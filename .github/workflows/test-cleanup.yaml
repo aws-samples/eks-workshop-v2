@@ -1,0 +1,40 @@
+name: Test cleanup
+
+on:
+  workflow_dispatch:
+    inputs:
+      buildId:
+        description: 'Build ID'
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    name: cleanup
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '17'
+    - name: Get AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1.6.1
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        role-duration-seconds: 3600
+        aws-region: ${{ secrets.AWS_REGION }}
+        role-session-name: GithubActionsSession
+    - name: Init environment
+      working-directory: test/terraform
+      timeout-minutes: 60
+      env:
+        BUILD_ID: ${{ github.event.inputs.buildId }}
+      run: |
+        export CLUSTER_ID="ci-${BUILD_ID}"
+        export TF_VAR_cluster_id="${CLUSTER_ID}"
+        terraform init -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="key=ci/${CLUSTER_ID}/terraform.tfstate"
+        terraform destroy --auto-approve
