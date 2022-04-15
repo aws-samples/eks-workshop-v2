@@ -37,7 +37,5 @@ jobs:
       run: |
         export CLUSTER_ID="ci-${BUILD_ID}"
         export TF_VAR_cluster_id="${CLUSTER_ID}"
-        export TF_LOG='debug'
-        env
         terraform init -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="key=ci/${CLUSTER_ID}/terraform.tfstate"
         terraform plan
