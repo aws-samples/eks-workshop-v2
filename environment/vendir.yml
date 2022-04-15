@@ -1,0 +1,14 @@
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+directories:
+- path: vendor
+  contents:
+  - path: terraform
+    http:
+      url: https://releases.hashicorp.com/terraform/1.1.8/terraform_1.1.8_linux_amd64.zip
+  - path: kubectl
+    http:
+      url: https://dl.k8s.io/release/v1.23.5/bin/linux/amd64/kubectl
+  - path: helm
+    http:
+      url: https://get.helm.sh/helm-v3.8.1-linux-amd64.tar.gz

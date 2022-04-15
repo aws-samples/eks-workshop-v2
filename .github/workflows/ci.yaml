@@ -16,9 +16,14 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '17'
+    - name: Build environment image
+      working-directory: environment
+      run: |
+           docker build -t environment .
+    - name: Build test image
+      working-directory: test
+      run: |
+           docker build -t test .
     - name: Get AWS credentials
       uses: aws-actions/configure-aws-credentials@v1.6.1
       with:
@@ -34,6 +39,18 @@ jobs:
       run: |
         terraform init -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="key=ci/${CLUSTER_ID}/terraform.tfstate"
         terraform apply --auto-approve
+        echo "EKS_CLUSTER_NAME=$(terraform -raw output eks_cluster_id)" >> $GITHUB_ENV
+    - name: Refresh AWS credentials
+      if: always()
+      uses: aws-actions/configure-aws-credentials@v1.6.1
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        role-duration-seconds: 3600
+        aws-region: ${{ secrets.AWS_REGION }}
+        role-session-name: GithubActionsSession
+    - name: Run tests
+      run: |
+           docker run -v site/content:/content -e "EKS_CLUSTER_NAME" -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" test
     - name: Refresh AWS credentials
       if: always()
       uses: aws-actions/configure-aws-credentials@v1.6.1

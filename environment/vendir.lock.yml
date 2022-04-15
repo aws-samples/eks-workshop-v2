@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - http: {}
+    path: terraform
+  - http: {}
+    path: kubectl
+  - http: {}
+    path: helm
+  path: vendor
+kind: LockConfig
