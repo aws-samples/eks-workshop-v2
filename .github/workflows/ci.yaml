@@ -52,4 +52,6 @@ jobs:
       timeout-minutes: 20
       working-directory: test/terraform
       run: |
+        export CLUSTER_ID="ci-${BUILD_ID}"
+        export TF_VAR_cluster_id="${CLUSTER_ID}"
         terraform destroy --auto-approve
