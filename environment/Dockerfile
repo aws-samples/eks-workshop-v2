@@ -9,6 +9,6 @@ RUN curl -fsSL https://github.com/vmware-tanzu/carvel-vendir/releases/download/v
 
 ADD install-tools.sh /tmp/install-tools.sh
 
-ADD vendir.yml vendir.lock.yml .
+ADD vendir.yml vendir.lock.yml ./
 
 RUN chmod +x /tmp/install-tools.sh && /tmp/install-tools.sh
