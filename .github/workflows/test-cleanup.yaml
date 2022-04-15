@@ -28,7 +28,7 @@ jobs:
         role-duration-seconds: 3600
         aws-region: ${{ secrets.AWS_REGION }}
         role-session-name: GithubActionsSession
-    - name: Init environment
+    - name: Cleanup environment
       working-directory: test/terraform
       timeout-minutes: 60
       env:
