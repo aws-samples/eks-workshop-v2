@@ -2,11 +2,6 @@ name: CI
 
 on:
   workflow_dispatch:
-    inputs:
-      reason:
-        description: 'Run reason'
-        default: 'Testing'
-        required: true
 
 permissions:
   id-token: write
