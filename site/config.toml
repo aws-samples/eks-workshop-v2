@@ -1,0 +1,19 @@
+baseURL = 'http://eksworkshop.com/'
+languageCode = 'en-us'
+title = 'Amazon EKS Workshop'
+
+theme = "hugo-theme-learn"
+
+# For search functionality
+[outputs]
+home = [ "HTML", "RSS", "JSON"]
+
+[[menu.shortcuts]] 
+name = "<i class='fab fa-github'></i> Github repo"
+identifier = "ds"
+url = "https://github.com/aws-samples/eks-workshop-v2"
+weight = 10
+
+[params]
+  themeVariant = "mine"
+  editURL = "https://github.com/aws-samples/eks-workshop-v2/edit/main/site/content"
