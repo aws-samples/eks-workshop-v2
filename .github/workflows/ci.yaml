@@ -11,6 +11,8 @@ jobs:
   build:
     name: test
     runs-on: ubuntu-latest
+    env:
+      CLUSTER_ID: "ci-${{ github.run_id }}"
     steps:
     - name: Check out code
       uses: actions/checkout@v2
@@ -24,14 +26,12 @@ jobs:
         role-duration-seconds: 3600
         aws-region: ${{ secrets.AWS_REGION }}
         role-session-name: GithubActionsSession
+    - name: Set cluster ID
+      run: echo "TF_VAR_cluster_id=${CLUSTER_ID}" >> $GITHUB_ENV
     - name: Init environment
       working-directory: test/terraform
       timeout-minutes: 60
-      env:
-        BUILD_ID: ${{ github.run_id }}
       run: |
-        export CLUSTER_ID="ci-${BUILD_ID}"
-        export TF_VAR_cluster_id="${CLUSTER_ID}"
         terraform init -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="key=ci/${CLUSTER_ID}/terraform.tfstate"
         terraform apply --auto-approve
     - name: Refresh AWS credentials
@@ -47,6 +47,4 @@ jobs:
       timeout-minutes: 20
       working-directory: test/terraform
       run: |
-        export CLUSTER_ID="ci-${BUILD_ID}"
-        export TF_VAR_cluster_id="${CLUSTER_ID}"
         terraform destroy --auto-approve
