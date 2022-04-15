@@ -26,7 +26,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v1.6.1
       with:
         role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-        role-duration-seconds: 7200
+        role-duration-seconds: 3600
         aws-region: ${{ secrets.AWS_REGION }}
         role-session-name: GithubActionsSession
     - name: Init environment
