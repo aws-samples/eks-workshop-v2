@@ -39,7 +39,7 @@ jobs:
       run: |
         terraform init -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="key=ci/${CLUSTER_ID}/terraform.tfstate"
         terraform apply --auto-approve
-        EKS_CLUSTER_NAME=$(terraform -raw output eks_cluster_id)
+        EKS_CLUSTER_NAME=$(terraform output -raw eks_cluster_id)
         echo "EKS_CLUSTER_NAME=$EKS_CLUSTER_NAME" >> $GITHUB_ENV
     - name: Refresh AWS credentials
       if: always()
