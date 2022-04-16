@@ -51,7 +51,7 @@ jobs:
         role-session-name: GithubActionsSession
     - name: Run tests
       run: |
-           docker run -v ${GITHUB_WORKSPACE}/site/content:/content -e "EKS_CLUSTER_NAME" -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" test
+           docker run -v ${GITHUB_WORKSPACE}/site/content:/content -e "EKS_CLUSTER_NAME" -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" -e "AWS_DEFAULT_REGION" test
     - name: Refresh AWS credentials
       if: always()
       uses: aws-actions/configure-aws-credentials@v1.6.1
