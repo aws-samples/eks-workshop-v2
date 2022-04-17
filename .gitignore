@@ -1,6 +1,6 @@
 vendor
 .terraform*
-*.tfstate
+*.tfstate*
 
 public
 resources
