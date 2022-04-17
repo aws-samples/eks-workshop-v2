@@ -1,11 +1,8 @@
-## My Project
+## Amazon Elastic Kubernetes Service Workshop
 
-TODO: Fill this README out!
+![Tests](https://github.com/aws-samples/eks-workshop-v2/actions/workflows/ci/badge.svg)
 
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
+Welcome to the content repository for the Amazon Elastic Kubernetes Services workshop.
 
 ## Security
 
