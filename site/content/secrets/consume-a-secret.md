@@ -36,7 +36,7 @@ EOF
 
 Deploy the pod on your EKS cluster:
 
-```bash wait=5
+```bash wait=10
 kubectl --namespace secretslab \
         apply -f podconsumingsecret.yaml
 ```
@@ -50,7 +50,7 @@ pod/consumesecret created
 Attach to the pod and attempt to access the secret:
 
 ```bash
-kubectl --namespace secretslab exec -it consumesecret -- cat /tmp/test-creds
+kubectl --namespace secretslab exec consumesecret -- cat /tmp/test-creds
 ```
 
 Output:

@@ -1,7 +1,7 @@
 set -Eeuo pipefail
 
 before() {
-  # NONE
+  echo "noop"
 }
 
 after() {

@@ -1,11 +1,9 @@
 FROM environment
 
-RUN yum install -y nodejs npm aws-cli
+RUN yum install -y nodejs npm aws-cli procps
 
-RUN npm install -g @niallthomson/wtf@0.0.12
+RUN npm install -g @niallthomson/wtf@0.0.13
 
 COPY run.sh /
-
-RUN chmod +x /run.sh
 
 ENTRYPOINT ["bash", "/run.sh"]

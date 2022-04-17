@@ -32,7 +32,7 @@ release "mywebserver" uninstalled
 
 kubectl will also demonstrate that our pods and service are no longer available:
 
-```bash
+```bash expectError=true
 kubectl get pods -l app.kubernetes.io/name=nginx
 kubectl get service mywebserver-nginx -o wide
 ```
