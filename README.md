@@ -1,6 +1,6 @@
 ## Amazon Elastic Kubernetes Service Workshop
 
-![Tests](https://github.com/aws-samples/eks-workshop-v2/actions/workflows/ci/badge.svg)
+![Tests](https://github.com/aws-samples/eks-workshop-v2/actions/workflows/ci.yaml/badge.svg)
 
 Welcome to the content repository for the Amazon Elastic Kubernetes Services workshop.
 
