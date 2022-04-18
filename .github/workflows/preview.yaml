@@ -22,7 +22,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y curl git
 
-        curl -L https://github.com/gohugoio/hugo/releases/download/v0.91.2/hugo_0.91.2_Linux-64bit.deb -o hugo.deb
+        curl -L https://github.com/gohugoio/hugo/releases/download/v0.97.0/hugo_0.97.0_Linux-64bit.deb -o hugo.deb
 
         sudo apt install ./hugo.deb
     - name: Generate site
