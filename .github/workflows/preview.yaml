@@ -17,6 +17,8 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - name: Install hugo
       run: |
         sudo apt-get update
