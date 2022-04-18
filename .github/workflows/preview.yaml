@@ -38,4 +38,4 @@ jobs:
         role-session-name: GithubActionsSession
     - name: Sync
       working-directory: site/public
-      run: aws sync . s3://${{ secrets.PREVIEW_CONTENT_S3_BUCKET }}
+      run: aws s3 sync . s3://${{ secrets.PREVIEW_CONTENT_S3_BUCKET }}
