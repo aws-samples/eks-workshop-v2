@@ -145,3 +145,24 @@ Sometimes it is tempting to execute a long-running command in one window and ins
 1. It can be confusing for the learner to switch between multiple windows
 2. Contextual information like environment variables can get lost in new windows
 3. It is more difficult to test
+
+
+### Referencing external manifests or components
+
+If something like a manifest hosted externally is to be referenced by content it should be pinned as explicitly as possible to prevent changes to these files causing uncontrolled changes to the content experience, or worse breaking it entirely.
+
+When fetching a manifest from GitHub do not refer to `master` or `main` and instead refer to either a tag or specific commit.
+
+For example, instead of this:
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/aws/eks-charts/master/stable/aws-load-balancer-controller/crds/crds.yaml
+```
+
+It is preferable to use this:
+
+```
+kubectl apply -f https://raw.githubusercontent.com/aws/eks-charts/v0.0.86/stable/aws-load-balancer-controller/crds/crds.yaml
+```
+
+Notice we changed from referring to `master` to referring to the tag `v0.0.86`.
