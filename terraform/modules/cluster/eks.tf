@@ -1,5 +1,5 @@
 module "aws-eks-accelerator-for-terraform" {
-  source = "git::https://github.com/aws-ia/terraform-aws-eks-blueprints.git?ref=v4.0.1"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.0.1"
 
   tenant            = local.tenant
   environment       = local.environment
