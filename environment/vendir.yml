@@ -7,8 +7,18 @@ directories:
     http:
       url: https://releases.hashicorp.com/terraform/1.1.8/terraform_1.1.8_linux_amd64.zip
   - path: kubectl
-    http:
-      url: https://dl.k8s.io/release/v1.23.5/bin/linux/amd64/kubectl
+    githubRelease:
+      slug: kubernetes/kubernetes
+      tagSelection:
+        semver:
+          constraints: ">= 1.23.0 < 1.24.0"
+      http:
+        url: https://dl.k8s.io/release/{tag}/bin/linux/amd64/kubectl
   - path: helm
-    http:
-      url: https://get.helm.sh/helm-v3.8.1-linux-amd64.tar.gz
+    githubRelease:
+      slug: helm/helm
+      tagSelection:
+        semver:
+          constraints: ">= 3.8.0 < 4.0.0"
+      http:
+        url: https://get.helm.sh/helm-{tag}-linux-amd64.tar.gz
