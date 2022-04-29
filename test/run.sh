@@ -2,8 +2,6 @@
 
 set -e
 
-source ~/.bashrc
-
 if [ -z "$EKS_CLUSTER_NAME" ]; then
   echo "Error: Must provide EKS_CLUSTER_NAME"
   exit 1
