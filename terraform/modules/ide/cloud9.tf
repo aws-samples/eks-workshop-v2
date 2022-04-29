@@ -1,8 +1,8 @@
 resource "aws_cloud9_environment_ec2" "c9_workspace" {
-  instance_type = var.instance_type
-  name = var.environment_name
+  instance_type               = var.instance_type
+  name                        = var.environment_name
   automatic_stop_time_minutes = 90
-  
+
   tags = {
     Cloud9Bootstrap = "Active"
   }
@@ -61,7 +61,7 @@ resource "aws_iam_policy" "cloud9_additional_policy" {
 
 resource "aws_iam_role_policy_attachment" "cloud9_additional_policy" {
   count = length(var.additional_cloud9_policies)
-  
+
   role       = aws_iam_role.cloud9_role.name
   policy_arn = aws_iam_policy.cloud9_additional_policy[count.index].arn
 }
@@ -76,9 +76,9 @@ resource "aws_lambda_invocation" "cloud9_instance_profile" {
   function_name = module.cloud9_bootstrap_lambda.lambda_function_name
 
   input = jsonencode({
-    instance_id = data.aws_instance.cloud9_instance.id
-    instance_profile_arn = aws_iam_instance_profile.cloud9_ssm_instance_profile.arn
+    instance_id           = data.aws_instance.cloud9_instance.id
+    instance_profile_arn  = aws_iam_instance_profile.cloud9_ssm_instance_profile.arn
     instance_profile_name = aws_iam_instance_profile.cloud9_ssm_instance_profile.name
-    disk_size = var.disk_size
+    disk_size             = var.disk_size
   })
 }

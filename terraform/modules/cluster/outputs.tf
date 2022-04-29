@@ -10,10 +10,10 @@ output "configure_kubectl" {
 
 output "private_subnet_ids" {
   description = "Private Subnet Ids"
-  value = module.aws_vpc.private_subnets
+  value       = module.aws_vpc.private_subnets
 }
 
 output "public_subnet_ids" {
   description = "Public Subnet Ids"
-  value = module.aws_vpc.public_subnets
+  value       = module.aws_vpc.public_subnets
 }
