@@ -35,7 +35,7 @@ provider "helm" {
 locals {
   tenant      = "eksw"
   environment = "env"
-  zone        = var.id 
+  zone        = var.id
 
   cluster_version = var.cluster_version
 

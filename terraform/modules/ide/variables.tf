@@ -11,23 +11,23 @@ variable "subnet_id" {
 }
 
 variable "environment_name" {
-  type        = string
-  default     = "test"
+  type    = string
+  default = "test"
 }
 
 variable "disk_size" {
-  type        = number
-  default     = 60
+  type    = number
+  default = 60
 }
 
 variable "bootstrap_script" {
-  type        = string
-  default     = "echo 'No extension bootstrap'"
+  type    = string
+  default = "echo 'No extension bootstrap'"
 }
 
 variable "additional_cloud9_policies" {
-  type        = list
-  default     = []
+  type    = list(any)
+  default = []
 }
 
 variable "cloud9_user_arns" {

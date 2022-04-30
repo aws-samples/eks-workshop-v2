@@ -1,14 +1,14 @@
 data "aws_region" "current" {}
 
 module "cluster" {
-  source  = "../modules/cluster"
+  source = "../modules/cluster"
 
   id = var.id
 
   map_roles = [{
-    rolearn = module.ide.cloud9_iam_role
+    rolearn  = module.ide.cloud9_iam_role
     username = "cloud9"
-    groups = ["system:masters"]
+    groups   = ["system:masters"]
   }]
 }
 
@@ -31,11 +31,11 @@ resource "aws_s3_object" "bootstrap_archive" {
 }
 
 module "ide" {
-  source  = "../modules/ide"
+  source = "../modules/ide"
 
-  environment_name              = module.cluster.eks_cluster_id
-  subnet_id                     = module.cluster.public_subnet_ids[0]
-  additional_cloud9_policies    = [{
+  environment_name = module.cluster.eks_cluster_id
+  subnet_id        = module.cluster.public_subnet_ids[0]
+  additional_cloud9_policies = [{
     Version = "2012-10-17",
     Statement = [
       {
@@ -51,7 +51,7 @@ module "ide" {
         ]
       }
     ]
-  },{
+    }, {
     Version = "2012-10-17",
     Statement = [
       {

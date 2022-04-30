@@ -5,6 +5,6 @@ module "eks-blueprints-kubernetes-addons" {
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller_helm_config = {
-    version    = var.aws_load_balancer_controller_version
+    version = var.aws_load_balancer_controller_version
   }
 }
