@@ -1,0 +1,11 @@
+charts:
+- name: aws-load-balancer-controller
+  repository: https://aws.github.io/eks-charts
+  chart: aws-load-balancer-controller
+  constraint: '>=1.4.0 <1.5.0'
+- name: karpenter
+  repository: https://charts.karpenter.sh
+  chart: karpenter
+- name: aws-efs-csi-driver
+  repository: https://kubernetes-sigs.github.io/aws-efs-csi-driver
+  chart: aws-efs-csi-driver
