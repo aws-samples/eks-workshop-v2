@@ -1,4 +1,4 @@
-FROM environment
+FROM eks-workshop-environment
 
 RUN yum install -y nodejs npm aws-cli procps
 

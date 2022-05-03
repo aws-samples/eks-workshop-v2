@@ -23,11 +23,11 @@ jobs:
     - name: Build environment image
       working-directory: environment
       run: |
-           docker build -t environment .
+           docker build -t eks-workshop-environment .
     - name: Build test image
       working-directory: test
       run: |
-           docker build -t test .
+           docker build -t eks-workshop-test .
     - name: Get AWS credentials
       uses: aws-actions/configure-aws-credentials@v1.6.1
       with:
@@ -55,7 +55,7 @@ jobs:
         role-session-name: GithubActionsSession
     - name: Run tests
       run: |
-           docker run -v ${GITHUB_WORKSPACE}/site/content:/content -e "EKS_CLUSTER_NAME" -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" -e "AWS_DEFAULT_REGION" test
+           docker run -v ${GITHUB_WORKSPACE}/site/content:/content -e "EKS_CLUSTER_NAME" -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" -e "AWS_DEFAULT_REGION" eks-workshop-test
     - name: Refresh AWS credentials
       if: always()
       uses: aws-actions/configure-aws-credentials@v1.6.1
