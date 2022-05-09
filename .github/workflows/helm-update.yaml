@@ -2,6 +2,8 @@ name: Helm Chart Update
 
 on:
   workflow_dispatch:
+  schedule:
+  - cron:  '30 5 * * *'
 
 permissions:
   pull-requests: write
