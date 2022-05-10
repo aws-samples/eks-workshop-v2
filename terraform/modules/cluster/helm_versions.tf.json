@@ -5,7 +5,7 @@
       "default": {
         "aws-efs-csi-driver": "2.2.6",
         "aws-load-balancer-controller": "1.4.1",
-        "karpenter": "0.9.0"
+        "karpenter": "0.10.0"
       }
     }
   }
