@@ -36,9 +36,10 @@ EOF
 
 Deploy the pod on your EKS cluster:
 
-```bash wait=10
+```bash
 kubectl --namespace secretslab \
         apply -f podconsumingsecret.yaml
+kubectl wait pods --namespace secretslab consumesecret --for condition=Ready --timeout=90s
 ```
 
 Output:
