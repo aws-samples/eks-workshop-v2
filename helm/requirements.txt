@@ -3,5 +3,5 @@ charset-normalizer==2.0.12
 idna==3.3
 PyYAML==6.0
 requests==2.27.1
-semantic-version==2.9.0
+semantic-version==2.10.0
 urllib3==1.26.9
