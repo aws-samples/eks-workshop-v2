@@ -3,9 +3,10 @@
   "variable": {
     "helm_chart_versions": {
       "default": {
-        "aws-efs-csi-driver": "2.2.6",
+        "aws-efs-csi-driver": "2.2.7",
         "aws-load-balancer-controller": "1.4.2",
-        "karpenter": "0.10.1"
+        "descheduler": "0.24.1",
+        "karpenter": "0.12.0"
       }
     }
   }
