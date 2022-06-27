@@ -13,3 +13,7 @@ test:
 .PHONY: e2e-test
 e2e-test:
 	bash hack/run-e2e.sh
+
+.PHONY: update-helm-versions
+update-helm-versions:
+	bash hack/update-helm-versions.sh
