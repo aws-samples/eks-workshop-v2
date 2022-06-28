@@ -1,0 +1,4 @@
+charts:
+- name: karpenter
+  repository: https://charts.karpenter.sh
+  chart: karpenter
