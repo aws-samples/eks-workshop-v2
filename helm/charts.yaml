@@ -9,3 +9,6 @@ charts:
 - name: aws-efs-csi-driver
   repository: https://kubernetes-sigs.github.io/aws-efs-csi-driver
   chart: aws-efs-csi-driver
+- name: descheduler
+  repository: https://kubernetes-sigs.github.io/descheduler
+  chart: descheduler
