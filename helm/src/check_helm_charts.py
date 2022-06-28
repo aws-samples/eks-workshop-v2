@@ -3,9 +3,10 @@ import requests
 import semantic_version
 import json
 import os
+import argparse
 
-def load_chart_requirements():
-  stream = open("charts.yaml", "r")
+def load_chart_requirements(path):
+  stream = open(path, "r")
 
   charts = yaml.safe_load(stream)
 
@@ -13,22 +14,18 @@ def load_chart_requirements():
 
   return charts
 
-def load_terraform_variables(path):
-  f = open(path)
-
-  data = json.load(f)
- 
-  f.close()
-
-  return data
-
 def save_terraform_variables(path, vars):
   print('Writing output to {}'.format(path))
   with open(path, 'w') as outfile:
     outfile.write('')
     json.dump(vars, outfile, indent=2, sort_keys=True)
 
-charts = load_chart_requirements()
+parser = argparse.ArgumentParser()
+parser.add_argument("target", help="target file to write resolved JSON to")
+parser.add_argument("-c", "--config", help="path to charts.yaml", default="charts.yaml")
+args = parser.parse_args()
+
+charts = load_chart_requirements(args.config)
 vars = {
   '//': "This file is auto-generated, do not modify manually",
   'variable': {
@@ -37,8 +34,6 @@ vars = {
     }
   }
 }
-
-target_file = os.getenv('TARGET_FILE', '../terraform/modules/cluster/helm_versions.tf.json')
 
 for chart in charts['charts']:
   url = '{}/index.yaml'.format(chart['repository'])
@@ -65,4 +60,4 @@ for chart in charts['charts']:
 
     vars['variable']['helm_chart_versions']['default'][chart['name']] = selected_version
 
-save_terraform_variables(target_file, vars)
+save_terraform_variables(args.target, vars)
