@@ -54,21 +54,31 @@ All Terraform configuration resides in the `terraform` directory, and is structu
 
 The workshop content has various dependencies that are necessary to run it in addition to the Terraform infrastructure. These include:
 - Binaries like `kubectl`, `helm` etc. that are used by learners throughout the content
-- Helm charts which are used to install components such as AWS Load Balancer Controller etc.
+- Kubernetes components which are used to install components such as AWS Load Balancer Controller etc.
 
 These have specific mechanisms in place to help automate tracking dependency updates.
 
-### Helm charts
+### Kubernetes components
 
-Helm charts are primarily installed using Terraform, but the versions which are installed are maintained by an automated script that runs daily to check for new versions of these charts.
+Kubernetes components required for workshop content are primarily installed using Terraform, and the versions which are installed are maintained by an automated script that runs daily to check for new versions of these charts.
 
-To add a new Helm chart edit the file `helm/charts.yaml` and follow the existing content as an example. 
+#### Terraform addons
+
+Where possible the preference is to use EKS Blueprints addons to install dependencies like Helm charts in the EKS cluster. There are a [number of addons](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons) packaged with EKS Blueprints which can be used if your particular component is supported. You can see examples of how to install these addons for workshop content [here](../terraform/modules/cluster/addons.tf).
+
+If the component you require is not already supported by EKS Blueprints you can create a custom addon within this repository. You can see an example of creating a custom addon module [here](../terraform/modules/addons/descheduler/main.tf) and it is installed [here](../terraform/modules/cluster/addons.tf).
+
+#### Helm chart versions
+
+In order to keep up with new versions of Helm charts being published there is an automated mechanism used to monitor all Helm charts used in the workshop content that will raise PRs when new versions are published.
+
+In addition to adding a component to Terraform as outlined in the previous section you must also do the following:
+- Edit the file `helm/charts.yaml` and specify the Helm repository, chart name etc.
+- Edit the file `terraform/modules/cluster/helm_versions.tf.json` and specify the initial version, note the map name must match the `name` field from `charts.yaml` for your chart.
 
 By default the automated system will look for the latest version of any charts added, but you can control this by using the `constraint` field, which uses the [NPM semantic versioning](https://docs.npmjs.com/about-semantic-versioning) constraint syntax. Please use this sparingly, as any constraints used will require additional maintenance overhead to keep updated. This should mainly be used for charts where:
 - The latest chart versions are incompatible with the version of EKS in the content
 - The content requires significant changes to bring it inline with a new version
-
-This changed in this YAML file will be reflected in the Terraform variables file `terraform/modules/cluster/helm_versions.tf.json`.
 
 ## Testing
 
