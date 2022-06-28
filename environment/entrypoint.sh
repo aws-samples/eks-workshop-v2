@@ -2,8 +2,8 @@
 
 set -e
 
-if [ ! -z "$CLUSTER_NAME" ]; then
-  aws eks update-kubeconfig --name $CLUSTER_NAME
+if [ ! -z "$EKS_CLUSTER_NAME" ]; then
+  aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
 fi
 
 bash -l
