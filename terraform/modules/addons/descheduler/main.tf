@@ -9,15 +9,15 @@ module "helm_addon" {
   irsa_config       = null
   addon_context     = var.addon_context
 
-  depends_on = [kubernetes_namespace_v1.this]
+  # depends_on = [kubernetes_namespace_v1.this]
 }
 
 #-------------------------------------
 # Helm Namespace
 #-------------------------------------
 
-resource "kubernetes_namespace_v1" "this" {
-  metadata {
-    name = local.helm_config["namespace"]
-  }
-}
+# resource "kubernetes_namespace_v1" "this" {
+#   metadata {
+#     name = local.helm_config["namespace"]
+#   }
+# }
