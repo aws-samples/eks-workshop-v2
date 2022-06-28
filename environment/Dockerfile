@@ -2,7 +2,7 @@ FROM amazonlinux:2022
 
 ARG GITHUB_TOKEN=''
 
-RUN yum install -y curl findutils aws-cli && \
+RUN yum install -y curl findutils aws-cli jq && \
     yum clean all
 
 ADD install-tools.sh /tmp/install-tools.sh
