@@ -21,6 +21,8 @@ The first step is to create a working branch to create the content. There are tw
 
 Modifications to the workshop will only be accepted via Pull Requests.
 
+Note: You must clone the repository with submodules `git clone --recurse-submodules https://github.com/aws-samples/eks-workshop-v2.git`
+
 ## Writing content
 
 Once you have a working branch on your local machine you can start writing the workshop content. The Markdown files for the content are all contained in the `site/content` directory of the repository. This directory is structured using the standard [Hugo directory layout](https://gohugo.io/content-management/organization/). It is recommended to use other modules as guidelines for format and structure.
