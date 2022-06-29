@@ -21,3 +21,11 @@ shell:
 .PHONY: update-helm-versions
 update-helm-versions:
 	bash hack/update-helm-versions.sh
+
+.PHONY: create-infrastructure
+create-infrastructure:
+	bash hack/create-infrastructure.sh
+
+.PHONY: destroy-infrastructure
+destroy-infrastructure:
+	bash hack/destroy-infrastructure.sh
