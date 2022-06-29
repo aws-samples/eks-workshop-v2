@@ -9,6 +9,15 @@ fi
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
+state_path="$SCRIPT_DIR/../terraform/cluster-only/terraform.tfstate"
+
+if [ ! -f "$state_path" ]; then
+  echo "Error: Terraform state file does not exist, did you create the infrastructure?"
+  exit 1
+fi
+
+export EKS_CLUSTER_NAME=$(terraform output -state $state_path -raw eks_cluster_id)
+
 echo "Generating temporary AWS credentials..."
 
 ACCESS_VARS=$(aws sts assume-role --role-arn $ASSUME_ROLE --role-session-name eks-workshop-shell | jq -r '.Credentials | "export AWS_ACCESS_KEY_ID=\(.AccessKeyId) AWS_SECRET_ACCESS_KEY=\(.SecretAccessKey) AWS_SESSION_TOKEN=\(.SessionToken)"')
@@ -16,9 +25,6 @@ ACCESS_VARS=$(aws sts assume-role --role-arn $ASSUME_ROLE --role-session-name ek
 echo "Building container images..."
 
 (cd $SCRIPT_DIR/../environment && docker build -q -t eks-workshop-environment .)
-
-# TODO: Retrieve this from state file
-export EKS_CLUSTER_NAME="eksw-env-cluster-eks"
 
 # TODO: This should probably not use eval
 eval "$ACCESS_VARS"
