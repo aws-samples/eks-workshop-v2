@@ -10,47 +10,11 @@ We will deploy an application and expose as a service on TCP port 80.
 The application is a custom-built image based on the php-apache image. The index.php page performs calculations to generate CPU load. More information can be found [here](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#run-expose-php-apache-server)
 
 ```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: php-apache
-spec:
-  selector:
-    matchLabels:
-      run: php-apache
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        run: php-apache
-    spec:
-      containers:
-      - name: php-apache
-        image: k8s.gcr.io/hpa-example
-        ports:
-        - containerPort: 80
-        resources:
-          limits:
-            cpu: 500m
-          requests:
-            cpu: 200m
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: php-apache
-  labels:
-    run: php-apache
-spec:
-  ports:
-  - port: 80
-  selector:
-    run: php-apache
-EOF
+kubectl create deployment php-apache --image=us.gcr.io/k8s-artifacts-prod/hpa-example
+kubectl set resources deploy php-apache --requests=cpu=200m
+kubectl expose deploy php-apache --port 80
 
-
-kubectl get deployment/php-apache
+kubectl get pod -l app=php-apache
 
 ```
 
@@ -70,6 +34,13 @@ View the HPA using kubectl. You probably will see `<unknown>/50%` for 1-2 minute
 ```bash
 kubectl get hpa
 ```
+
+The output is similar to:
+
+{{< output >}}
+NAME         REFERENCE               TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   <unknown>/50%   1         10        0          6s
+{{< /output >}}
 
 ## Generate load to trigger scaling
 
