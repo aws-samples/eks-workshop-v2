@@ -12,3 +12,9 @@ charts:
 - name: descheduler
   repository: https://kubernetes-sigs.github.io/descheduler
   chart: descheduler
+- name: cluster_autoscaler
+  repository: https://kubernetes.github.io/autoscaler
+  chart: cluster_autoscaler  
+- name: metrics_server
+  repository: https://kubernetes-sigs.github.io/metrics-server
+  chart: metrics_server    
