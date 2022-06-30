@@ -44,7 +44,7 @@ kubectl get pods
 ```
 ````
 
-Expected output from a command the learner should run must be displayed in a separate `code` block:
+Expected output from a command the learner should run must be displayed using the `{{< output >}}` shortcode:
 
 ````
 Please run this command:
@@ -55,10 +55,10 @@ kubectl get pods
 
 And expect this output:
 
-```
+{{< output >}}
 NAME                       READY   STATUS    RESTARTS      AGE
 aws-node-1z3ng             1/1     Running   1 (16h ago)   21h
-```
+{{< /output >}}
 ````
 
 ### Asynchronous commands
