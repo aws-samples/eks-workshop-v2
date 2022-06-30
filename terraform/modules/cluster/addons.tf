@@ -5,6 +5,7 @@ module "eks-blueprints-kubernetes-addons" {
 
   enable_aws_load_balancer_controller = true
   enable_cluster_autoscaler = true
+  enable_metrics_server = true
   
   aws_load_balancer_controller_helm_config = {
     version = var.helm_chart_versions["aws-load-balancer-controller"]
