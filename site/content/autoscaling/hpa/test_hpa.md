@@ -1,6 +1,5 @@
 ---
 title: "Scale an Application with HPA"
-date: 2018-08-07T08:30:11-07:00
 weight: 20
 ---
 
@@ -11,11 +10,48 @@ We will deploy an application and expose as a service on TCP port 80.
 The application is a custom-built image based on the php-apache image. The index.php page performs calculations to generate CPU load. More information can be found [here](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#run-expose-php-apache-server)
 
 ```bash
-kubectl create deployment php-apache --image=us.gcr.io/k8s-artifacts-prod/hpa-example
-kubectl set resources deploy php-apache --requests=cpu=200m
-kubectl expose deploy php-apache --port 80
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-apache
+spec:
+  selector:
+    matchLabels:
+      run: php-apache
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: php-apache
+    spec:
+      containers:
+      - name: php-apache
+        image: k8s.gcr.io/hpa-example
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-apache
+  labels:
+    run: php-apache
+spec:
+  ports:
+  - port: 80
+  selector:
+    run: php-apache
+EOF
 
-kubectl get pod -l app=php-apache
+
+kubectl get deployment/php-apache
+
 ```
 
 ## Create an HPA resource
@@ -40,19 +76,13 @@ kubectl get hpa
 **Open a new terminal** in the Cloud9 Environment and run the following command to drop into a shell on a new container
 
 ```bash
-kubectl run -i --tty load-generator --image=busybox /bin/sh
-```
-
-Execute a while loop to continue getting http:///php-apache
-
-```bash
-while true; do wget -q -O - http://php-apache; done
+kubectl run -i --tty load-generator --rm --image=busybox:1.28 --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
 ```
 
 In the previous tab, watch the HPA with the following command
 
 ```bash
-kubectl get hpa -w
+kubectl get hpa php-apache --watch
 ```
 
 You will see HPA scale the pods from 1 up to our configured maximum (10) until the CPU average is below our target (50%)

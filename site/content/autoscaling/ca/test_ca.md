@@ -1,6 +1,5 @@
 ---
 title: "Scale a Cluster with CA"
-date: 2018-08-07T08:30:11-07:00
 weight: 40
 ---
 
@@ -9,7 +8,7 @@ weight: 40
 We will deploy an sample nginx application as a `ReplicaSet` of 1 `Pod`
 
 ```bash
-cat <<EoF> ~/environment/cluster-autoscaler/nginx.yaml
+cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -35,9 +34,8 @@ spec:
           requests:
             cpu: 500m
             memory: 512Mi
-EoF
+EOF
 
-kubectl apply -f ~/environment/cluster-autoscaler/nginx.yaml
 
 kubectl get deployment/nginx-to-scaleout
 ```
@@ -57,25 +55,23 @@ kubectl get pods -l app=nginx -o wide --watch
 ```
 
 {{< output >}}
-NAME                                 READY     STATUS    RESTARTS   AGE
-
-nginx-to-scaleout-7cb554c7d5-2d4gp   0/1       Pending   0          11s
-nginx-to-scaleout-7cb554c7d5-2nh69   0/1       Pending   0          12s
-nginx-to-scaleout-7cb554c7d5-45mqz   0/1       Pending   0          12s
-nginx-to-scaleout-7cb554c7d5-4qvzl   0/1       Pending   0          12s
-nginx-to-scaleout-7cb554c7d5-5jddd   1/1       Running   0          34s
-nginx-to-scaleout-7cb554c7d5-5sx4h   0/1       Pending   0          12s
-nginx-to-scaleout-7cb554c7d5-5xbjp   0/1       Pending   0          11s
-nginx-to-scaleout-7cb554c7d5-6l84p   0/1       Pending   0          11s
-nginx-to-scaleout-7cb554c7d5-7vp7l   0/1       Pending   0          12s
-nginx-to-scaleout-7cb554c7d5-86pr6   0/1       Pending   0          12s
-nginx-to-scaleout-7cb554c7d5-88ttw   0/1       Pending   0          12s
+NAME                                 READY   STATUS    RESTARTS   AGE   IP            NODE                          NOMINATED NODE   READINESS GATES
+nginx-to-scaleout-6fcd49fb84-7j28k   1/1     Running   0          15s   10.42.10.27   ip-10-42-10-28.ec2.internal   <none>           <none>
+nginx-to-scaleout-6fcd49fb84-9ksv6   0/1     Pending   0          7s    <none>        <none>                        <none>           <none>
+nginx-to-scaleout-6fcd49fb84-c5sps   1/1     Running   0          7s    10.42.10.79   ip-10-42-10-28.ec2.internal   <none>           <none>
+nginx-to-scaleout-6fcd49fb84-cp78b   0/1     Pending   0          7s    <none>        <none>                        <none>           <none>
+nginx-to-scaleout-6fcd49fb84-gj4pq   0/1     Pending   0          7s    <none>        <none>                        <none>           <none>
+nginx-to-scaleout-6fcd49fb84-lmm7q   0/1     Pending   0          7s    <none>        <none>                        <none>           <none>
+nginx-to-scaleout-6fcd49fb84-lpzsk   0/1     Pending   0          7s    <none>        <none>                        <none>           <none>
+nginx-to-scaleout-6fcd49fb84-psr6v   0/1     Pending   0          7s    <none>        <none>                        <none>           <none>
+nginx-to-scaleout-6fcd49fb84-zcjdx   0/1     Pending   0          7s    <none>        <none>                        <none>           <none>
+nginx-to-scaleout-6fcd49fb84-zpls2   0/1     Pending   0          7s    <none>        <none>                        <none>           <none>
 {{< /output >}}
 
 View the cluster-autoscaler logs
 
 ```bash
-kubectl -n kube-system logs -f deployment/cluster-autoscaler
+kubectl -n kube-system logs -f deployment/cluster-autoscaler-aws-cluster-autoscaler
 ```
 
 You will notice Cluster Autoscaler events similar to below
@@ -94,8 +90,8 @@ kubectl get nodes
 Output
 
 {{< output >}}
-ip-192-168-12-114.us-east-2.compute.internal   Ready    <none>   3d6h   v1.17.7-eks-bffbac
-ip-192-168-29-155.us-east-2.compute.internal   Ready    <none>   63s    v1.17.7-eks-bffbac
-ip-192-168-55-187.us-east-2.compute.internal   Ready    <none>   3d6h   v1.17.7-eks-bffbac
-ip-192-168-82-113.us-east-2.compute.internal   Ready    <none>   8h     v1.17.7-eks-bffbac
+NAME                           STATUS   ROLES    AGE     VERSION
+ip-10-42-10-28.ec2.internal    Ready    <none>   10m     v1.22.9-eks-810597c
+ip-10-42-11-67.ec2.internal    Ready    <none>   2m24s   v1.22.9-eks-810597c
+ip-10-42-12-158.ec2.internal   Ready    <none>   2m24s   v1.22.9-eks-810597c
 {{< /output >}}

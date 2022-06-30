@@ -1,6 +1,5 @@
 ---
-title: "Cleanup Scaling"
-date: 2018-08-07T08:30:11-07:00
+title: "Cleanup"
 weight: 50
 ---
 
