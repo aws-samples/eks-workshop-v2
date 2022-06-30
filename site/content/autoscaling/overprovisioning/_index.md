@@ -1,4 +1,9 @@
-# EKS Cluster Autoscaler - Over Provisioning
+---
+title: "EKS Cluster Autosclaer - Over Provisioning"
+chapter: true
+weight: 1
+draft: false
+---
 
 ## Prerequisite
 

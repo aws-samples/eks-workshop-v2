@@ -1,4 +1,8 @@
-# Configuring Over Provisioning with Cluster Autoscaler
+---
+title: "Configuring Over Provisioning with Cluster Autoscaler"
+weight: 2
+draft: false
+---
 
 ## Create Default Priority Class 
 
@@ -152,7 +156,7 @@ kubectl get svc kube-ops-view | tail -n 1 | awk '{ print "Kube-ops-view URL = ht
 Now that we have deployed the pause pods and can see the kube-ops-view let us scale up the application.
 Here is the kube-ops-view showing the Pause pods running on one of the cluster node. 
 
-![Image](kube-ops-view-before.jpg)
+![image](/posts/images/kube-ops-view-before.jpg)
 
 The following command shows the Pause container pods running in 2 nodes
 
@@ -215,7 +219,8 @@ pause-pods-5c765d9cb5-smnfl     0/1     Pending   0          32s
 
 The screenshot shows the Pause container pods evicted and waiting to be scheduled and a new node has been added by Cluster Autoscaler, once the new node is available the Pause container pods will be scheduled.
 
-![Image](kube-ops-view-after.jpg)
+![image](/posts/images/kube-ops-view-after.png)
 
+## Conclusion
 In this workshop we have shown how to over provision your cluster to scale your critical applications immediately.
 

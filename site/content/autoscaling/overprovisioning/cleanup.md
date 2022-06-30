@@ -1,6 +1,10 @@
-# Cleanup
+---
+title: "Cleanup"
+weight: 2
+draft: false
+---
 
-To delete all the resources in this chapter
+To delete all the resources in this chapter execute the commands below
 
 ```bash
 # Cleanup K8S resources
