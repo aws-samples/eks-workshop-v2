@@ -33,6 +33,6 @@ eval "$ACCESS_VARS"
 
 echo "Running test suite..."
 
-docker run -v $SCRIPT_DIR/../site/content:/content \
+docker run --rm -v $SCRIPT_DIR/../site/content:/content \
   -e "EKS_CLUSTER_NAME" -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" -e "AWS_DEFAULT_REGION" \
   eks-workshop-test
