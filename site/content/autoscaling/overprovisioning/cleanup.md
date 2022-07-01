@@ -13,7 +13,7 @@ kubectl delete priorityclass default
 kubectl delete priorityclass pause-pods
 
 # Scale down application #TODO: Change after app
-kubectl scale deployment --replicas=1 nginx
+kubectl delete deployment nginx
 
 # Set ASG value to previous values
 

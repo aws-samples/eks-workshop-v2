@@ -144,7 +144,7 @@ Currently 3rd cluster node is running pause container pod and there **—max-siz
 
 ```bash
 # Create a deployment - (TODO:Change to app - once decided)
-#kubectl create deployment nginx ``--``image``=``nginx
+kubectl create deployment nginx --image=nginx
 
 # Scale the deployment
 kubectl scale deployment --replicas=17 nginx
