@@ -44,13 +44,11 @@ php-apache   Deployment/php-apache   <unknown>/50%   1         10        0      
 
 ## Generate load to trigger scaling
 
-**Open a new terminal** in the Cloud9 Environment and run the following command to drop into a shell on a new container
-
 ```bash
-kubectl run -i --tty load-generator --rm --image=busybox:1.28 --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
+kubectl run load-generator --image=busybox:1.28 --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
 ```
 
-In the previous tab, watch the HPA with the following command
+Watch the HPA with the following command
 
 ```bash
 kubectl get hpa php-apache --watch
