@@ -69,8 +69,12 @@ kubectl patch deployment cluster-autoscaler-aws-cluster-autoscaler -n kube-syste
 Configure ASG’s max-size to be a value that will accommodate your over provisioning needs. Here we are configuring **—-max-size** to 4 and the current cluster has 3 nodes (***--desired-capacity 3***).
 
 ```bash
+
+# Get Cluster Name
+export EKS_CLUSTER_NAME=$(aws eks list-clusters --query "clusters[0]" --output text)
+
 # Get ASG name
-export ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='eksw-env-cluster-eks']].AutoScalingGroupName" --output text)
+export ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='$EKS_CLUSTER_NAME']].AutoScalingGroupName" --output text)
 
 # increase max capacity up to 4
 aws autoscaling \
@@ -83,7 +87,7 @@ aws autoscaling \
 # Check new values
 aws autoscaling \
     describe-auto-scaling-groups \
-    --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='eksw-env-cluster']].[AutoScalingGroupName, MinSize, MaxSize,DesiredCapacity]" \
+    --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='$EKS_CLUSTER_NAME']].[AutoScalingGroupName, MinSize, MaxSize,DesiredCapacity]" \
     --output table
 ```
 

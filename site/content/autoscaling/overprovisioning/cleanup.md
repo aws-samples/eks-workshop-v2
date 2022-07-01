@@ -16,6 +16,14 @@ kubectl delete priorityclass pause-pods
 kubectl scale deployment --replicas=1 nginx
 
 # Set ASG value to previous values
+
+# Get Cluster Name
+export EKS_CLUSTER_NAME=$(aws eks list-clusters --query "clusters[0]" --output text)
+
+# Get ASG name
+export ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='$EKS_CLUSTER_NAME']].AutoScalingGroupName" --output text)
+
+# Set ASG config
 aws autoscaling \
     update-auto-scaling-group \
     --auto-scaling-group-name ${ASG_NAME} \
