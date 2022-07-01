@@ -9,12 +9,8 @@ chapter: false
 It is best practice to create appropriate PriorityClass for your applications. Create **global default priority class** using the field **`globalDefault:true`**. This default PriorityClass will be assigned pods/deployments that don’t specify a `PriorityClassName`.
 
 ```bash
-# Create a Directory
-mkdir -p ~/environment/overprovision-lab
-
-# Create the PriorityClass yaml file for Global Default
-cat <<EOF > default-priorityclass.yaml
----
+# Create the PriorityClass for all pods in cluster (Global Default)
+cat <<EOF | kubectl apply -f -
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
@@ -23,9 +19,6 @@ value: 0
 globalDefault: true
 description: "Default Priority class."
 EOF
-
-# Apply and Create the object in the cluster
-kubectl apply -f ~/environment/overprovision-lab/default-priorityclass.yaml
 ```
 
 ## Create Over provisioning Pod’s Priority Class
@@ -34,9 +27,8 @@ Next create PriorityClass that will be assigned to Pause Container pods used for
 
 ```bash
 
-# Create the PriorityClass yaml file for overprovisioned pause container 
-cat <<EOF > ~/environment/overprovision-lab/pause-priorityclass.yaml
----
+# Create the PriorityClass for overprovisioned pause container 
+cat <<EOF | kubectl apply -f -
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
@@ -45,9 +37,6 @@ value: -1
 globalDefault: false
 description: "Priority class used by pause-pods for overprovisioning."
 EOF
-
-# Apply and Create the object in the cluster
-kubectl apply -f ~/environment/overprovision-lab/pause-priorityclass.yaml
 ```
 
 Verify priority classes using the command (output shows system default priority classes as well).
@@ -103,9 +92,8 @@ aws autoscaling \
 Create pause containers to make sure there are enough nodes that are available based on how much over provisioning is needed for your environment. Keep in mind the `—max-size` parameter in ASG (of EKS node group). Cluster Autoscaler won’t increase number of nodes beyond this maximum specified in the ASG
 
 ```bash
-# Create the deployment file for Pause Container pods
-cat <<EOF > ~/environment/overprovision-lab/pause-deploy.yaml
----
+# Create deployment for Pause Container pods
+cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -130,13 +118,9 @@ spec:
               cpu: "1.5"
               memory: "1G"
 EOF
-
-# Apply and create Pause container pods
-kubectl apply -f ~/environment/overprovision-lab/pause-deploy.yaml
 ```
 
 ## Monitoring Pod Provisioning Kube-Ops-View
-
 
 We will use [kube-ops-view](https://codeberg.org/hjacobs/kube-ops-view) that was installed in the previous lab to view the eviction of Pause Pods and Critical Application containers getting deployed.
 
