@@ -8,10 +8,9 @@ To delete all the resources in this chapter execute the commands below
 
 ```bash
 # Cleanup K8S resources
-kubectl delete -f ~/environment/overprovision-lab/pause-deploy.yaml 
-kubectl delete -f ~/environment/overprovision-lab/pause-priorityclass.yaml
-kubectl delete -f ~/environment/overprovision-lab/default-priorityclass.yaml
-rm -rf ~/environment/overprovision-lab
+kubectl delete deployment pause-pods
+kubectl delete priorityclass default
+kubectl delete priorityclass pause-pods
 
 # Scale down application #TODO: Change after app
 kubectl scale deployment --replicas=1 nginx

@@ -60,8 +60,8 @@ Patch CA to set flag **`expendable-pods-priority-cutoff`** to value **`-10`** so
 
 ```bash
 # Patch the Cluster Autoscaler so it takes expendable pod into account for making scaling decisions
-kubectl patch deployment cluster-autoscaler -n kube-system \
--p '{"spec": {"template": {"spec": {"containers": [{"name": "cluster-autoscaler","command": ["./cluster-autoscaler","--v=4","--stderrthreshold=info","--cloud-provider=aws","--skip-nodes-with-local-storage=false","--expander=least-waste","--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eksworkshop-eksctl","--balance-similar-node-groups","--skip-nodes-with-system-pods=false","--expendable-pods-priority-cutoff=-10"]}]}}}}'
+kubectl patch deployment cluster-autoscaler-aws-cluster-autoscaler -n kube-system \
+-p '{"spec": {"template": {"spec": {"containers": [{"name": "aws-cluster-autoscaler","command": ["./cluster-autoscaler","--v=4","--stderrthreshold=info","--cloud-provider=aws","--skip-nodes-with-local-storage=false","--expander=least-waste","--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eksworkshop-eksctl","--balance-similar-node-groups","--skip-nodes-with-system-pods=false","--expendable-pods-priority-cutoff=-10"]}]}}}}'
 ```
 
 ## Configure AWS AutoScaling Group (ASG)
@@ -70,7 +70,7 @@ Configure ASG’s max-size to be a value that will accommodate your over provisi
 
 ```bash
 # Get ASG name
-export ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='eksworkshop-eksctl']].AutoScalingGroupName" --output text)
+export ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='eksw-env-cluster-eks']].AutoScalingGroupName" --output text)
 
 # increase max capacity up to 4
 aws autoscaling \
@@ -83,7 +83,7 @@ aws autoscaling \
 # Check new values
 aws autoscaling \
     describe-auto-scaling-groups \
-    --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='eksworkshop-eksctl']].[AutoScalingGroupName, MinSize, MaxSize,DesiredCapacity]" \
+    --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='eksw-env-cluster']].[AutoScalingGroupName, MinSize, MaxSize,DesiredCapacity]" \
     --output table
 ```
 
@@ -120,24 +120,7 @@ spec:
 EOF
 ```
 
-## Monitoring Pod Provisioning Kube-Ops-View
-
-We will use [kube-ops-view](https://codeberg.org/hjacobs/kube-ops-view) that was installed in the previous lab to view the eviction of Pause Pods and Critical Application containers getting deployed.
-
->**Note**: If you note deployed kube-ops-view install it here
-
-Lets get the URL for kube-ops-view using the following command and open the URL in a brower
-
-```bash
-kubectl get svc kube-ops-view | tail -n 1 | awk '{ print "Kube-ops-view URL = http://"$4 }'
-```
-
 ## Application Scaling (TODO - change based on application)
-
-Now that we have deployed the pause pods and can see the kube-ops-view let us scale up the application.
-Here is the kube-ops-view showing the Pause pods running on one of the cluster node. 
-
-![image](kube-ops-view-before.png)
 
 The following command shows the Pause container pods running in 2 nodes
 
@@ -156,21 +139,19 @@ pause-pods-5c765d9cb5-nxspd   1/1     Running   0          4h36m   192.168.68.23
 Currently 3rd cluster node is running pause container pod and there **—max-size** of the ASG is 4, lets scale up the application.
 
 ```bash
-# Create a deployment
-kubectl create deployment nginx ``--``image``=``nginx #``(``TODO``:`` ``Change to app``)
+# Create a deployment - (TODO:Change to app - once decided)
+#kubectl create deployment nginx ``--``image``=``nginx
 
 # Scale the deployment
 kubectl scale deployment --replicas=17 nginx
 ```
 
-On the kube-ops-view browser page you should see the application scaled and the pause pods evicted. Next the Cluster Autoscaler will kick in and provision a new worked node (using the ASG) and pending Pause container pod will get deployed, this will take a few minutes.
 
-The following command shows that the applications pods have been deployed and Pause container pods have been evicted and are in pending state.
+The following command shows that the applications pods have been deployed and Pause container pods have been evicted and are in pending state. Next Cluster Autoscaler will kick in and provision a new worked node (using the ASG) and pending Pause container pod will get deployed, this will take a few minutes.
 
 ```bash
 kubectl get pods
 ```
-
 The output of the above command should be similar to this
 
 {{< output >}}
@@ -197,9 +178,11 @@ pause-pods-5c765d9cb5-smnfl     0/1     Pending   0          32s
 {{< /output >}}
 
 
-The screenshot shows Pause container pods evicted and waiting to be scheduled and a new node has been added by Cluster Autoscaler, once the new node is available Pause container pods will be scheduled.
+You can run the following command to see new node getting created, once the new node is available Pause container pods will be scheduled.
 
-![image](/images/kube-ops-view-after.png)
+```bash
+kubectl get nodes -o wide
+```
 
 ## Conclusion
 In this workshop we have shown how to over provision your cluster to scale your critical applications immediately.
