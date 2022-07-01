@@ -1,7 +1,7 @@
 ---
 title: "Cleanup"
-weight: 2
-draft: false
+weight: 40
+chapter: false
 ---
 
 To delete all the resources in this chapter execute the commands below

@@ -1,12 +1,12 @@
 ---
-title: "Configuring Over Provisioning with Cluster Autoscaler"
-weight: 2
-draft: false
+title: "Configure Over Provisioning with CA"
+weight: 35
+chapter: false
 ---
 
 ## Create Default Priority Class 
 
-It is best practice to create appropriate PriorityClass for your applications. A global default priority class can be created with the flag **`globalDefault:true`**. This default PriorityClass will be assigned pods/deployments that don’t specify a `PriorityClassName`.
+It is best practice to create appropriate PriorityClass for your applications. Create **global default priority class** using the field **`globalDefault:true`**. This default PriorityClass will be assigned pods/deployments that don’t specify a `PriorityClassName`.
 
 ```bash
 # Create a Directory
@@ -25,12 +25,12 @@ description: "Default Priority class."
 EOF
 
 # Apply and Create the object in the cluster
-kubectl apply -f default-priorityclass.yaml
+kubectl apply -f ~/environment/overprovision-lab/default-priorityclass.yaml
 ```
 
 ## Create Over provisioning Pod’s Priority Class
 
-Next create PriorityClass that will be assigned to Pause containers used for over provisioning.
+Next create PriorityClass that will be assigned to Pause Container pods used for over provisioning with priority value **"-1"**.
 
 ```bash
 
@@ -58,20 +58,18 @@ kubectl get priorityclass
 
 The output will show the PriortyClass created with appropriate values
 
-```
+{{< output >}}
 NAME                      VALUE        GLOBAL-DEFAULT   AGE
 default                   0            true             82s
 pause-pods                -1           false            9s
 system-cluster-critical   2000000000   false            17d
-system-node-critical      2000001000   false            17d
-```
+{{< /output >}}
 
-## Configure Cluster Autoscaler to allow for “best-effort” pod based scaling
+## Configure CA to include best-effort pods for Scaling
 
-Patch Cluster Autoscaler to set flag **`expendable-pods-priority-cutoff`** to value **`-10`** so Pause pods are taken into consideration when Cluster Autoscaler does the scaling operation.
+Patch CA to set flag **`expendable-pods-priority-cutoff`** to value **`-10`** so Pause pods are taken into consideration when Cluster Autoscaler does the scaling operation.
 
 ```bash
-
 # Patch the Cluster Autoscaler so it takes expendable pod into account for making scaling decisions
 kubectl patch deployment cluster-autoscaler -n kube-system \
 -p '{"spec": {"template": {"spec": {"containers": [{"name": "cluster-autoscaler","command": ["./cluster-autoscaler","--v=4","--stderrthreshold=info","--cloud-provider=aws","--skip-nodes-with-local-storage=false","--expander=least-waste","--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eksworkshop-eksctl","--balance-similar-node-groups","--skip-nodes-with-system-pods=false","--expendable-pods-priority-cutoff=-10"]}]}}}}'
@@ -79,7 +77,7 @@ kubectl patch deployment cluster-autoscaler -n kube-system \
 
 ## Configure AWS AutoScaling Group (ASG)
 
-Configure the ASG’s max-size to be a value that will accommodate your over provisioning needs. Here we are configuring `—max-size` to 4 and the current cluster has 3 nodes (*`—desired-capacity 3`*).
+Configure ASG’s max-size to be a value that will accommodate your over provisioning needs. Here we are configuring **—-max-size** to 4 and the current cluster has 3 nodes (***--desired-capacity 3***).
 
 ```bash
 # Get ASG name
@@ -105,7 +103,6 @@ aws autoscaling \
 Create pause containers to make sure there are enough nodes that are available based on how much over provisioning is needed for your environment. Keep in mind the `—max-size` parameter in ASG (of EKS node group). Cluster Autoscaler won’t increase number of nodes beyond this maximum specified in the ASG
 
 ```bash
-
 # Create the deployment file for Pause Container pods
 cat <<EOF > ~/environment/overprovision-lab/pause-deploy.yaml
 ---
@@ -147,7 +144,7 @@ We will use [kube-ops-view](https://codeberg.org/hjacobs/kube-ops-view) that was
 
 Lets get the URL for kube-ops-view using the following command and open the URL in a brower
 
-```
+```bash
 kubectl get svc kube-ops-view | tail -n 1 | awk '{ print "Kube-ops-view URL = http://"$4 }'
 ```
 
@@ -156,7 +153,7 @@ kubectl get svc kube-ops-view | tail -n 1 | awk '{ print "Kube-ops-view URL = ht
 Now that we have deployed the pause pods and can see the kube-ops-view let us scale up the application.
 Here is the kube-ops-view showing the Pause pods running on one of the cluster node. 
 
-![image](/posts/images/kube-ops-view-before.jpg)
+![image](kube-ops-view-before.png)
 
 The following command shows the Pause container pods running in 2 nodes
 
@@ -166,14 +163,13 @@ kubectl get pods -o wide -l run=pause-pods
 
 The output should show
 
-```
+{{< output >}}
 NAME                          READY   STATUS    RESTARTS   AGE     IP               NODE                                          NOMINATED NODE   READINESS GATES
 pause-pods-5c765d9cb5-h87hj   1/1     Running   0          7m35s   192.168.56.218   ip-192-168-63-47.us-west-2.compute.internal   <none>           <none>
 pause-pods-5c765d9cb5-nxspd   1/1     Running   0          4h36m   192.168.68.232   ip-192-168-86-79.us-west-2.compute.internal   <none>           <none>
-admin:~/environment $ 
-```
+{{< /output >}}
 
-Currently 3rd cluster node is running the pause pod and there `—max-size` of the ASG is 4, lets scale up the application.
+Currently 3rd cluster node is running pause container pod and there **—max-size** of the ASG is 4, lets scale up the application.
 
 ```bash
 # Create a deployment
@@ -193,7 +189,7 @@ kubectl get pods
 
 The output of the above command should be similar to this
 
-```
+{{< output >}}
 NAME                            READY   STATUS    RESTARTS   AGE
 kube-ops-view-894bc75fb-gcw9b   1/1     Running   0          42h
 nginx-6799fc88d8-2srf4          1/1     Running   0          59s
@@ -214,13 +210,12 @@ nginx-6799fc88d8-pqz47          1/1     Running   0          59s
 nginx-6799fc88d8-q2t5r          1/1     Running   0          60s
 pause-pods-5c765d9cb5-6c82d     0/1     Pending   0          32s
 pause-pods-5c765d9cb5-smnfl     0/1     Pending   0          32s
-```
+{{< /output >}}
 
 
-The screenshot shows the Pause container pods evicted and waiting to be scheduled and a new node has been added by Cluster Autoscaler, once the new node is available the Pause container pods will be scheduled.
+The screenshot shows Pause container pods evicted and waiting to be scheduled and a new node has been added by Cluster Autoscaler, once the new node is available Pause container pods will be scheduled.
 
-![image](/posts/images/kube-ops-view-after.png)
+![image](/images/kube-ops-view-after.png)
 
 ## Conclusion
 In this workshop we have shown how to over provision your cluster to scale your critical applications immediately.
-
