@@ -1,1 +1,2 @@
-<pre><output class="bash">{{ .Inner | htmlUnescape }}</output></pre>
+{{ $clean := htmlEscape (trim .Inner "\n") }}
+{{ (print "```bash\n" $clean  "\n```") | markdownify }}
