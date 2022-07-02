@@ -1,5 +1,5 @@
 vendor
-.terraform*
+.terraform
 *.tfstate*
 builds
 
