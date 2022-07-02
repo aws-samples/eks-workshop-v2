@@ -1,0 +1,13 @@
+{
+  "//": "This file is auto-generated, do not modify manually",
+  "variable": {
+    "helm_chart_versions": {
+      "default": {
+        "aws-efs-csi-driver": "2.2.7",
+        "aws-load-balancer-controller": "1.4.2",
+        "descheduler": "0.24.1",
+        "karpenter": "0.13.0"
+      }
+    }
+  }
+}
