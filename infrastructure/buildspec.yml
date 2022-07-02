@@ -1,0 +1,28 @@
+version: 0.2
+
+env:
+  variables:
+    TF_STATE_S3_BUCKET: TF_STATE_S3_BUCKET_NOT_SET
+
+phases:
+  install:
+    on-failure: ABORT
+    runtime-versions:
+      nodejs: 14
+    commands:
+      - sudo apt-get update && sudo apt-get install -y gnupg software-properties-common curl
+      - curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+      - sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+      - sudo apt-get update && sudo apt-get install terraform
+      - 
+      - terraform init -backend-config="bucket=$(TF_STATE_S3_BUCKET)"
+  pre_build:
+    on-failure: ABORT
+    commands:
+      - cd $CODEBUILD_SRC_DIR/terraform/workshop-stack
+      - terraform init -backend-config="bucket=$(TF_STATE_S3_BUCKET)"
+  build:
+    on-failure: ABORT
+    commands:
+      - cd $CODEBUILD_SRC_DIR/terraform/workshop-stack
+      - terraform apply -auto-approve
