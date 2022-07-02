@@ -9,8 +9,4 @@ resources
 env
 
 .vscode
-package-lock.json
-
-.DS_Store
-
-eksworkshop-gitops-config-flux
+*.zip

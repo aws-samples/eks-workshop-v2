@@ -7,7 +7,7 @@ zip: $(ZIPFILE)
 .PHONY: $(ZIPFILE)
 $(ZIPFILE): $(shell git ls-files)
 	rm -f $@
-	zip -r $(ZIPFILE) ./ --exclude "*.terraform/*" --exclude "*node_modules/*"
+	git ls-files | xargs zip $@
 
 .PHONY: tf-init-stack
 tf-init-stack:
