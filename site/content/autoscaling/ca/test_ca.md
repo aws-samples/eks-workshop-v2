@@ -37,7 +37,7 @@ spec:
 EOF
 
 
-kubectl get deployment/nginx-to-scaleout
+kubectl wait --for=condition=available --timeout=60s deployment/nginx-to-scaleout
 ```
 
 ## Scale our ReplicaSet

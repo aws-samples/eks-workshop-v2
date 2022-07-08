@@ -50,13 +50,34 @@ kubectl run load-generator --image=busybox:1.28 --restart=Never -- /bin/sh -c "w
 
 Watch the HPA with the following command
 
-```bash
+```bash test=false
 kubectl get hpa php-apache --watch
 ```
 
 You will see HPA scale the pods from 1 up to our configured maximum (10) until the CPU average is below our target (50%)
 
-![Scale Up](/images/scaling-hpa-results.png)
+{{< output >}}
+NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   0%/50%    1         10        1          27s
+php-apache   Deployment/php-apache   139%/50%   1         10        1          45s
+php-apache   Deployment/php-apache   435%/50%   1         10        3          60s
+php-apache   Deployment/php-apache   273%/50%   1         10        6          75s
+php-apache   Deployment/php-apache   116%/50%   1         10        9          90s
+php-apache   Deployment/php-apache   74%/50%    1         10        9          105s
+php-apache   Deployment/php-apache   86%/50%    1         10        9          2m
+php-apache   Deployment/php-apache   91%/50%    1         10        9          2m16s
+php-apache   Deployment/php-apache   71%/50%    1         10        9          2m31s
+php-apache   Deployment/php-apache   64%/50%    1         10        9          2m46s
+php-apache   Deployment/php-apache   59%/50%    1         10        9          3m1s
+php-apache   Deployment/php-apache   63%/50%    1         10        9          3m16s
+php-apache   Deployment/php-apache   59%/50%    1         10        9          3m31s
+php-apache   Deployment/php-apache   44%/50%    1         10        9          3m46s
+php-apache   Deployment/php-apache   44%/50%    1         10        9          4m1s
+php-apache   Deployment/php-apache   50%/50%    1         10        9          4m16s
+php-apache   Deployment/php-apache   47%/50%    1         10        9          4m31s
+php-apache   Deployment/php-apache   48%/50%    1         10        9          4m46s
+php-apache   Deployment/php-apache   45%/50%    1         10        9          5m1s
+{{< /output >}}
 
 ## Stop the load test
 
