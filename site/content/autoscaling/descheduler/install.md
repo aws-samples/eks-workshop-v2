@@ -72,7 +72,7 @@ kubectl patch deployment descheduler -n kube-system --type='json' -p='[{"op": "r
 Verify the deployment status by running the below command.
 
 ```bash
-kubectl wait --for=condition=available --timeout=60s deployment/descheduler -n kube-system
+kubectl rollout status deployment/descheduler -n kube-system --timeout 30s
 kubectl get deployment descheduler -n kube-system
 ```
 
