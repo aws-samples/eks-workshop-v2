@@ -8,7 +8,9 @@ weight: 2
 
 Lets get started by configuring the descheduler in the EKS cluster. The descheduler can be installed as `Job`, `CronJob`, `Deployment` in the cluster. It runs as a critical pod in the `kube-system` namespace to avoid being evicted by itself or by the kubelet.
 
-In this workshop, descheduler installed as a `Deployment` object. Start by creating the descheduler policy configuration, we are enabling `RemovePodsViolatingNodeTaints`, `RemoveDuplicates`, `PodLifeTime`, `RemovePodsViolatingInterPodAntiAffinity`, `RemovePodsViolatingNodeAffinity`, `LowNodeUtilization` policies.
+In this workshop, descheduler is installed as a `Deployment` object with 1 minute interval. You can see the default values and configurable parameters [here](https://github.com/kubernetes-sigs/descheduler/blob/master/charts/descheduler/README.md). 
+
+Start by creating a descheduler policy configuration, we are enabling `RemovePodsViolatingNodeTaints`, `RemoveDuplicates`, `PodLifeTime`, `RemovePodsViolatingInterPodAntiAffinity`, `RemovePodsViolatingNodeAffinity`, `LowNodeUtilization` policies.
 
 ```bash
 cat << EOF > descheduler-configmap.yaml
@@ -16,7 +18,7 @@ cat << EOF > descheduler-configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: descheduler-policy-configmap
+  name: descheduler-cm
   namespace: kube-system
 data:
   policy.yaml: |
@@ -61,9 +63,16 @@ EOF
 kubectl apply -f descheduler-configmap.yaml
 ```
 
-Verify the deployment by running the below command.
+Run the below command to use the new descheduler config created in above step.
 
 ```bash
+kubectl patch deployment descheduler -n kube-system --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/volumes/0/configMap/name", "value": "descheduler-cm"}]'
+```
+
+Verify the deployment status by running the below command.
+
+```bash
+kubectl wait --for=condition=available --timeout=60s deployment/descheduler -n kube-system
 kubectl get deployment descheduler -n kube-system
 ```
 
@@ -74,10 +83,6 @@ NAME          READY   UP-TO-DATE   AVAILABLE   AGE
 descheduler   1/1     1            1           14s
 {{< /output >}}
 
-By default, descheduler is configured to run every 5 minutes. Run the below command to reduce the interval to 2 minutes.
 
-```bash
-kubectl patch deployment descheduler -n kube-system --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/args", "value": ["--policy-config-file",  "/policy-dir/policy.yaml", "--descheduling-interval", "2m", "--v", "3" ]}]'
-```
 
 We will test `RemovePodsViolatingNodeTaints` and `PodLifeTime` policies in the following sections.

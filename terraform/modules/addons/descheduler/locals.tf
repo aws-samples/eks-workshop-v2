@@ -9,10 +9,7 @@ locals {
     namespace        = "kube-system"
     create_namespace = false
     values           = local.default_helm_values
-    set              = [{
-      name  = "kind"
-      value = "Deployment"
-    }]
+    set              = []
     description      = "Rebalance clusters by evicting Pods that can potentially be scheduled on better nodes."
     wait             = false
   }
