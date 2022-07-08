@@ -82,7 +82,7 @@ nginx-lifetime-68db49fb68-zk56p   1/1     Running             0          2s
 
 Press `Ctrl + C` to return to the command prompt. You can also look at the descheduler logs for more analysis
 
-```bash
+```bash expectError=true
 kubectl logs -n kube-system deployment/descheduler
 ```
 
