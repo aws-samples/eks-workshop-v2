@@ -90,7 +90,7 @@ To use this utility you must:
 The shell session created will have AWS credentials injected, so you will immediately be able to use the `aws` CLI and `kubectl` commands with no further configuration:
 
 ```bash
-➜  eks-workshop-v2 git:(main) ✗ ASSUME_ROLE="arn:aws:iam::111111111:role/Admin" make shell
+➜  eks-workshop-v2 git:(main) ✗ make shell
 bash hack/shell.sh
 Generating temporary AWS credentials...
 Building container images...
@@ -143,7 +143,7 @@ make create-infrastructure
 Then run `make test` as many times as necessary, which will run the test suite on your existing infrastructure:
 
 ```
-➜  eks-workshop-v2 git:(main) ✗ ASSUME_ROLE="arn:aws:iam::111111111:role/Admin" make test
+➜  eks-workshop-v2 git:(main) ✗ make test
 bash hack/run-tests.sh
 Generating temporary AWS credentials...
 Building container images...
@@ -212,7 +212,7 @@ As a result, this can take roughly 30 minutes, and is most suitable once you are
 The tests are triggered using the `make e2e-test` command:
 
 ```bash
-➜  eks-workshop-v2 git:(main) ✗ ASSUME_ROLE="arn:aws:iam::111111111:role/Admin" make e2e-test
+➜  eks-workshop-v2 git:(main) ✗ make e2e-test
 [...]
 ```
 
