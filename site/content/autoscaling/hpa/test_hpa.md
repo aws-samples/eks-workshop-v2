@@ -81,7 +81,7 @@ php-apache   Deployment/php-apache   45%/50%    1         10        9          5
 
 ## Stop the load test
 
-```bash
+```bash timeout=180
 kubectl delete pod load-generator
 ```
 

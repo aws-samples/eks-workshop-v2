@@ -1,6 +1,7 @@
 vendor
 .terraform*
 *.tfstate*
+*.sh
 builds
 
 public
