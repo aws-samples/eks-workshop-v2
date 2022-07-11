@@ -6,7 +6,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 PROJECT_ROOT="$SCRIPT_DIR/.."
 
-TERRAFORM_DIR="$PROJECT_ROOT/terraform/cluster-only"
+TERRAFORM_DIR="$PROJECT_ROOT/terraform/local"
 
 terraform -chdir=$TERRAFORM_DIR init
 

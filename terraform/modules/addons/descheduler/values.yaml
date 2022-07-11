@@ -1,0 +1,2 @@
+kind: Deployment
+deschedulingInterval: 1m
