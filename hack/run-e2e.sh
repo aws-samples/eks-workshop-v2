@@ -1,5 +1,8 @@
 #!/bin/bash
 
+ASSUME_ROLE="arn:aws:iam::581611100341:role/Admin"
+
+set -Eeuo pipefail
 
 
 set -Eeuo pipefail
