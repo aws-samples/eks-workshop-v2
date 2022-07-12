@@ -1,5 +1,5 @@
 module "eks-blueprints-kubernetes-addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.0.1//modules/kubernetes-addons"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.4.0//modules/kubernetes-addons"
 
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
@@ -7,6 +7,10 @@ module "eks-blueprints-kubernetes-addons" {
   aws_load_balancer_controller_helm_config = {
     version = var.helm_chart_versions["aws-load-balancer-controller"]
   }
+
+  enable_karpenter                    = true
+  enable_aws_node_termination_handler = true
+
 }
 
 locals {
