@@ -1,0 +1,26 @@
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: default
+spec:
+  requirements:
+    - key: "karpenter.sh/capacity-type"
+      operator: In
+      values: ["spot", "on-demand"]
+    - key: "node.kubernetes.io/instance-type"              #If not included, all instance types are considered
+      operator: In
+      values: ["m5.2xlarge", "m5.4xlarge"]
+    - key: "kubernetes.io/arch"                            #If not included, all architectures are considered
+      operator: In
+      values: ["arm64", "amd64"]
+  limits:
+    resources:
+      cpu: 1000
+  provider:
+    launchTemplate: "eks-d4c0f89d-a517-3937-b9ef-0868c5f27bcd"     # Used by Karpenter Nodes
+    subnetSelector:
+      Name: "eksw-env-cluster-vpc-private*"
+  labels:
+    type: karpenter
+    provisioner: default
+  ttlSecondsAfterEmpty: 120
