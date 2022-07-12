@@ -18,6 +18,10 @@ module "eks-blueprints-kubernetes-addons" {
   aws_load_balancer_controller_helm_config = {
     version = var.helm_chart_versions["aws-load-balancer-controller"]
   }
+
+  enable_karpenter                    = true
+  enable_aws_node_termination_handler = true
+
 }
 
 locals {
