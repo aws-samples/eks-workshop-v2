@@ -107,6 +107,3 @@ It will take several minutes for the LoadBalancer to become healthy and start pa
 ```bash
 curl -s -o /dev/null -w "%{http_code}" -I http://$NTH_LB
 ```
-```bash
-while sleep 5; do curl -s -o /dev/null -w "%{http_code}" -I http://$NTH_LB; done
-```
