@@ -8,14 +8,23 @@ Though many variables are changeable in the following steps, we recommend only c
 1. Create a namespace. A namespace allows you to group resources in Kubernetes. For more information, see [Namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/) in the Kubernetes documentation. 
 
 ```bash
-kubectl create namespace eks-sample-nth
+cat << EOF > nth-namespace.yaml
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: eks-sample-nth
+EOF
+kubectl apply -f nth-namespace.yaml
 ```
 
 2. Create a Kubernetes deployment. This sample deployment pulls a container image from a public repository and deploys three replicas (individual pods) of it to your cluster. To learn more, see [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) in the Kubernetes documentation.
 
-a. Save the following contents to a file named `eks-sample-deployment.yaml`.
+a. Create the deployment manifest file.
 
-```yaml
+```bash
+cat << EOF > eks-sample-deployment.yaml
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -37,20 +46,23 @@ spec:
           ports:
             - name: tcp
               containerPort: 80
-
+EOF
 ```
 
 b. Apply the deployment manifest to your cluster.
 
 ```bash
 kubectl apply -f eks-sample-deployment.yaml
+kubectl wait --for=condition=available --timeout=60s -n eks-sample-nth deployment/nlb-sample-app
 ```
 
 3. Create a service. A service allows you to access all replicas through a single IP address or name. For more information, see [Service](https://kubernetes.io/docs/concepts/services-networking/service/) in the Kubernetes documentation. Though not implemented in the sample application, if you have applications that need to interact with other AWS services, we recommend that you create Kubernetes service accounts for your pods, and associate them to AWS IAM accounts. By specifying service accounts, your pods have only the minimum permissions that you specify for them to interact with other services. For more information, see [IAM roles for service accounts](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html).
 
-a. Save the following contents to a file named `eks-sample-service.yaml`.
+a. Create the Service manifest file.
 
-```yaml
+```bash
+cat << EOF > eks-sample-service.yaml
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -68,6 +80,7 @@ spec:
   type: LoadBalancer
   selector:
     app: nginx
+EOF
 ```
 
 b. Apply the service manifest to your cluster.
@@ -102,8 +115,8 @@ echo $NTH_LB
 It will take several minutes for the LoadBalancer to become healthy and start passing traffic to the pods.
 {{% /notice %}}
 
-5. Test if you get a successful response code of `200` from the following command
+<!-- 5. Test if you get a successful response code of `200` from the following command
 
 ```bash
 curl -s -o /dev/null -w "%{http_code}" -I http://$NTH_LB
-```
+``` -->
