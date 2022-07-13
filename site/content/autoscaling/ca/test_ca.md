@@ -36,7 +36,6 @@ spec:
             memory: 512Mi
 EOF
 
-
 kubectl wait --for=condition=available --timeout=60s deployment/nginx-to-scaleout
 ```
 
@@ -44,13 +43,13 @@ kubectl wait --for=condition=available --timeout=60s deployment/nginx-to-scaleou
 
 Let's scale out the replicaset to 10
 
-```bash
+```bash hook=ca-pod-scaleout
 kubectl scale --replicas=10 deployment/nginx-to-scaleout
 ```
 
 Some pods will be in the `Pending` state, which triggers the cluster-autoscaler to scale out the EC2 fleet.
 
-```bash
+```bash test=false
 kubectl get pods -l app=nginx -o wide --watch
 ```
 
@@ -70,7 +69,7 @@ nginx-to-scaleout-6fcd49fb84-zpls2   0/1     Pending   0          7s    <none>  
 
 View the cluster-autoscaler logs
 
-```bash
+```bash test=false
 kubectl -n kube-system logs -f deployment/cluster-autoscaler-aws-cluster-autoscaler
 ```
 

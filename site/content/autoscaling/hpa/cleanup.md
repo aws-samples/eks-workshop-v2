@@ -7,5 +7,4 @@ weight: 50
 kubectl delete hpa,svc php-apache
 
 kubectl delete deployment php-apache
-
 ```

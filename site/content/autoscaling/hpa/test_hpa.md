@@ -11,11 +11,12 @@ The application is a custom-built image based on the php-apache image. The index
 
 ```bash
 kubectl create deployment php-apache --image=us.gcr.io/k8s-artifacts-prod/hpa-example
+kubectl wait --for=condition=available --timeout=60s deployment/php-apache
+
 kubectl set resources deploy php-apache --requests=cpu=200m
 kubectl expose deploy php-apache --port 80
 
 kubectl get pod -l app=php-apache
-
 ```
 
 ## Create an HPA resource
@@ -44,7 +45,7 @@ php-apache   Deployment/php-apache   <unknown>/50%   1         10        0      
 
 ## Generate load to trigger scaling
 
-```bash
+```bash hook=hpa-pod-scaleout
 kubectl run load-generator --image=busybox:1.28 --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
 ```
 
