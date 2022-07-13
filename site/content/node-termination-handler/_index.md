@@ -19,5 +19,5 @@ In this workshop, EKS Blueprints add-on for [node termination handler](https://g
 For this chapter, we will
 
 * Deploy a sample application
-* Simulate an EC2 instance going down by Terminating a EC2 instance from the AWS Console
-* See Node Termination Handler in action
+* Simulate [AutoScaling Group Scale-In](https://docs.aws.amazon.com/autoscaling/ec2/userguide/AutoScalingGroupLifecycle.html#as-lifecycle-scale-in) by reducing the number of EC2 instances in ASG by 1.
+* See Node Termination Handler in action by ensuring application resiliency.
