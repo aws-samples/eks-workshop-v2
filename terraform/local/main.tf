@@ -32,7 +32,7 @@ resource "aws_iam_role" "local_role" {
   tags = local.tags
 }
 
-resource "aws_iam_role_policy_attachment" "local_role_eks_read" {
+resource "aws_iam_role_policy_attachment" "local_role" {
   role       = aws_iam_role.local_role.name
   policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
 }
@@ -45,4 +45,21 @@ locals {
 
   prefix        = "eks-workshop"
   rolename      = join("-", [local.prefix, local.tags.env, "role"])
+  policy_arn = aws_iam_policy.local_policy.arn
+}
+
+data "template_file" "iam_policy" {
+  template = file("${path.module}/iam_policy.json")
+  vars = {
+    cluster_arn = module.cluster.eks_cluster_arn
+    nodegroup = module.cluster.eks_cluster_nodegroup
+  }
+}
+
+resource "aws_iam_policy" "local_policy" {
+  name        = "eks-workshop-dev-local"
+  path        = "/"
+  description = "Policy for EKS Workshop local environment to access AWS services"
+
+  policy = data.template_file.iam_policy.rendered
 }
