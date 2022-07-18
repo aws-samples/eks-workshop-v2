@@ -79,12 +79,30 @@ The workshop content has various tools and utilities that are necessary to for t
 
 All changes should be tested before raising a PR against the repository. There are two ways to test which can be used at different stages of your authoring process.
 
+### Creating the infrastructure
+
+When creating your content you will want to test the commands you specify against infrastructure that mirrors what will be used in the actual workshop by learners. All infrastructure (VPC, EKS cluster etc) is expressed as Terraform configuration in the `terraform` directory.
+
+You can use the following convenience command to create the infrastructure:
+
+```
+make create-infrastructure
+```
+
+If you make any changes to the Terraform as part of your workshop content as outlined above you can run this command repeatedly to update the infrastructure incrementally.
+
+Once you're finished with the test environment you can delete all of the infrastructure using the following convenience command:
+
+```
+make destroy-infrastructure
+```
+
 ### Manual testing
 
 When in the process of creating the content its likely you'll need to be fairly interactive in testing commands etc. For this theres a mechanism to easily create an interactive shell with access to the EKS cluster created by the Terraform, as well as including all the necessary tools and utilities without installing them locally.
 
 To use this utility you must:
-- Already have created the workshop infrastructure as outlined above in this document
+- Already have created the workshop infrastructure as outlined in the section above
 - Have some AWS credentials available in your current shell session (ie. you `aws` CLI must work)
 
 The shell session created will have AWS credentials injected, so you will immediately be able to use the `aws` CLI and `kubectl` commands with no further configuration:
