@@ -17,4 +17,4 @@ charts:
   chart: cluster-autoscaler  
 - name: metrics_server
   repository: https://kubernetes-sigs.github.io/metrics-server
-  chart: metrics-server    
+  chart: metrics_server    
