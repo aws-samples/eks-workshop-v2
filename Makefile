@@ -22,6 +22,10 @@ shell:
 update-helm-versions:
 	bash hack/update-helm-versions.sh
 
+.PHONY: verify-helm-metadata
+verify-helm-metadata:
+	bash hack/verify-helm-metadata.sh
+
 .PHONY: create-infrastructure
 create-infrastructure:
 	bash hack/create-infrastructure.sh
