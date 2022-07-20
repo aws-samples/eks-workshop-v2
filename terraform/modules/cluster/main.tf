@@ -38,15 +38,15 @@ provider "helm" {
 
 locals {
   tags = {
-    tenant      = "eksw"
-    environment = "env"
-    zone        = var.id
+    created-by  = "eks-workshop-v2"
+    env         = var.id
   }
 
   cluster_version = var.cluster_version
+  prefix       = "eks-workshop"
 
   vpc_cidr     = "10.42.0.0/16"
-  vpc_name     = join("-", [local.tags.tenant, local.tags.environment, local.tags.zone, "vpc"])
+  vpc_name     = join("-", [local.prefix, local.tags.env, "vpc"])
   azs          = slice(data.aws_availability_zones.available.names, 0, 3)
-  cluster_name = join("-", [local.tags.tenant, local.tags.environment, local.tags.zone, "eks"])  
+  cluster_name = join("-", [local.prefix, local.tags.env])  
 }

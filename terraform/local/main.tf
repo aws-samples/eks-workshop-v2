@@ -5,7 +5,7 @@ module "cluster" {
 
   map_roles = [{
     rolearn  = aws_iam_role.local_role.arn
-    username = "eks-workshop-dev-local"
+    username = local.rolename
     groups   = ["system:masters"]
   }]
 }
@@ -13,7 +13,7 @@ module "cluster" {
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role" "local_role" {
-  name = "eks-workshop-dev-local"
+  name = local.rolename
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -28,9 +28,21 @@ resource "aws_iam_role" "local_role" {
       },
     ]
   })
+
+  tags = local.tags
 }
 
 resource "aws_iam_role_policy_attachment" "local_role_eks_read" {
   role       = aws_iam_role.local_role.name
   policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
+}
+
+locals {
+  tags = {
+    created-by  = "eks-workshop-v2"
+    env         = var.id
+  }
+
+  prefix        = "eks-workshop"
+  rolename      = join("-", [local.prefix, local.tags.env, "role"])
 }
