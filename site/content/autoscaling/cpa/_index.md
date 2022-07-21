@@ -30,7 +30,8 @@ Cluster Proportional autoscaler (CPA) is a horizontal pod autoscaler that scales
     * All of `min`,`max`,`preventSinglePointFailure`,`includeUnschedulableNodes` are optional. If not set, `min` will be defaulted to 1, `preventSinglePointFailure` will be defaulted to `false` and `includeUnschedulableNodes` will be defaulted to `false`
     * Both `coresPerReplica` and `nodesPerReplica` are float
 
-{{< ConfigMapParametersforLinear >}}
+**ConfigMap for Linear**
+```
 data:
   linear: |-
     {
@@ -41,13 +42,14 @@ data:
       "preventSinglePointFailure": true,
       "includeUnschedulableNodes": true
     }
-{{< /ConfigMapParametersforLinear >}}
+```
 
-{{< Equation >}}
+**The Equation of Linear Control Mode:**
+```
 replicas = max( ceil( cores * 1/coresPerReplica ) , ceil( nodes * 1/nodesPerReplica ) )
 replicas = min(replicas, max)
 replicas = max(replicas, min)
-{{< /Equation >}}
+```
 
 * Ladder
     * This scaling method uses a step function to determine the ratio of nodes:replicas and/or cores:replicas
@@ -56,7 +58,8 @@ replicas = max(replicas, min)
     * Replicas can be set to 0 (unlike in linear mode)
     * Scaling to 0 replicas could be used to enable optional features as a cluster grows
 
-{{< ConfigMapParametersforLadder >}}
+**ConfigMap for Linear**
+```
 data:
   ladder: |-
     {
@@ -75,7 +78,7 @@ data:
         [ 2, 2 ]
       ]
     }
-{{< /ConfigMapParametersforLadder >}}
+```
 
 #### Comparison of Cluster Proportional Autoscaler and Horizontal Pod Autoscaler
 Horizontal Pod Autoscaler is a top level kubernetes API resource. HPA is a closed feedback loop autoscaler which monitors CPU/Memory utilization of the pods and scales the number of replicas automatically. HPA relies on the Metrics API and requires Metrics Server whereas Cluster Proportional Autoscaler does not use Metrics Server nor the Metrics API. Cluster Proportional Autoscaler is not scaled with a kubernetes resource but instead uses flags to identify target workloads and a ConfigMap for scaling configuration. CPA provides a simple control loop that watches the cluster size and scales the target controller. The inputs for CPA are number of schedulable cores and nodes in the cluster
