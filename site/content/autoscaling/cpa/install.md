@@ -4,7 +4,7 @@ date: 2022-07-21T00:00:00-03:00
 weight: 2
 ---
 
-## CPA Installation using Helm
+## CPA Installation using YAML Manifest
 
 * Cluster proportional autoscaler can be installed using a helm chart or a YAML manifest.
 
@@ -125,13 +125,13 @@ NAME                              READY   STATUS    RESTARTS   AGE
 dns-autoscaler-7686459c58-cn97f   1/1     Running   0          1m
 {{< /output >}}
 
-Run the below command to check the configmap created for the cluster proportional autoscaler
+Run the below command to check the configmap got created for the cluster proportional autoscaler
 
 ```bash
 kubectl get configmap -n kube-system | grep dns-autoscaler
 ```
 
 {{< output >}}
-NAME                                 DATA   AGE
-dns-autoscaler                       1      1h
+NAME               DATA   AGE
+dns-autoscaler     1      1h
 {{< /output >}}
