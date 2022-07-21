@@ -26,7 +26,6 @@ EOF
 Next create PriorityClass that will be assigned to Pause Container pods used for over provisioning with priority value **"-1"**.
 
 ```bash
-
 # Create the PriorityClass for overprovisioned pause container 
 cat <<EOF | kubectl apply -f -
 apiVersion: scheduling.k8s.io/v1
@@ -64,31 +63,24 @@ kubectl patch deployment cluster-autoscaler-aws-cluster-autoscaler -n kube-syste
 -p '{"spec": {"template": {"spec": {"containers": [{"name": "aws-cluster-autoscaler","command": ["./cluster-autoscaler","--v=4","--stderrthreshold=info","--cloud-provider=aws","--skip-nodes-with-local-storage=false","--expander=least-waste","--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eksworkshop-eksctl","--balance-similar-node-groups","--skip-nodes-with-system-pods=false","--expendable-pods-priority-cutoff=-10"]}]}}}}'
 ```
 
-## Configure AWS AutoScaling Group (ASG)
+## Configure Nodegroup Size
 
-Configure ASG’s max-size to be a value that will accommodate your over provisioning needs. Here we are configuring **—-max-size** to 4 and the current cluster has 3 nodes (***--desired-capacity 3***).
+The Cluster's Nodegroup size is tied to ASG. EKS modified ASG's min-size, max-size and desired-capacity to adjust the Nodegroup's size. Set this to be a value that will accommodate your over provisioning needs. Here we are configuring **—-max-size** to 4 and the current cluster has 3 nodes (***--desired-capacity 3***).
 
 ```bash
 
-# Get Cluster Name
+# Get Cluster Name and Nodegroup Name
 export EKS_CLUSTER_NAME=$(aws eks list-clusters --query "clusters[0]" --output text)
+export EKS_NODEGROUP_NAME=$(aws eks list-nodegroups --cluster-name $EKS_CLUSTER_NAME --query "nodegroups[0]" --output text)
 
-# Get ASG name
-export ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='$EKS_CLUSTER_NAME']].AutoScalingGroupName" --output text)
+# Display the current Nodgroup size configurations
+aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME --query nodegroup.scalingConfig --output table
 
-# increase max capacity up to 4
-aws autoscaling \
-    update-auto-scaling-group \
-    --auto-scaling-group-name ${ASG_NAME} \
-    --min-size 3 \
-    --desired-capacity 3 \
-    --max-size 4
+# increase max capacity (max-size) up to 4
+aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME  --scaling-config minSize=3,maxSize=4,desiredSize=3
 
-# Check new values
-aws autoscaling \
-    describe-auto-scaling-groups \
-    --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='$EKS_CLUSTER_NAME']].[AutoScalingGroupName, MinSize, MaxSize,DesiredCapacity]" \
-    --output table
+# Verify new values of Nodgroup size
+aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME --query nodegroup.scalingConfig --output table
 ```
 
 ## Create Over provisioning Pause container deployment
