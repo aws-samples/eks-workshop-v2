@@ -34,7 +34,7 @@ resource "aws_iam_role" "local_role" {
 
 resource "aws_iam_role_policy_attachment" "local_role" {
   role       = aws_iam_role.local_role.name
-  policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
+  policy_arn = aws_iam_policy.local_policy.arn
 }
 
 locals {
@@ -45,7 +45,6 @@ locals {
 
   prefix        = "eks-workshop"
   rolename      = join("-", [local.prefix, local.tags.env, "role"])
-  policy_arn = aws_iam_policy.local_policy.arn
 }
 
 data "template_file" "iam_policy" {
@@ -63,3 +62,4 @@ resource "aws_iam_policy" "local_policy" {
 
   policy = data.template_file.iam_policy.rendered
 }
+
