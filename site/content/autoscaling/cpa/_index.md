@@ -85,8 +85,8 @@ Horizontal Pod Autoscaler is a top level kubernetes API resource. HPA is a close
 
 
 #### In this workshop we will see how Cluster Proportional Autoscaler autoscales CoreDNS service
-    * The `cluster-proportional-autoscaler` application is deployed separately from the CoreDNS service in the same kube-system namespace
-    * The autoscaler Pod runs a client that polls the Kubernetes API server for the number of nodes and cores in the cluster
-    * A desired replica count is calculated and applied to the CoreDNS backends based on the `current schedulable nodes` and `cores` and the given scaling parameters
-    * The scaling parameters and data points are provided via a `ConfigMap` to the autoscaler, and it refreshes its parameters table every poll interval to be up to date with the latest desired scaling parameters. Changes to the scaling parameters are allowed without rebuilding or restarting the autoscaler Pod.
-    * The autoscaler provides a controller interface to support two control patterns: `linear` and `ladder`
+* The `cluster-proportional-autoscaler` application is deployed separately from the CoreDNS service in the same kube-system namespace
+* The autoscaler Pod runs a client that polls the Kubernetes API server for the number of nodes and cores in the cluster
+* A desired replica count is calculated and applied to the CoreDNS backends based on the `current schedulable nodes` and `cores` and the given scaling parameters
+* The scaling parameters and data points are provided via a `ConfigMap` to the autoscaler, and it refreshes its parameters table every poll interval to be up to date with the latest desired scaling parameters. Changes to the scaling parameters are allowed without rebuilding or restarting the autoscaler Pod.
+* The autoscaler provides a controller interface to support two control patterns: `linear` and `ladder`
