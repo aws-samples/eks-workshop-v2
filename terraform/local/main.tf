@@ -63,13 +63,3 @@ resource "aws_iam_policy" "local_policy" {
 
   policy = data.template_file.iam_policy.rendered
 }
-
-locals {
-  tags = {
-    created-by  = "eks-workshop-v2"
-    env         = var.id
-  }
-
-  prefix        = "eks-workshop"
-  rolename      = join("-", [local.prefix, local.tags.env, "role"])
-}
