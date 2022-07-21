@@ -22,7 +22,7 @@ Cluster Proportional autoscaler (CPA) is a horizontal pod autoscaler that scales
 * Simple and easy mechanism to scale out workloads as it does not require metrics server or prometheus adapter
 
 #### Scaling Methods used by Cluster Proportional Autoscaler
-* Linear
+* **Linear**
     * This scaling method will scale the application in direct proportion to how many nodes or cores are available in the cluster
     * Either one of the `coresPerReplica` or `nodesPerReplica` could be omitted
     * When `preventSinglePointFailure` is set to `true`, the controller ensures at least 2 replicas if there are more than one node
@@ -51,7 +51,7 @@ replicas = min(replicas, max)
 replicas = max(replicas, min)
 ```
 
-* Ladder
+* **Ladder**
     * This scaling method uses a step function to determine the ratio of nodes:replicas and/or cores:replicas
     * The step ladder function uses the datapoint for core and node scaling from the ConfigMap. The lookup which yields the hugher number of replicas will be used as the target scaling number.
     * Either one of the `coresPerReplica` or `nodesPerReplica` could be omitted
@@ -84,7 +84,7 @@ data:
 Horizontal Pod Autoscaler is a top level kubernetes API resource. HPA is a closed feedback loop autoscaler which monitors CPU/Memory utilization of the pods and scales the number of replicas automatically. HPA relies on the Metrics API and requires Metrics Server whereas Cluster Proportional Autoscaler does not use Metrics Server nor the Metrics API. Cluster Proportional Autoscaler is not scaled with a kubernetes resource but instead uses flags to identify target workloads and a ConfigMap for scaling configuration. CPA provides a simple control loop that watches the cluster size and scales the target controller. The inputs for CPA are number of schedulable cores and nodes in the cluster
 
 
-**In this workshop we will see how Cluster Proportional Autoscaler autoscales CoreDNS service**
+#### In this workshop we will see how Cluster Proportional Autoscaler autoscales CoreDNS service
     * The `cluster-proportional-autoscaler` application is deployed separately from the CoreDNS service in the same kube-system namespace
     * The autoscaler Pod runs a client that polls the Kubernetes API server for the number of nodes and cores in the cluster
     * A desired replica count is calculated and applied to the CoreDNS backends based on the `current schedulable nodes` and `cores` and the given scaling parameters
