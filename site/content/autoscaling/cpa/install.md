@@ -110,7 +110,6 @@ Verify the deployment status by running the below command.
 ```bash
 kubectl get deployment dns-autoscaler -n kube-system
 ```
-Output will look like:
 
 {{< output >}}
 NAME             READY   UP-TO-DATE   AVAILABLE   AGE
@@ -120,8 +119,6 @@ dns-autoscaler   1/1     1            1           10s
 ```bash
 kubectl get po -n kube-system -l k8s-app=dns-autoscaler
 ```
-
-Output will look like:
 
 {{< output >}}
 NAME                              READY   STATUS    RESTARTS   AGE
@@ -133,6 +130,7 @@ Run the below command to check the configmap created for the cluster proportiona
 ```bash
 kubectl get configmap -n kube-system | grep dns-autoscaler
 ```
+
 {{< output >}}
 NAME                                 DATA   AGE
 dns-autoscaler                       1      1h
