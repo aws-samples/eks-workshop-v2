@@ -1,15 +1,13 @@
 module "aws-eks-accelerator-for-terraform" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.0.1"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.4.0"
 
-  tenant            = local.tenant
-  environment       = local.environment
-  zone              = local.zone
-  terraform_version = local.terraform_version
+  tags = local.tags
 
   vpc_id             = module.aws_vpc.vpc_id
   private_subnet_ids = module.aws_vpc.private_subnets
   public_subnet_ids  = module.aws_vpc.public_subnets
 
+  cluster_name    = local.cluster_name
   cluster_version = local.cluster_version
 
   cluster_endpoint_public_access  = true

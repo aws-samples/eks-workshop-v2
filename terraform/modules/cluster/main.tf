@@ -37,16 +37,16 @@ provider "helm" {
 }
 
 locals {
-  tenant      = "eksw"
-  environment = "env"
-  zone        = var.id
+  tags = {
+    created-by  = "eks-workshop-v2"
+    env         = var.id
+  }
 
   cluster_version = var.cluster_version
+  prefix       = "eks-workshop"
 
   vpc_cidr     = "10.42.0.0/16"
-  vpc_name     = join("-", [local.tenant, local.environment, local.zone, "vpc"])
+  vpc_name     = join("-", [local.prefix, local.tags.env, "vpc"])
   azs          = slice(data.aws_availability_zones.available.names, 0, 3)
-  cluster_name = join("-", [local.tenant, local.environment, local.zone, "eks"])
-
-  terraform_version = "Terraform v1.0.1"
+  cluster_name = join("-", [local.prefix, local.tags.env])  
 }
