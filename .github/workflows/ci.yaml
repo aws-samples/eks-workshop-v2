@@ -15,8 +15,8 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: test
+  test-content-scripts:
+    name: test-content-scripts
     runs-on: ubuntu-latest
     concurrency: test-environment
     env:
@@ -27,11 +27,11 @@ jobs:
     - name: Build environment image
       working-directory: environment
       run: |
-           docker build -t eks-workshop-environment .
+        docker build -t eks-workshop-environment .
     - name: Build test image
       working-directory: test
       run: |
-           docker build -t eks-workshop-test .
+        docker build -t eks-workshop-test .
     - name: Get AWS credentials
       uses: aws-actions/configure-aws-credentials@v1.6.1
       with:
@@ -74,3 +74,12 @@ jobs:
       working-directory: test/terraform
       run: |
         terraform destroy --auto-approve
+  verify-helm-charts:
+    name: verify-helm-charts
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Verify helm chart yaml
+      run: |
+        make verify-helm-metadata

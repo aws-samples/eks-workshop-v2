@@ -21,8 +21,8 @@ def save_terraform_variables(path, vars):
     json.dump(vars, outfile, indent=2, sort_keys=True)
 
 parser = argparse.ArgumentParser()
-parser.add_argument("target", help="target file to write resolved JSON to")
 parser.add_argument("-c", "--config", help="path to charts.yaml", default="charts.yaml")
+parser.add_argument("-o", "--output-file", help="path to write JSON output", default = None)
 args = parser.parse_args()
 
 charts = load_chart_requirements(args.config)
@@ -39,6 +39,9 @@ for chart in charts['charts']:
   url = '{}/index.yaml'.format(chart['repository'])
   resp = requests.get(url=url)
   data = yaml.safe_load(resp.content)
+
+  if chart['chart'] not in data['entries']:
+    raise Exception('Chart {} does not exist in repository {} - check chart name'.format(chart['chart'], chart['repository']))
 
   entry = data['entries'][chart['chart']]
 
@@ -60,4 +63,7 @@ for chart in charts['charts']:
 
     vars['variable']['helm_chart_versions']['default'][chart['name']] = selected_version
 
-save_terraform_variables(args.target, vars)
+if args.output_file is None:
+  print('No output file given, skipping writing')
+else:
+  save_terraform_variables(args.output_file, vars)
