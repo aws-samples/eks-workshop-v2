@@ -151,7 +151,6 @@ The output of the above command should be similar to this
 
 {{< output >}}
 NAME                            READY   STATUS    RESTARTS   AGE
-kube-ops-view-894bc75fb-gcw9b   1/1     Running   0          42h
 nginx-6799fc88d8-2srf4          1/1     Running   0          59s
 nginx-6799fc88d8-48c66          1/1     Running   0          32s
 nginx-6799fc88d8-5vbfp          1/1     Running   0          59s

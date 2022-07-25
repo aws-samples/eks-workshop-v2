@@ -15,19 +15,10 @@ kubectl delete priorityclass pause-pods
 # Scale down application #TODO: Change after app
 kubectl delete deployment nginx
 
-# Set ASG value to previous values
+# Set max capacity (max-size) up to 3 (older value)
+aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME  --scaling-config minSize=3,maxSize=3,desiredSize=3
 
-# Get Cluster Name
-export EKS_CLUSTER_NAME=$(aws eks list-clusters --query "clusters[0]" --output text)
+# Verify old values of Nodgroup size have been restored
+aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME --query nodegroup.scalingConfig --output table
 
-# Get ASG name
-export ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='$EKS_CLUSTER_NAME']].AutoScalingGroupName" --output text)
-
-# Set ASG config
-aws autoscaling \
-    update-auto-scaling-group \
-    --auto-scaling-group-name ${ASG_NAME} \
-    --min-size 3 \
-    --desired-capacity 3 \
-    --max-size 3
 ```
