@@ -1,5 +1,5 @@
 ---
-title: "Autoscaling our Applications and Clusters"
+title: "Autoscaling"
 chapter: true
 weight: 80
 ---
