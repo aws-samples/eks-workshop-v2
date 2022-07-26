@@ -17,7 +17,7 @@ spec:
     resources:
       cpu: 1000
   provider:
-    launchTemplate: "eks-d4c0f89d-a517-3937-b9ef-0868c5f27bcd"     # Used by Karpenter Nodes
+    launchTemplate: "eksw-env-cluster-eks-managed-ondemand"     # Used by Karpenter Nodes
     subnetSelector:
       Name: "eksw-env-cluster-vpc-private*"
   labels:
