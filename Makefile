@@ -8,7 +8,7 @@ tf-fmt:
 
 .PHONY: test
 test:
-	bash hack/run-tests.sh
+	bash hack/run-tests.sh $(module)
 
 .PHONY: e2e-test
 e2e-test:

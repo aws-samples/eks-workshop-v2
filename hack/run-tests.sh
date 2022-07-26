@@ -1,5 +1,13 @@
 #!/bin/bash
 
+module=$1
+
+if [ -z "$module" ]; then
+  module='*'
+  echo "Running tests for all modules"
+else
+  echo "Running tests for module $module"
+fi
 
 set -Eeuo pipefail
 
@@ -32,4 +40,4 @@ echo "Running test suite..."
 
 docker run --rm -v $SCRIPT_DIR/../site/content:/content \
   -e "EKS_CLUSTER_NAME" -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" -e "AWS_DEFAULT_REGION" \
-  eks-workshop-test
+  eks-workshop-test -g "$module/**"
