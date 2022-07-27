@@ -5,3 +5,7 @@ updates:
     directory: "/helm"
     schedule:
       interval: monthly
+  - package-ecosystem: "terraform" 
+    directory: "/terraform" 
+    schedule:
+      interval: "weekly"
