@@ -7,7 +7,7 @@ if [ -z "$EKS_CLUSTER_NAME" ]; then
   exit 1
 fi
 
-aws eks update-kubeconfig --name $EKS_CLUSTER_NAME 
+aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
 
 kubectl get nodes &> /dev/null
 
