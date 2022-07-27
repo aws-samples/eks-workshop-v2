@@ -5,7 +5,7 @@ before() {
 }
 
 after() {
-  kubectl wait --for=condition=available --timeout=180s deployment/nginx-to-scaleout
+  kubectl wait pods -n default -l app=nginx --for condition=Ready --timeout=180s
 
   num_nodes=$(kubectl get nodes -o json | jq -r '.items | length')
 
