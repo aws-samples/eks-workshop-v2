@@ -63,9 +63,9 @@ kubectl patch deployment cluster-autoscaler-aws-cluster-autoscaler -n kube-syste
 -p '{"spec": {"template": {"spec": {"containers": [{"name": "aws-cluster-autoscaler","command": ["./cluster-autoscaler","--v=4","--stderrthreshold=info","--cloud-provider=aws","--skip-nodes-with-local-storage=false","--expander=least-waste","--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eksworkshop-eksctl","--balance-similar-node-groups","--skip-nodes-with-system-pods=false","--expendable-pods-priority-cutoff=-10"]}]}}}}'
 ```
 
-## Configure Nodegroup Size
+## Verify Nodegroup Size
 
-The Cluster's Nodegroup size is tied to ASG. EKS modified ASG's min-size, max-size and desired-capacity to adjust the Nodegroup's size. Set this to be a value that will accommodate your over provisioning needs. Here we are configuring **—-max-size** to 4 and the current cluster has 3 nodes (***--desired-capacity 3***).
+The Cluster's Nodegroup size is tied to ASG. EKS modified ASG's min-size, max-size and desired-capacity to adjust the Nodegroup's size. Check if this value will accommodate your over provisioning needs. The environment is configured with **—-max-size** **`"6"`**.
 
 ```bash
 # Get Cluster Name and Nodegroup Name
@@ -74,13 +74,13 @@ export EKS_NODEGROUP_NAME=$(aws eks list-nodegroups --cluster-name $EKS_CLUSTER_
 
 # Display the current Nodgroup size configurations
 aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME --query nodegroup.scalingConfig --output table
-
-# increase max capacity (max-size) up to 4
-aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME  --scaling-config minSize=3,maxSize=4,desiredSize=3
-
-# Verify new values of Nodgroup size
-aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME --query nodegroup.scalingConfig --output table
 ```
+
+> **Note**: If `max-size` is not set you can used the following command to set it.
+> 
+> ```bash
+> aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME  --scaling-config minSize=3,maxSize=6,desiredSize=3`
+> ```
 
 ## Create Over provisioning Pause container deployment
 

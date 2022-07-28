@@ -10,7 +10,6 @@ Pod’s can be assigned priorities relative to other pods. The kuberentes schedu
 
 PriorityClasses with Priority Values are created and assigned to Pods. A default PriorityClass can be assigned to namespaces. Shown below is an example of **PriorityClass** Definition and how it is used in the PodSpec using **PriorityClassName**.
 
-
 ### Priority Class
 
 ```yaml
@@ -53,29 +52,33 @@ Here is the flow of how over provisioning works
 
 * When a critical application pod is scheduled (with higher Priority or Default Priority greater than "-1") empty Pause containers get evicted and critical application pods get provisioned immediately. 
 
-* Since there are **Pending** (Pause Container) pods in the cluster Cluster Autoscaler will kick in and provision additional kubernetes worker nodes based on **ASG configuration (`--max-size`)**.
-
+* Since there are **Pending** (Pause Container) pods in the cluster Cluster Autoscaler will kick in and provision additional kubernetes worker nodes based on **ASG configuration (`--max-size`)** that is associated with EKS NodeGroup.
 
 How much over provisioning is needed can be controlled by 
 
 1. The number of Pause Pods (**replicas**) with necessary **CPU and memory** specified deployed
-2. The maximum size of ASG (The command below shows the ASG configuration)
-
->**Note**: This estimate is done manually, The [Horizontal Cluster Proportional Autoscaler](https://github.com/kubernetes-sigs/cluster-proportional-autoscaler) can be used to scale placeholder Pause container Pods (Deployments) to scale with the size of the cluster.
+2. The maximum number of nodes in the NodeGroup (`maxsize`) (EKS modifies the ASG associated with the EKS Managed NodeGroup)
+   - The command below displays the Managed Nodegroup size
 
 ```bash
-aws autoscaling \
-    describe-auto-scaling-groups \
-    --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='eksworkshop-eksctl']].[AutoScalingGroupName, MinSize, MaxSize,DesiredCapacity]" \
-    --output table
-```
+export EKS_CLUSTER_NAME=$(aws eks list-clusters --query "clusters[0]" --output text)
+export EKS_NODEGROUP_NAME=$(aws eks list-nodegroups --cluster-name $EKS_CLUSTER_NAME --query "nodegroups[0]" --output text)
 
->**Note**: The **`—max-size`** dictates how many nodes the Cluster Autoscaler will provision
+# Display the size of the NodeGroup in the EKS cluster
+aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME --query nodegroup.scalingConfig --output table
+```
+>**Note**: The **`—max-size`** dictates upto how many nodes Cluster Autoscaler will provision
 
 {{< output >}}
-+-----------------------------------------------------------+
-|                 DescribeAutoScalingGroups                 |
-+-------------------------------------------+----+----+-----+
-|  eks-1eb9b447-f3c1-0456-af77-af0bbd65bc9f |  3 |  4 |  3  |
-+-------------------------------------------+----+----+-----+
+---------------------------------------
+|          DescribeNodegroup          |
++-------------+-----------+-----------+
+| desiredSize |  maxSize  |  minSize  |
++-------------+-----------+-----------+
+|  3          |  6        |  3        |
++-------------+-----------+-----------+
 {{< /output >}}
+
+>**Note**: The estimate is done manually here. 
+> - The [Horizontal Cluster Proportional Autoscaler](https://github.com/kubernetes-sigs/cluster-proportional-autoscaler) can be used to scale placeholder Pause container Pods (Deployments) to scale with size of the cluster.
+
