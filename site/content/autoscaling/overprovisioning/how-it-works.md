@@ -61,7 +61,6 @@ How much over provisioning is needed can be controlled by
    - The command below displays the Managed Nodegroup size
 
 ```bash
-export EKS_CLUSTER_NAME=$(aws eks list-clusters --query "clusters[0]" --output text)
 export EKS_NODEGROUP_NAME=$(aws eks list-nodegroups --cluster-name $EKS_CLUSTER_NAME --query "nodegroups[0]" --output text)
 
 # Display the size of the NodeGroup in the EKS cluster

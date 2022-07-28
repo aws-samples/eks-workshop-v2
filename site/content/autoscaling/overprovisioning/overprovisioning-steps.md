@@ -68,8 +68,7 @@ kubectl patch deployment cluster-autoscaler-aws-cluster-autoscaler -n kube-syste
 The Cluster's Nodegroup size is tied to ASG. EKS modified ASG's min-size, max-size and desired-capacity to adjust the Nodegroup's size. Check if this value will accommodate your over provisioning needs. The environment is configured with **—-max-size** **`"6"`**.
 
 ```bash
-# Get Cluster Name and Nodegroup Name
-export EKS_CLUSTER_NAME=$(aws eks list-clusters --query "clusters[0]" --output text)
+# Get the Nodegroup Name
 export EKS_NODEGROUP_NAME=$(aws eks list-nodegroups --cluster-name $EKS_CLUSTER_NAME --query "nodegroups[0]" --output text)
 
 # Display the current Nodgroup size configurations
