@@ -4,22 +4,23 @@
     {
       "Effect": "Allow",
       "Action": [
-        "eks:ListClusters",
-        "autoscaling:SetDesiredCapacity"
+        "eks:ListClusters"
       ],
       "Resource": "*"
     },
     {
       "Effect": "Allow",
       "Action": [
-        "eks:DescribeCluster"
+        "eks:DescribeCluster",
+        "eks:ListNodegroups"
       ],
       "Resource": "${cluster_arn}"
     },
     {
       "Effect": "Allow",
       "Action": [
-        "eks:UpdateNodegroupConfig"
+        "eks:UpdateNodegroupConfig",
+        "eks:DescribeNodegroup"
       ],
       "Resource": "${nodegroup}/*"
     }
