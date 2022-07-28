@@ -6,6 +6,26 @@ updates:
     schedule:
       interval: monthly
   - package-ecosystem: "terraform" 
-    directory: "/terraform" 
+    directory: "/terraform/cluster-only" 
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "terraform" 
+    directory: "/terraform/full" 
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "terraform" 
+    directory: "/terraform/local" 
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "terraform" 
+    directory: "/terraform/modules/cluster" 
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "terraform" 
+    directory: "/terraform/modules/ide" 
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "terraform" 
+    directory: "/terraform/modules/addons/descheduler" 
     schedule:
       interval: "weekly"
