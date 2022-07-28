@@ -7,20 +7,25 @@ spec:
     - key: "karpenter.sh/capacity-type"
       operator: In
       values: ["spot", "on-demand"]
-    - key: "node.kubernetes.io/instance-type"              #If not included, all instance types are considered
-      operator: In
-      values: ["m5.2xlarge", "m5.4xlarge"]
-    - key: "kubernetes.io/arch"                            #If not included, all architectures are considered
-      operator: In
-      values: ["arm64", "amd64"]
+#    - key: "node.kubernetes.io/instance-type"              #If not included, all instance types are considered
+#      operator: In
+#      values: ["m5.2xlarge", "m5.4xlarge"]
+#    - key: "kubernetes.io/arch"                            #If not included, all architectures are considered
+#      operator: In
+#      values: ["arm64", "amd64"]
   limits:
     resources:
       cpu: 1000
   provider:
-    launchTemplate: "eksw-env-cluster-eks-managed-ondemand"     # Used by Karpenter Nodes
+  #  launchTemplate: "eksw-env-cluster-eks-managed-ondemand"     # Used by Karpenter Nodes
+    instanceProfile: "eksw-env-cluster-eks-managed-ondemand" 
     subnetSelector:
       Name: "eksw-env-cluster-vpc-private*"
+    securityGroupSelector:
+      Name: "eks-cluster-sg-eksw-env-cluster-eks-*"
+    tags:
+      EKSWorkshop: "AWS"   
   labels:
     type: karpenter
     provisioner: default
-  ttlSecondsAfterEmpty: 120
+  ttlSecondsAfterEmpty: 30
