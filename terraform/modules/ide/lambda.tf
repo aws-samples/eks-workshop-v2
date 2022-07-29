@@ -1,6 +1,6 @@
 module "cloud9_bootstrap_lambda" {
   source  = "terraform-aws-modules/lambda/aws"
-  version = "3.1.0"
+  version = "3.3.1"
 
   publish = true
 
