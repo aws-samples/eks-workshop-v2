@@ -1,5 +1,5 @@
 module "aws-eks-accelerator-for-terraform" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.4.0"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.6.1"
 
   tags = local.tags
 
