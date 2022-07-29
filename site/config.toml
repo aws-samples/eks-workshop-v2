@@ -2,7 +2,7 @@ baseURL = 'http://eksworkshop.com/'
 languageCode = 'en-us'
 title = 'Amazon EKS Workshop'
 
-theme = "learn"
+theme = "hugo-theme-relearn"
 
 # For search functionality
 [outputs]
