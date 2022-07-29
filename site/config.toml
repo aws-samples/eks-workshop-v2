@@ -2,7 +2,7 @@ baseURL = 'http://eksworkshop.com/'
 languageCode = 'en-us'
 title = 'Amazon EKS Workshop'
 
-theme = "learn"
+theme = "hugo-theme-relearn"
 
 # For search functionality
 [outputs]
@@ -17,3 +17,5 @@ weight = 10
 [params]
   themeVariant = "mine"
   editURL = "https://github.com/aws-samples/eks-workshop-v2/edit/main/site/content"
+
+  alwaysopen = false
