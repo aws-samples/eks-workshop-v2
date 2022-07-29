@@ -17,3 +17,5 @@ weight = 10
 [params]
   themeVariant = "mine"
   editURL = "https://github.com/aws-samples/eks-workshop-v2/edit/main/site/content"
+
+  alwaysopen = false
