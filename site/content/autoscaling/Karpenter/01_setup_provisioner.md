@@ -29,11 +29,11 @@ spec:
     resources:
       cpu: 1000
   provider:
-    instanceProfile: "eksw-env-cluster-eks-managed-ondemand" 
+    instanceProfile: "${EKS_CLUSTER_NAME}-managed-ondemand" 
     subnetSelector:
-      Name: "eksw-env-cluster-vpc-private*"
+      karpenter.sh/discovery: "${EKS_CLUSTER_NAME}"
     securityGroupSelector:
-      Name: "eks-cluster-sg-eksw-env-cluster-eks-*"
+      karpenter.sh/discovery: "${EKS_CLUSTER_NAME}"
     tags:
       EKSWorkshop: "AWS"   
   labels:
