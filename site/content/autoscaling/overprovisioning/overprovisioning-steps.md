@@ -58,9 +58,15 @@ system-cluster-critical   2000000000   false            17d
 Patch CA to set flag **`expendable-pods-priority-cutoff`** to value **`-10`** so Pause pods are taken into consideration when Cluster Autoscaler does the scaling operation.
 
 ```bash
-# Patch the Cluster Autoscaler so it takes expendable pod into account for making scaling decisions
+# Patch Cluster Autoscaler so it takes expendable pod into account for making scaling decisions
 kubectl patch deployment cluster-autoscaler-aws-cluster-autoscaler -n kube-system \
--p '{"spec": {"template": {"spec": {"containers": [{"name": "aws-cluster-autoscaler","command": ["./cluster-autoscaler","--v=4","--stderrthreshold=info","--cloud-provider=aws","--skip-nodes-with-local-storage=false","--expander=least-waste","--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eksworkshop-eksctl","--balance-similar-node-groups","--skip-nodes-with-system-pods=false","--expendable-pods-priority-cutoff=-10"]}]}}}}'
+-p '{"spec": {"template": {"spec": {"containers": [{"name": "aws-cluster-autoscaler","command": ["./cluster-autoscaler","--v=4","--stderrthreshold=info","--cloud-provider=aws","--skip-nodes-with-local-storage=false","--expander=least-waste","--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eks-workshop-cluster","--balance-similar-node-groups","--skip-nodes-with-system-pods=false","--expendable-pods-priority-cutoff=-10"]}]}}}}'
+
+# Patch Cluster Autoscaler so it doesn't get evicted
+kubectl patch deployment cluster-autoscaler-aws-cluster-autoscaler \
+  -n kube-system \
+  -p '{"spec":{"template":{"metadata":{"annotations":{"cluster-autoscaler.kubernetes.io/safe-to-evict": "false"}}}}}'
+
 ```
 
 ## Verify Nodegroup Size
@@ -78,7 +84,7 @@ aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EK
 > **Note**: If `max-size` is not set you can used the following command to set it.
 > 
 > ```bash
-> aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME  --scaling-config minSize=3,maxSize=6,desiredSize=3`
+> aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME  --scaling-config minSize=3,maxSize=6,desiredSize=3
 > ```
 
 ## Create Over provisioning Pause container deployment
@@ -94,7 +100,7 @@ metadata:
    name: pause-pods
    namespace: default
 spec:
-   replicas: 2
+   replicas: 3
    selector:
       matchLabels:
         run: pause-pods
@@ -109,14 +115,15 @@ spec:
           image: k8s.gcr.io/pause
           resources:
             requests:
-              cpu: "1.5"
-              memory: "1G"
+              cpu: "1"
 EOF
 ```
 
 ## Application Scaling (TODO - change based on application)
 
-The following command shows the Pause container pods running in 2 nodes
+Now let us scale the application and see what happens to the Pause container pods
+
+The following command shows Pause container pods running in 3 nodes (with 1 vCPU requested)
 
 ```bash
 kubectl get pods -o wide -l run=pause-pods
@@ -125,57 +132,71 @@ kubectl get pods -o wide -l run=pause-pods
 The output should show
 
 {{< output >}}
-NAME                          READY   STATUS    RESTARTS   AGE     IP               NODE                                          NOMINATED NODE   READINESS GATES
-pause-pods-5c765d9cb5-h87hj   1/1     Running   0          7m35s   192.168.56.218   ip-192-168-63-47.us-west-2.compute.internal   <none>           <none>
-pause-pods-5c765d9cb5-nxspd   1/1     Running   0          4h36m   192.168.68.232   ip-192-168-86-79.us-west-2.compute.internal   <none>           <none>
+NAME                          READY   STATUS    RESTARTS   AGE   IP             NODE                                         NOMINATED NODE   READINESS GATES
+pause-pods-55f859d945-65zvp   1/1     Running   0          86s   10.42.12.144   ip-10-42-12-235.us-west-2.compute.internal   <none>           <none>
+pause-pods-55f859d945-8jmk6   1/1     Running   0          86s   10.42.10.192   ip-10-42-10-8.us-west-2.compute.internal     <none>           <none>
+pause-pods-55f859d945-qjnl5   1/1     Running   0          86s   10.42.11.139   ip-10-42-11-184.us-west-2.compute.internal   <none>           <none>
 {{< /output >}}
 
-Currently 3rd cluster node is running pause container pod and there **—max-size** of the ASG is 4, lets scale up the application.
+Currently 3 cluster node run 3 pause container pods and node group size is 6 (**—max-size** of ASG is 6), lets create and scale the application *(with a request of .5 CPU*).
 
 ```bash
 # Create a deployment - (TODO:Change to app - once decided)
-kubectl create deployment nginx --image=nginx
+cat <<EOF | kubectl apply -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: ".5" # vCPU requested
+EOF
 
 # Scale the deployment
-kubectl scale deployment --replicas=17 nginx
+kubectl scale deployment --replicas=4 nginx
 ```
 
-
-The following command shows that the applications pods have been deployed and Pause container pods have been evicted and are in pending state. Next Cluster Autoscaler will kick in and provision a new worked node (using the ASG) and pending Pause container pod will get deployed, this will take a few minutes.
+When application gets scaled Pause container pods will get evicted and application pods gets deployed immediately. The following command shows that the applications pods have been deployed and Pause container pods have been evicted and are in pending state. 
 
 ```bash
-kubectl get pods
+kubectl get pods -o wide
 ```
-The output of the above command should be similar to this
+The output of above command should be similar to this
 
 {{< output >}}
-NAME                            READY   STATUS    RESTARTS   AGE
-nginx-6799fc88d8-2srf4          1/1     Running   0          59s
-nginx-6799fc88d8-48c66          1/1     Running   0          32s
-nginx-6799fc88d8-5vbfp          1/1     Running   0          59s
-nginx-6799fc88d8-62xh4          1/1     Running   0          47s
-nginx-6799fc88d8-67hsk          1/1     Running   0          59s
-nginx-6799fc88d8-8nqjs          1/1     Running   0          59s
-nginx-6799fc88d8-b988b          1/1     Running   0          32s
-nginx-6799fc88d8-cfn96          1/1     Running   0          59s
-nginx-6799fc88d8-d7vcp          1/1     Running   0          32s
-nginx-6799fc88d8-hnkdm          1/1     Running   0          4h51m
-nginx-6799fc88d8-hnkjb          1/1     Running   0          32s
-nginx-6799fc88d8-jhbbt          1/1     Running   0          60s
-nginx-6799fc88d8-lc69l          1/1     Running   0          47s
-nginx-6799fc88d8-pkq92          1/1     Running   0          59s
-nginx-6799fc88d8-pqz47          1/1     Running   0          59s
-nginx-6799fc88d8-q2t5r          1/1     Running   0          60s
-pause-pods-5c765d9cb5-6c82d     0/1     Pending   0          32s
-pause-pods-5c765d9cb5-smnfl     0/1     Pending   0          32s
+kubectl get pods -o wide
+NAME                          READY   STATUS    RESTARTS   AGE   IP             NODE                                         NOMINATED NODE   READINESS GATES
+nginx-5db669fcb8-4n7n6        1/1     Running   0          5s    10.42.10.67    ip-10-42-10-109.us-west-2.compute.internal   <none>           <none>
+nginx-5db669fcb8-9ssps        1/1     Running   0          5s    10.42.10.221   ip-10-42-10-109.us-west-2.compute.internal   <none>           <none>
+nginx-5db669fcb8-dgkd2        1/1     Running   0          5s    10.42.12.167   ip-10-42-12-186.us-west-2.compute.internal   <none>           <none>
+nginx-5db669fcb8-fwv7k        1/1     Running   0          77s   10.42.11.215   ip-10-42-11-229.us-west-2.compute.internal   <none>           <none>
+pause-pods-5c765d9cb5-27mtr   0/1     Pending   0          4s    <none>         <none>                                       <none>           <none>
+pause-pods-5c765d9cb5-9mj4v   1/1     Running   0          45m   10.42.12.113   ip-10-42-12-186.us-west-2.compute.internal   <none>           <none>
+pause-pods-5c765d9cb5-bs9rq   1/1     Running   0          15m   10.42.11.27    ip-10-42-11-229.us-west-2.compute.internal   <none>           <none>
 {{< /output >}}
 
 
-You can run the following command to see new node getting created, once the new node is available Pause container pods will be scheduled.
+Next Cluster Autoscaler will kick in and provision a new worked node (using ASG) and pending Pause container pod will get deployed, this will take a few minutes. You can run the following command to see new node getting created, once the new node is available Pause container pods will be scheduled.
 
 ```bash
 kubectl get nodes -o wide
 ```
 
 ## Conclusion
-In this workshop we have shown how to over provision your cluster to scale your critical applications immediately.
+
+In this workshop we have shown how to over provision your cluster (with Pause container pods) to scale your critical applications immediately and reserve space for future critical applications.
