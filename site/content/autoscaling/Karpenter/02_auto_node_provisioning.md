@@ -51,13 +51,13 @@ kubectl apply -f inflate.yaml
 
 Lets got through following questions in order to better understand how Karpenter works:
 
-# 1) Why did Karpenter not scale the cluster after making the initial deployment ?
+#### 1) Why did Karpenter not scale the cluster after making the initial deployment ?
 
 The deployment was created with `replicas: 0`. We've done this for two reasons. In this section we will mention the first reason: We did set the replicas to 0, just for your convenience, so you can check out Karpenter logs once that you increase the number of replicas in the deployment. 
 In the answer to question number 8, we will explain the second reason we are starting from zero.
 
 
-2) How would you scale the deployment to 1 replicas?
+#### 2) How would you scale the deployment to 1 replicas?
 
 To scale up the deployment run the following command: 
 
@@ -71,7 +71,7 @@ You can check the state of the replicas by running the following command. Once K
 kubectl get deployment inflate 
 ```
 
-3) Which instance type did Karpenter use when increasing the instances ? Why that instance ?
+#### 3) Which instance type did Karpenter use when increasing the instances ? Why that instance ?
 
 You can check which instance type was used running the following command:
 
@@ -120,7 +120,7 @@ We did not set Karpenter Provisioner to use specific `instance-types` [requireme
 By implementing techniques such as: Bin-packing using First Fit Decreasing, Instance diversification using EC2 Fleet instant fleet and `capacity-optimized-prioritized`, Karpenter removes the need from customer to define multiple Auto Scaling groups each one for the type of capacity constraints and sizes that all the applications need to fit in. This simplifies considerably the operational support of kubernetes clusters.
 
 
-4) What are the new instance properties and Labels ?
+#### 4) What are the new instance properties and Labels ?
 
 
 You can use the following command to display all the node attributes including labels:
@@ -168,7 +168,7 @@ At this time, Karpenter only supports Linux OS nodes.
 {{% /notice %}}
 
 
-5) Why did the newly created `inflate` pod was not scheduled into the managed node group ?
+#### 5) Why did the newly created `inflate` pod was not scheduled into the managed node group ?
 
 
 The On-Demand Managed Node group was provisioned without the label `intent` set to `apps`. In our case the deployment defined the following section, where the `intent` is set to `apps`.
@@ -194,7 +194,7 @@ spec:
 Both Karpenter and [Cluster Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler) do take into consideration NodeSelector, Taints and Tolerations. Mixing  Autoscaling management solution in the same cluster may cause side effects as auto scaler systems like Cluster Autoscaler and Karpenter both scale up nodes in response to unschedulable pods. To avoid race conditions a clear division of the resources using NodeSelectors, Taints and Tolerations must be used. This is outside of the scope of this workshop.
 
 
-6) How would you scale the number of replicas to 6? What do you expect to happen? Which instance types were selected in this case ?
+#### 6) How would you scale the number of replicas to 6? What do you expect to happen? Which instance types were selected in this case ?
 
 
 This one should be easy! 
@@ -237,7 +237,7 @@ kubectl describe node --selector=type=karpenter
 This time around you'll see the description for both instances created.
 
 
-7) How would you scale the number of replicas to 0?  what do you expect to happen?
+#### 7) How would you scale the number of replicas to 0?  what do you expect to happen?
 
 To scale the number of replicas to 0, run the following command: 
 
