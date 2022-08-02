@@ -82,6 +82,7 @@ linear:
 ----
 {"coresPerReplica":2,"includeUnschedulableNodes":true,"nodesPerReplica":1,"preventSinglePointFailure":true,"min":1,"max":4}
 Events:  <none>
+
 {{< /output >}}
 
 Currently we are running a 3 node cluster and based on autoscaling parameters defined in the ConfigMap, we see cluster proportional autoscaler added 3 replicas of CoreDNS
@@ -100,7 +101,7 @@ ip-192-168-80-39.us-east-2.compute.internal     Ready    <none>   76m   v1.22.9-
 ```bash
 aws autoscaling \
     describe-auto-scaling-groups \
-    --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='autoscaling']].[AutoScalingGroupName, MinSize, MaxSize,DesiredCapacity]" \
+    --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='$EKS_CLUSTER_NAME']].[AutoScalingGroupName, MinSize, MaxSize,DesiredCapacity]" \
     --output table
 ```
 

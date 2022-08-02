@@ -10,4 +10,4 @@ bash $SCRIPT_DIR/create-infrastructure.sh
 
 bash $SCRIPT_DIR/run-tests.sh
 
-bash $SCRIPT_DIR/destroy-infrastructure.sh
+#bash $SCRIPT_DIR/destroy-infrastructure.sh
