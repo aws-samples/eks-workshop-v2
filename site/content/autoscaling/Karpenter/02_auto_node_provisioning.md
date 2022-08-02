@@ -51,7 +51,7 @@ kubectl apply -f inflate.yaml
 
 Lets got through following questions in order to better understand how Karpenter works:
 
-1) Why did Karpenter not scale the cluster after making the initial deployment ?
+# 1) Why did Karpenter not scale the cluster after making the initial deployment ?
 
 The deployment was created with `replicas: 0`. We've done this for two reasons. In this section we will mention the first reason: We did set the replicas to 0, just for your convenience, so you can check out Karpenter logs once that you increase the number of replicas in the deployment. 
 In the answer to question number 8, we will explain the second reason we are starting from zero.
