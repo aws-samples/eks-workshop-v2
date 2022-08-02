@@ -49,10 +49,6 @@ kubectl apply -f inflate.yaml
 
 ## Challenge
 
-{{% notice tip %}}
-You can install [kube-ops-view](https://www.eksworkshop.com/beginner/080_scaling/install_kube_ops_view/) or just use the **kubectl** cli to visualize the changes and answer the questions below. In the answers we will provide the CLI commands that will help you check the responses. Remember: to get the url of **kube-ops-view** you can run the following command `kubectl get svc kube-ops-view | tail -n 1 | awk '{ print "Kube-ops-view URL = http://"$4 }'`
-{{% /notice %}}
-
 Answer the following questions. You can expand each question to get a detailed answer and validate your understanding.
 
 #### 1) Why did Karpenter not scale the cluster after making the initial deployment ?
