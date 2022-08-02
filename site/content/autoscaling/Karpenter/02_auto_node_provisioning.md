@@ -49,18 +49,16 @@ kubectl apply -f inflate.yaml
 
 ## Challenge
 
-Answer the following questions. You can expand each question to get a detailed answer and validate your understanding.
+Lets got through following questions in order to better understand how Karpenter works:
 
-#### 1) Why did Karpenter not scale the cluster after making the initial deployment ?
+1) Why did Karpenter not scale the cluster after making the initial deployment ?
 
-{{%expand "Click here to show the answer" %}} 
 The deployment was created with `replicas: 0`. We've done this for two reasons. In this section we will mention the first reason: We did set the replicas to 0, just for your convenience, so you can check out Karpenter logs once that you increase the number of replicas in the deployment. 
-
 In the answer to question number 8, we will explain the second reason we are starting from zero.
-{{% /expand %}}
 
-#### 2) How would you scale the deployment to 1 replicas?
-{{%expand "Click here to show the answer" %}} 
+
+2) How would you scale the deployment to 1 replicas?
+
 To scale up the deployment run the following command: 
 
 ```bash
@@ -72,10 +70,8 @@ You can check the state of the replicas by running the following command. Once K
 ```bash
 kubectl get deployment inflate 
 ```
-{{% /expand %}}
 
-#### 3) Which instance type did Karpenter use when increasing the instances ? Why that instance ?
-{{%expand "Click here to show the answer" %}} 
+3) Which instance type did Karpenter use when increasing the instances ? Why that instance ?
 
 You can check which instance type was used running the following command:
 
@@ -96,8 +92,6 @@ There is something even more interesting to learn about how the node was provisi
 2021-11-15T11:09:11.976Z        INFO    controller.allocation.provisioner/default       Found 1 provisionable pods      {"commit": "6468992"}
 2021-11-15T11:09:13.037Z        INFO    controller.allocation.provisioner/default       Computed packing for 1 pod(s) with instance type option(s) [t3.medium c6i.large c5.large t3a.medium c5ad.large c4.large c5a.large c3.large c5d.large c5n.large t3a.large m5a.large t3.large m5ad.large m5.large m6i.large m3.large m4.large m5zn.large m5dn.large]   {"commit": "6468992"}
 2021-11-15T11:09:15.185Z        INFO    controller.allocation.provisioner/default       Launched instance: i-09ba099d68f7c982c, hostname: xxxxxxxxxxxxx.compute.internal, type: t3.medium, zone: eu-west-1a, capacityType: spot  {"commit": "6468992"}
-2021-11-15T11:09:15.202Z        INFO    controller.allocation.provisioner/default       Bound 1 pod(s) to node xxxxxxxxxxxxx.compute.internal   {"commit": "6468992"}
-2021-11-15T11:09:15.202Z        INFO    controller.allocation.provisioner/default       Starting provisioning loop      {"commit": "6468992"}
 ```
 
 
@@ -125,12 +119,9 @@ We did not set Karpenter Provisioner to use specific `instance-types` [requireme
 
 By implementing techniques such as: Bin-packing using First Fit Decreasing, Instance diversification using EC2 Fleet instant fleet and `capacity-optimized-prioritized`, Karpenter removes the need from customer to define multiple Auto Scaling groups each one for the type of capacity constraints and sizes that all the applications need to fit in. This simplifies considerably the operational support of kubernetes clusters.
 
-{{% /expand %}}
 
+4) What are the new instance properties and Labels ?
 
-#### 4) What are the new instance properties and Labels ?
-
-{{%expand "Click here to show the answer" %}} 
 
 You can use the following command to display all the node attributes including labels:
 
@@ -176,11 +167,9 @@ System Info:
 At this time, Karpenter only supports Linux OS nodes.
 {{% /notice %}}
 
-{{% /expand %}}
 
-#### 5) Why did the newly created `inflate` pod was not scheduled into the managed node group ?
+5) Why did the newly created `inflate` pod was not scheduled into the managed node group ?
 
-{{%expand "Click here to show the answer" %}}
 
 The On-Demand Managed Node group was provisioned without the label `intent` set to `apps`. In our case the deployment defined the following section, where the `intent` is set to `apps`.
 
@@ -204,11 +193,9 @@ spec:
 
 Both Karpenter and [Cluster Autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler) do take into consideration NodeSelector, Taints and Tolerations. Mixing  Autoscaling management solution in the same cluster may cause side effects as auto scaler systems like Cluster Autoscaler and Karpenter both scale up nodes in response to unschedulable pods. To avoid race conditions a clear division of the resources using NodeSelectors, Taints and Tolerations must be used. This is outside of the scope of this workshop.
 
-{{% /expand %}}
 
-#### 6) How would you scale the number of replicas to 6? What do you expect to happen? Which instance types were selected in this case ?
+6) How would you scale the number of replicas to 6? What do you expect to happen? Which instance types were selected in this case ?
 
-{{%expand "Click here to show the answer" %}}
 
 This one should be easy! 
 
@@ -249,10 +236,9 @@ kubectl describe node --selector=type=karpenter
 
 This time around you'll see the description for both instances created.
 
-{{% /expand %}}
 
-#### 7) How would you scale the number of replicas to 0?  what do you expect to happen?
-{{%expand "Show me the answers" %}} 
+7) How would you scale the number of replicas to 0?  what do you expect to happen?
+
 To scale the number of replicas to 0, run the following command: 
 
 ```
@@ -263,7 +249,6 @@ In the previous section, we configured the default Provisioner with `ttlSecondsA
 
 
 Let's cover the second reason why we started with 0 replicas and why we also end with 0 replicas! Karpenter does support scale to and from zero. Karpenter only launches or terminates nodes as necessary based on aggregate pod resource requests. Karpenter will only retain nodes in your cluster as long as there are pods using them. 
-{{% /expand %}}
 
 
 ## What Have we learned in this section : 
