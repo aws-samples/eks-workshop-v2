@@ -1,4 +1,4 @@
-FROM amazonlinux:2022
+FROM amazonlinux:latest
 
 ARG GITHUB_TOKEN=''
 
