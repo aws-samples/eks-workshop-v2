@@ -46,7 +46,7 @@ EOF
 The configuration for this provider is quite simple. We will change in the future the provider. For the moment let's focus in a few of the settings used.
 
 * **Instance Profile**: Instances launched by Karpenter must run with an InstanceProfile that grants permissions necessary to run containers and configure networking.
-* **Requirements Section**: The [Provisioner CRD](https://karpenter.sh/v0.4.3-docs/provisioner-crd/) supports defining node properties like instance type and zone. For example, in response to a label of topology.kubernetes.io/zone=us-east-1c, Karpenter will provision nodes in that availability zone. We could set the `karpenter.sh/capacity-type` to procure EC2 Spot instances. If nothing provided it will default to on-demand. You can learn which other properties are [available here](https://karpenter.sh/v0.4.3-docs/cloud-providers/aws/aws-spec-fields/). We will work on a few more during the workshop.
+* **Requirements Section**: The [Provisioner CRD](https://karpenter.sh/v0.13.2/provisioner/) supports defining node properties like instance type and zone. For example, in response to a label of topology.kubernetes.io/zone=us-east-1c, Karpenter will provision nodes in that availability zone. We could set the `karpenter.sh/capacity-type` to procure EC2 Spot instances. If nothing provided it will default to on-demand.
 * **ttlSecondsAfterEmpty**: value configures Karpenter to terminate empty nodes. This behavior can be disabled by leaving the value undefined. In this case we have set it for a quick demonstration to a value of 30 seconds.
 * **Tags**: Provisioners can also define a set of tags that the EC2 instances will have upon creation. This helps to enable accounting and governance at the EC2 level.
 
@@ -55,7 +55,7 @@ The configuration for this provider is quite simple. We will change in the futur
 
 
 {{% notice info %}}
-Karpenter has been designed to be generic and support other Cloud and Infrastructure providers. At the moment of writing this workshop (Karpenter 0.5.1) main implementation and Provisioner available is on AWS. You can read more about the **[configuration available for the AWS Provisioner here](https://karpenter.sh/docs/aws/)**
+Karpenter has been designed to be generic and support other Cloud and Infrastructure providers. At the moment of writing this workshop (Karpenter 0.13.1) main implementation and Provisioner available is on AWS. You can read more about the **[configuration available for the AWS Provisioner here](https://karpenter.sh/docs/aws/)**
 {{% /notice %}}
 
 ## Displaying Karpenter Logs

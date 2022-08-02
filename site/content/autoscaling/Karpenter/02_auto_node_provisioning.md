@@ -1,6 +1,6 @@
 ---
 title: "Automatic Node Provisioning"
-date: 2021-11-07T11:05:19-07:00
+date: 2022-30-07T11:05:19-07:00
 weight: 40
 draft: false
 ---
@@ -33,7 +33,7 @@ spec:
         app: inflate
     spec:
       nodeSelector:
-        intent: apps
+         type: karpenter
       containers:
         - name: inflate
           image: public.ecr.aws/eks-distro/kubernetes/pause:3.2
@@ -84,13 +84,13 @@ kubectl get deployment inflate
 You can check which instance type was used running the following command:
 
 ```bash
-kubectl get node --selector=intent=apps --show-labels
+kubectl get node --selector=type=karpenter --show-labels
 ```
 
 This will show a single instance created with the label set to `intent: apps`. To get the type of instance in this case, we can describe the node and look at the label `beta.kubernetes.io/instance-type` 
 
 ```bash
-echo type: $(kubectl describe node --selector=intent=apps | grep "beta.kubernetes.io/instance-type" | sed s/.*=//g)
+kubectl get nodes --selector=type=karpenter -L beta.kubernetes.io/instance-type
 ```
 
 There is something even more interesting to learn about how the node was provisioned. Check out Karpenter logs and look at the new Karpenter created. The lines should be similar to the ones below 
@@ -139,14 +139,14 @@ By implementing techniques such as: Bin-packing using First Fit Decreasing, Inst
 You can use the following command to display all the node attributes including labels:
 
 ```
-kubectl describe node --selector=intent=apps
+kubectl describe node --selector=type=karpenter
 ```
 
 Let's now focus in a few of those parameters starting with the Labels:
 
 ```bash
 Labels:             ...
-                    intent=apps
+                    type=karpenter
                     karpenter.sh/capacity-type=on-demand
                     node.kubernetes.io/instance-type=t3.medium
                     topology.kubernetes.io/region=us-east-1
@@ -191,7 +191,7 @@ The On-Demand Managed Node group was provisioned without the label `intent` set 
 ```yaml
 spec:
       nodeSelector:
-        intent: apps
+        type: karpenter
       containers:
         ...
 ```
@@ -201,7 +201,7 @@ Karpenter default Provisioner was also created with the the section:
 ```yaml
 spec:
   labels:
-    intent: apps
+    type: karpenter
 ```
 
 [NodeSelector](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector), [Taints and Tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/), can be used to split the topology of your cluster and indicate Karpenter where to place your Pods and Jobs. 
@@ -245,10 +245,10 @@ There is one last thing that we have not mentioned until now. Check out this lin
 
 The line and message **Bound 5 pod(s)** is important. Karpenter Provisioners attempt to schedule pods when they are in state `type=PodScheduled,reason=Unschedulable`. In this case, Karpenter will make a provisioning decision, launch new capacity, and proactively **bind pods to the provisioned nodes**. Unlike the Cluster Autoscaler, Karpenter does not wait for the [Kube Scheduler](https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler) to make a scheduling decision, as the decision is already made during the provisioning time. The objective of this operation is to speed up the placement of the pods to the new nodes.
 
-Finally to check out the configuration of the `intent=apps` node execute again:
+Finally to check out the configuration of the `type=karpenter` node execute again:
 
 ```
-kubectl describe node --selector=intent=apps
+kubectl describe node --selector=type=karpenter
 ```
 
 This time around you'll see the description for both instances created.
