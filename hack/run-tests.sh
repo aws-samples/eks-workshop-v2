@@ -23,11 +23,17 @@ fi
 export EKS_CLUSTER_NAME=$(terraform output -state $state_path -raw eks_cluster_id)
 export ASSUME_ROLE=$(terraform output -state $state_path -raw iam_role_arn)
 
-echo "Building container images..."
+container_image='public.ecr.aws/f2e3b2o6/eks-workshop:test-alpha.1'
 
-(cd $SCRIPT_DIR/../environment && docker build -q -t eks-workshop-environment .)
+if [ -n "${DEV_MODE-}" ]; then
+  echo "Building container images..."
 
-(cd $SCRIPT_DIR/../test && docker build -q -t eks-workshop-test .)
+  (cd $SCRIPT_DIR/../environment && docker build -q -t eks-workshop-environment .)
+
+  (cd $SCRIPT_DIR/../test && docker build -q -t eks-workshop-test .)
+
+  container_image='eks-workshop-test'
+fi
 
 echo "Generating temporary AWS credentials..."
 
@@ -40,4 +46,4 @@ echo "Running test suite..."
 
 docker run --rm -v $SCRIPT_DIR/../site/content:/content \
   -e "EKS_CLUSTER_NAME" -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" -e "AWS_DEFAULT_REGION" \
-  eks-workshop-test -g "$module/**"
+  $container_image -g "$module/**"
