@@ -1,4 +1,4 @@
-FROM amazonlinux:2022
+FROM amazonlinux:latest
 
 RUN yum install -y findutils aws-cli jq tar gzip && \
     yum clean all
