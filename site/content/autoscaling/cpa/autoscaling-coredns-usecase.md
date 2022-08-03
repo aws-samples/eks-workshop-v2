@@ -8,9 +8,9 @@ weight: 3
 
 `CoreDNS` is the default DNS service for kubernetes. The label set for CoreDNS is `k8s-app=kube-dns`
 
-In this example, we will autoscale CoreDNS based on the number of schedulable nodes and cores of the cluster. Cluster proportional autoscaler will resize the number of `CoreDNS` replicas
+**In this example, we will autoscale CoreDNS based on the number of schedulable nodes and cores of the cluster. Cluster proportional autoscaler will resize the number of `CoreDNS` replicas**
 
-In the installation section, we installed `dns-autoscaler` and chose `CoreDNS` as the deployment target for the cluster proportional autoscaler
+**In the installation section, we installed `dns-autoscaler` and chose `CoreDNS` as the deployment target for the cluster proportional autoscaler**
 
 ```bash
 kubectl get po -n kube-system -l k8s-app=kube-dns
@@ -85,7 +85,7 @@ Events:  <none>
 
 {{< /output >}}
 
-Currently we are running a 3 node cluster and based on autoscaling parameters defined in the ConfigMap, we see cluster proportional autoscaler added 3 replicas of CoreDNS
+**Currently we are running a 3 node cluster and based on autoscaling parameters defined in the ConfigMap, we see cluster proportional autoscaler added 3 replicas of CoreDNS**
 
 ```bash
 kubectl get nodes
@@ -98,32 +98,29 @@ ip-192-168-142-113.us-east-2.compute.internal   Ready    <none>   76m   v1.22.9-
 ip-192-168-80-39.us-east-2.compute.internal     Ready    <none>   76m   v1.22.9-eks-810597c
 {{< /output >}}
 
-```bash
-aws autoscaling \
-    describe-auto-scaling-groups \
-    --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='$EKS_CLUSTER_NAME']].[AutoScalingGroupName, MinSize, MaxSize,DesiredCapacity]" \
-    --output table
-```
-
-{{< output >}}
-
-----------------------------------------------------------------
-|                   DescribeAutoScalingGroups                  |
-+-----------------------------------------------+----+----+----+
-|  eks-ng-dcc110a0-acab-4f51-22fd-d3cf227734af  |  3 |  5 |  3 |
-+-----------------------------------------------+----+----+----+
-
-{{< /output >}}
+**Export Nodegroup name**
 
 ```bash
-echo $ASG_NAME
+export EKS_NODEGROUP_NAME=$(aws eks list-nodegroups --cluster-name $EKS_CLUSTER_NAME --query "nodegroups[0]" --output text)
 ```
 
-{{< output >}}
-eks-ng-dcc110a0-acab-4f51-22fd-d3cf227734af
-{{< /output >}}
+**Display the current Nodgroup size configurations**
+```bash
+aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME --query nodegroup.scalingConfig --output table
+```
 
-Check current CoreDNS replicas
+{{ output }}
+---------------------------------------
+|          DescribeNodegroup          |
++-------------+-----------+-----------+
+| desiredSize |  maxSize  |  minSize  |
++-------------+-----------+-----------+
+|  3          |  5        |  3        | 
++-------------+-----------+-----------+
+
+{{ /output }}
+
+**Check current CoreDNS replicas**
 
 ```bash
 kubectl get po -n kube-system -l k8s-app=kube-dns
@@ -137,19 +134,22 @@ coredns-5db97b446d-svknx   1/1     Running   0          86s
 {{ /output }}
 
 
-
-If we reduce the size of the cluster to a single node, cluster proportional autoscaler will resize the CoreDNS to just run a single replica
+**If we reduce the size of the cluster to a single node, cluster proportional autoscaler will resize the CoreDNS to just run a single replica as we are reducing the cluster size from 3 nodes to a single node**
 
 ```bash
-aws autoscaling \
-    update-auto-scaling-group \
-    --auto-scaling-group-name ${ASG_NAME} \
-    --min-size 1 \
-    --desired-capacity 1 \
-    --max-size 5
+aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME  --scaling-config minSize=1,maxSize=5,desiredSize=1
 ```
+{{ output }}
+---------------------------------------
+|          DescribeNodegroup          |
++-------------+-----------+-----------+
+| desiredSize |  maxSize  |  minSize  |
++-------------+-----------+-----------+
+|  1          |  5        |  1        | 
++-------------+-----------+-----------+
+{{ /output }}
 
-Check worker nodes and CoreDNS pods
+**Check worker nodes and CoreDNS pods**
 
 ```bash
 kubectl get nodes
@@ -168,7 +168,7 @@ coredns-5db97b446d-n5mp4   1/1     Running   0          84m
 {{ /output }}
 
 
-Check Cluster proportional autoscaler logs to ensure it resized CoreDNS replicas from 3 to 1
+**Check Cluster proportional autoscaler logs to ensure it resized CoreDNS replicas from 3 to 1**
 
 ```bash
 kubectl get po -n kube-system -l k8s-app=dns-autoscaler
@@ -179,13 +179,13 @@ NAME                              READY   STATUS    RESTARTS   AGE
 dns-autoscaler-7686459c58-bbjgk   1/1     Running   0          63m
 {{ /output }}
 
-Check Cluster proportional autoscaler logs
+**Check Cluster proportional autoscaler logs**
 
 ```bash
 kubectl logs -f dns-autoscaler-7686459c58-bbjgk -n kube-system
 ```
 
-In the output you will see CPA resizing CoreDNS replicas from 3 to 1
+**In the output you will see CPA resizing CoreDNS replicas from 3 to 1**
 
 {{ output }}
 {"coresPerReplica":2,"includeUnschedulableNodes":true,"nodesPerReplica":1,"preventSinglePointFailure":true,"min":1,"max":4}

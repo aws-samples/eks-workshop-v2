@@ -6,7 +6,7 @@ weight: 4
 
 ### Cleaning up
 
-To delete cluster proportional autoscaler from the EKS cluster
+**To delete cluster proportional autoscaler from the EKS cluster**
 
 ```bash
 kubectl delete deployment dns-autoscaler --namespace=kube-system
@@ -27,7 +27,7 @@ kubectl scale deployment --replicas=0 dns-autoscaler --namespace=kube-system
 deployment.extensions/dns-autoscaler scaled
 {{ /output }}
 
-Check ReplicaSet for dns-autoscaler
+**Check ReplicaSet for dns-autoscaler**
 
 ```bash
 kubectl get rs -n kube-system -l k8s-app=dns-autoscaler
