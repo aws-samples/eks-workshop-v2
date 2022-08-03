@@ -9,7 +9,7 @@ We will deploy an application and expose as a service on TCP port 80.
 
 The application is a custom-built image based on the php-apache image. The index.php page performs calculations to generate CPU load. More information can be found [here](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#run-expose-php-apache-server)
 
-```bash
+```bash timeout=120
 kubectl create deployment php-apache --image=us.gcr.io/k8s-artifacts-prod/hpa-example
 kubectl wait --for=condition=available --timeout=60s deployment/php-apache
 
