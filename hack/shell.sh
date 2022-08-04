@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ -z "$AWS_DEFAULT_REGION" ]; then
+  echo 'Please set $AWS_DEFAULT_REGION'
+  exit 1
+fi
+
 set -Eeuo pipefail
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
