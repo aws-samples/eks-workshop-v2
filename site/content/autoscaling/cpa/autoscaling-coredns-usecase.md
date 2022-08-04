@@ -182,7 +182,7 @@ dns-autoscaler-7686459c58-bbjgk   1/1     Running   0          63m
 **Check Cluster proportional autoscaler logs**
 
 ```bash
-kubectl logs -f dns-autoscaler-7686459c58-bbjgk -n kube-system
+kubectl logs -f deploy/dns-autoscaler -n kube-system
 ```
 
 **In the output you will see CPA resizing CoreDNS replicas from 3 to 1**
