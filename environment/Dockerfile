@@ -1,7 +1,5 @@
 FROM amazonlinux:2022
 
-ARG GITHUB_TOKEN=''
-
 RUN yum install -y findutils aws-cli jq tar gzip && \
     yum clean all
 
