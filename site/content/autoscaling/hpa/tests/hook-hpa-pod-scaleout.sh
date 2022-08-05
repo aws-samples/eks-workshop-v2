@@ -6,7 +6,7 @@ before() {
 
 after() {
   # Give HPA time to scale out
-  sleep 60
+  sleep 120
 
   num_pods=$(kubectl get pod -l app=php-apache -o json | jq -r '.items | length')
 
