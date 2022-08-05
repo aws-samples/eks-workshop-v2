@@ -41,6 +41,9 @@ jobs:
         TEST_IMAGE="public.ecr.aws/f2e3b2o6/eks-workshop:test-${BUILD_ID}"
 
         docker build -t ${ENVIRONMENT_IMAGE} environment
+        
+        docker tag ${ENVIRONMENT_IMAGE} eks-workshop-environment
+        
         docker build -t ${TEST_IMAGE} test
 
         echo "ENVIRONMENT_IMAGE=${ENVIRONMENT_IMAGE}" >> $GITHUB_ENV
