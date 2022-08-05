@@ -70,7 +70,7 @@ nginx-to-scaleout-6fcd49fb84-zpls2   0/1     Pending   0          7s    <none>  
 View the cluster-autoscaler logs
 
 ```bash test=false
-kubectl -n kube-system logs -f deployment/cluster-autoscaler-aws-cluster-autoscaler
+kubectl -n workshop-system logs -f deployment/cluster-autoscaler-aws-cluster-autoscaler
 ```
 
 You will notice Cluster Autoscaler events similar to below
@@ -83,7 +83,7 @@ Check the [EC2 AWS Management Console](https://console.aws.amazon.com/ec2/home?#
 or by using the kubectl
 
 ```bash
-kubectl get nodes
+kubectl get nodes -l workshop-default=yes
 ```
 
 Output

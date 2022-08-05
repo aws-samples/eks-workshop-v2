@@ -24,6 +24,21 @@ module "aws-eks-accelerator-for-terraform" {
       min_size     = 3
       max_size     = 6
       desired_size = 3
+
+      k8s_labels = {
+        workshop-default = "yes"
+      }
+    }
+  }
+
+  fargate_profiles = {
+    workshop_system = {
+      fargate_profile_name = "workshop_system"
+      fargate_profile_namespaces = [
+        {
+          namespace = "workshop-system"
+      }]
+      subnet_ids = module.aws_vpc.private_subnets
     }
   }
 
