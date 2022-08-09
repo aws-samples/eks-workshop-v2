@@ -12,3 +12,13 @@ output "iam_role_arn" {
   description = "ARN of the IAM role to be used for local testing"
   value       = aws_iam_role.local_role.arn
 }
+
+output "environment_variables" {
+  value = <<EOT
+EKS_CLUSTER_NAME=${module.cluster.eks_cluster_id}
+EKS_DEFAULT_MNG_NAME=${split(":", module.cluster.eks_cluster_nodegroup_name)[1]}
+EKS_DEFAULT_MNG_MIN=${module.cluster.eks_cluster_nodegroup_size_min}
+EKS_DEFAULT_MNG_MAX=${module.cluster.eks_cluster_nodegroup_size_max}
+EKS_DEFAULT_MNG_DESIRED=${module.cluster.eks_cluster_nodegroup_size_desired}
+EOT
+}

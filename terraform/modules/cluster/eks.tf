@@ -1,3 +1,9 @@
+locals {
+  default_mng_min  = 3
+  default_mng_max  = 6
+  default_mng_size = 3
+}
+
 module "aws-eks-accelerator-for-terraform" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.4.0"
 
@@ -21,9 +27,9 @@ module "aws-eks-accelerator-for-terraform" {
       instance_types  = ["t3.medium"]
       subnet_ids      = module.aws_vpc.private_subnets
 
-      min_size     = 3
-      max_size     = 6
-      desired_size = 3
+      min_size     = local.default_mng_min
+      max_size     = local.default_mng_max
+      desired_size = local.default_mng_size
 
       k8s_labels = {
         workshop-default = "yes"
