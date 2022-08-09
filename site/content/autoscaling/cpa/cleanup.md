@@ -6,31 +6,17 @@ weight: 4
 
 ### Cleaning up
 
-**To delete cluster proportional autoscaler from the EKS cluster**
+Delete cluster proportional autoscaler from the EKS cluster and reset the node group:
 
-```bash
+```bash wait=120 timeout=300 hook=cpa-cleanup
 kubectl delete deployment dns-autoscaler --namespace=kube-system
+kubectl delete cm dns-autoscaler --namespace=kube-system
+aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME  --scaling-config desiredSize=$ORIGINAL_DESIRED_SIZE
+aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME
 ```
 
-{{ output }}
-deployment.apps "dns-autoscaler" deleted
-{{ /output }}
+Finally reset CoreDNS replicas back to its original configuration:
 
-**Second Option:**
-Scale down the DNS-autoscaler deployment to 0 replicas
-
-```bash
-kubectl scale deployment --replicas=0 dns-autoscaler --namespace=kube-system
-```
-
-{{ output }}
-deployment.extensions/dns-autoscaler scaled
-{{ /output }}
-
-**Check ReplicaSet for dns-autoscaler**
-
-```bash
-kubectl get rs -n kube-system -l k8s-app=dns-autoscaler
-NAME                        DESIRED   CURRENT   READY   AGE
-dns-autoscaler-7686459c58   0         0         0       1d
+```bash expectError=true
+kubectl scale --replicas=2 --namespace kube-system deployment/coredns
 ```

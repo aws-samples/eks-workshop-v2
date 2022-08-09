@@ -1,7 +1,7 @@
 ---
 title: "Horizontal Cluster Proportional Autoscaler"
 chapter: true
-weight: 1
+weight: 15
 ---
 
 # Cluster Proportional Autoscaler

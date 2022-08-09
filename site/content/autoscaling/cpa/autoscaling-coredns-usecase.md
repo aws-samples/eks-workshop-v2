@@ -1,5 +1,5 @@
 ---
-title: "Autoscaling CoreDNS Using Cluster Proportional Autoscaler"
+title: "Autoscaling CoreDNS"
 date: 2022-07-21T00:00:00-03:00
 weight: 3
 ---
@@ -47,7 +47,7 @@ dns-autoscaler-7686459c58-cn97f   1/1     Running   0          1m
 
 **Get CPA autoscaling parameters**
 
-```bash
+```bash wait=60
 kubectl get configmap -n kube-system
 ```
 
@@ -88,7 +88,7 @@ Events:  <none>
 **Currently we are running a 3 node cluster and based on autoscaling parameters defined in the ConfigMap, we see cluster proportional autoscaler added 3 replicas of CoreDNS**
 
 ```bash
-kubectl get nodes
+kubectl get nodes -l workshop-default=yes
 ```
 
 {{< output >}}
@@ -136,27 +136,25 @@ coredns-5db97b446d-svknx   1/1     Running   0          86s
 
 **If we reduce the size of the cluster to a single node, cluster proportional autoscaler will resize the CoreDNS to just run a single replica as we are reducing the cluster size from 3 nodes to a single node**
 
-```bash
-aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME  --scaling-config minSize=1,maxSize=5,desiredSize=1
+```bash hook=cpa-pod-scaleout timeout=300
+export ORIGINAL_DESIRED_SIZE=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME --output text --query nodegroup.scalingConfig.desiredSize)
+aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME --scaling-config desiredSize=$(($ORIGINAL_DESIRED_SIZE+2))
+aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME
+kubectl wait --for=condition=Ready nodes --all --timeout=120s
 ```
-{{ output }}
----------------------------------------
-|          DescribeNodegroup          |
-+-------------+-----------+-----------+
-| desiredSize |  maxSize  |  minSize  |
-+-------------+-----------+-----------+
-|  1          |  5        |  1        | 
-+-------------+-----------+-----------+
-{{ /output }}
 
 **Check worker nodes and CoreDNS pods**
 
 ```bash
-kubectl get nodes
+kubectl get nodes -l workshop-default=yes
 ```
 {{< output >}}
 NAME                                          STATUS   ROLES    AGE   VERSION
-ip-192-168-80-39.us-east-2.compute.internal   Ready    <none>   83m   v1.22.9-eks-810597c
+ip-10-42-10-248.us-west-2.compute.internal    Ready    <none>   61s   v1.22.9-eks-810597c
+ip-10-42-10-29.us-west-2.compute.internal     Ready    <none>   124m  v1.22.9-eks-810597c
+ip-10-42-11-109.us-west-2.compute.internal    Ready    <none>   6m39s v1.22.9-eks-810597c
+ip-10-42-11-152.us-west-2.compute.internal    Ready    <none>   61s   v1.22.9-eks-810597c
+ip-10-42-12-139.us-west-2.compute.internal    Ready    <none>   6m20s v1.22.9-eks-810597c
 {{< /output >}}
 
 ```bash
@@ -194,12 +192,3 @@ I0801 15:02:45.330328       1 k8sclient.go:273] Replicas are not as expected : u
 I0801 15:03:15.330855       1 k8sclient.go:272] Cluster status: SchedulableNodes[1], SchedulableCores[2]
 I0801 15:03:15.330875       1 k8sclient.go:273] Replicas are not as expected : updating replicas from 2 to 1
 {{ /output }}
-
-
-
-
-
-
-
-
-
