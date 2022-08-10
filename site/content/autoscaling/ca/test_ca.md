@@ -43,7 +43,7 @@ kubectl wait --for=condition=available --timeout=60s deployment/nginx-to-scaleou
 
 Let's scale out the replicaset to 10
 
-```bash hook=ca-pod-scaleout
+```bash hook=ca-pod-scaleout timeout=180
 kubectl scale --replicas=10 deployment/nginx-to-scaleout
 ```
 

@@ -22,6 +22,10 @@ module "eks-blueprints-kubernetes-addons" {
       {
         name  = "image.tag"
         value = "v${var.cluster_version}.1"
+      },
+      {
+        name  = "replicaCount"
+        value = 0
       }
     ]
   }
