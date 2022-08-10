@@ -35,7 +35,7 @@ spec:
     securityGroupSelector:
       karpenter.sh/discovery: "${EKS_CLUSTER_NAME}"
     tags:
-      EKSWorkshop: "AWS"   
+      EKSWorkshop: "AWS"
   labels:
     type: karpenter
     provisioner: default
@@ -67,9 +67,9 @@ You can create a new terminal window within Cloud9 and leave the command below r
 To read Karpenter logs from the console you can run the following command.
 
 ```bash
-kubectl logs -f deployment/karpenter-controller -n karpenter
+kubectl logs deployment/karpenter -c controller -n workshop-system
 ```
 
 {{% notice info %}}
-Karpenter log configuration is stored as a Kubernetes ConfigMap. You can read the configuration by running the following command `kubectl describe configmap config-logging -n karpenter`. You can increase the logging level to `debug` using the following command `kubectl patch configmap config-logging -n karpenter --patch '{"data":{"loglevel.controller":"debug"}}'`
+Karpenter log configuration is stored as a Kubernetes ConfigMap. You can read the configuration by running the following command `kubectl describe configmap config-logging -n workshop-system`. You can increase the logging level to `debug` using the following command `kubectl patch configmap config-logging -n workshop-system --patch '{"data":{"loglevel.controller":"debug"}}'`
 {{% /notice %}}

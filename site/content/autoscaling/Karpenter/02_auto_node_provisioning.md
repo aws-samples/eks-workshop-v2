@@ -33,7 +33,7 @@ spec:
         app: inflate
     spec:
       nodeSelector:
-         type: karpenter
+        type: karpenter
       containers:
         - name: inflate
           image: public.ecr.aws/eks-distro/kubernetes/pause:3.2
@@ -61,8 +61,9 @@ In the answer to question number 8, we will explain the second reason we are sta
 
 To scale up the deployment run the following command: 
 
-```bash
+```bash timeout=140 hook=karpenter-deployment
 kubectl scale deployment inflate --replicas 1
+kubectl wait --for=condition=available --timeout=120s deployment/inflate
 ```
 
 You can check the state of the replicas by running the following command. Once Karpenter provisions the new instance the pod will be placed in the new node.
@@ -87,19 +88,19 @@ kubectl get nodes --selector=type=karpenter -L beta.kubernetes.io/instance-type
 
 There is something even more interesting to learn about how the node was provisioned. Check out Karpenter logs and look at the new Karpenter created. The lines should be similar to the ones below 
 
-```bash 
+{{< output >}}
 2021-11-15T11:09:10.574Z        INFO    controller.allocation.provisioner/default       Waiting to batch additional pods        {"commit": "6468992"}
 2021-11-15T11:09:11.976Z        INFO    controller.allocation.provisioner/default       Found 1 provisionable pods      {"commit": "6468992"}
 2021-11-15T11:09:13.037Z        INFO    controller.allocation.provisioner/default       Computed packing for 1 pod(s) with instance type option(s) [t3.medium c6i.large c5.large t3a.medium c5ad.large c4.large c5a.large c3.large c5d.large c5n.large t3a.large m5a.large t3.large m5ad.large m5.large m6i.large m3.large m4.large m5zn.large m5dn.large]   {"commit": "6468992"}
 2021-11-15T11:09:15.185Z        INFO    controller.allocation.provisioner/default       Launched instance: i-09ba099d68f7c982c, hostname: xxxxxxxxxxxxx.compute.internal, type: t3.medium, zone: eu-west-1a, capacityType: spot  {"commit": "6468992"}
-```
+{{< /output >}}
 
 
 We explained earlier on about group-less cluster scalers and how that simplifies operations and maintenance. Let's deep dive for a second into this concept. Notice how Karpenter picks up the instance from did a diversified selection of instances. In this case it selected the following instances:
 
-```bash
+{{< output >}}
 t3.medium c6i.large c5.large t3a.medium c5ad.large c4.large c5a.large c3.large c5d.large c5n.large t3a.large m5a.large t3.large m5ad.large m5.large m6i.large m3.large m4.large m5zn.large m5dn.large
-```
+{{< /output >}}
 
 {{% notice note %}}
 Instances types might be different depending on the region selected.
@@ -125,13 +126,13 @@ By implementing techniques such as: Bin-packing using First Fit Decreasing, Inst
 
 You can use the following command to display all the node attributes including labels:
 
-```
+```bash
 kubectl describe node --selector=type=karpenter
 ```
 
 Let's now focus in a few of those parameters starting with the Labels:
 
-```bash
+{{< output >}}
 Labels:             ...
                     type=karpenter
                     karpenter.sh/capacity-type=on-demand
@@ -140,7 +141,7 @@ Labels:             ...
                     topology.kubernetes.io/zone=us-east-1a
                     karpenter.sh/provisioner-name=default
                     ...
-```
+{{< /output >}}
 
 * Note the node was created with the `intent=apps` as we did state in the Provisioner configuration
 * Same applies to the On-demand configuration. Note how the `karpenter.sh/capacity-type` label has been set to `on-demand`
@@ -149,14 +150,14 @@ Labels:             ...
 
 Another thing to note from the node description is the following section:
 
-```bash
+{{< output >}}
 System Info:
   ...
   Operating System:           linux
   Architecture:               amd64
   Container Runtime Version:  containerd://1.4.6
   ...
-```
+{{< /output >}}
 
 * The instance selected has been created with the default architecture Karpenter will use when the Provisioner CRD requirement for `kubernetes.io/arch` [Architecture](https://karpenter.sh/v0.4.3/provisioner-crd/) has not been provided.
 
@@ -206,31 +207,31 @@ kubectl scale deployment inflate --replicas 6
 This will set a few pods pending. Karpenter will get the pending pod signal and run a new provisioning cycle similar to the one below (confirm by checking Karpenter logs). This time, the capacity should get provisioned with a slightly different set of characteristics. Given the new size of aggregated pod requirements, Karpenter will check which type of instance diversification makes sense to use.
 
 
-```bash
+{{< output >}}
 2021-11-15T12:33:14.976Z        INFO    controller.allocation.provisioner/default       Found 5 provisionable pods      {"commit": "6468992"}
 2021-11-15T12:33:16.324Z        INFO    controller.allocation.provisioner/default       Computed packing for 5 pod(s) with instance type option(s) [c3.2xlarge c4.2xlarge c5ad.2xlarge c6i.2xlarge c5a.2xlarge c5d.2xlarge c5.2xlarge c5n.2xlarge m3.2xlarge t3a.2xlarge m5ad.2xlarge m4.2xlarge t3.2xlarge m5n.2xlarge m5d.2xlarge m6i.2xlarge m5a.2xlarge m5zn.2xlarge m5.2xlarge m5dn.2xlarge]   {"commit": "6468992"}
 2021-11-15T12:33:18.774Z        INFO    controller.allocation.provisioner/default       Launched instance: i-0c1fc34e7527358f0, hostname: xxxxxxxxxxxxx.compute.internal, type: t3.2xlarge, zone: eu-west-1a, capacityType: spot        {"commit": "6468992"}
 2021-11-15T12:33:18.802Z        INFO    controller.allocation.provisioner/default       Bound 5 pod(s) to node xxxxxxxxxxxxx.compute.internal  {"commit": "6468992"}
 2021-11-15T12:33:18.802Z        INFO    controller.allocation.provisioner/default       Starting provisioning loop      {"commit": "6468992"}
-```
+{{< /output >}}
 
 Indeed the instances selected this time are larger ! The instances selected in this example were:
 
-```bash
+{{< output >}}
 c3.2xlarge c4.2xlarge c5ad.2xlarge c6i.2xlarge c5a.2xlarge c5d.2xlarge c5.2xlarge c5n.2xlarge m3.2xlarge t3a.2xlarge m5ad.2xlarge m4.2xlarge t3.2xlarge m5n.2xlarge m5d.2xlarge m6i.2xlarge m5a.2xlarge m5zn.2xlarge m5.2xlarge m5dn.2xlarge. 
-```
+{{< /output >}}
 
 There is one last thing that we have not mentioned until now. Check out this line in Karpenter log.
 
-```bash
+{{< output >}}
 2021-11-15T12:33:18.802Z        INFO    controller.allocation.provisioner/default       Bound 5 pod(s) to node ip-192-168-89-216.eu-west-1.compute.internal  {"commit": "6468992"}
-```
+{{< /output >}}
 
 The line and message **Bound 5 pod(s)** is important. Karpenter Provisioners attempt to schedule pods when they are in state `type=PodScheduled,reason=Unschedulable`. In this case, Karpenter will make a provisioning decision, launch new capacity, and proactively **bind pods to the provisioned nodes**. Unlike the Cluster Autoscaler, Karpenter does not wait for the [Kube Scheduler](https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler) to make a scheduling decision, as the decision is already made during the provisioning time. The objective of this operation is to speed up the placement of the pods to the new nodes.
 
 Finally to check out the configuration of the `type=karpenter` node execute again:
 
-```
+```bash
 kubectl describe node --selector=type=karpenter
 ```
 
@@ -241,7 +242,7 @@ This time around you'll see the description for both instances created.
 
 To scale the number of replicas to 0, run the following command: 
 
-```
+```bash
 kubectl scale deployment inflate --replicas 0
 ```
 

@@ -54,7 +54,16 @@ module "eks-blueprints-kubernetes-addons" {
   }
 
   karpenter_helm_config = {
-    version = var.helm_chart_versions["karpenter"]
+    namespace        = kubernetes_namespace.workshop_system.metadata[0].name
+    version          = var.helm_chart_versions["karpenter"]
+    create_namespace = false
+
+    set = [
+      {
+        name  = "replicas"
+        value = 0
+      }
+    ]
   }
 }
 
