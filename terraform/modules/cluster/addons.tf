@@ -9,6 +9,8 @@ module "eks-blueprints-kubernetes-addons" {
 
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
+  enable_karpenter                    = true
+  enable_aws_node_termination_handler = true
   enable_aws_load_balancer_controller = true
   enable_cluster_autoscaler = true
   enable_metrics_server = true
@@ -47,6 +49,19 @@ module "eks-blueprints-kubernetes-addons" {
       {
         name  = "vpcId"
         value = module.aws_vpc.vpc_id
+      }
+    ]
+  }
+
+  karpenter_helm_config = {
+    namespace        = kubernetes_namespace.workshop_system.metadata[0].name
+    version          = var.helm_chart_versions["karpenter"]
+    create_namespace = false
+
+    set = [
+      {
+        name  = "replicas"
+        value = 0
       }
     ]
   }
