@@ -50,6 +50,7 @@ locals {
 data "template_file" "iam_policy" {
   template = file("${path.module}/iam_policy.json")
   vars = {
+    cluster_name = module.cluster.eks_cluster_id
     cluster_arn = module.cluster.eks_cluster_arn
     nodegroup = module.cluster.eks_cluster_nodegroup
   }

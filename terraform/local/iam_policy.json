@@ -23,6 +23,23 @@
         "eks:DescribeNodegroup"
       ],
       "Resource": "${nodegroup}/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "autoscaling:UpdateAutoScalingGroup"
+      ],
+      "Resource": "*",
+      "Condition": {
+          "StringEquals": { "autoscaling:ResourceTag/eks:cluster-name": "${cluster_name}" }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "autoscaling:DescribeAutoScalingGroups"
+      ],
+      "Resource": "*"
     }
   ]
 }
