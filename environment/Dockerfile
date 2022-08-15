@@ -1,16 +1,18 @@
 FROM amazonlinux:latest
 
-ARG GITHUB_TOKEN=''
-
-RUN yum install -y curl findutils aws-cli jq && \
+RUN yum install -y findutils aws-cli jq tar gzip && \
     yum clean all
 
-ADD install-tools.sh /tmp/install-tools.sh
+RUN curl -LO https://dl.k8s.io/release/v1.22.12/bin/linux/amd64/kubectl && \
+  chmod +x ./kubectl && \
+  mv ./kubectl /usr/local/bin
+
+RUN curl -fsSL -o helm.tar.gz https://get.helm.sh/helm-v3.9.2-linux-amd64.tar.gz && \
+  tar zxf helm.tar.gz && \
+  chmod +x linux-amd64/helm && \
+  mv ./linux-amd64/helm /usr/local/bin && \
+  rm -rf linux-amd64/ helm.tar.gz
 
 ADD entrypoint.sh /entrypoint.sh
-
-ADD vendir.* ./
-
-RUN chmod +x /tmp/install-tools.sh && VENDIR_GITHUB_API_TOKEN=$GITHUB_TOKEN /tmp/install-tools.sh && rm -f /tmp/install-tools.sh
 
 ENTRYPOINT ["bash", "/entrypoint.sh"]

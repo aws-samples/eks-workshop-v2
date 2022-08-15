@@ -2,6 +2,11 @@
 
 module=$1
 
+if [ -z "$AWS_DEFAULT_REGION" ]; then
+  echo 'Please set $AWS_DEFAULT_REGION'
+  exit 1
+fi
+
 if [ -z "$module" ]; then
   module='*'
   echo "Running tests for all modules"
@@ -20,8 +25,11 @@ if [ ! -f "$state_path" ]; then
   exit 1
 fi
 
-export EKS_CLUSTER_NAME=$(terraform output -state $state_path -raw eks_cluster_id)
 export ASSUME_ROLE=$(terraform output -state $state_path -raw iam_role_arn)
+
+TEMP='/tmp/eks-workshop-shell-env'
+
+terraform output -state $state_path -raw environment_variables > $TEMP
 
 container_image='public.ecr.aws/f2e3b2o6/eks-workshop:test-alpha.1'
 
@@ -45,5 +53,6 @@ eval "$ACCESS_VARS"
 echo "Running test suite..."
 
 docker run --rm -v $SCRIPT_DIR/../site/content:/content \
-  -e "EKS_CLUSTER_NAME" -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" -e "AWS_DEFAULT_REGION" \
+  -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" -e "AWS_DEFAULT_REGION" \
+  --env-file /tmp/eks-workshop-shell-env \
   $container_image -g "$module/**"

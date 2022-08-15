@@ -53,22 +53,6 @@ pause-pods                -1           false            9s
 system-cluster-critical   2000000000   false            17d
 {{< /output >}}
 
-## Configure CA to include best-effort pods for Scaling
-
-Patch CA to set flag **`expendable-pods-priority-cutoff`** to value **`-10`** so Pause pods are taken into consideration when Cluster Autoscaler does the scaling operation.
-
-```bash
-# Patch Cluster Autoscaler so it takes expendable pod into account for making scaling decisions
-kubectl patch deployment cluster-autoscaler-aws-cluster-autoscaler -n kube-system \
--p '{"spec": {"template": {"spec": {"containers": [{"name": "aws-cluster-autoscaler","command": ["./cluster-autoscaler","--v=4","--stderrthreshold=info","--cloud-provider=aws","--skip-nodes-with-local-storage=false","--expander=least-waste","--node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eks-workshop-cluster","--balance-similar-node-groups","--skip-nodes-with-system-pods=false","--expendable-pods-priority-cutoff=-10"]}]}}}}'
-
-# Patch Cluster Autoscaler so it doesn't get evicted
-kubectl patch deployment cluster-autoscaler-aws-cluster-autoscaler \
-  -n kube-system \
-  -p '{"spec":{"template":{"metadata":{"annotations":{"cluster-autoscaler.kubernetes.io/safe-to-evict": "false"}}}}}'
-
-```
-
 ## Verify Nodegroup Size
 
 The Cluster's Nodegroup size is tied to ASG. EKS modified ASG's min-size, max-size and desired-capacity to adjust the Nodegroup's size. Check if this value will accommodate your over provisioning needs. The environment is configured with **—-max-size** **`"6"`**.
@@ -80,12 +64,6 @@ export EKS_NODEGROUP_NAME=$(aws eks list-nodegroups --cluster-name $EKS_CLUSTER_
 # Display the current Nodgroup size configurations
 aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME --query nodegroup.scalingConfig --output table
 ```
-
-> **Note**: If `max-size` is not set you can used the following command to set it.
-> 
-> ```bash
-> aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME  --scaling-config minSize=3,maxSize=6,desiredSize=3
-> ```
 
 ## Create Over provisioning Pause container deployment
 
@@ -194,7 +172,7 @@ pause-pods-5c765d9cb5-bs9rq   1/1     Running   0          15m   10.42.11.27    
 Next Cluster Autoscaler will kick in and provision a new worked node (using ASG) and pending Pause container pod will get deployed, this will take a few minutes. You can run the following command to see new node getting created, once the new node is available Pause container pods will be scheduled.
 
 ```bash
-kubectl get nodes -o wide
+kubectl get nodes -l workshop-default=yes -o wide
 ```
 
 ## Conclusion

@@ -1,14 +1,35 @@
+resource "kubernetes_namespace" "workshop_system" {
+  metadata {
+    name = "workshop-system"
+  }
+}
+
 module "eks-blueprints-kubernetes-addons" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.4.0//modules/kubernetes-addons"
 
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
 
+  enable_karpenter                    = true
+  enable_aws_node_termination_handler = true
   enable_aws_load_balancer_controller = true
   enable_cluster_autoscaler = true
   enable_metrics_server = true
 
   cluster_autoscaler_helm_config = {
-    version = var.helm_chart_versions["cluster_autoscaler"]
+    version          = var.helm_chart_versions["cluster_autoscaler"]
+    namespace        = kubernetes_namespace.workshop_system.metadata[0].name
+    create_namespace = false
+
+    set = [
+      {
+        name  = "image.tag"
+        value = "v${var.cluster_version}.1"
+      },
+      {
+        name  = "replicaCount"
+        value = 0
+      }
+    ]
   }
 
   metrics_server_helm_config = {
@@ -16,7 +37,33 @@ module "eks-blueprints-kubernetes-addons" {
   }
   
   aws_load_balancer_controller_helm_config = {
-    version = var.helm_chart_versions["aws-load-balancer-controller"]
+    namespace        = kubernetes_namespace.workshop_system.metadata[0].name
+    version          = var.helm_chart_versions["aws-load-balancer-controller"]
+    create_namespace = false
+
+    set = [
+      {
+        name  = "replicaCount"
+        value = 1
+      },
+      {
+        name  = "vpcId"
+        value = module.aws_vpc.vpc_id
+      }
+    ]
+  }
+
+  karpenter_helm_config = {
+    namespace        = kubernetes_namespace.workshop_system.metadata[0].name
+    version          = var.helm_chart_versions["karpenter"]
+    create_namespace = false
+
+    set = [
+      {
+        name  = "replicas"
+        value = 0
+      }
+    ]
   }
 }
 
