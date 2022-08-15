@@ -6,11 +6,11 @@ weight: 3
 
 ### Autoscaling CoreDNS
 
-`CoreDNS` is the default DNS service for kubernetes. The label set for CoreDNS is `k8s-app=kube-dns`
+**CoreDNS** is the default DNS service for kubernetes. The label set for CoreDNS is **k8s-app=kube-dns**
 
-**In this example, we will autoscale CoreDNS based on the number of schedulable nodes and cores of the cluster. Cluster proportional autoscaler will resize the number of `CoreDNS` replicas**
+**In this example, we will autoscale CoreDNS based on the number of schedulable nodes and cores of the cluster. Cluster proportional autoscaler will resize the number of CoreDNS replicas**
 
-**In the installation section, we installed `dns-autoscaler` and chose `CoreDNS` as the deployment target for the cluster proportional autoscaler**
+In the installation section, we installed **dns-autoscaler** and chose **CoreDNS** as the deployment target for the cluster proportional autoscaler**
 
 ```bash
 kubectl get po -n kube-system -l k8s-app=kube-dns
@@ -22,7 +22,7 @@ coredns-5db97b446d-k2rgr          1/1     Running   0          120m
 
 #### How to enable DNS autoscaling horizontally
 
-CPA pods use `k8s.gcr.io/cpa/cluster-proportional-autoscaler:1.8.5` image that watches over the number of schedulable nodes and cores of the cluster and resizes the number of `CoreDNS` replicas as we chose CoreDNS as the target deployment for the CPA
+CPA pods use **k8s.gcr.io/cpa/cluster-proportional-autoscaler:1.8.5** image that watches over the number of schedulable nodes and cores of the cluster and resizes the number of **CoreDNS** replicas as we chose CoreDNS as the target deployment for the CPA
 
 ```bash
 kubectl get deployment dns-autoscaler -n kube-system
@@ -80,7 +80,7 @@ Data
 ====
 linear:
 ----
-{"coresPerReplica":2,"includeUnschedulableNodes":true,"nodesPerReplica":1,"preventSinglePointFailure":true,"min":1,"max":4}
+{"coresPerReplica":2,"includeUnschedulableNodes":true,"nodesPerReplica":1,"preventSinglePointFailure":true,"min":1,"max":5}
 Events:  <none>
 
 {{< /output >}}
@@ -134,7 +134,7 @@ coredns-5db97b446d-svknx   1/1     Running   0          86s
 {{ /output }}
 
 
-**If we reduce the size of the cluster to a single node, cluster proportional autoscaler will resize the CoreDNS to just run a single replica as we are reducing the cluster size from 3 nodes to a single node**
+**If we increase the size of the cluster to five nodes, cluster proportional autoscaler will resize the CoreDNS to run 5 CoreDNS replicas**
 
 ```bash hook=cpa-pod-scaleout timeout=300
 export ORIGINAL_DESIRED_SIZE=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_NODEGROUP_NAME --output text --query nodegroup.scalingConfig.desiredSize)
@@ -150,11 +150,11 @@ kubectl get nodes -l workshop-default=yes
 ```
 {{< output >}}
 NAME                                          STATUS   ROLES    AGE   VERSION
-ip-10-42-10-248.us-west-2.compute.internal    Ready    <none>   61s   v1.22.9-eks-810597c
-ip-10-42-10-29.us-west-2.compute.internal     Ready    <none>   124m  v1.22.9-eks-810597c
-ip-10-42-11-109.us-west-2.compute.internal    Ready    <none>   6m39s v1.22.9-eks-810597c
-ip-10-42-11-152.us-west-2.compute.internal    Ready    <none>   61s   v1.22.9-eks-810597c
-ip-10-42-12-139.us-west-2.compute.internal    Ready    <none>   6m20s v1.22.9-eks-810597c
+ip-10-42-10-248.us-east-2.compute.internal    Ready    <none>   61s   v1.22.9-eks-810597c
+ip-10-42-10-29.us-east-2.compute.internal     Ready    <none>   124m  v1.22.9-eks-810597c
+ip-10-42-11-109.us-east-2.compute.internal    Ready    <none>   6m39s v1.22.9-eks-810597c
+ip-10-42-11-152.us-east-2.compute.internal    Ready    <none>   61s   v1.22.9-eks-810597c
+ip-10-42-12-139.us-east-2.compute.internal    Ready    <none>   6m20s v1.22.9-eks-810597c
 {{< /output >}}
 
 ```bash
@@ -162,11 +162,15 @@ kubectl get po -n kube-system -l k8s-app=kube-dns
 ```
 {{ output }}
 NAME                       READY   STATUS    RESTARTS   AGE
-coredns-5db97b446d-n5mp4   1/1     Running   0          84m
+coredns-5db97b446d-n5mp4   1/1     Running   0          8m
+coredns-7eb86b457e-m6nq5   1/1     Running   0          8m
+coredns-8fb88b468f-o7jr6   1/1     Running   0          8m
+coredns-9gb99b479g-p8bs7   1/1     Running   0          1m
+coredns-1hb01b481h-q9ct8   1/1     Running   0          1m
 {{ /output }}
 
 
-**Check Cluster proportional autoscaler logs to ensure it resized CoreDNS replicas from 3 to 1**
+**Check Cluster proportional autoscaler logs to ensure it resized CoreDNS replicas from 3 to 5**
 
 ```bash
 kubectl get po -n kube-system -l k8s-app=dns-autoscaler
@@ -183,12 +187,10 @@ dns-autoscaler-7686459c58-bbjgk   1/1     Running   0          63m
 kubectl logs deploy/dns-autoscaler -n kube-system
 ```
 
-**In the output you will see CPA resizing CoreDNS replicas from 3 to 1**
+**In the output you will see CPA resizing CoreDNS replicas from 3 to 5**
 
 {{ output }}
-{"coresPerReplica":2,"includeUnschedulableNodes":true,"nodesPerReplica":1,"preventSinglePointFailure":true,"min":1,"max":4}
-I0801 15:02:45.330307       1 k8sclient.go:272] Cluster status: SchedulableNodes[1], SchedulableCores[2]
-I0801 15:02:45.330328       1 k8sclient.go:273] Replicas are not as expected : updating replicas from 3 to 2
-I0801 15:03:15.330855       1 k8sclient.go:272] Cluster status: SchedulableNodes[1], SchedulableCores[2]
-I0801 15:03:15.330875       1 k8sclient.go:273] Replicas are not as expected : updating replicas from 2 to 1
+{"coresPerReplica":2,"includeUnschedulableNodes":true,"nodesPerReplica":1,"preventSinglePointFailure":true,"min":1,"max":5}
+I0801 15:02:45.330328       1 k8sclient.go:273] Replicas are not as expected : updating replicas from 3 to 4
+I0801 15:03:15.330875       1 k8sclient.go:273] Replicas are not as expected : updating replicas from 4 to 5
 {{ /output }}

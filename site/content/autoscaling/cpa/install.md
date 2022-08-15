@@ -8,9 +8,9 @@ weight: 2
 
 **Cluster proportional autoscaler can be installed using a helm chart or a YAML manifest**
 
-**In this workshop, Cluster proportional autoscaler is installed as a `Deployment` object in the cluster in the `kube-system` namespace to avoid being evicted by itself or by the kubelet. We will use a YAML manifest to install CPA**
+In this workshop, Cluster proportional autoscaler is installed as a **Deployment** object in the cluster in the **kube-system** namespace to avoid being evicted by itself or by the kubelet. We will use a YAML manifest to install CPA
 
-**The target deployment for the Cluster proportional autoscaler is `CoreDNS`**
+**The target deployment for the Cluster proportional autoscaler is CoreDNS**
 
 ```bash
 cat << EOF > cpa-install.yaml

@@ -24,11 +24,11 @@ Cluster Proportional autoscaler (CPA) is a horizontal pod autoscaler that scales
 #### Scaling Methods used by Cluster Proportional Autoscaler
 * **Linear**
     * This scaling method will scale the application in direct proportion to how many nodes or cores are available in the cluster
-    * Either one of the `coresPerReplica` or `nodesPerReplica` could be omitted
-    * When `preventSinglePointFailure` is set to `true`, the controller ensures at least 2 replicas if there are more than one node
-    * When `includeUnschedulableNodes` is set to `true`, the replicas will be scaled based on the total number of nodes. Otherwise, the replicas will only scale based on the number of schedulable nodes (i.e., cordoned and draining nodes are excluded)
-    * All of `min`,`max`,`preventSinglePointFailure`,`includeUnschedulableNodes` are optional. If not set, `min` will be defaulted to 1, `preventSinglePointFailure` will be defaulted to `false` and `includeUnschedulableNodes` will be defaulted to `false`
-    * Both `coresPerReplica` and `nodesPerReplica` are float
+    * Either one of the **coresPerReplica** or **nodesPerReplica** could be omitted
+    * When **preventSinglePointFailure** is set to **true**, the controller ensures at least 2 replicas if there are more than one node
+    * When **includeUnschedulableNodes** is set to **true**, the replicas will be scaled based on the total number of nodes. Otherwise, the replicas will only scale based on the number of schedulable nodes (i.e., cordoned and draining nodes are excluded)
+    * All of **min**,**max**,**preventSinglePointFailure**,**includeUnschedulableNodes** are optional. If not set, **min** will be defaulted to 1, **preventSinglePointFailure** will be defaulted to **false** and **includeUnschedulableNodes** will be defaulted to **false**
+    * Both **coresPerReplica** and **nodesPerReplica** are float
 
 **ConfigMap for Linear**
 ```
@@ -54,7 +54,7 @@ replicas = max(replicas, min)
 * **Ladder**
     * This scaling method uses a step function to determine the ratio of nodes:replicas and/or cores:replicas
     * The step ladder function uses the datapoint for core and node scaling from the ConfigMap. The lookup which yields the hugher number of replicas will be used as the target scaling number.
-    * Either one of the `coresPerReplica` or `nodesPerReplica` could be omitted
+    * Either one of the **coresPerReplica** or **nodesPerReplica** could be omitted
     * Replicas can be set to 0 (unlike in linear mode)
     * Scaling to 0 replicas could be used to enable optional features as a cluster grows
 
@@ -85,8 +85,8 @@ Horizontal Pod Autoscaler is a top level kubernetes API resource. HPA is a close
 
 
 #### In this workshop we will see how Cluster Proportional Autoscaler autoscales CoreDNS service
-* The `cluster-proportional-autoscaler` application is deployed separately from the CoreDNS service in the same kube-system namespace
+* The **cluster-proportional-autoscaler** application is deployed separately from the CoreDNS service in the same kube-system namespace
 * The autoscaler Pod runs a client that polls the Kubernetes API server for the number of nodes and cores in the cluster
-* A desired replica count is calculated and applied to the CoreDNS backends based on the `current schedulable nodes` and `cores` and the given scaling parameters
-* The scaling parameters and data points are provided via a `ConfigMap` to the autoscaler, and it refreshes its parameters table every poll interval to be up to date with the latest desired scaling parameters. Changes to the scaling parameters are allowed without rebuilding or restarting the autoscaler Pod.
-* The autoscaler provides a controller interface to support two control patterns: `linear` and `ladder`
+* A desired replica count is calculated and applied to the CoreDNS backends based on the **current schedulable nodes**,**cores** and the given scaling parameters
+* The scaling parameters and data points are provided via a **ConfigMap** to the autoscaler, and it refreshes its parameters table every poll interval to be up to date with the latest desired scaling parameters. Changes to the scaling parameters are allowed without rebuilding or restarting the autoscaler Pod.
+* The autoscaler provides a controller interface to support two control patterns: **linear** and **ladder**
