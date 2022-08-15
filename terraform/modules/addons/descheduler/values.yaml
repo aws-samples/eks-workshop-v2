@@ -1,2 +1,35 @@
 kind: Deployment
 deschedulingInterval: 1m
+deschedulerPolicy:
+  strategies:
+    RemovePodsViolatingNodeTaints:
+      enabled: true
+    RemoveDuplicates:
+      enabled: true
+    PodLifeTime:
+      enabled: true
+      params:
+        podLifeTime:
+          maxPodLifeTimeSeconds: 120
+        labelSelector:
+          matchLabels:
+            podlifetime: enabled
+    RemovePodsViolatingInterPodAntiAffinity:
+      enabled: true
+    RemovePodsViolatingNodeAffinity:
+      enabled: true
+      params:
+        nodeAffinityType:
+        - requiredDuringSchedulingIgnoredDuringExecution
+    LowNodeUtilization:
+      enabled: true
+      params:
+        nodeResourceUtilizationThresholds:
+          thresholds:
+            cpu : 20
+            memory: 20
+            pods: 20
+          targetThresholds:
+            cpu : 80
+            memory: 80
+          pods: 80

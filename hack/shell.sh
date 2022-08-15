@@ -1,5 +1,7 @@
 #!/bin/bash
 
+terraform_context=$1
+
 if [ -z "$AWS_DEFAULT_REGION" ]; then
   echo 'Please set $AWS_DEFAULT_REGION'
   exit 1
@@ -9,20 +11,15 @@ set -Eeuo pipefail
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-state_path="$SCRIPT_DIR/../terraform/local/terraform.tfstate"
+terraform_dir="$SCRIPT_DIR/../$terraform_context"
 
-if [ ! -f "$state_path" ]; then
-  echo "Error: Terraform state file does not exist, did you create the infrastructure?"
-  exit 1
-fi
-
-export ASSUME_ROLE=$(terraform output -state $state_path -raw iam_role_arn)
+export ASSUME_ROLE=$(terraform -chdir=$terraform_dir output -raw iam_role_arn)
 
 TEMP='/tmp/eks-workshop-shell-env'
 
-terraform output -state $state_path -raw environment_variables > $TEMP
+terraform -chdir=$terraform_dir output -raw environment_variables > $TEMP
 
-container_image='public.ecr.aws/f2e3b2o6/eks-workshop:environment-alpha.1'
+container_image='public.ecr.aws/f2e3b2o6/eks-workshop:environment-alpha.3'
 
 if [ -n "${DEV_MODE-}" ]; then
   echo "Building container images..."
@@ -41,7 +38,6 @@ eval "$ACCESS_VARS"
 
 echo "Starting shell in container..."
 
-docker run --rm -v $SCRIPT_DIR/../site/content:/content -it \
+docker run --rm -it --env-file /tmp/eks-workshop-shell-env \
   -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" -e "AWS_DEFAULT_REGION" \
-  --env-file /tmp/eks-workshop-shell-env \
   $container_image

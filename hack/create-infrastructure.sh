@@ -1,13 +1,15 @@
 #!/bin/bash
 
+terraform_context=$1
+
 set -e
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 PROJECT_ROOT="$SCRIPT_DIR/.."
 
-TERRAFORM_DIR="$PROJECT_ROOT/terraform/local"
+terraform_dir="$PROJECT_ROOT/$terraform_context"
 
-terraform -chdir=$TERRAFORM_DIR init
+terraform -chdir=$terraform_dir init
 
-terraform -chdir=$TERRAFORM_DIR apply --auto-approve
+terraform -chdir=$terraform_dir apply --auto-approve

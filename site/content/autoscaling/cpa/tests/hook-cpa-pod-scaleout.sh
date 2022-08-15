@@ -1,5 +1,3 @@
-set -Eeuo pipefail
-
 before() {
   echo "noop"
 }

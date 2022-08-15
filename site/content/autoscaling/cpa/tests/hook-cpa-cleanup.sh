@@ -1,14 +1,12 @@
-set -Eeuo pipefail
-
 before() {
   echo "noop"
 }
 
 after() {
   timeout -s TERM 160 bash -c \
-    "while [[ $(kubectl get po -n kube-system -l k8s-app=kube-dns -o json | jq -r '.items | length') -lt 3 ]];\
-    do echo 'Waiting for CoreDNS to scale' && sleep 30;\
-    done"
+    'while [[ $(kubectl get po -n kube-system -l k8s-app=kube-dns -o json | jq -r ".items | length") -lt 3 ]];\
+    do echo "Waiting for CoreDNS to scale" && sleep 30;\
+    done'
 
   if [ $? -ne 0 ]; then
     cat << EOF >&2

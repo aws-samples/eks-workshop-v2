@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orders
+data:
+  SPRING_PROFILES_ACTIVE: mysql,default
+  SPRING_ACTIVEMQ_BROKERURL: tcp://activemq-0.activemq.activemq.svc:61616

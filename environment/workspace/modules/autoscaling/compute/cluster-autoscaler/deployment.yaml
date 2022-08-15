@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders
+spec:
+  replicas: 5
+  template:
+    spec:
+      containers:
+        - name: orders
+          resources:
+            limits:
+              memory: 2Gi
+            requests:
+              memory: 2Gi

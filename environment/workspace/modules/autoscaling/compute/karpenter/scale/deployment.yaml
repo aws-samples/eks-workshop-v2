@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: assets
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+        - name: assets
+          resources:
+            limits:
+              memory: 2Gi
+            requests:
+              memory: 2Gi
+      nodeSelector:
+        type: karpenter

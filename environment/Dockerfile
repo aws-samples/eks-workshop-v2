@@ -1,6 +1,6 @@
 FROM amazonlinux:2022
 
-RUN yum install -y findutils aws-cli jq tar gzip && \
+RUN yum install -y findutils aws-cli jq tar gzip zsh git diffutils wget && \
     yum clean all
 
 RUN curl -LO https://dl.k8s.io/release/v1.22.12/bin/linux/amd64/kubectl && \
@@ -14,5 +14,20 @@ RUN curl -fsSL -o helm.tar.gz https://get.helm.sh/helm-v3.9.2-linux-amd64.tar.gz
   rm -rf linux-amd64/ helm.tar.gz
 
 ADD entrypoint.sh /entrypoint.sh
+
+RUN useradd \
+    --home "/workspace" \
+    --create-home \
+    --user-group \
+    --shell /bin/zsh \
+    learner
+
+USER learner
+
+RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh
+
+WORKDIR /workspace
+COPY --chmod=755 bin/* /usr/local/bin
+ADD --chown=learner:learner workspace /workspace/
 
 ENTRYPOINT ["bash", "/entrypoint.sh"]

@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: carts
+spec:
+  template:
+    metadata:
+      labels:
+        podlifetime: enabled
+    spec:
+      containers:
+        - name: carts

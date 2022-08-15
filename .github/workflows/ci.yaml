@@ -41,14 +41,12 @@ jobs:
         role-session-name: GithubActionsSession
     - name: Set cluster ID
       run: echo "TF_VAR_cluster_id=${CLUSTER_ID}" >> $GITHUB_ENV
-    - name: Init environment
+    - name: Create infrastructure
+      timeout-minutes: 30
       working-directory: test/terraform
-      timeout-minutes: 60
       run: |
         terraform init -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="key=ci/${CLUSTER_ID}/terraform.tfstate"
         terraform apply --auto-approve
-        EKS_CLUSTER_NAME=$(terraform output -raw eks_cluster_id)
-        echo "EKS_CLUSTER_NAME=$EKS_CLUSTER_NAME" >> $GITHUB_ENV
     - name: Refresh AWS credentials
       if: always()
       uses: aws-actions/configure-aws-credentials@v1.6.1
@@ -58,8 +56,9 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
         role-session-name: GithubActionsSession
     - name: Run tests
+      timeout-minutes: 60
       run: |
-           docker run -v ${GITHUB_WORKSPACE}/site/content:/content -e "EKS_CLUSTER_NAME" -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" -e "AWS_DEFAULT_REGION" eks-workshop-test
+        DEV_MODE=1 make test
     - name: Refresh AWS credentials
       if: always()
       uses: aws-actions/configure-aws-credentials@v1.6.1

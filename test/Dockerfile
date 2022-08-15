@@ -1,9 +1,13 @@
 FROM eks-workshop-environment
 
+USER root
+
 RUN yum install -y nodejs npm aws-cli procps
 
-RUN npm install -g @niallthomson/wtf@0.0.13
+RUN npm install -g @niallthomson/markdown-sh@0.2.1
 
 COPY run.sh /
+
+USER learner
 
 ENTRYPOINT ["bash", "-l", "/run.sh"]

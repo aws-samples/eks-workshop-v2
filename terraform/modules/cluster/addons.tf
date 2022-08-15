@@ -60,8 +60,8 @@ module "eks-blueprints-kubernetes-addons" {
 
     set = [
       {
-        name  = "replicas"
-        value = 0
+        name  = "aws.defaultInstanceProfile"
+        value = module.aws-eks-accelerator-for-terraform.managed_node_group_iam_instance_profile_id[0]
       }
     ]
   }
@@ -78,7 +78,7 @@ locals {
     aws_region_name                = data.aws_region.current.id
     eks_cluster_id                 = module.aws-eks-accelerator-for-terraform.eks_cluster_id
     eks_oidc_issuer_url            = local.oidc_url
-    eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.oidc_url}"
+    eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${local.aws_account_id}:oidc-provider/${local.oidc_url}"
     tags                           = {}
   }
 }
@@ -86,8 +86,4 @@ locals {
 module "descheduler" {
   source            = "../addons/descheduler"
   addon_context     = local.addon_context
-
-  helm_config = {
-    version = var.helm_chart_versions["descheduler"]
-  }
 }
