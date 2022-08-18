@@ -23,7 +23,9 @@ source $SCRIPT_DIR/lib/terraform-context.sh
 
 container_image='public.ecr.aws/f2e3b2o6/eks-workshop:test-alpha.3'
 
-if [ -n "${DEV_MODE-}" ]; then
+if [ -n "${PREBUILT-}" ]; then
+  echo "Using pre-built images"
+else
   echo "Building container images..."
 
   (cd $SCRIPT_DIR/../environment && docker build -q -t eks-workshop-environment .)
