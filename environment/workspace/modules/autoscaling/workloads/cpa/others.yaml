@@ -1,0 +1,36 @@
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: dns-autoscaler
+  namespace: other
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: dns-autoscaler
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["list", "watch"]
+  - apiGroups: [""]
+    resources: ["replicationcontrollers/scale"]
+    verbs: ["get", "update"]
+  - apiGroups: ["apps"]
+    resources: ["deployments/scale", "replicasets/scale"]
+    verbs: ["get", "update"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "create"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: dns-autoscaler
+subjects:
+  - kind: ServiceAccount
+    name: dns-autoscaler
+    namespace: other
+roleRef:
+  kind: ClusterRole
+  name: dns-autoscaler
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: checkout
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: checkout
+    app.kubernetes.io/instance: checkout
+    app.kubernetes.io/component: service

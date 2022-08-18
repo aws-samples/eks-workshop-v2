@@ -48,5 +48,8 @@ locals {
   vpc_cidr     = "10.42.0.0/16"
   vpc_name     = join("-", [local.prefix, local.tags.env, "vpc"])
   azs          = slice(data.aws_availability_zones.available.names, 0, 3)
-  cluster_name = join("-", [local.prefix, local.tags.env])  
+  cluster_name = join("-", [local.prefix, local.tags.env])
+
+  aws_account_id = data.aws_caller_identity.current.account_id
+  aws_region     = data.aws_region.current.id
 }

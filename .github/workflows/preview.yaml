@@ -19,23 +19,19 @@ jobs:
       uses: actions/checkout@v2
       with:
         submodules: recursive
-    - name: Install hugo
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y curl git
-
-        curl -L https://github.com/gohugoio/hugo/releases/download/v0.97.0/hugo_0.97.0_Linux-64bit.deb -o hugo.deb
-
-        sudo apt install ./hugo.deb
-    - name: Generate site
-      working-directory: site
-      run: hugo
-    - name: Get AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1.6.1
+    - name: Use Node.js
+      uses: actions/setup-node@v3
       with:
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-        aws-region: ${{ secrets.AWS_REGION }}
-        role-session-name: GithubActionsSession
-    - name: Sync
-      working-directory: site/public
-      run: aws s3 sync . s3://${{ secrets.PREVIEW_CONTENT_S3_BUCKET }}
+        node-version: 16
+    - uses: azure/setup-kubectl@v3
+      with:
+        version: 'v1.22.12'
+      id: install
+    - name: Deploy site
+      working-directory: website
+      env:
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      run: |
+        npm install
+        npm run deploy:netlify -- --alias preview

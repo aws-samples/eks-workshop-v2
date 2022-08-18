@@ -47,3 +47,13 @@ output "public_subnet_ids" {
   description = "Public Subnet Ids"
   value       = module.aws_vpc.public_subnets
 }
+
+output "cart_dynamodb_table_name" {
+  description = "Name of the DynamoDB table created for the cart service"
+  value       = aws_dynamodb_table.carts.name
+}
+
+output "cart_iam_role" {
+  description = "ARN of the IAM role to allow access to DynamoDB for the cart service"
+  value       = module.iam_assumable_role_carts.this_iam_role_arn
+}

@@ -15,10 +15,13 @@ output "iam_role_arn" {
 
 output "environment_variables" {
   value = <<EOT
+AWS_ACCOUNT_ID=${data.aws_caller_identity.current.account_id}
 EKS_CLUSTER_NAME=${module.cluster.eks_cluster_id}
 EKS_DEFAULT_MNG_NAME=${split(":", module.cluster.eks_cluster_nodegroup_name)[1]}
 EKS_DEFAULT_MNG_MIN=${module.cluster.eks_cluster_nodegroup_size_min}
 EKS_DEFAULT_MNG_MAX=${module.cluster.eks_cluster_nodegroup_size_max}
 EKS_DEFAULT_MNG_DESIRED=${module.cluster.eks_cluster_nodegroup_size_desired}
+CARTS_DYNAMODB_TABLENAME=${module.cluster.cart_dynamodb_table_name}
+CARTS_IAM_ROLE=${module.cluster.cart_iam_role}
 EOT
 }
