@@ -83,3 +83,7 @@
 .colorModeToggle_node_modules-\@docusaurus-theme-classic-lib-theme-Navbar-Content-styles-module {
   color: white;
 }
+
+.hero--primary {
+  background-color: #000716;
+}
