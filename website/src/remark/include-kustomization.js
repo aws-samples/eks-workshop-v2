@@ -5,7 +5,7 @@ const yaml = require('yamljs');
 const { parse } = require('path');
 const Diff = require('diff');
 
-const modulesPath = '~/modules'
+const modulesPath = '/workspace/modules'
 
 const plugin = (options) => {
   const manifestsDir = options.manifestsDir
@@ -39,7 +39,7 @@ const plugin = (options) => {
         const mutatedPromise = generateYaml(kustomizationPath, resourceKind, resourceName)
           //return {patch: res.patch, kustomizeOutput}
 
-        const nicePath = `~/modules/${file}`
+        const nicePath = `/workspace/modules/${file}`
 
         const p = Promise.all([filePromise, originalPromise, mutatedPromise]).then(res => {
           const originalManifest = res[1].manifest

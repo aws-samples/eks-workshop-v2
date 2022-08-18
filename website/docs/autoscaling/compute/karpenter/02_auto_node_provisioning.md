@@ -12,8 +12,8 @@ Deployment/assets
 
 Let's apply this to our cluster:
 
-```bash timeout=180 hook=karpenter-deployment
-kubectl apply -k ~/modules/autoscaling/compute/karpenter/scale
+```bash timeout=300 hook=karpenter-deployment
+kubectl apply -k /workspace/modules/autoscaling/compute/karpenter/scale
 ```
 
 Topics to cover here:

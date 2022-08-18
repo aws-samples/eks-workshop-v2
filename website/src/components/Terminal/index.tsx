@@ -22,28 +22,38 @@ export default function Terminal({
   let base64ToStringNew = atob(output)
 
   return (
-  <div className={styles.terminal}>
-    <section className={styles.terminal__bar}>
-      <div className={styles.bar__buttons}>
-        <button className={`${styles.bar__button} ${styles.bar__button__exit}`}>&nbsp;</button>
-        <button className={styles.bar__button}>&nbsp;</button>
-        <button className={styles.bar__button}>&nbsp;</button>
+    <div className={styles.browserWindow}>
+      <div className={styles.browserWindowHeader}>
+        <div className={styles.buttons}>
+          <span className={styles.dot} style={{background: '#f25f58'}} />
+          <span className={styles.dot} style={{background: '#fbbe3c'}} />
+          <span className={styles.dot} style={{background: '#58cb42'}} />
+        </div>
+        <div className={styles.browserWindowMenuIcon}>
+          <div>
+            <span className={styles.bar} />
+            <span className={styles.bar} />
+            <span className={styles.bar} />
+          </div>
+        </div>
       </div>
-    </section>
-    <section className={styles.terminal__body} onClick={copyToClipboard}>
-      <div className={styles.terminal__prompt}>
-        <span className={styles.terminal__prompt__user}>eks-workshop:</span>
-        <span className={styles.terminal__prompt__location}>~</span>
-        <span className={styles.terminal__prompt__bling}>$</span>
-        <span className={styles.terminal__prompt__cursor}></span>
-        <span className={styles.terminal__prompt__command}>{command}</span>
+
+      <div className={styles.browserWindowBody}>
+        <section className={styles.terminalBody} onClick={copyToClipboard}>
+          <div className={styles.terminalPrompt}>
+            <span className={styles.terminalPromptUser}>eks-workshop:</span>
+            <span className={styles.terminalPromptLocation}>~</span>
+            <span className={styles.terminalPromptBling}>$</span>
+            <span className={styles.terminalPromptCursor}></span>
+            <span className={styles.terminalPromptCommand}>{command}</span>
+          </div>
+          <div className={styles.terminalOutput}><pre>
+            {base64ToStringNew}
+            </pre>
+          </div>
+        
+        </section>
       </div>
-      <div className={styles.terminal__output}><pre>
-        {base64ToStringNew}
-        </pre>
-      </div>
-    
-    </section>
-  </div>
+    </div>
   );
 }

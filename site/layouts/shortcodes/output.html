@@ -1,2 +1,0 @@
-{{ $clean := htmlEscape (trim .Inner "\n") }}
-{{ (print "```bash\n" $clean  "\n```") | markdownify }}

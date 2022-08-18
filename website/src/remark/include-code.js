@@ -2,7 +2,7 @@ const visit = require('unist-util-visit');
 const fs = require('fs/promises');
 var path = require('path');
 
-const modulesPath = '~/modules'
+const modulesPath = '/workspace/modules'
 
 const plugin = (options) => {
   const manifestsDir = options.manifestsDir

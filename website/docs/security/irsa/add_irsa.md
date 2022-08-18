@@ -28,7 +28,7 @@ ServiceAccount/carts
 Run Kustomize to apply this change:
 
 ```bash
-kubectl apply -k ~/modules/security/irsa/service-account
+kubectl apply -k /workspace/modules/security/irsa/service-account
 ```
 
 With the `ServiceAccount` updated now we just need to recycle the `carts` Pod so it picks up the new `ServiceAccount`:

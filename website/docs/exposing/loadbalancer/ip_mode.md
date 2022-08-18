@@ -25,7 +25,7 @@ exposing/load-balancer/ip-mode/nlb.yaml
 Apply the manifest with kustomize:
 
 ```bash
-kubectl apply -k ~/modules/exposing/load-balancer/ip-mode
+kubectl apply -k /workspace/modules/exposing/load-balancer/ip-mode
 ```
 
 It will take a few minutes for the configuration of the load balancer to be updated.

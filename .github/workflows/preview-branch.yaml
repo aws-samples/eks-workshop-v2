@@ -1,10 +1,11 @@
-name: Publish Preview
+name: Publish PR Preview
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-    - main
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+    - website/**
+    - environment/**
 
 permissions:
   id-token: write
@@ -30,8 +31,9 @@ jobs:
     - name: Deploy site
       working-directory: website
       env:
+        PR_ID: ${{ github.event.pull_request.number }}
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
       run: |
         npm install
-        npm run deploy:netlify -- --alias preview
+        npm run deploy:netlify -- --alias pr-${PR_ID}

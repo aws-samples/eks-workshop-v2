@@ -23,7 +23,7 @@ metadata:
 Lets use Kustomize to change this configuration to use the real DynamoDB service:
 
 ```bash hook=enable-dynamo hookTimeout=430
-kubectl apply -k ~/modules/security/irsa/dynamo
+kubectl apply -k /workspace/modules/security/irsa/dynamo
 ```
 
 This will create a new `ConfigMap` which we can now take a look at:

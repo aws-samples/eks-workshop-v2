@@ -1,88 +1,96 @@
-.terminal {
-  width: 100%;
-  
-  box-shadow: 2px 4px 10px rgba(0,0,0,0.5);
-
-  margin-bottom: 20px;
+.browserWindow {
+  border: 3px solid var(--ifm-color-emphasis-200);
+  border-radius: var(--ifm-global-radius);
+  box-shadow: var(--ifm-global-shadow-lw);
+  margin-bottom: var(--ifm-leading);
 }
 
-.terminal__bar {
-  display: flex;
-  width: 100%;
-  height: 30px;
+.browserWindowHeader {
   align-items: center;
-  padding: 0 8px;
-  box-sizing: border-box;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  background: linear-gradient(#504b45 0%,#3c3b37 100%);
+  background: var(--ifm-color-emphasis-200);
+  display: flex;
+  padding: 0.5rem 1rem;
 }
 
-.bar__buttons {
-  display: flex;
-  align-items: center;
+.row::after {
+  content: '';
+  display: table;
+  clear: both;
 }
 
-.bar__button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-  margin-right: 5px;
+.buttons {
+  white-space: nowrap;
+}
+
+.right {
+  align-self: center;
+  width: 10%;
+}
+
+[data-theme='light'] {
+  --ifm-background-color: #fff;
+}
+
+.dot {
+  margin-right: 6px;
+  margin-top: 4px;
   height: 12px;
   width: 12px;
-  box-sizing: border-box;
-  border: none;
-  border-radius: 100%;
-  background: linear-gradient(#7d7871 0%, #595953 100%);
-  text-shadow: 0px 1px 0px rgba(255,255,255,0.2);
-  box-shadow: 0px 0px 1px 0px #41403A, 0px 1px 1px 0px #474642;
-}
-.bar__button:hover {
-  cursor: pointer;
-}
-.bar__button:focus {
-  outline: none;
-}
-.bar__button__exit {
-  background: linear-gradient(#f37458 0%, #de4c12 100%);
-  background-clip: padding-box;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
 }
 
-.bar__user {
-  color: #d5d0ce;
-  margin-left: 6px;
-  line-height: 15px;
+.browserWindowMenuIcon {
+  margin-left: auto;
 }
 
-.terminal__body {
-  background: black;
+.bar {
+  width: 17px;
+  height: 3px;
+  background-color: #aaa;
+  margin: 3px 0;
+  display: block;
+}
+
+.browserWindowBody {
+  background-color: var(--ifm-background-color);
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+
+.browserWindowBody *:last-child {
+  margin-bottom: 0;
+}
+
+.terminalBody {
+  background: #1E1E1E;
   font-family: monospace;
   padding: 10px;
   margin-top: -1px;
   font-size: 15px;
 }
 
-.terminal__prompt {
+.terminalPrompt {
   display: flex;
 }
-.terminal__prompt__user {
+.terminalPromptUser{
   color: #7eda28;
 }
-.terminal__prompt__location {
+.terminalPromptLocation {
   color: #4878c0;
 }
-.terminal__prompt__bling {
+.terminalPromptBling {
   color: #dddddd;
 }
-.terminal__prompt__cursor {
+.terminalPromptCursor {
   display: block;
   height: 17px;
   width: 8px;
   margin-left: 9px;
   animation: blink 1200ms linear infinite;
 }
-.terminal__prompt__copy {
+.terminalPrompt__copy {
   background-color: white;
   margin-left: 15px;
   padding-left: 5px;
@@ -91,39 +99,39 @@
   font-size: 80%;
   vertical-align: middle;
 }
-.terminal__prompt__command {
+.terminalPromptCommand {
   color: #dddddd;
   white-space: pre-wrap;
 }
-.terminal__body:hover {
+.terminalBody:hover {
   cursor: pointer;
 }
-.terminal__body:hover .terminal__prompt__command {
+.terminalBody:hover .terminalPromptCommand {
   background-color: #dddddd;
-  color: rgba(56, 4, 40, 0.9);
+  color: #1E1E1E;
 }
-.terminal__output {
+.terminalOutput {
   margin-top: 5px;
   color: #dddddd;
   overflow-x: scroll;
 }
 
-.terminal__output::-webkit-scrollbar {
+.terminalOutput::-webkit-scrollbar {
   width: 11px;
     height: 11px;
 }
 
-.terminal__output::-webkit-scrollbar-track {
-  background: transparent;        /* color of the tracking area */
+.terminalOutput::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.terminal__output::-webkit-scrollbar-thumb {
-  background-color: #bfbfc0;    /* color of the scroll thumb */
-  border-radius: 6px;       /* roundness of the scroll thumb */
-  border: 3px solid black;  /* creates padding around scroll thumb */
+.terminalOutput::-webkit-scrollbar-thumb {
+  background-color: #bfbfc0;
+  border-radius: 6px; 
+  border: 3px solid #1E1E1E;
 }
 
-.terminal__output pre {
+.terminalOutput pre {
   margin: 0;
   all: unset;
   white-space: pre;

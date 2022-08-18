@@ -15,7 +15,7 @@ autoscaling/compute/karpenter/provisioner/provisioner.yaml
 Let's apply this to our cluster:
 
 ```bash timeout=180
-kubectl apply -k ~/modules/autoscaling/compute/karpenter/provisioner
+kubectl apply -k /workspace/modules/autoscaling/compute/karpenter/provisioner
 ```
 
 The configuration for this provider is quite simple. We will change in the future the provider. For the moment let's focus in a few of the settings used.

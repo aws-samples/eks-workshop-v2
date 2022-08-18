@@ -32,5 +32,5 @@ autoscaling/workloads/hpa/hpa.yaml
 Lets apply this configuration:
 
 ```bash
-kubectl apply -k ~/modules/autoscaling/workloads/hpa
+kubectl apply -k /workspace/modules/autoscaling/workloads/hpa
 ```

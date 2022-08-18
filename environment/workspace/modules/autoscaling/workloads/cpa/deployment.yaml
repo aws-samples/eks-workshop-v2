@@ -32,7 +32,7 @@ spec:
                 memory: "10Mi"
         command:
           - /cluster-proportional-autoscaler
-          - --namespace=other
+          - --namespace=kube-system
           - --configmap=dns-autoscaler
           - --target=Deployment/coredns
           # HIGHLIGHT

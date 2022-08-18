@@ -1,4 +1,4 @@
-FROM amazonlinux:2022
+FROM public.ecr.aws/amazonlinux/amazonlinux:2022
 
 RUN yum install -y findutils aws-cli jq tar gzip zsh git diffutils wget && \
     yum clean all
@@ -16,11 +16,12 @@ RUN curl -fsSL -o helm.tar.gz https://get.helm.sh/helm-v3.9.2-linux-amd64.tar.gz
 ADD entrypoint.sh /entrypoint.sh
 
 RUN useradd \
-    --home "/workspace" \
+    --home "/learner" \
     --create-home \
     --user-group \
     --shell /bin/zsh \
-    learner
+    learner && \
+    mkdir /workspace
 
 USER learner
 

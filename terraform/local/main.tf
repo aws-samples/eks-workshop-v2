@@ -57,7 +57,7 @@ data "template_file" "iam_policy" {
 }
 
 resource "aws_iam_policy" "local_policy" {
-  name        = "eks-workshop-dev-local"
+  name        = aws_iam_role.local_role.name
   path        = "/"
   description = "Policy for EKS Workshop local environment to access AWS services"
 

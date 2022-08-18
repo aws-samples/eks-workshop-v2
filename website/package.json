@@ -8,6 +8,7 @@
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
+    "deploy:netlify": "npm run build && netlify deploy --dir=build",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
@@ -25,7 +26,8 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "2.0.1"
+    "@docusaurus/module-type-aliases": "2.0.1",
+    "netlify-cli": "^10.17.8"
   },
   "browserslist": {
     "production": [
