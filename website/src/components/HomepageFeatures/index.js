@@ -1,11 +1,12 @@
 import React from 'react';
 import clsx from 'clsx';
-import styles from './styles.module.css';
+import styles from './styles.module.css'
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 const FeatureList = [
   {
     title: 'Accelerated path',
-    Svg: require('@site/static/img/accelerate.svg').default,
+    image: '/img/workshop.png',
     description: (
       <>
         Navigate through the features of Amazon Elastic Kubernetes Services quickly.
@@ -14,7 +15,7 @@ const FeatureList = [
   },
   {
     title: 'Self-Paced',
-    Svg: require('@site/static/img/self-paced.svg').default,
+    image: '/img/self_paced.png',
     description: (
       <>
         Learn at your own pace using practical examples.
@@ -23,7 +24,7 @@ const FeatureList = [
   },
   {
     title: 'Modular',
-    Svg: require('@site/static/img/modules.svg').default,
+    image: '/img/path.png',
     description: (
       <>
         Customize your learning path by focusing on the features that matter most to you.
@@ -32,11 +33,11 @@ const FeatureList = [
   },
 ];
 
-function Feature({Svg, title, description}) {
+function Feature({image, title, description}) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+        <img src={useBaseUrl(image)} />
       </div>
       <div className="text--center padding-horiz--md">
         <h3>{title}</h3>
