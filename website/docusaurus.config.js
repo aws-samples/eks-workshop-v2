@@ -24,6 +24,8 @@ const config = {
   organizationName: 'aws-samples',
   projectName: 'eks-workshop-v2',
 
+  plugins: ['docusaurus-plugin-sass'],
+
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
@@ -47,7 +49,7 @@ const config = {
             'https://github.com/aws-samples/eks-workshop-v2/main/website',
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: require.resolve('./src/css/custom.scss'),
         },
       }),
     ],
