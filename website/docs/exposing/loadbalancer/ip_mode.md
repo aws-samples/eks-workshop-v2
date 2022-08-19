@@ -18,8 +18,9 @@ Lets reconfigure our NLB to use IP mode and look at the effect it has on the inf
 
 This is the patch we'll be applying to re-configure the `Service`:
 
-```file
+```kustomization
 exposing/load-balancer/ip-mode/nlb.yaml
+Service/ui-nlb
 ```
 
 Apply the manifest with kustomize:

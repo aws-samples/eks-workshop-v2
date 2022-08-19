@@ -9,7 +9,7 @@ const modulesPath = '/workspace/modules'
 
 const plugin = (options) => {
   const manifestsDir = options.manifestsDir
-  const baseDir = `${options.manifestsDir}/../manifests`
+  const baseDir = path.normalize(`${options.manifestsDir}/../manifests`)
 
   const transformer = async (ast, vfile) => {
     const promises = [];
@@ -22,22 +22,21 @@ const plugin = (options) => {
         const file = parts[0]
         const resource = parts[1]
 
-        const kustomizationPath = `${manifestsDir}/${path.dirname(file)}`
+        const filePath = path.normalize(`${manifestsDir}/${file}`)
+        const kustomizationPath = path.dirname(filePath)
 
-        const filePath = `${manifestsDir}/${file}`
-        const extension = path.extname(filePath).slice(1)
-
-        resourceParts = resource.split('/')
-        resourceKind = resourceParts[0]
-        resourceName = resourceParts[1]
+        const resourceParts = resource.split('/')
+        const resourceKind = resourceParts[0]
+        const resourceName = resourceParts[1]
 
         node.type = 'jsx'
-        //node.meta = `title="${modulesPath}/${value}"`
 
         const filePromise = fs.readFile(filePath, { encoding: 'utf8' });
-        const originalPromise = generateYaml(baseDir, resourceKind, resourceName)
+        const originalPromise = readKustomization(kustomizationPath).then(res => {
+          const actualPath = path.normalize(`${kustomizationPath}/${res['bases'][0]}`)
+          return generateYaml(actualPath, resourceKind, resourceName)
+        });
         const mutatedPromise = generateYaml(kustomizationPath, resourceKind, resourceName)
-          //return {patch: res.patch, kustomizeOutput}
 
         const nicePath = `/workspace/modules/${file}`
 
@@ -47,9 +46,9 @@ const plugin = (options) => {
 
           const diff = Diff.createPatch('dummy', originalManifest, mutatedManifest)
 
-          kustomizeEncoded = Buffer.from(res[0]).toString('base64')
-          completeEncoded = Buffer.from(mutatedManifest).toString('base64')
-          diffEncoded = Buffer.from(diff).toString('base64')
+          const kustomizeEncoded = Buffer.from(res[0]).toString('base64')
+          const completeEncoded = Buffer.from(mutatedManifest).toString('base64')
+          const diffEncoded = Buffer.from(diff).toString('base64')
 
           node.value= `<kustomization resource="${resource}" path="${nicePath}" kustomize="${kustomizeEncoded}" complete="${completeEncoded}" diff="${diffEncoded}"></kustomization>`
         });
@@ -60,6 +59,14 @@ const plugin = (options) => {
   };
   return transformer;
 };
+
+function readKustomization(path) {
+  const filePromise = fs.readFile(`${path}/kustomization.yaml`, { encoding: 'utf8' });
+
+  return filePromise.then(res => {
+    return yaml.parse(res)
+  })
+}
 
 function generateYaml(path, kind, resource) {
   return execShellCommand(`kubectl kustomize ${path}`)
@@ -75,20 +82,21 @@ function generateYaml(path, kind, resource) {
           }
         }
 
-        reject(`Failed to find resource ${kind}/${resource}`)
+        reject(`Failed to find resource ${kind}/${resource} at ${path}`)
       });
     });
 }
 
 function execShellCommand(cmd) {
   const exec = require('child_process').exec;
+
   return new Promise((resolve, reject) => {
-   exec(cmd, (error, stdout, stderr) => {
-    if (error) {
-     console.warn(error);
-    }
-    resolve(stdout? stdout : stderr);
-   });
+    exec(cmd, (error, stdout, stderr) => {
+      if (error) {
+        console.warn(error);
+      }
+      resolve(stdout? stdout : stderr);
+    });
   });
  }
 

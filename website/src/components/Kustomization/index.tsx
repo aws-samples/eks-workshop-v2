@@ -34,7 +34,7 @@ export default function Kustomization({
 
   return (
     <Tabs>
-    <TabItem value="kustomize" label="Kustomize" default>
+    <TabItem value="kustomize" label="Kustomize Patch" default>
       <CodeBlock
         title={path}
         language="yaml">
