@@ -5,69 +5,8 @@ on:
   pull_request:
     branches:
     - main
-    paths:
-    - site/content/**
-    - terraform/**
-    - helm/charts.yaml
-
-permissions:
-  id-token: write
-  contents: read
 
 jobs:
-  test-content-scripts:
-    name: test-content-scripts
-    runs-on: ubuntu-latest
-    concurrency: test-environment
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-    - name: Get AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1.6.1
-      with:
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-        role-duration-seconds: 3600
-        aws-region: ${{ secrets.AWS_REGION }}
-        role-session-name: GithubActionsSession
-    - name: Set cluster ID
-      env:
-        RUN_ID: "${{ github.run_id }}"
-      run: |
-        CLUSTER_ID="ci-${RUN_ID}"
-        echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
-        echo "TF_VAR_cluster_id=${CLUSTER_ID}" >> $GITHUB_ENV
-    - name: Create infrastructure
-      working-directory: test/terraform
-      run: |
-        terraform init -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="key=ci/${CLUSTER_ID}/terraform.tfstate"
-        terraform apply --auto-approve
-    - name: Refresh AWS credentials
-      if: always()
-      uses: aws-actions/configure-aws-credentials@v1.6.1
-      with:
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-        role-duration-seconds: 3600
-        aws-region: ${{ secrets.AWS_REGION }}
-        role-session-name: GithubActionsSession
-    - name: Run tests
-      timeout-minutes: 60
-      env:
-        DOCKER_BUILDKIT: 1
-      run: |
-        DEV_MODE=1 make test terraform_context="test/terraform"
-    - name: Refresh AWS credentials
-      if: always()
-      uses: aws-actions/configure-aws-credentials@v1.6.1
-      with:
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-        role-duration-seconds: 3600
-        aws-region: ${{ secrets.AWS_REGION }}
-        role-session-name: GithubActionsSession
-    - name: Cleanup environment
-      if: always()
-      working-directory: test/terraform
-      run: |
-        terraform destroy --auto-approve
   verify-helm-charts:
     name: verify-helm-charts
     runs-on: ubuntu-latest

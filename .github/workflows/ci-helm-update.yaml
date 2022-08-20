@@ -8,10 +8,6 @@ on:
     paths:
     - helm/src/**
 
-permissions:
-  pull-requests: write
-  contents: write
-
 jobs:
   test:
     name: test

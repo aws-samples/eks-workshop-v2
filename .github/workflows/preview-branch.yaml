@@ -2,14 +2,10 @@ name: Publish PR Preview
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [ opened, reopened, synchronize ]
     paths:
     - website/**
     - environment/**
-
-permissions:
-  id-token: write
-  contents: read
 
 jobs:
   deploy:
@@ -27,8 +23,25 @@ jobs:
     - uses: azure/setup-kubectl@v3
       with:
         version: 'v1.22.12'
-      id: install
+    - name: Find Comment
+      uses: peter-evans/find-comment@v2
+      id: fc
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: 'github-actions[bot]'
+        body-includes: Deploy Preview
+    - name: Deploying comment
+      id: comment-deploying
+      uses: peter-evans/create-or-update-comment@v2
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-id: ${{ steps.fc.outputs.comment-id }}
+        edit-mode: replace
+        body: |
+          ## Deploy Preview
+          Preview site deployment in progress...
     - name: Deploy site
+      id: deploy-site
       working-directory: website
       env:
         PR_ID: ${{ github.event.pull_request.number }}
@@ -37,3 +50,14 @@ jobs:
       run: |
         npm install
         npm run deploy:netlify -- --alias pr-${PR_ID}
+
+        echo "::set-output name=preview::pr-${PR_ID}--eksworkshop-v2-next.netlify.app"
+    - name: Deployed comment
+      uses: peter-evans/create-or-update-comment@v2
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-id: ${{ steps.comment-deploying.outputs.comment-id }}
+        edit-mode: replace
+        body: |
+          ## Deploy Preview
+          Check out the preview at: https://${{ steps.deploy-site.outputs.preview }}
