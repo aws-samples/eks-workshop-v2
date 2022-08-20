@@ -5,10 +5,6 @@ on:
   schedule:
   - cron:  '30 5 * * *'
 
-permissions:
-  pull-requests: write
-  contents: write
-
 jobs:
   check:
     name: check
