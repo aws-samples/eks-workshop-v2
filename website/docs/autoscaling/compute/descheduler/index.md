@@ -35,6 +35,7 @@ Descheduler's policy is configurable and includes below strategies that can be e
 * RemoveFailedPods
 
 The policy includes a common configuration that applies to all the strategies:
+
 | Name | Default Value | Description |
 |------|---------------|-------------|
 | `nodeSelector` | `nil` | limiting the nodes which are processed |
