@@ -16,3 +16,15 @@ jobs:
     - name: Verify helm chart yaml
       run: |
         make verify-helm-metadata
+  verify-terraform:
+    name: verify-terraform
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - uses: hashicorp/setup-terraform@v2
+    - name: Verify terraform
+      working-directory: terraform/local
+      run: |
+        terraform init -backend=false
+        terraform validate -no-color
