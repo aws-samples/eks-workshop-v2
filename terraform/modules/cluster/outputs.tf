@@ -55,5 +55,5 @@ output "cart_dynamodb_table_name" {
 
 output "cart_iam_role" {
   description = "ARN of the IAM role to allow access to DynamoDB for the cart service"
-  value       = module.iam_assumable_role_carts.this_iam_role_arn
+  value       = module.iam_assumable_role_carts.iam_role_arn
 }
