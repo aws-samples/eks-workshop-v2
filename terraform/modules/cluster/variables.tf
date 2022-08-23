@@ -1,7 +1,7 @@
 variable "cluster_version" {
   type        = string
   description = "Kubernetes Version"
-  default     = "1.22"
+  default     = "1.23"
 }
 
 variable "id" {
