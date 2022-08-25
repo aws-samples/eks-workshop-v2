@@ -1,6 +1,10 @@
 terraform_context='terraform/local'
 module='*'
 
+.PHONY: install
+serve:
+	cd website; npm install
+
 .PHONY: serve
 serve:
 	cd website; npm start

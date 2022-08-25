@@ -9,9 +9,9 @@ The following pre-requisites are necessary to work on the content:
 - Installed locally:
   - Docker
   - `make`
-  - `hugo`
   - `terraform`
   - `jq`
+  - `npm`
 
 ## Create a work branch
 
@@ -25,11 +25,17 @@ Note: You must clone the repository with submodules `git clone --recurse-submodu
 
 ## Writing content
 
-Once you have a working branch on your local machine you can start writing the workshop content. The Markdown files for the content are all contained in the `site/content` directory of the repository. This directory is structured using the standard [Hugo directory layout](https://gohugo.io/content-management/organization/). It is recommended to use other modules as guidelines for format and structure.
+Once you have a working branch on your local machine you can start writing the workshop content. The Markdown files for the content are all contained in the `website` directory of the repository. This directory is structured using the standard [Docusaurus directory layout](https://docusaurus.io/docs/installation#project-structure). It is recommended to use other modules as guidelines for format and structure.
 
 Please see the [style guide](./style_guide.md) documentation for specific guidance on how to write content so it is consistent across the workshop content.
 
-As you write the content you can run a live local server that renders the final web site on your local machine by running the following command in the root of the repository:
+As you write the content you can run a live local server that renders the final web site on your local machine. First install the dependencies by running the following command in the root of the repository.
+
+```
+make install
+```
+
+Then, run the following command to start the development server:
 
 ```
 make serve
@@ -37,7 +43,7 @@ make serve
 
 Note: This command does not return, if you want to stop it use Ctrl+C.
 
-You can then access the content at `http://localhost:1313`.
+You can then access the content at `http://localhost:3000`.
 
 As you make changes to the Markdown content the site will refresh automatically, you will not need to re-run the command to re-load.
 
@@ -61,6 +67,17 @@ By default the automated system will look for the latest version of any charts a
 - The latest chart versions are incompatible with the version of EKS in the content
 - The content requires significant changes to bring it inline with a new version
 
+Example constraint in `helm/charts.yaml`:
+
+```
+...
+- name: aws-load-balancer-controller
+  repository: https://aws.github.io/eks-charts
+  chart: aws-load-balancer-controller
+  constraint: '>=1.4.0 <1.5.0'
+...
+```
+
 ### What if I need to change the AWS infrastructure like VPC, EKS configuration etc?
 
 Any content changes are expected to be accompanied by the any corresponding infrastructure changes in the same Pull Request.
@@ -75,6 +92,8 @@ All Terraform configuration resides in the `terraform` directory, and is structu
 
 The workshop content has various tools and utilities that are necessary to for the learner to complete it, the primary example being `kubectl` along with supporting tools like `jq` and `curl`.
 
+See `environment/Dockerfile` to configure the installed utilities. 
+
 ## Testing
 
 All changes should be tested before raising a PR against the repository. There are two ways to test which can be used at different stages of your authoring process.
@@ -83,7 +102,9 @@ All changes should be tested before raising a PR against the repository. There a
 
 When creating your content you will want to test the commands you specify against infrastructure that mirrors what will be used in the actual workshop by learners. All infrastructure (VPC, EKS cluster etc) is expressed as Terraform configuration in the `terraform` directory.
 
-You can use the following convenience command to create the infrastructure:
+Ensure that your AWS credentials are set so Terraform is able to authenticate against your IAM account. Terraform will pull credentials from your `~/.aws/credentials` and `~/.aws/config` folders. You can find instructions [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
+
+You can then use the following convenience command to create the infrastructure:
 
 ```
 make create-infrastructure
