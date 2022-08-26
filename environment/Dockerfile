@@ -1,6 +1,6 @@
 FROM public.ecr.aws/amazonlinux/amazonlinux:2022
 
-RUN yum install -y findutils aws-cli jq tar gzip zsh git diffutils wget && \
+RUN yum install -y findutils aws-cli jq tar gzip zsh git diffutils wget tree && \
     yum clean all
 
 RUN curl -LO https://dl.k8s.io/release/v1.23.9/bin/linux/amd64/kubectl && \

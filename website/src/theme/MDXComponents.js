@@ -7,6 +7,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CodeBlock from '@theme/CodeBlock';
 import Kustomization from '@site/src/components/Kustomization';
+import BlueprintsAddon from '@site/src/components/BlueprintsAddon';
 
 export default {
   // Re-use the default mapping
@@ -15,4 +16,5 @@ export default {
   terminal: Terminal,
   browser: BrowserWindow,
   kustomization: Kustomization,
+  blueprintsAddon: BlueprintsAddon
 };
