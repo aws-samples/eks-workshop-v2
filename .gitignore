@@ -9,3 +9,4 @@ resources
 env
 
 .vscode
+package-lock.json
