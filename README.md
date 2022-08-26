@@ -10,7 +10,13 @@ The top level repository can be split is to several areas.
 
 ### Site content
 
-The workshop content itself is a `hugo` site within the `site` directory. All workshop content is written using Markdown and can be found in `site/content`.
+The workshop content itself is a `docusaurus` site. All workshop content is written using Markdown and can be found in `website`.
+
+### Contributing content
+
+To learn how to author content on this repository, read docs/[authoring_content.md](docs/authoring_content.md) or watch this internal video on Broadcast:
+
+[<img src="https://user-images.githubusercontent.com/3959052/186980675-a76db290-be21-42ca-af67-547691f94523.png" width="400" link="https://broadcast.amazon.com/videos/591479" />](https://broadcast.amazon.com/videos/591479)
 
 ### Workshop infrastructure
 
