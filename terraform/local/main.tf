@@ -47,20 +47,16 @@ locals {
   rolename      = join("-", [local.prefix, local.tags.env, "role"])
 }
 
-data "template_file" "iam_policy" {
-  template = file("${path.module}/iam_policy.json")
-  vars = {
-    cluster_name = module.cluster.eks_cluster_id
-    cluster_arn = module.cluster.eks_cluster_arn
-    nodegroup = module.cluster.eks_cluster_nodegroup
-  }
-}
-
 resource "aws_iam_policy" "local_policy" {
   name        = aws_iam_role.local_role.name
   path        = "/"
   description = "Policy for EKS Workshop local environment to access AWS services"
 
-  policy = data.template_file.iam_policy.rendered
+  # policy = data.template_file.iam_policy.rendered
+  policy = templatefile("${path.module}/iam_policy.json", {
+    cluster_name = module.cluster.eks_cluster_id
+    cluster_arn = module.cluster.eks_cluster_arn
+    nodegroup = module.cluster.eks_cluster_nodegroup
+  })
 }
 
