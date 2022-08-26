@@ -8,8 +8,10 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const remarkCodeTerminal = require('./src/remark/code-terminal');
 const remarkIncludeCode = require('./src/remark/include-code');
 const remarkIncludeKustomization = require('./src/remark/include-kustomization');
+const remarkBlueprintsAddon = require('./src/remark/blueprints-addon');
 
-const manifestsDir = `${path.dirname(require.resolve('./package.json'))}/../environment/workspace/modules`
+const rootDir = path.dirname(require.resolve('./package.json'))
+const manifestsDir = `${rootDir}/../environment/workspace/modules`
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -43,7 +45,8 @@ const config = {
           ],
           beforeDefaultRemarkPlugins: [
             [remarkIncludeCode, {manifestsDir}],
-            [remarkIncludeKustomization, {manifestsDir}]
+            [remarkIncludeKustomization, {manifestsDir}],
+            //[remarkBlueprintsAddon, {terraformDir: `${rootDir}/../terraform/local`}]
           ],
           editUrl:
             'https://github.com/aws-samples/eks-workshop-v2/main/website',

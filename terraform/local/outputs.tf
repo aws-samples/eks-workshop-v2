@@ -25,3 +25,8 @@ CARTS_DYNAMODB_TABLENAME=${module.cluster.cart_dynamodb_table_name}
 CARTS_IAM_ROLE=${module.cluster.cart_iam_role}
 EOT
 }
+
+output "blueprints_addons" {
+  sensitive = true
+  value     = module.cluster.blueprints_addons
+}

@@ -48,6 +48,15 @@ output "public_subnet_ids" {
   value       = module.aws_vpc.public_subnets
 }
 
+output "blueprints_addons" {
+  value       = {
+    "descheduler" =  {
+      helm_release = module.descheduler.helm_release
+      link         = "https://github.com/aws-samples/eks-workshop-v2/tree/main/terraform/modules/addons/descheduler"
+    }
+  }
+}
+
 output "cart_dynamodb_table_name" {
   description = "Name of the DynamoDB table created for the cart service"
   value       = aws_dynamodb_table.carts.name
