@@ -25,4 +25,4 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         filter_mode: nofilter
         reporter: github-check
-        markdownlint_flags: website/docs/**
+        markdownlint_flags: website/docs/**/*.md
