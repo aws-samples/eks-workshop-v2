@@ -1,0 +1,7 @@
+{
+  // Enable all markdownlint rules
+  "default": true,
+
+  // Disable line length check
+  "MD013": false
+}
