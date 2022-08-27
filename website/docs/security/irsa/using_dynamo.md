@@ -32,7 +32,7 @@ This will create a new `ConfigMap` which we can now take a look at:
 security/irsa/dynamo/carts-configMap.yaml
 ```
 
-We've removed the DynamoDB endpoint configuration which tells the SDK to default to the real DynamoDB service instead of our test Pod. We've also provided it with the name of the DynamoDB table thats been created already for us. 
+We've removed the DynamoDB endpoint configuration which tells the SDK to default to the real DynamoDB service instead of our test Pod. We've also provided it with the name of the DynamoDB table thats been created already for us.
 
 It also re-configured the `cart` service to use this new `ConfigMap`:
 
