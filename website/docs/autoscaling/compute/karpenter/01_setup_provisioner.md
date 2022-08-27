@@ -36,7 +36,7 @@ You can create a new terminal window and leave the command below running so you 
 To read Karpenter logs from the console you can run the following command.
 
 ```bash
-kubectl logs deployment/karpenter -c controller -n workshop-system
+kubectl logs deployment/karpenter -c controller -n karpenter
 ```
 
-Karpenter log configuration is stored as a Kubernetes ConfigMap. You can read the configuration by running the following command `kubectl describe configmap config-logging -n workshop-system`. You can increase the logging level to `debug` using the following command `kubectl patch configmap config-logging -n workshop-system --patch '{"data":{"loglevel.controller":"debug"}}'`
+Karpenter log configuration is stored as a Kubernetes ConfigMap. You can read the configuration by running the following command `kubectl describe configmap config-logging -n karpenter`. You can increase the logging level to `debug` using the following command `kubectl patch configmap config-logging -n karpenter --patch '{"data":{"loglevel.controller":"debug"}}'`

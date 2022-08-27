@@ -25,7 +25,7 @@ kubectl get pods -l app=nginx -o wide --watch
 View the cluster-autoscaler logs
 
 ```bash test=false
-kubectl -n workshop-system logs \
+kubectl -n kube-system logs \
   -f deployment/cluster-autoscaler-aws-cluster-autoscaler
 ```
 

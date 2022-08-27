@@ -76,11 +76,18 @@ module "aws-eks-accelerator-for-terraform" {
   }
 
   fargate_profiles = {
-    workshop_system = {
-      fargate_profile_name = "workshop_system"
-      fargate_profile_namespaces = [
-        {
-          namespace = "workshop-system"
+    default_profile = {
+      fargate_profile_name = "default-profile"
+      fargate_profile_namespaces = [{
+        namespace = "kube-system"
+        k8s_labels = {
+          fargate = "yes"
+        }
+      },{
+        namespace = "karpenter"
+        k8s_labels = {
+          fargate = "yes"
+        }
       }]
       subnet_ids = module.aws_vpc.private_subnets
     }

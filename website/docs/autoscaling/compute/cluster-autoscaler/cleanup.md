@@ -8,6 +8,6 @@ This module requires some manual cleanup due to the nature of the changes we mad
 Make sure to disable the Cluster Autoscaler:
 
 ```bash wait=10
-kubectl scale --replicas=0 -n workshop-system \
+kubectl scale --replicas=0 -n kube-system \
   deployment/cluster-autoscaler-aws-cluster-autoscaler
 ```

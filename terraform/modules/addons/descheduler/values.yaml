@@ -33,3 +33,5 @@ deschedulerPolicy:
             cpu : 80
             memory: 80
           pods: 80
+podLabels:
+  fargate: 'yes'

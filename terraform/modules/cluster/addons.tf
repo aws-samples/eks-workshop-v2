@@ -17,8 +17,7 @@ module "eks-blueprints-kubernetes-addons" {
 
   cluster_autoscaler_helm_config = {
     version          = var.helm_chart_versions["cluster_autoscaler"]
-    namespace        = kubernetes_namespace.workshop_system.metadata[0].name
-    create_namespace = false
+    namespace        = "kube-system"
 
     set = [
       {
@@ -28,6 +27,10 @@ module "eks-blueprints-kubernetes-addons" {
       {
         name  = "replicaCount"
         value = 0
+      },
+      {
+        name = "podLabels.fargate"
+        value = "yes"
       }
     ]
   }
@@ -37,9 +40,7 @@ module "eks-blueprints-kubernetes-addons" {
   }
   
   aws_load_balancer_controller_helm_config = {
-    namespace        = kubernetes_namespace.workshop_system.metadata[0].name
     version          = var.helm_chart_versions["aws-load-balancer-controller"]
-    create_namespace = false
 
     set = [
       {
@@ -49,19 +50,25 @@ module "eks-blueprints-kubernetes-addons" {
       {
         name  = "vpcId"
         value = module.aws_vpc.vpc_id
+      },
+      {
+        name = "podLabels.fargate"
+        value = "yes"
       }
     ]
   }
 
   karpenter_helm_config = {
-    namespace        = kubernetes_namespace.workshop_system.metadata[0].name
     version          = var.helm_chart_versions["karpenter"]
-    create_namespace = false
 
     set = [
       {
         name  = "aws.defaultInstanceProfile"
         value = module.aws-eks-accelerator-for-terraform.managed_node_group_iam_instance_profile_id[0]
+      },
+      {
+        name = "podLabels.fargate"
+        value = "yes"
       }
     ]
   }
