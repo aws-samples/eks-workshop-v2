@@ -1,4 +1,5 @@
 import React, {type ReactNode} from 'react';
+import ReactTooltip from 'react-tooltip';
 
 import styles from './styles.module.css';
 
@@ -13,7 +14,10 @@ export default function Terminal({
   command,
   output,
 }: Props): JSX.Element {
-  command = command.split('\\').join('\\ \n')
+  const commandParts = command.split('\\')
+
+  const firstLine = commandParts[0]
+  const otherParts = commandParts.slice[1]
 
   function copyToClipboard(e) {
     navigator.clipboard.writeText(command)
@@ -39,20 +43,24 @@ export default function Terminal({
       </div>
 
       <div className={styles.browserWindowBody}>
-        <section className={styles.terminalBody} onClick={copyToClipboard}>
+        <section className={styles.terminalBody} onClick={copyToClipboard} data-tip data-for="copy-hint">
           <div className={styles.terminalPrompt}>
             <span className={styles.terminalPromptUser}>eks-workshop:</span>
             <span className={styles.terminalPromptLocation}>~</span>
             <span className={styles.terminalPromptBling}>$</span>
             <span className={styles.terminalPromptCursor}></span>
-            <span className={styles.terminalPromptCommand}>{command}</span>
+            <span className={styles.terminalPromptCommand}>{firstLine}</span>
           </div>
+          {otherParts && otherParts.map((object, i) => <div className={styles.terminalPrompt}>{object}</div>)}
           <div className={styles.terminalOutput}><pre>
             {base64ToStringNew}
             </pre>
           </div>
         
         </section>
+        <ReactTooltip id="copy-hint" place="right" effect='solid'>
+          <span>Click to copy</span>
+        </ReactTooltip>
       </div>
     </div>
   );
