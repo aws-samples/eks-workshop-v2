@@ -41,6 +41,7 @@ module "eks-blueprints-kubernetes-addons" {
   
   aws_load_balancer_controller_helm_config = {
     version          = var.helm_chart_versions["aws-load-balancer-controller"]
+    namespace        = "aws-load-balancer-controller"
 
     set = [
       {
@@ -60,6 +61,7 @@ module "eks-blueprints-kubernetes-addons" {
 
   karpenter_helm_config = {
     version          = var.helm_chart_versions["karpenter"]
+    timeout          = 600
 
     set = [
       {
