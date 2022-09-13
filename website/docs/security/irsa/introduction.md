@@ -9,7 +9,9 @@ Run the following command to setup the EKS cluster for this module:
 reset-environment
 ```
 
-The `carts` component of our architecture is currently using a lightweight version of Amazon DynamoDB running as a container in the EKS cluster. You can see this by running the following command:
+The `carts` component of our architecture can use either MongoDB or Amazon DynamoDB as its storage backend, which is a common use-case you'll find for databases like DynamoDB.
+
+The way in which `carts` is currently deployed uses a [lightweight version of Amazon DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html) running as a container in the EKS cluster. You can see this by running the following command:
 
 ```bash
 kubectl -n carts get pod 
@@ -26,4 +28,4 @@ kubectl -n carts exec deployment/carts -- env \
 CARTS_DYNAMODB_ENDPOINT=http://carts-dynamodb:8000
 ```
 
-This approach can be useful for testing, but we want to move our application to use the fully managed Amazon DynamoDB service.
+This approach can be useful for testing, but we want to migrate our application to use the fully managed Amazon DynamoDB service in order to take full advantage of the scale and reliability it offers.
