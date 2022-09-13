@@ -88,6 +88,11 @@ module "aws-eks-accelerator-for-terraform" {
         k8s_labels = {
           fargate = "yes"
         }
+      },{
+        namespace = "aws-load-balancer-controller"
+        k8s_labels = {
+          fargate = "yes"
+        }
       }]
       subnet_ids = module.aws_vpc.private_subnets
     }
