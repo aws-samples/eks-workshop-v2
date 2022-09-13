@@ -17,6 +17,7 @@ AWS_WEB_IDENTITY_TOKEN_FILE=/var/run/secrets/eks.amazonaws.com/serviceaccount/to
 These environment have not been passed in using something like a `ConfigMap` or configured directly on the `Deployment`. Instead these have been set by IRSA automatically to allow AWS SDKs to obtain temporary credentials from the AWS STS service.
 
 Things that are worth noting are:
+
 * The region is set automatically to the same as our EKS cluster
 * STS regional endpoints are configured to avoid putting too much pressure on the global endpoint in `us-east-1`
 * The role ARN matches the role that we used to annotate our Kubernetes `ServiceAccount` earlier

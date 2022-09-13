@@ -23,7 +23,7 @@ If you want to understand more about Kustomize take a look at the [optional modu
 
 There are different ways you can browse the manifests for the sample application depending on your comfort level. One way is to take a look at the GitHub repository for this workshop:
 
-https://github.com/aws-samples/eks-workshop-v2/tree/main/environment/workspace/manifests
+  [https://github.com/aws-samples/eks-workshop-v2/tree/main/environment/workspace/manifests](https://github.com/aws-samples/eks-workshop-v2/tree/main/environment/workspace/manifests)
 
 Alternatively you can explore the manifests directly in your workshop environment. For example, use the `tree` command to visualize the directory structure:
 
