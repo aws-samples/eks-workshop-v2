@@ -1,6 +1,7 @@
 resource "aws_cloud9_environment_ec2" "c9_workspace" {
   instance_type               = var.instance_type
   name                        = var.environment_name
+  subnet_id                   = var.subnet_id
   automatic_stop_time_minutes = 90
 
   tags = {

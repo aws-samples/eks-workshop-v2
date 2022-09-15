@@ -10,7 +10,7 @@ module "aws-eks-accelerator-for-terraform" {
   tags = local.tags
 
   vpc_id             = module.aws_vpc.vpc_id
-  private_subnet_ids = module.aws_vpc.private_subnets
+  private_subnet_ids = slice(module.aws_vpc.private_subnets, 0, 3)
   public_subnet_ids  = module.aws_vpc.public_subnets
 
   cluster_name    = local.cluster_name
@@ -64,7 +64,7 @@ module "aws-eks-accelerator-for-terraform" {
     mg_5 = {
       node_group_name = "managed-ondemand"
       instance_types  = ["t3.medium"]
-      subnet_ids      = module.aws_vpc.private_subnets
+      subnet_ids      = slice(module.aws_vpc.private_subnets, 0, 3)
       min_size     = local.default_mng_min
       max_size     = local.default_mng_max
       desired_size = local.default_mng_size

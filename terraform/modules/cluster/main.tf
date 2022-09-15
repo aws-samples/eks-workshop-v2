@@ -45,10 +45,14 @@ locals {
   cluster_version = var.cluster_version
   prefix       = "eks-workshop"
 
-  vpc_cidr     = "10.42.0.0/16"
-  vpc_name     = join("-", [local.prefix, local.tags.env, "vpc"])
-  azs          = slice(data.aws_availability_zones.available.names, 0, 3)
-  cluster_name = join("-", [local.prefix, local.tags.env])
+  vpc_cidr               = "10.42.0.0/16"
+  secondary_vpc_cidr     = "100.64.0.0/16"
+  primary_priv_subnets   = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+  secondary_priv_subnets = [for k, v in local.azs : cidrsubnet(local.secondary_vpc_cidr, 8, k + 10)]
+  public_subnets         = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  vpc_name               = join("-", [local.prefix, local.tags.env, "vpc"])
+  azs                    = slice(data.aws_availability_zones.available.names, 0, 3)
+  cluster_name           = join("-", [local.prefix, local.tags.env])
 
   aws_account_id = data.aws_caller_identity.current.account_id
   aws_region     = data.aws_region.current.id
