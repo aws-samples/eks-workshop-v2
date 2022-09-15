@@ -7,10 +7,10 @@ module "aws_vpc" {
   secondary_cidr_blocks = [local.secondary_vpc_cidr]
   azs  = local.azs
 
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
+  public_subnets  = local.public_subnets
   private_subnets = concat(
-    [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)],
-    [for k, v in local.azs : cidrsubnet(local.secondary_vpc_cidr, 8, k + 10)]
+    local.primary_priv_subnets,
+    local.secondary_priv_subnets
   )
 
   enable_nat_gateway   = true
