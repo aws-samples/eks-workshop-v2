@@ -1,5 +1,5 @@
 ---
-title: "Setting up your GitOps components and Configuration"
+title: 'Setting up your GitOps components and Configuration'
 sidebar_position: 15
 ---
 
@@ -13,15 +13,10 @@ Grant your created access token a `repo` permission as shown in the image below 
 
 ![GitHub Token repo permission](./github-acess-token-repo-permission.png)
 
-Keep this token in a safe location, and set it up as environment variable on your terminal (replace the `<YOUR-TOKEN>` with your actual token value). It will later be used by the Flux CLI.
+Keep this token in a safe location, and set it up as environment variable on your terminal (replace the `<YOUR-TOKEN>` with your actual token value). It will later be used by the Flux CLI. You shhoul also configure your GitHub username as environment variable as well. Replace the `<GITHUB_USER>` in the block below:
 
-```bash
+```test=false
 export GITHUB_TOKEN=<YOUR-TOKEN>
-```
-
-Configure your GitHub username as environment variable as well. Replace the `<GITHUB_USER>`
-
-```bash
 export GITHUB_USER=<GITHUB_USER>
 ```
 
@@ -51,7 +46,7 @@ flux version 0.34.0
 
 The bootstrap process, install Flux components on your cluster, create a GitHub repository if it's not already exists, and create the relevant files within the repository for managing clusters object using GitOps with Flux.
 
-```bash
+```bash test=false
 export GITHUB_REPO=eksworkshop-gitops-config-flux
 ```
 
@@ -66,7 +61,7 @@ flux check --pre
 
 After setting up all the relevant environment variables, use the following command to bootstrap Flux v2 to the cluster:
 
-```bash
+```bash test=false
 flux bootstrap github --owner=${GITHUB_USER} --repository=${GITHUB_REPO} --branch=main --path=clusters/production --personal
 ► connecting to github.com
 ✔ repository "https://github.com/aws-samples/eksworkshop-gitops-config-flux" created

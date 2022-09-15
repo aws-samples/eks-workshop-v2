@@ -12,7 +12,7 @@ The reason we chose the UI service, is because it can be easily replicated in th
 
 First you will have to clone the repository created by Flux in the previous section. Using this repository we will deploy the replicated UI service that will be deployed by Flux.
 
-```bash
+```bash test=false
 git clone https://github.com/$GITHUB_USER/eksworkshop-gitops-config-flux.git
 ```
 
