@@ -135,7 +135,7 @@ As you can see in the above snippet, the `GitRepository` named `flux-system` tha
 Since we are using the monorepo approach in this workshop module, we can simply point out Flux kustomization to use the configured Flux `GitRepository` object, and retrieve our new `UI` service manifests from it (Remember - we are hosting both the Flux toolkit configuration and the application manifests configuration in the same repository). To create it, use the following command:
 
 ```
-cat <<EOF >>./eksworkshop-gitops-config-flux/clusters/production/flux-system/ui-kustomization.yaml
+cat <<EOF >>./eksworkshop-gitops-config-flux/clusters/production/ui-kustomization.yaml
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
@@ -162,7 +162,30 @@ After you configured Flux to point to your GitOps version of the `UI` service, t
 Within the cloned repository of `eksworkshop-gitops-config-flux`, run the following command
 
 ```
+cd eksworkshop-gitops-config-flux
 git add .
 git commit -am "Configuring the UI service"
 git push origin main
 ```
+
+# Verify the delivery of the `UI` service
+
+Assuming everything worked as expected, you now should have the following components in your cluster:
+
+- A new namespace named `ui-gitops`
+- A complete deployment of the `UI` service into the `ui-gitops` namespace
+- A modified Kubernetes service of type `LoadBalancer` in the `ui-gitops` namespace
+
+To verify your `UI` service kustomization was successfully created, you will need to use the flux CLI. Can you figure out what command it should be based on Flux [documentation](https://fluxcd.io/flux/components/kustomize/kustomization/)?
+
+<details><summary>Show me the command</summary>
+<p>
+
+```bash
+flux get kustomization
+```
+
+</p>
+</details>
+
+You should be able to retrieve the modified `LoadBalancer` service endpoint from the `ui-gitops` namespce. Get the endpoint and head over to your browseer to make sure the new `UI` service is accessible from that endpoint
