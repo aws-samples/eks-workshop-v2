@@ -1,6 +1,6 @@
 ---
 title: Getting started
-sidebar_position: 20
+sidebar_position: 30
 ---
 
 The workshop modules use a sample microservices application to demonstrate the various concepts related to EKS.
