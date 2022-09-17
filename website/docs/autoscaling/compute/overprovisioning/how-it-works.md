@@ -58,7 +58,7 @@ How much over provisioning is needed can be controlled by
    - The command below displays the Managed Nodegroup size
 
 ```bash
-aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME \
+$ aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME \
   --nodegroup-name $EKS_DEFAULT_MNG_NAME --query nodegroup.scalingConfig --output table
 ```
 >**Note**: The **`—max-size`** dictates upto how many nodes Cluster Autoscaler will provision

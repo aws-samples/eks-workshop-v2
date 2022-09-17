@@ -28,7 +28,7 @@ There are different ways you can browse the manifests for the sample application
 Alternatively you can explore the manifests directly in your workshop environment. For example, use the `tree` command to visualize the directory structure:
 
 ```bash
-tree --dirsfirst /workspace/manifests
+$ tree --dirsfirst /workspace/manifests
 |-- activemq
 |   |-- configMap.yaml
 |   |-- kustomization.yaml
@@ -98,7 +98,7 @@ tree --dirsfirst /workspace/manifests
 To deploy the application, run the following `kubectl` command:
 
 ```bash timeout=300 wait=30
-kubectl apply -k /workspace/manifests
+$ kubectl apply -k /workspace/manifests
 ```
 
 ## Exploring the application
@@ -106,7 +106,7 @@ kubectl apply -k /workspace/manifests
 You can start to explore the example application thats been deployed for you. The initial state of the application is that its completely self-contained in the EKS cluster. Each microservice is deployed to its own separate `Namespace` to provide some degree of isolation.
 
 ```bash
-kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
+$ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
 NAME       STATUS   AGE
 activemq   Active   5h6m
 assets     Active   5h6m
@@ -121,7 +121,7 @@ ui         Active   5h6m
 Most of the components are modeled using the `Deployment` resource in its respective namespace:
 
 ```bash
-kubectl get deployment -l app.kubernetes.io/created-by=eks-workshop -A
+$ kubectl get deployment -l app.kubernetes.io/created-by=eks-workshop -A
 NAMESPACE   NAME             READY   UP-TO-DATE   AVAILABLE   AGE
 assets      assets           1/1     1            1           5h6m
 carts       carts            1/1     1            1           5h6m

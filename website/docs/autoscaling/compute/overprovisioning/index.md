@@ -12,5 +12,5 @@ There are different approaches to solve this problem. This workshop solves this 
 Before we begin let's reset our environment:
 
 ```bash timeout=300 wait=30
-reset-environment
+$ reset-environment 
 ```

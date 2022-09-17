@@ -6,13 +6,13 @@ sidebar_position: 30
 The first place to look for the issue is the logs of the `carts` service:
 
 ```bash
-kubectl logs -n carts deployment/carts
+$ kubectl logs -n carts deployment/carts
 ```
 
 This will return a lot of logs, so lets filter it down a little to get a succinct view of the problem:
 
 ```bash
-kubectl -n carts logs deployment/carts \
+$ kubectl -n carts logs deployment/carts \
   | grep AmazonDynamoDBException
 2022-08-01 20:46:40.648 ERROR 1 --- [nio-8080-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException: User: arn:aws:sts::1234567890:assumed-role/eks-workshop-cluster-managed-ondemand/i-09e2e801deff1197a is not authorized to perform: dynamodb:Query on resource: arn:aws:dynamodb:us-west-2:1234567890:table/eks-workshop-cluster-carts/index/idx_global_customerId because no identity-based policy allows the dynamodb:Query action (Service: AmazonDynamoDBv2; Status Code: 400; Error Code: AccessDeniedException; Request ID: BDDGUIJ5N8PSEI03F4U15NI727VV4KQNSO5AEMVJF66Q9ASUAAJG; Proxy: null)] with root cause
 com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException: User: arn:aws:sts::1234567890:assumed-role/eks-workshop-cluster-managed-ondemand/i-09e2e801deff1197a is not authorized to perform: dynamodb:Query on resource: arn:aws:dynamodb:us-west-2:1234567890:table/eks-workshop-cluster-carts/index/idx_global_customerId because no identity-based policy allows the dynamodb:Query action (Service: AmazonDynamoDBv2; Status Code: 400; Error Code: AccessDeniedException; Request ID: BDDGUIJ5N8PSEI03F4U15NI727VV4KQNSO5AEMVJF66Q9ASUAAJG; Proxy: null)

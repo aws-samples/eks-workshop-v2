@@ -27,7 +27,7 @@ KUSTOMIZE HERE
 Watch the pod status by running the below command, you will notice the pods being evicted every time it runs for more than 120 seconds:
 
 ```bash test=false
-kubectl get pods -l podlifetime=enabled --watch 
+$ kubectl get pods -l podlifetime=enabled --watch 
 NAME                              READY   STATUS              RESTARTS   AGE
 nginx-lifetime-68db49fb68-4x6l5   1/1     Running             0          2m24s
 nginx-lifetime-68db49fb68-4x6l5   1/1     Terminating         0          3m
@@ -43,7 +43,7 @@ nginx-lifetime-68db49fb68-zk56p   1/1     Running             0          2s
 Press `Ctrl + C` to return to the command prompt. You can also look at the descheduler logs for more analysis
 
 ```bash test=false
-kubectl logs -n kube-system deployment/descheduler
+$ kubectl logs -n kube-system deployment/descheduler
 I0610 03:58:23.658264       1 descheduler.go:278] Building a pod evictor
 I0610 03:58:23.658303       1 pod_lifetime.go:104] "Processing node" node="ip-10-14-10-225.us-west-2.compute.internal"
 I0610 03:58:23.658392       1 pod_lifetime.go:104] "Processing node" node="ip-10-14-11-249.us-west-2.compute.internal"

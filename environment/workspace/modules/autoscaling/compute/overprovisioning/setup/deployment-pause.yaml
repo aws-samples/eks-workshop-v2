@@ -19,4 +19,4 @@ spec:
         image: k8s.gcr.io/pause
         resources:
           requests:
-            memory: "1.5Gi"
+            memory: "2Gi"

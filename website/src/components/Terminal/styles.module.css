@@ -57,6 +57,24 @@
   background-color: var(--ifm-background-color);
   border-bottom-left-radius: inherit;
   border-bottom-right-radius: inherit;
+  overflow-x: scroll;
+  background: #1E1E1E;
+  padding: 10px;
+}
+
+.browserWindowBody::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+
+.browserWindowBody::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.browserWindowBody::-webkit-scrollbar-thumb {
+  background-color: #bfbfc0;
+  border-radius: 6px; 
+  border: 3px solid #1E1E1E;
 }
 
 .browserWindowBody *:last-child {
@@ -66,25 +84,8 @@
 .terminalBody {
   background: #1E1E1E;
   font-family: monospace;
-  padding: 10px;
   margin-top: -1px;
   font-size: 15px;
-  overflow-x: scroll;
-}
-
-.terminalBody::-webkit-scrollbar {
-  width: 11px;
-  height: 11px;
-}
-
-.terminalBody::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.terminalBody::-webkit-scrollbar-thumb {
-  background-color: #bfbfc0;
-  border-radius: 6px; 
-  border: 3px solid #1E1E1E;
 }
 
 .terminalPrompt {
@@ -99,6 +100,7 @@
 }
 .terminalPromptBling {
   color: #dddddd;
+  margin-right: 10px;
 }
 .terminalPromptCursor {
   display: block;

@@ -6,7 +6,7 @@ sidebar_position: 50
 Let's take a closer look at the new `carts` pod to see whats happening.
 
 ```bash
-kubectl -n carts exec deployment/carts -- env | grep AWS
+$ kubectl -n carts exec deployment/carts -- env | grep AWS
 AWS_STS_REGIONAL_ENDPOINTS=regional
 AWS_DEFAULT_REGION=us-west-2
 AWS_REGION=us-west-2

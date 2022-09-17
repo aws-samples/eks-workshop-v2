@@ -6,7 +6,7 @@ sidebar_position: 20
 The first step in this process is to re-configure the `carts` service to use a DynamoDB table that has already been created for us. The application loads most of its confirmation from a `ConfigMap`, lets take look at it:
 
 ```bash
-kubectl -n carts get -o yaml cm carts
+$ kubectl -n carts get -o yaml cm carts
 apiVersion: v1
 data:
   AWS_ACCESS_KEY_ID: key
@@ -23,7 +23,7 @@ metadata:
 Lets use Kustomize to change this configuration to use the real DynamoDB service:
 
 ```bash hook=enable-dynamo hookTimeout=430
-kubectl apply -k /workspace/modules/security/irsa/dynamo
+$ kubectl apply -k /workspace/modules/security/irsa/dynamo
 ```
 
 This will create a new `ConfigMap` which we can now take a look at:

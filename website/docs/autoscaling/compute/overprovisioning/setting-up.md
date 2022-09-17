@@ -24,5 +24,5 @@ autoscaling/compute/overprovisioning/setup/deployment-pause.yaml
 Apply the updates to your cluster:
 
 ```bash timeout=340 hook=overprovisioning-setup
-kubectl apply -k /workspace/modules/autoscaling/compute/overprovisioning/setup
+$ kubectl apply -k /workspace/modules/autoscaling/compute/overprovisioning/setup
 ```

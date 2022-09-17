@@ -32,7 +32,7 @@ Your IDE comes pre-configured to access the workshop EKS cluster and also provid
 For example, run the following command to get details about your EKS cluster:
 
 ```bash
-aws eks describe-cluster --name $EKS_CLUSTER_NAME
+$ aws eks describe-cluster --name $EKS_CLUSTER_NAME
 {
     "cluster": {
         "name": "eks-workshop-cluster",
@@ -47,5 +47,5 @@ aws eks describe-cluster --name $EKS_CLUSTER_NAME
 You can also check that you can connect to your EKS cluster like so:
 
 ```bash
-kubectl get nodes
+$ kubectl get nodes
 ```

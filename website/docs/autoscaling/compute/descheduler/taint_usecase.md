@@ -13,15 +13,15 @@ In order to demonstrate this scenario we need to apply a taint to a node. The co
 - Identify an arbitrary node
 - Taint the node
 
-```bash multiLine=true hook=descheduler-taint
-export FIRST_NODE_NAME=$(kubectl get nodes --sort-by={metadata.name} --no-headers -l workshop-default=yes -o json | jq -r '.items[0].metadata.name')
-kubectl taint nodes ${FIRST_NODE_NAME} dedicated=team1:NoSchedule --overwrite
+```bash hook=descheduler-taint
+$ export FIRST_NODE_NAME=$(kubectl get nodes --sort-by={metadata.name} --no-headers -l workshop-default=yes -o json | jq -r '.items[0].metadata.name')
+$ kubectl taint nodes ${FIRST_NODE_NAME} dedicated=team1:NoSchedule --overwrite
 ```
 
 The descheduler will evict the all pods on its next reconciliation loop as it does not tolerate the taint applied to the node. Once evicted, `kube-scheduler` will kick in and schedule those pods to an untained node. We can observe this by watching the pods:
 
 ```bash
-kubectl get pods -o wide -l app.kubernetes.io/created-by=eks-workshop -A
+$ kubectl get pods -o wide -l app.kubernetes.io/created-by=eks-workshop -A
 ```
 
 What we expect to see is that multiple pods will get identified for eviction and terminated, with new pods starting to take their place.
@@ -29,7 +29,7 @@ What we expect to see is that multiple pods will get identified for eviction and
 You can also look at the descheduler logs to understand its actions:
 
 ```bash
-kubectl logs -n kube-system deployment/descheduler
+$ kubectl logs -n kube-system deployment/descheduler
 I0609 18:40:23.334236       1 node_taint.go:108] "Processing node" node="ip-10-14-10-225.us-west-2.compute.internal"
 I0609 18:40:23.334389       1 node_taint.go:121] "Not all taints with NoSchedule effect are tolerated after update for pod on node" pod="default/nginx-6799fc88d8-k46jv" node="ip-10-14-10-225.us-west-2.compute.internal"
 I0609 18:40:23.353289       1 evictions.go:163] "Evicted pod" pod="default/nginx-6799fc88d8-k46jv" reason="NodeTaint" strategy="NodeTaint" node="ip-10-14-10-225.us-west-2.compute.internal"
@@ -43,5 +43,5 @@ I0609 18:40:23.354776       1 descheduler.go:304] "Number of evicted pods" total
 Once the exercise is complete remove the taint from the node:
 
 ```bash expectError=true
-kubectl taint nodes -l workshop-default=yes dedicated=team1:NoSchedule-
+$ kubectl taint nodes -l workshop-default=yes dedicated=team1:NoSchedule-
 ```

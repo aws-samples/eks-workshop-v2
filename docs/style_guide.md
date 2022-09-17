@@ -14,7 +14,7 @@ For example instead of this:
 
 ````
 ```
-kubectl get pods
+$ kubectl get pods
 ```
 ````
 
@@ -22,11 +22,11 @@ It is preferable to use this:
 
 ````
 ```bash
-kubectl get pods
+$ kubectl get pods
 ```
 ````
 
-Enter the command exactly as it should be run by the learner, do not prefix it with anything in the interest of styling.
+Enter the command exactly as it should be run by the learner, prefixed with `$ `.
 
 For example instead of this:
 
@@ -36,30 +36,24 @@ For example instead of this:
 ```
 ````
 
-It is preferable to use this:
+You should do this:
 
 ````
 ```bash
-kubectl get pods
+$ kubectl get pods
 ```
 ````
 
-Expected output from a command the learner should run must be displayed using the `{{< output >}}` shortcode:
+Expected output from a command the learner runs can be displayed under the command, do not prefix it with anything:
 
 ````
 Please run this command:
 
 ```bash
-kubectl get pods
-```
-
-And expect this output:
-
-{{< output >}}
+$ kubectl get pods
 NAME                       READY   STATUS    RESTARTS      AGE
 aws-node-1z3ng             1/1     Running   1 (16h ago)   21h
-{{< /output >}}
-````
+```
 
 ### Asynchronous commands
 
@@ -89,7 +83,7 @@ $ kubectl wait --for=condition=available --timeout=60s deployment/example
 Similarly with `helm` use `--wait`:
 
 ```bash
-helm upgrade --install --namespace karpenter \
+$ helm upgrade --install --namespace karpenter \
   karpenter karpenter/karpenter \
   --wait
 ```
@@ -156,13 +150,13 @@ When fetching a manifest from GitHub do not refer to `master` or `main` and inst
 For example, instead of this:
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/aws/eks-charts/master/stable/aws-load-balancer-controller/crds/crds.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/aws/eks-charts/master/stable/aws-load-balancer-controller/crds/crds.yaml
 ```
 
 It is preferable to use this:
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/aws/eks-charts/v0.0.86/stable/aws-load-balancer-controller/crds/crds.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/aws/eks-charts/v0.0.86/stable/aws-load-balancer-controller/crds/crds.yaml
 ```
 
 Notice we changed from referring to `master` to referring to the tag `v0.0.86`.
@@ -180,5 +174,5 @@ The recommendation is to use the EKS cluster name where possible, and this is pr
 An example of using this would look like so:
 
 ```
-aws eks describe-cluster --name $EKS_CLUSTER_NAME
+$ aws eks describe-cluster --name $EKS_CLUSTER_NAME
 ```

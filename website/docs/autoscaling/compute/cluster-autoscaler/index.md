@@ -17,5 +17,5 @@ Cluster Autoscaler will attempt to determine the CPU, memory, and GPU resources 
 Before we begin let's reset our environment:
 
 ```bash timeout=300 wait=30
-reset-environment
+$ reset-environment 
 ```

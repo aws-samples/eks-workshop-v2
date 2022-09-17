@@ -7,7 +7,7 @@ sidebar_position: 2
 Before we begin let's reset our environment:
 
 ```bash timeout=300 wait=30
-reset-environment
+$ reset-environment 
 ```
 
 We will be installing CPA using Kustomize manifests, the main part of which is the `Deployment` resource below:
@@ -19,13 +19,13 @@ autoscaling/workloads/cpa/deployment.yaml
 Let's apply this to our cluster:
 
 ```bash hook=cpa-install timeout=180
-kubectl apply -k /workspace/modules/autoscaling/workloads/cpa
+$ kubectl apply -k /workspace/modules/autoscaling/workloads/cpa
 ```
 
 This will create a `Deployment` in the `kube-system` namespace which we can inspect:
 
 ```bash
-kubectl get deployment dns-autoscaler -n other
+$ kubectl get deployment dns-autoscaler -n other
 NAME             READY   UP-TO-DATE   AVAILABLE   AGE
 dns-autoscaler   1/1     1            1           10s
 ```
@@ -33,7 +33,7 @@ dns-autoscaler   1/1     1            1           10s
 After CPA starts up it will automatically create a `ConfigMap` we can modify to adjust its configuration:
 
 ```bash
-kubectl describe configmap dns-autoscaler -n kube-system
+$ kubectl describe configmap dns-autoscaler -n kube-system
 Name:         dns-autoscaler
 Namespace:    other
 Labels:       <none>

@@ -1,4 +1,4 @@
-import React, {type ReactNode} from 'react';
+import React, {Component, type ReactNode} from 'react';
 import ReactTooltip from 'react-tooltip';
 
 import styles from './styles.module.css';
@@ -6,7 +6,7 @@ import styles from './styles.module.css';
 interface Props {
   children: ReactNode;
   command: string;
-  output: string,
+  output: string;
 }
 
 export default function Terminal({
@@ -14,16 +14,34 @@ export default function Terminal({
   command,
   output,
 }: Props): JSX.Element {
-  const commandParts = command.split('\\')
+  let decodedOutput = atob(output);
 
-  const firstLine = commandParts[0]
-  const otherParts = commandParts.slice[1]
+  const outputParts = decodedOutput.split('\n')
+
+  let sections : Array<TerminalSection> = []
+
+  let section = new TerminalSection()
+
+  let appendNext = false;
+
+  for(let i = 0; i < outputParts.length; i++) {
+    let currentLine = outputParts[i]
+
+    if(!appendNext) {
+      if(currentLine.startsWith('$ ')) {
+        section = new TerminalSection()
+        sections.push(section)
+
+        currentLine = currentLine.substring(2)
+      }
+
+      section.processLine(currentLine)
+    }
+  }
 
   function copyToClipboard(e) {
     navigator.clipboard.writeText(command)
   }
-
-  let base64ToStringNew = atob(output)
 
   return (
     <div className={styles.browserWindow}>
@@ -43,25 +61,155 @@ export default function Terminal({
       </div>
 
       <div className={styles.browserWindowBody}>
-        <section className={styles.terminalBody} onClick={copyToClipboard} data-tip data-for="copy-hint">
-          <div className={styles.terminalPrompt}>
-            <span className={styles.terminalPromptUser}>eks-workshop:</span>
-            <span className={styles.terminalPromptLocation}>~</span>
-            <span className={styles.terminalPromptBling}>$</span>
-            <span className={styles.terminalPromptCursor}></span>
-            <span className={styles.terminalPromptCommand}>{firstLine}</span>
-          </div>
-          {otherParts && otherParts.map((object, i) => <div className={styles.terminalPrompt}>{object}</div>)}
-          <div className={styles.terminalOutput}><pre>
-            {base64ToStringNew}
-            </pre>
-          </div>
-        
-        </section>
-        <ReactTooltip id="copy-hint" place="right" effect='solid'>
-          <span>Click to copy</span>
-        </ReactTooltip>
+        { sections.map(element => {
+          return element.render()
+        })}
       </div>
     </div>
   );
+}
+
+class TerminalCommandContext {
+  private commandLines: Array<string> = [];
+  private output: string = '';
+  private inHeredoc = false;
+  private capturingOutput = false;
+
+  processLine(currentLine: string) {
+    if(this.capturingOutput) {
+      this.output.concat(`${currentLine}\n`)
+    }
+    else {
+      this.commandLines.push(currentLine)
+
+      if(currentLine.indexOf('<<EOF') > -1) {
+        this.inHeredoc = true
+      }
+      else if(this.inHeredoc) {
+        if(currentLine.indexOf('EOF') > -1) {
+          this.inHeredoc = false
+        }
+      }
+    }
+
+    if(!currentLine.endsWith('\\') && !this.inHeredoc) {
+      this.capturingOutput = true
+    }
+  }
+}
+
+class TerminalSection {
+  protected contexts: Array<TerminalContext> = [];
+  private context : TerminalContext;
+  private commandContext : TerminalCommand;
+  private inHeredoc = false;
+
+  constructor() {
+    this.context = this.commandContext = new TerminalCommand();
+    this.contexts.push(this.context)
+  }
+
+  switchContext(context: TerminalContext) {
+    this.contexts.push(context)
+
+    this.context = context;
+  }
+
+  addLine(line: string) {
+    this.context.addLine(line)
+  }
+
+  processLine(currentLine: string) {
+    this.context.addLine(currentLine);
+
+    if(currentLine.indexOf('<<EOF') > -1) {
+      this.inHeredoc = true
+    }
+    else if(this.inHeredoc) {
+      if(currentLine.indexOf('EOF') > -1) {
+        this.inHeredoc = false
+      }
+    }
+    
+    if(!currentLine.endsWith('\\') && !this.inHeredoc) {
+      this.context = new TerminalOutput()
+      this.contexts.push(this.context)
+    }
+  }
+
+  render() {
+    const commandString = this.commandContext.getCommand()
+    const handler = () => {
+      navigator.clipboard.writeText(commandString)
+    }
+
+    return (
+      <section className={styles.terminalBody} data-tip data-for="copy-hint" onClick={handler}>
+        {this.contexts.map(element => {
+          return (element.render())
+        })}
+      </section>
+    )
+  }
+  
+}
+
+class TerminalContext {
+  protected lines: Array<string> = [];
+
+  addLine(line: string) {
+    this.lines.push(line)
+  }
+
+  render() {
+    return (<div></div>)
+  }
+
+  hasLines() {
+    return this.lines.length > 0
+  }
+}
+
+class TerminalCommand extends TerminalContext {
+  private isMultiLine = false;
+
+  addLine(line: string) {
+    super.addLine(line)
+  }
+
+  getCommand() {
+    return this.lines.join('\n')
+  }
+
+  render() {
+    return (
+      <div>
+        <div className={styles.terminalPrompt}>
+        <span className={styles.terminalPromptUser}>eks-workshop:</span>
+        <span className={styles.terminalPromptLocation}>~</span>
+        <span className={styles.terminalPromptBling}>$</span>
+        {this.renderCommand(this.lines[0])}
+      </div>
+      { this.lines.slice(1).map(element => {
+        return (<div className={styles.terminalPrompt}>{this.renderCommand(element)}</div>)
+      })
+      }
+      </div>
+    )
+  }
+
+  renderCommand(command: string) {
+    return (<span className={styles.terminalPromptCommand}>{command}</span>)
+  }
+}
+
+class TerminalOutput extends TerminalContext {
+  render() {
+    return (
+      <div className={styles.terminalOutput}><pre>
+        { this.lines.join('\n')}
+      </pre>
+    </div>
+    )
+  }
 }
