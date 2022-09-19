@@ -15,7 +15,7 @@ autoscaling/compute/karpenter/provisioner/provisioner.yaml
 Let's apply this to our cluster:
 
 ```bash timeout=180
-kubectl apply -k /workspace/modules/autoscaling/compute/karpenter/provisioner
+$ kubectl apply -k /workspace/modules/autoscaling/compute/karpenter/provisioner
 ```
 
 The configuration for this provider is quite simple. We will change in the future the provider. For the moment let's focus in a few of the settings used.
@@ -36,7 +36,7 @@ You can create a new terminal window and leave the command below running so you 
 To read Karpenter logs from the console you can run the following command.
 
 ```bash
-kubectl logs deployment/karpenter -c controller -n karpenter
+$ kubectl logs deployment/karpenter -c controller -n karpenter
 ```
 
 Karpenter log configuration is stored as a Kubernetes ConfigMap. You can read the configuration by running the following command `kubectl describe configmap config-logging -n karpenter`. You can increase the logging level to `debug` using the following command `kubectl patch configmap config-logging -n karpenter --patch '{"data":{"loglevel.controller":"debug"}}'`

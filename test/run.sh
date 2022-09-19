@@ -9,6 +9,4 @@ fi
 
 aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
 
-kubectl get nodes &> /dev/null
-
 markdown-sh test "$@" /content 

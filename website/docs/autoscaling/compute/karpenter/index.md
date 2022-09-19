@@ -18,5 +18,5 @@ Karpenter's goal is to improve the efficiency and cost of running workloads on K
 Before we begin let's reset our environment:
 
 ```bash timeout=300 wait=30
-reset-environment
+$ reset-environment 
 ```

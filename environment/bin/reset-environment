@@ -18,8 +18,8 @@ echo "Waiting for application to become ready..."
 
 sleep 10
 
-kubectl wait --for=condition=available --timeout=120s deployments -l app.kubernetes.io/created-by=eks-workshop -A > /dev/null
-kubectl wait --for=condition=Ready --timeout=120s pods -l app.kubernetes.io/created-by=eks-workshop -A > /dev/null
+kubectl wait --for=condition=available --timeout=180s deployments -l app.kubernetes.io/created-by=eks-workshop -A > /dev/null
+kubectl wait --for=condition=Ready --timeout=180s pods -l app.kubernetes.io/created-by=eks-workshop -A > /dev/null
 
 expected_size_config="$EKS_DEFAULT_MNG_MIN $EKS_DEFAULT_MNG_MAX $EKS_DEFAULT_MNG_DESIRED"
 

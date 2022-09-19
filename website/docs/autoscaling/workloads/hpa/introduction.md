@@ -6,13 +6,13 @@ sidebar_position: 10
 Run the following command to setup the EKS cluster for this module:
 
 ```bash timeout=300 wait=30
-reset-environment
+$ reset-environment 
 ```
 
 Currently there are no `HorizontalPodAutoscaler` resources in our cluster, which you can check with the following command:
 
 ```bash expectError=true
-kubectl get hpa -A
+$ kubectl get hpa -A
 No resources found
 ```
 
@@ -32,5 +32,5 @@ autoscaling/workloads/hpa/hpa.yaml
 Lets apply this configuration:
 
 ```bash
-kubectl apply -k /workspace/modules/autoscaling/workloads/hpa
+$ kubectl apply -k /workspace/modules/autoscaling/workloads/hpa
 ```
