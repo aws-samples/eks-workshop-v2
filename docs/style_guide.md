@@ -54,6 +54,7 @@ $ kubectl get pods
 NAME                       READY   STATUS    RESTARTS      AGE
 aws-node-1z3ng             1/1     Running   1 (16h ago)   21h
 ```
+````
 
 ### Asynchronous commands
 
