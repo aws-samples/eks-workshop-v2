@@ -7,7 +7,7 @@ The Cluster Autoscaler component has been pre-installed in the EKS cluster but i
 
 ```bash timeout=240
 $ kubectl scale --replicas=1 -n kube-system \
-  deployment/cluster-autoscaler-aws-cluster-autoscaler && \
+  deployment/cluster-autoscaler-aws-cluster-autoscaler
 $ kubectl rollout status \
   deployment/cluster-autoscaler-aws-cluster-autoscaler \
   -n kube-system --timeout 180s
