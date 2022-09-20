@@ -19,7 +19,7 @@ $ kubectl apply -k /workspace/modules/autoscaling/compute/cluster-autoscaler
 Some pods will be in the `Pending` state, which triggers the cluster-autoscaler to scale out the EC2 fleet.
 
 ```bash test=false
-$ kubectl get pods -l app=nginx -o wide --watch
+$ kubectl get pods -n orders -o wide --watch
 ```
 
 View the cluster-autoscaler logs
