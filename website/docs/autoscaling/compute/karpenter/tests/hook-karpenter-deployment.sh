@@ -7,7 +7,7 @@ before() {
 after() {
   sleep 10
 
-  kubectl rollout status -n assets deployment/assets --timeout 240s
+  kubectl rollout status -n assets deployment/assets --timeout 300s
 
   echo 'Rollout complete'
 
