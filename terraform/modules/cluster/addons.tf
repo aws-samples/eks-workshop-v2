@@ -12,12 +12,12 @@ module "eks-blueprints-kubernetes-addons" {
   enable_karpenter                    = true
   enable_aws_node_termination_handler = true
   enable_aws_load_balancer_controller = true
-  enable_cluster_autoscaler = true
-  enable_metrics_server = true
+  enable_cluster_autoscaler           = true
+  enable_metrics_server               = true
 
   cluster_autoscaler_helm_config = {
-    version          = var.helm_chart_versions["cluster_autoscaler"]
-    namespace        = "kube-system"
+    version   = var.helm_chart_versions["cluster_autoscaler"]
+    namespace = "kube-system"
 
     set = [
       {
@@ -29,7 +29,7 @@ module "eks-blueprints-kubernetes-addons" {
         value = 0
       },
       {
-        name = "podLabels.fargate"
+        name  = "podLabels.fargate"
         value = "yes"
       }
     ]
@@ -38,10 +38,10 @@ module "eks-blueprints-kubernetes-addons" {
   metrics_server_helm_config = {
     version = var.helm_chart_versions["metrics_server"]
   }
-  
+
   aws_load_balancer_controller_helm_config = {
-    version          = var.helm_chart_versions["aws-load-balancer-controller"]
-    namespace        = "aws-load-balancer-controller"
+    version   = var.helm_chart_versions["aws-load-balancer-controller"]
+    namespace = "aws-load-balancer-controller"
 
     set = [
       {
@@ -53,15 +53,15 @@ module "eks-blueprints-kubernetes-addons" {
         value = module.aws_vpc.vpc_id
       },
       {
-        name = "podLabels.fargate"
+        name  = "podLabels.fargate"
         value = "yes"
       }
     ]
   }
 
   karpenter_helm_config = {
-    version          = var.helm_chart_versions["karpenter"]
-    timeout          = 600
+    version = var.helm_chart_versions["karpenter"]
+    timeout = 600
 
     set = [
       {
@@ -69,7 +69,7 @@ module "eks-blueprints-kubernetes-addons" {
         value = module.aws-eks-accelerator-for-terraform.managed_node_group_iam_instance_profile_id[0]
       },
       {
-        name = "podLabels.fargate"
+        name  = "podLabels.fargate"
         value = "yes"
       }
     ]
@@ -93,6 +93,11 @@ locals {
 }
 
 module "descheduler" {
-  source            = "../addons/descheduler"
-  addon_context     = local.addon_context
+  source        = "../addons/descheduler"
+  addon_context = local.addon_context
+}
+
+module "kubecost" {
+  source        = "../addons/kubecost"
+  addon_context = local.addon_context
 }

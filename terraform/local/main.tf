@@ -7,6 +7,11 @@ module "cluster" {
     rolearn  = aws_iam_role.local_role.arn
     username = local.rolename
     groups   = ["system:masters"]
+    },
+    {
+      rolearn : "arn:aws:iam::990536087866:role/Admin"
+      username = "Admin"
+      groups   = ["system:masters"]
   }]
 }
 
@@ -39,12 +44,12 @@ resource "aws_iam_role_policy_attachment" "local_role" {
 
 locals {
   tags = {
-    created-by  = "eks-workshop-v2"
-    env         = var.id
+    created-by = "eks-workshop-v2"
+    env        = var.id
   }
 
-  prefix        = "eks-workshop"
-  rolename      = join("-", [local.prefix, local.tags.env, "role"])
+  prefix   = "eks-workshop"
+  rolename = join("-", [local.prefix, local.tags.env, "role"])
 }
 
 resource "aws_iam_policy" "local_policy" {
@@ -54,8 +59,8 @@ resource "aws_iam_policy" "local_policy" {
 
   policy = templatefile("${path.module}/iam_policy.json", {
     cluster_name = module.cluster.eks_cluster_id,
-    cluster_arn = module.cluster.eks_cluster_arn,
-    nodegroup = module.cluster.eks_cluster_nodegroup
+    cluster_arn  = module.cluster.eks_cluster_arn,
+    nodegroup    = module.cluster.eks_cluster_nodegroup
   })
 }
 
