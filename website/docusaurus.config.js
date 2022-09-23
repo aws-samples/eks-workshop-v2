@@ -76,9 +76,9 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'exposing/index',
+            docId: 'fundamentals/index',
             position: 'left',
-            label: 'Exposing applications',
+            label: 'Fundamentals',
           },
           {
             type: 'doc',
@@ -91,12 +91,6 @@ const config = {
             docId: 'networking/index',
             position: 'left',
             label: 'Networking',
-          },
-          {
-            type: 'doc',
-            docId: 'storage/index',
-            position: 'left',
-            label: 'Stateful services',
           },
           {
             type: 'doc',
