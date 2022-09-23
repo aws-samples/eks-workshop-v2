@@ -5,7 +5,7 @@ sidebar_position: 10
 
 Kubecost has already been deployed into your cluster. To access the Kubecost dashboard we will expose it through a `kubectl port-forward` command. Expose the Kubecost dashboard by running the following command:
 
-```bash
+```bash hookTimeout=180 hook=portforward
 $ kubectl port-forward --namespace kubecost deployment/kubecost-cost-analyzer 9090
 Forwarding from 127.0.0.1:9090 -> 9090
 Forwarding from [::1]:9090 -> 9090
