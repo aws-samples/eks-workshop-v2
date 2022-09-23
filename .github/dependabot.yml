@@ -26,3 +26,10 @@ updates:
     ignore:
       # EKS blueprints upgrades will be handled separately
       - dependency-name: '*terraform-aws-eks-blueprints*'
+  - package-ecosystem: npm
+    directory: "/website"
+    schedule:
+      interval: monthly
+    ignore:
+      # Let backstage-cli do these version bumps
+      - dependency-name: '@docusaurus*'
