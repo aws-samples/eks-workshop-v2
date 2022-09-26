@@ -23,6 +23,8 @@ jobs:
       with:
         version: 'v1.22.12'
       id: install
+    - name: Install netlify CLI
+      run: npm install -g netlify-cli@11.8.3
     - name: Deploy site
       working-directory: website
       env:
