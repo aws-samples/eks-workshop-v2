@@ -7,12 +7,7 @@ module "cluster" {
     rolearn  = aws_iam_role.local_role.arn
     username = local.rolename
     groups   = ["system:masters"]
-    },
-    {
-      rolearn : "arn:aws:iam::990536087866:role/Admin"
-      username = "Admin"
-      groups   = ["system:masters"]
-  }]
+    }]
 }
 
 data "aws_caller_identity" "current" {}
