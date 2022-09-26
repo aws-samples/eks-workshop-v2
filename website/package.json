@@ -29,8 +29,7 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "2.1.0",
-    "netlify-cli": "^10.17.8"
+    "@docusaurus/module-type-aliases": "2.1.0"
   },
   "browserslist": {
     "production": [

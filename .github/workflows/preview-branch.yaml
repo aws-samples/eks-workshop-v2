@@ -40,6 +40,8 @@ jobs:
         body: |
           ## Deploy Preview
           Preview site deployment in progress...
+    - name: Install netlify CLI
+      run: npm install -g netlify-cli@11.8.3
     - name: Deploy site
       id: deploy-site
       working-directory: website
