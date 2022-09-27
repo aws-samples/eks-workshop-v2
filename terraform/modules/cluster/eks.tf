@@ -69,6 +69,20 @@ module "aws-eks-accelerator-for-terraform" {
       max_size        = local.default_mng_max
       desired_size    = local.default_mng_size
 
+      custom_ami_id   = data.aws_ssm_parameter.eks_optimized_ami.value
+      instance_types  = ["t3.medium"]
+      subnet_ids      = slice(module.aws_vpc.private_subnets, 0, 3)
+      
+      create_launch_template = true
+      launch_template_os = "amazonlinux2eks"
+
+      pre_userdata =  <<-EOT
+        MAX_PODS=$(/etc/eks/max-pods-calculator.sh --instance-type-from-imds --cni-version ${trimprefix(data.aws_eks_addon_version.latest["vpc-cni"].version, "v")} --cni-prefix-delegation-enabled)
+      EOT
+
+      kubelet_extra_args   = "--max-pods=$${MAX_PODS}"
+      bootstrap_extra_args = "--use-max-pods false"
+
       k8s_labels = {
         workshop-default = "yes"
       }
@@ -88,5 +102,51 @@ module "aws-eks-accelerator-for-terraform" {
         workshop-system = "yes"
       }
     }
+  }
+}
+
+# Build kubeconfig for use with null resource to modify aws-node daemonset
+locals {
+  kubeconfig = yamlencode({
+    apiVersion      = "v1"
+    kind            = "Config"
+    current-context = "terraform"
+    clusters = [{
+      name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+      cluster = {
+        certificate-authority-data = module.aws-eks-accelerator-for-terraform.eks_cluster_certificate_authority_data
+        server                     = module.aws-eks-accelerator-for-terraform.eks_cluster_endpoint
+      }
+    }]
+    contexts = [{
+      name = "terraform"
+      context = {
+        cluster = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+        user    = "terraform"
+      }
+    }]
+    users = [{
+      name = "terraform"
+      user = {
+        token = data.aws_eks_cluster_auth.cluster.token
+      }
+    }]
+  })
+}
+
+resource "null_resource" "kubectl_set_env" {
+  triggers = {}
+
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    environment = {
+      KUBECONFIG = base64encode(local.kubeconfig)
+    }
+
+    # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
+    command = <<-EOT
+      kubectl set env daemonset aws-node -n kube-system ENABLE_PREFIX_DELEGATION=true --kubeconfig <(echo $KUBECONFIG | base64 --decode)
+      kubectl set env daemonset aws-node -n kube-system WARM_PREFIX_TARGET=1 --kubeconfig <(echo $KUBECONFIG | base64 --decode)
+    EOT
   }
 }
