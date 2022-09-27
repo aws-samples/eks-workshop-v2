@@ -48,6 +48,10 @@ We see that there are different deployments associated with our application. We 
 
 In this view we can see all the costs associated with the Kubernetes resources running in this namespace. This can be a useful view if you have a multi-tenant cluster and have a namespace per customer.
 
+We can also look at the different resources running in this namespace and see their associated costs.
+
+![Orders Namespace Resources](assets/orders.png)
+
 Click on one of the entries under <b>Controllers</b>. We've clicked on the orders deployment.
 
 <browser url='http://localhost:9090/allocations'>
