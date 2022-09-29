@@ -41,7 +41,7 @@ export default function Kustomization({
         {kustomizeDecoded}
       </CodeBlock>
     </TabItem>
-    <TabItem value="complete" label={resource}>
+    <TabItem value="complete" label="Final Manifest">
       <CodeBlock
         language="yaml">
         {completeDecoded}
