@@ -49,8 +49,8 @@ output "public_subnet_ids" {
 }
 
 output "blueprints_addons" {
-  value       = {
-    "descheduler" =  {
+  value = {
+    "descheduler" = {
       helm_release = module.descheduler.helm_release
       link         = "https://github.com/aws-samples/eks-workshop-v2/tree/main/terraform/modules/addons/descheduler"
     }
