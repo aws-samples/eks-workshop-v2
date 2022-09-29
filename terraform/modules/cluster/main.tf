@@ -38,12 +38,12 @@ provider "helm" {
 
 locals {
   tags = {
-    created-by  = "eks-workshop-v2"
-    env         = var.id
+    created-by = "eks-workshop-v2"
+    env        = var.id
   }
 
   cluster_version = var.cluster_version
-  prefix       = "eks-workshop"
+  prefix          = "eks-workshop"
 
   vpc_cidr               = "10.42.0.0/16"
   secondary_vpc_cidr     = "100.64.0.0/16"

@@ -75,12 +75,6 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'exposing/index',
-            position: 'left',
-            label: 'Exposing applications',
-          },
-          {
-            type: 'doc',
             docId: 'security/index',
             position: 'left',
             label: 'Security',
@@ -93,12 +87,6 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'storage/index',
-            position: 'left',
-            label: 'Stateful services',
-          },
-          {
-            type: 'doc',
             docId: 'autoscaling/index',
             position: 'left',
             label: 'Autoscaling',
@@ -108,6 +96,12 @@ const config = {
             docId: 'observability/index',
             position: 'left',
             label: 'Observability',
+          },
+          {
+            type: 'doc',
+            docId: 'costoptimization/index',
+            position: 'left',
+            label: 'Cost Optimization',
           },
           {
             type: 'doc',
