@@ -10,7 +10,7 @@ env
 
 .vscode
 package-lock.json
+
 .DS_Store
 
-# Ignore cloned Flux cofiguration repository
 eksworkshop-gitops-config-flux

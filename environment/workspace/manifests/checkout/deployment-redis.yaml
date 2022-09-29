@@ -4,6 +4,7 @@ metadata:
   name: checkout-redis
   labels:
     app.kubernetes.io/created-by: eks-workshop
+    app.kubernetes.io/team: database
 spec:
   replicas: 1
   selector:
@@ -18,6 +19,7 @@ spec:
         app.kubernetes.io/instance: checkout
         app.kubernetes.io/component: redis
         app.kubernetes.io/created-by: eks-workshop
+        app.kubernetes.io/team: database
     spec:
       containers:
         - name: redis
