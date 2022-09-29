@@ -93,6 +93,7 @@ spec:
             limits:
               memory: 256Mi
             requests:
+              cpu: 250m
               memory: 256Mi
           volumeMounts:
             - mountPath: /tmp
