@@ -94,7 +94,18 @@ module "aws-eks-accelerator-for-terraform" {
           fargate = "yes"
         }
       }]
-      subnet_ids = module.aws_vpc.private_subnets
+      subnet_ids = slice(module.aws_vpc.private_subnets, 0, 3)
+    }
+
+    checkout_profile = {
+      fargate_profile_name = "checkout-profile"
+      fargate_profile_namespaces = [{
+        namespace = "checkout"
+        k8s_labels = {
+          fargate = "yes"
+        }
+      }]
+      subnet_ids = slice(module.aws_vpc.private_subnets, 0, 3)
     }
   }
 

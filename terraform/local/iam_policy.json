@@ -40,6 +40,13 @@
           "autoscaling:DescribeAutoScalingGroups"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "eks:DescribeFargateProfile"
+      ],
+      "Resource": "*"
     }
   ]
 }
