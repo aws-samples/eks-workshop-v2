@@ -3,16 +3,22 @@ title: "Introduction"
 sidebar_position: 10
 ---
 
-Kubecost has already been deployed into your cluster. To access the Kubecost dashboard we will expose it through a `kubectl port-forward` command. Expose the Kubecost dashboard by running the following command:
+Kubecost has already been deployed into your cluster. To access the Kubecost dashboard we will expose it through a `kubectl port-forward` command. Expose the Kubecost dashboard open a new terminal in your Cloud9 IDE and run the following command:
 
 ```bash test=false
-$ kubectl port-forward --namespace kubecost deployment/kubecost-cost-analyzer 9090
-Forwarding from 127.0.0.1:9090 -> 9090
-Forwarding from [::1]:9090 -> 9090
+$ kubectl port-forward --namespace kubecost deployment/kubecost-cost-analyzer 8080:9090
+Forwarding from 127.0.0.1:8080 -> 9090
+Forwarding from [::1]:8080 -> 9090
 ```
 
-Open a browser and access `http://localhost:9090` to reach the Kubecost dashboard.
+In your Cloud9 environment, click <b>Preview / Preview Running Application</b> to access dashboard. You can click on Pop out window button to maximize browser into new tab. Leave the current terminal running because if you kill the process, you will loose access to the dashboard. See the below immage for more details.
 
-<browser url='http://localhost:9090/overview'>
+<browser url='https://us-east-1.console.aws.amazon.com/cloud9/ide/2an0f568zlmnfkfb3w59iviyx6dedjmi'>
+<img src={require('./assets/cloud9.png').default}/>
+</browser>
+
+You should see the below dashboard once you have completed the steps.
+
+<browser url='https://2an0f568zlmnfkfb3w59iviyx6dedjmi.vfs.cloud9.us-east-1.amazonaws.com/overview'>
 <img src={require('./assets/overview.png').default}/>
 </browser>
