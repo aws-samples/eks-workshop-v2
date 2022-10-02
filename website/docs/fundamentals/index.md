@@ -4,6 +4,10 @@ sidebar_position: 8
 weight: 8
 ---
 
-Welcome to the AWS Elastic Kubernetes Service (EKS) workshop!
+In this module, we will learn the fundamentals of working with the EKS cluster by performing the following tasks:
+* Expose the Watchn application so we can access it over the public Internet
+* Configure the worker nodes within the managed node group that power the EKS cluster
+* Enable and re-deploy an application using Fargate
+* Configure EBS and EFS for stateful applications
 
-This provides a set of hands-on lab exercises to learn and explore the various features provided by EKS and how it integrates with the broader set of services offered by AWS.
+Continue to the next step with the button below.
