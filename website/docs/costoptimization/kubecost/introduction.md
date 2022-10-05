@@ -3,7 +3,16 @@ title: "Introduction"
 sidebar_position: 10
 ---
 
-Kubecost has already been deployed into your cluster. To access the Kubecost dashboard we will expose it through a `kubectl port-forward` command. Expose the Kubecost dashboard open a new terminal in your Cloud9 IDE and run the following command:
+Kubecost has already been deployed into your cluster. We can check to see if it's up and running. Run:
+
+```bash hook=kubecost-deployment
+$ kubectl get deployment -n kubecost
+kubecost-cost-analyzer        1/1     1            1           16m
+kubecost-kube-state-metrics   1/1     1            1           16m
+kubecost-prometheus-server    1/1     1            1           16m
+```
+
+To access the Kubecost dashboard we will expose it through a `kubectl port-forward` command. Expose the Kubecost dashboard open a new terminal in your Cloud9 IDE and run the following command:
 
 ```bash test=false
 $ kubectl port-forward --namespace kubecost deployment/kubecost-cost-analyzer 8080:9090
