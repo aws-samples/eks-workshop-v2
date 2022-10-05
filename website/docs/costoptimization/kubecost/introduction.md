@@ -20,7 +20,7 @@ Forwarding from 127.0.0.1:8080 -> 9090
 Forwarding from [::1]:8080 -> 9090
 ```
 
-In your Cloud9 environment, click <b>Preview / Preview Running Application</b> to access dashboard. You can click on Pop out window button to maximize browser into new tab. Leave the current terminal running because if you kill the process, you will loose access to the dashboard. See the below immage for more details.
+In your Cloud9 environment, click <b>Preview / Preview Running Application</b> to access dashboard. You can click on Pop out window button to maximize the browser into a new tab. Leave the current terminal running because if you kill the process, you will loose access to the dashboard. See the below immage for more details.
 
 <browser url='https://us-east-1.console.aws.amazon.com/cloud9/ide/2an0f568zlmnfkfb3w59iviyx6dedjmi'>
 <img src={require('./assets/cloud9.png').default}/>
