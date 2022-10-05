@@ -6,7 +6,7 @@ locals {
     chart            = local.name
     repository       = "https://kubernetes-sigs.github.io/descheduler"
     version          = "0.24.1"
-    namespace        = local.name
+    namespace        = "kube-system"
     create_namespace = false
     values           = local.default_helm_values
     set              = []

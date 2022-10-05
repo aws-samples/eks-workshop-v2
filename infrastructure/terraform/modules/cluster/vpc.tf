@@ -1,13 +1,17 @@
 module "aws_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "v3.2.0"
+  version = "3.16.0"
 
-  name = local.vpc_name
-  cidr = local.vpc_cidr
-  azs  = local.azs
+  name                  = local.vpc_name
+  cidr                  = local.vpc_cidr
+  secondary_cidr_blocks = [local.secondary_vpc_cidr]
+  azs                   = local.azs
 
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+  public_subnets = local.public_subnets
+  private_subnets = concat(
+    local.primary_priv_subnets,
+    local.secondary_priv_subnets
+  )
 
   enable_nat_gateway   = true
   create_igw           = true
@@ -22,5 +26,8 @@ module "aws_vpc" {
   private_subnet_tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb"             = "1"
+    "karpenter.sh/discovery"                      = local.cluster_name
   }
+
+  tags = local.tags
 }
