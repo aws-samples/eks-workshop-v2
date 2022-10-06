@@ -26,4 +26,7 @@ phases:
     commands:
       - cd $CODEBUILD_SRC_DIR/terraform/workshop-stack
       - terraform destroy --auto-approve
-  
+  post_build:
+    on-failure: CONTINUE
+    commands:
+      - aws s3 rm s3://${TF_STATE_S3_BUCKET} --recursive
