@@ -10,3 +10,5 @@ env
 
 .vscode
 *.zip
+
+cdk.out
