@@ -264,7 +264,7 @@ exports.handler = async function (event, context) {
         ZipFileChecksum: sourceZipFileChecksum.valueAsString,
       }
     });
-    //clusterStack.node.addDependency(buildCompleteRule, buildProjectPolicy, vpc);
+    clusterStack.node.addDependency(buildCompleteRule, reportBuildFunction);
     
     new CfnOutput(this, 'TFStateBucketArn', { value: tfStateBackendBucket.bucketArn });
   }
