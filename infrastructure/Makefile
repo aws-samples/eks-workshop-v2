@@ -46,7 +46,7 @@ make-copy:
 
 .PHONY: deploy
 deploy:
-	npx cdk deploy --app "npx ts-node --prefer-ts-exts event-engine/bin/event-engine.ts" EventEngineStack1 --require-approval=never \
+	npx cdk deploy --app "npx ts-node --prefer-ts-exts event-engine/bin/event-engine.ts" EventEngineStack --require-approval=never \
 		--previous-parameters=false \
 		--parameters EventEngineStack:EEAssetsBucket=$(S3_ASSET_BUCKET) \
 		--parameters EventEngineStack:EEAssetsKeyPrefix=$(S3_ASSET_PREFIX) \
