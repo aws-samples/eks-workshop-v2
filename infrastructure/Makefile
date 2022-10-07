@@ -1,8 +1,11 @@
 TF_STATE_S3_BUCKET ?= terraformstate94163fde
 ZIPFILE ?= eks-workshop-tf-stack.zip
-S3_ASSET_BUCKET ?= code-upload-bucket-eks-workshop-v2-25158
+# S3_ASSET_BUCKET ?= code-upload-bucket-eks-workshop-v2-25158
+S3_ASSET_BUCKET ?= code-upload-bucket-eks-workshop-v2-16728
 S3_ASSET_PREFIX ?= modules/4bc94302f57c4c418df7e029ed5ffffc/v1/
-S3_URL := s3://$(S3_ASSET_BUCKET)/$(S3_ASSET_PREFIX)$(ZIPFILE)
+# S3_URL := s3://$(S3_ASSET_BUCKET)/$(S3_ASSET_PREFIX)$(ZIPFILE)
+S3_URL := s3://$(S3_ASSET_BUCKET)/$(ZIPFILE)
+
 
 .PHONY: upload
 upload: $(ZIPFILE)
