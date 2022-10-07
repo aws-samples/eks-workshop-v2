@@ -1,6 +1,6 @@
 ---
 title: "GitOps"
-sidebar_position: 5
+sidebar_position: 1
 weight: 20
 ---
 
