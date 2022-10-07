@@ -13,7 +13,6 @@ module "cluster" {
 }
 
 resource "aws_s3_bucket" "eks_workshop_bootstrap" {
-  bucket        = "${module.cluster.eks_cluster_id}-bootstrap"
   force_destroy = true
 }
 
