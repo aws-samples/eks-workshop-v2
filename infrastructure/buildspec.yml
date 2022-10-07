@@ -3,6 +3,7 @@ version: 0.2
 env:
   variables:
     TF_STATE_S3_BUCKET: TF_STATE_S3_BUCKET_NOT_SET
+    C9_OWNER_ROLE: C9_OWNER_ROLE_NOT_SET
 
 phases:
   install:
@@ -20,10 +21,10 @@ phases:
     on-failure: ABORT
     commands:
       - cd $CODEBUILD_SRC_DIR/terraform/workshop-stack
-      - terraform init --backend-config="bucket=${TF_STATE_S3_BUCKET}" --backend-config="region=${AWS_REGION}"
+      - terraform init --backend-config="bucket=${TF_STATE_S3_BUCKET}" --backend-config="region=${AWS_REGION}" -var 'cloud9_user_arns=["${C9_OWNER_ROLE}"]'
   build:
     on-failure: ABORT
     commands:
       - cd $CODEBUILD_SRC_DIR/terraform/workshop-stack
-      - terraform apply --auto-approve
+      - terraform apply -auto-approve
   
