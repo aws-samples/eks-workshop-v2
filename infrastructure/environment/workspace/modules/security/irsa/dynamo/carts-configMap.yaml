@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: carts-dynamo
+  namespace: carts
+  labels:
+    app: carts

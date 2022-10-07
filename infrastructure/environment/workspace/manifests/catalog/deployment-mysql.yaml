@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-mysql
+  labels:
+    app.kubernetes.io/created-by: eks-workshop
+    app.kubernetes.io/team: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: catalog
+      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/component: mysql
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: catalog
+        app.kubernetes.io/instance: catalog
+        app.kubernetes.io/component: mysql
+        app.kubernetes.io/created-by: eks-workshop
+        app.kubernetes.io/team: database
+    spec:
+      containers:
+        - name: mysql
+          image: "mysql:5.7"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: my-secret-pw
+            #- name: MYSQL_DATABASE
+            #  value: catalog
+            #- name: MYSQL_USER
+            #  value: catalog_user
+            #- name: MYSQL_PASSWORD
+            #  value: default_password
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-writer-db
+                  key: username
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-writer-db
+                  key: password
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-writer-db
+                  key: name
+          ports:
+            - name: mysql
+              containerPort: 3306
+              protocol: TCP

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dns-autoscaler
+  namespace: other
+  labels:
+    k8s-app: dns-autoscaler
+    kubernetes.io/cluster-service: "true"
+spec:
+  selector:
+    matchLabels:
+      k8s-app: dns-autoscaler
+  template:
+    metadata:
+      labels:
+        k8s-app: dns-autoscaler
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        supplementalGroups: [ 65534 ]
+        fsGroup: 65534
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+      - name: autoscaler
+        # HIGHLIGHT
+        image: k8s.gcr.io/cpa/cluster-proportional-autoscaler:1.8.5
+        resources:
+            requests:
+                cpu: "20m"
+                memory: "10Mi"
+        command:
+          - /cluster-proportional-autoscaler
+          - --namespace=kube-system
+          - --configmap=dns-autoscaler
+          - --target=Deployment/coredns
+          # HIGHLIGHT
+          - --default-params={"linear":{"nodesPerReplica":2,"min":2,"max":6,"preventSinglePointFailure":true,"includeUnschedulableNodes":true}}
+          - --logtostderr=true
+          - --v=2
+      tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+      serviceAccountName: dns-autoscaler
