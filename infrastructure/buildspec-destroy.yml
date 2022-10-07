@@ -25,7 +25,10 @@ phases:
     on-failure: ABORT
     commands:
       - cd $CODEBUILD_SRC_DIR/terraform/workshop-stack
-      - terraform destroy --auto-approve
+      - terraform destroy -target="module.eks_blueprints_kubernetes_addons" -auto-approve
+      - terraform destroy -target="module.eks_blueprints" -auto-approve
+      - terraform destroy -target="module.vpc" -auto-approve
+      - terraform destroy -auto-approve
   post_build:
     on-failure: CONTINUE
     commands:
