@@ -65,9 +65,9 @@ module "aws-eks-accelerator-for-terraform" {
       node_group_name = "managed-ondemand"
       instance_types  = ["t3.medium"]
       subnet_ids      = slice(module.aws_vpc.private_subnets, 0, 3)
-      min_size     = local.default_mng_min
-      max_size     = local.default_mng_max
-      desired_size = local.default_mng_size
+      min_size        = local.default_mng_min
+      max_size        = local.default_mng_max
+      desired_size    = local.default_mng_size
 
       k8s_labels = {
         workshop-default = "yes"
@@ -83,12 +83,12 @@ module "aws-eks-accelerator-for-terraform" {
         k8s_labels = {
           fargate = "yes"
         }
-      },{
+        }, {
         namespace = "karpenter"
         k8s_labels = {
           fargate = "yes"
         }
-      },{
+        }, {
         namespace = "aws-load-balancer-controller"
         k8s_labels = {
           fargate = "yes"

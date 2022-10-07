@@ -10,13 +10,14 @@ const remarkIncludeCode = require('./src/remark/include-code');
 const remarkIncludeKustomization = require('./src/remark/include-kustomization');
 const remarkBlueprintsAddon = require('./src/remark/blueprints-addon');
 
-const rootDir = path.dirname(require.resolve('./package.json'))
-const manifestsDir = `${rootDir}/../environment/workspace/modules`
+const rootDir = path.dirname(require.resolve('./package.json'));
+const manifestsDir = `${rootDir}/../environment/workspace/modules`;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'EKS Workshop',
-  tagline: 'Practical exercises to learn about Amazon Elastic Kubernetes Service',
+  tagline:
+    'Practical exercises to learn about Amazon Elastic Kubernetes Service',
   url: 'https://eksworkshop-v2-next.netlify.app',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -40,12 +41,10 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          remarkPlugins: [
-            remarkCodeTerminal, 
-          ],
+          remarkPlugins: [remarkCodeTerminal],
           beforeDefaultRemarkPlugins: [
-            [remarkIncludeCode, {manifestsDir}],
-            [remarkIncludeKustomization, {manifestsDir}],
+            [remarkIncludeCode, { manifestsDir }],
+            [remarkIncludeKustomization, { manifestsDir }],
             //[remarkBlueprintsAddon, {terraformDir: `${rootDir}/../terraform/local`}]
           ],
           editUrl:
@@ -105,11 +104,23 @@ const config = {
             label: 'Observability',
           },
           {
+            type: 'doc',
+            docId: 'costoptimization/index',
+            position: 'left',
+            label: 'Cost Optimization',
+          },
+          {
+            type: 'doc',
+            docId: 'gitops/index',
+            position: 'left',
+            label: 'GitOps',
+          },
+          {
             href: 'https://github.com/aws-samples/eks-workshop-v2',
             position: 'right',
             className: 'header-github-link',
             'aria-label': 'GitHub repository',
-          }
+          },
         ],
       },
       tableOfContents: {
@@ -155,7 +166,7 @@ const config = {
           {
             className: 'theme-code-block-highlighted-line',
             line: 'highlight-next-line',
-            block: {start: 'highlight-start', end: 'highlight-end'},
+            block: { start: 'highlight-start', end: 'highlight-end' },
           },
           {
             className: 'code-block-highlight',

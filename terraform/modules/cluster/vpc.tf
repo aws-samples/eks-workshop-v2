@@ -1,13 +1,13 @@
 module "aws_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "3.14.4"
+  version = "3.16.0"
 
-  name = local.vpc_name
-  cidr = local.vpc_cidr
+  name                  = local.vpc_name
+  cidr                  = local.vpc_cidr
   secondary_cidr_blocks = [local.secondary_vpc_cidr]
-  azs  = local.azs
+  azs                   = local.azs
 
-  public_subnets  = local.public_subnets
+  public_subnets = local.public_subnets
   private_subnets = concat(
     local.primary_priv_subnets,
     local.secondary_priv_subnets
