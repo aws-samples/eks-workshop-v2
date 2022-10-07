@@ -107,7 +107,7 @@ const config = {
             type: 'doc',
             docId: 'gitops/index',
             position: 'left',
-            label: 'GitOps',
+            label: 'Automation',
           },
           {
             href: 'https://github.com/aws-samples/eks-workshop-v2',
