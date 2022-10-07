@@ -109,6 +109,7 @@ export class EventEngineStack extends Stack {
     });
     tfStateBackendBucket.grantReadWrite(codeBuildRole);
 
+    const resourceName = 'Admin';
     const codebuildProject = new codebuild.Project(this, 'StackDeployProject', {
       role: codeBuildRole,
       environment: {
@@ -121,6 +122,7 @@ export class EventEngineStack extends Stack {
       }),
       environmentVariables: {
         'TF_STATE_S3_BUCKET': { value: tfStateBackendBucket.bucketName },
+        'C9_OWNER_ROLE': { value: `arn:aws:sts::${this.account}:assumed-role/${resourceName}/umishaq-Isengard` }
       },
       timeout: cdk.Duration.minutes(90),
     });
