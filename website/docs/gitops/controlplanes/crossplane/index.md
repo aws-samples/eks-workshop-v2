@@ -1,9 +1,9 @@
 ---
-title: "Overview of Crossplane"
+title: "Crossplane Overview"
 sidebar_position: 2
 weight: 20
 ---
 
-Overview of Crossplane
+Crossplane Overview
 
 
