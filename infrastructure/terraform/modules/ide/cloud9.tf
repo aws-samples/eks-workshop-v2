@@ -31,7 +31,6 @@ data "aws_instance" "cloud9_instance" {
 }
 
 resource "aws_iam_role" "cloud9_role" {
-  name = "Cloud9Role-${var.environment_name}"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -55,8 +54,6 @@ resource "aws_iam_role_policy_attachment" "cloud9_policy_ssm_core" {
 resource "aws_iam_policy" "cloud9_additional_policy" {
   count = length(var.additional_cloud9_policies)
 
-  name = "Cloud9Policy-${var.environment_name}-${count.index}"
-
   policy = jsonencode(var.additional_cloud9_policies[count.index])
 }
 
@@ -69,7 +66,6 @@ resource "aws_iam_role_policy_attachment" "cloud9_additional_policy" {
 
 
 resource "aws_iam_instance_profile" "cloud9_ssm_instance_profile" {
-  name = "Cloud9InstanceProfile-${var.environment_name}"
   role = aws_iam_role.cloud9_role.name
 }
 
