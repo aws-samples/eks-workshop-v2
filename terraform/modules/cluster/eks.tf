@@ -1,7 +1,7 @@
 locals {
-  default_mng_min  = 3
+  default_mng_min  = 2
   default_mng_max  = 6
-  default_mng_size = 3
+  default_mng_size = 2
 }
 
 module "aws-eks-accelerator-for-terraform" {
@@ -63,7 +63,7 @@ module "aws-eks-accelerator-for-terraform" {
   managed_node_groups = {
     mg_5 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["t3.medium"]
+      instance_types  = ["m5.large"]
       subnet_ids      = slice(module.aws_vpc.private_subnets, 0, 3)
       min_size        = local.default_mng_min
       max_size        = local.default_mng_max
@@ -71,6 +71,21 @@ module "aws-eks-accelerator-for-terraform" {
 
       k8s_labels = {
         workshop-default = "yes"
+      }
+    }
+
+    system = {
+      node_group_name = "managed-system"
+      instance_types  = ["m5.large"]
+      subnet_ids      = slice(module.aws_vpc.private_subnets, 0, 1)
+      min_size        = 1
+      max_size        = 2
+      desired_size    = 1
+
+      k8s_taints = [{ key = "systemComponent", value = "true", effect = "NO_SCHEDULE" }]
+
+      k8s_labels = {
+        workshop-system = "yes"
       }
     }
   }

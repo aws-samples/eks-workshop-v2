@@ -4,6 +4,7 @@ metadata:
   name: carts
   labels:
     app.kubernetes.io/created-by: eks-workshop
+    app.kubernetes.io/type: app
 spec:
   replicas: 1
   selector:
@@ -57,9 +58,9 @@ spec:
             periodSeconds: 3
           resources:
             limits:
-              memory: 256Mi
+              memory: 1Gi
             requests:
-              memory: 256Mi
+              memory: 1Gi
           volumeMounts:
             - mountPath: /tmp
               name: tmp-volume

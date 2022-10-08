@@ -4,6 +4,7 @@ metadata:
   name: checkout
   labels:
     app.kubernetes.io/created-by: eks-workshop
+    app.kubernetes.io/type: app
 spec:
   replicas: 1
   selector:
@@ -52,9 +53,9 @@ spec:
             periodSeconds: 3
           resources:
             limits:
-              memory: 256Mi
+              memory: 512Mi
             requests:
-              memory: 256Mi
+              memory: 512Mi
           volumeMounts:
             - mountPath: /tmp
               name: tmp-volume
