@@ -4,11 +4,54 @@ resource "kubernetes_namespace" "workshop_system" {
   }
 }
 
+module "eks-blueprints-kubernetes-csi-addon" {
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.10.0//modules/kubernetes-addons/aws-ebs-csi-driver"
+
+  depends_on = [
+    module.aws-eks-accelerator-for-terraform
+  ]
+
+  enable_self_managed_aws_ebs_csi_driver = true
+
+  addon_context = local.addon_context
+
+  helm_config = {
+    set = [{
+      name  = "node.tolerateAllTaints"
+      value = "true"
+    },
+    {
+      name  = "controller.replicaCount"
+      value = 1
+    },
+    {
+      name  = "controller.nodeSelector.workshop-system"
+      value = "yes"
+      type  = "string"
+    },
+    {
+      name  = "controller.tolerations[0].key"
+      value = "systemComponent"
+      type  = "string"
+    },
+    {
+      name  = "controller.tolerations[0].operator"
+      value = "Exists"
+      type  = "string"
+    },
+    {
+      name  = "controller.tolerations[0].effect"
+      value = "NoSchedule"
+      type  = "string"
+    }]
+  }
+}
+
 module "eks-blueprints-kubernetes-addons" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.10.0//modules/kubernetes-addons"
 
   depends_on = [
-    module.aws-eks-accelerator-for-terraform
+    module.eks-blueprints-kubernetes-csi-addon
   ]
 
   eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
@@ -18,7 +61,6 @@ module "eks-blueprints-kubernetes-addons" {
   enable_aws_load_balancer_controller    = true
   enable_cluster_autoscaler              = true
   enable_metrics_server                  = true
-  enable_self_managed_aws_ebs_csi_driver = true
   enable_kubecost                        = true
 
   cluster_autoscaler_helm_config = {
@@ -127,37 +169,6 @@ module "eks-blueprints-kubernetes-addons" {
     }], 
     local.system_component_values)
   }
-
-  self_managed_aws_ebs_csi_driver_helm_config = {
-    set = [{
-      name  = "node.tolerateAllTaints"
-      value = "true"
-    },
-    {
-      name  = "controller.replicaCount"
-      value = 1
-    },
-    {
-      name  = "controller.nodeSelector.workshop-system"
-      value = "yes"
-      type  = "string"
-    },
-    {
-      name  = "controller.tolerations[0].key"
-      value = "systemComponent"
-      type  = "string"
-    },
-    {
-      name  = "controller.tolerations[0].operator"
-      value = "Exists"
-      type  = "string"
-    },
-    {
-      name  = "controller.tolerations[0].effect"
-      value = "NoSchedule"
-      type  = "string"
-    }]
-  }
 }
 
 locals {
@@ -172,6 +183,8 @@ locals {
     eks_cluster_id                 = module.aws-eks-accelerator-for-terraform.eks_cluster_id
     eks_oidc_issuer_url            = local.oidc_url
     eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${local.aws_account_id}:oidc-provider/${local.oidc_url}"
+    irsa_iam_role_path             = "/"
+    irsa_iam_permissions_boundary  = ""
     tags                           = {}
   }
 
@@ -199,6 +212,11 @@ locals {
 
 module "descheduler" {
   source        = "../addons/descheduler"
+
+  depends_on = [
+    module.eks-blueprints-kubernetes-csi-addon
+  ]
+
   addon_context = local.addon_context
 
   helm_config = {
