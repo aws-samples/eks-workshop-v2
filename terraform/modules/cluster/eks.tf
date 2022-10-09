@@ -89,28 +89,4 @@ module "aws-eks-accelerator-for-terraform" {
       }
     }
   }
-
-  fargate_profiles = {
-    default_profile = {
-      fargate_profile_name = "default-profile"
-      fargate_profile_namespaces = [{
-        namespace = "kube-system"
-        k8s_labels = {
-          fargate = "yes"
-        }
-        }, {
-        namespace = "karpenter"
-        k8s_labels = {
-          fargate = "yes"
-        }
-        }, {
-        namespace = "aws-load-balancer-controller"
-        k8s_labels = {
-          fargate = "yes"
-        }
-      }]
-      subnet_ids = module.aws_vpc.private_subnets
-    }
-  }
-
 }
