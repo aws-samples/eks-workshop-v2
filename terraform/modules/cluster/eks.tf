@@ -4,6 +4,10 @@ locals {
   default_mng_size = 2
 }
 
+data "aws_ssm_parameter" "eks_optimized_ami" {
+  name = "/aws/service/eks/optimized-ami/${local.cluster_version}/amazon-linux-2/recommended/image_id"
+}
+
 module "aws-eks-accelerator-for-terraform" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.10.0"
 
@@ -79,8 +83,6 @@ module "aws-eks-accelerator-for-terraform" {
       desired_size    = local.default_mng_size
 
       custom_ami_id   = data.aws_ssm_parameter.eks_optimized_ami.value
-      instance_types  = ["t3.medium"]
-      subnet_ids      = slice(module.aws_vpc.private_subnets, 0, 3)
       
       create_launch_template = true
       launch_template_os = "amazonlinux2eks"
@@ -104,6 +106,18 @@ module "aws-eks-accelerator-for-terraform" {
       min_size        = 1
       max_size        = 2
       desired_size    = 1
+
+      custom_ami_id   = data.aws_ssm_parameter.eks_optimized_ami.value
+      
+      create_launch_template = true
+      launch_template_os = "amazonlinux2eks"
+
+      pre_userdata =  <<-EOT
+        MAX_PODS=$(/etc/eks/max-pods-calculator.sh --instance-type-from-imds --cni-version ${trimprefix(data.aws_eks_addon_version.latest["vpc-cni"].version, "v")} --cni-prefix-delegation-enabled)
+      EOT
+
+      kubelet_extra_args   = "--max-pods=$${MAX_PODS}"
+      bootstrap_extra_args = "--use-max-pods false"
 
       k8s_taints = [{ key = "systemComponent", value = "true", effect = "NO_SCHEDULE" }]
 
