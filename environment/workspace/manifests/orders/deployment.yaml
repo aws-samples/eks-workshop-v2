@@ -4,6 +4,7 @@ metadata:
   name: orders
   labels:
     app.kubernetes.io/created-by: eks-workshop
+    app.kubernetes.io/type: app
 spec:
   replicas: 1
   selector:
@@ -91,10 +92,10 @@ spec:
             periodSeconds: 5
           resources:
             limits:
-              memory: 256Mi
+              memory: 1Gi
             requests:
               cpu: 250m
-              memory: 256Mi
+              memory: 1Gi
           volumeMounts:
             - mountPath: /tmp
               name: tmp-volume

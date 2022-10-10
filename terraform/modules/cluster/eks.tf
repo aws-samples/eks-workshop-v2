@@ -1,7 +1,7 @@
 locals {
-  default_mng_min  = 3
+  default_mng_min  = 2
   default_mng_max  = 6
-  default_mng_size = 3
+  default_mng_size = 2
 }
 
 module "aws-eks-accelerator-for-terraform" {
@@ -63,7 +63,7 @@ module "aws-eks-accelerator-for-terraform" {
   managed_node_groups = {
     mg_5 = {
       node_group_name = "managed-ondemand"
-      instance_types  = ["t3.medium"]
+      instance_types  = ["m5.large"]
       subnet_ids      = slice(module.aws_vpc.private_subnets, 0, 3)
       min_size        = local.default_mng_min
       max_size        = local.default_mng_max
@@ -73,30 +73,24 @@ module "aws-eks-accelerator-for-terraform" {
         workshop-default = "yes"
       }
     }
+  
+    system = {
+      node_group_name = "managed-system"
+      instance_types  = ["m5.large"]
+      subnet_ids      = slice(module.aws_vpc.private_subnets, 0, 1)
+      min_size        = 1
+      max_size        = 2
+      desired_size    = 1
+
+      k8s_taints = [{ key = "systemComponent", value = "true", effect = "NO_SCHEDULE" }]
+
+      k8s_labels = {
+        workshop-system = "yes"
+      }
+    }
   }
 
   fargate_profiles = {
-    default_profile = {
-      fargate_profile_name = "default-profile"
-      fargate_profile_namespaces = [{
-        namespace = "kube-system"
-        k8s_labels = {
-          fargate = "yes"
-        }
-        }, {
-        namespace = "karpenter"
-        k8s_labels = {
-          fargate = "yes"
-        }
-        }, {
-        namespace = "aws-load-balancer-controller"
-        k8s_labels = {
-          fargate = "yes"
-        }
-      }]
-      subnet_ids = slice(module.aws_vpc.private_subnets, 0, 3)
-    }
-
     checkout_profile = {
       fargate_profile_name = "checkout-profile"
       fargate_profile_namespaces = [{
@@ -108,5 +102,4 @@ module "aws-eks-accelerator-for-terraform" {
       subnet_ids = slice(module.aws_vpc.private_subnets, 0, 3)
     }
   }
-
 }

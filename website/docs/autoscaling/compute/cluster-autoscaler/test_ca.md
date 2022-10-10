@@ -3,11 +3,10 @@ title: "Scale with CA"
 sidebar_position: 40
 ---
 
-We're going to update the `orders` service to consume more resources by increasing its memory request manually scaling it out horizontally. This will trigger the creation of more Pods, some of which will be unschedulable due to lack of resources in the existing compute instances.
+Next we're going to update all of the application components to increase their replica count to 4. This will cause more resources to be consumed than are available in the cluster, triggering more compute to be provisioned.
 
-```kustomization
+```file
 autoscaling/compute/cluster-autoscaler/deployment.yaml
-Deployment/orders
 ```
 
 Let's apply this to our cluster:
@@ -37,6 +36,6 @@ Alternatively you can use `kubectl`:
 $ kubectl get nodes -l workshop-default=yes
 NAME                           STATUS   ROLES    AGE     VERSION
 ip-10-42-10-28.ec2.internal    Ready    <none>   10m     v1.22.9-eks-810597c
-ip-10-42-11-67.ec2.internal    Ready    <none>   2m24s   v1.22.9-eks-810597c
+ip-10-42-11-67.ec2.internal    Ready    <none>   10m     v1.22.9-eks-810597c
 ip-10-42-12-158.ec2.internal   Ready    <none>   2m24s   v1.22.9-eks-810597c
 ```
