@@ -73,7 +73,7 @@ module "aws-eks-accelerator-for-terraform" {
         workshop-default = "yes"
       }
     }
-  
+
     system = {
       node_group_name = "managed-system"
       instance_types  = ["m5.large"]

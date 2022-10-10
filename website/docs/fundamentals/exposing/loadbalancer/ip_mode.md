@@ -33,7 +33,7 @@ $ kubectl apply -k /workspace/modules/exposing/load-balancer/ip-mode
 It will take a few minutes for the configuration of the load balancer to be updated. Run the following command to ensure the annotation is updated:
 
 ```bash
-$ k describe service/ui-nlb -n ui
+$ kubectl describe service/ui-nlb -n ui
 ...
 Annotations:              service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
 ...

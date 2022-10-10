@@ -47,6 +47,13 @@
           "eks:DescribeFargateProfile"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "cloudformation:ListStacks"
+      ],
+      "Resource": "*"
     }
   ]
 }
