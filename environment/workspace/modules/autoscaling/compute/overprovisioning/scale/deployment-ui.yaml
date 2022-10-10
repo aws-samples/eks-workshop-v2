@@ -4,4 +4,4 @@ metadata:
   name: ui
   namespace: ui
 spec:
-  replicas: 8
+  replicas: 5
