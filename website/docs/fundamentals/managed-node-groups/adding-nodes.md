@@ -15,7 +15,7 @@ On the Edit node group page, you can see the following settings under **Node gro
 Wait a few seconds and run the following command again:
 
 ```bash
-$ eksctl get nodegroup --cluster eks-workshop-cluster
+$ eksctl get nodegroup --cluster $EKS_CLUSTER_NAME
 ```
 
 You should see the updated configuration with the new desired capacity and minimum size. Wait about 3-4 minutes and run the following command:

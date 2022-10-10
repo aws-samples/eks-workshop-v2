@@ -16,7 +16,7 @@ Advantages of running Amazon EKS managed node groups include:
 We can inspect the managed node group that was pre-provisioned for you:
 
 ```bash
-$ eksctl get nodegroup --cluster eks-workshop-cluster
+$ eksctl get nodegroup --cluster $EKS_CLUSTER_NAME
 ```
 
 There are several attributes of managed node groups that we can see from this output:
