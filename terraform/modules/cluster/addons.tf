@@ -4,11 +4,30 @@ resource "kubernetes_namespace" "workshop_system" {
   }
 }
 
+data "aws_eks_addon_version" "latest" {
+  for_each = toset(["vpc-cni"])
+
+  addon_name         = each.value
+  kubernetes_version = local.cluster_version
+  most_recent        = true
+}
+
+resource "aws_eks_addon" "vpc_cni" {
+  cluster_name      = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  addon_name        = "vpc-cni"
+  addon_version     = data.aws_eks_addon_version.latest["vpc-cni"].version
+  resolve_conflicts = "OVERWRITE"
+
+  depends_on = [
+    null_resource.kubectl_set_env
+  ]
+}
+
 module "eks-blueprints-kubernetes-csi-addon" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.10.0//modules/kubernetes-addons/aws-ebs-csi-driver"
 
   depends_on = [
-    module.aws-eks-accelerator-for-terraform
+    aws_eks_addon.vpc_cni
   ]
 
   enable_self_managed_aws_ebs_csi_driver = true
