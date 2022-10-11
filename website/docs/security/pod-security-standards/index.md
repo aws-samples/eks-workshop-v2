@@ -7,7 +7,7 @@ Securely adopting Kubernetes includes preventing unwanted changes to clusters. U
 
 In Kubernetes, PSPs are being replaced with, [Pod Security Admission / PSA](https://kubernetes.io/docs/concepts/security/pod-security-admission/), a built-in admission controller that implements the security controls outlined in the [Pod Security Standards / PSS](https://kubernetes.io/docs/concepts/security/pod-security-standards/). As of Kubernetes version 1.23, PSA and PSS have both reached beta feature states, and are enabled in Amazon Elastic Kubernetes Service (EKS) by default.
 
-### Pod Security Standards (PSS) and Pod Security Admission (PSA)
+## Pod Security Standards (PSS) and Pod Security Admission (PSA)
 
 According to the Kubernetes documentation, the PSS "define three different policies to broadly cover the security spectrum. These policies are cumulative and range from highly-permissive to highly-restrictive." 
 
@@ -23,13 +23,11 @@ The PSA admission controller implements the controls, outlined by the PSS polici
 * *audit:* Policy violations will trigger the addition of an audit annotation to the event recorded in the [audit log](https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/), but are otherwise allowed.
 * *warn:* Policy violations will trigger a user-facing warning, but are otherwise allowed.
 
-
-### Built-in Pod Security admission enforcement
+## Built-in Pod Security admission enforcement
 
 From Kubernetes version 1.23, the PodSecurity [feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/) is a beta feature and is enabled by default in Amazon EKS. The default [PSS and PSA settings](https://kubernetes.io/docs/tasks/configure-pod-container/enforce-standards-admission-controller/#configure-the-admission-controller) for upstream Kubernetes version 1.23 are used for Amazon EKS. They are listed below.
 
-
-```
+```yaml
     defaults:
       enforce: "privileged"
       enforce-version: "latest"
@@ -44,7 +42,6 @@ From Kubernetes version 1.23, the PodSecurity [feature gate](https://kubernetes.
       runtimeClasses: []
       # Array of namespaces to exempt.
       namespaces: []
-      
 ```
 
 The above settings configure the following cluster-wide scenario:
@@ -52,16 +49,11 @@ The above settings configure the following cluster-wide scenario:
 * No PSA exemptions are configured at Kubernetes API server startup.
 * The Privileged PSS profile is configured by default for all PSA modes, and set to latest versions.
 
-
-
-### Pod Security Admission labels for Namespaces 
+## Pod Security Admission labels for Namespaces 
 
 Given the above default configuration, you must configure specific PSS profiles and PSA modes at the Kubernetes Namespace level, to opt Namespaces into Pod security provided by the PSA and PSS. You can configure Namespaces to define the admission control mode you want to use for Pod security. With [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels), you can choose which of the predefined PSS levels you want to use for Pods in a given Namespace. The label you select defines what action the PSA takes if a potential violation is detected. As seen below, you can configure any or all modes, or even set a different level for different modes. For each mode, there are two possible labels that determine the policy used.
 
-
-
 ```
-
 # The per-mode level label indicates which policy level to apply for the mode.
 #
 # MODE must be one of `enforce`, `audit`, or `warn`.
@@ -74,13 +66,11 @@ Given the above default configuration, you must configure specific PSS profiles 
 # MODE must be one of `enforce`, `audit`, or `warn`.
 # VERSION must be a valid Kubernetes minor version, or `latest`.
 *pod-security.kubernetes.io/<MODE>-version*: <VERSION>
-      
 ```
 
 Below is an example of PSA and PSS Namespace configurations that can be used for testing. Please note that we did not include the optional PSA mode-version label. We used the cluster-wide setting, latest, configured by default. By uncommenting the desired labels, below, you can enable the PSA modes and PSS profiles you need for your respective Namespace.
 
-```
-
+```yaml
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -100,9 +90,7 @@ metadata:
       
 ```
 
-
-
-### Validating Admission Controllers 
+## Validating Admission Controllers 
 
 In Kubernetes, an Admission Controller is a piece of code that intercepts requests to the Kubernetes API server before they are persisted into etcd, and used to make cluster changes. Admission controllers can be of  type mutating, validating, or both. The implementation of PSA is a validating admission controller , and it checks inbound Pod specification requests for conformance to the specified PSS. 
 
@@ -110,13 +98,8 @@ In the flow below, [mutating and validating dynamic admission controllers](https
 
 ![](k8s-admission-controllers.png)
 
-
-### Using PSA and PSS 
+## Using PSA and PSS 
 
 PSA enforces the policies outlined in PSS, and the PSS policies define a set of Pod security profiles. In the diagram below, we outline how PSA and PSS work together, with Pods and Namespaces, to define Pod security profiles and apply admission control based on those profiles. As seen in the diagram below, the PSA enforcement modes and PSS policies are defined as labels in the target Namespaces.
 
 ![](using-pss-psa.png)
-
-
-
-
