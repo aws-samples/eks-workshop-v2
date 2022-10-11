@@ -239,7 +239,7 @@ Executing tests...
 success
 ```
 
-You can limit the tests to just specific modules in order to execute tests quicker by specifying the directory relative to `site/content`. For example to test only the content for the autoscaling module located at `site/content/autoscaling' the command would be:
+You can limit the tests to just specific modules in order to execute tests quicker by specifying the directory relative to `website/docs`. For example to test only the content for the autoscaling module located at `website/docs/autoscaling' the command would be:
 
 ```
 ➜  eks-workshop-v2 git:(main) ✗ make test module='autoscaling/**'
