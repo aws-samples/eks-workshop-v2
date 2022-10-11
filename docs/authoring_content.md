@@ -162,6 +162,8 @@ kube-proxy-v5zft                                1/1     Running   0          17h
 [root@43267b0ac0c8 /]$ 
 ```
 
+Depending on your Docker version, you might need to add a flag to enable [BuildKit builds](https://docs.docker.com/develop/develop-images/build_enhancements/). To do that just run this command `export DOCKER_BUILDKIT=1`, which will set the required env var. After that, you can run again `make shell`. 
+
 If your AWS credentials expire you can `exit` and restart the shell, which will not affect your cluster.
 
 ### Automated testing
