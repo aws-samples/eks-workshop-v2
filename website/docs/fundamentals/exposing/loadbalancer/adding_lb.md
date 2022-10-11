@@ -18,10 +18,10 @@ $ kubectl apply -k /workspace/modules/exposing/load-balancer/nlb
 Lets inspect the `Service` resources for the `ui` application again:
 
 ```bash
-$ cat <<EOF > /tmp/yourfilehere
-These contents will be written to the file.
-  This line is indented.
-EOF
+$ kubectl get svc -n ui
+NAME     TYPE           CLUSTER-IP       EXTERNAL-IP                                                            PORT(S)        AGE
+ui       ClusterIP      172.20.135.223   <none>                                                                 80/TCP         37d
+ui-nlb   LoadBalancer   172.20.14.5      k8s-ui-uinlb-d8f94d1e39-9c16f234485ba30b.elb.us-east-2.amazonaws.com   80:30787/TCP   5s
 ```
 
 Now we see two separate resources, with the new `ui-nlb` entry being of type `LoadBalancer`. Most importantly note it has an "external IP" value, this the DNS entry that can be used to access our application from outside the Kubernetes cluster.

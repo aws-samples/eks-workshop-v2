@@ -40,6 +40,20 @@
           "autoscaling:DescribeAutoScalingGroups"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "eks:DescribeFargateProfile"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "cloudformation:ListStacks"
+      ],
+      "Resource": "*"
     }
   ]
 }

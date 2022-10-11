@@ -75,6 +75,12 @@ const config = {
           },
           {
             type: 'doc',
+            docId: 'fundamentals/index',
+            position: 'left',
+            label: 'Fundamentals',
+          },
+          {
+            type: 'doc',
             docId: 'security/index',
             position: 'left',
             label: 'Security',

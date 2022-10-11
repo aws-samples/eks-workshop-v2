@@ -126,6 +126,19 @@ module "aws-eks-accelerator-for-terraform" {
       }
     }
   }
+
+  fargate_profiles = {
+    checkout_profile = {
+      fargate_profile_name = "checkout-profile"
+      fargate_profile_namespaces = [{
+        namespace = "checkout"
+        k8s_labels = {
+          fargate = "yes"
+        }
+      }]
+      subnet_ids = slice(module.aws_vpc.private_subnets, 0, 3)
+    }
+  }
 }
 
 # Build kubeconfig for use with null resource to modify aws-node daemonset
