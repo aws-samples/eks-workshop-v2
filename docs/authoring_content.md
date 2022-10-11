@@ -15,6 +15,7 @@ The following pre-requisites are necessary to work on the content:
   - `terraform`
   - `jq`
   - `npm`
+  - `kubectl`
 
 ## Create a work branch
 
