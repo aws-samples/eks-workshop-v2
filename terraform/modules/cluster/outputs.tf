@@ -66,3 +66,28 @@ output "cart_iam_role" {
   description = "ARN of the IAM role to allow access to DynamoDB for the cart service"
   value       = module.iam_assumable_role_carts.iam_role_arn
 }
+
+output "orders_rds_endpoint" {
+  description = "Endpoint of the RDS database for the orders service"
+  value       = module.orders_rds.cluster_endpoint
+}
+
+output "orders_rds_master_username" {
+  description = "Master username of the RDS database for the orders service"
+  value       = "orders"
+}
+
+output "orders_rds_master_password" {
+  description = "Master password of the RDS database for the orders service"
+  value       = random_string.orders_db_master.result
+}
+
+output "orders_rds_database_name" {
+  description = "Master username of the RDS database for the orders service"
+  value       = module.orders_rds.cluster_database_name
+}
+
+output "orders_rds_ingress_sg_id" {
+  description = "Endpoint of the RDS database for the orders service"
+  value       = aws_security_group.orders_rds_ingress.id
+}
