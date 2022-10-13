@@ -182,8 +182,18 @@ module "eks-blueprints-kubernetes-addons" {
       type  = "string"
     },
     {
+      name  = "prometheus.nodeExporter.tolerations[0].key"
+      value = "systemComponent"
+      type  = "string"
+    },
+    {
       name  = "prometheus.nodeExporter.tolerations[0].operator"
       value = "Exists"
+      type  = "string"
+    },
+    {
+      name  = "prometheus.nodeExporter.tolerations[0].effect"
+      value = "NoSchedule"
       type  = "string"
     }], 
     local.system_component_values)
