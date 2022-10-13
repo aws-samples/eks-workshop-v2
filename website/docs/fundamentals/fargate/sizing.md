@@ -30,10 +30,10 @@ Deployment/checkout
 
 Apply the kustomization and wait for the rollout to complete:
 
-```bash
+```bash timeout=180
 $ kubectl apply -k /workspace/modules/fundamentals/fargate/sizing
 [...]
-$ kubectl rollout status -n checkout deployment/checkout
+$ kubectl rollout status -n checkout deployment/checkout --timeout=160s
 ```
 
 Now we can check again the resource allocated by Fargate. Based on the changes outlined above, what do you expect to see?

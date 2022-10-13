@@ -33,10 +33,10 @@ Deployment/checkout
 
 Apply the kustomization to the cluster:
 
-```bash
+```bash timeout=180
 $ kubectl apply -k /workspace/modules/fundamentals/fargate/enabling
 [...]
-$ kubectl rollout status -n checkout deployment/checkout
+$ kubectl rollout status -n checkout deployment/checkout --timeout=160s
 ```
 
 This will cause the pod specification for the `checkout` service to be updated and trigger a new deployment, replacing all the pods. When the new pods are scheduled, the Fargate scheduler will match the new label applied by the kustomization with our target profile and intervene to ensure our pod is schedule on capacity managed by Fargate.
