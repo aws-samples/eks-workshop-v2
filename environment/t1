@@ -1,0 +1,10 @@
+Name:         cluster-admin
+Labels:       kubernetes.io/bootstrapping=rbac-defaults
+Annotations:  rbac.authorization.kubernetes.io/autoupdate: true
+Role:
+  Kind:  ClusterRole
+  Name:  cluster-admin
+Subjects:
+  Kind   Name            Namespace
+  ----   ----            ---------
+  Group  system:masters  
