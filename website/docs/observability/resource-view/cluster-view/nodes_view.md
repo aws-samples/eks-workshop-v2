@@ -3,11 +3,11 @@ title: "Nodes"
 sidebar_position: 30
 ---
 
-Kubernetes runs your workload by placing containers into Pods to run on Nodes. A node may be a virtual or physical machine, depending on the cluster. The eks-workshop-cluster is running 3 nodes on which the workloads are deployed. Click on the Nodes drill down to list the nodes. 
+Kubernetes runs your workload by placing containers into pods to run on [Nodes] (https://kubernetes.io/docs/concepts/architecture/nodes/). A node may be a virtual or physical machine, depending on the cluster. The eks-workshop-cluster is running 3 nodes on which the workloads are deployed. Click on the Nodes drill down to list the nodes. 
 
 ![Insights](/img/resource-view/cluster-node.jpg)
 
-If you click on any of the node names, you will find the Info section that has a lot of details of the node - OS, container runtime, instance type , ec2 instance and [Managed node group](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) that make it easy to provision compute capcity for the cluster. The next section, Capacity allocation shows suage and reservation of various resources on EC2 worker notes connected to the cluster.
+If you click on any of the node names, you will find the Info section that has a lot of details of the node - OS, container runtime, instance type , EC2 instance and [Managed node group](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) (that make it easy to provision compute capcity for the cluster). The next section, Capacity allocation shows usage and reservation of various resources on EC2 worker nodes connected to the cluster.
 
 ![Insights](/img/resource-view/cluster-node-detail1.jpg)
 
