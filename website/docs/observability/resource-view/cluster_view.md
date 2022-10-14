@@ -1,6 +1,6 @@
 ---
 title: "Cluster view in EKS console"
-sidebar_position: 30
+sidebar_position: 40
 ---
 
 Cluster view
