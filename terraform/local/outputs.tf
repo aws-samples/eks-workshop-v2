@@ -14,6 +14,7 @@ output "iam_role_arn" {
 }
 
 output "environment_variables" {
+  description = "Environment variables that will be injected in to the participants shell (Cloud9 etc)"
   value = <<EOT
 AWS_ACCOUNT_ID=${data.aws_caller_identity.current.account_id}
 EKS_CLUSTER_NAME=${module.cluster.eks_cluster_id}
@@ -23,6 +24,11 @@ EKS_DEFAULT_MNG_MAX=${module.cluster.eks_cluster_nodegroup_size_max}
 EKS_DEFAULT_MNG_DESIRED=${module.cluster.eks_cluster_nodegroup_size_desired}
 CARTS_DYNAMODB_TABLENAME=${module.cluster.cart_dynamodb_table_name}
 CARTS_IAM_ROLE=${module.cluster.cart_iam_role}
+ORDERS_RDS_ENDPOINT=${module.cluster.orders_rds_endpoint}
+ORDERS_RDS_USERNAME=${module.cluster.orders_rds_master_username}
+ORDERS_RDS_PASSWORD=${module.cluster.orders_rds_master_password}
+ORDERS_RDS_DATABASE_NAME=${module.cluster.orders_rds_database_name}
+ORDERS_RDS_SG_ID=${module.cluster.orders_rds_ingress_sg_id}
 EOT
 }
 

@@ -3,7 +3,7 @@ title: "Pods"
 sidebar_position: 30
 ---
 
-[Pods] (https://kubernetes.io/docs/concepts/workloads/pods/) resource view displays all the pods which represent the smallest and simplest Kubernetes object.
+[Pods](https://kubernetes.io/docs/concepts/workloads/pods/) resource view displays all the pods which represent the smallest and simplest Kubernetes object.
 
 ![Insights](/img/resource-view/view-pods.jpg)
 

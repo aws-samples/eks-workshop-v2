@@ -66,6 +66,15 @@ module "aws-eks-accelerator-for-terraform" {
       type                          = "ingress"
       source_cluster_security_group = true
     }
+    
+    ingress_nodes_metric_server_port = {
+      description                   = "Cluster API to Nodegroup for Metric Server"
+      protocol                      = "tcp"
+      from_port                     = 4443
+      to_port                       = 4443
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
   }
 
   # Add karpenter.sh/discovery tag so that we can use this as securityGroupSelector in karpenter provisioner
@@ -124,6 +133,19 @@ module "aws-eks-accelerator-for-terraform" {
       k8s_labels = {
         workshop-system = "yes"
       }
+    }
+  }
+
+  fargate_profiles = {
+    checkout_profile = {
+      fargate_profile_name = "checkout-profile"
+      fargate_profile_namespaces = [{
+        namespace = "checkout"
+        k8s_labels = {
+          fargate = "yes"
+        }
+      }]
+      subnet_ids = slice(module.aws_vpc.private_subnets, 0, 3)
     }
   }
 }

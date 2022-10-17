@@ -12,6 +12,10 @@ RUN curl -fsSL -o helm.tar.gz https://get.helm.sh/helm-v3.9.2-linux-amd64.tar.gz
   chmod +x linux-amd64/helm && \
   mv ./linux-amd64/helm /usr/local/bin && \
   rm -rf linux-amd64/ helm.tar.gz
+  
+RUN curl --location "https://github.com/weaveworks/eksctl/releases/download/v0.114.0/eksctl_Linux_amd64.tar.gz" | tar xz && \
+  chmod +x eksctl && \
+  mv ./eksctl /usr/local/bin
 
 ADD entrypoint.sh /entrypoint.sh
 

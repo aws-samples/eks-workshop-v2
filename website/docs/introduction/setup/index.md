@@ -1,7 +1,6 @@
 ---
 title: Setup
 sidebar_position: 20
-weight: 5
 ---
 
 This section outlines how to set up the environment to run the labs in the workshop, including setting up your AWS account.

@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkout
+spec:
+  template:
+    spec:
+      containers:
+        - name: checkout
+          resources:
+            requests:
+              cpu: '1'
+              memory: 2.5G
+            limits:
+              memory: 2.5G
