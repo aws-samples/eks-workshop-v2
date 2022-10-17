@@ -24,7 +24,7 @@ resource "aws_dynamodb_table" "carts" {
 
 module "iam_assumable_role_carts" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "~> v5.3.0"
+  version                       = "~> v5.5.2"
   create_role                   = true
   role_name                     = "${local.cluster_name}-carts-dynamo"
   provider_url                  = module.aws-eks-accelerator-for-terraform.eks_oidc_issuer_url
