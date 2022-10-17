@@ -93,4 +93,52 @@ tmpfs           3.8G     0  3.8G   0% /sys/firmware
 
 Check the "/dev/nvme2n1" disk that is currently being mounted on the "/var/lib/mysql". This is the EBS Volume for the stateful MySQL database files that being stored in a persistent way. 
 
+Let's now test if our data is in fact persistent. We'll create the same *test.txt* file as on the first section of this module:
+
+```bash
+$ echo test123 > /var/lib/mysql/test.txt
+```
+
+```bash
+$ ls /var/lib/mysql
+auto.cnf    catalog          ib_buffer_pool  ibdata1  mysql.sock          public_key.pem   sys
+ca-key.pem  client-cert.pem  ib_logfile0     ibtmp1   performance_schema  server-cert.pem  test.txt
+ca.pem      client-key.pem   ib_logfile1     mysql    private_key.pem     server-key.pem
+```
+
+**Exit the container shell press Control + D, and you'll return to the Cloud9 shell**
+
+Now let's remove the current catalog-mysql pod. This will force the StatefulSet controller to automatically re-create a new catalog-mysql pod:
+
+```bash
+$ kubectl delete pods -n catalog -l app.kubernetes.io/team=database
+pod "catalog-mysql-0" deleted
+```
+
+```bash
+$ kubectl get pods -n catalog -l app.kubernetes.io/team=database
+NAME              READY   STATUS    RESTARTS   AGE
+catalog-mysql-0   1/1     Running   0          29s
+```
+
+Finally, let's exec back into the MySQL container shell to see that our *test.txt* file has persisted. 
+
+```bash
+$ kubectl exec --stdin --tty catalog-mysql-0  -n catalog -- /bin/bash
+```
+
+```bash
+$ ls /var/lib/mysql
+auto.cnf    catalog          ib_buffer_pool  ibdata1  mysql.sock          public_key.pem   sys
+ca-key.pem  client-cert.pem  ib_logfile0     ibtmp1   performance_schema  server-cert.pem  test.txt
+ca.pem      client-key.pem   ib_logfile1     mysql    private_key.pem     server-key.pem
+```
+
+```bash
+$ cat /var/lib/mysql/test.txt
+test123
+```
+
+As you can see the *test.txt* file is still available after a pod delete and restart. This is the main functionality of Persistent Volumes (PVs). Amazon EBS is storing the data and keeping our data safe and available across an AWS Availability Zone (AZ)
+
 **To exit the container shell press Control + D, and you'll return to the Cloud9 shell**

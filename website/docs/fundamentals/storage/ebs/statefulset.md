@@ -39,4 +39,61 @@ $ kubectl get statefulsets -n catalog -o json | jq '.items[].spec.template.spec.
 
 An emptyDir volume is first created when a Pod is assigned to a node, and exists as long as that Pod is running on that node. As the name says, the emptyDir volume is initially empty. All containers in the Pod can read and write the same files in the emptyDir volume, though that volume can be mounted at the same or different paths in each container. **When a Pod is removed from a node for any reason, the data in the emptyDir is deleted permanently.** Therefore EmptyDir is not a good fit for our MySQL Database. 
 
+We can test by creating a shell inside the container that is running MySQL and creating a test file. Then after that, we'll delete the pod that is running our StatefulSet. Because that pod is not using a Persistent Volume (PV), it's using a EmptyDir, the file will not survive a pod restart. First let's shell inside the MySQL container. 
+
+```bash
+$ kubectl exec --stdin --tty catalog-mysql-0  -n catalog -- /bin/bash
+```
+
+Now, let's create a file inside the "var/lib/mysql" directory, which is using the EmptyDir
+
+```bash
+$ echo test123 > /var/lib/mysql/test.txt
+```
+
+```bash
+$ ls /var/lib/mysql
+auto.cnf    catalog          ib_buffer_pool  ibdata1  mysql.sock          public_key.pem   sys
+ca-key.pem  client-cert.pem  ib_logfile0     ibtmp1   performance_schema  server-cert.pem  test.txt
+ca.pem      client-key.pem   ib_logfile1     mysql    private_key.pem     server-key.pem
+```
+
+**Exit the container shell press Control + D, and you'll return to the Cloud9 shell**
+
+Now let's remove the current catalog-mysql pod. This will force the StatefulSet controller to automatically re-create a new catalog-mysql pod:
+
+```bash
+$ kubectl delete pods -n catalog -l app.kubernetes.io/team=database
+pod "catalog-mysql-0" deleted
+```
+
+```bash
+$ kubectl get pods -n catalog -l app.kubernetes.io/team=database
+NAME              READY   STATUS    RESTARTS   AGE
+catalog-mysql-0   1/1     Running   0          29s
+```
+
+Finally, let's exec back into the MySQL container shell to see if our file has disappeared:
+
+```bash
+$ kubectl exec --stdin --tty catalog-mysql-0  -n catalog -- /bin/bash
+```
+
+```bash
+$ ls /var/lib/mysql
+auto.cnf    catalog          ib_buffer_pool  ibdata1  mysql.sock          public_key.pem   sys
+ca-key.pem  client-cert.pem  ib_logfile0     ibtmp1   performance_schema  server-cert.pem
+ca.pem      client-key.pem   ib_logfile1     mysql    private_key.pem     server-key.pem
+```
+
+```bash
+$ cat /var/lib/mysql/test.txt
+cat: /var/lib/mysql/test.txt: No such file or directory
+```
+
+As you can see the *test.txt* file is no longer there, because emptyDir volumes are ephemeral. On future sections, we'll run the same experiment and demostrate how Persistent Volumes (PVs) will keep the *test.txt* file and survive pod restarts and/or failures. 
+
+**Exit the container shell press Control + D, and you'll return to the Cloud9 shell**
+
+
 On the next page, we will on understanding the main concepts of Storage on Kubernetes and its integration with the AWS cloud ecosystem. 

@@ -8,4 +8,4 @@ sidebar_position: 30
 In this section, we will learn about the following concepts:
 * Kubernetes StatefulSets
 * EKS Storage Overview
-* StatefulSet with EBSV Volume
+* StatefulSet with EBS Volume
