@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: catalog-mysql
   labels:
@@ -12,9 +12,10 @@ spec:
       app.kubernetes.io/name: catalog
       app.kubernetes.io/instance: catalog
       app.kubernetes.io/component: mysql
+  serviceName: mysql
   template:
     metadata:
-      labels:
+      labels: 
         app.kubernetes.io/name: catalog
         app.kubernetes.io/instance: catalog
         app.kubernetes.io/component: mysql
@@ -53,3 +54,14 @@ spec:
             - name: mysql
               containerPort: 3306
               protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
+              subPath: mysql
+            - name: conf
+              mountPath: /etc/mysql/conf.d
+      volumes:
+        - name: conf
+          emptyDir: {}
+        - name: data
+          emptyDir: {}

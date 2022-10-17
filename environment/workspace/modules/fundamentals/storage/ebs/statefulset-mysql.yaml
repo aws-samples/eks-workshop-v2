@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: catalog-mysql
+spec:
+  template:
+    spec:
+      volumes:
+        - name: conf
+          emptyDir: {}
+        - $patch: delete
+          name: data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: gp2
+        resources:
+          requests:
+            storage: 30Gi 
+        
