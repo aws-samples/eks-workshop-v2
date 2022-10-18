@@ -54,6 +54,13 @@
           "cloudformation:ListStacks"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "ec2:DescribeVolumes"
+      ],
+      "Resource": "*"
     }
   ]
 }
