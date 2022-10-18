@@ -23,7 +23,7 @@ $ kubectl wait --for=delete pod catalog-mysql-0 -n catalog --timeout=10s
 
 Finally, we can apply the Kustomize changes to a new `StatefulSet` deployment. Run the following commands:
 
-```bash
+```bash hook=check-pvc
 $ kubectl apply -k /workspace/modules/fundamentals/storage/ebs/
 namespace/catalog unchanged
 serviceaccount/catalog unchanged
@@ -34,6 +34,7 @@ service/catalog unchanged
 service/catalog-mysql unchanged
 deployment.apps/catalog unchanged
 statefulset.apps/catalog-mysql created
+$ kubectl rollout status --timeout=60s statefulset/catalog-mysql -n catalog
 ```
 
 It takes a couple of seconds for our newly deployed `StatefulSet` to be deployed and have a `PV` EBS volume attached to it. Run the command to wait for the proper status to be Ready:
@@ -80,7 +81,7 @@ If you prefer you can also check it via the AWS console, just look for the EBS v
 If you'd like to inspect the container shell and check out the newly EBS volume attached to the Linux OS, run this instructions to runa shell command into the `mysql-catalog` container. It'll inspect the filesystems that you have mounted:
 
 ```bash
-$ kubectl exec --stdin --tty catalog-mysql-0  -n catalog -- bash -c "df -h"
+$ kubectl exec --stdin catalog-mysql-0  -n catalog -- bash -c "df -h"
 Filesystem      Size  Used Avail Use% Mounted on
 overlay         100G  7.6G   93G   8% /
 tmpfs            64M     0   64M   0% /dev
@@ -98,20 +99,20 @@ Check the `/dev/nvme2n1` disk that is currently being mounted on the `/var/lib/m
 Let's now test if our data is in fact persistent. We'll create the same `test.txt` file exactly the same way as we did on the first section of this module:
 
 ```bash
-$ kubectl exec --stdin --tty catalog-mysql-0  -n catalog -- bash -c  "echo 123 > /var/lib/mysql/test.txt"
+$ kubectl exec --stdin catalog-mysql-0  -n catalog -- bash -c  "echo 123 > /var/lib/mysql/test.txt"
 ```
 
 Now let's verify that our `test.txt` file got created on the `/var/lib/mysql` directory:
 
 ```bash
-$ kubectl exec --stdin --tty catalog-mysql-0  -n catalog -- bash -c  "ls -larth /var/lib/mysql/ | grep -i test"
+$ kubectl exec --stdin catalog-mysql-0  -n catalog -- bash -c  "ls -larth /var/lib/mysql/ | grep -i test"
 -rw-r--r-- 1 root  root     4 Oct 18 13:57 test.txt
 ```
 
 Now let's remove the current `catalog-mysql` pod. This will force the StatefulSet controller to automatically re-create a new catalog-mysql pod:
 
-```bash
-$ kubectl delete pods -n catalog -l app.kubernetes.io/team=database
+```bash hook=pod-delete
+$ kubectl delete pods -n catalog catalog-mysql-0
 pod "catalog-mysql-0" deleted
 ```
 
@@ -128,12 +129,9 @@ catalog-mysql-0   1/1     Running   0          29s
 Finally, let's exec back into the MySQL container shell and run a `ls` command on the `/var/lib/mysql` path trying to look for the `test.txt` file that we created, and see if the file has now persisted:
 
 ```bash
-$ kubectl exec --stdin --tty catalog-mysql-0  -n catalog -- bash -c  "ls -larth /var/lib/mysql/ | grep -i test"
+$ kubectl exec --stdin catalog-mysql-0  -n catalog -- bash -c  "ls -larth /var/lib/mysql/ | grep -i test"
 -rw-r--r-- 1 mysql root     4 Oct 18 13:57 test.txt
-```
-
-```bash
-$ kubectl exec --stdin --tty catalog-mysql-0  -n catalog -- bash -c  "cat /var/lib/mysql/test.txt"
+$ kubectl exec --stdin catalog-mysql-0  -n catalog -- bash -c  "cat /var/lib/mysql/test.txt"
 123
 ```
 

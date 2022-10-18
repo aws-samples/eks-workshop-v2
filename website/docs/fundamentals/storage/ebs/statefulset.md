@@ -60,13 +60,13 @@ An emptyDir volume is first created when a Pod is assigned to a node, and exists
 We can test by creating a shell inside the container that is running MySQL and creating a test file. Then after that, we'll delete the pod that is running our StatefulSet. Because that pod is not using a Persistent Volume (PV), it's using a EmptyDir, the file will not survive a pod restart. First let's run a command inside our MySQL container to create a file on the emptyDir `var/lib/mysql` path (where MySQL saves database files): 
 
 ```bash
-$ kubectl exec --stdin --tty catalog-mysql-0  -n catalog -- bash -c  "echo 123 > /var/lib/mysql/test.txt"
+$ kubectl exec --stdin catalog-mysql-0  -n catalog -- bash -c  "echo 123 > /var/lib/mysql/test.txt"
 ```
 
 Now let's verify that our `test.txt` file got created on the `/var/lib/mysql` directory:
 
 ```bash
-$ kubectl exec --stdin --tty catalog-mysql-0  -n catalog -- bash -c  "ls -larth /var/lib/mysql/ | grep -i test"
+$ kubectl exec --stdin catalog-mysql-0  -n catalog -- bash -c  "ls -larth /var/lib/mysql/ | grep -i test"
 -rw-r--r-- 1 root  root     4 Oct 18 13:38 test.txt
 ```
 
@@ -89,13 +89,13 @@ catalog-mysql-0   1/1     Running   0          29s
 
 Finally, let's exec back into the MySQL container shell and run a `ls` command on the `/var/lib/mysql` path trying to look for the `test.txt` file that we created:
 
-```bash
-$ kubectl exec --stdin --tty catalog-mysql-0  -n catalog -- bash -c  "ls -larth /var/lib/mysql/ | grep -i test"
+```bash expectError=true
+$ kubectl exec --stdin catalog-mysql-0  -n catalog -- bash -c  "ls -larth /var/lib/mysql/ | grep -i test"
 command terminated with exit code 1
 ```
 
-```bash
-$ kubectl exec --stdin --tty catalog-mysql-0  -n catalog -- bash -c  "cat /var/lib/mysql/test.txt"
+```bash expectError=true
+$ kubectl exec --stdin catalog-mysql-0  -n catalog -- bash -c  "cat /var/lib/mysql/test.txt"
 cat: /var/lib/mysql/test.txt: No such file or directory
 command terminated with exit code 1
 ```
