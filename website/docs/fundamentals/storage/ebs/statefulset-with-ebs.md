@@ -18,6 +18,7 @@ To apply, the changes. We first need to delete the current `catalog-mysql` State
 
 ```bash
 $ kubectl delete statefulset catalog-mysql -n catalog
+$ kubectl wait --for=delete pod catalog-mysql-0 -n catalog --timeout=10s
 ```
 
 Finally, we can apply the Kustomize changes to a new `StatefulSet` deployment. Run the following commands:
@@ -33,6 +34,13 @@ service/catalog unchanged
 service/catalog-mysql unchanged
 deployment.apps/catalog unchanged
 statefulset.apps/catalog-mysql created
+```
+
+It takes a couple of seconds for our newly deployed `StatefulSet` to be deployed and have a `PV` EBS volume attached to it. Run the command to wait for the proper status to be Ready:
+
+```bash
+$ kubectl wait --for=condition=ready pod catalog-mysql-0 -n catalog --timeout=60s
+pod/catalog-mysql-0 condition met
 ```
 
 Let's now confirm that our newly deployed `StatefulSet` is running:
@@ -60,7 +68,8 @@ Utilizing the [AWS CLI](https://aws.amazon.com/cli/), we can check the Amazon EB
 ```bash
 $ aws ec2 describe-volumes \
     --filters Name=tag:kubernetes.io/created-for/pv/name,Values=`kubectl get pvc -n catalog -o jsonpath='{.items[].spec.volumeName}'` \
-    --query "Volumes[*].{ID:VolumeId,Tag:Tags}"
+    --query "Volumes[*].{ID:VolumeId,Tag:Tags}" \
+    --no-cli-pager
 ```
 
 If you prefer you can also check it via the AWS console, just look for the EBS volumes with the tag of key  `kubernetes.io/created-for/pvc/name` and value of `data-catalog-mysql-0`:
@@ -109,9 +118,11 @@ pod "catalog-mysql-0" deleted
 Wait for a few seconds, and run the command below to check if the `catalog-mysql` pod has been re-created:
 
 ```bash
+$ kubectl wait --for=condition=Ready pod -n catalog -l app.kubernetes.io/team=database --timeout=60s
+pod/catalog-mysql-0 condition met
 $ kubectl get pods -n catalog -l app.kubernetes.io/team=database
 NAME              READY   STATUS    RESTARTS   AGE
-catalog-mysql-0   1/1     Running   0          20s
+catalog-mysql-0   1/1     Running   0          29s
 ```
 
 Finally, let's exec back into the MySQL container shell and run a `ls` command on the `/var/lib/mysql` path trying to look for the `test.txt` file that we created, and see if the file has now persisted:

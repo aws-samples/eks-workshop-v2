@@ -21,6 +21,24 @@ On our ecommerce application, we have a StatefulSet already deployed part of our
 $ kubectl describe statefulsets -n catalog
 ```
 
+As you can see the [`volumeMounts`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section of our `StatefulSet` defines what is the `monuntPath` that will be mounted into a specific volume:
+
+```blank title="manifests/catalog/statefulset-mysql.yaml" 
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
+              subPath: mysql
+            - name: conf
+              mountPath: /etc/mysql/conf.d
+      volumes:
+        - name: conf
+          emptyDir: {}
+        - name: data
+          emptyDir: {}
+```
+
+In our case the `volumeMounts` called `data` has a `mountPath` of `/var/lib/mysql` directory, Kubernetes will map to a `volume` with the same name, which is the `emptyDir` with name of `data` that you see on the last two lines of the snippet above. 
+
 Unfortunately, our MySQL StatefulSet is not utilizing a persistent EBS volume for persistent storage. It's currently just utilizing a [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir). Run the following command to confirm and check under the `name: data` volume:
 
 ```bash
@@ -62,6 +80,8 @@ pod "catalog-mysql-0" deleted
 Wait for a few seconds, and run the command below to check if the `catalog-mysql` pod has been re-created:
 
 ```bash
+$ kubectl wait --for=condition=Ready pod -n catalog -l app.kubernetes.io/team=database --timeout=30s
+pod/catalog-mysql-0 condition met
 $ kubectl get pods -n catalog -l app.kubernetes.io/team=database
 NAME              READY   STATUS    RESTARTS   AGE
 catalog-mysql-0   1/1     Running   0          29s
