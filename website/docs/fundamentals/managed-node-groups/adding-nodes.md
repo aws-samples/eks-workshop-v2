@@ -2,28 +2,36 @@
 title: Add and remove nodes
 sidebar_position: 10
 ---
-While working with your cluster, you may need to update your managed node group configuration to add additional nodes to support the needs of your workloads. To edit your managed node group configuration, navigate to the Amazon EKS console at [https://console.aws.amazon.com/eks/home#/clusters](https://console.aws.amazon.com/eks/home#/clusters).
+While working with your cluster, you may need to update your managed node group configuration to add additional nodes to support the needs of your workloads. A nodegroup can be scaled by using the `eksctl scale nodegroup` command.
 
-Next, click the `eks-workshop-cluster`, select the **Compute** tab, and select the node group to edit and choose **Edit**.
-
-On the Edit node group page, you can see the following settings under **Node group scaling configuration**: **Desired size**, **Minimum size** and **Maximum size**. Bump the **minimum size** *and* **desired size** from `3` to `4`. Scroll down and hit **Save changes**.
-
-> Note: You can also edit **Tags** and **Kubernetes labels** on this page. Labels are defined within the Kubernetes API, and are generally used to define which nodes you want pods to run. Tags are assigned to the EKS node group object, but not the nodes themselves. Tags are used for a number of purposes, including auto-discovery by the cluster-autoscaler and to control access to the node group using AWS IAM policies.
-
-![Added nodes in UI](./assets/added-nodes.png)
-
-Wait a few seconds and run the following command again:
+First let's retrieve the current nodegroup scaling configuration and look at `MIN SIZE`, `MAX SIZE` and `DESIRED CAPACITY` of nodes using eksctl command below:
 
 ```bash
-$ eksctl get nodegroup --cluster $EKS_CLUSTER_NAME
+$ eksctl get nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME
 ```
 
-You should see the updated configuration with the new desired capacity and minimum size. Wait about 3-4 minutes and run the following command:
+We will scale the nodegroup in `eks-workshop-cluster` by incrementing the current node count by **1** for `MIN SIZE` and `DESIRED CAPACITY`.
+
+```bash
+$ eksctl scale nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME --nodes 3 --nodes-min 3 --nodes-max 6
+```
+It may take upto **2-3 minutes** for node provisioning and configuration changes to take effect. Let's retrieve the nodegroup configutation again and look at `MIN SIZE`, `MAX SIZE` and `DESIRED CAPACITY` of nodes using eksctl command below:
+
+```bash
+$ eksctl get nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME
+```
+
+You can also review changed **Kubernetes** node count with following command:
 
 ```bash
 $ kubectl get nodes
 ```
 
-You should see 4 nodes in your managed node group instead of 3, in addition to the existing two fargate nodes.
+To remove nodes, change the nodegroup configuration with command given below:
 
-To remove nodes, follow the same steps to edit the managed node group, but this time set the **minimum size** and **desired size** to `3`.
+```bash
+$ eksctl scale nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME --nodes 2 --nodes-min 2 --nodes-max 6
+```
+
+
+> Note: A nodegroup can also be scaled by using a config file passed to `--config-file` and specifying the name of the nodegroup that should be scaled with `--name`. Eksctl will search the config file and discover that nodegroup as well as its scaling configuration values.
