@@ -27,12 +27,7 @@ As you can see the [`volumeMounts`](https://kubernetes.io/docs/concepts/storage/
           volumeMounts:
             - name: data
               mountPath: /var/lib/mysql
-              subPath: mysql
-            - name: conf
-              mountPath: /etc/mysql/conf.d
       volumes:
-        - name: conf
-          emptyDir: {}
         - name: data
           emptyDir: {}
 ```
@@ -44,10 +39,6 @@ Unfortunately, our MySQL StatefulSet is not utilizing a persistent EBS volume fo
 ```bash
 $ kubectl get statefulsets -n catalog -o json | jq '.items[].spec.template.spec.volumes'
 [
-  {
-    "emptyDir": {},
-    "name": "conf"
-  },
   {
     "emptyDir": {},
     "name": "data"

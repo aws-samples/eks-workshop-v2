@@ -25,6 +25,8 @@ spec:
       containers:
         - name: mysql
           image: "mysql:5.7"
+          args: 
+            - "--ignore-db-dir=lost+found"
           imagePullPolicy: IfNotPresent
           env:
             - name: MYSQL_ROOT_PASSWORD
@@ -57,11 +59,7 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/mysql
-              subPath: mysql
-            - name: conf
-              mountPath: /etc/mysql/conf.d
+              # subPath: mysql
       volumes:
-        - name: conf
-          emptyDir: {}
         - name: data
           emptyDir: {}

@@ -11,6 +11,9 @@ The [Kubernetes Container Storage Interface (CSI)](https://kubernetes-csi.github
 
 In order to utilize Amazon EBS volumes with dynamic provisioning on our EKS cluster, we need to confirm that we have the EBS CSI Driver installed. [The Amazon Elastic Block Store (Amazon EBS) Container Storage Interface (CSI) driver](https://github.com/kubernetes-sigs/aws-ebs-csi-driver) allows Amazon Elastic Kubernetes Service (Amazon EKS) clusters to manage the lifecycle of Amazon EBS volumes for persistent volumes.
 
+> Optional: 
+> To learn how to install the Amazon EBS CSI driver on a non-workshop cluster, follow the instructions in our documentation.
+
 As part of our workshop environment, the EKS cluster has pre-installed the EBS CSI Driver. We can confirm the installation by running the following command:
 
 ```bash

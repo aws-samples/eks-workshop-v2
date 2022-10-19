@@ -14,7 +14,7 @@ fundamentals/storage/ebs/statefulset-mysql.yaml
 StatefulSet/catalog-mysql
 ```
 
-To apply, the changes. We first need to delete the current `catalog-mysql` StatefulSet because StatefulSets [do not allow the update of underline persistent storage](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations). It requires to re-create the StatefulSet object from scratch. First let's delete it: 
+To apply, the changes. We first need to delete the current `catalog-mysql` StatefulSet because StatefulSets [do not allow the update of underlying persistent storage](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations). It requires to re-create the StatefulSet object from scratch. First let's delete it: 
 
 ```bash
 $ kubectl delete statefulset catalog-mysql -n catalog
@@ -74,12 +74,11 @@ $ aws ec2 describe-volumes \
     --no-cli-pager
 ```
 
-If you prefer you can also check it via the AWS console, just look for the EBS volumes with the tag of key  `kubernetes.io/created-for/pvc/name` and value of `data-catalog-mysql-0`:
+If you prefer you can also check it via the [AWS console](https://console.aws.amazon.com/ec2/home#Volumes), just look for the EBS volumes with the tag of key  `kubernetes.io/created-for/pvc/name` and value of `data-catalog-mysql-0`:
 
 ![EBS Volume AWS Console Screenshot](./assets/ebsVolumeScrenshot.png)
 
-
-If you'd like to inspect the container shell and check out the newly EBS volume attached to the Linux OS, run this instructions to runa shell command into the `mysql-catalog` container. It'll inspect the filesystems that you have mounted:
+If you'd like to inspect the container shell and check out the newly EBS volume attached to the Linux OS, run this instructions to run a shell command into the `mysql-catalog` container. It'll inspect the filesystems that you have mounted:
 
 ```bash
 $ kubectl exec --stdin catalog-mysql-0  -n catalog -- bash -c "df -h"
@@ -115,7 +114,6 @@ Now let's remove the current `catalog-mysql` pod. This will force the StatefulSe
 ```bash hook=pod-delete
 $ kubectl delete pods -n catalog catalog-mysql-0
 pod "catalog-mysql-0" deleted
-$ kubectl wait --for=delete pod catalog-mysql-0 -n catalog --timeout=120s
 ```
 
 Wait for a few seconds, and run the command below to check if the `catalog-mysql` pod has been re-created:
