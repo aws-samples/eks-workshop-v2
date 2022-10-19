@@ -9,9 +9,9 @@ Now, let's enable the addons `tetrate_istio` and `prometheus` addon using EKS Bl
 
 Go into the module example directory if you are not there already, and open the *`main.tf`* file for editing. 
 
-```bash
-$ cd examples/eks-cluster-with-new-vpc/
-$ vi main.tf 
+```shell
+cd examples/eks-cluster-with-new-vpc/
+vi main.tf 
 ```
 Add the follwoing two lines under the `eks_blueprints_kubernetes_addons` to enable istio and prometheus on your cluster 
 
@@ -43,9 +43,9 @@ The chart `prometheus` does not include those additional services. We also need 
 
 To do so, open the *main.tf* file of the prometheus module located under *modules/kubernetes-addons/prometheus/*, and change the `chart` and `version` values under the helm_config section of the module `helm_addon`. In addition, replace the sub-value `operating_system` with `ingressClassName` as follow:
 
-```bash
-$ cd ../../modules/kubernetes-addons/prometheus/
-$ vi main.tf
+```shell
+cd ../../modules/kubernetes-addons/prometheus/
+vi main.tf
 ```
 ```yaml
 # module "helm_addon" {
@@ -76,7 +76,7 @@ You install this chart with the default values, except the following values that
 To do so, you create a *values.yaml* file in the directory of the prometheus module, in the following path */modules/kubernetes-addons/prometheus/*, which is the path that is already referenced in the `values` attribute under `helm_config` under module `helm_addon` in main.tf file (located in the prometheus module directory). 
 
 ```yaml
-$ cat <<EOF > values.yaml
+cat <<EOF > values.yaml
 grafana:
   ingress:
     ## If true, Grafana Ingress will be created
@@ -112,8 +112,8 @@ You may need to set values differently when running it in production. For a full
 
 Next step, is to add the following value to the locals values in *locals.tf* located in *modules/kubernetes-addons/aws-load-balancer-controller/*, to enable creating ingress class resources which is needed to create the ALB of Grafana and Prometheus. 
 
-```bash
-$ vi ../aws-load-balancer-controller/locals.tf
+```shell
+vi ../aws-load-balancer-controller/locals.tf
 ```
 ```yaml
 locals {
@@ -127,15 +127,15 @@ locals {
 ```
 
 Now you are all set to apply the resources of ISTIO and Prometheus to your EKS cluster
-```bash
-$ terraform apply
+```shell
+terraform apply
 ```
 
 Wait for the resources to get applied to your cluster, and then you should be able seeing 
 the services and pods of ISTIO and Prometheus in their respective namespaces.
 
-```bash
-$ kubectl get po,svc -n istio-system
+```shell
+kubectl get po,svc -n istio-system
 ```
 
 Output:
@@ -154,8 +154,8 @@ service/istiod                 ClusterIP      172.20.51.28    <none>            
 
 Enabling Istio will create a classic load balancer for Istio Ingress gateway as you notice in the preceeding output.
 
-```bash
-$ kubectl get po,svc -n prometheus
+```shell
+kubectl get po,svc -n prometheus
 ```
 
 Output:
