@@ -18,7 +18,8 @@ To apply, the changes. We first need to delete the current `catalog-mysql` State
 
 ```bash
 $ kubectl delete statefulset catalog-mysql -n catalog
-$ kubectl wait --for=delete pod catalog-mysql-0 -n catalog --timeout=10s
+pod "catalog-mysql-0" deleted
+$ kubectl wait --for=delete pod catalog-mysql-0 -n catalog --timeout=120s
 ```
 
 Finally, we can apply the Kustomize changes to a new `StatefulSet` deployment. Run the following commands:
@@ -114,6 +115,7 @@ Now let's remove the current `catalog-mysql` pod. This will force the StatefulSe
 ```bash hook=pod-delete
 $ kubectl delete pods -n catalog catalog-mysql-0
 pod "catalog-mysql-0" deleted
+$ kubectl wait --for=delete pod catalog-mysql-0 -n catalog --timeout=120s
 ```
 
 Wait for a few seconds, and run the command below to check if the `catalog-mysql` pod has been re-created:
