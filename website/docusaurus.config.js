@@ -75,12 +75,6 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'fundamentals/index',
-            position: 'left',
-            label: 'Fundamentals',
-          },
-          {
-            type: 'doc',
             docId: 'security/index',
             position: 'left',
             label: 'Security',
@@ -115,6 +109,12 @@ const config = {
             position: 'left',
             label: 'GitOps',
           },
+          {
+            type: 'doc',
+            docId: 'servicemesh/index',
+            position: 'left',
+            label: 'Service Mesh',
+          },          
           {
             href: 'https://github.com/aws-samples/eks-workshop-v2',
             position: 'right',
