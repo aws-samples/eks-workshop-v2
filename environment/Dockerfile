@@ -1,4 +1,4 @@
-FROM public.ecr.aws/amazonlinux/amazonlinux:2022
+FROM public.ecr.aws/amazonlinux/amazonlinux:2
 
 RUN yum install -y findutils aws-cli jq tar gzip zsh git diffutils wget tree && \
     yum clean all
