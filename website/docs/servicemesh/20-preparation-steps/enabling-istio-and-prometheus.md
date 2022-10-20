@@ -80,13 +80,10 @@ cat <<EOF > values.yaml
 grafana:
   ingress:
     ## If true, Grafana Ingress will be created
-    ##
     enabled: true
 
-    ## IngressClassName for Grafana Ingress.
-    ## Should be provided if Ingress is enable.
-    ##
-    ingressClassName: ${ingressClassName} #nginx
+    ## IngressClassName for Grafana Ingress should be provided if Ingress is enable.
+    ingressClassName: ${ingressClassName} 
 
     ## Annotations for Grafana Ingress
     annotations: {
