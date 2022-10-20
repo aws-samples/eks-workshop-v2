@@ -5,7 +5,13 @@ metadata:
 spec:
   template:
     spec:
+      containers:
+      - name: assets
+        volumeMounts:
+        - name: efsvolume
+          mountPath: /efsvolumedir
+        
       volumes:
-        - name: tmp-volume
-          emptyDir:
-            medium: Memory
+        - name: efsvolume
+          persistentVolumeClaim:
+            claimName: efs-claim
