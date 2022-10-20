@@ -5,6 +5,7 @@ weight: 10
 ---
 
 In this chapter will focus on the following topics:
+
 * How ISTIO works?
 * ISTIO Architecture
 * Traffic Management

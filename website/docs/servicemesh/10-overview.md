@@ -22,7 +22,7 @@ ISTIO works through a set of sidecar proxies. Those sidecar proxies are the data
 ![Istio Architecture](./assets/istio-architecture.png)
 
 And what happens is you use Istio to inject proxies into your workloads. And then all subsequent traffic, inbound and outbound, goes through those proxies.
- 
+
 Istio configures these proxies using rules that you give it to do very customizable things with Envoy.
  
 One key thing to note here is that Istio installs its API on Kubernetes as CRDs. So what this means is that you can interact with your Istio policies, and your rules using kubectl using Kubernetes native tooling.
