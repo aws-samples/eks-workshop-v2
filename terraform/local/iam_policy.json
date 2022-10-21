@@ -54,6 +54,14 @@
           "cloudformation:ListStacks"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "iam:CreateUser",
+          "iam:CreateAccessKey"
+      ],
+      "Resource": "*"
     }
   ]
 }
