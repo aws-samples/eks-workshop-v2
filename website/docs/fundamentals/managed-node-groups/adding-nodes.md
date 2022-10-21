@@ -8,15 +8,20 @@ While working with your cluster, you may need to update your managed node group 
 
 Next, click the `eks-workshop-cluster`, select the **Compute** tab, and select the node group to edit and choose **Edit**.
 
-On the Edit node group page, you can see the following settings under **Node group scaling configuration**: **Desired size**, **Minimum size** and **Maximum size**. Bump the **minimum size** *and* **desired size** from `2` to `2`. Scroll down and hit **Save changes**.
+On the **Edit node group** page, you can see the following settings under **Node group scaling configuration**: **Desired size**, **Minimum size** and **Maximum size**. Bump the **minimum size** *and* **desired size** from `2` to `3`. Scroll down and hit **Save changes**.
 
-**Alternatively**, You can also change nodegroup configuration using `eksctl` command. To change your nodegroup configuration using `eksctl`, first let's retrieve the current nodegroup scaling configuration and look at `MIN SIZE`, `MAX SIZE` and `DESIRED CAPACITY` of nodes using eksctl command below:
+
+![Added nodes in UI](./assets/added-nodes.png)
+
+
+**Alternatively**, You can also change nodegroup configuration using `eksctl` command. To change your nodegroup configuration using `eksctl` command, first let's retrieve the current nodegroup scaling configuration and look at `MIN SIZE`, `MAX SIZE` and `DESIRED CAPACITY` of nodes using eksctl command below:
 
 ```bash
 $ eksctl get nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME
 ```
 
-We will scale the nodegroup in `eks-workshop-cluster` by incrementing the current node count by **1** for `MIN SIZE` and `DESIRED CAPACITY`.
+We will scale the nodegroup in `eks-workshop-cluster` by changing the node count from `2` to `3` for `MIN SIZE` and `DESIRED CAPACITY` using below command:
+>Note: You do not need to run below command, if you have changed the size of nodegroup using `Amazon EKS Console`.
 
 ```bash
 $ eksctl scale nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME --nodes 3 --nodes-min 3 --nodes-max 6
