@@ -1,5 +1,5 @@
 ---
-title: Amazon Elastic BFile System (EFS)
+title: Amazon Elastic File System (EFS)
 sidebar_position: 30
 ---
 

@@ -3,9 +3,9 @@ title: Dynamic provisioning using EFS and Kuberneties deployment
 sidebar_position: 30
 ---
 
-Now that we understand [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) and [Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/), let's create a [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and change the Nginx container on the assets deployment to mount the Volume created.
+Now that we understand [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) and [Kuberneties storage Class](https://kubernetes.io/docs/concepts/storage/storage-classes/), let's create a [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and change the Nginx container on the assets deployment to mount the Volume created.
 
-first let us inspect the efspvclaim.yaml file to see the parameters in the file and the claim of teh specific storage size of 5GB from the Storage class "efs-sc" we created in the earlier step:
+first inspect the efspvclaim.yaml file to see the parameters in the file and the claim of the specific storage size of 5GB from the Storage class "efs-sc" we created in the earlier step:
 
 ```bash
 $ cat modules/fundamentals/storage/efs/efspvclaim.yaml 
@@ -23,14 +23,14 @@ spec:
     requests:
       storage: 5Gi%          
 ```
-Now let create the PVC. Run the below command:
+Now create the PVC. Run the below command:
 
 ```bash
 $ kubectl apply -f modules/fundamentals/storage/efs/efspvclaim.yaml
 persistentvolumeclaim/efs-claim created
 ```
 
-Now let us show the PV has been created automatically for the PVC we had created in the previous step:
+Now show the PV has been created automatically for the PVC we had created in the previous step:
 
 ```bash
 $ kubectl get pv
@@ -38,7 +38,7 @@ $ kubectl get pv
 NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                                 STORAGECLASS   REASON   AGE
 pvc-342a674d-b426-4214-b8b6-7847975ae121   5Gi        RWX            Delete           Bound    assets/efs-claim                      efs-sc                  2m33s
 ```
-Also we can describe the PVC we had created. Run the below Command:
+Also describe the PVC created. Run the below Command:
 
 ```bash
 $ kubectl describe pvc -n assets
@@ -67,11 +67,12 @@ Events:
 
 ```
 Now Utilizing Kustomiza we will do two things:
+
 * Remove the EmptyDir volume with `tmp-volume` named.
 * Add the Volume Claim and Volume Mounts to the specs of our conatiners .
 
 
-We can applt the Kustomiza changes to teh deployment bu Run the following command:
+We can apply the Kustomiza changes to the deployment by Run the following command:
 
 ```bash
 $ kubectl apply -k modules/fundamentals/storage/efs
