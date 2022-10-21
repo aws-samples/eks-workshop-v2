@@ -2,9 +2,15 @@
 title: Add and remove nodes
 sidebar_position: 10
 ---
-While working with your cluster, you may need to update your managed node group configuration to add additional nodes to support the needs of your workloads. A nodegroup can be scaled by using the `eksctl scale nodegroup` command.
+While working with your cluster, you may need to update your managed node group configuration to add additional nodes to support the needs of your workloads. A nodegroup can be scaled using Amazon EKS Console OR  using `eksctl scale nodegroup` command.
 
-First let's retrieve the current nodegroup scaling configuration and look at `MIN SIZE`, `MAX SIZE` and `DESIRED CAPACITY` of nodes using eksctl command below:
+ To edit your managed node group configuration using Amazon EKS Console, navigate to the Amazon EKS console at [https://console.aws.amazon.com/eks/home#/clusters](https://console.aws.amazon.com/eks/home#/clusters).
+
+Next, click the `eks-workshop-cluster`, select the **Compute** tab, and select the node group to edit and choose **Edit**.
+
+On the Edit node group page, you can see the following settings under **Node group scaling configuration**: **Desired size**, **Minimum size** and **Maximum size**. Bump the **minimum size** *and* **desired size** from `2` to `2`. Scroll down and hit **Save changes**.
+
+**Alternatively**, You can also change nodegroup configuration using `eksctl` command. To change your nodegroup configuration using `eksctl`, first let's retrieve the current nodegroup scaling configuration and look at `MIN SIZE`, `MAX SIZE` and `DESIRED CAPACITY` of nodes using eksctl command below:
 
 ```bash
 $ eksctl get nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME
@@ -15,7 +21,10 @@ We will scale the nodegroup in `eks-workshop-cluster` by incrementing the curren
 ```bash
 $ eksctl scale nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME --nodes 3 --nodes-min 3 --nodes-max 6
 ```
-It may take upto **2-3 minutes** for node provisioning and configuration changes to take effect. Let's retrieve the nodegroup configutation again and look at `MIN SIZE`, `MAX SIZE` and `DESIRED CAPACITY` of nodes using eksctl command below:
+
+
+After making changes to nodegroup via `Amazon EKS Console ` or `eksctl` command, it may take upto **2-3 minutes** for node provisioning and configuration changes to take effect. 
+Let's retrieve the nodegroup configutation again and look at `MIN SIZE`, `MAX SIZE` and `DESIRED CAPACITY` of nodes using eksctl command below:
 
 ```bash
 $ eksctl get nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME
