@@ -2,11 +2,6 @@
 
 terraform_context=$1
 
-if [ -z "$AWS_DEFAULT_REGION" ]; then
-  echo 'Please set $AWS_DEFAULT_REGION'
-  exit 1
-fi
-
 set -Eeuo pipefail
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
@@ -31,5 +26,5 @@ echo "Starting shell in container..."
 
 docker run --rm -it --env-file /tmp/eks-workshop-shell-env \
   -v $SCRIPT_DIR/../environment/workspace:/workspace \
-  -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" -e "AWS_DEFAULT_REGION" \
+  -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" \
   $container_image

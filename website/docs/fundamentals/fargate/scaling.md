@@ -17,7 +17,7 @@ Apply the kustomization and wait for the rollout to complete:
 ```bash timeout=240
 $ kubectl apply -k /workspace/modules/fundamentals/fargate/scaling
 [...]
-$ kubectl rollout status -n checkout deployment/checkout --timeout=160s
+$ kubectl rollout status -n checkout deployment/checkout --timeout=200s
 ```
 
 Once the rollout is complete we can check the number of pods:

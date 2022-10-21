@@ -1,3 +1,5 @@
+data "aws_region" "current" {}
+
 module "cluster" {
   source = "../modules/cluster"
 

@@ -1,7 +1,11 @@
 FROM public.ecr.aws/amazonlinux/amazonlinux:2
 
-RUN yum install -y findutils aws-cli jq tar gzip zsh git diffutils wget tree && \
+RUN yum install -y findutils jq tar gzip zsh git diffutils wget tree unzip && \
     yum clean all
+
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install
 
 RUN curl -LO https://dl.k8s.io/release/v1.23.9/bin/linux/amd64/kubectl && \
   chmod +x ./kubectl && \

@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: catalog-mysql
   labels:
@@ -12,9 +12,10 @@ spec:
       app.kubernetes.io/name: catalog
       app.kubernetes.io/instance: catalog
       app.kubernetes.io/component: mysql
+  serviceName: mysql
   template:
     metadata:
-      labels:
+      labels: 
         app.kubernetes.io/name: catalog
         app.kubernetes.io/instance: catalog
         app.kubernetes.io/component: mysql
@@ -24,6 +25,8 @@ spec:
       containers:
         - name: mysql
           image: "mysql:5.7"
+          args: 
+            - "--ignore-db-dir=lost+found"
           imagePullPolicy: IfNotPresent
           env:
             - name: MYSQL_ROOT_PASSWORD
@@ -53,3 +56,10 @@ spec:
             - name: mysql
               containerPort: 3306
               protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
+              # subPath: mysql
+      volumes:
+        - name: data
+          emptyDir: {}
