@@ -57,6 +57,13 @@
     },
     {
       "Effect": "Allow",
+        "Action": [
+            "ec2:DescribeVolumes"
+        ],
+        "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
       "Action": [
           "iam:CreateUser",
           "iam:CreateAccessKey"

@@ -17,6 +17,7 @@ output "environment_variables" {
   description = "Environment variables that will be injected in to the participants shell (Cloud9 etc)"
   value = <<EOT
 AWS_ACCOUNT_ID=${data.aws_caller_identity.current.account_id}
+AWS_DEFAULT_REGION=${data.aws_region.current.name}
 EKS_CLUSTER_NAME=${module.cluster.eks_cluster_id}
 EKS_DEFAULT_MNG_NAME=${split(":", module.cluster.eks_cluster_nodegroup_name)[1]}
 EKS_DEFAULT_MNG_MIN=${module.cluster.eks_cluster_nodegroup_size_min}
