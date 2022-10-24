@@ -106,6 +106,8 @@ $ kubectl get deployment -n assets -o json | jq '.items[].spec.template.spec.con
     "name": "tmp-volume"
   }
 ]
+
+$ kubectl wait --for=condition=available --timeout=120s deployment/assets -n assets
 ```
 
 Now check that the POD is ready, run the below command:
@@ -135,7 +137,7 @@ $ kubectl delete --all pods --namespace=assets
 
 pod "assets-6897999c5-vx46q" deleted
 
-$ kubectl wait --for=condition=available --timeout=120s deployment/assets -n assets
+$ kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=assets -n assets --timeout=60s
 ```
 
 Now check if the file new JPG file has been created in the step above still exist on the new created conatiner:
