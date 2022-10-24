@@ -8,7 +8,7 @@ Securely adopting Kubernetes includes preventing unwanted changes to clusters. U
 In Kubernetes, PSPs are being replaced with, [Pod Security Admission / PSA](https://kubernetes.io/docs/concepts/security/pod-security-admission/), a built-in admission controller that implements the security controls outlined in the [Pod Security Standards / PSS](https://kubernetes.io/docs/concepts/security/pod-security-standards/). As of Kubernetes version 1.23, PSA and PSS have both reached beta feature states, and are enabled in Amazon Elastic Kubernetes Service (EKS) by default.
 
 ## Pod Security Standards (PSS) and Pod Security Admission (PSA)
-
+h
 According to the Kubernetes documentation, the PSS "define three different policies to broadly cover the security spectrum. These policies are cumulative and range from highly-permissive to highly-restrictive." 
 
 The policy levels are defined as:

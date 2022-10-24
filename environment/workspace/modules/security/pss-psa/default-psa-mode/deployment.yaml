@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: assets
+spec:
+  template:
+    spec:
+      hostNetwork: true
+      hostPID: true
+      hostIPC: true    
+      securityContext:
+        runAsNonRoot: false
+      containers:
+        - name: assets
+          securityContext:
+            capabilities:
+              drop: ["DAC_OVERRIDE"]          
+            privileged: true
+            runAsNonRoot: false
+            allowPrivilegeEscalation: true
