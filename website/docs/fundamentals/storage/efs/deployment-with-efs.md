@@ -28,6 +28,8 @@ Now create the PVC. Run the below command:
 ```bash
 $ kubectl apply -f modules/fundamentals/storage/efs/efspvclaim.yaml
 persistentvolumeclaim/efs-claim created
+
+$ kubectl wait --for=condition=available --timeout=60s persistentvolumeclaim/efs-claim -n assets
 ```
 
 Now show the PV has been created automatically for the PVC we had created in the previous step:
@@ -71,8 +73,12 @@ Now Utilizing Kustomiza we will do two things:
 * Remove the EmptyDir volume with `tmp-volume` named.
 * Add the Volume Claim and Volume Mounts to the specs of our conatiners .
 
+```kustomization
+fundamentals/storage/efs/deployment.yaml
+deployment/assets
+```
 
-We can apply the Kustomiza changes to the deployment by Run the following command:
+We can apply the Kustomize changes to the deployment by Run the following command:
 
 ```bash
 $ kubectl apply -k modules/fundamentals/storage/efs
@@ -83,6 +89,7 @@ configmap/assets unchanged
 service/assets unchanged
 deployment.apps/assets configured
 
+$ kubectl wait --for=condition=available --timeout=120s deployment/assets -n assets
 ```
 Now get the volumeMounts in the deployment and Notice that we have our new Volume "efsvolume" mounted /efsvolumedir . Run the Follwing command
 
@@ -100,6 +107,14 @@ $ kubectl get deployment -n assets -o json | jq '.items[].spec.template.spec.con
   }
 ]
 ```
+
+Now check that the POD is ready, run the below command:
+```bash
+$ kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=assets -n assets --timeout=60s
+
+pod/assets-6487bdc64-9qd6s condition met
+
+```
 Now create a new JPG photo under the newly Mounted file system /efsvolumedir: run the following command"
 
 ```bash
@@ -116,9 +131,11 @@ newproduct.png
 Now let's remove the current `assets` pod. This will force the deployment controller to automatically re-create a new assets pod:
 
 ```bash
-$ kubectl delete pod assets-6897999c5-vx46q -n assets
+$ kubectl delete --all pods --namespace=assets
 
 pod "assets-6897999c5-vx46q" deleted
+
+$ kubectl wait --for=condition=available --timeout=120s deployment/assets -n assets
 ```
 
 Now check if the file new JPG file has been created in the step above still exist on the new created conatiner:
