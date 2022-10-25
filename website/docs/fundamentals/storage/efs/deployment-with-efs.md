@@ -75,7 +75,7 @@ Now Utilizing Kustomiza we will do two things:
 
 ```kustomization
 fundamentals/storage/efs/deployment.yaml
-deployment/assets
+Deployment/assets
 ```
 
 We can apply the Kustomize changes to the deployment by Run the following command:
