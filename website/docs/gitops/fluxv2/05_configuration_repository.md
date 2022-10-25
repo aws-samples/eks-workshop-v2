@@ -13,7 +13,7 @@ The reason we chose the UI service, is because it can be easily replicated in th
 First you will have to clone the repository created by Flux in the previous section. Using this repository we will deploy the replicated UI service that will be deployed by Flux.
 
 ```bash test=false
-git clone https://github.com/$GITHUB_USER/eksworkshop-gitops-config-flux.git
+$ git clone https://github.com/$GITHUB_USER/eksworkshop-gitops-config-flux.git
 ```
 
 Now we can get into the cloned repository, and start creating our GitOps configuration.
@@ -41,16 +41,16 @@ For simplicity, we will use the monorepo approach, where all application manifes
 Let's start with structuring our deployment configuration.
 First, we will create an application base folder for our deployment, and copy the content of the UI service manifest folder to our base app. We will use this as a base configuration that will be customized (with Kustomize) between environemtns.
 
-```
-mkdir -p eksworkshop-gitops-config-flux/app/base/ui
-mkdir -p eksworkshop-gitops-config-flux/app/production/ui
+```bash
+$ mkdir -p eksworkshop-gitops-config-flux/app/base/ui && \
+mkdir -p eksworkshop-gitops-config-flux/app/production/ui && \
 cp -r ./workspace/manifests/ui/ ./eksworkshop-gitops-config-flux/app/base/ui/
 ```
 
 Next, we will add a Kustomization file to specifiy which files needs to be applied when pointing this folder
 
-```
-cat <<EOF >>./eksworkshop-gitops-config-flux/app/base/ui/kustomization.yaml
+```bash
+$ cat <<EOF >>./eksworkshop-gitops-config-flux/app/base/ui/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
@@ -64,8 +64,8 @@ EOF
 
 All we have to do now, is to create another kustomization overlay to represent our new ui service that will be deployed the GitOps way using Flux. You can read more about [Kustomizations Bases and Overlays](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays) in Kubernetes documentation. Remember that we are using the same UI service manifests to point to the already deployed backend services. Therfore, to avoid clashes between the already deployed `UI` service, we will kustomize the base folder to deploy to a new namespace that we will call `ui-gitops`. We will also configured the Kubernetes service to be of a type `LoadBalancer`, in order to instruct Kubernetes to generate Load-Balancer for this service
 
-```
-cat <<EOF >>./eksworkshop-gitops-config-flux/app/production/ui/kustomization.yaml
+```bash
+$ cat <<EOF >>./eksworkshop-gitops-config-flux/app/production/ui/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: ui-gitops
@@ -77,7 +77,7 @@ patches:
       allowNameChange: true
 EOF
 
-cat <<EOF >>./eksworkshop-gitops-config-flux/app/production/ui/ui-values.yaml
+$ cat <<EOF >>./eksworkshop-gitops-config-flux/app/production/ui/ui-values.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -134,8 +134,8 @@ As you can see in the above snippet, the `GitRepository` named `flux-system` tha
 
 Since we are using the monorepo approach in this workshop module, we can simply point out Flux kustomization to use the configured Flux `GitRepository` object, and retrieve our new `UI` service manifests from it (Remember - we are hosting both the Flux toolkit configuration and the application manifests configuration in the same repository). To create it, use the following command:
 
-```
-cat <<EOF >>./eksworkshop-gitops-config-flux/clusters/production/ui-kustomization.yaml
+```bash
+$ cat <<EOF >>./eksworkshop-gitops-config-flux/clusters/production/ui-kustomization.yaml
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
@@ -161,10 +161,10 @@ The important configuration in the above kustomization file is the `path` and th
 After you configured Flux to point to your GitOps version of the `UI` service, then the final step is to commit & push all the configurations we have created up until now.
 Within the cloned repository of `eksworkshop-gitops-config-flux`, run the following command
 
-```
-cd eksworkshop-gitops-config-flux
-git add .
-git commit -am "Configuring the UI service"
+```bash
+$ cd eksworkshop-gitops-config-flux && \
+git add . && \
+git commit -am "Configuring the UI service" && \
 git push origin main
 ```
 
@@ -182,7 +182,7 @@ To verify your `UI` service kustomization was successfully created, you will nee
 <p>
 
 ```bash
-flux get kustomization
+$ flux get kustomization
 ```
 
 </p>
