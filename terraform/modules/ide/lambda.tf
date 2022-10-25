@@ -19,7 +19,7 @@ module "cloud9_bootstrap_lambda" {
 }
 
 resource "aws_iam_policy" "cloud9_bootstrap_lambda_policy" {
-  name = "Cloud9BootstrapLambdaPolicy-${var.environment_name}"
+  name = "${var.environment_name}-cloud9-bootstrap"
 
   policy = jsonencode({
     Version = "2012-10-17",
