@@ -1,5 +1,5 @@
 ---
-title: 'Deploying the UI service using GitOps'
+title: 'GitOps the UI service'
 sidebar_position: 15
 ---
 
