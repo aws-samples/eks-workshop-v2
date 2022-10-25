@@ -1,5 +1,5 @@
 ---
-title: 'Setting up your GitOps components and Configuration'
+title: 'Flux GitOps Toolkit'
 sidebar_position: 15
 ---
 
