@@ -1,8 +1,8 @@
 {
-  "name": "event-engine",
+  "name": "eks-workshop",
   "version": "0.1.0",
   "bin": {
-    "event-engine": "bin/event-engine.js"
+    "eks-workshop": "bin/eks-workshop.js"
   },
   "scripts": {
     "build": "tsc",

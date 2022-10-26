@@ -12,7 +12,7 @@
     "parserOptions": {
         "ecmaVersion": "latest",
         "sourceType": "module",
-        "project": "infrastructure/event-engine/tsconfig.json"
+        "project": "infrastructure/eks-workshop/tsconfig.json"
     },
     "plugins": [
         "@typescript-eslint"

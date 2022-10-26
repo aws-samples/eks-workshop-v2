@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
 import 'source-map-support/register';
-import { EventEngineStack } from '../lib/event-engine-stack';
+import { EksWorkshopStack } from '../lib/eks-workshop-stack';
 
 const app = new cdk.App();
-new EventEngineStack(app, 'EventEngineStack', {
+new EksWorkshopStack(app, 'EksWorkshopStack', {
   /* Uncomment the next line to specialize this stack for the AWS Account
    * and Region that are implied by the current CLI configuration. */
   env: {

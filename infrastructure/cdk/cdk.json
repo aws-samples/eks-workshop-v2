@@ -1,5 +1,5 @@
 {
-  "app": "npx ts-node --prefer-ts-exts bin/event-engine.ts",
+  "app": "npx ts-node --prefer-ts-exts bin/eks-workshop.ts",
   "watch": {
     "include": [
       "**"

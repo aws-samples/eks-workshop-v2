@@ -1,13 +1,13 @@
 // import * as cdk from 'aws-cdk-lib';
 // import { Template } from 'aws-cdk-lib/assertions';
-// import * as EventEngine from '../lib/event-engine-stack';
+// import * as EksWorkshop from '../lib/eks-workshop-stack';
 
 // example test. To run these tests, uncomment this file along with the
-// example resource in lib/event-engine-stack.ts
+// example resource in lib/eks-workshop-stack.ts
 test('SQS Queue Created', () => {
 //   const app = new cdk.App();
 //     // WHEN
-//   const stack = new EventEngine.EventEngineStack(app, 'MyTestStack');
+//   const stack = new EksWorkshop.EksWorkshopStack(app, 'MyTestStack');
 //     // THEN
 //   const template = Template.fromStack(stack);
 

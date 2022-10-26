@@ -57,13 +57,13 @@ const respond = async function(event, context, responseStatus, responseData, phy
 };
 `;
 
-export interface EventEngineStackProps extends StackProps {
+export interface EksWorkshopStackProps extends StackProps {
   sourceZipFile: string
   sourceZipFileChecksum: string
 }
 
-export class EventEngineStack extends Stack {
-  constructor(scope: Construct, id: string, props: EventEngineStackProps) {
+export class EksWorkshopStack extends Stack {
+  constructor(scope: Construct, id: string, props: EksWorkshopStackProps) {
     super(scope, id, props);
 
     const clusterId = new cdk.CfnParameter(this, 'ClusterId', {

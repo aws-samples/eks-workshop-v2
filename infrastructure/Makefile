@@ -4,28 +4,28 @@ ZIPFILE ?=
 
 .PHONY: clean
 clean:
-	find event-engine/lib -name '*.js' -delete
-	find event-engine/lib -name '*.d.ts' -delete
-	find event-engine/bin -name '*.js' -delete
-	find event-engine/bin -name '*.d.ts' -delete
-	rm -rf event-engine/cdk.out/
+	find cdk/lib -name '*.js' -delete
+	find cdk/lib -name '*.d.ts' -delete
+	find cdk/bin -name '*.js' -delete
+	find cdk/bin -name '*.d.ts' -delete
+	rm -rf cdk/cdk.out/
 
 .PHONY: build
 build:
-	cd event-engine && npm run-script build
+	cd cdk && npm run-script build
 
 .PHONY: synth-bootstrap
 synth-bootstrap: clean build
-	cd event-engine && npx cdk synth EventEngineStack
+	cd cdk && npx cdk synth EksWorkshopStack
 
 .PHONY: deploy
 deploy:
-	npx cdk deploy --app "npx ts-node --prefer-ts-exts event-engine/bin/event-engine.ts" EventEngineStack --require-approval=never \
+	npx cdk deploy --app "npx ts-node --prefer-ts-exts cdk/bin/eks-workshop.ts" EksWorkshopStack --require-approval=never \
 		--previous-parameters=false \
-		--parameters EventEngineStack:AssetBucketName=$(S3_ASSET_BUCKET) \
-		--parameters EventEngineStack:AssetBucketPrefix=$(S3_ASSET_PREFIX) \
-		--parameters EventEngineStack:SourceZipFile=$(ZIPFILE)
+		--parameters EksWorkshopStack:AssetBucketName=$(S3_ASSET_BUCKET) \
+		--parameters EksWorkshopStack:AssetBucketPrefix=$(S3_ASSET_PREFIX) \
+		--parameters EksWorkshopStack:SourceZipFile=$(ZIPFILE)
 
 .PHONY: destroy
 destroy:
-	npx cdk destroy --app "npx ts-node --prefer-ts-exts event-engine/bin/event-engine.ts" EventEngineStack
+	npx cdk destroy --app "npx ts-node --prefer-ts-exts cdk/bin/eks-workshop.ts" EksWorkshopStack
