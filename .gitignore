@@ -1,6 +1,8 @@
 vendor
 .terraform
 *.tfstate*
+*.lock.hcl
+
 builds
 
 public

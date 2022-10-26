@@ -6,6 +6,7 @@ import { LambdaFunction as LambdaTarget } from 'aws-cdk-lib/aws-events-targets';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
+import * as yaml from 'yaml';
 // This function is based on the cfnresponse JS module that is published
 // by CloudFormation. It's an async function that makes coding much easier.
 const respondFunction = `
@@ -65,27 +66,26 @@ export class EventEngineStack extends Stack {
   constructor(scope: Construct, id: string, props: EventEngineStackProps) {
     super(scope, id, props);
 
-    // These parameters are supplied by Event Engine. We'll
-    // take advantage of them to locate the Zip file containing this
-    // source code.
-    const assetBucketName = new cdk.CfnParameter(this, 'EEAssetsBucket', {
+    const clusterId = new cdk.CfnParameter(this, 'ClusterId', {
+      default: 'default',
+      type: 'String'
+    });
+
+    const assetBucketName = new cdk.CfnParameter(this, 'AssetBucketName', {
       default: 'BucketNameNotSet',
       type: 'String'
     });
 
-    const assetPrefix = new cdk.CfnParameter(this, 'EEAssetsKeyPrefix', {
+    const assetPrefix = new cdk.CfnParameter(this, 'AssetBucketPrefix', {
       default: 'KeyPrefixNotSet',
       type: 'String'
     });
 
-    const teamRoleArn = new cdk.CfnParameter(this, 'EETeamRoleArn', {
-      default: 'RoleArnNotSet',
+    const cloud9AdditionalRoleArn = new cdk.CfnParameter(this, 'Cloud9AdditionalRoleArn', {
+      default: '',
       type: 'String'
     });
 
-    // We supply the value of this parameter ourselves via the ZIPFILE
-    // environment variable. It will be automatically rendered into the
-    // generated YAML template.
     const sourceZipFile = new cdk.CfnParameter(this, 'SourceZipFile', {
       default: props.sourceZipFile,
       type: 'String'
@@ -109,20 +109,18 @@ export class EventEngineStack extends Stack {
     });
     tfStateBackendBucket.grantReadWrite(codeBuildRole);
 
-    const resourceName = 'Admin';
     const codebuildProject = new codebuild.Project(this, 'StackDeployProject', {
       role: codeBuildRole,
       environment: {
         buildImage: codebuild.LinuxBuildImage.STANDARD_6_0,
         computeType: codebuild.ComputeType.MEDIUM,
       },
-      source: codebuild.Source.s3({
-        bucket: assetBucket,
-        path: props.sourceZipFile,
-      }),
+      buildSpec: codebuild.BuildSpec.fromObjectToYaml(buildSpecYaml),
       environmentVariables: {
         'TF_STATE_S3_BUCKET': { value: tfStateBackendBucket.bucketName },
-        'C9_OWNER_ROLE': { value: `arn:aws:sts::${this.account}:assumed-role/${resourceName}/umishaq-Isengard` }
+        'CLUSTER_ID': { value: clusterId.valueAsString },
+        'C9_ADDITIONAL_ROLE': { value: cloud9AdditionalRoleArn.valueAsString },
+        'REPOSITORY_ARCHIVE_LOCATION': { value: `s3://${assetBucketName.valueAsString}/${assetPrefix.valueAsString}${sourceZipFile.valueAsString}` }
       },
       timeout: cdk.Duration.minutes(90),
     });
@@ -143,7 +141,7 @@ exports.handler = async function (event, context) {
       projectName,
       // Pass CFN related parameters through the build for extraction by the
       // completion handler.
-      buildspecOverride: event.RequestType === 'Delete' ? 'buildspec-destroy.yml' : 'buildspec.yml',
+      //buildspecOverride: event.RequestType === 'Delete' ? 'infrastructure/buildspec-destroy.yml' : 'infrastructure/buildspec.yml',
       environmentVariablesOverride: [
         {
           name: 'CFN_RESPONSE_URL',
@@ -162,12 +160,8 @@ exports.handler = async function (event, context) {
           value: event.LogicalResourceId
         },
         {
-          name: 'CLOUD9_ENVIRONMENT_ID',
-          value: event.ResourceProperties.Cloud9EnvironmentId
-        },
-        {
-          name: 'BUILD_ROLE_ARN',
-          value: event.ResourceProperties.BuildRoleArn
+          name: 'REQUESTED_ACTION',
+          value: event.RequestType
         }
       ]
     }).promise();
@@ -271,3 +265,57 @@ exports.handler = async function (event, context) {
     new CfnOutput(this, 'TFStateBucketArn', { value: tfStateBackendBucket.bucketArn });
   }
 }
+
+const buildSpecYaml = yaml.parse(`
+version: 0.2
+
+env:
+  shell: bash
+  variables:
+    TF_STATE_S3_BUCKET: NOT_SET
+    CLUSTER_ID: NOT_SET
+    C9_ADDITIONAL_ROLE: ''
+    REPOSITORY_ARCHIVE_LOCATION: NOT_SET
+    REQUESTED_ACTION: 'Create'
+
+phases:
+  install:
+    on-failure: ABORT
+    runtime-versions:
+      nodejs: 16
+    commands:
+      - echo "===================================================\${TF_STATE_S3_BUCKET}==================================================="
+      - sudo apt-get update && sudo apt-get install -y gnupg software-properties-common curl unzip
+      - curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+      - sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+      - sudo apt-get update && sudo apt-get install terraform=1.2.2
+      
+  pre_build:
+    on-failure: ABORT
+    commands:
+      - aws s3 cp $REPOSITORY_ARCHIVE_LOCATION /tmp/repository.zip
+      - unzip -o -q /tmp/repository.zip -d $CODEBUILD_SRC_DIR
+      - cd $CODEBUILD_SRC_DIR/infrastructure/terraform
+      - terraform init --backend-config="bucket=\${TF_STATE_S3_BUCKET}" --backend-config="key=terraform.tfstate" --backend-config="region=\${AWS_REGION}"
+  build:
+    on-failure: ABORT
+    commands:
+      - |
+        set -e
+        
+        cd $CODEBUILD_SRC_DIR/infrastructure/terraform
+
+        export TF_VAR_cluster_id="\${CLUSTER_ID}"
+
+        if [[ $REQUESTED_ACTION == 'Delete' ]]; then
+          terraform destroy -target=module.core.module.cluster.module.eks-blueprints-kubernetes-addons --auto-approve
+          terraform destroy -target=module.core.module.cluster.module.eks-blueprints-kubernetes-csi-addon --auto-approve
+          terraform destroy -target=module.core.module.cluster.module.descheduler --auto-approve
+
+          terraform destroy -target=module.core.module.cluster.module.eks-blueprints --auto-approve
+
+          terraform destroy --auto-approve
+        else
+          terraform apply -auto-approve -var "repository_archive_location=\${REPOSITORY_ARCHIVE_LOCATION}" -var "cloud9_additional_role=\${C9_ADDITIONAL_ROLE}"
+        fi
+`)

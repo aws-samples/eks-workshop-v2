@@ -23,6 +23,8 @@ module "eks-blueprints" {
   cluster_endpoint_public_access  = true
   cluster_endpoint_private_access = true
 
+  cluster_kms_key_additional_admin_arns = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+
   map_roles = var.map_roles
 
   node_security_group_additional_rules = {

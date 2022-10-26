@@ -43,12 +43,14 @@ resource "aws_iam_role_policy_attachment" "local_role" {
   policy_arn = aws_iam_policy.local_policy.arn
 }
 
-data "template_file" "iam_policy" {
-  template = file("${path.module}/iam_policy.json")
-  vars = {
-    cluster_arn = module.cluster.eks_cluster_arn
-    nodegroup = module.cluster.eks_cluster_nodegroup
+locals {
+  tags = {
+    created-by = "eks-workshop-v2"
+    env        = var.id
   }
+
+  prefix   = "eks-workshop"
+  rolename = join("-", [local.prefix, local.tags.env, "role"])
 }
 
 resource "aws_iam_policy" "local_policy" {
@@ -62,4 +64,3 @@ resource "aws_iam_policy" "local_policy" {
     nodegroup    = module.cluster.eks_cluster_nodegroup
   })
 }
-
