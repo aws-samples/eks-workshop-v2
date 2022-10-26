@@ -252,7 +252,6 @@ exports.handler = async function (event, context) {
       serviceToken: startBuildFunction.functionArn,
       properties: {
         ProjectName: codebuildProject.projectName,
-        Cloud9EnvironmentId: 'workspace.environmentId',
         BuildRoleArn: codeBuildRole.roleArn,
         // This isn't actually used by the custom resource. We use a change in
         // the checksum as a way to signal to CloudFormation that the input has
@@ -308,6 +307,8 @@ phases:
         export TF_VAR_cluster_id="\${CLUSTER_ID}"
 
         if [[ $REQUESTED_ACTION == 'Delete' ]]; then
+          terraform state rm module.core.module.ide[0].aws_cloud9_environment_membership.user[0] || true
+          
           terraform destroy -target=module.core.module.cluster.module.eks-blueprints-kubernetes-addons --auto-approve
           terraform destroy -target=module.core.module.cluster.module.eks-blueprints-kubernetes-csi-addon --auto-approve
           terraform destroy -target=module.core.module.cluster.module.descheduler --auto-approve
