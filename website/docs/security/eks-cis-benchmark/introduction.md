@@ -27,7 +27,7 @@ Install `kube-bench`
 
 1. Set Kube-bench URL in EKS node.
 ```bash
-$ $KUBEBENCH_URL=$(curl -s https://api.github.com/repos/aquasecurity/kube-bench/releases/latest | jq -r '.assets[] | select(.name | contains("amd64.rpm")) | .browser_download_url')
+$ KUBEBENCH_URL=$(curl -s https://api.github.com/repos/aquasecurity/kube-bench/releases/latest | jq -r '.assets[] | select(.name | contains("amd64.rpm")) | .browser_download_url')
 ```
 2. Download and install kube-bench using yum
 ```bash
