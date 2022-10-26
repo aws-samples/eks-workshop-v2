@@ -25,6 +25,27 @@ kube-bench-lvg24   0/1     Completed   0          2m24s
 Check the logs of the pod to determine the results of the scan
 ```bash
 $ kubectl logs kube-bench-lvg24
+[INFO] 1 Control Plane Components
+
+== Summary master ==
+0 checks PASS
+0 checks FAIL
+0 checks WARN
+0 checks INFO
+
+[INFO] 2 Control Plane Configuration
+[INFO] 2.1 Logging
+[WARN] 2.1.1 Enable audit logs (Manual)
+
+== Remediations controlplane ==
+2.1.1 audit test did not run: No tests defined
+
+== Summary controlplane ==
+0 checks PASS
+0 checks FAIL
+1 checks WARN
+0 checks INFO
+
 [INFO] 3 Worker Node Security Configuration
 [INFO] 3.1 Worker Node Configuration Files
 [PASS] 3.1.1 Ensure that the kubeconfig file permissions are set to 644 or more restrictive (Manual)

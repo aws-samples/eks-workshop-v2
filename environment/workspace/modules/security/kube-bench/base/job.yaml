@@ -8,8 +8,14 @@ spec:
       hostPID: true
       containers:
         - name: kube-bench
-          image: aquasec/kube-bench:latest
-          command: ["kube-bench", "--benchmark", "eks-1.1.0"]
+          image: docker.io/aquasec/kube-bench:latest
+          command:
+            [
+              "kube-bench",
+              "run",
+              "--benchmark",
+              "eks-1.1.0",
+            ]
           volumeMounts:
             - name: var-lib-kubelet
               mountPath: /var/lib/kubelet
