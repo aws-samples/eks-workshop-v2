@@ -18,3 +18,11 @@ Below are the list of the supported Node OS:
 
 To get more details on the latest available EKS optimized AMI's 
 
+
+* Draft Notes
+
+More on EKS AMZ2 
+
+https://github.com/awslabs/amazon-eks-ami/releases 
+|| https://alas.aws.amazon.com/alas2.html 
+
