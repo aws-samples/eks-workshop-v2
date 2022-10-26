@@ -34,10 +34,10 @@ $ KUBEBENCH_URL=$(curl -s https://api.github.com/repos/aquasecurity/kube-bench/r
 $ sudo yum install -y $KUBEBENCH_URL
 ```
 
-3. Run assessment against `eks-1.0.1` based on CIS Amazon EKS Benchmark node assessments.
+3. Run assessment against `eks-1.1.0` based on CIS Amazon EKS Benchmark node assessments.
 ```bash
-$ kube-bench --benchmark eks-1.0.1
-INFO] 3 Worker Node Security Configuration
+$ kube-bench --benchmark eks-1.1.0
+[INFO] 3 Worker Node Security Configuration
 [INFO] 3.1 Worker Node Configuration Files
 [PASS] 3.1.1 Ensure that the kubeconfig file permissions are set to 644 or more restrictive (Manual)
 [PASS] 3.1.2 Ensure that the kubelet kubeconfig file ownership is set to root:root (Manual)
@@ -55,6 +55,8 @@ INFO] 3 Worker Node Security Configuration
 [WARN] 3.2.9 Ensure that the --eventRecordQPS argument is set to 0 or a level which ensures appropriate event capture (Automated)
 [PASS] 3.2.10 Ensure that the --rotate-certificates argument is not set to false (Manual)
 [PASS] 3.2.11 Ensure that the RotateKubeletServerCertificate argument is set to true (Manual)
+[INFO] 3.3 Container Optimized OS
+[WARN] 3.3.1 Prefer using Container-Optimized OS when possible (Manual)
 
 == Remediations node ==
 3.2.9 If using a Kubelet config file, edit the file to set eventRecordQPS: to an appropriate level.
@@ -65,11 +67,12 @@ Based on your system, restart the kubelet service. For example:
 systemctl daemon-reload
 systemctl restart kubelet.service
 
+3.3.1 audit test did not run: No tests defined
 
 == Summary node ==
 14 checks PASS
 0 checks FAIL
-1 checks WARN
+2 checks WARN
 0 checks INFO
 ```
 

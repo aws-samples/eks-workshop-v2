@@ -43,6 +43,8 @@ $ kubectl logs kube-bench-lvg24
 [WARN] 3.2.9 Ensure that the --eventRecordQPS argument is set to 0 or a level which ensures appropriate event capture (Automated)
 [PASS] 3.2.10 Ensure that the --rotate-certificates argument is not set to false (Manual)
 [PASS] 3.2.11 Ensure that the RotateKubeletServerCertificate argument is set to true (Manual)
+[INFO] 3.3 Container Optimized OS
+[WARN] 3.3.1 Prefer using Container-Optimized OS when possible (Manual)
 
 == Remediations node ==
 3.2.9 If using a Kubelet config file, edit the file to set eventRecordQPS: to an appropriate level.
@@ -53,10 +55,11 @@ Based on your system, restart the kubelet service. For example:
 systemctl daemon-reload
 systemctl restart kubelet.service
 
+3.3.1 audit test did not run: No tests defined
 
 == Summary node ==
 14 checks PASS
 0 checks FAIL
-1 checks WARN
+2 checks WARN
 0 checks INFO
 ```
