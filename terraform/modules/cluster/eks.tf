@@ -184,6 +184,10 @@ locals {
 resource "null_resource" "kubectl_set_env" {
   triggers = {}
 
+  depends_on = [
+    module.eks-blueprints
+  ]
+
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     environment = {
