@@ -126,7 +126,7 @@ $ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /usr/share/ngi
 
 ```
 
-As you see the newly Created image newproduct.png is not exist now , as it is not been copied while the creation of the Docker image. In order to help the team solve this issue we need a presistent volume conatin the images. that can be shared across multiple pods if the team want to scale horizintally.
+As you see the newly created image newproduct.png is not exist now , as it is not been copied while the creation of the Docker image. In order to help the team solve this issue we need a presistent volume contain the images. That can be shared across multiple pods if the team want to scale horizintally.
 
 Now that we have a better understading of EKS Storage and Kuberneties objects. On the next page, we will talk more about EFS CSI Driver and how we can Utilize it ro create a persistent storage on Kuberneties using Dynamic Provisioning on Elastic file system.
 
