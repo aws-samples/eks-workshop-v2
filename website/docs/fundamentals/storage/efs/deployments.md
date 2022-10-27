@@ -23,9 +23,58 @@ We can start by describe the deployment to ensure it is exist, by running the fo
 
 ```bash
 $ kubectl describe deployment -n assets
+
+Name:                   assets
+Namespace:              assets
+CreationTimestamp:      Tue, 25 Oct 2022 13:56:26 +0000
+Labels:                 app.kubernetes.io/created-by=eks-workshop
+Annotations:            deployment.kubernetes.io/revision: 1
+Selector:               app.kubernetes.io/component=service,app.kubernetes.io/instance=assets,app.kubernetes.io/name=assets
+Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:           app.kubernetes.io/component=service
+                    app.kubernetes.io/created-by=eks-workshop
+                    app.kubernetes.io/instance=assets
+                    app.kubernetes.io/name=assets
+  Annotations:      prometheus.io/path: /metrics
+                    prometheus.io/port: 8080
+                    prometheus.io/scrape: true
+  Service Account:  assets
+  Containers:
+   assets:
+    Image:      watchn/watchn-assets:build.1666365372
+    Port:       8080/TCP
+    Host Port:  0/TCP
+    Limits:
+      memory:  128Mi
+    Requests:
+      cpu:     128m
+      memory:  128Mi
+    Liveness:  http-get http://:8080/health.html delay=30s timeout=1s period=3s #success=1 #failure=3
+    Environment Variables from:
+      assets      ConfigMap  Optional: false
+    Environment:  <none>
+    Mounts:
+      /tmp from tmp-volume (rw)
+  Volumes:
+   tmp-volume:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     Memory
+    SizeLimit:  <unset>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  <none>
+NewReplicaSet:   assets-c9d9c8766 (1/1 replicas created)
+Events:          <none>
 ```
 
-As you can see in the output of the previous command the [`volumeMounts`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section of our `deployment` defines what is the `monuntPath` that will be mounted into a specific volume.
+As you can see in the output of the previous command the [`volumeMounts`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section of our `deployment` defines what is the `mountPath` that will be mounted into a specific volume.
 
 It's currently just utilizing a [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir). Run the following command to confirm and check under the `name: tmp-volume` volume:
 
@@ -42,7 +91,7 @@ $ kubectl get deployment -n assets -o json | jq '.items[].spec.template.spec.vol
 ]
 ```
 
-The nginx conatiner has the product images copied to it as part of the docker build under the folder /usr/share/nginx/html/assets/, we can check by running the below command:
+The nginx container has the product images copied to it as part of the docker build under the folder /usr/share/nginx/html/assets/, we can check by running the below command:
 
 ```bash
 $ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /usr/share/nginx/html/assets/" 
@@ -79,5 +128,5 @@ $ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /usr/share/ngi
 
 As you see the newly Created image newproduct.png is not exist now , as it is not been copied while the creation of the Docker image. In order to help the team solve this issue we need a presistent volume conatin the images. that can be shared across multiple pods if the team want to scale horizintally.
 
-Now that we have a better understading of EKS Storage and Kubernetes objects. On the next page, we will talk more about EFS CSI Driver and how we can Utilize it ro create a persistent storage on Kuberneties using Dynamic Provisioning on Elastic file system.
+Now that we have a better understading of EKS Storage and Kuberneties objects. On the next page, we will talk more about EFS CSI Driver and how we can Utilize it ro create a persistent storage on Kuberneties using Dynamic Provisioning on Elastic file system.
 

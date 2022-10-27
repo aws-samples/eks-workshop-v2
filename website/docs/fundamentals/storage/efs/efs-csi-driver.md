@@ -32,9 +32,9 @@ $ aws efs describe-file-systems --query "FileSystems[*].FileSystemId" --output t
 fs-061cb5c5ed841a6b0
 ```
 
-Now we Will need to create [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured using the previously created [Amazon Elastic File System](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html) as part of this workshop infrastructure and use [EFS Access points](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html) as provisioning mode.
+Now we will need to create [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured using the previously created [Amazon Elastic File System](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html) as part of this workshop infrastructure and use [EFS Access points](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html) as provisioning mode.
 
-First you will need to Edit the file modules/fundamentals/storage/efs/efsstorageclass.yaml. Find the following line and replace the value for fileSystemId with your file system ID.
+First you will need to edit the file modules/fundamentals/storage/efs/efsstorageclass.yaml. Find the following line and replace the value for fileSystemId with your file system ID.
 
 ```blank
 

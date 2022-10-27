@@ -10,7 +10,6 @@ spec:
         volumeMounts:
         - name: efsvolume
           mountPath: /efsvolumedir
-        
       volumes:
         - name: efsvolume
           persistentVolumeClaim:
