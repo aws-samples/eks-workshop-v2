@@ -3,7 +3,7 @@ title: "Nodes"
 sidebar_position: 30
 ---
 
-Kubernetes runs your workload by placing containers into pods to run on [Nodes] (https://kubernetes.io/docs/concepts/architecture/nodes/). A node may be a virtual or physical machine, depending on the cluster. The eks-workshop-cluster is running 3 nodes on which the workloads are deployed. Click on the Nodes drill down to list the nodes. 
+Kubernetes runs your workload by placing containers into pods to run on [Nodes](https://kubernetes.io/docs/concepts/architecture/nodes/). A node may be a virtual or physical machine, depending on the cluster. The eks-workshop-cluster is running 3 nodes on which the workloads are deployed. Click on the Nodes drill down to list the nodes. 
 
 ![Insights](/img/resource-view/cluster-node.jpg)
 
