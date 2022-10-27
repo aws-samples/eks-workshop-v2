@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aiml
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: inference
+  namespace: aiml
+  annotations:
+    eks.amazonaws.com/role-arn: ${AIML_NEURON_ROLE_ARN}
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    role: compiler
+  name: compiler
+  namespace: aiml
+spec:
+  containers:
+  - command:
+    - sh
+    - -c
+    - sleep infinity
+    image: ${AIML_DL_IMAGE}
+    name: compiler
+  serviceAccountName: inference

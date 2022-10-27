@@ -1,0 +1,32 @@
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: default
+spec:
+  requirements:
+    - key: "karpenter.sh/capacity-type"
+      operator: In
+      values: ["spot", "on-demand"]
+  providerRef:
+    name: default
+  ttlSecondsAfterEmpty: 30
+
+---
+apiVersion: karpenter.k8s.aws/v1alpha1
+kind: AWSNodeTemplate
+metadata:
+  name: default
+spec:
+  subnetSelector:
+    aws-ids: "${PRIMARY_SUBNET_1},${PRIMARY_SUBNET_2},${PRIMARY_SUBNET_3}"
+  securityGroupSelector:
+    karpenter.sh/discovery: $EKS_CLUSTER_NAME
+  # Increase the ephemeral storage for hosting a large Deep Learning Container
+  blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        volumeSize: 100Gi
+        volumeType: gp3
+        deleteOnTermination: true
+  tags:
+    app.kubernetes.io/created-by: eks-workshop

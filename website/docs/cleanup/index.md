@@ -4,6 +4,6 @@ sidebar_position: 99
 weight: 99
 ---
 
-```bash hookTimeout=600
+```bash hookTimeout=600 timeout=600
 $ echo 'Dummy'
 ```

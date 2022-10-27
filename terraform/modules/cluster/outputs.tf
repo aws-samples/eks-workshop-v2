@@ -113,6 +113,16 @@ output "catalog_sg_id" {
   value       = aws_security_group.catalog_rds_ingress.id
 }
 
+output "aiml_neuron_s3_bucket_name" {
+  description = "Name of the S3 bucket created for the AI/ML"
+  value       = aws_s3_bucket.inference.id
+}
+
+output "aiml_neuron_role_arn" {
+  description = "Arn of role for neuron workloads for the AI/ML"
+  value       = module.iam_assumable_role_inference.iam_role_arn
+}
+
 output "efsid" {
   description = "EFS file system ID"
   value       = aws_efs_file_system.efsassets.id
