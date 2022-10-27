@@ -71,7 +71,7 @@ Events:
 Now Utilizing Kustomiza we will do two things:
 
 * Remove the EmptyDir volume with `tmp-volume` named.
-* Add the Volume Claim and Volume Mounts to the specs of our conatiners .
+* Add the Volume Claim and Volume Mounts to the specs of our containers.
 
 ```kustomization
 fundamentals/storage/efs/deployment.yaml
@@ -140,7 +140,7 @@ pod "assets-6897999c5-vx46q" deleted
 $ kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=assets -n assets --timeout=60s
 ```
 
-Now check if the file new JPG file has been created in the step above still exist on the new created conatiner:
+Now check if the file new JPG file has been created in the step above still exist on the new created container:
 
 ```bash
 $ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /efsvolumedir"
