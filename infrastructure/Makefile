@@ -16,7 +16,7 @@ build:
 
 .PHONY: synth-bootstrap
 synth-bootstrap: clean build
-	cd cdk && npx cdk synth EksWorkshopStack
+	cd cdk && npx cdk synth EksWorkshopStack --path-metadata false
 
 .PHONY: deploy
 deploy:
