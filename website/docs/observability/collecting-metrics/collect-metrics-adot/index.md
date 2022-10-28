@@ -16,7 +16,7 @@ observability/collecting-metrics/collecting-metrics-adot/opentelemetrycollector.
 This will cauase the adot collector to scrape Kubernetes endpoints and remote write them to Amazon Managed Service for Prometheus:
 
 ```bash timeout=180 hook=add-ingress hookTimeout=430
-$ kubectl apply -k /workspace/modules/observability/metrics
+$ kubectl apply -k /workspace/modules/observability/collecting-metrics/collecting-metrics-adot
 ```
 
 Let's inspect the ADOT collector pod by running the below command:
