@@ -17,6 +17,6 @@ terraform -chdir=$terraform_dir destroy -target=module.cluster.module.eks-bluepr
 terraform -chdir=$terraform_dir destroy -target=module.cluster.module.eks-blueprints-kubernetes-csi-addon --auto-approve
 terraform -chdir=$terraform_dir destroy -target=module.cluster.module.descheduler --auto-approve
 
-terraform -chdir=$terraform_dir destroy -target=module.cluster.module.aws-eks-accelerator-for-terraform --auto-approve
+terraform -chdir=$terraform_dir destroy -target=module.cluster.module.eks-blueprints --auto-approve
 
 terraform -chdir=$terraform_dir destroy --auto-approve

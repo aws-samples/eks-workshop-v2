@@ -8,7 +8,7 @@ data "aws_ssm_parameter" "eks_optimized_ami" {
   name = "/aws/service/eks/optimized-ami/${local.cluster_version}/amazon-linux-2/recommended/image_id"
 }
 
-module "aws-eks-accelerator-for-terraform" {
+module "eks-blueprints" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.10.0"
 
   tags = local.tags
@@ -157,16 +157,16 @@ locals {
     kind            = "Config"
     current-context = "terraform"
     clusters = [{
-      name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+      name = module.eks-blueprints.eks_cluster_id
       cluster = {
-        certificate-authority-data = module.aws-eks-accelerator-for-terraform.eks_cluster_certificate_authority_data
-        server                     = module.aws-eks-accelerator-for-terraform.eks_cluster_endpoint
+        certificate-authority-data = module.eks-blueprints.eks_cluster_certificate_authority_data
+        server                     = module.eks-blueprints.eks_cluster_endpoint
       }
     }]
     contexts = [{
       name = "terraform"
       context = {
-        cluster = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+        cluster = module.eks-blueprints.eks_cluster_id
         user    = "terraform"
       }
     }]

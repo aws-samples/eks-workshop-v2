@@ -1,7 +1,5 @@
-data "aws_region" "current" {}
-
 module "cluster" {
-  source = "../modules/cluster"
+  source = "./modules/cluster"
 
   id = var.id
 
@@ -9,10 +7,16 @@ module "cluster" {
     rolearn  = aws_iam_role.local_role.arn
     username = local.rolename
     groups   = ["system:masters"]
-    }]
+  },{
+    # Did it this way because of circular dependencies
+    rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${module.cluster.eks_cluster_id}-cloud9"
+    username = "cloud9"
+    groups   = ["system:masters"]
+  }]
 }
 
 data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
 
 resource "aws_iam_role" "local_role" {
   name = local.rolename
@@ -54,7 +58,7 @@ resource "aws_iam_policy" "local_policy" {
   path        = "/"
   description = "Policy for EKS Workshop local environment to access AWS services"
 
-  policy = templatefile("${path.module}/iam_policy.json", {
+  policy = templatefile("${path.module}/local/iam_policy.json", {
     cluster_name = module.cluster.eks_cluster_id,
     cluster_arn  = module.cluster.eks_cluster_arn,
     nodegroup    = module.cluster.eks_cluster_nodegroup
