@@ -96,6 +96,12 @@ The nginx container has the product images copied to it as part of the docker bu
 ```bash
 $ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /usr/share/nginx/html/assets/" 
 
+chrono_classic.jpg
+gentleman.jpg
+pocket_watch.jpg
+smart_1.jpg
+smart_2.jpg
+wood_watch.jpg
 ```
 
 Now let us try to put a new product image in the directory using the below command:
@@ -109,11 +115,18 @@ Now confirm the new product image has been created in the folder, using the belo
 ```bash
 $ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /usr/share/nginx/html/assets/" 
 
+chrono_classic.jpg
+gentleman.jpg
+newproduct.png
+pocket_watch.jpg
+smart_1.jpg
+smart_2.jpg
+wood_watch.jpg
 ```
 Now let's remove the current `assets` pod. This will force the deployment controller to automatically re-create a new assets pod:
 
 ```bash
-$ kubectl delete --all pods --namespace=assetss
+$ kubectl delete --all pods --namespace=assets
 
 pod "assets-ddb8f87dc-ww4jn" deleted
 
