@@ -81,7 +81,7 @@ Deployment/assets
 We can apply the Kustomize changes to the deployment by Run the following command:
 
 ```bash
-$ kubectl apply -k modules/fundamentals/storage/efs
+$ kubectl apply -k /workspace/modules/fundamentals/storage/efs
 
 namespace/assets unchanged
 serviceaccount/assets unchanged

@@ -31,25 +31,32 @@ $ aws efs describe-file-systems --query "FileSystems[*].FileSystemId" --output t
 
 fs-061cb5c5ed841a6b0
 ```
+As part of our workshop environement we have exported the EFS filesystemid in an environement varaiable called "EFS_ID" you can doubel check the value on this environement variable by running the below command:
 
-Now we will need to create [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured using the previously created [Amazon Elastic File System](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html) as part of this workshop infrastructure and use [EFS Access points](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html) as provisioning mode.
-
-First you will need to edit the file modules/fundamentals/storage/efs/efsstorageclass.yaml. Find the following line and replace the value for fileSystemId with your file system ID.
-
-```blank
-
-  fileSystemId: <filesystemid>
-  
-```
-
-Second you will need to run the below command to create the storage class.
 
 ```bash
-$ kubectl apply -f modules/fundamentals/storage/efs/efsstorageclass.yaml
+$ echo $EFS_ID
 
-storageclass.storage.k8s.io/efs-sc created
+fs-061cb5c5ed841a6b0
 ```
-Now if you want you can get and describe the storage class use the below command, you will notice that provisioner used is the EFS CSI driver and Provisioning mode is EFS Access point.
+Now we will need to create [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured using the previously created [Amazon Elastic File System](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html) as part of this workshop infrastructure and use [EFS Access points](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html) as provisioning mode.
+
+we will be using Kustomize to create for us the storage class and to ingest the environement variable "EFS_ID" in the paramter filesystemid value in the configuration of the storage class object: 
+
+```bash
+$ kubectl apply -k modules/fundamentals/storage/efs/storageclass 
+  
+storageclass.storage.k8s.io/efs-sc created
+configmap/assets-efsid-48hg67g6fd created
+```
+
+As appear in the command above there is a configMAP which we can take a look at:
+
+```file
+fundamentals/storage/efs/storageclass/assets-configMap.yaml
+```
+
+Now you can get and describe the storage class use the below command, you will notice that provisioner used is the EFS CSI driver and Provisioning mode is EFS Access point and ID of teh filesystem as exported in the "EFS_ID" environement variable.
 
 ```bash
 $ kubectl get storageclass
