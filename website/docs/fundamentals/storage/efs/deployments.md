@@ -113,15 +113,9 @@ $ kubectl exec --stdin deployment/assets -n assets -- bash -c "touch /usr/share/
 Now confirm the new product image `newproduct.png` has been created in the folder `/usr/share/nginx/html/assets`, using the below command:
 
 ```bash
-$ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /usr/share/nginx/html/assets/" 
+$ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls usr/share/nginx/html/assets/newproduct.png"  
 
-chrono_classic.jpg
-gentleman.jpg
-newproduct.png
-pocket_watch.jpg
-smart_1.jpg
-smart_2.jpg
-wood_watch.jpg
+/usr/share/nginx/html/assets/newproduct.png
 ```
 Now let's remove the current `assets` pod. This will force the deployment controller to automatically re-create a new `assets` pod:
 
