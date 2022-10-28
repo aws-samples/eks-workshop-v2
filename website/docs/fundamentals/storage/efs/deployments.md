@@ -15,9 +15,9 @@ The following are typical use cases for Deployments:
 * Use the status of the Deployment as an indicator that a rollout has stuck.
 * Clean up older ReplicaSets that you don't need anymore.
 
-On our ecommerce application, we have a deployment already created as part of our Assets microservice. The Assets microservice utilizes a Nginx webserver running on EKS. Webservers are a great example for the use of deployments because they require **scale horizontally** and Declare the new state of the Pods. 
+On our ecommerce application, we have a deployment already created as part of our assets microservice. The assets microservice utilizes a nginx webserver running on EKS. Webservers are a great example for the use of deployments because they require **scale horizontally** and **declare the new state** of the Pods. 
 
-Assets component is an nginx container which serves static images for products, these product images are added as part of the docker image build. unfortunatly with this setup evrytime the team want to update the product images they have to recreate the docker image. In this exrecise By utilizing [EFS File system](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html) and Kuberneties [presistent volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) we will help the team update old product images and add new product images with out the need to rebuild the containers images.
+Assets component is a nginx container which serves static images for products, these product images are added as part of the docker image build. Unfortunatly with this setup evrytime the team wants to update the product images they have to recreate the docker image. In this exrecise By utilizing [EFS File system](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html) and Kuberneties [presistent volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) we will help the team update old product images and add new product images with out the need to rebuild the containers images.
 
 We can start by describe the deployment to ensure it is exist, by running the following command:
 
@@ -91,7 +91,7 @@ $ kubectl get deployment -n assets -o json | jq '.items[].spec.template.spec.vol
 ]
 ```
 
-The nginx container has the product images copied to it as part of the docker build under the folder /usr/share/nginx/html/assets/, we can check by running the below command:
+The nginx container has the product images copied to it as part of the docker build under the folder `/usr/share/nginx/html/assets`, we can check by running the below command:
 
 ```bash
 $ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /usr/share/nginx/html/assets/" 
@@ -104,13 +104,13 @@ smart_2.jpg
 wood_watch.jpg
 ```
 
-Now let us try to put a new product image neamed `newproduct.png` in the directory using the below command:
+Now let us try to put a new product image named `newproduct.png` in the directory `/usr/share/nginx/html/assets` using the below command:
 
 ```bash
 $ kubectl exec --stdin deployment/assets -n assets -- bash -c "touch /usr/share/nginx/html/assets/newproduct.png" 
 
 ```
-Now confirm the new product image `newproduct.png` has been created in the folder, using the below command:
+Now confirm the new product image `newproduct.png` has been created in the folder `/usr/share/nginx/html/assets`, using the below command:
 
 ```bash
 $ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /usr/share/nginx/html/assets/" 
