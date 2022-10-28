@@ -147,7 +147,7 @@ $ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /efsvolumedir"
 
 newproduct.png
 ```
-Now as you can see even though we have a new POD created after we deleted the old pod we still can see the file on the Directory . This is the main functionality of Persistent Volumes (PVs). Amazon EBS is storing the data and keeping our data safe and available .
+Now as you can see even though we have a new POD created after we deleted the old pod we still can see the file on the Directory . This is the main functionality of Persistent Volumes (PVs). Amazon EFS is storing the data and keeping our data safe and available .
 
 
 
