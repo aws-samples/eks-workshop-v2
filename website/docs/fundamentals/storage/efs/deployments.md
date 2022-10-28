@@ -104,13 +104,13 @@ smart_2.jpg
 wood_watch.jpg
 ```
 
-Now let us try to put a new product image in the directory using the below command:
+Now let us try to put a new product image neamed `newproduct.png` in the directory using the below command:
 
 ```bash
 $ kubectl exec --stdin deployment/assets -n assets -- bash -c "touch /usr/share/nginx/html/assets/newproduct.png" 
 
 ```
-Now confirm the new product image has been created in the folder, using the below command:
+Now confirm the new product image `newproduct.png` has been created in the folder, using the below command:
 
 ```bash
 $ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /usr/share/nginx/html/assets/" 
@@ -123,7 +123,7 @@ smart_1.jpg
 smart_2.jpg
 wood_watch.jpg
 ```
-Now let's remove the current `assets` pod. This will force the deployment controller to automatically re-create a new assets pod:
+Now let's remove the current `assets` pod. This will force the deployment controller to automatically re-create a new `assets` pod:
 
 ```bash
 $ kubectl delete --all pods --namespace=assets
@@ -132,14 +132,14 @@ pod "assets-ddb8f87dc-ww4jn" deleted
 
 $ kubectl wait --for=condition=available --timeout=120s deployment/assets -n assets
 ```
-Now let us check if the image we created for the new product "newproduct.png" is still exist:
+Now let us check if the image we created for the new product `newproduct.png` is still exist:
 
 ```bash
 $ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /usr/share/nginx/html/assets/" 
 
 ```
 
-As you see the newly created image newproduct.png is not exist now , as it is not been copied while the creation of the Docker image. In order to help the team solve this issue we need a presistent volume contain the images. That can be shared across multiple pods if the team want to scale horizintally.
+As you see the newly created image `newproduct.png` is not exist now , as it is not been copied while the creation of the Docker image. In order to help the team solve this issue we need a `PersistentVolume` contain the images. That can be shared across multiple pods if the team want to scale horizintally.
 
-Now that we have a better understading of EKS Storage and Kuberneties objects. On the next page, we will talk more about EFS CSI Driver and how we can Utilize it ro create a persistent storage on Kuberneties using Dynamic Provisioning on Elastic file system.
+Now that we have a better understading of EKS Storage and Kuberneties objects. On the next page, we will talk more about EFS CSI Driver and how we can Utilize it to create a persistent storage on Kuberneties using Dynamic Provisioning on Elastic file system.
 

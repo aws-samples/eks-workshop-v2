@@ -5,7 +5,7 @@ sidebar_position: 30
 
 Now that we understand [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) and [Kuberneties storage Class](https://kubernetes.io/docs/concepts/storage/storage-classes/), let's create a [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and change the Nginx container on the assets deployment to mount the Volume created.
 
-first inspect the efspvclaim.yaml file to see the parameters in the file and the claim of the specific storage size of 5GB from the Storage class "efs-sc" we created in the earlier step:
+first inspect the `efspvclaim.yaml` file to see the parameters in the file and the claim of the specific storage size of 5GB from the Storage class `efs-sc` we created in the earlier step:
 
 ```bash
 $ cat modules/fundamentals/storage/efs/efspvclaim.yaml 
@@ -23,7 +23,7 @@ spec:
     requests:
       storage: 5Gi%          
 ```
-Now create the PVC. Run the below command:
+Now create the `PersistentVolumeClaim`(PVC). Run the below command:
 
 ```bash
 $ kubectl apply -f modules/fundamentals/storage/efs/efspvclaim.yaml
@@ -32,7 +32,7 @@ persistentvolumeclaim/efs-claim created
 $ kubectl wait --for=condition=available --timeout=60s persistentvolumeclaim/efs-claim -n assets
 ```
 
-Now show the PV has been created automatically for the PVC we had created in the previous step:
+Now show the `PersistentVolume` (PV) has been created automatically for the `PersistentVolumeClaim` (PVC) we had created in the previous step:
 
 ```bash
 $ kubectl get pv
@@ -40,7 +40,7 @@ $ kubectl get pv
 NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                                 STORAGECLASS   REASON   AGE
 pvc-342a674d-b426-4214-b8b6-7847975ae121   5Gi        RWX            Delete           Bound    assets/efs-claim                      efs-sc                  2m33s
 ```
-Also describe the PVC created. Run the below Command:
+Also describe the `PersistentVolumeClaim` (PVC) created. Run the below Command:
 
 ```bash
 $ kubectl describe pvc -n assets
@@ -78,7 +78,7 @@ fundamentals/storage/efs/deployment.yaml
 Deployment/assets
 ```
 
-We can apply the Kustomize changes to the deployment by Run the following command:
+We can apply the Kustomize changes to the `Deployment` by Run the following command:
 
 ```bash
 $ kubectl apply -k /workspace/modules/fundamentals/storage/efs
@@ -91,7 +91,7 @@ deployment.apps/assets configured
 
 $ kubectl wait --for=condition=available --timeout=120s deployment/assets -n assets
 ```
-Now get the volumeMounts in the deployment and Notice that we have our new Volume "efsvolume" mounted /efsvolumedir . Run the Follwing command
+Now get the `volumeMounts` in the deployment and Notice that we have our new `Volume` named `efsvolume` mounted on`volumeMounts` named `/efsvolumedir`. Run the Follwing command
 
 ```bash
 $ kubectl get deployment -n assets -o json | jq '.items[].spec.template.spec.containers[].volumeMounts' 
@@ -117,20 +117,20 @@ $ kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=assets -n ass
 pod/assets-6487bdc64-9qd6s condition met
 
 ```
-Now create a new JPG photo under the newly Mounted file system /efsvolumedir: run the following command"
+Now create a new JPG photo `newproduct.png` under the newly Mounted file system `/efsvolumedir`, by running the below command"
 
 ```bash
 $ kubectl exec --stdin deployment/assets -n assets -- bash -c "touch /efsvolumedir/newproduct.png"
 ```
 
-Confirm it has been created:
+Confirm that the new image file `newproduct.png` has been created:
 ```bash
 $ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /efsvolumedir"
 
 newproduct.png
 ```
 
-Now let's remove the current `assets` pod. This will force the deployment controller to automatically re-create a new assets pod:
+Now let's remove the current `assets` pod. This will force the deployment controller to automatically re-create a new `assets` pod:
 
 ```bash
 $ kubectl delete --all pods --namespace=assets
