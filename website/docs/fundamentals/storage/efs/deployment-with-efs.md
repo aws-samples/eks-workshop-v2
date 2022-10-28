@@ -120,6 +120,10 @@ pod/assets-6487bdc64-9qd6s condition met
 Now create a new JPG photo `newproduct.png` under the newly Mounted file system `/efsvolumedir`, by running the below command"
 
 ```bash
+$ kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=assets -n assets --timeout=60s
+
+pod/assets-6487bdc64-9qd6s condition met
+
 $ kubectl exec --stdin deployment/assets -n assets -- bash -c "touch /efsvolumedir/newproduct.png"
 ```
 
