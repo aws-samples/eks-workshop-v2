@@ -43,6 +43,6 @@ Deployment/carts
 
 So now our application should be using DynamoDB right? Load it up in the browser and navigate to the shopping cart:
 
-[Insert image]
+![Application Error](./assets/error.png)
 
-What's gone wrong?
+Carts service is not accessible! What's gone wrong?
