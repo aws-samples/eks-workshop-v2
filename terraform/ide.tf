@@ -65,9 +65,8 @@ if [[ ! -d "/home/ec2-user/.bashrc.d" ]]; then
   sudo -H -u ec2-user bash -c "echo 'for file in ~/.bashrc.d/*.bash; do source \"\$file\"; done' >> ~/.bashrc"
 fi
 
-sudo -H -u ec2-user bash -c "echo 'source ~/.env' > ~/.bashrc"
-
-sudo -H -u ec2-user bash -c 'AWS_DEFAULT_REGION="${data.aws_region.current.name}" aws eks update-kubeconfig --name ${module.cluster.eks_cluster_id}'
+sudo -H -u ec2-user bash -c "echo 'source ~/.env' > ~/.bashrc.d/env.bash"
+sudo -H -u ec2-user bash -c "echo 'aws eks update-kubeconfig --name ${module.cluster.eks_cluster_id}' > ~/.bashrc.d/kubeconfig.bash"
 
 EOF
 }
