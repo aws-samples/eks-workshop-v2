@@ -5,23 +5,10 @@ sidebar_position: 30
 
 Now that we understand [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) and [Kuberneties storage Class](https://kubernetes.io/docs/concepts/storage/storage-classes/), let's create a [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and change the Nginx container on the assets deployment to mount the Volume created.
 
-first inspect the `efspvclaim.yaml` file to see the parameters in the file and the claim of the specific storage size of 5GB from the Storage class `efs-sc` we created in the earlier step:
+First inspect the `efspvclaim.yaml` file to see the parameters in the file and the claim of the specific storage size of 5GB from the Storage class `efs-sc` we created in the earlier step:
 
-```bash
-$ cat modules/fundamentals/storage/efs/efspvclaim.yaml 
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: efs-claim
-  namespace: assets
-spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: efs-sc
-  resources:
-    requests:
-      storage: 5Gi%          
+```file
+fundamentals/storage/efs/efspvclaim.yaml
 ```
 Now create the `PersistentVolumeClaim`(PVC). Run the below command:
 

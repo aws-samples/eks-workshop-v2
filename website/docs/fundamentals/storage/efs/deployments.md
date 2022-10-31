@@ -17,7 +17,7 @@ The following are typical use cases for Deployments:
 
 On our ecommerce application, we have a deployment already created as part of our assets microservice. The assets microservice utilizes a nginx webserver running on EKS. Webservers are a great example for the use of deployments because they require **scale horizontally** and **declare the new state** of the Pods. 
 
-Assets component is a nginx container which serves static images for products, these product images are added as part of the docker image build. Unfortunatly with this setup evrytime the team wants to update the product images they have to recreate the docker image. In this exrecise By utilizing [EFS File system](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html) and Kuberneties [presistent volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) we will help the team update old product images and add new product images with out the need to rebuild the containers images.
+Assets component is a nginx container which serves static images for products, these product images are added as part of the container image build. unfortunately with this setup everytime the team wants to update the product images they have to recreate the container image. In this exrercise By utilizing [EFS File system](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html) and kubernetes [presistent volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) we will help the team update old product images and add new product images with out the need to rebuild the containers images.
 
 We can start by describe the deployment to ensure it is exist, by running the following command:
 
@@ -133,7 +133,7 @@ $ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /usr/share/ngi
 
 ```
 
-As you see the newly created image `newproduct.png` is not exist now , as it is not been copied while the creation of the Docker image. In order to help the team solve this issue we need a `PersistentVolume` contain the images. That can be shared across multiple pods if the team want to scale horizintally.
+As you see the newly created image `newproduct.png` is not exist now , as it is not been copied while the creation of the container image. In order to help the team solve this issue we need a `PersistentVolume` contain the images. That can be shared across multiple pods if the team want to scale horizontally.
 
-Now that we have a better understading of EKS Storage and Kuberneties objects. On the next page, we will talk more about EFS CSI Driver and how we can Utilize it to create a persistent storage on Kuberneties using Dynamic Provisioning on Elastic file system.
+Now that we have a better understanding of EKS Storage and kubernetes objects. On the next page, we will talk more about EFS CSI Driver and how we can utilize it to create a persistent storage on kubernetes using dynamic provisioning on Elastic File System.
 
