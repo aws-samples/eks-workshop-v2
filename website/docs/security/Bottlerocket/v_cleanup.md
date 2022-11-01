@@ -1,5 +1,5 @@
 ---
-title: "CLEANUP"
+title: "Clean Up"
 sidebar_position: 50
 ---
 
