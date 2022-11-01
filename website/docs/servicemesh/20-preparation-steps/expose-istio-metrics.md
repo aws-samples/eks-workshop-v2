@@ -11,7 +11,7 @@ In the following step, you deploy a ServiceMonitor resource that describes which
 ### Configuring Prometheus operator to monitor Istio control plane
 The following resource is to configure Prometheus operator to monitor Istio control plane by looking for any service with label istio equal to `[mixer,pilot,galley,citadel,sidecar-injector]` and it configures it to scrap metrics from ports `http-monitoring` and `http-policy-monitoring` every 15 seconds.
 ```yaml
-cat <<EOF | kubectl apply -f -
+kubectl apply -f - <<EOF
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -66,7 +66,7 @@ The data-plane resource has the same configurations, but this time it targets al
 
 
 ```yaml
-cat <<EOF | kubectl apply -f -
+kubectl apply -f - <<EOF
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:

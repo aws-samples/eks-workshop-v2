@@ -57,7 +57,7 @@ kubectl apply -f https://raw.githubusercontent.com/istio/istio/master/samples/ad
 
 Now, we need to expose both Jager and Kiali services on AWS with ALB. To do that we create the following two ingress resources.
 ```yaml
-cat <<EOF | kubectl apply -f -
+kubectl apply -f - <<EOF
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

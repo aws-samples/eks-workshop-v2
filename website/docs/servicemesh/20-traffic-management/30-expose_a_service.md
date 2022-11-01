@@ -89,7 +89,7 @@ How we can expose a service outside the cluster? Let's see how we can do that wi
 To do so we define two Istio resources, `Gateway` and `VirtualService`.
 Gateway configurations are applied to standalone Envoy proxies that are running at the edge of the mesh. 
 ```yaml
-cat <<EOF | kubectl apply -n test -f -
+kubectl apply -n test -f - <<EOF
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
@@ -116,7 +116,7 @@ The gateway here, does not specify any traffic routing rules for the kuberenets 
 
 
 ```yaml
-cat <<EOF | kubectl apply -n test -f -
+kubectl apply -n test -f - <<EOF
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:

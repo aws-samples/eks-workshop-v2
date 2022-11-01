@@ -77,7 +77,7 @@ reviews-v1-9c6bb6658-s97gt       2/2     Running   0          22h
 Now, let's define a subset per version using a DestinationRule. The label attached to the pods of each version must match the label defined here for each subset.
 
 ```yaml
-cat <<EOF | kubectl apply -n test -f -
+kubectl apply -n test -f - <<EOF
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
@@ -101,7 +101,7 @@ EOF
 For the weight-based routing to happen, you create a VirtualService where you define a routing rule per version. Weights associated with the version determine the proportion of traffic it receives. For example, the rules defined here will route 80% of traffic for the “reviews” service to instances with the “v1” label 10% of traffic for "v2", and the remaining 10% for "v3".
 
 ```yaml
-cat <<EOF | kubectl apply -n test -f -
+kubectl apply -n test -f - <<EOF
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -111,7 +111,7 @@ spec:
   - reviews # reviews.<namespace>.svc.cluster.local
   gateways: 
     # Here you bind this virtualService to the gateway bookinfo-gateway, and to the whole mesh. 
-    # Which means that the rules of this virtualservice will apply at this gateway level, and the whole mesh. 
+    # Which means that the rules of this virtualservice will apply to this gateway level, and to the whole mesh. 
   - bookinfo-gateway 
   - mesh 
   http: 
