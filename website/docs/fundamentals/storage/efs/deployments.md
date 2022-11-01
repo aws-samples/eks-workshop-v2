@@ -1,5 +1,5 @@
 ---
-title: Assets microservice deployment
+title: Persistent network storage
 sidebar_position: 10
 ---
 
@@ -11,26 +11,9 @@ We can start by describe the deployment to ensure it is exist, by running the fo
 
 ```bash
 $ kubectl describe deployment -n assets
-
 Name:                   assets
 Namespace:              assets
-CreationTimestamp:      Tue, 25 Oct 2022 13:56:26 +0000
-Labels:                 app.kubernetes.io/created-by=eks-workshop
-Annotations:            deployment.kubernetes.io/revision: 1
-Selector:               app.kubernetes.io/component=service,app.kubernetes.io/instance=assets,app.kubernetes.io/name=assets
-Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
-StrategyType:           RollingUpdate
-MinReadySeconds:        0
-RollingUpdateStrategy:  25% max unavailable, 25% max surge
-Pod Template:
-  Labels:           app.kubernetes.io/component=service
-                    app.kubernetes.io/created-by=eks-workshop
-                    app.kubernetes.io/instance=assets
-                    app.kubernetes.io/name=assets
-  Annotations:      prometheus.io/path: /metrics
-                    prometheus.io/port: 8080
-                    prometheus.io/scrape: true
-  Service Account:  assets
+[...]
   Containers:
    assets:
     Image:      watchn/watchn-assets:build.1666365372
@@ -52,14 +35,7 @@ Pod Template:
     Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
     Medium:     Memory
     SizeLimit:  <unset>
-Conditions:
-  Type           Status  Reason
-  ----           ------  ------
-  Available      True    MinimumReplicasAvailable
-  Progressing    True    NewReplicaSetAvailable
-OldReplicaSets:  <none>
-NewReplicaSet:   assets-c9d9c8766 (1/1 replicas created)
-Events:          <none>
+[...]
 ```
 
 As you can see in the output of the previous command the [`volumeMounts`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section of our `deployment` defines what is the `mountPath` that will be mounted into a specific volume.
@@ -68,7 +44,6 @@ It's currently just utilizing a [EmptyDir volume type](https://kubernetes.io/doc
 
 ```bash
 $ kubectl get deployment -n assets -o json | jq '.items[].spec.template.spec.volumes'
-
 [
   {
     "emptyDir": {
