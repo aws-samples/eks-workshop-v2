@@ -1,6 +1,6 @@
 ---
 title: "Policy"
-sidebar_position: 12
+sidebar_position: 120
 ---
 
 [Policies](https://kubernetes.io/docs/concepts/policy/)
