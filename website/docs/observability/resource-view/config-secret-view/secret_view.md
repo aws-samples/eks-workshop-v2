@@ -3,7 +3,7 @@ title: "Secrets"
 sidebar_position: 35
 ---
 
-[Secrets](https://kubernetes.io/docs/concepts/configuration/secret/) is a Kubernetes resource object for storing sensitive peices of data such as username, passwords, tokens, and other credentials. Secrets are helpful to oranize and distribute sensitive information across the pods in the cluster. Secrets can be used in a variety of ways, such as being mounted as data volumes or exposed as environment variables to be used by a container in a Pod.
+[Secrets](https://kubernetes.io/docs/concepts/configuration/secret/) is a Kubernetes resource object for storing sensitive peices of data such as username, passwords, tokens, and other credentials. Secrets are helpful to organize and distribute sensitive information across the pods in the cluster. Secrets can be used in a variety of ways, such as being mounted as data volumes or exposed as environment variables to be used by a container in a Pod.
 
 Click on the Secrets drill down and you can see all the secrets for the cluster.
 

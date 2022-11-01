@@ -8,13 +8,13 @@ data "aws_ssm_parameter" "eks_optimized_ami" {
   name = "/aws/service/eks/optimized-ami/${local.cluster_version}/amazon-linux-2/recommended/image_id"
 }
 
-module "aws-eks-accelerator-for-terraform" {
+module "eks-blueprints" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.10.0"
 
   tags = local.tags
 
   vpc_id             = module.aws_vpc.vpc_id
-  private_subnet_ids = slice(module.aws_vpc.private_subnets, 0, 3)
+  private_subnet_ids = local.private_subnet_ids
   public_subnet_ids  = module.aws_vpc.public_subnets
 
   cluster_name    = local.cluster_name
@@ -86,7 +86,7 @@ module "aws-eks-accelerator-for-terraform" {
     mg_5 = {
       node_group_name = "managed-ondemand"
       instance_types  = ["m5.large"]
-      subnet_ids      = slice(module.aws_vpc.private_subnets, 0, 3)
+      subnet_ids      = local.private_subnet_ids
       min_size        = local.default_mng_min
       max_size        = local.default_mng_max
       desired_size    = local.default_mng_size
@@ -111,7 +111,7 @@ module "aws-eks-accelerator-for-terraform" {
     system = {
       node_group_name = "managed-system"
       instance_types  = ["m5.large"]
-      subnet_ids      = slice(module.aws_vpc.private_subnets, 0, 1)
+      subnet_ids      = slice(local.private_subnet_ids, 0, 1)
       min_size        = 1
       max_size        = 2
       desired_size    = 1
@@ -145,7 +145,7 @@ module "aws-eks-accelerator-for-terraform" {
           fargate = "yes"
         }
       }]
-      subnet_ids = slice(module.aws_vpc.private_subnets, 0, 3)
+      subnet_ids = local.private_subnet_ids
     }
   }
 }
@@ -157,16 +157,16 @@ locals {
     kind            = "Config"
     current-context = "terraform"
     clusters = [{
-      name = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+      name = module.eks-blueprints.eks_cluster_id
       cluster = {
-        certificate-authority-data = module.aws-eks-accelerator-for-terraform.eks_cluster_certificate_authority_data
-        server                     = module.aws-eks-accelerator-for-terraform.eks_cluster_endpoint
+        certificate-authority-data = module.eks-blueprints.eks_cluster_certificate_authority_data
+        server                     = module.eks-blueprints.eks_cluster_endpoint
       }
     }]
     contexts = [{
       name = "terraform"
       context = {
-        cluster = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+        cluster = module.eks-blueprints.eks_cluster_id
         user    = "terraform"
       }
     }]

@@ -1,4 +1,4 @@
-terraform_context='terraform/local'
+terraform_context='terraform'
 module='*'
 
 .PHONY: install
