@@ -5,7 +5,7 @@ sidebar_position: 50
 
 ## Amazon provides official AMIs in the following AWS regions:
 
-```bash
+```
 | Region Name               |            Region     |
 | -------------             |         ------------- |
 | Africa (Cape Town)        |            ap-east-1  |

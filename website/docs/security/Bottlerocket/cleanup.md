@@ -4,7 +4,7 @@ sidebar_position: 50
 ---
 
 ```
-1. 
+1. kubectl delete carts application pod
 
 2. kubectl delete namespace bottlerocket-nginx
 
