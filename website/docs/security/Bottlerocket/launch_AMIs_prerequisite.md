@@ -31,4 +31,5 @@ sidebar_position: 50
 | US West (Oregon)          |            us-west-2  |
 ```
 
-## Warning: Don’t continue the lab unless you use one of these region.
+!!! **Warning** 
+Don’t continue the lab unless you use one of these region.
