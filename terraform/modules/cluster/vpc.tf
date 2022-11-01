@@ -1,3 +1,7 @@
+locals {
+  private_subnet_ids = slice(module.aws_vpc.private_subnets, 0, 3)
+}
+
 module "aws_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "3.16.0"
