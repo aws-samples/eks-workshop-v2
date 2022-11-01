@@ -1,19 +1,3 @@
-data "aws_subnet" "pvsubnetsmanagednodes" {
-  for_each = toset(module.aws_vpc.private_subnets)
-
-  id = each.key
-}
-
-locals {
-  availability_zone_subnets = {
-    for item in data.aws_subnet.pvsubnetsmanagednodes : item.availability_zone => item.id...
-  }
-  
-  mount_target_subnets = [for subnet_ids in local.availability_zone_subnets : subnet_ids[0]]
-}
-
-
-
 resource "aws_security_group" "efssecuritygroup" {
   name        = "efssecuritygroup"
   description = "efs security group allow access to port 2049"
@@ -47,9 +31,10 @@ resource "aws_efs_file_system" "efsassets" {
 }
 
 resource "aws_efs_mount_target" "efsmtpvsubnet" {
-  count = length(local.mount_target_subnets)
+  count = length(local.private_subnet_ids)
+
   file_system_id  = aws_efs_file_system.efsassets.id
-  subnet_id = element(local.mount_target_subnets, count.index)
+  subnet_id = local.private_subnet_ids[count.index]
   security_groups = [aws_security_group.efssecuritygroup.id]
  }
  

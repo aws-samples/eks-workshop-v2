@@ -16,28 +16,16 @@ As part of our workshop environment, the EKS cluster has pre-installed the Amazo
 
 ```bash
 $ kubectl get daemonset efs-csi-node -n kube-system
-
 NAME           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                 AGE
 efs-csi-node   3         3         3       3            3           beta.kubernetes.io/os=linux   2d1h
 ```
 
 EFS CSI driver supports dynamic provisioning and static provisioning. Currently Dynamic Provisioning creates an access point for each `PersistentVolume`. This mean an AWS EFS file system has to be created manually on AWS first and should be provided as an input to the `StorageClass` parameter. For static provisioning, AWS EFS file system needs to be created manually on AWS first. After that it can be mounted inside a container as a volume using the driver.
 
-As part of our workshop environment, we have created EFS file system, mount targets and required security group with an inbound rule that allows inbound NFS traffic for your Amazon EFS mount points. Also we have exported the EFS file system ID as an environment variable called `EFS_ID` you can check the value for environment variable by running the below command:
-
-
-```bash
-$ echo $EFS_ID
-
-fs-061cb5c5ed841a6b0
-```
-You can also retrieve the EFS file system ID by running the following AWS CLI command:
-
+As part of our workshop environment, we have created EFS file system, mount targets and required security group with an inbound rule that allows inbound NFS traffic for your Amazon EFS mount points. You can retrieve information about the EFS file system by running the following AWS CLI command:
 
 ```bash
-$ aws efs describe-file-systems --file-system-id $EFS_ID --query "FileSystems[*].FileSystemId" --output text
-
-fs-061cb5c5ed841a6b0
+$ aws efs describe-file-systems --file-system-id $EFS_ID 
 ```
 
 Now we will need to create [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured using the previously created [Amazon Elastic File System](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html) as part of this workshop infrastructure and use [EFS Access points](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html) as provisioning mode.
@@ -46,7 +34,6 @@ we will be using Kustomize to create for us the storage class and to ingest the 
 
 ```bash
 $ kubectl apply -k modules/fundamentals/storage/efs/storageclass 
-  
 storageclass.storage.k8s.io/efs-sc created
 configmap/assets-efsid-48hg67g6fd created
 ```
@@ -61,14 +48,12 @@ Now you can get and describe the `StorageClass` using the below commands, you wi
 
 ```bash
 $ kubectl get storageclass
-
 NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
 efs-sc          efs.csi.aws.com         Delete          Immediate              false                  8m29s
 ```
 
 ```bash
 $ kubectl describe sc efs-sc
-
 Name:            efs-sc
 IsDefaultClass:  No
 Annotations:     kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"storage.k8s.io/v1","kind":"StorageClass","metadata":{"annotations":{},"name":"efs-sc"},"parameters":{"directoryPerms":"700","fileSystemId":"fs-061cb5c5ed841a6b0","provisioningMode":"efs-ap"},"provisioner":"efs.csi.aws.com"}
