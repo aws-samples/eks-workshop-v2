@@ -10,7 +10,7 @@ module "orders_rds" {
   }
 
   vpc_id  = module.aws_vpc.vpc_id
-  subnets = slice(module.aws_vpc.private_subnets, 0, 3)
+  subnets = local.private_subnet_ids
 
   allowed_security_groups = [aws_security_group.orders_rds_ingress.id]
 

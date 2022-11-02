@@ -1,6 +1,6 @@
 ---
 title: "Configuring datasource for Amazon Grafana"
-sidebar_position: 35
+sidebar_position: 40
 ---
 #### Login to AMG workspace
 

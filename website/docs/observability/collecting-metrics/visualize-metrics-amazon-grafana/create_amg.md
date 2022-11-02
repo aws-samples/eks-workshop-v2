@@ -1,6 +1,6 @@
 ---
 title: "Creating Amazon Managed Grafana Workspace"
-sidebar_position: 40
+sidebar_position: 30
 ---
 
 #### Prerequisite
