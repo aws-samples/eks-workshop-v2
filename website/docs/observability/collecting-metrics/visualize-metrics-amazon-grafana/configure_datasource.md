@@ -8,10 +8,10 @@ Click on the Grafana workspace URL in the Summary section
 
 ![Login to AMG workspace](/img/collecting-metrics/amg6.png)
 
-This will take you to the AWS SSO login screen, where you can provide the UserId and Password that you created as part of prerequisites.
+This will take you to the SAML login screen, where you can provide the UserId and Password that you created as part of prerequisites.
 
 
-![SSO screen](/img/collecting-metrics/amg7.png)
+![SAML Login](/img/collecting-metrics/amg7.png)
 
 #### Configure AMP data source
 
@@ -24,7 +24,7 @@ Select Prometheus from the list, select the AWS Region where you created the AMP
 
 ![AMP data source config](/img/collecting-metrics/amg9.png)
 
-Simply select the AMP workspace from the list and click `Add data sources`. Once added you will able to see that the AMP data source is authenticated through SigV4 protocol. Grafana (7.3.5 and above) has the AWS SigV4 proxy built-in as a plugin which makes this possible.
+Simply select the `eks-observability-workspace` workspace from the list and click `Add data sources`. Once added you will able to see that the AMP data source is authenticated through SigV4 protocol. Grafana (7.3.5 and above) has the AWS SigV4 proxy built-in as a plugin which makes this possible.
 
 ![AMP configuration](/img/collecting-metrics/amg10.png)
 

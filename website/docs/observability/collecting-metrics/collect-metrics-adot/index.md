@@ -8,16 +8,7 @@ To gather the metrics from the Amazon EKS Cluster, we will deploy the OpenTeleme
 Verifies that all the required connections for these creation, update, or deletion requests to the Kubernetes API server are available.
 Deploys ADOT Collector instances in the way the user expressed in the OpenTelemetryCollector resource configuration.
 
-Let's now deploy the CRD using Kustomization to scrape the metrics and ingest them to Amazon Managed Service for Prometheus. As part of setting up the lab, we have deployed the Amazon Managed Service for Prometheus workspace and will use the workspace to store the metrics.
-
-```file
-observability/collecting-metrics/collecting-metrics-adot/opentelemetrycollector.yaml
-```
-This will cauase the adot collector to scrape Kubernetes endpoints and remote write them to Amazon Managed Service for Prometheus:
-
-```bash timeout=180 hook=add-ingress hookTimeout=430
-$ kubectl apply -k /workspace/modules/observability/collecting-metrics/collecting-metrics-adot
-```
+Let's now take a look at the adot-collector pod that stores the metrics to Amazon Managed Service for Prometheus workspace. As part of setting up the lab, we have deployed the ADOT collector, Amazon Managed Service for Prometheus workspace and will use the workspace to store the metrics.
 
 Let's inspect the ADOT collector pod by running the below command:
 

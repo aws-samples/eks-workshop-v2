@@ -5,12 +5,14 @@ sidebar_position: 60
 
 In this module, we will verify the ingestion of metrics into the Amazon Managed Service for Prometheus
 
-The Amazon Managed Service for Prometheus workspace is already created for you. You should be able to see `observability` workspace on the Amazon Managed Service for Prometheus console
+The Amazon Managed Service for Prometheus workspace is already created for you. You should be able to see `eks-observability-workspace` workspace on the Amazon Managed Service for Prometheus console
 
 By running the awscurl, let's verify the successful ingestion of the metrics:
 
 ```bash 
-export AMP_QUERY_ENDPOINT= https://aps-workspaces.Region.amazonaws.com/workspaces/Workspace-id/api/v1/query
+export WORKSPACE=$(aws amp list-workspaces | jq -r '.workspaces[] | select(.alias=="eks-observability-workspace").workspaceId')
+export REGION=$AWS_REGION
+export AMP_QUERY_ENDPOINT= https://aps-workspaces.$Region.amazonaws.com/workspaces/$WORKSPACE/api/v1/query
 awscurl -X POST --region Region --service aps "$AMP_QUERY_ENDPOINT?query=up"
 ```
 
