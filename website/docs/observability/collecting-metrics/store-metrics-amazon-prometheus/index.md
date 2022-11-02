@@ -9,7 +9,7 @@ The Amazon Managed Service for Prometheus workspace is already created for you. 
 
 By running the awscurl, let's verify the successful ingestion of the metrics:
 
-```bash 
+```json 
 export WORKSPACE=$(aws amp list-workspaces | jq -r '.workspaces[] | select(.alias=="eks-observability-workspace").workspaceId')
 export REGION=$AWS_REGION
 export AMP_QUERY_ENDPOINT= https://aps-workspaces.$Region.amazonaws.com/workspaces/$WORKSPACE/api/v1/query

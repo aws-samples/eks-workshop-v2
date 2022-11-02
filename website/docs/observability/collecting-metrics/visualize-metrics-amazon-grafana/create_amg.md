@@ -11,5 +11,7 @@ Follow the  [AMG Integration with Okta](https://docs.aws.amazon.com/grafana/late
 
 As part of the lab setup, we have created a Amazon Managed Grafana workspace named `eksworkshop-grafana`
 
+![AMG workspace](/img/collecting-metrics/amgws.png)
+
 
 Once the above setup is complete, you should be able to login to the Amazon Managed Grafana workspace using Okta authentication

@@ -1,6 +1,6 @@
 ---
 title: "Collecting & analyzing metrics using ADOT, Amazon Managed Prometheus & Amazon Managed Grafana"
-sidebar_position: 5
+sidebar_position: 10
 ---
 
 In this section, we will collect the metrics from the application using AWS Distro for OpenTelemetry, store the metrics in Amazon Managed Service for Prometheus and visualize using Amazon Managed Grafana
