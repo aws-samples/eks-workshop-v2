@@ -5,7 +5,7 @@ sidebar_position: 40
 
 In this section, we will see how to checks the kubernetes pod logs forwarded by the Fluent-bit agent deployed on each node to Amazon CloudWatch logs. 
 
-1. Deploy the Sample Webstore application from the **'Introduction/Getting Started'** section, this sample application creates the resources in the below different kubernetes namespaces. 
+1. Deploy the Sample Webstore application from the [**Introduction/Getting Started**](/docs/introduction/getting-started.md) section, this sample application creates the resources in the below kubernetes namespaces. 
 
 ```bash
 $ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
