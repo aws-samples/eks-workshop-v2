@@ -142,35 +142,6 @@ module "eks-blueprints-kubernetes-addons" {
   kubecost_helm_config = {
     set = concat([
       {
-        name  = "global.amp.enabled"
-        value = "true"
-        type  = "string"
-      },
-      {
-        name  = "global.amp.prometheusServerEndpoint"
-        value = "http://localhost:8005/workspaces/ws-954cd4b8-f660-43b4-8f28-8399c3bb3cb6"
-        type  = "string"
-      },
-      {
-        name  = "global.amp.remoteWriteService"
-        value = "https://aps-workspaces.${local.aws_region}.amazonaws.com/workspaces/ws-954cd4b8-f660-43b4-8f28-8399c3bb3cb6/api/v1/remote_write"
-        type  = "string"
-      },
-      {
-        name  = "global.amp.sigv4.region"
-        value = "${local.aws_region}"
-        type  = "string"
-      },
-      {
-        name  = "sigV4Proxy.region"
-        value = "${local.aws_region}"
-        type  = "string"
-      },
-      {
-        name  = "sigV4Proxy.host"
-        value = "aps-workspaces.${local.aws_region}.amazonaws.com"
-      },
-      {
         name  = "prometheus.server.nodeSelector.workshop-system"
         value = "yes"
         type  = "string"
