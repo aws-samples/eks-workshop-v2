@@ -68,12 +68,6 @@ ip-10-42-10-115.ec2.internal   Ready    <none>   157m   v1.23.12-eks-a64d4ad
 ip-10-42-12-32.ec2.internal    Ready    <none>   157m   v1.23.12-eks-a64d4ad
 ```
 
-!!! **Note** : AMI ID will vary depends upon on the AWS region, to verify you can use the command (change region and cluster version as per your requirement):
-
-```bash 
-$ aws ssm get-parameter --region us-east-1 --name "/aws/service/bottlerocket/aws-k8s-1.23/x86_64/latest/image_id" --query Parameter.Value --output text
-```
-
 ## Congratulations!
 
 You now have a fully working Amazon EKS Cluster with Bottlerocket nodes that is ready to use!

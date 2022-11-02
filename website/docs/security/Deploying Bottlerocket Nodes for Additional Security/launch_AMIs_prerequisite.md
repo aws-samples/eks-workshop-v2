@@ -31,5 +31,8 @@ sidebar_position: 50
 | US West (Oregon)          |            us-west-2  |
 ```
 
-!!! **Warning** 
-Don’t continue the lab unless you use one of these region.
+!!! **Note** : AMI ID will vary depends upon on the AWS region, to verify you can use the below command (change region and cluster version as per your requirement) and do not continue the lab unless you can use one of the above regions
+
+```bash 
+$ aws ssm get-parameter --region us-east-1 --name "/aws/service/bottlerocket/aws-k8s-1.23/x86_64/latest/image_id" --query Parameter.Value --output text
+```
