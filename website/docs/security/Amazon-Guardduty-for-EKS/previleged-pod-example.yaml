@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu-privileged-with-mount
+spec:
+  selector:
+    matchLabels:
+      app: ubuntu-privileged-with-mount
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ubuntu-privileged-with-mount
+    spec:
+      containers:
+      - name: ubuntu-privileged-with-mount
+        image: rastasheep/ubuntu-sshd:14.04W
+        ports:
+        - containerPort: 22
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /test-pd
+          name: test-volume
+      volumes:
+      - name: test-volume
+        hostPath:
+          path: /etc
+          type: Directory
