@@ -81,6 +81,8 @@ module "eks-blueprints-kubernetes-addons" {
   enable_cluster_autoscaler              = true
   enable_metrics_server                  = true
   enable_kubecost                        = true
+  enable_amazon_eks_adot                 = true
+  enable_cert_manager                    = true
 
   cluster_autoscaler_helm_config = {
     version   = var.helm_chart_versions["cluster_autoscaler"]
@@ -251,4 +253,8 @@ module "descheduler" {
   helm_config = {
     set = concat([], local.system_component_values)
   }
+}
+
+module "collecting_metrics" {
+  source        = "../addons/collecting-metrics"
 }
