@@ -13,9 +13,9 @@ $ aws ssm start-session --target instance-id
 Starting session with SessionId: eks-course-0bf27ea1e078f5c40
 Welcome to Bottlerocket's control container!
 ```
-You are now connected to the Bottlerocket “control” container. To replace this control container with your own, refer to the documentation. In order to access the container through SSM, you need to give the node the appropriate IAM role. Amazon EKS will handle this for you when using a managed node group. Once you have access to the control container, you can execute commands, which in turn make the appropriate API calls to a local service running on the instance to configure and manage your Bottlerocket node. This is not a complete shell environment and you have a limited set of commands available.
+You are now connected to the Bottlerocket [“control” container](https://github.com/bottlerocket-os/bottlerocket-control-container). To replace this control container with your own, refer to the [documentation](https://github.com/bottlerocket-os/bottlerocket#settings). In order to access the container through SSM, you need to give the node the appropriate IAM role. Amazon EKS will handle this for you when using a managed node group. Once you have access to the control container, you can execute commands, which in turn make the appropriate API calls to a local service running on the instance to configure and manage your Bottlerocket node. This is not a complete shell environment and you have a limited set of commands available.
 
-The Bottlerocket API includes methods for checking and starting system updates. You can read more about the update APIs in the update system documentation. Most of your interactions will be through the apiclient command. You can find more details in the documentation. The apiclient knows how to handle those update APIs for you. You can also use apiclient to describe the configuration setting on your instance.
+The [Bottlerocket API](https://github.com/bottlerocket-os/bottlerocket#api) includes methods for checking and starting system updates. You can read more about the update APIs in the [update system documentation](https://github.com/bottlerocket-os/bottlerocket/blob/develop/sources/updater/README.md#update-api). Most of your interactions will be through the [apiclient](https://github.com/bottlerocket-os/bottlerocket/tree/develop/sources/api/apiclient) command. You can find more details in the [documentation](https://github.com/bottlerocket-os/bottlerocket#settings). The apiclient knows how to handle those update APIs for you. You can also use apiclient to describe the configuration setting on your instance.
 
 ```bash
 $ apiclient -u /settings
@@ -36,13 +36,13 @@ Once inside the admin container, execute sheltie to get a complete root shell in
 
 ```bash
 $ sudo sheltie
-  logdog
+$ logdog
 ```
 
 This will create a log archive /var/log/support/bottlerocket-logs.tar.gz. You may retrieve the file through SSH. Once you’ve quit the Bottlerocket host, execute the following command:
 
 ```bash
-$ssh -i ~/.ssh/eks_bottlerocket.pem \
+$ ssh -i ~/.ssh/eks_bottlerocket.pem \
     ec2-user@BottlerocketElasticIP \
     "cat /.bottlerocket/rootfs/var/log/support/bottlerocket-logs.tar.gz" > bottlerocket-logs.tar.gz
 ```
