@@ -14,7 +14,7 @@ $ unset AWS_PROFILE
 ```
 To verify we’re the admin user again, and no longer rbac-user, issue the following command:
 ```bash test=false
-aws sts get-caller-identity
+$ aws sts get-caller-identity
 
 {
     "UserId": "<USER ID>,
