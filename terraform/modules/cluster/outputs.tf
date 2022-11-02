@@ -91,3 +91,8 @@ output "orders_rds_ingress_sg_id" {
   description = "Endpoint of the RDS database for the orders service"
   value       = aws_security_group.orders_rds_ingress.id
 }
+
+output "efsid" {
+  description = "EFS file system ID"
+  value       = aws_efs_file_system.efsassets.id
+}

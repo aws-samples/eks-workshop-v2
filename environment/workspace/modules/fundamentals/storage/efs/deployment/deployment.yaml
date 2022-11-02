@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: assets
+spec:
+  template:
+    spec:
+      containers:
+      - name: assets
+        volumeMounts:
+        - name: efsvolume
+          mountPath: /efsvolumedir
+      volumes:
+        - name: efsvolume
+          persistentVolumeClaim:
+            claimName: efs-claim

@@ -14,7 +14,7 @@ module "eks-blueprints" {
   tags = local.tags
 
   vpc_id             = module.aws_vpc.vpc_id
-  private_subnet_ids = slice(module.aws_vpc.private_subnets, 0, 3)
+  private_subnet_ids = local.private_subnet_ids
   public_subnet_ids  = module.aws_vpc.public_subnets
 
   cluster_name    = local.cluster_name
@@ -86,7 +86,7 @@ module "eks-blueprints" {
     mg_5 = {
       node_group_name = "managed-ondemand"
       instance_types  = ["m5.large"]
-      subnet_ids      = slice(module.aws_vpc.private_subnets, 0, 3)
+      subnet_ids      = local.private_subnet_ids
       min_size        = local.default_mng_min
       max_size        = local.default_mng_max
       desired_size    = local.default_mng_size
@@ -111,7 +111,7 @@ module "eks-blueprints" {
     system = {
       node_group_name = "managed-system"
       instance_types  = ["m5.large"]
-      subnet_ids      = slice(module.aws_vpc.private_subnets, 0, 1)
+      subnet_ids      = slice(local.private_subnet_ids, 0, 1)
       min_size        = 1
       max_size        = 2
       desired_size    = 1
@@ -145,7 +145,7 @@ module "eks-blueprints" {
           fargate = "yes"
         }
       }]
-      subnet_ids = slice(module.aws_vpc.private_subnets, 0, 3)
+      subnet_ids = local.private_subnet_ids
     }
   }
 }
