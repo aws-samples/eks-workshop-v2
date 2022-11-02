@@ -1,9 +1,7 @@
 ---
 title: "Storage"
-sidebar_position: 80
+sidebar_position: 90
 ---
 
-To view the Kubernetes storage resources, click on the <i>Resources</i> tab. Drill down to the <i>Storage</i> section and you can view several the Kubernetes API resource types that are part of cluster.
-
-
+To view the Kubernetes storage resources, click on the <i>Resources</i> tab. Drill down to the <i>Storage</i> section and you can view several the Kubernetes API resource types that are part of cluster. 
 
