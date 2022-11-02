@@ -75,13 +75,14 @@ module "eks-blueprints-kubernetes-addons" {
 
   eks_cluster_id = module.eks-blueprints.eks_cluster_id
 
-  enable_karpenter                    = true
-  enable_aws_node_termination_handler = true
-  enable_aws_load_balancer_controller = true
-  enable_cluster_autoscaler           = true
-  enable_metrics_server               = true
-  enable_kubecost                     = true
-
+  enable_karpenter                       = true
+  enable_aws_node_termination_handler    = true
+  enable_aws_load_balancer_controller    = true
+  enable_cluster_autoscaler              = true
+  enable_metrics_server                  = true
+  enable_kubecost                        = true
+  enable_aws_efs_csi_driver              = true
+  
   cluster_autoscaler_helm_config = {
     version   = var.helm_chart_versions["cluster_autoscaler"]
     namespace = "kube-system"

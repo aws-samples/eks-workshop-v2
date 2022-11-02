@@ -36,7 +36,7 @@ spec:
               drop:
               - ALL
             readOnlyRootFilesystem: false
-          image: "watchn/watchn-assets:build.1615751790"
+          image: "watchn/watchn-assets:build.1666365372"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
