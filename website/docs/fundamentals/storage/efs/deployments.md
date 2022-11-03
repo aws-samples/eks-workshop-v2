@@ -93,7 +93,6 @@ Now let us check if the image we created for the new product `newproduct.png` is
 
 ```bash
 $ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /usr/share/nginx/html/assets/" 
-
 ```
 
 As you see the newly created image `newproduct.png` is not exist now , as it is not been copied while the creation of the container image. In order to help the team solve this issue we need a `PersistentVolume` contain the images. That can be shared across multiple pods if the team want to scale horizontally.
