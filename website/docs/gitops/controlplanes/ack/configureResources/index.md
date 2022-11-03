@@ -16,7 +16,7 @@ $ CATALOG_NAMESPACE=catalog-prod
 ```
 Set new password
 ```bash
-$ CATALOG_PASSWORD="N2YyZDc2YjgzYzA3NjQzODNmN2Y1ZjMy"
+$ CATALOG_PASSWORD="$(date +%s | sha256sum | base64 | head -c 32)"
 ```
 Create secret
 ```bash
@@ -123,7 +123,7 @@ $ ORDERS_NAMESPACE=orders-prod
 ```
 Set new password
 ```bash
-$ ORDERS_PASSWORD="N2YyZDc2YjgzYzA3NjQzODNmN2Y1ZjMy"
+$ ORDERS_PASSWORD="$(date +%s | sha256sum | base64 | head -c 32)"
 ```
 Create secret
 ```bash
