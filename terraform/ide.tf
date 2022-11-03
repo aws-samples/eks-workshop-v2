@@ -15,6 +15,11 @@ ORDERS_RDS_PASSWORD=${module.cluster.orders_rds_master_password}
 ORDERS_RDS_DATABASE_NAME=${module.cluster.orders_rds_database_name}
 ORDERS_RDS_SG_ID=${module.cluster.orders_rds_ingress_sg_id}
 EFS_ID=${module.cluster.efsid}
+NETWORKING_RDS_ENDPOINT=${module.cluster.networking_rds_endpoint}
+NETWORKING_RDS_USERNAME=${module.cluster.networking_rds_master_username}
+NETWORKING_RDS_PASSWORD=${module.cluster.networking_rds_master_password}
+NETWORKING_RDS_DATABASE_NAME=${module.cluster.networking_rds_database_name}
+NETWORKING_RDS_SG_ID=${module.cluster.networking_rds_ingress_sg_id}
 EOT
 }
 
