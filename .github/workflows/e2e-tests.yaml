@@ -26,6 +26,16 @@ jobs:
       with:
         terraform_version: 1.2.9
         terraform_wrapper: false
+    - name: Install utilities
+      run: |
+        sudo apt install -y gettext
+
+        mkdir -p ${HOME}/.local/bin
+        wget https://github.com/jckuester/awsweeper/releases/download/v0.12.0/awsweeper_0.12.0_linux_amd64.tar.gz
+        tar zxf awsweeper_0.12.0_linux_amd64.tar.gz
+        mv awsweeper_0.12.0_linux_amd64/awsweeper ${HOME}/.local/bin
+
+        echo "${HOME}/.local/bin" >> $GITHUB_PATH
     - name: Get AWS credentials
       uses: aws-actions/configure-aws-credentials@v1.6.1
       with:
@@ -95,7 +105,7 @@ jobs:
         DEV_MODE: 1
       run: |
         make test terraform_context="test/terraform" module="{observability,observability/**}"
-    - name: Run tests - Observability
+    - name: Run tests - Cost optimization
       if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/cost-optimization') }}
       env:
         DOCKER_BUILDKIT: 1
@@ -126,5 +136,8 @@ jobs:
         terraform destroy -target=module.core.module.cluster.module.descheduler --auto-approve
 
         terraform destroy -target=module.core.module.cluster.module.eks-blueprints --auto-approve
+
+        envsubst < ../../hack/lib/filter.yml > filter.yml
+        awsweeper --force filter.yml
 
         terraform destroy --auto-approve
