@@ -22,6 +22,9 @@ fi
 
 source $SCRIPT_DIR/lib/generate-aws-creds.sh
 
+# Right now the container images are only designed for amd64
+export DOCKER_DEFAULT_PLATFORM=linux/amd64 
+
 echo "Starting shell in container..."
 
 docker run --rm -it --env-file /tmp/eks-workshop-shell-env \
