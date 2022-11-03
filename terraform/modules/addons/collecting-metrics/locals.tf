@@ -11,7 +11,9 @@ data "aws_eks_cluster" "eks_cluster" {
 locals {
   name      = "adot-collector"
   namespace = try(var.helm_config.namespace, local.name)
-  amp_ws_id       = aws_prometheus_workspace.this[0].id
+  amp_ws_id       = aws_prometheus_workspace.this.id
+  ampname    = "eks-observability-workspace"
+  amgname    = "eksworkshop-grafana"
 
   eks_oidc_issuer_url  = replace(data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer, "https://", "")
   eks_cluster_endpoint = data.aws_eks_cluster.eks_cluster.endpoint

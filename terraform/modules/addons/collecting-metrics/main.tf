@@ -51,7 +51,7 @@ module "helm_addon" {
 }
 
 resource "aws_prometheus_workspace" "this" {
-  alias = eks-observability-workspace
+  alias = local.ampname
 }
 
 resource "aws_grafana_workspace" "this" {
@@ -59,7 +59,7 @@ resource "aws_grafana_workspace" "this" {
   authentication_providers = ["SAML"]
   permission_type          = "SERVICE_MANAGED"
   role_arn                 = aws_iam_role.assume.arn
-  name                     = eksworkshop-grafana
+  name                     = local.amgname
 }
 
 resource "aws_iam_role" "assume" {

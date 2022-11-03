@@ -258,4 +258,5 @@ module "descheduler" {
 
 module "collecting_metrics" {
   source        = "../addons/collecting-metrics"
+  eks_cluster_id = module.eks-blueprints.eks_cluster_id
 }
