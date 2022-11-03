@@ -1,5 +1,6 @@
 terraform_context='terraform'
 module='*'
+environment='cluster'
 
 .PHONY: install
 install:
@@ -35,11 +36,11 @@ verify-helm-metadata:
 
 .PHONY: create-infrastructure
 create-infrastructure:
-	bash hack/create-infrastructure.sh $(terraform_context)
+	bash hack/create-infrastructure.sh $(environment) $(terraform_context)
 
 .PHONY: destroy-infrastructure
 destroy-infrastructure:
-	bash hack/destroy-infrastructure.sh $(terraform_context)
+	bash hack/destroy-infrastructure.sh $(environment) $(terraform_context)
 
 .PHONY: lint-markdown
 lint-markdown:
