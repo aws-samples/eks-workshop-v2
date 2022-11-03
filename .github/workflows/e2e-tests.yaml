@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   test-content:
-    if: ${{ (github.event_name == 'pull_request' && ((github.event.action == 'labeled' && github.event.label.name == 'automation/e2e-tests') || (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'automation/e2e-tests')))) || github.event_name == 'workflow_dispatch' }}
+    if: ${{ (github.event.action == 'labeled' && github.event.label.name == 'automation/e2e-tests') || (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'automation/e2e-tests')) }}
 
     name: run-tests
     runs-on: ubuntu-latest
