@@ -1,0 +1,13 @@
+aws_lb:
+  - tags:
+      elbv2.k8s.aws/cluster: eks-workshop-${CLUSTER_ID}
+aws_lb_target_group:
+  - tags:
+      elbv2.k8s.aws/cluster: eks-workshop-${CLUSTER_ID}
+aws_security_group:
+  - tags:
+      elbv2.k8s.aws/cluster: eks-workshop-${CLUSTER_ID}
+aws_ebs_volume:
+  - tags:
+      KubernetesCluster: eks-workshop-${CLUSTER_ID}
+      ebs.csi.aws.com/cluster: true

@@ -3,7 +3,7 @@
 environment=$1
 terraform_context=$2
 
-set -e
+set -Eeuo pipefail
 
 if [ -z "$environment" ]; then
   echo 'Error: Must provide environment name'

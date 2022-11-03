@@ -3,7 +3,7 @@
 environment=$1
 terraform_context=$2
 
-set -e
+set -Eeuo pipefail
 
 if [ -z "$environment" ]; then
   echo 'Error: Must provide environment name'
@@ -26,5 +26,13 @@ terraform -chdir=$terraform_dir destroy -target=module.cluster.module.eks-bluepr
 terraform -chdir=$terraform_dir destroy -target=module.cluster.module.descheduler --auto-approve
 
 terraform -chdir=$terraform_dir destroy -target=module.cluster.module.eks-blueprints --auto-approve
+
+if [ ! -z "$DANGEROUS_CLEANUP" ]; then
+  temp_file=$(mktemp)
+
+  CLUSTER_ID="${environment}" envsubst < $SCRIPT_DIR/lib/filter.yml > $temp_file
+
+  awsweeper --force $temp_file
+fi
 
 terraform -chdir=$terraform_dir destroy --auto-approve
