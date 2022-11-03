@@ -76,7 +76,8 @@ module "eks-blueprints-kubernetes-addons" {
   enable_metrics_server                  = true
   enable_kubecost                        = true
   enable_aws_efs_csi_driver              = true
-  
+  enable_aws_for_fluentbit               = true
+ 
   cluster_autoscaler_helm_config = {
     version   = var.helm_chart_versions["cluster_autoscaler"]
     namespace = "kube-system"
