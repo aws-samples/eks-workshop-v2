@@ -14,13 +14,11 @@ The first controller to setup is the IAM one which is going to be used for the s
 ## IAM controller setup
 Create the IAM role with the trust relationship with the Service Account for the IAM Controller.  
 
-```
-AWS_REGION="eu-west-1"
-AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-OIDC_PROVIDER=$(aws eks describe-cluster --name $CLUSTER_NAME --region $AWS_REGION --query "cluster.identity.oidc.issuer" --output text | sed -e "s/^https:\/\///")
-ACK_K8S_NAMESPACE=ack-system
-ACK_K8S_SERVICE_ACCOUNT_NAME=ack-iam-controller
-cat <<EOF > trust.json
+```bash
+$ OIDC_PROVIDER=$(aws eks describe-cluster --name $CLUSTER_NAME --region $AWS_REGION --query "cluster.identity.oidc.issuer" --output text | sed -e "s/^https:\/\///")
+$ ACK_K8S_NAMESPACE=ack-system
+$ ACK_K8S_SERVICE_ACCOUNT_NAME=ack-iam-controller
+$ cat <<EOF > trust.json
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -40,54 +38,48 @@ cat <<EOF > trust.json
 }
 EOF
 
-ACK_CONTROLLER_IAM_ROLE="ack-iam-controller"
-ACK_CONTROLLER_IAM_ROLE_DESCRIPTION="IRSA role for ACK IAM controller deployment on EKS cluster using Helm charts"
-aws iam create-role --role-name "${ACK_CONTROLLER_IAM_ROLE}" --assume-role-policy-document file://trust.json --description "${ACK_CONTROLLER_IAM_ROLE_DESCRIPTION}"
-ACK_CONTROLLER_IAM_ROLE_ARN=$(aws iam get-role --role-name=$ACK_CONTROLLER_IAM_ROLE --query Role.Arn --output text)
-rm trust.json
+$ ACK_CONTROLLER_IAM_ROLE="ack-iam-controller"
+$ ACK_CONTROLLER_IAM_ROLE_DESCRIPTION="IRSA role for ACK IAM controller deployment on EKS cluster using Helm charts"
+$ aws iam create-role --role-name "${ACK_CONTROLLER_IAM_ROLE}" --assume-role-policy-document file://trust.json --description "${ACK_CONTROLLER_IAM_ROLE_DESCRIPTION}"
+$ ACK_CONTROLLER_IAM_ROLE_ARN=$(aws iam get-role --role-name=$ACK_CONTROLLER_IAM_ROLE --query Role.Arn --output text)
 ```
 
 Create the IAM policy for the IAM controller
 
-```
-BASE_URL=https://raw.githubusercontent.com/aws-controllers-k8s/${SERVICE}-controller/main
-INLINE_POLICY_URL=${BASE_URL}/config/iam/recommended-inline-policy
-INLINE_POLICY="$(wget -qO- ${INLINE_POLICY_URL})"
+```bash
+$ BASE_URL=https://raw.githubusercontent.com/aws-controllers-k8s/iam-controller/main
+$ INLINE_POLICY_URL=${BASE_URL}/config/iam/recommended-inline-policy
+$ INLINE_POLICY="$(curl -s ${INLINE_POLICY_URL})"
 
-if [ ! -z "$INLINE_POLICY" ]; then
-    echo -n "Putting inline policy ... "
-    aws iam put-role-policy \
+$ aws iam put-role-policy \
         --role-name "${ACK_CONTROLLER_IAM_ROLE}" \
         --policy-name "ack-recommended-policy" \
         --policy-document "$INLINE_POLICY"
-    echo "ok."
-fi
+
 ```
 
 Create the IAM controller
 
-```
-echo "### Installing the $SERVICE controller ###"
-echo "### ### ###"
-aws ecr-public get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin public.ecr.aws
+```bash
+$ aws ecr-public get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin public.ecr.aws
 
-RELEASE_VERSION=`curl -sL https://api.github.com/repos/aws-controllers-k8s/iam-controller/releases/latest | grep '"tag_name":' | cut -d'"' -f4`
+$ RELEASE_VERSION=`curl -sL https://api.github.com/repos/aws-controllers-k8s/iam-controller/releases/latest | grep '"tag_name":' | cut -d'"' -f4`
 
-helm install --create-namespace -n $ACK_K8S_NAMESPACE ack-iam-controller \
+$ helm install --create-namespace -n $ACK_K8S_NAMESPACE ack-iam-controller \
   oci://public.ecr.aws/aws-controllers-k8s/iam-chart --version=$RELEASE_VERSION --set=aws.region=$AWS_REGION
 
 
-IRSA_ROLE_ARN=eks.amazonaws.com/role-arn=$ACK_CONTROLLER_IAM_ROLE_ARN
-kubectl annotate serviceaccount -n $ACK_K8S_NAMESPACE $ACK_K8S_SERVICE_ACCOUNT_NAME $IRSA_ROLE_ARN
-kubectl -n $ACK_K8S_NAMESPACE rollout restart deployment ack-iam-controller-iam-chart
+$ IRSA_ROLE_ARN=eks.amazonaws.com/role-arn=$ACK_CONTROLLER_IAM_ROLE_ARN
+$ kubectl annotate serviceaccount -n $ACK_K8S_NAMESPACE $ACK_K8S_SERVICE_ACCOUNT_NAME $IRSA_ROLE_ARN
+$ kubectl -n $ACK_K8S_NAMESPACE rollout restart deployment ack-iam-controller-iam-chart
 ```
 
 ## EC2 controller setup
 Create the IAM role with the trust relationship with the Service Account for the EC2 Controller. This time we use the IAM controller itself to create the role.
 
-```
-ACK_K8S_SERVICE_ACCOUNT_NAME=ack-ec2-controller
-cat <<EOF > ec2-iam-role.yaml
+```bash
+$ ACK_K8S_SERVICE_ACCOUNT_NAME=ack-ec2-controller
+$ cat <<EOF > ec2-iam-role.yaml
 apiVersion: iam.services.k8s.aws/v1alpha1
 kind: Role
 metadata:
@@ -117,29 +109,29 @@ spec:
       ]
     }
 EOF
-kubectl apply -f ec2-iam-role.yaml
+$ kubectl apply -f ec2-iam-role.yaml
 ```
 
 Create the EC2 Controller.
-```
-RELEASE_VERSION=`curl -sL https://api.github.com/repos/aws-controllers-k8s/ec2-controller/releases/latest | grep '"tag_name":' | 
+```bash
+$ RELEASE_VERSION=`curl -sL https://api.github.com/repos/aws-controllers-k8s/ec2-controller/releases/latest | grep '"tag_name":' | cut -d'"' -f4`
 
-helm install --create-namespace -n $ACK_K8S_NAMESPACE ${ACK_K8S_SERVICE_ACCOUNT_NAME} \
+$ helm install --create-namespace -n $ACK_K8S_NAMESPACE ${ACK_K8S_SERVICE_ACCOUNT_NAME} \
   oci://public.ecr.aws/aws-controllers-k8s/ec2-chart --version=$RELEASE_VERSION --set=aws.region=$AWS_REGION
 
-ACK_CONTROLLER_EC2_ROLE_ARN=$(aws iam get-role --role-name=${ACK_K8S_SERVICE_ACCOUNT_NAME} --query Role.Arn --output text)
+$ ACK_CONTROLLER_EC2_ROLE_ARN=$(aws iam get-role --role-name=${ACK_K8S_SERVICE_ACCOUNT_NAME} --query Role.Arn --output text)
 IRSA_ROLE_ARN=eks.amazonaws.com/role-arn=$ACK_CONTROLLER_EC2_ROLE_ARN
 
-kubectl annotate serviceaccount -n $ACK_K8S_NAMESPACE $ACK_K8S_SERVICE_ACCOUNT_NAME $IRSA_ROLE_ARN --
-kubectl -n $ACK_K8S_NAMESPACE rollout restart deployment ack-ec2-controller-ec2-chart
+$ kubectl annotate serviceaccount -n $ACK_K8S_NAMESPACE $ACK_K8S_SERVICE_ACCOUNT_NAME $IRSA_ROLE_ARN
+$ kubectl -n $ACK_K8S_NAMESPACE rollout restart deployment ack-ec2-controller-ec2-chart
 ```
 
 ## RDS controller setup
 Create the IAM role with the trust relationship with the Service Account for the RDS Controller. This time we use the IAM controller itself to create the role.
 
-```
-ACK_K8S_SERVICE_ACCOUNT_NAME=ack-rds-controller
-cat <<EOF > rds-iam-role.yaml
+```bash
+$ ACK_K8S_SERVICE_ACCOUNT_NAME=ack-rds-controller
+$ cat <<EOF > rds-iam-role.yaml
 apiVersion: iam.services.k8s.aws/v1alpha1
 kind: Role
 metadata:
@@ -169,29 +161,29 @@ spec:
       ]
     }
 EOF
-kubectl apply -f rds-iam-role.yaml
+$ kubectl apply -f rds-iam-role.yaml
 ```
 
 Create the RDS Controller.
-```
-RELEASE_VERSION=`curl -sL https://api.github.com/repos/aws-controllers-k8s/rds-controller/releases/latest | grep '"tag_name":' | 
+```bash
+$ RELEASE_VERSION=`curl -sL https://api.github.com/repos/aws-controllers-k8s/rds-controller/releases/latest | grep '"tag_name":' | cut -d'"' -f4`
 
-helm install --create-namespace -n $ACK_K8S_NAMESPACE ${ACK_K8S_SERVICE_ACCOUNT_NAME} \
+$ helm install --create-namespace -n $ACK_K8S_NAMESPACE ${ACK_K8S_SERVICE_ACCOUNT_NAME} \
   oci://public.ecr.aws/aws-controllers-k8s/rds-chart --version=$RELEASE_VERSION --set=aws.region=$AWS_REGION
 
-ACK_CONTROLLER_RDS_ROLE_ARN=$(aws iam get-role --role-name=${ACK_K8S_SERVICE_ACCOUNT_NAME} --query Role.Arn --output text)
-IRSA_ROLE_ARN=eks.amazonaws.com/role-arn=$ACK_CONTROLLER_RDS_ROLE_ARN
+$ ACK_CONTROLLER_RDS_ROLE_ARN=$(aws iam get-role --role-name=${ACK_K8S_SERVICE_ACCOUNT_NAME} --query Role.Arn --output text)
+$ IRSA_ROLE_ARN=eks.amazonaws.com/role-arn=$ACK_CONTROLLER_RDS_ROLE_ARN
 
-kubectl annotate serviceaccount -n $ACK_K8S_NAMESPACE $ACK_K8S_SERVICE_ACCOUNT_NAME $IRSA_ROLE_ARN --
-kubectl -n $ACK_K8S_NAMESPACE rollout restart deployment ack-rds-controller-rds-chart
+$ kubectl annotate serviceaccount -n $ACK_K8S_NAMESPACE $ACK_K8S_SERVICE_ACCOUNT_NAME $IRSA_ROLE_ARN
+$ kubectl -n $ACK_K8S_NAMESPACE rollout restart deployment ack-rds-controller-rds-chart
 ```
 
 ## MQ controller setup
 Create the IAM role with the trust relationship with the Service Account for the MQ Controller. This time we use the IAM controller itself to create the role.
 
-```
-ACK_K8S_SERVICE_ACCOUNT_NAME=ack-mq-controller
-cat <<EOF > mq-iam-role.yaml
+```bash
+$ ACK_K8S_SERVICE_ACCOUNT_NAME=ack-mq-controller
+$ cat <<EOF > mq-iam-role.yaml
 apiVersion: iam.services.k8s.aws/v1alpha1
 kind: Role
 metadata:
@@ -232,20 +224,20 @@ spec:
       ]
     }
 EOF
-kubectl apply -f mq-iam-role.yaml
+$ kubectl apply -f mq-iam-role.yaml
 ```
 
 Create the MQ Controller.
-```
-RELEASE_VERSION=`curl -sL https://api.github.com/repos/aws-controllers-k8s/mq-controller/releases/latest | grep '"tag_name":' | 
+```bash
+$ RELEASE_VERSION=`curl -sL https://api.github.com/repos/aws-controllers-k8s/mq-controller/releases/latest | grep '"tag_name":' | cut -d'"' -f4`
 
-helm install --create-namespace -n $ACK_K8S_NAMESPACE ${ACK_K8S_SERVICE_ACCOUNT_NAME} \
+$ helm install --create-namespace -n $ACK_K8S_NAMESPACE ${ACK_K8S_SERVICE_ACCOUNT_NAME} \
   oci://public.ecr.aws/aws-controllers-k8s/mq-chart --version=$RELEASE_VERSION --set=aws.region=$AWS_REGION
 
 
-ACK_CONTROLLER_MQ_ROLE_ARN=$(aws iam get-role --role-name=${ACK_K8S_SERVICE_ACCOUNT_NAME} --query Role.Arn --output text)
-IRSA_ROLE_ARN=eks.amazonaws.com/role-arn=$ACK_CONTROLLER_MQ_ROLE_ARN
+$ ACK_CONTROLLER_MQ_ROLE_ARN=$(aws iam get-role --role-name=${ACK_K8S_SERVICE_ACCOUNT_NAME} --query Role.Arn --output text)
+$ IRSA_ROLE_ARN=eks.amazonaws.com/role-arn=$ACK_CONTROLLER_MQ_ROLE_ARN
 
-kubectl annotate serviceaccount -n $ACK_K8S_NAMESPACE $ACK_K8S_SERVICE_ACCOUNT_NAME $IRSA_ROLE_ARN --
-kubectl -n $ACK_K8S_NAMESPACE rollout restart deployment ack-mq-controller-mq-chart
+$ kubectl annotate serviceaccount -n $ACK_K8S_NAMESPACE $ACK_K8S_SERVICE_ACCOUNT_NAME $IRSA_ROLE_ARN
+$ kubectl -n $ACK_K8S_NAMESPACE rollout restart deployment ack-mq-controller-mq-chart
 ```
