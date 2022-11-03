@@ -1,7 +1,7 @@
 module "networking_rds_postgres" {
   source = "terraform-aws-modules/rds-aurora/aws"
 
-  name           = "eksworkshop-rds-sgpp"
+  name           = "eksworkshop-rds-networking"
   engine         = "aurora-postgresql"
   engine_version = "11.12"
   instance_class = "db.t3.small"
@@ -38,7 +38,7 @@ resource "random_string" "networking_db_master" {
 }
 
 resource "aws_security_group" "networking_rds_ingress" {
-  description = "Allow inbound traffic to security group per pod PostGres"
+  description = "Allow inbound traffic to security group networking module RDS"
   vpc_id      = module.aws_vpc.vpc_id
 
   tags = local.tags
