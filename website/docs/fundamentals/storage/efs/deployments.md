@@ -82,11 +82,9 @@ $ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls usr/share/ngin
 ```
 Now let's remove the current `assets` pod. This will force the deployment controller to automatically re-create a new `assets` pod:
 
-```bash
+```bash wait=60
 $ kubectl delete --all pods --namespace=assets
-
 pod "assets-ddb8f87dc-ww4jn" deleted
-
 $ kubectl wait --for=condition=available --timeout=120s deployment/assets -n assets
 ```
 Now let us check if the image we created for the new product `newproduct.png` is still exist:
