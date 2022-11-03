@@ -208,7 +208,7 @@ spec:
       "Statement": [
         {
           "Effect": "Allow",
-          "Action": "ec2:ec2:ModifyNetworkInterfaceAttribute",
+          "Action": "ec2:ModifyNetworkInterfaceAttribute",
           "Resource": "*"
         }
       ]
