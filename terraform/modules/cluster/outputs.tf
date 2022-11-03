@@ -109,7 +109,7 @@ output "networking_rds_master_username" {
 
 output "networking_rds_master_password" {
   description = "Master password of the RDS database for the networking module"
-  value       = random_string.networking_rds_postgre.result
+  value       = random_string.networking_db_master.result
 }
 
 output "networking_rds_database_name" {
