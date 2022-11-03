@@ -1,4 +1,4 @@
-module "networking_rds_postgres" {
+module "networking_rds_postgre" {
   source = "terraform-aws-modules/rds-aurora/aws"
 
   name           = "eksworkshop-rds-networking"

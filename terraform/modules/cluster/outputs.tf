@@ -99,7 +99,7 @@ output "efsid" {
 
 output "networking_rds_endpoint" {
   description = "Endpoint of the RDS database for the networking module"
-  value       = module.networking_rds_postgres.cluster_endpoint
+  value       = module.networking_rds_postgre.cluster_endpoint
 }
 
 output "networking_rds_master_username" {
@@ -109,12 +109,12 @@ output "networking_rds_master_username" {
 
 output "networking_rds_master_password" {
   description = "Master password of the RDS database for the networking module"
-  value       = random_string.networking_rds_postgres.result
+  value       = random_string.networking_rds_postgre.result
 }
 
 output "networking_rds_database_name" {
   description = "Master username of the RDS database for the networking module"
-  value       = module.networking_rds_postgres.cluster_database_name
+  value       = module.networking_rds_postgre.cluster_database_name
 }
 
 output "networking_rds_ingress_sg_id" {
