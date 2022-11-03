@@ -1,9 +1,3 @@
-resource "kubernetes_namespace" "workshop_system" {
-  metadata {
-    name = "workshop-system"
-  }
-}
-
 data "aws_eks_addon_version" "latest" {
   for_each = toset(["vpc-cni"])
 

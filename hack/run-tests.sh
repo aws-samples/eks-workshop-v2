@@ -1,19 +1,5 @@
 #!/bin/bash
 
-terraform_context=$1
-module=$2
-
-if [ -z "$AWS_DEFAULT_REGION" ]; then
-  echo 'Please set $AWS_DEFAULT_REGION'
-  exit 1
-fi
-
-if [ -z "$module" ]; then
-  module='*'
-  echo "Running tests for all modules"
-else
-  echo "Running tests for module pattern $module"
-fi
 
 set -Eeuo pipefail
 
