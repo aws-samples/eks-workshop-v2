@@ -5,7 +5,7 @@ before() {
 }
 
 after() {
-  sleep 10 
+  sleep 30 
 
   EXIT_CODE=0
   
