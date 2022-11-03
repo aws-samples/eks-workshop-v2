@@ -103,7 +103,7 @@ jobs:
       run: |
         make test terraform_context="test/terraform" module="{costoptimization,costoptimization/**}"
     - name: Run tests - Cleanup
-      if: steps.create-infrastructure.outcome == 'success'
+      if: always()
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
