@@ -41,6 +41,7 @@ jobs:
         echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
         echo "TF_VAR_cluster_id=${CLUSTER_ID}" >> $GITHUB_ENV
     - name: Create infrastructure
+      id: create-infrastructure
       working-directory: test/terraform
       run: |
         terraform init -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="key=ci/${CLUSTER_ID}/terraform.tfstate"
@@ -60,13 +61,49 @@ jobs:
       run: |
         make test terraform_context="test/terraform" module="{introduction,introduction/**}"
     - name: Run tests - Fundamentals
-      if: ${{ (github.event_name == 'pull_request' && contains( github.event.pull_request.labels.*.name, 'content/fundamentals')) || github.event_name == 'workflow_dispatch' }}
+      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/fundamentals') }}
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
         make test terraform_context="test/terraform" module="{fundamentals,fundamentals/**}"
+    - name: Run tests - Security
+      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/security') }}
+      env:
+        DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
+      run: |
+        make test terraform_context="test/terraform" module="{security,security/**}"
+    - name: Run tests - Networking
+      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/networking') }}
+      env:
+        DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
+      run: |
+        make test terraform_context="test/terraform" module="{networking,networking/**}"
+    - name: Run tests - Autoscaling
+      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/autoscaling') }}
+      env:
+        DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
+      run: |
+        make test terraform_context="test/terraform" module="{autoscaling,autoscaling/**}"
+    - name: Run tests - Observability
+      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/observability') }}
+      env:
+        DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
+      run: |
+        make test terraform_context="test/terraform" module="{observability,observability/**}"
+    - name: Run tests - Observability
+      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/cost-optimization') }}
+      env:
+        DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
+      run: |
+        make test terraform_context="test/terraform" module="{costoptimization,costoptimization/**}"
     - name: Run tests - Cleanup
+      if: steps.create-infrastructure.outcome == 'success'
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
