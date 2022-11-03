@@ -1,14 +1,22 @@
 #!/bin/bash
 
-terraform_context=$1
+environment=$1
+terraform_context=$2
 
 set -e
+
+if [ -z "$environment" ]; then
+  echo 'Error: Must provide environment name'
+  exit 1
+fi
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 PROJECT_ROOT="$SCRIPT_DIR/.."
 
 terraform_dir="$PROJECT_ROOT/$terraform_context"
+
+export TF_VAR_id=${environment} TF_VAR_cluster_id=${environment}
 
 # Deletion procedure reflects recommendations from EKS Blueprints: 
 # https://aws-ia.github.io/terraform-aws-eks-blueprints/v4.6.0/getting-started/#cleanup

@@ -13,11 +13,12 @@ permissions:
 
 jobs:
   test-content:
-    if: ${{ (github.event.action == 'labeled' && github.event.label.name == 'automation/e2e-tests') || (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'automation/e2e-tests')) }}
+    if: ${{ (github.event_name == 'pull_request' && ((github.event.action == 'labeled' && github.event.label.name == 'automation/e2e-tests') || (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'automation/e2e-tests'))) || github.event_name == 'workflow_dispatch' }}
 
     name: run-tests
     runs-on: ubuntu-latest
     concurrency: test-environment
+    timeout-minutes: 90
     steps:
     - name: Check out code
       uses: actions/checkout@v2
@@ -52,12 +53,25 @@ jobs:
         role-duration-seconds: 3600
         aws-region: ${{ secrets.AWS_REGION }}
         role-session-name: GithubActionsSession
-    - name: Run tests
-      timeout-minutes: 60
+    - name: Run tests - Introduction
       env:
         DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
       run: |
-        DEV_MODE=1 make test terraform_context="test/terraform"
+        make test terraform_context="test/terraform" module="{introduction,introduction/**}"
+    - name: Run tests - Fundamentals
+      if: ${{ (github.event_name == 'pull_request' && contains( github.event.pull_request.labels.*.name, 'content/fundamentals')) || github.event_name == 'workflow_dispatch' }}
+      env:
+        DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
+      run: |
+        make test terraform_context="test/terraform" module="{fundamentals,fundamentals/**}"
+    - name: Run tests - Cleanup
+      env:
+        DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
+      run: |
+        make test terraform_context="test/terraform" module="{cleanup,cleanup/**}"
     - name: Refresh AWS credentials
       if: always()
       uses: aws-actions/configure-aws-credentials@v1.6.1
