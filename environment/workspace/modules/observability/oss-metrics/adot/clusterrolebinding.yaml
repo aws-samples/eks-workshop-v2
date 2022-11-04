@@ -9,4 +9,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: adot-collector
-    namespace: adot-collector
+    namespace: other

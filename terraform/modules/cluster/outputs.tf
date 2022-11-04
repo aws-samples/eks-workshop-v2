@@ -96,3 +96,13 @@ output "efsid" {
   description = "EFS file system ID"
   value       = aws_efs_file_system.efsassets.id
 }
+
+output "amp_endpoint" {
+  description = "Endpoint of the AMP workspace"
+  value       = aws_prometheus_workspace.this.prometheus_endpoint
+}
+
+output "adot_iam_role" {
+  description = "ARN of the IAM role used by the ADOT collector pod"
+  value       = module.iam_assumable_role_adot.iam_role_arn
+}

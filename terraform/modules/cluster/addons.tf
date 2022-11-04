@@ -82,7 +82,7 @@ module "eks-blueprints-kubernetes-addons" {
   enable_metrics_server                  = true
   enable_kubecost                        = true
   enable_amazon_eks_adot                 = true
-  enable_cert_manager                    = true
+  enable_grafana                         = true
   enable_aws_efs_csi_driver              = true
   
   cluster_autoscaler_helm_config = {
@@ -201,6 +201,14 @@ module "eks-blueprints-kubernetes-addons" {
     }], 
     local.system_component_values)
   }
+
+  amazon_eks_adot_config = {
+    kubernetes_version = var.cluster_version
+  }
+
+  grafana_helm_config = {
+    values = [templatefile("${path.module}/templates/grafana.yaml", { prometheus_endpoint = aws_prometheus_workspace.this.prometheus_endpoint, region = data.aws_region.current.name })]
+  }
 }
 
 locals {
@@ -254,9 +262,4 @@ module "descheduler" {
   helm_config = {
     set = concat([], local.system_component_values)
   }
-}
-
-module "collecting_metrics" {
-  source        = "../addons/collecting-metrics"
-  eks_cluster_id = module.eks-blueprints.eks_cluster_id
 }

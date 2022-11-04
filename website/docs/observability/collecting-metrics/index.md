@@ -1,5 +1,5 @@
 ---
-title: "Collecting & analyzing metrics using ADOT, Amazon Managed Prometheus & Amazon Managed Grafana"
+title: "EKS Open source observability"
 sidebar_position: 10
 ---
 
