@@ -174,7 +174,7 @@ metadata:
   namespace: ${ORDERS_NAMESPACE}
 data:
   SPRING_PROFILES_ACTIVE: mysql,activemq
-  SPRING_ACTIVEMQ_ORDERS_PASSWORD: ${ORDERS_PASSWORD}
+  SPRING_ACTIVEMQ_PASSWORD: ${ORDERS_PASSWORD}
 ---
 apiVersion: services.k8s.aws/v1alpha1
 kind: FieldExport

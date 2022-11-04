@@ -98,7 +98,14 @@
     {
       "Effect": "Allow",
       "Action": [
-          "aps:QueryMetrics"
+        "aps:QueryMetrics",
+        "iam:CreateRole",
+        "iam:GetRole",
+        "iam:PutRolePolicy",
+        "ecr-public:GetAuthorizationToken",
+        "sts:GetServiceBearerToken",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeVpcs"
       ],
       "Resource": "*"
     },
@@ -111,5 +118,6 @@
       ],
       "Resource": "*"
     }
+
   ]
 }

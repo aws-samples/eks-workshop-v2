@@ -34,7 +34,7 @@ metadata:
 spec:
   description: SecurityGroup
   name: ${CATALOG_INSTANCE_NAME}
-  vpcID: vpc-07488ff69b233a7c0
+  vpcID: $(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=${EKS_CLUSTER_NAME}-vpc" --query 'Vpcs[0].VpcId')
   ingressRules:
   - ipProtocol: tcp
     ipRanges:
@@ -49,6 +49,11 @@ Create Security Group resource
 $ kubectl apply -f rds-security-group.yaml
 ```
 
+Wait for Security Group to be created
+```bash
+$ kubectl wait SecurityGroup ${CATALOG_INSTANCE_NAME} --for=condition=ACK.ResourceSynced
+```
+
 Create DBSubnetGroup yaml
 ```bash
 $ cat <<EOF > rds-dbgroup.yaml
@@ -61,15 +66,20 @@ spec:
   description: DBSubnet group
   name: ${CATALOG_INSTANCE_NAME}
   subnetIDs:
-  - $(aws ec2 describe-subnets --filters "Name=tag-key,Values=kubernetes.io/cluster/$CLUSTER_NAME" "Name=map-public-ip-on-launch,Values=false" --query 'Subnets[0].SubnetId')
-  - $(aws ec2 describe-subnets --filters "Name=tag-key,Values=kubernetes.io/cluster/$CLUSTER_NAME" "Name=map-public-ip-on-launch,Values=false" --query 'Subnets[1].SubnetId')
-  - $(aws ec2 describe-subnets --filters "Name=tag-key,Values=kubernetes.io/cluster/$CLUSTER_NAME" "Name=map-public-ip-on-launch,Values=false" --query 'Subnets[2].SubnetId')
+  - $(aws ec2 describe-subnets --filters "Name=tag-key,Values=kubernetes.io/cluster/$EKS_CLUSTER_NAME" "Name=map-public-ip-on-launch,Values=false" --query 'Subnets[0].SubnetId')
+  - $(aws ec2 describe-subnets --filters "Name=tag-key,Values=kubernetes.io/cluster/$EKS_CLUSTER_NAME" "Name=map-public-ip-on-launch,Values=false" --query 'Subnets[1].SubnetId')
+  - $(aws ec2 describe-subnets --filters "Name=tag-key,Values=kubernetes.io/cluster/$EKS_CLUSTER_NAME" "Name=map-public-ip-on-launch,Values=false" --query 'Subnets[2].SubnetId')
 EOF
 ```
 
 Create DBSubnetGroup resource
 ```bash
 $ kubectl apply -f rds-dbgroup.yaml
+```
+
+Wait for DBSubnetGroup to be created
+```bash
+$ kubectl wait DBSubnetGroup ${CATALOG_INSTANCE_NAME} --for=condition=ACK.ResourceSynced
 ```
 
 Create DBInstance yaml
@@ -106,9 +116,9 @@ Create DBInstance resource
 $ kubectl apply -f rds-mysql.yaml
 ```
 
-Wait for Broker to be created
+Wait for DBInstance to be created
 ```bash
-$ kubectl wait Broker ${CATALOG_INSTANCE_NAME} --for=condition=ACK.ResourceSynced
+$ kubectl wait DBInstance ${CATALOG_INSTANCE_NAME} --for=condition=ACK.ResourceSynced --timeout=20m
 ```
 
 ## Create Amazon MQ Broker 
@@ -141,7 +151,7 @@ metadata:
 spec:
   description: SecurityGroup ${ORDERS_INSTANCE_NAME}
   name: ${ORDERS_INSTANCE_NAME}
-  vpcID: vpc-07488ff69b233a7c0
+  vpcID: $(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=${EKS_CLUSTER_NAME}-vpc" --query 'Vpcs[0].VpcId')
   ingressRules:
   - ipProtocol: tcp
     ipRanges:
@@ -195,7 +205,7 @@ spec:
       consoleAccess: true
       username: admin
   subnetIDs:
-  - $(aws ec2 describe-subnets --filters "Name=tag-key,Values=kubernetes.io/cluster/$CLUSTER_NAME" "Name=map-public-ip-on-launch,Values=false" --query 'Subnets[0].SubnetId')
+  - $(aws ec2 describe-subnets --filters "Name=tag-key,Values=kubernetes.io/cluster/$EKS_CLUSTER_NAME" "Name=map-public-ip-on-launch,Values=false" --query 'Subnets[0].SubnetId')
   securityGroups:
   - ${ORDERS_SECURITY_GROUP_ID}
 EOF
@@ -208,6 +218,6 @@ $ kubectl apply -f mq-broker.yaml
 
 Wait for Broker to be created
 ```bash
-$ kubectl wait Broker ${ORDERS_INSTANCE_NAME} --for=condition=ACK.ResourceSynced
+$ kubectl wait Broker ${ORDERS_INSTANCE_NAME} --for=condition=ACK.ResourceSynced --timeout=20m
 ```
 
