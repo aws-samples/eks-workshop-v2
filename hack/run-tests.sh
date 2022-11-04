@@ -5,6 +5,11 @@ module=$2
 
 set -Eeuo pipefail
 
+if [[ "$module" == "*" ]]; then
+  echo 'Error: Please specify a module'
+  exit 1
+fi
+
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 source $SCRIPT_DIR/lib/terraform-context.sh
