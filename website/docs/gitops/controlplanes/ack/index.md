@@ -1,5 +1,5 @@
 ---
-title: "AWS Controller Overview"
+title: "AWS Controllers for Kubernetes (ACK)"
 sidebar_position: 1
 weight: 20
 ---

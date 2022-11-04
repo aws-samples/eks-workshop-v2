@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: 
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: catalog-reader-db
+  namespace: 
+data: {}
+stringData:
+  password: 
+  name: catalog
+---
+apiVersion: services.k8s.aws/v1alpha1
+kind: FieldExport
+metadata:
+  name: catalog-reader-db-endpoint
+spec:
+  to:
+    name: catalog-reader-db
+    kind: secret
+    namespace: 
+    key: endpoint
+  from:
+    path: ".status.endpoint.address"
+    resource:
+      group: rds.services.k8s.aws
+      kind: DBInstance
+      name: 
+---
+apiVersion: services.k8s.aws/v1alpha1
+kind: FieldExport
+metadata:
+  name: catalog-reader-db-user
+spec:
+  to:
+    name: catalog-reader-db
+    kind: secret
+    namespace: 
+    key: username
+  from:
+    path: ".spec.masterUsername"
+    resource:
+      group: rds.services.k8s.aws
+      kind: DBInstance
+      name: 
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: catalog-writer-db
+  namespace: 
+data: {}
+stringData:
+  password: 
+  name: catalog
+---
+apiVersion: services.k8s.aws/v1alpha1
+kind: FieldExport
+metadata:
+  name: catalog-writer-db-endpoint
+spec:
+  to:
+    name: catalog-writer-db
+    kind: secret
+    namespace: 
+    key: endpoint
+  from:
+    path: ".status.endpoint.address"
+    resource:
+      group: rds.services.k8s.aws
+      kind: DBInstance
+      name: 
+---
+apiVersion: services.k8s.aws/v1alpha1
+kind: FieldExport
+metadata:
+  name: catalog-writer-db-user
+spec:
+  to:
+    name: catalog-writer-db
+    kind: secret
+    namespace: 
+    key: username
+  from:
+    path: ".spec.masterUsername"
+    resource:
+      group: rds.services.k8s.aws
+      kind: DBInstance
+      name: 

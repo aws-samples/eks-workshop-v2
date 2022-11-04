@@ -1,6 +1,6 @@
 ---
-title: "Update the Application to talk to managed resources"
-sidebar_position: 3
+title: "Bind Application to AWS Resources"
+sidebar_position: 4
 weight: 20
 ---
 

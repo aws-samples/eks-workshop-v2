@@ -1,6 +1,6 @@
 ---
 title: "Provision ACK Resources"
-sidebar_position: 2
+sidebar_position: 3
 weight: 20
 ---
 

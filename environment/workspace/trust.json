@@ -1,0 +1,17 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::015299085168:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/AFE51250CAE71D076FF4B8A0B4AA27C5"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "oidc.eks.us-east-1.amazonaws.com/id/AFE51250CAE71D076FF4B8A0B4AA27C5:sub": "system:serviceaccount:ack-system:ack-iam-controller"
+        }
+      }
+    }
+  ]
+}
