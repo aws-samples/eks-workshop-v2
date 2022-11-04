@@ -1,6 +1,6 @@
 ---
 title: "Simulate Amazon Guardduty for EKS Findings"
-sidebar_position: 65
+sidebar_position: 125
 ---
 
 In this section, we will generate few Kubernetes findings in your Amazon EKS cluster.  
