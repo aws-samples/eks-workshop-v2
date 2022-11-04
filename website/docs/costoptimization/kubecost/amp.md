@@ -10,7 +10,7 @@ Amazon Managed Service for Prometheus is a Prometheus-compatible monitoring and 
 There are resources available online that can guide you through this process.
 
 - [Amazon EKS cost monitoring with Kubecost and Amazon Managed Service for Prometheus (AMP)](https://blog.kubecost.com/blog/aws-amp-kubecost-integration/)
-- [Amazon Web Services Blog](https://aws.amazon.com/blogs/mt/integrating-kubecost-with-amazon-managed-service-for-prometheus/)
+- [Integrating Kubecost with Amazon Managed Service for Prometheus](https://aws.amazon.com/blogs/mt/integrating-kubecost-with-amazon-managed-service-for-prometheus/)
 - [Amazon Managed Service for Prometheus Documentation](https://docs.aws.amazon.com/prometheus/latest/userguide/integrating-kubecost.html#kubecost-set-up-amp)
 
 The basics come down to:
