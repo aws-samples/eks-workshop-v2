@@ -5,6 +5,9 @@ module=$2
 
 set -Eeuo pipefail
 
+# Right now the container images are only designed for amd64
+export DOCKER_DEFAULT_PLATFORM=linux/amd64 
+
 if [[ "$module" == "*" ]]; then
   echo 'Error: Please specify a module'
   exit 1
@@ -23,9 +26,6 @@ container_image='eks-workshop-test'
 (cd $SCRIPT_DIR/../test && docker build -q -t $container_image .)
 
 source $SCRIPT_DIR/lib/generate-aws-creds.sh
-
-# Right now the container images are only designed for amd64
-export DOCKER_DEFAULT_PLATFORM=linux/amd64 
 
 echo "Running test suite..."
 
