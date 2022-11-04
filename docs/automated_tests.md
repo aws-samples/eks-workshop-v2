@@ -171,7 +171,7 @@ The directory structure might look like this:
 
 The framework will automatically look in the `tests` directory for a file called `hook-${hook-name}.sh`, and will execute it before and after the `bash` snippet. The only argument passed is `before` or `after` to provide context which it is getting called.
 
-Here is an example implementation of a hook file that checks `/tmp/my-file` doesn't exist when the test starts and was created after the `bash` snippet in the Markdown is completed.
+Here is an example implementation of a hook file `hook-example.sh` that checks `/tmp/my-file` doesn't exist when the test starts and was created after the `bash` snippet in the Markdown is completed.
 
 ```
 set -Eeuo pipefail
