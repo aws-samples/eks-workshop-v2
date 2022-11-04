@@ -69,56 +69,56 @@ jobs:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="{introduction,introduction/**}"
+        make test terraform_context="test/terraform" module="introduction"
     - name: Run tests - Fundamentals
       if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/fundamentals') }}
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="{fundamentals,fundamentals/**}"
+        make test terraform_context="test/terraform" module="fundamentals"
     - name: Run tests - Security
       if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/security') }}
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="{security,security/**}"
+        make test terraform_context="test/terraform" module="security"
     - name: Run tests - Networking
       if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/networking') }}
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="{networking,networking/**}"
+        make test terraform_context="test/terraform" module="networking"
     - name: Run tests - Autoscaling
       if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/autoscaling') }}
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="{autoscaling,autoscaling/**}"
+        make test terraform_context="test/terraform" module="autoscaling"
     - name: Run tests - Observability
       if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/observability') }}
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="{observability,observability/**}"
+        make test terraform_context="test/terraform" module="observability"
     - name: Run tests - Cost optimization
       if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/cost-optimization') }}
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="{costoptimization,costoptimization/**}"
+        make test terraform_context="test/terraform" module="costoptimization"
     - name: Run tests - Cleanup
       if: always()
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="{cleanup,cleanup/**}"
+        make test terraform_context="test/terraform" module="cleanup"
     - name: Refresh AWS credentials
       if: always()
       uses: aws-actions/configure-aws-credentials@v1.6.1

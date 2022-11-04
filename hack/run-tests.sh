@@ -5,6 +5,11 @@ module=$2
 
 set -Eeuo pipefail
 
+if [[ "$module" == "*" ]]; then
+  echo 'Error: Please specify a module'
+  exit 1
+fi
+
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 source $SCRIPT_DIR/lib/terraform-context.sh
@@ -28,4 +33,4 @@ docker run --rm --env-file /tmp/eks-workshop-shell-env \
   -v $SCRIPT_DIR/../website/docs:/content \
   -v $SCRIPT_DIR/../environment/workspace:/workspace \
   -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" -e "AWS_DEFAULT_REGION" \
-  $container_image -g "$module" --hook-timeout 360
+  $container_image -g "{$module,$module/**}" --hook-timeout 360
