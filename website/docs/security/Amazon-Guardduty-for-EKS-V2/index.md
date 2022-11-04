@@ -1,5 +1,5 @@
 ---
-title: "Amazon GuardDuty for EKS"
+title: "Amazon GuardDuty for EKS V2"
 sidebar_position: 120
 ---
 
