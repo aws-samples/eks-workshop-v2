@@ -9,21 +9,18 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 source $SCRIPT_DIR/lib/terraform-context.sh
 
-container_image='public.ecr.aws/f2e3b2o6/eks-workshop:test-alpha.3'
+echo "Building container images..."
 
-if [ -n "${PREBUILT-}" ]; then
-  echo "Using pre-built images"
-else
-  echo "Building container images..."
+container_image='eks-workshop-test'
 
-  (cd $SCRIPT_DIR/../environment && docker build -q -t eks-workshop-environment .)
+(cd $SCRIPT_DIR/../environment && docker build -q -t eks-workshop-environment .)
 
-  (cd $SCRIPT_DIR/../test && docker build -q -t eks-workshop-test .)
-
-  container_image='eks-workshop-test'
-fi
+(cd $SCRIPT_DIR/../test && docker build -q -t $container_image .)
 
 source $SCRIPT_DIR/lib/generate-aws-creds.sh
+
+# Right now the container images are only designed for amd64
+export DOCKER_DEFAULT_PLATFORM=linux/amd64 
 
 echo "Running test suite..."
 
