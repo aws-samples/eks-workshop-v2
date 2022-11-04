@@ -3,7 +3,7 @@ title: "Simulate Amazon Guardduty for EKS Findings"
 sidebar_position: 65
 ---
 
-In this section, we will generate various Kubernetes findings in your Amazon EKS cluster.  
+In this section, we will generate few Kubernetes findings in your Amazon EKS cluster.  
 
 
 **Discovery:Kubernetes/SuccessfulAnonymousAccess**
@@ -28,13 +28,14 @@ With in few minutes we will see the finding `Discovery:Kubernetes/SuccessfulAnon
 
 Run the following command to delete the cluster role binding.
 
+Cleanup: 
 ```bash
 $ kubectl delete clusterrolebinding anonymous-view
 ```
 
 
 **Impact:Kubernetes/SuccessfulAnonymousAccess and Policy:Kubernetes/AnonymousAccessGranted**
-This finding is used to indicate that A API commonly used to tamper with resources in a Kubernetes cluster was invoked by an unauthenticated user.
+This finding is used to indicate that an API commonly used to tamper with resources in a Kubernetes cluster was invoked by an unauthenticated user.
 
 To simulate this we will need to first create a role **pod-create**. 
 ```bash
@@ -80,9 +81,9 @@ With in few minutes we will see the finding `Impact:Kubernetes/SuccessfulAnonymo
 
 Cleanup: 
 ```bash
-kubectl delete pod nginx -n default
-kubectl delete rolebinding pod-access -n default
-kubectl delete role pod-create -n default
+$ kubectl delete pod nginx -n default
+$ kubectl delete rolebinding pod-access -n default
+$ kubectl delete role pod-create -n default
 ```
 
 **Policy:Kubernetes/AdminAccessToDefaultServiceAccount**
@@ -98,6 +99,7 @@ With in few minutes we will see the finding `Policy:Kubernetes/AdminAccessToDefa
 
 Run the following command to delete the role binding.
 
+Cleanup: 
 ```bash
 $ kubectl delete rolebinding sa-default-admin --namespace=default
 ```
@@ -106,8 +108,15 @@ $ kubectl delete rolebinding sa-default-admin --namespace=default
 
 This finding informs you that Kubernetes dashboard for your cluster was exposed to the internet by a Load Balancer service. An exposed dashboard makes the management interface of your cluster accessible from the internet and allows adversaries to exploit any authentication and access control gaps that may be present.
 
-
+```kustomization
+security/Guardduty/Dashboard/deployment.yaml
+Deployment/carts
+```
 
 
 **PrivilegeEscalation:Kubernetes/PrivilegedContainer and Persistence:Kubernetes/ContainerWithSensitiveMount**
-  
+
+
+```kustomization
+security/Guardduty/privileged
+```

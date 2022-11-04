@@ -35,9 +35,6 @@ usr
 var
 ```
 
-
-![](kubectl_exec.png)
-
 Go back to the GuardDuty console to check if a finding is generated.
 
 ![](exec_finding.png)
