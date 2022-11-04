@@ -169,7 +169,7 @@ If your AWS credentials expire you can `exit` and restart the shell, which will 
 
 There is also an automated testing capability provided with the workshop that allows testing of the entire workshop flow as a unit test suite. This is useful once your content is stable and has been manually tested.
 
-See this [doc](./automated_test_workflows.md) for more information on automated tests.
+See this [doc](./automated_tests.md) for more information on automated tests.
 
 ## Raise a Pull Request
 
