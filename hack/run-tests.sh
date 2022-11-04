@@ -1,5 +1,7 @@
 #!/bin/bash
 
+terraform_context=$1
+module=$2
 
 set -Eeuo pipefail
 
