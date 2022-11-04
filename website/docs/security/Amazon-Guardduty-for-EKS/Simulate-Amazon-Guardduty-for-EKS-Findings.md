@@ -35,6 +35,7 @@ $ kubectl delete clusterrolebinding anonymous-view
 
 
 **Impact:Kubernetes/SuccessfulAnonymousAccess and Policy:Kubernetes/AnonymousAccessGranted**
+
 This finding is used to indicate that an API commonly used to tamper with resources in a Kubernetes cluster was invoked by an unauthenticated user.
 
 To simulate this we will need to first create a role **pod-create**. 
@@ -109,15 +110,21 @@ $ kubectl delete rolebinding sa-default-admin --namespace=default
 This finding informs you that Kubernetes dashboard for your cluster was exposed to the internet by a Load Balancer service. An exposed dashboard makes the management interface of your cluster accessible from the internet and allows adversaries to exploit any authentication and access control gaps that may be present.
 
 
-```kustomization
-security/Guardduty/Dashboard/modified-dashboard.yaml
+```bash
+$ kubectl apply -k /workspace/modules/security/Guardduty/Dashboard
 ```
 
+With in few minutes we will see the finding `Policy:Kubernetes/ExposedDashboard` in guardduty portal. 
+
+![](finding-2.png)
+
+
+Cleanup
+```bash
+$ kubectl delete -k /workspace/modules/security/Guardduty/Dashboard
+```
 
 **PrivilegeEscalation:Kubernetes/PrivilegedContainer and Persistence:Kubernetes/ContainerWithSensitiveMount**
-
-
-
 
 ```kustomization
 security/Guardduty/privileged/deployment.yaml
