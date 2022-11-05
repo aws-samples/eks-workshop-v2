@@ -8,19 +8,19 @@ In this section, we will enable GuardDuty and Kubernetes protection.
 
 Search for GuardDuty in AWS console
 
-![](GDSearch.png)
+![](Gsearch.png)
 
 
 Click Get Started
 
-![](GDHome.png)
+![](gpage.png)
 
 
 Click Enable GuardDuty
 
 
-![](GDEnable.png)
+![](genable.png.png)
 
 Check if Kubernetes Protection is enabled. Go to Findings. Check there is no any findings available yet.
 
-![](GDK8sEnable.png)
+![](gkubernetesenable.png)
