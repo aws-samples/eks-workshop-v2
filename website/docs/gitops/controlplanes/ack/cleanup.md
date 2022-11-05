@@ -5,8 +5,6 @@ sidebar_position: 5
 
 This module requires some manual cleanup due to the nature of the changes we made to the AWS account. 
 
-Remove the Application:
-
 ```bash timeout=600
 $ kubectl delete -k /workspace/modules/ack/manifests/
 $ kubectl delete -n default fieldexports.services.k8s.aws --all

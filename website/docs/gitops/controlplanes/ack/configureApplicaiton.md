@@ -19,126 +19,22 @@ The database password is in the Secret that is referenced in the DBInstance spec
 
 You can extract this information and make it available to your Pods using a [FieldExport](https://aws-controllers-k8s.github.io/community/docs/user-docs/field-export) resource.
 
-Lets create the secrets that the catalog microservice will use when the application is deploy to production. 
 
-Set the namespace to create secrets
-```bash
-$ CATALOG_NAMESPACE=catalog-prod
+FieldExport manifest
+```file
+ack/rds/fieldexports/rds-fieldexports-writer.yaml
 ```
 
-Get the password from the previous section
+Create FieldExport
 ```bash
-$ CATALOG_PASSWORD=$(kubectl get secrets -n default rds-eks-workshop -o go-template='{{.data.password|base64decode}}')
+$ export CATALOG_PASSWORD=$(kubectl get secrets -n default rds-eks-workshop -o go-template='{{.data.password|base64decode}}')
+$ kubectl apply -k /workspace/modules/ack/rds/fieldexports
 ```
 
-Create a yaml manifest for FieldExport
 ```bash
-$ cat <<EOF > rds-field-exports.yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: ${CATALOG_NAMESPACE}
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: catalog-reader-db
-  namespace: ${CATALOG_NAMESPACE}
-data: {}
-stringData:
-  password: ${CATALOG_PASSWORD}
-  name: catalog
----
-apiVersion: services.k8s.aws/v1alpha1
-kind: FieldExport
-metadata:
-  name: catalog-reader-db-endpoint
-spec:
-  to:
-    name: catalog-reader-db
-    kind: secret
-    namespace: ${CATALOG_NAMESPACE}
-    key: endpoint
-  from:
-    path: ".status.endpoint.address"
-    resource:
-      group: rds.services.k8s.aws
-      kind: DBInstance
-      name: ${CATALOG_INSTANCE_NAME}
----
-apiVersion: services.k8s.aws/v1alpha1
-kind: FieldExport
-metadata:
-  name: catalog-reader-db-user
-spec:
-  to:
-    name: catalog-reader-db
-    kind: secret
-    namespace: ${CATALOG_NAMESPACE}
-    key: username
-  from:
-    path: ".spec.masterUsername"
-    resource:
-      group: rds.services.k8s.aws
-      kind: DBInstance
-      name: ${CATALOG_INSTANCE_NAME}
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: catalog-writer-db
-  namespace: ${CATALOG_NAMESPACE}
-data: {}
-stringData:
-  password: ${CATALOG_PASSWORD}
-  name: catalog
----
-apiVersion: services.k8s.aws/v1alpha1
-kind: FieldExport
-metadata:
-  name: catalog-writer-db-endpoint
-spec:
-  to:
-    name: catalog-writer-db
-    kind: secret
-    namespace: ${CATALOG_NAMESPACE}
-    key: endpoint
-  from:
-    path: ".status.endpoint.address"
-    resource:
-      group: rds.services.k8s.aws
-      kind: DBInstance
-      name: ${CATALOG_INSTANCE_NAME}
----
-apiVersion: services.k8s.aws/v1alpha1
-kind: FieldExport
-metadata:
-  name: catalog-writer-db-user
-spec:
-  to:
-    name: catalog-writer-db
-    kind: secret
-    namespace: ${CATALOG_NAMESPACE}
-    key: username
-  from:
-    path: ".spec.masterUsername"
-    resource:
-      group: rds.services.k8s.aws
-      kind: DBInstance
-      name: ${CATALOG_INSTANCE_NAME}
-EOF
-```
-
-Create FieldExport resources
-```bash
-$ kubectl apply -f rds-field-exports.yaml
-```
-
-Verify that the secrets are created
-
-```bash
-$ kubectl get secret -n catalog-prod catalog-reader-db -o go-template='{{.data.endpoint|base64decode}}{{"\n"}}'
-$ kubectl get secret -n catalog-prod catalog-writer-db -o go-template='{{.data.endpoint|base64decode}}{{"\n"}}'
+$ kubectl get secret catalog-writer-db -o go-template='{{.data.endpoint|base64decode}}{{"\n"}}' -n catalog-prod 
+$ kubectl get secret catalog-writer-db -o go-template='{{.data.username|base64decode}}{{"\n"}}'  -n catalog-prod
+$ kubectl get secret catalog-writer-db -o go-template='{{.data.password|base64decode}}{{"\n"}}' -n catalog-prod 
 ```
 
 ## Connect to Amazon MQ Instance
@@ -146,81 +42,24 @@ The `Broker` status contains the information for connecting to the MQ instance. 
 
 You can extract this information and make it available to your Pods using a [FieldExport](https://aws-controllers-k8s.github.io/community/docs/user-docs/field-export) resource.
 
-Lets create the configmap that the orders microservice will use when the application is deploy to production.
-
-Set the namespace to create configmap
-```bash
-$ ORDERS_NAMESPACE=orders-prod
+FieldExport manifest
+```file
+ack/mq/fieldexports/mq-fieldexports-orders.yaml
 ```
 
-Get the password from the previous section
+Create FieldExport
 ```bash
-$ ORDERS_PASSWORD=$(kubectl get secrets -n default mq-eks-workshop -o go-template='{{.data.password|base64decode}}')
+$ export ORDERS_PASSWORD=$(kubectl get secrets -n default mq-eks-workshop -o go-template='{{.data.password|base64decode}}')
+$ kubectl apply -k /workspace/modules/ack/mq/fieldexports
 ```
 
-Create a yaml manifest for FieldExport
-```bash
-$ cat <<EOF > mq-field-exports.yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: ${ORDERS_NAMESPACE}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: orders
-  namespace: ${ORDERS_NAMESPACE}
-data:
-  SPRING_PROFILES_ACTIVE: mysql,activemq
-  SPRING_ACTIVEMQ_PASSWORD: ${ORDERS_PASSWORD}
----
-apiVersion: services.k8s.aws/v1alpha1
-kind: FieldExport
-metadata:
-  name: orders-host
-spec:
-  to:
-    name: orders
-    kind: configmap
-    namespace: ${ORDERS_NAMESPACE}
-    key: SPRING_ACTIVEMQ_BROKERURL
-  from:
-    path: ".status.brokerInstances[0].endpoints[0]"
-    resource:
-      group: mq.services.k8s.aws
-      kind: Broker
-      name: ${ORDERS_INSTANCE_NAME}
----
-apiVersion: services.k8s.aws/v1alpha1
-kind: FieldExport
-metadata:
-  name: orders-user
-spec:
-  to:
-    name: orders
-    kind: configmap
-    namespace: ${ORDERS_NAMESPACE}
-    key: SPRING_ACTIVEMQ_USER
-  from:
-    path: ".spec.users[0].username"
-    resource:
-      group: mq.services.k8s.aws
-      kind: Broker
-      name: ${ORDERS_INSTANCE_NAME}
-EOF
-```
 
-Create FieldExport resources
-```bash
-$ kubectl apply -f mq-field-exports.yaml 
-```
-
-Verify that the configmap is created
+Verify the new configmap values
 
 ```bash
-$ kubectl get cm -n orders-prod orders -o go-template='{{.data.SPRING_ACTIVEMQ_BROKERURL}}{{"\n"}}'
-$ kubectl get cm -n orders-prod orders -o go-template='{{.data.SPRING_ACTIVEMQ_USER}}{{"\n"}}'
+$ kubectl get cm orders -o go-template='{{.data.SPRING_ACTIVEMQ_BROKERURL}}{{"\n"}}' -n orders-prod
+$ kubectl get cm orders -o go-template='{{.data.SPRING_ACTIVEMQ_USER}}{{"\n"}}' -n orders-prod
+$ kubectl get cm orders -o go-template='{{.data.SPRING_ACTIVEMQ_PASSWORD}}{{"\n"}}' -n orders-prod
 ```
 
 ## Restart the deployments
