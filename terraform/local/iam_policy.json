@@ -105,7 +105,9 @@
         "ecr-public:GetAuthorizationToken",
         "sts:GetServiceBearerToken",
         "ec2:DescribeSubnets",
-        "ec2:DescribeVpcs"
+        "ec2:DescribeVpcs",
+        "iam:DeleteRolePolicy",
+        "iam:DeleteRole"
       ],
       "Resource": "*"
     },

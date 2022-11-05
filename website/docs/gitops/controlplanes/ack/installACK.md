@@ -17,7 +17,7 @@ Create the IAM role with the trust relationship with the Service Account for the
 This role will be use to create the other ACK controller roles. 
 
 ```bash
-$ cat <<EOF > trust.json
+$ cat <<EOF > /tmp/trust.json
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -37,7 +37,7 @@ $ cat <<EOF > trust.json
 }
 EOF
 
-$ aws iam create-role --role-name "ack-iam-controller" --assume-role-policy-document file://trust.json 
+$ aws iam create-role --role-name "ack-iam-controller" --assume-role-policy-document file:///tmp/trust.json 
 
 $ aws iam put-role-policy \
         --role-name "ack-iam-controller" \
