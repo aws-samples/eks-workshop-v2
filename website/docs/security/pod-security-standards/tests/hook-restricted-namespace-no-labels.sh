@@ -1,11 +1,11 @@
 set -Eeuo pipefail
 
 before() {
+  sleep 2
   echo "noop"
 }
 
 after() {
-  >&2 echo "inside hook-baseline-namespace.sh"
   sleep 5
 
   num_labels=$(kubectl get ns assets -ojson | jq -r '.metadata.labels | length')
