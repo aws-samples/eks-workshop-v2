@@ -5,124 +5,59 @@ sidebar_position: 3
 
 ## Create RDS Database
 
-Set new password
+Set DB master user password
 ```bash
 $ kubectl create secret generic "${CATALOG_INSTANCE_NAME}" --from-literal=password="$(date +%s | sha256sum | base64 | head -c 32)" --namespace default
 ```
 
+Security Group manifest
 ```file
-ack/rds/resources/rds-security-group.yaml
+ack/rds/k8s/rds-security-group.yaml
 ```
+RDS DBSubnetGroup manifest
 ```file
-ack/rds/resources/rds-dbgroup.yaml
+ack/rds/k8s/rds-dbgroup.yaml
 ```
+RDS DBInstance manifest
 ```file
-ack/rds/resources/rds-instance.yaml
+ack/rds/k8s/rds-instance.yaml
 ```
 
 Create SecurityGroup, DBSubnetGroup, and DBInstance
 ```bash timeout=600
-$ kubectl apply -k /workspace/modules/ack/rds/resources
+$ kubectl apply -k /workspace/modules/ack/rds/k8s
 $ kubectl wait DBInstance rds-eks-workshop --for=condition=ACK.ResourceSynced --timeout=10m
 ```
 
 ## Create Amazon MQ Broker 
 
-Set instance name
-```bash
-$ ORDERS_INSTANCE_NAME=mq-eks-workshop
-```
-Set namespace
-```bash
-$ ORDERS_NAMESPACE=orders-prod
-```
-Set new password
-```bash
-$ ORDERS_PASSWORD="$(date +%s | sha256sum | base64 | head -c 32)"
-```
-Create secret
-```bash
-$ kubectl create secret generic "${ORDERS_INSTANCE_NAME}" --from-literal=password="${ORDERS_PASSWORD}" --namespace default
+
+Security Group manifest
+```file
+ack/mq/k8s/security-group/mq-security-group.yaml
 ```
 
-Create Security Group yaml
+Create Security Group for MQ Broker
 ```bash
-$ cat <<EOF > mq-security-group.yaml
-apiVersion: ec2.services.k8s.aws/v1alpha1
-kind: SecurityGroup
-metadata:
-  name: "${ORDERS_INSTANCE_NAME}"
-  namespace: default
-spec:
-  description: SecurityGroup ${ORDERS_INSTANCE_NAME}
-  name: ${ORDERS_INSTANCE_NAME}
-  vpcID: $(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=${EKS_CLUSTER_NAME}-vpc" --query 'Vpcs[0].VpcId')
-  ingressRules:
-  - ipProtocol: tcp
-    ipRanges:
-    - cidrIP: "0.0.0.0/0"
-    fromPort: 61616
-    toPort: 61619
-  - ipProtocol: tcp
-    ipRanges:
-    - cidrIP: "0.0.0.0/0"
-    fromPort: 8162
-    toPort: 8162
-EOF
+$ kubectl apply -k /workspace/modules/ack/mq/k8s/security-group
+$ kubectl wait SecurityGroup mq-eks-workshop --for=condition=ACK.ResourceSynced
 ```
 
-Create Security Group resource
+
+Create secret for admin user
 ```bash
-$ kubectl apply -f mq-security-group.yaml
+$ kubectl create secret generic mq-eks-workshop --from-literal=password="$(date +%s | sha256sum | base64 | head -c 32)" --namespace default
 ```
 
-Wait for Security Group to be created
-```bash
-$ kubectl wait SecurityGroup ${ORDERS_INSTANCE_NAME} --for=condition=ACK.ResourceSynced
+Amazon MQ Broker manifest
+```file
+ack/mq/k8s/broker/mq-broker.yaml
 ```
 
-Get the Security Group ID
-```bash
-$ ORDERS_SECURITY_GROUP_ID=$(kubectl get SecurityGroup ${ORDERS_INSTANCE_NAME} -o go-template='{{.status.id}}')
-```
-
-Create Broker yaml
-```bash
-$ cat <<EOF > mq-broker.yaml
-apiVersion: mq.services.k8s.aws/v1alpha1
-kind: Broker
-metadata:
-  name: "${ORDERS_INSTANCE_NAME}"
-spec:
-  name: "${ORDERS_INSTANCE_NAME}"
-  deploymentMode: SINGLE_INSTANCE
-  engineType: ActiveMQ
-  engineVersion: "5.15.8"
-  hostInstanceType: "mq.t3.micro"
-  publiclyAccessible: false
-  autoMinorVersionUpgrade: false
-  users:
-    - password:
-        namespace: default
-        name: "${ORDERS_INSTANCE_NAME}"
-        key: password
-      groups: []
-      consoleAccess: true
-      username: admin
-  subnetIDs:
-  - $(aws ec2 describe-subnets --filters "Name=tag-key,Values=kubernetes.io/cluster/$EKS_CLUSTER_NAME" "Name=map-public-ip-on-launch,Values=false" --query 'Subnets[0].SubnetId')
-  securityGroups:
-  - ${ORDERS_SECURITY_GROUP_ID}
-EOF
-```
- 
-Create Broker resource
-```bash
-$ kubectl apply -f mq-broker.yaml
-```
-
-Wait for Broker to be created
-```bash
-$ kubectl wait Broker ${ORDERS_INSTANCE_NAME} --for=condition=ACK.ResourceSynced --timeout=20m
+Create Amazon MQ Broker
+```bash timeout=900
+$ export ORDERS_SECURITY_GROUP_ID=$(kubectl get SecurityGroup mq-eks-workshop -o go-template='{{.status.id}}')
+$ kubectl apply -k /workspace/modules/ack/mq/k8s/broker
+$ kubectl wait brokers.mq.services.k8s.aws mq-eks-workshop --for=condition=ACK.ResourceSynced --timeout=15m
 ```
 

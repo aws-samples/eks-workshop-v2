@@ -1,0 +1,12 @@
+apiVersion: rds.services.k8s.aws/v1alpha1
+kind: DBSubnetGroup
+metadata:
+  name: rds-eks-workshop
+  namespace: default
+spec:
+  description: DBSubnet group
+  name: rds-eks-workshop
+  subnetIDs:
+  - $(VPC_PRIVATE_SUBNET_ID_0)
+  - $(VPC_PRIVATE_SUBNET_ID_1)
+  - $(VPC_PRIVATE_SUBNET_ID_2)
