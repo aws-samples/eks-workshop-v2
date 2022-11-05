@@ -82,7 +82,6 @@ module "eks-blueprints-kubernetes-addons" {
   enable_metrics_server                  = true
   enable_kubecost                        = true
   enable_amazon_eks_adot                 = true
-  enable_grafana                         = true
   enable_aws_efs_csi_driver              = true
   
   cluster_autoscaler_helm_config = {
@@ -205,10 +204,6 @@ module "eks-blueprints-kubernetes-addons" {
   amazon_eks_adot_config = {
     kubernetes_version = var.cluster_version
   }
-
-  grafana_helm_config = {
-    values = [templatefile("${path.module}/templates/grafana.yaml", { prometheus_endpoint = aws_prometheus_workspace.this.prometheus_endpoint, region = data.aws_region.current.name })]
-  }
 }
 
 locals {
@@ -248,6 +243,20 @@ locals {
     value = "NoSchedule"
     type  = "string"
   }]
+}
+
+module "eks-blueprints-kubernetes-grafana-addon" {
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.10.0//modules/kubernetes-addons/grafana"
+
+  depends_on = [
+    module.eks-blueprints-kubernetes-addons
+  ]
+
+  addon_context = local.addon_context
+
+  helm_config = {
+    values = [templatefile("${path.module}/templates/grafana.yaml", { prometheus_endpoint = aws_prometheus_workspace.this.prometheus_endpoint, region = data.aws_region.current.name })]
+  }
 }
 
 module "descheduler" {
