@@ -1,0 +1,9 @@
+varReference:
+  - apiVersion: iam.services.k8s.aws/v1alpha1
+    kind: Role
+    path: spec/assumeRolePolicyDocument
+    value: mq-ack-options
+  - apiVersion: iam.services.k8s.aws/v1alpha1
+    kind: Role
+    path: spec/policies
+    value: mq-ack-options

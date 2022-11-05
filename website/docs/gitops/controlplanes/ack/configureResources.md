@@ -1,7 +1,6 @@
 ---
 title: "Provision ACK Resources"
 sidebar_position: 3
-weight: 20
 ---
 
 ## Create RDS Database

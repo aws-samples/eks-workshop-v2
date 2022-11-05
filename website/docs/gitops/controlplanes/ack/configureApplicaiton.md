@@ -1,7 +1,6 @@
 ---
 title: "Bind Application to AWS Resources"
 sidebar_position: 4
-weight: 20
 ---
 
 ## Deploy the application for production

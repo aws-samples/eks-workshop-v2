@@ -1,7 +1,6 @@
 ---
 title: "AWS Controllers for Kubernetes (ACK)"
 sidebar_position: 1
-weight: 20
 ---
 
 [AWS Controllers for Kubernetes (ACK)](https://aws-controllers-k8s.github.io/community/) lets you define and use AWS service resources directly from Kubernetes. 
