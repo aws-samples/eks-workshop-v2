@@ -86,11 +86,11 @@ Create the IAM role with the trust relationship with the Service Account for the
 
 Create the RDS Role manifest
 ```file
-ack/rds/rds-iam-role.yaml
+ack/rds/roles/rds-iam-role.yaml
 ```
 Create the RDS Role.
 ```bash
-$ kubectl apply -k /workspace/modules/ack/rds
+$ kubectl apply -k /workspace/modules/ack/rds/roles
 ```
 
 Create the RDS Controller.
@@ -108,11 +108,11 @@ Create the IAM role with the trust relationship with the Service Account for the
 
 Create the RDS Role manifest
 ```file
-ack/mq/mq-iam-role.yaml
+ack/mq/roles/mq-iam-role.yaml
 ```
 Create the RDS Role.
 ```bash
-$ kubectl apply -k /workspace/modules/ack/mq
+$ kubectl apply -k /workspace/modules/ack/mq/roles
 ```
 
 Create the MQ Controller.

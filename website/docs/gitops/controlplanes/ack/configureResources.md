@@ -5,119 +5,25 @@ sidebar_position: 3
 
 ## Create RDS Database
 
-Set instance name
-```bash
-$ CATALOG_INSTANCE_NAME=rds-eks-workshop
-```
-Set namespace
-```bash
-$ CATALOG_NAMESPACE=catalog-prod
-```
 Set new password
 ```bash
-$ CATALOG_PASSWORD="$(date +%s | sha256sum | base64 | head -c 32)"
-```
-Create secret
-```bash
-$ kubectl create secret generic "${CATALOG_INSTANCE_NAME}" --from-literal=password="${CATALOG_PASSWORD}" --namespace default
+$ kubectl create secret generic "${CATALOG_INSTANCE_NAME}" --from-literal=password="$(date +%s | sha256sum | base64 | head -c 32)" --namespace default
 ```
 
-Create Security Group yaml
-```bash
-$ cat <<EOF > rds-security-group.yaml
-apiVersion: ec2.services.k8s.aws/v1alpha1
-kind: SecurityGroup
-metadata:
-  name: "${CATALOG_INSTANCE_NAME}"
-  namespace: default
-spec:
-  description: SecurityGroup
-  name: ${CATALOG_INSTANCE_NAME}
-  vpcID: $(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=${EKS_CLUSTER_NAME}-vpc" --query 'Vpcs[0].VpcId')
-  ingressRules:
-  - ipProtocol: tcp
-    ipRanges:
-    - cidrIP: "0.0.0.0/0"
-    fromPort: 3306
-    toPort: 3306
-EOF
+```file
+ack/rds/resources/rds-security-group.yaml
+```
+```file
+ack/rds/resources/rds-dbgroup.yaml
+```
+```file
+ack/rds/resources/rds-instance.yaml
 ```
 
-Create Security Group resource
-```bash
-$ kubectl apply -f rds-security-group.yaml
-```
-
-Wait for Security Group to be created
-```bash
-$ kubectl wait SecurityGroup ${CATALOG_INSTANCE_NAME} --for=condition=ACK.ResourceSynced
-```
-
-Create DBSubnetGroup yaml
-```bash
-$ cat <<EOF > rds-dbgroup.yaml
-apiVersion: rds.services.k8s.aws/v1alpha1
-kind: DBSubnetGroup
-metadata:
-  name: "${CATALOG_INSTANCE_NAME}"
-  namespace: default
-spec:
-  description: DBSubnet group
-  name: ${CATALOG_INSTANCE_NAME}
-  subnetIDs:
-  - $(aws ec2 describe-subnets --filters "Name=tag-key,Values=kubernetes.io/cluster/$EKS_CLUSTER_NAME" "Name=map-public-ip-on-launch,Values=false" --query 'Subnets[0].SubnetId')
-  - $(aws ec2 describe-subnets --filters "Name=tag-key,Values=kubernetes.io/cluster/$EKS_CLUSTER_NAME" "Name=map-public-ip-on-launch,Values=false" --query 'Subnets[1].SubnetId')
-  - $(aws ec2 describe-subnets --filters "Name=tag-key,Values=kubernetes.io/cluster/$EKS_CLUSTER_NAME" "Name=map-public-ip-on-launch,Values=false" --query 'Subnets[2].SubnetId')
-EOF
-```
-
-Create DBSubnetGroup resource
-```bash
-$ kubectl apply -f rds-dbgroup.yaml
-```
-
-Wait for DBSubnetGroup to be created
-```bash
-$ kubectl wait DBSubnetGroup ${CATALOG_INSTANCE_NAME} --for=condition=ACK.ResourceSynced
-```
-
-Create DBInstance yaml
-```bash
-$ cat <<EOF > rds-mysql.yaml
-apiVersion: rds.services.k8s.aws/v1alpha1
-kind: DBInstance
-metadata:
-  name: "${CATALOG_INSTANCE_NAME}"
-  namespace: default
-spec:
-  allocatedStorage: 20
-  dbInstanceClass: db.t4g.micro
-  dbInstanceIdentifier: "${CATALOG_INSTANCE_NAME}"
-  engine: mysql
-  engineVersion: "8.0"
-  masterUsername: "admin"
-  dbSubnetGroupRef: 
-    from: 
-      name: "${CATALOG_INSTANCE_NAME}"
-  vpcSecurityGroupRefs:
-    - from: 
-        name: "${CATALOG_INSTANCE_NAME}"
-  masterUserPassword:
-    namespace: default
-    name: "${CATALOG_INSTANCE_NAME}"
-    key: password
-  dbName: catalog
-EOF
-```
-
-Create DBInstance resource
-```bash
-$ kubectl apply -f rds-mysql.yaml
-```
-
-Wait for DBInstance to be created
-```bash
-$ kubectl wait DBInstance ${CATALOG_INSTANCE_NAME} --for=condition=ACK.ResourceSynced --timeout=20m
+Create SecurityGroup, DBSubnetGroup, and DBInstance
+```bash timeout=600
+$ kubectl apply -k /workspace/modules/ack/rds/resources
+$ kubectl wait DBInstance rds-eks-workshop --for=condition=ACK.ResourceSynced --timeout=10m
 ```
 
 ## Create Amazon MQ Broker 
