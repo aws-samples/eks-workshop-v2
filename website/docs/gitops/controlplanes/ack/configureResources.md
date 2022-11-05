@@ -7,7 +7,7 @@ sidebar_position: 3
 
 Set DB master user password
 ```bash
-$ kubectl create secret generic "${CATALOG_INSTANCE_NAME}" --from-literal=password="$(date +%s | sha256sum | base64 | head -c 32)" --namespace default
+$ kubectl create secret generic rds-eks-workshop --from-literal=password="$(date +%s | sha256sum | base64 | head -c 32)" --namespace default
 ```
 
 Security Group manifest
