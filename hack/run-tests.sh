@@ -33,4 +33,4 @@ docker run --rm --env-file /tmp/eks-workshop-shell-env \
   -v $SCRIPT_DIR/../website/docs:/content \
   -v $SCRIPT_DIR/../environment/workspace:/workspace \
   -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" -e "AWS_DEFAULT_REGION" \
-  $container_image -g "{$module,$module/**}" --hook-timeout 360 --timeout 1800
+  $container_image -g "{$module,$module/**}" --hook-timeout 360 --timeout 2100
