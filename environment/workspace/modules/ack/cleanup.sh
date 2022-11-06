@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eoux pipefail
+set -oux pipefail
 
 kubectl delete -k /workspace/modules/ack/manifests/
 kubectl delete -n default fieldexports.services.k8s.aws --all
