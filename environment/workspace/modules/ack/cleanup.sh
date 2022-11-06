@@ -1,7 +1,6 @@
 #!/bin/bash
 
-set -eo pipefail
-set -ux
+set -eoux pipefail
 
 kubectl delete -k /workspace/modules/ack/manifests/
 kubectl delete -n default fieldexports.services.k8s.aws --all
@@ -19,5 +18,4 @@ helm uninstall -n ack-system ack-ec2-controller
 helm uninstall -n ack-system ack-iam-controller
 aws iam delete-role-policy --role-name ack-iam-controller --policy-name ack-iam-recommended-policy
 aws iam delete-role --role-name ack-iam-controller
-
 exit 0
