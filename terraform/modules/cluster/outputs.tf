@@ -38,6 +38,11 @@ output "configure_kubectl" {
   value       = module.eks-blueprints.configure_kubectl
 }
 
+output "vpc_id" {
+  description = "VPC Id"
+  value       = module.aws_vpc.vpc_id
+}
+
 output "private_subnet_ids" {
   description = "Private Subnet Ids"
   value       = module.aws_vpc.private_subnets

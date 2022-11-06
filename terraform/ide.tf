@@ -17,6 +17,7 @@ ORDERS_RDS_SG_ID=${module.cluster.orders_rds_ingress_sg_id}
 EFS_ID=${module.cluster.efsid}
 AMP_ENDPOINT=${module.cluster.amp_endpoint}
 ADOT_IAM_ROLE=${module.cluster.adot_iam_role}
+VPC_ID=${module.cluster.vpc_id}
 EOT
 }
 
