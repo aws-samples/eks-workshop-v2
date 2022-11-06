@@ -17,7 +17,7 @@ Create the IAM role with the trust relationship with the Service Account for the
 This role will be use to create the other ACK controller roles. 
 
 ```bash
-$ cat <<EOF > trust.json
+$ cat <<EOF > /tmp/trust.json
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -36,9 +36,7 @@ $ cat <<EOF > trust.json
   ]
 }
 EOF
-
-$ aws iam create-role --role-name "ack-iam-controller" --assume-role-policy-document file://trust.json 
-
+$ aws iam create-role --role-name "ack-iam-controller" --assume-role-policy-document "file:///tmp/trust.json"
 $ aws iam put-role-policy \
         --role-name "ack-iam-controller" \
         --policy-name "ack-iam-recommended-policy" \
@@ -47,13 +45,11 @@ $ aws iam put-role-policy \
 
 Deploy the IAM Controller
 ```bash
-$ aws ecr-public get-login-password --region ${AWS_DEFAULT_REGION} | helm registry login --username AWS --password-stdin public.ecr.aws
-
+$ export AWS_ECR_TOKEN=$(aws ecr-public get-login-password --region $AWS_DEFAULT_REGION)
+$ helm registry login --username AWS --password "${AWS_ECR_TOKEN}" public.ecr.aws
 $ helm install --create-namespace -n ack-system ack-iam-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/iam-chart --version=$(curl -sL https://api.github.com/repos/aws-controllers-k8s/iam-controller/releases/latest | grep '"tag_name":' | cut -d'"' -f4) --set=aws.region=$AWS_DEFAULT_REGION
-
+  oci://public.ecr.aws/aws-controllers-k8s/iam-chart --version=$(curl -sL https://api.github.com/repos/aws-controllers-k8s/iam-controller/releases/latest | grep '"tag_name":' | cut -d'"' -f4) --set=aws.region=$AWS_DEFAULT_REGION --wait
 $ kubectl annotate serviceaccount -n ack-system ack-iam-controller "eks.amazonaws.com/role-arn=arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-iam-controller"
-
 $ kubectl -n ack-system rollout restart deployment ack-iam-controller-iam-chart
 ```
 
@@ -74,10 +70,8 @@ $ kubectl apply -k /workspace/modules/ack/ec2
 Deploy the EC2 Controller.
 ```bash
 $ helm install --create-namespace -n ack-system ack-ec2-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/ec2-chart --version=$(curl -sL https://api.github.com/repos/aws-controllers-k8s/ec2-controller/releases/latest | grep '"tag_name":' | cut -d'"' -f4) --set=aws.region=$AWS_DEFAULT_REGION
-
+  oci://public.ecr.aws/aws-controllers-k8s/ec2-chart --version=$(curl -sL https://api.github.com/repos/aws-controllers-k8s/ec2-controller/releases/latest | grep '"tag_name":' | cut -d'"' -f4) --set=aws.region=$AWS_DEFAULT_REGION --wait
 $ kubectl annotate serviceaccount -n ack-system ack-ec2-controller "eks.amazonaws.com/role-arn=arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-ec2-controller"
-
 $ kubectl -n ack-system rollout restart deployment ack-ec2-controller-ec2-chart
 ```
 
@@ -96,10 +90,8 @@ $ kubectl apply -k /workspace/modules/ack/rds/roles
 Create the RDS Controller.
 ```bash
 $ helm install --create-namespace -n ack-system ack-rds-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/rds-chart --version=$(curl -sL https://api.github.com/repos/aws-controllers-k8s/rds-controller/releases/latest | grep '"tag_name":' | cut -d'"' -f4) --set=aws.region=$AWS_DEFAULT_REGION
-
+  oci://public.ecr.aws/aws-controllers-k8s/rds-chart --version=$(curl -sL https://api.github.com/repos/aws-controllers-k8s/rds-controller/releases/latest | grep '"tag_name":' | cut -d'"' -f4) --set=aws.region=$AWS_DEFAULT_REGION --wait
 $ kubectl annotate serviceaccount -n ack-system ack-rds-controller "eks.amazonaws.com/role-arn=arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-rds-controller"
-
 $ kubectl -n ack-system rollout restart deployment ack-rds-controller-rds-chart
 ```
 
@@ -118,9 +110,7 @@ $ kubectl apply -k /workspace/modules/ack/mq/roles
 Create the MQ Controller.
 ```bash
 $ helm install --create-namespace -n ack-system ack-mq-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/mq-chart --version=$(curl -sL https://api.github.com/repos/aws-controllers-k8s/mq-controller/releases/latest | grep '"tag_name":' | cut -d'"' -f4) --set=aws.region=$AWS_DEFAULT_REGION
-
+  oci://public.ecr.aws/aws-controllers-k8s/mq-chart --version=$(curl -sL https://api.github.com/repos/aws-controllers-k8s/mq-controller/releases/latest | grep '"tag_name":' | cut -d'"' -f4) --set=aws.region=$AWS_DEFAULT_REGION --wait
 $ kubectl annotate serviceaccount -n ack-system ack-mq-controller "eks.amazonaws.com/role-arn=arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-mq-controller"
-
 $ kubectl -n ack-system rollout restart deployment ack-mq-controller-mq-chart
 ```
