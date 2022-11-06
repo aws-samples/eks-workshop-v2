@@ -17,6 +17,12 @@ ORDERS_RDS_SG_ID=${module.cluster.orders_rds_ingress_sg_id}
 EFS_ID=${module.cluster.efsid}
 AMP_ENDPOINT=${module.cluster.amp_endpoint}
 ADOT_IAM_ROLE=${module.cluster.adot_iam_role}
+SECONDARY_SUBNET_1=${module.cluster.private_subnet_ids[3]}
+SECONDARY_SUBNET_2=${module.cluster.private_subnet_ids[4]}
+SECONDARY_SUBNET_3=${module.cluster.private_subnet_ids[5]}
+AZ1=${module.cluster.azs[0]}
+AZ2=${module.cluster.azs[1]}
+AZ3=${module.cluster.azs[2]}
 EOT
 }
 
