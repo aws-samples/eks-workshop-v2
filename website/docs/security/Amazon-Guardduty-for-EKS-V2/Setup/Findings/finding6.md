@@ -3,9 +3,6 @@ title: "PrivilegeEscalation:Kubernetes/PrivilegedContainer"
 sidebar_position: 131
 ---
 
-```kustomization
-security/Guardduty/privileged/previleged-pod-example.yaml
-```
 
 ```bash
 $ kubectl apply -k /workspace/modules/security/privileged
