@@ -1,6 +1,6 @@
 ---
 title: "Policy:Kubernetes/ExposedDashboard"
-sidebar_position: 128
+sidebar_position: 130
 ---
 
 This finding informs you that Kubernetes dashboard for your cluster was exposed to the internet by a Load Balancer service. An exposed dashboard makes the management interface of your cluster accessible from the internet and allows adversaries to exploit any authentication and access control gaps that may be present.

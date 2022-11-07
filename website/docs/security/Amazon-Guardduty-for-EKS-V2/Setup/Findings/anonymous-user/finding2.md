@@ -1,11 +1,11 @@
 ---
 title: "Discovery tacitc to access the kubernetes API Anonymously"
-sidebar_position: 125
+sidebar_position: 126
 ---
 
-This finding is used to indicate Kubernetes API commonly used in Discovery tactics by the anonymous user `system:anonymous`.
+This finding is used to indicate Kubernetes API commonly used to gain knowledge about the resources has been invoked by an anonymous user `system:anonymous`.
 
-We will need to create a cluster role binding to bind clusterrole named **view** to user named **system:anonymous**.
+To simulate this we will need to create a cluster role binding to bind clusterrole named **view** to user named **system:anonymous**.
 
 ```bash
 $ kubectl create clusterrolebinding anonymous-view --clusterrole=view --user=system:anonymous

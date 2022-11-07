@@ -1,6 +1,6 @@
 ---
 title: "Policy:Kubernetes/AdminAccessToDefaultServiceAccount"
-sidebar_position: 127
+sidebar_position: 129
 ---
 
 The default service account in EKS Cluster was granted admin privileges. This may result in pods unintentionally launched with admin privileges. If this behavior is not expected, it may indicate a configuration mistake or that your credentials are compromised.

@@ -1,12 +1,12 @@
 ---
-title: "Policy:Kubernetes/AnonymousAccessGranted and Impact:Kubernetes/SuccessfulAnonymousAccess"
-sidebar_position: 126
+title: "unauthorized creation or tampering of resourses by unauthenticated user" 
+sidebar_position: 128
 ---
 
 
 This finding is used to indicate that an API commonly used to tamper with resources in a Kubernetes cluster was invoked by an unauthenticated user.
 
-To simulate this we will need to first create a role **pod-create**. 
+To simulate this we will create a role **pod-create**. 
 ```bash
 $ kubectl create role pod-create --verb=get,list,watch,create,delete,patch --resource=pods -n default
 ```
@@ -15,7 +15,7 @@ Once the cluster role is created we will need to bind the role with `system:anon
 ```bash
 $ kubectl create rolebinding pod-access --role=pod-create --user=system:anonymous
 ```
-Please note that the above rolebinding command will trigger `Policy:Kubernetes/AnonymousAccessGranted` finding in guard duty within few minutes. It indicated that the anonymous user `system:anonymous` was granted API permissions on the EKS cluster. This enables unauthenticated access to the permitted APIs.
+Please note that the above rolebinding command will trigger `Policy:Kubernetes/AnonymousAccessGranted` finding in guard duty within few minutes.
 
 Now let us create a pod named nginx using a HTTP post call. Please make sure to replace `cluster-name` with your cluster name and `REGION` with your region.
 

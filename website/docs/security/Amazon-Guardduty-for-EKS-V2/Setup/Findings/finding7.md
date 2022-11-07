@@ -1,10 +1,11 @@
 ---
-title: "PrivilegeEscalation:Kubernetes/PrivilegedContainer"
+title: "Persistence:Kubernetes/ContainerWithSensitiveMount"
 sidebar_position: 131
 ---
 
 ```kustomization
-security/Guardduty/privileged/previleged-pod-example.yaml
+security/Guardduty/privileged/deployment.yaml
+Deployment/carts
 ```
 
 ```bash
