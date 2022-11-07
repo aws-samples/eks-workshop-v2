@@ -1,5 +1,5 @@
 ---
-title: "Using Flux V2 for GitOps based delivery"
+title: 'Flux V2'
 sidebar_position: 10
 ---
 

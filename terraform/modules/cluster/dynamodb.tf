@@ -27,7 +27,7 @@ module "iam_assumable_role_carts" {
   version                       = "~> v5.3.0"
   create_role                   = true
   role_name                     = "${local.cluster_name}-carts-dynamo"
-  provider_url                  = module.aws-eks-accelerator-for-terraform.eks_oidc_issuer_url
+  provider_url                  = module.eks-blueprints.eks_oidc_issuer_url
   role_policy_arns              = [aws_iam_policy.carts_dynamo.arn]
   oidc_fully_qualified_subjects = ["system:serviceaccount:carts:carts"]
 }
