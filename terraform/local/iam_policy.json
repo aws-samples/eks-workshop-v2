@@ -107,7 +107,10 @@
         "ec2:DescribeSubnets",
         "ec2:DescribeVpcs",
         "iam:DeleteRolePolicy",
-        "iam:DeleteRole"
+        "iam:DeleteRole",
+        "rds:DescribeDBInstances",
+        "mq:ListBrokers",
+        "mq:DescribeBroker"
       ],
       "Resource": "*"
     },

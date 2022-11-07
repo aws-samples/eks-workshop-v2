@@ -25,16 +25,20 @@ FieldExport manifest
 ack/rds/fieldexports/rds-fieldexports-writer.yaml
 ```
 
-Create FieldExport
+Create FieldExport, this will insert the RDS connection values into the configmap **catalog** in the namespace **catalog-prod**
 ```bash
 $ export CATALOG_PASSWORD=$(kubectl get secrets -n default rds-eks-workshop -o go-template='{{.data.password|base64decode}}')
 $ kubectl apply -k /workspace/modules/ack/rds/fieldexports
 ```
 
+Verify that the configmap **catalog** has the correct information
 ```bash
-$ kubectl get secret catalog-writer-db -o go-template='{{.data.endpoint|base64decode}}{{"\n"}}' -n catalog-prod 
-$ kubectl get secret catalog-writer-db -o go-template='{{.data.username|base64decode}}{{"\n"}}'  -n catalog-prod
-$ kubectl get secret catalog-writer-db -o go-template='{{.data.password|base64decode}}{{"\n"}}' -n catalog-prod 
+$ if [[ "$(aws rds describe-db-instances --query "DBInstances[?DBInstanceIdentifier == 'rds-eks-workshop'].Endpoint.Address" --output text)" ==  "$(kubectl get secret catalog-writer-db -o go-template='{{.data.endpoint|base64decode}}' -n catalog-prod)" ]]; then echo "Catalog configured correctly"; else echo "Error Catalo misconfigured"; false; fi
+```
+
+Restart catalog to pick up the new configuration
+```bash
+$ kubectl rollout restart deployment -n catalog-prod catalog
 ```
 
 ## Connect to Amazon MQ Instance
@@ -47,36 +51,26 @@ FieldExport manifest
 ack/mq/fieldexports/mq-fieldexports-orders.yaml
 ```
 
-Create FieldExport
+Create FieldExport, this will insert the RDS connection values into the secret **orders** in the namespace **orders-prod**
 ```bash
 $ export ORDERS_PASSWORD=$(kubectl get secrets -n default mq-eks-workshop -o go-template='{{.data.password|base64decode}}')
 $ kubectl apply -k /workspace/modules/ack/mq/fieldexports
 ```
 
 
-Verify the new configmap values
-
+Verify that the secret **orders** has the correct information
 ```bash
-$ kubectl get cm orders -o go-template='{{.data.SPRING_ACTIVEMQ_BROKERURL}}{{"\n"}}' -n orders-prod
-$ kubectl get cm orders -o go-template='{{.data.SPRING_ACTIVEMQ_USER}}{{"\n"}}' -n orders-prod
-$ kubectl get cm orders -o go-template='{{.data.SPRING_ACTIVEMQ_PASSWORD}}{{"\n"}}' -n orders-prod
+$ if [[ $(aws mq describe-broker --broker-id "$(aws mq list-brokers --query "BrokerSummaries[?BrokerName == 'mq-eks-workshop'].BrokerId" --output text)" --query 'BrokerInstances[0].Endpoints[0]') == \"$(kubectl get cm orders -o go-template='{{.data.SPRING_ACTIVEMQ_BROKERURL}}'\" -n orders-prod) ]]; then echo "Order configured correctly"; else echo "Error Order misconfigured"; false; fi
 ```
 
-## Restart the deployments
-
-For the microservices pods to be able to pick the new AWS binding information in their environments variables, we have to restart the deployment.
-
-Restart orders
+Restart orders to pickup the new configuration
 ```bash
 $ kubectl rollout restart deployment -n orders-prod orders
 ```
 
-Restart catalog
-```bash
-$ kubectl rollout restart deployment -n catalog-prod catalog
-```
+## Access the Application
 
-Verify that app pods are running in production
+Verify that all pods are running in production
 
 ```bash
 $ kubectl get pods -A | grep '\-prod'
