@@ -10,8 +10,10 @@ kubectl apply -k /workspace/manifests --prune --all \
   --prune-whitelist=core/v1/ConfigMap \
   --prune-whitelist=apps/v1/Deployment \
   --prune-whitelist=core/v1/ServiceAccount \
+  --prune-whitelist=core/v1/PersistentVolumeClaim \
   --prune-whitelist=karpenter.sh/v1alpha5/Provisioner \
   --prune-whitelist=scheduling.k8s.io/v1/PriorityClass \
+  --prune-whitelist=opentelemetry.io/v1alpha1/OpenTelemetryCollector \
   --prune-whitelist=networking.k8s.io/v1/Ingress > /dev/null
 
 echo "Waiting for application to become ready..."

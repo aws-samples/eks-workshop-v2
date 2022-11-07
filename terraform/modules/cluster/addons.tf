@@ -1,9 +1,3 @@
-resource "kubernetes_namespace" "workshop_system" {
-  metadata {
-    name = "workshop-system"
-  }
-}
-
 data "aws_eks_addon_version" "latest" {
   for_each = toset(["vpc-cni"])
 
@@ -13,7 +7,7 @@ data "aws_eks_addon_version" "latest" {
 }
 
 resource "aws_eks_addon" "vpc_cni" {
-  cluster_name      = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  cluster_name      = module.eks-blueprints.eks_cluster_id
   addon_name        = "vpc-cni"
   addon_version     = data.aws_eks_addon_version.latest["vpc-cni"].version
   resolve_conflicts = "OVERWRITE"
@@ -73,7 +67,7 @@ module "eks-blueprints-kubernetes-addons" {
     module.eks-blueprints-kubernetes-csi-addon
   ]
 
-  eks_cluster_id = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  eks_cluster_id = module.eks-blueprints.eks_cluster_id
 
   enable_karpenter                       = true
   enable_aws_node_termination_handler    = true
@@ -81,7 +75,10 @@ module "eks-blueprints-kubernetes-addons" {
   enable_cluster_autoscaler              = true
   enable_metrics_server                  = true
   enable_kubecost                        = true
-
+  enable_amazon_eks_adot                 = true
+  enable_aws_efs_csi_driver              = true
+  enable_aws_for_fluentbit               = true
+ 
   cluster_autoscaler_helm_config = {
     version   = var.helm_chart_versions["cluster_autoscaler"]
     namespace = "kube-system"
@@ -124,7 +121,7 @@ module "eks-blueprints-kubernetes-addons" {
 
     set = concat([{
       name  = "aws.defaultInstanceProfile"
-      value = module.aws-eks-accelerator-for-terraform.managed_node_group_iam_instance_profile_id[0]
+      value = module.eks-blueprints.managed_node_group_iam_instance_profile_id[0]
     },
     {
       name  = "controller.resources.requests.cpu"
@@ -198,6 +195,10 @@ module "eks-blueprints-kubernetes-addons" {
     }], 
     local.system_component_values)
   }
+
+  amazon_eks_adot_config = {
+    kubernetes_version = var.cluster_version
+  }
 }
 
 locals {
@@ -209,7 +210,7 @@ locals {
     aws_eks_cluster_endpoint       = data.aws_eks_cluster.cluster.endpoint
     aws_partition_id               = data.aws_partition.current.partition
     aws_region_name                = data.aws_region.current.id
-    eks_cluster_id                 = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+    eks_cluster_id                 = module.eks-blueprints.eks_cluster_id
     eks_oidc_issuer_url            = local.oidc_url
     eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${local.aws_account_id}:oidc-provider/${local.oidc_url}"
     irsa_iam_role_path             = "/"
@@ -237,6 +238,20 @@ locals {
     value = "NoSchedule"
     type  = "string"
   }]
+}
+
+module "eks-blueprints-kubernetes-grafana-addon" {
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.10.0//modules/kubernetes-addons/grafana"
+
+  depends_on = [
+    module.eks-blueprints-kubernetes-addons
+  ]
+
+  addon_context = local.addon_context
+
+  helm_config = {
+    values = [templatefile("${path.module}/templates/grafana.yaml", { prometheus_endpoint = aws_prometheus_workspace.this.prometheus_endpoint, region = data.aws_region.current.name })]
+  }
 }
 
 module "descheduler" {

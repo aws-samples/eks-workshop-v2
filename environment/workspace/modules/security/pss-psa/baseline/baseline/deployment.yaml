@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: assets
+spec:
+  template:
+    spec:
+      hostNetwork: true
+      hostPID: true
+      hostIPC: true    
+      securityContext:
+        runAsNonRoot: false
+      containers:
+        - name: assets
+          securityContext:
+            capabilities:
+              drop: ["DAC_OVERRIDE"]  
+              add: ["AUDIT_WRITE","CHOWN","FOWNER","FSETID","KILL","MKNOD","NET_BIND_SERVICE","SETFCAP","SETGID","SETPCAP","SETUID","SYS_CHROOT"]
+            privileged: true

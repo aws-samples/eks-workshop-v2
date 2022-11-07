@@ -25,4 +25,4 @@ else
   fi
 fi
 
-sudo yum install -y tar gzip openssl jq git gettext bash-completion findutils unzip
+sudo yum install -y git

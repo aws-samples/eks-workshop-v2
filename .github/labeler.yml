@@ -1,0 +1,23 @@
+content/fundamentals:
+- environment/modules/fundamentals/**/*
+- website/docs/fundamentals/**/*
+
+content/autoscaling:
+- environment/modules/autoscaling/**/*
+- website/docs/autoscaling/**/*
+
+content/security:
+- environment/modules/security/**/*
+- website/docs/security/**/*
+
+content/networking:
+- environment/modules/networking/**/*
+- website/docs/networking/**/*
+
+content/observability:
+- environment/modules/observability/**/*
+- website/docs/observability/**/*
+
+content/cost-optimization:
+- environment/modules/costoptimization/**/*
+- website/docs/costoptimization/**/*
