@@ -1,5 +1,5 @@
 ---
-title: Authenticating and Authorizing end-users with Istio and Auth0
+title: Authenticating and Authorizing with Istio and Auth0
 sidebar_position: 30
 weight: 5
 ---
