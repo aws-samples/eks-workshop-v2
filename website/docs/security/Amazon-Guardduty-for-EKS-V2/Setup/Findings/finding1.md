@@ -1,9 +1,7 @@
 ---
-title: "Execution:Kubernetes/ExecInKubeSystemPod"
+title: "Unsafe execution into pod in kube-system namespace"
 sidebar_position: 124
 ---
-
-
 
 The anonymous user system:anonymous was granted API permissions on the EKS cluster cluster-2. This enables unauthenticated access to the permitted APIs.
 

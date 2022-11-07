@@ -1,5 +1,5 @@
 ---
-title: "Discovery:Kubernetes/SuccessfulAnonymousAccess"
+title: "Discovery tacitc to access the kubernetes API Anonymously"
 sidebar_position: 125
 ---
 
