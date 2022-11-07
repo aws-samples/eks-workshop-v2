@@ -59,6 +59,7 @@
     {
       "Effect": "Allow",
       "Action": [
+          "ec2:DescribeInstances",
           "ec2:DescribeVolumes"
       ],
       "Resource": "*"
@@ -94,13 +95,6 @@
           "aws:ResourceTag/efs.csi.aws.com/cluster": "true"
         }
       }
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-          "aps:QueryMetrics"
-      ],
-      "Resource": "*"
     }
   ]
 }
