@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: assets
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsNonRoot: true
+      containers:
+        - name: assets
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 101
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault            

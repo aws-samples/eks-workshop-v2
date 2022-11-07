@@ -2,8 +2,8 @@ terraform {
   backend "s3" {}
 }
 
-module "local" {
-  source  = "../../terraform/local"
+module "core" {
+  source  = "../../terraform"
 
   id = var.cluster_id
 }

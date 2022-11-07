@@ -9,4 +9,4 @@ resources:
 - service.yaml
 - service-mysql.yaml
 - deployment.yaml
-- deployment-mysql.yaml
+- statefulset-mysql.yaml
