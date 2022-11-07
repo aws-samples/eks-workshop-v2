@@ -101,6 +101,15 @@
           "aps:QueryMetrics"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "elasticloadbalancing:DescribeLoadBalancers",
+          "elasticloadbalancing:DescribeTargetGroups",
+          "elasticloadbalancing:DescribeTargetHealth"
+      ],
+      "Resource": "*"
     }
   ]
 }
