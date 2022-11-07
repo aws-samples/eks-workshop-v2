@@ -29,7 +29,7 @@ $ kubectl get ds aws-node -n kube-system -o json | jq -c '.spec.template.spec.co
 Since prefix delegation is enabled (this was done at cluster creation for this workshop), we should be able to see prefix assigned to the network interfaces of the worker nodes. You should see output similar to below.
 
 ```bash
-$ aws ec2 describe-instances --filters "Name=tag-key,Values=eks:cluster-name" "Name=tag-value,Values=eks-workshop-cluster"\
+$ aws ec2 describe-instances --filters "Name=tag-key,Values=eks:cluster-name" "Name=tag-value,Values=${EKS_CLUSTER_NAME}"\
  --query 'Reservations[*].Instances[].{InstanceId: InstanceId, Prefixes: NetworkInterfaces[].Ipv4Prefixes[]}'
 
  [

@@ -1,5 +1,5 @@
 ---
-title: "Deploy Sample Application"
+title: "Consume Additional Prefixes"
 sidebar_position: 40
 ---
 
@@ -20,6 +20,6 @@ kubectl get deployment/pause-pods-prefix
 Once the pods are running successfully, we should be able to see the additional prefixes added to the worker nodes.
 
 ```bash
-$ aws ec2 describe-instances --filters "Name=tag-key,Values=eks:cluster-name" "Name=tag-value,Values=eks-workshop-cluster"\
+$ aws ec2 describe-instances --filters "Name=tag-key,Values=eks:cluster-name" "Name=tag-value,Values=${EKS_CLUSTER_NAME}"\
  --query 'Reservations[*].Instances[].{InstanceId: InstanceId, Prefixes: NetworkInterfaces[].Ipv4Prefixes[]}'
 ```
