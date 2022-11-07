@@ -11,26 +11,8 @@ Run the below commands to generate this finding. Note, the exact pod name varies
 
 ```bash
 $ KUBE_PROXY_POD=`kubectl get pods -n kube-system -l k8s-app=kube-proxy -o name | head -n 1`
-$ kubectl -n kube-system exec $KUBE_PROXY_POD -- ls
-bin
-boot
-dev
-etc
-home
-lib
-lib64
-media
-mnt
-opt
-proc
-root
-run
-sbin
-srv
-sys
-tmp
-usr
-var
+$ kubectl -n kube-system exec $KUBE_PROXY_POD -- pwd
+/
 ```
 
 Go back to the GuardDuty console to check if a finding is generated.
