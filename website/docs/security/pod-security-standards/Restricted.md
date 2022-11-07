@@ -8,13 +8,6 @@ In the section, we will look at the followng scenario.
 #### All PSA Modes Enabled for Restricted PSS Profile at Namespace Level
 
 In this scenario, we will enable all PSA modes (i.e. enforce, audit and warn) for Restricted PSS profile for a namespace.
-
-Run the following command to setup the EKS cluster for this module:
-
-```bash timeout=300 wait=30
-$ reset-environment 
-```
-
 ## Review existing Pod security configuration
 
 Let's ensure that there are no PSA labels added to the `assets` namespace, by default.
@@ -83,13 +76,13 @@ In the above Pod security configuration, the `securityContext` is nil at the Pod
 Let us add labels to the `assets` namespace to enable all PSA modes for the Restricted PSS profile.
 
 ```kustomization
-security/pss-psa/psa-all-modes-restricted-profile/namespace/namespace.yaml
+security/pss-psa/restricted/namespace/namespace.yaml
 Namespace/assets
 ```
 Run Kustomize to apply this change to add labels to the `assets` namespace.
 
 ```bash  timeout=180 hook=restricted-namespace
-$ kubectl apply -k /workspace/modules/security/pss-psa/psa-all-modes-restricted-profile/namespace
+$ kubectl apply -k /workspace/modules/security/pss-psa/restricted/namespace
 Warning: existing pods in namespace "assets" violate the new PodSecurity enforce level "restricted:latest"
 Warning: assets-d59d88b99-flkgp: hostPort, allowPrivilegeEscalation != false, runAsNonRoot != true, seccompProfile
 namespace/assets configured
@@ -150,7 +143,7 @@ The above output indicates that PSA did not allow creation of Pods in the `asset
 Now, let's add some security controls to the Pod configuration to make it compliances to the Privileged PSS profile configured for the `assets` namespace.
 
 ```kustomization
-security/pss-psa/psa-all-modes-restricted-profile/restricted/deployment.yaml
+security/pss-psa/restricted/restricted/deployment.yaml
 Deployment/assets
 ```
 
@@ -164,7 +157,7 @@ Deployment.apps "assets" deleted
 Run Kustomize to apply these changes, which we re-create the Deployment.
 
 ```bash timeout=180 hook=restricted-deploy-with-changes
-$ kubectl apply -k /workspace/modules/security/pss-psa/psa-all-modes-restricted-profile/restricted/
+$ kubectl apply -k /workspace/modules/security/pss-psa/restricted/restricted/
 namespace/assets unchanged
 serviceaccount/assets unchanged
 configmap/assets unchanged
@@ -184,3 +177,24 @@ assets-8dd6fc8c6-9kptf   1/1     Running   0          3m6s
 The above output indicates that PSA allowed since Pod security configuration confirms to the Restricted PSS profile.
 
 Note that the above security permissions are not the comprehensive list of controls allowed under Restricted PSS profile. For detailed security controls allowed/disallowed under each PSS profile, refer to the [documentation](https://kubernetes.io/docs/concepts/security/pod-security-standards/#restricted)
+
+## Cleanup
+
+Let us revert the changes by first deleting the deployment. 
+
+```bash
+$ kubectl -n assets delete deploy assets
+deployment.apps "assets" deleted
+
+```
+Then re-deploy it from the original manifest.
+
+```bash
+$ kubectl apply -k /workspace/manifests/assets
+namespace/assets configured
+serviceaccount/assets unchanged
+configmap/assets unchanged
+service/assets unchanged
+deployment.apps/assets created
+
+```
