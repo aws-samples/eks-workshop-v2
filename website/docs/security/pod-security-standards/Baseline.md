@@ -8,13 +8,6 @@ In the section, we will look at the followng scenario.
 #### All PSA Modes Enabled for Baseline PSS Profile at Namespace Level
 
 In this scenario, we will enable all PSA modes (i.e. enforce, audit and warn) for Baseline PSS profile for a namespace.
-
-Run the following command to setup the EKS cluster for this module:
-
-```bash timeout=300 wait=30
-$ reset-environment 
-```
-
 ## Review existing Pod security configuration
 
 Let's ensure that there are no PSA labels added to the `assets` namespace, by default.
@@ -83,13 +76,13 @@ In the above Pod security configuration, the `securityContext` is nil at the Pod
 Let us add labels to the `assets` namespace to enable all PSA modes for the Baseline PSS profile.
 
 ```kustomization
-security/pss-psa/psa-all-modes-baseline-profile/namespace/namespace.yaml
+security/pss-psa/baseline/namespace/namespace.yaml
 Namespace/assets
 ```
 Run Kustomize to apply this change to add labels to the `assets` namespace.
 
 ```bash timeout=60 hook=baseline-namespace
-$ kubectl apply -k /workspace/modules/security/pss-psa/psa-all-modes-baseline-profile/namespace
+$ kubectl apply -k /workspace/modules/security/pss-psa/baseline/namespace
 namespace/assets configured
 serviceaccount/assets unchanged
 configmap/assets unchanged
@@ -145,7 +138,7 @@ As shown in above output, PSA allowed both Deployment and Pod objects creation w
 In the section, let us add some additonal security permissions to the existing Pod configuration and re-create the Deployment. The idea here is to check how PSA behaves to these changes as per the Baseline PSS profile configured for the `assets` namespace
 
 ```kustomization
-security/pss-psa/psa-all-modes-baseline-profile/baseline/deployment.yaml
+security/pss-psa/baseline/baseline/deployment.yaml
 Deployment/assets
 ```
 Before applying the above changes, let us first delete the Deployment and re-create it with above changes.
@@ -158,7 +151,7 @@ Deployment.apps "assets" deleted
 Run Kustomize to apply these changes, which we re-create the Deployment.
 
 ```bash timeout=60 hook=baseline-deploy-with-changes
-$ kubectl apply -k /workspace/modules/security/pss-psa/psa-all-modes-baseline-profile/baseline/
+$ kubectl apply -k /workspace/modules/security/pss-psa/baseline/baseline/
 namespace/assets unchanged
 serviceaccount/assets unchanged
 configmap/assets unchanged
@@ -225,4 +218,22 @@ status:
 ```
 While the Deployment was created, the Pod was not. It’s clear that a best practice would be to use warn and audit modes at all times, for a better user experience.
 
+## Cleanup
 
+Let us revert the changes by first deleting the deployment. 
+
+```bash
+$ kubectl -n assets delete deploy assets
+deployment.apps "assets" deleted
+```
+Then re-deploy it from the original manifest.
+
+```bash
+$ kubectl apply -k /workspace/manifests/assets
+namespace/assets configured
+serviceaccount/assets unchanged
+configmap/assets unchanged
+service/assets unchanged
+deployment.apps/assets created
+
+```

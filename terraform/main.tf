@@ -7,7 +7,7 @@ module "cluster" {
     rolearn  = aws_iam_role.local_role.arn
     username = local.rolename
     groups   = ["system:masters"]
-  },{
+    }, {
     # Did it this way because of circular dependencies
     rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${module.cluster.eks_cluster_id}-cloud9"
     username = "cloud9"

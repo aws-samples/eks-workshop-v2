@@ -10,14 +10,12 @@ In the section, we will look at the followng scenario.
 From Kubernetes version 1.23, by default, all PSA modes (i.e. enforce, audit and warn) are enabled for privileged PSS profile at the cluster level. That means, by default, PSA allows deployments or pods with Privileged PSS profile (i.e. absence of any restrictions) across all namespaces.
 These default settings provide less impact to clusters and reduce negative impact to applications. As we will see, Namespace labels can be used to opt-in to more restrictive settings.
 
-
 Run the following command to setup the EKS cluster for this module:
 
 ```bash timeout=300 wait=30
 $ reset-environment 
 ```
 Let us take one of the namespaces in our sample application, say `assets` namespace to demonstrate how the default PSA modes work for the Privileged PSS profile.
-
 ## Review existing pod security configuration
 
 Let's ensure that there are no PSA labels added to the `assets` namespace, by default.
@@ -90,7 +88,7 @@ But what are the other security controls does PSA allows by default?. To check t
 We will be adding following additional permissions and capabilities to our pod configuration.
 
 ```kustomization
-security/pss-psa/default-psa-mode/deployment.yaml
+security/pss-psa/priveleged/deployment.yaml
 Deployment/assets
 ```
 Before we deploy our changes, let us first delete the existing deployment and then re-create it with the above changes.
@@ -104,7 +102,7 @@ Run Kustomize to apply the above changes and check if PSA allows the pod with th
 
 
 ```bash  timeout=180 hook=privileged-deploy-with-changes
-$ kubectl apply -k /workspace/modules/security/pss-psa/default-psa-mode/
+$ kubectl apply -k /workspace/modules/security/pss-psa/priveleged/
 namespace/assets unchanged
 serviceaccount/assets unchanged
 configmap/assets unchanged
@@ -156,3 +154,23 @@ This shows that default PSA mode enabled for Privileged PSS profile allows many 
  
 Note that the above security permissions are not the comprehensive list of controls allowed under Privileged PSS profile. For detailed security controls allowed/disallowed under each PSS profile, refer to the [documentation](https://kubernetes.io/docs/concepts/security/pod-security-standards/)
 
+## Cleanup
+
+Let us revert the changes by first deleting the deployment. 
+
+```bash
+$ kubectl -n assets delete deploy assets
+deployment.apps "assets" deleted
+
+```
+Then re-deploy it from the original manifest.
+
+```bash
+$ kubectl apply -k /workspace/manifests/assets
+namespace/assets unchanged
+serviceaccount/assets unchanged
+configmap/assets unchanged
+service/assets unchanged
+deployment.apps/assets created
+
+```

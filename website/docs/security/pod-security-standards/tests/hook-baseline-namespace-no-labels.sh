@@ -1,6 +1,7 @@
 set -Eeuo pipefail
 
 before() {
+  sleep 2
   echo "noop"
 }
 
