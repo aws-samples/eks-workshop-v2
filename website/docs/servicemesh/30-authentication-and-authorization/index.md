@@ -12,7 +12,5 @@ You will understand the following topics by the end of this chapter.
 * Which ISTIO resources you can use to configure them?
 * What access control in ISTIO is? How it works?
 * How they work together to restrict *service A* from performing an action on *service B*.
-* How to Build resilient microservice applications using circuit breaking?
-* How to enables introducing new features/changes into production with the least amount of risk using Istio Mirroring capability?
 
 

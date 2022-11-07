@@ -13,3 +13,5 @@ You will understand the following topics by the end of this chapter.
 * How to set up HTTP path Condition Routing?
 * How to set up Traffic Splitting (Canary, weight-based routing)?
 * How Identity-Based Routing works. 
+* How to Build resilient microservice applications using circuit breaking?
+* How to enables introducing new features/changes into production with the least amount of risk using Istio Mirroring capability?
