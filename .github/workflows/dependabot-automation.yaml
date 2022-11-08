@@ -22,9 +22,6 @@ jobs:
         run: gh pr edit "$PR_URL" --add-label "automation/e2e-tests"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
-      - name: Sleep for 10 seconds
-        run: sleep 10s
-        shell: bash
       - name: Approve Dependabot PRs
         run: gh pr review --approve "$PR_URL"
         env:
