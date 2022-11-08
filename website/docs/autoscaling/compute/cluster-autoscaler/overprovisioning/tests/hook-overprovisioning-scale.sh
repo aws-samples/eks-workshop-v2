@@ -7,7 +7,7 @@ before() {
 after() {
   sleep 10
 
-  kubectl rollout status -n ui deployment/ui --timeout 120s
+  kubectl wait --for=condition=Ready --timeout=180s pods -l app.kubernetes.io/created-by=eks-workshop -A
 
   echo 'Rollout complete'
 
