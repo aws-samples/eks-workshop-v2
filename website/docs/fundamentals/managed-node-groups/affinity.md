@@ -34,11 +34,11 @@ Based on the results above, the `checkout-58f865f584-rn2pb` pod is running on th
 
 Let's set up a `podAntiAffinity` policy in the **checkout** deployment specifying that any pods matching `app.kubernetes.io/component=service` can not be scheduled on the same node. We will use the `requiredDuringSchedulingIgnoredDuringExecution` to make this a requirement.
 
-To make the change, edit the **checkout** deployment in your cluster
+To make the change, run the following command to modify the **checkout** deployment in your cluster
 ```bash
-$ kubectl edit deployment checkout -n checkout
+$ kubectl apply -k environment/workspace/modules/fundamentals/affinity/checkout/
 ```
-Add the following YAML snippet in the `spec.template.spec` section, prior to the `spec.template.spec.containers` section and save the deployment file.
+The command adds an `affinity` section to the **checkout** deployment specifying a **podAntiAffinity** policy.
 ```
       affinity:
         podAntiAffinity:
@@ -51,7 +51,7 @@ Add the following YAML snippet in the `spec.template.spec` section, prior to the
                 - service
             topologyKey: kubernetes.io/hostname
 ```
-> **Note**: A sample [checkout_deployment.yaml](./yaml/checkout_deployment.yaml) is provided for reference
+> **Note**: A sample [checkout_deployment.yaml](./yaml/checkout_deployment.yaml) is provided for reference or you can run `kubectl edit deployment checkout -n checkout` to view the updatated deployment
 
 With the `checkout` deployment updated to require that only one pod can run per node, let's scale the deployment to ensure it deploys to the second node
 
@@ -83,12 +83,12 @@ ip-10-42-10-177.us-east-2.compute.internal/10.42.10.177
 ```
 In this example, the two `checkout` pods are running on `ip-10-42-12-141.us-east-2.compute.internal` and `ip-10-42-10-177.us-east-2.compute.internal/10.42.10.177`, as required by the **podAntiAffinity** policy we defined in the deployment
 
-Next, let's modify the `checkout-redis` deployment policies to require that future pods both run individually per node and only run on nodes where a `checkout` pod exists. To do this we will need to edit the `checkout-redis` deployment
+Next, let's modify the `checkout-redis` deployment policies to require that future pods both run individually per node and only run on nodes where a `checkout` pod exists. To do this we will need to update the `checkout-redis` deployment
 ```bash
-$ kubectl edit deployment checkout-redis -n checkout
+$ kubectl apply -k environment/workspace/modules/fundamentals/affinity/checkout-redis/
 ```
 
-Add the following YAML snippet in the `spec.template.spec` section, prior to the `spec.template.spec.containers` section and save the deployment file.
+The command adds an `affinity` section to the **checkout-redis** deployment specifying both a **podAffinity** and **podAntiAffinity** policy.
 ```
       affinity:
         podAffinity:
