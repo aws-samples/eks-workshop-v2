@@ -25,7 +25,9 @@ For more details on the latest AMI release versions and their changelog:
 
 **Pricing:** There are no additional costs to use Amazon EKS managed node groups, you only pay for the AWS resources you provision. These include Amazon EC2 instances, Amazon EBS volumes, Amazon EKS cluster hours, and any other AWS infrastructure. There are no minimum fees and no upfront commitments.
 
-> **Note:** Starting with kubernetes version 1.24, Amazon EKS will end the support for `Dockershim`. To learn more, refer to the following article in the [AWS documentation](https://docs.aws.amazon.com/eks/latest/userguide/dockershim-deprecation.html).
+:::info 
+Starting with kubernetes version 1.24, Amazon EKS will end the support for `Dockershim`. To learn more, refer to the following article in the [AWS documentation](https://docs.aws.amazon.com/eks/latest/userguide/dockershim-deprecation.html).
+:::Dockershim deprecation 
 
 There are two ways to provision and upgrade your worker nodes - **Self-managed node groups** and **Managed node groups**. This workshop uses a managed node group which is where our sample application is running by default. Managed Node groups make it easier for us to automate both the AWS and the Kubernetes side of the process.
 
