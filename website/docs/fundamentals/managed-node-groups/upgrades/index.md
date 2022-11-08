@@ -26,24 +26,43 @@ For more details on the latest AMI release versions and their changelog: [Amazon
 
 <p> </p>
 
-There are two ways to provision and upgrade your worker nodes - Self-managed node groups and Managed node groups, This workshop uses a managed node group which is where our sample application is running by default Managed Node groups makes it easier for us to automate both the AWS and the Kubernetes side of the process.
 
+
+There are two ways to provision and upgrade your worker nodes - <strong>Self-managed node groups</strong> and <strong>Managed node groups</strong>, This workshop uses a managed node group which is where our sample application is running by default Managed Node groups makes it easier for us to automate both the AWS and the Kubernetes side of the process.
 <p> </p>
+The Amazone EKS Managed worker node upgrade has 4 phases. 
+<p> </p>
+<h3>Setup  >  Scale Up  > Upgrade > Scale Down</h3> 
+<p> </p>
+<h4>Setup:</h4>
 
-1. Amazon EKS creates a new Amazon EC2 launch template version for the Auto Scaling group associated with your node group. The new template uses the target AMI for the update.
-2. The Auto Scaling group is updated to use the latest launch template with the new AMI.
-3. The Auto Scaling group maximum size and desired size are incremented by one up to twice the number of Availability Zones in the Region that the Auto Scaling group is deployed in. This is to ensure that at least one new instance comes up in every Availability Zone in the Region that your node group is deployed in.
-Amazon EKS checks the nodes in the node group for the eks.amazonaws.com/nodegroup-image label, and applies a `eks.amazonaws.com/nodegroup=unschedulable:NoSchedule` taint on all of the nodes in the node group that aren’t labeled with the latest AMI ID. This prevents nodes that have already been updated from a previous failed update from being tainted.
-4. Amazon EKS randomly selects a node in the node group and evicts all pods from it.
-5. After all of the pods are evicted, Amazon EKS cordons the node. This is done so that the service controller doesn’t send any new request to this node and removes this node from its list of healthy, active nodes.
-6. Amazon EKS sends a termination request to the Auto Scaling group for the cordoned node.
-7. Steps 5-7 are repeated until there are no nodes in the node group that are deployed with the earlier version of the launch template.
-The Auto Scaling group maximum size and desired size are decremented by 1 to return to your pre-update values.
+* Update Amazon EC2 Launch Template version associated with Auto Scaling group with the latest AMI
+* Point your Auto Scaling group to use the latest version of the launch template
+* Modify <code>updateconfig</code> with number of nodes where you want to run parallel upgrades
+
+<h4>Scale Up:</h4>
+
+* During the upgrade process, The upgraded nodes are launched in the same availability zone
+* Increments the Auto Scaling Group’s maximum size and desired size by the larger of either:
+* After scaling the Auto Scaling Group, it checks if the nodes using the latest configuration are present in the node group. 
+* Applies an <code>eks.amazonaws.com/nodegroup=unschedulable:NoSchedule</code> taint on every node in the node group without the latest labels. This prevents nodes that have already been updated from a previous failed update from being tainted.
+
+<h4>Upgrade:</h4>
+
+* Randomly selects a node, Drains the pods from the node. If the pods don't leave the node within 15 minutes and there's no force flag, the upgrade phase fails with a <code>PodEvictionFailure</code> error. For this scenario, you can apply the force flag with the <code>update-nodegroup-version</code> request to delete the pods.
+* Cordons the node after every pod is evicted and waits for 60 seconds, Sends a termination request to the Auto Scaling Group for the cordoned node.
+* Applies same accross all nodes which are part of Managed Node group making sure there are no nodes with older version
+
+<h4>Scale Down:</h4>
+*The scale down phase decrements the Auto Scaling group maximum size and desired size by one to return to values before the update started.
+
+To know more about Manged node group update behavior [Managed Node group Update phases](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-update-behavior.html)
+
 
 To trigger the manage node group upgrade process, Run the following eksctl command:
 
 ```bash
-$ eksctl upgrade nodegroup --name=nodegroup --cluster=$EKS_CLUSTER_NAME --kubernetes-version=<kubernetes_version>
+$ eksctl upgrade nodegroup --name=nodegroup --cluster=$EKS_CLUSTER_NAME --kubernetes-version=<Your_kubernetes_version>
 ```
 
 In another Terminal tab you can follow the progress with:
