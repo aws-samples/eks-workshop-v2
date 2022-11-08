@@ -39,19 +39,11 @@ To make the change, run the following command to modify the **checkout** deploym
 $ kubectl apply -k environment/workspace/modules/fundamentals/affinity/checkout/
 ```
 The command adds an `affinity` section to the **checkout** deployment specifying a **podAntiAffinity** policy.
+```kustomization
+fundamentals/affinity/checkout-redis/checkout.yaml
+Deployment/checkout
 ```
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app.kubernetes.io/component
-                operator: In
-                values:
-                - service
-            topologyKey: kubernetes.io/hostname
-```
-> **Note**: A sample [checkout_deployment.yaml](./yaml/checkout_deployment.yaml) is provided for reference or you can run `kubectl edit deployment checkout -n checkout` to view the updatated deployment
+The **podAntiAffinity** section requires that no `checkout` pods are already running on the node and is accomplished by matching the **`app.kubernetes.io/component=service`** label
 
 With the `checkout` deployment updated to require that only one pod can run per node, let's scale the deployment to ensure it deploys to the second node
 
@@ -88,31 +80,13 @@ Next, let's modify the `checkout-redis` deployment policies to require that futu
 $ kubectl apply -k environment/workspace/modules/fundamentals/affinity/checkout-redis/
 ```
 
-The command adds an `affinity` section to the **checkout-redis** deployment specifying both a **podAffinity** and **podAntiAffinity** policy.
+The command adds an `affinity` section to the **checkout-redis** deployment specifying both a **podAffinity** and **podAntiAffinity** policy
+```kustomization
+fundamentals/affinity/checkout-redis/checkout-redis.yaml
+Deployment/checkout-redis
 ```
-      affinity:
-        podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app.kubernetes.io/component
-                operator: In
-                values:
-                - service
-            topologyKey: kubernetes.io/hostname
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app.kubernetes.io/component
-                operator: In
-                values:
-                - redis
-            topologyKey: kubernetes.io/hostname
-```
-> **Note**: A sample [checkout_redis_deployment.yaml](./yaml/checkout_redis_deployment.yaml) is provided for reference
 
-As you can see, for the `checkout-redis` deployment we are adding **podAffinity** and **podAntiAffinity** statements. The **podAffinity** section requires that a `checkout` pod exist on the node before deploying and the **podAntiAffinity** section requires that no `checkout-redis` pods are already running on the node.
+As you can see, for the `checkout-redis` deployment we are adding **podAffinity** and **podAntiAffinity** statements. The **podAffinity** section requires that a `checkout` pod exist on the node before deploying. This is accomplished by matching the **`app.kubernetes.io/component=service`** label. The **podAntiAffinity** section requires that no `checkout-redis` pods are already running on the node and is accomplished by matching the **`app.kubernetes.io/component=redis`** label.
 
 Now, let's scale the `checkout-redis` deployment
 ```bash
@@ -146,7 +120,7 @@ checkout-redis-7f66c6c587-v4czw
 ip-10-42-10-177.us-east-2.compute.internal/10.42.10.177
 ```
 
-All looks good on the pod scheduling, but we can further verify by scalaing the `checkout-redis` pod again to see where a third pod will deploy
+All looks good on the pod scheduling, but we can further verify by scaling the `checkout-redis` pod again to see where a third pod will deploy
 ```bash
 $ kubectl scale --replicas=3 deployment/checkout --namespace checkout
 ```
