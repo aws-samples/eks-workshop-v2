@@ -3,7 +3,7 @@ title: "Create the Role and RoleBinding"
 sidebar_position: 40
 ---
 
-Lets to add Roles and Role Bindings to our user carts-user
+Let's to add Roles and Role Bindings to our user carts-user
 As mentioned earlier, we have our new user carts-user, but its not yet bound to any roles. In order to do that, we’ll need to switch back to our default admin user.
 
 Run the following to unset the environmental variables that define us as rbac-user:
@@ -48,7 +48,7 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: read-pods
-  namespace: rbac-test
+  namespace: carts
 subjects:
 - kind: User
   name: carts-user

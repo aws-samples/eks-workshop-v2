@@ -3,7 +3,7 @@ title: "Test the User access after Role binding"
 sidebar_position: 50
 ---
 
-Now that the user, Role, and RoleBinding are defined, lets switch back to rbac-user, and test.
+Now that the user, Role, and RoleBinding are defined, let's switch back to rbac-user, and test.
 
 To switch back to rbac-user, issue the following commands
 
@@ -22,17 +22,16 @@ $ aws sts get-caller-identity
     "Arn": "arn:aws:iam::<ACCOUNT_ID>:user/carts-user"
 }
 ```
-Now we had made sure that the active user is carts-user. Lets try to access the pods inside carts namespace 
+Now we had made sure that the active user is carts-user. Let's try to access the pods inside carts namespace 
 ```bash test=false
-$ kubectl get pods -n carts
+$ kubectl auth can-i get pods -n carts
 
-NAME                             READY   STATUS    RESTARTS   AGE
-carts-789498bdbd-6l8rw           1/1     Running   0          3d23h
-carts-dynamodb-cc5bf4649-xccc8   1/1     Running   0          4d1h
+yes
 ```
-Voilà.. user carts-user can see the pods now.. Now lets test if he have access to pods inside another namespace orders
+User carts-user can see the pods now. Now let's test if they have access to pods inside another namespace orders
 ```bash test=false
-$ kubectl get pods -n orders   
+$ kubectl auth can-i get pods -n orders   
 
-Error from server (Forbidden): pods is forbidden: User "carts-user" cannot list resource "pods" in API group "" in the namespace "orders"
+no
 ```
+AS expected user - carts-user doesn't have access to see pods inside orders namespace

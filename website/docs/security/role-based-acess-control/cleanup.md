@@ -8,30 +8,30 @@ Its time to cleanup the cluster to previous stage. Execute following commands
 $ unset AWS_ACCESS_KEY_ID  
 $ unset AWS_SECRET_ACCESS_KEY  
 $ unset AWS_PROFILE  
-$ rm rbacuser_creds.sh
 $ rm rbacuser-role.yaml
 $ rm rbacuser-role-binding.yaml
-$ aws iam delete-access-key --user-name=rbac-user --access-key-id=$(jq -r .AccessKey.AccessKeyId /tmp/create_output.json)
-$ aws iam delete-user --user-name rbac-user
+$ aws iam delete-access-key --user-name=carts-user --access-key-id=$(jq -r .AccessKey.AccessKeyId /tmp/create_output.json)
+$ aws iam delete-user --user-name carts-user
 $ rm /tmp/create_output.json
 ```
 Next remove the rbac-user mapping from the existing configMap by editing the existing aws-auth.yaml file from 
-```js
-data:
-  mapUsers: |
-    - userarn: arn:aws:iam::${ACCOUNT_ID}:user/carts-user
-      username: carts-user
 
-```
-to 
-```js
-data:
-  mapUsers: |
-    []
-```
-
-Next, apply the ConfigMap to apply this mapping to the system:
 
 ```bash test=false
-$ kubectl apply -f aws-auth.yaml
+$ eksctl delete iamidentitymapping --cluster  eks-workshop-cluster --region=<AWS_DEFAULT_REGION> --arn arn:aws:iam::<ACCOUNT_ID>:user/carts-user1
+```
+make sure that the actual value of <ACCOUNT_ID> is replaced with ${ACCOUNT_ID} and <AWS_DEFAULT_REGION> should be replaced with ${AWS_DEFAULT_REGION}
+
+
+Now verify that the user - carts-user is removed from the aws-auth configmap
+
+```bash test=false
+$ kubectl describe configmap -n kube-system aws-auth
+```
+Check the mapUsers section, you can see that the carts-user is removed
+
+```js
+mapUsers:
+----
+[]
 ```

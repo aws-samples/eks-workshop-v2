@@ -4,7 +4,8 @@
     {
       "Effect": "Allow",
       "Action": [
-        "eks:ListClusters"
+        "eks:ListClusters",
+        "eks:DescribeCluster"
       ],
       "Resource": "*"
     },
@@ -66,7 +67,9 @@
       "Effect": "Allow",
       "Action": [
           "iam:CreateUser",
-          "iam:CreateAccessKey"
+          "iam:CreateAccessKey",
+          "iam:DeleteAccessKey",
+          "iam:DeleteUser"
       ],
       "Resource": "*"
     }

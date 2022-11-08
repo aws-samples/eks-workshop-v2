@@ -16,17 +16,27 @@ A group, user, or service account (an identity representing an application that 
 #### Resource
 A pod, service, or secret that the entity wants to access using the certain operations.
 
-#### Role
-Used to define rules for the actions the entity can take on various resources.
+#### Role and ClusterRole
+An RBAC Role or ClusterRole contains rules that represent a set of permissions. Permissions are purely additive (there are no "deny" rules).
 
-#### Role binding
-This attaches (binds) a role to an entity, stating that the set of rules define the actions permitted by the attached entity on the specified resources.
-There are two types of Roles (Role, ClusterRole) and the respective bindings (RoleBinding, ClusterRoleBinding). 
-These differentiate between authorization in a namespace or cluster-wide.
+A Role always sets permissions within a particular namespace; when you create a Role, you have to specify the namespace it belongs in.
+ClusterRole, by contrast, is a non-namespaced resource which can be used cluster-wide.
+A RoleBinding may reference any Role in the same namespace. 
+
+A RoleBinding can also reference a ClusterRole to grant the permissions defined in that ClusterRole to resources inside the RoleBinding's namespace. This kind of reference lets you define a set of common roles across your cluster, then reuse them within multiple namespaces.
+If you want to bind a ClusterRole to all the namespaces in your cluster, you use a ClusterRoleBinding.
+
+
+#### Role binding and ClusterRoleBinding
+A role binding grants the permissions defined in a role to a user or set of users. It holds a list of subjects (users, groups, or service accounts), and a reference to the role being granted. 
+A RoleBinding grants permissions within a specific namespace whereas a ClusterRoleBinding grants that access cluster-wide.
 
 #### Namespace
-Namespaces are an excellent way of creating security boundaries, they also provide a unique scope for object names as the ‘namespace’ name implies. 
-They are intended to be used in multi-tenant environments to create virtual kubernetes clusters on the same physical cluster.
+In Kubernetes, namespaces provides a mechanism for isolating groups of resources within a single cluster. 
+Names of resources need to be unique within a namespace, but not across namespaces. 
+Namespace-based scoping is applicable only for namespaced objects (e.g. Deployments, Services, etc) and not for cluster-wide objects (e.g. StorageClass, Nodes, PersistentVolumes, etc).
+
+
 
 In this section we will try to create a new IAM user, map it to Kubernetes and try to explore the above concepts. 
 The Objective is to give the new user the access to see all the pods in "carts" namespace
