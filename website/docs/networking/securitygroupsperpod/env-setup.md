@@ -7,5 +7,5 @@ weight: 20
 ### Create Working Directory
 
 ```bash
-$ mkdir ~/environment/sg-per-pod/
+$ mkdir ~/environment/sg-per-pod/ && cd ~/environment/sg-per-pod/
 ```
