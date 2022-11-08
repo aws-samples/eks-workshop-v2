@@ -73,3 +73,54 @@ In another Terminal tab you can follow the progress with:
 $ kubectl get nodes --watch
 ```
 
+<p></p>
+<h3> Bottlerocket </h3>
+<p></p>
+Bottlerocket is a Linux-based open-source operating system that is purpose-built by Amazon Web Services for running containers. Bottlerocket includes only the essential software required to run containers, and ensures that the underlying software is always secure. With Bottlerocket, customers can reduce maintenance overhead and automate their workflows by applying configuration settings consistently as nodes are upgraded or replaced. Bottlerocket is now generally available at no cost as an Amazon Machine Image (AMI) for Amazon Elastic Compute Cloud (EC2).
+
+<p></p>
+<strong>Update Process</strong>
+<p></p>
+
+Unlike general-purpose Linux distributions that include a package manager allowing you to update and install individual pieces of software, Bottlerocket downloads a full filesystem image and reboots into it. It can automatically roll back if boot failures occur, and workload failures can trigger manual rollbacks. This simplifies the update processes and makes it easier, faster, and safer to perform updates through automation.
+
+There are also multiple mechanisms you can leverage to perform updates—the Bottlerocket API, updog CLI tool, and the Bottlerocket Update Operator for Kubernetes.
+
+For this workshop, we’ll use the admin container and the updog CLI tool.
+
+First, you will need to connect to the admin container of your Bottlerocket node via SSH by using the following command:
+
+```
+$ ssh -i YOUR_EC2_KEYPAIR_FILE.pem ec2-user@INSTANCE IP
+```
+
+Note: Make sure to replace “YOUR_EC2_KEYPAIR_FILE” with the name of your Keypair and the “INSTANCE IP” with the IP of your Bottlerocket Node that you can glean, for example, from kubectl get nodes -o wide.
+
+Next, use sheltie to drop into a root shell on your bottle rocket node:
+
+```
+$ sudo sheltie
+```
+
+To check for updates:
+
+```
+$ updog check-update
+```
+
+If an update is available, you can initiate an update:
+
+```
+$ updog update
+```
+
+This will download the new update image and update the boot flags so that when you reboot it will attempt to boot to the new version.
+
+When that’s complete, you can reboot:
+
+```
+$ reboot
+```
+
+And that’s it. The node is now running the latest version of Bottlerocket OS.
+
