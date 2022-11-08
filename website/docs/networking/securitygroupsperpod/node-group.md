@@ -6,26 +6,7 @@ weight: 40
 
 Security groups for pods are supported by most Nitro-based Amazon EC2 instance families, including the m5, c5, r5, p3, m6g, c6g, and r6g instance families. The t3 instance family is not supported and so we will create a second NodeGroup using one m5.large instance.
 
-### 1. Configure Target Subnets
-
-Use the following commands to configure the target subnets:
-TODO: FIX `subnetlist` variable
-
-```bash
-$ az_1=`echo $subnetlist | jq -r '.[0][0]'`
-
-$ new_subnet_id_1=`echo $subnetlist | jq -r '.[0][1]'`
-
-$ az_2=`echo $subnetlist | jq -r '.[1][0]'`
-
-$ new_subnet_id_2=`echo $subnetlist | jq -r '.[1][1]'`
-
-$ az_3=`echo $subnetlist | jq -r '.[2][0]'`
-
-$ new_subnet_id_3=`echo $subnetlist | jq -r '.[2][1]'`
-```
-
-### 2. Create IAM Role
+### 1. Create IAM Role
 
 Run the following command to create an IAM trust policy JSON file.
 
@@ -76,7 +57,7 @@ $ aws iam attach-role-policy \
     --role-name $node_role_name
 ```
 
-### 3. Create Node Group
+### 2. Create Node Group
 
 Use the following command to create the group:
 
@@ -84,7 +65,7 @@ Use the following command to create the group:
 $ aws eks create-nodegroup --region ${AWS_DEFAULT_REGION} \
 --cluster-name ${EKS_CLUSTER_NAME} \
 --nodegroup-name nodegroup-sec-group \
---subnets ${new_subnet_id_1} ${new_subnet_id_2} ${new_subnet_id_3} \
+--subnets ${PRIMARY_SUBNET_1} ${PRIMARY_SUBNET_2} ${PRIMARY_SUBNET_3} \
 --instance-types m5.large --node-role ${node_role_arn} \
 --scaling-config minSize=1,maxSize=3,desiredSize=3
 ```
@@ -92,7 +73,7 @@ $ aws eks create-nodegroup --region ${AWS_DEFAULT_REGION} \
 Node group creation takes several minutes. You can check the status of the creation of a managed node group with the following command.
 
 ```bash
-$ aws eks describe-nodegroup --cluster-name ${cluster_name} \
+$ aws eks describe-nodegroup --cluster-name ${EKS_CLUSTER_NAME} \
 --nodegroup-name nodegroup-sec-group \
 --query nodegroup.status --output text
 ```
@@ -105,5 +86,17 @@ Get a list of nodes in your cluster:
 $ kubectl get nodes -o wide
 ```
 
-You can see that 3 new nodes are provisioned in the 10.42.0.0/16 CIDR range.
+Here is a sample output from the previous command.
 
+```bash
+$ kubectl get nodes -o wide
+NAME                                          STATUS   ROLES    AGE    VERSION               INTERNAL-IP     EXTERNAL-IP   OS-IMAGE         KERNEL-VERSION                 CONTAINER-RUNTIME
+ip-10-42-10-93.us-west-2.compute.internal     Ready    <none>   2d3h   v1.23.9-eks-ba74326   10.42.10.93     <none>        Amazon Linux 2   5.4.209-116.367.amzn2.x86_64   docker://20.10.17
+ip-10-42-11-6.us-west-2.compute.internal      Ready    <none>   2d3h   v1.23.9-eks-ba74326   10.42.11.6      <none>        Amazon Linux 2   5.4.209-116.367.amzn2.x86_64   docker://20.10.17
+ip-10-42-12-60.us-west-2.compute.internal     Ready    <none>   2d3h   v1.23.9-eks-ba74326   10.42.12.60     <none>        Amazon Linux 2   5.4.209-116.367.amzn2.x86_64   docker://20.10.17
+ip-10-42-10-224.us-west-2.compute.internal    Ready    <none>   104s   v1.23.9-eks-ba74326   10.42.10.224    <none>        Amazon Linux 2   5.4.209-116.367.amzn2.x86_64   docker://20.10.17
+ip-10-42-11-228.us-west-2.compute.internal    Ready    <none>   105s   v1.23.9-eks-ba74326   10.42.11.228    <none>        Amazon Linux 2   5.4.209-116.367.amzn2.x86_64   docker://20.10.17
+ip-10-42-12-220.us-west-2.compute.internal    Ready    <none>   105s   v1.23.9-eks-ba74326   10.42.12.220    <none>        Amazon Linux 2   5.4.209-116.367.amzn2.x86_64   docker://20.10.17
+```
+
+You can see that 3 new nodes are provisioned in the `10.42.0.0/16` CIDR range.
