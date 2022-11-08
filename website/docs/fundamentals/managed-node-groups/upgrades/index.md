@@ -54,7 +54,8 @@ The Amazone EKS Managed worker node upgrade has 4 phases.
 * Applies same accross all nodes which are part of Managed Node group making sure there are no nodes with older version
 
 <h4>Scale Down:</h4>
-*The scale down phase decrements the Auto Scaling group maximum size and desired size by one to return to values before the update started.
+
+* The scale down phase decrements the Auto Scaling group maximum size and desired size by one to return to values before the update started.
 
 To know more about Manged node group update behavior [Managed Node group Update phases](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-update-behavior.html)
 
