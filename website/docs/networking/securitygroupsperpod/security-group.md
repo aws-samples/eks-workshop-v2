@@ -9,5 +9,54 @@ weight: 50
 First, attach an additional security group to Cloud9 to enable access to RDS:
 
 ```bash
-$ FIX THE COMMAND
+$ export C9_INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+
+$ aws ec2 describe-instances --output table \
+--query 'Reservations[*].Instances[*].NetworkInterfaces[*].Groups[*].GroupId' \
+--region ${AWS_DEFAULT_REGION} --instance-ids ${C9_INSTANCE_ID}
+```
+
+### Create Security Group
+
+Now, let’s create the pod security group (POD_SG):
+
+```bash
+$ aws ec2 create-security-group \
+--description 'POD SG' \
+--group-name 'POD_SG' \
+--vpc-id ${VPC_ID}
+```
+
+Export the pod security group id:
+
+```bash
+$ export POD_SG=$(aws ec2 describe-security-groups \
+--filters Name=group-name,Values=POD_SG Name=vpc-id,Values=${VPC_ID} \
+--query "SecurityGroups[0].GroupId" --output text)
+```
+
+### Enable DNS
+
+Our application would rely on DNS to reach the RDS instance. Now that we have a created a security group intended for our application pod, we need to adjust the worker node security group to allow DNS resolution to work from the pod security group. Use the following command to locate the cluster security group:
+
+```bash
+$ export CLUSTER_SG=$(aws eks describe-cluster --name ${EKS_CLUSTER_NAME} \
+--query "cluster.resourcesVpcConfig.clusterSecurityGroupId" \
+--output text)
+```
+
+Allow POD_SG to connect to CLUSTER_SG using TCP and UDP ports 53:
+
+```bash
+$ aws ec2 authorize-security-group-ingress \
+    --group-id ${CLUSTER_SG} \
+    --protocol tcp \
+    --port 53 \
+    --source-group ${POD_SG}
+
+$ aws ec2 authorize-security-group-ingress \
+    --group-id ${CLUSTER_SG} \
+    --protocol udp \
+    --port 53 \
+    --source-group ${POD_SG}
 ```
