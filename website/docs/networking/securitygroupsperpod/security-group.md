@@ -4,21 +4,35 @@ sidebar_position: 50
 weight: 50
 ---
 
-### Attach RDS Security Group to Cloud9
+### Enable Cloud9 Acccess To RDS
 
-First, attach an additional security group to Cloud9 to enable access to RDS:
+i. First, get the instance id of the Cloud9 instance from the instance metadata service:
 
 ```bash
 $ export C9_INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
-
-$ aws ec2 describe-instances --output table \
---query 'Reservations[*].Instances[*].NetworkInterfaces[*].Groups[*].GroupId' \
---region ${AWS_DEFAULT_REGION} --instance-ids ${C9_INSTANCE_ID}
 ```
 
-### Create Security Group
+ii. Locate the existing security group attached to the Cloud9 instance:
 
-Now, let’s create the pod security group (POD_SG):
+```bash
+$ export C9_SG=$(aws ec2 describe-instances --output text \
+--query 'Reservations[*].Instances[*].NetworkInterfaces[*].Groups[*].GroupId' \
+--region ${AWS_DEFAULT_REGION} --instance-ids ${C9_INSTANCE_ID})
+```
+
+iii. Add Cloud9 security group to the allowed list on the RDS security group:
+
+```bash
+$ aws ec2 authorize-security-group-ingress \
+--group-id ${NETWORKING_RDS_SG_ID} \
+--protocol tcp \
+--port 5432 \
+--source-group ${C9_SG}
+```
+
+### Create Pod Security Group
+
+i. Now, let’s create the pod security group (POD_SG):
 
 ```bash
 $ aws ec2 create-security-group \
@@ -27,12 +41,22 @@ $ aws ec2 create-security-group \
 --vpc-id ${VPC_ID}
 ```
 
-Export the pod security group id:
+ii. Export the pod security group id:
 
 ```bash
 $ export POD_SG=$(aws ec2 describe-security-groups \
 --filters Name=group-name,Values=POD_SG Name=vpc-id,Values=${VPC_ID} \
 --query "SecurityGroups[0].GroupId" --output text)
+```
+
+iii. Add `POD_SG` to RDS security group to allow access:
+
+```bash
+$ aws ec2 authorize-security-group-ingress \
+--group-id ${NETWORKING_RDS_SG_ID} \
+--protocol tcp \
+--port 5432 \
+--source-group ${POD_SG}
 ```
 
 ### Enable DNS
