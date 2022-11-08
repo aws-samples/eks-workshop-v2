@@ -1,6 +1,7 @@
 # EKS Workshop - Authoring Content
 
 This guide outlines how to author content for the workshop, whether adding new content or modifying existing content.
+
 ## Video tutorial
 
 [<img src="https://user-images.githubusercontent.com/3959052/186980675-a76db290-be21-42ca-af67-547691f94523.png" width="400" link="https://broadcast.amazon.com/videos/591479" />](https://broadcast.amazon.com/videos/591479)
@@ -24,8 +25,6 @@ The first step is to create a working branch to create the content. There are tw
 2. Otherwise fork the repository, clone it and create a new branch
 
 Modifications to the workshop will only be accepted via Pull Requests.
-
-Note: You must clone the repository with submodules `git clone --recurse-submodules https://github.com/aws-samples/eks-workshop-v2.git`
 
 ## Writing content
 
@@ -55,7 +54,7 @@ As you make changes to the Markdown content the site will refresh automatically,
 
 Where possible the workshop content aims to avoid having users install components in the EKS cluster using Helm charts, Kubernetes manifests or other means. The goal of the workshop is to teach learners how to use components, not how to install them. As such, the default choice should be to align with the existing patterns for pre-installing all components in the EKS cluster using automation.
 
-Where possible the preference is to use EKS Blueprints addons to install dependencies like Helm charts in the EKS cluster. There are a [number of addons](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons) packaged with EKS Blueprints which can be used if your particular component is supported. You can see examples of how to install these addons for workshop content [here](../terraform/modules/cluster/addons.tf).
+Where possible the preference is to use Terraform and EKS Blueprints addons to install dependencies like Helm charts in the EKS cluster. There are a [number of addons](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/modules/kubernetes-addons) packaged with EKS Blueprints which can be used if your particular component is supported. You can see examples of how to install these addons for workshop content [here](../terraform/modules/cluster/addons.tf).
 
 If the component you require is not already supported by EKS Blueprints you can create a custom addon within this repository. You can see an example of creating a custom addon module [here](../terraform/modules/addons/descheduler/main.tf) and it is installed [here](../terraform/modules/cluster/addons.tf).
 
@@ -96,7 +95,7 @@ All Terraform configuration resides in the `terraform` directory, and is structu
 
 The workshop content has various tools and utilities that are necessary to for the learner to complete it, the primary example being `kubectl` along with supporting tools like `jq` and `curl`.
 
-See `environment/Dockerfile` to configure the installed utilities. 
+See `environment/Dockerfile` and `environment/installer.sh` to configure the installed utilities. 
 
 ## Testing
 
@@ -170,107 +169,7 @@ If your AWS credentials expire you can `exit` and restart the shell, which will 
 
 There is also an automated testing capability provided with the workshop that allows testing of the entire workshop flow as a unit test suite. This is useful once your content is stable and has been manually tested.
 
-To use this utility you must:
-- Have some AWS credentials available in your current shell session (ie. you `aws` CLI must work)
-
-There are two ways you can interact with this automated testing suite.
-
-#### Iterative automated testing
-
-This method allows you to repeatedly run the automated tests, and is suitable for when you are still working through potential issues and changes.
-
-First, create the infrastructure:
-
-```
-make create-infrastructure
-```
-
-Then run `make test` as many times as necessary, which will run the test suite on your existing infrastructure:
-
-```
-➜  eks-workshop-v2 git:(main) ✗ make test
-bash hack/run-tests.sh
-Generating temporary AWS credentials...
-Building container images...
-sha256:62fb5cc6e348d854a59a5e00429554eab770adc24150753df2e810355e678899
-sha256:a6b3c8675c79804587b5e4d5b8dfc5cfd6d01b40c89ee181ad662902e0cb650d
-Running test suite...
-Added new context arn:aws:eks:us-west-2:111111111:cluster/eksw-env-cluster-eks to /root/.kube/config
-- Generating test cases
-✔ Generating test cases
-- Building Mocha suites
-✔ Building Mocha suites
-
-Executing tests...
-
-
-  Root
-    Setup
-      - Setup
-      - At an AWS Event
-    Helm
-      - Helm
-      ✔ Introduction (250ms)
-      ✔ Update the Chart repository (8744ms)
-      ✔ Search Chart repositories (2353ms)
-      ✔ Add the Bitnami repository (15342ms)
-      ✔ Install NGINX (19128ms)
-      ✔ Clean Up (7342ms)
-    Secrets
-      - Secrets
-      - AWS KMS and Custom Key Store
-      ✔ Create a Secret (3475ms)
-      ✔ Access the Secret from a Pod (4778ms)
-      ✔ Cleanup The Lab (44457ms)
-    Autoscaling
-      - Autoscaling
-      - Cleanup
-      Descheduler
-        - Descheduler
-        ✔ Install (2733ms)
-        ✔ Remove Pods Violating NodeTaints (5847ms)
-        ✔ Pod Lifetime usecase (1857ms)
-        ✔ Clean Up (2292ms)
-
-
-  13 passing (2m)
-  8 pending
-
-success
-```
-
-You can limit the tests to just specific modules in order to execute tests quicker by specifying the directory relative to `website/docs`. For example to test only the content for the autoscaling module located at `website/docs/autoscaling' the command would be:
-
-```
-➜  eks-workshop-v2 git:(main) ✗ make test module='autoscaling/**'
-bash hack/run-tests.sh
-Running tests with for module autoscaling
-Generating temporary AWS credentials...
-Building container images...
-[...]
-```
-
-Finally, once you are done destroy the infrastructure:
-
-```
-make destroy-infrastructure
-```
-
-#### End-to-end testing
-
-This method will:
-- Create all the workshop infrastructure
-- Run the test suite
-- Destroy all the workshop infrastructure
-
-As a result, this can take roughly 30 minutes, and is most suitable once you are sure your content is functioning correctly.
-
-The tests are triggered using the `make e2e-test` command:
-
-```bash
-➜  eks-workshop-v2 git:(main) ✗ make e2e-test
-[...]
-```
+See this [doc](./automated_tests.md) for more information on automated tests.
 
 ## Raise a Pull Request
 

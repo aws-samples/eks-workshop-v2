@@ -1,6 +1,6 @@
 ---
 title: Storage
-sidebar_position: 20
+sidebar_position: 40
 ---
 
 [Storage on EKS](https://docs.aws.amazon.com/eks/latest/userguide/storage.html) will provide a high level overview on how to integrate two AWS Storage services with your EKS cluster.

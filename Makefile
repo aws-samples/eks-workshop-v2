@@ -18,10 +18,6 @@ tf-fmt:
 test:
 	bash hack/run-tests.sh $(terraform_context) $(module)
 
-.PHONY: e2e-test
-e2e-test:
-	bash hack/run-e2e.sh $(terraform_context)
-
 .PHONY: shell
 shell:
 	bash hack/shell.sh $(terraform_context)

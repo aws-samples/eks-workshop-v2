@@ -24,7 +24,9 @@ download_and_verify () {
   rm "$out_file.sha256"
 }
 
-yum install -y findutils jq tar gzip zsh git diffutils wget tree unzip openssl gettext bash-completion
+yum install -y findutils jq tar gzip zsh git diffutils wget tree unzip openssl gettext bash-completion python3 pip3 python3-pip
+
+pip3 install awscurl
 
 # kubectl
 download_and_verify "https://dl.k8s.io/release/v$kubectl_version/bin/linux/amd64/kubectl" "$kubectl_checksum" "kubectl"

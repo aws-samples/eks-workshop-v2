@@ -120,4 +120,13 @@ output "networking_rds_database_name" {
 output "networking_rds_ingress_sg_id" {
   description = "Security group id of the RDS database for the networking module"
   value       = aws_security_group.networking_rds_ingress.id
+
+output "amp_endpoint" {
+  description = "Endpoint of the AMP workspace"
+  value       = aws_prometheus_workspace.this.prometheus_endpoint
+}
+
+output "adot_iam_role" {
+  description = "ARN of the IAM role used by the ADOT collector pod"
+  value       = module.iam_assumable_role_adot.iam_role_arn
 }

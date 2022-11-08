@@ -27,12 +27,12 @@ terraform -chdir=$terraform_dir destroy -target=module.cluster.module.deschedule
 
 terraform -chdir=$terraform_dir destroy -target=module.cluster.module.eks-blueprints --auto-approve
 
-if [ ! -z "$DANGEROUS_CLEANUP" ]; then
+if [ -n "${DANGEROUS_CLEANUP-}" ]; then
   temp_file=$(mktemp)
 
   CLUSTER_ID="${environment}" envsubst < $SCRIPT_DIR/lib/filter.yml > $temp_file
 
-  awsweeper --force $temp_file
+  awsweeper --dry-run $temp_file
 fi
 
 terraform -chdir=$terraform_dir destroy --auto-approve

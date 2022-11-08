@@ -67,3 +67,7 @@ Until now we've looked at a broad overview of cost allocations or a deep dive in
 </browser>
 
 There are many other features available with Kubecost as well, like Savings, Health, Reports and Alerts. Feel free to play around with various links.
+
+### Clean Up
+
+To Clean Up, go back to the Cloud9 terminal and stop the port forward by pressing `CTRL + C`. That's it.
