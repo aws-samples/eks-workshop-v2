@@ -120,6 +120,7 @@ output "networking_rds_database_name" {
 output "networking_rds_ingress_sg_id" {
   description = "Security group id of the RDS database for the networking module"
   value       = aws_security_group.networking_rds_ingress.id
+}
 
 output "amp_endpoint" {
   description = "Endpoint of the AMP workspace"
