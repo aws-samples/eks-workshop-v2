@@ -99,17 +99,6 @@ The following "master node" programs have been searched, but none of them have b
 [INFO] 3.3 Container Optimized OS
 [WARN] 3.3.1 Prefer using Container-Optimized OS when possible (Manual)
 
-== Remediations node ==
-3.2.9 If using a Kubelet config file, edit the file to set eventRecordQPS: to an appropriate level.
-If using command line arguments, edit the kubelet service file
-/etc/systemd/system/kubelet.service on each worker node and
-set the below parameter in KUBELET_SYSTEM_PODS_ARGS variable.
-Based on your system, restart the kubelet service. For example:
-systemctl daemon-reload
-systemctl restart kubelet.service
-
-3.3.1 audit test did not run: No tests defined
-
 == Summary node ==
 14 checks PASS
 0 checks FAIL
