@@ -1,5 +1,5 @@
 ---
-title: "Using CloudWatch Logs Insights to view Container Insights data"
+title: "Using CloudWatch Logs Insights to View Container Insights Data"
 sidebar_position: 30
 weight: 5
 ---

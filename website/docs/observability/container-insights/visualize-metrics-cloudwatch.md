@@ -1,5 +1,5 @@
 ---
-title: "Visualize Container Insights metrics using Amazon CloudWatch"
+title: "Visualize Container Insights Metrics Using Amazon CloudWatch"
 sidebar_position: 20
 weight: 6
 ---

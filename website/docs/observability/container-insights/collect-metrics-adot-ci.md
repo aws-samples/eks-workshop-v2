@@ -1,5 +1,5 @@
 ---
-title: "Enabling Container Insights using Using AWS Distro for OpenTelemetry"
+title: "Enabling Container Insights Using AWS Distro for OpenTelemetry"
 sidebar_position: 10
 ---
 
