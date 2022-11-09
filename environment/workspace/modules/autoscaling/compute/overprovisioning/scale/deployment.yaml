@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ui
-  namespace: ui
+  name: all
 spec:
-  replicas: 5
+  replicas: 6
