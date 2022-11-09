@@ -20,6 +20,7 @@
       "Effect": "Allow",
       "Action": [
         "eks:UpdateNodegroupConfig",
+        "eks:UpdateNodegroupVersion",
         "eks:DescribeNodegroup"
       ],
       "Resource": "${nodegroup}/*"
@@ -110,6 +111,20 @@
           "elasticloadbalancing:DescribeTargetHealth"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "ssm:DescribeParameters"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "ssm:GetParameters"
+      ],
+      "Resource": "arn:aws:ssm:${region}::parameter/aws/service/eks/optimized-ami/*"
     }
   ]
 }

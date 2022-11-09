@@ -22,15 +22,6 @@ For more details on the latest AMI release versions and their changelog:
 * [Bottlerocket AMI](https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami-bottlerocket.html)
 * [Windows AMI](https://docs.aws.amazon.com/eks/latest/userguide/eks-ami-versions-windows.html)
 
-
-**Pricing:** There are no additional costs to use Amazon EKS managed node groups, you only pay for the AWS resources you provision. These include Amazon EC2 instances, Amazon EBS volumes, Amazon EKS cluster hours, and any other AWS infrastructure. There are no minimum fees and no upfront commitments.
-
-:::info 
-Starting with kubernetes version 1.24, Amazon EKS will end the support for `Dockershim`. To learn more, refer to the following article in the [AWS documentation](https://docs.aws.amazon.com/eks/latest/userguide/dockershim-deprecation.html).
-:::Dockershim deprecation 
-
-There are two ways to provision and upgrade your worker nodes - **Self-managed node groups** and **Managed node groups**. This workshop uses a managed node group which is where our sample application is running by default. Managed Node groups make it easier for us to automate both the AWS and the Kubernetes side of the process.
-
 The Amazon EKS Managed worker node upgrade has 4 phases:
 **Setup  >  Scale Up  > Upgrade > Scale Down**
 
@@ -61,12 +52,18 @@ The Amazon EKS Managed worker node upgrade has 4 phases:
 To know more about Manged node group update behavior, see [Managed Node group Update phases](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-update-behavior.html).
 
 
-### Upgrade Managed Node Group (optional):
+### Upgrading a Managed Node Group
 
-For reference, the following command can be run to trigger an upgrade of your node-group. If you're in a live workshop setting, note that this process takes time and may impact your ability to proceed to the next module.
+The EKS cluster that has been provisioned for you intentionally has Managed Node Groups that are not running the latest AMI. You can see what the latest AMI version is by querying SSM:
 
 ```
-$ eksctl upgrade nodegroup --name=nodegroup --cluster=$EKS_CLUSTER_NAME --kubernetes-version=<desired_kubernetes_version>
+$ aws ssm get-parameter --name /aws/service/eks/optimized-ami/1.23/amazon-linux-2/recommended/image_id --region $AWS_DEFAULT_REGION --query "Parameter.Value" --output text
+```
+
+When you initiate a managed node group update, Amazon EKS automatically updates your nodes for you, completing the steps listed above. If you're using an Amazon EKS optimized AMI, Amazon EKS automatically applies the latest security patches and operating system updates to your nodes as part of the latest AMI release version. You can initiate an update of the Managed Node Group used to host our sample application like so:
+
+```
+$ aws eks update-nodegroup-version --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME
 ```
 
 In another Terminal tab you can follow the progress with:
@@ -74,55 +71,3 @@ In another Terminal tab you can follow the progress with:
 ```
 $ kubectl get nodes --watch
 ```
-
-<p></p>
-<h3> Bottlerocket </h3>
-<p></p>
-Bottlerocket is a Linux-based open-source operating system that is purpose-built by Amazon Web Services for running containers. Bottlerocket includes only the essential software required to run containers, and ensures that the underlying software is always secure. With Bottlerocket, customers can reduce maintenance overhead and automate their workflows by applying configuration settings consistently as nodes are upgraded or replaced. Bottlerocket is now generally available at no cost as an Amazon Machine Image (AMI) for Amazon Elastic Compute Cloud (EC2).
-
-<p></p>
-<strong>Update Process</strong>
-<p></p>
-
-Unlike general-purpose Linux distributions that include a package manager allowing you to update and install individual pieces of software, Bottlerocket downloads a full filesystem image and reboots into it. It can automatically roll back if boot failures occur, and workload failures can trigger manual rollbacks. This simplifies the update processes and makes it easier, faster, and safer to perform updates through automation.
-
-There are also multiple mechanisms you can leverage to perform updates—the Bottlerocket API, updog CLI tool, and the Bottlerocket Update Operator for Kubernetes.
-
-For this workshop, we’ll use the admin container and the updog CLI tool.
-
-First, you will need to connect to the admin container of your Bottlerocket node via SSH by using the following command:
-
-```
-$ ssh -i YOUR_EC2_KEYPAIR_FILE.pem ec2-user@INSTANCE IP
-```
-
-Note: Make sure to replace “YOUR_EC2_KEYPAIR_FILE” with the name of your Keypair and the “INSTANCE IP” with the IP of your Bottlerocket Node that you can glean, for example, from kubectl get nodes -o wide.
-
-Next, use sheltie to drop into a root shell on your bottle rocket node:
-
-```
-$ sudo sheltie
-```
-
-To check for updates:
-
-```
-$ updog check-update
-```
-
-If an update is available, you can initiate an update:
-
-```
-$ updog update
-```
-
-This will download the new update image and update the boot flags so that when you reboot it will attempt to boot to the new version.
-
-When that’s complete, you can reboot:
-
-```
-$ reboot
-```
-
-And that’s it. The node is now running the latest version of Bottlerocket OS.
-
