@@ -15,9 +15,9 @@ Since Amazon EKS provides a managed control plane, not all of the recommendation
 
 CIS Amazon EKS Benchmark [v1.0.1](https://www.cisecurity.org/cis-benchmarks/) provides guidance for node security configurations for Kubernetes and aligns with CIS Kubernetes Benchmark v1.6.1.
 
-{{% notice info %}}
+:::note
 Note: The CIS committee agreed to remove controls for the appropriate control plane recommendations from the managed Kubernetes benchmarks. The CIS Amazon EKS Benchmark consists of four sections on control plane logging configuration, worker nodes, policies and managed services. 
-{{% /notice %}}
+:::
 
 #### [aquasecurity/kube-bench](https://github.com/aquasecurity/kube-bench)
 

@@ -24,7 +24,7 @@ kube-bench-lvg24   0/1     Completed   0          2m24s
 
 Check the logs of the pod to determine the results of the scan
 ```bash
-$ kubectl logs kube-bench-lvg24
+$ kubectl logs <kube-bench-pod-name>
 [INFO] 1 Control Plane Components
 
 == Summary master ==
