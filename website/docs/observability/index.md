@@ -1,7 +1,7 @@
 ---
 title: "Observability"
-sidebar_position: 5
-weight: 35
+sidebar_position: 10
+weight: 10
 ---
 
 Observability section
