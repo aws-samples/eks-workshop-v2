@@ -66,7 +66,7 @@ module "eks-blueprints" {
       type                          = "ingress"
       source_cluster_security_group = true
     }
-    
+
     ingress_nodes_metric_server_port = {
       description                   = "Cluster API to Nodegroup for Metric Server"
       protocol                      = "tcp"
@@ -91,12 +91,12 @@ module "eks-blueprints" {
       max_size        = local.default_mng_max
       desired_size    = local.default_mng_size
 
-      custom_ami_id   = data.aws_ssm_parameter.eks_optimized_ami.value
-      
-      create_launch_template = true
-      launch_template_os = "amazonlinux2eks"
+      custom_ami_id = data.aws_ssm_parameter.eks_optimized_ami.value
 
-      pre_userdata =  <<-EOT
+      create_launch_template = true
+      launch_template_os     = "amazonlinux2eks"
+
+      pre_userdata = <<-EOT
         MAX_PODS=$(/etc/eks/max-pods-calculator.sh --instance-type-from-imds --cni-version ${trimprefix(data.aws_eks_addon_version.latest["vpc-cni"].version, "v")} --cni-prefix-delegation-enabled)
       EOT
 
@@ -116,12 +116,12 @@ module "eks-blueprints" {
       max_size        = 2
       desired_size    = 1
 
-      custom_ami_id   = data.aws_ssm_parameter.eks_optimized_ami.value
-      
-      create_launch_template = true
-      launch_template_os = "amazonlinux2eks"
+      custom_ami_id = data.aws_ssm_parameter.eks_optimized_ami.value
 
-      pre_userdata =  <<-EOT
+      create_launch_template = true
+      launch_template_os     = "amazonlinux2eks"
+
+      pre_userdata = <<-EOT
         MAX_PODS=$(/etc/eks/max-pods-calculator.sh --instance-type-from-imds --cni-version ${trimprefix(data.aws_eks_addon_version.latest["vpc-cni"].version, "v")} --cni-prefix-delegation-enabled)
       EOT
 
@@ -134,6 +134,33 @@ module "eks-blueprints" {
         workshop-system = "yes"
       }
     }
+
+    mg_tainted = {
+      node_group_name = "managed-ondemand-tainted"
+      instance_types  = ["m5.large"]
+      subnet_ids      = local.private_subnet_ids
+      min_size        = 1
+      max_size        = 2
+      desired_size    = 1
+
+      custom_ami_id = data.aws_ssm_parameter.eks_optimized_ami.value
+
+      create_launch_template = true
+      launch_template_os     = "amazonlinux2eks"
+
+      pre_userdata = <<-EOT
+        MAX_PODS=$(/etc/eks/max-pods-calculator.sh --instance-type-from-imds --cni-version ${trimprefix(data.aws_eks_addon_version.latest["vpc-cni"].version, "v")} --cni-prefix-delegation-enabled)
+      EOT
+
+      kubelet_extra_args   = "--max-pods=$${MAX_PODS}"
+      bootstrap_extra_args = "--use-max-pods false"
+
+      k8s_labels = {
+        workshop-default = "no"
+        tainted          = "yes"
+      }
+    }
+
   }
 
   fargate_profiles = {

@@ -38,30 +38,30 @@ module "eks-blueprints-kubernetes-csi-addon" {
     set = [{
       name  = "node.tolerateAllTaints"
       value = "true"
-    },
-    {
-      name  = "controller.replicaCount"
-      value = 1
-    },
-    {
-      name  = "controller.nodeSelector.workshop-system"
-      value = "yes"
-      type  = "string"
-    },
-    {
-      name  = "controller.tolerations[0].key"
-      value = "systemComponent"
-      type  = "string"
-    },
-    {
-      name  = "controller.tolerations[0].operator"
-      value = "Exists"
-      type  = "string"
-    },
-    {
-      name  = "controller.tolerations[0].effect"
-      value = "NoSchedule"
-      type  = "string"
+      },
+      {
+        name  = "controller.replicaCount"
+        value = 1
+      },
+      {
+        name  = "controller.nodeSelector.workshop-system"
+        value = "yes"
+        type  = "string"
+      },
+      {
+        name  = "controller.tolerations[0].key"
+        value = "systemComponent"
+        type  = "string"
+      },
+      {
+        name  = "controller.tolerations[0].operator"
+        value = "Exists"
+        type  = "string"
+      },
+      {
+        name  = "controller.tolerations[0].effect"
+        value = "NoSchedule"
+        type  = "string"
     }]
   }
 }
@@ -75,14 +75,14 @@ module "eks-blueprints-kubernetes-addons" {
 
   eks_cluster_id = module.eks-blueprints.eks_cluster_id
 
-  enable_karpenter                       = true
-  enable_aws_node_termination_handler    = true
-  enable_aws_load_balancer_controller    = true
-  enable_cluster_autoscaler              = true
-  enable_metrics_server                  = true
-  enable_kubecost                        = true
-  enable_aws_efs_csi_driver              = true
-  
+  enable_karpenter                    = true
+  enable_aws_node_termination_handler = true
+  enable_aws_load_balancer_controller = true
+  enable_cluster_autoscaler           = true
+  enable_metrics_server               = true
+  enable_kubecost                     = true
+  enable_aws_efs_csi_driver           = true
+
   cluster_autoscaler_helm_config = {
     version   = var.helm_chart_versions["cluster_autoscaler"]
     namespace = "kube-system"
@@ -90,11 +90,11 @@ module "eks-blueprints-kubernetes-addons" {
     set = concat([{
       name  = "image.tag"
       value = "v${var.cluster_version}.1"
-    },
-    {
-      name  = "replicaCount"
-      value = 0
-    }],
+      },
+      {
+        name  = "replicaCount"
+        value = 0
+      }],
     local.system_component_values)
   }
 
@@ -111,11 +111,11 @@ module "eks-blueprints-kubernetes-addons" {
     set = concat([{
       name  = "replicaCount"
       value = 1
-    },
-    {
-      name  = "vpcId"
-      value = module.aws_vpc.vpc_id
-    }],
+      },
+      {
+        name  = "vpcId"
+        value = module.aws_vpc.vpc_id
+      }],
     local.system_component_values)
   }
 
@@ -126,77 +126,77 @@ module "eks-blueprints-kubernetes-addons" {
     set = concat([{
       name  = "aws.defaultInstanceProfile"
       value = module.eks-blueprints.managed_node_group_iam_instance_profile_id[0]
-    },
-    {
-      name  = "controller.resources.requests.cpu"
-      value = "300m"
-      type  = "string"
-    },
-    {
-      name  = "controller.resources.limits.cpu"
-      value = "300m"
-      type  = "string"
-    }], 
+      },
+      {
+        name  = "controller.resources.requests.cpu"
+        value = "300m"
+        type  = "string"
+      },
+      {
+        name  = "controller.resources.limits.cpu"
+        value = "300m"
+        type  = "string"
+      }],
     local.system_component_values)
   }
 
   kubecost_helm_config = {
     set = concat([
-    {
-      name  = "prometheus.server.nodeSelector.workshop-system"
-      value = "yes"
-      type  = "string"
-    },
-    {
-      name  = "prometheus.server.tolerations[0].key"
-      value = "systemComponent"
-      type  = "string"
-    },
-    {
-      name  = "prometheus.server.tolerations[0].operator"
-      value = "Exists"
-      type  = "string"
-    },
-    {
-      name  = "prometheus.server.tolerations[0].effect"
-      value = "NoSchedule"
-      type  = "string"
-    },
-    {
-      name  = "prometheus.kube-state-metrics.nodeSelector.workshop-system"
-      value = "yes"
-      type  = "string"
-    },
-    {
-      name  = "prometheus.kube-state-metrics.tolerations[0].key"
-      value = "systemComponent"
-      type  = "string"
-    },
-    {
-      name  = "prometheus.kube-state-metrics.tolerations[0].operator"
-      value = "Exists"
-      type  = "string"
-    },
-    {
-      name  = "prometheus.kube-state-metrics.tolerations[0].effect"
-      value = "NoSchedule"
-      type  = "string"
-    },
-    {
-      name  = "prometheus.nodeExporter.tolerations[0].key"
-      value = "systemComponent"
-      type  = "string"
-    },
-    {
-      name  = "prometheus.nodeExporter.tolerations[0].operator"
-      value = "Exists"
-      type  = "string"
-    },
-    {
-      name  = "prometheus.nodeExporter.tolerations[0].effect"
-      value = "NoSchedule"
-      type  = "string"
-    }], 
+      {
+        name  = "prometheus.server.nodeSelector.workshop-system"
+        value = "yes"
+        type  = "string"
+      },
+      {
+        name  = "prometheus.server.tolerations[0].key"
+        value = "systemComponent"
+        type  = "string"
+      },
+      {
+        name  = "prometheus.server.tolerations[0].operator"
+        value = "Exists"
+        type  = "string"
+      },
+      {
+        name  = "prometheus.server.tolerations[0].effect"
+        value = "NoSchedule"
+        type  = "string"
+      },
+      {
+        name  = "prometheus.kube-state-metrics.nodeSelector.workshop-system"
+        value = "yes"
+        type  = "string"
+      },
+      {
+        name  = "prometheus.kube-state-metrics.tolerations[0].key"
+        value = "systemComponent"
+        type  = "string"
+      },
+      {
+        name  = "prometheus.kube-state-metrics.tolerations[0].operator"
+        value = "Exists"
+        type  = "string"
+      },
+      {
+        name  = "prometheus.kube-state-metrics.tolerations[0].effect"
+        value = "NoSchedule"
+        type  = "string"
+      },
+      {
+        name  = "prometheus.nodeExporter.tolerations[0].key"
+        value = "systemComponent"
+        type  = "string"
+      },
+      {
+        name  = "prometheus.nodeExporter.tolerations[0].operator"
+        value = "Exists"
+        type  = "string"
+      },
+      {
+        name  = "prometheus.nodeExporter.tolerations[0].effect"
+        value = "NoSchedule"
+        type  = "string"
+      }],
     local.system_component_values)
   }
 }
@@ -222,26 +222,26 @@ locals {
     name  = "nodeSelector.workshop-system"
     value = "yes"
     type  = "string"
-  },
-  {
-    name  = "tolerations[0].key"
-    value = "systemComponent"
-    type  = "string"
-  },
-  {
-    name  = "tolerations[0].operator"
-    value = "Exists"
-    type  = "string"
-  },
-  {
-    name  = "tolerations[0].effect"
-    value = "NoSchedule"
-    type  = "string"
+    },
+    {
+      name  = "tolerations[0].key"
+      value = "systemComponent"
+      type  = "string"
+    },
+    {
+      name  = "tolerations[0].operator"
+      value = "Exists"
+      type  = "string"
+    },
+    {
+      name  = "tolerations[0].effect"
+      value = "NoSchedule"
+      type  = "string"
   }]
 }
 
 module "descheduler" {
-  source        = "../addons/descheduler"
+  source = "../addons/descheduler"
 
   depends_on = [
     module.eks-blueprints-kubernetes-csi-addon
