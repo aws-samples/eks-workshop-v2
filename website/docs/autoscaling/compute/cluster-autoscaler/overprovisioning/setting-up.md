@@ -9,17 +9,19 @@ It is best practice to create appropriate `PriorityClass` for your applications.
 autoscaling/compute/overprovisioning/setup/priorityclass-default.yaml
 ```
 
-Next create `PriorityClass` that will be assigned to Pause Container pods used for over provisioning with priority value `-1`.
+We'll also create `PriorityClass` that will be assigned to pause pods used for over-provisioning with priority value `-1`.
 
 ```file
 autoscaling/compute/overprovisioning/setup/priorityclass-pause.yaml
 ```
 
-Pause containers make sure there are enough nodes that are available based on how much over provisioning is needed for your environment. Keep in mind the `—max-size` parameter in ASG (of EKS node group). Cluster Autoscaler won’t increase number of nodes beyond this maximum specified in the ASG
+Pause pods make sure there are enough nodes that are available based on how much over provisioning is needed for your environment. Keep in mind the `—max-size` parameter in ASG (of EKS node group). Cluster Autoscaler won’t increase number of nodes beyond this maximum specified in the ASG
 
 ```file
 autoscaling/compute/overprovisioning/setup/deployment-pause.yaml
 ```
+
+In this case we're going to schedule a single pause pod requesting `7Gi` of memory, which means it will consume basically entire `m5.large` instance. This will result in us always having a "spare" worker node available.
 
 Apply the updates to your cluster:
 

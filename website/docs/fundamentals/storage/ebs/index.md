@@ -1,5 +1,5 @@
 ---
-title: Amazon Elastic Block Store (EBS)
+title: Amazon EBS
 sidebar_position: 30
 ---
 

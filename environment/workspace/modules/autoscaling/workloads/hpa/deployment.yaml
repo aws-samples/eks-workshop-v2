@@ -9,6 +9,4 @@ spec:
         - name: ui
           resources:
             limits:
-              cpu: 200m
-            requests:
-              cpu: 200m
+              cpu: 250m
