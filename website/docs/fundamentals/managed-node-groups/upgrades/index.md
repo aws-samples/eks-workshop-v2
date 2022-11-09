@@ -1,5 +1,5 @@
 ---
-title: Upgrade Managed Node Group
+title: Upgrading Managed Node Groups
 sidebar_position: 60
 ---
 
@@ -23,29 +23,28 @@ For more details on the latest AMI release versions and their changelog:
 * [Windows AMI](https://docs.aws.amazon.com/eks/latest/userguide/eks-ami-versions-windows.html)
 
 The Amazon EKS Managed worker node upgrade has 4 phases:
-**Setup  >  Scale Up  > Upgrade > Scale Down**
 
-### Setup:
+**Setup**:
 
 * Create a new Amazon EC2 Launch Template version associated with Auto Scaling group with the latest AMI
 * Point your Auto Scaling group to use the latest version of the launch template
 * Determine the maximum number of nodes to upgrade in parallel using the `updateconfig` property for the node group.
 
-### Scale Up:
+**Scale Up**:
 
 * During the upgrade process, the upgraded nodes are launched in the same availability zone as those that are being upgraded
 * Increments the Auto Scaling Group’s maximum size and desired size to support the additional nodes
 * After scaling the Auto Scaling Group, it checks if the nodes using the latest configuration are present in the node group. 
 * Applies a `eks.amazonaws.com/nodegroup=unschedulable:NoSchedule` taint on every node in the node group without the latest labels. This prevents nodes that have already been updated from a previous failed update from being tainted.
 
-### Upgrade:
+**Upgrade**:
 
 * Randomly selects a node and drains the pods from the node.
 * Cordons the node after every pod is evicted and waits for 60 seconds
 * Sends a termination request to the Auto Scaling Group for the cordoned node.
 * Applies same accross all nodes which are part of Managed Node group making sure there are no nodes with older version
 
-### Scale Down:
+**Scale Down**:
 
 * The scale down phase decrements the Auto Scaling group maximum size and desired size by one until the the values are the same as before the update started.
 
@@ -54,20 +53,34 @@ To know more about Manged node group update behavior, see [Managed Node group Up
 
 ### Upgrading a Managed Node Group
 
+:::caution
+
+Upgrading the node group will take at least 10 minutes, only execute this section if you have sufficient time
+
+:::
+
 The EKS cluster that has been provisioned for you intentionally has Managed Node Groups that are not running the latest AMI. You can see what the latest AMI version is by querying SSM:
 
 ```
 $ aws ssm get-parameter --name /aws/service/eks/optimized-ami/1.23/amazon-linux-2/recommended/image_id --region $AWS_DEFAULT_REGION --query "Parameter.Value" --output text
 ```
 
-When you initiate a managed node group update, Amazon EKS automatically updates your nodes for you, completing the steps listed above. If you're using an Amazon EKS optimized AMI, Amazon EKS automatically applies the latest security patches and operating system updates to your nodes as part of the latest AMI release version. You can initiate an update of the Managed Node Group used to host our sample application like so:
+When you initiate a managed node group update, Amazon EKS automatically updates your nodes for you, completing the steps listed above. If you're using an Amazon EKS optimized AMI, Amazon EKS automatically applies the latest security patches and operating system updates to your nodes as part of the latest AMI release version. 
 
-```
+You can initiate an update of the Managed Node Group used to host our sample application like so:
+
+```bash
 $ aws eks update-nodegroup-version --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME
 ```
 
-In another Terminal tab you can follow the progress with:
+You can watch activity on the nodes using `kubectl`:
 
-```
+```bash test=false
 $ kubectl get nodes --watch
+```
+
+If you want to wait until the MNG is updated you can do this:
+
+```bash timeout=900
+$ aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME
 ```

@@ -60,7 +60,9 @@
     {
       "Effect": "Allow",
       "Action": [
-          "ec2:DescribeVolumes"
+        "ec2:DescribeInstances",
+        "ec2:DescribeVolumes",
+        "ec2:DescribeAvailabilityZones"
       ],
       "Resource": "*"
     },
@@ -69,8 +71,7 @@
       "Action": [
         "elasticfilesystem:DescribeAccessPoints",
         "elasticfilesystem:DescribeFileSystems",
-        "elasticfilesystem:DescribeMountTargets",
-        "ec2:DescribeAvailabilityZones"
+        "elasticfilesystem:DescribeMountTargets"
       ],
       "Resource": "*"
     },
@@ -122,7 +123,7 @@
     {
       "Effect": "Allow",
       "Action": [
-          "ssm:GetParameters"
+          "ssm:GetParameter"
       ],
       "Resource": "arn:aws:ssm:${region}::parameter/aws/service/eks/optimized-ami/*"
     }
