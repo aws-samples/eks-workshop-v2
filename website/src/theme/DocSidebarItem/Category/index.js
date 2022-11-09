@@ -82,7 +82,6 @@ export default function DocSidebarItemCategory({
       sidebar: {autoCollapseCategories},
     },
   } = useThemeConfig();
-  console.log(item)
   const hrefWithSSRFallback = useCategoryHrefWithSSRFallback(item);
   const isActive = isActiveSidebarItem(item, activePath);
   const isCurrentPage = isSamePath(href, activePath);
