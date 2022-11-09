@@ -88,6 +88,12 @@ But prior to raising a PR should verify the autoscaling module in its entirety:
 make test module="autoscaling/compute/karpenter"
 ```
 
+You can pass extra flag to the test framework by using environment variable `AWS_EKS_WORKSHOP_TEST_FLAGS`
+
+```
+AWS_EKS_WORKSHOP_TEST_FLAGS="--debug" make test module="gitops"
+```
+
 Finally, once you are done if needed you can destroy the infrastructure:
 
 ```

@@ -31,7 +31,7 @@ $ aws iam put-role-policy \
 
 Login into public ECR using `helm login`
 ```bash
-$ helm registry login --username AWS --password "$(aws ecr-public get-login-password --region $AWS_DEFAULT_REGION)" public.ecr.aws
+$ helm registry login --username AWS --password "$(aws ecr-public get-login-password --region us-east-1)" public.ecr.aws
 Login Succeeded
 ```
 
