@@ -4,9 +4,11 @@ terraform_context=$1
 module=$2
 
 set -Eeuo pipefail
-
+set -u
 # Right now the container images are only designed for amd64
-export DOCKER_DEFAULT_PLATFORM=linux/amd64 
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
+
+AWS_EKS_WORKSHOP_TEST_FLAGS=${AWS_EKS_WORKSHOP_TEST_FLAGS:-""}
 
 if [[ "$module" == "*" ]]; then
   echo 'Error: Please specify a module'
