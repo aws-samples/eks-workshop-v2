@@ -7,6 +7,9 @@ In this section we will provision a database and message broker for our applicat
 AWS managed service can be provision using Kubernetes API, we will use Kubernetes custom resources to specify the desire
 configuration for the service we want to access form our application.
 
+
+![ACK reconciler concept](./assets/ack-desired-current.jpg)
+
 ## Create RDS Database
 
 Set DB master user password
