@@ -36,7 +36,7 @@ Let's set up a `podAntiAffinity` policy in the **checkout** deployment specifyin
 
 To make the change, run the following command to modify the **checkout** deployment in your cluster
 ```bash
-$ kubectl apply -k environment/workspace/modules/fundamentals/affinity/checkout/
+$ kubectl apply -k /workspace/modules/fundamentals/affinity/checkout/
 ```
 The command adds an `affinity` section to the **checkout** deployment specifying a **podAntiAffinity** policy.
 ```kustomization
@@ -77,7 +77,7 @@ In this example, the two `checkout` pods are running on `ip-10-42-12-141.us-east
 
 Next, let's modify the `checkout-redis` deployment policies to require that future pods both run individually per node and only run on nodes where a `checkout` pod exists. To do this we will need to update the `checkout-redis` deployment
 ```bash
-$ kubectl apply -k environment/workspace/modules/fundamentals/affinity/checkout-redis/
+$ kubectl apply -k /workspace/modules/fundamentals/affinity/checkout-redis/
 ```
 
 The command adds an `affinity` section to the **checkout-redis** deployment specifying both a **podAffinity** and **podAntiAffinity** policy
