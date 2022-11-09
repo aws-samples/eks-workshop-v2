@@ -1,21 +1,22 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  namespace: ui
-  name: ui
+  name: assets
+  namespace: assets
   annotations:
-    alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/liveness
+    alb.ingress.kubernetes.io/healthcheck-path: /health.html
+    # HIGHLIGHT
+    alb.ingress.kubernetes.io/group.name: retail-app-group
 spec:
   ingressClassName: alb
   rules:
   - http:
       paths:
-      - path: /
+      - path: /assets
         pathType: Prefix
         backend:
           service:
-            name: ui
+            name: assets
             port:
               number: 80

@@ -1,6 +1,8 @@
 vendor
-.terraform*
+.terraform
 *.tfstate*
+*.lock.hcl
+
 builds
 
 public
@@ -9,8 +11,6 @@ resources
 env
 
 .vscode
-package-lock.json
+*.zip
 
-.DS_Store
-
-eksworkshop-gitops-config-flux
+cdk.out

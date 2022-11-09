@@ -48,7 +48,7 @@ mv ./eksctl /usr/local/bin
 rm -rf eksctl_Linux_amd64.tar.gz
 
 # aws cli v2
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+curl --location --show-error --silent "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip -o -q awscliv2.zip
 ./aws/install
 rm -rf ./aws awscliv2.zip

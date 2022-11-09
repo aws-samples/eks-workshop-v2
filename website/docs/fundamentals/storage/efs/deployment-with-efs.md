@@ -23,10 +23,10 @@ Deployment/assets
 
 We can apply the changes by running the following command:
 
-```bash hook=efs-deployment
+```bash hook=efs-deployment hookTimeout=90
 $ kubectl apply -k /workspace/modules/fundamentals/storage/efs/deployment
 [...]
-$ kubectl rollout status --timeout=120s deployment/assets -n assets
+$ kubectl rollout status --timeout=130s deployment/assets -n assets
 ```
 
 Now look at the `volumeMounts` in the deployment, notice that we have our new `Volume` named `efsvolume` mounted on`volumeMounts` named `/efsvolumedir`:
