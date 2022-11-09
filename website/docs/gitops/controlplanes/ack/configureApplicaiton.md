@@ -35,7 +35,7 @@ FieldExport manifest
 ack/rds/fieldexports/rds-fieldexports-writer.yaml
 ```
 
-Create FieldExport, this will insert the RDS connection values into the configmap **catalog** in the namespace **catalog-prod**
+Create FieldExport, this will insert the RDS connection values into the configmap **catalog-reader-db** in the namespace **catalog-prod**
 ```bash
 $ export CATALOG_PASSWORD=$(kubectl get secrets -n default rds-eks-workshop -o go-template='{{.data.password|base64decode}}')
 $ kubectl apply -k /workspace/modules/ack/rds/fieldexports
@@ -47,9 +47,20 @@ fieldexport.services.k8s.aws/catalog-writer-db-endpoint created
 fieldexport.services.k8s.aws/catalog-writer-db-user created
 ```
 
+It takes some time to provision the AWS managed services, for RDS approximately 10 minutes. The ACK controller will report the status of the reconciliation in the status field of the Kubernetes custom resources.  
+You can open the AWS console and see the services being created.
+
+To verify that the provision is done, you can check that the condition “ACK.ResourceSynced” is true using the Kubernetes CLI.
+
+Run the following commands and they will exit once the condition is met.
+```bash timeout=1080
+$ kubectl wait DBInstance rds-eks-workshop --for=condition=ACK.ResourceSynced --timeout=15m
+dbinstances.rds.services.k8s.aws/rds-eks-workshop condition met
+```
+
 Verify that the configmap **catalog** has the correct information
 ```bash
-$ if [[ "$(aws rds describe-db-instances --query "DBInstances[?DBInstanceIdentifier == 'rds-eks-workshop'].Endpoint.Address" --output text)" ==  "$(kubectl get secret catalog-writer-db -o go-template='{{.data.endpoint|base64decode}}' -n catalog-prod)" ]]; then echo "Secret catalog configured correctly"; else echo "Error Catalo misconfigured"; false; fi
+$ if [[ "$(aws rds describe-db-instances --query "DBInstances[?DBInstanceIdentifier == 'rds-eks-workshop'].Endpoint.Address" --output text)" ==  "$(kubectl get secret catalog-reader-db -o go-template='{{.data.endpoint|base64decode}}' -n catalog-prod)" ]]; then echo "Secret catalog configured correctly"; else echo "Error Catalo misconfigured"; false; fi
 Secret catalog configured correctly
 ```
 
@@ -78,6 +89,16 @@ fieldexport.services.k8s.aws/orders-host created
 fieldexport.services.k8s.aws/orders-user created
 ```
 
+It takes some time to provision the AWS managed services, for RDS approximately 12 minutes. The ACK controller will report the status of the reconciliation in the status field of the Kubernetes custom resources.  
+You can open the AWS console and see the services being created.
+
+To verify that the provision is done, you can check that the condition “ACK.ResourceSynced” is true using the Kubernetes CLI.
+
+Run the following commands and they will exit once the condition is met.
+```bash timeout=1080
+$ kubectl wait brokers.mq.services.k8s.aws mq-eks-workshop --for=condition=ACK.ResourceSynced --timeout=18m
+brokers.mq.services.k8s.aws/mq-eks-workshop condition met
+```
 
 Verify that the secret **orders** has the correct information
 ```bash

@@ -76,26 +76,5 @@ $ kubectl apply -k /workspace/modules/ack/mq/k8s/broker
 broker.mq.services.k8s.aws/mq-eks-workshop created
 ```
 
-### Verify the AWS Managed Services
-
-It takes some time to provision the AWS managed services, for RDS and MQ approximately 10 minutes. The ACK controller will report the status of the reconciliation in the status field of the Kubernetes custom resources.  
-You can open the AWS console and see the services being created.
-
-To verify that the provision is done, you can check that the condition “ACK.ResourceSynced” is true using the Kubernetes CLI.
-
-Run the following commands and they will exit once the condition is met.
-
-Wait until the RDS Database is created
-```bash timeout=1080
-$ kubectl wait DBInstance rds-eks-workshop --for=condition=ACK.ResourceSynced --timeout=15m
-dbinstances.rds.services.k8s.aws/rds-eks-workshop condition met
-```
-
-Wait until the MQ Broker is created
-```bash timeout=1080
-$ kubectl wait brokers.mq.services.k8s.aws mq-eks-workshop --for=condition=ACK.ResourceSynced --timeout=18m
-brokers.mq.services.k8s.aws/mq-eks-workshop condition met
-```
-
 Continue to the next section to export the binding information from the provisioned AWS managed services.
 
