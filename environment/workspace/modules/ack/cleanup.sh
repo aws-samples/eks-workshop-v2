@@ -12,6 +12,7 @@ kubectl delete -n default secret rds-eks-workshop
 kubectl delete -n default secret mq-eks-workshop
 kubectl delete -k /workspace/modules/ack/ec2
 kubectl delete -k /workspace/modules/ack/rds/roles
+kubectl delete -k /workspace/modules/ack/mq/roles
 helm uninstall -n ack-system ack-rds-controller
 helm uninstall -n ack-system ack-mq-controller
 helm uninstall -n ack-system ack-ec2-controller
