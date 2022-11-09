@@ -4,7 +4,12 @@ sidebar_position: 20
 weight: 6
 ---
 
-In this module, we will visualize the Container Insights metrics using CloudWatch. To view metrics:
+In this module, we will visualize the Container Insights metrics using CloudWatch. 
+:::note
+It may take a few minutes for data to start appearing in cloudwatch
+:::
+
+To view metrics:
 
 1. Open the CloudWatch console at https://console.aws.amazon.com/cloudwatch/.
 

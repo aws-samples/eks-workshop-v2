@@ -18,23 +18,21 @@ $ envsubst < <(cat /workspace/modules/observability/container-insights/adot/conf
 
 Next we'll apply the `Collector Daemonset` to create collector pods in our cluster. 
 
+
 ```bash hook=deploy-adot-ci
 $ kubectl apply -f /workspace/modules/observability/container-insights/adot/daemonset.yaml
 ```
-<!-- 
-We can deploy the ADOT Collector as a daemon set to the cluster by entering the following command:
-```bash
-$ kubectl apply -f /workspace/modules/observability/container-insights/adot/adotcicollector.yaml
-`````` -->
+
 Let's inspect the ADOT collector pods collecting Container Insights metrics by running the below command:
 
 ```bash 
 $ kubectl get pods -n other
 NAME                              READY   STATUS    RESTARTS   AGE
-adot-collector-ci-6f6b8867f6-lpjb7   1/1     Running   2          11d
+ aws-otel-eks-ci-6f6b8867f6-lpjb7   1/1     Running   2          11d
 ```
 
 If the output of this command includes multiple pods in the Running state as shown above, the collector is running and collecting metrics from the cluster. The collector creates a log group named *aws/containerinsights/**cluster-name**/performance* and sends the metric data as performance log events in EMF format.
+
 
 
 
