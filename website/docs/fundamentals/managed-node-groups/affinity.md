@@ -166,10 +166,10 @@ In our cluster the `checkout` and `checkout-redis` pods are running on different
 
 If the pods are **NOT** co-located, delete the `checkout-redis` pod and let the scheduler start a new one. 
 ```bash
-$ kubectl delete pod checkout-redis-7f66c6c587-b6tg6 -n checkout
+$ kubectl delete pod `kubectl get pods -n checkout | grep redis | awk '{print $1}'` -n checkout
 ```
 ```
-pod "checkout-redis-7f66c6c587-b6tg6" deleted
+pod "checkout-redis" deleted
 ```
 
 Verify that the new pod is still following the affinity rules and is deployed to the same node as the `checkout` pod
