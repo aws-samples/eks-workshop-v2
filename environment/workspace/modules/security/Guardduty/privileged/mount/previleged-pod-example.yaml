@@ -19,3 +19,11 @@ spec:
         - containerPort: 22
         securityContext:
           privileged: true
+        volumeMounts:
+        - mountPath: /test-pd
+          name: test-volume
+      volumes:
+      - name: test-volume
+        hostPath:
+          path: /etc
+          type: Directory
