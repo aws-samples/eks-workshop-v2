@@ -34,9 +34,6 @@
          </div>
          <div className={styles.browserWindowMenuIcon}>
            <div>
-             <span className={styles.bar} />
-             <span className={styles.bar} />
-             <span className={styles.bar} />
            </div>
          </div>
        </div>
