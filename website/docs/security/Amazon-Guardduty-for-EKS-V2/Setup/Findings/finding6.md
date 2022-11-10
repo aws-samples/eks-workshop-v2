@@ -4,10 +4,15 @@ sidebar_position: 131
 ---
 
 
-```bash
-$ kubectl apply -k /workspace/modules/security/privileged/privileged
+```file
+security/Guardduty/privileged/previleged-pod-example.yaml
 ```
 
 ```bash
-$ kubectl delete -k /workspace/modules/security/privileged/privileged
+$ kubectl apply -k /workspace/modules/security/privileged/
+```
+
+
+```bash
+$ kubectl delete -k /workspace/modules/security/privileged/
 ```
