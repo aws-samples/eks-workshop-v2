@@ -1,6 +1,6 @@
 ---
 title: "Security Groups per Pod"
-sidebar_position: 10
+sidebar_position: 30
 weight: 10
 ---
 
