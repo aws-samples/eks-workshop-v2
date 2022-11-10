@@ -73,7 +73,7 @@ role.iam.services.k8s.aws/ack-ec2-controller created
 
 Wait for Role to be be reconciled
 ```bash
-$ kubectl wait role.iam.services.k8s.aws ack-ec2-controller -n ack-system --for=condition=ACK.ResourceSynced --timeout=1m
+$ kubectl wait role.iam.services.k8s.aws ack-ec2-controller -n ack-system --for=condition=ACK.ResourceSynced --timeout=2m
 ```
 
 Deploy the EC2 Controller.
@@ -112,7 +112,7 @@ role.iam.services.k8s.aws/ack-rds-controller created
 
 Wait for Role to be be reconciled
 ```bash
-$ kubectl wait role.iam.services.k8s.aws ack-rds-controller -n ack-system --for=condition=ACK.ResourceSynced --timeout=1m
+$ kubectl wait role.iam.services.k8s.aws ack-rds-controller -n ack-system --for=condition=ACK.ResourceSynced --timeout=2m
 ```
 
 Create the RDS Controller.
@@ -152,7 +152,7 @@ policy.iam.services.k8s.aws/ack-mq-controller created
 
 Wait for Policy and Role to be be reconciled
 ```bash
-$ kubectl wait role.iam.services.k8s.aws ack-mq-controller -n ack-system --for=condition=ACK.ResourceSynced --timeout=1m
+$ kubectl wait role.iam.services.k8s.aws ack-mq-controller -n ack-system --for=condition=ACK.ResourceSynced --timeout=2m
 ```
 
 Deploy the MQ Controller.
