@@ -1,3 +1,5 @@
 {
-  "collapsed": false
+  "customProps": {
+    "module": true
+  }
 }
