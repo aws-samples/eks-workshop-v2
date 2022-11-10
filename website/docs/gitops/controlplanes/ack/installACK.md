@@ -20,7 +20,7 @@ This role will be use to create the other ACK controller roles.
 View the IAM trust policy running `cat /workspace/modules/ack/iam/trust.json`
 
 Create the `ack-iam-controller` IAM Role using the role policy document `trust.json` and attach the `ack-iam-recommended-policy` recommended policy
-```bash
+```bash hook=ack-install
 $ aws iam create-role --role-name "ack-iam-controller" --assume-role-policy-document "$(envsubst </workspace/modules/ack/iam/trust.json)"
 $ aws iam put-role-policy \
         --role-name "ack-iam-controller" \
