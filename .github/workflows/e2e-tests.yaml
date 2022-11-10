@@ -143,8 +143,12 @@ jobs:
         terraform destroy -target=module.core.module.cluster.module.descheduler --auto-approve
 
         terraform destroy -target=module.core.module.cluster.module.eks-blueprints --auto-approve
+        
 
         envsubst < ../../hack/lib/filter.yml > filter.yml
+        # TODO: Debug
+        echo "dump awsweeper filter.yml"
+        cat filter.yml
         awsweeper --force filter.yml
 
         terraform destroy --auto-approve
