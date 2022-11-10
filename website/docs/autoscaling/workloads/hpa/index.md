@@ -9,6 +9,7 @@ Prepare your environment for this section:
 ```bash timeout=300 wait=30
 $ reset-environment 
 ```
+
 :::
 
 A Horizontal Pod Autoscaler (HPA) scales pods in a deployment or replica set. It is implemented as a K8s API resource and a controller. The resource determines the behavior of the controller. The Controller Manager queries the resource utilization against the metrics specified in each HorizontalPodAutoscaler definition. The controller periodically adjusts the number of replicas in a replication controller or deployment to the target specified by the user by observing metrics such as average CPU utilization, average memory utilization or any other custom metric. It obtains the metrics from either the resource metrics API (for per-pod resource metrics), or the custom metrics API (for all other metrics).

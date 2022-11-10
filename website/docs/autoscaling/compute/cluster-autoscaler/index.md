@@ -9,6 +9,7 @@ Prepare your environment for this section:
 ```bash timeout=300 wait=30
 $ reset-environment 
 ```
+
 :::
 
 Cluster Autoscaler for AWS provides integration with Auto Scaling groups. It enables users to choose from four different options of deployment:
