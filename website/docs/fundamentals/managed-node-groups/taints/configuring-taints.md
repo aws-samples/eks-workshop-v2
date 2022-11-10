@@ -13,21 +13,22 @@ CLUSTER			NODEGROUP						STATUS	CREATED			MIN SIZE	MAX SIZE	DESIRED CAPACITY	INS
 eks-workshop-cluster	managed-ondemand-tainted-20221103142426393800000006	ACTIVE	2022-11-03T14:24:28Z	1		2		1			m5.large	ami-0b55230f107a87100	eks-managed-ondemand-tainted-20221103142426393800000006-d0c21ef0-8024-f793-52a9-3ed57ca9d457	managed
 ```
 
-For the purpose of the lab, we have provisioned a separate `managed` node group with a desired capacity of `1` and instance type of `m5.large`. We can validate this configuration using `kubectl` as follows:
+For the purpose of the lab, we have provisioned a separate managed node group with a desired capacity of `1` and instance type of `m5.large`. We can also validate this configuration using `kubectl` as follows:
 
 ```bash
 $ kubectl get nodes \
-    -L eks.amazonaws.com/nodegroup \
-    -l eks.amazonaws.com/nodegroup=$EKS_TAINTED_MNG_NAME
+    --label-columns eks.amazonaws.com/nodegroup \
+    --selector eks.amazonaws.com/nodegroup=$EKS_TAINTED_MNG_NAME
 NAME                                         STATUS   ROLES    AGE   VERSION               NODEGROUP
 ip-10-42-12-233.eu-west-1.compute.internal   Ready    <none>   63m   v1.23.9-eks-ba74326   managed-ondemand-tainted-20221103142426393800000006
 ```
+The above command makes use of the `--selector` flag to query for all nodes that have a label of `eks.amazonaws.com/nodegroup` that matches the name of our managed node group `$EKS_TAINTED_MNG_NAME`. The `--label-columns` flag also allows us to display the value of the `eks.amazonaws.com/nodegroup` label in the node list. 
 
-Bofore configuring our taints, let's explore the current configuration of our node. Note that the following command will list the details of all nodes that are part of our Managed Node Group. In our lab, this is just one instance. 
+Bofore configuring our taints, let's explore the current configuration of our node. Note that the following command will list the details of all nodes that are part of our Managed Node Group. In our lab, the managed node group has just one instance. 
 
 ```bash
 $ kubectl describe nodes \
-    -l eks.amazonaws.com/nodegroup=$EKS_TAINTED_MNG_NAME
+    --selector eks.amazonaws.com/nodegroup=$EKS_TAINTED_MNG_NAME
 Name:               ip-10-42-12-233.eu-west-1.compute.internal
 Roles:              <none>
 Labels:             beta.kubernetes.io/arch=amd64
@@ -44,15 +45,15 @@ Taints:             <none>
 ```
 
 A few things to point out:
-1. EKS automatically adds certain labels to allow for easier filtering. We have used the `eks.amazonaws.com/nodegroup` label to filter out all nodes that are part of the node group we are interested in. While certain labels are provided out-of-the-box with EKS, we also allow operators to configure their own set of labels at the node group level. This ensures that every node within a node group will have consistent labels. 
-2. There are no taints configured for the explored node, showcased by the `Taints: <none>` stanza. 
+1. EKS automatically adds certain labels to allow for easier filtering, including labels for the OS type, managed node group name, instance type and others. While certain labels are provided out-of-the-box with EKS, AWS allows operators to configure their own set of custom labels at the managed node group level. This ensures that every node within a node group will have consistent labels. 
+2. Currently, there are no taints configured for the explored node, showcased by the `Taints: <none>` stanza. 
 
 
 ## Configuring taints for Managed Node Groups (MNGs)
 
 While it's easy to taint nodes using the `kubectl` CLI as described [here](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#concepts), an administrator will have to make this change every time the underlying node group scales up or down. To overcome this challange, AWS supports adding both `labels` and `taints` to managed node groups, ensuring every node within the MNG will have the asociated labels and taints configured automatically. 
 
-In the next few sections, will explore how to add taints to the preconfigured managed node group. 
+In the next few sections, will explore how to add taints to our preconfigured managed node group `$EKS_TAINTED_MNG_NAME`. 
 
 Let's start by adding a `taint` to our managed node group using the following `aws` cli command: 
 
@@ -77,11 +78,14 @@ $ aws eks update-nodegroup-config \
     }
 }
 ```
+The adition, removal or replacement of taints can be done by using the `aws eks update-nodegroup-config` CLI command for updating the configuration of the managed node group. This can be done by passing either `addOrUpdateTaints` or `removeTaints` and a list of taints to the `--taints` command flag. 
 
-The above command will add a new taint with the key of `frontend`, value of `true` and effect of `NO_EXECUTE`. This ensures that pods will not be able to be scheduled on any nodes that are part of the managed node group without having the corresponding toleration. Also, any existing pods without a matching toleration will be evicted. The configuration for MNG currently support the folowing values for `effect`:
-* `NO_SCHEDULE`
-* `NO_EXECUTE`
-* `PREFER_NO_SCHEDULE`
+The above command will add a new taint with the key of `frontend`, value of `true` and effect of `NO_EXECUTE`. This ensures that pods will not be able to be scheduled on any nodes that are part of the managed node group without having the corresponding toleration. Also, any existing pods without a matching toleration will be evicted. 
+
+The configuration for managed node groups currently support the folowing values for the taint `effect`:
+* `NO_SCHEDULE` - This corresponds to the Kubernetes `NoSchedule` taint effect. This configures the managed node group with a taint that repels all pods that don't have a matching toleration. All running pods are **not evicted from the manage node group's nodes**.
+* `NO_EXECUTE` - This corresponds to the Kubernetes `NoExecute` taint effect. Allows nodes configured with this taint to not only repel newly scheduled pods but also **evicts any running pods without a matching toleration**.
+* `PREFER_NO_SCHEDULE` - This corresponds to the Kubernets `PreferNoSchedule` taint effect. If possible, EKS avoids scheduling Pods that do not tolerate this taint onto the node.
 
 We can use the following command to check the taints have been correctly configured for the managed node group:
 
@@ -108,7 +112,7 @@ Verifying with the `kubectl` cli command, we can also see that the taint has bee
 
 ```bash
 $ kubectl describe nodes \
-    -l eks.amazonaws.com/nodegroup=$EKS_TAINTED_MNG_NAME
+    --selector eks.amazonaws.com/nodegroup=$EKS_TAINTED_MNG_NAME
 Name:               ip-10-42-12-233.eu-west-1.compute.internal
 Roles:              <none>
 Labels:             beta.kubernetes.io/arch=amd64
