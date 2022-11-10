@@ -18,5 +18,9 @@ helm uninstall -n ack-system ack-mq-controller
 helm uninstall -n ack-system ack-ec2-controller
 helm uninstall -n ack-system ack-iam-controller
 kubectl delete namespace ack-system
+#TODO: this is a one time cleanup, remove after clean
+aws iam delete-role-policy --role-name ack-mq-controller --policy-name ack-mq-controller
+aws iam delete-role --role-name ack-mq-controller
+
 aws iam delete-role-policy --role-name ack-iam-controller --policy-name ack-iam-recommended-policy
 aws iam delete-role --role-name ack-iam-controller
