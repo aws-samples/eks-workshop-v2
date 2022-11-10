@@ -4,14 +4,14 @@ sidebar_position: 132
 ---
 
 ```kustomization
-security/Guardduty/privileged/deployment.yaml
+security/Guardduty/privileged/Guardduty/privileged/deployment.yaml
 Deployment/carts
 ```
 
 ```bash
-$ kubectl apply -k /workspace/modules/security/privileged
+$ kubectl apply -k /workspace/modules/security/Guardduty/privileged
 ```
 
 ```bash
-$ kubectl delete -k /workspace/modules/security/privileged
+$ kubectl delete -k /workspace/modules/security/Guardduty/privileged
 ```

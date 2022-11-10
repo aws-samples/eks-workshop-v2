@@ -5,9 +5,9 @@ sidebar_position: 131
 
 
 ```bash
-$ kubectl apply -k /workspace/modules/security/privileged
+$ kubectl apply -k /workspace/modules/security/privileged/privileged
 ```
 
 ```bash
-$ kubectl delete -k /workspace/modules/security/privileged
+$ kubectl delete -k /workspace/modules/security/privileged/privileged
 ```
