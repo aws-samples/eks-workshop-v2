@@ -64,4 +64,3 @@ resource "aws_iam_policy" "local_policy" {
     nodegroup    = module.cluster.eks_cluster_nodegroup
   })
 }
-

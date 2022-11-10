@@ -82,18 +82,15 @@ $ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls usr/share/ngin
 ```
 Now let's remove the current `assets` pod. This will force the deployment controller to automatically re-create a new `assets` pod:
 
-```bash
+```bash wait=60
 $ kubectl delete --all pods --namespace=assets
-
 pod "assets-ddb8f87dc-ww4jn" deleted
-
 $ kubectl wait --for=condition=available --timeout=120s deployment/assets -n assets
 ```
 Now let us check if the image we created for the new product `newproduct.png` is still exist:
 
 ```bash
 $ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /usr/share/nginx/html/assets/" 
-
 ```
 
 As you see the newly created image `newproduct.png` is not exist now , as it is not been copied while the creation of the container image. In order to help the team solve this issue we need a `PersistentVolume` contain the images. That can be shared across multiple pods if the team want to scale horizontally.

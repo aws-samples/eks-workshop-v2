@@ -4,6 +4,7 @@ metadata:
   name: assets
   labels:
     app.kubernetes.io/created-by: eks-workshop
+    app.kubernetes.io/type: app
 spec:
   replicas: 1
   selector:
@@ -46,7 +47,6 @@ spec:
             httpGet:
               path: /health.html
               port: 8080
-            initialDelaySeconds: 30
             periodSeconds: 3
           resources:
             limits:

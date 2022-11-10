@@ -101,3 +101,38 @@ output "efsid" {
   description = "EFS file system ID"
   value       = aws_efs_file_system.efsassets.id
 }
+
+output "networking_rds_endpoint" {
+  description = "Endpoint of the RDS database for the networking module"
+  value       = module.networking_rds_postgre.cluster_endpoint
+}
+
+output "networking_rds_master_username" {
+  description = "Master username of the RDS database for the networking module"
+  value       = "eksworkshop"
+}
+
+output "networking_rds_master_password" {
+  description = "Master password of the RDS database for the networking module"
+  value       = random_string.networking_db_master.result
+}
+
+output "networking_rds_database_name" {
+  description = "Master username of the RDS database for the networking module"
+  value       = module.networking_rds_postgre.cluster_database_name
+}
+
+output "networking_rds_ingress_sg_id" {
+  description = "Security group id of the RDS database for the networking module"
+  value       = module.networking_rds_postgre.security_group_id
+}
+
+output "amp_endpoint" {
+  description = "Endpoint of the AMP workspace"
+  value       = aws_prometheus_workspace.this.prometheus_endpoint
+}
+
+output "adot_iam_role" {
+  description = "ARN of the IAM role used by the ADOT collector pod"
+  value       = module.iam_assumable_role_adot.iam_role_arn
+}

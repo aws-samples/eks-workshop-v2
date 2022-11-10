@@ -1,5 +1,7 @@
 import React, {Component, type ReactNode} from 'react';
 import ReactTooltip from 'react-tooltip';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faClipboard } from '@fortawesome/free-solid-svg-icons'
 
 import styles from './styles.module.css';
 
@@ -24,6 +26,8 @@ export default function Terminal({
 
   let appendNext = false;
 
+  let allCommands = "";
+
   for(let i = 0; i < outputParts.length; i++) {
     let currentLine = outputParts[i]
 
@@ -33,29 +37,31 @@ export default function Terminal({
         sections.push(section)
 
         currentLine = currentLine.substring(2)
+
+        allCommands = `${allCommands}\n${currentLine}`
       }
 
       section.processLine(currentLine)
     }
   }
 
-  function copyToClipboard(e) {
-    navigator.clipboard.writeText(command)
+  const handler = () => {
+    navigator.clipboard.writeText(`${allCommands}\n`)
   }
 
   return (
     <div className={styles.browserWindow}>
       <div className={styles.browserWindowHeader}>
         <div className={styles.buttons}>
+          
           <span className={styles.dot} style={{background: '#f25f58'}} />
           <span className={styles.dot} style={{background: '#fbbe3c'}} />
           <span className={styles.dot} style={{background: '#58cb42'}} />
         </div>
         <div className={styles.browserWindowMenuIcon}>
-          <div>
-            <span className={styles.bar} />
-            <span className={styles.bar} />
-            <span className={styles.bar} />
+          <div className={styles.copyAll}>
+            <FontAwesomeIcon icon={faClipboard} onClick={handler} data-tip="Copy all commands" />
+            <ReactTooltip effect="solid" border={true} />
           </div>
         </div>
       </div>
@@ -144,7 +150,7 @@ class TerminalSection {
     }
 
     return (
-      <section className={styles.terminalBody} data-tip data-for="copy-hint" onClick={handler}>
+      <section className={styles.terminalBody} data-tip="Copy command" onClick={handler}>
         {this.contexts.map(element => {
           return (element.render())
         })}

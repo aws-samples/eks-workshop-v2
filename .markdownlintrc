@@ -9,5 +9,8 @@
   "MD014": false,
 
   // Disable files needing to end with single newline
-  "MD047": false
+  "MD047": false,
+
+  // Disable detection of inline HTML since we use JSX
+  "MD033": false
 }

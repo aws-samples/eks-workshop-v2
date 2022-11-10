@@ -4,7 +4,7 @@ metadata:
   name: pause-pods
   namespace: other
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       run: pause-pods
@@ -19,4 +19,4 @@ spec:
         image: k8s.gcr.io/pause
         resources:
           requests:
-            memory: "2Gi"
+            memory: "6.5Gi"

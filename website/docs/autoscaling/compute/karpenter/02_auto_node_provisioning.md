@@ -17,5 +17,6 @@ $ kubectl apply -k /workspace/modules/autoscaling/compute/karpenter/scale
 ```
 
 Topics to cover here:
+
 - Show Karpenter creates separate nodes not in node group (query by labels?)
 - Show that Karpenter provisioned a right-sized node based on the replicas/memory requested by the Pod

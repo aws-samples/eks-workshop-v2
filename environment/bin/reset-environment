@@ -1,10 +1,23 @@
 #!/bin/bash
 
+module=$1
+
+absolute_path='/workspace/manifests'
+
+if [ ! -z "$module" ]; then
+  absolute_path="/workspace/modules/$module/base"
+fi
+
 set -Eeuo pipefail
+
+if [[ ! -d "$absolute_path" ]]; then
+  echo "Error: Manifest directory not found to reset"
+  exit 1
+fi
 
 echo "Resetting the environment, please wait"
 
-kubectl apply -k /workspace/manifests --prune --all \
+kubectl apply -k $absolute_path --prune --all \
   --prune-whitelist=autoscaling/v1/HorizontalPodAutoscaler \
   --prune-whitelist=core/v1/Service \
   --prune-whitelist=core/v1/ConfigMap \
@@ -13,6 +26,7 @@ kubectl apply -k /workspace/manifests --prune --all \
   --prune-whitelist=core/v1/PersistentVolumeClaim \
   --prune-whitelist=karpenter.sh/v1alpha5/Provisioner \
   --prune-whitelist=scheduling.k8s.io/v1/PriorityClass \
+  --prune-whitelist=opentelemetry.io/v1alpha1/OpenTelemetryCollector \
   --prune-whitelist=networking.k8s.io/v1/Ingress > /dev/null
 
 echo "Waiting for application to become ready..."
@@ -21,6 +35,8 @@ sleep 10
 
 kubectl wait --for=condition=available --timeout=180s deployments -l app.kubernetes.io/created-by=eks-workshop -A > /dev/null
 kubectl wait --for=condition=Ready --timeout=180s pods -l app.kubernetes.io/created-by=eks-workshop -A > /dev/null
+
+kubectl scale --replicas=0 -n kube-system deployment/cluster-autoscaler-aws-cluster-autoscaler > /dev/null
 
 expected_size_config="$EKS_DEFAULT_MNG_MIN $EKS_DEFAULT_MNG_MAX $EKS_DEFAULT_MNG_DESIRED"
 

@@ -4,8 +4,13 @@ locals {
   default_mng_size = 2
 }
 
-data "aws_ssm_parameter" "eks_optimized_ami" {
-  name = "/aws/service/eks/optimized-ami/${local.cluster_version}/amazon-linux-2/recommended/image_id"
+data "aws_ami_ids" "eks_ami" {
+  owners = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amazon-eks-node-${var.cluster_version}-*"]
+  }
 }
 
 module "eks-blueprints" {
@@ -22,6 +27,8 @@ module "eks-blueprints" {
 
   cluster_endpoint_public_access  = true
   cluster_endpoint_private_access = true
+
+  cluster_kms_key_additional_admin_arns = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
 
   map_roles = var.map_roles
 
@@ -91,20 +98,12 @@ module "eks-blueprints" {
       max_size        = local.default_mng_max
       desired_size    = local.default_mng_size
 
-      custom_ami_id = data.aws_ssm_parameter.eks_optimized_ami.value
-
-      create_launch_template = true
-      launch_template_os     = "amazonlinux2eks"
-
-      pre_userdata = <<-EOT
-        MAX_PODS=$(/etc/eks/max-pods-calculator.sh --instance-type-from-imds --cni-version ${trimprefix(data.aws_eks_addon_version.latest["vpc-cni"].version, "v")} --cni-prefix-delegation-enabled)
-      EOT
-
-      kubelet_extra_args   = "--max-pods=$${MAX_PODS}"
-      bootstrap_extra_args = "--use-max-pods false"
+      ami_type        = "AL2_x86_64"
+      release_version = var.ami_release_version
 
       k8s_labels = {
         workshop-default = "yes"
+        blocker = null_resource.kubectl_set_env.id
       }
     }
 
@@ -116,22 +115,14 @@ module "eks-blueprints" {
       max_size        = 2
       desired_size    = 1
 
-      custom_ami_id = data.aws_ssm_parameter.eks_optimized_ami.value
-
-      create_launch_template = true
-      launch_template_os     = "amazonlinux2eks"
-
-      pre_userdata = <<-EOT
-        MAX_PODS=$(/etc/eks/max-pods-calculator.sh --instance-type-from-imds --cni-version ${trimprefix(data.aws_eks_addon_version.latest["vpc-cni"].version, "v")} --cni-prefix-delegation-enabled)
-      EOT
-
-      kubelet_extra_args   = "--max-pods=$${MAX_PODS}"
-      bootstrap_extra_args = "--use-max-pods false"
+      ami_type        = "AL2_x86_64"
+      release_version = var.ami_release_version
 
       k8s_taints = [{ key = "systemComponent", value = "true", effect = "NO_SCHEDULE" }]
 
       k8s_labels = {
         workshop-system = "yes"
+        blocker = null_resource.kubectl_set_env.id
       }
     }
 
@@ -143,17 +134,9 @@ module "eks-blueprints" {
       max_size        = 2
       desired_size    = 1
 
-      custom_ami_id = data.aws_ssm_parameter.eks_optimized_ami.value
-
-      create_launch_template = true
-      launch_template_os     = "amazonlinux2eks"
-
-      pre_userdata = <<-EOT
-        MAX_PODS=$(/etc/eks/max-pods-calculator.sh --instance-type-from-imds --cni-version ${trimprefix(data.aws_eks_addon_version.latest["vpc-cni"].version, "v")} --cni-prefix-delegation-enabled)
-      EOT
-
-      kubelet_extra_args   = "--max-pods=$${MAX_PODS}"
-      bootstrap_extra_args = "--use-max-pods false"
+      
+      ami_type        = "AL2_x86_64"
+      release_version = var.ami_release_version
 
       k8s_labels = {
         workshop-default = "no"
@@ -207,7 +190,9 @@ locals {
 }
 
 resource "null_resource" "kubectl_set_env" {
-  triggers = {}
+  triggers = {
+    cluster_arns = module.eks-blueprints.eks_cluster_arn
+  }
 
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
@@ -217,8 +202,9 @@ resource "null_resource" "kubectl_set_env" {
 
     # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
     command = <<-EOT
+      sleep 30
       kubectl set env daemonset aws-node -n kube-system ENABLE_PREFIX_DELEGATION=true --kubeconfig <(echo $KUBECONFIG | base64 --decode)
-      kubectl set env daemonset aws-node -n kube-system WARM_PREFIX_TARGET=1 --kubeconfig <(echo $KUBECONFIG | base64 --decode)
+      sleep 10
     EOT
   }
 }

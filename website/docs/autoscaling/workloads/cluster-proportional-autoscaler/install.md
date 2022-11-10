@@ -4,12 +4,6 @@ date: 2022-07-21T00:00:00-03:00
 sidebar_position: 2
 ---
 
-Before we begin let's reset our environment:
-
-```bash timeout=300 wait=30
-$ reset-environment 
-```
-
 We will be installing CPA using Kustomize manifests, the main part of which is the `Deployment` resource below:
 
 ```file

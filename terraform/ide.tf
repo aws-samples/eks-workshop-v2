@@ -16,7 +16,13 @@ ORDERS_RDS_DATABASE_NAME=${module.cluster.orders_rds_database_name}
 ORDERS_RDS_SG_ID=${module.cluster.orders_rds_ingress_sg_id}
 EFS_ID=${module.cluster.efsid}
 EKS_TAINTED_MNG_NAME=${split(":", module.cluster.eks_cluster_tainted_nodegroup_name)[1]}
-
+NETWORKING_RDS_ENDPOINT=${module.cluster.networking_rds_endpoint}
+NETWORKING_RDS_USERNAME=${module.cluster.networking_rds_master_username}
+NETWORKING_RDS_PASSWORD=${module.cluster.networking_rds_master_password}
+NETWORKING_RDS_DATABASE_NAME=${module.cluster.networking_rds_database_name}
+NETWORKING_RDS_SG_ID=${module.cluster.networking_rds_ingress_sg_id}
+AMP_ENDPOINT=${module.cluster.amp_endpoint}
+ADOT_IAM_ROLE=${module.cluster.adot_iam_role}
 EOT
 }
 
@@ -67,9 +73,8 @@ if [[ ! -d "/home/ec2-user/.bashrc.d" ]]; then
   sudo -H -u ec2-user bash -c "echo 'for file in ~/.bashrc.d/*.bash; do source \"\$file\"; done' >> ~/.bashrc"
 fi
 
-sudo -H -u ec2-user bash -c "echo 'source ~/.env' > ~/.bashrc"
-
-sudo -H -u ec2-user bash -c 'AWS_DEFAULT_REGION="${data.aws_region.current.name}" aws eks update-kubeconfig --name ${module.cluster.eks_cluster_id}'
+sudo -H -u ec2-user bash -c "echo 'source ~/.env' > ~/.bashrc.d/env.bash"
+sudo -H -u ec2-user bash -c "echo 'aws eks update-kubeconfig --name ${module.cluster.eks_cluster_id}' > ~/.bashrc.d/kubeconfig.bash"
 
 EOF
 }

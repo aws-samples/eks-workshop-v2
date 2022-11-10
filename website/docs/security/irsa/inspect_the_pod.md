@@ -1,6 +1,6 @@
 ---
 title: "Inspect the Pod"
-sidebar_position: 50
+sidebar_position: 60
 ---
 
 Let's take a closer look at the new `carts` pod to see whats happening.
