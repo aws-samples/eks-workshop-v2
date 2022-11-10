@@ -15,6 +15,8 @@ ORDERS_RDS_PASSWORD=${module.cluster.orders_rds_master_password}
 ORDERS_RDS_DATABASE_NAME=${module.cluster.orders_rds_database_name}
 ORDERS_RDS_SG_ID=${module.cluster.orders_rds_ingress_sg_id}
 EFS_ID=${module.cluster.efsid}
+EKS_TAINTED_MNG_NAME=${split(":", module.cluster.eks_cluster_tainted_nodegroup_name)[1]}
+
 EOT
 }
 
