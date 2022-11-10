@@ -110,7 +110,8 @@
         "iam:DeleteRole",
         "rds:DescribeDBInstances",
         "mq:ListBrokers",
-        "mq:DescribeBroker"
+        "mq:DescribeBroker",
+        "iam:DetachRolePolicy"
       ],
       "Resource": "*"
     },
