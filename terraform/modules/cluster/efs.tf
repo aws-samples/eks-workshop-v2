@@ -26,7 +26,7 @@ resource "aws_security_group" "efs" {
 }
 
 resource "aws_efs_file_system" "efsassets" {
-  creation_token = "efs-assets"
+  creation_token = "${local.cluster_name}-efs-assets"
 
   tags = merge(
     local.tags,
