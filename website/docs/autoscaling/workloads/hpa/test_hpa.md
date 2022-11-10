@@ -6,6 +6,7 @@ sidebar_position: 20
 To observe HPA scale out in response to the policy we have configured we need to generate some load on our application. We'll do that by calling the home page of the workload with [hey](https://github.com/rakyll/hey).
 
 The command below will run the load generator with:
+
 - 10 workers running concurrently
 - Sending 5 queries per second each
 - Running for a maximum of 60 minutes

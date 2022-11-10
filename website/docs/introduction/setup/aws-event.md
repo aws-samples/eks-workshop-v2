@@ -28,5 +28,3 @@ When you press **Sign in** you will be presented with your personal dashboard:
 Select the **AWS Console** button to be taken to your AWS account console:
 
 ![Event Engine Console](./assets/console.png)
-
-You can now proceed to [Getting Started](../getting-started.md)

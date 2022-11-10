@@ -152,8 +152,14 @@ export default function DocSidebarItemCategory({
           aria-expanded={collapsible ? !collapsed : undefined}
           href={collapsible ? hrefWithSSRFallback ?? '#' : hrefWithSSRFallback}
           {...props}>
-          {label}
-          {item.customProps?.module ? <span class="badge">Module</span> : <span></span>}
+          <div className="category-wrapper">
+            <div style={{flex: "1"}}>
+            {label}
+            </div>
+            <div>
+            {item.customProps?.module ? <span class="badge">LAB</span> : <span></span>}
+            </div>
+          </div>
         </Link>
         {href && collapsible && (
           <CollapseButton
