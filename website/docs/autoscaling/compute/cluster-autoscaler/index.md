@@ -12,13 +12,13 @@ $ reset-environment
 
 :::
 
-Cluster Autoscaler for AWS provides integration with Auto Scaling groups. It enables users to choose from four different options of deployment:
+The [Kubernetes Cluster Autoscaler](https://github.com/kubernetes/autoscaler) is a component that automatically adjusts the size of a Kubernetes Cluster so that all pods have a place to run without unneeded nodes. The Cluster Autoscaler is a great tool to ensure that the underlying cluster infrastructure is elastic, scalable, and can meet the changing demands of workloads.
 
-* One Auto Scaling group
-* Multiple Auto Scaling groups
-* Auto-Discovery
-* Control-plane Node setup
+The Kubernetes Cluster Autoscaler automatically adjusts the size of a Kubernetes cluster when one of the following conditions is true:
 
-Auto-Discovery is the preferred method to configure Cluster Autoscaler. Click [here](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler/cloudprovider/aws) for more information.
+1. There are pods that fail to run in the cluster due to insufficient resources.
+2. There are nodes in the cluster that are underutilized for an extended period of time and their pods can be placed on other existing nodes.
 
-Cluster Autoscaler will attempt to determine the CPU, memory, and GPU resources provided by an Auto Scaling Group based on the instance type specified in its Launch Configuration or Launch Template.
+Cluster Autoscaler for AWS provides [integration with Auto Scaling groups](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler/cloudprovider/aws). 
+
+In this lab we will apply the Cluster Autoscaler to our EKS cluster and see how it behaves when we scale up our workloads.
