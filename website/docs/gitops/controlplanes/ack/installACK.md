@@ -17,15 +17,15 @@ Create the IAM role with the trust relationship with the Service Account for the
 This role will be use to create the other ACK controller roles. 
 
 
-View the IAM trust policy running `cat /workspace/modules/ack/trust.json`
+View the IAM trust policy running `cat /workspace/modules/ack/iam/trust.json`
 
 Create the `ack-iam-controller` IAM Role using the role policy document `trust.json` and attach the `ack-iam-recommended-policy` recommended policy
 ```bash
-$ aws iam create-role --role-name "ack-iam-controller" --assume-role-policy-document "$(envsubst </workspace/modules/ack/trust.json)"
+$ aws iam create-role --role-name "ack-iam-controller" --assume-role-policy-document "$(envsubst </workspace/modules/ack/iam/trust.json)"
 $ aws iam put-role-policy \
         --role-name "ack-iam-controller" \
         --policy-name "ack-iam-recommended-policy" \
-        --policy-document "$(curl -s https://raw.githubusercontent.com/aws-controllers-k8s/iam-controller/main/config/iam/recommended-inline-policy)"
+        --policy-document "file:////workspace/modules/ack/iam/inline-policy.json"
 ```
 
 Login into public ECR using `helm login`
@@ -37,7 +37,7 @@ Login Succeeded
 Deploy the IAM Controller
 ```bash
 $ helm install --create-namespace -n ack-system ack-iam-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/iam-chart --version=$(curl -sL https://api.github.com/repos/aws-controllers-k8s/iam-controller/releases/latest | grep '"tag_name":' | cut -d'"' -f4) --set=aws.region=$AWS_DEFAULT_REGION --wait
+  oci://public.ecr.aws/aws-controllers-k8s/iam-chart --version=v0.0.21 --set=aws.region=$AWS_DEFAULT_REGION --wait
 ...
 STATUS: deployed
 ...
@@ -71,10 +71,15 @@ $ kubectl apply -k /workspace/modules/ack/ec2
 role.iam.services.k8s.aws/ack-ec2-controller created
 ```
 
+Wait for Role to be be reconciled
+```bash
+$ kubectl wait role.iam.services.k8s.aws ack-ec2-controller -n ack-system --for=condition=ACK.ResourceSynced --timeout=1m
+```
+
 Deploy the EC2 Controller.
 ```bash
 $ helm install --create-namespace -n ack-system ack-ec2-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/ec2-chart --version=$(curl -sL https://api.github.com/repos/aws-controllers-k8s/ec2-controller/releases/latest | grep '"tag_name":' | cut -d'"' -f4) --set=aws.region=$AWS_DEFAULT_REGION --wait
+  oci://public.ecr.aws/aws-controllers-k8s/ec2-chart --version=v0.0.21 --set=aws.region=$AWS_DEFAULT_REGION --wait
 ...
 STATUS: deployed
 ...
@@ -105,10 +110,15 @@ $ kubectl apply -k /workspace/modules/ack/rds/roles
 role.iam.services.k8s.aws/ack-rds-controller created
 ```
 
+Wait for Role to be be reconciled
+```bash
+$ kubectl wait role.iam.services.k8s.aws ack-rds-controller -n ack-system --for=condition=ACK.ResourceSynced --timeout=1m
+```
+
 Create the RDS Controller.
 ```bash
 $ helm install --create-namespace -n ack-system ack-rds-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/rds-chart --version=$(curl -sL https://api.github.com/repos/aws-controllers-k8s/rds-controller/releases/latest | grep '"tag_name":' | cut -d'"' -f4) --set=aws.region=$AWS_DEFAULT_REGION --wait
+  oci://public.ecr.aws/aws-controllers-k8s/rds-chart --version=v0.1.1 --set=aws.region=$AWS_DEFAULT_REGION --wait
 ...
 STATUS: deployed
 ...
@@ -140,10 +150,15 @@ role.iam.services.k8s.aws/ack-mq-controller created
 policy.iam.services.k8s.aws/ack-mq-controller created
 ```
 
+Wait for Policy and Role to be be reconciled
+```bash
+$ kubectl wait role.iam.services.k8s.aws ack-mq-controller -n ack-system --for=condition=ACK.ResourceSynced --timeout=1m
+```
+
 Deploy the MQ Controller.
 ```bash
 $ helm install --create-namespace -n ack-system ack-mq-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/mq-chart --version=$(curl -sL https://api.github.com/repos/aws-controllers-k8s/mq-controller/releases/latest | grep '"tag_name":' | cut -d'"' -f4) --set=aws.region=$AWS_DEFAULT_REGION --wait
+  oci://public.ecr.aws/aws-controllers-k8s/mq-chart --version=v0.0.22 --set=aws.region=$AWS_DEFAULT_REGION --wait
 ...
 STATUS: deployed
 ...

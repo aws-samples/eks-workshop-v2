@@ -1,24 +1,4 @@
 apiVersion: iam.services.k8s.aws/v1alpha1
-kind: Policy
-metadata:
-  name: ack-mq-controller
-  namespace: ack-system
-spec:
-  description: Policy for ACK MQ controller deployment on EKS cluster using Helm charts
-  name: ack-mq-controller
-  policyDocument: >
-    {
-      "Version": "2012-10-17",
-      "Statement": [
-        {
-          "Effect": "Allow",
-          "Action": "ec2:ModifyNetworkInterfaceAttribute",
-          "Resource": "*"
-        }
-      ]
-    }
----
-apiVersion: iam.services.k8s.aws/v1alpha1
 kind: Role
 metadata:
   name: ack-mq-controller
@@ -28,7 +8,7 @@ spec:
   name: ack-mq-controller
   policies:
     - "arn:aws:iam::aws:policy/AmazonMQFullAccess"
-    - "arn:aws:iam::$(AWS_ACCOUNT_ID):policy/ack-mq-controller"
+    - "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
   assumeRolePolicyDocument: >
     {
       "Version": "2012-10-17",
