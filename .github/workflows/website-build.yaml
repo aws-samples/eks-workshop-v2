@@ -1,0 +1,33 @@
+name: Website build
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  repository-projects: write
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+    - name: Dependabot metadata
+      id: metadata
+      uses: dependabot/fetch-metadata@v1.1.1
+      with:
+        github-token: "${{ secrets.GITHUB_TOKEN }}"
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - uses: azure/setup-kubectl@v3
+      with:
+        version: 'v1.22.12'
+      id: install
+    - name: Add a label for Dependabot Terraform PRs
+      if: ${{contains(steps.metadata.outputs.directory, '/website')}}
+      working-directory: website
+      run: |
+        npm install
+        npm run build

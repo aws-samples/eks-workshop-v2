@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: "mysql:5.7"
+        image: "public.ecr.aws/docker/library/mysql:5.7"
         imagePullPolicy: IfNotPresent
         env:
         - name: MYSQL_ROOT_PASSWORD
