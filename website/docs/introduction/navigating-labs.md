@@ -25,7 +25,7 @@ You should start each lab from the page indicated by this badge and anything oth
 
 Most of the interaction you will do in this workshop will be done with terminal commands, which you can either manually type or copy/paste to the Cloud9 IDE terminal. You will see this terminal commands displayed like this:
 
-```bash
+```bash test=false
 $ echo "This is an example command"
 ```
 
@@ -33,7 +33,7 @@ Hover your mouse over `echo "This is an example command"` and click to copy that
 
 You will also come across commands with sample output like this:
 
-```bash
+```bash test=false
 $ kubectl get nodes
 NAME                                         STATUS   ROLES    AGE     VERSION
 ip-10-42-10-104.us-west-2.compute.internal   Ready    <none>   6h2m    v1.23.9-eks-ba74326
@@ -45,7 +45,7 @@ Using the 'click to copy' function will only copy the command and ignore the sam
 
 Another pattern used in the content is presenting several commands in a single terminal:
 
-```bash
+```bash test=false
 $ kubectl get pods
 No resources found in default namespace.
 $ kubectl get nodes
