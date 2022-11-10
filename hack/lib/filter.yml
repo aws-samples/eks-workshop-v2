@@ -20,7 +20,6 @@ aws_rds_cluster:
 aws_security_group:
   - tags:
       Name: efssecuritygroup
-aws_security_group:
   - tags:
       created-by: eks-workshop-v2    
 aws_efs_file_system:
