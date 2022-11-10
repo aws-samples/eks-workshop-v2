@@ -4,7 +4,7 @@ sidebar_position: 132
 ---
 
 ```kustomization
-security/Guardduty/privileged/Guardduty/privileged/deployment.yaml
+security/Guardduty/privileged/deployment.yaml
 Deployment/carts
 ```
 
