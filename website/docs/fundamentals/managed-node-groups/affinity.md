@@ -4,9 +4,7 @@ sidebar_position: 30
 ---
 Pods can be constrained to run on specific nodes or under specific circumstances. This can include cases where you want only one pod running per node or want pods to be paired together on a node. Additionally, when using node affinity, pods can preferred or mandatory restrictions.
 
-For this lesson, we will focus on inter-pod affinity and anti-affinity by scheduling the `catalog` pods to run only one instance per node and by scheduling the `catalog-redis` pods to only run on nodes where a `catalog` pod exists. This will ensure that our caching pods (`catalog-redis`) run locally with a `catalog` pod instance for best performance.
-
-If you have not installed the [Sample Application](../../introduction/getting-started.md), please do that before proceeding with the next section. 
+For this lesson, we will focus on inter-pod affinity and anti-affinity by scheduling the `catalog` pods to run only one instance per node and by scheduling the `catalog-redis` pods to only run on nodes where a `catalog` pod exists. This will ensure that our caching pods (`catalog-redis`) run locally with a `catalog` pod instance for best performance. 
 
 The first thing we want to do is see that the `checkout` and `checkout-redis` pods are running
 ```bash
