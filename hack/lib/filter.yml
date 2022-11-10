@@ -7,6 +7,10 @@ aws_lb_target_group:
 aws_security_group:
   - tags:
       elbv2.k8s.aws/cluster: eks-workshop-${CLUSTER_ID}
+  - tags:
+      Name: efssecuritygroup
+  - tags:
+      created-by: eks-workshop-v2   
 aws_ebs_volume:
   - tags:
       KubernetesCluster: eks-workshop-${CLUSTER_ID}
@@ -16,12 +20,7 @@ aws_db_subnet_group:
       created-by: eks-workshop-v2
 aws_rds_cluster:
   - tags:
-      created-by: eks-workshop-v2
-aws_security_group:
-  - tags:
-      Name: efssecuritygroup
-  - tags:
-      created-by: eks-workshop-v2    
+      created-by: eks-workshop-v2  
 aws_efs_file_system:
   - tags:
       Name: efs-assets
