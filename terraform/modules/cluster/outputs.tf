@@ -131,3 +131,7 @@ output "adot_iam_role" {
   description = "ARN of the IAM role used by the ADOT collector pod"
   value       = module.iam_assumable_role_adot.iam_role_arn
 }
+output "adot_iam_role_ci" {
+  description = "ARN of the IAM role used by the ADOT collector pod for Container Insights"
+  value       = module.iam_assumable_role_adot_ci.iam_role_arn
+}
