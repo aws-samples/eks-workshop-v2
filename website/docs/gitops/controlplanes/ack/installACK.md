@@ -143,11 +143,17 @@ View the MQ Role manifest by running `cat /workspace/modules/ack/mq/roles/mq-iam
 ```file
 ack/mq/roles/mq-iam-role.yaml
 ```
-Create the RDS Role.
+Create the MQ Role.
 ```bash
 $ kubectl apply -k /workspace/modules/ack/mq/roles
 role.iam.services.k8s.aws/ack-mq-controller created
-policy.iam.services.k8s.aws/ack-mq-controller created
+```
+
+
+TODO: DEBUG to troubleshoot github action
+```bash timeout=180
+$ sleep 120
+$ kubectl get role.iam.services.k8s.aws ack-mq-controller -n ack-system -o yaml
 ```
 
 Wait for Policy and Role to be be reconciled
