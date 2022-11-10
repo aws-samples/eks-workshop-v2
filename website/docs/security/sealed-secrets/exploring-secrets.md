@@ -8,7 +8,7 @@ Run the following command to setup the EKS cluster for this module:
 ```bash timeout=300 wait=30
 $ reset-environment
 ```
-Kubernetes secrets can be exposed to the pods in different ways such as via environment variables and volumes. Let's see some of the ways a kubernetes secret can be exposed to the pods.
+Kubernetes secrets can be exposed to the pods in different ways such as via environment variables and volumes.
 
 ### Exposing Secrets as Environment Variables
 

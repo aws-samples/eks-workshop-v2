@@ -22,7 +22,7 @@ $ kubectl get pods -n kube-system | grep sealed-secrets-controller
 
 sealed-secrets-controller-77747c4b8c-snsxp      1/1     Running   0          5s
 ```
-The logs of the sealed-secrets controller shows that it tries to find any existing private keys during startup. If there are no private keys found, then it creates a new secret with the certificate details.
+The logs of the sealed-secrets controller show that the controller tries to find any existing private keys during startup. If there are no private keys found, then it creates a new secret with the certificate details.
 
 ```bash test=false
 $ kubectl logs sealed-secrets-controller-77747c4b8c-snsxp -n kube-system
@@ -80,7 +80,7 @@ Example command:
 ```bash test=false
 $ helm install sealed-secrets -n kube-system --set-string fullnameOverride=sealed-secrets-controller sealed-secrets/sealed-secrets
 ```
-* If the `fullnameOverride` parameter is not provided during helm install, then the kubeseal command must have the flag `--controller-name sealed-secrets` because kubeseal tries to access the controller with the name sealed-secrets-controller by default. Test
+* If the `fullnameOverride` parameter is not provided during helm install, then the kubeseal command must have the flag `--controller-name sealed-secrets` because kubeseal tries to access the controller with the name sealed-secrets-controller by default.
 
 Example command:
 ```bash test=false
