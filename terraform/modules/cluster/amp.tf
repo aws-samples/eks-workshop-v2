@@ -1,5 +1,7 @@
 resource "aws_prometheus_workspace" "this" {
   alias = local.cluster_name
+
+  tags = local.tags
 }
 
 module "iam_assumable_role_adot" {
