@@ -4,9 +4,9 @@ sidebar_position: 20
 weight: 6
 ---
 
-In this module, we will visualize the Container Insights metrics using CloudWatch. 
+In this module, we will visualize the Container Insights metrics using CloudWatch.
 :::note
-It may take a few minutes for data to start appearing in cloudwatch
+It may take a few minutes for data to start appearing in CloudWatch
 :::
 
 To view metrics:
