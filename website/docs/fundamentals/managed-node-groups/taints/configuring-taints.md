@@ -22,9 +22,10 @@ $ kubectl get nodes \
 NAME                                         STATUS   ROLES    AGE   VERSION               NODEGROUP
 ip-10-42-12-233.eu-west-1.compute.internal   Ready    <none>   63m   v1.23.9-eks-ba74326   managed-ondemand-tainted-20221103142426393800000006
 ```
+
 The above command makes use of the `--selector` flag to query for all nodes that have a label of `eks.amazonaws.com/nodegroup` that matches the name of our managed node group `$EKS_TAINTED_MNG_NAME`. The `--label-columns` flag also allows us to display the value of the `eks.amazonaws.com/nodegroup` label in the node list. 
 
-Bofore configuring our taints, let's explore the current configuration of our node. Note that the following command will list the details of all nodes that are part of our Managed Node Group. In our lab, the managed node group has just one instance. 
+Before configuring our taints, let's explore the current configuration of our node. Note that the following command will list the details of all nodes that are part of our Managed Node Group. In our lab, the managed node group has just one instance. 
 
 ```bash
 $ kubectl describe nodes \
@@ -47,7 +48,6 @@ Taints:             <none>
 A few things to point out:
 1. EKS automatically adds certain labels to allow for easier filtering, including labels for the OS type, managed node group name, instance type and others. While certain labels are provided out-of-the-box with EKS, AWS allows operators to configure their own set of custom labels at the managed node group level. This ensures that every node within a node group will have consistent labels. 
 2. Currently, there are no taints configured for the explored node, showcased by the `Taints: <none>` stanza. 
-
 
 ## Configuring taints for Managed Node Groups (MNGs)
 
@@ -78,6 +78,7 @@ $ aws eks update-nodegroup-config \
     }
 }
 ```
+
 The adition, removal or replacement of taints can be done by using the `aws eks update-nodegroup-config` CLI command for updating the configuration of the managed node group. This can be done by passing either `addOrUpdateTaints` or `removeTaints` and a list of taints to the `--taints` command flag. 
 
 The above command will add a new taint with the key of `frontend`, value of `true` and effect of `NO_EXECUTE`. This ensures that pods will not be able to be scheduled on any nodes that are part of the managed node group without having the corresponding toleration. Also, any existing pods without a matching toleration will be evicted. 
@@ -102,6 +103,7 @@ $ aws eks describe-nodegroup \
   }
 ]
 ```
+
 :::info
 
 Updating the managed node group and propagating the labels and taints usually takes a few minutes. If you are not seeing any taints configured or getting a `null` value, please do wait a few minutes before trying the above command again. 
