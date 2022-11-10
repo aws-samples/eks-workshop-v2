@@ -10,9 +10,3 @@ Autoscaling monitors your workloads and automatically adjusts capacity to mainta
 * Pods: Since pods are used to run workloads in a Kubernetes cluster, scaling a workload is primarily done by scaling Pods either horizontally or vertically in response to scenarios such as changes in load on a given application.
 
 In this chapter we'll explore the various mechanisms that are available to automatically scale both pods and cluster compute capacity.
-
-Before we begin let's setup our baseline environment for this module:
-
-```bash timeout=300 wait=30
-$ reset-environment 
-```
