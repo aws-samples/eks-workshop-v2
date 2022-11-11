@@ -1,0 +1,33 @@
+name: Publish Preview Prod
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - reinvent
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - uses: azure/setup-kubectl@v3
+      with:
+        version: 'v1.22.12'
+      id: install
+    - name: Install netlify CLI
+      run: npm install -g netlify-cli@11.8.3
+    - name: Deploy site
+      working-directory: website
+      env:
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      run: |
+        npm install
+        npm run deploy:netlify
