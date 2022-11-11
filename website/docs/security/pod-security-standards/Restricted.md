@@ -3,7 +3,7 @@ title: "Restricted PSS Profile"
 sidebar_position: 30
 ---
 
-In the section, we will look at the followng scenario.
+In the section, we will look at the following scenario.
 
 #### All PSA Modes Enabled for Restricted PSS Profile at Namespace Level
 
@@ -12,7 +12,7 @@ In this scenario, we will enable all PSA modes (i.e. enforce, audit and warn) fo
 
 Let's ensure that there are no PSA labels added to the `assets` namespace, by default.
 
-You can check current lables for namespace using below command.
+You can check current labels for namespace using below command.
 
 ```bash  timeout=60 hook=restricted-namespace-no-labels
 $ kubectl describe ns assets 
@@ -35,7 +35,7 @@ $ kubectl -n assets get deploy
 NAME     READY   UP-TO-DATE   AVAILABLE   AGE
 assets   1/1     1            1           5m24sh
 
-$ kubectl -n assets  get Pod
+$ kubectl -n assets  get pod
 NAME                     READY   STATUS    RESTARTS   AGE
 assets-ddb8f87dc-8z6l9   1/1     Running   0          5m24s
 ```
@@ -124,7 +124,7 @@ $ kubectl -n assets apply -f /workspace/manifests/assets/deployment.yaml
 Warning: would violate PodSecurity "restricted:latest": allowPrivilegeEscalation != false (container "assets" must set securityContext.allowPrivilegeEscalation=false), runAsNonRoot != true (pod or container "assets" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "assets" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
 deployment.apps/assets created
 ```
-As shown in the above output, PSA did not allow pod creation due to security condition violations for the (Privileged PSS profile)[https://kubernetes.io/docs/concepts/security/pod-security-standards] configured for the `assets` namespace.
+As shown in the above output, PSA did not allow pod creation due to security condition violations for the [Privileged PSS profile](https://kubernetes.io/docs/concepts/security/pod-security-standards) configured for the `assets` namespace.
 
 Let us check if Deployment and Pod objects are created or not.
 
@@ -133,7 +133,7 @@ $ kubectl -n assets get deploy
 NAME     READY   UP-TO-DATE   AVAILABLE   AGE
 assets   0/1     0            0           90s
 
-$ kubectl -n assets get Pod   
+$ kubectl -n assets get pod   
 No resources found in assets namespace.
 ```
 The above output indicates that PSA did not allow creation of Pods in the `assets` namespace, because the Pod security configuration violates Restricted PSS profile. This behaviour is same as what we saw earlier in the previous module.
