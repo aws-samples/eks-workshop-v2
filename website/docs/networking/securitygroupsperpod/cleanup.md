@@ -51,13 +51,6 @@ $ aws ec2 delete-security-group \
     --group-id ${POD_SG}
 ```
 
-### Delete the EKS Nodegroup
-```bash
-$ aws eks delete-nodegroup \
---cluster-name ${cluster_name} \
---nodegroup-name nodegroup-sec-group
-```
-
 ### Remove the trunk label
 
 ```bash
