@@ -1,0 +1,5 @@
+varReference:
+  - apiVersion: v1
+    kind: ConfigMap
+    path: data/SPRING_ACTIVEMQ_PASSWORD
+    value: mq-ack-options

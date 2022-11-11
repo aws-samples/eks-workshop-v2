@@ -135,3 +135,15 @@ output "adot_iam_role_ci" {
   description = "ARN of the IAM role used by the ADOT collector pod for Container Insights"
   value       = module.iam_assumable_role_adot_ci.iam_role_arn
 }
+
+
+output "oidc_provider" {
+  description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
+  value       = module.eks-blueprints.oidc_provider
+}
+
+output "vpc_id" {
+  description = "The VPC ID"
+  value       = module.aws_vpc.vpc_id
+}
+

@@ -1,0 +1,33 @@
+apiVersion: services.k8s.aws/v1alpha1
+kind: FieldExport
+metadata:
+  name: catalog-reader-db-endpoint
+spec:
+  to:
+    name: catalog-reader-db
+    kind: secret
+    namespace: catalog-prod
+    key: endpoint
+  from:
+    path: ".status.endpoint.address"
+    resource:
+      group: rds.services.k8s.aws
+      kind: DBInstance
+      name: rds-eks-workshop
+---
+apiVersion: services.k8s.aws/v1alpha1
+kind: FieldExport
+metadata:
+  name: catalog-reader-db-user
+spec:
+  to:
+    name: catalog-reader-db
+    kind: secret
+    namespace: catalog-prod
+    key: username
+  from:
+    path: ".spec.masterUsername"
+    resource:
+      group: rds.services.k8s.aws
+      kind: DBInstance
+      name: rds-eks-workshop

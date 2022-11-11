@@ -1,0 +1,15 @@
+apiVersion: ec2.services.k8s.aws/v1alpha1
+kind: SecurityGroup
+metadata:
+  name: rds-eks-workshop
+  namespace: default
+spec:
+  description: SecurityGroup
+  name: rds-eks-workshop
+  vpcID: $(VPC_ID)
+  ingressRules:
+  - ipProtocol: tcp
+    ipRanges:
+    - cidrIP: "0.0.0.0/0"
+    fromPort: 3306
+    toPort: 3306

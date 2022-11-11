@@ -98,7 +98,20 @@
     {
       "Effect": "Allow",
       "Action": [
-          "aps:QueryMetrics"
+        "aps:QueryMetrics",
+        "iam:CreateRole",
+        "iam:GetRole",
+        "iam:PutRolePolicy",
+        "ecr-public:GetAuthorizationToken",
+        "sts:GetServiceBearerToken",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeVpcs",
+        "iam:DeleteRolePolicy",
+        "iam:DeleteRole",
+        "rds:DescribeDBInstances",
+        "mq:ListBrokers",
+        "mq:DescribeBroker",
+        "iam:DetachRolePolicy"
       ],
       "Resource": "*"
     },
@@ -111,5 +124,6 @@
       ],
       "Resource": "*"
     }
+
   ]
 }

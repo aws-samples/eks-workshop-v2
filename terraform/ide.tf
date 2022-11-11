@@ -23,6 +23,11 @@ NETWORKING_RDS_SG_ID=${module.cluster.networking_rds_ingress_sg_id}
 AMP_ENDPOINT=${module.cluster.amp_endpoint}
 ADOT_IAM_ROLE=${module.cluster.adot_iam_role}
 ADOT_IAM_ROLE_CI=${module.cluster.adot_iam_role_ci}
+OIDC_PROVIDER=${module.cluster.oidc_provider}
+VPC_ID=${module.cluster.vpc_id}
+VPC_PRIVATE_SUBNET_ID_0=${module.cluster.private_subnet_ids[0]}
+VPC_PRIVATE_SUBNET_ID_1=${module.cluster.private_subnet_ids[1]}
+VPC_PRIVATE_SUBNET_ID_2=${module.cluster.private_subnet_ids[2]}
 EOT
 }
 

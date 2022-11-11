@@ -1,0 +1,30 @@
+apiVersion: iam.services.k8s.aws/v1alpha1
+kind: Role
+metadata:
+  name: ack-mq-controller
+  namespace: ack-system
+spec:
+  description: IRSA role for ACK MQ controller deployment on EKS cluster using Helm charts
+  name: ack-mq-controller
+  policies:
+    - "arn:aws:iam::aws:policy/AmazonMQFullAccess"
+    - "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+  assumeRolePolicyDocument: >
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Principal": {
+            "Federated": "arn:aws:iam::$(AWS_ACCOUNT_ID):oidc-provider/$(OIDC_PROVIDER)"
+          },
+          "Action": "sts:AssumeRoleWithWebIdentity",
+          "Condition": {
+            "StringEquals": {
+              "$(OIDC_PROVIDER):sub": "system:serviceaccount:ack-system:ack-mq-controller"
+            }
+          }
+        }
+      ]
+    }
+
