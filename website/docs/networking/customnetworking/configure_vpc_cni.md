@@ -14,7 +14,7 @@ $ echo "The secondary subnet in AZ $AZ2 is $SECONDARY_SUBNET_2"
 $ echo "The secondary subnet in AZ $AZ3 is $SECONDARY_SUBNET_3"
 ``` 
 
-Set the AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG environment variable to *true* in the aws-node DaemonSet.
+Set the *AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG* environment variable to *true* in the aws-node DaemonSet.
 
 ```bash timeout=240
 $ kubectl set env daemonset aws-node -n kube-system AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG=true
@@ -24,8 +24,7 @@ Retrieve the ID of your [cluster security group](https://docs.aws.amazon.com/eks
 
 
 ```bash expectError=true
-$ cluster_security_group_id=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --region $AWS_DEFAULT_REGION \
-  --query cluster.resourcesVpcConfig.clusterSecurityGroupId --output text)
+$ cluster_security_group_id=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --region $AWS_DEFAULT_REGION --query cluster.resourcesVpcConfig.clusterSecurityGroupId --output text)
 ```
 
 Create an ENIConfig custom resource for each subnet that you want to deploy pods in.
@@ -42,11 +41,7 @@ spec:
   securityGroups:
     - $cluster_security_group_id
   subnet: $SECONDARY_SUBNET_1
-EOF
-```
-
-```bash expectError=true
-$ cat <<EOF | kubectl apply -f -
+---
 apiVersion: crd.k8s.amazonaws.com/v1alpha1
 kind: ENIConfig
 metadata:
@@ -55,13 +50,7 @@ spec:
   securityGroups:
     - $cluster_security_group_id
   subnet: $SECONDARY_SUBNET_2
-EOF
-
-```
-
-
-```bash expectError=true
-$ cat <<EOF | kubectl apply -f -
+---
 apiVersion: crd.k8s.amazonaws.com/v1alpha1
 kind: ENIConfig
 metadata:

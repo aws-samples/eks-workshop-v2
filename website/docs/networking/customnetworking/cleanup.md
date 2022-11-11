@@ -44,3 +44,8 @@ Reset Amazon VPC CNI configuration
 ```bash expectError=true
 $ kubectl set env daemonset aws-node -n kube-system AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG=false
 ```
+
+Delete the IAM trust policy JSON file
+```bash expectError=true
+$ rm node-role-trust-relationship.json
+```

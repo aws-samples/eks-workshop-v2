@@ -57,9 +57,10 @@ Create a Managed Node Group
 ```bash expectError=true
 $ aws eks create-nodegroup --region $AWS_DEFAULT_REGION --cluster-name $EKS_CLUSTER_NAME \
   --nodegroup-name custom-networking-nodegroup \
-  --subnets $SECONDARY_SUBNET_1 $SECONDARY_SUBNET_2 $SECONDARY_SUBNET_3 \
   --instance-types t3.medium --node-role $node_role_arn \
-  --scaling-config minSize=1,maxSize=3,desiredSize=3
+  --subnets $PRIMARY_SUBNET_1 $PRIMARY_SUBNET_2 $PRIMARY_SUBNET_3 \
+  --labels type=customnetworking \
+  --scaling-config minSize=1,maxSize=1,desiredSize=1
 ```
 
 Node group creation takes several minutes. You can check the status of the creation of a managed node group with the following command.
@@ -79,15 +80,13 @@ $ kubectl get nodes -o wide
 Here is a sample output from the previous command.
 ```bash expectError=true
 $ kubectl get nodes -o wide
-NAME                                          STATUS   ROLES    AGE    VERSION               INTERNAL-IP     EXTERNAL-IP   OS-IMAGE         KERNEL-VERSION                 CONTAINER-RUNTIME
-ip-10-42-10-93.us-west-2.compute.internal     Ready    <none>   2d3h   v1.23.9-eks-ba74326   10.42.10.93     <none>        Amazon Linux 2   5.4.209-116.367.amzn2.x86_64   docker://20.10.17
-ip-10-42-11-6.us-west-2.compute.internal      Ready    <none>   2d3h   v1.23.9-eks-ba74326   10.42.11.6      <none>        Amazon Linux 2   5.4.209-116.367.amzn2.x86_64   docker://20.10.17
-ip-10-42-12-60.us-west-2.compute.internal     Ready    <none>   2d3h   v1.23.9-eks-ba74326   10.42.12.60     <none>        Amazon Linux 2   5.4.209-116.367.amzn2.x86_64   docker://20.10.17
-ip-100-64-10-224.us-west-2.compute.internal   Ready    <none>   104s   v1.23.9-eks-ba74326   100.64.10.224   <none>        Amazon Linux 2   5.4.209-116.367.amzn2.x86_64   docker://20.10.17
-ip-100-64-11-228.us-west-2.compute.internal   Ready    <none>   105s   v1.23.9-eks-ba74326   100.64.11.228   <none>        Amazon Linux 2   5.4.209-116.367.amzn2.x86_64   docker://20.10.17
-ip-100-64-12-220.us-west-2.compute.internal   Ready    <none>   105s   v1.23.9-eks-ba74326   100.64.12.220   <none>        Amazon Linux 2   5.4.209-116.367.amzn2.x86_64   docker://20.10.17
+NAME                                         STATUS   ROLES    AGE     VERSION               INTERNAL-IP    EXTERNAL-IP   OS-IMAGE         KERNEL-VERSION                 CONTAINER-RUNTIME
+ip-10-42-10-127.us-west-2.compute.internal   Ready    <none>   2m15s   v1.23.9-eks-ba74326   10.42.10.127   <none>        Amazon Linux 2   5.4.219-126.411.amzn2.x86_64   docker://20.10.17
+ip-10-42-10-190.us-west-2.compute.internal   Ready    <none>   60m     v1.23.9-eks-ba74326   10.42.10.190   <none>        Amazon Linux 2   5.4.217-126.408.amzn2.x86_64   docker://20.10.17
+ip-10-42-11-189.us-west-2.compute.internal   Ready    <none>   60m     v1.23.9-eks-ba74326   10.42.11.189   <none>        Amazon Linux 2   5.4.217-126.408.amzn2.x86_64   docker://20.10.17
+ip-10-42-12-73.us-west-2.compute.internal    Ready    <none>   60m     v1.23.9-eks-ba74326   10.42.12.73    <none>        Amazon Linux 2   5.4.217-126.408.amzn2.x86_64   docker://20.10.17
 ```
 
-You can see that 3 new nodes are provisioned in the 100.64.0.0/16 CIDR range.
+You can see that 1 new node provisioned. You can identity this with the least age.
 
 
