@@ -199,6 +199,8 @@ module "eks-blueprints-kubernetes-addons" {
   amazon_eks_adot_config = {
     kubernetes_version = var.cluster_version
   }
+
+  tags = local.tags
 }
 
 locals {

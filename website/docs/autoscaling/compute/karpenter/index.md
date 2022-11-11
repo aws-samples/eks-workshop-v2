@@ -3,9 +3,18 @@ title: "Karpenter"
 sidebar_position: 30
 ---
 
+:::tip Before you start
+Prepare your environment for this section:
+
+```bash timeout=300 wait=30
+$ reset-environment 
+```
+
+:::
+
 In this section we will setup [Karpenter](https://github.com/aws/karpenter). Karpenter is an open-source autoscaling project built for Kubernetes. Karpenter is designed to provide the right compute resources to match your application’s needs in seconds, instead of minutes by observing the aggregate resource requests of unschedulable pods and makes decisions to launch and terminate nodes to minimize scheduling latencies.
 
-**Insert image here
+<img src={require('./assets/karpenter-diagram.png').default}/>
 
 Karpenter's goal is to improve the efficiency and cost of running workloads on Kubernetes clusters. Karpenter works by:
 
@@ -14,9 +23,3 @@ Karpenter's goal is to improve the efficiency and cost of running workloads on K
 * Provisioning nodes that meet the requirements of the pods
 * Scheduling the pods to run on the new nodes
 * Removing the nodes when the nodes are no longer needed
-
-Before we begin let's reset our environment:
-
-```bash timeout=300 wait=30
-$ reset-environment 
-```

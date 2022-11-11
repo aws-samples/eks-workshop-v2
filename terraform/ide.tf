@@ -32,6 +32,7 @@ SECONDARY_SUBNET_3=${module.cluster.private_subnet_ids[5]}
 AZ1=${module.cluster.azs[0]}
 AZ2=${module.cluster.azs[1]}
 AZ3=${module.cluster.azs[2]}
+ADOT_IAM_ROLE_CI=${module.cluster.adot_iam_role_ci}
 EOT
 }
 

@@ -3,26 +3,7 @@ title: "Verify the logs in CloudWatch"
 sidebar_position: 40
 ---
 
-In this section, we will see how to checks the kubernetes pod logs forwarded by the Fluent-bit agent deployed on each node to Amazon CloudWatch logs. 
-
-1. Deploy the Sample Webstore application from the [**Introduction/Getting Started**](/docs/introduction/getting-started.md) section, this sample application creates the resources in the below kubernetes namespaces. 
-
-```bash
-$ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
-NAME       STATUS   AGE
-activemq   Active   3d19h
-assets     Active   3d19h
-carts      Active   3d19h
-catalog    Active   3d19h
-checkout   Active   3d19h
-orders     Active   3d19h
-other      Active   3d19h
-ui         Active   3d19h
-```
-
-
-The deployed application streams the logs in pod consoles, and the pod console logs are saved in _/var/log/containers/*.log_ path on each node. Verify the resources deployed in **_assets_** namespace and pod logs using the below commands.
-
+In this section, we will see how to checks the kubernetes pod logs forwarded by the Fluent-bit agent deployed on each node to Amazon CloudWatch logs. The deployed application components write logs to `stdout`, which are saved in the `/var/log/containers/*.log` path on each node. Verify the resources deployed in **_assets_** namespace and pod logs using the below commands.
 
 ```bash
 $ kubectl get all -n assets
