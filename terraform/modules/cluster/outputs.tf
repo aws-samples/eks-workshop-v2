@@ -161,8 +161,3 @@ output "oidc_provider" {
   description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
   value       = module.eks-blueprints.oidc_provider
 }
-
-output "vpc_id" {
-  description = "The VPC ID"
-  value       = module.aws_vpc.vpc_id
-}
