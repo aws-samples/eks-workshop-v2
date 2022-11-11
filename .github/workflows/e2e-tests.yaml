@@ -112,6 +112,13 @@ jobs:
         DEV_MODE: 1
       run: |
         make test terraform_context="test/terraform" module="costoptimization"
+    - name: Run tests - Automation
+      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/automation') }}
+      env:
+        DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
+      run: |
+        AWS_EKS_WORKSHOP_TEST_FLAGS="--debug" make test terraform_context="test/terraform" module="gitops"
     - name: Run tests - Cleanup
       if: always()
       env:
@@ -136,6 +143,7 @@ jobs:
         terraform destroy -target=module.core.module.cluster.module.descheduler --auto-approve
 
         terraform destroy -target=module.core.module.cluster.module.eks-blueprints --auto-approve
+        
 
         envsubst < ../../hack/lib/filter.yml > filter.yml
         awsweeper --force filter.yml

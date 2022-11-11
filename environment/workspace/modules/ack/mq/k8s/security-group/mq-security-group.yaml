@@ -1,0 +1,20 @@
+apiVersion: ec2.services.k8s.aws/v1alpha1
+kind: SecurityGroup
+metadata:
+  name: mq-eks-workshop
+  namespace: default
+spec:
+  description: SecurityGroup
+  name: mq-eks-workshop
+  vpcID: $(VPC_ID)
+  ingressRules:
+  - ipProtocol: tcp
+    ipRanges:
+    - cidrIP: "0.0.0.0/0"
+    fromPort: 61616
+    toPort: 61619
+  - ipProtocol: tcp
+    ipRanges:
+    - cidrIP: "0.0.0.0/0"
+    fromPort: 8162
+    toPort: 8162

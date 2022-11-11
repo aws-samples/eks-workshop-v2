@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+configMapGenerator:
+- name: mq-ack-options
+  envs:
+  - mq-ack-options.env
+vars:
+- name: AWS_ACCOUNT_ID
+  objref:
+    kind: ConfigMap
+    name: mq-ack-options
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.AWS_ACCOUNT_ID
+- name: OIDC_PROVIDER
+  objref:
+    kind: ConfigMap
+    name: mq-ack-options
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.OIDC_PROVIDER
+configurations:
+  - env-var-transformer.yaml
+resources:
+- mq-iam-role.yaml

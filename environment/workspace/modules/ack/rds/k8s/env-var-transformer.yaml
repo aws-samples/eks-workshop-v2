@@ -1,0 +1,9 @@
+varReference:
+  - apiVersion: ec2.services.k8s.aws/v1alpha1
+    kind: SecurityGroup
+    path: spec/vpcID
+    value: rds-ack-options
+  - apiVersion: rds.services.k8s.aws/v1alpha1
+    kind: DBSubnetGroup
+    path: spec/subnetIDs
+    value: rds-ack-options

@@ -156,3 +156,13 @@ output "eks_cluster_managed_node_group_iam_role_arns" {
   description = "IAM role arn's of managed node groups"
   value       = module.eks-blueprints.managed_node_group_iam_role_arns
 }
+
+output "oidc_provider" {
+  description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
+  value       = module.eks-blueprints.oidc_provider
+}
+
+output "vpc_id" {
+  description = "The VPC ID"
+  value       = module.aws_vpc.vpc_id
+}

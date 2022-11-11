@@ -35,6 +35,11 @@ AZ1=${module.cluster.azs[0]}
 AZ2=${module.cluster.azs[1]}
 AZ3=${module.cluster.azs[2]}
 ADOT_IAM_ROLE_CI=${module.cluster.adot_iam_role_ci}
+OIDC_PROVIDER=${module.cluster.oidc_provider}
+VPC_ID=${module.cluster.vpc_id}
+VPC_PRIVATE_SUBNET_ID_0=${module.cluster.private_subnet_ids[0]}
+VPC_PRIVATE_SUBNET_ID_1=${module.cluster.private_subnet_ids[1]}
+VPC_PRIVATE_SUBNET_ID_2=${module.cluster.private_subnet_ids[2]}
 EOT
 }
 
