@@ -23,6 +23,7 @@ NETWORKING_RDS_SG_ID=${module.cluster.networking_rds_ingress_sg_id}
 AMP_ENDPOINT=${module.cluster.amp_endpoint}
 ADOT_IAM_ROLE=${module.cluster.adot_iam_role}
 VPC_ID=${module.cluster.vpc_id}
+EKS_CLUSTER_SECURITY_GROUP_ID=${module.cluster.eks_cluster_security_group_id}
 PRIMARY_SUBNET_1=${module.cluster.private_subnet_ids[0]}
 PRIMARY_SUBNET_2=${module.cluster.private_subnet_ids[1]}
 PRIMARY_SUBNET_3=${module.cluster.private_subnet_ids[2]}

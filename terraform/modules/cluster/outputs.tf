@@ -145,3 +145,8 @@ output "adot_iam_role_ci" {
   description = "ARN of the IAM role used by the ADOT collector pod for Container Insights"
   value       = module.iam_assumable_role_adot_ci.iam_role_arn
 }
+
+output "eks_cluster_security_group_id" {
+  description = "EKS Control Plane Security Group ID"
+  value       = module.eks-blueprints.cluster_primary_security_group_id
+}
