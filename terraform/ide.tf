@@ -23,6 +23,7 @@ NETWORKING_RDS_DATABASE_NAME=${module.cluster.networking_rds_database_name}
 NETWORKING_RDS_SG_ID=${module.cluster.networking_rds_ingress_sg_id}
 AMP_ENDPOINT=${module.cluster.amp_endpoint}
 ADOT_IAM_ROLE=${module.cluster.adot_iam_role}
+ADOT_IAM_ROLE_CI=${module.cluster.adot_iam_role_ci}
 EOT
 }
 

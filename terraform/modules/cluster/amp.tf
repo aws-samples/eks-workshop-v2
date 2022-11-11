@@ -1,5 +1,7 @@
 resource "aws_prometheus_workspace" "this" {
   alias = local.cluster_name
+
+  tags = local.tags
 }
 
 module "iam_assumable_role_adot" {
@@ -10,4 +12,6 @@ module "iam_assumable_role_adot" {
   provider_url                  = local.oidc_url
   role_policy_arns              = ["arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonPrometheusRemoteWriteAccess"]
   oidc_fully_qualified_subjects = ["system:serviceaccount:other:adot-collector"]
+
+  tags = local.tags
 }

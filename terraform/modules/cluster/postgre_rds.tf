@@ -1,7 +1,7 @@
 module "networking_rds_postgre" {
   source = "terraform-aws-modules/rds-aurora/aws"
 
-  name           = "eksworkshop-rds-networking"
+  name           = "${local.cluster_name}-networking"
   engine         = "aurora-postgresql"
   engine_version = "11.13"
   instance_class = "db.t3.medium"

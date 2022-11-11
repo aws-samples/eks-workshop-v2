@@ -1,0 +1,40 @@
+---
+title: "Creating the load balancer"
+sidebar_position: 20
+---
+
+Lets create an additional `Service` that provisions a load balancer with the following kustomization:
+
+```file
+exposing/load-balancer/nlb/nlb.yaml
+```
+
+This `Service` will create a Network Load Balancer that listens on port 80 and forwards connections to the `ui` Pods on port 8080. An NLB is a layer 4 load balancer that on our case operates at the TCP layer.
+
+```bash timeout=180 hook=add-lb hookTimeout=430
+$ kubectl apply -k /workspace/modules/exposing/load-balancer/nlb
+```
+
+Lets inspect the `Service` resources for the `ui` application again:
+
+```bash
+$ kubectl get service -n ui
+```
+
+We see two separate resources, with the new `ui-nlb` entry being of type `LoadBalancer`. Most importantly note it has an "external IP" value, this the DNS entry that can be used to access our application from outside the Kubernetes cluster.
+
+Now that our application is exposed to the outside world, lets try to access it.
+
+Get the URL from the `Service` resource:
+
+```bash
+$ kubectl -n kube-system get svc -n ui ui-nlb -o json | jq \
+    -r '.status.loadBalancer.ingress[0].hostname'
+k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
+```
+
+Paste that URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
+
+<browser url='http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com'>
+<img src={require('./assets/web-ui.png').default}/>
+</browser>

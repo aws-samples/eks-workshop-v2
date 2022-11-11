@@ -1,6 +1,6 @@
 ---
 title: "Logging in EKS"
-sidebar_position: 10
+sidebar_position: 30
 ---
 
 Kubernetes logging can be divided into control plane logging, node logging, and application logging. The [Kubernetes control plane](https://kubernetes.io/docs/concepts/overview/components/#control-plane-components) is a set of components that manage Kubernetes clusters and produce logs used for auditing and diagnostic purposes. With Amazon EKS, you can turn on logs for different control plane components and send them to Amazon CloudWatch.
