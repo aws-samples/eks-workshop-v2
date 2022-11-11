@@ -144,25 +144,10 @@ View the MQ Role manifest by running `cat /workspace/modules/ack/mq/roles/mq-iam
 ack/mq/roles/mq-iam-role.yaml
 ```
 
-
-TODO: DEBUG to troubleshoot role deletion from hack
-```bash
-$ aws iam detach-role-policy  --role-name ack-mq-controller --policy-arn "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
-$ aws iam detach-role-policy  --role-name ack-mq-controller --policy-arn "arn:aws:iam::aws:policy/AmazonMQFullAccess"
-$ aws iam delete-role --role-name ack-mq-controller
-```
-
 Create the MQ Role.
 ```bash
 $ kubectl apply -k /workspace/modules/ack/mq/roles
 role.iam.services.k8s.aws/ack-mq-controller created
-```
-
-
-TODO: DEBUG to troubleshoot github action
-```bash timeout=180
-$ sleep 120
-$ kubectl get role.iam.services.k8s.aws ack-mq-controller -n ack-system -o yaml
 ```
 
 Wait for Policy and Role to be be reconciled
