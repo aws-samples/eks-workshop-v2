@@ -36,12 +36,12 @@ export default function Terminal({
         section = new TerminalSection()
         sections.push(section)
 
-        currentLine = currentLine.substring(2)
-
-        allCommands = `${allCommands}\n${currentLine}`
+        currentLine = currentLine.substring(2).trim()
       }
 
-      section.processLine(currentLine)
+      if(section.processLine(currentLine)) {
+        allCommands = `${allCommands}\n${currentLine}`
+      }
     }
   }
 
@@ -75,40 +75,13 @@ export default function Terminal({
   );
 }
 
-class TerminalCommandContext {
-  private commandLines: Array<string> = [];
-  private output: string = '';
-  private inHeredoc = false;
-  private capturingOutput = false;
-
-  processLine(currentLine: string) {
-    if(this.capturingOutput) {
-      this.output.concat(`${currentLine}\n`)
-    }
-    else {
-      this.commandLines.push(currentLine)
-
-      if(currentLine.indexOf('<<EOF') > -1) {
-        this.inHeredoc = true
-      }
-      else if(this.inHeredoc) {
-        if(currentLine.indexOf('EOF') > -1) {
-          this.inHeredoc = false
-        }
-      }
-    }
-
-    if(!currentLine.endsWith('\\') && !this.inHeredoc) {
-      this.capturingOutput = true
-    }
-  }
-}
-
 class TerminalSection {
   protected contexts: Array<TerminalContext> = [];
   private context : TerminalContext;
   private commandContext : TerminalCommand;
   private inHeredoc = false;
+  private commandString : string = "";
+  private inCommand = true;
 
   constructor() {
     this.context = this.commandContext = new TerminalCommand();
@@ -125,8 +98,15 @@ class TerminalSection {
     this.context.addLine(line)
   }
 
-  processLine(currentLine: string) {
+  processLine(currentLine: string) : boolean {
+    let processed = false;
+
     this.context.addLine(currentLine);
+
+    if(this.inCommand) {
+      this.commandString += currentLine;
+      processed = true;
+    }
 
     if(currentLine.indexOf('<<EOF') > -1) {
       this.inHeredoc = true
@@ -140,7 +120,11 @@ class TerminalSection {
     if(!currentLine.endsWith('\\') && !this.inHeredoc) {
       this.context = new TerminalOutput()
       this.contexts.push(this.context)
+
+      this.inCommand = false;
     }
+
+    return processed;
   }
 
   render() {
