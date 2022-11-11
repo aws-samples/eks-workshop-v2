@@ -30,7 +30,6 @@ Let's apply this to our cluster:
 
 ```bash hook=deploy-adot
 $ envsubst < <(cat /workspace/modules/networking/custom-networking/provision/eniconfigs.yaml) | kubectl apply -f -
-$ envsubst < <(cat ./workspace/modules/networking/custom-networking/provision/eniconfigs.yaml) | cat -
 ```
 
 Confirm that your ENIConfigs were created.

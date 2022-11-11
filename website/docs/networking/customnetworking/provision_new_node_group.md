@@ -9,7 +9,7 @@ Create a Managed Node Group
 ```bash expectError=true
 $ aws eks create-nodegroup --region $AWS_DEFAULT_REGION --cluster-name $EKS_CLUSTER_NAME \
   --nodegroup-name custom-networking-nodegroup \
-  --instance-types t3.medium --node-role MANAGED_NODE_GROUP_IAM_ROLE_ARN \
+  --instance-types t3.medium --node-role $MANAGED_NODE_GROUP_IAM_ROLE_ARN \
   --subnets $PRIMARY_SUBNET_1 $PRIMARY_SUBNET_2 $PRIMARY_SUBNET_3 \
   --labels type=customnetworking \
   --scaling-config minSize=1,maxSize=1,desiredSize=1
