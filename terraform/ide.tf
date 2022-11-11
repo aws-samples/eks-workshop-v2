@@ -30,6 +30,7 @@ PRIMARY_SUBNET_3=${module.cluster.private_subnet_ids[2]}
 SECONDARY_SUBNET_1=${module.cluster.private_subnet_ids[3]}
 SECONDARY_SUBNET_2=${module.cluster.private_subnet_ids[4]}
 SECONDARY_SUBNET_3=${module.cluster.private_subnet_ids[5]}
+MANAGED_NODE_GROUP_IAM_ROLE_ARN=${module.cluster.eks_cluster_managed_node_group_iam_role_arns[0]}
 AZ1=${module.cluster.azs[0]}
 AZ2=${module.cluster.azs[1]}
 AZ3=${module.cluster.azs[2]}

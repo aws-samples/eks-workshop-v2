@@ -20,41 +20,17 @@ Set the **AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG** environment variable to *true* in
 $ kubectl set env daemonset aws-node -n kube-system AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG=true
 ```
 
-Retrieve the ID of your [cluster security group](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html) and store it in a variable for use in the next step. Amazon EKS automatically creates this security group when you create your cluster.
+Create an ENIConfig custom resource for each subnet that you want to deploy pods in. Here is the ENIConfig configuration.
 
-Create an ENIConfig custom resource for each subnet that you want to deploy pods in.
-* The following commands create separate ENIConfigs for the three subnets that were created in a previous step. The value for name must be unique. The cluster security group is assigned to the ENIConfig.
+```file
+networking/custom-networking/provision/eniconfigs.yaml
+```
 
+Let's apply this to our cluster:
 
-```bash expectError=true
-$ cat <<EOF | kubectl apply -f -
-apiVersion: crd.k8s.amazonaws.com/v1alpha1
-kind: ENIConfig
-metadata:
-  name: $AZ1
-spec:
-  securityGroups:
-    - $EKS_CLUSTER_SECURITY_GROUP_ID
-  subnet: $SECONDARY_SUBNET_1
----
-apiVersion: crd.k8s.amazonaws.com/v1alpha1
-kind: ENIConfig
-metadata:
-  name: $AZ2
-spec:
-  securityGroups:
-    - $EKS_CLUSTER_SECURITY_GROUP_ID
-  subnet: $SECONDARY_SUBNET_2
----
-apiVersion: crd.k8s.amazonaws.com/v1alpha1
-kind: ENIConfig
-metadata:
-  name: $AZ3
-spec:
-  securityGroups:
-    - $EKS_CLUSTER_SECURITY_GROUP_ID
-  subnet: $SECONDARY_SUBNET_3
-EOF
+```bash hook=deploy-adot
+$ envsubst < <(cat /workspace/modules/networking/custom-networking/provision/eniconfigs.yaml) | kubectl apply -f -
+$ envsubst < <(cat ./workspace/modules/networking/custom-networking/provision/eniconfigs.yaml) | cat -
 ```
 
 Confirm that your ENIConfigs were created.

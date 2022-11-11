@@ -150,3 +150,9 @@ output "eks_cluster_security_group_id" {
   description = "EKS Control Plane Security Group ID"
   value       = module.eks-blueprints.cluster_primary_security_group_id
 }
+
+
+output "eks_cluster_managed_node_group_iam_role_arns" {
+  description = "IAM role arn's of managed node groups"
+  value       = module.eks-blueprints.managed_node_group_iam_role_arns
+}
