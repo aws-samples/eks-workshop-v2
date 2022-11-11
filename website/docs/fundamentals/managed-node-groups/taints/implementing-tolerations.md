@@ -107,7 +107,10 @@ Events:
   Warning  FailedScheduling  3s    default-scheduler  0/4 nodes are available: 1 node(s) had taint {frontend: true}, that the pod didn't tolerate, 1 node(s) had taint {systemComponent: true}, that the pod didn't tolerate, 2 node(s) didn't match Pod's node affinity/selector.
 ```
 
-Our changes are reflected in the new configuration of the `Pending` pod. We can see that we have pinned the pod to any node with the `tainted=yes` label but this introduced a new problem as our pod cannot be scheduled (`PodScheduled False`). A more useful explanation can be found under the `events` stanza:  `0/4 nodes are available: 1 node(s) had taint {frontend: true}, that the pod didn't tolerate, 1 node(s) had taint {systemComponent: true}, that the pod didn't tolerate, 2 node(s) didn't match Pod's node affinity/selector.` 
+Our changes are reflected in the new configuration of the `Pending` pod. We can see that we have pinned the pod to any node with the `tainted=yes` label but this introduced a new problem as our pod cannot be scheduled (`PodScheduled False`). A more useful explanation can be found under the `events`:
+```
+0/4 nodes are available: 1 node(s) had taint {frontend: true}, that the pod didn't tolerate, 1 node(s) had taint {systemComponent: true}, that the pod didn't tolerate, 2 node(s) didn't match Pod's node affinity/selector.` 
+```
 
 Let's ensure our deployment and associated pods are able to tolerate the `frontend: true` taint. We can use the below `Kustomize` patch to make the necessary changes:
  
@@ -186,3 +189,5 @@ Taints:             frontend=true:NoExecute
 Unschedulable:      false
 [...]
 ```
+
+Now that we've learned how to configure taints and tolerations, proceed to the next step to clean up our environment.

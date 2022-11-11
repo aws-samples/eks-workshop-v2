@@ -79,7 +79,7 @@ $ aws eks update-nodegroup-config \
 }
 ```
 
-The adition, removal or replacement of taints can be done by using the `aws eks update-nodegroup-config` CLI command for updating the configuration of the managed node group. This can be done by passing either `addOrUpdateTaints` or `removeTaints` and a list of taints to the `--taints` command flag. 
+The addition, removal or replacement of taints can be done by using the [`aws eks update-nodegroup-config`](https://docs.aws.amazon.com/cli/latest/reference/eks/update-nodegroup-config.html) CLI command for updating the configuration of the managed node group. This can be done by passing either `addOrUpdateTaints` or `removeTaints` and a list of taints to the `--taints` command flag. 
 
 The above command will add a new taint with the key of `frontend`, value of `true` and effect of `NO_EXECUTE`. This ensures that pods will not be able to be scheduled on any nodes that are part of the managed node group without having the corresponding toleration. Also, any existing pods without a matching toleration will be evicted. 
 

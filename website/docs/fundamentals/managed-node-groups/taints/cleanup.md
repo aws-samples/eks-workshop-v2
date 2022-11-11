@@ -1,5 +1,5 @@
 ---
-title: Cleanup
+title: Clean up
 sidebar_position: 30
 ---
 
