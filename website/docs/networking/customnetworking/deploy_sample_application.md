@@ -4,31 +4,29 @@ sidebar_position: 25
 weight: 50
 ---
 
-Lets deploy a sample application to test the “custom networking” updates we have made so far. This sample application models a simple web store application, where customer can browse a catalogue, add items to their cart and complete a purchase.
+In order to test the custom networking updates we have made so far, lets update the checkout deployment to run the pods in the new node we provisioned in the previous step.
 
-```bash expectError=true
-$ kubectl apply -k ./environment/workspace/manifests
+To make the change, run the following command to modify the **checkout** deployment in your cluster
+```bash
+$ kubectl apply -k /workspace/modules/networking/custom-networking/
+```
+The command adds a `nodeSelector` to the **checkout** deployment.
+```kustomization
+networking/custom-networking/checkout.yaml
+Deployment/checkout
 ```
 
-Explore the application
-
-You can start to explore the example application thats been deployed for you. The initial state of the application is that its completely self-contained in the EKS cluster. Each microservice is deployed to its own separate Namespace to provide some degree of isolation.
+Lets review the microservices deployed in the “checkout” namespace.
 
 ```bash expectError=true
-$ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
-```
-
-Lets review the microservices deployed in the “orders” namespace.
-
-```bash expectError=true
-$ kubectl get pods -n orders -o wide
+$ kubectl get pods -n checkout -o wide
 ```
 
 Here is a sample output from the previous command
 
 ```bash expectError=true
 $ kubectl get pods -n orders -o wide
-NAME                            READY   STATUS    RESTARTS      AGE   IP              NODE                                          NOMINATED NODE   READINESS GATES
-orders-59b94995cf-ppx6q         1/1     Running   1 (65s ago)   88s   100.64.11.17    ip-10-42-11-6.us-west-2.compute.internal      <none>           <none>
-orders-mysql-749f67f7d4-nh8gm   1/1     Running   0             88s   100.64.10.160   ip-100-64-10-224.us-west-2.compute.internal   <none>           <none>
+NAME                              READY   STATUS    RESTARTS   AGE   IP              NODE                                         NOMINATED NODE   READINESS GATES
+checkout-5fbbc99bb7-lgv78         1/1     Running   0          75s   100.64.10.34    ip-10-42-10-127.us-west-2.compute.internal   <none>           <none>
+checkout-redis-6cfd7d8787-vhbgp   1/1     Running   0          16m   100.64.11.113   ip-10-42-11-189.us-west-2.compute.internal   <none>           <none>
 ```

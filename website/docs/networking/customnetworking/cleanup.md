@@ -7,7 +7,7 @@ weight: 60
 Delete the sample application
 
 ```bash expectError=true
-$ kubectl delete -k ./environment/workspace/manifests
+$ kubectl delete -k /workspace/manifests
 ```
 
 Delete the node group that was created to test custom networking
@@ -24,7 +24,7 @@ $ aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name c
 
 Delete the node IAM role
 
-Detach the policies from the role.
+Lets detach the policies from the role.
 
 ```bash expectError=true
 $ aws iam detach-role-policy --role-name $node_role_name --policy-arn arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
@@ -32,7 +32,7 @@ $ aws iam detach-role-policy --role-name $node_role_name --policy-arn arn:aws:ia
 $ aws iam detach-role-policy --role-name $node_role_name --policy-arn arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
 ```
 
-Delete the role.
+and finally delete the role.
 
 
 ```bash expectError=true
