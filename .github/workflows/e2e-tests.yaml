@@ -54,6 +54,9 @@ jobs:
       id: create-infrastructure
       working-directory: test/terraform
       run: |
+        aws iam detach-role-policy  --role-name ack-mq-controller --policy-arn "arn:aws:iam::aws:policy/AmazonEC2FullAccess" || true
+        aws iam detach-role-policy  --role-name ack-mq-controller --policy-arn "arn:aws:iam::aws:policy/AmazonMQFullAccess" || true
+        aws iam delete-role --role-name ack-mq-controller || true
         terraform init -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="key=ci/${CLUSTER_ID}/terraform.tfstate"
         terraform apply --auto-approve
     - name: Refresh AWS credentials
