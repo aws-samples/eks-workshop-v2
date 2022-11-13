@@ -55,7 +55,7 @@ deployment.apps/ui configured
 With our recently made changes, let's check the rollout status of our UI deployment:
 
 ```bash
-$ kubectl --namespace ui rollout status deployment/ui
+$ kubectl --namespace ui rollout status --watch=false deployment/ui
 Waiting for deployment "ui" rollout to finish: 1 old replicas are pending termination...
 ```
 
