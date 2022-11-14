@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pause-pods-prefix
-  namespace: default
+  namespace: other
 spec:
   replicas: 150
   selector:

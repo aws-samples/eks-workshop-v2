@@ -54,7 +54,7 @@ $ kubectl -n sg-per-pod describe secret rds
 
 The expected output is:
 
-```
+```text
 Name:         rds
 Namespace:    sg-per-pod
 Labels:       <none>
@@ -88,7 +88,7 @@ $ kubectl -n sg-per-pod  logs -f ${RED_POD_NAME}
 
 The output expected is:
 
-```
+```text
 Database connection failed due to timeout expired
 ```
 
@@ -110,7 +110,7 @@ $ kubectl -n sg-per-pod  logs -f ${GREEN_POD_NAME}
 
 The output expected is:
 
-```
+```text
 [('--------------------------',), ('Welcome to the eksworkshop',), ('--------------------------',)]
 [('--------------------------',), ('Welcome to the eksworkshop',), ('--------------------------',)]
 ```
@@ -123,7 +123,7 @@ $ kubectl -n sg-per-pod  describe pod $GREEN_POD_NAME | head -11
 
 The outuput should be similar to:
 
-```
+```text
 Name:         green-pod-5c786d8dff-4kmvc
 Namespace:    sg-per-pod
 Priority:     0

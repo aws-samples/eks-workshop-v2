@@ -5,11 +5,11 @@ sidebar_position: 30
 
 Before we begin, lets confirm if the VPC CNI is installed and running.
 
-```bash hook=aws-node-deployment
+```bash
 $ kubectl get pods --selector=k8s-app=aws-node -n kube-system
 ```
 
-Confirm the CNI version. The CNI version must be 1.9.0 or later. 
+Confirm the CNI version. The CNI version must be 1.9.0 or later.
 
 ```bash
 $ kubectl describe daemonset aws-node --namespace kube-system | grep Image | cut -d "/" -f 2
@@ -17,7 +17,7 @@ amazon-k8s-cni:v1.11.4-eksbuild.1
 amazon-k8s-cni-init:v1.11.4-eksbuild.1
 ```
 
-You will see similar output to above. 
+You will see similar output to above.
 
 Confirm if the VPC CNI is configured to run in prefix mode. The value should return "true"
 
@@ -29,8 +29,9 @@ $ kubectl get ds aws-node -n kube-system -o json | jq -c '.spec.template.spec.co
 Since prefix delegation is enabled (this was done at cluster creation for this workshop), we should be able to see prefix assigned to the network interfaces of the worker nodes. You should see output similar to below.
 
 ```bash
-$ aws ec2 describe-instances --filters "Name=tag-key,Values=eks:cluster-name" "Name=tag-value,Values=${EKS_CLUSTER_NAME}"\
- --query 'Reservations[*].Instances[].{InstanceId: InstanceId, Prefixes: NetworkInterfaces[].Ipv4Prefixes[]}'
+$ aws ec2 describe-instances --filters "Name=tag-key,Values=eks:cluster-name" \
+  "Name=tag-value,Values=${EKS_CLUSTER_NAME}" \
+  --query 'Reservations[*].Instances[].{InstanceId: InstanceId, Prefixes: NetworkInterfaces[].Ipv4Prefixes[]}'
 
  [
     {
@@ -67,7 +68,6 @@ $ aws ec2 describe-instances --filters "Name=tag-key,Values=eks:cluster-name" "N
         ]
     }
 ]
- ```
-
+```
 
 As we can see, there are currently prefixes assigned to our worker nodes. Prefix delegation is working successfully!

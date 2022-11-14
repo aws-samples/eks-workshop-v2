@@ -7,4 +7,4 @@ spec:
   template:
     spec:
       nodeSelector:
-        eks.amazonaws.com/nodegroup: custom-networking-nodegroup
+        eks.amazonaws.com/nodegroup: custom-networking
