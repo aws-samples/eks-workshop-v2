@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: redis
-          image: "redis:6.0-alpine"
+          image: "public.ecr.aws/docker/library/redis:6.0-alpine"
           imagePullPolicy: IfNotPresent
           ports:
             - name: redis

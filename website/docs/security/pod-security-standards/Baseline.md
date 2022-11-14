@@ -3,7 +3,7 @@ title: "Baseline PSS Profile"
 sidebar_position: 20
 ---
 
-In the section, we will look at the followng scenario.
+In the section, we will look at the following scenario.
 
 #### All PSA Modes Enabled for Baseline PSS Profile at Namespace Level
 
@@ -12,7 +12,7 @@ In this scenario, we will enable all PSA modes (i.e. enforce, audit and warn) fo
 
 Let's ensure that there are no PSA labels added to the `assets` namespace, by default.
 
-You can check current lables for namespace using below command.
+You can check current labels for namespace using below command.
 
 ```bash  timeout=60 hook=baseline-namespace-no-labels
 $ kubectl describe ns assets
@@ -35,7 +35,7 @@ $ kubectl -n assets get deploy
 NAME     READY   UP-TO-DATE   AVAILABLE   AGE
 assets   1/1     1            1           5m24s
 
-$ kubectl -n assets  get Pod
+$ kubectl -n assets  get pod
 NAME                     READY   STATUS    RESTARTS   AGE
 assets-ddb8f87dc-8z6l9   1/1     Running   0          5m24s
 ```
@@ -126,7 +126,7 @@ $ kubectl -n assets get deploy
 NAME     READY   UP-TO-DATE   AVAILABLE   AGE
 assets   1/1     1            1           3m36s
 
-$ kubectl -n assets get Pod   
+$ kubectl -n assets get pod   
 NAME                     READY   STATUS    RESTARTS   AGE
 assets-ddb8f87dc-rmv9n   1/1     Running   0          3m
 ```
@@ -135,7 +135,7 @@ As shown in above output, PSA allowed both Deployment and Pod objects creation w
 
 ## Add additional security permissions to the Pod
 
-In the section, let us add some additonal security permissions to the existing Pod configuration and re-create the Deployment. The idea here is to check how PSA behaves to these changes as per the Baseline PSS profile configured for the `assets` namespace
+In the section, let us add some additional security permissions to the existing Pod configuration and re-create the Deployment. The idea here is to check how PSA behaves to these changes as per the Baseline PSS profile configured for the `assets` namespace
 
 ```kustomization
 security/pss-psa/baseline/baseline/deployment.yaml
@@ -168,7 +168,7 @@ Pod-security.kubernetes.io/warn=baseline
 Let us check if the Pod is created with above additional security permissions in the `assets` namespace.
 
 ```bash  test=false
-$ kubectl -n assets get Pod                                                                    
+$ kubectl -n assets get pod                                                                    
 No resources found in assets namespace.
 ```
 The above output indicates that PSA did not allow creation of Pods in the `assets` namespace, because the Pod security configuration violates Baseline PSS profile, as shown in the above Warning message.
@@ -235,5 +235,4 @@ serviceaccount/assets unchanged
 configmap/assets unchanged
 service/assets unchanged
 deployment.apps/assets created
-
 ```

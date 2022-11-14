@@ -48,7 +48,7 @@ const config = {
             //[remarkBlueprintsAddon, {terraformDir: `${rootDir}/../terraform/local`}]
           ],
           editUrl:
-            'https://github.com/aws-samples/eks-workshop-v2/main/website',
+            'https://github.com/aws-samples/eks-workshop-v2/tree/main/website',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.scss'),
@@ -60,6 +60,9 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      colorMode: {
+        disableSwitch: true,
+      },
       navbar: {
         title: 'EKS Workshop',
         logo: {
@@ -113,7 +116,7 @@ const config = {
             type: 'doc',
             docId: 'gitops/index',
             position: 'left',
-            label: 'GitOps',
+            label: 'Automation',
           },
           {
             href: 'https://github.com/aws-samples/eks-workshop-v2',

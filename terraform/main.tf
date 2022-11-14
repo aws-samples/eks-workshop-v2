@@ -7,7 +7,7 @@ module "cluster" {
     rolearn  = aws_iam_role.local_role.arn
     username = local.rolename
     groups   = ["system:masters"]
-  },{
+    }, {
     # Did it this way because of circular dependencies
     rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${module.cluster.eks_cluster_id}-cloud9"
     username = "cloud9"
@@ -61,6 +61,7 @@ resource "aws_iam_policy" "local_policy" {
   policy = templatefile("${path.module}/local/iam_policy.json", {
     cluster_name = module.cluster.eks_cluster_id,
     cluster_arn  = module.cluster.eks_cluster_arn,
-    nodegroup    = module.cluster.eks_cluster_nodegroup
+    nodegroup    = module.cluster.eks_cluster_nodegroup,
+    region       = data.aws_region.current.name
   })
 }

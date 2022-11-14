@@ -1,6 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: unused
+  name: all
 spec:
   replicas: 4

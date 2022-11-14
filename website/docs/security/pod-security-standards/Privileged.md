@@ -3,7 +3,7 @@ title: "Privileged PSS Profile"
 sidebar_position: 10
 ---
 
-In the section, we will look at the followng scenario.
+In the section, we will look at the following scenario.
 
 #### Default PSA Modes Enabled for Privileged PSS Profile at the Cluster Level.
 
@@ -20,7 +20,7 @@ Let us take one of the namespaces in our sample application, say `assets` namesp
 
 Let's ensure that there are no PSA labels added to the `assets` namespace, by default.
 
-You can check current lables for namespace using below command.
+You can check current labels for namespace using below command.
 
 ```bash  timeout=60 hook=privileged-namespace-no-labels
 $ kubectl describe ns assets 

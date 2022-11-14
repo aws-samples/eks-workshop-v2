@@ -20,16 +20,20 @@ resource "aws_dynamodb_table" "carts" {
     hash_key        = "customerId"
     projection_type = "ALL"
   }
+
+  tags = local.tags
 }
 
 module "iam_assumable_role_carts" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "~> v5.3.0"
+  version                       = "~> v5.5.5"
   create_role                   = true
   role_name                     = "${local.cluster_name}-carts-dynamo"
   provider_url                  = module.eks-blueprints.eks_oidc_issuer_url
   role_policy_arns              = [aws_iam_policy.carts_dynamo.arn]
   oidc_fully_qualified_subjects = ["system:serviceaccount:carts:carts"]
+  
+  tags = local.tags
 }
 
 resource "aws_iam_policy" "carts_dynamo" {
@@ -53,4 +57,5 @@ resource "aws_iam_policy" "carts_dynamo" {
   ]
 }
 EOF
+  tags = local.tags
 }

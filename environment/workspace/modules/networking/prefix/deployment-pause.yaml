@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pause-pods
-  namespace: default
+  name: pause-pods-prefix
+  namespace: other
 spec:
   replicas: 150
   selector:
     matchLabels:
-      run: pause-pods
+      run: pause-pods-prefix
   template:
     metadata:
       labels:
-        run: pause-pods
+        run: pause-pods-prefix
     spec:
       containers:
       - name: reserve-resources

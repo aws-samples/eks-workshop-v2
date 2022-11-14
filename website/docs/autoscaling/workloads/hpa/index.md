@@ -3,12 +3,17 @@ title: "Horizontal Pod Autoscaler"
 sidebar_position: 10
 ---
 
-In Kubernetes, a HorizontalPodAutoscaler automatically updates a workload resource (such as a Deployment or StatefulSet), with the aim of automatically scaling the workload to match demand.
+:::tip Before you start
+Prepare your environment for this section:
 
-Horizontal scaling means that the response to increased load is to deploy more Pods. This is different from vertical scaling, which for Kubernetes would mean assigning more resources (for example: memory or CPU) to the Pods that are already running for the workload.
+```bash timeout=300 wait=30
+$ reset-environment 
+```
 
-If the load decreases, and the number of Pods is above the configured minimum, the HorizontalPodAutoscaler instructs the workload resource (the Deployment, StatefulSet, or other similar resource) to scale back down.
+:::
 
-Horizontal pod autoscaling does not apply to objects that can't be scaled (for example: a DaemonSet.)
+A Horizontal Pod Autoscaler (HPA) scales pods in a deployment or replica set. It is implemented as a K8s API resource and a controller. The resource determines the behavior of the controller. The Controller Manager queries the resource utilization against the metrics specified in each HorizontalPodAutoscaler definition. The controller periodically adjusts the number of replicas in a replication controller or deployment to the target specified by the user by observing metrics such as average CPU utilization, average memory utilization or any other custom metric. It obtains the metrics from either the resource metrics API (for per-pod resource metrics), or the custom metrics API (for all other metrics).
 
-The HorizontalPodAutoscaler is implemented as a Kubernetes API resource and a controller. The resource determines the behavior of the controller. The horizontal pod autoscaling controller, running within the Kubernetes control plane, periodically adjusts the desired scale of its target (for example, a Deployment) to match observed metrics such as average CPU utilization, average memory utilization, or any other custom metric you specify.
+The Kubernetes Metrics Server is a scalable and efficient aggregator of resource usage data in your cluster. It provides container metrics that are required by the Horizontal Pod Autoscaler. The metrics server is not deployed by default in Amazon EKS clusters.
+
+<img src={require('./assets/hpa.png').default}/>

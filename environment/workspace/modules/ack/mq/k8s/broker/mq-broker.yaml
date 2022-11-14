@@ -1,0 +1,24 @@
+apiVersion: mq.services.k8s.aws/v1alpha1
+kind: Broker
+metadata:
+  name: mq-eks-workshop
+spec:
+  name: mq-eks-workshop
+  deploymentMode: SINGLE_INSTANCE
+  engineType: ActiveMQ
+  engineVersion: "5.15.8"
+  hostInstanceType: "mq.t3.micro"
+  publiclyAccessible: false
+  autoMinorVersionUpgrade: false
+  users:
+    - password:
+        namespace: default
+        name: mq-eks-workshop
+        key: password
+      groups: []
+      consoleAccess: true
+      username: admin
+  subnetIDs:
+  - $(VPC_PRIVATE_SUBNET_ID_0)
+  securityGroups:
+  - $(ORDERS_SECURITY_GROUP_ID)

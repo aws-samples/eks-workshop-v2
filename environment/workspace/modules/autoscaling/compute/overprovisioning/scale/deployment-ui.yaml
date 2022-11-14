@@ -1,7 +1,0 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ui
-  namespace: ui
-spec:
-  replicas: 5
