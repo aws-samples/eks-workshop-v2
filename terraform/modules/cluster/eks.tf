@@ -203,7 +203,7 @@ resource "null_resource" "kubectl_set_env" {
     # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
     command = <<-EOT
       sleep 30
-      kubectl set env daemonset aws-node -n kube-system ENABLE_PREFIX_DELEGATION=true --kubeconfig <(echo $KUBECONFIG | base64 --decode)
+      kubectl set env daemonset aws-node -n kube-system ENABLE_PREFIX_DELEGATION=true ENABLE_POD_ENI=true POD_SECURITY_GROUP_ENFORCING_MODE=standard --kubeconfig <(echo $KUBECONFIG | base64 --decode)
       sleep 10
     EOT
   }

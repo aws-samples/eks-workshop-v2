@@ -4,7 +4,8 @@
     {
       "Effect": "Allow",
       "Action": [
-        "eks:ListClusters"
+        "eks:ListClusters",
+        "eks:CreateNodegroup"
       ],
       "Resource": "*"
     },
@@ -20,8 +21,9 @@
       "Effect": "Allow",
       "Action": [
         "eks:UpdateNodegroupConfig",
-        "eks:UpdateNodegroupVersion",
-        "eks:DescribeNodegroup"
+        "eks:DescribeNodegroup",
+        "eks:DeleteNodegroup",
+        "eks:UpdateNodegroupVersion"
       ],
       "Resource": "${nodegroup}/*"
     },
@@ -113,7 +115,8 @@
         "rds:DescribeDBInstances",
         "mq:ListBrokers",
         "mq:DescribeBroker",
-        "iam:DetachRolePolicy"
+        "iam:DetachRolePolicy",
+        "iam:PassRole"
       ],
       "Resource": "*"
     },
@@ -129,17 +132,23 @@
     {
       "Effect": "Allow",
       "Action": [
-          "ssm:DescribeParameters"
+          "iam:ListAttachedRolePolicies"
       ],
       "Resource": "*"
     },
     {
       "Effect": "Allow",
       "Action": [
-          "ssm:GetParameter"
+        "ssm:DescribeParameters"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:GetParameter"
       ],
       "Resource": "arn:aws:ssm:${region}::parameter/aws/service/eks/optimized-ami/*"
     }
-
   ]
 }

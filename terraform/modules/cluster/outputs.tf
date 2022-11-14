@@ -43,6 +43,11 @@ output "configure_kubectl" {
   value       = module.eks-blueprints.configure_kubectl
 }
 
+output "vpc_id" {
+  description = "VPC Id"
+  value       = module.aws_vpc.vpc_id
+}
+
 output "private_subnet_ids" {
   description = "Private Subnet Ids"
   value       = module.aws_vpc.private_subnets
@@ -136,19 +141,28 @@ output "adot_iam_role" {
   description = "ARN of the IAM role used by the ADOT collector pod"
   value       = module.iam_assumable_role_adot.iam_role_arn
 }
+output "azs" {
+  description = "AZ details"
+  value       = local.azs
+}
+
 output "adot_iam_role_ci" {
   description = "ARN of the IAM role used by the ADOT collector pod for Container Insights"
   value       = module.iam_assumable_role_adot_ci.iam_role_arn
 }
 
+output "eks_cluster_security_group_id" {
+  description = "EKS Control Plane Security Group ID"
+  value       = module.eks-blueprints.cluster_primary_security_group_id
+}
+
+
+output "eks_cluster_managed_node_group_iam_role_arns" {
+  description = "IAM role arn's of managed node groups"
+  value       = module.eks-blueprints.managed_node_group_iam_role_arns
+}
 
 output "oidc_provider" {
   description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
   value       = module.eks-blueprints.oidc_provider
 }
-
-output "vpc_id" {
-  description = "The VPC ID"
-  value       = module.aws_vpc.vpc_id
-}
-
