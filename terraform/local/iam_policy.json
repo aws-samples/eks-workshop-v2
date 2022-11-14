@@ -22,7 +22,7 @@
       "Action": [
         "eks:UpdateNodegroupConfig",
         "eks:DescribeNodegroup",
-        "eks:DeleteNodegroup"
+        "eks:DeleteNodegroup",
         "eks:UpdateNodegroupVersion"
       ],
       "Resource": "${nodegroup}/*"
