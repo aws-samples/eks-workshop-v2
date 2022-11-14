@@ -60,6 +60,7 @@ module "ide" {
       cluster_name = module.cluster.eks_cluster_id,
       cluster_arn  = module.cluster.eks_cluster_arn,
       nodegroup    = module.cluster.eks_cluster_nodegroup
+      region       = data.aws_region.current.name
     }))
   ]
 

@@ -61,6 +61,7 @@ resource "aws_iam_policy" "local_policy" {
   policy = templatefile("${path.module}/local/iam_policy.json", {
     cluster_name = module.cluster.eks_cluster_id,
     cluster_arn  = module.cluster.eks_cluster_arn,
-    nodegroup    = module.cluster.eks_cluster_nodegroup
+    nodegroup    = module.cluster.eks_cluster_nodegroup,
+    region       = data.aws_region.current.name
   })
 }
