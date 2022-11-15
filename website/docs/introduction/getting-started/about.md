@@ -46,3 +46,5 @@ ui          ui               1/1     1            1           5h6m
 ```
 
 All of the `Service` resources are of type `ClusterIP`, which means right now our application cannot be accessed from the outside world. We'll explore exposing the application using various ingress mechanisms later in the labs.
+
+To learn more about `kustomize`, head to the optional [Kustomize module](../kustomize) or continue with the [Fundamentals module](/docs/fundamentals).
