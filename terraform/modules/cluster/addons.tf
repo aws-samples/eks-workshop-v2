@@ -29,6 +29,8 @@ module "eks-blueprints-kubernetes-csi-addon" {
   addon_context = local.addon_context
 
   helm_config = {
+    kubernetes_version = var.cluster_version
+    
     set = [{
       name  = "node.tolerateAllTaints"
       value = "true"
