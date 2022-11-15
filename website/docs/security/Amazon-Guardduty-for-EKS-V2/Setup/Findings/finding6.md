@@ -19,7 +19,6 @@ $ kubectl apply -k /workspace/modules/security/privileged/
 
 With in few minutes we will see the finding `PrivilegeEscalation:Kubernetes/PrivilegedContainer` in guardduty portal.
 
-![]()
 
 Cleanup:
 

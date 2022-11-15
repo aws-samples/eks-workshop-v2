@@ -29,7 +29,6 @@ $ kubectl apply -k /workspace/modules/security/Guardduty/privileged/mount
 
 With in few minutes we will see the finding `Persistence:Kubernetes/ContainerWithSensitiveMount` in guardduty portal.
 
-![]()
 
 Cleanup:
 
