@@ -14,7 +14,7 @@ data "aws_ami_ids" "eks_ami" {
 }
 
 module "eks-blueprints" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.10.0"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.16.0"
 
   tags = local.tags
 
