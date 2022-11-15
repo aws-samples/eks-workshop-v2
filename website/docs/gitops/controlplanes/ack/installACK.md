@@ -38,8 +38,8 @@ Login Succeeded
 Deploy the IAM Controller
 ```bash
 $ helm install --create-namespace -n ack-system ack-iam-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/iam-chart --version=v0.0.21 \ 
-  --set=aws.region=$AWS_DEFAULT_REGION \ 
+  oci://public.ecr.aws/aws-controllers-k8s/iam-chart --version=v0.0.21 \
+  --set=aws.region=$AWS_DEFAULT_REGION \
   --set=serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-iam-controller" --wait
 ...
 STATUS: deployed
@@ -71,9 +71,9 @@ $ kubectl wait role.iam.services.k8s.aws ack-ec2-controller -n ack-system --for=
 Deploy the EC2 Controller.
 ```bash
 $ helm install --create-namespace -n ack-system ack-ec2-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/ec2-chart --version=v0.0.21 \ 
+  oci://public.ecr.aws/aws-controllers-k8s/ec2-chart --version=v0.0.21 \
   --set=aws.region=$AWS_DEFAULT_REGION \
-  --set=serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-iam-controller" --wait
+  --set=serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-ec2-controller" --wait
 ...
 STATUS: deployed
 ...
@@ -102,9 +102,9 @@ $ kubectl wait role.iam.services.k8s.aws ack-rds-controller -n ack-system --for=
 Create the RDS Controller.
 ```bash
 $ helm install --create-namespace -n ack-system ack-rds-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/rds-chart --version=v0.1.1 \ 
+  oci://public.ecr.aws/aws-controllers-k8s/rds-chart --version=v0.1.1 \
   --set=aws.region=$AWS_DEFAULT_REGION \
-  --set=serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-iam-controller" --wait
+  --set=serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-rds-controller" --wait
 ...
 STATUS: deployed
 ...
@@ -134,9 +134,9 @@ $ kubectl wait role.iam.services.k8s.aws ack-mq-controller -n ack-system --for=c
 Deploy the MQ Controller.
 ```bash
 $ helm install --create-namespace -n ack-system ack-mq-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/mq-chart --version=v0.0.22 \ 
-  --set=aws.region=$AWS_DEFAULT_REGION \ 
-  --set=serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-iam-controller" --wait
+  oci://public.ecr.aws/aws-controllers-k8s/mq-chart --version=v0.0.22 \
+  --set=aws.region=$AWS_DEFAULT_REGION \
+  --set=serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-mq-controller" --wait
 ...
 STATUS: deployed
 ...
