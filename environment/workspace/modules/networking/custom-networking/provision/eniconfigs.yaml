@@ -1,0 +1,26 @@
+apiVersion: crd.k8s.amazonaws.com/v1alpha1
+kind: ENIConfig
+metadata:
+  name: ${AZ1}
+spec:
+  securityGroups:
+    - ${EKS_CLUSTER_SECURITY_GROUP_ID}
+  subnet: ${SECONDARY_SUBNET_1}
+---
+apiVersion: crd.k8s.amazonaws.com/v1alpha1
+kind: ENIConfig
+metadata:
+  name: ${AZ2}
+spec:
+  securityGroups:
+    - ${EKS_CLUSTER_SECURITY_GROUP_ID}
+  subnet: ${SECONDARY_SUBNET_2}
+---
+apiVersion: crd.k8s.amazonaws.com/v1alpha1
+kind: ENIConfig
+metadata:
+  name: ${AZ3}
+spec:
+  securityGroups:
+    - ${EKS_CLUSTER_SECURITY_GROUP_ID}
+  subnet: ${SECONDARY_SUBNET_3}

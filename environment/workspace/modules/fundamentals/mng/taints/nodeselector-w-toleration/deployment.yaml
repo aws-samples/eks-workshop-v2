@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui
+spec:
+  template:
+    spec:
+      tolerations:
+      - key: "frontend"
+        operator: "Exists"
+        effect: "NoExecute"
+      nodeSelector:
+        tainted: yes

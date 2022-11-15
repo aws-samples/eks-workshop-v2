@@ -73,7 +73,7 @@ module "eks-blueprints" {
       type                          = "ingress"
       source_cluster_security_group = true
     }
-    
+
     ingress_nodes_metric_server_port = {
       description                   = "Cluster API to Nodegroup for Metric Server"
       protocol                      = "tcp"
@@ -125,6 +125,25 @@ module "eks-blueprints" {
         blocker = null_resource.kubectl_set_env.id
       }
     }
+
+    mg_tainted = {
+      node_group_name = "managed-ondemand-tainted"
+      instance_types  = ["m5.large"]
+      subnet_ids      = local.private_subnet_ids
+      min_size        = 1
+      max_size        = 2
+      desired_size    = 1
+
+      
+      ami_type        = "AL2_x86_64"
+      release_version = var.ami_release_version
+
+      k8s_labels = {
+        workshop-default = "no"
+        tainted          = "yes"
+      }
+    }
+
   }
 
   fargate_profiles = {
@@ -184,7 +203,7 @@ resource "null_resource" "kubectl_set_env" {
     # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
     command = <<-EOT
       sleep 30
-      kubectl set env daemonset aws-node -n kube-system ENABLE_PREFIX_DELEGATION=true --kubeconfig <(echo $KUBECONFIG | base64 --decode)
+      kubectl set env daemonset aws-node -n kube-system ENABLE_PREFIX_DELEGATION=true ENABLE_POD_ENI=true POD_SECURITY_GROUP_ENFORCING_MODE=standard --kubeconfig <(echo $KUBECONFIG | base64 --decode)
       sleep 10
     EOT
   }

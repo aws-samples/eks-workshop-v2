@@ -27,6 +27,7 @@ kubectl apply -k $absolute_path --prune --all \
   --prune-whitelist=karpenter.sh/v1alpha5/Provisioner \
   --prune-whitelist=scheduling.k8s.io/v1/PriorityClass \
   --prune-whitelist=opentelemetry.io/v1alpha1/OpenTelemetryCollector \
+  --prune-whitelist=crd.k8s.amazonaws.com/v1alpha1/ENIConfig \
   --prune-whitelist=networking.k8s.io/v1/Ingress > /dev/null
 
 echo "Waiting for application to become ready..."

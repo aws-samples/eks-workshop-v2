@@ -41,6 +41,6 @@ variable "cloud9_user_arns" {
 }
 
 variable "tags" {
-  type        = map(string)
-  default     = {}
+  type    = map(string)
+  default = {}
 }

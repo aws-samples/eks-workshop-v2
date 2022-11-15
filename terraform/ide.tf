@@ -15,6 +15,7 @@ ORDERS_RDS_PASSWORD=${module.cluster.orders_rds_master_password}
 ORDERS_RDS_DATABASE_NAME=${module.cluster.orders_rds_database_name}
 ORDERS_RDS_SG_ID=${module.cluster.orders_rds_ingress_sg_id}
 EFS_ID=${module.cluster.efsid}
+EKS_TAINTED_MNG_NAME=${split(":", module.cluster.eks_cluster_tainted_nodegroup_name)[1]}
 NETWORKING_RDS_ENDPOINT=${module.cluster.networking_rds_endpoint}
 NETWORKING_RDS_USERNAME=${module.cluster.networking_rds_master_username}
 NETWORKING_RDS_PASSWORD=${module.cluster.networking_rds_master_password}
@@ -22,6 +23,18 @@ NETWORKING_RDS_DATABASE_NAME=${module.cluster.networking_rds_database_name}
 NETWORKING_RDS_SG_ID=${module.cluster.networking_rds_ingress_sg_id}
 AMP_ENDPOINT=${module.cluster.amp_endpoint}
 ADOT_IAM_ROLE=${module.cluster.adot_iam_role}
+VPC_ID=${module.cluster.vpc_id}
+EKS_CLUSTER_SECURITY_GROUP_ID=${module.cluster.eks_cluster_security_group_id}
+PRIMARY_SUBNET_1=${module.cluster.private_subnet_ids[0]}
+PRIMARY_SUBNET_2=${module.cluster.private_subnet_ids[1]}
+PRIMARY_SUBNET_3=${module.cluster.private_subnet_ids[2]}
+SECONDARY_SUBNET_1=${module.cluster.private_subnet_ids[3]}
+SECONDARY_SUBNET_2=${module.cluster.private_subnet_ids[4]}
+SECONDARY_SUBNET_3=${module.cluster.private_subnet_ids[5]}
+MANAGED_NODE_GROUP_IAM_ROLE_ARN=${module.cluster.eks_cluster_managed_node_group_iam_role_arns[0]}
+AZ1=${module.cluster.azs[0]}
+AZ2=${module.cluster.azs[1]}
+AZ3=${module.cluster.azs[2]}
 ADOT_IAM_ROLE_CI=${module.cluster.adot_iam_role_ci}
 OIDC_PROVIDER=${module.cluster.oidc_provider}
 VPC_ID=${module.cluster.vpc_id}
@@ -48,6 +61,7 @@ module "ide" {
       cluster_name = module.cluster.eks_cluster_id,
       cluster_arn  = module.cluster.eks_cluster_arn,
       nodegroup    = module.cluster.eks_cluster_nodegroup
+      region       = data.aws_region.current.name
     }))
   ]
 

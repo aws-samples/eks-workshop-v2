@@ -4,7 +4,8 @@
     {
       "Effect": "Allow",
       "Action": [
-        "eks:ListClusters"
+        "eks:ListClusters",
+        "eks:CreateNodegroup"
       ],
       "Resource": "*"
     },
@@ -20,7 +21,9 @@
       "Effect": "Allow",
       "Action": [
         "eks:UpdateNodegroupConfig",
-        "eks:DescribeNodegroup"
+        "eks:DescribeNodegroup",
+        "eks:DeleteNodegroup",
+        "eks:UpdateNodegroupVersion"
       ],
       "Resource": "${nodegroup}/*"
     },
@@ -59,7 +62,9 @@
     {
       "Effect": "Allow",
       "Action": [
-          "ec2:DescribeVolumes"
+        "ec2:DescribeInstances",
+        "ec2:DescribeVolumes",
+        "ec2:DescribeAvailabilityZones"
       ],
       "Resource": "*"
     },
@@ -68,8 +73,7 @@
       "Action": [
         "elasticfilesystem:DescribeAccessPoints",
         "elasticfilesystem:DescribeFileSystems",
-        "elasticfilesystem:DescribeMountTargets",
-        "ec2:DescribeAvailabilityZones"
+        "elasticfilesystem:DescribeMountTargets"
       ],
       "Resource": "*"
     },
@@ -111,7 +115,8 @@
         "rds:DescribeDBInstances",
         "mq:ListBrokers",
         "mq:DescribeBroker",
-        "iam:DetachRolePolicy"
+        "iam:DetachRolePolicy",
+        "iam:PassRole"
       ],
       "Resource": "*"
     },
@@ -123,7 +128,27 @@
           "elasticloadbalancing:DescribeTargetHealth"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "iam:ListAttachedRolePolicies"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:DescribeParameters"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:GetParameter"
+      ],
+      "Resource": "arn:aws:ssm:${region}::parameter/aws/service/eks/optimized-ami/*"
     }
-
   ]
 }

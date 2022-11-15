@@ -1,5 +1,5 @@
 ---
-title: "EKS Open source observability"
+title: "EKS open source observability"
 sidebar_position: 40
 ---
 
