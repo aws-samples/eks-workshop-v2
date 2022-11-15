@@ -7,11 +7,9 @@ sidebar_position: 132
 $ kubectl apply -k /workspace/modules/security/Guardduty/privileged
 ```
 
-
 ```file
 security/Guardduty/privileged/mount/previleged-pod-example.yaml
 ```
-
 
 ```bash
 $ kubectl apply -k /workspace/modules/security/Guardduty/privileged/mount
