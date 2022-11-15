@@ -4,3 +4,4 @@ kind: Kustomization
 #- deployment.yaml
 resources:
 - previleged-pod-example.yaml
+

@@ -15,19 +15,19 @@ Identify the API server url of the cluster and run a http get call for uri /api/
 
 Please make sure to replace `cluster-name` with your cluster name and `REGION` with your region.
 
-
 ```bash
 $ API_URL=`aws eks describe-cluster --name <cluster-name> --query "cluster.endpoint" --region <REGION> --output text`
 $ curl -k $API_URL/api/v1/pods
 ```
 
-With in few minutes we will see the finding `Discovery:Kubernetes/SuccessfulAnonymousAccess` in guardduty portal. 
+With in few minutes we will see the finding `Discovery:Kubernetes/SuccessfulAnonymousAccess` in guardduty portal.
 
 ![](finding-1.png)
 
 Run the following command to delete the cluster role binding.
 
-Cleanup: 
+Cleanup:
+
 ```bash
 $ kubectl delete clusterrolebinding anonymous-view
 ```

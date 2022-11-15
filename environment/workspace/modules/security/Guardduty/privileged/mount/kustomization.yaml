@@ -6,3 +6,4 @@ bases:
 - ../
 patches:
 - previleged-pod-example.yaml
+

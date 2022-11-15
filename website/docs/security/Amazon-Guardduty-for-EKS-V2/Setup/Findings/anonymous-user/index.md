@@ -7,4 +7,4 @@ In this section we will we will generate Kubernetes findings related to Anonymou
 
 - `Discovery:Kubernetes/SuccessfulAnonymousAccess`
 - `Policy:Kubernetes/AnonymousAccessGranted`
-- `Impact:Kubernetes/SuccessfulAnonymousAccess` 
+- `Impact:Kubernetes/SuccessfulAnonymousAccess`

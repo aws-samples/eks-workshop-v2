@@ -22,3 +22,4 @@ spec:
           hostPath:
             path: /etc
             type: Directory
+
