@@ -2,6 +2,7 @@
 title: "Security Groups per Pod"
 sidebar_position: 30
 weight: 10
+sidebar_custom_props: {"module": true}
 ---
 
 :::tip Before you start

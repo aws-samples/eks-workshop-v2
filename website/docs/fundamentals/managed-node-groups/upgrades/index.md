@@ -1,6 +1,7 @@
 ---
 title: Upgrading Managed Node Groups
 sidebar_position: 60
+sidebar_custom_props: {"module": true}
 ---
 
 When you initiate a managed node group update, Amazon EKS automatically updates your nodes by applying the latest security patches and OS updates. You have the flexibility to deploy nodes either with Amazon Linux AMIs, Bottlerocket AMIs, Windows AMIs, or build-your-own custom AMIs.

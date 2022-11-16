@@ -1,6 +1,7 @@
 ---
 title: Pod Affinity and Anti-Affinity
 sidebar_position: 30
+sidebar_custom_props: {"module": true}
 ---
 Pods can be constrained to run on specific nodes or under specific circumstances. This can include cases where you want only one pod running per node or want pods to be paired together on a node. Additionally, when using node affinity pods can have preferred or mandatory restrictions.
 
