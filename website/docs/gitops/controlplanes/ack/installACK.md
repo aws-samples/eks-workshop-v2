@@ -111,7 +111,7 @@ View the MQ Role manifest by running `cat /workspace/modules/ack/mq/roles/mq-iam
 ack/mq/roles/mq-iam-role.yaml
 ```
 
-DEploy MQ Role and MQ Controller
+Deploy MQ Role and MQ Controller
 ```bash
 $ kubectl apply -k /workspace/modules/ack/mq/roles
 role.iam.services.k8s.aws/ack-mq-controller created
