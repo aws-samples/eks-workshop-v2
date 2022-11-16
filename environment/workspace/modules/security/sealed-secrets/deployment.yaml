@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog
+spec:
+  template:
+    spec:
+      containers:
+        - name: catalog
+          env:
+            - name: DB_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-writer-sealed-db
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-writer-sealed-db
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-writer-sealed-db
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-writer-sealed-db

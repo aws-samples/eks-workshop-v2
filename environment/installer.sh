@@ -54,3 +54,8 @@ curl --location --show-error --silent "https://awscli.amazonaws.com/awscli-exe-l
 unzip -o -q awscliv2.zip
 ./aws/install
 rm -rf ./aws awscliv2.zip
+
+# kubeseal version 0.18.0
+wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.18.0/kubeseal-0.18.0-linux-amd64.tar.gz
+tar xfz kubeseal-0.18.0-linux-amd64.tar.gz
+install -m 755 kubeseal /usr/local/bin/kubeseal
