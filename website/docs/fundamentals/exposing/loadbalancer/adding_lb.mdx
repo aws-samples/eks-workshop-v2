@@ -28,8 +28,7 @@ Now that our application is exposed to the outside world, lets try to access it.
 Get the URL from the `Service` resource:
 
 ```bash
-$ kubectl -n kube-system get svc -n ui ui-nlb -o json | jq \
-    -r '.status.loadBalancer.ingress[0].hostname'
+$ kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
 k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
 
