@@ -1,6 +1,6 @@
 ---
 title: "Anonymous Access Granted to k8's API'"
-sidebar_position: 127
+sidebar_position: 126
 ---
 
 This finding indicates that the anonymous user `system:anonymous` was granted API permissions on the EKS cluster. This enables unauthenticated access to the permitted APIs.
@@ -19,7 +19,7 @@ $ kubectl create rolebinding pod-access --role=pod-create --user=system:anonymou
 
 With in few minutes we will see the finding `Policy:Kubernetes/AnonymousAccessGranted` in guardduty portal.
 
-![](finding-3.1.png)
+![](Policy_AnonymousAccessGranted.png)
 
 Cleanup:
 

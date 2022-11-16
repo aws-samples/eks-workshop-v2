@@ -7,16 +7,24 @@ This finding informs you that Kubernetes dashboard for your cluster was exposed 
 
 To simulate this we will need to expose kubernetes dashboard to internet with service type LoadBalancer.
 
+Firstly we will install kubernetes dashboard. Based on [release notes](https://github.com/kubernetes/dashboard/releases/tag/v2.5.1) v2.5.1 is compatable with k8's cluster version 1.23 hence we are picking v2.5.1 for our simulation.
+
 ```bash
-$ kubectl apply -k /workspace/modules/security/Guardduty/Dashboard
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.1/aio/deploy/recommended.yaml
+```
+
+Let us patch the `kubernetes-dashboard` service to be type LoadBalancer.
+
+```bash
+$ kubectl patch patch svc kubernetes-dashboard -n kubernetes-dashboard -p='{"spec": {"type": "LoadBalancer"}}'
 ```
 
 With in few minutes we will see the finding `Policy:Kubernetes/ExposedDashboard` in guardduty portal.
 
-![](finding-4.png)
+![](ExposedDashboard.png)
 
-Cleanup
+Cleanup:
 
 ```bash
-$ kubectl delete -k /workspace/modules/security/Guardduty/Dashboard
+$ kubectl delete -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.1/aio/deploy/recommended.yaml
 ```
