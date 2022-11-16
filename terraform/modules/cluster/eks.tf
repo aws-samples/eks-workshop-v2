@@ -110,7 +110,7 @@ module "eks-blueprints" {
     system = {
       node_group_name = "managed-system"
       instance_types  = ["m5.large"]
-      subnet_ids      = slice(local.private_subnet_ids, 0, 1)
+      subnet_ids      = local.primary_private_subnet_id
       min_size        = 1
       max_size        = 2
       desired_size    = 1
