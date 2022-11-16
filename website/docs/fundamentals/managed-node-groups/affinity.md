@@ -142,6 +142,7 @@ checkout-redis-7f66c6c587-v4czw   1/1     Running   0          112s
 ```
 
 ### Clean up
+
 To clean up the environment, simply apply the original manifests:
 ```bash
 $ kubectl apply -k /workspace/manifests

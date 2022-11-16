@@ -33,6 +33,7 @@ checkout-585c9b45c7-xmx2t   1/1     Running   0          40m
 Each of these pods is scheduled on a separate Fargate instance. You can confirm this by following similar steps as previously and identifying the node of a given pod.
 
 ### Clean up
+
 To continue with the workshop, let's reset the changes we made to `deployment/checkout`. 
 
 ```bash timeout=300 wait=30
