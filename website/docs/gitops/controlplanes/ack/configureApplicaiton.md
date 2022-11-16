@@ -89,7 +89,7 @@ fieldexport.services.k8s.aws/orders-host created
 fieldexport.services.k8s.aws/orders-user created
 ```
 
-It takes some time to provision the AWS managed services, for RDS approximately 12 minutes. The ACK controller will report the status of the reconciliation in the status field of the Kubernetes custom resources.  
+It takes some time to provision the AWS managed services, for MQ approximately 12 minutes. The ACK controller will report the status of the reconciliation in the status field of the Kubernetes custom resources.  
 You can open the AWS console and see the services being created.
 
 To verify that the provision is done, you can check that the condition “ACK.ResourceSynced” is true using the Kubernetes CLI.

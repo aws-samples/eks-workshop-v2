@@ -2,11 +2,12 @@
 title: "Configuring ACK Resources"
 sidebar_position: 2
 ---
+Installing the contollers is usually an activity done by the cluster admins. The application teams are responsible to setup AWS resources via the controllers. They can define the application and its dependencies in one single Helm chart, thanks to the controllers.   
 
 Installing a controller consists of three steps:
 1. Setup of IAM Role Service Account (IRSA) for the controller. It gives the controller the access rights to the AWS resources it controls.
-2. Setup the controller K8S resources via Helm
-3. Update the Service Account (SA) annotation to have the IRSA working and restart the controller (to simplify)
+2. Setup the controller K8S resources via Helm.
+3. Update the Service Account (SA) annotation to have the IRSA working and restart the controller (to simplify).
 
 >The values `$(AWS_ACCOUNT_ID)` and `$(OIDC_PROVIDER)` will be substituted from environment variables.
 
@@ -37,23 +38,14 @@ Login Succeeded
 Deploy the IAM Controller
 ```bash
 $ helm install --create-namespace -n ack-system ack-iam-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/iam-chart --version=v0.0.21 --set=aws.region=$AWS_DEFAULT_REGION --wait
+  oci://public.ecr.aws/aws-controllers-k8s/iam-chart --version=v0.0.21 \
+  --set=aws.region=$AWS_DEFAULT_REGION \
+  --set=serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-iam-controller" --wait
 ...
 STATUS: deployed
 ...
 You are now able to create AWS Identity & Access Management (IAM) resources!
 ...
-```
-
-Annotate Service Account with the IAM role we created
-```bash
-$ kubectl annotate serviceaccount -n ack-system ack-iam-controller "eks.amazonaws.com/role-arn=arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-iam-controller"
-serviceaccount/ack-iam-controller annotated
-```
-Restart the controller to to pick up the new permissions
-```bash
-$ kubectl -n ack-system rollout restart deployment ack-iam-controller-iam-chart
-deployment.apps/ack-iam-controller-iam-chart restarted
 ```
 
 ## EC2 controller setup
@@ -65,36 +57,23 @@ View the EC2 Role manifest by running `cat /workspace/modules/ack/ec2/ec2-iam-ro
 ack/ec2/ec2-iam-role.yaml
 ```
 
-Create the EC2 Role.
+Deploy the EC2 IAM Role and EC2 Controller.
 ```bash
 $ kubectl apply -k /workspace/modules/ack/ec2
 role.iam.services.k8s.aws/ack-ec2-controller created
-```
 
-Wait for Role to be be reconciled
-```bash
 $ kubectl wait role.iam.services.k8s.aws ack-ec2-controller -n ack-system --for=condition=ACK.ResourceSynced --timeout=2m
-```
+role.iam.services.k8s.aws/ack-ec2-controller condition met
 
-Deploy the EC2 Controller.
-```bash
 $ helm install --create-namespace -n ack-system ack-ec2-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/ec2-chart --version=v0.0.21 --set=aws.region=$AWS_DEFAULT_REGION --wait
+  oci://public.ecr.aws/aws-controllers-k8s/ec2-chart --version=v0.1.0 \
+  --set=aws.region=$AWS_DEFAULT_REGION \
+  --set=serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-ec2-controller" --wait
 ...
 STATUS: deployed
 ...
 You are now able to create Amazon Elastic Cloud Compute (EC2) resources!
 ...
-```
-Annotate Service Account with the IAM role we created
-```bash
-$ kubectl annotate serviceaccount -n ack-system ack-ec2-controller "eks.amazonaws.com/role-arn=arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-ec2-controller"
-serviceaccount/ack-ec2-controller annotated
-```
-Restart the controller to to pick up the new permissions
-```bash
-$ kubectl -n ack-system rollout restart deployment ack-ec2-controller-ec2-chart
-deployment.apps/ack-ec2-controller-ec2-chart restarted
 ```
 
 ## RDS controller setup
@@ -104,36 +83,24 @@ View the RDS Role manifest by running `cat /workspace/modules/ack/rds/roles/rds-
 ```file
 ack/rds/roles/rds-iam-role.yaml
 ```
-Create the RDS Role.
+
+Deploy RDS Role and RDS Controller
 ```bash
 $ kubectl apply -k /workspace/modules/ack/rds/roles
 role.iam.services.k8s.aws/ack-rds-controller created
-```
 
-Wait for Role to be be reconciled
-```bash
 $ kubectl wait role.iam.services.k8s.aws ack-rds-controller -n ack-system --for=condition=ACK.ResourceSynced --timeout=2m
-```
+role.iam.services.k8s.aws/ack-rds-controller condition met
 
-Create the RDS Controller.
-```bash
 $ helm install --create-namespace -n ack-system ack-rds-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/rds-chart --version=v0.1.1 --set=aws.region=$AWS_DEFAULT_REGION --wait
+  oci://public.ecr.aws/aws-controllers-k8s/rds-chart --version=v0.1.1 \
+  --set=aws.region=$AWS_DEFAULT_REGION \
+  --set=serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-rds-controller" --wait
 ...
 STATUS: deployed
 ...
 You are now able to create Amazon Relational Database Service (RDS) resources!
 ...
-```
-Annotate Service Account with the IAM role we created
-```bash
-$ kubectl annotate serviceaccount -n ack-system ack-rds-controller "eks.amazonaws.com/role-arn=arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-rds-controller"
-serviceaccount/ack-rds-controller annotated
-```
-Restart the controller to to pick up the new permissions
-```bash
-$ kubectl -n ack-system rollout restart deployment ack-rds-controller-rds-chart
-deployment.apps/ack-rds-controller-rds-chart restarted
 ```
 
 ## MQ controller setup
@@ -144,32 +111,20 @@ View the MQ Role manifest by running `cat /workspace/modules/ack/mq/roles/mq-iam
 ack/mq/roles/mq-iam-role.yaml
 ```
 
-Create the MQ Role.
+Deploy MQ Role and MQ Controller
 ```bash
 $ kubectl apply -k /workspace/modules/ack/mq/roles
 role.iam.services.k8s.aws/ack-mq-controller created
-```
 
-Wait for Policy and Role to be be reconciled
-```bash
 $ kubectl wait role.iam.services.k8s.aws ack-mq-controller -n ack-system --for=condition=ACK.ResourceSynced --timeout=2m
-```
+role.iam.services.k8s.aws/ack-mq-controller condition met
 
-Deploy the MQ Controller.
-```bash
 $ helm install --create-namespace -n ack-system ack-mq-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/mq-chart --version=v0.0.22 --set=aws.region=$AWS_DEFAULT_REGION --wait
+  oci://public.ecr.aws/aws-controllers-k8s/mq-chart --version=v0.0.23 \
+  --set=aws.region=$AWS_DEFAULT_REGION \
+  --set=serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-mq-controller" --wait
 ...
 STATUS: deployed
 ...
 You are now able to create Amazon MQ (MQ) resources!
-...
-```
-```bash
-$ kubectl annotate serviceaccount -n ack-system ack-mq-controller "eks.amazonaws.com/role-arn=arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-mq-controller"
-serviceaccount/ack-mq-controller annotated
-```
-```bash
-$ kubectl -n ack-system rollout restart deployment ack-mq-controller-mq-chart
-deployment.apps/ack-mq-controller-mq-chart restarted
 ```
