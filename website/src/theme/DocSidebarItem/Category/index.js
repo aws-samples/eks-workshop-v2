@@ -157,7 +157,7 @@ export default function DocSidebarItemCategory({
             {label}
             </div>
             <div>
-            {item.customProps?.module ? <span class="badge">LAB</span> : <span></span>}
+            {item.customProps?.module ? <span class="badge lab">LAB</span> : <span></span>}
             </div>
           </div>
         </Link>
