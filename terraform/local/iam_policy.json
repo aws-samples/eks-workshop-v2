@@ -12,7 +12,8 @@
       "Effect": "Allow",
       "Action": [
         "eks:DescribeCluster",
-        "eks:ListNodegroups"
+        "eks:ListNodegroups",
+        "eks:CreateNodegroup"
       ],
       "Resource": "${cluster_arn}"
     },
@@ -20,7 +21,8 @@
       "Effect": "Allow",
       "Action": [
         "eks:UpdateNodegroupConfig",
-        "eks:DescribeNodegroup"
+        "eks:DescribeNodegroup",
+        "eks:DeleteNodegroup"
       ],
       "Resource": "${nodegroup}/*"
     },
@@ -52,6 +54,22 @@
       "Effect": "Allow",
       "Action": [
           "cloudformation:ListStacks"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:PassRole",
+        "iam:GetRole",
+        "iam:ListAttachedRolePolicies"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeSubnets"
       ],
       "Resource": "*"
     }
