@@ -1,6 +1,7 @@
 ---
 title: "Kubecost"
 sidebar_position: 10
+sidebar_custom_props: {"module": true}
 ---
 
 Kubecost provides real-time cost visibility and insights for teams using Kubernetes, helping you continuously reduce your cloud costs.

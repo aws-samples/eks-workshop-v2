@@ -1,6 +1,7 @@
 ---
 title: "Prefix Delegation"
 sidebar_position: 10
+sidebar_custom_props: {"module": true}
 ---
 
 :::tip Before you start

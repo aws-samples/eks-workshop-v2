@@ -1,6 +1,7 @@
 ---
 title: Amazon EFS
 sidebar_position: 30
+sidebar_custom_props: {"module": true}
 ---
 
 :::tip Before you start

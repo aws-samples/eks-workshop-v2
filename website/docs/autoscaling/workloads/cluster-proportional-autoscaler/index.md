@@ -1,6 +1,7 @@
 ---
 title: "Cluster Proportional Autoscaler"
 sidebar_position: 15
+sidebar_custom_props: {"module": true}
 ---
 
 :::tip Before you start

@@ -1,6 +1,7 @@
 ---
 title: "IAM Roles for Service Accounts"
 sidebar_position: 20
+sidebar_custom_props: {"module": true}
 ---
 
 :::tip Before you start

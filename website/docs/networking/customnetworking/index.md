@@ -1,6 +1,7 @@
 ---
 title: "Custom Networking"
 sidebar_position: 20
+sidebar_custom_props: {"module": true}
 ---
 
 :::tip Before you start

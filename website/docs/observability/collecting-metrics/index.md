@@ -1,6 +1,7 @@
 ---
 title: "EKS open source observability"
 sidebar_position: 40
+sidebar_custom_props: {"module": true}
 ---
 
 In this section, we will collect the metrics from the application using AWS Distro for OpenTelemetry, store the metrics in Amazon Managed Service for Prometheus and visualize using Amazon Managed Grafana

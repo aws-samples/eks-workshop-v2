@@ -1,6 +1,7 @@
 ---
 title: "Container Insights on EKS"
 sidebar_position: 50
+sidebar_custom_props: {"module": true}
 ---
 
 In this section, we will see how to enable and use CloudWatch Container Insights to collect, aggregate, and summarize metrics and logs from your containerized applications and microservices. Container Insights is available for Amazon Elastic Container Service (Amazon ECS), Amazon Elastic Kubernetes Service (Amazon EKS), and Kubernetes platforms on Amazon EC2. Amazon ECS support includes support for Fargate.
