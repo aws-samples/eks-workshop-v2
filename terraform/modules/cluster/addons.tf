@@ -116,7 +116,7 @@ module "eks-blueprints-kubernetes-addons" {
   }
 
   karpenter_helm_config = {
-    version = var.helm_chart_versions["karpenter"]
+    version = "v${var.helm_chart_versions["karpenter"]}"
     timeout = 600
 
     set = concat([{
