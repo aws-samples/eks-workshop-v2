@@ -20,6 +20,6 @@ $ kubectl delete -k /workspace/modules/security/Guardduty/privileged/
 Disable  guardduty
 
 ```bash
-DetectorIds=`aws guardduty list-detectors --output text --query DetectorIds`
-aws guardduty delete-detector  --detector-id  $DetectorIds
+$ DetectorIds=`aws guardduty list-detectors --output text --query DetectorIds`
+$ aws guardduty delete-detector  --detector-id  $DetectorIds
 ```
