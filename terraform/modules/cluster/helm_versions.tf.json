@@ -6,7 +6,7 @@
         "aws-efs-csi-driver": "2.2.7",
         "aws-load-balancer-controller": "1.4.2",
         "descheduler": "0.24.1",
-        "karpenter": "0.13.0",
+        "karpenter": "0.18.1",
         "cluster_autoscaler": "9.19.2",
         "metrics_server": "3.8.2"
       }

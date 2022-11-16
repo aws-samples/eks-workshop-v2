@@ -18,7 +18,7 @@ resource "aws_eks_addon" "vpc_cni" {
 }
 
 module "eks-blueprints-kubernetes-csi-addon" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.10.0//modules/kubernetes-addons/aws-ebs-csi-driver"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.16.0//modules/kubernetes-addons/aws-ebs-csi-driver"
 
   depends_on = [
     aws_eks_addon.vpc_cni
@@ -29,6 +29,8 @@ module "eks-blueprints-kubernetes-csi-addon" {
   addon_context = local.addon_context
 
   helm_config = {
+    kubernetes_version = var.cluster_version
+    
     set = [{
       name  = "node.tolerateAllTaints"
       value = "true"
@@ -61,7 +63,7 @@ module "eks-blueprints-kubernetes-csi-addon" {
 }
 
 module "eks-blueprints-kubernetes-addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.10.0//modules/kubernetes-addons"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.16.0//modules/kubernetes-addons"
 
   depends_on = [
     module.eks-blueprints-kubernetes-csi-addon
@@ -116,7 +118,7 @@ module "eks-blueprints-kubernetes-addons" {
   }
 
   karpenter_helm_config = {
-    version = var.helm_chart_versions["karpenter"]
+    version = "v${var.helm_chart_versions["karpenter"]}"
     timeout = 600
 
     set = concat([{
@@ -243,7 +245,7 @@ locals {
 }
 
 module "eks-blueprints-kubernetes-grafana-addon" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.10.0//modules/kubernetes-addons/grafana"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.16.0//modules/kubernetes-addons/grafana"
 
   depends_on = [
     module.eks-blueprints-kubernetes-addons
