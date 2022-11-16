@@ -16,7 +16,7 @@ $ aws eks describe-fargate-profile --cluster-name $EKS_CLUSTER_NAME \
   --fargate-profile-name checkout-profile
 ```
 
-Can you tell what this profile is meant to do?
+Can you tell what this profile is meant to do? **Hint:** Look at the selectors.
 
 So why isn't the `checkout` service already running on Fargate? Lets check its labels:
 

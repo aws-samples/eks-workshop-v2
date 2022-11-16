@@ -3,17 +3,15 @@ title: Configuring taints
 sidebar_position: 10
 ---
 
-Before we start, let's explore the already configured managed node group (MNG) using the following command: 
+For the purpose of the lab, we have provisioned a separate managed node group with a desired capacity of `1` and instance type of `m5.large`. Use the following command to describe the node group: 
 
 ```bash
-$ eksctl get nodegroup \
-    --name $EKS_TAINTED_MNG_NAME \
-    --cluster $EKS_CLUSTER_NAME
+$ eksctl get nodegroup --name $EKS_TAINTED_MNG_NAME --cluster $EKS_CLUSTER_NAME
 CLUSTER			NODEGROUP						STATUS	CREATED			MIN SIZE	MAX SIZE	DESIRED CAPACITY	INSTANCE TYPE	IMAGE ID		ASG NAME									TYPE
 eks-workshop-cluster	managed-ondemand-tainted-20221103142426393800000006	ACTIVE	2022-11-03T14:24:28Z	1		2		1			m5.large	ami-0b55230f107a87100	eks-managed-ondemand-tainted-20221103142426393800000006-d0c21ef0-8024-f793-52a9-3ed57ca9d457	managed
 ```
 
-For the purpose of the lab, we have provisioned a separate managed node group with a desired capacity of `1` and instance type of `m5.large`. We can also validate this configuration using `kubectl` as follows:
+We can also validate this configuration using `kubectl` as follows:
 
 ```bash
 $ kubectl get nodes \
@@ -49,7 +47,7 @@ A few things to point out:
 1. EKS automatically adds certain labels to allow for easier filtering, including labels for the OS type, managed node group name, instance type and others. While certain labels are provided out-of-the-box with EKS, AWS allows operators to configure their own set of custom labels at the managed node group level. This ensures that every node within a node group will have consistent labels. 
 2. Currently, there are no taints configured for the explored node, showcased by the `Taints: <none>` stanza. 
 
-## Configuring taints for Managed Node Groups (MNGs)
+## Configuring taints for Managed Node Groups
 
 While it's easy to taint nodes using the `kubectl` CLI as described [here](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#concepts), an administrator will have to make this change every time the underlying node group scales up or down. To overcome this challange, AWS supports adding both `labels` and `taints` to managed node groups, ensuring every node within the MNG will have the asociated labels and taints configured automatically. 
 
@@ -79,9 +77,13 @@ $ aws eks update-nodegroup-config \
 }
 ```
 
-The addition, removal or replacement of taints can be done by using the [`aws eks update-nodegroup-config`](https://docs.aws.amazon.com/cli/latest/reference/eks/update-nodegroup-config.html) CLI command for updating the configuration of the managed node group. This can be done by passing either `addOrUpdateTaints` or `removeTaints` and a list of taints to the `--taints` command flag. 
+The addition, removal, or replacement of taints can be done by using the [`aws eks update-nodegroup-config`](https://docs.aws.amazon.com/cli/latest/reference/eks/update-nodegroup-config.html) CLI command to update the configuration of the managed node group. This can be done by passing either `addOrUpdateTaints` or `removeTaints` and a list of taints to the `--taints` command flag. 
 
 The above command will add a new taint with the key of `frontend`, value of `true` and effect of `NO_EXECUTE`. This ensures that pods will not be able to be scheduled on any nodes that are part of the managed node group without having the corresponding toleration. Also, any existing pods without a matching toleration will be evicted. 
+
+:::tip
+You can also configure taints on a managed node group using the `eksctl` CLI. See the [docs](https://eksctl.io/usage/nodegroup-taints/) for more info.
+:::
 
 The configuration for managed node groups currently support the folowing values for the taint `effect`:
 * `NO_SCHEDULE` - This corresponds to the Kubernetes `NoSchedule` taint effect. This configures the managed node group with a taint that repels all pods that don't have a matching toleration. All running pods are **not evicted from the manage node group's nodes**.

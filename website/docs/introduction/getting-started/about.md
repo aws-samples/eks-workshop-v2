@@ -13,7 +13,7 @@ The application has several components and dependencies:
 
 ![Architecture](https://github.com/niallthomson/microservices-demo/raw/master/docs/images/architecture.png)
 
-You can start to explore the example application thats been deployed for you. The initial state of the application is that its completely self-contained in the EKS cluster. Each microservice is deployed to its own separate `Namespace` to provide some degree of isolation.
+You can start to explore the example application thats been deployed for you. Initially, the application is completely self-contained in the Amazon EKS cluster, without using any external services on AWS. Each microservice is deployed to its own separate `Namespace` to provide some degree of isolation.
 
 ```bash
 $ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
@@ -28,7 +28,7 @@ other      Active   5h6m
 ui         Active   5h6m
 ```
 
-Most of the components are modeled using the `Deployment` resource in its respective namespace:
+Most of the components are modeled using the `Deployment` resource in its respective namespace. The following command gets all deployments across all namespaces with the label `app.kubernetes.io/created-by=eks-workshop`.
 
 ```bash
 $ kubectl get deployment -l app.kubernetes.io/created-by=eks-workshop -A
@@ -46,3 +46,5 @@ ui          ui               1/1     1            1           5h6m
 ```
 
 All of the `Service` resources are of type `ClusterIP`, which means right now our application cannot be accessed from the outside world. We'll explore exposing the application using various ingress mechanisms later in the labs.
+
+To learn more about `kustomize`, head to the optional [Kustomize module](../kustomize) or continue with the [Fundamentals module](/docs/fundamentals).

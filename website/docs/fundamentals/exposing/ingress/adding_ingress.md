@@ -3,7 +3,7 @@ title: "Creating the Ingress"
 sidebar_position: 20
 ---
 
-Lets create an `Ingress` resource with the following manifest:
+Let's create an `Ingress` resource with the following manifest:
 
 ```file
 exposing/ingress/creating-ingress/ingress.yaml

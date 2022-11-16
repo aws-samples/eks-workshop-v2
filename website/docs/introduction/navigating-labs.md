@@ -19,7 +19,7 @@ The lab exercises are designed in a way that you can run any modules that you wi
 This module contains a single lab named **Getting started** which will be visible on the left side of your screen.
 
 :::caution
-You should start each lab from the page indicated by this badge and anything otherwise is likely to cause issues.
+You should start each lab from the page indicated by this badge. Starting in the middle of a lab is likely to cause issues.
 :::
 
 ## Terminal commands
