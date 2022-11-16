@@ -1,3 +1,6 @@
+aws_elb:
+  - tags:
+      kubernetes.io/cluster/eks-workshop-${CLUSTER_ID}: owned
 aws_lb:
   - tags:
       elbv2.k8s.aws/cluster: eks-workshop-${CLUSTER_ID}
@@ -7,6 +10,8 @@ aws_lb_target_group:
 aws_security_group:
   - tags:
       elbv2.k8s.aws/cluster: eks-workshop-${CLUSTER_ID}
+  - tags:
+      kubernetes.io/cluster/eks-workshop-${CLUSTER_ID}: owned
 aws_ebs_volume:
   - tags:
       KubernetesCluster: eks-workshop-${CLUSTER_ID}
