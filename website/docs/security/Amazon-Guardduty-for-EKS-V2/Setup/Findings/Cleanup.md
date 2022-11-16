@@ -3,7 +3,7 @@ title: "Cleanup"
 sidebar_position: 133
 ---
 
-In this section we will double check if all the resources related to guardduty findings are deleted. To clean up all created resources in Amazon Guradduty for EKS section please run the following commands.
+To clean up all created resources in Amazon Guradduty for EKS section please run the following commands.
 
 ```bash
 $ kubectl delete rolebinding pod-access -n default
@@ -15,4 +15,11 @@ $ kubectl delete role pod-create psp-use -n default
 $ kubectl delete rolebinding sa-default-admin --namespace=default
 $ kubectl delete -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.1/aio/deploy/recommended.yaml
 $ kubectl delete -k /workspace/modules/security/Guardduty/privileged/
+```
+
+Disable  guardduty
+
+```bash
+DetectorIds=`aws guardduty list-detectors --output text --query DetectorIds`
+aws guardduty delete-detector  --detector-id  $DetectorIds
 ```

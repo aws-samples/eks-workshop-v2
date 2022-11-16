@@ -11,7 +11,7 @@ To simulate the finding we will be reusing Privileged Container manifest and pat
 security/Guardduty/mount/previleged-pod-example.yaml
 ```
 
-Run the below command to patch the deployment. Please note that the *environment* directory will be present in eks-workshop directory and the commands are executed from eks-workshop directory. eks-workshop directory must be downloaded prior to running below commands.
+Run the below command to patch the deployment.
 
 ```bash
 $ kubectl apply -k /workspace/modules/security/Guardduty/privileged/mount
