@@ -3,7 +3,7 @@ title: Deploying the application
 sidebar_position: 10
 ---
 
-The workshop modules use a sample microservices application to demonstrate the various concepts related to EKS. The sample application is composed of a set of Kubernetes manifests organized in a way that can be easily applied with Kustomize. This allows us to not only make the manifests easier to break apart and navigate, but also incrementally apply overlays and patches as we work through the various modules of this workshop.
+The workshop modules use a sample microservices application to demonstrate the various concepts related to EKS. The sample application is composed of a set of Kubernetes manifests organized in a way that can be easily applied with Kustomize. Kustomize is an open-source capability and is a native feature of the `kubectl` CLI. This workshop uses Kustomize to apply changes to Kubernetes manifests, making it easier to understand changes to manifest files without needing to manually edit YAML. As we work through the various modules of this workshop, we will incrementally apply overlays and patches with Kustomize. To learn more about Kustomize, you can refer to the official Kubernetes [documentation](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/).
 
 If you want to understand more about Kustomize take a look at the [optional module](../kustomize.md) provided in this workshop.
 

@@ -1,3 +1,7 @@
+content/introduction:
+- environment/modules/introduction/**/*
+- website/docs/introduction/**/*
+
 content/fundamentals:
 - environment/modules/fundamentals/**/*
 - website/docs/fundamentals/**/*

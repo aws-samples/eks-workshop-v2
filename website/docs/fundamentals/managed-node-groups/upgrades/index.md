@@ -61,8 +61,9 @@ Upgrading the node group will take at least 10 minutes, only execute this sectio
 
 The EKS cluster that has been provisioned for you intentionally has Managed Node Groups that are not running the latest AMI. You can see what the latest AMI version is by querying SSM:
 
-```
+```bash
 $ aws ssm get-parameter --name /aws/service/eks/optimized-ami/1.23/amazon-linux-2/recommended/image_id --region $AWS_DEFAULT_REGION --query "Parameter.Value" --output text
+ami-0fcd72f3118e0dd88
 ```
 
 When you initiate a managed node group update, Amazon EKS automatically updates your nodes for you, completing the steps listed above. If you're using an Amazon EKS optimized AMI, Amazon EKS automatically applies the latest security patches and operating system updates to your nodes as part of the latest AMI release version. 
@@ -79,8 +80,10 @@ You can watch activity on the nodes using `kubectl`:
 $ kubectl get nodes --watch
 ```
 
-If you want to wait until the MNG is updated you can do this:
+If you want to wait until the MNG is updated you can run the following command:
 
 ```bash timeout=900
 $ aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME
 ```
+
+Once this is completed, you can proceed to the next step.

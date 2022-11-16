@@ -32,7 +32,7 @@ Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists fo
                              node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
 ```
 
-As anticipated, the application is running succesfully on a non-tainted node. The associated pod is in a `Running` status and we can confirm that no custom tolerations have been configured. Note that Kubernetes automatically adds tolerations for `node.kubernetes.io/not-ready` and `node.kubernetes.io/unreachable` with `tolerationSeconds=300`, unless you, or a controller, set those tolerations explicitly. These automatically-added tolerations mean that Pods remain bound to Nodes for 5 minutes after one of these problems is detected.
+As anticipated, the application is running succesfully on a non-tainted node. The associated pod is in a `Running` status and we can confirm that no custom tolerations have been configured. Note that Kubernetes automatically adds tolerations for `node.kubernetes.io/not-ready` and `node.kubernetes.io/unreachable` with `tolerationSeconds=300`, unless you or a controller set those tolerations explicitly. These automatically-added tolerations mean that Pods remain bound to Nodes for 5 minutes after one of these problems is detected.
 
 Let's update our `ui` deployment to bind its pods to our tainted managed node group. We have pre-configured our tainted managed node group with a label of `tainted=yes` that we can use with a `nodeSelector`. The following `Kustomize` patch describes the changes needed to our deployment configuration in order to enable this setup: 
 
@@ -76,26 +76,6 @@ $ podname=$(kubectl get pod --namespace ui --field-selector=status.phase=Pending
                 kubectl describe pod $podname -n ui
 Name:           ui-659df48c56-z496x
 Namespace:      ui
-Priority:       0
-Node:           <none>
-Labels:         app.kubernetes.io/component=service
-                app.kubernetes.io/created-by=eks-workshop
-                app.kubernetes.io/instance=ui
-                app.kubernetes.io/name=ui
-                pod-template-hash=659df48c56
-Annotations:    kubernetes.io/psp: eks.privileged
-                prometheus.io/path: /actuator/prometheus
-                prometheus.io/port: 8080
-                prometheus.io/scrape: true
-Status:         Pending
-IP:
-IPs:            <none>
-Controlled By:  ReplicaSet/ui-659df48c56
-Containers:
-    [...]
-Conditions:
-  Type           Status
-  PodScheduled   False
 [...]
 Node-Selectors:              tainted=yes
 Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
@@ -112,7 +92,7 @@ Our changes are reflected in the new configuration of the `Pending` pod. We can 
 0/4 nodes are available: 1 node(s) had taint {frontend: true}, that the pod didn't tolerate, 1 node(s) had taint {systemComponent: true}, that the pod didn't tolerate, 2 node(s) didn't match Pod's node affinity/selector.` 
 ```
 
-Let's ensure our deployment and associated pods are able to tolerate the `frontend: true` taint. We can use the below `Kustomize` patch to make the necessary changes:
+To fix this, we need to add a toleration. Let's ensure our deployment and associated pods are able to tolerate the `frontend: true` taint. We can use the below `Kustomize` patch to make the necessary changes:
  
 ```kustomization
 fundamentals/mng/taints/nodeselector-w-toleration/deployment.yaml

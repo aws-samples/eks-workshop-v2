@@ -4,6 +4,7 @@ metadata:
   name: checkout
   namespace: checkout
 spec:
+  replicas: 2
   template:
     spec:
       affinity:

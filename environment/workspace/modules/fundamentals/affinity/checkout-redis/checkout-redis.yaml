@@ -6,6 +6,7 @@ metadata:
     app.kubernetes.io/created-by: eks-workshop
     app.kubernetes.io/team: database
 spec:
+  replicas: 2
   template:
     spec:
       affinity:
