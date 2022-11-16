@@ -20,5 +20,6 @@ spec:
       username: admin
   subnetIDs:
   - $(VPC_PRIVATE_SUBNET_ID_0)
-  securityGroups:
-  - $(ORDERS_SECURITY_GROUP_ID)
+  securityGroupRefs:
+    - from: 
+        name: mq-eks-workshop

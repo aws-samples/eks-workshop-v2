@@ -5,6 +5,13 @@ configMapGenerator:
   envs:
   - mq-ack-options.env
 vars:
+- name: VPC_ID
+  objref:
+    kind: ConfigMap
+    name: mq-ack-options
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.VPC_ID
 - name: VPC_PRIVATE_SUBNET_ID_0
   objref:
     kind: ConfigMap
@@ -12,14 +19,8 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.VPC_PRIVATE_SUBNET_ID_0
-- name: ORDERS_SECURITY_GROUP_ID
-  objref:
-    kind: ConfigMap
-    name: mq-ack-options
-    apiVersion: v1
-  fieldref:
-    fieldpath: data.ORDERS_SECURITY_GROUP_ID
 configurations:
   - env-var-transformer.yaml
 resources:
+- mq-security-group.yaml
 - mq-broker.yaml

@@ -7,4 +7,8 @@ varReference:
     kind: Broker
     path: spec/subnetIDs
     value: mq-eks-workshop
+  - apiVersion: ec2.services.k8s.aws/v1alpha1
+    kind: SecurityGroup
+    path: spec/vpcID
+    value: mq-eks-workshop
 

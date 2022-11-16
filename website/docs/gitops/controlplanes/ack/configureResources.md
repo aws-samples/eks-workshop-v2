@@ -40,41 +40,29 @@ dbsubnetgroup.rds.services.k8s.aws/rds-eks-workshop created
 ```
 ## Create Amazon MQ Broker 
 
-
-Specify a Security Group manifest, this controls access to our message broker.
-```file
-ack/mq/k8s/security-group/mq-security-group.yaml
-```
-
-Create Security Group for MQ Broker using the manifest file.
-```bash
-$ kubectl apply -k /workspace/modules/ack/mq/k8s/security-group
-securitygroup.ec2.services.k8s.aws/mq-eks-workshop created
-```
-Wait until the security group is reconciled
-```bash
-$ kubectl wait SecurityGroup mq-eks-workshop --for=condition=ACK.ResourceSynced --timeout=1m
-securitygroup.ec2.services.k8s.aws/mq-eks-workshop condition met
-```
-
-
-Set admin user password
+Set Broker admin user password
 ```bash
 $ kubectl create secret generic mq-eks-workshop --from-literal=password="$(date +%s | sha256sum | base64 | head -c 32)" --namespace default
 secret/mq-eks-workshop created
 ```
 
+Specify a Security Group manifest, this controls access to our message broker.
+```file
+ack/mq/k8s/mq-security-group.yaml
+```
 Specify the Amazon MQ Broker manifest
 ```file
-ack/mq/k8s/broker/mq-broker.yaml
+ack/mq/k8s/mq-broker.yaml
 ```
 
-Create Amazon MQ Broker using the manifest files.
+
+Create Security Group and Amazon MQ Broker using the manifest files.
 ```bash
-$ export ORDERS_SECURITY_GROUP_ID=$(kubectl get SecurityGroup mq-eks-workshop -o go-template='{{.status.id}}')
-$ kubectl apply -k /workspace/modules/ack/mq/k8s/broker
+$ kubectl apply -k /workspace/modules/ack/mq/k8s
 broker.mq.services.k8s.aws/mq-eks-workshop created
 ```
+
+After 10 minutes you can see in the AWS Console the RDS and MQ resouces are available.
 
 Continue to the next section to export the binding information from the provisioned AWS managed services.
 
