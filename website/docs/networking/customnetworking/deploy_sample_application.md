@@ -28,7 +28,7 @@ $ kubectl get pods -n checkout -o wide
 Here is a sample output from the previous command
 
 ```bash
-$ kubectl get pods -n orders -o wide
+$ kubectl get pods -n checkout -o wide
 NAME                              READY   STATUS    RESTARTS   AGE   IP             NODE                                         NOMINATED NODE   READINESS GATES
 checkout-5fbbc99bb7-brn2m         1/1     Running   0          98s   100.64.10.16   ip-10-42-10-14.us-west-2.compute.internal    <none>           <none>
 checkout-redis-6cfd7d8787-8n99n   1/1     Running   0          49m   10.42.12.33    ip-10-42-12-155.us-west-2.compute.internal   <none>           <none>
