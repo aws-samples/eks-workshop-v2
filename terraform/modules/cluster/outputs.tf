@@ -25,7 +25,7 @@ output "eks_cluster_tainted_nodegroup_name" {
 
 output "eks_cluster_nodegroup_iam_role_arn" {
   description = "Amazon EKS Cluster node group role ARN"
-  value       = module.aws-eks-accelerator-for-terraform.managed_node_group_iam_role_arns[0]
+  value       = module.eks-blueprints.managed_node_group_iam_role_arns[0]
 }
 
 output "eks_cluster_nodegroup_size_min" {

@@ -22,7 +22,6 @@
       "Action": [
         "eks:UpdateNodegroupConfig",
         "eks:DescribeNodegroup",
-        "eks:DescribeNodegroup",
         "eks:DeleteNodegroup",
         "eks:UpdateNodegroupVersion"
       ],
@@ -66,13 +65,6 @@
         "ec2:DescribeInstances",
         "ec2:DescribeVolumes",
         "ec2:DescribeAvailabilityZones"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:DescribeSubnets"
       ],
       "Resource": "*"
     },

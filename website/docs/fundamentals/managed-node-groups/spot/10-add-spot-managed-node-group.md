@@ -28,7 +28,7 @@ We will now create the a Spot managed node group.
 ```bash test=false
 $ aws eks create-nodegroup \
   --cluster-name=${EKS_CLUSTER_NAME} \
-  --subnets ${EKS_CLUSTER_PUBLIC_SUBNET_ID_1} ${EKS_CLUSTER_PUBLIC_SUBNET_ID_2} \
+  --subnets ${PRIMARY_PUBLIC_SUBNET_1} ${PRIMARY_PUBLIC_SUBNET_2} \
   --nodegroup-name ng-spot \
   --node-role ${EKS_DEFAULT_MNG_ROLE_ARN} \
   --region=${AWS_DEFAULT_REGION} \
