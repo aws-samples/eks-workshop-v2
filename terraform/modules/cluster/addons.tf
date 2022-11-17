@@ -198,11 +198,18 @@ module "eks-blueprints-kubernetes-addons" {
     local.system_component_values)
   }
 
+  aws_for_fluentbit_cw_log_group_name = "/${module.eks-blueprints.eks_cluster_id}/worker-fluentbit-logs-${random_string.fluentbit_log_group.result}"
+
   amazon_eks_adot_config = {
     kubernetes_version = var.cluster_version
   }
 
   tags = local.tags
+}
+
+resource "random_string" "fluentbit_log_group" {
+  length           = 6
+  special          = false
 }
 
 locals {
