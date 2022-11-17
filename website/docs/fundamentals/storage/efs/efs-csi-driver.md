@@ -50,9 +50,6 @@ Now you can get and describe the `StorageClass` using the below commands, you wi
 $ kubectl get storageclass
 NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
 efs-sc          efs.csi.aws.com         Delete          Immediate              false                  8m29s
-```
-
-```bash
 $ kubectl describe sc efs-sc
 Name:            efs-sc
 IsDefaultClass:  No
