@@ -31,12 +31,6 @@ spec:
           env:
             - name: MYSQL_ROOT_PASSWORD
               value: my-secret-pw
-            #- name: MYSQL_DATABASE
-            #  value: catalog
-            #- name: MYSQL_USER
-            #  value: catalog_user
-            #- name: MYSQL_PASSWORD
-            #  value: default_password
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
@@ -59,7 +53,6 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/mysql
-              # subPath: mysql
       volumes:
         - name: data
           emptyDir: {}
