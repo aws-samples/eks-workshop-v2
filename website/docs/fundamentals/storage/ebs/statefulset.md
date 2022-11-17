@@ -3,7 +3,7 @@ title: StatefulSets
 sidebar_position: 10
 ---
 
-Kubernetes  [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) are like a Deployment, a StatefulSet manages Pods that are based on an identical container spec. Unlike a Deployment, a StatefulSet maintains a sticky identity for each of their Pods. These pods are created from the same spec, but are not interchangeable: each has a persistent identifier that it maintains across any rescheduling.
+Kubernetes  [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) are like a Deployment, a StatefulSet manages Pods that are based on an identical container spec. Unlike a Deployment, a StatefulSet maintains a sticky identity for each of their Pods. These Pods are created from the same spec, but are not interchangeable: each has a persistent identifier that it maintains across any rescheduling.
 
 If you want to use storage volumes to provide persistence for your workload, you can use a StatefulSet as part of the solution. Although individual Pods in a StatefulSet are susceptible to failure, the persistent Pod identifiers make it easier to match existing volumes to the new Pods that replace any that have failed.
 
@@ -21,7 +21,7 @@ On our ecommerce application, we have a StatefulSet already deployed part of our
 $ kubectl describe statefulsets -n catalog
 ```
 
-As you can see the [`volumeMounts`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section of our `StatefulSet` defines what is the `monuntPath` that will be mounted into a specific volume:
+As you can see the [`volumeMounts`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section of our StatefulSet defines what is the `mountPath` that will be mounted into a specific volume:
 
 ```blank title="manifests/catalog/statefulset-mysql.yaml" 
           volumeMounts:
@@ -37,7 +37,7 @@ In our case the `volumeMounts` called `data` has a `mountPath` of `/var/lib/mysq
 Unfortunately, our MySQL StatefulSet is not utilizing a persistent EBS volume for persistent storage. It's currently just utilizing a [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir). Run the following command to confirm and check under the `name: data` volume:
 
 ```bash
-$ kubectl get statefulsets -n catalog -o json | jq '.items[].spec.template.spec.volumes'
+$ kubectl get statefulset -n catalog catalog-mysql -o jsonpath='{.spec.template.spec.volumes}' | jq .
 [
   {
     "emptyDir": {},
@@ -48,32 +48,32 @@ $ kubectl get statefulsets -n catalog -o json | jq '.items[].spec.template.spec.
 
 An emptyDir volume is first created when a Pod is assigned to a node, and exists as long as that Pod is running on that node. As the name says, the emptyDir volume is initially empty. All containers in the Pod can read and write the same files in the emptyDir volume, though that volume can be mounted at the same or different paths in each container. **When a Pod is removed from a node for any reason, the data in the emptyDir is deleted permanently.** Therefore EmptyDir is not a good fit for our MySQL Database. 
 
-We can test by creating a shell inside the container that is running MySQL and creating a test file. Then after that, we'll delete the pod that is running our StatefulSet. Because that pod is not using a Persistent Volume (PV), it's using a EmptyDir, the file will not survive a pod restart. First let's run a command inside our MySQL container to create a file on the emptyDir `var/lib/mysql` path (where MySQL saves database files): 
+We can test by creating a shell inside the container that is running MySQL and creating a test file. Then after that, we'll delete the Pod that is running our StatefulSet. Because that Pod is not using a Persistent Volume (PV), it's using a EmptyDir, the file will not survive a Pod restart. First let's run a command inside our MySQL container to create a file on the emptyDir `var/lib/mysql` path (where MySQL saves database files): 
 
 ```bash
-$ kubectl exec --stdin catalog-mysql-0  -n catalog -- bash -c  "echo 123 > /var/lib/mysql/test.txt"
+$ kubectl exec catalog-mysql-0 -n catalog -- bash -c  "echo 123 > /var/lib/mysql/test.txt"
 ```
 
 Now let's verify that our `test.txt` file got created on the `/var/lib/mysql` directory:
 
 ```bash
-$ kubectl exec --stdin catalog-mysql-0  -n catalog -- bash -c  "ls -larth /var/lib/mysql/ | grep -i test"
+$ kubectl exec catalog-mysql-0 -n catalog -- ls -larth /var/lib/mysql/ | grep -i test
 -rw-r--r-- 1 root  root     4 Oct 18 13:38 test.txt
 ```
 
-Now let's remove the current `catalog-mysql` pod. This will force the StatefulSet controller to automatically re-create a new catalog-mysql pod:
+Now let's remove the current `catalog-mysql` Pod. This will force the StatefulSet controller to automatically re-create a new catalog-mysql Pod:
 
 ```bash
-$ kubectl delete pods -n catalog -l app.kubernetes.io/team=database
+$ kubectl delete pods -n catalog -l app.kubernetes.io/component=mysql
 pod "catalog-mysql-0" deleted
 ```
 
-Wait for a few seconds, and run the command below to check if the `catalog-mysql` pod has been re-created:
+Wait for a few seconds, and run the command below to check if the `catalog-mysql` Pod has been re-created:
 
 ```bash
-$ kubectl wait --for=condition=Ready pod -n catalog -l app.kubernetes.io/team=database --timeout=30s
+$ kubectl wait --for=condition=Ready pod -n catalog -l app.kubernetes.io/component=mysql --timeout=30s
 pod/catalog-mysql-0 condition met
-$ kubectl get pods -n catalog -l app.kubernetes.io/team=database
+$ kubectl get pods -n catalog -l app.kubernetes.io/component=mysql
 NAME              READY   STATUS    RESTARTS   AGE
 catalog-mysql-0   1/1     Running   0          29s
 ```
@@ -81,16 +81,16 @@ catalog-mysql-0   1/1     Running   0          29s
 Finally, let's exec back into the MySQL container shell and run a `ls` command on the `/var/lib/mysql` path trying to look for the `test.txt` file that we created:
 
 ```bash expectError=true
-$ kubectl exec --stdin catalog-mysql-0  -n catalog -- bash -c  "ls -larth /var/lib/mysql/ | grep -i test"
+$ kubectl exec catalog-mysql-0 -n catalog -- ls -larth /var/lib/mysql | grep -i test
 command terminated with exit code 1
 ```
 
 ```bash expectError=true
-$ kubectl exec --stdin catalog-mysql-0  -n catalog -- bash -c  "cat /var/lib/mysql/test.txt"
+$ kubectl exec catalog-mysql-0 -n catalog -- cat /var/lib/mysql/test.txt
 cat: /var/lib/mysql/test.txt: No such file or directory
 command terminated with exit code 1
 ```
 
-As you can see the `test.txt` file is no longer there, because emptyDir volumes are ephemeral. On future sections, we'll run the same experiment and demostrate how Persistent Volumes (PVs) will keep the `test.txt` file and survive pod restarts and/or failures. 
+As you can see the `test.txt` file is no longer there, because emptyDir volumes are ephemeral. On future sections, we'll run the same experiment and demostrate how Persistent Volumes (PVs) will keep the `test.txt` file and survive Pod restarts and/or failures. 
 
 On the next page, we will on understanding the main concepts of Storage on Kubernetes and its integration with the AWS cloud ecosystem. 

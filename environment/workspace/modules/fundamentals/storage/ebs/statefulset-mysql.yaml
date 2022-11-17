@@ -1,12 +1,60 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: catalog-mysql
+  name: catalog-mysql-ebs
+  namespace: catalog
+  labels:
+    app.kubernetes.io/created-by: eks-workshop
+    app.kubernetes.io/team: database
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: catalog
+      app.kubernetes.io/instance: catalog
+      app.kubernetes.io/component: mysql-ebs
+  serviceName: mysql
   template:
+    metadata:
+      labels: 
+        app.kubernetes.io/name: catalog
+        app.kubernetes.io/instance: catalog
+        app.kubernetes.io/component: mysql-ebs
+        app.kubernetes.io/created-by: eks-workshop
+        app.kubernetes.io/team: database
     spec:
-      volumes:
-        - $patch: delete
+      containers:
+        - name: mysql
+          image: "public.ecr.aws/docker/library/mysql:5.7"
+          args: 
+            - "--ignore-db-dir=lost+found"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: my-secret-pw
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-writer-db
+                  key: username
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-writer-db
+                  key: password
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-writer-db
+                  key: name
+          ports:
+            - name: mysql
+              containerPort: 3306
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
+  # HIGHLIGHT
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -16,4 +64,3 @@ spec:
         resources:
           requests:
             storage: 30Gi 
-        
