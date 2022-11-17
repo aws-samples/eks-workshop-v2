@@ -1,0 +1,4 @@
+varReference:
+  - kind: StorageClass
+    path: parameters/fileSystemId
+    value: assets-efsid

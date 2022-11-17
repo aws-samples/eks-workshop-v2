@@ -1,7 +1,17 @@
 ---
 title: "Pod Security Standards"
 sidebar_position: 50
+sidebar_custom_props: {"module": true}
 ---
+
+:::tip Before you start
+Prepare your environment for this section:
+
+```bash timeout=300 wait=30
+$ reset-environment 
+```
+
+:::
 
 Securely adopting Kubernetes includes preventing unwanted changes to clusters. Unwanted changes can disrupt cluster operations and even compromise cluster integrity. Introducing Pods that lack correct security configurations is an example of an unwanted cluster change. To control Pod security Kubernetes provided [Pod Security Policy / PSP](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) resources. PSPs specify a set of security settings that Pods must meet before they can be created or updated in a cluster. However, as of Kubernetes version 1.21, PSPs have been deprecated, and are scheduled for removal in Kubernetes version 1.25. 
 

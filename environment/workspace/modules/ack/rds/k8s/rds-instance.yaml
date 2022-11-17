@@ -1,0 +1,23 @@
+apiVersion: rds.services.k8s.aws/v1alpha1
+kind: DBInstance
+metadata:
+  name: rds-eks-workshop
+  namespace: default
+spec:
+  allocatedStorage: 20
+  dbInstanceClass: db.t4g.micro
+  dbInstanceIdentifier: rds-eks-workshop
+  engine: mysql
+  engineVersion: "8.0"
+  masterUsername: "admin"
+  dbSubnetGroupRef: 
+    from: 
+      name: rds-eks-workshop
+  vpcSecurityGroupRefs:
+    - from: 
+        name: rds-eks-workshop
+  masterUserPassword:
+    namespace: default
+    name: rds-eks-workshop
+    key: password
+  dbName: catalog

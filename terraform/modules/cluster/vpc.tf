@@ -1,6 +1,11 @@
+locals {
+  private_subnet_ids = length(module.aws_vpc.private_subnets) > 0 ? slice(module.aws_vpc.private_subnets, 0, 3) : []
+  primary_private_subnet_id = length(module.aws_vpc.private_subnets) > 0 ? slice(module.aws_vpc.private_subnets, 0, 1) : []
+}
+
 module "aws_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "3.16.0"
+  version = "3.18.1"
 
   name                  = local.vpc_name
   cidr                  = local.vpc_cidr

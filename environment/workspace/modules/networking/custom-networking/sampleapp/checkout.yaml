@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkout
+  namespace: checkout
+spec:
+  template:
+    spec:
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: custom-networking

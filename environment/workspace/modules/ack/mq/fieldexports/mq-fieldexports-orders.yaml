@@ -1,0 +1,33 @@
+apiVersion: services.k8s.aws/v1alpha1
+kind: FieldExport
+metadata:
+  name: orders-host
+spec:
+  to:
+    name: orders
+    kind: configmap
+    namespace: orders-prod
+    key: SPRING_ACTIVEMQ_BROKERURL
+  from:
+    path: ".status.brokerInstances[0].endpoints[0]"
+    resource:
+      group: mq.services.k8s.aws
+      kind: Broker
+      name: mq-eks-workshop
+---
+apiVersion: services.k8s.aws/v1alpha1
+kind: FieldExport
+metadata:
+  name: orders-user
+spec:
+  to:
+    name: orders
+    kind: configmap
+    namespace: orders-prod
+    key: SPRING_ACTIVEMQ_USER
+  from:
+    path: ".spec.users[0].username"
+    resource:
+      group: mq.services.k8s.aws
+      kind: Broker
+      name: mq-eks-workshop

@@ -139,3 +139,8 @@
   all: unset;
   white-space: pre;
 }
+
+.copyAll:hover {
+  cursor: pointer;
+  color: #1E1E1E;
+}

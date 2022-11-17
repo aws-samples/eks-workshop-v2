@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+configMapGenerator:
+- name: ec2-ack-options
+  envs:
+  - ec2-ack-options.env
+vars:
+- name: AWS_ACCOUNT_ID
+  objref:
+    kind: ConfigMap
+    name: ec2-ack-options
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.AWS_ACCOUNT_ID
+- name: OIDC_PROVIDER
+  objref:
+    kind: ConfigMap
+    name: ec2-ack-options
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.OIDC_PROVIDER
+configurations:
+  - env-var-transformer.yaml
+resources:
+- ec2-iam-role.yaml

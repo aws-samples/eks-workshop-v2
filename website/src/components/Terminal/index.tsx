@@ -1,5 +1,7 @@
 import React, {Component, type ReactNode} from 'react';
 import ReactTooltip from 'react-tooltip';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faClipboard } from '@fortawesome/free-solid-svg-icons'
 
 import styles from './styles.module.css';
 
@@ -24,6 +26,8 @@ export default function Terminal({
 
   let appendNext = false;
 
+  let allCommands = "";
+
   for(let i = 0; i < outputParts.length; i++) {
     let currentLine = outputParts[i]
 
@@ -32,30 +36,32 @@ export default function Terminal({
         section = new TerminalSection()
         sections.push(section)
 
-        currentLine = currentLine.substring(2)
+        currentLine = currentLine.substring(2).trim()
       }
 
-      section.processLine(currentLine)
+      if(section.processLine(currentLine)) {
+        allCommands = `${allCommands}\n${currentLine}`
+      }
     }
   }
 
-  function copyToClipboard(e) {
-    navigator.clipboard.writeText(command)
+  const handler = () => {
+    navigator.clipboard.writeText(`${allCommands}\n`)
   }
 
   return (
     <div className={styles.browserWindow}>
       <div className={styles.browserWindowHeader}>
         <div className={styles.buttons}>
+          
           <span className={styles.dot} style={{background: '#f25f58'}} />
           <span className={styles.dot} style={{background: '#fbbe3c'}} />
           <span className={styles.dot} style={{background: '#58cb42'}} />
         </div>
         <div className={styles.browserWindowMenuIcon}>
-          <div>
-            <span className={styles.bar} />
-            <span className={styles.bar} />
-            <span className={styles.bar} />
+          <div className={styles.copyAll}>
+            <FontAwesomeIcon icon={faClipboard} onClick={handler} data-tip="Copy all commands" />
+            <ReactTooltip effect="solid" border={true} />
           </div>
         </div>
       </div>
@@ -69,40 +75,13 @@ export default function Terminal({
   );
 }
 
-class TerminalCommandContext {
-  private commandLines: Array<string> = [];
-  private output: string = '';
-  private inHeredoc = false;
-  private capturingOutput = false;
-
-  processLine(currentLine: string) {
-    if(this.capturingOutput) {
-      this.output.concat(`${currentLine}\n`)
-    }
-    else {
-      this.commandLines.push(currentLine)
-
-      if(currentLine.indexOf('<<EOF') > -1) {
-        this.inHeredoc = true
-      }
-      else if(this.inHeredoc) {
-        if(currentLine.indexOf('EOF') > -1) {
-          this.inHeredoc = false
-        }
-      }
-    }
-
-    if(!currentLine.endsWith('\\') && !this.inHeredoc) {
-      this.capturingOutput = true
-    }
-  }
-}
-
 class TerminalSection {
   protected contexts: Array<TerminalContext> = [];
   private context : TerminalContext;
   private commandContext : TerminalCommand;
   private inHeredoc = false;
+  private commandString : string = "";
+  private inCommand = true;
 
   constructor() {
     this.context = this.commandContext = new TerminalCommand();
@@ -119,8 +98,15 @@ class TerminalSection {
     this.context.addLine(line)
   }
 
-  processLine(currentLine: string) {
+  processLine(currentLine: string) : boolean {
+    let processed = false;
+
     this.context.addLine(currentLine);
+
+    if(this.inCommand) {
+      this.commandString += currentLine;
+      processed = true;
+    }
 
     if(currentLine.indexOf('<<EOF') > -1) {
       this.inHeredoc = true
@@ -134,7 +120,11 @@ class TerminalSection {
     if(!currentLine.endsWith('\\') && !this.inHeredoc) {
       this.context = new TerminalOutput()
       this.contexts.push(this.context)
+
+      this.inCommand = false;
     }
+
+    return processed;
   }
 
   render() {
@@ -144,7 +134,7 @@ class TerminalSection {
     }
 
     return (
-      <section className={styles.terminalBody} data-tip data-for="copy-hint" onClick={handler}>
+      <section className={styles.terminalBody} data-tip="Copy command" onClick={handler}>
         {this.contexts.map(element => {
           return (element.render())
         })}

@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+configMapGenerator:
+- name: mq-ack-options
+  envs:
+  - mq-ack-options.env
+vars:
+- name: VPC_ID
+  objref:
+    kind: ConfigMap
+    name: mq-ack-options
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.VPC_ID
+- name: VPC_PRIVATE_SUBNET_ID_0
+  objref:
+    kind: ConfigMap
+    name: mq-ack-options
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.VPC_PRIVATE_SUBNET_ID_0
+configurations:
+  - env-var-transformer.yaml
+resources:
+- mq-security-group.yaml
+- mq-broker.yaml
