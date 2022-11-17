@@ -17,17 +17,17 @@ $ sudo amazon-linux-extras install -y postgresql12
 Create a table and load some data:
 
 ```bash
-$ cat << EoF > ~/environment/sg-per-pod/pgsql.sql
+$ cat <<EOF > ~/environment/sg-per-pod/pgsql.sql
 CREATE TABLE welcome (column1 TEXT);
 insert into welcome values ('--------------------------');
 insert into welcome values ('Welcome to the eksworkshop');
 insert into welcome values ('--------------------------');
-EoF
+EOF
 ```
 
 Run the created script:
 
 ```bash
-$ psql postgresql://eksworkshop:${RDS_PASSWORD}@${RDS_ENDPOINT}:5432/eksworkshop \
-    -f ~/environment/sg-per-pod/pgsql.sql
+$ psql postgresql://eksworkshop:${NETWORKING_RDS_PASSWORD}@${NETWORKING_RDS_ENDPOINT}:5432/eksworkshop \
+-f ~/environment/sg-per-pod/pgsql.sql
 ```
