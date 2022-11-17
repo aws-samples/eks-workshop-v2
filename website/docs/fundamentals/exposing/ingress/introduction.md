@@ -3,12 +3,6 @@ title: "Introduction"
 sidebar_position: 10
 ---
 
-Run the following command to setup the EKS cluster for this module:
-
-```bash timeout=300 wait=30
-$ reset-environment 
-```
-
 Currently there are no `Ingress` resources in our cluster, which you can check with the following command:
 
 ```bash expectError=true

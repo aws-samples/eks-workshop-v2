@@ -4,6 +4,15 @@ sidebar_position: 50
 sidebar_custom_props: {"module": true}
 ---
 
+:::tip Before you start
+Prepare your environment for this section:
+
+```bash timeout=300 wait=30
+$ reset-environment 
+```
+
+:::
+
 Securely adopting Kubernetes includes preventing unwanted changes to clusters. Unwanted changes can disrupt cluster operations and even compromise cluster integrity. Introducing Pods that lack correct security configurations is an example of an unwanted cluster change. To control Pod security Kubernetes provided [Pod Security Policy / PSP](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) resources. PSPs specify a set of security settings that Pods must meet before they can be created or updated in a cluster. However, as of Kubernetes version 1.21, PSPs have been deprecated, and are scheduled for removal in Kubernetes version 1.25. 
 
 In Kubernetes, PSPs are being replaced with, [Pod Security Admission / PSA](https://kubernetes.io/docs/concepts/security/pod-security-admission/), a built-in admission controller that implements the security controls outlined in the [Pod Security Standards / PSS](https://kubernetes.io/docs/concepts/security/pod-security-standards/). As of Kubernetes version 1.23, PSA and PSS have both reached beta feature states, and are enabled in Amazon Elastic Kubernetes Service (EKS) by default.

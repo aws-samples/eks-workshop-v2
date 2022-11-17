@@ -4,6 +4,15 @@ sidebar_position: 10
 sidebar_custom_props: {"module": true}
 ---
 
+:::tip Before you start
+Prepare your environment for this section:
+
+```bash timeout=300 wait=30
+$ reset-environment 
+```
+
+:::
+
 Amazon EKS control plane logging provides audit and diagnostic logs directly from the Amazon EKS control plane to CloudWatch Logs in your account. These logs make it easy for you to secure and run your clusters. You can select the exact log types you need, and logs are sent as log streams to a group for each Amazon EKS cluster in CloudWatch.
 
 You can enable or disable each log type on a per-cluster basis using the AWS Management Console, AWS CLI (version 1.16.139 or higher), or through the Amazon EKS API.

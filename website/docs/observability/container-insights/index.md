@@ -4,6 +4,15 @@ sidebar_position: 50
 sidebar_custom_props: {"module": true}
 ---
 
+:::tip Before you start
+Prepare your environment for this section:
+
+```bash timeout=300 wait=30
+$ reset-environment 
+```
+
+:::
+
 In this section, we will see how to enable and use CloudWatch Container Insights to collect, aggregate, and summarize metrics and logs from your containerized applications and microservices. Container Insights is available for Amazon Elastic Container Service (Amazon ECS), Amazon Elastic Kubernetes Service (Amazon EKS), and Kubernetes platforms on Amazon EC2. Amazon ECS support includes support for Fargate.
 
 The metrics include utilization for resources such as CPU, memory, disk, and network. Container Insights also provides diagnostic information, such as container restart failures, to help you isolate issues and resolve them quickly. You can also set CloudWatch alarms on metrics that Container Insights collects.
