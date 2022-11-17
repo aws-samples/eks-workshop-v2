@@ -317,6 +317,14 @@ phases:
 
           terraform destroy --auto-approve
         else
-          terraform apply -auto-approve -var "repository_archive_location=\${REPOSITORY_ARCHIVE_LOCATION}" -var "cloud9_additional_role=\${C9_ADDITIONAL_ROLE}"
+          # Retry loop due to intermittent timing issues with cluster becoming available
+          s=0
+
+          for i in $(seq 1 3); do 
+            terraform apply -auto-approve -var "repository_archive_location=\${REPOSITORY_ARCHIVE_LOCATION}" -var "cloud9_additional_role=\${C9_ADDITIONAL_ROLE}" && s=0 && break || \
+              s=$? && echo 'Sleeping until retry...' && sleep 1
+          done
+
+          exit $s
         fi
 `)
