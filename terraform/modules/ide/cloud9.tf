@@ -3,6 +3,7 @@ resource "aws_cloud9_environment_ec2" "c9_workspace" {
   name                        = var.environment_name
   automatic_stop_time_minutes = 90
   image_id                    = "amazonlinux-2-x86_64"
+  subnet_id                   = var.subnet_id
 
   tags = var.tags
 

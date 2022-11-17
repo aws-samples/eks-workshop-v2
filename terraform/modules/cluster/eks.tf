@@ -4,15 +4,6 @@ locals {
   default_mng_size = 2
 }
 
-data "aws_ami_ids" "eks_ami" {
-  owners = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["amazon-eks-node-${var.cluster_version}-*"]
-  }
-}
-
 module "eks-blueprints" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.16.0"
 
@@ -27,6 +18,17 @@ module "eks-blueprints" {
 
   cluster_endpoint_public_access  = true
   cluster_endpoint_private_access = true
+
+  cluster_security_group_additional_rules = {
+    ingress_from_cloud9_host = {
+      description = "Ingress from Cloud9 Host"
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      type        = "ingress"
+      cidr_blocks = [module.aws_vpc.vpc_cidr_block]
+    }
+  }
 
   cluster_kms_key_additional_admin_arns = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
 

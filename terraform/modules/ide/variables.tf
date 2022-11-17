@@ -7,7 +7,6 @@ variable "instance_type" {
 variable "subnet_id" {
   type        = string
   description = "Target subnet for the C9 instance"
-  default     = ""
 }
 
 variable "environment_name" {
