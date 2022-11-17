@@ -17,12 +17,12 @@ $ sudo amazon-linux-extras install -y postgresql12
 Create a table and load some data:
 
 ```bash
-$ cat <<EoF > ~/environment/sg-per-pod/pgsql.sql
+$ cat <<EOF > ~/environment/sg-per-pod/pgsql.sql
 CREATE TABLE welcome (column1 TEXT);
 insert into welcome values ('--------------------------');
 insert into welcome values ('Welcome to the eksworkshop');
 insert into welcome values ('--------------------------');
-EoF
+EOF
 ```
 
 Run the created script:
