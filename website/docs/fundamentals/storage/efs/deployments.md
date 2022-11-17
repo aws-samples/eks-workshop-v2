@@ -43,7 +43,7 @@ As you can see in the output of the previous command the [`volumeMounts`](https:
 It's currently just utilizing a [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir). Run the following command to confirm and check under the `name: tmp-volume` volume:
 
 ```bash
-$ kubectl get deployment -n assets -o json | jq '.items[].spec.template.spec.volumes'
+$ kubectl get deployment -n assets -o jsonpath='{.items[].spec.template.spec.volumes}' | jq
 [
   {
     "emptyDir": {
