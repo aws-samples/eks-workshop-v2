@@ -3,30 +3,28 @@ title: At an AWS event
 sidebar_position: 20
 ---
 
-By participating in this workshop you will be provided with an AWS account to use to complete the lab material. Connect to the portal by browsing to [https://dashboard.eventengine.run/](https://dashboard.eventengine.run/), where the following screen shows up.
+By participating in this workshop you will be provided with an AWS account to use to complete the lab material. Connect to the portal by browsing to [https://catalog.workshops.aws/](https://catalog.workshops.aws/), where the following screen shows up.
 
-![Event Engine](./assets/splash.png)
+Click on **Get Started** and select the option **Email One-Time Password(OTP)** to proceed.
 
-Your instructor should have provided you with an **Event Hash** prior the starting these exercises. Enter the provided hash in the text box. The button on the bottom right corner changes to **Accept Terms & Login**. Click on that button to continue.
+![Workshop Studio Home](./assets/workshop-studio-home.png)
 
-You will be presented with a sign-in screen that looks like this:
+Enter your email address and press **Send passcode**, which will send a one-time passcode to your inbox. When the email arrives you can enter the passcode and log-in.
 
-![Event Engine Sign In](./assets/sign-in.png)
+Your instructor should have provided you with an **Event access code** prior the starting these exercises. Enter the provided hash in the text box and hit **Next**.
 
-Select the option **Email One-Time Password(OTP)** to proceed, and the next screen will display:
+![Event Code](./assets/event-code.png)
 
-![Event Engine OTP](./assets/otp-email.png)
+Read and accept the Terms and Conditions and click **Join event** to continue.
 
-Enter your email address and press **Send passcode**, which will send a one-time passcode to your inbox. When the email arrives you can enter the passcode:
+![Review and Join](./assets/review-and-join.png)
 
-![Event Engine Passcode](./assets/otp-passcode.png)
+You will be presented with your personal dashboard. Press **Get Started** for basic information about the workshop.
 
-When you press **Sign in** you will be presented with your personal dashboard:
+![Get Started](./assets/workshop-event-page.png)
 
-![Event Engine Dashboard](./assets/dashboard.png)
+Select the **Open AWS Console** button to be taken to your AWS account console:
 
-Select the **AWS Console** button to be taken to your AWS account console:
+![Open Console](./assets/openconsole.png)
 
-![Event Engine Console](./assets/console.png)
-
-You can now proceed to [Getting Started](../getting-started.md)
+Proceed to the next step to access your Cloud9 IDE.

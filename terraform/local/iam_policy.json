@@ -4,7 +4,8 @@
     {
       "Effect": "Allow",
       "Action": [
-        "eks:ListClusters"
+        "eks:ListClusters",
+        "eks:CreateNodegroup"
       ],
       "Resource": "*"
     },
@@ -12,8 +13,7 @@
       "Effect": "Allow",
       "Action": [
         "eks:DescribeCluster",
-        "eks:ListNodegroups",
-        "eks:CreateNodegroup"
+        "eks:ListNodegroups"
       ],
       "Resource": "${cluster_arn}"
     },
@@ -22,7 +22,9 @@
       "Action": [
         "eks:UpdateNodegroupConfig",
         "eks:DescribeNodegroup",
-        "eks:DeleteNodegroup"
+        "eks:DescribeNodegroup",
+        "eks:DeleteNodegroup",
+        "eks:UpdateNodegroupVersion"
       ],
       "Resource": "${nodegroup}/*"
     },
@@ -53,16 +55,17 @@
     {
       "Effect": "Allow",
       "Action": [
-          "cloudformation:ListStacks"
+          "cloudformation:ListStacks",
+          "cloudformation:DescribeStacks"
       ],
       "Resource": "*"
     },
     {
       "Effect": "Allow",
       "Action": [
-        "iam:PassRole",
-        "iam:GetRole",
-        "iam:ListAttachedRolePolicies"
+        "ec2:DescribeInstances",
+        "ec2:DescribeVolumes",
+        "ec2:DescribeAvailabilityZones"
       ],
       "Resource": "*"
     },
@@ -72,6 +75,88 @@
         "ec2:DescribeSubnets"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "elasticfilesystem:DescribeAccessPoints",
+        "elasticfilesystem:DescribeFileSystems",
+        "elasticfilesystem:DescribeMountTargets"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "elasticfilesystem:CreateAccessPoint"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/efs.csi.aws.com/cluster": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "elasticfilesystem:DeleteAccessPoint",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/efs.csi.aws.com/cluster": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "aps:QueryMetrics",
+        "iam:CreateRole",
+        "iam:GetRole",
+        "iam:PutRolePolicy",
+        "ecr-public:GetAuthorizationToken",
+        "sts:GetServiceBearerToken",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeVpcs",
+        "iam:DeleteRolePolicy",
+        "iam:DeleteRole",
+        "rds:DescribeDBInstances",
+        "mq:ListBrokers",
+        "mq:DescribeBroker",
+        "iam:DetachRolePolicy",
+        "iam:PassRole"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "elasticloadbalancing:DescribeLoadBalancers",
+          "elasticloadbalancing:DescribeTargetGroups",
+          "elasticloadbalancing:DescribeTargetHealth"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "iam:ListAttachedRolePolicies"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:DescribeParameters"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:GetParameter"
+      ],
+      "Resource": "arn:aws:ssm:${region}::parameter/aws/service/eks/optimized-ami/*"
     }
   ]
 }

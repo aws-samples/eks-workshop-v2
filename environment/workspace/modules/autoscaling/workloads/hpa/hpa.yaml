@@ -10,4 +10,5 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: ui
+  # HIGHLIGHT
   targetCPUUtilizationPercentage: 80

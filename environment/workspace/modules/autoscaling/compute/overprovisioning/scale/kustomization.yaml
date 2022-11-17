@@ -3,4 +3,7 @@ kind: Kustomization
 bases:
 - ../../../../../manifests
 patches:
-- deployment-ui.yaml
+- path: deployment.yaml
+  target:
+    kind: Deployment
+    labelSelector: app.kubernetes.io/type=app

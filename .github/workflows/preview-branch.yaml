@@ -11,11 +11,10 @@ jobs:
   deploy:
     name: deploy
     runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
     - name: Check out code
       uses: actions/checkout@v2
-      with:
-        submodules: recursive
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:

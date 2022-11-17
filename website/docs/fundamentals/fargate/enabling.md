@@ -16,7 +16,7 @@ $ aws eks describe-fargate-profile --cluster-name $EKS_CLUSTER_NAME \
   --fargate-profile-name checkout-profile
 ```
 
-Can you tell what this profile is meant to do?
+Can you tell what this profile is meant to do? **Hint:** Look at the selectors.
 
 So why isn't the `checkout` service already running on Fargate? Lets check its labels:
 
@@ -33,10 +33,10 @@ Deployment/checkout
 
 Apply the kustomization to the cluster:
 
-```bash timeout=180
+```bash timeout=220
 $ kubectl apply -k /workspace/modules/fundamentals/fargate/enabling
 [...]
-$ kubectl rollout status -n checkout deployment/checkout --timeout=160s
+$ kubectl rollout status -n checkout deployment/checkout --timeout=200s
 ```
 
 This will cause the pod specification for the `checkout` service to be updated and trigger a new deployment, replacing all the pods. When the new pods are scheduled, the Fargate scheduler will match the new label applied by the kustomization with our target profile and intervene to ensure our pod is schedule on capacity managed by Fargate.

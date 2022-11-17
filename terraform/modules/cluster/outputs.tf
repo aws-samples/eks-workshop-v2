@@ -1,21 +1,26 @@
 output "eks_cluster_id" {
   description = "Amazon EKS Cluster Name"
-  value       = module.aws-eks-accelerator-for-terraform.eks_cluster_id
+  value       = module.eks-blueprints.eks_cluster_id
 }
 
 output "eks_cluster_arn" {
   description = "Amazon EKS Cluster ARN"
-  value       = "arn:${data.aws_partition.current.partition}:eks:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:cluster/${module.aws-eks-accelerator-for-terraform.eks_cluster_id}"
+  value       = "arn:${data.aws_partition.current.partition}:eks:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:cluster/${module.eks-blueprints.eks_cluster_id}"
 }
 
 output "eks_cluster_nodegroup" {
   description = "Amazon EKS Cluster noode group ARN"
-  value       = "arn:${data.aws_partition.current.partition}:eks:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:nodegroup/${module.aws-eks-accelerator-for-terraform.eks_cluster_id}"
+  value       = "arn:${data.aws_partition.current.partition}:eks:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:nodegroup/${module.eks-blueprints.eks_cluster_id}"
 }
 
 output "eks_cluster_nodegroup_name" {
   description = "Amazon EKS Cluster node group name"
-  value       = module.aws-eks-accelerator-for-terraform.managed_node_groups_id[0]
+  value       = module.eks-blueprints.managed_node_groups_id[0]
+}
+
+output "eks_cluster_tainted_nodegroup_name" {
+  description = "Amazon EKS Cluster tainted node group name"
+  value       = module.eks-blueprints.managed_node_groups_id[1]
 }
 
 output "eks_cluster_nodegroup_iam_role_arn" {
@@ -40,7 +45,12 @@ output "eks_cluster_nodegroup_size_desired" {
 
 output "configure_kubectl" {
   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.aws-eks-accelerator-for-terraform.configure_kubectl
+  value       = module.eks-blueprints.configure_kubectl
+}
+
+output "vpc_id" {
+  description = "VPC Id"
+  value       = module.aws_vpc.vpc_id
 }
 
 output "private_subnet_ids" {
@@ -95,4 +105,69 @@ output "orders_rds_database_name" {
 output "orders_rds_ingress_sg_id" {
   description = "Endpoint of the RDS database for the orders service"
   value       = aws_security_group.orders_rds_ingress.id
+}
+
+output "efsid" {
+  description = "EFS file system ID"
+  value       = aws_efs_file_system.efsassets.id
+}
+
+output "networking_rds_endpoint" {
+  description = "Endpoint of the RDS database for the networking module"
+  value       = module.networking_rds_postgre.cluster_endpoint
+}
+
+output "networking_rds_master_username" {
+  description = "Master username of the RDS database for the networking module"
+  value       = "eksworkshop"
+}
+
+output "networking_rds_master_password" {
+  description = "Master password of the RDS database for the networking module"
+  value       = random_string.networking_db_master.result
+}
+
+output "networking_rds_database_name" {
+  description = "Master username of the RDS database for the networking module"
+  value       = module.networking_rds_postgre.cluster_database_name
+}
+
+output "networking_rds_ingress_sg_id" {
+  description = "Security group id of the RDS database for the networking module"
+  value       = module.networking_rds_postgre.security_group_id
+}
+
+output "amp_endpoint" {
+  description = "Endpoint of the AMP workspace"
+  value       = aws_prometheus_workspace.this.prometheus_endpoint
+}
+
+output "adot_iam_role" {
+  description = "ARN of the IAM role used by the ADOT collector pod"
+  value       = module.iam_assumable_role_adot.iam_role_arn
+}
+output "azs" {
+  description = "AZ details"
+  value       = local.azs
+}
+
+output "adot_iam_role_ci" {
+  description = "ARN of the IAM role used by the ADOT collector pod for Container Insights"
+  value       = module.iam_assumable_role_adot_ci.iam_role_arn
+}
+
+output "eks_cluster_security_group_id" {
+  description = "EKS Control Plane Security Group ID"
+  value       = module.eks-blueprints.cluster_primary_security_group_id
+}
+
+
+output "eks_cluster_managed_node_group_iam_role_arns" {
+  description = "IAM role arn's of managed node groups"
+  value       = module.eks-blueprints.managed_node_group_iam_role_arns
+}
+
+output "oidc_provider" {
+  description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
+  value       = module.eks-blueprints.oidc_provider
 }

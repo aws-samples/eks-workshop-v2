@@ -1,5 +1,5 @@
 ---
-title: EKS Workshop
+title: EKS Workshop 
 sidebar_position: 1
 ---
 

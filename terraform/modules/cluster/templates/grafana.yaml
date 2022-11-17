@@ -1,0 +1,52 @@
+serviceAccount:
+  create: false
+  name: grafana
+
+env:
+  AWS_SDK_LOAD_CONFIG: true
+  GF_AUTH_SIGV4_AUTH_ENABLED: true
+
+ingress:
+  enabled: true
+  hosts: []
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+  ingressClassName: alb
+
+tolerations:
+- key: "systemComponent"
+  operator: "Exists"
+  effect: "NoSchedule"
+
+nodeSelector:
+  workshop-system: 'yes'
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      url: ${prometheus_endpoint}
+      access: proxy
+      jsonData:
+        httpMethod: "POST"
+        sigV4Auth: true
+        sigV4AuthType: "default"
+        sigV4Region: ${region}
+      isDefault: true
+
+dashboards:
+  default:
+    kubernetesCluster:
+      gnetId: 3119
+      revision: 2
+      datasource: Prometheus
+
+sidecar:
+  dashboards:
+    enabled: true
+    searchNamespace: ALL
+    label: app.kubernetes.io/component
+    labelValue: grafana

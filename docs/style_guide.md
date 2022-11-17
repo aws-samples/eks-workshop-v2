@@ -177,3 +177,35 @@ An example of using this would look like so:
 ```
 $ aws eks describe-cluster --name $EKS_CLUSTER_NAME
 ```
+
+### Info and Caution Blocks
+
+:::Info
+Use info blocks for additional information
+:::
+
+:::Caution
+Caution blocks also available
+:::
+
+:::Note
+Note blocks are available
+:::
+
+### Badges
+
+To mark your module as an independent module that users can begin with, place the following in the header of your markdown file:
+```
+---
+...
+sidebar_custom_props: {"module": true}
+---
+```
+
+To mark your module as informational, with no actionable steps, place the following in the header of your markdown file:
+```
+---
+...
+sidebar_custom_props: {"info": true}
+---
+```

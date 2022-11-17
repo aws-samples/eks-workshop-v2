@@ -1,9 +1,17 @@
-# EKS Worskhop - FAQ
+# EKS Workshop - FAQ
 
-### Q: When I run `make serve` I get an error saying `failed to extract shortcode: template for shortcode "expand" not found`
+### Q: When I create the infrastructure I get an error about the Kubecost helm chart
 
-This happens when the git submodule for the hugo theme is not present. Run the following command in the root of the cloned repository:
+The error looks similar to this:
 
 ```
-git submodule update --init
+│ Error: could not download chart: failed to download "oci://public.ecr.aws/kubecost/cost-analyzer" at version "1.96.0"
+│ 
+│   with module.cluster.module.eks-blueprints-kubernetes-addons.module.kubecost[0].module.helm_addon.helm_release.addon[0],
+│   on .terraform/modules/cluster.eks-blueprints-kubernetes-addons/modules/kubernetes-addons/helm-addon/main.tf line 1, in resource "helm_release" "addon":
+│    1: resource "helm_release" "addon" {
+│ 
+╵
 ```
+
+This is likely due to expired credentials from previously interacting with ECR Public. Run `docker logout` and then re-run `make create-infrastructure`.

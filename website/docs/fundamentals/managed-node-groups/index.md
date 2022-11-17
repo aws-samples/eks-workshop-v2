@@ -3,20 +3,31 @@ title: Managed Node Groups
 sidebar_position: 10
 ---
 
+:::tip Before you start
+Prepare your environment for this section:
+
+```bash timeout=300 wait=30
+$ reset-environment 
+```
+
+:::
+
 [Amazon EKS managed node groups](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) automate the provisioning and lifecycle management of nodes (Amazon EC2 instances) for Amazon EKS clusters. This greatly simplifies operational activities such as rolling updates for new AMIs or Kubernetes version deployments.
+
+![Managed Node Groups](./assets/managed-node-groups.png)
 
 Advantages of running Amazon EKS managed node groups include:
 
-* Create, automatically update, or terminate nodes with a single operation using the Amazon EKS console, eksctl, AWS CLI, AWS API, or infrastructure as code tools including AWS CloudFormation
+* Create, automatically update, or terminate nodes with a single operation using the Amazon EKS console, `eksctl`, AWS CLI, AWS API, or infrastructure as code tools including AWS CloudFormation and Terraform
 * Provisioned nodes run using the latest Amazon EKS optimized AMIs
-* Nodes provisioned under managed node group are automatically tagged with metadata such as availability zones, CPU architecture and instance type
+* Nodes provisioned as part of a MNG are automatically tagged with metadata such as availability zones, CPU architecture and instance type
 * Node updates and terminations automatically and gracefully drain nodes to ensure that your applications stay available
 * No additional costs to use Amazon EKS managed node groups, pay only for the AWS resources provisioned
 
-We can inspect the managed node group that was pre-provisioned for you:
+We can inspect the default managed node group that was pre-provisioned for you:
 
 ```bash
-$ eksctl get nodegroup --cluster $EKS_CLUSTER_NAME
+$ eksctl get nodegroup --cluster $EKS_CLUSTER_NAME --name $EKS_DEFAULT_MNG_NAME
 ```
 
 There are several attributes of managed node groups that we can see from this output:

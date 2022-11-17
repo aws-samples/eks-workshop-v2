@@ -6,7 +6,7 @@ weight: 8
 
 In this module, we will learn the fundamentals of working with the EKS cluster by performing the following tasks:
 
-* Expose the Watchn application so we can access it over the public Internet
+* Expose the sample application so we can access it over the public Internet
 * Configure the worker nodes within the managed node group that power the EKS cluster
 * Enable and re-deploy an application using Fargate
 * Configure EBS and EFS for stateful applications

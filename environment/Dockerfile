@@ -1,25 +1,8 @@
 FROM public.ecr.aws/amazonlinux/amazonlinux:2
 
-RUN yum install -y findutils jq tar gzip zsh git diffutils wget tree unzip && \
-    yum clean all
+ADD installer.sh /installer.sh
 
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
-    unzip awscliv2.zip && \
-    ./aws/install
-
-RUN curl -LO https://dl.k8s.io/release/v1.23.9/bin/linux/amd64/kubectl && \
-  chmod +x ./kubectl && \
-  mv ./kubectl /usr/local/bin
-
-RUN curl -fsSL -o helm.tar.gz https://get.helm.sh/helm-v3.9.2-linux-amd64.tar.gz && \
-  tar zxf helm.tar.gz && \
-  chmod +x linux-amd64/helm && \
-  mv ./linux-amd64/helm /usr/local/bin && \
-  rm -rf linux-amd64/ helm.tar.gz
-  
-RUN curl --location "https://github.com/weaveworks/eksctl/releases/download/v0.114.0/eksctl_Linux_amd64.tar.gz" | tar xz && \
-  chmod +x eksctl && \
-  mv ./eksctl /usr/local/bin
+RUN bash installer.sh
 
 ADD entrypoint.sh /entrypoint.sh
 

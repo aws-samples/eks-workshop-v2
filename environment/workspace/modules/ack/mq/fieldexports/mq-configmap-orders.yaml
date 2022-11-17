@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orders
+  namespace: orders-prod
+data:
+  SPRING_PROFILES_ACTIVE: mysql,activemq
+  SPRING_ACTIVEMQ_PASSWORD: $(ORDERS_PASSWORD)

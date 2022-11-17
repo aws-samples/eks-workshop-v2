@@ -1,5 +1,5 @@
 module "orders_rds" {
-  source  = "terraform-aws-modules/rds-aurora/aws"
+  source = "terraform-aws-modules/rds-aurora/aws"
 
   name           = "${local.cluster_name}-orders"
   engine         = "aurora-mysql"
@@ -10,7 +10,7 @@ module "orders_rds" {
   }
 
   vpc_id  = module.aws_vpc.vpc_id
-  subnets = slice(module.aws_vpc.private_subnets, 0, 3)
+  subnets = local.private_subnet_ids
 
   allowed_security_groups = [aws_security_group.orders_rds_ingress.id]
 
@@ -22,13 +22,13 @@ module "orders_rds" {
   skip_final_snapshot    = true
   #monitoring_interval = 10
 
-  create_db_parameter_group       = true
-  db_parameter_group_name         = "${local.cluster_name}-orders"
-  db_parameter_group_family       = "aurora-mysql5.7"
+  create_db_parameter_group = true
+  db_parameter_group_name   = "${local.cluster_name}-orders"
+  db_parameter_group_family = "aurora-mysql5.7"
 
-  create_db_cluster_parameter_group  = true
-  db_cluster_parameter_group_name    = "${local.cluster_name}-orders"
-  db_cluster_parameter_group_family  = "aurora-mysql5.7"
+  create_db_cluster_parameter_group = true
+  db_cluster_parameter_group_name   = "${local.cluster_name}-orders"
+  db_cluster_parameter_group_family = "aurora-mysql5.7"
 
   tags = local.tags
 }
