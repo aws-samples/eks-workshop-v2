@@ -3,13 +3,9 @@ title: "Installing Sealed Secrets"
 sidebar_position: 60
 ---
 
-## Installing the kubeseal Client
+The `kubeseal` CLI is used to interact with the sealed secrets controller, and has already been installed in Cloud9.
 
-The kubeseal client has already been installed as part of the setup.
-
-## Installing the Custom Controller and CRD for SealedSecret
-
-Install the SealedSecret CRD, controller and RBAC artifacts on your EKS cluster as follows:
+The first thing we'll do is install the sealed secrets controller in the EKS cluster:
 
 ```bash
 $ kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.18.0/controller.yaml
@@ -24,8 +20,8 @@ sealed-secrets-controller-77747c4b8c-snsxp      1/1     Running   0          5s
 ```
 The logs of the sealed-secrets controller show that the controller tries to find any existing private keys during startup. If there are no private keys found, then it creates a new secret with the certificate details.
 
-```bash test=false
-$ kubectl logs sealed-secrets-controller-77747c4b8c-snsxp -n kube-system
+```bash
+$ kubectl logs deployments/sealed-secrets-controller -n kube-system
 
 controller version: 0.18.0
 2022/10/18 09:17:01 Starting sealed-secrets controller version: 0.18.0
