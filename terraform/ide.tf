@@ -53,7 +53,8 @@ module "ide" {
   subnet_id        = module.cluster.public_subnet_ids[0]
 
   additional_cloud9_policy_arns = [
-    "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+    "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
+    "arn:aws:iam::aws:policy/AdministratorAccess"
   ]
 
   additional_cloud9_policies = [
@@ -81,19 +82,22 @@ cp /tmp/repository-archive/environment/bin/* /usr/local/bin
 
 rm -rf /tmp/repository-archive
 
-cat << EOT > /home/ec2-user/.env
-${local.environment_variables}
-EOT
-
-sudo -H -u ec2-user bash -c "mkdir -p ~/.bashrc.d"
-sudo -H -u ec2-user bash -c "touch ~/.bashrc.d/dummy.bash"
-
 if [[ ! -d "/home/ec2-user/.bashrc.d" ]]; then
+  sudo -H -u ec2-user bash -c "mkdir -p ~/.bashrc.d"
+  sudo -H -u ec2-user bash -c "touch ~/.bashrc.d/dummy.bash"
+
   sudo -H -u ec2-user bash -c "echo 'for file in ~/.bashrc.d/*.bash; do source \"\$file\"; done' >> ~/.bashrc"
 fi
 
-sudo -H -u ec2-user bash -c "echo 'source ~/.env' > ~/.bashrc.d/env.bash"
 sudo -H -u ec2-user bash -c "echo 'aws eks update-kubeconfig --name ${module.cluster.eks_cluster_id}' > ~/.bashrc.d/kubeconfig.bash"
+
+cat << EOT > /home/ec2-user/.bashrc.d/env.bash
+set -a
+${local.environment_variables}
+set +a
+EOT
+
+chown ec2-user /home/ec2-user/.bashrc.d/env.bash
 
 EOF
 }

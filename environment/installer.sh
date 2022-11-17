@@ -24,7 +24,7 @@ download_and_verify () {
   rm "$out_file.sha256"
 }
 
-yum install -y findutils jq tar gzip zsh git diffutils wget tree unzip openssl gettext bash-completion python3 pip3 python3-pip
+yum install -y findutils jq tar gzip zsh git diffutils wget tree unzip openssl gettext bash-completion python3 pip3 python3-pip amazon-linux-extras
 
 amazon-linux-extras install -y postgresql12
 
