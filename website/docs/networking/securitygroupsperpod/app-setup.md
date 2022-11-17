@@ -42,8 +42,8 @@ Before deploying our two pods we need to provide them with the RDS endpoint and 
 ```bash
 $ kubectl create secret generic rds\
 --namespace=sg-per-pod \
---from-literal="password=${RDS_PASSWORD}" \
---from-literal="host=${RDS_ENDPOINT}"
+--from-literal="password=${NETWORKING_RDS_PASSWORD}" \
+--from-literal="host=${NETWORKING_RDS_ENDPOINT}"
 ```
 
 To verify the secret:
