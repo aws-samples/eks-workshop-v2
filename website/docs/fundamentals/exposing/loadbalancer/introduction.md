@@ -3,15 +3,15 @@ title: "Introduction"
 sidebar_position: 10
 ---
 
-We can confirm our service is only accessible internally by taking a look at the current `Service` resources in the cluster:
+We can confirm our service is only accessible internally by taking a look at the current Service resources in the cluster:
 
 ```bash
 $ kubectl get svc -A
 ```
 
-All of our application components are currently using `ClusterIP` services, which only allows access to other workloads in the same Kubernetes cluster. In order for users to access our application we need to expose the `ui` application, and in this example we'll do so using a Kubernetes `Service` of type `LoadBalancer`.
+All of our application components are currently using `ClusterIP` services, which only allows access to other workloads in the same Kubernetes cluster. In order for users to access our application we need to expose the `ui` application, and in this example we'll do so using a Kubernetes Service of type `LoadBalancer`.
 
-First, lets take a closer look at the current specification of the `Service` for the `ui` component:
+First, lets take a closer look at the current specification of the Service for the `ui` component:
 
 ```bash
 $ kubectl -n ui describe service ui

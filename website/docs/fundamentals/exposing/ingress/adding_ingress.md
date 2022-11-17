@@ -3,7 +3,7 @@ title: "Creating the Ingress"
 sidebar_position: 20
 ---
 
-Let's create an `Ingress` resource with the following manifest:
+Let's create an Ingress resource with the following manifest:
 
 ```file
 exposing/ingress/creating-ingress/ingress.yaml
@@ -15,7 +15,7 @@ This will cause the AWS Load Balancer Controller to provision an Application Loa
 $ kubectl apply -k /workspace/modules/exposing/ingress/creating-ingress
 ```
 
-Let's inspect the `Ingress` object created:
+Let's inspect the Ingress object created:
 
 ```bash
 $ kubectl get ingress ui -n ui
@@ -23,22 +23,7 @@ NAME   CLASS   HOSTS   ADDRESS                                            PORTS 
 ui     alb     *       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com   80      15s
 ```
 
-Now that our application is exposed to the outside world, lets try to access it.
-
-Get the URL from the `Ingress` resource:
-
-```bash
-$ kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
-k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com
-```
-
-And access it in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
-
-<browser url='http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com'>
-<img src={require('./assets/web-ui.png').default}/>
-</browser>
-
-We can take a closer look at the ALB provisioned for this `Ingress` to see how its configured:
+The NLB will take several minutes to provision and register its targets so take some time we can take a closer look at the ALB provisioned for this Ingress to see how its configured:
 
 ```bash
 $ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-ui`) == `true`]'
@@ -82,15 +67,11 @@ $ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalance
 ```
 
 What does this tell us?
-* The `DNSName` field matches the endpoint displayed by `kubectl get ingress`
+
 * The ALB is accessible over the public internet
 * It uses the public subnets in our VPC
 
-You can also inspect the ALB in the console by clicking this link:
-
-https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=ui/ui;sort=loadBalancerName
-
-We can also inspect the targets in the target group that was created by the controller:
+Inspect the targets in the target group that was created by the controller:
 
 ```bash
 $ ALB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-ui`) == `true`].LoadBalancerArn' | jq -r '.[0]')
@@ -113,8 +94,23 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 }
 ```
 
-Since we specified using IP mode in our 'Ingress' object, the target is registered using the IP address of the `ui` pod and the port on which it serves traffic.
+Since we specified using IP mode in our Ingress object, the target is registered using the IP address of the `ui` pod and the port on which it serves traffic.
 
-You can also take a look at the target group in the console:
+You can also inspect the ALB and its target groups in the console by clicking this link:
 
-https://us-west-2.console.aws.amazon.com/ec2/home?region=us-west-2#TargetGroups:tag:ingress.k8s.aws/stack=ui/ui
+https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=ui/ui;sort=loadBalancerName
+
+Now that our application is exposed to the outside world, lets try to access it.
+
+Get the URL from the Ingress resource:
+
+```bash
+$ kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
+k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com
+```
+
+And access it in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
+
+<browser url='http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com'>
+<img src={require('./assets/web-ui.png').default}/>
+</browser>
