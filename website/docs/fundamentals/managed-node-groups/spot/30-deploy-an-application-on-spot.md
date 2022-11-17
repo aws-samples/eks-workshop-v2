@@ -70,14 +70,15 @@ do echo "=================="; echo "Pods on instance ${n}:";kubectl get pods --n
 done
 
 ==================
-Pods on instance ip-10-42-1-16.ap-southeast-1.compute.internal:
-nginx-deployment-6d647796c5-lb529   1/1   Running   0     7s
-nginx-deployment-6d647796c5-mwr5r   1/1   Running   0     27m
+Pods on instance ip-10-42-0-45.ap-southeast-1.compute.internal:
+nginx-deployment-6d647796c5-6fsrf   1/1   Running   0     22s
+nginx-deployment-6d647796c5-qlq57   1/1   Running   0     17s
 
 ==================
-Pods on instance ip-10-42-2-19.ap-southeast-1.compute.internal:
-nginx-deployment-6d647796c5-294m2   1/1   Running   0     27m
-nginx-deployment-6d647796c5-h8m4d   1/1   Running   0     8s
+Pods on instance ip-10-42-1-233.ap-southeast-1.compute.internal:
+nginx-deployment-6d647796c5-dm8s6   1/1   Running   0     25s
+nginx-deployment-6d647796c5-qstjf   1/1   Running   0     21s
+
 
 
 
@@ -91,16 +92,21 @@ do echo "=================="; echo "Pods on instance ${n}:";kubectl get pods --n
 done
 
 ==================
-Pods on instance ip-10-42-10-228.ap-southeast-1.compute.internal:
+Pods on instance ip-10-42-10-73.ap-southeast-1.compute.internal:
 No resources found in default namespace.
 
 ==================
-Pods on instance ip-10-42-10-232.ap-southeast-1.compute.internal:
+Pods on instance ip-10-42-11-202.ap-southeast-1.compute.internal:
 No resources found in default namespace.
 
 ==================
-Pods on instance ip-10-42-12-226.ap-southeast-1.compute.internal:
+Pods on instance ip-10-42-12-103.ap-southeast-1.compute.internal:
 No resources found in default namespace.
+
+==================
+Pods on instance ip-10-42-12-254.ap-southeast-1.compute.internal:
+No resources found in default namespace.
+
 
 ```
 

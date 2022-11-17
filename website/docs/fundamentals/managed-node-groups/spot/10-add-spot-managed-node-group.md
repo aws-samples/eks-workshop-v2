@@ -14,10 +14,12 @@ $ kubectl get nodes \
   --label-columns=eks.amazonaws.com/capacityType \
   --selector=eks.amazonaws.com/capacityType=ON_DEMAND
   
-NAME                                              STATUS   ROLES    AGE   VERSION               CAPACITYTYPE
-ip-10-42-10-134.ap-southeast-1.compute.internal   Ready    <none>   27h   v1.23.9-eks-ba74326   ON_DEMAND
-ip-10-42-11-181.ap-southeast-1.compute.internal   Ready    <none>   76m   v1.23.9-eks-ba74326   ON_DEMAND
-ip-10-42-12-195.ap-southeast-1.compute.internal   Ready    <none>   76m   v1.23.9-eks-ba74326   ON_DEMAND
+NAME                                              STATUS   ROLES    AGE    VERSION               CAPACITYTYPE
+ip-10-42-10-73.ap-southeast-1.compute.internal    Ready    <none>   120m   v1.23.9-eks-ba74326   ON_DEMAND
+ip-10-42-11-202.ap-southeast-1.compute.internal   Ready    <none>   105m   v1.23.9-eks-ba74326   ON_DEMAND
+ip-10-42-12-103.ap-southeast-1.compute.internal   Ready    <none>   105m   v1.23.9-eks-ba74326   ON_DEMAND
+ip-10-42-12-254.ap-southeast-1.compute.internal   Ready    <none>   120m   v1.23.9-eks-ba74326   ON_DEMAND
+
 
 ```
 
@@ -63,12 +65,14 @@ Confirm that the new nodes joined the cluster correctly. You should see 2 more n
 ```bash
 $ kubectl get nodes --sort-by=.metadata.creationTimestamp
  
-NAME                                              STATUS   ROLES    AGE     VERSION
-ip-10-42-10-232.ap-southeast-1.compute.internal   Ready    <none>   105m    v1.23.13-eks-fb459a0
-ip-10-42-10-228.ap-southeast-1.compute.internal   Ready    <none>   105m    v1.23.13-eks-fb459a0
-ip-10-42-12-226.ap-southeast-1.compute.internal   Ready    <none>   103m    v1.23.13-eks-fb459a0
-ip-10-42-1-16.ap-southeast-1.compute.internal     Ready    <none>   3m34s   v1.23.13-eks-fb459a0
-ip-10-42-2-19.ap-southeast-1.compute.internal     Ready    <none>   3m32s   v1.23.13-eks-fb459a0
+NAME                                              STATUS   ROLES    AGE    VERSION
+ip-10-42-12-254.ap-southeast-1.compute.internal   Ready    <none>   125m   v1.23.9-eks-ba74326
+ip-10-42-10-73.ap-southeast-1.compute.internal    Ready    <none>   125m   v1.23.9-eks-ba74326
+ip-10-42-11-202.ap-southeast-1.compute.internal   Ready    <none>   110m   v1.23.9-eks-ba74326
+ip-10-42-12-103.ap-southeast-1.compute.internal   Ready    <none>   110m   v1.23.9-eks-ba74326
+ip-10-42-0-45.ap-southeast-1.compute.internal     Ready    <none>   2m6s   v1.23.13-eks-fb459a0
+ip-10-42-1-233.ap-southeast-1.compute.internal    Ready    <none>   2m5s   v1.23.13-eks-fb459a0
+
 
 ```
 
@@ -79,8 +83,9 @@ $ kubectl get nodes \
   --label-columns=eks.amazonaws.com/capacityType \
   --selector=eks.amazonaws.com/capacityType=SPOT
  
-NAME                                            STATUS   ROLES    AGE     VERSION                CAPACITYTYPE
-ip-10-42-1-16.ap-southeast-1.compute.internal   Ready    <none>   3m47s   v1.23.13-eks-fb459a0   SPOT
-ip-10-42-2-19.ap-southeast-1.compute.internal   Ready    <none>   3m45s   v1.23.13-eks-fb459a0   SPOT
+NAME                                             STATUS   ROLES    AGE     VERSION                CAPACITYTYPE
+ip-10-42-0-45.ap-southeast-1.compute.internal    Ready    <none>   2m28s   v1.23.13-eks-fb459a0   SPOT
+ip-10-42-1-233.ap-southeast-1.compute.internal   Ready    <none>   2m27s   v1.23.13-eks-fb459a0   SPOT
+
 ```
 

@@ -5,7 +5,7 @@ sidebar_position: 40
 
 Cleanup our nginx application
 
-```bash
+```bash test=false
 $ kubectl delete -f nginx-deployment.yaml
 deployment.apps "nginx-deployment" deleted
 
@@ -14,7 +14,7 @@ $ rm nginx-deployment.yaml
 
 Delete SPOT node group
 
-```bash
+```bash test=false
 $ aws eks delete-nodegroup \
   --cluster-name=${EKS_CLUSTER_NAME} \
   --nodegroup-name ng-spot 
