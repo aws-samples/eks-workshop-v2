@@ -122,6 +122,11 @@ module "eks-blueprints-kubernetes-addons" {
     timeout = 600
 
     set = concat([{
+        name  = "replicas"
+        value = "1"
+        type  = "auto"
+      },
+      {
       name  = "aws.defaultInstanceProfile"
       value = module.eks-blueprints.managed_node_group_iam_instance_profile_id[0]
       },
