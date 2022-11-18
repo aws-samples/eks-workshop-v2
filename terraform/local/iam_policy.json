@@ -123,9 +123,7 @@
     {
       "Effect": "Allow",
       "Action": [
-          "elasticloadbalancing:DescribeLoadBalancers",
-          "elasticloadbalancing:DescribeTargetGroups",
-          "elasticloadbalancing:DescribeTargetHealth"
+          "elasticloadbalancing:Describe*"
       ],
       "Resource": "*"
     },
