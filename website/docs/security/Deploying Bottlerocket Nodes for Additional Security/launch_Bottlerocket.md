@@ -44,7 +44,7 @@ EOF
 $ export EKS_IAM_NODE_ROLE=$(aws iam create-role --role-name EKS_IAM_NODE_ROLE --assume-role-policy-document file://eks-trust-policy.json)
 ```
 
-Add the required policies to the "EKS_IAM_NODE_ROLE" managed role using the following command:
+Add the required policies to the "EKS_IAM_NODE_ROLE" managed role using the following commands:
 
 ```bash
 $ aws iam attach-role-policy --role-name EKS_IAM_NODE_ROLE --policy-arn arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
