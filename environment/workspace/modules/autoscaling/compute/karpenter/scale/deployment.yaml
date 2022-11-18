@@ -1,16 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: assets
+  name: inflate
+  namespace: other
 spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: inflate
   template:
+    metadata:
+      labels:
+        app: inflate
     spec:
-      containers:
-        - name: assets
-          resources:
-            limits:
-              memory: 2Gi
-            requests:
-              memory: 2Gi
       nodeSelector:
         type: karpenter
+      terminationGracePeriodSeconds: 0
+      containers:
+        - name: inflate
+          image: public.ecr.aws/eks-distro/kubernetes/pause:3.2
+          resources:
+            requests:
+              memory: 1Gi

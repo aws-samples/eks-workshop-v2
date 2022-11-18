@@ -7,10 +7,6 @@ before() {
 after() {
   sleep 10
 
-  kubectl rollout status -n assets deployment/assets --timeout 300s
-
-  echo 'Rollout complete'
-
   num_nodes=$(kubectl get nodes --selector=type=karpenter -o json | jq -r '.items | length')
 
   if [[ $num_nodes -lt 1 ]]; then
