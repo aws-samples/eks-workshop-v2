@@ -16,7 +16,7 @@ Namespace:              assets
 [...]
   Containers:
    assets:
-    Image:      watchn/watchn-assets:build.1666365372
+    Image:      public.ecr.aws/aws-containers/retail-store-sample-assets:latest
     Port:       8080/TCP
     Host Port:  0/TCP
     Limits:

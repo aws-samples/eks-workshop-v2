@@ -1,50 +1,16 @@
 ---
-title: Exploring
+title: Sample application
 sidebar_position: 20
 ---
 
-The sample application models a simple web store application, where customers can browse a catalogue, add items to their cart and complete a purchase.
+Most of the labs in this workshop use a common sample application to provide actual container components that we can work on during the exercises. The sample application models a simple web store application, where customers can browse a catalogue, add items to their cart and complete a purchase.
 
 <browser url="-">
-<img src="https://github.com/niallthomson/microservices-demo/raw/master/docs/images/screenshot.png"/>
+<img src={require('@site/static/img/sample-app-screens/home.png').default}/>
 </browser>
 
 The application has several components and dependencies:
 
 ![Architecture](https://github.com/niallthomson/microservices-demo/raw/master/docs/images/architecture.png)
 
-You can start to explore the example application thats been deployed for you. Initially, the application is completely self-contained in the Amazon EKS cluster, without using any external services on AWS. Each microservice is deployed to its own separate `Namespace` to provide some degree of isolation.
-
-```bash
-$ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
-NAME       STATUS   AGE
-activemq   Active   5h6m
-assets     Active   5h6m
-carts      Active   5h6m
-catalog    Active   5h6m
-checkout   Active   5h6m
-orders     Active   5h6m
-other      Active   5h6m
-ui         Active   5h6m
-```
-
-Most of the components are modeled using the `Deployment` resource in its respective namespace. The following command gets all deployments across all namespaces with the label `app.kubernetes.io/created-by=eks-workshop`.
-
-```bash
-$ kubectl get deployment -l app.kubernetes.io/created-by=eks-workshop -A
-NAMESPACE   NAME             READY   UP-TO-DATE   AVAILABLE   AGE
-assets      assets           1/1     1            1           5h6m
-carts       carts            1/1     1            1           5h6m
-carts       carts-dynamodb   1/1     1            1           5h6m
-catalog     catalog          1/1     1            1           5h6m
-catalog     catalog-mysql    1/1     1            1           5h6m
-checkout    checkout         1/1     1            1           5h6m
-checkout    checkout-redis   1/1     1            1           5h6m
-orders      orders           1/1     1            1           5h6m
-orders      orders-mysql     1/1     1            1           5h6m
-ui          ui               1/1     1            1           5h6m
-```
-
-All of the `Service` resources are of type `ClusterIP`, which means right now our application cannot be accessed from the outside world. We'll explore exposing the application using various ingress mechanisms later in the labs.
-
-To learn more about `kustomize`, head to the optional [Kustomize module](../kustomize) or continue with the [Fundamentals module](/docs/fundamentals).
+Initially we will deploy the application in a manner that is self-contained in the Amazon EKS cluster, without using any AWS services like load balancers or managed database. Over the course of the labs we will leverage different features of EKS to take advantage of broader AWS services and features for our retail store.

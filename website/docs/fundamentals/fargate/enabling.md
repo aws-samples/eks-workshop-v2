@@ -52,8 +52,8 @@ Events:
   ----     ------           ----   ----               -------
   Warning  LoggingDisabled  10m    fargate-scheduler  Disabled logging because aws-logging configmap was not found. configmap "aws-logging" not found
   Normal   Scheduled        9m48s  fargate-scheduler  Successfully assigned checkout/checkout-78fbb666b-fftl5 to fargate-ip-10-42-11-96.us-west-2.compute.internal
-  Normal   Pulling          9m48s  kubelet            Pulling image "watchn/watchn-checkout:build.1615751790"
-  Normal   Pulled           9m5s   kubelet            Successfully pulled image "watchn/watchn-checkout:build.1615751790" in 43.258137629s
+  Normal   Pulling          9m48s  kubelet            Pulling image "public.ecr.aws/aws-containers/retail-store-sample-checkout:latest"
+  Normal   Pulled           9m5s   kubelet            Successfully pulled image "public.ecr.aws/aws-containers/retail-store-sample-checkout:latest" in 43.258137629s
   Normal   Created          9m5s   kubelet            Created container checkout
   Normal   Started          9m4s   kubelet            Started container checkout
 ```

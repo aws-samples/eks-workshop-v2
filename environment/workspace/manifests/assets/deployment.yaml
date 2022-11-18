@@ -37,7 +37,7 @@ spec:
               drop:
               - ALL
             readOnlyRootFilesystem: false
-          image: "watchn/watchn-assets:build.1666365372"
+          image: "public.ecr.aws/aws-containers/retail-store-sample-assets:latest"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

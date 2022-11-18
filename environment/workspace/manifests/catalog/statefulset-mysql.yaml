@@ -34,17 +34,17 @@ spec:
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
-                  name: catalog-writer-db
+                  name: catalog-db
                   key: username
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: catalog-writer-db
+                  name: catalog-db
                   key: password
             - name: MYSQL_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: catalog-writer-db
+                  name: catalog-db
                   key: name
           ports:
             - name: mysql

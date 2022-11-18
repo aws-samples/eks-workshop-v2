@@ -15,13 +15,10 @@ Alternatively you can explore the manifests directly in your workshop environmen
 
 ```bash
 $ tree --dirsfirst /workspace/manifests
-|-- activemq
-|   |-- configMap.yaml
+|-- rabbitmq
+|   |-- generated.yaml
 |   |-- kustomization.yaml
-|   |-- namespace.yaml
-|   |-- service.yaml
-|   |-- serviceAccount.yaml
-|   `-- statefulSet.yaml
+|   `--  namespace.yaml
 |-- assets
 |   |-- configMap.yaml
 |   |-- deployment.yaml
