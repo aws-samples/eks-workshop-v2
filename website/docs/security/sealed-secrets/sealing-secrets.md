@@ -5,19 +5,10 @@ sidebar_position: 70
 
 Let's create a new secret `catalog-writer-sealed-db`. We will create a new file `new-catalog-writer-db.yaml` with the same keys and values as the `catalog-writer-db` Secret.
 
-```yaml
-apiVersion: v1
-data:
-  endpoint: Y2F0YWxvZy1teXNxbDozMzA2
-  name: Y2F0YWxvZw==
-  password: ZGVmYXVsdF9wYXNzd29yZA==
-  username: Y2F0YWxvZ191c2Vy
-kind: Secret
-metadata:
-  name: catalog-writer-sealed-db
-  namespace: catalog
-type: Opaque
+```file
+security/sealed-secrets/new-catalog-writer-db.yaml
 ```
+
 Now, let’s create SealedSecret YAML manifests with kubeseal.
 
 :::note
@@ -25,14 +16,16 @@ Please make sure that there is an inbound rule added to the worker nodes securit
 :::
 
 ```bash test=false
-$ kubeseal --format=yaml < new-catalog-writer-db.yaml > sealed-catalog-writer-db.yaml
+$ kubeseal --format=yaml < /workspace/modules/security/sealed-secrets/new-catalog-writer-db.yaml \
+  > /tmp/sealed-catalog-writer-db.yaml
 ```
 
 Alternatively, the public key can be fetched from the controller and use it offline to seal your Secrets
 
 ```bash test=false
-$ kubeseal --fetch-cert > public-key-cert.pem
-$ kubeseal --cert=public-key-cert.pem --format=yaml < new-catalog-writer-db.yaml > sealed-catalog-writer-db.yaml
+$ kubeseal --fetch-cert > /tmp/public-key-cert.pem
+$ kubeseal --cert=/tmp/public-key-cert.pem --format=yaml < /workspace/modules/security/sealed-secrets/new-catalog-writer-db.yaml \
+  > /tmp/sealed-catalog-writer-db.yamlsealed-catalog-writer-db.yaml
 ```
 
 It will create a sealed-secret with the following content:
@@ -61,15 +54,14 @@ spec:
 
 Let's deploy the SealedSecret to your EKS cluster:
 
-```bash test=false
-$ kubectl apply -f sealed-catalog-writer-db.yaml
-
+```bash
+$ kubectl apply -f /tmp/sealed-catalog-writer-db.yaml
 ```
 
 The controller logs shows that it picks up the SealedSecret custom resource that was just deployed, unseals it to create a regular Secret.
 
-```bash test=false
-$ kubectl logs sealed-secrets-controller-77747c4b8c-snsxp -n kube-system
+```bash
+$ kubectl logs deployments/sealed-secrets-controller -n kube-system
 
 2022/11/07 04:28:27 Updating catalog/catalog-writer-sealed-db
 2022/11/07 04:28:27 Event(v1.ObjectReference{Kind:"SealedSecret", Namespace:"catalog", Name:"catalog-writer-sealed-db", UID:"a2ae3aef-f475-40e9-918c-697cd8cfc67d", APIVersion:"bitnami.com/v1alpha1", ResourceVersion:"23351", FieldPath:""}): type: 'Normal' reason: 'Unsealed' SealedSecret unsealed successfully
@@ -77,7 +69,7 @@ $ kubectl logs sealed-secrets-controller-77747c4b8c-snsxp -n kube-system
 
 Verify that the `catalog-writer-sealed-db` Secret unsealed from the SealedSecret was deployed by the controller to the secure-secrets namespace.
 
-```bash test=false
+```bash
 $ kubectl get secret -n catalog catalog-writer-sealed-db 
 
 NAME                       TYPE     DATA   AGE

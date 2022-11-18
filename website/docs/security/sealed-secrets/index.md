@@ -1,6 +1,7 @@
 ---
 title: "Securing Secrets Using Sealed Secrets"
 sidebar_position: 50
+sidebar_custom_props: {"module": true}
 ---
 
 :::tip Before you start
