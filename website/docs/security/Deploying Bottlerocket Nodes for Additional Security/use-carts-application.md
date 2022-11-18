@@ -32,5 +32,6 @@ $ kubectl get pods --selector=app.kubernetes.io/created-by=eks-workshop -n carts
 Finally, in the Output section, we can view the pods that launched on the bottlerocket node:
 
 ```
-Node:         ip-10-42-10-115.us-east-1.compute.internal/10.42.10.115
+Node:         ip-10-42-0-133.us-west-2.compute.internal/10.42.0.33
 ```
+

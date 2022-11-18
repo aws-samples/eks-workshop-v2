@@ -1,36 +1,67 @@
 ---
-title: "Deploy Carts Application on Bottlerocket"
-sidebar_position: 54
+title: "Launch Bottlerocket nodes to an EKS cluster"
+sidebar_position: 53
 ---
 
-## Deploy carts application pod onto a Bottlerocket node
+## Add Bottlerocket nodes to an EKS cluster
 
-Lets use Kustomize to change this configuration to deploy the carts application onto the bottlerocket worker nodes:
+Create an environment variables "eks_vpc_id" and "eks_subnet_id". We will use this in the next step:
 
 ```bash
-$ kubectl apply -k /workspace/modules/security/bottlerocket
+$ vpc_id=$(aws eks describe-cluster --name eks-workshop-cluster --query 'cluster.resourcesVpcConfig.vpcId')
+$ export eks_vpc_id=$(echo $vpc_id | tr -d '"')
+$ subnet_id=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=$vpc_id" --query 'Subnets[?MapPublicIpOnLaunch==`true`].SubnetId | [0]')
+$ export eks_subnet_id=$(echo $subnet_id | tr -d '"')
 ```
 
-nodeSelector is the simplest way to constrain Pods to nodes with specific labels, in our case we used a label "role=bottlerocket" on nodes then customize deployment objects through kustomization files suchas deployment.yaml and deployment-db.yaml where we've specified nodeSelector which constrain the cart application and database pods on to bottlerocket nodes:
+Create EKS trust policy using the following command to create Bottlerocket nodegroup IAM Role. Also, set the "EKS_IAM_NODE_ROLE" environment variable:
 
-```kustomization
-security/bottlerocket/deployment.yaml
-Deployment/carts
+```bash
+cat << EOF > eks-trust-policy.json
+---
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+               "Service": "eks.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole",
+            "Condition": {}
+        },
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "ec2.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+       }
+    ]
+}
+EOF
+
+$ export EKS_IAM_NODE_ROLE=$(aws iam create-role --role-name EKS_IAM_NODE_ROLE --assume-role-policy-document file://eks-trust-policy.json)
 ```
 
-```kustomization
-security/bottlerocket/deployment-db.yaml
-Deployment/carts-dynamodb
+Add the required policies to the "EKS_IAM_NODE_ROLE" managed role using the following command:
+
+```bash
+$ aws iam attach-role-policy --role-name EKS_IAM_NODE_ROLE --policy-arn arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+$ aws iam attach-role-policy --role-name EKS_IAM_NODE_ROLE --policy-arn arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy 
+$ aws iam attach-role-policy --role-name EKS_IAM_NODE_ROLE --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
 ```
 
 Next, run the following command to confirm the new application is running on the bottlerocket node:
 
 ```bash
-$ kubectl get pods --selector=app.kubernetes.io/created-by=eks-workshop -n carts -o wide
+$ aws eks create-nodegroup --cluster-name eks-workshop-cluster --nodegroup-name btl-x86 --subnets $eks_subnet_id --node-role $EKS_IAM_NODE_ROLE --ami-type BOTTLEROCKET_x86_64 --scaling-config minSize=1,maxSize=1,desiredSize=1 --labels "role"="bottlerocket"
  ```
 
-Finally, in the Output section, we can view the pods that launched on the bottlerocket node:
+Next, run the following command to list all the nodes in the EKS cluster and you should see a node as follows:
 
 ```
-Node:         ip-10-42-10-115.us-east-1.compute.internal/10.42.10.115
+NAME                                        STATUS   ROLES    AGE   VERSION
+ip-10-42-0-133.us-west-2.compute.internal   Ready    <none>   15h   v1.23.12-eks-a64d4ad
 ```
+
