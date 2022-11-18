@@ -51,7 +51,7 @@ $ kubectl scale -n other deployment/inflate --replicas 5
 
 We can check the Karpenter logs to get an idea of what actions it took in response to our scaling in the deployment:
 
-```bash
+```bash test=false
 $ kubectl -n karpenter logs deployment/karpenter -c controller | grep Consolidating -A 2
 ```
 
