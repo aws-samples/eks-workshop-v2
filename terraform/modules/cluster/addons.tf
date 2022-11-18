@@ -260,9 +260,30 @@ module "eks-blueprints-kubernetes-grafana-addon" {
 
   addon_context = local.addon_context
 
+  irsa_policies = [
+    aws_iam_policy.grafana.arn
+  ]
+
   helm_config = {
     values = [templatefile("${path.module}/templates/grafana.yaml", { prometheus_endpoint = aws_prometheus_workspace.this.prometheus_endpoint, region = data.aws_region.current.name })]
   }
+}
+
+resource "aws_iam_policy" "grafana" {
+  name        = "${local.cluster_name}-grafana-other"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "aps:*",
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
 }
 
 module "descheduler" {
