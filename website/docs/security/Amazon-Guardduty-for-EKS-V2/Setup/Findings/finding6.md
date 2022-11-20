@@ -8,13 +8,13 @@ This finding indicates that a privileged container with root level access was la
 To simulate the finding we will apply the following yaml.
 
 ```file
-security/Guardduty/privileged/previleged-pod-example.yaml
+security/Guardduty/privileged/privileged-pod-example.yaml
 ```
 
 Create the deployment by running the following command.
 
 ```bash
-$ kubectl apply -k /workspace/modules/security/Guardduty/privileged/
+$ kubectl apply -f /workspace/modules/security/Guardduty/privileged/privileged-pod-example.yaml
 ```
 
 With in few minutes we will see the finding `PrivilegeEscalation:Kubernetes/PrivilegedContainer` in guardduty portal.
@@ -24,5 +24,5 @@ With in few minutes we will see the finding `PrivilegeEscalation:Kubernetes/Priv
 Cleanup:
 
 ```bash
-$ kubectl delete -k /workspace/modules/security/Guardduty/privileged/
+$ kubectl delete -f /workspace/modules/security/Guardduty/privileged/privileged-pod-example.yaml
 ```
