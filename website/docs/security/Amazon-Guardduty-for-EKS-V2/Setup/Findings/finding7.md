@@ -8,7 +8,7 @@ This finding indicates that a container was launched with a sensitive external h
 To simulate the finding we will be reusing Privileged Container manifest and patch it with host path volume mount. Lets apply the patched version of privileged container from earlier example with host path `/etc` mounted to container's path `/test-pd`.
 
 ```file
-security/Guardduty/mount/previleged-pod-example.yaml
+security/Guardduty/mount/privileged-pod-example.yaml
 ```
 
 Run the below command to patch the deployment.
