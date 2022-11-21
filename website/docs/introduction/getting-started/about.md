@@ -17,7 +17,7 @@ The application has several components and dependencies:
 |-----------|-----------------------------------------------------------------------------|
 | UI        | Provides the front end user interface and aggregates API calls to the various other services. |
 | Catalog   | API for product listings and details                                                       |
-| Cart   | | API for customer shopping carts |
+| Cart   | API for customer shopping carts |
 | Checkout | API to orchestrate the checkout process                                  |
 | Orders | API to receive and process customer orders                               |
 | Static assets  | Serves static assets like images related to the product catalog             |
