@@ -129,6 +129,12 @@ https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=
 
 Now that our application is exposed to the outside world, lets try to access it.
 
+:::caution
+
+The Load Balancer can take a couple of minutes before being available.
+
+:::
+
 Get the URL from the Service resource:
 
 ```bash
