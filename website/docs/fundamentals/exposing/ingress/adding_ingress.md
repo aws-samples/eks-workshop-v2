@@ -23,7 +23,7 @@ NAME   CLASS   HOSTS   ADDRESS                                            PORTS 
 ui     alb     *       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com   80      15s
 ```
 
-The NLB will take several minutes to provision and register its targets so take some time we can take a closer look at the ALB provisioned for this Ingress to see how its configured:
+The ALB will take several minutes to provision and register its targets so take some time we can take a closer look at the ALB provisioned for this Ingress to see how its configured:
 
 ```bash
 $ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-ui`) == `true`]'
