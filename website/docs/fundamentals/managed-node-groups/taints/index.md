@@ -1,7 +1,6 @@
 ---
 title: Taints
 sidebar_position: 40
-sidebar_custom_props: {"module": true}
 ---
 
 Taints are a property of a node to repel certain pods. Tolerations are applied to pods to allow their scheduling onto nodes with matching taints. Taints and tolerations work together to ensure that pods are not scheduled on unsuitable nodes. While tolerations allow pods to be scheduled on nodes with matching taint, this isn't a guarantee and other Kuberenetes concepts like node affinity or node selectors will have to be used to achieve desired configuration. 

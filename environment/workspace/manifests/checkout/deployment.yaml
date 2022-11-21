@@ -37,9 +37,7 @@ spec:
               drop:
               - ALL
             readOnlyRootFilesystem: true
-            runAsNonRoot: true
-            runAsUser: 1000
-          image: "watchn/watchn-checkout:build.1615751790"
+          image: "public.ecr.aws/aws-containers/retail-store-sample-checkout:latest"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

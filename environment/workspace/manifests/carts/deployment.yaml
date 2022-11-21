@@ -44,7 +44,7 @@ spec:
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 1000
-          image: "watchn/watchn-cart:build.1615751790"
+          image: "public.ecr.aws/aws-containers/retail-store-sample-cart:latest"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

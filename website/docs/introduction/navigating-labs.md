@@ -10,16 +10,16 @@ In this section we will explain how to navigate this web site and the content pr
 The content of this workshop is made up of:
 
 1. Individual lab exercises
-2. Supporting content
+2. Supporting content that explains concepts related to the labs
 
-The lab exercises are designed in a way that you can run any modules that you wish and in whatever order suits. Lab exercises will be displayed in the sidebar to the left and are designated by the icon shown here:
+The lab exercises are designed in a way that you can run any modules as a self-container exercise. Lab exercises will be displayed in the sidebar to the left and are designated by the icon shown here:
 
 ![Lab icon example](./assets/lab-icon.png)
 
 This module contains a single lab named **Getting started** which will be visible on the left side of your screen.
 
 :::caution
-You should start each lab from the page indicated by this badge. Starting in the middle of a lab is likely to cause issues.
+You should start each lab from the page indicated by this badge. Starting in the middle of a lab will cause unpredictable behavior.
 :::
 
 ## Terminal commands
@@ -37,9 +37,9 @@ You will also come across commands with sample output like this:
 ```bash test=false
 $ kubectl get nodes
 NAME                                         STATUS   ROLES    AGE     VERSION
-ip-10-42-10-104.us-west-2.compute.internal   Ready    <none>   6h2m    v1.23.9-eks-ba74326
-ip-10-42-10-210.us-west-2.compute.internal   Ready    <none>   22h     v1.23.9-eks-ba74326
-ip-10-42-11-198.us-west-2.compute.internal   Ready    <none>   6h19m   v1.23.9-eks-ba74326
+ip-10-42-10-104.us-west-2.compute.internal   Ready    <none>   6h      v1.23.9-eks-ba74326
+ip-10-42-10-210.us-west-2.compute.internal   Ready    <none>   6h      v1.23.9-eks-ba74326
+ip-10-42-11-198.us-west-2.compute.internal   Ready    <none>   6h      v1.23.9-eks-ba74326
 ```
 
 Using the 'click to copy' function will only copy the command and ignore the sample output.

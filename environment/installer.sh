@@ -11,6 +11,12 @@ helm_checksum='c12d2cd638f2d066fec123d0bd7f010f32c643afdf288d39a4610b1f9cb32af3'
 eksctl_version='0.115.0'
 eksctl_checksum='d1d6d6d56ae33f47242f769bea4b19587f1200e5bbef65f3a35d159ed2463716'
 
+kustomize_version='4.5.7'
+kustomize_checksum='701e3c4bfa14e4c520d481fdf7131f902531bfc002cb5062dcf31263a09c70c9'
+
+kubeseal_version='0.18.4'
+kubeseal_checksum='2e765b87889bfcf06a6249cde8e28507e3b7be29851e4fac651853f7638f12f3'
+
 download_and_verify () {
   url=$1
   checksum=$2
@@ -49,13 +55,22 @@ chmod +x eksctl
 mv ./eksctl /usr/local/bin
 rm -rf eksctl_Linux_amd64.tar.gz
 
+# kustomize
+download_and_verify "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${kustomize_version}/kustomize_v${kustomize_version}_linux_amd64.tar.gz" "$kustomize_checksum" "kustomize.tar.gz"
+tar zxf kustomize.tar.gz
+chmod +x kustomize
+mv ./kustomize /usr/local/bin
+rm -rf kustomize.tar.gz
+
 # aws cli v2
 curl --location --show-error --silent "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip -o -q awscliv2.zip
 ./aws/install
 rm -rf ./aws awscliv2.zip
 
-# kubeseal version 0.18.0
-wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.18.0/kubeseal-0.18.0-linux-amd64.tar.gz
-tar xfz kubeseal-0.18.0-linux-amd64.tar.gz
-install -m 755 kubeseal /usr/local/bin/kubeseal
+# kubeseal
+download_and_verify "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${kubeseal_version}/kubeseal-${kubeseal_version}-linux-amd64.tar.gz" "$kubeseal_checksum" "kubeseal.tar.gz"
+tar xfz kubeseal.tar.gz
+chmod +x kubeseal
+mv ./kubeseal /usr/local/bin
+rm -rf kubeseal.tar.gz

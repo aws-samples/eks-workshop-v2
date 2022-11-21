@@ -22,7 +22,7 @@ NAME           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTO
 ebs-csi-node   4         4         4       4            4           kubernetes.io/os=linux   3d21h
 ```
 
-We also already have our [storageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured using [Amazon EBS GP2 volume type](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/general-purpose.html#EBSVolumeTypes_gp2). Run the following command to confirm:
+We also already have our [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured using [Amazon EBS GP2 volume type](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/general-purpose.html#EBSVolumeTypes_gp2). Run the following command to confirm:
 
 ```bash
 $ kubectl get storageclass

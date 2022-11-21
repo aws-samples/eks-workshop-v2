@@ -5,8 +5,8 @@ metadata:
 spec:
   name: mq-eks-workshop
   deploymentMode: SINGLE_INSTANCE
-  engineType: ActiveMQ
-  engineVersion: "5.15.8"
+  engineType: RabbitMQ
+  engineVersion: "3.10.10"
   hostInstanceType: "mq.t3.micro"
   publiclyAccessible: false
   autoMinorVersionUpgrade: false

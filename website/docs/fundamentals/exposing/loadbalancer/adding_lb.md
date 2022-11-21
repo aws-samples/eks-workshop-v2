@@ -138,6 +138,6 @@ k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
 
 Paste that URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
 
-<browser url='http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com'>
-<img src={require('./assets/web-ui.png').default}/>
+<browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
+<img src={require('@site/static/img/sample-app-screens/home.png').default}/>
 </browser>

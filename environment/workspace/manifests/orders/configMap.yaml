@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: orders
 data:
-  SPRING_PROFILES_ACTIVE: mysql,default
-  SPRING_ACTIVEMQ_BROKERURL: tcp://activemq-0.activemq.activemq.svc:61616
+  SPRING_PROFILES_ACTIVE: mysql,rabbitmq
+  SPRING_RABBITMQ_HOST: rabbitmq.rabbitmq.svc

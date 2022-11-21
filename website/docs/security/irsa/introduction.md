@@ -3,9 +3,9 @@ title: "Introduction"
 sidebar_position: 10
 ---
 
-The `carts` component of our architecture can use either MongoDB or Amazon DynamoDB as its storage backend, which is a common use-case you'll find for databases like DynamoDB.
+The `carts` component of our architecture uses Amazon DynamoDB as its storage backend, which is a common use-case you'll find for databases like DynamoDB. The way in which the way the carts API is currently deployed uses a [lightweight version of Amazon DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html) running as a container in the EKS cluster. 
 
-The way in which `carts` is currently deployed uses a [lightweight version of Amazon DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html) running as a container in the EKS cluster. You can see this by running the following command:
+You can see this by running the following command:
 
 ```bash
 $ kubectl -n carts get pod 

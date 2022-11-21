@@ -3,62 +3,51 @@ title: "Managing the Sealing Key"
 sidebar_position: 80
 ---
 
-The only way to decrypt the encrypted data within a SealedSecret is with the private key that is managed by the controller. There could be situations where you are trying to restore the original state of a cluster after a disaster or you want to leverage GitOps workflow to deploy the Kubernetes resources, including SealedSecrets, from a Git repository and create a new EKS cluster. The controller deployed in the new EKS cluster must use the same private key to be able to unseal the SealedSecrets.
+The only way to decrypt the encrypted data within a SealedSecret is with the sealing key that is managed by the controller. There could be situations where you are trying to restore the original state of a cluster after a disaster or you want to leverage GitOps workflow to deploy the Kubernetes resources, including SealedSecrets, from a Git repository and create a new EKS cluster. The controller deployed in the new EKS cluster must use the same sealing key to be able to unseal the SealedSecrets.
 
-Run the following command in order to retrieve the private key from the cluster. In a production environment, it is recommended to make use of Kubernetes RBAC to grant the permissions required to perform this operation to restricted set of clients.
+Run the following command in order to retrieve the sealing key from the cluster. In a production environment, it is recommended to make use of Kubernetes RBAC to grant the permissions required to perform this operation to restricted set of clients.
 
 ```bash
-$ kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key -o yaml > master-private.yaml
+$ kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key -o yaml \
+  > /tmp/master-sealing-key.yaml
 ```
 
-In order to test the operation, let’s first delete the controller, the Secret that it created which contains the private key, the SealedSecret resource named `catalog-writer-sealed-db` as well as the Secret that was unsealed from it.
+In order to test the operation let’s delete the Secret which contains the sealing key and recycle the sealed secrets controller:
 
 ```bash
-$ kubectl delete secret catalog-writer-sealed-db -n catalog
-$ kubectl delete sealedsecret catalog-writer-sealed-db -n catalog
 $ kubectl delete secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key
-$ kubectl delete -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.18.0/controller.yaml
+$ kubectl -n kube-system delete pod -l name=sealed-secrets-controller
+$ kubectl wait --for=condition=Ready --timeout=30s pods -l name=sealed-secrets-controller -n kube-system
 ```
 
-Now, put the Secret containing the private key back into the cluster using the **master-private.yaml** file.
+If we now check the logs for the controller you will notice that it fails to decrypt the SealedSecret:
 
 ```bash
-$ kubectl apply -f master-private.yaml
-$ kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key
+$ kubectl logs deployment/sealed-secrets-controller -n kube-system
+[...]
+2022/11/18 22:47:42 Updating catalog/catalog-sealed-db
+2022/11/18 22:47:43 Error updating catalog/catalog-sealed-db, giving up: no key could decrypt secret (password, username, endpoint, name)
+E1118 22:47:43.030178       1 controller.go:175] no key could decrypt secret (password, username, endpoint, name)
+2022/11/18 22:47:43 Event(v1.ObjectReference{Kind:"SealedSecret", Namespace:"catalog", Name:"catalog-sealed-db", UID:"a6705e6f-72a1-43f5-8c0b-4f45b9b6f5fb", APIVersion:"bitnami.com/v1alpha1", ResourceVersion:"519192", FieldPath:""}): type: 'Warning' reason: 'ErrUnsealFailed' Failed to unseal: no key could decrypt secret (password, username, endpoint, name)
 ```
 
-Let's redeploy the SealedSecret CRD, controller and RBAC artifacts on your EKS cluster.
+This is because we deleted the sealing key, which caused the controller to generate a new one when it started. This effectively makes all of our SealedSecret resources inaccessible by this controller. Thankfully we previously saved it to `/tmp/master-sealing-key.yaml` so we can re-create it in the EKS cluster:
 
 ```bash
-$ kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.18.0/controller.yaml
-$ kubectl get pods -n kube-system | grep sealed-secrets-controller
-sealed-secrets-controller-77747c4b8c-mzdrg     1/1     Running   0          7s
+$ kubectl apply -f /tmp/master-sealing-key.yaml
+$ kubectl -n kube-system delete pod -l name=sealed-secrets-controller
+$ kubectl wait --for=condition=Ready --timeout=30s pods -l name=sealed-secrets-controller -n kube-system
 ```
 
-When viewing the logs of the newly launched controller pod, we can see that the controller was able to find the existing Secret **sealed-secrets-keymg2md** in the kube-system namespace and therefore does not create a new key pair. Note that the name of the controller pod will be different in your cluster.
+Checking the logs again shows this time the controller picked up the sealing key we restored and unsealed our `catalog-sealed-db` secret:
 
-```bash test=false
-$ kubectl logs sealed-secrets-controller-77747c4b8c-mzdrg -n kube-system
-
-2022/10/19 05:55:06 Starting sealed-secrets controller version: 0.18.0
-controller version: 0.18.0
-2022/10/19 05:55:06 Searching for existing private keys
-2022/10/19 05:55:06 ----- sealed-secrets-keymg2md
-2022/10/19 05:55:06 HTTP server serving on :8080
+```bash
+$ kubectl logs deployment/sealed-secrets-controller -n kube-system
+[...]
+2022/11/18 22:52:51 Updating catalog/catalog-sealed-db
+2022/11/18 22:52:51 Event(v1.ObjectReference{Kind:"SealedSecret", Namespace:"catalog", Name:"catalog-sealed-db", UID:"a6705e6f-72a1-43f5-8c0b-4f45b9b6f5fb", APIVersion:"bitnami.com/v1alpha1", ResourceVersion:"519192", FieldPath:""}): type: 'Normal' reason: 'Unsealed' SealedSecret unsealed successfully
 ```
 
-Let’s redeploy the SealedSecret and verify that the controller is able to successfully unseal it. Note that the name of the controller pod will be different in your cluster.
+The file `/tmp/master-sealing-key.yaml` contains the public/private key pair generated by the controller. If this file is compromised all the SealedSecret manifests can be unsealed and the encrypted sensitive information they store revealed. As such this file must be guarded by granting least privilege access. For additional guidance on topics such as sealing key renewal and manual sealing key management please consult the [documentation](https://github.com/bitnami-labs/sealed-secrets#secret-rotation).
 
-```bash test=false
-$ kubectl apply -f sealed-secret.yaml
-$ kubectl logs sealed-secrets-controller-77747c4b8c-mzdrg -n kube-system
-
-2022/10/19 06:13:17 Updating secure-secrets/database-credentials
-2022/10/19 06:13:17 Event(v1.ObjectReference{Kind:"SealedSecret", Namespace:"secure-secrets", Name:"database-credentials", UID:"090c2a6b-73b6-4255-b317-eddc3f9a4e51", APIVersion:"bitnami.com/v1alpha1", ResourceVersion:"58586", FieldPath:""}): type: 'Normal' reason: 'Unsealed' SealedSecret unsealed successfully
-```
-
-:::info
-The file master-private.yaml contains the public/private key pair generated by the controller. If this file is compromised, all the SealedSecret manifests can be unsealed, and the encrypted sensitive information they store, revealed. Hence, this file must be guarded by granting least privilege access. For additional guidance on sealing key renewal, manual sealing key management etc., please consult the [documentation](https://github.com/bitnami-labs/sealed-secrets#secret-rotation).
-
-One option to secure the private key is to store the master-private.yaml file contents as a SecureString parameter in AWS Systems Manager Parameter Store. The parameter could be secured using a KMS Customer managed key (CMK) and you can use the Key policy to restrict the set of IAM principals who can use this key in order to retrieve the parameter. Additionally, you may also enable automatic rotation of this CMK in KMS. Note that Standard tier parameters support a maximum parameter value of 4096 characters. Hence, given the size of the master.yaml file, you will have to store it as a parameter in the Advanced tier.
-:::
+One option to secure the sealing key is to store the `/tmp/master-sealing-key.yaml` file contents as a SecureString parameter in AWS Systems Manager Parameter Store. The parameter could be secured using a KMS Customer managed key (CMK) and you can use the Key policy to restrict the set of IAM principals who can use this key in order to retrieve the parameter. Additionally you may also enable automatic rotation of this CMK in KMS. Note that standard tier parameters support a maximum parameter value of 4096 characters. Hence, given the size of the master.yaml file, you will have to store it as a parameter in the Advanced tier.

@@ -59,7 +59,7 @@ $ kubectl -n assets get deploy -oyaml
               drop:
               - ALL
             readOnlyRootFilesystem: false
-          image: "watchn/watchn-assets:build.1615751790"
+          image: "public.ecr.aws/aws-containers/retail-store-sample-assets:latest"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

@@ -4,5 +4,5 @@ metadata:
   name: orders
   namespace: orders-prod
 data:
-  SPRING_PROFILES_ACTIVE: mysql,activemq
-  SPRING_ACTIVEMQ_PASSWORD: $(ORDERS_PASSWORD)
+  SPRING_PROFILES_ACTIVE: mysql,rabbitmq
+  SPRING_RABBITMQ_PASSWORD: $(ORDERS_PASSWORD)

@@ -33,27 +33,27 @@ spec:
             - name: DB_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  name: catalog-writer-db
+                  name: catalog-db
                   key: endpoint
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: catalog-writer-db
+                  name: catalog-db
                   key: username
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: catalog-writer-db
+                  name: catalog-db
                   key: password
             - name: DB_READ_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  name: catalog-reader-db
+                  name: catalog-db
                   key: endpoint
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: catalog-writer-db
+                  name: catalog-db
                   key: name
           envFrom:
             - configMapRef:
@@ -65,7 +65,7 @@ spec:
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 1000
-          image: "watchn/watchn-catalog:build.1615751790"
+          image: "public.ecr.aws/aws-containers/retail-store-sample-catalog:latest"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

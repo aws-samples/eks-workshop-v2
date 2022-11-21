@@ -11,10 +11,5 @@ spec:
   - ipProtocol: tcp
     ipRanges:
     - cidrIP: "0.0.0.0/0"
-    fromPort: 61616
-    toPort: 61619
-  - ipProtocol: tcp
-    ipRanges:
-    - cidrIP: "0.0.0.0/0"
-    fromPort: 8162
-    toPort: 8162
+    fromPort: 5671
+    toPort: 5671

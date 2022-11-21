@@ -47,7 +47,8 @@ catalog-mysql-ebs   1/1     79s
 Inspecting our `catalog-mysql-ebs` StatefulSet, we can see that now we have a PersistentVolumeClaim attached to it with 30GiB and with `storageClassName` of gp2. 
 
 ```bash
-$ kubectl get statefulset -n catalog catalog-mysql-ebs -o jsonpath='{.spec.volumeClaimTemplates}' | jq .
+$ kubectl get statefulset -n catalog catalog-mysql-ebs \
+  -o jsonpath='{.spec.volumeClaimTemplates}' | jq .
 [
   {
     "apiVersion": "v1",
@@ -135,7 +136,8 @@ pod "catalog-mysql-ebs-0" deleted
 Wait for a few seconds, and run the command below to check if the `catalog-mysql-ebs` Pod has been re-created:
 
 ```bash
-$ kubectl wait --for=condition=Ready pod -n catalog -l app.kubernetes.io/component=mysql-ebs --timeout=60s
+$ kubectl wait --for=condition=Ready pod -n catalog \
+  -l app.kubernetes.io/component=mysql-ebs --timeout=60s
 pod/catalog-mysql-ebs-0 condition met
 $ kubectl get pods -n catalog -l app.kubernetes.io/component=mysql-ebs
 NAME                  READY   STATUS    RESTARTS   AGE

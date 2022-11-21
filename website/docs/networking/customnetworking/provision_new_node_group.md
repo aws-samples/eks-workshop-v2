@@ -3,7 +3,7 @@ title: "Provision a new Node Group"
 sidebar_position: 20
 ---
 
-Create a Managed Node Group
+Create an EKS managed node group:
 
 ```bash
 $ aws eks create-nodegroup --region $AWS_DEFAULT_REGION \

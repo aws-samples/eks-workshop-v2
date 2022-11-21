@@ -23,7 +23,7 @@ ip-10-42-12-233.eu-west-1.compute.internal   Ready    <none>   63m   v1.23.9-eks
 
 The above command makes use of the `--selector` flag to query for all nodes that have a label of `eks.amazonaws.com/nodegroup` that matches the name of our managed node group `$EKS_TAINTED_MNG_NAME`. The `--label-columns` flag also allows us to display the value of the `eks.amazonaws.com/nodegroup` label in the node list. 
 
-Before configuring our taints, let's explore the current configuration of our node. Note that the following command will list the details of all nodes that are part of our Managed Node Group. In our lab, the managed node group has just one instance. 
+Before configuring our taints, let's explore the current configuration of our node. Note that the following command will list the details of all nodes that are part of our managed node group. In our lab, the managed node group has just one instance. 
 
 ```bash
 $ kubectl describe nodes \
