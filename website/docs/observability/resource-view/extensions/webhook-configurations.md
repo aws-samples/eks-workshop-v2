@@ -1,5 +1,5 @@
 ---
-title: "WebhookConfigurations"
+title: "Webhook Configurations"
 sidebar_position: 48
 ---
 Webhook configurations are executed during the process of intercepting authenticated API request to accept an object request or deny an object by _[Kubernetes Admission controllers](https://kubernetes.io/blog/2019/03/21/a-guide-to-kubernetes-admission-controllers/)_. Kubernetes admission controllers sets a security baseline across namespace or cluster. The following diagram decribes the different steps involved in the admission controller process.
