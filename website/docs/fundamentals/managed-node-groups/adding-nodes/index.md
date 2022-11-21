@@ -1,7 +1,6 @@
 ---
 title: Add and remove nodes
 sidebar_position: 10
-sidebar_custom_props: {"module": true}
 ---
 While working with your cluster, you may need to update your managed node group configuration to add additional nodes to support the needs of your workloads. A nodegroup can be scaled using Amazon EKS Console OR  using `eksctl scale nodegroup` command.
 

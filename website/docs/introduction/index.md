@@ -10,7 +10,7 @@ This provides a set of hands-on lab exercises to learn and explore the various f
 
 The labs are grouped across a number of areas:
 
-* **Fundamentals** - Familiarize yourself with basic EKS concepts such as Managed Node Groups, Fargate, exposing your applications and storage
+* **Fundamentals** - Familiarize yourself with basic EKS concepts such as managed node groups, Fargate, exposing your applications and utilizing storage
 * **Security** - Demonstrates how to apply container security practices to EKS clusters and workloads
 * **Networking** - Dive deep in to how EKS networking integrates to Amazon Virtual Private Cloud and more
 * **Autoscaling** - Understand how to automatically scale your applications and clusters horizontally and vertically

@@ -20,31 +20,31 @@ NAME           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTO
 efs-csi-node   4         4         4       4            4           beta.kubernetes.io/os=linux   2d1h
 ```
 
-EFS CSI driver supports dynamic provisioning and static provisioning. Currently Dynamic Provisioning creates an access point for each `PersistentVolume`. This mean an AWS EFS file system has to be created manually on AWS first and should be provided as an input to the `StorageClass` parameter. For static provisioning, AWS EFS file system needs to be created manually on AWS first. After that it can be mounted inside a container as a volume using the driver.
+EFS CSI driver supports dynamic provisioning and static provisioning. Currently Dynamic Provisioning creates an access point for each PersistentVolume. This mean an AWS EFS file system has to be created manually on AWS first and should be provided as an input to the StorageClass parameter. For static provisioning, AWS EFS file system needs to be created manually on AWS first. After that it can be mounted inside a container as a volume using the driver.
 
 As part of our workshop environment, we have created EFS file system, mount targets and required security group with an inbound rule that allows inbound NFS traffic for your Amazon EFS mount points. You can retrieve information about the EFS file system by running the following AWS CLI command:
 
 ```bash
-$ aws efs describe-file-systems --file-system-id $EFS_ID 
+$ aws efs describe-file-systems --file-system-id $EFS_ID
 ```
 
-Now we will need to create [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured using the previously created [Amazon Elastic File System](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html) as part of this workshop infrastructure and use [EFS Access points](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html) as provisioning mode.
+Now we will need to create a [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured to use the pre-provisioned EFS file system as part of this workshop infrastructure and use [EFS Access points](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html) in provisioning mode.
 
-we will be using Kustomize to create for us the storage class and to ingest the environment variable "EFS_ID" in the paramter filesystemid value in the configuration of the storage class object: 
+We will be using Kustomize to create for us the storage class and to ingest the environment variable `EFS_ID` in the parameter `filesystemid` value in the configuration of the storage class object: 
 
 ```bash
-$ kubectl apply -k modules/fundamentals/storage/efs/storageclass 
+$ kubectl apply -k modules/fundamentals/storage/efs/storageclass
 storageclass.storage.k8s.io/efs-sc created
 configmap/assets-efsid-48hg67g6fd created
 ```
 
-As appear in the output of the command above there is a `configMap` which we can take a look at:
+As appear in the output of the command above there is a ConfigMap which we can take a look at:
 
 ```file
 fundamentals/storage/efs/storageclass/assets-configMap.yaml
 ```
 
-Now you can get and describe the `StorageClass` using the below commands, you will notice that provisioner used is the EFS CSI driver and provisioning mode is EFS access point and ID of the filesystem as exported in the `EFS_ID` environment variable.
+Now you can get and describe the StorageClass using the below commands, you will notice that provisioner used is the EFS CSI driver and provisioning mode is EFS access point and ID of the file system as exported in the `EFS_ID` environment variable.
 
 ```bash
 $ kubectl get storageclass
@@ -64,4 +64,4 @@ VolumeBindingMode:     Immediate
 Events:                <none>
 ```
 
-Now that we have a better understading of EKS `StorageClass` and EFS CSI driver. On the next page, we will focus on modifying the Nginx `Deployment` of the assets microservice to utilize the created `StorageClass` using Kubernetes Dynamic Volume Provisioning to have a `PersistentVolume` to store the product images. 
+Now that we have a better understanding of EKS StorageClass and EFS CSI driver. On the next page, we will focus on modifying the Nginx Deployment of the assets microservice to utilize the created `StorageClass` using Kubernetes Dynamic Volume Provisioning to have a PersistentVolume to store the product images. 

@@ -1,6 +1,7 @@
 ---
 title: Managed Node Groups
 sidebar_position: 10
+sidebar_custom_props: {"module": true}
 ---
 
 :::tip Before you start
@@ -12,7 +13,13 @@ $ reset-environment
 
 :::
 
-[Amazon EKS managed node groups](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) automate the provisioning and lifecycle management of nodes (Amazon EC2 instances) for Amazon EKS clusters. This greatly simplifies operational activities such as rolling updates for new AMIs or Kubernetes version deployments.
+In the Getting started lab we deployed our sample application to EKS and saw the running Pods. But are these Pods running?
+
+An EKS cluster contains one or more EC2 nodes that Pods are scheduled on. EKS nodes run in your AWS account and connect to the control plane of your cluster through the cluster API server endpoint. You deploy one or more nodes into a node group. A node group is one or more EC2 instances that are deployed in an EC2 Auto Scaling group.
+
+EKS nodes are standard Amazon EC2 instances. You're billed for them based on EC2 prices. For more information, see [Amazon EC2 pricing](https://aws.amazon.com/ec2/pricing/).
+
+[Amazon EKS managed node groups](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) automate the provisioning and lifecycle management of nodes for Amazon EKS clusters. This greatly simplifies operational activities such as rolling updates for new AMIs or Kubernetes version deployments.
 
 ![Managed Node Groups](./assets/managed-node-groups.png)
 

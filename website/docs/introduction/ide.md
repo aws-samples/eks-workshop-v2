@@ -38,7 +38,7 @@ $ aws eks describe-cluster --name $EKS_CLUSTER_NAME
         "name": "eks-workshop-cluster",
         "arn": "arn:aws:eks:us-west-2:1234567890:cluster/eks-workshop-cluster",
         "createdAt": 1662084731.367,
-        "version": "1.22",
+        "version": "1.23",
         "endpoint": "https://7C18D86993E776387BB6C040FBA9D359.sk1.us-west-2.eks.amazonaws.com",
 [...]
 }
@@ -48,4 +48,9 @@ You can also check that you can connect to your EKS cluster like so:
 
 ```bash
 $ kubectl get nodes
+NAME                                         STATUS   ROLES    AGE     VERSION
+ip-10-42-10-176.us-west-2.compute.internal   Ready    <none>   18h   v1.23.9-eks-ba74326
+ip-10-42-10-56.us-west-2.compute.internal    Ready    <none>   18h   v1.23.9-eks-ba74326
+ip-10-42-11-123.us-west-2.compute.internal   Ready    <none>   18h   v1.23.9-eks-ba74326
+ip-10-42-12-58.us-west-2.compute.internal    Ready    <none>   18h   v1.23.9-eks-ba74326
 ```

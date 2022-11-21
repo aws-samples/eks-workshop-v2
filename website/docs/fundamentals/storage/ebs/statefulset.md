@@ -37,7 +37,8 @@ In our case the `volumeMounts` called `data` has a `mountPath` of `/var/lib/mysq
 Unfortunately, our MySQL StatefulSet is not utilizing a persistent EBS volume for persistent storage. It's currently just utilizing a [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir). Run the following command to confirm and check under the `name: data` volume:
 
 ```bash
-$ kubectl get statefulset -n catalog catalog-mysql -o jsonpath='{.spec.template.spec.volumes}' | jq .
+$ kubectl get statefulset -n catalog catalog-mysql \
+  -o jsonpath='{.spec.template.spec.volumes}' | jq .
 [
   {
     "emptyDir": {},
@@ -48,7 +49,7 @@ $ kubectl get statefulset -n catalog catalog-mysql -o jsonpath='{.spec.template.
 
 An emptyDir volume is first created when a Pod is assigned to a node, and exists as long as that Pod is running on that node. As the name says, the emptyDir volume is initially empty. All containers in the Pod can read and write the same files in the emptyDir volume, though that volume can be mounted at the same or different paths in each container. **When a Pod is removed from a node for any reason, the data in the emptyDir is deleted permanently.** Therefore EmptyDir is not a good fit for our MySQL Database. 
 
-We can test by creating a shell inside the container that is running MySQL and creating a test file. Then after that, we'll delete the Pod that is running our StatefulSet. Because that Pod is not using a Persistent Volume (PV), it's using a EmptyDir, the file will not survive a Pod restart. First let's run a command inside our MySQL container to create a file on the emptyDir `var/lib/mysql` path (where MySQL saves database files): 
+We can test by creating a shell inside the container that is running MySQL and creating a test file. Then after that, we'll delete the Pod that is running our StatefulSet. Because that Pod is not using a Persistent Volume (PV), it's using a EmptyDir, the file will not survive a Pod restart. First let's run a command inside our MySQL container to create a file on the emptyDir `/var/lib/mysql` path (where MySQL saves database files): 
 
 ```bash
 $ kubectl exec catalog-mysql-0 -n catalog -- bash -c  "echo 123 > /var/lib/mysql/test.txt"
@@ -71,7 +72,8 @@ pod "catalog-mysql-0" deleted
 Wait for a few seconds, and run the command below to check if the `catalog-mysql` Pod has been re-created:
 
 ```bash
-$ kubectl wait --for=condition=Ready pod -n catalog -l app.kubernetes.io/component=mysql --timeout=30s
+$ kubectl wait --for=condition=Ready pod -n catalog \
+  -l app.kubernetes.io/component=mysql --timeout=30s
 pod/catalog-mysql-0 condition met
 $ kubectl get pods -n catalog -l app.kubernetes.io/component=mysql
 NAME              READY   STATUS    RESTARTS   AGE

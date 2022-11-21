@@ -32,7 +32,8 @@ $ kubectl rollout status --timeout=130s deployment/assets -n assets
 Now look at the `volumeMounts` in the deployment, notice that we have our new `Volume` named `efsvolume` mounted on`volumeMounts` named `/efsvolumedir`:
 
 ```bash
-$ kubectl get deployment -n assets -o json | jq '.items[].spec.template.spec.containers[].volumeMounts' 
+$ kubectl get deployment -n assets \
+  -o json | jq '.items[].spec.template.spec.containers[].volumeMounts' 
 
 [
   {
@@ -84,33 +85,33 @@ Events:
 Now create a new JPG photo `newproduct.png` under the newly Mounted file system `/efsvolumedir`, by running the below command"
 
 ```bash
-$ kubectl exec --stdin deployment/assets -n assets -- bash -c "touch /efsvolumedir/newproduct.png"
+$ kubectl exec --stdin deployment/assets \
+  -n assets -- bash -c "touch /efsvolumedir/newproduct.png"
 ```
 
 Confirm that the new image file `newproduct.png` has been created:
 
 ```bash
-$ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /efsvolumedir"
+$ kubectl exec --stdin deployment/assets \
+  -n assets -- bash -c "ls /efsvolumedir"
 newproduct.png
 ```
 
-Now let's remove the current `assets` pod. This will force the deployment controller to automatically re-create a new `assets` pod:
+Now let's remove the current `assets` Pod. This will force the deployment controller to automatically re-create a new `assets` Pod:
 
 ```bash
-$ kubectl delete --all pods --namespace=assets
+$ kubectl delete --all pods -n assets
 pod "assets-6897999c5-vx46q" deleted
-$ kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=assets -n assets --timeout=60s
+$ kubectl wait --for=condition=ready pod \
+  -l app.kubernetes.io/name=assets -n assets --timeout=60s
 ```
 
 Now check if the file new JPG file has been created in the step above still exist on the new created container:
 
 ```bash
-$ kubectl exec --stdin deployment/assets -n assets -- bash -c "ls /efsvolumedir"
+$ kubectl exec --stdin deployment/assets \
+  -n assets -- bash -c "ls /efsvolumedir"
 newproduct.png
 ```
 
-Now as you can see even though we have a new POD created after we deleted the old pod we still can see the file on the Directory . This is the main functionality of Persistent Volumes (PVs). Amazon EFS is storing the data and keeping our data safe and available .
-
-
-
-
+Now as you can see even though we have a new Pod created after we deleted the old Pod we still can see the file on the Directory . This is the main functionality of Persistent Volumes (PVs). Amazon EFS is storing the data and keeping our data safe and available .

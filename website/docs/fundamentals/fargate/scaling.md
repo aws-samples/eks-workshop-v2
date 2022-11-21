@@ -40,4 +40,4 @@ To continue with the workshop, let's reset the changes we made to `deployment/ch
 $ kubectl apply -k /workspace/manifests
 ```
 
-The checkout service will now go back to running on our Managed Node Group by default.
+The checkout service will now go back to running on our managed node group by default.

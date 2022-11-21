@@ -11,9 +11,9 @@ Currently we are running a 3 node cluster:
 ```bash
 $ kubectl get nodes -l workshop-default=yes
 NAME                                            STATUS   ROLES    AGE   VERSION
-ip-192-168-109-155.us-east-2.compute.internal   Ready    <none>   76m   v1.22.9-eks-810597c
-ip-192-168-142-113.us-east-2.compute.internal   Ready    <none>   76m   v1.22.9-eks-810597c
-ip-192-168-80-39.us-east-2.compute.internal     Ready    <none>   76m   v1.22.9-eks-810597c
+ip-192-168-109-155.us-east-2.compute.internal   Ready    <none>   76m   v1.23.9-eks-810597c
+ip-192-168-142-113.us-east-2.compute.internal   Ready    <none>   76m   v1.23.9-eks-810597c
+ip-192-168-80-39.us-east-2.compute.internal     Ready    <none>   76m   v1.23.9-eks-810597c
 ```
 
 Based on autoscaling parameters defined in the `ConfigMap`, we see cluster proportional autoscaler scale `CoreDNS` to 2 replicas:
@@ -40,11 +40,11 @@ Kubernetes now shows the 5 nodes in a `Ready` state:
 ```bash
 $ kubectl get nodes -l workshop-default=yes
 NAME                                          STATUS   ROLES    AGE   VERSION
-ip-10-42-10-248.us-west-2.compute.internal    Ready    <none>   61s   v1.22.9-eks-810597c
-ip-10-42-10-29.us-west-2.compute.internal     Ready    <none>   124m  v1.22.9-eks-810597c
-ip-10-42-11-109.us-west-2.compute.internal    Ready    <none>   6m39s v1.22.9-eks-810597c
-ip-10-42-11-152.us-west-2.compute.internal    Ready    <none>   61s   v1.22.9-eks-810597c
-ip-10-42-12-139.us-west-2.compute.internal    Ready    <none>   6m20s v1.22.9-eks-810597c
+ip-10-42-10-248.us-west-2.compute.internal    Ready    <none>   61s   v1.23.9-eks-810597c
+ip-10-42-10-29.us-west-2.compute.internal     Ready    <none>   124m  v1.23.9-eks-810597c
+ip-10-42-11-109.us-west-2.compute.internal    Ready    <none>   6m39s v1.23.9-eks-810597c
+ip-10-42-11-152.us-west-2.compute.internal    Ready    <none>   61s   v1.23.9-eks-810597c
+ip-10-42-12-139.us-west-2.compute.internal    Ready    <none>   6m20s v1.23.9-eks-810597c
 ```
 
 And we can see that the number of `CoreDNS` Pods has increased:

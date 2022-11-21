@@ -58,18 +58,18 @@ checkout-585c9b45c7-c456l   1/1     Running   0          2m12s
 checkout-585c9b45c7-xmx2t   1/1     Running   0          40m
 ```
 
-To reset any kustomizations, you can simply apply the original set of manifests:
-
-```bash timeout=300 wait=30
-$ kubectl apply -k /workspace/manifests
-```
-
 Although we have used the `kustomize` CLI directly in this section, Kustomize is also integrated directly with the `kubectl` CLI, and can be applied with `kubectl apply -k <kustomization_directory>`. This approach is used through this workshop to make it easier to apply changes to manifest files, while clearly surfacing the changes to be applied.
 
 Lets try that:
 
 ```bash
 $ kubectl apply -k /workspace/modules/introduction/kustomize
+```
+
+To reset the application manifests back to their initial state, you can simply apply the original set of manifests:
+
+```bash timeout=300 wait=30
+$ kubectl apply -k /workspace/manifests
 ```
 
 Now that you understand how Kustomize works, proceed to the [Fundamentals module](/docs/fundamentals).
