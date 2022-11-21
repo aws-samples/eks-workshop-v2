@@ -166,7 +166,7 @@ Notice we changed from referring to `master` to referring to the tag `v0.0.86`.
 
 It is common in workshop content to reference various AWS infrastructure that has been build by the Terraform configuration provided. Some examples of this include:
 - Getting the cluster name to reference in a Kubernetes manifest
-- Modifying EKS Managed Node Group configuration by name
+- Modifying EKS managed node group configuration by name
 
 Names of these resources should NOT be hardcoded in content, as even though the default name is predictable the content is designed in a way to make it possible to have multiple instances of the workshop infrastructure in a single AWS account and region.
 
