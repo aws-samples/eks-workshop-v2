@@ -116,13 +116,6 @@ Verifying with the `kubectl` cli command, we can also see that the taint has bee
 
 ```bash
 $ kubectl describe nodes \
-    --selector eks.amazonaws.com/nodegroup=$EKS_TAINTED_MNG_NAME
-Name:               ip-10-42-12-233.eu-west-1.compute.internal
-Roles:              <none>
-Labels:             beta.kubernetes.io/arch=amd64
-                    beta.kubernetes.io/instance-type=m5.large
-                    beta.kubernetes.io/os=linux
-                    [...]
-CreationTimestamp:  Wed, 09 Nov 2022 10:36:26 +0000
+    --selector eks.amazonaws.com/nodegroup=$EKS_TAINTED_MNG_NAME | grep Taints
 Taints:             frontend=true:NoExecute
 ```
