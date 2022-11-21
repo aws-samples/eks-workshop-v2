@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu-privileged
+spec:
+  selector:
+    matchLabels:
+      app: ubuntu-privileged
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ubuntu-privileged
+    spec:
+      containers:
+      - name: ubuntu-privileged
+        image: ubuntu
+        ports:
+        - containerPort: 22
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /test-pd
+          name: test-volume
+      volumes:
+      - name: test-volume
+        hostPath:
+          path: /etc
+          type: Directory
