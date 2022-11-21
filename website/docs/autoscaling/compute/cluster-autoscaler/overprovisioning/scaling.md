@@ -16,7 +16,7 @@ $ kubectl apply -k /workspace/modules/autoscaling/compute/overprovisioning/scale
 $ kubectl wait --for=condition=Ready --timeout=180s pods -l app.kubernetes.io/created-by=eks-workshop -A
 ```
 
-As the new pods rollout there will eventually be a conflict where the pause pods are consuming resources that the workload services could make use of. Because of our priority configuration the pause pod will be evicted to allow the workload pods to start. This will leave some of the pause pods in a `Pending` state:
+As the new pods roll out there will eventually be a conflict where the pause pods are consuming resources that the workload services could make use of. Because of our priority configuration the pause pod will be evicted to allow the workload pods to start. This will leave some of the pause pods in a `Pending` state:
 
 ```bash
 $ kubectl get pod -n other -l run=pause-pods

@@ -3,7 +3,7 @@ title: "Using DynamoDB"
 sidebar_position: 20
 ---
 
-The first step in this process is to re-configure the `carts` service to use a DynamoDB table that has already been created for us. The application loads most of its confirmation from a `ConfigMap`, lets take look at it:
+The first step in this process is to re-configure the `carts` service to use a DynamoDB table that has already been created for us. The application loads most of its confirmation from a ConfigMap, lets take look at it:
 
 ```bash
 $ kubectl -n carts get -o yaml cm carts
@@ -26,7 +26,7 @@ Lets use Kustomize to change this configuration to use the real DynamoDB service
 $ kubectl apply -k /workspace/modules/security/irsa/dynamo
 ```
 
-This will create a new `ConfigMap` which we can now take a look at:
+This will create a new ConfigMap which we can now take a look at:
 
 ```file
 security/irsa/dynamo/carts-configMap.yaml
@@ -34,7 +34,7 @@ security/irsa/dynamo/carts-configMap.yaml
 
 We've removed the DynamoDB endpoint configuration which tells the SDK to default to the real DynamoDB service instead of our test Pod. We've also provided it with the name of the DynamoDB table thats been created already for us.
 
-It also re-configured the `cart` service to use this new `ConfigMap`:
+It also re-configured the `cart` service to use this new ConfigMap:
 
 ```kustomization
 security/irsa/dynamo/carts-deployment.yaml
@@ -49,6 +49,8 @@ k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 ```
 So now our application should be using DynamoDB right? Load it up in the browser using the output of the above command and navigate to the shopping cart:
 
-![Application Error](./assets/error.png)
+<browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/cart">
+<img src={require('@site/static/img/sample-app-screens/error-500.png').default}/>
+</browser>
 
-Carts service is not accessible! What's gone wrong?
+The shopping cart page is not accessible! What's gone wrong?

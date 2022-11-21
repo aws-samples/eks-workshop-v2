@@ -11,16 +11,16 @@ spec:
             - name: DB_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  name: catalog-writer-sealed-db
+                  name: catalog-sealed-db
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: catalog-writer-sealed-db
+                  name: catalog-sealed-db
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: catalog-writer-sealed-db
+                  name: catalog-sealed-db
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: catalog-writer-sealed-db
+                  name: catalog-sealed-db

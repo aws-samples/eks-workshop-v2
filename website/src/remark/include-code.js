@@ -17,7 +17,7 @@ const plugin = (options) => {
         const extension = path.extname(filePath).slice(1)
 
         node.lang = extension
-        node.meta = `title="${modulesPath}/${value}"`
+        node.meta = `title="${path.normalize(`${modulesPath}/${value}`)}"`
 
         const p = fs.readFile(filePath, { encoding: 'utf8' }).then(res => {
           node.value = res
