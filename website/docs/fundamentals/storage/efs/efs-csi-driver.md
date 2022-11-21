@@ -33,7 +33,7 @@ Now we will need to create a [StorageClass](https://kubernetes.io/docs/concepts/
 We will be using Kustomize to create for us the storage class and to ingest the environment variable `EFS_ID` in the parameter `filesystemid` value in the configuration of the storage class object: 
 
 ```bash
-$ kubectl apply -k modules/fundamentals/storage/efs/storageclass
+$ kubectl apply -k /workspace/modules/fundamentals/storage/efs/storageclass
 storageclass.storage.k8s.io/efs-sc created
 configmap/assets-efsid-48hg67g6fd created
 ```
