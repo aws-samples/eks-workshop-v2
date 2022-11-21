@@ -102,7 +102,7 @@ brokers.mq.services.k8s.aws/mq-eks-workshop condition met
 
 Verify that the secret **orders** has the correct information
 ```bash
-$ if [[ $(aws mq describe-broker --broker-id "$(aws mq list-brokers --query "BrokerSummaries[?BrokerName == 'mq-eks-workshop'].BrokerId" --output text)" --query 'BrokerInstances[0].Endpoints[0]') == \"$(kubectl get cm orders -o go-template='{{.data.SPRING_ACTIVEMQ_BROKERURL}}'\" -n orders-prod) ]]; then echo "ConfigMap orders configured correctly"; else echo "Error Order misconfigured"; false; fi
+$ if [[ $(aws mq describe-broker --broker-id "$(aws mq list-brokers --query "BrokerSummaries[?BrokerName == 'mq-eks-workshop'].BrokerId" --output text)" --query 'BrokerInstances[0].Endpoints[0]') == \"$(kubectl get cm orders -o go-template='{{.data.SPRING_RABBITMQ_ADDRESSES}}'\" -n orders-prod) ]]; then echo "ConfigMap orders configured correctly"; else echo "Error Order misconfigured"; false; fi
 ConfigMap orders configured correctly
 ```
 

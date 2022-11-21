@@ -7,7 +7,7 @@ spec:
     name: orders
     kind: configmap
     namespace: orders-prod
-    key: SPRING_ACTIVEMQ_BROKERURL
+    key: SPRING_RABBITMQ_ADDRESSES
   from:
     path: ".status.brokerInstances[0].endpoints[0]"
     resource:
@@ -24,7 +24,7 @@ spec:
     name: orders
     kind: configmap
     namespace: orders-prod
-    key: SPRING_ACTIVEMQ_USER
+    key: SPRING_RABBITMQ_USER
   from:
     path: ".spec.users[0].username"
     resource:
