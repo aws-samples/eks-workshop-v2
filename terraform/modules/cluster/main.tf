@@ -17,6 +17,10 @@ data "aws_eks_cluster_auth" "cluster" {
 provider "aws" {
   region = data.aws_region.current.id
   alias  = "default"
+
+  default_tags {
+    tags = local.tags
+  }
 }
 
 provider "kubernetes" {
