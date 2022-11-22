@@ -103,6 +103,8 @@ You are now able to create Amazon Relational Database Service (RDS) resources!
 ...
 ```
 
+
+<!-- TODO: Uncomment once MQ issue in ACK is resolved https://github.com/aws-controllers-k8s/community/issues/1517
 ## MQ controller setup
 Create the IAM role with the trust relationship with the Service Account for the MQ Controller. This time we use the IAM controller itself to create the role.
 
@@ -128,3 +130,4 @@ STATUS: deployed
 ...
 You are now able to create Amazon MQ (MQ) resources!
 ```
+-->

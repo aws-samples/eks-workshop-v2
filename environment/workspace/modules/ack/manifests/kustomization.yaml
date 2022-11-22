@@ -7,3 +7,5 @@ resources:
 - assets
 - orders
 - ui
+# TODO Delete the next line after MQ ACK issue is resolved MQ issue in ACK is resolved https://github.com/aws-controllers-k8s/community/issues/1517
+- rabbitmq

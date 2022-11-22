@@ -11,13 +11,10 @@ The application will use the same manifest files as in development, then we will
 $ kubectl apply -k /workspace/modules/ack/manifests/
 ...
 namespace/catalog-prod created
-namespace/orders-prod created
 ...
 service/catalog created
-service/orders created
 ...
 deployment.apps/catalog created
-deployment.apps/orders created
 ...
 ```
 
@@ -70,6 +67,7 @@ $ kubectl rollout restart deployment -n catalog-prod catalog
 deployment.apps/catalog restarted
 ```
 
+<!-- TODO: Uncomment once MQ issue in ACK is resolved https://github.com/aws-controllers-k8s/community/issues/1517
 ## Connect to Amazon MQ Instance
 The `Broker` status contains the information for connecting to the MQ instance. The endpoint information can be found in `status.brokerInstances[0].endpoints[0]` and the password can be found in `.spec.users[0].username`.
 
@@ -111,6 +109,7 @@ Restart orders to pickup the new configuration
 $ kubectl rollout restart deployment -n orders-prod orders
 deployment.apps/orders restarted
 ```
+-->
 
 ## Access the Application
 
