@@ -1,6 +1,6 @@
 ---
 title: "Run kube-bench as a job"
-sidebar_position: 20
+sidebar_position: 10
 ---
 
 In this case, we are going to be running kube-bench as a k8s job.

@@ -1,6 +1,6 @@
 ---
 title: "Run kube-bench as a debug job"
-sidebar_position: 30
+sidebar_position: 20
 ---
 
 In this case, we are going to be running kube-bench as a k8s job with debug mode on.
