@@ -22,6 +22,7 @@ kubectl apply -k $absolute_path --prune --all \
   --prune-whitelist=core/v1/Service \
   --prune-whitelist=core/v1/ConfigMap \
   --prune-whitelist=apps/v1/Deployment \
+  --prune-whitelist=apps/v1/StatefulSet \
   --prune-whitelist=core/v1/ServiceAccount \
   --prune-whitelist=core/v1/PersistentVolumeClaim \
   --prune-whitelist=karpenter.sh/v1alpha5/Provisioner \
@@ -38,6 +39,9 @@ kubectl wait --for=condition=available --timeout=240s deployments -l app.kuberne
 kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A > /dev/null
 
 kubectl scale --replicas=0 -n kube-system deployment/cluster-autoscaler-aws-cluster-autoscaler > /dev/null
+
+aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_TAINTED_MNG_NAME \
+    --scaling-config desiredSize=0,minSize=0,maxSize=1 > /dev/null
 
 expected_size_config="$EKS_DEFAULT_MNG_MIN $EKS_DEFAULT_MNG_MAX $EKS_DEFAULT_MNG_DESIRED"
 

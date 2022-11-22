@@ -19,7 +19,7 @@ As part of our workshop environment, the EKS cluster has pre-installed the EBS C
 ```bash
 $ kubectl get daemonset ebs-csi-node -n kube-system
 NAME           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
-ebs-csi-node   4         4         4       4            4           kubernetes.io/os=linux   3d21h
+ebs-csi-node   3         3         3       3            3           kubernetes.io/os=linux   3d21h
 ```
 
 We also already have our [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured using [Amazon EBS GP2 volume type](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/general-purpose.html#EBSVolumeTypes_gp2). Run the following command to confirm:
@@ -30,6 +30,6 @@ NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      A
 gp2 (default)   kubernetes.io/aws-ebs   Delete          WaitForFirstConsumer   false                  3d22h
 ```
 
-Now that we have a better understading of EKS Storage and Kubernetes objects. On the next page, we will focus on modifying the MySQL DB StatefulSet of the Catalog microservice to utilize a EBS block store volume as the persistent storage for the database files using Kubernetes Dynamic Volume Provisioning. 
+Now that we have a better understanding of EKS Storage and Kubernetes objects. On the next page, we will focus on modifying the MySQL DB StatefulSet of the catalog microservice to utilize a EBS block store volume as the persistent storage for the database files using Kubernetes dynamic volume provisioning. 
 
 

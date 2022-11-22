@@ -106,28 +106,16 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
             "TargetHealth": {
                 "State": "healthy"
             }
-        },
-        {
-            "Target": {
-                "Id": "i-05a9a63df03c84676",
-                "Port": 31338
-            },
-            "HealthCheckPort": "31338",
-            "TargetHealth": {
-                "State": "healthy"
-            }
         }
     ]
 }
 ```
 
-The output above shows that we have 4 targets registered to the load balancer using the EC2 instance IDs (`i-`) each on the same port. The reason for this is that by default the AWS Load Balancer Controller operates in "instance mode", which targets traffic to the worker nodes in the EKS cluster and allows `kube-proxy` to forward traffic to individual Pods.
+The output above shows that we have 3 targets registered to the load balancer using the EC2 instance IDs (`i-`) each on the same port. The reason for this is that by default the AWS Load Balancer Controller operates in "instance mode", which targets traffic to the worker nodes in the EKS cluster and allows `kube-proxy` to forward traffic to individual Pods.
 
 You can also inspect the NLB in the console by clicking this link:
 
 https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=ui/uinlb;sort=loadBalancerName
-
-Now that our application is exposed to the outside world, lets try to access it.
 
 Get the URL from the Service resource:
 
@@ -136,7 +124,13 @@ $ kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*]
 k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
 
-Paste that URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
+To wait until the load balancer has finished provisioning you can run this command:
+
+```bash
+$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+```
+
+Now that our application is exposed to the outside world, lets try to access it by pasting that URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
 
 <browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
 <img src={require('@site/static/img/sample-app-screens/home.png').default}/>

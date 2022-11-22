@@ -3,15 +3,21 @@ title: Configuring taints
 sidebar_position: 10
 ---
 
-For the purpose of the lab, we have provisioned a separate managed node group with a desired capacity of `1` and instance type of `m5.large`. Use the following command to describe the node group: 
+For the purpose of this exercise, we have provisioned a separate managed node group that current has no nodes running. Use the following command to scale the node group up to 1:
+
+```bash hook=configure-taints
+$ eksctl scale nodegroup --name $EKS_TAINTED_MNG_NAME --cluster $EKS_CLUSTER_NAME --nodes 1 --nodes-min 0 --nodes-max 1
+```
+
+Now check the status of the node group:
 
 ```bash
 $ eksctl get nodegroup --name $EKS_TAINTED_MNG_NAME --cluster $EKS_CLUSTER_NAME
 CLUSTER			NODEGROUP						STATUS	CREATED			MIN SIZE	MAX SIZE	DESIRED CAPACITY	INSTANCE TYPE	IMAGE ID		ASG NAME									TYPE
-eks-workshop-cluster	managed-ondemand-tainted-20221103142426393800000006	ACTIVE	2022-11-03T14:24:28Z	1		2		1			m5.large	ami-0b55230f107a87100	eks-managed-ondemand-tainted-20221103142426393800000006-d0c21ef0-8024-f793-52a9-3ed57ca9d457	managed
+eks-workshop-cluster	managed-ondemand-tainted-20221103142426393800000006	ACTIVE	2022-11-03T14:24:28Z	0		1		1			m5.large	ami-0b55230f107a87100	eks-managed-ondemand-tainted-20221103142426393800000006-d0c21ef0-8024-f793-52a9-3ed57ca9d457	managed
 ```
 
-We can also validate this configuration using `kubectl` as follows:
+It will take *2-3* minutes for the node to join the EKS cluster, until you see this command give the following output:
 
 ```bash
 $ kubectl get nodes \
@@ -44,6 +50,7 @@ Taints:             <none>
 ```
 
 A few things to point out:
+
 1. EKS automatically adds certain labels to allow for easier filtering, including labels for the OS type, managed node group name, instance type and others. While certain labels are provided out-of-the-box with EKS, AWS allows operators to configure their own set of custom labels at the managed node group level. This ensures that every node within a node group will have consistent labels. 
 2. Currently, there are no taints configured for the explored node, showcased by the `Taints: <none>` stanza. 
 
@@ -55,7 +62,7 @@ In the next few sections, will explore how to add taints to our preconfigured ma
 
 Let's start by adding a `taint` to our managed node group using the following `aws` cli command: 
 
-```bash hook=configure-taints
+```bash
 $ aws eks update-nodegroup-config \
     --cluster-name $EKS_CLUSTER_NAME \
     --nodegroup-name $EKS_TAINTED_MNG_NAME \
@@ -75,6 +82,8 @@ $ aws eks update-nodegroup-config \
         "errors": []
     }
 }
+$ aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME \
+  --nodegroup-name $EKS_TAINTED_MNG_NAME
 ```
 
 The addition, removal, or replacement of taints can be done by using the [`aws eks update-nodegroup-config`](https://docs.aws.amazon.com/cli/latest/reference/eks/update-nodegroup-config.html) CLI command to update the configuration of the managed node group. This can be done by passing either `addOrUpdateTaints` or `removeTaints` and a list of taints to the `--taints` command flag. 

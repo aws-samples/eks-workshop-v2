@@ -127,6 +127,7 @@ metadata:
     helm.sh/chart: rabbitmq-11.0.1
     app.kubernetes.io/instance: rabbitmq
     app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/created-by: eks-workshop
 spec:
   type: ClusterIP
   sessionAffinity: None

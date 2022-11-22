@@ -3,7 +3,7 @@ title: "Verify the logs in CloudWatch"
 sidebar_position: 40
 ---
 
-In this section, we will see how to checks the kubernetes pod logs forwarded by the Fluent-bit agent deployed on each node to Amazon CloudWatch logs. The deployed application components write logs to `stdout`, which are saved in the `/var/log/containers/*.log` path on each node. Verify the resources deployed in **_assets_** namespace and pod logs using the below commands.
+In this section, we will see how to checks theKubernetespod logs forwarded by the Fluent-bit agent deployed on each node to Amazon CloudWatch logs. The deployed application components write logs to `stdout`, which are saved in the `/var/log/containers/*.log` path on each node. Verify the resources deployed in **_assets_** namespace and pod logs using the below commands.
 
 ```bash
 $ kubectl get all -n assets

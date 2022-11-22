@@ -3,9 +3,9 @@ title: Resource allocation
 sidebar_position: 20
 ---
 
-The primary dimensions of [Fargate pricing](https://aws.amazon.com/fargate/pricing/) is based on CPU and memory, and the amount of resources allocated to a Fargate instance depend on the resource requests specified by the pod. There is a [documented set](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size) of valid CPU and memory combinations for Fargate that should be considered when assessing if a workload is suitable for Fargate.
+The primary dimensions of [Fargate pricing](https://aws.amazon.com/fargate/pricing/) is based on CPU and memory, and the amount of resources allocated to a Fargate instance depend on the resource requests specified by the Pod. There is a [documented set](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size) of valid CPU and memory combinations for Fargate that should be considered when assessing if a workload is suitable for Fargate.
 
-We can confirm what resources were provisioned for our pod from the previous deployment by inspecting its annotations:
+We can confirm what resources were provisioned for our Pod from the previous deployment by inspecting its annotations:
 
 ```bash
 $ kubectl get pod -n checkout -l app.kubernetes.io/component=service -o json | jq -r '.items[0].metadata.annotations'
@@ -19,7 +19,7 @@ $ kubectl get pod -n checkout -l app.kubernetes.io/component=service -o json | j
 }
 ```
 
-In the above example we can see that the `CapacityProvisioned` annotation shows that we were allocated 0.25 vCPU and 0.5 GB of memory, which is the minimum Fargate instance size. But what if our pod needs more resources? Luckily Fargate provides a variety of options depending on the resource requests that we can try out.
+In the above example we can see that the `CapacityProvisioned` annotation shows that we were allocated 0.25 vCPU and 0.5 GB of memory, which is the minimum Fargate instance size. But what if our Pod needs more resources? Luckily Fargate provides a variety of options depending on the resource requests that we can try out.
 
 In the next example we'll increase the amount of resources the `checkout` component is requesting and see how the Fargate scheduler adapts. The kustomization we're going to apply increases the resources requested to 1 vCPU and 2.5G of memory:
 
@@ -50,4 +50,4 @@ $ kubectl get pod -n checkout -l app.kubernetes.io/component=service -o json | j
 }
 ```
 
-The resources requested by the pod have been rounded up to the nearest Fargate configuration outlined in the valid set of combinations above.
+The resources requested by the Pod have been rounded up to the nearest Fargate configuration outlined in the valid set of combinations above.

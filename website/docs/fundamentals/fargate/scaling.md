@@ -3,9 +3,9 @@ title: Scaling the workload
 sidebar_position: 30
 ---
 
-Another benefit of Fargate is the simplified horizontal scaling model it offers. When using EC2 for compute, scaling pods involves considering how not only the pods will scale but also the underlying compute. Because Fargate abstracts away the underlying compute you only need to be concerned with scaling pods themselves.
+Another benefit of Fargate is the simplified horizontal scaling model it offers. When using EC2 for compute, scaling Pods involves considering how not only the Pods will scale but also the underlying compute. Because Fargate abstracts away the underlying compute you only need to be concerned with scaling Pods themselves.
 
-The examples we've looked at so far have only used a single pod replica. What happens if we scale this out horizontally as we would typically expect in a real life scenario? Lets scale up the `checkout` service and find out:
+The examples we've looked at so far have only used a single Pod replica. What happens if we scale this out horizontally as we would typically expect in a real life scenario? Lets scale up the `checkout` service and find out:
 
 ```kustomization
 fundamentals/fargate/scaling/deployment.yaml
@@ -20,7 +20,7 @@ $ kubectl apply -k /workspace/modules/fundamentals/fargate/scaling
 $ kubectl rollout status -n checkout deployment/checkout --timeout=200s
 ```
 
-Once the rollout is complete we can check the number of pods:
+Once the rollout is complete we can check the number of Pods:
 
 ```bash
 $ kubectl get pod -n checkout -l app.kubernetes.io/component=service
@@ -30,14 +30,4 @@ checkout-585c9b45c7-c456l   1/1     Running   0          2m12s
 checkout-585c9b45c7-xmx2t   1/1     Running   0          40m
 ```
 
-Each of these pods is scheduled on a separate Fargate instance. You can confirm this by following similar steps as previously and identifying the node of a given pod.
-
-### Clean up
-
-To continue with the workshop, let's reset the changes we made to `deployment/checkout`. 
-
-```bash timeout=300 wait=30
-$ kubectl apply -k /workspace/manifests
-```
-
-The checkout service will now go back to running on our managed node group by default.
+Each of these Pods is scheduled on a separate Fargate instance. You can confirm this by following similar steps as previously and identifying the node of a given Pod.

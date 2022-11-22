@@ -33,14 +33,14 @@ We'll now have a Namespace for each of our application components:
 ```bash
 $ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
 NAME       STATUS   AGE
-assets     Active   6m
-carts      Active   6m
-catalog    Active   6m
-checkout   Active   6m
-rabbitmq   Active   6m
-orders     Active   6m
-other      Active   6m
-ui         Active   6m
+assets     Active   62s
+carts      Active   62s
+catalog    Active   7m17s
+checkout   Active   62s
+orders     Active   62s
+other      Active   62s
+rabbitmq   Active   62s
+ui         Active   62s
 ```
 
 We can also see all of the Deployments created for the components:
@@ -48,15 +48,15 @@ We can also see all of the Deployments created for the components:
 ```bash
 $ kubectl get deployment -l app.kubernetes.io/created-by=eks-workshop -A
 NAMESPACE   NAME             READY   UP-TO-DATE   AVAILABLE   AGE
-assets      assets           1/1     1            1           6m
-carts       carts            1/1     1            1           6m
-carts       carts-dynamodb   1/1     1            1           6m
-catalog     catalog          1/1     1            1           6m
-checkout    checkout         1/1     1            1           6m
-checkout    checkout-redis   1/1     1            1           6m
-orders      orders           1/1     1            1           6m
-orders      orders-mysql     1/1     1            1           6m
-ui          ui               1/1     1            1           6m
+assets      assets           1/1     1            1           90s
+carts       carts            1/1     1            1           90s
+carts       carts-dynamodb   1/1     1            1           90s
+catalog     catalog          1/1     1            1           7m46s
+checkout    checkout         1/1     1            1           90s
+checkout    checkout-redis   1/1     1            1           90s
+orders      orders           1/1     1            1           90s
+orders      orders-mysql     1/1     1            1           90s
+ui          ui               1/1     1            1           90s
 ```
 
 The sample application is now deployed and ready to provide a foundation for us to use in the rest of the labs in this workshop!

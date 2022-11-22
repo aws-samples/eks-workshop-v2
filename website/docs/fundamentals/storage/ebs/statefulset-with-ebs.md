@@ -111,7 +111,7 @@ tmpfs           3.8G     0  3.8G   0% /proc/acpi
 tmpfs           3.8G     0  3.8G   0% /sys/firmware
 ```
 
-Check the `/dev/nvme2n1` disk that is currently being mounted on the `/var/lib/mysql`. This is the EBS Volume for the stateful MySQL database files that being stored in a persistent way. 
+Check the disk that is currently being mounted on the `/var/lib/mysql`. This is the EBS Volume for the stateful MySQL database files that being stored in a persistent way.
 
 Let's now test if our data is in fact persistent. We'll create the same `test.txt` file exactly the same way as we did on the first section of this module:
 
@@ -153,4 +153,4 @@ $ kubectl exec catalog-mysql-ebs-0 -n catalog -- cat /var/lib/mysql/test.txt
 123
 ```
 
-As you can see the `test.txt` file is still available after a Pod delete and restart and with the right text on it `123`. This is the main functionality of Persistent Volumes (PVs). Amazon EBS is storing the data and keeping our data safe and available across an AWS Availability Zone (AZ).
+As you can see the `test.txt` file is still available after a Pod delete and restart and with the right text on it `123`. This is the main functionality of Persistent Volumes (PVs). Amazon EBS is storing the data and keeping our data safe and available within an AWS availability zone.

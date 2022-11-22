@@ -1,5 +1,5 @@
 ---
-title: "Discovery tacitc to access the kubernetes API Anonymously"
+title: "Discovery tacitc to access theKubernetesAPI Anonymously"
 sidebar_position: 127
 ---
 

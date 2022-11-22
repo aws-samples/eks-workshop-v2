@@ -132,9 +132,9 @@ module "eks-blueprints" {
       node_group_name = "managed-ondemand-tainted"
       instance_types  = ["m5.large"]
       subnet_ids      = local.private_subnet_ids
-      min_size        = 1
-      max_size        = 2
-      desired_size    = 1
+      min_size        = 0
+      max_size        = 1
+      desired_size    = 0
 
       
       ami_type        = "AL2_x86_64"

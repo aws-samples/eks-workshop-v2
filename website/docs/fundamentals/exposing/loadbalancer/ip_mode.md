@@ -66,7 +66,7 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 }
 ```
 
-Notice that we've gone from the 4 targets we observed in the previous section to just a single target. Why is that? Instead of registering the EC2 instances in our EKS cluster the load balancer controller is now registering individual Pods and sending traffic directly, taking advantage of the AWS VPC CNI and the fact that Pods each have a first-class VPC IP address.
+Notice that we've gone from the 3 targets we observed in the previous section to just a single target. Why is that? Instead of registering the EC2 instances in our EKS cluster the load balancer controller is now registering individual Pods and sending traffic directly, taking advantage of the AWS VPC CNI and the fact that Pods each have a first-class VPC IP address.
 
 Lets scale up the ui component to 3 replicas see what happens:
 
@@ -125,3 +125,9 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 ```
 
 As expected we now have 3 targets, matching the number of replicas in the ui Deployment.
+
+If you want to wait to make sure the application still functions the same, run the following command. Otherwise you can proceed to the next module.
+
+```bash timeout=240
+$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+```

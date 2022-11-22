@@ -3,13 +3,21 @@ kind: Deployment
 metadata:
   name: assets
 spec:
+  replicas: 2
   template:
     spec:
+      initContainers:
+       - name: copy
+         image: "public.ecr.aws/aws-containers/retail-store-sample-assets:latest"
+         command: ["/bin/sh", "-c", "cp -R /usr/share/nginx/html/assets/* /efsvolume"]
+         volumeMounts:
+         - name: efsvolume
+           mountPath: /efsvolume
       containers:
       - name: assets
         volumeMounts:
         - name: efsvolume
-          mountPath: /efsvolumedir
+          mountPath: /usr/share/nginx/html/assets
       volumes:
         - name: efsvolume
           persistentVolumeClaim:

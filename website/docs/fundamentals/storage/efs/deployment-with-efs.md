@@ -3,7 +3,7 @@ title: Dynamic provisioning using EFS
 sidebar_position: 30
 ---
 
-Now that we understand [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) and [Kuberneties storage Class](https://kubernetes.io/docs/concepts/storage/storage-classes/), let's create a [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and change the Nginx container on the assets deployment to mount the Volume created.
+Now that we understand the EFS storage class for Kubernetes let's create a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and change the `nginx` container on the assets deployment to mount the Volume created.
 
 First inspect the `efspvclaim.yaml` file to see the parameters in the file and the claim of the specific storage size of 5GB from the Storage class `efs-sc` we created in the earlier step:
 
@@ -13,8 +13,8 @@ fundamentals/storage/efs/deployment/efspvclaim.yaml
 
 We'll also modify the assets service is two ways:
 
-* Remove the EmptyDir volume with `tmp-volume` named.
-* Add the Volume Claim and Volume Mounts to the specs of our containers.
+* Mount the PVC to the location where the assets images are stored
+* Add an [init container](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) to copy the initial images to the EFS volume
 
 ```kustomization
 fundamentals/storage/efs/deployment/deployment.yaml
@@ -23,21 +23,20 @@ Deployment/assets
 
 We can apply the changes by running the following command:
 
-```bash hook=efs-deployment hookTimeout=90
+```bash
 $ kubectl apply -k /workspace/modules/fundamentals/storage/efs/deployment
 [...]
 $ kubectl rollout status --timeout=130s deployment/assets -n assets
 ```
 
-Now look at the `volumeMounts` in the deployment, notice that we have our new `Volume` named `efsvolume` mounted on`volumeMounts` named `/efsvolumedir`:
+Now look at the `volumeMounts` in the deployment, notice that we have our new `Volume` named `efsvolume` mounted on`volumeMounts` named `/usr/share/nginx/html/assets`:
 
 ```bash
 $ kubectl get deployment -n assets \
   -o json | jq '.items[].spec.template.spec.containers[].volumeMounts' 
-
 [
   {
-    "mountPath": "/efsvolumedir",
+    "mountPath": "/usr/share/nginx/html/assets",
     "name": "efsvolume"
   },
   {
@@ -47,7 +46,7 @@ $ kubectl get deployment -n assets \
 ]
 ```
 
-A `PersistentVolume` (PV) has been created automatically for the `PersistentVolumeClaim` (PVC) we had created in the previous step:
+A PersistentVolume (PV) has been created automatically for the PersistentVolumeClaim (PVC) we had created in the previous step:
 
 ```bash
 $ kubectl get pv
@@ -55,7 +54,7 @@ NAME                                       CAPACITY   ACCESS MODES   RECLAIM POL
 pvc-342a674d-b426-4214-b8b6-7847975ae121   5Gi        RWX            Delete           Bound    assets/efs-claim                      efs-sc                  2m33s
 ```
 
-Also describe the `PersistentVolumeClaim` (PVC) created:
+Also describe the PersistentVolumeClaim (PVC) created:
 
 ```bash
 $ kubectl describe pvc -n assets
@@ -82,36 +81,28 @@ Events:
   Normal  ProvisioningSucceeded  22m                efs.csi.aws.com_ip-10-42-11-246.ec2.internal_1b9196ea-2586-49a6-87dd-5ce1d78c4c0d  Successfully provisioned volume pvc-342a674d-b426-4214-b8b6-7847975ae121
 ```
 
-Now create a new JPG photo `newproduct.png` under the newly Mounted file system `/efsvolumedir`, by running the below command"
+Now create a new file `newproduct.png` under the assets directory in the first Pod:
 
 ```bash
-$ kubectl exec --stdin deployment/assets \
-  -n assets -- bash -c "touch /efsvolumedir/newproduct.png"
+$ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[0].metadata.name}')
+$ kubectl exec --stdin deployment/assets $POD_NAME \
+  -n assets -- bash -c 'touch /usr/share/nginx/html/assets/newproduct.png'
 ```
 
-Confirm that the new image file `newproduct.png` has been created:
+And verify that the file now also exists in the second Pod:
 
 ```bash
-$ kubectl exec --stdin deployment/assets \
-  -n assets -- bash -c "ls /efsvolumedir"
-newproduct.png
+$ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
+$ kubectl exec --stdin deployment/assets $POD_NAME \
+  -n assets -- bash -c 'ls /usr/share/nginx/html/assets'
+chrono_classic.jpg
+gentleman.jpg
+newproduct.png <-----------
+pocket_watch.jpg
+smart_1.jpg
+smart_2.jpg
+test.txt
+wood_watch.jpg
 ```
 
-Now let's remove the current `assets` Pod. This will force the deployment controller to automatically re-create a new `assets` Pod:
-
-```bash
-$ kubectl delete --all pods -n assets
-pod "assets-6897999c5-vx46q" deleted
-$ kubectl wait --for=condition=ready pod \
-  -l app.kubernetes.io/name=assets -n assets --timeout=60s
-```
-
-Now check if the file new JPG file has been created in the step above still exist on the new created container:
-
-```bash
-$ kubectl exec --stdin deployment/assets \
-  -n assets -- bash -c "ls /efsvolumedir"
-newproduct.png
-```
-
-Now as you can see even though we have a new Pod created after we deleted the old Pod we still can see the file on the Directory . This is the main functionality of Persistent Volumes (PVs). Amazon EFS is storing the data and keeping our data safe and available .
+Now as you can see even though we created a file through the first Pod the second Pod also has access to this file because of the shared EFS file system.

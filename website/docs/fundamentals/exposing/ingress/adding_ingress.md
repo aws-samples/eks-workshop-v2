@@ -100,13 +100,17 @@ You can also inspect the ALB and its target groups in the console by clicking th
 
 https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=ui/ui;sort=loadBalancerName
 
-Now that our application is exposed to the outside world, lets try to access it.
-
 Get the URL from the Ingress resource:
 
 ```bash
 $ kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
-k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com
+k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
+```
+
+To wait until the load balancer has finished provisioning you can run this command:
+
+```bash
+$ wait-for-lb $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
 ```
 
 And access it in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.

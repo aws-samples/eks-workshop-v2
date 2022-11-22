@@ -37,7 +37,7 @@ The command reads the expored `POD_SG` values for the security group ID that’l
 
 ### 3. Create Secret for RDS
 
-Before deploying our two pods we need to provide them with the RDS endpoint and password. We will create a kubernetes secret.
+Before deploying our two pods we need to provide them with the RDS endpoint and password. We will create aKubernetessecret.
 
 ```bash
 $ kubectl create secret generic rds \

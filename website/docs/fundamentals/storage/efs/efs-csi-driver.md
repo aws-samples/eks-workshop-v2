@@ -9,10 +9,7 @@ The [Amazon Elastic File System Container Storage Interface (CSI) Driver](https:
 
 In order to utilize Amazon EFS file system with dynamic provisioning on our EKS cluster, we need to confirm that we have the EFS CSI Driver installed. The [Amazon Elastic File System Container Storage Interface (CSI) Driver](https://github.com/kubernetes-sigs/aws-efs-csi-driver) implements the CSI specification for container orchestrators to manage the lifecycle of Amazon EFS file systems.
 
-> Optional: 
-> To learn how to install the [Amazon Elastic File System Container Storage Interface (CSI) Driver](https://github.com/kubernetes-sigs/aws-efs-csi-driver) on a non-workshop cluster, follow the instructions in our documentation.
-
-As part of our workshop environment, the EKS cluster has pre-installed the Amazon Elastic File System Container Storage Interface (CSI) Driver. We can confirm the installation by running the following command:
+As part of our workshop environment the EKS cluster has the Amazon Elastic File System Container Storage Interface (CSI) Driver pre-installed. We can confirm the installation like so:
 
 ```bash
 $ kubectl get daemonset efs-csi-node -n kube-system
@@ -20,15 +17,15 @@ NAME           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTO
 efs-csi-node   4         4         4       4            4           beta.kubernetes.io/os=linux   2d1h
 ```
 
-EFS CSI driver supports dynamic provisioning and static provisioning. Currently Dynamic Provisioning creates an access point for each PersistentVolume. This mean an AWS EFS file system has to be created manually on AWS first and should be provided as an input to the StorageClass parameter. For static provisioning, AWS EFS file system needs to be created manually on AWS first. After that it can be mounted inside a container as a volume using the driver.
+The EFS CSI driver supports dynamic and static provisioning. Currently dynamic provisioning creates an access point for each PersistentVolume. This mean an AWS EFS file system has to be created manually on AWS first and should be provided as an input to the StorageClass parameter. For static provisioning, AWS EFS file system needs to be created manually on AWS first. After that it can be mounted inside a container as a volume using the driver.
 
-As part of our workshop environment, we have created EFS file system, mount targets and required security group with an inbound rule that allows inbound NFS traffic for your Amazon EFS mount points. You can retrieve information about the EFS file system by running the following AWS CLI command:
+The workshop environment also has an EFS file system, mount targets and the required security group pre-provisioned with an inbound rule that allows inbound NFS traffic for your Amazon EFS mount points. You can retrieve information about the EFS file system by running the following AWS CLI command:
 
 ```bash
 $ aws efs describe-file-systems --file-system-id $EFS_ID
 ```
 
-Now we will need to create a [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured to use the pre-provisioned EFS file system as part of this workshop infrastructure and use [EFS Access points](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html) in provisioning mode.
+Now we will need to create a StorageClass(https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured to use the pre-provisioned EFS file system as part of this workshop infrastructure and use [EFS Access points](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html) in provisioning mode.
 
 We will be using Kustomize to create for us the storage class and to ingest the environment variable `EFS_ID` in the parameter `filesystemid` value in the configuration of the storage class object: 
 
@@ -44,7 +41,7 @@ As appear in the output of the command above there is a ConfigMap which we can t
 fundamentals/storage/efs/storageclass/assets-configMap.yaml
 ```
 
-Now you can get and describe the StorageClass using the below commands, you will notice that provisioner used is the EFS CSI driver and provisioning mode is EFS access point and ID of the file system as exported in the `EFS_ID` environment variable.
+Now you can get and describe the StorageClass using the below commands, you will notice that the provisioner used is the EFS CSI driver and the provisioning mode is EFS access point and ID of the file system as exported in the `EFS_ID` environment variable.
 
 ```bash
 $ kubectl get storageclass
@@ -64,4 +61,4 @@ VolumeBindingMode:     Immediate
 Events:                <none>
 ```
 
-Now that we have a better understanding of EKS StorageClass and EFS CSI driver. On the next page, we will focus on modifying the Nginx Deployment of the assets microservice to utilize the created `StorageClass` using Kubernetes Dynamic Volume Provisioning to have a PersistentVolume to store the product images. 
+Now that we have a better understanding of EKS StorageClass and EFS CSI driver. On the next page, we will focus on modifying the asset microservice to leverage the EFS `StorageClass` using Kubernetes dynamic volume provisioning and a PersistentVolume to store the product images. 

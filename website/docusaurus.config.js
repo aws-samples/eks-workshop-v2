@@ -84,18 +84,6 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'security/index',
-            position: 'left',
-            label: 'Security',
-          },
-          {
-            type: 'doc',
-            docId: 'networking/index',
-            position: 'left',
-            label: 'Networking',
-          },
-          {
-            type: 'doc',
             docId: 'autoscaling/index',
             position: 'left',
             label: 'Autoscaling',
@@ -105,6 +93,18 @@ const config = {
             docId: 'observability/index',
             position: 'left',
             label: 'Observability',
+          },
+          {
+            type: 'doc',
+            docId: 'security/index',
+            position: 'left',
+            label: 'Security',
+          },
+          {
+            type: 'doc',
+            docId: 'networking/index',
+            position: 'left',
+            label: 'Networking',
           },
           {
             type: 'doc',

@@ -9,7 +9,7 @@ sidebar_position: 3
 Currently we are running a 3 node cluster:
 
 ```bash
-$ kubectl get nodes -l workshop-default=yes
+$ kubectl get nodes
 NAME                                            STATUS   ROLES    AGE   VERSION
 ip-192-168-109-155.us-east-2.compute.internal   Ready    <none>   76m   v1.23.9-eks-810597c
 ip-192-168-142-113.us-east-2.compute.internal   Ready    <none>   76m   v1.23.9-eks-810597c
@@ -38,7 +38,7 @@ $ kubectl wait --for=condition=Ready nodes --all --timeout=120s
 Kubernetes now shows the 5 nodes in a `Ready` state:
 
 ```bash
-$ kubectl get nodes -l workshop-default=yes
+$ kubectl get nodes
 NAME                                          STATUS   ROLES    AGE   VERSION
 ip-10-42-10-248.us-west-2.compute.internal    Ready    <none>   61s   v1.23.9-eks-810597c
 ip-10-42-10-29.us-west-2.compute.internal     Ready    <none>   124m  v1.23.9-eks-810597c
@@ -61,7 +61,7 @@ You can take a look at the CPA logs to see how it responded to the change in the
 
 ```bash
 $ kubectl logs deploy/dns-autoscaler -n other
-{'coresPerReplica':2,'includeUnschedulableNodes':true,'nodesPerReplica':1,'preventSinglePointFailure':true,'min':1,'max':4}
+{"includeUnschedulableNodes":true,"max":6,"min":2,"nodesPerReplica":2,"preventSinglePointFailure":true}
 I0801 15:02:45.330307       1 k8sclient.go:272] Cluster status: SchedulableNodes[1], SchedulableCores[2]
 I0801 15:02:45.330328       1 k8sclient.go:273] Replicas are not as expected : updating replicas from 2 to 3
 ```

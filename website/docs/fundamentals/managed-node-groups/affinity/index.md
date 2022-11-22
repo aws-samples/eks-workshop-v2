@@ -11,8 +11,8 @@ The first thing we want to do is see that the `checkout` and `checkout-redis` po
 ```bash
 $ kubectl get pods -n checkout
 NAME                              READY   STATUS    RESTARTS   AGE
-checkout-66b6dcbc45-cgrqn         1/1     Running   0          52s
-checkout-redis-6656dd7c55-4xrzg   1/1     Running   0          51s
+checkout-698856df4d-vzkzw         1/1     Running   0          125m
+checkout-redis-6cfd7d8787-kxs8r   1/1     Running   0          127m
 ```
 
 We can see both applications have one pod running in the cluster. Now let's find out where they are running:
@@ -20,11 +20,11 @@ We can see both applications have one pod running in the cluster. Now let's find
 ```bash
 $ kubectl get pods -n checkout \
   -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.nodeName}{"\n"}'
-checkout-58f865f584-rn2pb       ip-10-42-10-177.us-east-2.compute.internal
-checkout-redis-7f66c6c587-d7g7c ip-10-42-10-177.us-east-2.compute.internal
+checkout-698856df4d-vzkzw       ip-10-42-11-142.us-west-2.compute.internal
+checkout-redis-6cfd7d8787-kxs8r ip-10-42-10-225.us-west-2.compute.internal
 ```
 
-Based on the results above, the `checkout-58f865f584-rn2pb` pod is running on the `ip-10-42-10-177.us-east-2.compute` node while the `checkout-redis-7f66c6c587-d7g7c` pod is running on the `ip-10-42-10-177.us-east-2.compute.internal` node.
+Based on the results above, the `checkout-698856df4d-vzkzw` pod is running on the `ip-10-42-11-142.us-west-2.compute.internal` node while the `checkout-redis-6cfd7d8787-kxs8r` pod is running on the `ip-10-42-10-225.us-west-2.compute.internal` node.
 
 :::note
 In your environment the pods may be running on the same node initially
@@ -32,7 +32,7 @@ In your environment the pods may be running on the same node initially
 
 Let's set up a `podAntiAffinity` policy in the **checkout** deployment specifying that any pods matching `app.kubernetes.io/component=service` can not be scheduled on the same node. We will use the `requiredDuringSchedulingIgnoredDuringExecution` to make this a requirement, rather than a preferred behavior.
 
-The following kustomization adds an `affinity` section to the **checkout** deployment specifying a **podAntiAffinity** policy, and bumps the number of replicas to `2`:
+The following kustomization adds an `affinity` section to the **checkout** deployment specifying a **podAntiAffinity** policy:
 
 ```kustomization
 fundamentals/affinity/checkout-redis/checkout.yaml
@@ -50,18 +50,14 @@ service/checkout unchanged
 service/checkout-redis unchanged
 deployment.apps/checkout configured
 deployment.apps/checkout-redis unchanged
+$ kubectl rollout status deployment/checkout \
+  -n checkout --timeout 180s
 ```
 
-The **podAntiAffinity** section requires that no `checkout` pods are already running on the node by matching the **`app.kubernetes.io/component=service`** label.
-
-Ensure that both pods are up and running:
+The **podAntiAffinity** section requires that no `checkout` pods are already running on the node by matching the **`app.kubernetes.io/component=service`** label. Now lets scale up the Deployment to check the configuration is working:
 
 ```bash
-$ kubectl get pods -n checkout
-NAME                              READY   STATUS    RESTARTS   AGE
-checkout-58f865f584-hbql9         1/1     Running   0          7s
-checkout-58f865f584-rn2pb         1/1     Running   0          2m13s
-checkout-redis-6656dd7c55-4xrzg   1/1     Running   0          11m
+$ kubectl scale -n checkout deployment/checkout --replicas 2
 ```
 
 Now validate where each pod is running:
@@ -69,14 +65,14 @@ Now validate where each pod is running:
 ```bash
 $ kubectl get pods -n checkout \
   -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.nodeName}{"\n"}'
-checkout-58f865f584-hbql9       ip-10-42-12-141.us-east-2.compute.internal
-checkout-58f865f584-rn2pb       ip-10-42-10-177.us-east-2.compute.internal
-checkout-redis-6656dd7c55-4xrzg ip-10-42-10-177.us-east-2.compute.internal
+checkout-5b68c8cddf-bn8bp       ip-10-42-11-142.us-west-2.compute.internal
+checkout-5b68c8cddf-clnps       ip-10-42-12-31.us-west-2.compute.internal
+checkout-redis-6cfd7d8787-kxs8r ip-10-42-10-225.us-west-2.compute.internal
 ```
 
-In this example, the two `checkout` pods are running on `ip-10-42-12-141.us-east-2.compute.internal` and `ip-10-42-10-177.us-east-2.compute.internal`, as required by the **podAntiAffinity** policy we defined in the deployment.
+In this example the `checkout` pods are running on separate nodes `ip-10-42-12-31.us-west-2.compute.internal` and `ip-10-42-11-142.us-west-2.compute.internal`, as required by the **podAntiAffinity** policy we defined in the deployment.
 
-Next, let's modify the `checkout-redis` deployment policies to require that future pods both run individually per node and only run on nodes where a `checkout` pod exists. To do this we will need to update the `checkout-redis` deployment specifying both a **podAffinity** and **podAntiAffinity** policy. We also bump the number of replicas to `2`:
+Next, let's modify the `checkout-redis` deployment policies to require that future pods both run individually per node and only run on nodes where a `checkout` Pod exists. To do this we will need to update the `checkout-redis` deployment specifying both a **podAffinity** and **podAntiAffinity** policy.:
 
 ```kustomization
 fundamentals/affinity/checkout-redis/checkout-redis.yaml
@@ -94,33 +90,39 @@ service/checkout unchanged
 service/checkout-redis unchanged
 deployment.apps/checkout unchanged
 deployment.apps/checkout-redis configured
+$ kubectl rollout status deployment/checkout-redis \
+  -n checkout --timeout 180s
 ```
 
 For the `checkout-redis` deployment we are adding **podAffinity** and **podAntiAffinity** fields. The **podAffinity** section requires that a `checkout` pod exist on the node before deploying by matching the **`app.kubernetes.io/component=service`** label. The **podAntiAffinity** section requires that no `checkout-redis` pods are already running on the node by matching the **`app.kubernetes.io/component=redis`** label.
+
+```bash
+$ kubectl scale -n checkout deployment/checkout-redis --replicas 2
+```
 
 Check the running pods to verify that there are now two of each running:
 
 ```bash
 $ kubectl get pods -n checkout                                       
-NAME                              READY   STATUS    RESTARTS   AGE
-checkout-58f865f584-hbql9         1/1     Running   0          7m16s
-checkout-58f865f584-rn2pb         1/1     Running   0          9m22s
-checkout-redis-7f66c6c587-b6tg6   1/1     Running   0          88s
-checkout-redis-7f66c6c587-v4czw   1/1     Running   0          20s
+NAME                             READY   STATUS    RESTARTS   AGE
+checkout-5b68c8cddf-6ddwn        1/1     Running   0          4m14s
+checkout-5b68c8cddf-rd7xf        1/1     Running   0          4m12s
+checkout-redis-7979df659-cjfbf   1/1     Running   0          19s
+checkout-redis-7979df659-pc6m9   1/1     Running   0          22s
 ```
 
-We can also verify where the pods are running to ensure the **podAffinity** and **podAntiAffinity** policies are being followed:
+We can also verify where the Pods are running to ensure the **podAffinity** and **podAntiAffinity** policies are being followed:
 
 ```bash
 $ kubectl get pods -n checkout \
   -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.nodeName}{"\n"}'
-checkout-58f865f584-hbql9        ip-10-42-12-141.us-east-2.compute.internal
-checkout-58f865f584-rn2pb        ip-10-42-10-177.us-east-2.compute.internal
-checkout-redis-7f66c6c587-b6tg6  ip-10-42-12-141.us-east-2.compute.internal
-checkout-redis-7f66c6c587-v4czw  ip-10-42-10-177.us-east-2.compute.internal
+checkout-5b68c8cddf-bn8bp       ip-10-42-11-142.us-west-2.compute.internal
+checkout-5b68c8cddf-clnps       ip-10-42-12-31.us-west-2.compute.internal
+checkout-redis-7979df659-57xcb  ip-10-42-11-142.us-west-2.compute.internal
+checkout-redis-7979df659-r7kkm  ip-10-42-12-31.us-west-2.compute.internal
 ```
 
-All looks good on the pod scheduling, but we can further verify by scaling the `checkout-redis` pod again to see where a third pod will deploy:
+All looks good on the Pod scheduling, but we can further verify by scaling the `checkout-redis` pod again to see where a third Pod will deploy:
 
 ```bash
 $ kubectl scale --replicas=3 deployment/checkout-redis --namespace checkout
@@ -130,10 +132,16 @@ If we check the running pods we can see that the third `checkout-redis` pod has 
 
 ```bash
 $ kubectl get pods -n checkout
-NAME                              READY   STATUS    RESTARTS   AGE
-checkout-58f865f584-hbql9         1/1     Running   0          8m48s
-checkout-58f865f584-rn2pb         1/1     Running   0          10m
-checkout-redis-7f66c6c587-b6tg6   1/1     Running   0          3m
-checkout-redis-7f66c6c587-cf268   0/1     Pending   0          18s
-checkout-redis-7f66c6c587-v4czw   1/1     Running   0          112s
+NAME                             READY   STATUS    RESTARTS   AGE
+checkout-5b68c8cddf-bn8bp        1/1     Running   0          4m59s
+checkout-5b68c8cddf-clnps        1/1     Running   0          6m9s
+checkout-redis-7979df659-57xcb   1/1     Running   0          35s
+checkout-redis-7979df659-lb69n   0/1     Pending   0          6s
+checkout-redis-7979df659-r7kkm   1/1     Running   0          2m10s
+```
+
+Lets finish this section by removing the Pending Pod:
+
+```bash
+$ kubectl scale --replicas=2 deployment/checkout-redis --namespace checkout
 ```

@@ -15,39 +15,37 @@ StatefulSets are valuable for applications that require one or more of the follo
 * Ordered, automated rolling updates.
 
 
-On our ecommerce application, we have a StatefulSet already deployed part of our Catalog microservice. The Catalog microservice utilizes a MySQL database running on EKS. Databases are a great example for the use of StatefulSet because they require **persistent storage**. We can analyze our MySQL DB on the catalog service, by running the following command:
+On our ecommerce application, we have a StatefulSet already deployed part of our Catalog microservice. The Catalog microservice utilizes a MySQL database running on EKS. Databases are a great example for the use of StatefulSet because they require **persistent storage**. We can analyze our MySQL DB Pod to see its current volume configuration:
 
 ```bash
-$ kubectl describe statefulsets -n catalog
+$ kubectl describe statefulset -n catalog catalog-mysql
+Name:               catalog-mysql
+Namespace:          catalog
+[...]
+  Containers:
+   mysql:
+    Image:      public.ecr.aws/docker/library/mysql:5.7
+    Port:       3306/TCP
+    Host Port:  0/TCP
+    Args:
+      --ignore-db-dir=lost+found
+    Environment:
+      MYSQL_ROOT_PASSWORD:  my-secret-pw
+      MYSQL_USER:           <set to the key 'username' in secret 'catalog-db'>  Optional: false
+      MYSQL_PASSWORD:       <set to the key 'password' in secret 'catalog-db'>  Optional: false
+      MYSQL_DATABASE:       <set to the key 'name' in secret 'catalog-db'>      Optional: false
+    Mounts:
+      /var/lib/mysql from data (rw)
+  Volumes:
+   data:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+Volume Claims:  <none>
+[...]
 ```
 
-As you can see the [`volumeMounts`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section of our StatefulSet defines what is the `mountPath` that will be mounted into a specific volume:
-
-```blank title="manifests/catalog/statefulset-mysql.yaml" 
-          volumeMounts:
-            - name: data
-              mountPath: /var/lib/mysql
-      volumes:
-        - name: data
-          emptyDir: {}
-```
-
-In our case the `volumeMounts` called `data` has a `mountPath` of `/var/lib/mysql` directory, Kubernetes will map to a `volume` with the same name, which is the `emptyDir` with name of `data` that you see on the last two lines of the snippet above. 
-
-Unfortunately, our MySQL StatefulSet is not utilizing a persistent EBS volume for persistent storage. It's currently just utilizing a [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir). Run the following command to confirm and check under the `name: data` volume:
-
-```bash
-$ kubectl get statefulset -n catalog catalog-mysql \
-  -o jsonpath='{.spec.template.spec.volumes}' | jq .
-[
-  {
-    "emptyDir": {},
-    "name": "data"
-  }
-]
-```
-
-An emptyDir volume is first created when a Pod is assigned to a node, and exists as long as that Pod is running on that node. As the name says, the emptyDir volume is initially empty. All containers in the Pod can read and write the same files in the emptyDir volume, though that volume can be mounted at the same or different paths in each container. **When a Pod is removed from a node for any reason, the data in the emptyDir is deleted permanently.** Therefore EmptyDir is not a good fit for our MySQL Database. 
+As you can see the [`Volumes`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section of our StatefulSet shows that we're only using an [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) which "shares the Pod's lifetime". An `emptyDir` volume is first created when a Pod is assigned to a node, and exists as long as that Pod is running on that node. As the name says, the emptyDir volume is initially empty. All containers in the Pod can read and write the same files in the emptyDir volume, though that volume can be mounted at the same or different paths in each container. **When a Pod is removed from a node for any reason, the data in the emptyDir is deleted permanently.** Therefore EmptyDir is not a good fit for our MySQL Database. 
 
 We can test by creating a shell inside the container that is running MySQL and creating a test file. Then after that, we'll delete the Pod that is running our StatefulSet. Because that Pod is not using a Persistent Volume (PV), it's using a EmptyDir, the file will not survive a Pod restart. First let's run a command inside our MySQL container to create a file on the emptyDir `/var/lib/mysql` path (where MySQL saves database files): 
 
@@ -83,16 +81,11 @@ catalog-mysql-0   1/1     Running   0          29s
 Finally, let's exec back into the MySQL container shell and run a `ls` command on the `/var/lib/mysql` path trying to look for the `test.txt` file that we created:
 
 ```bash expectError=true
-$ kubectl exec catalog-mysql-0 -n catalog -- ls -larth /var/lib/mysql | grep -i test
-command terminated with exit code 1
-```
-
-```bash expectError=true
 $ kubectl exec catalog-mysql-0 -n catalog -- cat /var/lib/mysql/test.txt
 cat: /var/lib/mysql/test.txt: No such file or directory
 command terminated with exit code 1
 ```
 
-As you can see the `test.txt` file is no longer there, because emptyDir volumes are ephemeral. On future sections, we'll run the same experiment and demostrate how Persistent Volumes (PVs) will keep the `test.txt` file and survive Pod restarts and/or failures. 
+As you can see the `test.txt` file is no longer there, because `emptyDir` volumes are ephemeral. On future sections, we'll run the same experiment and demostrate how Persistent Volumes (PVs) will keep the `test.txt` file and survive Pod restarts and/or failures. 
 
 On the next page, we will on understanding the main concepts of Storage on Kubernetes and its integration with the AWS cloud ecosystem. 

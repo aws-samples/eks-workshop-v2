@@ -43,23 +43,12 @@ ui          ui        alb     *       k8s-retailappgroup-2c24c1c4bc-17962260.us-
 
 Notice that the `ADDRESS` of both are the same URL, which is because both of these Ingress objects are being grouped together behind the same ALB.
 
-Try accessing the URL in the browser as before to check the web UI still works.
-
-Now try accessing the specific path we directed to the catalog service:
-
-```bash
-$ ADDRESS=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
-$ curl $ADDRESS/catalogue | jq .
-```
-
-You'll receive back a JSON payload from the catalog service, demonstrating that we've been able to expose multiple Kubernetes services via the same ALB.
-
 We can take a look at the ALB listener to see how this works:
 
 ```bash
 $ ALB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-retailappgroup`) == `true`].LoadBalancerArn' | jq -r '.[0]')
 $ LISTENER_ARN=$(aws elbv2 describe-listeners --load-balancer-arn $ALB_ARN | jq -r '.Listeners[0].ListenerArn')
-$ aws elbv2 describe-rules --listener-arn $LISTENER_ARN --output table
+$ aws elbv2 describe-rules --listener-arn $LISTENER_ARN
 ```
 
 The output of this command will illustrate that:
@@ -71,3 +60,25 @@ The output of this command will illustrate that:
 You can also checkout out the new ALB configuration in the AWS console:
 
 https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=retail-app-group;sort=loadBalancerName
+
+To wait until the load balancer has finished provisioning you can run this command:
+
+```bash
+$ wait-for-lb $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+```
+
+Try accessing the new Ingress URL in the browser as before to check the web UI still works:
+
+```bash
+$ kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
+k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
+```
+
+Now try accessing the specific path we directed to the catalog service:
+
+```bash
+$ ADDRESS=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ curl $ADDRESS/catalogue | jq .
+```
+
+You'll receive back a JSON payload from the catalog service, demonstrating that we've been able to expose multiple Kubernetes services via the same ALB.

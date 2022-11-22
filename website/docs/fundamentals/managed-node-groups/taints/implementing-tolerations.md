@@ -106,6 +106,7 @@ serviceaccount/ui unchanged
 configmap/ui unchanged
 service/ui unchanged
 deployment.apps/ui configured
+$ kubectl --namespace ui rollout status deployment/ui --timeout=120s
 ```
 
 Checking the UI pod, we can see that the configuration now includes the specified toleration (`frontend=true:NoExecute`) and it is succesfully scheduled on the node with corresponding taint. The following commands can be used for validation:  

@@ -1,5 +1,5 @@
 ---
-title: "Kubernetes Resource View in EKS Console"
+title: "View resources in EKS console"
 sidebar_position: 20
 sidebar_custom_props: {"module": true}
 ---

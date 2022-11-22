@@ -3,11 +3,11 @@ title: Enabling Fargate
 sidebar_position: 10
 ---
 
-Before you schedule pods on Fargate in your cluster, you must define at least one Fargate profile that specifies which pods use Fargate when launched.
+Before you schedule Pods on Fargate in your cluster, you must define at least one Fargate profile that specifies which Pods use Fargate when launched.
 
-As an administrator, you can use a Fargate profile to declare which pods run on Fargate. You can do this through the profile’s selectors. You can add up to five selectors to each profile. Each selector contains a namespace and optional labels. For every selector, you must define a namespace for every selector. The label field consists of multiple optional key-value pairs. Pods that match a selector are scheduled on Fargate. Pods are matched using a namespace and the labels that are specified in the selector. If a namespace selector is defined without labels, Amazon EKS attempts to schedule all the pods that run in that namespace onto Fargate using the profile. If a to-be-scheduled pod matches any of the selectors in the Fargate profile, then that pod is scheduled on Fargate.
+As an administrator, you can use a Fargate profile to declare which Pods run on Fargate. You can do this through the profile’s selectors. You can add up to five selectors to each profile. Each selector contains a namespace and optional labels. For every selector, you must define a namespace for every selector. The label field consists of multiple optional key-value pairs. Pods that match a selector are scheduled on Fargate. Pods are matched using a namespace and the labels that are specified in the selector. If a namespace selector is defined without labels, Amazon EKS attempts to schedule all the Pods that run in that namespace onto Fargate using the profile. If a to-be-scheduled Pod matches any of the selectors in the Fargate profile, then that Pod is scheduled on Fargate.
 
-If a pod matches multiple Fargate profiles, you can specify which profile a pod uses by adding the following Kubernetes label to the pod specification: `eks.amazonaws.com/fargate-profile: my-fargate-profile`. The pod must match a selector in that profile to be scheduled onto Fargate. Kubernetes affinity/anti-affinity rules do not apply and aren't necessary with Amazon EKS Fargate pods.
+If a Pod matches multiple Fargate profiles, you can specify which profile a Pod uses by adding the following Kubernetes label to the Pod specification: `eks.amazonaws.com/fargate-profile: my-fargate-profile`. The Pod must match a selector in that profile to be scheduled onto Fargate. Kubernetes affinity/anti-affinity rules do not apply and aren't necessary with Amazon EKS Fargate Pods.
 
 A Fargate profile has been pre-configured in your EKS cluster, and you can inspect it:
 
@@ -24,7 +24,7 @@ So why isn't the `checkout` service already running on Fargate? Lets check its l
 $ kubectl get pod -n checkout -l app.kubernetes.io/component=service -o json | jq '.items[0].metadata.labels'
 ```
 
-Looks like our pod is missing the label `fargate=yes`, so lets fix that by updating the deployment for that service so the Pod spec includes the label needed for the profile to schedule it on Fargate.
+Looks like our Pod is missing the label `fargate=yes`, so lets fix that by updating the deployment for that service so the Pod spec includes the label needed for the profile to schedule it on Fargate.
 
 ```kustomization
 fundamentals/fargate/enabling/deployment.yaml
@@ -33,19 +33,18 @@ Deployment/checkout
 
 Apply the kustomization to the cluster:
 
-```bash timeout=220
+```bash timeout=220 hook=enabling
 $ kubectl apply -k /workspace/modules/fundamentals/fargate/enabling
 [...]
 $ kubectl rollout status -n checkout deployment/checkout --timeout=200s
 ```
 
-This will cause the pod specification for the `checkout` service to be updated and trigger a new deployment, replacing all the pods. When the new pods are scheduled, the Fargate scheduler will match the new label applied by the kustomization with our target profile and intervene to ensure our pod is schedule on capacity managed by Fargate.
+This will cause the Pod specification for the `checkout` service to be updated and trigger a new deployment, replacing all the Pods. When the new Pods are scheduled, the Fargate scheduler will match the new label applied by the kustomization with our target profile and intervene to ensure our Pod is schedule on capacity managed by Fargate.
 
-
-How can we confirm that it worked? Describe the new pod thats been created and take a look at the `Events` section:
+How can we confirm that it worked? Describe the new Pod thats been created and take a look at the `Events` section:
 
 ```bash
-$ kubectl describe pod -n checkout -l app.kubernetes.io/component=service
+$ kubectl describe pod -n checkout -l fargate=yes
 [...]
 Events:
   Type     Reason           Age    From               Message
@@ -58,9 +57,9 @@ Events:
   Normal   Started          9m4s   kubelet            Started container checkout
 ```
 
-The events from `fargate-scheduler` give us some insight in to what has happened. The entry we are mainly interested in at this stage in the lab is the event with the reason `Scheduled`. Inspecting that closely gives us the name of the Fargate instance that was provisioned for this pod, in the case of the above example this is `fargate-ip-10-42-11-96.us-west-2.compute.internal`.
+The events from `fargate-scheduler` give us some insight in to what has happened. The entry we are mainly interested in at this stage in the lab is the event with the reason `Scheduled`. Inspecting that closely gives us the name of the Fargate instance that was provisioned for this Pod, in the case of the above example this is `fargate-ip-10-42-11-96.us-west-2.compute.internal`.
 
-We can inspect this node from `kubectl` to get additional information about the compute that was provisioned for this pod:
+We can inspect this node from `kubectl` to get additional information about the compute that was provisioned for this Pod:
 
 ```bash
 $ NODE_NAME=$(kubectl get pod -n checkout -l app.kubernetes.io/component=service -o json | jq -r '.items[0].spec.nodeName')

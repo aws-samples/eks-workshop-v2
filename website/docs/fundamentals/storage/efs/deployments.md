@@ -5,9 +5,9 @@ sidebar_position: 10
 
 On our ecommerce application, we have a deployment already created as part of our assets microservice. The assets microservice utilizes a nginx webserver running on EKS. Web servers are a great example for the use of deployments because they require **scale horizontally** and **declare the new state** of the Pods. 
 
-Assets component is a nginx container which serves static images for products, these product images are added as part of the container image build. unfortunately with this setup everytime the team wants to update the product images they have to recreate the container image. In this exrercise By utilizing [EFS File System](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html) and Kubernetes [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) we will help the team update old product images and add new product images without the need to rebuild the containers images.
+Assets component is a nginx container which serves static images for products, these product images are added as part of the container image build. unfortunately with this setup everytime the team wants to update the product images they have to recreate the container image. In this exercise we will utilize [EFS File System](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html) and Kubernetes [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) to update old product images and add new product images without the need to rebuild the containers images.
 
-We can start by describe the Deployment to ensure it is exist, by running the following command:
+We can start by describing the Deployment to take a look at its initial volume configuration:
 
 ```bash
 $ kubectl describe deployment -n assets
@@ -38,29 +38,13 @@ Namespace:              assets
 [...]
 ```
 
-As you can see in the output of the previous command the [`volumeMounts`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section of our Deployment defines what is the `mountPath` that will be mounted into a specific volume.
+As you can see the [`Volumes`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section of our StatefulSet shows that we're only using an [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) which "shares the Pod's lifetime". An `emptyDir` volume is first created when a Pod is assigned to a node, and exists as long as that Pod is running on that node. As the name says, the emptyDir volume is initially empty. All containers in the Pod can read and write the same files in the emptyDir volume, though that volume can be mounted at the same or different paths in each container. **When a Pod is removed from a node for any reason, the data in the emptyDir is deleted permanently.** This means that if we want to share data between multiple Pods in the same Deployment and make changes to that data then EmptyDir is not a good fit.
 
-It's currently just utilizing a [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir). Run the following command to confirm and check under the `name: tmp-volume` volume:
-
-```bash
-$ kubectl get deployment -n assets \
-  -o jsonpath='{.items[].spec.template.spec.volumes}' | jq
-[
-  {
-    "emptyDir": {
-      "medium": "Memory"
-    },
-    "name": "tmp-volume"
-  }
-]
-```
-
-The nginx container has the product images copied to it as part of the docker build under the folder `/usr/share/nginx/html/assets`, we can check by running the below command:
+The container has some initial product images copied to it as part of the container build under the folder `/usr/share/nginx/html/assets`, we can check by running the below command:
 
 ```bash
 $ kubectl exec --stdin deployment/assets \
   -n assets -- bash -c "ls /usr/share/nginx/html/assets/" 
-
 chrono_classic.jpg
 gentleman.jpg
 pocket_watch.jpg
@@ -69,35 +53,27 @@ smart_2.jpg
 wood_watch.jpg
 ```
 
-Now let us try to put a new product image named `newproduct.png` in the directory `/usr/share/nginx/html/assets` using the below command:
+First lets scale up the `assets` Deployment so it has multiple replicas:
 
 ```bash
-$ kubectl exec --stdin deployment/assets \
-  -n assets -- bash -c "touch /usr/share/nginx/html/assets/newproduct.png" 
-
+$ kubectl scale -n assets --replicas=2 deployment/assets
+$ kubectl rollout status -n assets deployment/assets --timeout=60s
 ```
-Now confirm the new product image `newproduct.png` has been created in the folder `/usr/share/nginx/html/assets`, using the below command:
+
+Now let us try to put a new product image named `newproduct.png` in the directory `/usr/share/nginx/html/assets` of the first Pod using the below command:
 
 ```bash
-$ kubectl exec --stdin deployment/assets \
-  -n assets -- bash -c "ls usr/share/nginx/html/assets/newproduct.png"  
-
-/usr/share/nginx/html/assets/newproduct.png
+$ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[0].metadata.name}')
+$ kubectl exec --stdin deployment/assets $POD_NAME \
+  -n assets -- bash -c 'touch /usr/share/nginx/html/assets/newproduct.png'
 ```
-Now let's remove the current `assets` Pod. This will force the deployment controller to automatically re-create a new `assets` Pod:
 
-```bash wait=60
-$ kubectl delete --all pods -n assets
-pod "assets-ddb8f87dc-ww4jn" deleted
-$ kubectl wait --for=condition=available --timeout=120s deployment/assets -n assets
-```
-Now let us check if the image we created for the new product `newproduct.png` is still exist:
+Now confirm the new product image `newproduct.png` isn't present on the file system of the second Pod:
 
 ```bash
-$ kubectl exec --stdin deployment/assets \
-  -n assets -- bash -c "ls /usr/share/nginx/html/assets/" 
+$ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
+$ kubectl exec --stdin deployment/assets $POD_NAME \
+  -n assets -- bash -c 'ls /usr/share/nginx/html/assets'
 ```
 
-As you see the newly created image `newproduct.png` is not exist now , as it is not been copied while the creation of the container image. In order to help the team solve this issue we need a PersistentVolume contain the images. That can be shared across multiple Pods if the team want to scale horizontally.
-
-Now that we have a better understanding of EKS Storage and kubernetes objects. On the next page, we will talk more about EFS CSI Driver and how we can utilize it to create a persistent storage on kubernetes using dynamic provisioning on Elastic File System.
+As you see the newly created image `newproduct.png` does not exist on the second Pod. In order to help solve this issue we need a file system that can be shared across multiple Pods if the service needs to scale horizontally while still making updates to the files without re-deploying.

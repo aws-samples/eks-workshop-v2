@@ -5,15 +5,3 @@ metadata:
   namespace: checkout
 spec:
   replicas: 2
-  template:
-    spec:
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app.kubernetes.io/component
-                operator: In
-                values:
-                - service
-            topologyKey: kubernetes.io/hostname
