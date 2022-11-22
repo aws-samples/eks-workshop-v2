@@ -5,7 +5,7 @@ sidebar_position: 10
 
 On our ecommerce application, we have a deployment already created as part of our assets microservice. The assets microservice utilizes a nginx webserver running on EKS. Web servers are a great example for the use of deployments because they require **scale horizontally** and **declare the new state** of the Pods. 
 
-Assets component is a nginx container which serves static images for products, these product images are added as part of the container image build. unfortunately with this setup everytime the team wants to update the product images they have to recreate the container image. In this exercise we will utilize [EFS File System](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html) and Kubernetes [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) to update old product images and add new product images without the need to rebuild the containers images.
+Assets component is a nginx container which serves static images for products, these product images are added as part of the container image build. However with this setup everytime the team wants to update the product images they have to recreate and redeploy the container image. In this exercise we will utilize [EFS File System](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html) and Kubernetes [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) to update old product images and add new product images without the need to rebuild the containers images.
 
 We can start by describing the Deployment to take a look at its initial volume configuration:
 
