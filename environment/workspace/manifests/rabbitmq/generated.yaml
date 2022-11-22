@@ -318,8 +318,6 @@ spec:
           volumeMounts:
             - name: configuration
               mountPath: /bitnami/rabbitmq/conf
-            - name: data
-              mountPath: /bitnami/rabbitmq/mnesia
       volumes:
         - name: configuration
           secret:
@@ -327,15 +325,3 @@ spec:
             items:
               - key: rabbitmq.conf
                 path: rabbitmq.conf
-  volumeClaimTemplates:
-    - metadata:
-        name: data
-        labels:
-          app.kubernetes.io/name: rabbitmq
-          app.kubernetes.io/instance: rabbitmq
-      spec:
-        accessModes:
-            - "ReadWriteOnce"
-        resources:
-          requests:
-            storage: "8Gi"
