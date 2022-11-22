@@ -35,7 +35,7 @@ Let's set up a `podAntiAffinity` policy in the **checkout** deployment specifyin
 The following kustomization adds an `affinity` section to the **checkout** deployment specifying a **podAntiAffinity** policy:
 
 ```kustomization
-fundamentals/affinity/checkout-redis/checkout.yaml
+fundamentals/affinity/checkout/checkout.yaml
 Deployment/checkout
 ```
 
