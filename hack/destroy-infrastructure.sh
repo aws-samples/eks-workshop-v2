@@ -21,10 +21,13 @@ export TF_VAR_id=${environment} TF_VAR_cluster_id=${environment}
 # Deletion procedure reflects recommendations from EKS Blueprints: 
 # https://aws-ia.github.io/terraform-aws-eks-blueprints/v4.6.0/getting-started/#cleanup
 
+echo "Deleting general addons..."
 terraform -chdir=$terraform_dir destroy -target=module.cluster.module.eks-blueprints-kubernetes-addons --auto-approve
-terraform -chdir=$terraform_dir destroy -target=module.cluster.module.eks-blueprints-kubernetes-csi-addon --auto-approve
+
+echo "Deleting descheduler addon..."
 terraform -chdir=$terraform_dir destroy -target=module.cluster.module.descheduler --auto-approve
 
+echo "Deleting core blueprints addons..."
 terraform -chdir=$terraform_dir destroy -target=module.cluster.module.eks-blueprints --auto-approve
 
 if [ -n "${DANGEROUS_CLEANUP-}" ]; then
@@ -35,4 +38,5 @@ if [ -n "${DANGEROUS_CLEANUP-}" ]; then
   awsweeper --dry-run $temp_file
 fi
 
+echo "Deleting everything else..."
 terraform -chdir=$terraform_dir destroy --auto-approve

@@ -18,6 +18,6 @@ terraform_dir="$PROJECT_ROOT/$terraform_context"
 
 export TF_VAR_id=${environment} TF_VAR_cluster_id=${environment}
 
-terraform -chdir=$terraform_dir init
+terraform -chdir=$terraform_dir init -lockfile=readonly
 
 terraform -chdir=$terraform_dir apply --auto-approve
