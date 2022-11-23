@@ -54,7 +54,7 @@ jobs:
       id: create-infrastructure
       working-directory: test/terraform
       run: |
-        terraform init -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="key=ci/${CLUSTER_ID}/terraform.tfstate"
+        terraform init -lockfile=readonly -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="key=ci/${CLUSTER_ID}/terraform.tfstate"
         terraform apply --auto-approve
     - name: Refresh AWS credentials
       if: always()
@@ -139,12 +139,10 @@ jobs:
       working-directory: test/terraform
       run: |
         terraform destroy -target=module.core.module.cluster.module.eks-blueprints-kubernetes-addons --auto-approve
-        terraform destroy -target=module.core.module.cluster.module.eks-blueprints-kubernetes-csi-addon --auto-approve
         terraform destroy -target=module.core.module.cluster.module.descheduler --auto-approve
 
         terraform destroy -target=module.core.module.cluster.module.eks-blueprints --auto-approve
         
-
         envsubst < ../../hack/lib/filter.yml > filter.yml
         awsweeper --force filter.yml
 

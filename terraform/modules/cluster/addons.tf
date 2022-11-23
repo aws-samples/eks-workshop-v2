@@ -17,20 +17,31 @@ resource "aws_eks_addon" "vpc_cni" {
   ]
 }
 
-module "eks-blueprints-kubernetes-csi-addon" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.16.0//modules/kubernetes-addons/aws-ebs-csi-driver"
+locals {
+  ebs_csi_blocker = try(module.eks-blueprints-kubernetes-addons.aws_ebs_csi_driver.release_metadata.metadata.status, "")
+}
+
+module "eks-blueprints-kubernetes-addons" {
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.16.0//modules/kubernetes-addons"
 
   depends_on = [
     aws_eks_addon.vpc_cni
   ]
 
+  eks_cluster_id = module.eks-blueprints.eks_cluster_id
+
+  enable_karpenter                       = true
+  enable_aws_node_termination_handler    = true
+  enable_aws_load_balancer_controller    = true
+  enable_cluster_autoscaler              = true
+  enable_metrics_server                  = true
+  enable_kubecost                        = true
+  enable_amazon_eks_adot                 = true
+  enable_aws_efs_csi_driver              = true
+  enable_aws_for_fluentbit               = true
   enable_self_managed_aws_ebs_csi_driver = true
 
-  addon_context = local.addon_context
-
-  helm_config = {
-    kubernetes_version = var.cluster_version
-    
+  self_managed_aws_ebs_csi_driver_helm_config = {
     set = [{
       name  = "node.tolerateAllTaints"
       value = "true"
@@ -60,26 +71,6 @@ module "eks-blueprints-kubernetes-csi-addon" {
         type  = "string"
     }]
   }
-}
-
-module "eks-blueprints-kubernetes-addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.16.0//modules/kubernetes-addons"
-
-  depends_on = [
-    module.eks-blueprints-kubernetes-csi-addon
-  ]
-
-  eks_cluster_id = module.eks-blueprints.eks_cluster_id
-
-  enable_karpenter                       = true
-  enable_aws_node_termination_handler    = true
-  enable_aws_load_balancer_controller    = true
-  enable_cluster_autoscaler              = true
-  enable_metrics_server                  = true
-  enable_kubecost                        = true
-  enable_amazon_eks_adot                 = true
-  enable_aws_efs_csi_driver              = true
-  enable_aws_for_fluentbit               = true
   
   cluster_autoscaler_helm_config = {
     version   = var.helm_chart_versions["cluster_autoscaler"]
@@ -145,6 +136,11 @@ module "eks-blueprints-kubernetes-addons" {
 
   kubecost_helm_config = {
     set = concat([
+      {
+        name = "blocker"
+        value = local.ebs_csi_blocker
+        type = "string"
+      },
       {
         name  = "prometheus.server.nodeSelector.workshop-system"
         value = "yes"
@@ -294,13 +290,13 @@ resource "aws_iam_policy" "grafana" {
 module "descheduler" {
   source = "../addons/descheduler"
 
-  depends_on = [
-    module.eks-blueprints-kubernetes-csi-addon
-  ]
-
   addon_context = local.addon_context
 
   helm_config = {
-    set = concat([], local.system_component_values)
+    set = concat([{
+        name = "blocker"
+        value = local.ebs_csi_blocker
+        type = "string"
+      }], local.system_component_values)
   }
 }
