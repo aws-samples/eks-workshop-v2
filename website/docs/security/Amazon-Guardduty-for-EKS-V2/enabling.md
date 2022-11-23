@@ -1,5 +1,5 @@
 ---
-title: "Enable GuardDuty Findings on EKS"
+title: "Enable GuardDuty findings on EKS"
 sidebar_position: 122
 ---
 
@@ -10,11 +10,6 @@ In this section, we will enable GuardDuty and Kubernetes protection.
 
 ```bash
 $ aws guardduty create-detector --enable --data-sources Kubernetes={AuditLogs={Enable=true}}
-```
-
-Expected output will be as following.
-
-```
 {
     "DetectorId": "b6b992d6d2f48e64bc59180bfexample"
 }
