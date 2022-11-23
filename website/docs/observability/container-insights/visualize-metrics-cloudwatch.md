@@ -1,25 +1,22 @@
 ---
-title: "Visualize Container Insights Metrics Using Amazon CloudWatch"
+title: "Container Insights metrics in Amazon CloudWatch"
 sidebar_position: 20
 weight: 6
 ---
 
-In this module, we will visualize the Container Insights metrics using CloudWatch.
-:::note
+In this section we will visualize the Container Insights metrics using CloudWatch.
+
+:::tip
 It may take a few minutes for data to start appearing in CloudWatch
 :::
 
-To view metrics:
+To view metrics first open the CloudWatch console and navigate to Container Insights:
 
-1. Open the CloudWatch console at https://console.aws.amazon.com/cloudwatch/.
+https://console.aws.amazon.com/cloudwatch/home#container-insights:infrastructure
 
-2. On the left hand side of the console page, under **Insights chose Container Insights**
+Select **Performance Monitoring** from the dropdown menu at the top of the page, and now select the type of resources you wish to view. For example, select **EKS Pods** to get basic metrics such as CPU, memory and utilization for the Pods running in our EKS cluster:
 
-3. In the navigation pane, choose **Performance Monitoring**.
-
-4. Use the drop-down boxes near the top to select the type of resource to view, as well as the specific resource.
-
-![ContainerInsightsConsole](/img/container-insights/container-inisghts-metrics-console.jpg)
+![ContainerInsightsConsole](./assets/container-inisghts-metrics-console.jpg)
 
 You can set a CloudWatch alarm on any metric that Container Insights collects. For more information, see [Using Amazon CloudWatch alarms](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html)
 

@@ -3,13 +3,11 @@ title: "Storing metrics with AMP"
 sidebar_position: 20
 ---
 
-Amazon Managed Service for Prometheus is a monitoring service for metrics compatible with the open source Prometheus project, making it easier for you to securely monitor container environments. Amazon Managed Service for Prometheus is a solution for monitoring containers based on the popular Cloud Native Computing Foundation (CNCF) Prometheus project. Amazon Managed Service for Prometheus is powered by Cortex, an open source CNCF project that adds horizontal scalability to ingest, store, query, and alert on Prometheus metrics. Amazon Managed Service for Prometheus reduces the heavy lifting required to get started with monitoring applications across Amazon Elastic Kubernetes Service and Amazon Elastic Container Service, as well as self-managed Kubernetes clusters. Amazon Managed Service for Prometheus automatically scales as your monitoring needs grow. It offers highly available, multi-Availability Zone deployments, and integrates AWS security and compliance capabilities. Amazon Managed Service for Prometheus offers native support for the PromQL query language as well as over 150+ Prometheus exporters maintained by the open source community.
-
 An Amazon Managed Service for Prometheus workspace is already created for you. You should be able to see it in the console:
 
-https://console.aws.amazon.com/prometheus/home
+https://console.aws.amazon.com/prometheus/home#/workspaces
 
-To view the workspace, click on the <i>All Workspaces</i> tab on the left control panel. Select the workspace that starts with **eks-workshop** and you can view several the several tabs under the workspace such as rules management, alert manager etc.
+To view the workspace, click on the **All Workspaces** tab on the left control panel. Select the workspace that starts with **eks-workshop** and you can view several the several tabs under the workspace such as rules management, alert manager etc.
 
 Let's verify the successful ingestion of the metrics using `awscurl`:
 

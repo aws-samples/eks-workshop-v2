@@ -1,23 +1,22 @@
 ---
-title: "Stream Pod logs to CloudWatch"
+title: "Using Fluent Bit"
 sidebar_position: 30
 ---
 
-For Kubernetes cluster components that run in pods, these write to files inside the <i>/var/log</i> directory, bypassing the default logging mechanism. We can implement pod-level logging by deploying a node-level logging agent as a DaemonSet on each node, such as Fluent Bit. 
+For Kubernetes cluster components that run in pods, these write to files inside the `/var/log` directory, bypassing the default logging mechanism. We can implement pod-level logging by deploying a node-level logging agent as a DaemonSet on each node, such as Fluent Bit. 
 
 [Fluent Bit](https://fluentbit.io/) is a lightweight log processor and forwarder that allows you to collect data and logs from different sources, enrich them with filters and send them to multiple destinations like CloudWatch, Kinesis Data Firehose, Kinesis Data Streams and Amazon OpenSearch Service.
 
-AWS provides a Fluent Bit image with plugins for both CloudWatch Logs and Kinesis Data Firehose. The [AWS for Fluent Bit](https://github.com/aws/aws-for-fluent-bit) image is available on the Amazon ECR Public Gallery. 
+AWS provides a Fluent Bit image with plugins for both CloudWatch Logs and Kinesis Data Firehose. The [AWS for Fluent Bit](https://github.com/aws/aws-for-fluent-bit) image is available on the [Amazon ECR Public Gallery](https://gallery.ecr.aws/aws-observability/aws-for-fluent-bit). 
 
 In the following section, you will see how to validate Fluent Bit agent is running as a daemonSet to send the containers / pods logs to CloudWatch Logs.
 
-
-
-1. Validate the fluent-bit deployment by entering the following command. Each node should have one pod 
+First, we can validate the resources created for Fluent Bit by entering the following command. Each node should have one pod:
 
   ```bash
   $ kubectl get all -n aws-for-fluent-bit
   NAME                           READY   STATUS    RESTARTS   AGE
+  pod/aws-for-fluent-bit-vfsbe   1/1     Running   0          99m
   pod/aws-for-fluent-bit-kmvnk   1/1     Running   0          99m
   pod/aws-for-fluent-bit-rxhs7   1/1     Running   0          100m
 
@@ -25,7 +24,7 @@ In the following section, you will see how to validate Fluent Bit agent is runni
   daemonset.apps/aws-for-fluent-bit   2         2         2       2            2           <none>          104m
   ```
 
-2. Verify the ConfigMap for aws-for-fluent-bit, it is configured to stream the _/var/log/containers/*.log_ from each nodes to CloudWatch log group '/eks-workshop-cluster/worker-fluentbit-logs'
+The ConfigMap for aws-for-fluent-bit is configured to stream the contents of files in the directory `/var/log/containers/*.log` from each node to the CloudWatch log group `/eks-workshop-cluster/worker-fluentbit-logs`:
 
   ```bash
   $ kubectl describe configmaps -n aws-for-fluent-bit

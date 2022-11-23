@@ -1,14 +1,18 @@
 ---
-title: "Verify the EKS logs"
+title: "Viewing in CloudWatch"
 sidebar_position: 30
 ---
 
-After you have enabled any of the control plane log types for your Amazon EKS cluster, you can view them on the CloudWatch console. Once enabled the cluster logs streamed to **/aws/eks/<clustername\>/cluster** CloudWatch log group.
+Lets take a look at the logs in the CloudWatch Logs console:
 
-1. To view your cluster control plane logs on the CloudWatch console, login to CloudWatch console, select **Log groups** from the left navigation pane, filter for **/aws/eks** prefix and select the cluster you want verify the logs.
+https://console.aws.amazon.com/cloudwatch/home?#logsV2:log-groups
 
-![Cluster Loggroup](/img/observability-logging/logging-cluster-cw-loggroup.png)
+Filter for **/aws/eks** prefix and select the cluster you want verify the logs:
 
-2. Choose the log stream to view.
+![Cluster Loggroup](./assets/logging-cluster-cw-loggroup.png)
 
-![LogStream](/img/observability-logging/logging-cluster-cw-logstream.png)
+You will be presented with a number of log streams in the group:
+
+![LogStream](./assets/logging-cluster-cw-logstream.png)
+
+Select any of these log streams to view the entries being sent to CloudWatch Logs by the EKS control plane.

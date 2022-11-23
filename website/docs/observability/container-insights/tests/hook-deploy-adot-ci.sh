@@ -7,7 +7,7 @@ before() {
 after() {
   sleep 20
 
-  kubectl wait --for=condition=Ready --timeout=30s pods -l name=aws-otel-eks-ci -n other
+  kubectl wait --for=condition=Ready --timeout=30s pods -l app.kubernetes.io/component=opentelemetry-collector -n other
 }
 
 "$@"

@@ -1,14 +1,16 @@
 ---
-title: "Enable EKS cluster logging"
+title: "Configuring control plane logs"
 sidebar_position: 30
 ---
 
-In this module, we will see how to enable the Amazon EKS control plane logs and verify it in Amazon CloudWatch logs.
+So that we have some data to look at in subsequent sections control plane logging was enabled when the cluster was created. Lets take a look at the configuration in the EKS console:
 
-1. To enable Amazon EKS control plane from the AWS console, login to EKS console, select the cluster, then select **Logging** tab to check the logging status, by default the logging will be disabled.
+https://console.aws.amazon.com/eks/home#/clusters/eks-workshop-cluster?selectedTab=cluster-logging-tab
 
-![EKS Console Logging Tab](/img/observability-logging/logging-cluster-logging-tab.png)
+The **Logging** tab shows the current configuration for control plane logs for the cluster:
 
-2. From the **Logging** Tab, choose **Manage Logging**, **Enable** the each log type and **Save** the changes to finish
+![EKS Console Logging Tab](./assets/logging-cluster-logging-tab.png)
 
-![Enable Logging](/img/observability-logging/logging-cluster-enable-logging.png)
+You can alter the logging configuration by clicking the **Manage** button:
+
+![Enable Logging](./assets/logging-cluster-enable-logging.png)
