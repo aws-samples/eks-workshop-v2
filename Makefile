@@ -8,7 +8,7 @@ install:
 
 .PHONY: serve
 serve:
-	cd website; npm start
+	bash hack/serve.sh
 
 .PHONY: tf-fmt
 tf-fmt:

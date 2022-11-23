@@ -34,15 +34,20 @@ const plugin = (options) => {
         const filePromise = fs.readFile(filePath, { encoding: 'utf8' });
         const originalPromise = readKustomization(kustomizationPath).then(res => {
           const actualPath = path.normalize(`${kustomizationPath}/${res['bases'][0]}`)
-          return generateYaml(actualPath, resourceKind, resourceName)
+          return generateYaml(actualPath, resourceKind, resourceName, false)
         });
-        const mutatedPromise = generateYaml(kustomizationPath, resourceKind, resourceName)
+        const mutatedPromise = generateYaml(kustomizationPath, resourceKind, resourceName, true)
 
         const nicePath = `/workspace/modules/${file}`
 
         const p = Promise.all([filePromise, originalPromise, mutatedPromise]).then(res => {
-          const originalManifest = res[1].manifest
           const mutatedManifest = res[2].manifest
+
+          let originalManifest = ''
+
+          if(res[1] !== null) {
+            originalManifest = res[1].manifest
+          }
 
           const diff = Diff.createPatch('dummy', originalManifest, mutatedManifest)
 
@@ -68,7 +73,7 @@ function readKustomization(path) {
   })
 }
 
-function generateYaml(path, kind, resource) {
+function generateYaml(path, kind, resource, failOnMissing) {
   return execShellCommand(`kubectl kustomize ${path}`)
     .then(res => {
       return new Promise((resolve, reject) => { // (*)
@@ -82,7 +87,11 @@ function generateYaml(path, kind, resource) {
           }
         }
 
-        reject(`Failed to find resource ${kind}/${resource} at ${path}`)
+        if (failOnMissing) {
+          reject(`Failed to find resource ${kind}/${resource} at ${path}`)
+        }
+
+        resolve(null)
       });
     });
 }

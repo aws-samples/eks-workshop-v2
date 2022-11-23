@@ -1,0 +1,3 @@
+# Sample environment variables for kustomization samples
+export CARTS_DYNAMODB_TABLENAME=eks-workshop-cluster-carts
+export CARTS_IAM_ROLE=arn:aws:iam::1234567890:role/eks-workshop-cluster-carts-dynamo
