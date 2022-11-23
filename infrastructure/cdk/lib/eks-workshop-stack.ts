@@ -110,7 +110,7 @@ export class EksWorkshopStack extends Stack {
     tfStateBackendBucket.grantReadWrite(codeBuildRole);
 
     const codebuildProject = new codebuild.Project(this, 'StackDeployProject', {
-      role: codeBuildRole,
+      role: codeBuildRole.withoutPolicyUpdates(),
       environment: {
         buildImage: codebuild.LinuxBuildImage.STANDARD_6_0,
         computeType: codebuild.ComputeType.MEDIUM,
