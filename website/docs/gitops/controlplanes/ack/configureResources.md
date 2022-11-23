@@ -38,6 +38,9 @@ securitygroup.ec2.services.k8s.aws/rds-eks-workshop created
 dbinstance.rds.services.k8s.aws/rds-eks-workshop created
 dbsubnetgroup.rds.services.k8s.aws/rds-eks-workshop created
 ```
+
+
+<!-- TODO: Uncomment once MQ issue in ACK is resolved https://github.com/aws-controllers-k8s/community/issues/1517
 ## Create Amazon MQ Broker 
 
 Set Broker admin user password
@@ -66,3 +69,4 @@ After 10 minutes you can see in the AWS Console the RDS and MQ resouces are avai
 
 Continue to the next section to export the binding information from the provisioned AWS managed services.
 
+-->
