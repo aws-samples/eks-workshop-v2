@@ -130,7 +130,8 @@
     {
       "Effect": "Allow",
       "Action": [
-          "iam:ListAttachedRolePolicies"
+          "iam:ListAttachedRolePolicies",
+          "iam:GetPolicyVersion"
       ],
       "Resource": "*"
     },

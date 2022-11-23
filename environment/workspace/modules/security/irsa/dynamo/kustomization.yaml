@@ -3,18 +3,11 @@ kind: Kustomization
 bases:
 - ../../../../manifests/carts
 configMapGenerator:
-- name: carts-dynamo
+- name: carts
   namespace: carts
   env: config.properties
+  behavior: replace
+  options:
+    disableNameSuffixHash: true
 resources:
 - nlb.yaml
-patches:
-- path: carts-deployment.yaml
-  target:
-    group: apps
-    version: v1
-    kind: Deployment
-    name: carts
-    namespace: carts
-patchesStrategicMerge:
-- carts-configMap.yaml

@@ -20,28 +20,45 @@ metadata:
   namespace: carts
 ```
 
-Lets use Kustomize to change this configuration to use the real DynamoDB service:
+The following kustomization overwrites the ConfigMap, removing the DynamoDB endpoint configuration which tells the SDK to default to the real DynamoDB service instead of our test Pod. We've also provided it with the name of the DynamoDB table thats been created already for us which is being pulled from the environment variable `CARTS_DYNAMODB_TABLENAME`.
 
-```bash hook=enable-dynamo hookTimeout=430
+```kustomization
+security/irsa/dynamo/kustomization.yaml
+ConfigMap/carts
+```
+
+Lets check the value of `CARTS_DYNAMODB_TABLENAME` then run Kustomize to use the real DynamoDB service:
+
+```bash
+$ echo $CARTS_DYNAMODB_TABLENAME
+eks-workshop-cluster-carts
 $ kubectl apply -k /workspace/modules/security/irsa/dynamo
 ```
 
-This will create a new ConfigMap which we can now take a look at:
+This will overwrite our ConfigMap with new values:
 
-```file
-security/irsa/dynamo/carts-configMap.yaml
+```bash
+$ kubectl get -n carts cm carts
+apiVersion: v1
+data:
+  CARTS_DYNAMODB_TABLENAME: eks-workshop-cluster
+kind: ConfigMap
+metadata:
+  labels:
+    app: carts
+  name: carts-dynamo
+  namespace: carts
 ```
 
-We've removed the DynamoDB endpoint configuration which tells the SDK to default to the real DynamoDB service instead of our test Pod. We've also provided it with the name of the DynamoDB table thats been created already for us.
+Now we need to recycle all the carts Pods to pick up our new ConfigMap contents:
 
-It also re-configured the `cart` service to use this new ConfigMap:
-
-```kustomization
-security/irsa/dynamo/carts-deployment.yaml
-Deployment/carts
+```bash hook=enable-dynamo hookTimeout=430
+$ kubectl rollout restart -n carts deployment/carts
+deployment.apps/carts restarted
+$ kubectl rollout status -n carts deployment/carts
 ```
 
-Let us try to access our application using the browser. A `LoadBalancer` type service named `ui-nlb` is provisioned in the `ui` namespace usig which the application's UI can be accessed.
+Let us try to access our application using the browser. A `LoadBalancer` type service named `ui-nlb` is provisioned in the `ui` namespace from which the application's UI can be accessed.
 
 ```bash
 $ kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}"

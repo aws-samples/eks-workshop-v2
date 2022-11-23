@@ -1,3 +1,0 @@
-- op: replace
-  path: /spec/template/spec/containers/0/envFrom/0/configMapRef/name
-  value: carts-dynamo
