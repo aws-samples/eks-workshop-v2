@@ -53,4 +53,3 @@ Keep in mind the following tips when evaluating purchasing Compute or EC2 Instan
 Check out the following links for more reading on Savings Plans:
 - [AWS Savings Plans Product Page](https://aws.amazon.com/savingsplans/)
 - [AWS Savings Plans User Guide](https:/docs.aws.amazon.com/savingsplans/latest/userguide/what-is-savings-plans.html)
-

@@ -32,7 +32,7 @@ module "iam_assumable_role_carts" {
   provider_url                  = module.eks-blueprints.eks_oidc_issuer_url
   role_policy_arns              = [aws_iam_policy.carts_dynamo.arn]
   oidc_fully_qualified_subjects = ["system:serviceaccount:carts:carts"]
-  
+
   tags = local.tags
 }
 
@@ -57,5 +57,5 @@ resource "aws_iam_policy" "carts_dynamo" {
   ]
 }
 EOF
-  tags = local.tags
+  tags   = local.tags
 }

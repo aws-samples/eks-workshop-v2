@@ -31,5 +31,3 @@ gp2 (default)   kubernetes.io/aws-ebs   Delete          WaitForFirstConsumer   f
 ```
 
 Now that we have a better understanding of EKS Storage and Kubernetes objects. On the next page, we will focus on modifying the MySQL DB StatefulSet of the catalog microservice to utilize a EBS block store volume as the persistent storage for the database files using Kubernetes dynamic volume provisioning. 
-
-

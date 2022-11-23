@@ -10,4 +10,3 @@ A [ReplicaSet](https://kubernetes.io/docs/concepts/workloads/controllers/replica
 Click on the replicaset <i>orders-d6b4566fc</i> and explore the configuration. You will see configurations under Info, Pods , labels and details of max and desired replicas.
 
 ![Insights](/img/resource-view/rs-detail.jpg)
-

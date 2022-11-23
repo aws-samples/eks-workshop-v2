@@ -110,5 +110,3 @@ This output will show the various labels that are set, for example the instance 
 ```
 
 This simple examples illustrates the fact that Karpenter can dynamically select the right instance type based on the resource requirements of the workloads that require compute capacity. This differs fundamentally from a model oriented around node pools, such as Cluster Autoscaler, where the instance types within a single node group must have consistent CPU and memory characteristics.
-
-

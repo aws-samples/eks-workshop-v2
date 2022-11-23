@@ -4,6 +4,3 @@ bases:
 - ../../base
 patches:
 - deployment.yaml
-
-
-

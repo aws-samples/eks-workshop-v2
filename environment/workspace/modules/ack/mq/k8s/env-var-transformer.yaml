@@ -11,4 +11,3 @@ varReference:
     kind: SecurityGroup
     path: spec/vpcID
     value: mq-eks-workshop
-

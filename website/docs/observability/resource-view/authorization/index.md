@@ -12,6 +12,3 @@ Check out the [Security](../../../security/) module for additional examples.
 :::
 
 ![Insights](/img/resource-view/autz-index.jpg)
-
-
-

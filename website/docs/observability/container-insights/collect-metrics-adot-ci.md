@@ -27,8 +27,3 @@ adot-container-ci-collector-ctvgs  1/1     Running   0          15s
 ```
 
 If the output of this command includes multiple pods in the `Running` state as shown above, the collector is running and collecting metrics from the cluster. The collector creates a log group named *aws/containerinsights/**cluster-name**/performance* and sends the metric data as performance log events in EMF format.
-
-
-
-
-

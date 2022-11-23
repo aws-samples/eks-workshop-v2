@@ -43,6 +43,3 @@ Filter for **checkout** to check the logs streams and select one:
 You can expand one of the log entries to see the full JSON payload:
 
 ![Podlogs](./assets/logs.png)
-
-
-

@@ -19,4 +19,3 @@ Select **Performance Monitoring** from the dropdown menu at the top of the page,
 ![ContainerInsightsConsole](./assets/container-inisghts-metrics-console.jpg)
 
 You can set a CloudWatch alarm on any metric that Container Insights collects. For more information, see [Using Amazon CloudWatch alarms](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html)
-
