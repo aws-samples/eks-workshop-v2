@@ -38,7 +38,7 @@ The command reads the expored `POD_SG` values for the security group ID that’l
 Now, create this policy resource:
 
 ```bash
-kubectl -f my-security-group-policy.yaml
+$ kubectl -f my-security-group-policy.yaml
 ```
 
 Ensure the policy object was created with the security group id:
