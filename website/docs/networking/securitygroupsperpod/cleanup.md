@@ -7,6 +7,18 @@ weight: 80
 Delete the sample applications:
 
 ```bash
+$ kubectl -n sg-per-pod delete -f https://www.eksworkshop.com/beginner/115_sg-per-pod/deployments.files/green-pod.yaml
+
+$ kubectl -n sg-per-pod delete -f https://www.eksworkshop.com/beginner/115_sg-per-pod/deployments.files/red-pod.yaml
+
+$ kubectl -n sg-per-pod delete -f my-security-group-policy.yaml
+
+$ kubectl -n sg-per-pod delete secret rds
+```
+
+Now, delete the namespace
+
+```bash
 $ kubectl delete ns sg-per-pod
 ```
 
