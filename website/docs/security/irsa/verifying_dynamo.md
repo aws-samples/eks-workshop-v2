@@ -27,7 +27,7 @@ AWS_ROLE_ARN=arn:aws:iam::1234567890:role/eks-workshop-cluster-carts-dynamo
 AWS_WEB_IDENTITY_TOKEN_FILE=/var/run/secrets/eks.amazonaws.com/serviceaccount/token
 ```
 
-These environment have not been passed in using something like a ConfigMap or configured directly on the Deployment. Instead these have been set by IRSA automatically to allow AWS SDKs to obtain temporary credentials from the AWS STS service.
+These environment variables have not been passed in using something like a ConfigMap or configured directly on the Deployment. Instead these have been set by IRSA automatically to allow AWS SDKs to obtain temporary credentials from the AWS STS service.
 
 Things that are worth noting are:
 
