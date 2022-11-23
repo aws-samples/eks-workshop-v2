@@ -38,7 +38,7 @@ $ kubectl apply -k /workspace/modules/security/irsa/dynamo
 This will overwrite our ConfigMap with new values:
 
 ```bash
-$ kubectl get -n carts cm carts
+$ kubectl get -n carts cm carts -o yaml
 apiVersion: v1
 data:
   CARTS_DYNAMODB_TABLENAME: eks-workshop-cluster
