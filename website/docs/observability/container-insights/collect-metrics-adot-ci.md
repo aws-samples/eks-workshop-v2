@@ -11,7 +11,7 @@ The first thing we need to do is create resources to allow the ADOT collector th
 observability/container-insights/adot/clusterrole.yaml
 ```
 
-We'll use the managed IAM policy `CloudWatchAgentServerPolicy` to provide to the collector with the IAM permissions it needed via IAM Roles for Service Accounts:
+We'll use the managed IAM policy `CloudWatchAgentServerPolicy` to provide the collector with the IAM permissions it needs via IAM Roles for Service Accounts:
 
 ```bash
 $ aws iam list-attached-role-policies \
@@ -26,7 +26,7 @@ $ aws iam list-attached-role-policies \
 }
 ```
 
-This will be added to the ServiceAccount for the collector:
+This IAM role will be added to the ServiceAccount for the collector:
 
 ```file
 observability/container-insights/adot/serviceaccount.yaml
@@ -63,7 +63,7 @@ This is configuring an OpenTelemetry pipeline with the following structure:
 * Processors
   - Batch the metrics in to 60 second intervals
 * Exporters
-  - [CloudWatch EMF](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/awsemfexporter/README.md) exporter which sends metrics to the CloudWatch API
+  - [CloudWatch EMF exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/awsemfexporter/README.md) which sends metrics to the CloudWatch API
 
 This collector is also configured to run as a DaemonSet with a collector agent running on each node:
 
