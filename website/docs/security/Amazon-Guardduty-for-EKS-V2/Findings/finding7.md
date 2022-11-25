@@ -17,7 +17,7 @@ Run the below command to patch the deployment.
 $ kubectl apply -f /workspace/modules/security/Guardduty/privileged/mount/privileged-pod-example.yaml
 ```
 
-With in few minutes we will see the finding `Persistence:Kubernetes/ContainerWithSensitiveMount` in guardduty portal.
+Within a few minutes we will see the finding `Persistence:Kubernetes/ContainerWithSensitiveMount` in the GuardDuty portal.
 
 ![](ContainerWithSensitiveMount.png)
 

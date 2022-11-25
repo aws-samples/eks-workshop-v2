@@ -22,13 +22,11 @@ $ API_URL=`aws eks describe-cluster --name eks-workshop-cluster --query "cluster
 $ curl -k $API_URL/api/v1/pods
 ```
 
-With in few minutes we will see the finding `Discovery:Kubernetes/SuccessfulAnonymousAccess` in guardduty portal.
+Within a few minutes we will see the finding `Discovery:Kubernetes/SuccessfulAnonymousAccess` in the GuardDuty portal.
 
 ![](discovery_SuccessfulAnonymousAccess.png)
 
 Run the following command to delete the cluster role binding.
-
-Cleanup:
 
 ```bash
 $ kubectl delete clusterrolebinding anonymous-view

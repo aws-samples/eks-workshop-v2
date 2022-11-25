@@ -17,7 +17,7 @@ Create the deployment by running the following command.
 $ kubectl apply -f /workspace/modules/security/Guardduty/privileged/privileged-pod-example.yaml
 ```
 
-With in few minutes we will see the finding `PrivilegeEscalation:Kubernetes/PrivilegedContainer` in guardduty portal.
+Within a few minutes we will see the finding `PrivilegeEscalation:Kubernetes/PrivilegedContainer` in the GuardDuty portal.
 
 ![](PrivilegedContainer.png)
 
