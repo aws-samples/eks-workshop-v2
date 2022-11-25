@@ -9,4 +9,4 @@ fi
 
 aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
 
-markdown-sh test "$@" /content 
+node /app/dist/cli.js test "$@" /content 

@@ -1,0 +1,32 @@
+name: Test Utility CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+    - main
+    paths:
+    - test/util/**
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Use Node.js ${{ env.node_version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.node_version }}
+        registry-url: 'https://registry.npmjs.org'
+    - name: Install NPM packages
+      run: npm ci
+    - name: Build
+      run: npm run build
+    - name: Run unit tests
+      run: |
+        npm test
+    - name: Run test content
+      run: |
+        npm run exec -- test ./test-content
