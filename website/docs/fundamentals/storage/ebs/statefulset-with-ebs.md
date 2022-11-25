@@ -5,6 +5,8 @@ sidebar_position: 30
 
 Now that we understand [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) and [Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/), let's change our MySQL DB on the Catalog microservice to provision a new EBS volume to store database files persistent.
 
+![MySQL with EBS](./assets/mysql-ebs.png)
+
 Utilizing Kustomize, we'll do two things:
 
 * Create a new StatefulSet for the MySQL database used by the catalog component which uses an EBS volume
