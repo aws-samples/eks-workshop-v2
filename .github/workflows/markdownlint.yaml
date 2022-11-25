@@ -5,6 +5,8 @@ on:
   pull_request:
     branches:
     - main
+    paths:
+    - website/**
 
 permissions:
   contents: read
