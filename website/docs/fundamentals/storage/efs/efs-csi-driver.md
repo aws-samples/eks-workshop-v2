@@ -29,16 +29,17 @@ Now we will need to create a StorageClass(https://kubernetes.io/docs/concepts/st
 
 We will be using Kustomize to create for us the storage class and to ingest the environment variable `EFS_ID` in the parameter `filesystemid` value in the configuration of the storage class object: 
 
+```kustomization
+fundamentals/storage/efs/storageclass/efsstorageclass.yaml
+StorageClass/efs-sc
+```
+
+Lets apply this kustomization:
+
 ```bash
 $ kubectl apply -k /workspace/modules/fundamentals/storage/efs/storageclass
 storageclass.storage.k8s.io/efs-sc created
 configmap/assets-efsid-48hg67g6fd created
-```
-
-As appear in the output of the command above there is a ConfigMap which we can take a look at:
-
-```file
-fundamentals/storage/efs/storageclass/assets-configMap.yaml
 ```
 
 Now you can get and describe the StorageClass using the below commands, you will notice that the provisioner used is the EFS CSI driver and the provisioning mode is EFS access point and ID of the file system as exported in the `EFS_ID` environment variable.
