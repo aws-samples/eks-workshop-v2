@@ -1,6 +1,6 @@
 ---
-title: "Kubecost"
-sidebar_position: 10
+title: "Cost visibility with Kubecost"
+sidebar_position: 60
 sidebar_custom_props: {"module": true}
 ---
 

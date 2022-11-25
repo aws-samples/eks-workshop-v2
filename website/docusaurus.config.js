@@ -108,12 +108,6 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'costoptimization/index',
-            position: 'left',
-            label: 'Cost Optimization',
-          },
-          {
-            type: 'doc',
             docId: 'gitops/index',
             position: 'left',
             label: 'Automation',
