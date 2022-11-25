@@ -18,7 +18,7 @@
     "@types/chai": "^4.3.3",
     "@types/glob-to-regexp": "^0.4.1",
     "@types/mdast": "^3.0.10",
-    "@types/mocha": "^9.1.1",
+    "@types/mocha": "^10.0.0",
     "@types/mock-fs": "^4.13.1",
     "@types/node": "^18.7.21",
     "@types/sinon": "^10.0.13",
