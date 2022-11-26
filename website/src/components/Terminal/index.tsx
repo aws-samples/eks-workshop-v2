@@ -39,7 +39,7 @@ export default function Terminal({
         currentLine = currentLine.substring(2)
       }
 
-      if(section.processLine(currentLine.trim())) {
+      if(section.processLine(currentLine)) {
         allCommands = `${allCommands}\n${currentLine}`
       }
     }
@@ -164,7 +164,7 @@ class TerminalCommand extends TerminalContext {
   private isMultiLine = false;
 
   addLine(line: string) {
-    super.addLine(line)
+    super.addLine(line.trim())
   }
 
   getCommand() {
