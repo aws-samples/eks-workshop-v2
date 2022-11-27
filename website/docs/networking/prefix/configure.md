@@ -7,23 +7,30 @@ Before we begin, lets confirm if the VPC CNI is installed and running.
 
 ```bash
 $ kubectl get pods --selector=k8s-app=aws-node -n kube-system
+NAME             READY   STATUS    RESTARTS   AGE
+aws-node-btst2   1/1     Running   0          107m
+aws-node-xwkf2   1/1     Running   0          107m
+aws-node-zd5rg   1/1     Running   0          107m
 ```
 
 Confirm the CNI version. The CNI version must be 1.9.0 or later.
 
 ```bash
 $ kubectl describe daemonset aws-node --namespace kube-system | grep Image | cut -d "/" -f 2
-amazon-k8s-cni:v1.11.4-eksbuild.1
-amazon-k8s-cni-init:v1.11.4-eksbuild.1
+amazon-k8s-cni-init:v1.12.0-eksbuild.1
+amazon-k8s-cni:v1.12.0-eksbuild.1
 ```
 
 You will see similar output to above.
 
-Confirm if the VPC CNI is configured to run in prefix mode. The value should return "true"
+Confirm if the VPC CNI is configured to run in prefix mode. The `ENABLE_PREFIX_DELEGATION` value should be set to "true":
 
 ```bash
-$ kubectl get ds aws-node -n kube-system -o json | jq -c '.spec.template.spec.containers[].env | .[] | select(.name | contains("ENABLE_PREFIX_DELEGATION"))'
-{"name":"ENABLE_PREFIX_DELEGATION","value":"true"}
+$ kubectl get ds aws-node -o yaml -n kube-system | yq '.spec.template.spec.containers[].env'
+[...]
+- name: ENABLE_PREFIX_DELEGATION
+  value: "true"
+[...]
 ```
 
 Since prefix delegation is enabled (this was done at cluster creation for this workshop), we should be able to see prefix assigned to the network interfaces of the worker nodes. You should see output similar to below.
