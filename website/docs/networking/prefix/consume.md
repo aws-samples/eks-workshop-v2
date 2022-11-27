@@ -31,3 +31,5 @@ Once the pods are running successfully, we should be able to see the additional 
 $ aws ec2 describe-instances --filters "Name=tag-key,Values=eks:cluster-name" "Name=tag-value,Values=${EKS_CLUSTER_NAME}" \
   --query 'Reservations[*].Instances[].{InstanceId: InstanceId, Prefixes: NetworkInterfaces[].Ipv4Prefixes[]}'
 ```
+
+This demonstrates how the VPC CNI dynamically provisions and attaches `/28` prefixes to the ENI(s) as more pods are scheduled on a given node.
