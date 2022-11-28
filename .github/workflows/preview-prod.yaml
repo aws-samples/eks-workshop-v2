@@ -2,9 +2,6 @@ name: Publish Preview Prod
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-    - reinvent
 
 jobs:
   deploy:
