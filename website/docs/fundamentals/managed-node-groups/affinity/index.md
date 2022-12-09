@@ -143,5 +143,5 @@ checkout-redis-7979df659-r7kkm   1/1     Running   0          2m10s
 Lets finish this section by removing the Pending pod:
 
 ```bash
-$ kubectl scale --replicas=2 deployment/checkout-redis --namespace checkout
+$ kubectl scale --replicas=2 deployment/checkout --namespace checkout
 ```

@@ -14,7 +14,7 @@ As part of our workshop environment the EKS cluster has the Amazon Elastic File 
 ```bash
 $ kubectl get daemonset efs-csi-node -n kube-system
 NAME           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                 AGE
-efs-csi-node   4         4         4       4            4           beta.kubernetes.io/os=linux   2d1h
+efs-csi-node   3         3         3       3            3           beta.kubernetes.io/os=linux   2d1h
 ```
 
 The EFS CSI driver supports dynamic and static provisioning. Currently dynamic provisioning creates an access point for each PersistentVolume. This mean an AWS EFS file system has to be created manually on AWS first and should be provided as an input to the StorageClass parameter. For static provisioning, AWS EFS file system needs to be created manually on AWS first. After that it can be mounted inside a container as a volume using the driver.

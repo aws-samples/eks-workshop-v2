@@ -18,6 +18,7 @@ Let's create some Pods and see how Karpenter adapts. Currently there are no node
 
 ```bash
 $ kubectl get node -l type=karpenter
+No resources found
 ```
 
 The following Deployment uses a simple `pause` container image, and we'll use resource requests to predictably scale the cluster. Initially this has `0` replicas so we can gradually scale it deliberately:
