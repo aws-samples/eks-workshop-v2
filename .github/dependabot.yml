@@ -33,3 +33,7 @@ updates:
     ignore:
       # Let backstage-cli do these version bumps
       - dependency-name: '@docusaurus*'
+  - package-ecosystem: npm
+    directory: "/test/util"
+    schedule:
+      interval: monthly

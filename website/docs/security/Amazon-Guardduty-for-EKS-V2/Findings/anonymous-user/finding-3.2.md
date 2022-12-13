@@ -49,7 +49,7 @@ NAME                                 READY   STATUS    RESTARTS   AGE
 nginx                                1/1     Running   0          2m17s
 ```
 
-With in few minutes we will see the finding `Impact:Kubernetes/SuccessfulAnonymousAccess` in guardduty portal.
+Within a few minutes we will see the finding `Impact:Kubernetes/SuccessfulAnonymousAccess` in the GuardDuty portal.
 
 ![](impact_SuccessfulAnonymousAccess.png)
 

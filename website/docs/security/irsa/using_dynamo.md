@@ -38,7 +38,7 @@ $ kubectl apply -k /workspace/modules/security/irsa/dynamo
 This will overwrite our ConfigMap with new values:
 
 ```bash
-$ kubectl get -n carts cm carts
+$ kubectl get -n carts cm carts -o yaml
 apiVersion: v1
 data:
   CARTS_DYNAMODB_TABLENAME: eks-workshop-cluster
@@ -61,7 +61,7 @@ $ kubectl rollout status -n carts deployment/carts
 Let us try to access our application using the browser. A `LoadBalancer` type service named `ui-nlb` is provisioned in the `ui` namespace from which the application's UI can be accessed.
 
 ```bash
-$ kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}"
+$ kubectl get service -n ui ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}'
 k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 ```
 So now our application should be using DynamoDB right? Load it up in the browser using the output of the above command and navigate to the shopping cart:

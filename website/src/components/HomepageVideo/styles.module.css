@@ -1,0 +1,14 @@
+.video {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.features {
+  background-image: url("/img/couch.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 2rem 0;
+  width: 100%;
+}

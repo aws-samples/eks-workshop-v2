@@ -108,9 +108,6 @@ spec:
         endpoint: :55679
     service:
       extensions: [pprof, zpages, health_check, sigv4auth]
-      telemetry:
-        logs:
-          level: "debug"
       pipelines:
         metrics:
           receivers: [prometheus]

@@ -43,3 +43,4 @@ resource "aws_efs_mount_target" "efsmtpvsubnet" {
   subnet_id       = local.private_subnet_ids[count.index]
   security_groups = [aws_security_group.efs.id]
 }
+ 

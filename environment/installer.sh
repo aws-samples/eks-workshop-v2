@@ -17,6 +17,9 @@ kustomize_checksum='701e3c4bfa14e4c520d481fdf7131f902531bfc002cb5062dcf31263a09c
 kubeseal_version='0.18.4'
 kubeseal_checksum='2e765b87889bfcf06a6249cde8e28507e3b7be29851e4fac651853f7638f12f3'
 
+yq_version='4.30.4'
+yq_checksum='30459aa144a26125a1b22c62760f9b3872123233a5658934f7bd9fe714d7864d'
+
 download_and_verify () {
   url=$1
   checksum=$2
@@ -74,3 +77,8 @@ tar xfz kubeseal.tar.gz
 chmod +x kubeseal
 mv ./kubeseal /usr/local/bin
 rm -rf kubeseal.tar.gz
+
+# yq
+download_and_verify "https://github.com/mikefarah/yq/releases/download/v${yq_version}/yq_linux_amd64" "$yq_checksum" "yq"
+chmod +x ./yq
+mv ./yq /usr/local/bin

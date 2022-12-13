@@ -33,8 +33,13 @@ const plugin = (options) => {
 
         const filePromise = fs.readFile(filePath, { encoding: 'utf8' });
         const originalPromise = readKustomization(kustomizationPath).then(res => {
-          const actualPath = path.normalize(`${kustomizationPath}/${res['bases'][0]}`)
-          return generateYaml(actualPath, resourceKind, resourceName, false)
+          if('bases' in res) {
+            const actualPath = path.normalize(`${kustomizationPath}/${res['bases'][0]}`)
+
+            return generateYaml(actualPath, resourceKind, resourceName, false)
+          }
+
+          return Promise.resolve({complete: res, manifest: ''})
         });
         const mutatedPromise = generateYaml(kustomizationPath, resourceKind, resourceName, true)
 
@@ -83,15 +88,15 @@ function generateYaml(path, kind, resource, failOnMissing) {
           const parsed = yaml.parse(e)
 
           if(parsed['kind'] === kind && parsed['metadata']['name'] === resource) {
-            resolve({complete: res, manifest: yaml.stringify(parsed, 99, 2)})
+            return resolve({complete: res, manifest: yaml.stringify(parsed, 99, 2)})
           }
         }
 
         if (failOnMissing) {
-          reject(`Failed to find resource ${kind}/${resource} at ${path}`)
+          return reject(`Failed to find resource ${kind}/${resource} at ${path}`)
         }
 
-        resolve(null)
+        return resolve(null)
       });
     });
 }
@@ -102,7 +107,7 @@ function execShellCommand(cmd) {
   return new Promise((resolve, reject) => {
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
-        console.warn(error);
+        console.warn(`Error running shell command: ${error}`);
       }
       resolve(stdout? stdout : stderr);
     });

@@ -107,13 +107,27 @@ catalog-846479dcdd-fznf5   1/1     Running   2 (43s ago)   46s
 catalog-mysql-0            1/1     Running   0             46s
 ```
 
-Notice we have a Pod for our catalog API and another for the MySQL database. The `catalog` Pod is showing a status of `CrashLoopBackOff`. This is because it needs to be able to connec tto the `catalog-mysql` Pod before it will start, and Kubernetes will keep restarting it until this is the case. Luckily we can use `kubectl wait` to monitor specific Pods until they are in a Ready state:
+Notice we have a Pod for our catalog API and another for the MySQL database. The `catalog` Pod is showing a status of `CrashLoopBackOff`. This is because it needs to be able to connec tto the `catalog-mysql` Pod before it will start, and Kubernetes will keep restarting it until this is the case. Luckily we can use [kubectl wait](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#wait) to monitor specific Pods until they are in a Ready state:
 
 ```bash
-$ kubectl wait --for=condition=Ready pods --all -n catalog --timeout=180s 
+$ kubectl wait --for=condition=Ready pods --all -n catalog --timeout=180s
 ```
 
-Now that the Pods are running lets take at the Services created:
+Now that the Pods are running we can [check their logs](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#logs), for example the catalog API:
+
+```bash
+$ kubectl logs -n catalog deployment/catalog
+```
+
+Kubernetes also allows us to easily scale the number of catalog Pods horizontally:
+
+```bash
+$ kubectl scale -n catalog --replicas 3 deployment/catalog
+deployment.apps/catalog scaled
+$ kubectl wait --for=condition=Ready pods --all -n catalog --timeout=180s
+```
+
+The manifests we applied also create a Service for each of our application and MySQL Pods that can be used by other components in the cluster to connect:
 
 ```bash
 $ kubectl get svc -n catalog

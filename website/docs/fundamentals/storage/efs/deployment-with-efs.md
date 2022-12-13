@@ -3,7 +3,7 @@ title: Dynamic provisioning using EFS
 sidebar_position: 30
 ---
 
-Now that we understand the EFS storage class for Kubernetes let's create a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and change the `nginx` container on the assets deployment to mount the Volume created.
+Now that we understand the EFS storage class for Kubernetes let's create a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and change the `assets` container on the assets deployment to mount the Volume created.
 
 First inspect the `efspvclaim.yaml` file to see the parameters in the file and the claim of the specific storage size of 5GB from the Storage class `efs-sc` we created in the earlier step:
 

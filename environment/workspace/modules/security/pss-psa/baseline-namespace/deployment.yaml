@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: assets
+spec:
+  template:
+    spec:
+      containers:
+        - name: assets
+          securityContext:   
+            privileged: true

@@ -31,4 +31,6 @@ spec:
 
 This is great because of how simple it is to put a load balancer in front of your application. The service spec been extended over the years with annotations and additional configuration. A second option is to use an ingress rule and an ingress controller to route external traffic into Kubernetes pods.
 
+![IP mode](./assets/ui-nlb-instance.png)
+
 In this chapter we'll demonstrate how to expose an application running in the EKS cluster to the Internet using a layer 4 Network Load Balancer.

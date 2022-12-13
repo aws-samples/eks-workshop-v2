@@ -36,7 +36,7 @@ export default function Terminal({
         section = new TerminalSection()
         sections.push(section)
 
-        currentLine = currentLine.substring(2).trim()
+        currentLine = currentLine.substring(2)
       }
 
       if(section.processLine(currentLine)) {
@@ -164,7 +164,7 @@ class TerminalCommand extends TerminalContext {
   private isMultiLine = false;
 
   addLine(line: string) {
-    super.addLine(line)
+    super.addLine(line.trim())
   }
 
   getCommand() {
@@ -175,21 +175,22 @@ class TerminalCommand extends TerminalContext {
     return (
       <div>
         <div className={styles.terminalPrompt}>
-        <span className={styles.terminalPromptUser}>eks-workshop:</span>
         <span className={styles.terminalPromptLocation}>~</span>
         <span className={styles.terminalPromptBling}>$</span>
-        {this.renderCommand(this.lines[0])}
+        {this.renderCommand(this.lines[0], false)}
       </div>
       { this.lines.slice(1).map(element => {
-        return (<div className={styles.terminalPrompt}>{this.renderCommand(element)}</div>)
+        return (<div className={styles.terminalPrompt}>{this.renderCommand(element, true)}</div>)
       })
       }
       </div>
     )
   }
 
-  renderCommand(command: string) {
-    return (<span className={styles.terminalPromptCommand}>{command}</span>)
+  renderCommand(command: string, indent: boolean) {
+    let output = indent ? `     ${command}` : command;
+
+    return (<span className={styles.terminalPromptCommand}>{output}</span>)
   }
 }
 

@@ -17,7 +17,7 @@ Once the cluster role is created we will bind the role with `system:anonymous` u
 $ kubectl create rolebinding pod-access --role=pod-create --user=system:anonymous
 ```
 
-With in few minutes we will see the finding `Policy:Kubernetes/AnonymousAccessGranted` in guardduty portal.
+Within a few minutes we will see the finding `Policy:Kubernetes/AnonymousAccessGranted` in the GuardDuty portal.
 
 ![](Policy_AnonymousAccessGranted.png)
 

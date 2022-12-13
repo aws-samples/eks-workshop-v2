@@ -52,5 +52,4 @@ NAME                                         STATUS   ROLES    AGE     VERSION
 ip-10-42-10-176.us-west-2.compute.internal   Ready    <none>   18h     v1.23.9-eks-ba74326
 ip-10-42-10-56.us-west-2.compute.internal    Ready    <none>   18h     v1.23.9-eks-ba74326
 ip-10-42-11-123.us-west-2.compute.internal   Ready    <none>   18h     v1.23.9-eks-ba74326
-ip-10-42-12-58.us-west-2.compute.internal    Ready    <none>   18h     v1.23.9-eks-ba74326
 ```

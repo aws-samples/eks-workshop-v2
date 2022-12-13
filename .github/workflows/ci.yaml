@@ -28,5 +28,5 @@ jobs:
     - name: Verify terraform
       working-directory: terraform
       run: |
-        terraform init -backend=false
+        terraform init -backend=false -upgrade
         terraform validate -no-color
