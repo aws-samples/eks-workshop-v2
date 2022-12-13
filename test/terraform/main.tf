@@ -3,7 +3,7 @@ terraform {
 }
 
 module "core" {
-  source  = "../../terraform"
+  source = "../../terraform"
 
   id = var.cluster_id
 }

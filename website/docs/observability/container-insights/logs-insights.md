@@ -41,5 +41,3 @@ STATS avg(number_of_container_restarts) as avg_number_of_container_restarts by P
 This query displays a list of your pods, sorted by average number of container restarts.
     
 If you want to try another query, you can use include fields in the list at the right of the screen. For more information about query syntax, see [CloudWatch Logs Insights Query Syntax](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html).
-
-

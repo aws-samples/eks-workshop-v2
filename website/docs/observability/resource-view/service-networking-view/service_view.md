@@ -22,5 +22,3 @@ For this sample application, click on <i> Endpoints</i> and it will list all the
 Click on the <i>catalog</i> endpoint and when you explore the details you can see the IP address and port associated with the endpoint along with Info, Labels and Annotations sections.
 
 ![Insights](/img/resource-view/service-endpoint-detail.jpg)
-
-

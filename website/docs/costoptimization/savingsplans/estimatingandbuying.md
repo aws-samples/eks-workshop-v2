@@ -43,4 +43,3 @@ To purchase the recommended Savings Plans, you first add the recommendation to y
 3. Click the Submit order button to place your order.
 <img src={require('./assets/figure3.png').default}/>
  
-

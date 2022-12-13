@@ -40,7 +40,7 @@ resource "aws_efs_mount_target" "efsmtpvsubnet" {
   count = length(local.private_subnet_ids)
 
   file_system_id  = aws_efs_file_system.efsassets.id
-  subnet_id = local.private_subnet_ids[count.index]
+  subnet_id       = local.private_subnet_ids[count.index]
   security_groups = [aws_security_group.efs.id]
- }
+}
  

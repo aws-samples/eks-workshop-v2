@@ -10,4 +10,3 @@ Check out the [Security](../../../security/) module for additional examples.
 :::Authentication examples. 
 
 ![Insights](/img/resource-view/auth-resources.jpg)
-

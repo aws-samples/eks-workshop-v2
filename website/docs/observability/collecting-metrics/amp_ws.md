@@ -47,4 +47,3 @@ $ awscurl -X POST --region $AWS_DEFAULT_REGION --service aps "${AMP_ENDPOINT}api
   ]
 }
 ```
-

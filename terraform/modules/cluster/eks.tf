@@ -105,7 +105,7 @@ module "eks-blueprints" {
 
       k8s_labels = {
         workshop-default = "yes"
-        blocker = null_resource.kubectl_set_env.id
+        blocker          = null_resource.kubectl_set_env.id
       }
     }
 
@@ -124,7 +124,7 @@ module "eks-blueprints" {
 
       k8s_labels = {
         workshop-system = "yes"
-        blocker = null_resource.kubectl_set_env.id
+        blocker         = null_resource.kubectl_set_env.id
       }
     }
 
@@ -136,7 +136,7 @@ module "eks-blueprints" {
       max_size        = 1
       desired_size    = 0
 
-      
+
       ami_type        = "AL2_x86_64"
       release_version = var.ami_release_version
 

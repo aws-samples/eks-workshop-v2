@@ -31,4 +31,3 @@ The following cluster control plane log types are available. Each log type corre
 - **Controller manager (controllerManager)** – The controller manager manages the core control loops that are shipped with Kubernetes. 
 
 - **Scheduler (scheduler)** – The scheduler component manages when and where to run pods in your cluster. 
-

@@ -71,7 +71,7 @@ module "eks-blueprints-kubernetes-addons" {
         type  = "string"
     }]
   }
-  
+
   cluster_autoscaler_helm_config = {
     version   = var.helm_chart_versions["cluster_autoscaler"]
     namespace = "kube-system"
@@ -113,13 +113,13 @@ module "eks-blueprints-kubernetes-addons" {
     timeout = 600
 
     set = concat([{
-        name  = "replicas"
-        value = "1"
-        type  = "auto"
+      name  = "replicas"
+      value = "1"
+      type  = "auto"
       },
       {
-      name  = "aws.defaultInstanceProfile"
-      value = module.eks-blueprints.managed_node_group_iam_instance_profile_id[0]
+        name  = "aws.defaultInstanceProfile"
+        value = module.eks-blueprints.managed_node_group_iam_instance_profile_id[0]
       },
       {
         name  = "controller.resources.requests.cpu"
@@ -137,9 +137,9 @@ module "eks-blueprints-kubernetes-addons" {
   kubecost_helm_config = {
     set = concat([
       {
-        name = "blocker"
+        name  = "blocker"
         value = local.ebs_csi_blocker
-        type = "string"
+        type  = "string"
       },
       {
         name  = "prometheus.server.nodeSelector.workshop-system"
@@ -209,8 +209,8 @@ module "eks-blueprints-kubernetes-addons" {
 }
 
 resource "random_string" "fluentbit_log_group" {
-  length           = 6
-  special          = false
+  length  = 6
+  special = false
 }
 
 locals {
@@ -271,7 +271,7 @@ module "eks-blueprints-kubernetes-grafana-addon" {
 }
 
 resource "aws_iam_policy" "grafana" {
-  name        = "${local.cluster_name}-grafana-other"
+  name = "${local.cluster_name}-grafana-other"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -294,9 +294,9 @@ module "descheduler" {
 
   helm_config = {
     set = concat([{
-        name = "blocker"
-        value = local.ebs_csi_blocker
-        type = "string"
-      }], local.system_component_values)
+      name  = "blocker"
+      value = local.ebs_csi_blocker
+      type  = "string"
+    }], local.system_component_values)
   }
 }
