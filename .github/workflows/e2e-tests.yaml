@@ -54,7 +54,7 @@ jobs:
       id: create-infrastructure
       working-directory: test/terraform
       run: |
-        terraform init -lockfile=readonly -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="key=ci/${CLUSTER_ID}/terraform.tfstate"
+        terraform init -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="key=ci/${CLUSTER_ID}/terraform.tfstate"
         terraform apply --auto-approve
     - name: Refresh AWS credentials
       if: always()

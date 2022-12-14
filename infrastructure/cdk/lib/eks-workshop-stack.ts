@@ -295,7 +295,7 @@ phases:
       - aws s3 cp $REPOSITORY_ARCHIVE_LOCATION /tmp/repository.zip
       - unzip -o -q /tmp/repository.zip -d $CODEBUILD_SRC_DIR
       - cd $CODEBUILD_SRC_DIR/infrastructure/terraform
-      - terraform init -lockfile=readonly --backend-config="bucket=\${TF_STATE_S3_BUCKET}" --backend-config="key=terraform.tfstate" --backend-config="region=\${AWS_REGION}"
+      - terraform init --backend-config="bucket=\${TF_STATE_S3_BUCKET}" --backend-config="key=terraform.tfstate" --backend-config="region=\${AWS_REGION}"
   build:
     on-failure: ABORT
     commands:
