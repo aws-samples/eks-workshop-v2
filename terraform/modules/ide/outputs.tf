@@ -5,3 +5,7 @@ output "cloud9_url" {
 output "cloud9_iam_role" {
   value = aws_iam_role.cloud9_role.arn
 }
+
+output "cloud9_environment_id" {
+  value = aws_cloud9_environment_ec2.c9_workspace.id
+}

@@ -4,12 +4,9 @@ resource "aws_cloud9_environment_ec2" "c9_workspace" {
   automatic_stop_time_minutes = 90
   image_id                    = "amazonlinux-2-x86_64"
   subnet_id                   = var.subnet_id
+  owner_arn                   = var.cloud9_owner
 
   tags = var.tags
-
-  provisioner "local-exec" {
-    command = "aws cloud9 update-environment --environment-id ${self.id} --managed-credentials-action DISABLE"
-  }
 }
 
 resource "aws_cloud9_environment_membership" "user" {
@@ -86,5 +83,6 @@ resource "aws_lambda_invocation" "cloud9_instance_profile" {
     instance_profile_arn  = aws_iam_instance_profile.cloud9_ssm_instance_profile.arn
     instance_profile_name = aws_iam_instance_profile.cloud9_ssm_instance_profile.name
     disk_size             = var.disk_size
+    ssm_document          = aws_ssm_document.cloud9_bootstrap.name
   })
 }

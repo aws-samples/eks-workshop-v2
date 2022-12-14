@@ -34,6 +34,11 @@ variable "additional_cloud9_policy_arns" {
   default = []
 }
 
+variable "cloud9_owner" {
+  type    = string
+  default = ""
+}
+
 variable "cloud9_user_arns" {
   type    = list(string)
   default = []

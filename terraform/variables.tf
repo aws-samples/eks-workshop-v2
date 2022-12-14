@@ -4,13 +4,17 @@ variable "id" {
   default     = "cluster"
 }
 
-variable "repository_archive_location" {
-  type        = string
-  description = "Location of the repository archive"
-  default     = ""
+variable "cloud9_owner" {
+  type    = string
+  default = ""
 }
 
-variable "cloud9_user_arns" {
-  type    = list(string)
-  default = [""]
+variable "repository_ref" {
+  type    = string
+  default = "main"
+}
+
+variable "github_token" {
+  type    = string
+  default = ""
 }

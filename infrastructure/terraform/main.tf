@@ -5,7 +5,8 @@ terraform {
 module "core" {
   source = "../../terraform"
 
-  id                          = var.cluster_id
-  repository_archive_location = var.repository_archive_location
-  cloud9_user_arns            = var.cloud9_additional_role == "" ? [] : [var.cloud9_additional_role]
+  id             = var.cluster_id
+  repository_ref = var.repository_ref
+  cloud9_owner   = var.cloud9_owner
+  eks_role_arns  = var.eks_additional_role == "" ? [] : [var.eks_additional_role]
 }

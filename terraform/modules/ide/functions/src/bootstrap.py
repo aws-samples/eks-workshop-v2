@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 def lambda_handler(event, context):
     ec2 = boto3.client('ec2')
-    cloud9 = boto3.client('cloud9')
+    ssm = boto3.client('ssm')
 
     instance_id = event['instance_id']
 
@@ -44,3 +44,30 @@ def lambda_handler(event, context):
 
     # Wait some time for IAM profile to apply
     time.sleep(10)
+
+    for i in range(1, 30):
+        response = ssm.describe_instance_information(Filters=[{'Key': 'InstanceIds', 'Values': [instance_id]}])
+        if len(response["InstanceInformationList"]) > 0 and \
+                response["InstanceInformationList"][0]["PingStatus"] == "Online" and \
+                response["InstanceInformationList"][0]["InstanceId"] == instance_id:
+            break
+        time.sleep(10)
+
+    ssm_document = event['ssm_document']
+
+    response = ssm.send_command(
+        InstanceIds=[instance_id],
+        DocumentName=ssm_document)
+
+    command_id = response['Command']['CommandId']
+
+    waiter = ssm.get_waiter('command_executed')
+
+    waiter.wait(
+        CommandId=command_id,
+        InstanceId=instance_id,
+        WaiterConfig={
+            'Delay': 10,
+            'MaxAttempts': 30
+        }
+    )

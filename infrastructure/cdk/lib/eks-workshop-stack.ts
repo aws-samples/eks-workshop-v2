@@ -320,7 +320,7 @@ phases:
           s=0
 
           for i in $(seq 1 3); do 
-            terraform apply -auto-approve -var "repository_archive_location=\${REPOSITORY_ARCHIVE_LOCATION}" -var "cloud9_additional_role=\${C9_ADDITIONAL_ROLE}" && s=0 && break || \
+            terraform apply -auto-approve -var "repository_archive_location=\${REPOSITORY_ARCHIVE_LOCATION}" -var "cloud9_owner=\${C9_ADDITIONAL_ROLE}" && s=0 && break || \
               s=$? && echo 'Sleeping until retry...' && sleep 1
           done
 

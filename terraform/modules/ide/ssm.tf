@@ -16,23 +16,14 @@ mainSteps:
   inputs:
     runCommand:
     - |
+      set -e
+      
+      export CLOUD9_ENVIRONMENT_ID="${aws_cloud9_environment_ec2.c9_workspace.id}"
+      
       echo "Running base bootstrap..."
       echo "${base64encode(local.base_bootstrap)}" | base64 -d | bash
 
       echo "Running extension bootstrap..."
       echo "${base64encode(var.bootstrap_script)}" | base64 -d | bash
 DOC
-}
-
-resource "aws_ssm_association" "cloud9_bootstrap" {
-  name = aws_ssm_document.cloud9_bootstrap.name
-
-  targets {
-    key    = "InstanceIds"
-    values = [data.aws_instance.cloud9_instance.id]
-  }
-
-  depends_on = [
-    aws_lambda_invocation.cloud9_instance_profile
-  ]
 }
