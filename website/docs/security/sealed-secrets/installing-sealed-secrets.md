@@ -15,7 +15,7 @@ $ kubectl wait --for=condition=Ready --timeout=30s pods -l name=sealed-secrets-c
 Now we will check the status of the pod
 
 ```bash
-$ kubectl get pods -n kube-system | grep sealed-secrets-controller
+$ kubectl get pods -n kube-system -l name=sealed-secrets-controller
 sealed-secrets-controller-77747c4b8c-snsxp      1/1     Running   0          5s
 ```
 

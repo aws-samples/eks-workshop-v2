@@ -4,13 +4,17 @@ variable "cluster_id" {
   default     = "cluster"
 }
 
-variable "repository_archive_location" {
-  type        = string
-  description = "Location of the repository archive"
-  default     = ""
+variable "repository_ref" {
+  type    = string
+  default = "main"
 }
 
-variable "cloud9_additional_role" {
+variable "cloud9_owner" {
+  type    = string
+  default = ""
+}
+
+variable "eks_additional_role" {
   type    = string
   default = ""
 }

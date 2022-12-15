@@ -42,15 +42,56 @@ VPC_PRIVATE_SUBNET_ID_0=${module.cluster.private_subnet_ids[0]}
 VPC_PRIVATE_SUBNET_ID_1=${module.cluster.private_subnet_ids[1]}
 VPC_PRIVATE_SUBNET_ID_2=${module.cluster.private_subnet_ids[2]}
 EOT
+
+  bootstrap_script = <<EOF
+rm -rf /tmp/workshop-repository
+git clone https://${var.github_token}@github.com/aws-samples/eks-workshop-v2 /tmp/workshop-repository
+(cd /tmp/workshop-repository && git checkout ${var.repository_ref})
+
+(cd /tmp/workshop-repository/environment && bash ./installer.sh)
+
+bash -c "aws cloud9 update-environment --environment-id $CLOUD9_ENVIRONMENT_ID --managed-credentials-action DISABLE || true"
+
+mkdir -p /workspace
+cp -R /tmp/workshop-repository/environment/workspace/* /workspace
+cp -R /workspace /workspace-backup
+chown ec2-user -R /workspace
+chmod +x /tmp/workshop-repository/environment/bin/*
+cp /tmp/workshop-repository/environment/bin/* /usr/local/bin
+
+rm -rf /tmp/workshop-repository
+
+sudo -H -u ec2-user bash -c "ln -sf /workspace ~/environment/workspace"
+
+if [[ ! -d "/home/ec2-user/.bashrc.d" ]]; then
+  sudo -H -u ec2-user bash -c "mkdir -p ~/.bashrc.d"
+  sudo -H -u ec2-user bash -c "touch ~/.bashrc.d/dummy.bash"
+
+  sudo -H -u ec2-user bash -c "echo 'for file in ~/.bashrc.d/*.bash; do source \"\$file\"; done' >> ~/.bashrc"
+fi
+
+sudo -H -u ec2-user bash -c "echo 'aws cloud9 update-environment --environment-id $CLOUD9_ENVIRONMENT_ID --managed-credentials-action DISABLE &> /dev/null || true' > ~/.bashrc.d/c9.bash"
+
+sudo -H -u ec2-user bash -c "echo 'export AWS_PAGER=\"\"' > ~/.bashrc.d/aws.bash"
+
+sudo -H -u ec2-user bash -c "echo 'aws eks update-kubeconfig --name ${module.cluster.eks_cluster_id} > /dev/null' > ~/.bashrc.d/kubeconfig.bash"
+
+cat << EOT > /home/ec2-user/.bashrc.d/env.bash
+set -a
+${local.environment_variables}
+set +a
+EOT
+
+chown ec2-user /home/ec2-user/.bashrc.d/env.bash
+EOF
 }
 
 module "ide" {
   source = "./modules/ide"
 
-  count = var.repository_archive_location == "" ? 0 : 1
-
   environment_name = module.cluster.eks_cluster_id
   subnet_id        = module.cluster.public_subnet_ids[0]
+  cloud9_owner     = var.cloud9_owner
 
   additional_cloud9_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
@@ -66,42 +107,5 @@ module "ide" {
     }))
   ]
 
-  cloud9_user_arns = var.cloud9_user_arns
-
-  bootstrap_script = <<EOF
-aws s3 cp ${var.repository_archive_location} /tmp/repository.zip
-mkdir -p /tmp/repository-archive
-unzip -o -qq /tmp/repository.zip -d /tmp/repository-archive
-
-(cd /tmp/repository-archive/environment && bash ./installer.sh)
-
-mkdir -p /workspace
-cp -R /tmp/repository-archive/environment/workspace/* /workspace
-chmod +x /tmp/repository-archive/environment/bin/*
-cp /tmp/repository-archive/environment/bin/* /usr/local/bin
-
-rm -rf /tmp/repository-archive
-
-sudo -H -u ec2-user bash -c "ln -s /workspace ~/environment/workspace"
-
-if [[ ! -d "/home/ec2-user/.bashrc.d" ]]; then
-  sudo -H -u ec2-user bash -c "mkdir -p ~/.bashrc.d"
-  sudo -H -u ec2-user bash -c "touch ~/.bashrc.d/dummy.bash"
-
-  sudo -H -u ec2-user bash -c "echo 'for file in ~/.bashrc.d/*.bash; do source \"\$file\"; done' >> ~/.bashrc"
-fi
-
-sudo -H -u ec2-user bash -c "echo 'export AWS_PAGER=\"\"' > ~/.bashrc.d/aws.bash"
-
-sudo -H -u ec2-user bash -c "echo 'aws eks update-kubeconfig --name ${module.cluster.eks_cluster_id}' > ~/.bashrc.d/kubeconfig.bash"
-
-cat << EOT > /home/ec2-user/.bashrc.d/env.bash
-set -a
-${local.environment_variables}
-set +a
-EOT
-
-chown ec2-user /home/ec2-user/.bashrc.d/env.bash
-
-EOF
+  bootstrap_script = var.github_token == "" ? "" : local.bootstrap_script
 }

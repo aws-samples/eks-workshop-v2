@@ -7,7 +7,7 @@ module "cloud9_bootstrap_lambda" {
   function_name = "${var.environment_name}-cloud9-bootstrap"
   handler       = "bootstrap.lambda_handler"
   runtime       = "python3.9"
-  timeout       = 20
+  timeout       = 900
 
   attach_policies    = true
   policies           = [aws_iam_policy.cloud9_bootstrap_lambda_policy.id]
@@ -27,7 +27,6 @@ resource "aws_iam_policy" "cloud9_bootstrap_lambda_policy" {
       {
         Effect = "Allow",
         Action = [
-          "cloud9:UpdateEnvironment",
           "ec2:DescribeInstances",
           "ec2:DescribeIamInstanceProfileAssociations",
           "ec2:DescribeVolumes",
@@ -35,7 +34,10 @@ resource "aws_iam_policy" "cloud9_bootstrap_lambda_policy" {
           "ec2:ModifyVolume",
           "ec2:ReplaceIamInstanceProfileAssociation",
           "iam:ListInstanceProfiles",
-          "iam:PassRole"
+          "iam:PassRole",
+          "ssm:DescribeInstanceInformation",
+          "ssm:SendCommand",
+          "ssm:GetCommandInvocation"
         ],
         Resource = "*"
       }

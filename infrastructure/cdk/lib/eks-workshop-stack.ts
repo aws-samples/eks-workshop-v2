@@ -295,7 +295,7 @@ phases:
       - aws s3 cp $REPOSITORY_ARCHIVE_LOCATION /tmp/repository.zip
       - unzip -o -q /tmp/repository.zip -d $CODEBUILD_SRC_DIR
       - cd $CODEBUILD_SRC_DIR/infrastructure/terraform
-      - terraform init -lockfile=readonly --backend-config="bucket=\${TF_STATE_S3_BUCKET}" --backend-config="key=terraform.tfstate" --backend-config="region=\${AWS_REGION}"
+      - terraform init --backend-config="bucket=\${TF_STATE_S3_BUCKET}" --backend-config="key=terraform.tfstate" --backend-config="region=\${AWS_REGION}"
   build:
     on-failure: ABORT
     commands:
@@ -320,7 +320,7 @@ phases:
           s=0
 
           for i in $(seq 1 3); do 
-            terraform apply -auto-approve -var "repository_archive_location=\${REPOSITORY_ARCHIVE_LOCATION}" -var "cloud9_additional_role=\${C9_ADDITIONAL_ROLE}" && s=0 && break || \
+            terraform apply -auto-approve -var "repository_archive_location=\${REPOSITORY_ARCHIVE_LOCATION}" -var "cloud9_owner=\${C9_ADDITIONAL_ROLE}" && s=0 && break || \
               s=$? && echo 'Sleeping until retry...' && sleep 1
           done
 
