@@ -1,5 +1,5 @@
-variable "cluster_id" {
+variable "environment_suffix" {
   type        = string
-  description = "Identifier for the cluster"
-  default     = "cluster"
+  description = "Suffix for the workshop environment name"
+  default     = ""
 }

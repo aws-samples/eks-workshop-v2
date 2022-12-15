@@ -99,7 +99,7 @@ module "ide" {
   ]
 
   additional_cloud9_policies = [
-    jsondecode(templatefile("${path.module}/local/iam_policy.json", {
+    jsondecode(templatefile("${path.module}/templates/iam_policy.json", {
       cluster_name = module.cluster.eks_cluster_id,
       cluster_arn  = module.cluster.eks_cluster_arn,
       nodegroup    = module.cluster.eks_cluster_nodegroup

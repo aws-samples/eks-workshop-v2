@@ -15,10 +15,10 @@ Please note that the above rolebinding command will trigger `Policy:Kubernetes/A
 
 Identify the API server url of the cluster and run a http get call for uri /api/v1/pods using curl. This is equivalent to running `kubectl get pods -A -o json`. The difference between kubectl and curl is that while using kubectl we will be attaching an auth bearer token to authenticate however while running curl we are not using any auth bearer token and skipping authentication and using `system:anonymous` for authorization.
 
-Please make sure to replace `eks-workshop-cluster` with your **cluster name** with your cluster name and `REGION` with your region.
+Please make sure to replace `eks-workshop` with your **cluster name** with your cluster name and `REGION` with your region.
 
 ```bash
-$ API_URL=`aws eks describe-cluster --name eks-workshop-cluster --query "cluster.endpoint" --region <REGION> --output text`
+$ API_URL=`aws eks describe-cluster --name eks-workshop --query "cluster.endpoint" --region <REGION> --output text`
 $ curl -k $API_URL/api/v1/pods
 ```
 

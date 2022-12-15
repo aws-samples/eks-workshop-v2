@@ -15,7 +15,7 @@ We'll use the managed IAM policy `CloudWatchAgentServerPolicy` to provide the co
 
 ```bash
 $ aws iam list-attached-role-policies \
-  --role-name eks-workshop-cluster-adot-collector-ci | jq .
+  --role-name eks-workshop-adot-collector-ci | jq .
 {
   "AttachedPolicies": [
     {

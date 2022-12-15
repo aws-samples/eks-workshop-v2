@@ -1,5 +1,5 @@
 resource "aws_security_group" "efs" {
-  name        = "${local.cluster_name}-efs"
+  name        = "${var.environment_name}-efs"
   description = "efs security group allow access to port 2049"
   vpc_id      = module.aws_vpc.vpc_id
 
@@ -12,26 +12,29 @@ resource "aws_security_group" "efs" {
   }
 
   egress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
+    description = "Allow all egress"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
   }
 
   tags = merge(
     local.tags,
     {
-      Name = "${local.cluster_name}-efssecuritygroup"
+      Name = "${var.environment_name}-efssecuritygroup"
     }
   )
 }
 
 resource "aws_efs_file_system" "efsassets" {
-  creation_token = "${local.cluster_name}-efs-assets"
+  creation_token = "${var.environment_name}-efs-assets"
+  encrypted      = true
+  kms_key_id     = aws_kms_key.cmk.arn
 
   tags = merge(
     local.tags,
     {
-      Name = "${local.cluster_name}-efs-assets"
+      Name = "${var.environment_name}-efs-assets"
     }
   )
 }

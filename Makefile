@@ -1,6 +1,6 @@
 terraform_context='terraform'
 module='*'
-environment='cluster'
+environment=''
 
 .PHONY: install
 install:

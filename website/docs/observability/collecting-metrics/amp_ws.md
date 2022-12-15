@@ -20,7 +20,7 @@ $ awscurl -X POST --region $AWS_DEFAULT_REGION --service aps "${AMP_ENDPOINT}api
     "beta_kubernetes_io_arch": "amd64",
     "beta_kubernetes_io_instance_type": "m5.large",
     "beta_kubernetes_io_os": "linux",
-    "cluster": "eks-workshop-cluster",
+    "cluster": "eks-workshop",
     "eks_amazonaws_com_capacityType": "ON_DEMAND",
     "eks_amazonaws_com_nodegroup": "managed-ondemand-2022110404042617720000001b",
     "eks_amazonaws_com_nodegroup_image": "ami-01dfb5782bffd09d6",

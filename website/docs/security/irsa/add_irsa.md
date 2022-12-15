@@ -27,8 +27,8 @@ $ aws iam get-policy-version \
       "Action": "dynamodb:*",
       "Effect": "Allow",
       "Resource": [
-        "arn:aws:dynamodb:us-west-2:1234567890:table/eks-workshop-cluster-carts",
-        "arn:aws:dynamodb:us-west-2:1234567890:table/eks-workshop-cluster-carts/index/*"
+        "arn:aws:dynamodb:us-west-2:1234567890:table/eks-workshop-carts",
+        "arn:aws:dynamodb:us-west-2:1234567890:table/eks-workshop-carts/index/*"
       ],
       "Sid": "AllAPIActionsOnCart"
     }
@@ -74,7 +74,7 @@ Lets check the value of `CARTS_IAM_ROLE` then run Kustomize to apply this change
 
 ```bash
 $ echo $CARTS_IAM_ROLE
-arn:aws:iam::1234567890:role/eks-workshop-cluster-carts-dynamo
+arn:aws:iam::1234567890:role/eks-workshop-carts-dynamo
 $ kubectl apply -k /workspace/modules/security/irsa/service-account
 ```
 

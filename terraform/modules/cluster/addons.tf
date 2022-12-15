@@ -2,12 +2,12 @@ data "aws_eks_addon_version" "latest" {
   for_each = toset(["vpc-cni"])
 
   addon_name         = each.value
-  kubernetes_version = local.cluster_version
+  kubernetes_version = var.cluster_version
   most_recent        = true
 }
 
 resource "aws_eks_addon" "vpc_cni" {
-  cluster_name      = module.eks-blueprints.eks_cluster_id
+  cluster_name      = module.eks_blueprints.eks_cluster_id
   addon_name        = "vpc-cni"
   addon_version     = data.aws_eks_addon_version.latest["vpc-cni"].version
   resolve_conflicts = "OVERWRITE"
@@ -18,17 +18,17 @@ resource "aws_eks_addon" "vpc_cni" {
 }
 
 locals {
-  ebs_csi_blocker = try(module.eks-blueprints-kubernetes-addons.aws_ebs_csi_driver.release_metadata.metadata.status, "")
+  ebs_csi_blocker = try(module.eks_blueprints_kubernetes_addons.aws_ebs_csi_driver.release_metadata.metadata.status, "")
 }
 
-module "eks-blueprints-kubernetes-addons" {
+module "eks_blueprints_kubernetes_addons" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.16.0//modules/kubernetes-addons"
 
   depends_on = [
     aws_eks_addon.vpc_cni
   ]
 
-  eks_cluster_id = module.eks-blueprints.eks_cluster_id
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   enable_karpenter                       = true
   enable_aws_node_termination_handler    = true
@@ -119,7 +119,7 @@ module "eks-blueprints-kubernetes-addons" {
       },
       {
         name  = "aws.defaultInstanceProfile"
-        value = module.eks-blueprints.managed_node_group_iam_instance_profile_id[0]
+        value = module.eks_blueprints.managed_node_group_iam_instance_profile_id[0]
       },
       {
         name  = "controller.resources.requests.cpu"
@@ -199,7 +199,7 @@ module "eks-blueprints-kubernetes-addons" {
     local.system_component_values)
   }
 
-  aws_for_fluentbit_cw_log_group_name = "/${module.eks-blueprints.eks_cluster_id}/worker-fluentbit-logs-${random_string.fluentbit_log_group.result}"
+  aws_for_fluentbit_cw_log_group_name = "/${module.eks_blueprints.eks_cluster_id}/worker-fluentbit-logs-${random_string.fluentbit_log_group.result}"
 
   amazon_eks_adot_config = {
     kubernetes_version = var.cluster_version
@@ -222,7 +222,7 @@ locals {
     aws_eks_cluster_endpoint       = data.aws_eks_cluster.cluster.endpoint
     aws_partition_id               = data.aws_partition.current.partition
     aws_region_name                = data.aws_region.current.id
-    eks_cluster_id                 = module.eks-blueprints.eks_cluster_id
+    eks_cluster_id                 = module.eks_blueprints.eks_cluster_id
     eks_oidc_issuer_url            = local.oidc_url
     eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${local.aws_account_id}:oidc-provider/${local.oidc_url}"
     irsa_iam_role_path             = "/"
@@ -252,11 +252,11 @@ locals {
   }]
 }
 
-module "eks-blueprints-kubernetes-grafana-addon" {
+module "eks_blueprints_kubernetes_grafana_addon" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.16.0//modules/kubernetes-addons/grafana"
 
   depends_on = [
-    module.eks-blueprints-kubernetes-addons
+    module.eks_blueprints_kubernetes_addons
   ]
 
   addon_context = local.addon_context
@@ -271,7 +271,7 @@ module "eks-blueprints-kubernetes-grafana-addon" {
 }
 
 resource "aws_iam_policy" "grafana" {
-  name = "${local.cluster_name}-grafana-other"
+  name = "${var.environment_name}-grafana-other"
 
   policy = jsonencode({
     Version = "2012-10-17"

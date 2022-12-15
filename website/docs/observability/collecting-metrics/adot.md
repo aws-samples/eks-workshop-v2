@@ -18,7 +18,7 @@ We'll use the managed IAM policy `AmazonPrometheusRemoteWriteAccess` to provide 
 
 ```bash
 $ aws iam list-attached-role-policies \
-  --role-name eks-workshop-cluster-adot-collector | jq .
+  --role-name eks-workshop-adot-collector | jq .
 {
   "AttachedPolicies": [
     {

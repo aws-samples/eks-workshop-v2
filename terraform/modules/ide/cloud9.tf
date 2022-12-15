@@ -9,14 +9,6 @@ resource "aws_cloud9_environment_ec2" "c9_workspace" {
   tags = var.tags
 }
 
-resource "aws_cloud9_environment_membership" "user" {
-  count = length(var.cloud9_user_arns)
-
-  environment_id = aws_cloud9_environment_ec2.c9_workspace.id
-  permissions    = "read-write"
-  user_arn       = var.cloud9_user_arns[count.index]
-}
-
 data "aws_instance" "cloud9_instance" {
   filter {
     name = "tag:aws:cloud9:environment"

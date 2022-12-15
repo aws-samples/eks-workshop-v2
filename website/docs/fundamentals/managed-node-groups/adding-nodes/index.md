@@ -6,7 +6,7 @@ While working with your cluster, you may need to update your managed node group 
 
  To edit your managed node group configuration using Amazon EKS Console, navigate to the Amazon EKS console at [https://console.aws.amazon.com/eks/home#/clusters](https://console.aws.amazon.com/eks/home#/clusters).
 
-Next, click the `eks-workshop-cluster`, select the **Compute** tab, and select the node group to edit and choose **Edit**.
+Next, click the `eks-workshop`, select the **Compute** tab, and select the node group to edit and choose **Edit**.
 
 On the **Edit node group** page, you can see the following settings under **Node group scaling configuration**: **Desired size**, **Minimum size** and **Maximum size**. Bump the **Minimum size** *and* **Desired size** from `2` to `3`. Scroll down and hit **Save changes**.
 
@@ -20,7 +20,7 @@ On the **Edit node group** page, you can see the following settings under **Node
 $ eksctl get nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME
 ```
 
-We will scale the nodegroup in `eks-workshop-cluster` by changing the node count from `2` to `3` for **minimum size** and **desired capacity** using below command:
+We will scale the nodegroup in `eks-workshop` by changing the node count from `2` to `3` for **minimum size** and **desired capacity** using below command:
 >Note: You do not need to run below command if you have changed the size of nodegroup using `Amazon EKS Console`.
 
 ```bash

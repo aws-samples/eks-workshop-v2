@@ -304,15 +304,15 @@ phases:
         
         cd $CODEBUILD_SRC_DIR/infrastructure/terraform
 
-        export TF_VAR_cluster_id="\${CLUSTER_ID}"
+        export TF_VAR_environment_suffix="\${CLUSTER_ID}"
 
         if [[ $REQUESTED_ACTION == 'Delete' ]]; then
           terraform state rm module.core.module.ide[0].aws_cloud9_environment_membership.user[0] || true
           
-          terraform destroy -target=module.core.module.cluster.module.eks-blueprints-kubernetes-addons --auto-approve
+          terraform destroy -target=module.core.module.cluster.module.eks_blueprints_kubernetes_addons --auto-approve
           terraform destroy -target=module.core.module.cluster.module.descheduler --auto-approve
 
-          terraform destroy -target=module.core.module.cluster.module.eks-blueprints --auto-approve
+          terraform destroy -target=module.core.module.cluster.module.eks_blueprints --auto-approve
 
           terraform destroy --auto-approve
         else
