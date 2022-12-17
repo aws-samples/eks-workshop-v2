@@ -1,9 +1,15 @@
 resource "aws_dynamodb_table" "carts" {
-  name             = "${local.cluster_name}-carts"
+  #checkov:skip=CKV2_AWS_28:Point in time backup not required for workshop
+  name             = "${var.environment_name}-carts"
   hash_key         = "id"
   billing_mode     = "PAY_PER_REQUEST"
   stream_enabled   = true
   stream_view_type = "NEW_AND_OLD_IMAGES"
+
+  server_side_encryption {
+    enabled     = true
+    kms_key_arn = aws_kms_key.cmk.arn
+  }
 
   attribute {
     name = "id"
@@ -28,8 +34,8 @@ module "iam_assumable_role_carts" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version                       = "~> v5.5.5"
   create_role                   = true
-  role_name                     = "${local.cluster_name}-carts-dynamo"
-  provider_url                  = module.eks-blueprints.eks_oidc_issuer_url
+  role_name                     = "${var.environment_name}-carts-dynamo"
+  provider_url                  = module.eks_blueprints.eks_oidc_issuer_url
   role_policy_arns              = [aws_iam_policy.carts_dynamo.arn]
   oidc_fully_qualified_subjects = ["system:serviceaccount:carts:carts"]
 
@@ -37,7 +43,7 @@ module "iam_assumable_role_carts" {
 }
 
 resource "aws_iam_policy" "carts_dynamo" {
-  name        = "${local.cluster_name}-carts-dynamo"
+  name        = "${var.environment_name}-carts-dynamo"
   path        = "/"
   description = "Dynamo policy for carts application"
 

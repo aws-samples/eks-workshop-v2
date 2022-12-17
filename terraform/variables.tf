@@ -1,20 +1,29 @@
-variable "id" {
+variable "environment_suffix" {
   type        = string
-  description = "Identifier for the cluster"
-  default     = "cluster"
+  description = "Suffix for the workshop environment name"
+  default     = ""
 }
 
 variable "cloud9_owner" {
-  type    = string
-  default = ""
+  type        = string
+  default     = ""
+  description = "IAM role of the Cloud9 owner"
 }
 
 variable "repository_ref" {
-  type    = string
-  default = "main"
+  type        = string
+  default     = "main"
+  description = "The ref in the GitHub repository to clone"
 }
 
 variable "github_token" {
-  type    = string
-  default = ""
+  type        = string
+  default     = ""
+  description = "GitHub token to clone from a private repository"
+}
+
+variable "eks_role_arns" {
+  type        = list(string)
+  default     = []
+  description = "Additional IAM roles that should be added to the AWS auth config map"
 }

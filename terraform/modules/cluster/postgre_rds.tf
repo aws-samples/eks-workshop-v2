@@ -1,7 +1,7 @@
 module "networking_rds_postgre" {
   source = "terraform-aws-modules/rds-aurora/aws"
 
-  name           = "${local.cluster_name}-networking"
+  name           = "${var.environment_name}-networking"
   engine         = "aurora-postgresql"
   engine_version = "11.13"
   instance_class = "db.t3.medium"
@@ -34,7 +34,8 @@ resource "random_string" "networking_db_master" {
 }
 
 resource "aws_security_group" "networking_rds_ingress" {
-  name        = "${local.cluster_name}-networking-db"
+  #checkov:skip=CKV2_AWS_5:This is attached in the workshop
+  name        = "${var.environment_name}-networking-db"
   description = "Allow inbound traffic to security group networking module RDS"
   vpc_id      = module.aws_vpc.vpc_id
 

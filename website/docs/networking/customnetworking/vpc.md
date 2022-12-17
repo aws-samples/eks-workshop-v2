@@ -44,7 +44,7 @@ $ aws ec2 describe-vpcs --vpc-ids $VPC_ID
                 },
                 {
                     "Key": "Name",
-                    "Value": "eks-workshop-cluster-vpc"
+                    "Value": "eks-workshop-vpc"
                 }
             ]
         }

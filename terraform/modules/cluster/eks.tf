@@ -4,7 +4,7 @@ locals {
   default_mng_size = 2
 }
 
-module "eks-blueprints" {
+module "eks_blueprints" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.16.0"
 
   tags = local.tags
@@ -13,8 +13,8 @@ module "eks-blueprints" {
   private_subnet_ids = local.private_subnet_ids
   public_subnet_ids  = module.aws_vpc.public_subnets
 
-  cluster_name    = local.cluster_name
-  cluster_version = local.cluster_version
+  cluster_name    = var.environment_name
+  cluster_version = var.cluster_version
 
   cluster_endpoint_public_access  = true
   cluster_endpoint_private_access = true
@@ -88,7 +88,7 @@ module "eks-blueprints" {
 
   # Add karpenter.sh/discovery tag so that we can use this as securityGroupSelector in karpenter provisioner
   node_security_group_tags = {
-    "karpenter.sh/discovery" = local.cluster_name
+    "karpenter.sh/discovery" = var.environment_name
   }
 
   managed_node_groups = {
@@ -145,7 +145,6 @@ module "eks-blueprints" {
         tainted          = "yes"
       }
     }
-
   }
 
   fargate_profiles = {
@@ -169,16 +168,16 @@ locals {
     kind            = "Config"
     current-context = "terraform"
     clusters = [{
-      name = module.eks-blueprints.eks_cluster_id
+      name = module.eks_blueprints.eks_cluster_id
       cluster = {
-        certificate-authority-data = module.eks-blueprints.eks_cluster_certificate_authority_data
-        server                     = module.eks-blueprints.eks_cluster_endpoint
+        certificate-authority-data = module.eks_blueprints.eks_cluster_certificate_authority_data
+        server                     = module.eks_blueprints.eks_cluster_endpoint
       }
     }]
     contexts = [{
       name = "terraform"
       context = {
-        cluster = module.eks-blueprints.eks_cluster_id
+        cluster = module.eks_blueprints.eks_cluster_id
         user    = "terraform"
       }
     }]
@@ -193,7 +192,7 @@ locals {
 
 resource "null_resource" "kubectl_set_env" {
   triggers = {
-    cluster_arns = module.eks-blueprints.eks_cluster_arn
+    cluster_arns = module.eks_blueprints.eks_cluster_arn
   }
 
   provisioner "local-exec" {

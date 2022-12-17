@@ -23,7 +23,7 @@ $ kubectl -n carts exec deployment/carts -- env | grep AWS
 AWS_STS_REGIONAL_ENDPOINTS=regional
 AWS_DEFAULT_REGION=us-west-2
 AWS_REGION=us-west-2
-AWS_ROLE_ARN=arn:aws:iam::1234567890:role/eks-workshop-cluster-carts-dynamo
+AWS_ROLE_ARN=arn:aws:iam::1234567890:role/eks-workshop-carts-dynamo
 AWS_WEB_IDENTITY_TOKEN_FILE=/var/run/secrets/eks.amazonaws.com/serviceaccount/token
 ```
 

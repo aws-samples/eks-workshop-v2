@@ -19,6 +19,7 @@ output "environment_variables" {
 }
 
 output "blueprints_addons" {
-  sensitive = true
-  value     = module.cluster.blueprints_addons
+  sensitive   = true
+  value       = module.cluster.blueprints_addons
+  description = "Information about EKS blueprints addons installed"
 }

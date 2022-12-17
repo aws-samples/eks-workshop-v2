@@ -1,7 +1,7 @@
 module "orders_rds" {
   source = "terraform-aws-modules/rds-aurora/aws"
 
-  name           = "${local.cluster_name}-orders"
+  name           = "${var.environment_name}-orders"
   engine         = "aurora-mysql"
   engine_version = "5.7"
   instance_class = "db.t3.small"
@@ -23,11 +23,11 @@ module "orders_rds" {
   #monitoring_interval = 10
 
   create_db_parameter_group = true
-  db_parameter_group_name   = "${local.cluster_name}-orders"
+  db_parameter_group_name   = "${var.environment_name}-orders"
   db_parameter_group_family = "aurora-mysql5.7"
 
   create_db_cluster_parameter_group = true
-  db_cluster_parameter_group_name   = "${local.cluster_name}-orders"
+  db_cluster_parameter_group_name   = "${var.environment_name}-orders"
   db_cluster_parameter_group_family = "aurora-mysql5.7"
 
   tags = local.tags
@@ -39,7 +39,8 @@ resource "random_string" "orders_db_master" {
 }
 
 resource "aws_security_group" "orders_rds_ingress" {
-  name        = "${local.cluster_name}-orders-db"
+  #checkov:skip=CKV2_AWS_5:This is attached in the workshop
+  name        = "${var.environment_name}-orders-db"
   description = "Allow inbound traffic to orders MySQL"
   vpc_id      = module.aws_vpc.vpc_id
 

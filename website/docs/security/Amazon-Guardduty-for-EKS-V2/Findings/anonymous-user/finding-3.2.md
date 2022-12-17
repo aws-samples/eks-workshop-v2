@@ -21,10 +21,10 @@ $ kubectl create rolebinding psp-access --role=psp-use --user=system:anonymous -
 
 Please note that the above rolebinding command will trigger `Policy:Kubernetes/AnonymousAccessGranted` finding in guard duty within few minutes.
 
-Now let us create a pod named nginx using a HTTP post call. Please make sure to replace `eks-workshop-cluster` with your **cluster name** with your cluster name and `REGION` with your region.
+Now let us create a pod named nginx using a HTTP post call. Please make sure to replace `eks-workshop` with your **cluster name** with your cluster name and `REGION` with your region.
 
 ```bash
-$ API_URL=`aws eks describe-cluster --name eks-workshop-cluster --query "cluster.endpoint" --region <REGION> --output text`
+$ API_URL=`aws eks describe-cluster --name eks-workshop --query "cluster.endpoint" --region <REGION> --output text`
 $ curl -k -v  $API_URL/api/v1/namespaces/default/pods -X POST -H 'Content-Type: application/yaml'   -d '---
 apiVersion: v1
 kind: Pod

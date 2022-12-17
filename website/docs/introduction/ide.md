@@ -35,8 +35,8 @@ For example, run the following command to get details about your EKS cluster:
 $ aws eks describe-cluster --name $EKS_CLUSTER_NAME
 {
     "cluster": {
-        "name": "eks-workshop-cluster",
-        "arn": "arn:aws:eks:us-west-2:1234567890:cluster/eks-workshop-cluster",
+        "name": "eks-workshop",
+        "arn": "arn:aws:eks:us-west-2:1234567890:cluster/eks-workshop",
         "createdAt": 1662084731.367,
         "version": "1.23",
         "endpoint": "https://7C18D86993E776387BB6C040FBA9D359.sk1.us-west-2.eks.amazonaws.com",

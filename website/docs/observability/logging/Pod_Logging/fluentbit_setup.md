@@ -24,7 +24,7 @@ First, we can validate the resources created for Fluent Bit by entering the foll
   daemonset.apps/aws-for-fluent-bit   2         2         2       2            2           <none>          104m
   ```
 
-The ConfigMap for aws-for-fluent-bit is configured to stream the contents of files in the directory `/var/log/containers/*.log` from each node to the CloudWatch log group `/eks-workshop-cluster/worker-fluentbit-logs`:
+The ConfigMap for aws-for-fluent-bit is configured to stream the contents of files in the directory `/var/log/containers/*.log` from each node to the CloudWatch log group `/eks-workshop/worker-fluentbit-logs`:
 
   ```bash
   $ kubectl describe configmaps -n aws-for-fluent-bit
@@ -69,7 +69,7 @@ The ConfigMap for aws-for-fluent-bit is configured to stream the contents of fil
       Name                  cloudwatch
       Match                 *
       region                us-east-1
-      log_group_name        /eks-workshop-cluster/worker-fluentbit-logs
+      log_group_name        /eks-workshop/worker-fluentbit-logs
       log_stream_prefix     fluentbit-
       auto_create_group     true
 

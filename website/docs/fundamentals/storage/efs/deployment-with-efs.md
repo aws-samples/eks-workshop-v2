@@ -25,7 +25,12 @@ We can apply the changes by running the following command:
 
 ```bash
 $ kubectl apply -k /workspace/modules/fundamentals/storage/efs/deployment
-[...]
+namespace/assets unchanged
+serviceaccount/assets unchanged
+configmap/assets unchanged
+service/assets unchanged
+persistentvolumeclaim/efs-claim created
+deployment.apps/assets configured
 $ kubectl rollout status --timeout=130s deployment/assets -n assets
 ```
 
@@ -33,17 +38,11 @@ Now look at the `volumeMounts` in the deployment, notice that we have our new `V
 
 ```bash
 $ kubectl get deployment -n assets \
-  -o json | jq '.items[].spec.template.spec.containers[].volumeMounts' 
-[
-  {
-    "mountPath": "/usr/share/nginx/html/assets",
-    "name": "efsvolume"
-  },
-  {
-    "mountPath": "/tmp",
-    "name": "tmp-volume"
-  }
-]
+  -o yaml | yq '.items[].spec.template.spec.containers[].volumeMounts' 
+- mountPath: /usr/share/nginx/html/assets
+  name: efsvolume
+- mountPath: /tmp
+  name: tmp-volume
 ```
 
 A PersistentVolume (PV) has been created automatically for the PersistentVolumeClaim (PVC) we had created in the previous step:
