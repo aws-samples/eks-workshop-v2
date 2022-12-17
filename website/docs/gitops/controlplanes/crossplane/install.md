@@ -1,5 +1,5 @@
 ---
-title: "Install Crossplane"
+title: "Crossplane Installation"
 sidebar_position: 10
 ---
 

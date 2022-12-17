@@ -20,8 +20,8 @@ spec:
       - name: rds-eks-workshop
     masterUserPasswordSecretRef:
       key: password
-      name: catalog-writer-db
+      name: catalog-db
       namespace: catalog-prod
   writeConnectionSecretToRef:
-    name: catalog-writer-db
+    name: catalog-db
     namespace: catalog-prod
