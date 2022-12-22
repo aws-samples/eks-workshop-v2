@@ -12,5 +12,8 @@
   "MD047": false,
 
   // Disable detection of inline HTML since we use JSX
-  "MD033": false
+  "MD033": false,
+
+  // Disable bare URL detection
+  "MD034": false
 }

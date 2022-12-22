@@ -105,7 +105,7 @@ module "eks_blueprints" {
 
       k8s_labels = {
         workshop-default = "yes"
-        blocker          = null_resource.kubectl_set_env.id
+        blocker          = sha1(aws_eks_addon.vpc_cni.id)
       }
     }
 
@@ -124,7 +124,7 @@ module "eks_blueprints" {
 
       k8s_labels = {
         workshop-system = "yes"
-        blocker         = null_resource.kubectl_set_env.id
+        blocker         = sha1(aws_eks_addon.vpc_cni.id)
       }
     }
 
@@ -142,6 +142,7 @@ module "eks_blueprints" {
 
       k8s_labels = {
         workshop-default = "no"
+        blocker          = sha1(aws_eks_addon.vpc_cni.id)
         tainted          = "yes"
       }
     }
@@ -159,6 +160,24 @@ module "eks_blueprints" {
       subnet_ids = local.private_subnet_ids
     }
   }
+}
+
+resource "aws_security_group_rule" "dns_udp" {
+  type              = "ingress"
+  from_port         = 53
+  to_port           = 53
+  protocol          = "udp"
+  cidr_blocks       = [module.aws_vpc.vpc_cidr_block]
+  security_group_id = module.eks_blueprints.cluster_primary_security_group_id
+}
+
+resource "aws_security_group_rule" "dns_tcp" {
+  type              = "ingress"
+  from_port         = 53
+  to_port           = 53
+  protocol          = "tcp"
+  cidr_blocks       = [module.aws_vpc.vpc_cidr_block]
+  security_group_id = module.eks_blueprints.cluster_primary_security_group_id
 }
 
 # Build kubeconfig for use with null resource to modify aws-node daemonset
@@ -204,7 +223,7 @@ resource "null_resource" "kubectl_set_env" {
     # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
     command = <<-EOT
       sleep 30
-      kubectl set env daemonset aws-node -n kube-system ENABLE_PREFIX_DELEGATION=true ENABLE_POD_ENI=true POD_SECURITY_GROUP_ENFORCING_MODE=standard --kubeconfig <(echo $KUBECONFIG | base64 --decode)
+      kubectl set env daemonset aws-node -n kube-system POD_SECURITY_GROUP_ENFORCING_MODE=standard --kubeconfig <(echo $KUBECONFIG | base64 --decode)
       sleep 10
     EOT
   }
