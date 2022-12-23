@@ -12,11 +12,6 @@ spec:
   claimNames:
     kind: RelationalDatabase
     plural: relationaldatabases
-  connectionSecretKeys:
-  - endpoint
-  - port
-  - username
-  - password
   versions:
     - name: v1alpha1
       served: true

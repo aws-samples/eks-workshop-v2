@@ -1,0 +1,10 @@
+varReference:
+  - apiVersion: apiextensions.crossplane.io/v1
+    kind: Composition
+    path: spec/resources/base/spec/forProvider/region
+  - apiVersion: apiextensions.crossplane.io/v1
+    kind: Composition
+    path: spec/resources/base/spec/forProvider/subnetIds
+  - apiVersion: apiextensions.crossplane.io/v1
+    kind: Composition
+    path: spec/resources/base/spec/forProvider/vpcId

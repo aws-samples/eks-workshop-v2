@@ -6,25 +6,25 @@ spec:
   compositeTypeRef:
     apiVersion: awsblueprints.io/v1alpha1
     kind: XRelationalDatabase
-  writeConnectionSecretsToNamespace: crossplane-system
   resources:
     - base:
         apiVersion: database.aws.crossplane.io/v1beta1
         kind: DBSubnetGroup
         spec:
           forProvider:
-            region: us-east-1
+            region: $(AWS_DEFAULT_REGION)
             description: "rds-mysql"
             subnetIds:
-            - subnet-03467c2555e1804a2
-            - subnet-0ab2caa411026e424
+            - $(VPC_PRIVATE_SUBNET_ID_0)
+            - $(VPC_PRIVATE_SUBNET_ID_1)
+            - $(VPC_PRIVATE_SUBNET_ID_2)
     - base:
         apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: SecurityGroup
         spec:
           forProvider:
-            region: us-east-1
-            vpcId: vpc-07ce7322edd11a248
+            region: $(AWS_DEFAULT_REGION)
+            vpcId: $(VPC_ID)
             description: "rds-mysq-sg"
             ingress:
               - ipProtocol: tcp
@@ -44,7 +44,7 @@ spec:
         kind: DBInstance
         spec:
           forProvider:
-            region: us-east-1
+            region: $(AWS_DEFAULT_REGION)
             applyImmediately: true
             autogeneratePassword: true
             dbSubnetGroupNameSelector:
@@ -79,8 +79,3 @@ spec:
             - type: string
               string:
                 fmt: "%s-password"
-      connectionDetails:
-      - fromConnectionSecretKey: username
-      - fromConnectionSecretKey: password
-      - fromConnectionSecretKey: endpoint
-      - fromConnectionSecretKey: port
