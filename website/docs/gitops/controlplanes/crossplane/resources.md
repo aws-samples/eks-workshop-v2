@@ -32,10 +32,10 @@ securitygroup.ec2.aws.crossplane.io/rds-eks-workshop created
 dbinstance.rds.aws.crossplane.io/rds-eks-workshop created
 ```
 
-It takes some time to provision the AWS managed services, for RDS approximately 10 minutes. The ACK controller will report the status of the reconciliation in the status field of the Kubernetes custom resources.  
+It takes some time to provision the AWS managed services, for RDS approximately 10 minutes. The AWS provider controller will report the status of the reconciliation in the status field of the Kubernetes custom resources.  
 You can open the AWS console and see the services being created.
 
-To verify that the provision is done, you can check that the condition “ACK.ResourceSynced” is true using the Kubernetes CLI.
+To verify that the provision is done, you can check that the condition “Ready” is true using the Kubernetes CLI.
 
 Run the following commands and they will exit once the condition is met.
 ```bash timeout=1080
@@ -92,7 +92,7 @@ Delete the Application
 ```bash
 $ kubectl delete -k /workspace/modules/crossplane/manifests/
 ```
-Delete the Crossplane managed resources
+Delete the Crossplane resources
 ```bash
 $ kubectl delete -k /workspace/modules/crossplane/managed
 $ kubectl delete ns catalog-prod

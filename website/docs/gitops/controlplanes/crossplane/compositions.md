@@ -17,6 +17,12 @@ In this example the user only needs to specify `databaseName`, `storageGB` and `
 crossplane/compositions/definition.yaml
 ```
 
+Create the Composite Definition
+```bash
+$ kubectl apply -f /workspace/modules/crossplane/compositions/definition.yaml
+compositeresourcedefinition.apiextensions.crossplane.io "xrelationaldatabases.awsblueprints.io" deleted
+```
+
 ## Create Composition
 
 A Composition lets Crossplane know what to do when someone creates a Composite Resource. Each Composition creates a link between an XR and a set of one or more Managed Resources - when the XR is created, updated, or deleted the set of Managed Resources are created, updated or deleted accordingly.
@@ -26,11 +32,93 @@ Create a Composition that provisions the managed resources `DBSubnetGroup`, `Sec
 crossplane/compositions/composition.yaml
 ```
 
+Create the Composition
+```bash
+$ kubectl apply -k /workspace/modules/crossplane/compositions
+composition.apiextensions.crossplane.io/rds-mysql.awsblueprints.io created
+```
+
 ## Create Composite Resource Claim 
 
 Once you’ve configured Crossplane with the details of your new XR you can either create one directly, or use a claim. Typically only the folks responsible for configuring Crossplane (often a platform or SRE team) have permission to create XRs directly. Everyone else manages XRs via a lightweight proxy resource called a Composite Resource Claim (or claim for short).
 
-Create the database by creating a Claim
+On this claim the developer only needs to specify a default database name, size, and location to store the credentials to connecto the database.
+
 ```file
 crossplane/compositions/claim.yaml
+```
+
+Create the database by creating a Claim. (The namespace `catalog-prod` is created to store the credentials)
+```bash
+$ kubectl create ns catalog-prod || true
+$ kubectl apply -f /workspace/modules/crossplane/compositions/claim.yaml
+relationaldatabase.awsblueprints.io/rds-eks-workshop created
+```
+
+
+It takes some time to provision the AWS managed services, for RDS approximately 10 minutes. The AWS provider controller will report the status of the reconciliation in the status field of the Kubernetes custom resources.  
+You can open the AWS console and see the services being created.
+
+To verify that the provision is done, you can check that the condition “Ready” is true using the Kubernetes CLI.
+
+Run the following commands and they will exit once the condition is met.
+```bash timeout=1080
+$ kubectl wait dbinstances.rds.aws.crossplane.io rds-eks-workshop --for=condition=Ready --timeout=15m
+dbinstances.rds.services.k8s.aws/rds-eks-workshop condition met
+```
+
+Verify that the secret **catalog-db** has the correct information
+```bash
+$ if [[ "$(aws rds describe-db-instances --query "DBInstances[?DBInstanceIdentifier == 'rds-eks-workshop'].Endpoint.Address" --output text)" ==  "$(kubectl get secret catalog-db -o go-template='{{.data.endpoint|base64decode}}' -n catalog-prod)" ]]; then echo "Secret catalog configured correctly"; else echo "Error Catalo misconfigured"; false; fi
+Secret catalog configured correctly
+```
+
+
+## Deploy the Application
+
+The application will use the same manifest files as in development with the exception of the secret which contains the binding information that connects to AWS Services.
+
+```bash
+$ kubectl apply -k /workspace/modules/crossplane/manifests/
+...
+service/catalog created
+...
+deployment.apps/catalog created
+...
+```
+
+## Access the Application
+
+Verify that all pods are running in production
+
+```bash
+$ kubectl get pods -A | grep '\-prod'
+assets-prod                    assets-7bd57dbfcc-cdp9j                         1/1     Running   0              1m
+carts-prod                     carts-789498bdbd-wmb2q                          1/1     Running   0              1m
+catalog-prod                   catalog-5c4b747759-7fphz                        1/1     Running   0              1m
+checkout-prod                  checkout-66b6dcbc45-k9qjr                       1/1     Running   0              1m
+orders-prod                    orders-59b94995cf-97pwz                         1/1     Running   0              1m
+ui-prod                        ui-795bd46545-49jrh                             1/1     Running   0              1m
+```
+
+Get the hostname of the network load balancer for the UI and open it in the browser
+
+```bash
+$ kubectl get svc -n ui-prod ui-nlb
+NAME     TYPE           CLUSTER-IP      EXTERNAL-IP                                           PORT(S)        AGE
+ui-nlb   LoadBalancer   x.x.x.x         k8s-uiprod-uinlb-<uuid>.elb.<region>.amazonaws.com    80:32028/TCP   111m
+```
+
+## Cleanup
+
+Delete the Application
+```bash
+$ kubectl delete -k /workspace/modules/crossplane/manifests/
+```
+Delete the Crossplane resources
+```bash
+$ kubectl delete -f /workspace/modules/crossplane/compositions/claim.yaml
+$ kubectl delete -f /workspace/modules/crossplane/compositions/definition.yaml
+$ kubectl delete -k /workspace/modules/crossplane/compositions
+$ kubectl delete ns catalog-prod
 ```

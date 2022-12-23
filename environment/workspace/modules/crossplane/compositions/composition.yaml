@@ -63,7 +63,7 @@ spec:
             masterUserPasswordSecretRef:
               key: password
               name: to-be-patched
-              namespace: crossplane-system
+              namespace: to-be-patched
       patches:
         - fromFieldPath: spec.secret.namespace
           toFieldPath: spec.writeConnectionSecretToRef.namespace
@@ -73,9 +73,7 @@ spec:
           toFieldPath: "spec.forProvider.allocatedStorage"
         - fromFieldPath: "spec.databaseName"
           toFieldPath: "spec.forProvider.dbName"
-        - fromFieldPath: "metadata.uid"
-          toFieldPath: "spec.forProvider.masterUserPasswordSecretRef.name"
-          transforms:
-            - type: string
-              string:
-                fmt: "%s-password"
+        - fromFieldPath: spec.secret.namespace
+          toFieldPath: spec.forProvider.masterUserPasswordSecretRef.namespace
+        - fromFieldPath: spec.secret.name
+          toFieldPath: spec.forProvider.masterUserPasswordSecretRef.name
