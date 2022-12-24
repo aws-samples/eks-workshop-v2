@@ -42,7 +42,7 @@ composition.apiextensions.crossplane.io/rds-mysql.awsblueprints.io created
 
 Once you’ve configured Crossplane with the details of your new XR you can either create one directly, or use a claim. Typically only the folks responsible for configuring Crossplane (often a platform or SRE team) have permission to create XRs directly. Everyone else manages XRs via a lightweight proxy resource called a Composite Resource Claim (or claim for short).
 
-On this claim the developer only needs to specify a default database name, size, and location to store the credentials to connecto the database.
+On this claim the developer only needs to specify a default database name, size, and location to store the credentials to connect to the database.
 
 ```file
 crossplane/compositions/claim.yaml
@@ -61,15 +61,16 @@ You can open the AWS console and see the services being created.
 
 To verify that the provision is done, you can check that the condition “Ready” is true using the Kubernetes CLI.
 
-Run the following commands and they will exit once the condition is met.
+Run the following commands and they will exit once the condition is met. (Takes approximately 10 minutes, check RDS Console for progress)
 ```bash timeout=1080
-$ kubectl wait dbinstances.rds.aws.crossplane.io rds-eks-workshop --for=condition=Ready --timeout=15m
+$ kubectl wait relationaldatabase.awsblueprints.io rds-eks-workshop -n catalog-prod --for=condition=Ready --timeout=15m
 dbinstances.rds.services.k8s.aws/rds-eks-workshop condition met
 ```
 
 Verify that the secret **catalog-db** has the correct information
 ```bash
-$ if [[ "$(aws rds describe-db-instances --query "DBInstances[?DBInstanceIdentifier == 'rds-eks-workshop'].Endpoint.Address" --output text)" ==  "$(kubectl get secret catalog-db -o go-template='{{.data.endpoint|base64decode}}' -n catalog-prod)" ]]; then echo "Secret catalog configured correctly"; else echo "Error Catalo misconfigured"; false; fi
+$ export DB_INSTANCE=$(k get dbinstances.rds.aws.crossplane.io -l 'crossplane.io/claim-name=rds-eks-workshop' -o jsonpath='{.items[*].status.atProvider.dbInstanceIdentifier}')
+$ if [[ "$(aws rds describe-db-instances --query "DBInstances[?DBInstanceIdentifier == "\'${DB_INSTANCE}\'"].Endpoint.Address" --output text)" ==  "$(kubectl get secret catalog-db -o go-template='{{.data.endpoint|base64decode}}' -n catalog-prod)" ]]; then echo "Secret catalog configured correctly"; else echo "Error Catalo misconfigured"; false; fi
 Secret catalog configured correctly
 ```
 

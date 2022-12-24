@@ -57,7 +57,7 @@ We already configured IAM to allow this service account to assume the role we cr
 
 ```bash
 $ envsubst < /workspace/modules/crossplane/aws-provider/aws-provider.yaml | kubectl apply -f -
-$ kubectl wait --for condition=established --timeout=60s crd/providerconfigs.aws.crossplane.io
+$ until kubectl wait --for condition=established --timeout=60s crd/providerconfigs.aws.crossplane.io; do echo "waiting on crd"; sleep 3; done
 ```
 
 Install the AWS `ProviderConfig` `default`

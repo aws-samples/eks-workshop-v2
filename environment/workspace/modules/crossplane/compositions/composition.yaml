@@ -65,15 +65,16 @@ spec:
               name: to-be-patched
               namespace: to-be-patched
       patches:
-        - fromFieldPath: spec.secret.namespace
-          toFieldPath: spec.writeConnectionSecretToRef.namespace
-        - fromFieldPath: spec.secret.name
-          toFieldPath: spec.writeConnectionSecretToRef.name
         - fromFieldPath: "spec.storageGB"
           toFieldPath: "spec.forProvider.allocatedStorage"
         - fromFieldPath: "spec.databaseName"
           toFieldPath: "spec.forProvider.dbName"
-        - fromFieldPath: spec.secret.namespace
+        - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+          toFieldPath: spec.writeConnectionSecretToRef.namespace
+        - fromFieldPath: spec.secret
+          toFieldPath: spec.writeConnectionSecretToRef.name
+        - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
           toFieldPath: spec.forProvider.masterUserPasswordSecretRef.namespace
-        - fromFieldPath: spec.secret.name
+        - fromFieldPath: spec.secret
           toFieldPath: spec.forProvider.masterUserPasswordSecretRef.name
+      
