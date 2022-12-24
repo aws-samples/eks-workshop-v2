@@ -62,14 +62,14 @@ You can open the AWS console and see the services being created.
 To verify that the provision is done, you can check that the condition “Ready” is true using the Kubernetes CLI.
 
 Run the following commands and they will exit once the condition is met. (Takes approximately 10 minutes, check RDS Console for progress)
-```bash timeout=1080
-$ kubectl wait relationaldatabase.awsblueprints.io rds-eks-workshop -n catalog-prod --for=condition=Ready --timeout=15m
+```bash timeout=1200
+$ kubectl wait relationaldatabase.awsblueprints.io rds-eks-workshop -n catalog-prod --for=condition=Ready --timeout=20m
 dbinstances.rds.services.k8s.aws/rds-eks-workshop condition met
 ```
 
 Verify that the secret **catalog-db** has the correct information
 ```bash
-$ export DB_INSTANCE=$(k get dbinstances.rds.aws.crossplane.io -l 'crossplane.io/claim-name=rds-eks-workshop' -o jsonpath='{.items[*].status.atProvider.dbInstanceIdentifier}')
+$ export DB_INSTANCE=$(kubectl get dbinstances.rds.aws.crossplane.io -l 'crossplane.io/claim-name=rds-eks-workshop' -o jsonpath='{.items[*].status.atProvider.dbInstanceIdentifier}')
 $ if [[ "$(aws rds describe-db-instances --query "DBInstances[?DBInstanceIdentifier == "\'${DB_INSTANCE}\'"].Endpoint.Address" --output text)" ==  "$(kubectl get secret catalog-db -o go-template='{{.data.endpoint|base64decode}}' -n catalog-prod)" ]]; then echo "Secret catalog configured correctly"; else echo "Error Catalo misconfigured"; false; fi
 Secret catalog configured correctly
 ```
@@ -113,11 +113,11 @@ ui-nlb   LoadBalancer   x.x.x.x         k8s-uiprod-uinlb-<uuid>.elb.<region>.ama
 ## Cleanup
 
 Delete the Application
-```bash
+```bash timeout=600
 $ kubectl delete -k /workspace/modules/crossplane/manifests/
 ```
 Delete the Crossplane resources
-```bash
+```bash timeout=600
 $ kubectl delete -f /workspace/modules/crossplane/compositions/claim.yaml
 $ kubectl delete -f /workspace/modules/crossplane/compositions/definition.yaml
 $ kubectl delete -k /workspace/modules/crossplane/compositions

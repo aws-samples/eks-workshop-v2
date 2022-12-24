@@ -38,8 +38,8 @@ You can open the AWS console and see the services being created.
 To verify that the provision is done, you can check that the condition “Ready” is true using the Kubernetes CLI.
 
 Run the following commands and they will exit once the condition is met.
-```bash timeout=1080
-$ kubectl wait dbinstances.rds.aws.crossplane.io rds-eks-workshop --for=condition=Ready --timeout=15m
+```bash timeout=1200
+$ kubectl wait dbinstances.rds.aws.crossplane.io rds-eks-workshop --for=condition=Ready --timeout=20m
 dbinstances.rds.services.k8s.aws/rds-eks-workshop condition met
 ```
 
@@ -89,11 +89,11 @@ ui-nlb   LoadBalancer   x.x.x.x         k8s-uiprod-uinlb-<uuid>.elb.<region>.ama
 ## Cleanup
 
 Delete the Application
-```bash
+```bash timeout=600
 $ kubectl delete -k /workspace/modules/crossplane/manifests/
 ```
 Delete the Crossplane resources
-```bash
+```bash timeout=600
 $ kubectl delete -k /workspace/modules/crossplane/managed
 $ kubectl delete ns catalog-prod
 ```

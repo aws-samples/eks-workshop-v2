@@ -16,7 +16,6 @@ Create the `crossplane-provider-aws` IAM Role using the assume role policy docum
 
 ```bash hook=crossplane-install
 $ aws iam create-role --role-name "crossplane-provider-aws" --assume-role-policy-document "$(envsubst </workspace/modules/crossplane/trust.json)"
-
 $ aws iam attach-role-policy --role-name crossplane-provider-aws --policy-arn "arn:aws:iam::aws:policy/AdministratorAccess"
 ```
 
@@ -57,7 +56,7 @@ We already configured IAM to allow this service account to assume the role we cr
 
 ```bash
 $ envsubst < /workspace/modules/crossplane/aws-provider/aws-provider.yaml | kubectl apply -f -
-$ until kubectl wait --for condition=established --timeout=60s crd/providerconfigs.aws.crossplane.io; do echo "waiting on crd"; sleep 3; done
+$ until kubectl wait --for condition=established --timeout=60s crd/providerconfigs.aws.crossplane.io; do echo "waiting on crd"; sleep 12; done
 ```
 
 Install the AWS `ProviderConfig` `default`
