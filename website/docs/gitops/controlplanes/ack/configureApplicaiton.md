@@ -3,21 +3,6 @@ title: "Bind Application to AWS Resources"
 sidebar_position: 4
 ---
 
-## Deploy the application for production
-
-The application will use the same manifest files as in development, then we will override secrets and configmaps values that will contain the binding information that connects to AWS Services.
-
-```bash
-$ kubectl apply -k /workspace/modules/ack/manifests/
-...
-namespace/catalog-prod created
-...
-service/catalog created
-...
-deployment.apps/catalog created
-...
-```
-
 
 ## Connect to Database Instance
 The `DBInstance` status contains the information for connecting to the RDS database instance. The host information can be found in `status.endpoint.address` and the port information can be found in `status.endpoint.port`. The master user name can be found in `spec.masterUsername`.
@@ -29,19 +14,17 @@ You can extract this information and make it available to your Pods using a [Fie
 
 FieldExport manifest
 ```file
-ack/rds/fieldexports/rds-fieldexports-writer.yaml
+ack/rds/fieldexports/rds-fieldexports.yaml
 ```
 
-Create FieldExport, this will insert the RDS connection values into the configmap **catalog-reader-db** in the namespace **catalog-prod**
+Create FieldExport, this will insert the RDS connection values into the secret **catalog-db** in the namespace **catalog-prod**
 ```bash
 $ export CATALOG_PASSWORD=$(kubectl get secrets -n default rds-eks-workshop -o go-template='{{.data.password|base64decode}}')
+$ kubectl create ns catalog-prod || true
 $ kubectl apply -k /workspace/modules/ack/rds/fieldexports
-secret/catalog-reader-db configured
-secret/catalog-writer-db configured
-fieldexport.services.k8s.aws/catalog-reader-db-endpoint created
-fieldexport.services.k8s.aws/catalog-reader-db-user created
-fieldexport.services.k8s.aws/catalog-writer-db-endpoint created
-fieldexport.services.k8s.aws/catalog-writer-db-user created
+secret/catalog-db configured
+fieldexport.services.k8s.aws/catalog-db-endpoint created
+fieldexport.services.k8s.aws/catalog-db-user created
 ```
 
 It takes some time to provision the AWS managed services, for RDS approximately 10 minutes. The ACK controller will report the status of the reconciliation in the status field of the Kubernetes custom resources.  
@@ -51,20 +34,14 @@ To verify that the provision is done, you can check that the condition “ACK.Re
 
 Run the following commands and they will exit once the condition is met.
 ```bash timeout=1080
-$ kubectl wait DBInstance rds-eks-workshop --for=condition=ACK.ResourceSynced --timeout=15m
+$ kubectl wait dbinstances.rds.services.k8s.aws rds-eks-workshop --for=condition=ACK.ResourceSynced --timeout=15m
 dbinstances.rds.services.k8s.aws/rds-eks-workshop condition met
 ```
 
 Verify that the configmap **catalog** has the correct information
 ```bash
-$ if [[ "$(aws rds describe-db-instances --query "DBInstances[?DBInstanceIdentifier == 'rds-eks-workshop'].Endpoint.Address" --output text)" ==  "$(kubectl get secret catalog-reader-db -o go-template='{{.data.endpoint|base64decode}}' -n catalog-prod)" ]]; then echo "Secret catalog configured correctly"; else echo "Error Catalo misconfigured"; false; fi
+$ if [[ "$(aws rds describe-db-instances --query "DBInstances[?DBInstanceIdentifier == 'rds-eks-workshop'].Endpoint.Address" --output text)" ==  "$(kubectl get secret catalog-db -o go-template='{{.data.endpoint|base64decode}}' -n catalog-prod)" ]]; then echo "Secret catalog configured correctly"; else echo "Error Catalo misconfigured"; false; fi
 Secret catalog configured correctly
-```
-
-Restart catalog to pick up the new configuration
-```bash
-$ kubectl rollout restart deployment -n catalog-prod catalog
-deployment.apps/catalog restarted
 ```
 
 <!-- TODO: Uncomment once MQ issue in ACK is resolved https://github.com/aws-controllers-k8s/community/issues/1517
@@ -104,12 +81,22 @@ $ if [[ $(aws mq describe-broker --broker-id "$(aws mq list-brokers --query "Bro
 ConfigMap orders configured correctly
 ```
 
-Restart orders to pickup the new configuration
-```bash
-$ kubectl rollout restart deployment -n orders-prod orders
-deployment.apps/orders restarted
-```
 -->
+
+## Deploy the Application
+
+The application will use the same manifest files as in development, then we will override secrets and configmaps values that will contain the binding information that connects to AWS Services.
+
+```bash
+$ kubectl apply -k /workspace/modules/ack/manifests/
+...
+namespace/catalog-prod created
+...
+service/catalog created
+...
+deployment.apps/catalog created
+...
+```
 
 ## Access the Application
 

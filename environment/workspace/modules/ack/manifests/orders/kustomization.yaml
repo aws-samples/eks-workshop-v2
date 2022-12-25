@@ -3,3 +3,5 @@ kind: Kustomization
 namespace: orders-prod
 bases:
 - ../../../../manifests/orders
+patches:
+- deployment.yaml

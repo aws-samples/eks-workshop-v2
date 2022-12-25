@@ -15,7 +15,5 @@ vars:
 configurations:
   - env-var-transformer.yaml
 resources:
-- rds-secret-reader.yaml
-- rds-secret-writer.yaml
-- rds-fieldexports-reader.yaml
-- rds-fieldexports-writer.yaml
+- rds-secret.yaml
+- rds-fieldexports.yaml

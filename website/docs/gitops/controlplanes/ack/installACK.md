@@ -61,10 +61,8 @@ Deploy the EC2 IAM Role and EC2 Controller.
 ```bash
 $ kubectl apply -k /workspace/modules/ack/ec2
 role.iam.services.k8s.aws/ack-ec2-controller created
-
 $ kubectl wait role.iam.services.k8s.aws ack-ec2-controller -n ack-system --for=condition=ACK.ResourceSynced --timeout=2m
 role.iam.services.k8s.aws/ack-ec2-controller condition met
-
 $ helm install --create-namespace -n ack-system ack-ec2-controller \
   oci://public.ecr.aws/aws-controllers-k8s/ec2-chart --version=v0.1.0 \
   --set=aws.region=$AWS_DEFAULT_REGION \
@@ -88,10 +86,8 @@ Deploy RDS Role and RDS Controller
 ```bash
 $ kubectl apply -k /workspace/modules/ack/rds/roles
 role.iam.services.k8s.aws/ack-rds-controller created
-
 $ kubectl wait role.iam.services.k8s.aws ack-rds-controller -n ack-system --for=condition=ACK.ResourceSynced --timeout=2m
 role.iam.services.k8s.aws/ack-rds-controller condition met
-
 $ helm install --create-namespace -n ack-system ack-rds-controller \
   oci://public.ecr.aws/aws-controllers-k8s/rds-chart --version=v0.1.1 \
   --set=aws.region=$AWS_DEFAULT_REGION \
