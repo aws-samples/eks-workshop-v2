@@ -1,0 +1,12 @@
+apiVersion: vpcresources.k8s.aws/v1beta1
+kind: SecurityGroupPolicy
+metadata:
+  name: catalog-rds-access
+  namespace: catalog
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: service
+  securityGroups:
+    groupIds:
+    - $(CATALOG_SG_ID)

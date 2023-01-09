@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+bases:
+- ../rds
+configMapGenerator:
+- name: catalog-sg-env
+  namespace: catalog
+  env: config.properties
+vars:
+- name: CATALOG_SG_ID
+  objref:
+    kind: ConfigMap
+    name: catalog-sg-env
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.CATALOG_SG_ID
+resources:
+- policy.yaml
+configurations:
+- configuration.yaml

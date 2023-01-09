@@ -7,10 +7,11 @@ data "aws_eks_addon_version" "latest" {
 }
 
 resource "aws_eks_addon" "vpc_cni" {
-  cluster_name      = module.eks_blueprints.eks_cluster_id
-  addon_name        = "vpc-cni"
-  addon_version     = data.aws_eks_addon_version.latest["vpc-cni"].version
-  resolve_conflicts = "OVERWRITE"
+  cluster_name         = module.eks_blueprints.eks_cluster_id
+  addon_name           = "vpc-cni"
+  addon_version        = data.aws_eks_addon_version.latest["vpc-cni"].version
+  resolve_conflicts    = "OVERWRITE"
+  configuration_values = "{\"env\":{\"ENABLE_PREFIX_DELEGATION\":\"true\", \"ENABLE_POD_ENI\":\"true\"}}"
 
   depends_on = [
     null_resource.kubectl_set_env

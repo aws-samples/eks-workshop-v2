@@ -1,0 +1,3 @@
+varReference:
+- path: spec/securityGroups/groupIds
+  kind: SecurityGroupPolicy

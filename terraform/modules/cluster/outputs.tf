@@ -78,59 +78,39 @@ output "cart_iam_role" {
   value       = module.iam_assumable_role_carts.iam_role_arn
 }
 
-output "orders_rds_endpoint" {
-  description = "Endpoint of the RDS database for the orders service"
-  value       = module.orders_rds.cluster_endpoint
+output "catalog_rds_endpoint" {
+  description = "Endpoint of the RDS database for the catalog service"
+  value       = module.catalog_mysql.db_instance_endpoint
 }
 
-output "orders_rds_master_username" {
-  description = "Master username of the RDS database for the orders service"
-  value       = "orders"
+output "catalog_rds_master_username" {
+  description = "Master username of the RDS database for the catalog service"
+  value       = "catalog_user"
 }
 
-output "orders_rds_master_password" {
-  description = "Master password of the RDS database for the orders service"
-  value       = random_string.orders_db_master.result
+output "catalog_rds_master_password" {
+  description = "Master password of the RDS database for the catalog service"
+  value       = random_string.catalog_db_master.result
 }
 
-output "orders_rds_database_name" {
-  description = "Master username of the RDS database for the orders service"
-  value       = module.orders_rds.cluster_database_name
+output "catalog_rds_database_name" {
+  description = "Database name associated with the RDS database for the catalog service"
+  value       = "catalog"
 }
 
-output "orders_rds_ingress_sg_id" {
-  description = "Endpoint of the RDS database for the orders service"
-  value       = aws_security_group.orders_rds_ingress.id
+output "catalog_rds_sg_id" {
+  description = "Security group applied to the catalog RDS database"
+  value       = module.catalog_rds_ingress.security_group_id
+}
+
+output "catalog_sg_id" {
+  description = "Security group for clients to access the catalog RDS database"
+  value       = aws_security_group.catalog_rds_ingress.id
 }
 
 output "efsid" {
   description = "EFS file system ID"
   value       = aws_efs_file_system.efsassets.id
-}
-
-output "networking_rds_endpoint" {
-  description = "Endpoint of the RDS database for the networking module"
-  value       = module.networking_rds_postgre.cluster_endpoint
-}
-
-output "networking_rds_master_username" {
-  description = "Master username of the RDS database for the networking module"
-  value       = "eksworkshop"
-}
-
-output "networking_rds_master_password" {
-  description = "Master password of the RDS database for the networking module"
-  value       = random_string.networking_db_master.result
-}
-
-output "networking_rds_database_name" {
-  description = "Master username of the RDS database for the networking module"
-  value       = module.networking_rds_postgre.cluster_database_name
-}
-
-output "networking_rds_ingress_sg_id" {
-  description = "Security group id of the RDS database for the networking module"
-  value       = module.networking_rds_postgre.security_group_id
 }
 
 output "amp_endpoint" {

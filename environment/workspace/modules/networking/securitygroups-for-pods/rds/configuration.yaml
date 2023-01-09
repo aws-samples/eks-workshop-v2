@@ -1,0 +1,7 @@
+varReference:
+- path: data/DB_ENDPOINT
+  kind: ConfigMap
+- path: data/DB_READ_ENDPOINT
+  kind: ConfigMap
+- path: data/password
+  kind: Secret

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: catalog
+  namespace: catalog
+data:
+  DB_ENDPOINT: $(CATALOG_RDS_ENDPOINT)
+  DB_READ_ENDPOINT: $(CATALOG_RDS_ENDPOINT)

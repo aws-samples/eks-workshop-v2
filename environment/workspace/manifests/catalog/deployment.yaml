@@ -30,11 +30,6 @@ spec:
       containers:
         - name: catalog
           env:
-            - name: DB_ENDPOINT
-              valueFrom:
-                secretKeyRef:
-                  name: catalog-db
-                  key: endpoint
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
@@ -45,11 +40,6 @@ spec:
                 secretKeyRef:
                   name: catalog-db
                   key: password
-            - name: DB_READ_ENDPOINT
-              valueFrom:
-                secretKeyRef:
-                  name: catalog-db
-                  key: endpoint
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
