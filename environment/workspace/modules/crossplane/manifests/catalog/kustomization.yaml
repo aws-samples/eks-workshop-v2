@@ -1,8 +1,30 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: catalog-prod
-resources:
-- configMap.yaml
-- serviceAccount.yaml
-- service.yaml
-- deployment.yaml
+bases:
+- ../../../../manifests/catalog
+patchesStrategicMerge:
+- |-
+  apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: catalog
+  $patch: delete
+- |-
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: catalog-db
+  $patch: delete
+- |-
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: catalog-mysql
+  $patch: delete
+- |-
+  apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    name: catalog-mysql
+  $patch: delete

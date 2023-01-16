@@ -5,6 +5,5 @@ bases:
 - ../../../../manifests/ui 
 patches:
 - configMap.yaml
-- deployment.yaml
 resources:
 - nlb.yaml

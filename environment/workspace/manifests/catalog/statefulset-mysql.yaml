@@ -43,8 +43,8 @@ spec:
                   key: password
             - name: MYSQL_DATABASE
               valueFrom:
-                secretKeyRef:
-                  name: catalog-db
+                configMapKeyRef:
+                  name: catalog
                   key: name
           ports:
             - name: mysql

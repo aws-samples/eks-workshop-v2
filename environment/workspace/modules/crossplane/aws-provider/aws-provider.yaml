@@ -13,7 +13,7 @@ kind: Provider
 metadata:
   name: aws-provider
 spec:
-  package: "crossplanecontrib/provider-aws:v0.34.0"
+  package: "crossplanecontrib/provider-aws:v0.36.0"
   controllerConfigRef:
     name: aws-controller-config
 

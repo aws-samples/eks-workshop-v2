@@ -5,5 +5,3 @@ bases:
 - ../../../../manifests/checkout
 patches:
 - configMap.yaml
-patches:
-- deployment.yaml

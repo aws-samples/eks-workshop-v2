@@ -3,5 +3,3 @@ kind: Kustomization
 namespace: carts-prod
 bases:
 - ../../../../manifests/carts
-patches:
-- deployment.yaml

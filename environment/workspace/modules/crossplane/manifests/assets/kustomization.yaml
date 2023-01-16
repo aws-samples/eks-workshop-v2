@@ -3,5 +3,3 @@ kind: Kustomization
 namespace: assets-prod
 bases:
 - ../../../../manifests/assets
-patches:
-- deployment.yaml

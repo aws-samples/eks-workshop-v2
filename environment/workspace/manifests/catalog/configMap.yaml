@@ -3,5 +3,4 @@ kind: ConfigMap
 metadata:
   name: catalog
 data:
-  DB_ENDPOINT: catalog-mysql:3306
-  DB_READ_ENDPOINT: catalog-mysql:3306
+  name: catalog
