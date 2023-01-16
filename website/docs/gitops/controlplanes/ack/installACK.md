@@ -38,7 +38,7 @@ Login Succeeded
 Deploy the IAM Controller
 ```bash
 $ helm install --create-namespace -n ack-system ack-iam-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/iam-chart --version=v0.0.21 \
+  oci://public.ecr.aws/aws-controllers-k8s/iam-chart --version=v0.1.1 \
   --set=aws.region=$AWS_DEFAULT_REGION \
   --set=serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-iam-controller" --wait
 ...
@@ -61,10 +61,8 @@ Deploy the EC2 IAM Role and EC2 Controller.
 ```bash
 $ kubectl apply -k /workspace/modules/ack/ec2
 role.iam.services.k8s.aws/ack-ec2-controller created
-
 $ kubectl wait role.iam.services.k8s.aws ack-ec2-controller -n ack-system --for=condition=ACK.ResourceSynced --timeout=2m
 role.iam.services.k8s.aws/ack-ec2-controller condition met
-
 $ helm install --create-namespace -n ack-system ack-ec2-controller \
   oci://public.ecr.aws/aws-controllers-k8s/ec2-chart --version=v0.1.0 \
   --set=aws.region=$AWS_DEFAULT_REGION \
@@ -88,12 +86,10 @@ Deploy RDS Role and RDS Controller
 ```bash
 $ kubectl apply -k /workspace/modules/ack/rds/roles
 role.iam.services.k8s.aws/ack-rds-controller created
-
 $ kubectl wait role.iam.services.k8s.aws ack-rds-controller -n ack-system --for=condition=ACK.ResourceSynced --timeout=2m
 role.iam.services.k8s.aws/ack-rds-controller condition met
-
 $ helm install --create-namespace -n ack-system ack-rds-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/rds-chart --version=v0.1.1 \
+  oci://public.ecr.aws/aws-controllers-k8s/rds-chart --version=v0.1.2 \
   --set=aws.region=$AWS_DEFAULT_REGION \
   --set=serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-rds-controller" --wait
 ...
@@ -102,32 +98,3 @@ STATUS: deployed
 You are now able to create Amazon Relational Database Service (RDS) resources!
 ...
 ```
-
-
-<!-- TODO: Uncomment once MQ issue in ACK is resolved https://github.com/aws-controllers-k8s/community/issues/1517
-## MQ controller setup
-Create the IAM role with the trust relationship with the Service Account for the MQ Controller. This time we use the IAM controller itself to create the role.
-
-View the MQ Role manifest by running `cat /workspace/modules/ack/mq/roles/mq-iam-role.yaml`
-```file
-ack/mq/roles/mq-iam-role.yaml
-```
-
-Deploy MQ Role and MQ Controller
-```bash
-$ kubectl apply -k /workspace/modules/ack/mq/roles
-role.iam.services.k8s.aws/ack-mq-controller created
-
-$ kubectl wait role.iam.services.k8s.aws ack-mq-controller -n ack-system --for=condition=ACK.ResourceSynced --timeout=2m
-role.iam.services.k8s.aws/ack-mq-controller condition met
-
-$ helm install --create-namespace -n ack-system ack-mq-controller \
-  oci://public.ecr.aws/aws-controllers-k8s/mq-chart --version=v0.0.23 \
-  --set=aws.region=$AWS_DEFAULT_REGION \
-  --set=serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::${AWS_ACCOUNT_ID}:role/ack-mq-controller" --wait
-...
-STATUS: deployed
-...
-You are now able to create Amazon MQ (MQ) resources!
-```
--->

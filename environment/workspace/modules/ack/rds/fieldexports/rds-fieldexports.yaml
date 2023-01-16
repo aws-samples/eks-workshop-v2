@@ -1,10 +1,10 @@
 apiVersion: services.k8s.aws/v1alpha1
 kind: FieldExport
 metadata:
-  name: catalog-writer-db-endpoint
+  name: catalog-db-endpoint
 spec:
   to:
-    name: catalog-writer-db
+    name: catalog-db
     kind: secret
     namespace: catalog-prod
     key: endpoint
@@ -18,10 +18,10 @@ spec:
 apiVersion: services.k8s.aws/v1alpha1
 kind: FieldExport
 metadata:
-  name: catalog-writer-db-user
+  name: catalog-db-user
 spec:
   to:
-    name: catalog-writer-db
+    name: catalog-db
     kind: secret
     namespace: catalog-prod
     key: username
