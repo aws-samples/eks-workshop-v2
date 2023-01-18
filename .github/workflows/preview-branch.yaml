@@ -52,7 +52,7 @@ jobs:
         npm install
         npm run deploy:netlify -- --alias pr-${PR_ID}
 
-        echo "::set-output name=preview::pr-${PR_ID}--eksworkshop-v2-next.netlify.app"
+        echo "::set-output name=preview::pr-${PR_ID}--eks-workshop.netlify.app"
     - name: Deployed comment
       uses: peter-evans/create-or-update-comment@v2
       with:
