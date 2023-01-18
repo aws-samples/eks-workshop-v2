@@ -10,13 +10,11 @@ RUN useradd \
     --home "/learner" \
     --create-home \
     --user-group \
-    --shell /bin/zsh \
+    --shell /bin/bash \
     learner && \
     mkdir /workspace
 
 USER learner
-
-RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh
 
 WORKDIR /workspace
 COPY --chmod=755 bin/* /usr/local/bin

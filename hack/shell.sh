@@ -1,6 +1,7 @@
 #!/bin/bash
 
 terraform_context=$1
+shell_command=$2
 
 set -Eeuo pipefail
 
@@ -19,9 +20,11 @@ container_image='eks-workshop-environment'
 
 source $SCRIPT_DIR/lib/generate-aws-creds.sh
 
+command_args=""
+
 echo "Starting shell in container..."
 
 docker run --rm -it --env-file /tmp/eks-workshop-shell-env \
   -v $SCRIPT_DIR/../environment/workspace:/workspace \
   -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" \
-  $container_image
+  $container_image $shell_command

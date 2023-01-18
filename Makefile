@@ -1,6 +1,7 @@
 terraform_context='terraform'
 module='*'
 environment=''
+shell_command=''
 
 .PHONY: install
 install:
@@ -20,7 +21,15 @@ test:
 
 .PHONY: shell
 shell:
-	bash hack/shell.sh $(terraform_context)
+	bash hack/shell.sh $(terraform_context) $(shell_command)
+
+.PHONY: reset-environment
+reset-environment:
+	bash hack/shell.sh $(terraform_context) reset-environment
+
+.PHONY: delete-environment
+delete-environment:
+	bash hack/shell.sh $(terraform_context) delete-environment
 
 .PHONY: update-helm-versions
 update-helm-versions:

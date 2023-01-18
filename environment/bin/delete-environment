@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -Eeuo pipefail
+
+reset-environment
+
+kubectl delete -k /workspace/manifests

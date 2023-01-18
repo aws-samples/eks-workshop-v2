@@ -9,8 +9,9 @@ fi
 # TODO: Move to .bashrc or similar
 export AWS_PAGER=""
 
-sed -i 's/^plugins=.*/plugins=(git kubectl aws)/g' ~/.zshrc
-
-echo 'PROMPT="%(?:%{$fg_bold[green]%}eks-workshop ➜ :%{$fg_bold[red]%}➜ )%{$reset_color%}"' >> ~/.zshrc
-
-zsh -l
+if [ $# -eq 0 ]
+  then
+    bash -l
+else
+  bash -c "$@"
+fi
