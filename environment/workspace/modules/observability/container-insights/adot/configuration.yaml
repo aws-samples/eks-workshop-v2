@@ -1,0 +1,3 @@
+varReference:
+- path: spec/env[]/value
+  kind: OpenTelemetryCollector
