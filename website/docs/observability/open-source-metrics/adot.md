@@ -35,16 +35,10 @@ This IAM role will be added to the ServiceAccount for the collector:
 observability/oss-metrics/adot/serviceaccount.yaml
 ```
 
-Create these resources:
+Create the resources:
 
 ```bash
 $ kubectl apply -k /workspace/modules/observability/oss-metrics/adot
-```
-
-Next we'll create the `OpenTelemetryCollector` object. This needs some extra variables provided from our environment so we'll pass it through `envsubst` before directly applying it.
-
-```bash hook=deploy-adot
-$ envsubst < <(cat /workspace/modules/observability/oss-metrics/adot/opentelemetrycollector.yaml) | kubectl apply -f -
 ```
 
 The specification for the collector is too long to show here, but you can view it like so:

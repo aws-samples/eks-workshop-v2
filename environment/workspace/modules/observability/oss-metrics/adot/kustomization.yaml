@@ -12,7 +12,38 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.ADOT_IAM_ROLE
+- name: EKS_CLUSTER_NAME
+  objref:
+    kind: ConfigMap
+    name: otel-env
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.EKS_CLUSTER_NAME
+- name: AWS_DEFAULT_REGION
+  objref:
+    kind: ConfigMap
+    name: otel-env
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.AWS_DEFAULT_REGION
+- name: AWS_ACCOUNT_ID
+  objref:
+    kind: ConfigMap
+    name: otel-env
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.AWS_ACCOUNT_ID
+- name: AMP_ENDPOINT
+  objref:
+    kind: ConfigMap
+    name: otel-env
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.AMP_ENDPOINT
+configurations:
+- configuration.yaml
 resources:
 - clusterrole.yaml
 - clusterrolebinding.yaml
 - serviceaccount.yaml
+- opentelemetrycollector.yaml

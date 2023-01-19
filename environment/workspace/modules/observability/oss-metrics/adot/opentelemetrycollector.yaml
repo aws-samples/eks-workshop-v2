@@ -112,3 +112,12 @@ spec:
         metrics:
           receivers: [prometheus]
           exporters: [logging, prometheusremotewrite]
+  env:
+  - name: EKS_CLUSTER_NAME
+    value: $(EKS_CLUSTER_NAME)
+  - name: AWS_DEFAULT_REGION
+    value: $(AWS_DEFAULT_REGION)
+  - name: AWS_ACCOUNT_ID
+    value: $(AWS_ACCOUNT_ID)
+  - name: AMP_ENDPOINT
+    value: $(AMP_ENDPOINT)
