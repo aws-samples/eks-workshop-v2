@@ -1,7 +1,7 @@
 ---
 title: "Control Planes"
 sidebar_position: 3
-weight: 20
+weight: 30
 ---
 
 Overview of Control Planes

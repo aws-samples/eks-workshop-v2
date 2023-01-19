@@ -29,6 +29,11 @@ terraform {
       source  = "grafana/grafana"
       version = "1.32.0"
     }
+
+    tls = {
+      source  = "hashicorp/tls"
+      version = "4.0.4"
+    }
   }
 
   required_version = "<= 1.2.9"

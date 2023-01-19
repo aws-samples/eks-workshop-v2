@@ -31,5 +31,6 @@ resource "aws_iam_policy" "local_policy" {
     cluster_arn  = module.cluster.eks_cluster_arn,
     nodegroup    = module.cluster.eks_cluster_nodegroup,
     region       = data.aws_region.current.name
+    account_id   = data.aws_caller_identity.current.account_id
   })
 }

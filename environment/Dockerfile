@@ -5,14 +5,14 @@ ADD installer.sh /installer.sh
 RUN bash installer.sh
 
 ADD entrypoint.sh /entrypoint.sh
+ADD prepare.sh /prepare.sh
 
 RUN useradd \
-    --home "/learner" \
+    --home "/home/learner" \
     --create-home \
     --user-group \
     --shell /bin/bash \
-    learner && \
-    mkdir /workspace
+    learner
 
 USER learner
 

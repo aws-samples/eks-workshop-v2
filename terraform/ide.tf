@@ -37,6 +37,9 @@ VPC_ID=${module.cluster.vpc_id}
 VPC_PRIVATE_SUBNET_ID_0=${module.cluster.private_subnet_ids[0]}
 VPC_PRIVATE_SUBNET_ID_1=${module.cluster.private_subnet_ids[1]}
 VPC_PRIVATE_SUBNET_ID_2=${module.cluster.private_subnet_ids[2]}
+GITOPS_IAM_SSH_KEY_ID=${module.cluster.gitops_iam_ssh_key_id}
+GITOPS_IAM_SSH_USER=${module.cluster.gitops_ssh_iam_user}
+GITOPS_SSH_SSM_NAME=${module.cluster.gitops_ssh_ssm_name}
 EOT
 
   bootstrap_script = <<EOF
@@ -79,6 +82,22 @@ set +a
 EOT
 
 chown ec2-user /home/ec2-user/.bashrc.d/env.bash
+
+sudo -H -u ec2-user bash -c "aws ssm get-parameter --name ${module.cluster.gitops_ssh_ssm_name} --with-decryption --query 'Parameter.Value' --region ${data.aws_region.current.name} --output text > ~/.ssh/gitops_ssh.pem"
+chmod 400 /home/ec2-user/.ssh/gitops_ssh.pem
+
+cat << EOT > /home/ec2-user/.ssh/config
+Host git-codecommit.*.amazonaws.com
+  User ${module.cluster.gitops_ssh_iam_user}
+  IdentityFile ~/.ssh/gitops_ssh.pem
+EOT
+chown ec2-user /home/ec2-user/.ssh/config
+chmod 600 /home/ec2-user/.ssh/config
+
+sudo -H -u ec2-user bash -c "ssh-keyscan -H git-codecommit.${data.aws_region.current.name}.amazonaws.com >> ~/.ssh/known_hosts"
+
+sudo -H -u ec2-user bash -c 'git config --global user.email "you@eksworkshop.com"'
+sudo -H -u ec2-user bash -c 'git config --global user.name "EKS Workshop Learner"'
 EOF
 }
 
@@ -100,6 +119,7 @@ module "ide" {
       cluster_arn  = module.cluster.eks_cluster_arn,
       nodegroup    = module.cluster.eks_cluster_nodegroup
       region       = data.aws_region.current.name
+      account_id   = data.aws_caller_identity.current.account_id
     }))
   ]
 
