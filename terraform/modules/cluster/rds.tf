@@ -1,6 +1,6 @@
 module "catalog_mysql" {
   source  = "terraform-aws-modules/rds/aws"
-  version = "5.2.1"
+  version = "5.2.3"
 
   identifier = "${var.environment_name}-catalog"
 
