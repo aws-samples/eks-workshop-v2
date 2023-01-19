@@ -151,6 +151,13 @@
       "Action": [
         "ssm:GetParameter"
       ],
+      "Resource": "arn:aws:ssm:${region}:${account_id}:parameter/${cluster_name}-gitops-ssh"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:GetParameter"
+      ],
       "Resource": "arn:aws:ssm:${region}::parameter/aws/service/eks/optimized-ami/*"
     }
   ]

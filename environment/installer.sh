@@ -20,6 +20,9 @@ kubeseal_checksum='2e765b87889bfcf06a6249cde8e28507e3b7be29851e4fac651853f7638f1
 yq_version='4.30.4'
 yq_checksum='30459aa144a26125a1b22c62760f9b3872123233a5658934f7bd9fe714d7864d'
 
+flux_version='0.38.3'
+flux_checksum='268b8d9a2fa5b0c9e462b551eaefdadb9e03370eb53061a88a2a9ac40e95e8e4'
+
 download_and_verify () {
   url=$1
   checksum=$2
@@ -82,3 +85,10 @@ rm -rf kubeseal.tar.gz
 download_and_verify "https://github.com/mikefarah/yq/releases/download/v${yq_version}/yq_linux_amd64" "$yq_checksum" "yq"
 chmod +x ./yq
 mv ./yq /usr/local/bin
+
+# flux
+download_and_verify "https://github.com/fluxcd/flux2/releases/download/v${flux_version}/flux_${flux_version}_linux_amd64.tar.gz" "$flux_checksum" "flux.tar.gz"
+tar zxf flux.tar.gz
+chmod +x flux
+mv ./flux /usr/local/bin
+rm -rf flux.tar.gz

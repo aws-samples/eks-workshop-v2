@@ -1,9 +1,7 @@
 ---
-title: "GitOps"
+title: "Automation"
 sidebar_position: 1
-weight: 20
+weight: 10
 ---
 
-Overview of GitOps
-Discuss GitOps concepts
-Separation between platform, configuration, and application teams
+In this section we'll look at several technologies that can be used with EKS to automate parts of the software delivery lifecycle, including deploying code and provisioning infrastructure like RDS databases and Elasticache clusters.

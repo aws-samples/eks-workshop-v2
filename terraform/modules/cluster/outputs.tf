@@ -147,3 +147,18 @@ output "oidc_provider" {
   description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
   value       = module.eks_blueprints.oidc_provider
 }
+
+output "gitops_ssh_iam_user" {
+  value       = aws_iam_user.gitops.unique_id
+  description = "ID of the IAM user for GitOps"
+}
+
+output "gitops_ssh_ssm_name" {
+  value       = aws_ssm_parameter.gitops.name
+  description = "Name of the SSM parameter used to store the GitOps private key"
+}
+
+output "gitops_iam_ssh_key_id" {
+  value       = aws_iam_user_ssh_key.gitops.id
+  description = "ID of the IAM SSH key for GitOps"
+}
