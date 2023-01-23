@@ -1,7 +1,7 @@
 # Steering Committee
 ## Members
 The Steering Committee is a 6 member body, overseeing the governance of the EKS Workshop.
-### Term end in February 2024
+### Terms end in February 2024
 |Name|Profile|Role|
 |:----|:-------|:----|
 |Sai Vennam|[@svennam92](https://github.com/svennam92)|Principal EKS DA
