@@ -29,6 +29,13 @@ terraform {
       source  = "grafana/grafana"
       version = "1.32.0"
     }
+
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.7.0"
+    }
+
+    
   }
 
   required_version = "<= 1.2.9"
