@@ -27,6 +27,13 @@ spec:
                   type: integer
                 secret:
                   type: string
+                resourceConfig:
+                  description: ResourceConfig defines general properties of this AWS
+                    resource.
+                  properties:
+                    providerConfigName:
+                      type: string
+                  type: object
               required:
               - secret
               - databaseName

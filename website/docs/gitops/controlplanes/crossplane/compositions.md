@@ -17,6 +17,8 @@ In this example the user only needs to specify `databaseName`, `storageGB` and `
 crossplane/compositions/definition.yaml
 ```
 
+Crossplane and the AWS provider are already installed on the Amazon EKS cluster. 
+
 Create the Composite Definition
 ```bash
 $ kubectl apply -f /workspace/modules/crossplane/compositions/definition.yaml

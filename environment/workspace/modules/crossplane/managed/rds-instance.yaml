@@ -25,3 +25,5 @@ spec:
   writeConnectionSecretToRef:
     name: catalog-db
     namespace: catalog-prod
+  providerConfigRef:
+    name: aws-provider-config

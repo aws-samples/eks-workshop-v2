@@ -23,6 +23,8 @@ Specify a RDS DBInstance manifest, this configures the database configuration li
 crossplane/managed/rds-instance.yaml
 ```
 
+Crossplane and the AWS provider are already installed on the Amazon EKS cluster. 
+
 Create SecurityGroup, DBSubnetGroup, and DBInstance using the manifest files.
 ```bash
 $ kubectl create ns catalog-prod || true
@@ -31,6 +33,7 @@ dbsubnetgroup.database.aws.crossplane.io/rds-eks-workshop created
 securitygroup.ec2.aws.crossplane.io/rds-eks-workshop created
 dbinstance.rds.aws.crossplane.io/rds-eks-workshop created
 ```
+
 
 It takes some time to provision the AWS managed services, for RDS approximately 10 minutes. The AWS provider controller will report the status of the reconciliation in the status field of the Kubernetes custom resources.  
 You can open the AWS console and see the services being created.
@@ -92,7 +95,7 @@ Delete the Application
 ```bash timeout=600
 $ kubectl delete -k /workspace/modules/crossplane/manifests/
 ```
-Delete the Crossplane resources
+Delete the Crossplane resources, it can take some time until the RDS Instance is deleted, once deleted the command will exit
 ```bash timeout=600
 $ kubectl delete -k /workspace/modules/crossplane/managed
 $ kubectl delete ns catalog-prod

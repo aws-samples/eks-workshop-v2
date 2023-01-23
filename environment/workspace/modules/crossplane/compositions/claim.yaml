@@ -7,3 +7,5 @@ spec:
   databaseName: catalog
   storageGB: 20
   secret: catalog-db
+  resourceConfig:
+    providerConfigName: aws-provider-config

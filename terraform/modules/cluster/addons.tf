@@ -41,6 +41,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_aws_efs_csi_driver              = true
   enable_aws_for_fluentbit               = true
   enable_self_managed_aws_ebs_csi_driver = true
+  enable_crossplane                      = true
 
   self_managed_aws_ebs_csi_driver_helm_config = {
     set = [{
@@ -204,6 +205,12 @@ module "eks_blueprints_kubernetes_addons" {
 
   amazon_eks_adot_config = {
     kubernetes_version = var.cluster_version
+  }
+
+  crossplane_aws_provider = {
+    enable                   = true
+    provider_aws_version     = "v0.36.0"
+    additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
   }
 
   tags = local.tags
