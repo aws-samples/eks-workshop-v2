@@ -11,7 +11,7 @@ By default, all Kubernetes API resource types are shown, but you can filter by n
 
 ![Insights](/img/resource-view/filter-pod.jpg)
 
-The resources view for all Kubernetes API resource types, offers two views - structured view and raw view. The structured view provides a visual representation of the resource to help access the data for the resource. In the example below, you can see a structured view for the catalog pod that breaks the pod information into Info, Containers, Labels and Annotations sections. It also details the associated replicaset, namespace and node.
+The resources view for all Kubernetes API resource types, offers two views - structured view and raw view. The structured view provides a visual representation of the resource to help access the data for the resource. In this example (below), you can see a structured view for the catalog pod that breaks the pod information into Info, Containers, Labels and Annotations sections. It also details the associated replicaset, namespace and node.
 
 ![Insights](/img/resource-view/pod-detail-structured.jpg)
 

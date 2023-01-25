@@ -7,7 +7,7 @@ Kubernetes secrets can be exposed to the Pods in different ways such as via envi
 
 ### Exposing Secrets as Environment Variables
 
-You may expose the keys, namely, username and password, in the database-credentials Secret to a Pod as environment variables using a Pod manifest as shown below:
+You may expose the keys, namely, username and password, in the database-credentials Secret to a Pod as environment variables using a Pod manifest as shown (below):
 
 ```yaml
 apiVersion: v1
@@ -34,7 +34,7 @@ spec:
 
 ### Exposing Secrets as Volumes
 
-Secrets can also be mounted as data volumes on to a Pod and you can control the paths within the volume where the Secret keys are projected using a Pod manifest as shown below:
+Secrets can also be mounted as data volumes on to a Pod and you can control the paths within the volume where the Secret keys are projected using a Pod manifest as shown (below):
 
 ```yaml
 apiVersion: v1

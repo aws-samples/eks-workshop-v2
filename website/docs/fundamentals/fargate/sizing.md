@@ -19,7 +19,7 @@ $ kubectl get pod -n checkout -l app.kubernetes.io/component=service -o json | j
 }
 ```
 
-In the above example we can see that the `CapacityProvisioned` annotation shows that we were allocated 0.25 vCPU and 0.5 GB of memory, which is the minimum Fargate instance size. But what if our Pod needs more resources? Luckily Fargate provides a variety of options depending on the resource requests that we can try out.
+In this example (above), we can see that the `CapacityProvisioned` annotation shows that we were allocated 0.25 vCPU and 0.5 GB of memory, which is the minimum Fargate instance size. But what if our Pod needs more resources? Luckily Fargate provides a variety of options depending on the resource requests that we can try out.
 
 In the next example we'll increase the amount of resources the `checkout` component is requesting and see how the Fargate scheduler adapts. The kustomization we're going to apply increases the resources requested to 1 vCPU and 2.5G of memory:
 
@@ -36,7 +36,7 @@ $ kubectl apply -k /workspace/modules/fundamentals/fargate/sizing
 $ kubectl rollout status -n checkout deployment/checkout --timeout=200s
 ```
 
-Now we can check again the resource allocated by Fargate. Based on the changes outlined above, what do you expect to see?
+Now, let's check again the resource allocated by Fargate. Based on the changes outlined above, what do you expect to see?
 
 ```bash
 $ kubectl get pod -n checkout -l app.kubernetes.io/component=service -o json | jq -r '.items[0].metadata.annotations'
