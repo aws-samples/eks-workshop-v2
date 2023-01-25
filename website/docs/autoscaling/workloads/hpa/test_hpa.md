@@ -36,4 +36,4 @@ Once you're satisfied with the autoscaling behavior, you can end the watch with 
 $ kubectl delete pod load-generator
 ```
 
-As the load generator terminates you will notice that HPA will slowly bring the replica count to min number based on its configuration.
+As the load generator terminates, notice that HPA will slowly bring the replica count to min number based on its configuration.
