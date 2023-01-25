@@ -13,13 +13,13 @@ $ reset-environment
 
 :::
 
-In this chapter, we will learn about [Cluster Proportional Autoscaler](https://github.com/kubernetes-sigs/cluster-proportional-autoscaler) and how to scale out applications proportional to the size of the cluster compute.
+In this lab, we'll learn about [Cluster Proportional Autoscaler](https://github.com/kubernetes-sigs/cluster-proportional-autoscaler) and how to scale out applications proportional to the size of the cluster compute.
 
-Cluster Proportional Autoscaler (CPA) is a horizontal pod autoscaler that scales replicas based on the number of nodes in the cluster. The proportional autoscaler container image watches over the number of schedulable nodes and cores of the cluster and resizes the number of replicas. This functionality is desirable for applications that need to be autoscaled with the size of the cluster such as CoreDNS and other services that scale with the number of nodes/pods in the cluster. CPA has Golang API clients running inside pods that connect to the API Server and polls the number of nodes and cores in the cluster. The scaling parameters and data points are provided via a ConfigMap to the autoscaler and it refreshes its parameters table every poll interval to be up to date with the latest desired scaling parameters. Unlike other autoscalers CPA does not rely on the Metrics API and does not require the Metrics Server
+Cluster Proportional Autoscaler (CPA) is a horizontal pod autoscaler that scales replicas based on the number of nodes in a cluster. The proportional autoscaler container image watches over the number of schedulable nodes and cores of a cluster and resizes the number of replicas. This functionality is desirable for applications that need to be autoscaled with the size of the cluster such as CoreDNS and other services that scale with the number of nodes/pods in a cluster. CPA has Golang API clients running inside pods that connect to the API Server and polls the number of nodes and cores in the cluster. The scaling parameters and data points are provided via a ConfigMap to the autoscaler and it refreshes its parameters table every poll interval to be up to date with the latest desired scaling parameters. Unlike other autoscalers CPA does not rely on the Metrics API and does not require the Metrics Server.
 
 ![CPA](cpa.png)
 
-Some of the main use-cases for CPA include:
+Some of the main use cases for CPA include:
 
 * Over-provisioning
 * Scale out core platform services
@@ -29,7 +29,7 @@ Some of the main use-cases for CPA include:
 
 **Linear**
 
-* This scaling method will scale the application in direct proportion to how many nodes or cores are available in the cluster
+* This scaling method will scale the application in direct proportion to how many nodes or cores are available in a cluster
 * Either one of the `coresPerReplica` or `nodesPerReplica` could be omitted
 * When `preventSinglePointFailure` is set to `true`, the controller ensures at least 2 replicas if there are more than one node
 * When `includeUnschedulableNodes` is set to `true`, the replicas will be scaled based on the total number of nodes. Otherwise, the replicas will only scale based on the number of schedulable nodes (i.e., cordoned and draining nodes are excluded)
@@ -92,6 +92,6 @@ data:
 
 #### Comparison to Horizontal Pod Autoscaler
 
-Horizontal Pod Autoscaler is a top level Kubernetes API resource. HPA is a closed feedback loop autoscaler which monitors CPU/Memory utilization of the pods and scales the number of replicas automatically. HPA relies on the Metrics API and requires Metrics Server whereas Cluster Proportional Autoscaler does not use Metrics Server nor the Metrics API. Cluster Proportional Autoscaler is not scaled with a Kubernetes resource but instead uses flags to identify target workloads and a ConfigMap for scaling configuration. CPA provides a simple control loop that watches the cluster size and scales the target controller. The inputs for CPA are number of schedulable cores and nodes in the cluster
+Horizontal Pod Autoscaler is a top level Kubernetes API resource. HPA is a closed feedback loop autoscaler which monitors CPU/Memory utilization of the pods and scales the number of replicas automatically. HPA relies on the Metrics API and requires Metrics Server whereas Cluster Proportional Autoscaler does not use Metrics Server nor the Metrics API. Cluster Proportional Autoscaler is not scaled with a Kubernetes resource but instead uses flags to identify target workloads and a ConfigMap for scaling configuration. CPA provides a simple control loop that watches the cluster size and scales the target controller. The inputs for CPA are number of schedulable cores and nodes in the cluster.
 
-In this section of the workshop we will demonstrate scaling the CoreDNS system component of the EKS cluster proportional to the amount of compute in the cluster.
+In the following lab exercises, we'll demonstrate scaling the CoreDNS system component of the EKS cluster proportional to the amount of compute in the cluster.

@@ -4,7 +4,7 @@ date: 2022-07-21T00:00:00-03:00
 sidebar_position: 2
 ---
 
-We will be installing CPA using Kustomize manifests, the main part of which is the `Deployment` resource below:
+In this lab exercise, we'll be installing CPA using Kustomize manifests, the main part of which is the `Deployment` resource below:
 
 ```file
 autoscaling/workloads/cpa/deployment.yaml

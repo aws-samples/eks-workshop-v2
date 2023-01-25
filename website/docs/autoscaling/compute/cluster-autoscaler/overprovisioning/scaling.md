@@ -3,7 +3,7 @@ title: "Scaling further"
 sidebar_position: 50
 ---
 
-Now lets scale up our entire application architecture further than we did in the CA section and see how the responsiveness differs.
+In this lab exercise, we'll scale up our entire application architecture further than we did in the CA section and see how the responsiveness differs.
 
 ```file
 autoscaling/compute/overprovisioning/scale/deployment.yaml
