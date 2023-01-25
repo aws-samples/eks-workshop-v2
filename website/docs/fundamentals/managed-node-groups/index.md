@@ -43,4 +43,4 @@ There are several attributes of managed node groups that we can see from this ou
 * The instance type for this node group is `m5.large`
 * Uses the `AL2_x86_64` EKS AMI type
 
-Over the course of this module we will make changes to this node group to demonstrate the capabilities of MNGs.
+Over the course of this module we'll make changes to this node group to demonstrate the capabilities of MNGs.

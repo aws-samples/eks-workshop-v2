@@ -37,7 +37,7 @@ To use the tools in the AWS Cost Management console to recommend potential savin
 
 ## Purchasing Savings Plans
 To purchase the recommended Savings Plans, you first add the recommendation to your cart and then submit your order:
-1. Once you are satisfied with the recommendations and have chosen the Savings Plans that work best for your requirements, click the “Add Savings Plan to Cart” button at the bottom of the page.
+1. Once you're satisfied with the recommendations and have chosen the Savings Plans that work best for your requirements, click the “Add Savings Plan to Cart” button at the bottom of the page.
 <img src={require('./assets/figure2.png').default}/>
 2. After adding the Savings Plans to your cart, click “Cart” on the left-hand navigation menu to review your order.
 3. Click the Submit order button to place your order.

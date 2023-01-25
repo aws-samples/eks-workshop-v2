@@ -3,7 +3,7 @@ title: "Configuring control plane logs"
 sidebar_position: 30
 ---
 
-So that we have some data to look at in subsequent sections control plane logging was enabled when the cluster was created. Lets take a look at the configuration in the EKS console:
+So that we have some data to look at in subsequent sections control plane logging was enabled when the cluster was created. Let's take a look at the configuration in the EKS console:
 
 https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab
 

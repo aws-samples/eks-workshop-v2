@@ -23,6 +23,6 @@ The following screenshot displays a list of the _PodDistributionBudgets_ by name
 
 ![Insights](/img/resource-view/policy-poddisruption.jpg)
 
-Lets examine the _Pod Disruption Budget_ for _karpenter_, you can see the details of this resource such as the namespace and the parameters that needs to be matched for this _Pod Disruption Budget_. In the below screenshot, `max unavailable = 1` is set , which means the maximum number of _karpenter_ pods that can be unavailable is 1.
+Let's examine the _Pod Disruption Budget_ for _karpenter_, you can see the details of this resource such as the namespace and the parameters that needs to be matched for this _Pod Disruption Budget_. In the below screenshot, `max unavailable = 1` is set, which means the maximum number of _karpenter_ pods that can be unavailable is 1.
 
 ![Insights](/img/resource-view/policy-poddisruption-detail.jpg)

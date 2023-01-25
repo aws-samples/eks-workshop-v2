@@ -3,7 +3,7 @@ title: "Consume Additional Prefixes"
 sidebar_position: 40
 ---
 
-To demonstrate VPC CNI  behavior of adding additional prefixes to our worker nodes, we will deploy pause pods to utilize more IP addresses than are currently assigned. We are utilizing a large number of these pods to simulate the addition of application pods in to the cluster either through deployments or scaling operations.
+To demonstrate VPC CNI behavior of adding additional prefixes to our worker nodes, we'll deploy pause pods to utilize more IP addresses than are currently assigned. We're utilizing a large number of these pods to simulate the addition of application pods in to the cluster either through deployments or scaling operations.
 
 ```file
 networking/prefix/deployment-pause.yaml

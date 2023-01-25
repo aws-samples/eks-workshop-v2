@@ -5,7 +5,7 @@ sidebar_position: 4
 
 ## Deploy the application for production
 
-The application will use the same manifest files as in development, then we will override secrets and configmaps values that will contain the binding information that connects to AWS Services.
+The application will use the same manifest files as in development, then we'll override secrets and configmaps values that will contain the binding information that connects to AWS Services.
 
 ```bash
 $ kubectl apply -k /workspace/modules/ack/manifests/

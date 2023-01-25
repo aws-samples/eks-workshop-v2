@@ -24,7 +24,7 @@ networking/securitygroups-for-pods/rds/kustomization.yaml
 ConfigMap/catalog
 ```
 
-Lets check the value of `CATALOG_RDS_ENDPOINT` then run Kustomize to use the real DynamoDB service:
+Let's check the value of `CATALOG_RDS_ENDPOINT` then run Kustomize to use the real DynamoDB service:
 
 ```bash
 $ echo $CATALOG_RDS_ENDPOINT
@@ -58,7 +58,7 @@ Waiting for deployment "catalog" rollout to finish: 1 old replicas are pending t
 error: timed out waiting for the condition
 ```
 
-We got an error, it looks like our catalog Pods failed to restart in time. What's gone wrong? Lets check the Pod logs to see what happened:
+We got an error, it looks like our catalog Pods failed to restart in time. What's gone wrong? Let's check the Pod logs to see what happened:
 
 ```bash
 $ kubectl -n catalog logs deployment/catalog

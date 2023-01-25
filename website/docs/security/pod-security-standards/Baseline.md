@@ -5,7 +5,7 @@ sidebar_position: 20
 
 What if we want to restrict the permissions that a Pod can request? For example the `privileged` permissions we provided to the assets Pod in the previous section can be dangerous, allowing an attacker access to the hosts resources outside of the container. 
 
-The Baseline PSS is a minimally restrictive policy which prevents known privilege escalations. Lets add labels to the `assets` Namespace to enable it:
+The Baseline PSS is a minimally restrictive policy which prevents known privilege escalations. Let's add labels to the `assets` Namespace to enable it:
 
 ```kustomization
 security/pss-psa/baseline-namespace/namespace.yaml
@@ -68,7 +68,7 @@ In some scenarios there is no immediate indication that the successfully applied
 
 In both the audit and warn PSA modes, the Pod restrictions don’t prevent violating Pods from being created and started. However in these modes audit annotations on API server audit log events and warnings to API server clients (e.g., kubectl) are triggered, respectively. This occurs when Pods, as well as objects that create Pods, contain Pod specs with PSS violations.
 
-Now we can fix the `assets` Deployment so it will run by removing the `privileged` flag:
+Now, let's fix the `assets` Deployment so it will run by removing the `privileged` flag:
 
 ```bash
 $ kubectl apply -k /workspace/modules/security/pss-psa/baseline-workload

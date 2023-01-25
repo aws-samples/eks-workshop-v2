@@ -3,22 +3,22 @@ title: "Multiple Ingress pattern"
 sidebar_position: 30
 ---
 
-It is common to leverage multiple Ingress objects in the same EKS cluster, for example to expose multiple different workloads. By default each Ingress will result in the creation of a separate ALB, but we can leverage the IngressGroup feature which enables you to group multiple Ingress resources together. The controller will automatically merge Ingress rules for all Ingresses within IngressGroup and support them with a single ALB. In addition, most annotations defined on an Ingress only apply to the paths defined by that Ingress.
+It's common to leverage multiple Ingress objects in the same EKS cluster, for example to expose multiple different workloads. By default each Ingress will result in the creation of a separate ALB, but we can leverage the IngressGroup feature which enables you to group multiple Ingress resources together. The controller will automatically merge Ingress rules for all Ingresses within IngressGroup and support them with a single ALB. In addition, most annotations defined on an Ingress only apply to the paths defined by that Ingress.
 
-In this example we'll expose the `catalog` API out through the same ALB as the `ui` component, leveraging path-based routing to dispatch requests to the appropriate Kubernetes service. Lets check we can't already access the catalog API:
+In this example, we'll expose the `catalog` API out through the same ALB as the `ui` component, leveraging path-based routing to dispatch requests to the appropriate Kubernetes service. Let's check we can't already access the catalog API:
 
 ```bash expectError=true
 $ ADDRESS=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
 $ curl $ADDRESS/catalogue
 ```
 
-The first thing we will do is re-create the Ingress for `ui` component adding the annotation `alb.ingress.kubernetes.io/group.name`:
+The first thing we'll do is re-create the Ingress for `ui` component adding the annotation `alb.ingress.kubernetes.io/group.name`:
 
 ```file
 exposing/ingress/multiple-ingress/ingress-ui.yaml
 ```
 
-Now we can create a separate Ingress for the `catalog` component that also leverages the same `group.name`:
+Now, let's create a separate Ingress for the `catalog` component that also leverages the same `group.name`:
 
 ```file
 exposing/ingress/multiple-ingress/ingress-catalog.yaml

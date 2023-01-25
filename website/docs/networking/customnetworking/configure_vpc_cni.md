@@ -3,9 +3,9 @@ title: "Configure Amazon VPC CNI"
 sidebar_position: 10
 ---
 
-In this section we will start configuring the Amazon VPC CNI.
+In this lab exercise, we'll start configuring the Amazon VPC CNI.
 
-Lets review the existing VPC and Availability Zone configuration.
+Let's review the existing VPC and Availability Zone configuration.
 
 ```bash
 $ echo "The secondary subnet in AZ $AZ1 is $SECONDARY_SUBNET_1"

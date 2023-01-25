@@ -3,7 +3,7 @@ title: Packaging the components
 sidebar_position: 20
 ---
 
-Before a workload can be deployed to a Kubernetes distribution like EKS it first must be packaged as a container image and published to a container registry. Basic container topics like this are not covered as part of this workshop, and the sample application has container images already available in Amazon Elastic Container Registry for the labs we will complete today.
+Before a workload can be deployed to a Kubernetes distribution like EKS it first must be packaged as a container image and published to a container registry. Basic container topics like this are not covered as part of this workshop, and the sample application has container images already available in Amazon Elastic Container Registry for the labs we'll complete today.
 
 The table below provides links to the ECR Public repository for each component, as well as the `Dockerfile` that was used to build each component.
 

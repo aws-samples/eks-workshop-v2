@@ -3,7 +3,7 @@ title: "Sealing your Secrets"
 sidebar_position: 70
 ---
 
-Let's create a new secret `catalog-sealed-db`. We will create a new file `new-catalog-db.yaml` with the same keys and values as the `catalog-db` Secret.
+Let's create a new secret `catalog-sealed-db`. We'll create a new file `new-catalog-db.yaml` with the same keys and values as the `catalog-db` Secret.
 
 ```file
 security/sealed-secrets/new-catalog-db.yaml

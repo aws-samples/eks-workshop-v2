@@ -117,7 +117,7 @@ $ aws eks describe-nodegroup \
 
 :::info
 
-Updating the managed node group and propagating the labels and taints usually takes a few minutes. If you are not seeing any taints configured or getting a `null` value, please do wait a few minutes before trying the above command again. 
+Updating the managed node group and propagating the labels and taints usually takes a few minutes. If you're not seeing any taints configured or getting a `null` value, please do wait a few minutes before trying the above command again. 
 
 :::
 

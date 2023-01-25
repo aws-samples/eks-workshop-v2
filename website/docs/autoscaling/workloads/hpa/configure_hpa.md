@@ -17,13 +17,13 @@ autoscaling/workloads/hpa/deployment.yaml
 Deployment/ui
 ```
 
-Next we need to create a `HorizontalPodAutoscaler` resource which defines the parameters HPA will use to determine how to scale our workload.
+Next, we need to create a `HorizontalPodAutoscaler` resource which defines the parameters HPA will use to determine how to scale our workload.
 
 ```file
 autoscaling/workloads/hpa/hpa.yaml
 ```
 
-Lets apply this configuration:
+Let's apply this configuration:
 
 ```bash
 $ kubectl apply -k /workspace/modules/autoscaling/workloads/hpa

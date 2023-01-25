@@ -12,7 +12,7 @@ kubecost-kube-state-metrics   1/1     1            1           16m
 kubecost-prometheus-server    1/1     1            1           16m
 ```
 
-To access the Kubecost dashboard we will expose it through a `kubectl port-forward` command. Expose the Kubecost dashboard open a new terminal in your Cloud9 IDE and run the following command:
+To access the Kubecost dashboard we'll expose it through a `kubectl port-forward` command. Expose the Kubecost dashboard open a new terminal in your Cloud9 IDE and run the following command:
 
 ```bash test=false
 $ kubectl port-forward --namespace kubecost deployment/kubecost-cost-analyzer 8080:9090

@@ -18,7 +18,7 @@ $ aws eks describe-fargate-profile --cluster-name $EKS_CLUSTER_NAME \
 
 Can you tell what this profile is meant to do? **Hint:** Look at the selectors.
 
-So why isn't the `checkout` service already running on Fargate? Lets check its labels:
+So why isn't the `checkout` service already running on Fargate? Let's check its labels:
 
 ```bash
 $ kubectl get pod -n checkout -l app.kubernetes.io/component=service -o json | jq '.items[0].metadata.labels'
@@ -57,7 +57,7 @@ Events:
   Normal   Started          9m4s   kubelet            Started container checkout
 ```
 
-The events from `fargate-scheduler` give us some insight in to what has happened. The entry we are mainly interested in at this stage in the lab is the event with the reason `Scheduled`. Inspecting that closely gives us the name of the Fargate instance that was provisioned for this Pod, in the case of the above example this is `fargate-ip-10-42-11-96.us-west-2.compute.internal`.
+The events from `fargate-scheduler` give us some insight in to what has happened. The entry we're mainly interested in at this stage in the lab is the event with the reason `Scheduled`. Inspecting that closely gives us the name of the Fargate instance that was provisioned for this Pod, in the case of the above example this is `fargate-ip-10-42-11-96.us-west-2.compute.internal`.
 
 We can inspect this node from `kubectl` to get additional information about the compute that was provisioned for this Pod:
 

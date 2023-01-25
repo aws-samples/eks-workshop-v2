@@ -3,7 +3,7 @@ title: 'Deploying an application'
 sidebar_position: 15
 ---
 
-We have successfully bootstraped Flux on our cluster so now we can deploy an application. To demonstrate the difference between GitOps based a delivery of an application and other method we will migrate the UI component of the sample application from using `kubectl apply -k` to being deployed with Flux.
+We have successfully bootstraped Flux on our cluster so now we can deploy an application. To demonstrate the difference between GitOps based a delivery of an application and other method we'll migrate the UI component of the sample application from using `kubectl apply -k` to being deployed with Flux.
 
 First lets remove the existing UI component so we can replace it:
 
@@ -11,13 +11,13 @@ First lets remove the existing UI component so we can replace it:
 $ kubectl delete -k /workspace/manifests/ui
 ```
 
-Next clone the repository we used to bootstrap Flux in the previous section:
+Next, clone the repository we used to bootstrap Flux in the previous section:
 
 ```bash
 $ git clone ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_DEFAULT_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-gitops ~/environment/gitops
 ```
 
-Now we can get into the cloned repository and start creating our GitOps configuration. Copy the existing kustomize configuration for the UI service:
+Now, let's get into the cloned repository and start creating our GitOps configuration. Copy the existing kustomize configuration for the UI service:
 
 ```bash
 $ mkdir ~/environment/gitops/apps

@@ -17,7 +17,7 @@ There are several reasons why we might want to configure the NLB to operate in I
 
 ### Re-configuring the NLB
 
-Lets reconfigure our NLB to use IP mode and look at the effect it has on the infrastructure.
+Let's reconfigure our NLB to use IP mode and look at the effect it has on the infrastructure.
 
 This is the patch we'll be applying to re-configure the Service:
 
@@ -68,7 +68,7 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 
 Notice that we've gone from the 3 targets we observed in the previous section to just a single target. Why is that? Instead of registering the EC2 instances in our EKS cluster the load balancer controller is now registering individual Pods and sending traffic directly, taking advantage of the AWS VPC CNI and the fact that Pods each have a first-class VPC IP address.
 
-Lets scale up the ui component to 3 replicas see what happens:
+Let's scale up the ui component to 3 replicas see what happens:
 
 ```bash
 $ kubectl scale -n ui deployment/ui --replicas=3

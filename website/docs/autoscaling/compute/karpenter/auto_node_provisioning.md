@@ -37,7 +37,7 @@ Apply this deployment:
 $ kubectl apply -k /workspace/modules/autoscaling/compute/karpenter/scale
 ```
 
-Now lets deliberately scale this deployment to demonstrate that Karpenter is making optimized decisions. Since we've requested 1Gi of memory, if we scale the deployment to 5 replicas that will request a total of 5Gi of memory.
+Now, let's deliberately scale this deployment to demonstrate that Karpenter is making optimized decisions. Since we've requested 1Gi of memory, if we scale the deployment to 5 replicas that will request a total of 5Gi of memory.
 
 Before we proceed, what instance from the table above do you think Karpenter will end up provisioning? Which instance type would you want it to?
 
@@ -68,7 +68,7 @@ You should see output that indicates the instance type and the purchase option:
 The Pods that we scheduled will fit nicely in to an EC2 instance with 8GB of memory, and since Karpenter will always prioritize the lowest price instance type for on-demand instances, it will select `m5.large`.
 
 :::info
-There are certain cases where a different instance type might be selected other than the lowest price, for example if that cheapest instance type has no remaining capacity available in the region you are working in
+There are certain cases where a different instance type might be selected other than the lowest price, for example if that cheapest instance type has no remaining capacity available in the region you're working in
 :::
 
 We can also check the metadata added to the node by Karpenter:

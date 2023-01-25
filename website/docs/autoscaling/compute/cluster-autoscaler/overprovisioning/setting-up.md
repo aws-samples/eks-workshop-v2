@@ -3,7 +3,7 @@ title: "Setting up Over-Provisioning"
 sidebar_position: 35
 ---
 
-It is best practice to create appropriate `PriorityClass` for your applications. We'll create a global default priority class using the field `globalDefault:true`. This default `PriorityClass` will be assigned pods/deployments that don’t specify a `PriorityClassName`.
+It's considered a best practice to create appropriate `PriorityClass` for your applications. Now, let's create a global default priority class using the field `globalDefault:true`. This default `PriorityClass` will be assigned pods/deployments that don’t specify a `PriorityClassName`.
 
 ```file
 autoscaling/compute/overprovisioning/setup/priorityclass-default.yaml

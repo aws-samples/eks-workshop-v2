@@ -3,8 +3,8 @@ title: "Provision ACK Resources"
 sidebar_position: 3
 ---
 
-In this section we will provision a database and message broker for our application, we will use AWS managed services.
-AWS managed service can be provision using Kubernetes API, we will use Kubernetes custom resources to specify the desire
+In this lab exercise, we'll provision a database and message broker for our application, we'll use AWS managed services.
+AWS managed service can be provision using Kubernetes API, we'll use Kubernetes custom resources to specify the desire
 configuration for the service we want to access form our application.
 
 
