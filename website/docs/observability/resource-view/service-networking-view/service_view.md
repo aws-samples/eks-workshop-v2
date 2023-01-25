@@ -3,7 +3,7 @@ title: "Services and Endpoints"
 sidebar_position: 30
 ---
 
-[Service](https://kubernetes.io/docs/concepts/services-networking/service/) resource view displays all the services that expose applications running on set of pods in the cluster.
+[Service](https://kubernetes.io/docs/concepts/services-networking/service/) resource view displays all the services that expose applications running on set of pods in a cluster.
 
 ![Insights](/img/resource-view/service-view.jpg)
 

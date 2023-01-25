@@ -4,7 +4,7 @@ sidebar_position: 40
 hide_table_of_contents: true
 ---
  
-To use IAM roles for service accounts in your cluster, an `IAM OIDC Identity Provider` must be created and associated with the cluster. An OIDC has already been provisioned and associated with your EKS cluster:
+To use IAM roles for service accounts in your cluster, an `IAM OIDC Identity Provider` must be created and associated with a cluster. An OIDC has already been provisioned and associated with your EKS cluster:
 
 Go to the Identity Providers in IAM Console:
 
@@ -70,7 +70,7 @@ security/irsa/service-account/carts-serviceAccount.yaml
 ServiceAccount/carts
 ```
 
-Lets check the value of `CARTS_IAM_ROLE` then run Kustomize to apply this change:
+Let's check the value of `CARTS_IAM_ROLE` then run Kustomize to apply this change:
 
 ```bash
 $ echo $CARTS_IAM_ROLE

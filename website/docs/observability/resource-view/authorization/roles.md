@@ -13,6 +13,6 @@ Click on the **_cluster-autoscaler-aws-cluster-autoscaler_** role to view more d
 
 ![Insights](/img/resource-view/autz-role-detail.jpg)
 
-A **[ClusterRoles](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole)** are a set of rules that are scoped to the cluster and not a namespace, which makes them different from a **_Role_**. **_ClusterRoles_** are additive, and you cannot set "deny" rules. You would generally use **_ClusterRoles_** to define cluster-wide permissions. Below we can see the list of **_ClusterRoles_** on your cluster. 
+A **[ClusterRoles](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole)** are a set of rules that are scoped to a cluster and not a namespace, which makes them different from a **_Role_**. **_ClusterRoles_** are additive, and you cannot set "deny" rules. You would generally use **_ClusterRoles_** to define cluster-wide permissions. Below we can see the list of **_ClusterRoles_** on your cluster. 
 
 ![Insights](/img/resource-view/authz-crole.jpg)

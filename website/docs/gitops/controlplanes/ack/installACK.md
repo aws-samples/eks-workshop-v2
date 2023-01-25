@@ -2,7 +2,7 @@
 title: "Configuring ACK Resources"
 sidebar_position: 2
 ---
-Installing the contollers is usually an activity done by the cluster admins. The application teams are responsible to setup AWS resources via the controllers. They can define the application and its dependencies in one single Helm chart, thanks to the controllers.   
+Installing the contollers is usually an activity done by cluster administrators. The application teams are responsible to setup AWS resources via the controllers. They can define the application and its dependencies in one single Helm chart, thanks to the controllers.   
 
 Installing a controller consists of three steps:
 1. Setup of IAM Role Service Account (IRSA) for the controller. It gives the controller the access rights to the AWS resources it controls.

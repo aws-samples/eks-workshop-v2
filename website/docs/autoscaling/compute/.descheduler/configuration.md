@@ -9,7 +9,7 @@ Before we begin let's reset our environment:
 $ reset-environment 
 ```
 
-The descheduler component can be installed as `Job`, `CronJob`, `Deployment` in the cluster. In this workshop, descheduler is installed as a `Deployment` object with 1 minute interval.
+The descheduler component can be installed as a `Job`, `CronJob`, `Deployment` in a cluster. In this workshop, descheduler is installed as a `Deployment` object with 1 minute interval.
 
 A policy has been pre-configured in the environment, which you can see:
 
