@@ -11,4 +11,3 @@ Crossplane extends your Kubernetes cluster to support orchestrating any infrastr
 Crossplane is a Cloud Native Compute Foundation project.
 
 ![EKS with RDS and MQ](./assets/eks-workshop-crossplane.jpg)
-

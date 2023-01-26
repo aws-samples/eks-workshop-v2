@@ -109,7 +109,7 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'gitops/index',
+            docId: 'automation/index',
             position: 'left',
             label: 'Automation',
           },
