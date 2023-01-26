@@ -3,7 +3,7 @@ title: Navigating the labs
 sidebar_position: 25
 ---
 
-In this section we will explain how to navigate this web site and the content provided.
+Let’s review how to navigate this web site and the content provided.
 
 ## Structure
 

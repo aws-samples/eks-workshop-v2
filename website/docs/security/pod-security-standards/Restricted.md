@@ -23,7 +23,7 @@ service/assets unchanged
 deployment.apps/assets unchanged
 ```
 
-Similar to the Baseline profile we are getting a warning that the assets Deployment is violating the Restricted profile.
+Similar to the Baseline profile we're getting a warning that the assets Deployment is violating the Restricted profile.
 
 ```bash
 $ kubectl -n assets delete pod --all

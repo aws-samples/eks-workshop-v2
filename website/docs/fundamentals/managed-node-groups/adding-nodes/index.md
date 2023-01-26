@@ -20,7 +20,7 @@ On the **Edit node group** page, you can see the following settings under **Node
 $ eksctl get nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME
 ```
 
-We will scale the nodegroup in `eks-workshop` by changing the node count from `2` to `3` for **minimum size** and **desired capacity** using below command:
+We'll scale the nodegroup in `eks-workshop` by changing the node count from `2` to `3` for **minimum size** and **desired capacity** using below command:
 >Note: You do not need to run below command if you have changed the size of nodegroup using `Amazon EKS Console`.
 
 ```bash
@@ -51,7 +51,7 @@ ip-10-42-11-143.us-west-2.compute.internal   Ready      <none>   22m   v1.23.9-e
 ip-10-42-12-117.us-west-2.compute.internal   NotReady   <none>   10s   v1.23.9-eks-ba74326
 ```
 
-You may notice that the node shows a status of `NotReady`, which happens when the new node is still in the process of joining the cluster. We can also use `kubectl wait` to watch until all the nodes report `Ready`:
+Notice that the node shows a status of `NotReady`, which happens when the new node is still in the process of joining the cluster. We can also use `kubectl wait` to watch until all the nodes report `Ready`:
 
 ```bash
 $ kubectl wait --for=condition=Ready nodes --all --timeout=300s

@@ -3,9 +3,9 @@ title: "Enabling Container Insights Using AWS Distro for OpenTelemetry"
 sidebar_position: 10
 ---
 
-In this lab we will walk through how to enable CloudWatch Container Insights metrics with the ADOT Collector for an EKS cluster.
+In this lab exercise, we'll explore how to enable CloudWatch Container Insights metrics with the ADOT Collector for an EKS cluster.
 
-The first thing we need to do is create resources to allow the ADOT collector the permissions it needed. We'll start with the ClusterRole that gives the collector permissions to access the Kubernetes API:
+Now, let's create resources to allow the ADOT collector the permissions it needed. We'll start with the ClusterRole that gives the collector permissions to access the Kubernetes API:
 
 ```file
 observability/container-insights/adot/clusterrole.yaml
@@ -44,7 +44,7 @@ The specification for the collector is too long to show here, but you can view i
 $ kubectl -n other get opentelemetrycollector adot-container-ci
 ```
 
-Lets break this down in to sections to get a better understanding of what has been deployed. This is the OpenTelemetry collector configuration:
+Let's break this down in to sections to get a better understanding of what has been deployed. This is the OpenTelemetry collector configuration:
 
 ```bash
 $ kubectl -n other get opentelemetrycollector adot-container-ci -o jsonpath='{.spec.config}'
@@ -74,4 +74,4 @@ adot-container-ci-collector-5lp5g  1/1     Running   0          15s
 adot-container-ci-collector-ctvgs  1/1     Running   0          15s
 ```
 
-If the output of this command includes multiple pods in the `Running` state as shown above, the collector is running and collecting metrics from the cluster. The collector creates a log group named *aws/containerinsights/**cluster-name**/performance* and sends the metric data as performance log events in EMF format.
+If the output of this command includes multiple pods in the `Running` state as shown (above), the collector is running and collecting metrics from the cluster. The collector creates a log group named *aws/containerinsights/**cluster-name**/performance* and sends the metric data as performance log events in EMF format.

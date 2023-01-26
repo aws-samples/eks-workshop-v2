@@ -4,7 +4,7 @@ sidebar_position: 30
 ---
 Pods can be constrained to run on specific nodes or under specific circumstances. This can include cases where you want only one pod running per node or want pods to be paired together on a node. Additionally, when using node affinity pods can have preferred or mandatory restrictions.
 
-For this lesson, we will focus on inter-pod affinity and anti-affinity by scheduling the `checkout-redis` pods to run only one instance per node and by scheduling the `checkout` pods to only run one instance of it on nodes where a `checkout-redis` pod exists. This will ensure that our caching pods (`checkout-redis`) run locally with a `checkout` pod instance for best performance. 
+For this lesson, we'll focus on inter-pod affinity and anti-affinity by scheduling the `checkout-redis` pods to run only one instance per node and by scheduling the `checkout` pods to only run one instance of it on nodes where a `checkout-redis` pod exists. This will ensure that our caching pods (`checkout-redis`) run locally with a `checkout` pod instance for best performance. 
 
 The first thing we want to do is see that the `checkout` and `checkout-redis` pods are running:
 
@@ -15,7 +15,7 @@ checkout-698856df4d-vzkzw         1/1     Running   0          125m
 checkout-redis-6cfd7d8787-kxs8r   1/1     Running   0          127m
 ```
 
-We can see both applications have one pod running in the cluster. Now let's find out where they are running:
+We can see both applications have one pod running in the cluster. Now, let's find out where they are running:
 
 ```bash
 $ kubectl get pods -n checkout \
@@ -30,7 +30,7 @@ Based on the results above, the `checkout-698856df4d-vzkzw` pod is running on th
 In your environment the pods may be running on the same node initially
 :::
 
-Let's set up a `podAffinity` and `podAntiAffinity` policy in the **checkout** deployment to ensure that one `checkout` pod runs per node, and that it will only run on nodes where a `checkout-redis` pod is already running. We will use the `requiredDuringSchedulingIgnoredDuringExecution` to make this a requirement, rather than a preferred behavior.
+Let's set up a `podAffinity` and `podAntiAffinity` policy in the **checkout** deployment to ensure that one `checkout` pod runs per node, and that it will only run on nodes where a `checkout-redis` pod is already running. We'll use the `requiredDuringSchedulingIgnoredDuringExecution` to make this a requirement, rather than a preferred behavior.
 
 The following kustomization adds an `affinity` section to the **checkout** deployment specifying both **podAffinity** and **podAntiAffinity** policies:
 
@@ -54,7 +54,7 @@ $ kubectl rollout status deployment/checkout \
   -n checkout --timeout 180s
 ```
 
-The **podAffinity** section ensures that a `checkout-redis` pod is already running on the node — this is because we can assume the `checkout` pod requires `checkout-redis` to run correctly. The **podAntiAffinity** section requires that no `checkout` pods are already running on the node by matching the **`app.kubernetes.io/component=service`** label. Now lets scale up the deployment to check the configuration is working:
+The **podAffinity** section ensures that a `checkout-redis` pod is already running on the node — this is because we can assume the `checkout` pod requires `checkout-redis` to run correctly. The **podAntiAffinity** section requires that no `checkout` pods are already running on the node by matching the **`app.kubernetes.io/component=service`** label. Now, let's scale up the deployment to check the configuration is working:
 
 ```bash
 $ kubectl scale -n checkout deployment/checkout --replicas 2
@@ -72,7 +72,7 @@ checkout-redis-6cfd7d8787-gw59j ip-10-42-10-120.us-west-2.compute.internal
 
 In this example, the first `checkout` pod runs on the same pod as the existing checkout-redis pod, as it fulfills the **podAffinity** rule we set. The second one is still pending, because the **podAntiAffinity** rule we defined does not allow two checkout pods to get started on the same node. As the second node doesn't have a `checkout-redis` pod running, it will stay pending.
 
-Next, we will scale the `checkout-redis` to two instances for our two nodes, but first let's modify the `checkout-redis` deployment policy to spread out our `checkout-redis` instances across each node. To do this, we will simply need to create a **podAntiAffinity** rule.
+Next, we'll scale the `checkout-redis` to two instances for our two nodes, but first let's modify the `checkout-redis` deployment policy to spread out our `checkout-redis` instances across each node. To do this, we'll simply need to create a **podAntiAffinity** rule.
 
 ```kustomization
 fundamentals/affinity/checkout-redis/checkout-redis.yaml
@@ -140,7 +140,7 @@ checkout-redis-7979df659-57xcb   1/1     Running   0          35s
 checkout-redis-7979df659-r7kkm   1/1     Running   0          2m10s
 ```
 
-Lets finish this section by removing the Pending pod:
+Let's finish this section by removing the Pending pod:
 
 ```bash
 $ kubectl scale --replicas=2 deployment/checkout --namespace checkout

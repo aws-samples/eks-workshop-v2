@@ -27,7 +27,7 @@ security/irsa/dynamo/kustomization.yaml
 ConfigMap/carts
 ```
 
-Lets check the value of `CARTS_DYNAMODB_TABLENAME` then run Kustomize to use the real DynamoDB service:
+Let's check the value of `CARTS_DYNAMODB_TABLENAME` then run Kustomize to use the real DynamoDB service:
 
 ```bash
 $ echo $CARTS_DYNAMODB_TABLENAME

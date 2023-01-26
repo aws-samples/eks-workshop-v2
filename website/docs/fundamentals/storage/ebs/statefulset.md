@@ -57,14 +57,14 @@ We can test by creating a shell inside the container that is running MySQL and c
 $ kubectl exec catalog-mysql-0 -n catalog -- bash -c  "echo 123 > /var/lib/mysql/test.txt"
 ```
 
-Now let's verify that our `test.txt` file got created on the `/var/lib/mysql` directory:
+Now, let's verify that our `test.txt` file got created on the `/var/lib/mysql` directory:
 
 ```bash
 $ kubectl exec catalog-mysql-0 -n catalog -- ls -larth /var/lib/mysql/ | grep -i test
 -rw-r--r-- 1 root  root     4 Oct 18 13:38 test.txt
 ```
 
-Now let's remove the current `catalog-mysql` Pod. This will force the StatefulSet controller to automatically re-create a new catalog-mysql Pod:
+Now, let's remove the current `catalog-mysql` Pod. This will force the StatefulSet controller to automatically re-create a new catalog-mysql Pod:
 
 ```bash
 $ kubectl delete pods -n catalog -l app.kubernetes.io/component=mysql
@@ -92,4 +92,4 @@ command terminated with exit code 1
 
 As you can see the `test.txt` file is no longer there, because `emptyDir` volumes are ephemeral. On future sections, we'll run the same experiment and demostrate how Persistent Volumes (PVs) will keep the `test.txt` file and survive Pod restarts and/or failures. 
 
-On the next page, we will on understanding the main concepts of Storage on Kubernetes and its integration with the AWS cloud ecosystem. 
+On the next page, we'll on understanding the main concepts of Storage on Kubernetes and its integration with the AWS cloud ecosystem. 

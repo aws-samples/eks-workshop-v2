@@ -3,12 +3,12 @@ title: "Scraping metrics using AWS Distro for OpenTelemetry"
 sidebar_position: 10
 ---
 
-To gather the metrics from the Amazon EKS Cluster, we will deploy a `OpenTelemetryCollector` custom resource. The ADOT operator running on the EKS cluster detects the presence of or changes of the this resource and for any such changes, the operator performs the following actions:
+To gather the metrics from the Amazon EKS Cluster, we'll deploy a `OpenTelemetryCollector` custom resource. The ADOT operator running on the EKS cluster detects the presence of or changes of the this resource and for any such changes, the operator performs the following actions:
 
 - Verifies that all the required connections for these creation, update, or deletion requests to the Kubernetes API server are available.
 - Deploys ADOT collector instances in the way the user expressed in the `OpenTelemetryCollector` resource configuration.
 
-The first thing we need to do is create resources to allow the ADOT collector the permissions it needed. We'll start with the ClusterRole that gives the collector permissions to access the Kubernetes API:
+Now, let's create resources to allow the ADOT collector the permissions it needed. We'll start with the ClusterRole that gives the collector permissions to access the Kubernetes API:
 
 ```file
 observability/oss-metrics/adot/clusterrole.yaml
@@ -47,7 +47,7 @@ The specification for the collector is too long to show here, but you can view i
 $ kubectl -n other get opentelemetrycollector adot
 ```
 
-Lets break this down in to sections to get a better understanding of what has been deployed. This is the OpenTelemetry collector configuration:
+Let's break this down in to sections to get a better understanding of what has been deployed. This is the OpenTelemetry collector configuration:
 
 ```bash
 $ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.config}'

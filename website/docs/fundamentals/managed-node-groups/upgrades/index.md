@@ -3,7 +3,7 @@ title: Upgrading AMIs
 sidebar_position: 60
 ---
 
-The [Amazon EKS optimized Amazon Linux AMI](https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-amis.html) is built on top of Amazon Linux 2, and is configured to serve as the base image for Amazon EKS nodes. It is a best practice to use the latest version of the EKS-Optimized AMI when you add nodes to an EKS cluster, as new releases include Kubernetes patches and security updates. It is also important to upgrade existing nodes already provisioned in the EKS cluster.
+The [Amazon EKS optimized Amazon Linux AMI](https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-amis.html) is built on top of Amazon Linux 2, and is configured to serve as the base image for Amazon EKS nodes. It's considered a best practice to use the latest version of the EKS-Optimized AMI when you add nodes to an EKS cluster, as new releases include Kubernetes patches and security updates. It's also important to upgrade existing nodes already provisioned in the EKS cluster.
 
 EKS managed node groups provides the capability to automate the update of the AMI being used by the nodes it manages. It will automatically drain nodes using the Kubernetes API and respects the [Pod disruption budgets](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/) that you set for your Pods to ensure that your applications stay available.
 

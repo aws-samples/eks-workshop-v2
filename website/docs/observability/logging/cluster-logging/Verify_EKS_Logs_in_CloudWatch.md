@@ -3,7 +3,7 @@ title: "Viewing in CloudWatch"
 sidebar_position: 30
 ---
 
-Lets take a look at the logs in the CloudWatch Logs console:
+Let's take a look at the logs in the CloudWatch Logs console:
 
 https://console.aws.amazon.com/cloudwatch/home?#logsV2:log-groups
 

@@ -9,4 +9,4 @@ Autoscaling monitors your workloads and automatically adjusts capacity to mainta
 * **Compute:** As pods are scaled the underlying compute in a Kubernetes cluster must also adapt by adjusting the number or size of worker nodes used to run the Pods.
 * **Pods:** Since pods are used to run workloads in a Kubernetes cluster, scaling a workload is primarily done by scaling Pods either horizontally or vertically in response to scenarios such as changes in load on a given application.
 
-In this chapter we'll explore the various mechanisms that are available to automatically scale both pods and cluster compute capacity.
+In this chapter, we'll explore the various mechanisms available for automatically scaling both the number of pods and a cluster's compute capacity.

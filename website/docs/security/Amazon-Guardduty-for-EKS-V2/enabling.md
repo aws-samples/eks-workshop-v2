@@ -4,7 +4,7 @@ sidebar_position: 122
 ---
 
 
-In this section, we will enable GuardDuty and Kubernetes protection.
+In this lab, we'll enable GuardDuty and Kubernetes protection.
 
 **Enabling using CLI:**
 

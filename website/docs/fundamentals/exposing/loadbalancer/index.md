@@ -14,7 +14,7 @@ $ reset-environment
 
 :::
 
-Kubernetes uses services to expose pods outside of the cluster. One of the most popular ways to use services in AWS is with the `LoadBalancer` type. With a simple YAML file declaring your service name, port, and label selector, the cloud controller will provision a load balancer for you automatically.
+Kubernetes uses services to expose pods outside of a cluster. One of the most popular ways to use services in AWS is with the `LoadBalancer` type. With a simple YAML file declaring your service name, port, and label selector, the cloud controller will provision a load balancer for you automatically.
 
 ```yaml
 apiVersion: v1

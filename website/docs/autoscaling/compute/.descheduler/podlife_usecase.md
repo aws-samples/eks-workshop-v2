@@ -5,7 +5,7 @@ sidebar_position: 4
 
 `PodLifeTime` strategy evicts pods that are older than `maxPodLifeTimeSeconds`. You can also specify podStatusPhases to only evict pods with specific StatusPhases, currently this parameter is limited to `Running` and `Pending`.
 
-This strategy is useful to balance the cluster by Pod Age, when initially migrating applications from a static virtual machine infrastructure to a cloud native k8s infrastructure there can be a tendency to treat application pods like static virtual machines. One approach to help prevent developers and operators from treating pods like virtual machines is to ensure that pods only run for a fixed amount of time.
+This strategy is useful to balance a cluster by Pod Age, when initially migrating applications from a static virtual machine infrastructure to a cloud native k8s infrastructure there can be a tendency to treat application pods like static virtual machines. One approach to help prevent developers and operators from treating pods like virtual machines is to ensure that pods only run for a fixed amount of time.
 
 In our setup, Descheduler policy is configured to evict pods older than 120 seconds with `podlifetime=enabled` label.
 
@@ -20,11 +20,11 @@ In our setup, Descheduler policy is configured to evict pods older than 120 seco
         podlifetime: enabled
 ```
 
-Lets start running by modifying the `checkout` service to add the label `podlifetime=enabled`:
+Let's start running by modifying the `checkout` service to add the label `podlifetime=enabled`:
 
 KUSTOMIZE HERE
 
-Watch the pod status by running the below command, you will notice the pods being evicted every time it runs for more than 120 seconds:
+Watch the pod status by running the below command, notice the pods being evicted every time it runs for more than 120 seconds:
 
 ```bash test=false
 $ kubectl get pods -l podlifetime=enabled --watch 

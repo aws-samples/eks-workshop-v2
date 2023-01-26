@@ -9,7 +9,7 @@ A Spot Instance is an instance that uses spare EC2 capacity that is available fo
 
 Spot Instances are a cost-effective choice if you can be flexible about when your applications run and if your applications can be interrupted. For example, Spot Instances are well-suited for data analysis, batch jobs, background processing, and optional tasks. For more information, see [Amazon EC2 Spot Instances](https://aws.amazon.com/ec2/spot-instances/).
 
-In this section we will look at how we can provision Spot capacity for our EKS cluster and deploy workloads that leverage it.
+In this lab exercise, we'll look at how we can provision Spot capacity for our EKS cluster and deploy workloads that leverage it.
 
 # EKS managed node groups with Spot capacity
 

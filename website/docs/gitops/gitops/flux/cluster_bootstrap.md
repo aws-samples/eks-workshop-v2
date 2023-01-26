@@ -3,9 +3,9 @@ title: 'Cluster bootstrap'
 sidebar_position: 15
 ---
 
-The bootstrap process installs Flux components on your cluster and creates the relevant files within the repository for managing clusters object using GitOps with Flux.
+The bootstrap process installs Flux components on a cluster and creates the relevant files within the repository for managing clusters object using GitOps with Flux.
 
-Before bootstraping the cluster Flux allows us to run pre-bootstrap checks verify that everything is set up correctly. Run the following command for Flux CLI to perform the checks:
+Before bootstraping a cluster, Flux allows us to run pre-bootstrap checks to verify that everything is set up correctly. Run the following command for Flux CLI to perform the checks:
 
 ```bash
 $ flux check --pre
@@ -27,10 +27,10 @@ $ flux bootstrap git \
 Let's break down the command above:
 
 - First we tell Flux which Git repository to use to store its state
-- After that, we are passing the Git `branch` that we want this instance of Flux to use, since some patterns involve multiple branches in the same Git repository
+- After that, we're passing the Git `branch` that we want this instance of Flux to use, since some patterns involve multiple branches in the same Git repository
 - Finally we'll be using SSH for Flux to connect and authenticate using the SSH key at `/home/ec2-user/gitops_ssh.pem`
 
-Now we can verify that the bootstrap process completed successfully by running the following command:
+Now, let's verify that the bootstrap process completed successfully by running the following command:
 
 ```bash
 $ flux get kustomization

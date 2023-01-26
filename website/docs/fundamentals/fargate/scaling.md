@@ -5,7 +5,7 @@ sidebar_position: 30
 
 Another benefit of Fargate is the simplified horizontal scaling model it offers. When using EC2 for compute, scaling Pods involves considering how not only the Pods will scale but also the underlying compute. Because Fargate abstracts away the underlying compute you only need to be concerned with scaling Pods themselves.
 
-The examples we've looked at so far have only used a single Pod replica. What happens if we scale this out horizontally as we would typically expect in a real life scenario? Lets scale up the `checkout` service and find out:
+The examples we've looked at so far have only used a single Pod replica. What happens if we scale this out horizontally as we would typically expect in a real life scenario? Let's scale up the `checkout` service and find out:
 
 ```kustomization
 fundamentals/fargate/scaling/deployment.yaml

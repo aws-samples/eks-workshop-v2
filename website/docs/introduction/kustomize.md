@@ -11,11 +11,11 @@ For example, take a look at the following manifest file for the `checkout` Deplo
 ../manifests/checkout/deployment.yaml
 ```
 
-This file has already been applied in the previous [Getting Started](getting-started) lab, but let's say we wanted to scale this component horizontally by updating the `replicas` field using Kustomize. Rather than manually updating this YAML file, we will use Kustomize to update the `spec/replicas` field from 1 to 2.
+This file has already been applied in the previous [Getting Started](getting-started) lab, but let's say we wanted to scale this component horizontally by updating the `replicas` field using Kustomize. Rather than manually updating this YAML file, we'll use Kustomize to update the `spec/replicas` field from 1 to 2.
 
 To do so, we'll apply the following kustomization.
 
-* The first tab shows the kustomization we are applying
+* The first tab shows the kustomization we're applying
 * The second tab shows a preview of what the updated `Deployment/checkout` file looks like after the kustomization is applied
 * Finally, the third tab shows just the diff of what has changed
 
@@ -30,7 +30,7 @@ You can generate the final Kubernetes YAML that applies this kustomization with 
 $ kustomize build /workspace/modules/introduction/kustomize
 ```
 
-This will generate a lot of YAML, which represents the final manifests you can apply directly to Kubernetes. Lets demonstrate this by piping the output from `kustomize` directly to `kubectl`:
+This will generate a lot of YAML, which represents the final manifests you can apply directly to Kubernetes. Let's demonstrate this by piping the output from `kustomize` directly to `kubectl`:
 
 ```bash
 $ kustomize build /workspace/modules/introduction/kustomize | kubectl apply -f -
@@ -60,7 +60,7 @@ checkout-585c9b45c7-xmx2t   1/1     Running   0          40m
 
 Although we have used the `kustomize` CLI directly in this section, Kustomize is also integrated directly with the `kubectl` CLI, and can be applied with `kubectl apply -k <kustomization_directory>`. This approach is used through this workshop to make it easier to apply changes to manifest files, while clearly surfacing the changes to be applied.
 
-Lets try that:
+Let's try that:
 
 ```bash
 $ kubectl apply -k /workspace/modules/introduction/kustomize

@@ -13,7 +13,7 @@ $ reset-environment
 
 :::
 
-In the Getting started lab we deployed our sample application to EKS and saw the running Pods. But are these Pods running?
+In the Getting started lab, we deployed our sample application to EKS and saw the running Pods. But are these Pods running?
 
 An EKS cluster contains one or more EC2 nodes that Pods are scheduled on. EKS nodes run in your AWS account and connect to the control plane of your cluster through the cluster API server endpoint. You deploy one or more nodes into a node group. A node group is one or more EC2 instances that are deployed in an EC2 Auto Scaling group.
 
@@ -43,4 +43,4 @@ There are several attributes of managed node groups that we can see from this ou
 * The instance type for this node group is `m5.large`
 * Uses the `AL2_x86_64` EKS AMI type
 
-Over the course of this module we will make changes to this node group to demonstrate the capabilities of MNGs.
+Over the course of this module we'll make changes to this node group to demonstrate the capabilities of MNGs.

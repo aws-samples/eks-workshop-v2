@@ -3,7 +3,7 @@ title: "Scale with CA"
 sidebar_position: 40
 ---
 
-Next we're going to update all of the application components to increase their replica count to 4. This will cause more resources to be consumed than are available in the cluster, triggering more compute to be provisioned.
+In this lab exercise, we'll update all of the application components to increase their replica count to 4. This will cause more resources to be consumed than are available in a cluster, triggering more compute to be provisioned.
 
 ```file
 autoscaling/compute/cluster-autoscaler/deployment.yaml

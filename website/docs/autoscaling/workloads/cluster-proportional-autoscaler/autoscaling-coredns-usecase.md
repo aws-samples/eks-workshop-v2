@@ -4,9 +4,9 @@ date: 2022-07-21T00:00:00-03:00
 sidebar_position: 3
 ---
 
-`CoreDNS` is the default DNS service for Kubernetes that runs in Pods with the label `k8s-app=kube-dns`. In this example, we will autoscale CoreDNS based on the number of schedulable nodes and cores of the cluster. Cluster Proportional Autoscaler will resize the number of `CoreDNS` replicas.
+`CoreDNS` is the default DNS service for Kubernetes that runs in Pods with the label `k8s-app=kube-dns`. In this lab exercise, we'll autoscale CoreDNS based on the number of schedulable nodes and cores of our cluster. Cluster Proportional Autoscaler will resize the number of `CoreDNS` replicas.
 
-Currently we are running a 3 node cluster:
+Currently we're running a 3 node cluster:
 
 ```bash
 $ kubectl get nodes
@@ -25,7 +25,7 @@ coredns-5db97b446d-5zwws   1/1     Running   0          66s
 coredns-5db97b446d-n5mp4   1/1     Running   0          89m
 ```
 
-If we increased the size of the EKS cluster to 5 nodes, Cluster Proportional Autoscaler will scale up the number of replicas of `CoreDNS` to accomodate for it:
+If we increased the size of the EKS cluster to 5 nodes, Cluster Proportional Autoscaler will scale up the number of replicas of `CoreDNS` to accommodate for it:
 
 ```bash hook=cpa-pod-scaleout timeout=300
 $ aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME \
@@ -57,7 +57,7 @@ coredns-657694c6f4-tdzsd   1/1     Running   0          54s
 coredns-657694c6f4-wmnnc   1/1     Running   0          14h
 ```
 
-You can take a look at the CPA logs to see how it responded to the change in the number of nodes in the cluster:
+You can take a look at the CPA logs to see how it responded to the change in the number of nodes in our cluster:
 
 ```bash
 $ kubectl logs deploy/dns-autoscaler -n other

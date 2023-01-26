@@ -15,7 +15,7 @@ This `Service` will create a Network Load Balancer that listens on port 80 and f
 $ kubectl apply -k /workspace/modules/exposing/load-balancer/nlb
 ```
 
-Lets inspect the Service resources for the `ui` application again:
+Let's inspect the Service resources for the `ui` application again:
 
 ```bash
 $ kubectl get service -n ui

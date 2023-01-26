@@ -121,14 +121,14 @@ Let's now test if our data is in fact persistent. We'll create the same `test.tx
 $ kubectl exec catalog-mysql-ebs-0 -n catalog -- bash -c  "echo 123 > /var/lib/mysql/test.txt"
 ```
 
-Now let's verify that our `test.txt` file got created on the `/var/lib/mysql` directory:
+Now, let's verify that our `test.txt` file got created on the `/var/lib/mysql` directory:
 
 ```bash
 $ kubectl exec catalog-mysql-ebs-0 -n catalog -- ls -larth /var/lib/mysql/ | grep -i test
 -rw-r--r-- 1 root  root     4 Oct 18 13:57 test.txt
 ```
 
-Now let's remove the current `catalog-mysql-ebs` Pod, which will force the StatefulSet controller to automatically re-create it:
+Now, let's remove the current `catalog-mysql-ebs` Pod, which will force the StatefulSet controller to automatically re-create it:
 
 ```bash hook=pod-delete
 $ kubectl delete pods -n catalog catalog-mysql-ebs-0

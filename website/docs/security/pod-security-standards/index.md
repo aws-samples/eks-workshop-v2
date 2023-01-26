@@ -23,7 +23,7 @@ According to the Kubernetes documentation, the PSS "define three different polic
 
 The policy levels are defined as:
 
-* **Privileged:** Unrestricted (unsecure) policy, providing the widest possible level of permissions. This policy allows for known privilege escalations. It is the absence of a policy. This is good for applications such as logging agents, CNIs, storage drivers, and other system wide applications that need privileged access.
+* **Privileged:** Unrestricted (unsecure) policy, providing the widest possible level of permissions. This policy allows for known privilege escalations. It's the absence of a policy. This is good for applications such as logging agents, CNIs, storage drivers, and other system wide applications that need privileged access.
 * **Baseline:** Minimally restrictive policy which prevents known privilege escalations. Allows the default (minimally specified) Pod configuration. The baseline policy prohibits use of hostNetwork, hostPID, hostIPC, hostPath, hostPort, the inability to add Linux capabilities, along with several other restrictions. 
 * **Restricted:*** Heavily restricted policy, following current Pod hardening best practices. This policy inherits from the baseline and adds further restrictions such as the inability to run as root or a root-group. Restricted policies may impact an application's ability to function. They are primarily targeted at running security critical applications.
 
@@ -78,7 +78,7 @@ Given the above default configuration, you must configure specific PSS profiles 
 *pod-security.kubernetes.io/<MODE>-version*: <VERSION>
 ```
 
-Below is an example of PSA and PSS Namespace configurations that can be used for testing. Please note that we did not include the optional PSA mode-version label. We used the cluster-wide setting, latest, configured by default. By uncommenting the desired labels, below, you can enable the PSA modes and PSS profiles you need for your respective Namespace.
+Below is an example of PSA and PSS Namespace configurations that can be used for testing. Note that we did not include the optional PSA mode-version label. We used the cluster-wide setting, latest, configured by default. By uncommenting the desired labels, below, you can enable the PSA modes and PSS profiles you need for your respective Namespace.
 
 ```yaml
 apiVersion: v1
@@ -102,7 +102,7 @@ metadata:
 
 ### Validating Admission Controllers 
 
-In Kubernetes, an Admission Controller is a piece of code that intercepts requests to the Kubernetes API server before they are persisted into etcd, and used to make cluster changes. Admission controllers can be of  type mutating, validating, or both. The implementation of PSA is a validating admission controller , and it checks inbound Pod specification requests for conformance to the specified PSS. 
+In Kubernetes, an Admission Controller is a piece of code that intercepts requests to the Kubernetes API server before they are persisted into etcd, and used to make cluster changes. Admission controllers can be of  type mutating, validating, or both. The implementation of PSA is a validating admission controller, and it checks inbound Pod specification requests for conformance to the specified PSS. 
 
 In the flow below, [mutating and validating dynamic admission controllers](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/), a.k.a. admission webhooks, are integrated to the Kubernetes API server request flow, via webhooks. These webhooks call out to services, configured to respond to certain types of API server requests. For example, you can use webhooks to configure dynamic admission controllers to validate that containers in a Pod are running as non-root users, or containers are sourced from trusted registries. 
 

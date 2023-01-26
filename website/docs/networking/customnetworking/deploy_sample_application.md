@@ -19,7 +19,7 @@ networking/custom-networking/sampleapp/checkout.yaml
 Deployment/checkout
 ```
 
-Lets review the microservices deployed in the “checkout” namespace.
+Let's review the microservices deployed in the “checkout” namespace.
 
 ```bash
 $ kubectl get pods -n checkout -o wide
@@ -28,4 +28,4 @@ checkout-5fbbc99bb7-brn2m         1/1     Running   0          98s   100.64.10.1
 checkout-redis-6cfd7d8787-8n99n   1/1     Running   0          49m   10.42.12.33    ip-10-42-12-155.us-west-2.compute.internal   <none>           <none>
 ```
 
-You can see that the `checkout` pod is assigned an IP address from the `100.64.0.0` CIDR block that was added to the VPC. Pods that have not yet been redeployed are still assigned addresses from the `10.42.0.0` CIDR block, because it was the only CIDR block originally associated with the VPC. In this example the `checkout-redis` pod still has an address from this range.
+You can see that the `checkout` pod is assigned an IP address from the `100.64.0.0` CIDR block that was added to the VPC. Pods that have not yet been redeployed are still assigned addresses from the `10.42.0.0` CIDR block, because it was the only CIDR block originally associated with the VPC. In this example, the `checkout-redis` pod still has an address from this range.

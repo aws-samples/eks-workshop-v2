@@ -5,7 +5,7 @@ sidebar_position: 10
 
 We'll start looking at PSS by exploring the Privileged profile, which is the most permissive and allows for known privilege escalations.
 
-From Kubernetes version 1.23, by default, all PSA modes (i.e. enforce, audit and warn) are enabled for privileged PSS profile at the cluster level. That means, by default, PSA allows Deployments or Pods with Privileged PSS profile (i.e. absence of any restrictions) across all namespaces. These default settings provide less impact to clusters and reduce negative impact to applications. As we will see, Namespace labels can be used to opt-in to more restrictive settings.
+From Kubernetes version 1.23, by default, all PSA modes (i.e. enforce, audit and warn) are enabled for privileged PSS profile at the cluster level. That means, by default, PSA allows Deployments or Pods with Privileged PSS profile (i.e. absence of any restrictions) across all namespaces. These default settings provide less impact to clusters and reduce negative impact to applications. As we'll see, Namespace labels can be used to opt-in to more restrictive settings.
 
 You can check that there are no PSA labels explicitly added to the `assets` namespace, by default:
 

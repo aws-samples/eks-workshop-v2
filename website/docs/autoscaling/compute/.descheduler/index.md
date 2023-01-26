@@ -3,7 +3,7 @@ title: "Descheduler"
 sidebar_position: 40
 ---
 
-In this chapter we will review how to useKubernetesdescheduler to evict pods based on specific strategies, so that the pods can be rescheduled on optimal worker nodes.
+In this chapter we'll review how to useKubernetesdescheduler to evict pods based on specific strategies, so that the pods can be rescheduled on optimal worker nodes.
 
 In Kubernetes, kube-scheduler is responsible for making the scheduling decisions to select optimal nodes for the newly created pods. It considers various factors like available resources, pod requirements, constraints, etc., 
 
@@ -21,7 +21,7 @@ Based on the configured policies, Descheduler finds pods that can be moved and e
 
 # Policy and Strategies
 
-Descheduler's policy is configurable and includes below strategies that can be enabled or disabled. By default, all strategies are enabled. In this chapter, we will test `RemovePodsViolatingNodeTaints` and `PodLifeTime` strategies.
+Descheduler's policy is configurable and includes below strategies that can be enabled or disabled. By default, all strategies are enabled. In this chapter, we'll test `RemovePodsViolatingNodeTaints` and `PodLifeTime` strategies.
 
 * RemoveDuplicates
 * LowNodeUtilization

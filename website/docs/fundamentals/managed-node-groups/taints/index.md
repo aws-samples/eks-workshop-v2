@@ -7,4 +7,4 @@ Taints are a property of a node to repel certain pods. Tolerations are applied t
 
 The configuration of tainted nodes is useful in scenarios where we need to ensure that only specific pods are to be scheduled on certain node groups with special hardware (such as attached GPUs) or when we want to dedicate entire node groups to a particular set of Kubernetes users. 
 
-In this section we will learn how to configure taints for our managed node groups and how to set up our applications to make use of tainted nodes. 
+In this lab exercise, we'll learn how to configure taints for our managed node groups and how to set up our applications to make use of tainted nodes. 

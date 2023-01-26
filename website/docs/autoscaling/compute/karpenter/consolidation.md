@@ -10,27 +10,27 @@ Karpenter offers two main ways this can be accomplished:
 1. Leverage the `ttlSecondsUntilExpired` property of Provisioners so that instances are regularly recycled, which will result in compaction of workloads indirectly
 2. Since v0.15 its possible to use the **Consolidation** feature, which will actively attempt to compact under-utilized workloads
 
-We will be focusing on option 2 in this lab, and to demonstrate we'll be performing these steps:
+We'll be focusing on option 2 in this lab, and to demonstrate we'll be performing these steps:
 
 1. Adjust the Provisioner created in the previous section to enable consolidation
 2. Scale the `inflate` workload from 5 to 12 replicas, triggering Karpenter to provision additional capacity
 3. Scale down the workload back down to 5 replicas
 4. Observe Karpenter consolidating the compute
 
-The first thing we need to do is update the Provisioner to enable consolidation:
+Now, let's update the Provisioner to enable consolidation:
 
 ```kustomization
 autoscaling/compute/karpenter/consolidation/provisioner.yaml
 Provisioner/default
 ```
 
-Lets apply this update:
+Let's apply this update:
 
 ```bash
 $ kubectl apply -k /workspace/modules/autoscaling/compute/karpenter/consolidation
 ```
 
-Now scale our `inflate` workload again to consume more resources:
+Now, let's scale our `inflate` workload again to consume more resources:
 
 ```bash
 $ kubectl scale -n other deployment/inflate --replicas 12
@@ -43,7 +43,7 @@ This changes the total memory request for this deployment to around 12Gi, which 
 $ kubectl get nodes -l type=karpenter
 ```
 
-Next scale the number of replicas back down to 5:
+Next, scale the number of replicas back down to 5:
 
 ```bash
 $ kubectl scale -n other deployment/inflate --replicas 5

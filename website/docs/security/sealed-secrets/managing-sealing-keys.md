@@ -5,7 +5,7 @@ sidebar_position: 80
 
 The only way to decrypt the encrypted data within a SealedSecret is with the sealing key that is managed by the controller. There could be situations where you are trying to restore the original state of a cluster after a disaster or you want to leverage GitOps workflow to deploy the Kubernetes resources, including SealedSecrets, from a Git repository and create a new EKS cluster. The controller deployed in the new EKS cluster must use the same sealing key to be able to unseal the SealedSecrets.
 
-Run the following command in order to retrieve the sealing key from the cluster. In a production environment, it is recommended to make use of Kubernetes RBAC to grant the permissions required to perform this operation to restricted set of clients.
+Run the following command to retrieve the sealing key from the cluster. In a production environment, it's considered a best practice to make use of Kubernetes RBAC to grant the permissions required to perform this operation to restricted set of clients.
 
 ```bash
 $ kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key -o yaml \
@@ -20,7 +20,7 @@ $ kubectl -n kube-system delete pod -l name=sealed-secrets-controller
 $ kubectl wait --for=condition=Ready --timeout=30s pods -l name=sealed-secrets-controller -n kube-system
 ```
 
-If we now check the logs for the controller you will notice that it fails to decrypt the SealedSecret:
+Now, we'll check the logs for the controller. Notice that it fails to decrypt the SealedSecret:
 
 ```bash
 $ kubectl logs deployment/sealed-secrets-controller -n kube-system

@@ -12,7 +12,7 @@ $ kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/downl
 $ kubectl wait --for=condition=Ready --timeout=30s pods -l name=sealed-secrets-controller -n kube-system
 ```
 
-Now we will check the status of the pod
+Now we'll check the status of the pod
 
 ```bash
 $ kubectl get pods -n kube-system -l name=sealed-secrets-controller
