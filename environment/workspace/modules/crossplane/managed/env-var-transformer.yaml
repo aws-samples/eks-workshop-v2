@@ -1,0 +1,16 @@
+varReference:
+  - apiVersion: rds.aws.crossplane.io/v1alpha1
+    kind: DBInstance
+    path: spec/forProvider/region
+  - apiVersion: database.aws.crossplane.io/v1beta1
+    kind: DBSubnetGroup
+    path: spec/forProvider/subnetIds
+  - apiVersion: database.aws.crossplane.io/v1beta1
+    kind: DBSubnetGroup
+    path: spec/forProvider/region
+  - apiVersion: ec2.aws.crossplane.io/v1beta1
+    kind: SecurityGroup
+    path: spec/forProvider/region
+  - apiVersion: ec2.aws.crossplane.io/v1beta1
+    kind: SecurityGroup
+    path: spec/forProvider/vpcId

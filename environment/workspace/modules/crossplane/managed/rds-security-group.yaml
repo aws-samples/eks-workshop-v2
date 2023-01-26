@@ -1,0 +1,24 @@
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: SecurityGroup
+metadata:
+  name: rds-eks-workshop
+spec:
+  forProvider:
+    region: $(AWS_DEFAULT_REGION)
+    description: SecurityGroup
+    groupName: rds-eks-workshop
+    vpcId: $(VPC_ID)
+    ingress:
+      - fromPort: 3306
+        toPort: 3306
+        ipProtocol: tcp
+        ipRanges:
+          - cidrIp: "0.0.0.0/0"
+    egress:
+      # AWS will treat it as all ports any protocol
+      - ipProtocol: '-1'
+        ipRanges:
+          - cidrIp: "0.0.0.0/0"
+  providerConfigRef:
+    name: aws-provider-config
+

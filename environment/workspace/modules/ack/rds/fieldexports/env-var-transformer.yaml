@@ -2,4 +2,3 @@ varReference:
   - apiVersion: v1
     kind: Secret
     path: stringData/password
-    value: rds-ack-options

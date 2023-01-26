@@ -1,0 +1,11 @@
+apiVersion: awsblueprints.io/v1alpha1
+kind: RelationalDatabase
+metadata:
+  name: rds-eks-workshop
+  namespace: catalog-prod
+spec:
+  databaseName: catalog
+  storageGB: 20
+  secret: catalog-db
+  resourceConfig:
+    providerConfigName: aws-provider-config

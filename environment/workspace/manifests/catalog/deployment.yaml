@@ -42,9 +42,19 @@ spec:
                   key: password
             - name: DB_NAME
               valueFrom:
+                configMapKeyRef:
+                  name: catalog
+                  key: name
+            - name: DB_READ_ENDPOINT
+              valueFrom:
                 secretKeyRef:
                   name: catalog-db
-                  key: name
+                  key: endpoint
+            - name: DB_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-db
+                  key: endpoint
           envFrom:
             - configMapRef:
                 name: catalog

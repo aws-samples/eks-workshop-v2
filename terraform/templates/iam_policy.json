@@ -119,6 +119,7 @@
         "rds:DescribeDBInstances",
         "mq:ListBrokers",
         "mq:DescribeBroker",
+        "iam:AttachRolePolicy",
         "iam:DetachRolePolicy",
         "iam:PassRole"
       ],

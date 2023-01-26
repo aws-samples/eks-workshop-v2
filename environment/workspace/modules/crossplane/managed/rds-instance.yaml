@@ -1,0 +1,29 @@
+apiVersion: rds.aws.crossplane.io/v1alpha1
+kind: DBInstance
+metadata:
+  name: rds-eks-workshop
+spec:
+  forProvider:
+    region: $(AWS_DEFAULT_REGION)
+    allocatedStorage: 20
+    dbInstanceClass: db.t4g.micro
+    dbName: catalog
+    engine: mysql
+    engineVersion: "8.0"
+    masterUsername: admin
+    autogeneratePassword: true
+    skipFinalSnapshot: true
+    applyImmediately: true
+    dbSubnetGroupNameRef:
+      name: rds-eks-workshop
+    vpcSecurityGroupIDRefs:
+      - name: rds-eks-workshop
+    masterUserPasswordSecretRef:
+      key: password
+      name: catalog-db
+      namespace: catalog-prod
+  writeConnectionSecretToRef:
+    name: catalog-db
+    namespace: catalog-prod
+  providerConfigRef:
+    name: aws-provider-config

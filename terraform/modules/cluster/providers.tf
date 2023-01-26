@@ -34,6 +34,13 @@ terraform {
       source  = "hashicorp/tls"
       version = "4.0.4"
     }
+
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.7.0"
+    }
+
+    
   }
 
   required_version = "<= 1.2.9"
