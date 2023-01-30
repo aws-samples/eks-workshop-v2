@@ -1,6 +1,6 @@
 module "iam_assumable_role_adot_ci" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "~> v5.5.0"
+  version                       = "~> v5.11.1"
   create_role                   = true
   role_name                     = "${var.environment_name}-adot-collector-ci"
   provider_url                  = local.oidc_url
