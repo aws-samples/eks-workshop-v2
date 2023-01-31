@@ -3,7 +3,7 @@ title: "Managed Resources"
 sidebar_position: 20
 ---
 
-By default the catalog component in the sample application uses a MySQL database running as a pod in the EKS cluster. In this lab we'll provision an Amazon RDS database for our application using Kubernetes custom resources to specify the desired configuration required by the workload.
+By default the catalog component in the sample application uses a MySQL database running as a pod in the EKS cluster. In this lab, we'll provision an Amazon RDS database for our application using Kubernetes custom resources to specify the desired configuration required by the workload.
 
 Let's explore the various Crossplane resources that we'll create. The first is an EC2 security group that will be applied to control access to the RDS database, which is done with a `ec2.aws.crossplane.io.SecurityGroup` resource:
 
@@ -11,7 +11,7 @@ Let's explore the various Crossplane resources that we'll create. The first is a
 automation/controlplanes/crossplane/managed/rds-security-group.yaml
 ```
 
-Next, because we want the RDS database to use the private subnets in our VPC we'll create a `database.aws.crossplane.io.DBSubnetGroup` which selects the appropriate subnet IDs:
+Next, we want the RDS database to use the private subnets in our VPC. We'll create a `database.aws.crossplane.io.DBSubnetGroup` which selects the appropriate subnet IDs:
 
 ```file
 automation/controlplanes/crossplane/managed/rds-dbgroup.yaml
@@ -32,27 +32,27 @@ securitygroup.ec2.aws.crossplane.io/rds-eks-workshop created
 dbinstance.rds.aws.crossplane.io/rds-eks-workshop created
 ```
 
-The Crossplane controllers in the cluster will react to these new resources and provision the AWS infrastructure it has expressed. For example we can use the AWS CLI to query the RDS database:
+The Crossplane controllers in the cluster will react to these new resources and provision the AWS infrastructure it has expressed. For example, we can use the AWS CLI to query the RDS database:
 
 ```bash
 $ aws rds describe-db-instances \
     --db-instance-identifier ${EKS_CLUSTER_NAME}-catalog-crossplane
 ```
 
-It takes some time to provision the AWS managed services, in the case of RDS up to 10 minutes. Crossplane will report the status of the reconciliation in the status field of the Kubernetes custom resources.
+It takes some time to provision the AWS managed services, in the case of RDS up to 10 minutes. Crossplane will report the status of the reconciliation in the `status` field of the Kubernetes custom resources.
 
 ```bash
 $ kubectl get dbinstances.rds.services.k8s.aws ${EKS_CLUSTER_NAME}-catalog-crossplane -n catalog -o yaml | yq '.status'
 ```
 
-We can use this status field to instruct `kubectl` to wait until the RDS database has been successfully created:
+We can use this `status` field to instruct `kubectl` to wait until the RDS database has been successfully created:
 
 ```bash timeout=1200
 $ kubectl wait dbinstances.rds.aws.crossplane.io ${EKS_CLUSTER_NAME}-catalog-crossplane --for=condition=Ready --timeout=20m
 dbinstances.rds.services.k8s.aws/rds-eks-workshop condition met
 ```
 
-Crossplane will have automatically created a Kubernetes secret object that contains the credentials to connect to the RDS instance:
+Crossplane will have automatically created a Kubernetes `Secret` object that contains the credentials to connect to the RDS instance:
 
 ```bash
 $ kubectl get secret catalog-db-crossplane -n catalog -o yaml

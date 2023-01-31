@@ -3,9 +3,9 @@ title: "Bind Application to AWS Resources"
 sidebar_position: 10
 ---
 
-Now that the RDS database has created successfully we can reconfigure the catalog component to use it for persistence instead of its existing pod-based MySQL. But how do we get the RDS endpoint and credentials for the catalog component so it can connect?
+Now that the RDS database has been created successfully, we can reconfigure the catalog component to use it for persistence instead of its existing pod-based MySQL. But how do we configure the catalog component with the RDS endpoint and credentials for the connection?
 
-The ACK `FieldExport` custom resource was designed to bridge the gap between managing the control plane of your ACK resources and using the properties of those resources in your application. This configures an ACK controller to export any spec or status field from an ACK resource into a Kubernetes ConfigMap or Secret. These fields are automatically updated when any field value changes. You are then able to mount the ConfigMap or Secret onto your Kubernetes Pods as environment variables that can ingest those values.
+The ACK `FieldExport` custom resource was designed to bridge the gap between managing the control plane of your ACK resources and using the properties of those resources in your application. This configures an ACK controller to export any `spec` or `status` field from an ACK resource into a Kubernetes ConfigMap or Secret. These fields are automatically updated when any field value changes. You are then able to mount the ConfigMap or Secret onto your Kubernetes Pods as environment variables that can ingest those values.
 
 The `DBInstance` resource contains the information for connecting to the RDS database instance. The host information can be found in `status.endpoint.address` and the master username  in `spec.masterUsername`. Lets create some `FieldExport` objects to extract these values in to a Kubernetes secret named `catalog-db-ack`.
 

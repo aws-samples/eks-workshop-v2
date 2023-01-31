@@ -3,7 +3,7 @@ title: "Provision ACK Resources"
 sidebar_position: 5
 ---
 
-By default the catalog component in the sample application uses a MySQL database running as a pod in the EKS cluster. In this lab we'll provision an Amazon RDS database for our application using Kubernetes custom resources to specify the desired configuration required by the workload.
+By default the catalog component in the sample application uses a MySQL database running as a pod in the EKS cluster. In this lab, we'll provision an Amazon RDS database for our application using Kubernetes custom resources to specify the desired configuration required by the workload.
 
 ![ACK reconciler concept](./assets/ack-desired-current.jpg)
 
@@ -21,7 +21,7 @@ Now let's explore the various ACK resources that we'll create. The first is an E
 automation/controlplanes/ack/rds/k8s/rds-security-group.yaml
 ```
 
-Next, because we want the RDS database to use the private subnets in our VPC we'll create a `DBSubnetGroup` which selects the appropriate subnet IDs:
+Next we want the RDS database to use the private subnets in our VPC. To accomplish this, we'll create a `DBSubnetGroup` which selects the appropriate subnet IDs:
 
 ```file
 automation/controlplanes/ack/rds/k8s/rds-dbgroup.yaml
@@ -33,7 +33,7 @@ Finally, we can create the configuration for the RDS database itself with a `DBI
 automation/controlplanes/ack/rds/k8s/rds-instance.yaml
 ```
 
-Apply this configuration to the EKS cluster:
+Apply this configuration to the Amazon EKS cluster:
 
 ```bash wait=30
 $ kubectl apply -k /workspace/modules/automation/controlplanes/ack/rds/k8s
@@ -42,7 +42,7 @@ dbinstance.rds.services.k8s.aws/rds-eks-workshop created
 dbsubnetgroup.rds.services.k8s.aws/rds-eks-workshop created
 ```
 
-The ACK controllers in the cluster will react to these new resources and provision the AWS infrastructure it has expressed. For example we can use the AWS CLI to query the RDS database:
+The ACK controllers in the cluster will react to these new resources and provision the AWS infrastructure it has expressed. For example, we can use the AWS CLI to query the RDS database:
 
 ```bash
 $ aws rds describe-db-instances \
