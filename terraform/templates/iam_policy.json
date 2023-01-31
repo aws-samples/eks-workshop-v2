@@ -160,6 +160,13 @@
         "ssm:GetParameter"
       ],
       "Resource": "arn:aws:ssm:${region}::parameter/aws/service/eks/optimized-ami/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "rds:DescribeDBInstances"
+      ],
+      "Resource": "*"
     }
   ]
 }

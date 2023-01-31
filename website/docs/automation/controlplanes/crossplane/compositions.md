@@ -1,127 +1,121 @@
 ---
-title: "Crossplane Compostions"
+title: "Compositions"
 sidebar_position: 30
 ---
 
-Using Compositions over directly using Managed Resources as we saw in the previous section, it allows for seperation of concenrs and for the platform team to provide
-a way for the application team to create namespace resources that represent the AWS resources they need for their application.
+In addition to provisioning individual cloud resources, Crossplane offers a higher abstraction layer called Compositions. Compositions allow users to build opinionated templates for deploying cloud resources. For example, organizations may require certain tags to be present to all AWS resources or add specific encryption keys for all Amazon Simple Storage (S3) buckets. Platform teams can define these self-service API abstractions within Compositions and ensure that all the resources created through these Compositions meet the organization’s requirements.
 
-## Create Composite Definition (XRD)
+A `CompositeResourceDefinition` (or XRD) defines the type and schema of your Composite Resource (XR). It lets Crossplane know that you want a particular kind of XR to exist, and what fields that XR should have. An XRD is a little like a CustomResourceDefinition (CRD), but slightly more opinionated. Writing an XRD is mostly a matter of specifying an OpenAPI ["structural schema"](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/).
 
-A `CompositeResourceDefinition` (or XRD) defines the type and schema of your Composite Resource (XR). It lets Crossplane know that you want a particular kind of XR to exist, and what fields that XR should have. An XRD is a little like a CustomResourceDefinition (CRD), but slightly more opinionated. Writing an XRD is mostly a matter of specifying an OpenAPI [“structural schema”](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/).
+First, lets provide a definition that can be used to create a database by members of the application team in their corresponding namespace. In this example the user only needs to specify `databaseName`, `storageGB` and `secret` location
 
-
-Provide a definition to create a database by members of the application team in their corresponding namespace.
-In this example the user only needs to specify `databaseName`, `storageGB` and `secret` location
 ```file
-crossplane/compositions/definition.yaml
+automation/controlplanes/crossplane/compositions/definition.yaml
 ```
 
-Crossplane and the AWS provider are already installed on the Amazon EKS cluster. 
+Create this composite definition:
 
-Create the Composite Definition
 ```bash
-$ kubectl apply -f /workspace/modules/crossplane/compositions/definition.yaml
+$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/compositions/definition.yaml
 compositeresourcedefinition.apiextensions.crossplane.io "xrelationaldatabases.awsblueprints.io" deleted
 ```
 
-## Create Composition
-
 A Composition lets Crossplane know what to do when someone creates a Composite Resource. Each Composition creates a link between an XR and a set of one or more Managed Resources - when the XR is created, updated, or deleted the set of Managed Resources are created, updated or deleted accordingly.
 
-Create a Composition that provisions the managed resources `DBSubnetGroup`, `SecurityGroup` and `DBInstance`
+The following Composition provisions the managed resources `DBSubnetGroup`, `SecurityGroup` and `DBInstance`:
+
 ```file
-crossplane/compositions/composition.yaml
+automation/controlplanes/crossplane/compositions/composition/composition.yaml
 ```
 
-Create the Composition
+Apply this to our EKS cluster:
+
 ```bash
-$ kubectl apply -k /workspace/modules/crossplane/compositions
+$ kubectl apply -k /workspace/modules/automation/controlplanes/crossplane/compositions/composition
 composition.apiextensions.crossplane.io/rds-mysql.awsblueprints.io created
 ```
 
-## Create Composite Resource Claim 
+Once we’ve configured Crossplane with the details of the new XR we can either create one directly or use a Claim. Typically only the team responsible for configuring Crossplane (often a platform or SRE team) have permission to create XRs directly. Everyone else manages XRs via a lightweight proxy resource called a Composite Resource Claim (or claim for short).
 
-Once you’ve configured Crossplane with the details of your new XR you can either create one directly, or use a claim. Typically only the folks responsible for configuring Crossplane (often a platform or SRE team) have permission to create XRs directly. Everyone else manages XRs via a lightweight proxy resource called a Composite Resource Claim (or claim for short).
-
-On this claim the developer only needs to specify a default database name, size, and location to store the credentials to connect to the database.
+With this claim the developer only needs to specify a default database name, size, and location to store the credentials to connect to the database. This allows the platform or SRE team to standardize on aspects such as database engine, high-availability architecture and security configuration.
 
 ```file
-crossplane/compositions/claim.yaml
+automation/controlplanes/crossplane/compositions/claim/claim.yaml
 ```
 
-Create the database by creating a Claim. (The namespace `catalog-prod` is created to store the credentials)
+Create the database by creating a `Claim`:
+
 ```bash
-$ kubectl create ns catalog-prod || true
-$ kubectl apply -f /workspace/modules/crossplane/compositions/claim.yaml
+$ kubectl apply -k /workspace/modules/automation/controlplanes/crossplane/compositions/claim
 relationaldatabase.awsblueprints.io/rds-eks-workshop created
 ```
 
+It takes some time to provision the AWS managed services, in the case of RDS up to 10 minutes. Crossplane will report the status of the reconciliation in the status field of the Kubernetes custom resources.
 
-It takes some time to provision the AWS managed services, for RDS approximately 10 minutes. The AWS provider controller will report the status of the reconciliation in the status field of the Kubernetes custom resources.  
-You can open the AWS console and see the services being created.
+To verify that the provisioning is done you can check that the condition “Ready” is true using the Kubernetes CLI. Run the following commands and they will exit once the condition is met:
 
-To verify that the provision is done, you can check that the condition “Ready” is true using the Kubernetes CLI.
-
-Run the following commands and they will exit once the condition is met. (Takes approximately 10 minutes, check RDS Console for progress)
 ```bash timeout=1200
-$ kubectl wait relationaldatabase.awsblueprints.io rds-eks-workshop -n catalog-prod --for=condition=Ready --timeout=20m
+$ kubectl wait relationaldatabase.awsblueprints.io ${EKS_CLUSTER_NAME}-catalog-composition -n catalog --for=condition=Ready --timeout=20m
 dbinstances.rds.services.k8s.aws/rds-eks-workshop condition met
 ```
 
-Verify that the secret **catalog-db** has the correct information
-```bash
-$ export DB_INSTANCE=$(kubectl get dbinstances.rds.aws.crossplane.io -l 'crossplane.io/claim-name=rds-eks-workshop' -o jsonpath='{.items[*].status.atProvider.dbInstanceIdentifier}')
-$ if [[ "$(aws rds describe-db-instances --query "DBInstances[?DBInstanceIdentifier == "\'${DB_INSTANCE}\'"].Endpoint.Address" --output text)" ==  "$(kubectl get secret catalog-db -o go-template='{{.data.endpoint|base64decode}}' -n catalog-prod)" ]]; then echo "Secret catalog configured correctly"; else echo "Error Catalo misconfigured"; false; fi
-Secret catalog configured correctly
-```
-
-
-## Deploy the Application
-
-The application will use the same manifest files as in development with the exception of the secret which contains the binding information that connects to AWS Services.
+Crossplane will have automatically created a Kubernetes secret object that contains the credentials to connect to the RDS instance:
 
 ```bash
-$ kubectl apply -k /workspace/modules/crossplane/manifests/
-...
-service/catalog created
-...
-deployment.apps/catalog created
-...
+$ kubectl get secret catalog-db-composition -n catalog -o yaml
+apiVersion: v1
+data:
+  endpoint: cmRzLWVrcy13b3Jrc2hvcC5jamthdHFkMWNucnoudXMtd2VzdC0yLnJkcy5hbWF6b25hd3MuY29t
+  password: eGRnS1NNN2RSQ3dlc2VvRmhrRUEwWDN3OXpp
+  port: MzMwNg==
+  username: YWRtaW4=
+kind: Secret
+metadata:
+  creationTimestamp: "2023-01-26T15:12:41Z"
+  name: catalog-db-composition
+  namespace: catalog
+  ownerReferences:
+  - apiVersion: rds.aws.crossplane.io/v1alpha1
+    controller: true
+    kind: DBInstance
+    name: rds-eks-workshop
+    uid: bff607d9-86f2-4710-aabd-e60985b56995
+  resourceVersion: "28395"
+  uid: 1407281b-d282-42d8-b898-733400d3d11a
+type: connection.crossplane.io/v1alpha1
 ```
 
-## Access the Application
-
-Verify that all pods are running in production
+Update the application to use the RDS endpoint and credentials:
 
 ```bash
-$ kubectl get pods -A | grep '\-prod'
-assets-prod                    assets-7bd57dbfcc-cdp9j                         1/1     Running   0              1m
-carts-prod                     carts-789498bdbd-wmb2q                          1/1     Running   0              1m
-catalog-prod                   catalog-5c4b747759-7fphz                        1/1     Running   0              1m
-checkout-prod                  checkout-66b6dcbc45-k9qjr                       1/1     Running   0              1m
-orders-prod                    orders-59b94995cf-97pwz                         1/1     Running   0              1m
-ui-prod                        ui-795bd46545-49jrh                             1/1     Running   0              1m
+$ kubectl apply -k /workspace/modules/automation/controlplanes/crossplane/compositions/application
+namespace/catalog unchanged
+serviceaccount/catalog unchanged
+configmap/catalog unchanged
+secret/catalog-db unchanged
+service/catalog unchanged
+service/catalog-mysql unchanged
+service/ui-nlb created
+deployment.apps/catalog configured
+statefulset.apps/catalog-mysql unchanged
+$ kubectl rollout status -n catalog deployment/catalog --timeout=30s
 ```
 
-Get the hostname of the network load balancer for the UI and open it in the browser
+An NLB has been created to expose the sample application for testing:
 
 ```bash
-$ kubectl get svc -n ui-prod ui-nlb
-NAME     TYPE           CLUSTER-IP      EXTERNAL-IP                                           PORT(S)        AGE
-ui-nlb   LoadBalancer   x.x.x.x         k8s-uiprod-uinlb-<uuid>.elb.<region>.amazonaws.com    80:32028/TCP   111m
+$ kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
+k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
 
-## Cleanup
+To wait until the load balancer has finished provisioning you can run this command:
 
-Delete the Application
-```bash timeout=600
-$ kubectl delete -k /workspace/modules/crossplane/manifests/
+```bash timeout=300
+$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
 ```
-Delete the Crossplane resources
-```bash timeout=600
-$ kubectl delete -f /workspace/modules/crossplane/compositions/claim.yaml
-$ kubectl delete -f /workspace/modules/crossplane/compositions/definition.yaml
-$ kubectl delete -k /workspace/modules/crossplane/compositions
-$ kubectl delete ns catalog-prod
-```
+
+Once the load balancer is provisioned you can access it by pasting the URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
+
+<browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
+<img src={require('@site/static/img/sample-app-screens/home.png').default}/>
+</browser>

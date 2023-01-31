@@ -1,7 +1,8 @@
 const visit = require('unist-util-visit');
 const fs = require('fs/promises');
 const path = require('path');
-const yaml = require('yamljs');
+const yamljs = require('yamljs');
+const YAML = require('yaml');
 const { parse } = require('path');
 const Diff = require('diff');
 
@@ -74,7 +75,7 @@ function readKustomization(path) {
   const filePromise = fs.readFile(`${path}/kustomization.yaml`, { encoding: 'utf8' });
 
   return filePromise.then(res => {
-    return yaml.parse(res)
+    return yamljs.parse(res)
   })
 }
 
@@ -85,10 +86,10 @@ function generateYaml(path, kind, resource, failOnMissing) {
         const parts = res.split('---')
         for(let i = 0; i < parts.length; i++) {
           const e = parts[i]
-          const parsed = yaml.parse(e)
+          const parsed = yamljs.parse(e)
 
           if(parsed['kind'] === kind && parsed['metadata']['name'] === resource) {
-            return resolve({complete: res, manifest: yaml.stringify(parsed, 99, 2)})
+            return resolve({complete: res, manifest: YAML.stringify(parsed)})
           }
         }
 

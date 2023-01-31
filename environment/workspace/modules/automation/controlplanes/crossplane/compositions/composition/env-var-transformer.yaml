@@ -1,0 +1,13 @@
+varReference:
+- apiVersion: apiextensions.crossplane.io/v1
+  kind: Composition
+  path: spec/resources/base/spec/forProvider/region
+- apiVersion: apiextensions.crossplane.io/v1
+  kind: Composition
+  path: spec/resources/base/spec/forProvider/subnetIds
+- apiVersion: apiextensions.crossplane.io/v1
+  kind: Composition
+  path: spec/resources/base/spec/forProvider/vpcId
+- apiVersion: awsblueprints.io/v1alpha1
+  kind: RelationalDatabase
+  path: spec/databaseName
