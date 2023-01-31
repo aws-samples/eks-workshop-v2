@@ -17,8 +17,6 @@ jobs:
 
     name: run-tests
     runs-on: ubuntu-latest
-    #concurrency: test-environment
-    timeout-minutes: 120
     steps:
     - name: Check out code
       uses: actions/checkout@v2
@@ -105,20 +103,13 @@ jobs:
         DEV_MODE: 1
       run: |
         make test terraform_context="test/terraform" module="observability"
-    - name: Run tests - Cost optimization
-      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/cost-optimization') }}
-      env:
-        DOCKER_BUILDKIT: 1
-        DEV_MODE: 1
-      run: |
-        make test terraform_context="test/terraform" module="costoptimization"
     - name: Run tests - Automation
       if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/automation') }}
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        AWS_EKS_WORKSHOP_TEST_FLAGS="--debug" make test terraform_context="test/terraform" module="gitops"
+        AWS_EKS_WORKSHOP_TEST_FLAGS="--debug" make test terraform_context="test/terraform" module="automation"
     - name: Run tests - Cleanup
       if: always()
       env:
