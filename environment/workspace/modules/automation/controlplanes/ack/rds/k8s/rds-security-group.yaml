@@ -10,6 +10,6 @@ spec:
   ingressRules:
   - ipProtocol: tcp
     ipRanges:
-    - cidrIP: "0.0.0.0/0"
+    - cidrIP: "$(VPC_CIDR)"
     fromPort: 3306
     toPort: 3306

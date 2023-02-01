@@ -11,6 +11,9 @@ varReference:
   kind: SecurityGroup
   path: spec/name
   value: rds-ack-options
+- apiVersion: ec2.services.k8s.aws/v1alpha1
+  kind: SecurityGroup
+  path: spec/ingressRules[]/ipRanges[]/cidrIP
 - apiVersion: rds.services.k8s.aws/v1alpha1
   kind: DBSubnetGroup
   path: spec/subnetIDs

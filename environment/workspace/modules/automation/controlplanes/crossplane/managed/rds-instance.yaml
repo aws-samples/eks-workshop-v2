@@ -22,6 +22,13 @@ spec:
       key: password
       name: catalog-db-crossplane
       namespace: catalog
+    tags:
+    - key: created-by
+      value: eks-workshop-v2
+    - key: env
+      value: $(EKS_CLUSTER_NAME)
+    - key: managed-by
+      value: crossplane
   writeConnectionSecretToRef:
     name: catalog-db-crossplane
     namespace: catalog

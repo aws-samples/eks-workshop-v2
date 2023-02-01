@@ -23,6 +23,8 @@ module "cluster" {
 
   environment_name = local.environment_name
 
+  tags = local.tags
+
   map_roles = concat(local.map_roles, [{
     rolearn  = aws_iam_role.local_role.arn
     username = local.shell_role_name

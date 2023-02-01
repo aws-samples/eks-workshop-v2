@@ -24,6 +24,13 @@ spec:
             - $(VPC_PRIVATE_SUBNET_ID_0)
             - $(VPC_PRIVATE_SUBNET_ID_1)
             - $(VPC_PRIVATE_SUBNET_ID_2)
+            tags:
+            - key: created-by
+              value: eks-workshop-v2
+            - key: env
+              value: $(EKS_CLUSTER_NAME)
+            - key: managed-by
+              value: crossplane
       patches:
         - type: PatchSet
           patchSetName: common-fields
@@ -40,7 +47,14 @@ spec:
                 fromPort: 3306
                 toPort: 3306
                 ipRanges:
-                  - cidrIp: "0.0.0.0/0"
+                  - cidrIp: "$(VPC_CIDR)"
+            tags:
+            - key: created-by
+              value: eks-workshop-v2
+            - key: env
+              value: $(EKS_CLUSTER_NAME)
+            - key: managed-by
+              value: crossplane
       patches:
         - type: PatchSet
           patchSetName: common-fields
@@ -75,6 +89,13 @@ spec:
               key: password
               name: to-be-patched
               namespace: to-be-patched
+            tags:
+            - key: created-by
+              value: eks-workshop-v2
+            - key: env
+              value: $(EKS_CLUSTER_NAME)
+            - key: managed-by
+              value: crossplane
       patches:
         - type: PatchSet
           patchSetName: common-fields

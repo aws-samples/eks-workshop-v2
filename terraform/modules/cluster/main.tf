@@ -14,9 +14,6 @@ data "aws_eks_cluster_auth" "cluster" {
   name = module.eks_blueprints.eks_cluster_id
 }
 
-provider "aws" {
-}
-
 provider "kubernetes" {
   experiments {
     manifest_resource = true

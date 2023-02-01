@@ -11,6 +11,12 @@ Let's explore the various Crossplane resources that we'll create. The first is a
 automation/controlplanes/crossplane/managed/rds-security-group.yaml
 ```
 
+:::info
+
+The EC2 security group above allows any traffic from the CIDR range of the VPC used by the EKS cluster. This has been done to keep the example clear and understandable. A more secure approach would be to use [Security Groups for Pods](../../../networking/security-groups-for-pods/index.md) to allow traffic from specific pods.
+
+:::
+
 Next, we want the RDS database to use the private subnets in our VPC. We'll create a `database.aws.crossplane.io.DBSubnetGroup` which selects the appropriate subnet IDs:
 
 ```file

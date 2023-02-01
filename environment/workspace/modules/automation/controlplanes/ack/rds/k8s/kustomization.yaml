@@ -19,6 +19,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.VPC_ID
+- name: VPC_CIDR
+  objref:
+    kind: ConfigMap
+    name: rds-ack-options
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.VPC_CIDR
 - name: VPC_PRIVATE_SUBNET_ID_0
   objref:
     kind: ConfigMap

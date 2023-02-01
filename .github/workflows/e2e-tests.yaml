@@ -109,7 +109,7 @@ jobs:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        AWS_EKS_WORKSHOP_TEST_FLAGS="--debug" make test terraform_context="test/terraform" module="automation"
+        make test terraform_context="test/terraform" module="automation"
     - name: Run tests - Cleanup
       if: always()
       env:
