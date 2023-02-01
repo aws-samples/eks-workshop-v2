@@ -14,7 +14,34 @@ You will see an OIDC provider has created for your EKS cluster:
 
 ![IAM OIDC Provider](./assets/oidc.png)
 
-A IAM role which provides the required permissions for the carts service to read and write to DynamoDB table has been created for you. You can view the policy like so:
+Another option is to use AWS CLI to verify the `IAM OIDC Identity Provider`.
+
+```bash
+$ aws iam list-open-id-connect-providers
+
+{
+    "OpenIDConnectProviderList": [
+        {
+            "Arn": "arn:aws:iam::012345678901:oidc-provider/oidc.eks.us-east-2.amazonaws.com/id/7185F12D2B62B8DA97B0ECA713F66C86"
+        }
+    ]
+}
+```
+
+And validate its association with our Amazon EKS cluster.
+
+```bash
+$ aws eks describe-cluster --name eks-workshop --query 'cluster.identity'
+
+{
+    "oidc": {
+        "issuer": "https://oidc.eks.us-west-2.amazonaws.com/id/7185F12D2B62B8DA97B0ECA713F66C86"
+    }
+}
+```
+
+
+A IAM role which provides the required permissions for the `carts` service to read and write to DynamoDB table has been created for you. You can view the policy like so:
 
 ```bash
 $ aws iam get-policy-version \
@@ -63,19 +90,33 @@ $ aws iam get-role \
 }
 ```
 
-All thats left to us is to re-configure the ServiceAccount object used by the carts service to give it with the required annotation so that IRSA provides the correct Pods with the IAM role above. It gets the name from an environment variable we've set for you called `CARTS_IAM_ROLE`.
+All thats left is to re-configure the Service Account object associated with the `carts` application adding the required annotation to it, so IRSA can provide the correct authorization for Pods using the IAM Role above. 
+Let's validate the SA associated with the `carts` Deployment.
+
+```bash
+$ kubectl -n carts describe deployment carts | grep 'Service Account'
+  Service Account:  cart
+```
+
+Now lets check the value of `CARTS_IAM_ROLE` which will provide the ARN of the IAM Role for the Service Account annotation. Then run Kustomize to apply this change:
+
+```bash
+$ echo $CARTS_IAM_ROLE
+arn:aws:iam::1234567890:role/eks-workshop-carts-dynamo
+$ kubectl apply -k /workspace/modules/security/irsa/service-account
+```
+
 
 ```kustomization
 security/irsa/service-account/carts-serviceAccount.yaml
 ServiceAccount/carts
 ```
 
-Let's check the value of `CARTS_IAM_ROLE` then run Kustomize to apply this change:
+Validate if the Service Account was annotated.
 
 ```bash
-$ echo $CARTS_IAM_ROLE
-arn:aws:iam::1234567890:role/eks-workshop-carts-dynamo
-$ kubectl apply -k /workspace/modules/security/irsa/service-account
+kubectl describe sa carts -n carts | grep Annotations
+Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::1234567890:role/eks-workshop-carts-dynamo
 ```
 
 With the ServiceAccount updated now we just need to recycle the carts Pod so it picks it up:

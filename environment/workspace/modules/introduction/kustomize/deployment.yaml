@@ -3,4 +3,4 @@ kind: Deployment
 metadata:
   name: checkout
 spec:
-  replicas: 2
+  replicas: 3
