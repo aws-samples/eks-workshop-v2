@@ -1,0 +1,60 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+configMapGenerator:
+- name: options
+  envs:
+  - options.env
+vars:
+- name: EKS_CLUSTER_NAME
+  objref:
+    kind: ConfigMap
+    name: options
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.EKS_CLUSTER_NAME
+- name: AWS_DEFAULT_REGION
+  objref:
+    kind: ConfigMap
+    name: options
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.AWS_DEFAULT_REGION
+- name: VPC_ID
+  objref:
+    kind: ConfigMap
+    name: options
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.VPC_ID
+- name: VPC_CIDR
+  objref:
+    kind: ConfigMap
+    name: options
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.VPC_CIDR
+- name: VPC_PRIVATE_SUBNET_ID_0
+  objref:
+    kind: ConfigMap
+    name: options
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.VPC_PRIVATE_SUBNET_ID_0
+- name: VPC_PRIVATE_SUBNET_ID_1
+  objref:
+    kind: ConfigMap
+    name: options
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.VPC_PRIVATE_SUBNET_ID_1
+- name: VPC_PRIVATE_SUBNET_ID_2
+  objref:
+    kind: ConfigMap
+    name: options
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.VPC_PRIVATE_SUBNET_ID_2
+configurations:
+  - env-var-transformer.yaml
+resources:
+- composition.yaml

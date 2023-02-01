@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog
+  namespace: catalog
+spec:
+  template:
+    spec:
+      containers:
+        - name: catalog
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-db-ack
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-db-ack
+                  key: password
+            - name: DB_READ_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-db-ack
+                  key: endpoint
+            - name: DB_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-db-ack
+                  key: endpoint

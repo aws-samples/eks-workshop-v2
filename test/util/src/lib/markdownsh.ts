@@ -131,7 +131,7 @@ export class MarkdownSh {
     
     if(fs.existsSync(hookPath)) {
       let func = async (hookPath: string, hook: string, hookTimeout: number, dryRun: boolean) => {
-        this.debugMessage(`Calling suite ${hook} hook`)
+        this.debugMessage(`Calling suite ${hook} hook at ${hookPath}`)
   
         if(!dryRun) {
           let response = await this.shell.exec(`bash ${hookPath} ${hook}`, hookTimeout, false)

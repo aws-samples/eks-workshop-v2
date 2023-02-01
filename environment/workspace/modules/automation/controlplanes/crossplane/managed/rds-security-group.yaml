@@ -1,0 +1,30 @@
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: SecurityGroup
+metadata:
+  name: $(EKS_CLUSTER_NAME)-catalog-crossplane
+spec:
+  forProvider:
+    region: $(AWS_DEFAULT_REGION)
+    description: SecurityGroup
+    groupName: $(EKS_CLUSTER_NAME)-catalog-crossplane
+    vpcId: $(VPC_ID)
+    ingress:
+      - fromPort: 3306
+        toPort: 3306
+        ipProtocol: tcp
+        ipRanges:
+          - cidrIp: "$(VPC_CIDR)"
+    egress:
+      # AWS will treat it as all ports any protocol
+      - ipProtocol: '-1'
+        ipRanges:
+          - cidrIp: "0.0.0.0/0"
+    tags:
+    - key: created-by
+      value: eks-workshop-v2
+    - key: env
+      value: $(EKS_CLUSTER_NAME)
+    - key: managed-by
+      value: crossplane
+  providerConfigRef:
+    name: aws-provider-config

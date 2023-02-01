@@ -3,16 +3,30 @@ aws_elb:
       kubernetes.io/cluster/${CLEANUP_ENVIRONMENT_NAME}: owned
 aws_lb:
   - tags:
-      elbv2.k8s.aws/cluster: ${CLEANUP_ENVIRONMENT_NAME}
+      elbv2.k8s.aws/cluster: ^${CLEANUP_ENVIRONMENT_NAME}$
 aws_lb_target_group:
   - tags:
-      elbv2.k8s.aws/cluster: ${CLEANUP_ENVIRONMENT_NAME}
+      elbv2.k8s.aws/cluster: ^${CLEANUP_ENVIRONMENT_NAME}$
 aws_security_group:
   - tags:
-      elbv2.k8s.aws/cluster: ${CLEANUP_ENVIRONMENT_NAME}
+      elbv2.k8s.aws/cluster: ^${CLEANUP_ENVIRONMENT_NAME}$
   - tags:
       kubernetes.io/cluster/${CLEANUP_ENVIRONMENT_NAME}: owned
+  - tags:
+      created-by: eks-workshop-v2
+      env: ^${CLEANUP_ENVIRONMENT_NAME}$
+      managed-by: .+
 aws_ebs_volume:
   - tags:
-      KubernetesCluster: ${CLEANUP_ENVIRONMENT_NAME}
+      KubernetesCluster: ^${CLEANUP_ENVIRONMENT_NAME}$
       ebs.csi.aws.com/cluster: true
+aws_db_instance:
+  - tags:
+      created-by: eks-workshop-v2
+      env: ^${CLEANUP_ENVIRONMENT_NAME}$
+      managed-by: .+
+aws_db_subnet_group:
+  - tags:
+      created-by: eks-workshop-v2
+      env: ^${CLEANUP_ENVIRONMENT_NAME}$
+      managed-by: .+

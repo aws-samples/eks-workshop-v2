@@ -1,0 +1,23 @@
+apiVersion: rds.services.k8s.aws/v1alpha1
+kind: DBInstance
+metadata:
+  name: $(EKS_CLUSTER_NAME)-catalog-ack
+  namespace: catalog
+spec:
+  allocatedStorage: 20
+  dbInstanceClass: db.t4g.micro
+  dbInstanceIdentifier: $(EKS_CLUSTER_NAME)-catalog-ack
+  engine: mysql
+  engineVersion: "8.0"
+  masterUsername: "admin"
+  dbSubnetGroupRef: 
+    from: 
+      name: $(EKS_CLUSTER_NAME)-catalog-ack
+  vpcSecurityGroupRefs:
+    - from: 
+        name: $(EKS_CLUSTER_NAME)-catalog-ack
+  masterUserPassword:
+    namespace: catalog
+    name: catalog-rds-pw
+    key: password
+  dbName: catalog

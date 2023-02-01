@@ -1,0 +1,113 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: rds-mysql.awsblueprints.io
+spec:
+  compositeTypeRef:
+    apiVersion: awsblueprints.io/v1alpha1
+    kind: XRelationalDatabase
+  patchSets:
+    - name: common-fields
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.resourceConfig.providerConfigName
+          toFieldPath: spec.providerConfigRef.name
+  resources:
+    - base:
+        apiVersion: database.aws.crossplane.io/v1beta1
+        kind: DBSubnetGroup
+        spec:
+          forProvider:
+            region: $(AWS_DEFAULT_REGION)
+            description: "rds-mysql"
+            subnetIds:
+            - $(VPC_PRIVATE_SUBNET_ID_0)
+            - $(VPC_PRIVATE_SUBNET_ID_1)
+            - $(VPC_PRIVATE_SUBNET_ID_2)
+            tags:
+            - key: created-by
+              value: eks-workshop-v2
+            - key: env
+              value: $(EKS_CLUSTER_NAME)
+            - key: managed-by
+              value: crossplane
+      patches:
+        - type: PatchSet
+          patchSetName: common-fields
+    - base:
+        apiVersion: ec2.aws.crossplane.io/v1beta1
+        kind: SecurityGroup
+        spec:
+          forProvider:
+            region: $(AWS_DEFAULT_REGION)
+            vpcId: $(VPC_ID)
+            description: "rds-mysq-sg"
+            ingress:
+              - ipProtocol: tcp
+                fromPort: 3306
+                toPort: 3306
+                ipRanges:
+                  - cidrIp: "$(VPC_CIDR)"
+            tags:
+            - key: created-by
+              value: eks-workshop-v2
+            - key: env
+              value: $(EKS_CLUSTER_NAME)
+            - key: managed-by
+              value: crossplane
+      patches:
+        - type: PatchSet
+          patchSetName: common-fields
+        - fromFieldPath: "metadata.uid"
+          toFieldPath: "spec.forProvider.groupName"
+          transforms:
+            - type: string
+              string:
+                fmt: "rds-mysql-sg-%s"
+    - base:
+        apiVersion: rds.aws.crossplane.io/v1alpha1
+        kind: DBInstance
+        spec:
+          forProvider:
+            region: $(AWS_DEFAULT_REGION)
+            applyImmediately: true
+            autogeneratePassword: true
+            dbSubnetGroupNameSelector:
+              matchControllerRef: true
+            dbInstanceClass: db.t4g.micro
+            masterUsername: admin
+            engine: mysql
+            engineVersion: "8.0"
+            dbName: to-be-patched
+            allocatedStorage: 20
+            skipFinalSnapshot: true
+            publiclyAccessible: false
+            vpcSecurityGroupIDs: []
+            vpcSecurityGroupIDSelector:
+              matchControllerRef: true
+            masterUserPasswordSecretRef:
+              key: password
+              name: to-be-patched
+              namespace: to-be-patched
+            tags:
+            - key: created-by
+              value: eks-workshop-v2
+            - key: env
+              value: $(EKS_CLUSTER_NAME)
+            - key: managed-by
+              value: crossplane
+      patches:
+        - type: PatchSet
+          patchSetName: common-fields
+        - fromFieldPath: "spec.storageGB"
+          toFieldPath: "spec.forProvider.allocatedStorage"
+        - fromFieldPath: "spec.databaseName"
+          toFieldPath: "spec.forProvider.dbName"
+        - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+          toFieldPath: spec.writeConnectionSecretToRef.namespace
+        - fromFieldPath: spec.secret
+          toFieldPath: spec.writeConnectionSecretToRef.name
+        - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+          toFieldPath: spec.forProvider.masterUserPasswordSecretRef.namespace
+        - fromFieldPath: spec.secret
+          toFieldPath: spec.forProvider.masterUserPasswordSecretRef.name

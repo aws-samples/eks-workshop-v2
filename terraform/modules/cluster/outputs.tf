@@ -48,6 +48,11 @@ output "vpc_id" {
   value       = module.aws_vpc.vpc_id
 }
 
+output "vpc_cidr" {
+  description = "VPC CIDR"
+  value       = module.aws_vpc.vpc_cidr_block
+}
+
 output "private_subnet_ids" {
   description = "Private Subnet Ids"
   value       = module.aws_vpc.private_subnets

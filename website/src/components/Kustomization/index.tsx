@@ -27,8 +27,16 @@ export default function Kustomization({
   let completeDecoded = atob(complete)
   let diffDecoded = atob(diff)
 
-  const diffWorking = diffDecoded.split('\n');
+  let diffWorking = diffDecoded.split('\n');
   diffWorking.splice(0, 5)
+
+  diffWorking = diffWorking.map(function (element) { 
+    if(element.startsWith("@@")) {
+      return "[...]"
+    }
+
+    return element;
+  })
 
   const diffTrimmed = diffWorking.join('\n')
 
