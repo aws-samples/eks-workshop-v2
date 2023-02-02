@@ -4,9 +4,10 @@ sidebar_position: 129
 ---
 
 
-In this lab exercise, we'll grant admin privileges to the Default service account, which may result in pods unintentionally launching with admin privileges.This is not a best practice because pods get the Default service account's token. This will give unintentinalKubernetesadminstrative permissions to users who have access to exec into pods.
+In this lab exercise, we'll grant admin privileges to the Default `ServiceAccount`,  which may result in Pods unintentionally being launched with admin privileges. This is not a best practice because Pods get the token from the Default `ServiceAccount`. This will give unintentional Kubernetes administrative permissions to users who have `exec` access into Pods.
 
-To simulate this we'll need to bind clusterrole `cluster-admin` to a serviceaccount named `default`.
+To simulate this we'll need to bind the `clusterrole` **cluster-admin** to a `ServiceAccount` named **default**.
+
 
 ```bash
 $ kubectl create rolebinding sa-default-admin --clusterrole=cluster-admin --serviceaccount=default:default --namespace=default

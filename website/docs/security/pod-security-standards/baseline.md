@@ -86,7 +86,7 @@ $ kubectl -n assets get pod
 NAME                      READY   STATUS    RESTARTS   AGE
 assets-864479dc44-d9p79   1/1     Running   0          15s
 
-$ kubectl -n assets exec -ti $(kubectl -n assets get pods -o name) -- whoami
+$ kubectl -n assets exec $(kubectl -n assets get pods -o name) -- whoami
 nginx
 ```
 
