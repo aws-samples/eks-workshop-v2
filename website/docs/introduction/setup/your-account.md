@@ -5,24 +5,28 @@ sidebar_position: 30
 
 ## Provisioning
 
-The workshop is using terraform to provision the required infrastructure. The following instructions will allow you to get this up and running:
+In this workshop, we'll use Terraform to provision the required infrastructure and get everything up and running. If you provision this in your account, **there will be cost associated with them**. The cleanup section will guide you to remove them to prevent future charges.
 
-Prerequisites:
- - terraform (We need 1.2.x): [Installation instructions](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
+## Prerequisites:
+ - [Install terraform 1.2.x](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 
-The following instructions will allow you to run the required Terraform project:
+## Set up
+Use the following instructions to set up the Terraform project.
 
-### Clone repo from github or download && unzip from github"
-```bash
+1. Clone the GitHub repository or download and unzip an archive file.
+
+```bash test=false
 $ git clone https://github.com/aws-samples/eks-workshop-v2.git
 $ cd eks-workshop-v2/terraform
 ```
-### Confirm version is 1.2.x
-```bash
+2. Check that your terraform version is 1.2.x.
+
+```bash test=false
 $ terraform version
 ```
-### Launch terraform to create supporting infrastructure
-```bash
+3. Run the following command to launch Terraform and create the supporting infrastructure.
+
+```bash test=false
 $ terraform init
 $ terraform apply --auto-approve # You can use plan command to preview the resources that will be create if you want
 ```
@@ -33,25 +37,26 @@ The terraform state file (terraform.tfstate) is used to know what was provisione
 
 ## Cleanup
 
-Since you will be handling the cleanup of the resources yourself in this case. The following commands are used to destroy via Terraform.
+In in your account, you'll be handling the cleanup of any resources you create. You can use the following commands to delete the resources you've created with Terraform.
 
-### Deleting general addons...
-```bash
+1. To delete general add-ons, run the following command:
+
+```bash test=false
 $ cd terraform
 $ terraform destroy -target=module.cluster.module.eks_blueprints_kubernetes_addons --auto-approve
 ```
 
-### Deleting descheduler addon...
-```bash
+2. To delete the descheduler add-on, run the following command:
+```bash test=false
 $ terraform destroy -target=module.cluster.module.descheduler --auto-approve
 ```
 
-### Deleting core blueprints addons...
-```bash
+3. To delete the core blueprints add-ons, run the following command:
+```bash test=false
 $ terraform destroy -target=module.cluster.module.eks_blueprints --auto-approve
 ```
 
-### Deleting everything else...
-```bash
+4. To delete the remaining resources created by Terraform, run the following command:
+```bash test=false
 $ terraform destroy --auto-approve
 ```
