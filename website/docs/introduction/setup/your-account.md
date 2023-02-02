@@ -8,20 +8,19 @@ The workshop is using terraform to provision the required infrastructure. The fo
 Prerequisites:
  - terraform (We need 1.2.x): [Installation instructions](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 
+The following instructions will allow you to run the required Terraform project:
  ```bash
 $ echo "Clone repo from github or download && unzip from github"
 $ git clone https://github.com/aws-samples/eks-workshop-v2.git
 $ cd eks-workshop-v2/terraform
-
 $ echo "Confirm version is 1.2.x"
 $ terraform version
-
 $ echo "Launch terraform to create supporting infrastructure"
 $ terraform init
 $ terraform apply --auto-approve # You can use plan command to preview the resources that will be create if you want
 ```
 
-:::caution
+:::Caution
 The terraform state file (terraform.tfstate) is used to know what was provisioned and is used in the cleanup process. If you delete/lose it, you will have to manually delete them.
 :::
 
