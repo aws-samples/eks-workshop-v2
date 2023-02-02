@@ -3,6 +3,8 @@ title: In your AWS account
 sidebar_position: 30
 ---
 
+## Provisioning
+
 The workshop is using terraform to provision the required infrastructure. The following instructions will allow you to get this up and running:
 
 Prerequisites:
@@ -20,11 +22,11 @@ $ terraform init
 $ terraform apply --auto-approve # You can use plan command to preview the resources that will be create if you want
 ```
 
-:::Caution
+:::caution
 The terraform state file (terraform.tfstate) is used to know what was provisioned and is used in the cleanup process. If you delete/lose it, you will have to manually delete them.
 :::
 
-# Cleanup
+## Cleanup
 
 Since you will be handling the cleanup of the resources yourself in this case. The following commands are used to destroy via Terraform.
 
