@@ -11,13 +11,18 @@ Prerequisites:
  - terraform (We need 1.2.x): [Installation instructions](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 
 The following instructions will allow you to run the required Terraform project:
- ```bash
-$ echo "Clone repo from github or download && unzip from github"
+
+### Clone repo from github or download && unzip from github"
+```bash
 $ git clone https://github.com/aws-samples/eks-workshop-v2.git
 $ cd eks-workshop-v2/terraform
-$ echo "Confirm version is 1.2.x"
+```
+### Confirm version is 1.2.x
+```bash
 $ terraform version
-$ echo "Launch terraform to create supporting infrastructure"
+```
+### Launch terraform to create supporting infrastructure
+```bash
 $ terraform init
 $ terraform apply --auto-approve # You can use plan command to preview the resources that will be create if you want
 ```
@@ -30,17 +35,23 @@ The terraform state file (terraform.tfstate) is used to know what was provisione
 
 Since you will be handling the cleanup of the resources yourself in this case. The following commands are used to destroy via Terraform.
 
+### Deleting general addons...
 ```bash
 $ cd terraform
-$ echo "Deleting general addons..."
 $ terraform destroy -target=module.cluster.module.eks_blueprints_kubernetes_addons --auto-approve
+```
 
-$ echo "Deleting descheduler addon..."
+### Deleting descheduler addon...
+```bash
 $ terraform destroy -target=module.cluster.module.descheduler --auto-approve
+```
 
-$ echo "Deleting core blueprints addons..."
+### Deleting core blueprints addons...
+```bash
 $ terraform destroy -target=module.cluster.module.eks_blueprints --auto-approve
+```
 
-$ echo "Deleting everything else..."
+### Deleting everything else...
+```bash
 $ terraform destroy --auto-approve
 ```
