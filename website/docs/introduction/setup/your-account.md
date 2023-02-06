@@ -60,3 +60,5 @@ $ terraform destroy -target=module.cluster.module.eks_blueprints --auto-approve
 ```bash test=false
 $ terraform destroy --auto-approve
 ```
+
+Proceed to the [Accessing the IDE](../ide) section to access your Cloud9 IDE environment.

@@ -5,7 +5,7 @@ sidebar_position: 25
 
 As part of the lab environment you have access to an AWS Cloud9 IDE.
 
-Assuming you've already logged in to your account according to the previous steps you should be able to use the link below to access the Cloud9 service by searching for it in the menu bar at the top of the screen:
+To access the Cloud9 IDE, log into your [AWS console](https://console.aws.amazon.com/). Search for Cloud9 in the menu bar at the top of the screen:
 
 ![Search for the Cloud9 service](./assets/search.png)
 
