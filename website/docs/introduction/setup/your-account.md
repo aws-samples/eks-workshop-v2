@@ -7,10 +7,10 @@ sidebar_position: 30
 
 In this workshop, we'll use Terraform to provision the required infrastructure and get everything up and running. If you provision this in your account, **there will be cost associated with them**. The cleanup section will guide you to remove them to prevent future charges.
 
-## Prerequisites:
+### Prerequisites:
  - [Install terraform 1.2.x](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 
-## Set up
+### Set up
 Use the following instructions to set up the Terraform project.
 
 1. Clone the GitHub repository or download and unzip an archive file.
@@ -37,7 +37,7 @@ The terraform state file (terraform.tfstate) is used to know what was provisione
 
 ## Cleanup
 
-In in your account, you'll be handling the cleanup of any resources you create. You can use the following commands to delete the resources you've created with Terraform.
+In your account, you'll be handling the cleanup of any resources you create. You can use the following commands to delete the resources you've created with Terraform.
 
 1. To delete general add-ons, run the following command:
 
