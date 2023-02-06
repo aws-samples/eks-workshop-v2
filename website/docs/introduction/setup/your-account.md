@@ -8,7 +8,7 @@ sidebar_position: 30
 In this workshop, we'll use Terraform to provision the required infrastructure and get everything up and running. If you provision this in your account, **there will be cost associated with them**. The cleanup section will guide you to remove them to prevent future charges.
 
 ### Prerequisites:
- - [Install terraform 1.2.x](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
+ - [Install Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 
 ### Set up
 Use the following instructions to set up the Terraform project.
@@ -19,7 +19,7 @@ Use the following instructions to set up the Terraform project.
 $ git clone https://github.com/aws-samples/eks-workshop-v2.git
 $ cd eks-workshop-v2/terraform
 ```
-2. Check that your terraform version is 1.2.x.
+2. Check your version of Terraform
 
 ```bash test=false
 $ terraform version
@@ -33,7 +33,7 @@ $ terraform apply --auto-approve
 ```
 
 :::caution
-The terraform state file (terraform.tfstate) is used to determine what resources were provisioned and is used in the cleanup process. If you delete/lose it, you will have to manually delete the resources.
+The Terraform state file (terraform.tfstate) is used to determine what resources were provisioned and is used in the cleanup process. If you delete/lose it, you will have to manually delete the resources.
 :::
 
 ## Cleanup
