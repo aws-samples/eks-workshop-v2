@@ -28,11 +28,12 @@ $ terraform version
 
 ```bash test=false
 $ terraform init
-$ terraform apply --auto-approve # You can use plan command to preview the resources that will be create if you want
+# You can use plan command to preview the resources that will be create if you want
+$ terraform apply --auto-approve 
 ```
 
 :::caution
-The terraform state file (terraform.tfstate) is used to know what was provisioned and is used in the cleanup process. If you delete/lose it, you will have to manually delete them.
+The terraform state file (terraform.tfstate) is used to determine what resources were provisioned and is used in the cleanup process. If you delete/lose it, you will have to manually delete the resources.
 :::
 
 ## Cleanup
