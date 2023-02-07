@@ -43,7 +43,7 @@ When you're done with the workshop, to avoid any unexpected costs, you'll be res
 1. From Cloud9, run the following to clean the environment.
 
 ```bash test=false
-$ make delete-environment
+$ delete-environment
 ```
 
 2. The following commands will delete the resources you've created with Terraform (using the terraform.tfstate from [Provisioning](#provisioning) above).
