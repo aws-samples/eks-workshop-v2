@@ -1,4 +1,4 @@
-name: Publish Preview Prod
+name: Publish Prod
 
 on:
   workflow_dispatch:
@@ -26,5 +26,7 @@ jobs:
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
       run: |
+        source .kustomize-env
+
         npm install
         npm run deploy:netlify -- --prod
