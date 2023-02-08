@@ -16,6 +16,7 @@ output "iam_role_arn" {
 output "environment_variables" {
   description = "Environment variables that will be injected in to the participants shell (Cloud9 etc)"
   value       = local.environment_variables
+  sensitive   = true
 }
 
 output "blueprints_addons" {
