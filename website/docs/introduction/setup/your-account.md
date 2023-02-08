@@ -3,9 +3,13 @@ title: In your AWS account
 sidebar_position: 30
 ---
 
+:::danger
+Provisioning this workshop environment in your AWS account will create resources and **there will be cost associated with them**. The cleanup section provides a guide to remove them, preventing further charges.
+:::
+
 ## Provisioning
 
-In this workshop, we'll use Terraform to provision the required infrastructure and get everything up and running. If you provision this in your account, **there will be cost associated with them**. The cleanup section will guide you to remove them to prevent future charges.
+In this workshop, we'll use Terraform to provision the required infrastructure and get everything up and running.
 
 ### Prerequisites:
  - [Install Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
@@ -19,11 +23,13 @@ Use the following instructions to set up the Terraform project.
 $ git clone https://github.com/aws-samples/eks-workshop-v2.git
 $ cd eks-workshop-v2/terraform
 ```
+
 2. The workshops require Terraform version 1.3.7+. Check your version:
 
 ```bash test=false
 $ terraform version
 ```
+
 3. Run the following command to launch Terraform and create the supporting infrastructure.
 
 ```bash test=false
@@ -33,7 +39,7 @@ $ terraform apply --auto-approve
 ```
 
 :::caution
-The Terraform state file (terraform.tfstate) is used to determine what resources were provisioned and is used in the cleanup process. If you delete/lose it, you will have to manually delete the resources.
+The Terraform state file (`terraform.tfstate`) is used by Terraform to track the resources that were provisioned which is critical for the cleanup process. If you delete/lose it, you will have to manually delete the resources.
 :::
 
 ## Cleanup
@@ -59,4 +65,5 @@ $ terraform destroy -target=module.cluster.module.eks_blueprints --auto-approve
 # To delete the remaining resources created by Terraform, run the following command:
 $ terraform destroy --auto-approve
 ```
+
 Proceed to the [Accessing the IDE](../ide) section to access your Cloud9 IDE environment.
