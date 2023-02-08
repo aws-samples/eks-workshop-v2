@@ -24,8 +24,8 @@ Note that the above rolebinding command will trigger `Policy:Kubernetes/Anonymou
 Now let us create a Pod named nginx using a HTTP post call. 
 
 ```bash
-$ curl -k -v $(aws eks describe-cluster --name $EKS_CLUSTER_NAME --query "cluster.endpoint" --region $AWS_DEFAULT_REGION --output text)/api/v1/namespaces/default/pods \
--X POST -H 'Content-Type: application/yaml' -d '---
+$ APU_URL=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --query "cluster.endpoint" --region $AWS_DEFAULT_REGION --output text)
+$ curl -k -v $AWS_API/api/v1/namespaces/default/pods -X POST -H 'Content-Type: application/yaml' -d '---
 apiVersion: v1
 kind: Pod
 metadata:
