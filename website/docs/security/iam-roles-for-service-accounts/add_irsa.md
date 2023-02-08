@@ -31,7 +31,7 @@ $ aws iam list-open-id-connect-providers
 And validate its association with our Amazon EKS cluster.
 
 ```bash
-$ aws eks describe-cluster --name eks-workshop --query 'cluster.identity'
+$ aws eks describe-cluster --name ${EKS_CLUSTER_NAME} --query 'cluster.identity'
 
 {
     "oidc": {
@@ -115,7 +115,7 @@ ServiceAccount/carts
 Validate if the Service Account was annotated.
 
 ```bash
-kubectl describe sa carts -n carts | grep Annotations
+$ kubectl describe sa carts -n carts | grep Annotations
 Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::1234567890:role/eks-workshop-carts-dynamo
 ```
 
