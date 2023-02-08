@@ -16,12 +16,6 @@ variable "repository_ref" {
   description = "The ref in the GitHub repository to clone"
 }
 
-variable "github_token" {
-  type        = string
-  default     = ""
-  description = "GitHub token to clone from a private repository"
-}
-
 variable "eks_role_arns" {
   type        = list(string)
   default     = []
