@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: checkout
-data:
-  ENDPOINTS_ORDERS: http://orders.orders-prod.svc:80

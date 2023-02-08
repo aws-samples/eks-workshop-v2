@@ -1,0 +1,21 @@
+apiVersion: database.aws.crossplane.io/v1beta1
+kind: DBSubnetGroup
+metadata:
+  name: $(EKS_CLUSTER_NAME)-catalog-crossplane
+spec:
+  forProvider:
+    region: $(AWS_DEFAULT_REGION)
+    description: DBSubnet group
+    subnetIds:
+    - $(VPC_PRIVATE_SUBNET_ID_0)
+    - $(VPC_PRIVATE_SUBNET_ID_1)
+    - $(VPC_PRIVATE_SUBNET_ID_2)
+    tags:
+    - key: created-by
+      value: eks-workshop-v2
+    - key: env
+      value: $(EKS_CLUSTER_NAME)
+    - key: managed-by
+      value: crossplane
+  providerConfigRef:
+    name: aws-provider-config

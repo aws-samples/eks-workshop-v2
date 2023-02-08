@@ -207,10 +207,73 @@ module "eks_blueprints_kubernetes_addons" {
     kubernetes_version = var.cluster_version
   }
 
+  crossplane_helm_config = {
+    set = concat([{
+      name  = "rbacManager.nodeSelector.workshop-system"
+      value = "yes"
+      type  = "string"
+      },
+      {
+        name  = "rbacManager.tolerations[0].key"
+        value = "systemComponent"
+        type  = "string"
+      },
+      {
+        name  = "rbacManager.tolerations[0].operator"
+        value = "Exists"
+        type  = "string"
+      },
+      {
+        name  = "rbacManager.tolerations[0].effect"
+        value = "NoSchedule"
+        type  = "string"
+    }], local.system_component_values)
+  }
+
   crossplane_aws_provider = {
     enable                   = true
     provider_aws_version     = "v0.36.0"
     additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
+  }
+
+  tags = local.tags
+}
+
+module "eks_blueprints_ack_addons" {
+  source = "github.com/aws-ia/terraform-aws-eks-ack-addons?ref=v1.1.0"
+
+  depends_on = [
+    aws_eks_addon.vpc_cni
+  ]
+
+  cluster_id = module.eks_blueprints.eks_cluster_id
+
+  # Wait for data plane to be ready
+  data_plane_wait_arn = module.eks_blueprints.managed_node_group_arn[0]
+
+  enable_rds = true
+
+  rds_helm_config = {
+    set = [{
+      name  = "deployment.nodeSelector.workshop-system"
+      value = "yes"
+      type  = "string"
+      },
+      {
+        name  = "deployment.tolerations[0].key"
+        value = "systemComponent"
+        type  = "string"
+      },
+      {
+        name  = "deployment.tolerations[0].operator"
+        value = "Exists"
+        type  = "string"
+      },
+      {
+        name  = "deployment.tolerations[0].effect"
+        value = "NoSchedule"
+        type  = "string"
+    }]
   }
 
   tags = local.tags

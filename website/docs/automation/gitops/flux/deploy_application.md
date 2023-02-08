@@ -3,9 +3,9 @@ title: 'Deploying an application'
 sidebar_position: 15
 ---
 
-We have successfully bootstraped Flux on our cluster so now we can deploy an application. To demonstrate the difference between GitOps based a delivery of an application and other method we'll migrate the UI component of the sample application from using `kubectl apply -k` to being deployed with Flux.
+We have successfully bootstrapped Flux on our cluster so now we can deploy an application. To demonstrate the difference between a GitOps-based delivery of an application and other methods, we'll migrate the UI component of the sample application which is currently using the `kubectl apply -k` approach to the new Flux deployment approach.
 
-First lets remove the existing UI component so we can replace it:
+First let's remove the existing UI component so we can replace it:
 
 ```bash
 $ kubectl delete -k /workspace/manifests/ui
@@ -96,7 +96,7 @@ bash wait=30 hook=flux-deployment
 $ flux reconcile source git flux-system -n flux-system
 ```
 
-Once `apps` appears as indicated above use `Ctrl+C` to close the command. You should now have all the resources related to the UI services deployed once more. Runs some checks:
+Once `apps` appears as indicated above use `Ctrl+C` to close the command. You should now have all the resources related to the UI services deployed once more. To verify, run the following commands:
 
 ```bash
 $ kubectl get deployment -n ui ui
@@ -107,4 +107,4 @@ NAME                  READY   STATUS    RESTARTS   AGE
 ui-54ff78779b-qnrrc   1/1     Running   0          5m
 ```
 
-We've now successfully migrated the UI component to deploy using Flux, and and further changes push to the Git repository will be automatically reconciled to our EKS cluster.
+We've now successfully migrated the UI component to deploy using Flux, and any further changes pushed to the Git repository will be automatically reconciled to our EKS cluster.

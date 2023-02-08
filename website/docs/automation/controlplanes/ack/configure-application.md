@@ -1,82 +1,68 @@
 ---
 title: "Bind Application to AWS Resources"
-sidebar_position: 4
+sidebar_position: 10
 ---
 
+Now that the RDS database has been created successfully, we can reconfigure the catalog component to use it for persistence instead of its existing pod-based MySQL. But how do we configure the catalog component with the RDS endpoint and credentials for the connection?
 
-## Connect to Database Instance
-The `DBInstance` status contains the information for connecting to the RDS database instance. The host information can be found in `status.endpoint.address` and the port information can be found in `status.endpoint.port`. The master user name can be found in `spec.masterUsername`.
+The ACK `FieldExport` custom resource was designed to bridge the gap between managing the control plane of your ACK resources and using the properties of those resources in your application. This configures an ACK controller to export any `spec` or `status` field from an ACK resource into a Kubernetes ConfigMap or Secret. These fields are automatically updated when any field value changes. You are then able to mount the ConfigMap or Secret onto your Kubernetes Pods as environment variables that can ingest those values.
 
-The database password is in the Secret that is referenced in the DBInstance spec (`spec.masterPassword.name`).
+The `DBInstance` resource contains the information for connecting to the RDS database instance. The host information can be found in `status.endpoint.address` and the master username  in `spec.masterUsername`. Lets create some `FieldExport` objects to extract these values in to a Kubernetes secret named `catalog-db-ack`.
 
-You can extract this information and make it available to your Pods using a [FieldExport](https://aws-controllers-k8s.github.io/community/docs/user-docs/field-export) resource.
-
-
-FieldExport manifest
 ```file
-ack/rds/fieldexports/rds-fieldexports.yaml
+automation/controlplanes/ack/rds/fieldexports/rds-fieldexports.yaml
 ```
 
-Create FieldExport, this will insert the RDS connection values into the secret **catalog-db** in the namespace **catalog-prod**
+Apply this configuration:
+
 ```bash
-$ export CATALOG_PASSWORD=$(kubectl get secrets -n default rds-eks-workshop -o go-template='{{.data.password|base64decode}}')
-$ kubectl create ns catalog-prod || true
-$ kubectl apply -k /workspace/modules/ack/rds/fieldexports
+$ export CATALOG_PASSWORD=$(kubectl get secrets -n default catalog-rds-pw -n catalog -o go-template='{{.data.password|base64decode}}')
+$ kubectl apply -k /workspace/modules/automation/controlplanes/ack/rds/fieldexports
 secret/catalog-db configured
 fieldexport.services.k8s.aws/catalog-db-endpoint created
 fieldexport.services.k8s.aws/catalog-db-user created
 ```
 
-It takes some time to provision the AWS managed services, for RDS approximately 10 minutes. The ACK controller will report the status of the reconciliation in the status field of the Kubernetes custom resources.  
-You can open the AWS console and see the services being created.
-
-To verify that the provision is done, you can check that the condition “ACK.ResourceSynced” is true using the Kubernetes CLI.
-
-Run the following commands and they will exit once the condition is met.
-```bash timeout=1080
-$ kubectl wait dbinstances.rds.services.k8s.aws rds-eks-workshop --for=condition=ACK.ResourceSynced --timeout=15m
-dbinstances.rds.services.k8s.aws/rds-eks-workshop condition met
-```
-
-Verify that the configmap **catalog** has the correct information
-```bash
-$ if [[ "$(aws rds describe-db-instances --query "DBInstances[?DBInstanceIdentifier == 'rds-eks-workshop'].Endpoint.Address" --output text)" ==  "$(kubectl get secret catalog-db -o go-template='{{.data.endpoint|base64decode}}' -n catalog-prod)" ]]; then echo "Secret catalog configured correctly"; else echo "Error: Secret catalog misconfigured"; false; fi
-Secret catalog configured correctly
-```
-
-## Deploy the Application
-
-The application will use the same manifest files as in development, then we'll override secrets and configmaps values that will contain the binding information that connects to AWS Services.
+And now we can see that the `catalog-db-ack` secret has been populated:
 
 ```bash
-$ kubectl apply -k /workspace/modules/ack/manifests/
-...
-namespace/catalog-prod created
-...
-service/catalog created
-...
-deployment.apps/catalog created
-...
+$ kubectl -n catalog get secret -o yaml catalog-db-ack | yq '.data'
+endpoint: ZWtzLXdvcmtzaG9wLWNhdGFsb2ctYWNrLmNqa2F0cWQxY25yei51cy13ZXN0LTIucmRzLmFtYXpvbmF3cy5jb20=
+password: TVdZM09UUTNNVGc1TUdVM1lXTTNabVV3TjJWbU5qQmo=
+username: YWRtaW4=
 ```
 
-## Access the Application
-
-Verify that all pods are running in production
+Finally, we can update the application to use the RDS endpoint and credentials sourced from the `catalog-db-ack` secret:
 
 ```bash
-$ kubectl get pods -A | grep '\-prod'
-assets-prod                    assets-7bd57dbfcc-cdp9j                         1/1     Running   0              1m
-carts-prod                     carts-789498bdbd-wmb2q                          1/1     Running   0              1m
-catalog-prod                   catalog-5c4b747759-7fphz                        1/1     Running   0              1m
-checkout-prod                  checkout-66b6dcbc45-k9qjr                       1/1     Running   0              1m
-orders-prod                    orders-59b94995cf-97pwz                         1/1     Running   0              1m
-ui-prod                        ui-795bd46545-49jrh                             1/1     Running   0              1m
+$ kubectl apply -k /workspace/modules/automation/controlplanes/ack/rds/application
+namespace/catalog unchanged
+serviceaccount/catalog unchanged
+configmap/catalog unchanged
+secret/catalog-db unchanged
+service/catalog unchanged
+service/catalog-mysql unchanged
+service/ui-nlb created
+deployment.apps/catalog configured
+statefulset.apps/catalog-mysql unchanged
+$ kubectl rollout status -n catalog deployment/catalog --timeout=120s
 ```
 
-Get the hostname of the network load balancer for the UI and open it in the browser
+An NLB has been created to expose the sample application for testing:
 
 ```bash
-$ kubectl get svc -n ui-prod ui-nlb
-NAME     TYPE           CLUSTER-IP      EXTERNAL-IP                                           PORT(S)        AGE
-ui-nlb   LoadBalancer   x.x.x.x         k8s-uiprod-uinlb-<uuid>.elb.<region>.amazonaws.com    80:32028/TCP   111m
+$ kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
+k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
+
+To wait until the load balancer has finished provisioning you can run this command:
+
+```bash timeout=610
+$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+```
+
+Once the load balancer is provisioned you can access it by pasting the URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
+
+<browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
+<img src={require('@site/static/img/sample-app-screens/home.png').default}/>
+</browser>

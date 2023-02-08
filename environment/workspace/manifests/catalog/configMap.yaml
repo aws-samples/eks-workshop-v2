@@ -3,4 +3,6 @@ kind: ConfigMap
 metadata:
   name: catalog
 data:
-  name: catalog
+  DB_NAME: catalog?timeout=5s
+  DB_ENDPOINT: catalog-mysql:3306
+  DB_READ_ENDPOINT: catalog-mysql:3306

@@ -17,7 +17,6 @@
    const {href, label, className, autoAddBaseUrl} = item;
    const isActive = isActiveSidebarItem(item, activePath);
    const isInternalLink = isInternalUrl(href);
-   console.log(item);
    return (
      <li
        className={clsx(

@@ -11,4 +11,5 @@ output "iam_role_arn" {
 output "environment_variables" {
   description = "Environment variables that will be injected in to the shell"
   value       = module.core.environment_variables
+  sensitive   = true
 }

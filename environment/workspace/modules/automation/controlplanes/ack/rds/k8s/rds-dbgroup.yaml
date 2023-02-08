@@ -1,0 +1,12 @@
+apiVersion: rds.services.k8s.aws/v1alpha1
+kind: DBSubnetGroup
+metadata:
+  name: $(EKS_CLUSTER_NAME)-catalog-ack
+  namespace: catalog
+spec:
+  description: DBSubnet group
+  name: $(EKS_CLUSTER_NAME)-catalog-ack
+  subnetIDs:
+  - $(VPC_PRIVATE_SUBNET_ID_0)
+  - $(VPC_PRIVATE_SUBNET_ID_1)
+  - $(VPC_PRIVATE_SUBNET_ID_2)

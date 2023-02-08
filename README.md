@@ -2,7 +2,7 @@
 
 ![Tests](https://github.com/aws-samples/eks-workshop-v2/actions/workflows/ci.yaml/badge.svg?branch=main)
 
-Welcome to the content repository for the Amazon Elastic Kubernetes Services workshop.
+Welcome to the repository for the [Amazon Elastic Kubernetes Services workshop](https://eksworkshop.com). This contains the source for the website content as well as the accompanying infrastructure-as-code to set up a workshop lab environment in your AWS account. Please review the [Introduction](https://www.eksworkshop.com/docs/introduction/) chapter of the workshop for more details.
 
 ## Navigating the repository
 
@@ -14,9 +14,7 @@ The workshop content itself is a `docusaurus` site. All workshop content is writ
 
 ### Contributing content
 
-To learn how to author content on this repository, read docs/[authoring_content.md](docs/authoring_content.md) or watch this internal video on Broadcast:
-
-[<img src="https://user-images.githubusercontent.com/3959052/186980675-a76db290-be21-42ca-af67-547691f94523.png" width="400" link="https://broadcast.amazon.com/videos/591479" />](https://broadcast.amazon.com/videos/591479)
+To learn how to author content on this repository, read docs/[authoring_content.md](docs/authoring_content.md).
 
 ### Workshop infrastructure
 

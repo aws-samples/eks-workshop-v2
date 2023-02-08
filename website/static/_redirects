@@ -1,3 +1,11 @@
 /beginner/*  https://archive.eksworkshop.com/beginner/:splat
 /intermediate/*  https://archive.eksworkshop.com/intermediate/:splat
 /advanced/*  https://archive.eksworkshop.com/advanced/:splat
+/010_introduction/*  https://archive.eksworkshop.com/010_introduction/:splat
+/020_prerequisites/*  https://archive.eksworkshop.com/020_prerequisites/:splat
+/030_eksctl/*  https://archive.eksworkshop.com/030_eksctl/:splat
+/910_conclusion/*  https://archive.eksworkshop.com/910_conclusion/:splat
+/920_cleanup/*  https://archive.eksworkshop.com/920_cleanup/:splat
+/authors/*  https://archive.eksworkshop.com/authors/:splat
+/more_resources/*  https://archive.eksworkshop.com/more_resources/:splat
+/tags/*  https://archive.eksworkshop.com/tags/:splat

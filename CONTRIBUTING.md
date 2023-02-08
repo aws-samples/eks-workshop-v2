@@ -1,11 +1,8 @@
 # Contributing Guidelines
+We're so excited to have you join us and help make the EKS Workshop project even better! Whether you're adding new content, code samples, or improving what's already here, there are just a few guidelines to follow. 
 
-Thank you for your interest in contributing to our project. Whether it's a bug report, new feature, correction, or additional
-documentation, we greatly value feedback and contributions from our community.
-
-Please read through this document before submitting any issues or pull requests to ensure we have all the necessary
-information to effectively respond to your bug report or contribution.
-
+## Goal and Target Audience
+It's important to note that our [open-source software (OSS) community](https://aws.amazon.com/what-is/open-source/) values our content most because it's openly governed and vendor-neutral in its guidance. Unless a vendor's product or service has an open source component and/or is widely recognized as a standard, we limit contributions to open source guidance and best practices, exclusively.
 
 ## Reporting Bugs/Feature Requests
 

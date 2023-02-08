@@ -1,0 +1,36 @@
+apiVersion: rds.aws.crossplane.io/v1alpha1
+kind: DBInstance
+metadata:
+  name: $(EKS_CLUSTER_NAME)-catalog-crossplane
+spec:
+  forProvider:
+    region: $(AWS_DEFAULT_REGION)
+    allocatedStorage: 20
+    dbInstanceClass: db.t4g.micro
+    dbName: catalog
+    engine: mysql
+    engineVersion: "8.0"
+    masterUsername: admin
+    autogeneratePassword: true
+    skipFinalSnapshot: true
+    applyImmediately: true
+    dbSubnetGroupNameRef:
+      name: $(EKS_CLUSTER_NAME)-catalog-crossplane
+    vpcSecurityGroupIDRefs:
+      - name: $(EKS_CLUSTER_NAME)-catalog-crossplane
+    masterUserPasswordSecretRef:
+      key: password
+      name: catalog-db-crossplane
+      namespace: catalog
+    tags:
+    - key: created-by
+      value: eks-workshop-v2
+    - key: env
+      value: $(EKS_CLUSTER_NAME)
+    - key: managed-by
+      value: crossplane
+  writeConnectionSecretToRef:
+    name: catalog-db-crossplane
+    namespace: catalog
+  providerConfigRef:
+    name: aws-provider-config

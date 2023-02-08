@@ -5,7 +5,7 @@ sidebar_position: 25
 
 As part of the lab environment you have access to an AWS Cloud9 IDE.
 
-Assuming you've already logged in to your account according to the previous steps you should be able to use the link below to access the Cloud9 service by searching for it in the menu bar at the top of the screen:
+To access the Cloud9 IDE, log into your [AWS console](https://console.aws.amazon.com/). Search for Cloud9 in the menu bar at the top of the screen:
 
 ![Search for the Cloud9 service](./assets/search.png)
 
@@ -13,7 +13,7 @@ When the main Cloud9 screen opens expand the menu on the left side of the screen
 
 ![Access Cloud9 service menu](./assets/menu.png)
 
-Then select **Shared with you**. There is a Cloud9 environment available with a name that contains **EKSLabIDE**, which can be launched using the **Open IDE** button.
+There will be a Cloud9 environment available, click the **Open** button to launch the IDE:
 
 ![Open the Cloud9 IDE](./assets/environment.png)
 
@@ -38,7 +38,6 @@ $ aws eks describe-cluster --name $EKS_CLUSTER_NAME
         "name": "eks-workshop",
         "arn": "arn:aws:eks:us-west-2:1234567890:cluster/eks-workshop",
         "createdAt": 1662084731.367,
-        "version": "1.23",
         "endpoint": "https://7C18D86993E776387BB6C040FBA9D359.sk1.us-west-2.eks.amazonaws.com",
 [...]
 }

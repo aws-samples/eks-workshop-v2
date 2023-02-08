@@ -1,0 +1,15 @@
+apiVersion: ec2.services.k8s.aws/v1alpha1
+kind: SecurityGroup
+metadata:
+  name: $(EKS_CLUSTER_NAME)-catalog-ack
+  namespace: catalog
+spec:
+  description: SecurityGroup
+  name: $(EKS_CLUSTER_NAME)-catalog-ack
+  vpcID: $(VPC_ID)
+  ingressRules:
+  - ipProtocol: tcp
+    ipRanges:
+    - cidrIP: "$(VPC_CIDR)"
+    fromPort: 3306
+    toPort: 3306

@@ -1,0 +1,7 @@
+varReference:
+- apiVersion: v1
+  kind: Secret
+  path: stringData/password
+- apiVersion: services.k8s.aws/v1alpha1
+  kind: FieldExport
+  path: spec/from/resource/name

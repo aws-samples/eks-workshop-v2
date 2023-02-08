@@ -2,10 +2,6 @@
 
 This guide outlines how to author content for the workshop, whether adding new content or modifying existing content.
 
-## Video tutorial
-
-[<img src="https://user-images.githubusercontent.com/3959052/186980675-a76db290-be21-42ca-af67-547691f94523.png" width="400" link="https://broadcast.amazon.com/videos/591479" />](https://broadcast.amazon.com/videos/591479)
-
 ## Pre-requisites
 
 The following pre-requisites are necessary to work on the content:

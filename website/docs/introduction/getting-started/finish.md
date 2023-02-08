@@ -17,14 +17,14 @@ Because Kubernetes uses a declarative mechanism we can apply the manifests for t
 
 Apply this kustomization to our cluster to deploy the rest of the components:
 
-```bash
+```bash wait=10
 $ kubectl apply -k /workspace/manifests
 ```
 
 After this is complete we can use `kubectl wait` to make sure all the components have started before we proceed:
 
-```bash
-$ kubectl wait --for=condition=Ready --timeout=120s pods \
+```bash timeout=200
+$ kubectl wait --for=condition=Ready --timeout=180s pods \
   -l app.kubernetes.io/created-by=eks-workshop -A
 ```
 
@@ -62,5 +62,5 @@ ui          ui               1/1     1            1           90s
 The sample application is now deployed and ready to provide a foundation for us to use in the rest of the labs in this workshop!
 
 :::tip
-If you want to understand more about Kustomize take a look at the [optional module](../kustomize.md) provided in this workshop.
+If you want to understand more about Kustomize take a look at the [optional module](../kustomize/index.md) provided in this workshop.
 :::

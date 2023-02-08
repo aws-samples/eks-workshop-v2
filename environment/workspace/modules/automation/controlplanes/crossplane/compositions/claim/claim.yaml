@@ -1,0 +1,11 @@
+apiVersion: awsblueprints.io/v1alpha1
+kind: RelationalDatabase
+metadata:
+  name: $(EKS_CLUSTER_NAME)-catalog-composition
+  namespace: catalog
+spec:
+  databaseName: catalog
+  storageGB: 20
+  secret: catalog-db-composition
+  resourceConfig:
+    providerConfigName: aws-provider-config
