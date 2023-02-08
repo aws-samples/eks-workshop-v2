@@ -121,7 +121,8 @@
         "mq:DescribeBroker",
         "iam:AttachRolePolicy",
         "iam:DetachRolePolicy",
-        "iam:PassRole"
+        "iam:PassRole",
+        "iam:ListOpenIDConnectProviders"
       ],
       "Resource": "*"
     },

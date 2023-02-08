@@ -1,18 +1,17 @@
 ---
-title: "Unsafe execution into pod in kube-system namespace"
+title: "Unsafe execution into pod in `kube-system` namespace"
 sidebar_position: 124
 ---
 
-This finding indicates that a command was executed inside a pod in kube-system namespace on EKS Cluster eks-workshop.
+This finding indicates that a command was executed inside a pod in kube-system namespace on EKS Cluster.
 
-Run the below commands to generate this finding. Note, the exact pod name varies in the second command. Use the pod name you see for the aws-node pod as displayed in the output of the first command.
+Run the below commands to generate this finding. 
 
 ```bash
-$ VPC_CNI_POD=`kubectl get pods -n kube-system -l k8s-app=aws-node -o name | head -n 1
-$ kubectl -n kube-system exec $VPC_CNI_POD -- pwd
-/app
+$ kubectl -n kube-system exec $(kubectl -n kube-system get pods -o name -l app=efs-csi-node | head -n1) -c efs-plugin -- pwd
+/
 ```
 
-Go back to the GuardDuty console to check if a finding is generated.
+Within a few minutes we'll see the finding `Execution:Kubernetes/ExecInKubeSystemPod` in the GuardDuty portal.
 
 ![](exec_finding.png)

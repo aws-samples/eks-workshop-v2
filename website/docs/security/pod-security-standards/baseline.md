@@ -79,12 +79,15 @@ service/assets unchanged
 deployment.apps/assets configured
 ```
 
-This time we didn't receive a warning so check if the Pods are running:
+This time we didn't receive a warning so check if the Pods are running, and we can validate it's not running with the `root` user anymore:
 
 ```bash
 $ kubectl -n assets get pod   
 NAME                      READY   STATUS    RESTARTS   AGE
 assets-864479dc44-d9p79   1/1     Running   0          15s
+
+$ kubectl -n assets exec $(kubectl -n assets get pods -o name) -- whoami
+nginx
 ```
 
 Since we remediated the Pod running in `privileged` mode it is now permitted to run under the Baseline profile.

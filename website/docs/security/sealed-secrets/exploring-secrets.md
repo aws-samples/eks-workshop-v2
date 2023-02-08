@@ -69,34 +69,41 @@ With the above Pod specification, the following will occur:
 
 ### Exploring the catalog Pod
 
-The catalog deployment in the catalog Namespace accesses the following database values from the `catalog-db` secret via environment variables:
+The `catalog` deployment in the `catalog` Namespace accesses the following database values from the catalog-db secret via environment variables:
 
 * `DB_ENDPOINT`
 * `DB_USER`
 * `DB_PASSWORD`
 * `DB_NAME`
 
-```yaml
-- name: DB_ENDPOINT
-  valueFrom:
-    secretKeyRef:
-      name: catalog-db
-      key: endpoint
+```bash
+$ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.containers[] | .env'
+
 - name: DB_USER
   valueFrom:
     secretKeyRef:
-      name: catalog-db
       key: username
+      name: catalog-db
 - name: DB_PASSWORD
   valueFrom:
     secretKeyRef:
-      name: catalog-db
       key: password
+      name: catalog-db
 - name: DB_NAME
   valueFrom:
-    secretKeyRef:
-      name: catalog-db
+    configMapKeyRef:
       key: name
+      name: catalog
+- name: DB_READ_ENDPOINT
+  valueFrom:
+    secretKeyRef:
+      key: endpoint
+      name: catalog-db
+- name: DB_ENDPOINT
+  valueFrom:
+    secretKeyRef:
+      key: endpoint
+      name: catalog-db
 ```
 
 Upon exploring the `catalog-db` Secret we can see that it is only encoded with base64 which can be easily decoded as follows hence making it difficult for the secrets manifests to be part of the GitOps workflow.
@@ -106,8 +113,12 @@ Upon exploring the `catalog-db` Secret we can see that it is only encoded with b
 ```
 
 ```bash
-$ echo "Y2F0YWxvZ191c2Vy" | base64 -d
-catalog_user%
-$ echo "ZGVmYXVsdF9wYXNzd29yZA==" | base64 -d
-default_password%   
+$ kubectl -n catalog get secrets catalog-db --template {{.data.endpoint}} | base64 -d
+catalog-mysql:3306%                                                                                                                                                                                             
+$ kubectl -n catalog get secrets catalog-db --template {{.data.name}} | base64 -d
+catalog%                                                                                                                                                                                                        
+$ kubectl -n catalog get secrets catalog-db --template {{.data.username}} | base64 -d
+catalog_user%                                                                                                                                                                                                   
+$ kubectl -n catalog get secrets catalog-db --template {{.data.password}} | base64 -d
+default_password% 
 ```

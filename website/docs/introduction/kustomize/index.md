@@ -30,7 +30,7 @@ You can generate the final Kubernetes YAML that applies this kustomization with 
 $ kustomize build /workspace/modules/introduction/kustomize
 ```
 
-This will generate a lot of YAML, which represents the final manifests you can apply directly to Kubernetes. Let's demonstrate this by piping the output from `kustomize` directly to `kubectl`:
+This will generate a lot of YAML files, which represents the final manifests you can apply directly to Kubernetes. Let's demonstrate this by piping the output from `kustomize` directly to `kubectl`:
 
 ```bash
 $ kustomize build /workspace/modules/introduction/kustomize | kubectl apply -f -

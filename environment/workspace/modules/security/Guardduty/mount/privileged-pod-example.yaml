@@ -26,4 +26,3 @@ spec:
       - name: test-volume
         hostPath:
           path: /etc
-          type: Directory

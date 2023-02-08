@@ -20,7 +20,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: catalog-sealed-db
-            - name: DB_NAME
+            - name: DB_READ_ENDPOINT
               valueFrom:
                 secretKeyRef:
                   name: catalog-sealed-db

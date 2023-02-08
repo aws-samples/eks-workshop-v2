@@ -90,7 +90,7 @@ volumes:
 
 In the above Pod security configuration, the `securityContext` is nil at the Pod level. At the container level, the `securityContext` is configured to drop all the Linux capabilities and `readOnlyRootFilesystem` is set to false. The fact that the deployment and Pod are already running indicates that the PSA (configured for Privileged PSS profile by default) allowed above Pod security configuration.
 
-But what are the other security controls this PSA allows? To check that, lets add some more permissions to the above Pod security configuration and check if the PSA still allows it or not in the `assets` namespace. Specifically lets add the `privileged` flag to the Pod, which means that it can access the hosts resources and is commonly required workloads like monitoring agents and service mesh sidecars:
+But what are the other security controls this PSA allows? To check that, lets add some more permissions to the above Pod security configuration and check if the PSA still allows it or not in the `assets` namespace. Specifically lets add the `privileged` and the `runAsUser:0` flags to the Pod, which means that it can access the hosts resources which is commonly required workloads like monitoring agents and service mesh sidecars, and also allowed to run as the `root` user:
 
 ```kustomization
 security/pss-psa/privileged-workload/deployment.yaml
@@ -105,15 +105,18 @@ namespace/assets unchanged
 serviceaccount/assets unchanged
 configmap/assets unchanged
 service/assets unchanged
-deployment.apps/assets created
+deployment.apps/assets configured
 ```
 
 Let us check if Deployment and Pod are re-created with above security permissions in the the `assets` namespace
 
 ```bash
-$ kubectl -n assets  get pod
+$ kubectl -n assets get pod
 NAME                      READY   STATUS    RESTARTS   AGE
 assets-64c49f848b-gmrtt   1/1     Running   0          9s
+
+$ kubectl -n assets exec $(kubectl -n assets get pods -o name) -- whoami
+root
 ```
 
 This shows that the default PSA mode enabled for Privileged PSS profile is permissive and allows Pods to request elevated security permissions if necessary.

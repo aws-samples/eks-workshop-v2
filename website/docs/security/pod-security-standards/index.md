@@ -13,7 +13,7 @@ $ reset-environment
 
 :::
 
-Securely adopting Kubernetes includes preventing unwanted changes to clusters. Unwanted changes can disrupt cluster operations and even compromise cluster integrity. Introducing Pods that lack correct security configurations is an example of an unwanted cluster change. To control Pod security Kubernetes provided [Pod Security Policy / PSP](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) resources. PSPs specify a set of security settings that Pods must meet before they can be created or updated in a cluster. However, as of Kubernetes version 1.21, PSPs have been deprecated, and are scheduled for removal in Kubernetes version 1.25. 
+Securely adopting Kubernetes includes preventing unwanted changes to clusters. Unwanted changes can disrupt cluster operations, workload behaviors, and even compromise the whole environment integrity. Introducing Pods that lack correct security configurations is an example of an unwanted cluster change. To control Pod security Kubernetes provided [Pod Security Policy / PSP](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) resources. PSPs specify a set of security settings that Pods must meet before they can be created or updated in a cluster. However, as of Kubernetes version 1.21, PSPs have been deprecated, and are scheduled for removal in Kubernetes version 1.25. 
 
 In Kubernetes, PSPs are being replaced with, [Pod Security Admission / PSA](https://kubernetes.io/docs/concepts/security/pod-security-admission/), a built-in admission controller that implements the security controls outlined in the [Pod Security Standards / PSS](https://kubernetes.io/docs/concepts/security/pod-security-standards/). As of Kubernetes version 1.23, PSA and PSS have both reached beta feature states, and are enabled in Amazon Elastic Kubernetes Service (EKS) by default.
 
@@ -35,7 +35,9 @@ The PSA admission controller implements the controls, outlined by the PSS polici
 
 ### Built-in Pod Security admission enforcement
 
-From Kubernetes version 1.23, the PodSecurity [feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/) is a beta feature and is enabled by default in Amazon EKS. The default [PSS and PSA settings](https://kubernetes.io/docs/tasks/configure-pod-container/enforce-standards-admission-controller/#configure-the-admission-controller) for upstream Kubernetes version 1.23 are used for Amazon EKS. They are listed below.
+From Kubernetes version 1.23, the PodSecurity [feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/) is enabled by default in Amazon EKS. The default [PSS and PSA settings](https://kubernetes.io/docs/tasks/configure-pod-container/enforce-standards-admission-controller/#configure-the-admission-controller) for upstream Kubernetes version 1.23 are also used for Amazon EKS, as listed below.
+
+> *PodSecurity feature gate is in Beta version (apiVersion: v1beta1) on Kubernetes v1.23 and v1.24, and became Generally Available (GA,  apiVersion: v1) in Kubernetes v1.25.*
 
 ```yaml
     defaults:

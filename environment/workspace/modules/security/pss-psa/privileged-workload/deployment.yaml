@@ -9,3 +9,4 @@ spec:
         - name: assets
           securityContext:   
             privileged: true
+            runAsUser: 0
