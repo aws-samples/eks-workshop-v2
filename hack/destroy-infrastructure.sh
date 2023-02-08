@@ -18,6 +18,8 @@ PROJECT_ROOT="$SCRIPT_DIR/.."
 
 terraform_dir="$PROJECT_ROOT/$terraform_context"
 
+terraform -chdir=$terraform_dir init -upgrade
+
 # Deletion procedure reflects recommendations from EKS Blueprints: 
 # https://aws-ia.github.io/terraform-aws-eks-blueprints/v4.6.0/getting-started/#cleanup
 
