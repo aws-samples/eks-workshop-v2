@@ -64,6 +64,7 @@ const config = {
       colorMode: {
         disableSwitch: true,
       },
+      image: 'img/meta.png',
       navbar: {
         title: 'EKS Workshop',
         logo: {
