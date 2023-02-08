@@ -137,7 +137,7 @@ const config = {
             items: [
               {
                 label: 'GitHub',
-                href: 'https://twitter.com/docusaurus',
+                href: 'https://github.com/aws-samples/eks-workshop-v2',
               },
             ],
           },
