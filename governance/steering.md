@@ -1,5 +1,5 @@
-# Steering Committee
-## Members
+# Steering Committee and Module Leads
+## Steering Commitee Members
 The Steering Committee is a 6 member body, overseeing the governance of the EKS Workshop.
 ### Terms end in February 2024
 |Name|Profile|Role|
@@ -10,6 +10,27 @@ The Steering Committee is a 6 member body, overseeing the governance of the EKS 
 |Ameet Naik|[@ameetnaik](https://github.com/ameetnaik)|Technical Account Manager|
 |Kamran Habib|[@kmhabib](https://github.com/kmhabib)|Solution Architect (TFC at large)|
 |Theo Salvo|[@buzzsurfr](https://github.com/buzzsurfr)|Container Specialist (TFC core team member)|
+
+## Working Groups
+The working groups are led by chairs (6 month terms) and maintainers (6 month terms).
+
+|Working Group|Chair|Maintainer|
+|:----|:-------|:----|
+|Infrastructure|[Niall Thomson](https://github.com/niallthomson)||
+|Fundamentals|[Sai Vennam](https://github.com/svennam92)||
+|Autoscaling|[Sanjeev Ganjihal](https://github.com/sanjeevrg89)||
+|Automation|[Carlos Santana](https://github.com/csantanapr)||
+|Machine Learning|[Masatoshi Hayashi](https://github.com/literalice)||
+|Networking|[Sheetal Joshi](https://github.com/sheetaljoshi)||
+|Observability|[Nirmal Mehta](https://github.com/normalfaults)||
+|Security|[Jimmy Ray](https://github.com/jimmyraywv)||
+
+## Wranglers
+Wranglers will work across all topic areas and serve for at least 6 months. 
+|Name|Profile|Role|
+|:----|:-------|:----|
+|Math Bruneau|[@brunemat](https://github.com/)|Specialist Solution Architect, Containers|
+
 
 ## Emeritus
 |Name|Profile|Role|
