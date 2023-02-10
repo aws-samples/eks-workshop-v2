@@ -29,7 +29,7 @@ The working groups are led by chairs (6 month terms) and maintainers (6 month te
 Wranglers will work across all topic areas and serve for at least 6 months. 
 |Name|Profile|Role|
 |:----|:-------|:----|
-|Math Bruneau|[@brunemat](https://github.com/)|Specialist Solution Architect, Containers|
+|Math Bruneau|[@ROunofF](https://github.com/ROunofF)|Specialist Solution Architect, Containers|
 
 
 ## Emeritus
