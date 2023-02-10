@@ -11,7 +11,7 @@ To gather the metrics from the Amazon EKS Cluster, we'll deploy a `OpenTelemetry
 Now, let's create resources to allow the ADOT collector the permissions it needed. We'll start with the ClusterRole that gives the collector permissions to access the Kubernetes API:
 
 ```file
-observability/oss-metrics/adot/clusterrole.yaml
+modules/observability/oss-metrics/adot/clusterrole.yaml
 ```
 
 We'll use the managed IAM policy `AmazonPrometheusRemoteWriteAccess` to provide the collector with the IAM permissions it needs via IAM Roles for Service Accounts:
@@ -32,13 +32,13 @@ $ aws iam list-attached-role-policies \
 This IAM role will be added to the ServiceAccount for the collector:
 
 ```file
-observability/oss-metrics/adot/serviceaccount.yaml
+modules/observability/oss-metrics/adot/serviceaccount.yaml
 ```
 
 Create the resources:
 
 ```bash
-$ kubectl apply -k /workspace/modules/observability/oss-metrics/adot
+$ kubectl apply -k @{/workspace/modules/observability/oss-metrics/adot}
 ```
 
 The specification for the collector is too long to show here, but you can view it like so:

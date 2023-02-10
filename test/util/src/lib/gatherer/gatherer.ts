@@ -6,6 +6,8 @@ import remarkParse from 'remark-parse'
 import remarkFrontmatter, { Root } from 'remark-frontmatter'
 import remarkGfm from 'remark-gfm'
 
+const path_replacement_regex = /\@\{([A-Za-z0-9\/\-_]+)\}/gm;
+
 export class Category {
   constructor(public title: string, public weight: number, public children: Array<Category>, public pages: Array<Page>, public run: boolean, public path: string) { 
   }
@@ -266,7 +268,7 @@ export class Gatherer {
         }
       } while (true);
     
-      return commandParts.join('\n');
+      return commandParts.join('\n').replace(path_replacement_regex, '$1');
     }
 
     return rawString;

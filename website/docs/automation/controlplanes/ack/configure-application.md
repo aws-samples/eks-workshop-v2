@@ -10,14 +10,14 @@ The ACK `FieldExport` custom resource was designed to bridge the gap between man
 The `DBInstance` resource contains the information for connecting to the RDS database instance. The host information can be found in `status.endpoint.address` and the master username  in `spec.masterUsername`. Lets create some `FieldExport` objects to extract these values in to a Kubernetes secret named `catalog-db-ack`.
 
 ```file
-automation/controlplanes/ack/rds/fieldexports/rds-fieldexports.yaml
+modules/automation/controlplanes/ack/rds/fieldexports/rds-fieldexports.yaml
 ```
 
 Apply this configuration:
 
 ```bash
 $ export CATALOG_PASSWORD=$(kubectl get secrets -n default catalog-rds-pw -n catalog -o go-template='{{.data.password|base64decode}}')
-$ kubectl apply -k /workspace/modules/automation/controlplanes/ack/rds/fieldexports
+$ kubectl apply -k @{/workspace/modules/automation/controlplanes/ack/rds/fieldexports}
 secret/catalog-db configured
 fieldexport.services.k8s.aws/catalog-db-endpoint created
 fieldexport.services.k8s.aws/catalog-db-user created
@@ -35,7 +35,7 @@ username: YWRtaW4=
 Finally, we can update the application to use the RDS endpoint and credentials sourced from the `catalog-db-ack` secret:
 
 ```bash
-$ kubectl apply -k /workspace/modules/automation/controlplanes/ack/rds/application
+$ kubectl apply -k @{/workspace/modules/automation/controlplanes/ack/rds/application}
 namespace/catalog unchanged
 serviceaccount/catalog unchanged
 configmap/catalog unchanged

@@ -20,7 +20,7 @@ const plugin = (options) => {
         node.meta = `title="${path.normalize(`${modulesPath}/${value}`)}"`
 
         const p = fs.readFile(filePath, { encoding: 'utf8' }).then(res => {
-          node.value = res
+          node.value = res.trim()
         });
         promises.push(p);
       }

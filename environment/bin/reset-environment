@@ -8,12 +8,11 @@ if [ ! -z "$module" ]; then
   absolute_path="/workspace/modules/$module/base"
 fi
 
-set -Eeuo pipefail
-
-if [[ ! -d "$absolute_path" ]]; then
-  echo "Error: Manifest directory not found to reset"
-  exit 1
+if [ ! -z "$MANIFESTS_REF" ]; then
+  absolute_path="github.com/aws-samples/eks-workshop-v2/environment$absolute_path?ref=${MANIFESTS_REF}"
 fi
+
+set -Eeuo pipefail
 
 echo "Resetting the environment, please wait"
 

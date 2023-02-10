@@ -13,18 +13,18 @@ No resources found
 In this case we're going to use the `ui` service and scale it based on CPU usage. The first thing we'll do is update the `ui` Pod specification to specify CPU `request` and `limit` values.
 
 ```kustomization
-autoscaling/workloads/hpa/deployment.yaml
+modules/autoscaling/workloads/hpa/deployment.yaml
 Deployment/ui
 ```
 
 Next, we need to create a `HorizontalPodAutoscaler` resource which defines the parameters HPA will use to determine how to scale our workload.
 
 ```file
-autoscaling/workloads/hpa/hpa.yaml
+modules/autoscaling/workloads/hpa/hpa.yaml
 ```
 
 Let's apply this configuration:
 
 ```bash
-$ kubectl apply -k /workspace/modules/autoscaling/workloads/hpa
+$ kubectl apply -k @{/workspace/modules/autoscaling/workloads/hpa}
 ```

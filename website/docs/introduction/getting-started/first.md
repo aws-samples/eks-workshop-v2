@@ -34,25 +34,14 @@ $ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
 No resources found
 ```
 
-The first thing we'll do is deploy the catalog component by itself. The manifests for this component can be found in `/workspace/manifests/catalog`.
+The first thing we'll do is deploy the catalog component by itself. You can view the manifests for this component on GitHub at the link below:
 
-```bash
-$ ls /workspace/manifests/catalog
-configMap.yaml
-deployment.yaml
-kustomization.yaml
-namespace.yaml
-secrets.yaml
-service-mysql.yaml
-service.yaml
-serviceAccount.yaml
-statefulset-mysql.yaml
-```
+https://github.com/aws-samples/eks-workshop-v2/tree/VAR::MANIFESTS_REF/environment/workspace/manifests/catalog
 
-These manifests include the Deployment for the catalog API:
+Let's take a look at the Deployment for the catalog API:
 
 ```file
-../manifests/catalog/deployment.yaml
+manifests/catalog/deployment.yaml
 ```
 
 This Deployment expresses the desired state of the catalog API component:
@@ -67,7 +56,7 @@ This Deployment expresses the desired state of the catalog API component:
 The manifests also include the Service used by other components to access the catalog API:
 
 ```file
-../manifests/catalog/service.yaml
+manifests/catalog/service.yaml
 ```
 
 This Service:
@@ -79,7 +68,7 @@ This Service:
 Let's create the catalog component:
 
 ```bash
-$ kubectl apply -k /workspace/manifests/catalog
+$ kubectl apply -k @{/workspace/manifests/catalog}
 namespace/catalog created
 serviceaccount/catalog created
 configmap/catalog created

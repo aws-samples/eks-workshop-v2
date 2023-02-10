@@ -22,7 +22,7 @@ $ kubectl set env daemonset aws-node -n kube-system AWS_VPC_K8S_CNI_CUSTOM_NETWO
 Create an ENIConfig custom resource for each subnet that you want to deploy pods in. Here is the ENIConfig configuration.
 
 ```file
-networking/custom-networking/provision/eniconfigs.yaml
+modules/networking/custom-networking/provision/eniconfigs.yaml
 ```
 
 Let's apply this to our cluster:

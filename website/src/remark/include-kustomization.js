@@ -6,11 +6,11 @@ const YAML = require('yaml');
 const { parse } = require('path');
 const Diff = require('diff');
 
-const modulesPath = '/workspace/modules'
+const modulesPath = '/workspace'
 
 const plugin = (options) => {
   const manifestsDir = options.manifestsDir
-  const baseDir = path.normalize(`${options.manifestsDir}/../manifests`)
+  //const baseDir = path.normalize(`${options.manifestsDir}/manifests`)
 
   const transformer = async (ast, vfile) => {
     const promises = [];
@@ -44,7 +44,7 @@ const plugin = (options) => {
         });
         const mutatedPromise = generateYaml(kustomizationPath, resourceKind, resourceName, true)
 
-        const nicePath = `/workspace/modules/${file}`
+        const nicePath = `/workspace/${file}`
 
         const p = Promise.all([filePromise, originalPromise, mutatedPromise]).then(res => {
           const mutatedManifest = res[2].manifest

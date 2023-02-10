@@ -20,7 +20,7 @@ metadata:
 The following kustomization overwrites the ConfigMap, altering the MySQL endpoint so that the application will connect to the Amazon RDS database thats been created already for us which is being pulled from the environment variable `CATALOG_RDS_ENDPOINT`.
 
 ```kustomization
-networking/securitygroups-for-pods/rds/kustomization.yaml
+modules/networking/securitygroups-for-pods/rds/kustomization.yaml
 ConfigMap/catalog
 ```
 
@@ -29,7 +29,7 @@ Let's check the value of `CATALOG_RDS_ENDPOINT` then run Kustomize to use the re
 ```bash
 $ echo $CATALOG_RDS_ENDPOINT
 eks-workshop-catalog.cluster-cjkatqd1cnrz.us-west-2.rds.amazonaws.com:3306
-$ kubectl apply -k /workspace/modules/networking/securitygroups-for-pods/rds
+$ kubectl apply -k @{/workspace/modules/networking/securitygroups-for-pods/rds}
 ```
 
 Check that the ConfigMap has been updated with the new values:

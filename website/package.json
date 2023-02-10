@@ -34,7 +34,8 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "2.3.1"
+    "@docusaurus/module-type-aliases": "2.3.1",
+    "@types/mdast": "^3.0.10"
   },
   "browserslist": {
     "production": [

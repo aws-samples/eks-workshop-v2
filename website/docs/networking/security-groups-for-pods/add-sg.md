@@ -63,14 +63,14 @@ This security group:
 In order for our Pod to use this security group we need to use the `SecurityGroupPolicy` CRD to tell EKS which security group is to be mapped to a specific set of Pods. This is what we'll configure:
 
 ```kustomization
-networking/securitygroups-for-pods/sg/policy.yaml
+modules/networking/securitygroups-for-pods/sg/policy.yaml
 SecurityGroupPolicy/catalog-rds-access
 ```
 
 Apply this to the cluster then recycle the catalog Pods once again:
 
 ```bash
-$ kubectl apply -k /workspace/modules/networking/securitygroups-for-pods/sg
+$ kubectl apply -k @{/workspace/modules/networking/securitygroups-for-pods/sg}
 namespace/catalog unchanged
 serviceaccount/catalog unchanged
 configmap/catalog unchanged

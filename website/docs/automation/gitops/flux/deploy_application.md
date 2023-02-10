@@ -27,7 +27,7 @@ $ cp -R /workspace/manifests/ui ~/environment/gitops/apps
 We'll then need to create a kustomization in the `apps` directory:
 
 ```file
-automation/gitops/flux/apps-kustomization.yaml
+modules/automation/gitops/flux/apps-kustomization.yaml
 ```
 
 Copy this file to the Git repository directory:
@@ -39,7 +39,7 @@ $ cp /workspace/modules/automation/gitops/flux/apps-kustomization.yaml ~/environ
 The last step before we push our changes is to ensure that Flux is aware of our `apps` directory. We do that by creating an additional file in the `flux` directory:
 
 ```file
-automation/gitops/flux/flux-kustomization.yaml
+modules/automation/gitops/flux/flux-kustomization.yaml
 ```
 
 Copy this file to the Git repository directory:

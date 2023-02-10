@@ -20,14 +20,14 @@ We'll be focusing on option 2 in this lab, and to demonstrate we'll be performin
 Now, let's update the Provisioner to enable consolidation:
 
 ```kustomization
-autoscaling/compute/karpenter/consolidation/provisioner.yaml
+modules/autoscaling/compute/karpenter/consolidation/provisioner.yaml
 Provisioner/default
 ```
 
 Let's apply this update:
 
 ```bash
-$ kubectl apply -k /workspace/modules/autoscaling/compute/karpenter/consolidation
+$ kubectl apply -k @{/workspace/modules/autoscaling/compute/karpenter/consolidation}
 ```
 
 Now, let's scale our `inflate` workload again to consume more resources:

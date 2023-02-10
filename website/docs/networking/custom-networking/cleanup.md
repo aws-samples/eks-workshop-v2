@@ -20,6 +20,6 @@ $ aws eks wait nodegroup-deleted --cluster-name $EKS_CLUSTER_NAME --nodegroup-na
 Reset checkout back to its default configuration:
 
 ```bash
-$ kubectl apply -k /workspace/manifests/checkout
+$ kubectl apply -k @{/workspace/manifests/checkout}
 $ kubectl rollout status deployment/checkout -n checkout --timeout 180s
 ```

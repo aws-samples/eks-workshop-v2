@@ -24,14 +24,14 @@ In this example (above), we can see that the `CapacityProvisioned` annotation sh
 In the next example we'll increase the amount of resources the `checkout` component is requesting and see how the Fargate scheduler adapts. The kustomization we're going to apply increases the resources requested to 1 vCPU and 2.5G of memory:
 
 ```kustomization
-fundamentals/fargate/sizing/deployment.yaml
+modules/fundamentals/fargate/sizing/deployment.yaml
 Deployment/checkout
 ```
 
 Apply the kustomization and wait for the rollout to complete:
 
 ```bash timeout=220
-$ kubectl apply -k /workspace/modules/fundamentals/fargate/sizing
+$ kubectl apply -k @{/workspace/modules/fundamentals/fargate/sizing}
 [...]
 $ kubectl rollout status -n checkout deployment/checkout --timeout=200s
 ```

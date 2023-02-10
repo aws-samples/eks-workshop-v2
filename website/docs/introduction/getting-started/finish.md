@@ -6,7 +6,7 @@ sidebar_position: 50
 In this lab exercise, we'll deploy the rest of the sample application efficiently using the power of Kustomize. The following kustomization file shows how you can reference other kustomizations and deploy multiple components together:
 
 ```file
-../manifests/kustomization.yaml
+manifests/kustomization.yaml
 ```
 
 :::tip
@@ -15,10 +15,14 @@ Notice that the catalog API is in this kustomization, didn't we already deploy i
 Because Kubernetes uses a declarative mechanism we can apply the manifests for the catalog API again and expect that because all of the resources are already created Kubernetes will take no action.
 :::
 
+You can view the manifests for all of the components on GitHub at the link below:
+
+https://github.com/aws-samples/eks-workshop-v2/tree/VAR::MANIFESTS_REF/environment/workspace/manifests
+
 Apply this kustomization to our cluster to deploy the rest of the components:
 
 ```bash wait=10
-$ kubectl apply -k /workspace/manifests
+$ kubectl apply -k @{/workspace/manifests}
 ```
 
 After this is complete we can use `kubectl wait` to make sure all the components have started before we proceed:

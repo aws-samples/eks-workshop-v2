@@ -10,13 +10,13 @@ A `CompositeResourceDefinition` (or XRD) defines the type and schema of your Com
 First, lets provide a definition that can be used to create a database by members of the application team in their corresponding namespace. In this example the user only needs to specify `databaseName`, `storageGB` and `secret` location
 
 ```file
-automation/controlplanes/crossplane/compositions/definition.yaml
+modules/automation/controlplanes/crossplane/compositions/definition.yaml
 ```
 
 Create this composite definition:
 
 ```bash
-$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/compositions/definition.yaml
+$ kubectl apply -f @{/workspace/modules/automation/controlplanes/crossplane/compositions/definition.yaml}
 compositeresourcedefinition.apiextensions.crossplane.io "xrelationaldatabases.awsblueprints.io" deleted
 ```
 
@@ -25,13 +25,13 @@ A Composition lets Crossplane know what to do when someone creates a Composite R
 The following Composition provisions the managed resources `DBSubnetGroup`, `SecurityGroup` and `DBInstance`:
 
 ```file
-automation/controlplanes/crossplane/compositions/composition/composition.yaml
+modules/automation/controlplanes/crossplane/compositions/composition/composition.yaml
 ```
 
 Apply this to our EKS cluster:
 
 ```bash
-$ kubectl apply -k /workspace/modules/automation/controlplanes/crossplane/compositions/composition
+$ kubectl apply -k @{/workspace/modules/automation/controlplanes/crossplane/compositions/composition}
 composition.apiextensions.crossplane.io/rds-mysql.awsblueprints.io created
 ```
 
@@ -40,13 +40,13 @@ Once we’ve configured Crossplane with the details of the new XR we can either 
 With this claim the developer only needs to specify a default database name, size, and location to store the credentials to connect to the database. This allows the platform or SRE team to standardize on aspects such as database engine, high-availability architecture and security configuration.
 
 ```file
-automation/controlplanes/crossplane/compositions/claim/claim.yaml
+modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml
 ```
 
 Create the database by creating a `Claim`:
 
 ```bash
-$ kubectl apply -k /workspace/modules/automation/controlplanes/crossplane/compositions/claim
+$ kubectl apply -k @{/workspace/modules/automation/controlplanes/crossplane/compositions/claim}
 relationaldatabase.awsblueprints.io/rds-eks-workshop created
 ```
 
@@ -88,7 +88,7 @@ type: connection.crossplane.io/v1alpha1
 Update the application to use the RDS endpoint and credentials:
 
 ```bash
-$ kubectl apply -k /workspace/modules/automation/controlplanes/crossplane/compositions/application
+$ kubectl apply -k @{/workspace/modules/automation/controlplanes/crossplane/compositions/application}
 namespace/catalog unchanged
 serviceaccount/catalog unchanged
 configmap/catalog unchanged

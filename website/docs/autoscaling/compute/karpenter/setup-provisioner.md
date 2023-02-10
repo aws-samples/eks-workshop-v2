@@ -10,7 +10,7 @@ One of the main objectives of Karpenter is to simplify the management of capacit
 This is the provisioner we'll created initially:
 
 ```file
-autoscaling/compute/karpenter/provisioner/provisioner.yaml
+modules/autoscaling/compute/karpenter/provisioner/provisioner.yaml
 ```
 
 :::info
@@ -25,7 +25,7 @@ The configuration for the provider is split into two parts. The first one define
 * **Selectors**: This `AWSNodeTemplate` resource uses `securityGroupSelector` and `subnetSelector` to discover resources used to launch nodes. These tags were automatically set on the associated AWS infrastructure provided for the workshop.
 
 ```bash timeout=180
-$ kubectl apply -k /workspace/modules/autoscaling/compute/karpenter/provisioner
+$ kubectl apply -k @{/workspace/modules/autoscaling/compute/karpenter/provisioner}
 ```
 
 Throughout the workshop you can inspect the Karpenter logs with the following command to understand its behavior:

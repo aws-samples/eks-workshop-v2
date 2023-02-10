@@ -4,4 +4,10 @@ set -Eeuo pipefail
 
 reset-environment
 
-kubectl delete -k /workspace/manifests
+absolute_path='/workspace/manifests'
+
+if [ ! -z "$MANIFESTS_REF" ]; then
+  absolute_path="github.com/aws-samples/eks-workshop-v2/environment$absolute_path?ref=${MANIFESTS_REF}"
+fi
+
+kubectl delete -k $absolute_path

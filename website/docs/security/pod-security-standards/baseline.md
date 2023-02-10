@@ -8,14 +8,14 @@ What if we want to restrict the permissions that a Pod can request? For example 
 The Baseline PSS is a minimally restrictive policy which prevents known privilege escalations. Let's add labels to the `assets` Namespace to enable it:
 
 ```kustomization
-security/pss-psa/baseline-namespace/namespace.yaml
+modules/security/pss-psa/baseline-namespace/namespace.yaml
 Namespace/assets
 ```
 
 Run Kustomize to apply this change to add labels to the `assets` namespace:
 
 ```bash
-$ kubectl apply -k /workspace/modules/security/pss-psa/baseline-namespace
+$ kubectl apply -k @{/workspace/modules/security/pss-psa/baseline-namespace}
 Warning: existing pods in namespace "assets" violate the new PodSecurity enforce level "baseline:latest"
 Warning: assets-64c49f848b-gmrtt: privileged
 namespace/assets configured
@@ -71,7 +71,7 @@ In both the audit and warn PSA modes, the Pod restrictions don’t prevent viola
 Now, let's fix the `assets` Deployment so it will run by removing the `privileged` flag:
 
 ```bash
-$ kubectl apply -k /workspace/modules/security/pss-psa/baseline-workload
+$ kubectl apply -k @{/workspace/modules/security/pss-psa/baseline-workload}
 namespace/assets unchanged
 serviceaccount/assets unchanged
 configmap/assets unchanged

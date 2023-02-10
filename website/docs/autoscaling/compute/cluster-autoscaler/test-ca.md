@@ -6,13 +6,13 @@ sidebar_position: 40
 In this lab exercise, we'll update all of the application components to increase their replica count to 4. This will cause more resources to be consumed than are available in a cluster, triggering more compute to be provisioned.
 
 ```file
-autoscaling/compute/cluster-autoscaler/deployment.yaml
+modules/autoscaling/compute/cluster-autoscaler/deployment.yaml
 ```
 
 Let's apply this to our cluster:
 
 ```bash hook=ca-pod-scaleout timeout=180
-$ kubectl apply -k /workspace/modules/autoscaling/compute/cluster-autoscaler
+$ kubectl apply -k @{/workspace/modules/autoscaling/compute/cluster-autoscaler}
 ```
 
 Some pods will be in the `Pending` state, which triggers the cluster-autoscaler to scale out the EC2 fleet.

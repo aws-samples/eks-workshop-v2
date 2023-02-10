@@ -6,7 +6,7 @@ sidebar_position: 70
 Let's create a new secret `catalog-sealed-db`. We'll create a new file `new-catalog-db.yaml` with the same keys and values as the `catalog-db` Secret.
 
 ```file
-security/sealed-secrets/new-catalog-db.yaml
+modules/security/sealed-secrets/new-catalog-db.yaml
 ```
 
 Now, let’s create SealedSecret YAML manifests with kubeseal.
@@ -75,12 +75,12 @@ catalog-sealed-db   Opaque   4      7m51s
 Let's redeploy the **catalog** deployment that reads from the above Secret. We have updated the `catalog` deployment to read the `catalog-sealed-db` Secret as follows:
 
 ```kustomization
-security/sealed-secrets/deployment.yaml
+modules/security/sealed-secrets/deployment.yaml
 Deployment/catalog
 ```
 
 ```bash
-$ kubectl apply -k /workspace/modules/security/sealed-secrets
+$ kubectl apply -k @{/workspace/modules/security/sealed-secrets}
 $ kubectl rollout status -n catalog deployment/catalog --timeout 30s
 ```
 

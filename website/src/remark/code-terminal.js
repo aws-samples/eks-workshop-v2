@@ -2,11 +2,20 @@ const visit = require('unist-util-visit');
 
 const regex = /(\w+)=([^\s]+)/g;
 
+const other_regex = /\@\{([A-Za-z0-9\/\-_]+)\}/gm;
+
 const plugin = (options) => {
+  const manifestsRef = options.ref
+
   const transformer = async (ast, vfile) => {
     visit(ast, 'code', (node) => {
       if(node.lang === 'bash') {
-        value = node.value
+        if(manifestsRef != '') {
+          value = node.value.replace(other_regex, 'github.com/aws-samples/eks-workshop-v2/environment$1?ref='+manifestsRef);
+        }
+        else {
+          value = node.value.replace(other_regex, '$1');
+        }
 
         smartMode = false
 

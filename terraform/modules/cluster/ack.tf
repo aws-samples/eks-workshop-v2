@@ -33,6 +33,26 @@ module "ec2" {
     {
       name  = "aws.region"
       value = data.aws_region.current.id
+    },
+    {
+      name  = "deployment.nodeSelector.workshop-system"
+      value = "yes"
+      type  = "string"
+    },
+    {
+      name  = "deployment.tolerations[0].key"
+      value = "systemComponent"
+      type  = "string"
+    },
+    {
+      name  = "deployment.tolerations[0].operator"
+      value = "Exists"
+      type  = "string"
+    },
+    {
+      name  = "deployment.tolerations[0].effect"
+      value = "NoSchedule"
+      type  = "string"
     }
   ]
 

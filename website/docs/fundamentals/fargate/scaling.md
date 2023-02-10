@@ -8,14 +8,14 @@ Another benefit of Fargate is the simplified horizontal scaling model it offers.
 The examples we've looked at so far have only used a single Pod replica. What happens if we scale this out horizontally as we would typically expect in a real life scenario? Let's scale up the `checkout` service and find out:
 
 ```kustomization
-fundamentals/fargate/scaling/deployment.yaml
+modules/fundamentals/fargate/scaling/deployment.yaml
 Deployment/checkout
 ```
 
 Apply the kustomization and wait for the rollout to complete:
 
 ```bash timeout=240
-$ kubectl apply -k /workspace/modules/fundamentals/fargate/scaling
+$ kubectl apply -k @{/workspace/modules/fundamentals/fargate/scaling}
 [...]
 $ kubectl rollout status -n checkout deployment/checkout --timeout=200s
 ```
