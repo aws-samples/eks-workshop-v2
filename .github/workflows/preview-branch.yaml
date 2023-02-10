@@ -49,8 +49,8 @@ jobs:
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
       run: |
-        export MANIFESTS_REF="${GITHUB_REF_NAME}"
-        
+        export MANIFESTS_REF="${GITHUB_REF##*/}"
+
         npm install
         npm run deploy:netlify -- --alias pr-${PR_ID}
 
