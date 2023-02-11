@@ -71,7 +71,7 @@ rm -rf kustomize.tar.gz
 # aws cli v2
 curl --location --show-error --silent "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip -o -q awscliv2.zip
-./aws/install
+./aws/install --update
 rm -rf ./aws awscliv2.zip
 
 # kubeseal

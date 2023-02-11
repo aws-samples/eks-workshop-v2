@@ -33,6 +33,8 @@ resource "aws_iam_role" "cloud9_role" {
       },
     ]
   })
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "cloud9_policy_ssm_core" {
@@ -46,6 +48,8 @@ resource "aws_iam_policy" "cloud9_additional_policy" {
   name = "${var.environment_name}-policy-${count.index}"
 
   policy = jsonencode(var.additional_cloud9_policies[count.index])
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "cloud9_additional_policy" {
@@ -65,10 +69,17 @@ resource "aws_iam_role_policy_attachment" "cloud9_additional_policy_arn" {
 resource "aws_iam_instance_profile" "cloud9_ssm_instance_profile" {
   name = "${var.environment_name}-cloud9"
   role = aws_iam_role.cloud9_role.name
+
+  tags = var.tags
 }
 
 resource "aws_lambda_invocation" "cloud9_instance_profile" {
   function_name = module.cloud9_bootstrap_lambda.lambda_function_name
+
+  triggers = {
+    ssm_document_version = sha256(aws_ssm_document.cloud9_bootstrap.content)
+    cloud9_instance_id   = aws_cloud9_environment_ec2.c9_workspace.arn
+  }
 
   input = jsonencode({
     instance_id           = data.aws_instance.cloud9_instance.id

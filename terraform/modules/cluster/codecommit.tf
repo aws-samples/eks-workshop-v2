@@ -11,7 +11,7 @@ resource "aws_iam_user" "gitops" {
 resource "aws_iam_user_ssh_key" "gitops" {
   username   = aws_iam_user.gitops.name
   encoding   = "SSH"
-  public_key = tls_private_key.gitops.public_key_pem
+  public_key = tls_private_key.gitops.public_key_openssh
 }
 
 resource "tls_private_key" "gitops" {
