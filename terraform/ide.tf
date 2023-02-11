@@ -41,29 +41,47 @@ VPC_PRIVATE_SUBNET_ID_2=${module.cluster.private_subnet_ids[2]}
 GITOPS_IAM_SSH_KEY_ID=${try(module.cluster.gitops_iam_ssh_key_id, "")}
 GITOPS_IAM_SSH_USER=${module.cluster.gitops_ssh_iam_user}
 GITOPS_SSH_SSM_NAME=${module.cluster.gitops_ssh_ssm_name}
+MANIFESTS_REF=${var.repository_ref}
 EOT
 
   bootstrap_script = <<EOF
 set -e
 
 rm -rf /tmp/workshop-repository
-git clone https://github.com/aws-samples/eks-workshop-v2 /tmp/workshop-repository
-(cd /tmp/workshop-repository && git checkout ${var.repository_ref})
+mkdir -p /workspace
+rm -rf /workspace/*
+rm f /home/user/ec2-user/environment/workspace
 
-(cd /tmp/workshop-repository/environment && bash ./installer.sh)
+curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/${var.repository_ref}/environment/installer.sh | bash
 
 bash -c "aws cloud9 update-environment --environment-id $CLOUD9_ENVIRONMENT_ID --managed-credentials-action DISABLE || true"
 
-mkdir -p /workspace
-cp -R /tmp/workshop-repository/environment/workspace/* /workspace
-cp -R /workspace /workspace-backup
-chown ec2-user -R /workspace
-chmod +x /tmp/workshop-repository/environment/bin/*
-cp /tmp/workshop-repository/environment/bin/* /usr/local/bin
+cat << EOT > /usr/local/bin/reset-environment
+#!/bin/bash
 
-rm -rf /tmp/workshop-repository
+set -e
+curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/\$MANIFESTS_REF/environment/bin/reset-environment | bash
+EOT
 
-sudo -H -u ec2-user bash -c "ln -sf /workspace ~/environment/workspace"
+chmod +x /usr/local/bin/reset-environment
+
+cat << EOT > /usr/local/bin/delete-environment
+#!/bin/bash
+
+set -e
+curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/\$MANIFESTS_REF/environment/bin/delete-environment | bash
+EOT
+
+chmod +x /usr/local/bin/delete-environment
+
+cat << EOT > /usr/local/bin/wait-for-lb
+#!/bin/bash
+
+set -e
+curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/\$MANIFESTS_REF/environment/bin/wait-for-lb | bash
+EOT
+
+chmod +x /usr/local/bin/wait-for-lb
 
 if [[ ! -d "/home/ec2-user/.bashrc.d" ]]; then
   sudo -H -u ec2-user bash -c "mkdir -p ~/.bashrc.d"

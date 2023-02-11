@@ -1,0 +1,7 @@
+varReference:
+- path: metadata/name
+  kind: ENIConfig
+- path: spec/securityGroups[]
+  kind: ENIConfig
+- path: spec/subnet
+  kind: ENIConfig

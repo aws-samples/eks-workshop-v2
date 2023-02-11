@@ -8,6 +8,7 @@ Reset Amazon VPC CNI configuration:
 
 ```bash
 $ kubectl set env daemonset aws-node -n kube-system AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG=false
+$ kubectl delete -k @{/workspace/modules/networking/custom-networking/provision} --ignore-not-found=true
 ```
 
 Delete the node group that was created to test custom networking:

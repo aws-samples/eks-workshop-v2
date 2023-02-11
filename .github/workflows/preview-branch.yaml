@@ -50,7 +50,8 @@ jobs:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         MANIFESTS_REF: ${{ github.event.pull_request.head.ref }}
       run: |
-
+        source .kustomize-env
+        
         npm install
         npm run deploy:netlify -- --alias pr-${PR_ID}
 

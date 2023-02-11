@@ -32,6 +32,8 @@ jobs:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
       run: |
         source .kustomize-env
+
+        export MANIFESTS_REF="main"
         
         npm install
         npm run deploy:netlify -- --alias preview

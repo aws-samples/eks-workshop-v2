@@ -12,7 +12,7 @@ variable "cloud9_owner" {
 
 variable "repository_ref" {
   type        = string
-  default     = "main"
+  default     = "live"
   description = "The ref in the GitHub repository to clone"
 }
 

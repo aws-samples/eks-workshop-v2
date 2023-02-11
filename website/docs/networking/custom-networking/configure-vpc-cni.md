@@ -5,7 +5,7 @@ sidebar_position: 10
 
 In this lab exercise, we'll start configuring the Amazon VPC CNI.
 
-Let's review the existing VPC and Availability Zone configuration.
+Let's review the existing VPC and availability zone configuration.
 
 ```bash
 $ echo "The secondary subnet in AZ $AZ1 is $SECONDARY_SUBNET_1"
@@ -13,7 +13,7 @@ $ echo "The secondary subnet in AZ $AZ2 is $SECONDARY_SUBNET_2"
 $ echo "The secondary subnet in AZ $AZ3 is $SECONDARY_SUBNET_3"
 ```
 
-Set the `AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG` environment variable to *true* in the aws-node DaemonSet.
+Set the `AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG` environment variable to *true* in the aws-node DaemonSet:
 
 ```bash
 $ kubectl set env daemonset aws-node -n kube-system AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG=true
@@ -28,16 +28,16 @@ modules/networking/custom-networking/provision/eniconfigs.yaml
 Let's apply this to our cluster:
 
 ```bash
-$ envsubst < <(cat /workspace/modules/networking/custom-networking/provision/eniconfigs.yaml) | kubectl apply -f -
+$ kubectl apply -k @{/workspace/modules/networking/custom-networking/provision}
 ```
 
-Confirm that your ENIConfigs were created.
+Confirm that your `ENIConfig` objects were created:
 
 ```bash
 $ kubectl get ENIConfigs
 ```
 
-Update your aws-node DaemonSet to automatically apply the `ENIConfig` for an Availability Zone to any new Amazon EC2 nodes created in your cluster.
+Update your aws-node DaemonSet to automatically apply the `ENIConfig` for an availability zone to any new Amazon EC2 nodes created in your cluster:
 
 ```bash
 $ kubectl set env daemonset aws-node -n kube-system ENI_CONFIG_LABEL_DEF=topology.kubernetes.io/zone
