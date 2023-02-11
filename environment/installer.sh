@@ -70,9 +70,9 @@ rm -rf kustomize.tar.gz
 
 # aws cli v2
 curl --location --show-error --silent "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip -o -q awscliv2.zip
-./aws/install
-rm -rf ./aws awscliv2.zip
+unzip -o -q awscliv2.zip -d /tmp/awscli
+/tmp/awscli/aws/install --update
+rm -rf /tmp/awscli awscliv2.zip
 
 # kubeseal
 download_and_verify "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${kubeseal_version}/kubeseal-${kubeseal_version}-linux-amd64.tar.gz" "$kubeseal_checksum" "kubeseal.tar.gz"
