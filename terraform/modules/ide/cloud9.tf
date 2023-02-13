@@ -5,7 +5,7 @@ resource "aws_cloud9_environment_ec2" "c9_workspace" {
   image_id                    = "amazonlinux-2-x86_64"
   subnet_id                   = var.subnet_id
   owner_arn                   = var.cloud9_owner
-
+  connection_type             = "CONNECT_SSM"
   tags = var.tags
 }
 
