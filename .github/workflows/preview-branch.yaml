@@ -50,7 +50,7 @@ jobs:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
       run: |
         npm install
-        npm run deploy:netlify -- --alias pr-${PR_ID} --context deploy-preview
+        npm run deploy:netlify -- --alias pr-${PR_ID}
 
         echo "::set-output name=preview::pr-${PR_ID}--eks-workshop.netlify.app"
     - name: Deployed comment
