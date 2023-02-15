@@ -4,6 +4,17 @@
 
 Welcome to the repository for the [Amazon Elastic Kubernetes Services workshop](https://eksworkshop.com). This contains the source for the website content as well as the accompanying infrastructure-as-code to set up a workshop lab environment in your AWS account. Please review the [Introduction](https://www.eksworkshop.com/docs/introduction/) chapter of the workshop for more details.
 
+## Introduction
+
+The Amazon EKS Workshop is built to help users learn about Amazon EKS features and integrations with popular open-source projects. The workshop is abstracted into high-level learning modules, including Networking, Security, DevOps Automation, and more. These are further broken down into standalone labs focusing on a particular feature, tool, or use-case. To ensure a consistent and predictable learning experience, the Amazon EKS Workshop closely adheres to the following tenets:
+
+**Tenets**:
+* **Modular**: The workshop is made up of standalone modules that can be individually completed, allowing you to start at any module and easily switch between them.
+* **Consistent sample app**: The workshop uses the same sample retail store application across all modules: AWS Containers Retail Sample.
+* **Amazon EKS-focused**: Although the workshop covers some Kubernetes basics, it primarily focuses on familiarizing the user with concepts directly related to Amazon EKS.
+* **Continuously tested**: We automatically test the infrastructure provisioning and CLI steps in the workshop, allowing us to keep the workshop updated and tracking the latest versions of Amazon EKS.
+
+
 ## Navigating the repository
 
 The top level repository can be split is to several areas.
@@ -14,7 +25,7 @@ The workshop content itself is a `docusaurus` site. All workshop content is writ
 
 ### Contributing content
 
-To learn how to author content on this repository, read docs/[authoring_content.md](docs/authoring_content.md).
+To learn how to author content on this repository, read [CONTRIBUTING.md](CONTRIBUTING.md) and docs/[authoring_content.md](docs/authoring_content.md).
 
 ### Workshop infrastructure
 

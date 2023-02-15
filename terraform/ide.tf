@@ -46,7 +46,6 @@ EOT
 
   bootstrap_script = <<EOF
 set -e
-
 curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/${var.repository_ref}/environment/installer.sh | bash
 
 bash -c "aws cloud9 update-environment --environment-id $CLOUD9_ENVIRONMENT_ID --managed-credentials-action DISABLE || true"
