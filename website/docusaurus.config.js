@@ -61,6 +61,13 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      algolia: {
+        appId: '5284U8NTXK',
+        // Algolia Public API key: it is safe to commit it
+        apiKey: 'a3e8f0ce2bc0f21e32c6b77b3998c431',
+        indexName: 'crawler_EKS Workshop',
+        contextualSearch: true,
+      },
       colorMode: {
         disableSwitch: true,
       },
