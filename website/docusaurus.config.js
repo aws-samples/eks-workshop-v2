@@ -23,7 +23,7 @@ const config = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.png',
-  noIndex: true,
+  noIndex: process.env.ENABLE_INDEX!=="1",
 
   organizationName: 'aws-samples',
   projectName: 'eks-workshop-v2',
