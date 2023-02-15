@@ -40,6 +40,7 @@ def lambda_handler(event, context):
     block_device = ec2.describe_volumes(VolumeIds=[block_volume_id])['Volumes'][0]
 
     if block_device['Size'] != int(event['disk_size']):
+      print("Resizing volume {}".format(block_volume_id))
       ec2.modify_volume(VolumeId=block_volume_id,Size=int(event['disk_size']))
 
     # Wait some time for IAM profile to apply
@@ -51,6 +52,7 @@ def lambda_handler(event, context):
                 response["InstanceInformationList"][0]["PingStatus"] == "Online" and \
                 response["InstanceInformationList"][0]["InstanceId"] == instance_id:
             break
+        print("Waiting for instance {} to be online".format(instance_id))
         time.sleep(10)
 
     ssm_document = event['ssm_document']

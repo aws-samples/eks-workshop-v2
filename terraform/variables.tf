@@ -12,7 +12,7 @@ variable "cloud9_owner" {
 
 variable "repository_ref" {
   type        = string
-  default     = "live"
+  default     = "terminal-portability"
   description = "The ref in the GitHub repository to clone"
 }
 

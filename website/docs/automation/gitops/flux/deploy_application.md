@@ -8,7 +8,7 @@ We have successfully bootstrapped Flux on our cluster so now we can deploy an ap
 First let's remove the existing UI component so we can replace it:
 
 ```bash
-$ kubectl delete -k /workspace/manifests/ui
+$ kubectl delete -k @{/workspace/manifests/ui}
 ```
 
 Next, clone the repository we used to bootstrap Flux in the previous section:
@@ -17,50 +17,58 @@ Next, clone the repository we used to bootstrap Flux in the previous section:
 $ git clone ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_DEFAULT_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-gitops ~/environment/gitops
 ```
 
-Now, let's get into the cloned repository and start creating our GitOps configuration. Copy the existing kustomize configuration for the UI service:
+Now, let's start creating our GitOps configuration. We'll start by creating a kustomization file that references out existing UI component manifests:
 
 ```bash
-$ mkdir ~/environment/gitops/apps
-$ cp -R /workspace/manifests/ui ~/environment/gitops/apps
+$ mkdir -p ~/environment/gitops/apps/ui
+$ cat <<EOF > ~/environment/gitops/apps/ui/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: ui
+resources:
+- git::https://github.com/aws-samples/eks-workshop-v2.git/environment/workspace/manifests/ui?ref=VAR::MANIFESTS_REF
+EOF
 ```
 
 We'll then need to create a kustomization in the `apps` directory:
 
-```file
-modules/automation/gitops/flux/apps-kustomization.yaml
-```
-
-Copy this file to the Git repository directory:
-
 ```bash
-$ cp /workspace/modules/automation/gitops/flux/apps-kustomization.yaml ~/environment/gitops/apps/kustomization.yaml
+$ cat <<EOF > ~/environment/gitops/apps/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ui
+EOF
 ```
 
 The last step before we push our changes is to ensure that Flux is aware of our `apps` directory. We do that by creating an additional file in the `flux` directory:
 
-```file
-modules/automation/gitops/flux/flux-kustomization.yaml
-```
-
-Copy this file to the Git repository directory:
-
 ```bash
-$ cp /workspace/modules/automation/gitops/flux/flux-kustomization.yaml ~/environment/gitops/apps.yaml
+$ cat <<EOF > ~/environment/gitops/apps.yaml
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  name: apps
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps
+  prune: true
+  validation: client
+EOF
 ```
 
-You Git directory should now look something like this which you can validate by running `tree ~/environment/gitops`:
+Your Git directory should now look something like this which you can validate by running `tree ~/environment/gitops`:
 
 ```
 .
 ├── apps
 │   ├── kustomization.yaml
 │   └── ui
-│       ├── configMap.yaml
-│       ├── deployment.yaml
-│       ├── kustomization.yaml
-│       ├── namespace.yaml
-│       ├── serviceAccount.yaml
-│       └── service.yaml
+│       └── kustomization.yaml
 ├── apps.yaml
 └── flux-system
     ├── gotk-components.yaml
@@ -68,7 +76,7 @@ You Git directory should now look something like this which you can validate by 
     └── kustomization.yaml
 
 
-3 directories, 11 files
+3 directories, 5 files
 ```
 
 Finally we can push our configuration to CodeCommit:

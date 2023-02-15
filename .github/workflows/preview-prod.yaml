@@ -26,6 +26,10 @@ jobs:
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
       run: |
+        BUILD_ID=${GITHUB_SHA::7}
+
+        export MANIFESTS_REF="${BUILD_ID}"
+
         source .kustomize-env
 
         npm install

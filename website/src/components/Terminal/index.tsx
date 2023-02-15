@@ -80,7 +80,7 @@ class TerminalSection {
   private context : TerminalContext;
   private commandContext : TerminalCommand;
   private inHeredoc = false;
-  private commandString : string = "";
+  private commandString = "";
   private inCommand = true;
 
   constructor() {
@@ -161,10 +161,8 @@ class TerminalContext {
 }
 
 class TerminalCommand extends TerminalContext {
-  private isMultiLine = false;
-
   addLine(line: string) {
-    super.addLine(line.trim())
+    super.addLine(line)
   }
 
   getCommand() {
@@ -188,7 +186,7 @@ class TerminalCommand extends TerminalContext {
   }
 
   renderCommand(command: string, indent: boolean) {
-    let output = indent ? `     ${command}` : command;
+    let output = indent ? `${command}` : command;
 
     return (<span className={styles.terminalPromptCommand}>{output}</span>)
   }
