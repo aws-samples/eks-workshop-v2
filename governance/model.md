@@ -24,7 +24,7 @@ The steering committee will be responsible for the overall governance of the pro
 
 The steering committee will also be responsible for communicating project wide changes, i.e. changes that can potentially affect all of the working groups, e.g. changes to the style guide, tenets, etc. 
 
-The steering committee will select the chairs of each working group. 
+The steering committee will select the chairs and maintainers of each working group. To nominate new chairs/wranglers/maintainers, raise a PR to [steering.md](steering.md). Nominations will require approval from atleast two current steering committee members.
 
 ## Working groups
 
