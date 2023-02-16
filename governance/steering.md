@@ -17,7 +17,7 @@ The working groups are led by chairs (6 month terms) and maintainers (6 month te
 |Working Group|Chair|Maintainer|
 |:----|:-------|:----|
 |Infrastructure|[Niall Thomson](https://github.com/niallthomson)||
-|Fundamentals|[Sai Vennam](https://github.com/svennam92)||
+|Fundamentals|[Sai Vennam](https://github.com/svennam92)|[Hemanth AVS](https://github.com/hemanth-avs)|
 |Autoscaling|[Sanjeev Ganjihal](https://github.com/sanjeevrg89)||
 |Automation|[Carlos Santana](https://github.com/csantanapr)||
 |Machine Learning|[Masatoshi Hayashi](https://github.com/literalice)||
