@@ -39,9 +39,7 @@ Wranglers will work across all topic areas and serve for at least 6 months.
 
 ## Meetings
 ### Schedule and Cadence
-The steering committee will meet 2 times a month. 
-* We hold a closed meeting at 9:00AM CT on alternating Thursdays each month.
-* We hold a public meeting every third Thursday of the month at 9AM CT. <!--update with Chime link-->
+The steering committee will host a public meeting every third Thursday of the month at 9AM CT. <!--update with Chime link-->
 
 ### Resources
 * <!--add links to meeting notes and recordings-->
