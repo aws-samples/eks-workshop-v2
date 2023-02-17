@@ -35,3 +35,13 @@ jobs:
 
         npm install
         npm run deploy:netlify -- --prod
+    - name: Update latest tag
+      uses: actions/github-script@v6
+      with:
+        script: |       
+          github.rest.git.updateRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/latest`,
+              sha: context.sha
+          })
