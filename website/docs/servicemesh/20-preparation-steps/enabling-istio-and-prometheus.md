@@ -54,8 +54,8 @@ module "helm_addon" {
   helm_config = merge(
     {
       name        = local.name
-      chart       = "kube-prometheus-stack" 
-      version     = "35.3.1" 
+      chart       = "kube-prometheus-stack"  #local.name
+      version     = "35.3.1" # "15.17.0"
       repository  = "https://prometheus-community.github.io/helm-charts"
       namespace   = local.namespace_name
       description = "Prometheus helm Chart deployment configuration"
@@ -83,7 +83,7 @@ grafana:
     enabled: true
 
     ## IngressClassName for Grafana Ingress should be provided if Ingress is enable.
-    ingressClassName: ${ingressClassName} 
+    ingressClassName: \${ingressClassName} 
 
     ## Annotations for Grafana Ingress
     annotations: {
@@ -95,7 +95,7 @@ grafana:
 prometheus:
   ingress:
     enabled: true
-    ingressClassName: ${ingressClassName} 
+    ingressClassName: \${ingressClassName} 
     annotations: {
       alb.ingress.kubernetes.io/scheme: "internet-facing",
       alb.ingress.kubernetes.io/target-type: "ip"       
@@ -115,17 +115,31 @@ vi ../aws-load-balancer-controller/locals.tf
 ```yaml
 locals {
     ...
-    {
+  set_values = concat(
+    [
+      {
+        name  = "serviceAccount.name"
+        value = local.service_account_name
+      },
+      {
+        name  = "serviceAccount.create"
+        value = false
+      },
+      {
       name  = "createIngressClassResource"
       value = true
-    }
+      }
+    ],
+    try(var.helm_config.set_values, [])
+  )
     ...
 }
 ```
 
 Now you are all set to apply the resources of ISTIO and Prometheus to your EKS cluster
 ```shell
-terraform apply
+cd -
+terraform apply --auto-approve
 ```
 
 Wait for the resources to get applied to your cluster, and then you should be able seeing 

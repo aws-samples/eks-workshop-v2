@@ -8,10 +8,11 @@ Kiali is an observability console for Istio with service mesh configuration and 
 
 To install Kilai run the following command:
 ```shell
+cd ..
 curl -o ./kiali.yaml https://raw.githubusercontent.com/istio/istio/master/samples/addons/kiali.yaml
 ```
 
-After downloading it, open it for editing and define the `external_services` section as follow for the `configMap` *Kiali* under `config.yaml: |`. Here you are defining the namespace of Istio, the url endpoint of Grafana and Prometheus.
+After downloading it, open it for editing and replace the `external_services` with the contents from here for the `configMap` *Kiali* under `config.yaml: |`. Here you are defining the namespace of Istio, the url endpoint of Grafana and Prometheus.
 
 ```yaml
 apiVersion: v1
@@ -42,6 +43,7 @@ data:
         cache_expiration: 300   
 ...
 ```
+
 Save changes, and apply it to your cluster.
 ```shell
 kubectl apply -f ./kiali.yaml
