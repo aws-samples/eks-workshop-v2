@@ -4,11 +4,12 @@ sidebar_position: 30
 weight: 5
 ---
 
-In this chapter, you will learn how to secure applications running on Kubernetes with Istio and Auth0. 
+This chapter will teach you to enhance the security of applications operating on Kubernetes with the use of Istio and Auth0.
 
-Before start working on this, you need to 
-- Verify that you are exposing port 80 for the bookinfo application using a Gateway resource. 
-- Configure the ingress gateway to route traffic to your bookinfo services, and you do that using a VirtualService resource.
+To proceed with the task, you must:
+
+* Ensure that port 80 is accessible for the bookinfo application through the use of a Gateway resource.
+* Set up the ingress gateway to direct traffic to your bookinfo services through the configuration of a VirtualService resource.
 
 #### Routing Traffic to Services Using An Istio Gateway
 Remember you created the `bookinfo-gateway` resource in the ["Expose a Service" section under the "Traffic Management"](../20-traffic-management/30-expose_a_service.md) chapter. 
@@ -67,9 +68,9 @@ The Istio ingress gateway accepts traffic on port 80 for any host once this Gate
 
 #### Defining a virtual service for your application
 
-After admitting traffic in your cluster, you need to configure the ingress gateway to direct traffic to your bookinfo services, and you do that using a VirtualService resource.
+Once you have allowed traffic into your cluster, it is necessary to set up the ingress gateway to route the traffic to your Bookinfo services. This can be accomplished by creating a VirtualService resource. 
 
-The following VirtualService rules instruct your gateway to direct incoming traffic over the listed endpoint paths, to the productpage service:
+The VirtualService rules specify how the gateway should redirect incoming traffic based on the specified endpoint paths. In this case, the rules direct the incoming traffic to the "productpage" service:
 
 ```yaml
 kubectl apply -n test -f - <<EOF
@@ -103,13 +104,15 @@ spec:
           number: 9080
 EOF
 ```
-You expose crucial functionalities using these endpoints. For this chapter, the important ones are:
-- **/productpage**: This is the primary endpoint of the bookinfo application that you hit in your browser. 
-- **/login**: Once Auth0 has been integrated into your app, this endpoint will redirect users to the Auth0 login page so they can sign in or sign up.
-- **/logout**: Users will use this endpoint to log out of your app.
-- **/callback**: This endpoint is used by Auth0 to redirect the user back to your app after they log in. When this occurs, your application receives a code. Then, your application exchanges this code to obtain the access token.
+In this chapter, the crucial functionality of your application is made available through these endpoint paths:
 
-After running this command, you can access your application in your browser by hitting the endpoint `/productpage` using the loadbalancer endpoint of the ingress-gateway service located in the namespace istio-system as you did in the previous chapter.
+* **/productpage**: This is the main endpoint of the Bookinfo application that can be accessed through a web browser.
+* **/login**: After integrating Auth0, this endpoint will redirect users to the Auth0 login page for them to sign in or sign up.
+* **/logout**: Users can log out of the application using this endpoint.
+* **/callback**: Auth0 uses this endpoint to redirect the user back to the application after they log in. Upon completion, the application will receive a code, which it can then exchange for an access token.
+
+By executing the specified command, you will be able to access the application in your browser by accessing the `/productpage` endpoint via the load balancer endpoint of the "ingress-gateway" service located in the "istio-system" namespace, similar to the process described in the previous chapter.
+
 
 ```shell
 export ISTIO_IG_HOSTNAME=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
@@ -123,53 +126,57 @@ ac8bed13fd78247e995b42664063ce47-1403049919.us-east-1.elb.amazonaws.com/productp
 Notice here that you can see book details and reviews displayed on the page without even logging with any users yet.
 
 #### Authenticating and Authorizing Users
-Now, in order to put access control policies into practice for the services you need to nitially redirect the user to Auth0 for authentication and then configure the services with rules that accept or reject requests based on user permissions, as follow.
+To implement access control policies for the services, you must first redirect the user to Auth0 for authentication. Afterwards, you must configure the services with rules that either accept or reject requests based on the user's permissions. The following is a summary of the policies:
 
-- The **productpage** service is accessible by any user.
-- The **reviews** service is accessible by identities with the read:book-reviews permission.
-- The **details** service is accessible only by identities with the read:book-details permission.
-- The **ratings** service has no policies applied, so it is accessible by any user; but you can restrict it as well if you want.
+* The **productpage** service can be accessed by any user.
+* The **reviews** service can be accessed by identities with the `read:book-reviews` permission.
+* The **details** service can only be accessed by identities with the `read:book-details` permission.
+* The **ratings** service does not have any policies applied, so it can be accessed by any user, but it can also be restricted if desired.
 
-You will have 3 category of users:
-- **Admins**: which can access all services.
-- **Users**: which can only access the productpage and details services.
-- **Unauthenticated users**: which can only access the productpage service.  
+There will be three categories of users:
+* **Admins** can access all services.
+* **Users** can only access the productpage and details services.
+* **Unauthenticated users** can only access the productpage service.
+
 
 #### Setting up the Auth0 application
-Let's start to configure Auth0 to authenticate users for our services. First, you need to [sign up](https://auth0.com/signup) for a free Auth0 account, if you do not have one already.
+To begin configuring Auth0 to authenticate users for our services, you must first [create a free Auth0 account]((https://auth0.com/signup)) if you do not already have one.
 
+After signing up, navigate to the ["Applications"](https://manage.auth0.com/#/applications) section of your dashboard and click the "Create Application" button. Auth0 will display a dialog box for you to enter the following information:
 
-Following the sign-up, you navigate to the [Applications](https://manage.auth0.com/#/applications) section of your dashboard and select the Create Application button. Auth0 will then display a dialog box for you to enter the following two items:
-- **Application Name**: The name of your application can be anything here. You can use something like istio-auth.
-- **Application Type**: Choose Regular Web Applications.
+* **Application Name**: This can be any name you choose, such as "istio-auth".
+* **Application Type**: Choose "Regular Web Applications".
+Once you click "Create", you will be directed to the "Quick Start" tab of your new application. Then, select the "Settings" tab and modify the following two fields:
 
-Then, when you click on Create, you will be directed to the Quick Start tab of your new application. After that, you select the Settings tab and modify the following two fields:
-- **Allowed Callback URLs**: In here you enter the URL that Auth0 will call after users authenticate. Here, you enter `http://{ISTIO_IG_HOSTNAME}/callback`.
-- **Allowed Logout URLs**: In here you enter the URL that Auth0 will call after users log out. Here, you enter `http://{ISTIO_IG_HOSTNAME}/productpage`.
+* **Allowed Callback URLs**: Enter the URL that Auth0 will call after users have authenticated. In this case, enter `http://{ISTIO_IG_HOSTNAME}/callback`.
+* **Allowed Logout URLs**: Enter the URL that Auth0 will call after users log out. In this case, enter `http://{ISTIO_IG_HOSTNAME}/productpage`.
 
-Then hit the Save Changes button.
+Finally, click the "Save Changes" button.
+
 
 #### Registering an API in Auth0
-Navigate to the [APIs](https://manage.auth0.com/#/apis) section and click on Create API. Then, Auth0 will then display a dialog box for you to enter the following items:
-- **A Name for your API**: You can name it anything, but let's name it as the application name (istio-auth).
-- **An Identifier for your API**: Use a URI like https://istio-auth. It doesn't have to be a valid URL.  It will not be called.
-- **A Signing Algorithm**: Use RS256.
+Navigate to the APIs section and click on Create API and enter the following information:
 
-Once you create the API, you will be directed to its configuration page. here, you configure the API to add permissions to the access token after a user logs in. Follow these steps:
+* **Name for your API**: Name it as the application name (istio-auth) or any other name.
+* **Identifier for your API**: Use a URI such as https://istio-auth. It doesn't have to be a valid URL, it will not be used.
+* **Signing Algorithm**: Choose RS256.
 
-1. Hit the Settings tab and scroll down to RBAC Settings.
-2. Enable both the `Enable RBAC` and `Add Permissions in the Access Token` options. Then, scroll down to Save.
-3. Next, hit the Permissions tab and add the following two permissions:
+After creating the [API](https://manage.auth0.com/#/apis), you will be taken to its configuration page where you will configure it to add permissions to the access token after a user logs in. Here are the steps:
+
+1. Go to the Settings tab and scroll down to RBAC Settings.
+1. Enable both the options for `Enable RBAC` and `Add Permissions in the Access Token`. Then, scroll down and save your changes.
+1. Next, go to the Permissions tab and add the following two permissions:
 
 | Permissions	      | Description      |
 | : --------------- | : -------------- |
 | read:book-details	| Read book details |
 | read:book-reviews	| Read book reviews |
 
-#### Defining roles and assigning permissions
-Users can be assigned permissions directly. However, creating roles that group a set of permissions is a preferable approach. A user will receive the same set of permissions when this role is assigned to them.
 
-To define roles, navigate to the [User Management > Roles](https://manage.auth0.com/#/roles) section, and create the two roles shown below, and assign the following permissions to each, by clicking the role and heading to the Permissions tab:
+#### Defining roles and assigning permissions
+To manage permissions more efficiently, it is advisable to group a set of permissions into roles and assign the roles to users. This way, when a role is assigned to a user, they automatically receive the same set of permissions.
+
+To create roles, go to the [User Management > Roles](https://manage.auth0.com/#/roles) section on Auth0 and create the following two roles: Then, assign the following permissions to each role by navigating to the Permissions tab after clicking on the role.
 
 | Roles	| Assigned Permissions                  |
 |:--    | : --                                  |
