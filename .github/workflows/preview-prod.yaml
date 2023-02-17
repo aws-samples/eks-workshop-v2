@@ -38,6 +38,6 @@ jobs:
           github.rest.git.updateRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: `refs/tags/latest`,
+              ref: `tags/latest`,
               sha: context.sha
           })
