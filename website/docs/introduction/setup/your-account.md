@@ -9,7 +9,7 @@ Provisioning this workshop environment in your AWS account will create resources
 
 ## Provisioning
 
-In this workshop, we'll use Terraform to provision the required infrastructure and get everything up and running.
+In this workshop, we'll use Terraform to provision the required infrastructure and get everything up and running. This workshop is tested in us-east-2, us-west-2, and eu-west-1.
 
 ### Prerequisites:
  - [Install Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
