@@ -20,5 +20,6 @@ replacements:
     fieldPaths:
     - spec.subnetSelector.[karpenter.sh/discovery]
     - spec.securityGroupSelector.[karpenter.sh/discovery]
+    - spec.securityGroupSelector.aws:eks:cluster-name
 resources:
 - provisioner.yaml

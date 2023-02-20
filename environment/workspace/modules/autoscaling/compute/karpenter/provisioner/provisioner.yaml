@@ -27,6 +27,6 @@ spec:
   subnetSelector:
     karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
   securityGroupSelector:
-    karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
+    "aws:eks:cluster-name": ${EKS_CLUSTER_NAME}
   tags:
     app.kubernetes.io/created-by: eks-workshop
