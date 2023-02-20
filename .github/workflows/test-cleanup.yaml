@@ -24,6 +24,16 @@ jobs:
     - uses: hashicorp/setup-terraform@v2
       with:
         terraform_version: ~1.3.7
+    - name: Install utilities
+      run: |
+        sudo apt install -y gettext
+
+        mkdir -p ${HOME}/.local/bin
+        wget https://github.com/jckuester/awsweeper/releases/download/v0.12.0/awsweeper_0.12.0_linux_amd64.tar.gz
+        tar zxf awsweeper_0.12.0_linux_amd64.tar.gz
+        mv awsweeper_0.12.0_linux_amd64/awsweeper ${HOME}/.local/bin
+
+        echo "${HOME}/.local/bin" >> $GITHUB_PATH
     - name: Get AWS credentials
       uses: aws-actions/configure-aws-credentials@v1.6.1
       with:
@@ -38,6 +48,18 @@ jobs:
         BUILD_ID: ${{ github.event.inputs.buildId }}
       run: |
         export CLUSTER_ID="ci-${BUILD_ID}"
-        export TF_VAR_cluster_id="${CLUSTER_ID}"
+        export TF_VAR_environment_suffix="${CLUSTER_ID}"
+        
         terraform init -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="key=ci/${CLUSTER_ID}/terraform.tfstate"
+        
+        terraform destroy -target=module.core.module.cluster.module.eks_blueprints_kubernetes_addons --auto-approve
+        terraform destroy -target=module.core.module.cluster.module.descheduler --auto-approve
+
+        terraform destroy -target=module.core.module.cluster.module.eks_blueprints --auto-approve
+        
+        export CLEANUP_ENVIRONMENT_NAME="${CLUSTER_ID}"
+        
+        envsubst < ../../hack/lib/filter.yml > filter.yml
+        awsweeper --force filter.yml
+
         terraform destroy --auto-approve

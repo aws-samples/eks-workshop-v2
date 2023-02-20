@@ -25,8 +25,19 @@ jobs:
       env:
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        ENABLE_INDEX: 1
       run: |
         source .kustomize-env
 
         npm install
         npm run deploy:netlify -- --prod
+    - name: Update latest tag
+      uses: actions/github-script@v6
+      with:
+        script: |       
+          github.rest.git.updateRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `tags/latest`,
+              sha: context.sha
+          })

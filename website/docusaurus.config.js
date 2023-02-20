@@ -18,12 +18,12 @@ const config = {
   title: 'EKS Workshop',
   tagline:
     'Practical exercises to learn about Amazon Elastic Kubernetes Service',
-  url: 'https://eksworkshop-v2-next.netlify.app',
+  url: 'https://www.eksworkshop.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.png',
-  noIndex: true,
+  noIndex: process.env.ENABLE_INDEX!=="1",
 
   organizationName: 'aws-samples',
   projectName: 'eks-workshop-v2',
@@ -64,6 +64,7 @@ const config = {
       colorMode: {
         disableSwitch: true,
       },
+      image: 'img/meta.png',
       navbar: {
         title: 'EKS Workshop',
         logo: {
