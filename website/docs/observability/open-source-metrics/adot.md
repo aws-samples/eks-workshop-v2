@@ -62,7 +62,7 @@ This is configuring an OpenTelemetry pipeline with the following structure:
 * Exporters
   - [Prometheus remote write exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusremotewriteexporter) which sends metrics to a Prometheus remote write endpoint like AMP
 
-This collector is also configured to run as a Deployment with a collector agent running on each node:
+This collector is also configured to run as a Deployment with one collector agent running:
 
 ```bash
 $ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.mode}{"\n"}'
