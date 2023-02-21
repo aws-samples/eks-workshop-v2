@@ -43,10 +43,7 @@ spec:
                   name: catalog-db
                   key: password
             - name: MYSQL_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: catalog-db
-                  key: name
+              value: catalog
           ports:
             - name: mysql
               containerPort: 3306
