@@ -50,7 +50,7 @@ This Deployment expresses the desired state of the catalog API component:
 * Run a single replica
 * Expose the container on port 8080 named `http`
 * Run [probes/healthchecks](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) against the `/health` path
-* [Requests](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) a specific amount of CPU and memory so the Kubernetes scheduler can place it on a node with enough available resourcs
+* [Requests](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) a specific amount of CPU and memory so the Kubernetes scheduler can place it on a node with enough available resources
 * Apply labels to the Pods so other resources can refer to them
 
 The manifests also include the Service used by other components to access the catalog API:
@@ -96,7 +96,7 @@ catalog-846479dcdd-fznf5   1/1     Running   2 (43s ago)   46s
 catalog-mysql-0            1/1     Running   0             46s
 ```
 
-Notice we have a Pod for our catalog API and another for the MySQL database. The `catalog` Pod is showing a status of `CrashLoopBackOff`. This is because it needs to be able to connec tto the `catalog-mysql` Pod before it will start, and Kubernetes will keep restarting it until this is the case. Luckily we can use [kubectl wait](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#wait) to monitor specific Pods until they are in a Ready state:
+Notice we have a Pod for our catalog API and another for the MySQL database. The `catalog` Pod is showing a status of `CrashLoopBackOff`. This is because it needs to be able to connect grep -rn configutationto the `catalog-mysql` Pod before it will start, and Kubernetes will keep restarting it until this is the case. Luckily we can use [kubectl wait](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#wait) to monitor specific Pods until they are in a Ready state:
 
 ```bash
 $ kubectl wait --for=condition=Ready pods --all -n catalog --timeout=180s
