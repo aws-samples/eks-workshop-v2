@@ -7,6 +7,10 @@ spec:
   image: public.ecr.aws/aws-observability/aws-otel-collector:v0.21.0
   mode: daemonset
   serviceAccount: adot-collector-ci
+  tolerations:
+  - effect: NoSchedule
+    key: systemComponent
+    operator: Exists  
   config: |
     extensions:
       health_check:
