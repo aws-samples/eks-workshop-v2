@@ -2,7 +2,7 @@
 title: Pod Affinity and Anti-Affinity
 sidebar_position: 30
 ---
-Pods can be constrained to run on specific nodes or under specific circumstances. This can include cases where you want only one pod running per node or want pods to be paired together on a node. Additionally, when using node affinity pods can have preferred or mandatory restrictions.
+Pods can be constrained to run on specific nodes or under specific circumstances. This can include cases where you want only one application pod running per node or want pods to be paired together on a node. Additionally, when using node affinity pods can have preferred or mandatory restrictions.
 
 For this lesson, we'll focus on inter-pod affinity and anti-affinity by scheduling the `checkout-redis` pods to run only one instance per node and by scheduling the `checkout` pods to only run one instance of it on nodes where a `checkout-redis` pod exists. This will ensure that our caching pods (`checkout-redis`) run locally with a `checkout` pod instance for best performance. 
 
