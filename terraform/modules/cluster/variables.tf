@@ -30,3 +30,16 @@ variable "tags" {
   description = "AWS tags that will be applied to all resources"
   default     = {}
 }
+
+variable "fsx_capacity" {
+  type = number
+  description = "default FSxN storage capacity"
+  default = 2048
+}
+
+variable "fsx_admin_password" {
+  type = string
+  description = "default FSxN filesystem admin password"
+  default = "Netapp1!"
+}
+

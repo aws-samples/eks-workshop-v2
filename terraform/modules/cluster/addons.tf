@@ -371,3 +371,9 @@ module "descheduler" {
     }], local.system_component_values)
   }
 }
+
+module "fsxn" {
+  source = "../addons/fsxn"
+
+  addon_context = local.addon_context
+}
