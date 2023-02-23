@@ -46,6 +46,8 @@ GITOPS_SSH_SSM_NAME=${module.cluster.gitops_ssh_ssm_name}
 EOT
 
   bootstrap_script = <<EOF
+set -e
+
 rm -rf /tmp/workshop-repository
 git clone https://github.com/aws-samples/eks-workshop-v2 /tmp/workshop-repository
 (cd /tmp/workshop-repository && git checkout ${var.repository_ref})
@@ -86,6 +88,8 @@ EOT
 
 chown ec2-user /home/ec2-user/.bashrc.d/env.bash
 
+sudo rm -f /home/ec2-user/.ssh/gitops_ssh.pem
+
 sudo -H -u ec2-user bash -c "aws ssm get-parameter --name ${module.cluster.gitops_ssh_ssm_name} --with-decryption --query 'Parameter.Value' --region ${data.aws_region.current.name} --output text > ~/.ssh/gitops_ssh.pem"
 chmod 400 /home/ec2-user/.ssh/gitops_ssh.pem
 
@@ -112,7 +116,6 @@ module "ide" {
   cloud9_owner     = var.cloud9_owner
 
   additional_cloud9_policy_arns = [
-    "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
     "arn:aws:iam::aws:policy/AdministratorAccess"
   ]
 

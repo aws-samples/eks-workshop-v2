@@ -5,7 +5,7 @@ set -e
 STR=$(cat /etc/os-release)
 SUB="VERSION_ID=\"2\""
 
-marker_file="/var/run/resized.mark"
+marker_file="/root/resized.mark"
 
 if [[ ! -f "$marker_file" ]]; then
   if [ $(readlink -f /dev/xvda) = "/dev/xvda" ]
