@@ -91,8 +91,7 @@ flux-system   apps          34s   True    Applied revision: main/f39f67e6fb870ee
 
 You can also manually trigger Flux to reconcile like so:
 
-```
-bash wait=30 hook=flux-deployment
+```bash wait=30 hook=flux-deployment
 $ flux reconcile source git flux-system -n flux-system
 ```
 

@@ -35,7 +35,7 @@ aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-nam
 ```
 :::
 
-After making changes to the node group via `Amazon EKS Console` or `eksctl` command, it may take up to **2-3 minutes** for node provisioning and configuration changes to take effect. Let's retrieve the nodegroup configutation again and look at **minimum size**, **maximum size** and **desired capacity** of nodes using eksctl command below:
+After making changes to the node group via `Amazon EKS Console` or `eksctl` command, it may take up to **2-3 minutes** for node provisioning and configuration changes to take effect. Let's retrieve the nodegroup configuration again and look at **minimum size**, **maximum size** and **desired capacity** of nodes using eksctl command below:
 
 ```bash
 $ eksctl get nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME

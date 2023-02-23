@@ -7,7 +7,7 @@ An Amazon Managed Service for Prometheus workspace is already created for you. Y
 
 https://console.aws.amazon.com/prometheus/home#/workspaces
 
-To view the workspace, click on the **All Workspaces** tab on the left control panel. Select the workspace that starts with **eks-workshop** and you can view several the several tabs under the workspace such as rules management, alert manager etc.
+To view the workspace, click on the **All Workspaces** tab on the left control panel. Select the workspace that starts with **eks-workshop** and you can view several tabs under the workspace such as rules management, alert manager etc.
 
 Let's verify the successful ingestion of the metrics using `awscurl`:
 
