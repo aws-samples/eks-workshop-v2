@@ -3,6 +3,17 @@ description: Report a bug encountered while using the EKS Workshop
 title: "[Bug]: "
 labels: ["bug", "triage"]
 body:
+  - type: dropdown
+    id: method
+    attributes:
+      label: Installation method
+      description: How was your environment created?
+      options:
+        - Own AWS account
+        - Workshop Studio
+    validations:
+      required: true
+      
   - type: textarea
     id: problem
     attributes:
@@ -34,6 +45,6 @@ body:
   - type: textarea
     id: eksVersion
     attributes:
-      label: EKSversion
+      label: EKS version
     validations:
       required: true
