@@ -51,6 +51,7 @@ jobs:
         MANIFESTS_REF: ${{ github.event.pull_request.head.ref }}
       run: |
         source .kustomize-env
+        export MANIFESTS_REF="${GITHUB_REF_NAME}"
         
         npm install
         npm run deploy:netlify -- --alias pr-${PR_ID}

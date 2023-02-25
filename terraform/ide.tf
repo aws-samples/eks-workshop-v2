@@ -72,7 +72,7 @@ cat << EOT > /usr/local/bin/wait-for-lb
 #!/bin/bash
 
 set -e
-curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/\$MANIFESTS_REF/environment/bin/wait-for-lb | bash
+curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/\$MANIFESTS_REF/environment/bin/wait-for-lb | bash -s -- \$1
 EOT
 
 chmod +x /usr/local/bin/wait-for-lb

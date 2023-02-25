@@ -2,6 +2,11 @@
 
 export host=$1
 
+if [ -z "$host" ]; then
+  echo "Please provide a host name: wait-for-lb <host>"
+  exit 1
+fi
+
 set -Eeuo pipefail
 
 echo "Waiting for ${host}..."

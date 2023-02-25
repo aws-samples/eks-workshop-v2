@@ -141,6 +141,21 @@ Sometimes it is tempting to execute a long-running command in one window and ins
 2. Contextual information like environment variables can get lost in new windows
 3. It is more difficult to test
 
+### Referencing lab manifests
+
+Kubernetes configuration is applied throughout most of the labs in the workshop and primarily uses `kubectl` to do so. In general manifests should reference GitHub so that content tracks updates made to the manifests. This will look something like this:
+
+```bash
+$ kubectl apply -k github.com/aws-samples/eks-workshop-v2/environment/workspace/modules/exposing/load-balancer/nlb?ref=terminal-portability
+```
+
+A mechanism has been included that will automatically convert relative paths in the repository to full GitHub URLs as shown above, including the appropriate ref such as a branch, tag or commit. This is done like so:
+
+```bash
+$ kubectl apply -k @{/workspace/modules/exposing/load-balancer/nlb}
+```
+
+This provides a smooth content authoring experience, and will automatically handle converting this relative path to the GitHub URL format shown above.
 
 ### Referencing external manifests or components
 

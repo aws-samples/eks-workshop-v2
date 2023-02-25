@@ -11,7 +11,6 @@ The provisioner created in the previous section expressed specific instance type
 |---------------|------|--------|-------|
 | c5.large | 2 | 4GB | + |
 | m5.large | 2 | 8GB | ++ |
-| r5.large | 2 | 16GB | +++ |
 | m5.xlarge | 4 | 16GB | ++++ |
 
 Let's create some Pods and see how Karpenter adapts. Currently there are no nodes managed by Karpenter:
