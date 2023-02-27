@@ -21,8 +21,8 @@ Use the following instructions to set up the Terraform project.
 
 ```bash test=false
 $ git clone https://github.com/aws-samples/eks-workshop-v2.git
-$ git checkout latest
 $ cd eks-workshop-v2/terraform
+$ git checkout latest
 ```
 
 2. The workshops require Terraform version 1.3.7+. Check your version:
