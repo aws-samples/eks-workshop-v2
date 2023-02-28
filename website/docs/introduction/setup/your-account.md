@@ -17,6 +17,8 @@ In this workshop, we'll use Terraform to provision the required infrastructure a
 ### Set up
 Use the following instructions to set up the Terraform project.
 
+1. For Terraform to be able to deploy resources in your AWS account, it is recommended to configure your AWS credentials in environment variables or shared configuration/credentials files. Follow the instructions in the [Terraform documentation for the AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#shared-configuration-and-credentials-files) to set up these credentials. In addition, ensure that `AWS_REGION` is set to the region you intend to deploy. If you have multiple profiles in your credentials file, you will also need to set `AWS_PROFILE`.
+
 1. Clone the GitHub repository or download and unzip an archive file.
 
 ```bash test=false
