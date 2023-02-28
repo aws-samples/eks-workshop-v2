@@ -23,7 +23,7 @@ The working groups are led by chairs (6 month terms) and maintainers (6 month te
 |Machine Learning|[Masatoshi Hayashi](https://github.com/literalice)||
 |Networking|[Sheetal Joshi](https://github.com/sheetaljoshi)||
 |Observability|[Nirmal Mehta](https://github.com/normalfaults)||
-|Security|[Jimmy Ray](https://github.com/jimmyraywv)||
+|Security|[Jimmy Ray](https://github.com/jimmyraywv)|[Rodrigo Bersa](https://github.com/rodrigobersa)|
 
 ## Wranglers
 Wranglers will work across all topic areas and serve for at least 6 months. 
