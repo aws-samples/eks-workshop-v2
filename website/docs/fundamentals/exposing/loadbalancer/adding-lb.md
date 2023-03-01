@@ -115,7 +115,7 @@ The output above shows that we have 3 targets registered to the load balancer us
 
 You can also inspect the NLB in the console by clicking this link:
 
-https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=ui/uinlb;sort=loadBalancerName
+https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:service.k8s.aws/stack=ui/ui-nlb;sort=loadBalancerName
 
 Get the URL from the Service resource:
 
