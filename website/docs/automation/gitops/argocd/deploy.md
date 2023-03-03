@@ -1,5 +1,5 @@
 ---
-title: "Deploy An Application"
+title: "Deploying an application"
 sidebar_position: 15
 ---
 
@@ -51,12 +51,34 @@ No resources found in argocd-demo namespace.
 
 Now, we're going to `sync` the application. This will deploy the application to the cluster and bring it to the desired state.
 
-Click on the `SYNC` button in the UI -> `SYNCHORONIZE`. 
+Click on the `SYNC` button in the UI of the app. 
 
 <img src={require('./assets/argocd-sync.png').default}/>
-<img src={require('./assets/argocd-sync2.png').default}/>
 
-After a short period of time, the application should be in `Synced` state and the pods should be running, the UI should look like this:
+After a short period of time, the application should be in `Synced` state and the resources should be deployed, the UI should look like this:
 
 <img src={require('./assets/argocd-synced.png').default}/>
 
+Let's check if resources have been deployed:
+
+```bash
+$ kubectl get all -n argocd-demo
+NAME                           READY   STATUS    RESTARTS        AGE
+pod/catalog-6898c9f5d6-dzbl9   1/1     Running   2 (4m37s ago)   4m40s
+pod/catalog-mysql-0            1/1     Running   0               4m40s
+
+NAME                    TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+service/catalog         ClusterIP   172.20.127.102   <none>        80/TCP     4m40s
+service/catalog-mysql   ClusterIP   172.20.197.206   <none>        3306/TCP   4m40s
+
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/catalog   1/1     1            1           4m41s
+
+NAME                                 DESIRED   CURRENT   READY   AGE
+replicaset.apps/catalog-6898c9f5d6   1         1         1       4m41s
+
+NAME                             READY   AGE
+statefulset.apps/catalog-mysql   1/1     4m41s
+```
+
+You've succefully deployed an application using Argo CD with the `GitOps` model. 

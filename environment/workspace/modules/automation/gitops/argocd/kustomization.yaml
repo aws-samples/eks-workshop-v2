@@ -3,3 +3,7 @@ kind: Kustomization
 namespace: argocd-demo
 resources:
 - ../../../../manifests/catalog/
+replicas:
+- name: catalog
+  count: 1
+  
