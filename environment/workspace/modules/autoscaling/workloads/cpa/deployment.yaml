@@ -25,7 +25,7 @@ spec:
       containers:
       - name: autoscaler
         # HIGHLIGHT
-        image: k8s.gcr.io/cpa/cluster-proportional-autoscaler:1.8.5
+        image: registry.k8s.io/cpa/cluster-proportional-autoscaler:1.8.5
         resources:
             requests:
                 cpu: "20m"
