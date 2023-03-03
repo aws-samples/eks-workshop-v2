@@ -1,0 +1,62 @@
+---
+title: "Deploy An Application"
+sidebar_position: 15
+---
+
+Argo CD applies the `GitOps` methodology to Kubernetes. It uses Git as a source of truth for your cluster's desired state. You can use Argo CD to deploy applications, monitor their health, and sync them with the desired state. Kubernetes manifests can be specified in several ways:
+* kustomize applications
+* Helm charts
+* Jsonnet files
+* Plain directories of Kubernetes YAML files
+
+In this lab exercise, we'll deploy a simple applications specified in Kustomize using Argo CD. We'll use the `catalog` application from our [EKS Workshop](https://github.com/aws-samples/eks-workshop-v2) repository.
+
+## Create an Argo CD Application
+
+Argo CD application is a CRD Kubernetes resource object representing a deployed application instance in an environment. It defines key information about the application, such as the application name, the Git repository, and the path to the Kubernetes manifests. The application resource also defines the desired state of the application, such as the target revision, the sync policy, and the health check policy.
+
+Let's create a namespace for our application:
+
+```bash
+$ kubectl create ns argocd-demo
+```
+
+Create an Argo CD application:
+
+```bash
+$ argocd app create argocd-demo --repo https://github.com/aws-samples/eks-workshop-v2.git --path environment/workspace/manifests/catalog --dest-server https://kubernetes.default.svc --dest-namespace argocd-demo
+$ application 'argocd-demo' created
+```
+
+Verify that the application has been created:
+
+```bash
+$ argocd app list
+NAME                CLUSTER                         NAMESPACE    PROJECT  STATUS     HEALTH   SYNCPOLICY  CONDITIONS  REPO                                                PATH                                     TARGET
+argocd/argocd-demo  https://kubernetes.default.svc  argocd-demo  default  OutOfSync  Healthy  <none>      <none>      https://github.com/aws-samples/eks-workshop-v2.git  environment/workspace/manifests/catalog  
+```
+
+Open the Argo CD UI and navigate to the `argocd-demo` application. You should see the following screen:
+
+<img src={require('./assets/argocd-app.png').default}/>
+
+Notice that the application is currently in `OutOfSync` state. This means that the application is not deployed and in sync with the desired state. 
+
+Let's check if there are any pods running in the `argocd-demo` namespace:
+
+```bash
+$ kubectl get pods -n argocd-demo
+No resources found in argocd-demo namespace.
+```
+
+Now, we're going to `sync` the application. This will deploy the application to the cluster and bring it to the desired state.
+
+Click on the `SYNC` button in the UI -> `SYNCHORONIZE`. 
+
+<img src={require('./assets/argocd-sync.png').default}/>
+<img src={require('./assets/argocd-sync2.png').default}/>
+
+After a short period of time, the application should be in `Synced` state and the pods should be running, the UI should look like this:
+
+<img src={require('./assets/argocd-synced.png').default}/>
+

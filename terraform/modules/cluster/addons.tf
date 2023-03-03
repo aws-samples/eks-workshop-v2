@@ -42,6 +42,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_aws_for_fluentbit               = true
   enable_self_managed_aws_ebs_csi_driver = true
   enable_crossplane                      = true
+  enable_argocd                          = true
 
   self_managed_aws_ebs_csi_driver_helm_config = {
     set = [{
@@ -234,6 +235,22 @@ module "eks_blueprints_kubernetes_addons" {
     enable                   = true
     provider_aws_version     = "v0.36.0"
     additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
+  }
+
+  argocd_helm_config = {
+      name              = "argocd"
+      chart             = "argo-cd"
+      repository        = "https://argoproj.github.io/argo-helm"
+      version           = "3.29.5"
+      namespace         = "argocd"
+      timeout           = 1200
+      create_namespace  = true
+      set = [
+        {
+          name  = "server.service.type"
+          value = "LoadBalancer"
+        }
+      ]
   }
 
   tags = local.tags
