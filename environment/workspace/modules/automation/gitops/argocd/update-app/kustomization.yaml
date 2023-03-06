@@ -4,5 +4,6 @@ namespace: argocd-demo
 resources:
   - ../../../../../manifests/catalog/
 replicas:
+  # HIGHLIGHT
   - count: 3
     name: catalog
