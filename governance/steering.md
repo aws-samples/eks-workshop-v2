@@ -14,19 +14,19 @@ The Steering Committee is a 6 member body, overseeing the governance of the EKS 
 ## Working Groups
 The working groups are led by chairs (6 month terms) and maintainers (6 month terms).
 
-|Working Group|Chair|Maintainer|
+|Working Group|Chair|Maintainers|
 |:----|:-------|:----|
 |Infrastructure|[Niall Thomson](https://github.com/niallthomson)||
 |Fundamentals|[Sai Vennam](https://github.com/svennam92)|[Hemanth AVS](https://github.com/hemanth-avs)|
 |Autoscaling|[Sanjeev Ganjihal](https://github.com/sanjeevrg89)||
-|Automation|[Carlos Santana](https://github.com/csantanapr)||
+|Automation|[Carlos Santana](https://github.com/csantanapr)|[Tsahi Duek](https://github.com/tsahiduek), [Christina Andonov](https://github.com/candonov)|
 |Machine Learning|[Masatoshi Hayashi](https://github.com/literalice)||
 |Networking|[Sheetal Joshi](https://github.com/sheetaljoshi)||
-|Observability|[Nirmal Mehta](https://github.com/normalfaults)||
-|Security|[Jimmy Ray](https://github.com/jimmyraywv)||
+|Observability|[Nirmal Mehta](https://github.com/normalfaults)|[Steven David](https://github.com/StevenDavid)|
+|Security|[Jimmy Ray](https://github.com/jimmyraywv)|[Rodrigo Bersa](https://github.com/rodrigobersa)|
 
 ## Wranglers
-Wranglers will work across all topic areas and serve for at least 6 months. 
+Wranglers will work across all topic areas and serve for at least 6 months.
 |Name|Profile|Role|
 |:----|:-------|:----|
 |Math Bruneau|[@ROunofF](https://github.com/ROunofF)|Specialist Solution Architect, Containers|

@@ -15,4 +15,4 @@ spec:
     spec:
       containers:
       - name: reserve-resources
-        image: k8s.gcr.io/pause
+        image: registry.k8s.io/pause
