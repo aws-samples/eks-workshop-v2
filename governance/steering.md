@@ -54,6 +54,10 @@ The steering committee will host a public meeting every third Thursday of the mo
 
 - <!--add links to meeting notes and recordings-->
 
+- <!--add links to meeting notes and recordings-->
+
 ## Contact
+
+- Mailing List: <eks-workshop-steering-committee@amazon.com>
 
 - Mailing List: <eks-workshop-steering-committee@amazon.com>
