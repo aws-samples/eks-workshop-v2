@@ -2,6 +2,9 @@ name: Publish Prod
 
 on:
   workflow_dispatch:
+  
+permissions:
+  contents: write
 
 jobs:
   deploy:
@@ -31,6 +34,17 @@ jobs:
 
         npm install
         npm run deploy:netlify -- --prod
+    - name: Set Git config
+      run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+    - name: Update stable branch
+      run: |
+          git fetch --unshallow
+          git checkout stable
+          git pull
+          git merge --no-ff main -m "Publish to stable"
+          git push
     - name: Update latest tag
       uses: actions/github-script@v6
       with:
