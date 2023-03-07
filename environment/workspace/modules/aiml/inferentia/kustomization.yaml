@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+configMapGenerator:
+- name: provisioner-vars
+  namespace: other
+  env: config.properties
+  options:
+    disableNameSuffixHash: true
+replacements:
+- source:
+    kind: ConfigMap
+    name: provisioner-vars
+    version: v1
+    namespace: other
+    fieldPath: data.EKS_CLUSTER_NAME
+  targets:
+  - select:
+      kind: AWSNodeTemplate
+      name: default
+    fieldPaths:
+    - spec.subnetSelector.[karpenter.sh/discovery]
+    - spec.securityGroupSelector.[karpenter.sh/discovery]
+resources:
+- provisioner.yaml
