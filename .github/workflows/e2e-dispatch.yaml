@@ -89,13 +89,6 @@ jobs:
         DEV_MODE: 1
       run: |
         make test terraform_context="test/terraform" module="security"
-    - name: Run tests - Networking
-      if: ${{ (inputs.module == 'networking') }}
-      env:
-        DOCKER_BUILDKIT: 1
-        DEV_MODE: 1
-      run: |
-        make test terraform_context="test/terraform" module="networking"
     - name: Run tests - Autoscaling
       if: ${{ (inputs.module == 'autoscaling') }}
       env:
@@ -117,6 +110,13 @@ jobs:
         DEV_MODE: 1
       run: |
         make test terraform_context="test/terraform" module="automation"
+    - name: Run tests - Networking
+      if: ${{ (inputs.module == 'networking') }}
+      env:
+        DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
+      run: |
+        make test terraform_context="test/terraform" module="networking"
     - name: Run tests - Cleanup
       if: always()
       env:
