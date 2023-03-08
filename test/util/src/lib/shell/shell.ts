@@ -13,6 +13,10 @@ export class ExecutionResult {
 export class DefaultShell implements Shell {
 
   exec(command: string, timeout: number = 300, expect: boolean = false) : Promise<ExecutionResult> {
+    if(!command) {
+      throw new Error("Command should not be empty")
+    }
+
     try {
       const buffer: Buffer = child.execSync(command, {
         timeout: timeout * 1000,

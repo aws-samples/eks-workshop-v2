@@ -189,7 +189,7 @@ class CustomTest extends Test {
               await this.executeShell(testCase.command, testCase.timeout, testCase.expectError)
             }
             catch(e: any) {
-              e.message = `Error running test case command at line ${testCase.lineNumber}`
+              e.message = `Error running test case command at line ${testCase.lineNumber} - ${e.message}`
   
               throw e
             }
