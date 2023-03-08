@@ -90,14 +90,14 @@ jobs:
       run: |
         make test terraform_context="test/terraform" module="security"
     - name: Run tests - Networking
-      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/networking') }}
+      if: ${{ (inputs.module == 'networking') }}
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
         make test terraform_context="test/terraform" module="networking"
     - name: Run tests - Autoscaling
-      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/autoscaling') }}
+      if: ${{ (inputs.module == 'autoscaling') }}
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
