@@ -39,8 +39,8 @@ VPC_PRIVATE_SUBNET_ID_0=${module.cluster.private_subnet_ids[0]}
 VPC_PRIVATE_SUBNET_ID_1=${module.cluster.private_subnet_ids[1]}
 VPC_PRIVATE_SUBNET_ID_2=${module.cluster.private_subnet_ids[2]}
 GITOPS_IAM_SSH_KEY_ID=${try(module.cluster.gitops_iam_ssh_key_id, "")}
-GITOPS_IAM_SSH_USER=${module.cluster.gitops_ssh_iam_user}
-GITOPS_SSH_SSM_NAME=${module.cluster.gitops_ssh_ssm_name}
+GITOPS_IAM_SSH_USER=${try(module.cluster.gitops_ssh_iam_user, "")}
+GITOPS_SSH_SSM_NAME=${try(module.cluster.gitops_ssh_ssm_name, "")}
 EOT
 
   bootstrap_script = <<EOF
