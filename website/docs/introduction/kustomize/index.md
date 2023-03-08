@@ -55,6 +55,7 @@ To check that the number of replicas has been updated, run the following command
 $ kubectl get pod -n checkout -l app.kubernetes.io/component=service
 NAME                        READY   STATUS    RESTARTS   AGE
 checkout-585c9b45c7-c456l   1/1     Running   0          2m12s
+checkout-585c9b45c7-b2rrz   1/1     Running   0          2m12s
 checkout-585c9b45c7-xmx2t   1/1     Running   0          40m
 ```
 
