@@ -1,0 +1,152 @@
+name: E2E Tests - Dispatch
+
+on:
+  workflow_dispatch:
+    inputs:
+      module:
+        description: 'Top level module to test'
+        required: true
+        default: 'fundamentals'
+        type: choice
+        options:
+        - fundamentals
+        - security
+        - networking
+        - autoscaling
+        - observability
+        - automation
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  run-tests:
+    name: run-tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ~1.3.7
+        terraform_wrapper: false
+    - name: Install utilities
+      run: |
+        sudo apt install -y gettext
+
+        mkdir -p ${HOME}/.local/bin
+        wget https://github.com/jckuester/awsweeper/releases/download/v0.12.0/awsweeper_0.12.0_linux_amd64.tar.gz
+        tar zxf awsweeper_0.12.0_linux_amd64.tar.gz
+        mv awsweeper_0.12.0_linux_amd64/awsweeper ${HOME}/.local/bin
+
+        echo "${HOME}/.local/bin" >> $GITHUB_PATH
+    - name: Get AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1.6.1
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        role-duration-seconds: 3600
+        aws-region: ${{ secrets.AWS_REGION }}
+        role-session-name: GithubActionsSession
+    - name: Set cluster ID
+      env:
+        RUN_ID: "${{ github.run_id }}"
+      run: |
+        CLUSTER_ID="ci-${RUN_ID}"
+        echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
+        echo "TF_VAR_environment_suffix=${CLUSTER_ID}" >> $GITHUB_ENV
+    - name: Create infrastructure
+      id: create-infrastructure
+      working-directory: test/terraform
+      run: |
+        terraform init -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="key=ci/${CLUSTER_ID}/terraform.tfstate"
+        terraform apply --auto-approve
+    - name: Refresh AWS credentials
+      if: always()
+      uses: aws-actions/configure-aws-credentials@v1.6.1
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        role-duration-seconds: 3600
+        aws-region: ${{ secrets.AWS_REGION }}
+        role-session-name: GithubActionsSession
+    - name: Run tests - Introduction
+      env:
+        DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
+      run: |
+        make test terraform_context="test/terraform" module="introduction"
+    - name: Run tests - Fundamentals
+      if: ${{ (inputs.module == 'fundamentals') }}
+      env:
+        DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
+      run: |
+        make test terraform_context="test/terraform" module="fundamentals"
+    - name: Run tests - Security
+      if: ${{ (inputs.module == 'security') }}
+      env:
+        DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
+      run: |
+        make test terraform_context="test/terraform" module="security"
+    - name: Run tests - Networking
+      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/networking') }}
+      env:
+        DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
+      run: |
+        make test terraform_context="test/terraform" module="networking"
+    - name: Run tests - Autoscaling
+      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/autoscaling') }}
+      env:
+        DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
+      run: |
+        make test terraform_context="test/terraform" module="autoscaling"
+    - name: Run tests - Observability
+      if: ${{ (inputs.module == 'observability') }}
+      env:
+        DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
+      run: |
+        make test terraform_context="test/terraform" module="observability"
+    - name: Run tests - Automation
+      if: ${{ (inputs.module == 'automation') }}
+      env:
+        DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
+      run: |
+        make test terraform_context="test/terraform" module="automation"
+    - name: Run tests - Cleanup
+      if: always()
+      env:
+        DOCKER_BUILDKIT: 1
+        DEV_MODE: 1
+      run: |
+        make test terraform_context="test/terraform" module="cleanup"
+    - name: Refresh AWS credentials
+      if: always()
+      uses: aws-actions/configure-aws-credentials@v1.6.1
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        role-duration-seconds: 3600
+        aws-region: ${{ secrets.AWS_REGION }}
+        role-session-name: GithubActionsSession
+    - name: Cleanup environment
+      if: always()
+      working-directory: test/terraform
+      run: |
+        terraform destroy -target=module.core.module.cluster.module.eks_blueprints_kubernetes_addons --auto-approve
+        terraform destroy -target=module.core.module.cluster.module.descheduler --auto-approve
+
+        terraform destroy -target=module.core.module.cluster.module.eks_blueprints --auto-approve
+
+        export CLEANUP_ENVIRONMENT_NAME="$CLUSTER_ID"
+        
+        envsubst < ../../hack/lib/filter.yml > filter.yml
+
+        cat filter.yml
+
+        awsweeper --force filter.yml
+
+        terraform destroy --auto-approve
