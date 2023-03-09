@@ -22,7 +22,7 @@ jobs:
       uses: actions/checkout@v2
     - uses: hashicorp/setup-terraform@v2
       with:
-        terraform_version: ~1.3.7
+        terraform_version: ~1.4.0
         terraform_wrapper: false
     - name: Install utilities
       run: |
