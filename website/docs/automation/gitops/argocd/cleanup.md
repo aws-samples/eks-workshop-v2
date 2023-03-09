@@ -3,10 +3,9 @@ title: 'Cleanup'
 sidebar_position: 90
 ---
 
-To uninstall Argo CD from the cluster run:
+To uninstall Argo CD apps from the cluster run:
 
 ```bash
-$ helm uninstall argocd -n argocd
-$ kubectl delete namespace argocd
+$ argocd app delete argocd-demo -y
 $ kubectl delete namespace argocd-demo
 ```

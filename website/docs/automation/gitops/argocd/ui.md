@@ -1,12 +1,14 @@
 ---
-title: 'Server bootstrap'
+title: 'Accessing Argo CD'
 sidebar_position: 10
 weight: 10
 ---
- 
-For the purpose of this lab, Argo CD server has already been exposed outside of the cluster using Load Balancer type.
 
-Get the URL from Argo CD service resource:
+:::info
+For the purpose of this lab, Argo CD server has already been exposed outside of the cluster using `Load Balancer` type. To see how we set up Argo CD in the cluster with EKS Terraform Blueprint, please refer to this [section](https://github.com/aws-samples/eks-workshop-v2/blob/d12e0008d688460f2d0a93c83e1ff3c5b03f72e6/terraform/modules/cluster/addons.tf#L240-L254).
+::: 
+
+To get the URL from Argo CD service, run the following command:
 
 ```bash
 $ kubectl get service -n argocd argocd-server -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}" 
@@ -25,8 +27,13 @@ You will be presented with a screen that looks like this:
 
 <img src={require('./assets/argocd-ui.png').default}/>
 
+Argo CD also provides a powerful CLI tool called `argocd` that can be used to manage applications.
 
-Login to the Argo CD server using the CLI, run the following commands:
+:::info
+For the purpose of this lab, `argocd` CLI has been installed for you. You can learn more about installing the CLI tool by following the [instructions](https://argoproj.github.io/argo-cd/cli_installation/)
+:::
+
+In order to interact with Argo CD objects using CLI, we need to login to the Argo CD server by running the following commands:
 
 ```bash
 $ ARGOCD_SERVER=$(kubectl get service -n argocd argocd-server -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")

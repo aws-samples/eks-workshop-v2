@@ -241,7 +241,7 @@ module "eks_blueprints_kubernetes_addons" {
       name              = "argocd"
       chart             = "argo-cd"
       repository        = "https://argoproj.github.io/argo-helm"
-      version           = "3.29.5"
+      version           = "5.25.0"
       namespace         = "argocd"
       timeout           = 1200
       create_namespace  = true

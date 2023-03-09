@@ -7,15 +7,16 @@ During the development lifecycle, there are new container images or the developm
 
 In this lab excerise, we'll update the `catalog` application to increase replicas to handle higher traffic with Argo CD. 
 
+:::info
+Normally, you should update the configuration files in the Git repository and commit the changes. Argo CD will then detect the changes and reconcile that in the cluster. In this lab exercise, we provide you with a new version of the file in a different path to simulate that we have made a change. Therefore, we'll instead update the path for our `argocd-demo` application with the new file.
+:::
+
 Update replicas of the `catalog` application in the `kuztomization` file to 3:
 
 ```file
 automation/gitops/argocd/update-app/kustomization.yaml
 ```
 
-:::tip In your environment
-You should update the same `kustomization.yaml` file and commit to the Git repository.
-:::
 Update Argo CD app to reflect the latest changes:
 
 ```bash
