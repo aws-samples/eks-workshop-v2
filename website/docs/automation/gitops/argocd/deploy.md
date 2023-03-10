@@ -25,7 +25,7 @@ Create an Argo CD application:
 
 ```bash
 $ argocd app create argocd-demo --repo https://github.com/aws-samples/eks-workshop-v2.git --path environment/workspace/modules/automation/gitops/argocd --dest-server https://kubernetes.default.svc --dest-namespace argocd-demo
-$ application 'argocd-demo' created
+ application 'argocd-demo' created
 ```
 
 Verify that the application has been created:
