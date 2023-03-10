@@ -41,12 +41,12 @@ This will overwrite our ConfigMap with new values:
 $ kubectl get -n carts cm carts -o yaml
 apiVersion: v1
 data:
-  CARTS_DYNAMODB_TABLENAME: eks-workshop
+  CARTS_DYNAMODB_TABLENAME: eks-workshop-carts
 kind: ConfigMap
 metadata:
   labels:
     app: carts
-  name: carts-dynamo
+  name: carts
   namespace: carts
 ```
 
