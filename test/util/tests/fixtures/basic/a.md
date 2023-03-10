@@ -4,5 +4,5 @@ weight: 20
 ---
 
 ```bash
-dummy
+$ dummy
 ```

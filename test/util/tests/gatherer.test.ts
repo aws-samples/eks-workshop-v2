@@ -112,6 +112,12 @@ describe('Gatherer', () => {
 
       expect(nestedCategory?.title).to.equal('Nested')
     });
+
+    it('should ignore blocks with no commands', async () => {
+      const emptyBlockPage = result?.children[0].pages[1]
+
+      expect(emptyBlockPage?.scripts.length).to.equal(1)
+    });
   })
   
   after(() => {

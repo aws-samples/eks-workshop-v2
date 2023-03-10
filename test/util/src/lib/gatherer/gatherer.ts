@@ -215,7 +215,11 @@ export class Gatherer {
           }
   
           if(add) {
-            data.push(new Script(this.extractCommand(child.value, raw), wait, timeout, hook, hookTimeout, expectError, child.position?.start.line));
+            let command = this.extractCommand(child.value, raw)
+
+            if(command.length > 0) {
+              data.push(new Script(command, wait, timeout, hook, hookTimeout, expectError, child.position?.start.line));
+            }
           }
         }
       }
