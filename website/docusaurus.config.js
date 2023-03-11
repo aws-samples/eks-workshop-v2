@@ -10,6 +10,8 @@ const remarkIncludeCode = require('./src/remark/include-code');
 const remarkIncludeKustomization = require('./src/remark/include-kustomization');
 const remarkBlueprintsAddon = require('./src/remark/blueprints-addon');
 
+require('dotenv').config({ path: '.kustomize-env' })
+
 const rootDir = path.dirname(require.resolve('./package.json'));
 const manifestsDir = `${rootDir}/../environment/workspace/modules`;
 
