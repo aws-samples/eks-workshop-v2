@@ -43,6 +43,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_self_managed_aws_ebs_csi_driver = true
   enable_crossplane                      = true
   enable_argocd                          = true
+  enable_argocd                          = true
 
   self_managed_aws_ebs_csi_driver_helm_config = {
     set = [{

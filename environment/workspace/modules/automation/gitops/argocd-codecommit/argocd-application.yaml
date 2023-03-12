@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  # HIGHLIGHT
+  name: apps
+  namespace: argocd
+spec:
+  project: default
+  # HIGHLIGHT
+  source:
+    repoURL: "ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_DEFAULT_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-gitops"
+    targetRevision: argocd
+    # HIGHLIGHT
+    path: apps
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
