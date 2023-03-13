@@ -1,8 +1,25 @@
-vendor
-.terraform
-*.tfstate*
+# MacOS
+.DS_Store
+
+# Local .terraform directories
+**/.terraform/*
+
+# Terraform lockfile
 .terraform.lock.hcl
 
+# .tfstate files
+*.tfstate
+*.tfstate.*
+*.tfplan
+
+# Crash log files
+crash.log
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+vendor
 builds
 
 public
