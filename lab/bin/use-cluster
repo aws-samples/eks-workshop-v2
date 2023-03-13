@@ -1,0 +1,16 @@
+#!/bin/bash
+
+cluster_name=$1
+
+if [ -z "$cluster_name" ]; then
+  echo "Error: You must provide a cluster name"
+  exit 1
+fi
+
+ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
+
+cat << EOT > /home/ec2-user/.bashrc.d/env.bash
+set -a
+${local.environment_variables}
+set +a
+EOT
