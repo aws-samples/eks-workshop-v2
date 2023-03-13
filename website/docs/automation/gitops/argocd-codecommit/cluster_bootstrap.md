@@ -30,8 +30,8 @@ Create an Argo CD repository `Secret` to store `sshPrivateKey` for access to an 
 $ kubectl -n argocd create secret generic codecommit-repo \
 --from-literal=type=git \
 --from-literal=insecure="true" \
---from-literal=url="ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_DEFAULT_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-gitops" \
---from-literal=sshPrivateKey=${HOME}/.ssh/gitops_ssh.pem \
+--from-literal=url="ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_DEFAULT_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-gitops-argocd" \
+--from-file=sshPrivateKey=${HOME}/.ssh/gitops_ssh.pem \
 && kubectl -n argocd label secret codecommit-repo "argocd.argoproj.io/secret-type=repository"
 secret/codecommit-repo created
 secret/codecommit-repo labeled
