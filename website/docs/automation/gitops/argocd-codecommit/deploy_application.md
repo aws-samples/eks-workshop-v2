@@ -78,6 +78,20 @@ $ echo "ArgoCD URL: http://$(kubectl get svc argo-cd-argocd-server -n argocd -o 
 $ echo "ArgoCD admin password: $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)"
 ```
 
+:::info
+
+If you need to reset Argo CD `admin` password, the sequence of commands below can be used:
+
+kubectl -n argocd patch secret argocd-secret -p '{"data": {"admin.password": null, "admin.passwordMtime": null}}'
+
+kubectl -n argocd rollout restart deployment/argo-cd-argocd-server
+
+kubectl -n argocd rollout status deploy/argo-cd-argocd-server
+
+echo "ArgoCD admin password: $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)"
+
+:::
+
 Now, let's login to Argo CD UI with `admin`, explore, `Refresh` and `Sync` changes:
 
 ![argocd-deploy-application](argocd-deploy-application.png)
