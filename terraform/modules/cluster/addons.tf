@@ -265,7 +265,7 @@ module "eks_blueprints_kubernetes_addons" {
       },
       {
         name  = "timeout.reconciliation"
-        value = "5s"
+        value = "60s"
       }
     ]
   }
