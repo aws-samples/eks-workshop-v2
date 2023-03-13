@@ -5,7 +5,7 @@ weight: 10
 ---
 
 :::info
-For the purpose of this lab, Argo CD server has already been exposed outside of the cluster using `Load Balancer` type. To see how we set up Argo CD in the cluster with EKS Terraform Blueprint, please refer to this [section](https://github.com/aws-samples/eks-workshop-v2/blob/d12e0008d688460f2d0a93c83e1ff3c5b03f72e6/terraform/modules/cluster/addons.tf#L240-L254).
+For the purpose of this lab, Argo CD server has already been exposed outside of the cluster using `Load Balancer` type. To see how we set up Argo CD in the cluster with EKS Terraform Blueprint, please refer to this [Terraform configuration](https://github.com/aws-samples/eks-workshop-v2/blob/d12e0008d688460f2d0a93c83e1ff3c5b03f72e6/terraform/modules/cluster/addons.tf#L240-L254).
 ::: 
 
 To get the URL from Argo CD service, run the following command:
@@ -30,7 +30,7 @@ You will be presented with a screen that looks like this:
 Argo CD also provides a powerful CLI tool called `argocd` that can be used to manage applications.
 
 :::info
-For the purpose of this lab, `argocd` CLI has been installed for you. You can learn more about installing the CLI tool by following the [instructions](https://argoproj.github.io/argo-cd/cli_installation/)
+For the purpose of this lab, `argocd` CLI has been installed for you. You can learn more about installing the CLI tool by following the [instructions](https://argoproj.github.io/argo-cd/cli_installation/).
 :::
 
 In order to interact with Argo CD objects using CLI, we need to login to the Argo CD server by running the following commands:
@@ -39,11 +39,6 @@ In order to interact with Argo CD objects using CLI, we need to login to the Arg
 $ ARGOCD_SERVER=$(kubectl get service -n argocd argocd-server -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
 $ ARGO_PWD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
 $ argocd login $ARGOCD_SERVER --username admin --password $ARGO_PWD --insecure
-```
-
-The shell will return the following output if you're succefully loged in:
-
-```bash
-$ 'admin:login' logged in successfully
-$ Context 'acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com' updated 
+'admin:login' logged in successfully
+Context 'acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com' updated 
 ```
