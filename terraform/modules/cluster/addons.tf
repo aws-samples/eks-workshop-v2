@@ -240,7 +240,7 @@ module "eks_blueprints_kubernetes_addons" {
 }
 
 module "eks_blueprints_ack_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-ack-addons?ref=v1.1.0"
+  source = "github.com/aws-ia/terraform-aws-eks-ack-addons?ref=v1.3.0"
 
   depends_on = [
     aws_eks_addon.vpc_cni
