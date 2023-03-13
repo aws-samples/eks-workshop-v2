@@ -25,7 +25,6 @@ The working groups are led by chairs (6 month terms) and maintainers (6 month te
 |Observability|[Nirmal Mehta](https://github.com/normalfaults)|[Steven David](https://github.com/StevenDavid)|
 |Security|[Jimmy Ray](https://github.com/jimmyraywv)|[Rodrigo Bersa](https://github.com/rodrigobersa)|
 
-
 ## Wranglers
 Wranglers will work across all topic areas and serve for at least 6 months.
 |Name|Profile|Role|
