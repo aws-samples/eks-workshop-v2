@@ -1,6 +1,6 @@
 ---
 title: "Argo CD with AWS CodeCommit"
-sidebar_position: 2
+sidebar_position: 4
 sidebar_custom_props: { "module": true }
 ---
 
