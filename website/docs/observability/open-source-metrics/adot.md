@@ -44,7 +44,7 @@ $ kubectl apply -k /workspace/modules/observability/oss-metrics/adot
 The specification for the collector is too long to show here, but you can view it like so:
 
 ```bash
-$ kubectl -n other get opentelemetrycollector adot
+$ kubectl -n other get opentelemetrycollector adot -o yaml
 ```
 
 Let's break this down in to sections to get a better understanding of what has been deployed. This is the OpenTelemetry collector configuration:
