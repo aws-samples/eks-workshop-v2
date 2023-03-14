@@ -1,6 +1,6 @@
 # EKS Workshop - FAQ
 
-### Q: When I create the infrastructure I get an error about the Kubecost helm chart
+### Q: When I create the infrastructure I get an error about some helm charts
 
 The error looks similar to this:
 
@@ -14,7 +14,8 @@ The error looks similar to this:
 ╵
 ```
 
-This is likely due to expired credentials from previously interacting with ECR Public. Run `docker logout` and then re-run `make create-infrastructure`.
+This is likely due to expired credentials from previously interacting with ECR Public. 
+Run `docker logout public.ecr.aws`, `helm registry logout public.ecr.aws` and then re-run `make create-infrastructure`.
 
 ### Q: Destroying my infrastructure failed and now I have AWS resources left over, what can I do?
 

@@ -20,7 +20,7 @@ automation/gitops/argocd/update-app/kustomization.yaml
 Update Argo CD app to reflect the latest changes:
 
 ```bash
-$ argocd app set argocd-demo --path /workspace/modules/automation/gitops/argocd/update-app
+$ argocd app set argocd-demo --path environment/workspace/modules/automation/gitops/argocd/update-app
 ``` 
 
 Flip back to the Argo CD UI and you should see the application is in `OutOfSync` state.
