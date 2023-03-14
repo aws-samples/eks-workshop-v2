@@ -3,14 +3,14 @@ kind: Kustomization
 configMapGenerator:
 - name: repo-url-env
   namespace: argocd
-  envs:
-  - config.properties
+  files:
+  - gitops_repo_url
 replacements:
 - source:
     kind: ConfigMap
     namespace: argocd
     name: repo-url-env
-    fieldPath: data.REPO_URL
+    fieldPath: data.gitops_repo_url
     version: v1
   targets:
   - select:

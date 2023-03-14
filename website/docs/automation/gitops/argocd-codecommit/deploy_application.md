@@ -19,7 +19,7 @@ deployment.apps "ui" deleted
 Next, clone the CodeCommit repository:
 
 ```bash
-$ git clone $REPO_URL ~/environment/gitops-argocd
+$ git clone $(cat ~/environment/argocd-application/gitops_repo_url) ~/environment/gitops-argocd
 $ cd ~/environment/gitops-argocd && git checkout -b main
 Switched to a new branch 'main'
 ```

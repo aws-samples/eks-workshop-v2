@@ -8,7 +8,7 @@ spec:
   project: default
   # HIGHLIGHT
   source:
-    repoURL: ${REPO_URL}
+    repoURL: ${GITOPS_REPO_URL}
     targetRevision: main
     # HIGHLIGHT
     path: apps
