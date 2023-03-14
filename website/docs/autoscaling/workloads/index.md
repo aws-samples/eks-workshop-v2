@@ -9,4 +9,3 @@ Now that we've established the concepts of autoscaling compute, we can take a co
 - Cluster Proportional Autoscaler (CPA)
 
 In this chapter, we'll explore the process of configuring and using the Horizontal Pod Autoscaler (HPA) and Cluster Proportional Autoscaler (CPA) to manage workloads in a cluster.
-
