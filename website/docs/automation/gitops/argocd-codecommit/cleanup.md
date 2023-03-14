@@ -6,7 +6,7 @@ sidebar_position: 90
 To remove Argo CD configuration for `apps` from the cluster run:
 
 ```bash
-$ kubectl -n argocd delete secret codecommit-repo
+$ kubectl -n argocd delete secret codecommit-repo --ignore-not-found
 secret "codecommit-repo" deleted
 $ kubectl -n argocd delete application apps
 application.argoproj.io "apps" deleted

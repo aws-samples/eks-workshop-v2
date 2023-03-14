@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+configMapGenerator:
+- name: repo-url-env
+  namespace: argocd
+  envs:
+  - config.properties
+replacements:
+- source:
+    kind: ConfigMap
+    namespace: argocd
+    name: repo-url-env
+    fieldPath: data.REPO_URL
+    version: v1
+  targets:
+  - select:
+      kind: Application
+      name: apps
+      namespace: argocd
+    fieldPaths:
+    - spec.source.repoURL
+resources:
+- application.yaml

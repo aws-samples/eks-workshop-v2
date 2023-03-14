@@ -8,7 +8,7 @@ spec:
   project: default
   # HIGHLIGHT
   source:
-    repoURL: "ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_DEFAULT_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-gitops-argocd"
+    repoURL: ${REPO_URL}
     targetRevision: main
     # HIGHLIGHT
     path: apps

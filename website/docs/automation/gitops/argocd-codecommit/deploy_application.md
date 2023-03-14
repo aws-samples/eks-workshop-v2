@@ -19,7 +19,7 @@ deployment.apps "ui" deleted
 Next, clone the CodeCommit repository:
 
 ```bash
-$ git clone ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_DEFAULT_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-gitops-argocd ~/environment/gitops-argocd
+$ git clone $REPO_URL ~/environment/gitops-argocd
 $ cd ~/environment/gitops-argocd && git checkout -b main
 Switched to a new branch 'main'
 ```
@@ -71,26 +71,23 @@ git push --set-upstream origin main)
 
 It will take Argo CD some time to notice the changes in CodeCommit and reconcile. You can use the Argo CD UI to `Refresh` and `Sync` for our new `apps` kustomization to appear.
 
-Get Argo CD UI url and `admin` password
+:::info
+If you need to reset Argo CD `admin` password, the sequence of commands below can be used:
+:::
 
 ```bash
-$ echo "ArgoCD URL: http://$(kubectl get svc argo-cd-argocd-server -n argocd -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname')"
+$ kubectl -n argocd patch secret argocd-secret -p '{"data": {"admin.password": null, "admin.passwordMtime": null}}'
+$ kubectl -n argocd rollout restart deployment/argocd-server
+$ kubectl -n argocd rollout status deploy/argocd-server
 $ echo "ArgoCD admin password: $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)"
 ```
 
-:::info
+Get Argo CD UI url and `admin` password
 
-If you need to reset Argo CD `admin` password, the sequence of commands below can be used:
-
-kubectl -n argocd patch secret argocd-secret -p '{"data": {"admin.password": null, "admin.passwordMtime": null}}'
-
-kubectl -n argocd rollout restart deployment/argo-cd-argocd-server
-
-kubectl -n argocd rollout status deploy/argo-cd-argocd-server
-
-echo "ArgoCD admin password: $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)"
-
-:::
+```bash
+$ echo "ArgoCD URL: http://$(kubectl get svc argocd-server -n argocd -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname')"
+$ echo "ArgoCD admin password: $(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)"
+```
 
 Now, let's login to Argo CD UI with `admin`, explore, `Refresh` and `Sync` changes:
 
