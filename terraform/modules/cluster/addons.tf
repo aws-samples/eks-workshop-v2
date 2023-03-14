@@ -264,10 +264,25 @@ module "eks_blueprints_kubernetes_addons" {
         value = "1"
       },
       {
-        name  = "timeout.reconciliation"
-        value = "5s"
-      }
-    ]
+        name  = "applicationSet.nodeSelector.workshop-system"
+        value = "yes"
+        type  = "string"
+      },
+      {
+        name  = "applicationSet.tolerations[0].key"
+        value = "systemComponent"
+        type  = "string"
+      },
+      {
+        name  = "applicationSet.tolerations[0].operator"
+        value = "Exists"
+        type  = "string"
+      },
+      {
+        name  = "applicationSet.tolerations[0].effect"
+        value = "NoSchedule"
+        type  = "string"
+    }], local.system_component_values)
   }
 
   tags = local.tags
