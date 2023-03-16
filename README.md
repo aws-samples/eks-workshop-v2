@@ -35,6 +35,19 @@ The infrastructure required to run the workshop content (EKS cluster configurati
 
 There are several tools that are required to run the workshop such as `kubectl` that need to be installed for a participant to complete the workshop content. This "learner environment" can be setup automatically using the scripts and other artifacts in the `environment` directory. This includes scripts to install all the pre-requisite tools, as well as container images to easily re-create a consistent environment.
 
+## Community
+
+### Governance
+* Steering Committee: [governance/steering.md](governance/steering.md)
+* Governance model: [governance/model.md](governance/model.md)
+* Tenets: [governance/tenets.md](governance/tenets.md)
+
+### Meetings
+2nd Thursday every month at 8am PT (3pm UTC)
+
+* Meeting link: [Chime Web Meeting Link](https://chime.aws/8607878433)
+* Agenda, Notes, and calendar invites: [Google Doc](https://docs.google.com/document/d/1hYjhBhPvLVMf7gunooM-kE0wptMjMIORCmI2BOedCWI/edit?usp=sharing)
+
 ## Security
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
