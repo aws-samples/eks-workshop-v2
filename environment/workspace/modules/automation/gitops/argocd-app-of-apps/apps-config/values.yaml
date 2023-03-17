@@ -1,0 +1,6 @@
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: ${GITOPS_REPO_URL}
+    targetRevision: main
