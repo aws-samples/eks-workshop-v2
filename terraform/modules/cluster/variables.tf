@@ -9,12 +9,6 @@ variable "cluster_version" {
   default     = "1.23"
 }
 
-variable "ami_release_version" {
-  description = "Default EKS AMI release version for node groups"
-  type        = string
-  default     = "1.23.9-20221027"
-}
-
 variable "map_roles" {
   description = "Additional IAM roles to add to the aws-auth ConfigMap"
   type = list(object({

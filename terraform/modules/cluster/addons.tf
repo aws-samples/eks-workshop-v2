@@ -1,35 +1,17 @@
-data "aws_eks_addon_version" "latest" {
-  for_each = toset(["vpc-cni"])
-
-  addon_name         = each.value
-  kubernetes_version = var.cluster_version
-  most_recent        = true
-}
-
-resource "aws_eks_addon" "vpc_cni" {
-  cluster_name         = module.eks_blueprints.eks_cluster_id
-  addon_name           = "vpc-cni"
-  addon_version        = data.aws_eks_addon_version.latest["vpc-cni"].version
-  resolve_conflicts    = "OVERWRITE"
-  configuration_values = "{\"env\":{\"ENABLE_PREFIX_DELEGATION\":\"true\", \"ENABLE_POD_ENI\":\"true\"}}"
-
-  depends_on = [
-    null_resource.kubectl_set_env
-  ]
-}
-
 locals {
   ebs_csi_blocker = try(module.eks_blueprints_kubernetes_addons.aws_ebs_csi_driver.release_metadata.metadata.status, "")
+}
+
+resource "aws_iam_instance_profile" "karpenter" {
+  name_prefix = "karpenter-"
+  role        = module.eks.eks_managed_node_groups["managed-system"].iam_role_name
+  tags        = local.tags
 }
 
 module "eks_blueprints_kubernetes_addons" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.16.0//modules/kubernetes-addons"
 
-  depends_on = [
-    aws_eks_addon.vpc_cni
-  ]
-
-  eks_cluster_id = module.eks_blueprints.eks_cluster_id
+  eks_cluster_id = module.eks.cluster_name
 
   enable_karpenter                       = true
   enable_aws_node_termination_handler    = true
@@ -122,7 +104,7 @@ module "eks_blueprints_kubernetes_addons" {
       },
       {
         name  = "aws.defaultInstanceProfile"
-        value = module.eks_blueprints.managed_node_group_iam_instance_profile_id[0]
+        value = aws_iam_instance_profile.karpenter.name
       },
       {
         name  = "controller.resources.requests.cpu"
@@ -202,7 +184,7 @@ module "eks_blueprints_kubernetes_addons" {
     local.system_component_values)
   }
 
-  aws_for_fluentbit_cw_log_group_name = "/${module.eks_blueprints.eks_cluster_id}/worker-fluentbit-logs-${random_string.fluentbit_log_group.result}"
+  aws_for_fluentbit_cw_log_group_name = "/${module.eks.cluster_name}/worker-fluentbit-logs-${random_string.fluentbit_log_group.result}"
 
   amazon_eks_adot_config = {
     kubernetes_version = var.cluster_version
@@ -431,14 +413,10 @@ module "eks_blueprints_kubernetes_addons" {
 module "eks_blueprints_ack_addons" {
   source = "github.com/aws-ia/terraform-aws-eks-ack-addons?ref=v1.1.0"
 
-  depends_on = [
-    aws_eks_addon.vpc_cni
-  ]
-
-  cluster_id = module.eks_blueprints.eks_cluster_id
+  cluster_id = module.eks.cluster_name
 
   # Wait for data plane to be ready
-  data_plane_wait_arn = module.eks_blueprints.managed_node_group_arn[0]
+  data_plane_wait_arn = join(",", [for group in module.eks.eks_managed_node_groups : group.node_group_arn])
 
   enable_rds = true
 
@@ -474,17 +452,15 @@ resource "random_string" "fluentbit_log_group" {
 }
 
 locals {
-  oidc_url = replace(data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer, "https://", "")
-
   addon_context = {
     aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
     aws_caller_identity_arn        = data.aws_caller_identity.current.arn
-    aws_eks_cluster_endpoint       = data.aws_eks_cluster.cluster.endpoint
+    aws_eks_cluster_endpoint       = module.eks.cluster_endpoint
     aws_partition_id               = data.aws_partition.current.partition
     aws_region_name                = data.aws_region.current.id
-    eks_cluster_id                 = module.eks_blueprints.eks_cluster_id
-    eks_oidc_issuer_url            = local.oidc_url
-    eks_oidc_provider_arn          = "arn:${data.aws_partition.current.partition}:iam::${local.aws_account_id}:oidc-provider/${local.oidc_url}"
+    eks_cluster_id                 = module.eks.cluster_name
+    eks_oidc_issuer_url            = module.eks.oidc_provider
+    eks_oidc_provider_arn          = module.eks.oidc_provider_arn
     irsa_iam_role_path             = "/"
     irsa_iam_permissions_boundary  = ""
     tags                           = {}
@@ -516,6 +492,7 @@ module "eks_blueprints_kubernetes_grafana_addon" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.16.0//modules/kubernetes-addons/grafana"
 
   depends_on = [
+    # TODO - remove this, it will disrupt the addon (remove permissions) when anything in the upstream module changes
     module.eks_blueprints_kubernetes_addons
   ]
 
@@ -526,7 +503,12 @@ module "eks_blueprints_kubernetes_grafana_addon" {
   ]
 
   helm_config = {
-    values = [templatefile("${path.module}/templates/grafana.yaml", { prometheus_endpoint = aws_prometheus_workspace.this.prometheus_endpoint, region = data.aws_region.current.name })]
+    values = [templatefile("${path.module}/templates/grafana.yaml",
+      {
+        prometheus_endpoint = aws_prometheus_workspace.this.prometheus_endpoint,
+        region              = data.aws_region.current.name
+      }
+    )]
   }
 }
 

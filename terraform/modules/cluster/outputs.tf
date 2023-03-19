@@ -1,26 +1,26 @@
 output "eks_cluster_id" {
   description = "Amazon EKS Cluster Name"
-  value       = module.eks_blueprints.eks_cluster_id
+  value       = module.eks.cluster_name
 }
 
 output "eks_cluster_arn" {
   description = "Amazon EKS Cluster ARN"
-  value       = "arn:${data.aws_partition.current.partition}:eks:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:cluster/${module.eks_blueprints.eks_cluster_id}"
+  value       = "arn:${data.aws_partition.current.partition}:eks:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:cluster/${module.eks.cluster_name}"
 }
 
 output "eks_cluster_nodegroup" {
   description = "Amazon EKS Cluster noode group ARN"
-  value       = "arn:${data.aws_partition.current.partition}:eks:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:nodegroup/${module.eks_blueprints.eks_cluster_id}"
+  value       = "arn:${data.aws_partition.current.partition}:eks:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:nodegroup/${module.eks.cluster_name}"
 }
 
 output "eks_cluster_nodegroup_name" {
   description = "Amazon EKS Cluster node group name"
-  value       = module.eks_blueprints.managed_node_groups_id[0]
+  value       = module.eks.eks_managed_node_groups["managed-system"].node_group_id
 }
 
 output "eks_cluster_tainted_nodegroup_name" {
   description = "Amazon EKS Cluster tainted node group name"
-  value       = module.eks_blueprints.managed_node_groups_id[1]
+  value       = module.eks.eks_managed_node_groups["managed-system-tainted"].node_group_id
 }
 
 output "eks_cluster_nodegroup_size_min" {
@@ -40,7 +40,7 @@ output "eks_cluster_nodegroup_size_desired" {
 
 output "configure_kubectl" {
   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.eks_blueprints.configure_kubectl
+  value       = "aws eks --region ${local.aws_region} update-kubeconfig --name ${module.eks.cluster_name}"
 }
 
 output "vpc_id" {
@@ -139,18 +139,18 @@ output "adot_iam_role_ci" {
 
 output "eks_cluster_security_group_id" {
   description = "EKS Control Plane Security Group ID"
-  value       = module.eks_blueprints.cluster_primary_security_group_id
+  value       = module.eks.cluster_primary_security_group_id
 }
 
 
 output "eks_cluster_managed_node_group_iam_role_arns" {
   description = "IAM role arn's of managed node groups"
-  value       = module.eks_blueprints.managed_node_group_iam_role_arns
+  value       = [for group in module.eks.eks_managed_node_groups : group.iam_role_arn]
 }
 
 output "oidc_provider" {
   description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
-  value       = module.eks_blueprints.oidc_provider
+  value       = module.eks.oidc_provider
 }
 
 output "gitops_ssh_iam_user" {

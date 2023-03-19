@@ -5,8 +5,7 @@ locals {
   secondary_priv_subnets = [for k, v in local.azs : cidrsubnet(local.secondary_vpc_cidr, 8, k + 10)]
   public_subnets         = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
 
-  private_subnet_ids        = length(module.aws_vpc.private_subnets) > 0 ? slice(module.aws_vpc.private_subnets, 0, 3) : []
-  primary_private_subnet_id = length(module.aws_vpc.private_subnets) > 0 ? slice(module.aws_vpc.private_subnets, 0, 1) : []
+  private_subnet_ids = slice(module.aws_vpc.private_subnets, 0, 3)
 }
 
 module "aws_vpc" {
