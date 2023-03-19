@@ -1,11 +1,12 @@
 data "aws_region" "current" {}
 
 terraform {
+  required_version = ">= 1.3"
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 4.46.0"
+      version = ">= 4.46"
     }
   }
-  required_version = ">= 1.3.7"
 }
