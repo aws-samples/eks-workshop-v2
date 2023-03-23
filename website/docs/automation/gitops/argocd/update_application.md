@@ -1,41 +1,41 @@
 ---
 title: "Updating an application"
-sidebar_position: 35
+sidebar_position: 40
 ---
 
 Now we can use Argo CD and Kustomize to deploy patches to our application manifests using GitOps
 For example, lets increase the number of `replicas` for `ui` deployment to `3`
 
 ```kustomization
-automation/gitops/argocd-codecommit/update-application/deployment-patch.yaml
+automation/gitops/argocd/update-application/deployment-patch.yaml
 Deployment/ui
 ```
 
 Copy patch file to the Git repository directory:
 
 ```bash
-$ cp /workspace/modules/automation/gitops/argocd-codecommit/update-application/deployment-patch.yaml ~/environment/gitops-argocd/apps/deployment-patch.yaml
+$ cp /workspace/modules/automation/gitops/argocd/update-application/deployment-patch.yaml ~/environment/gitops/apps/deployment-patch.yaml
 ```
 
-You can review planned changes in the file `/gitops-argocd/apps/deployment-patch.yaml`
+You can review planned changes in the file `/gitops/apps/deployment-patch.yaml`
 
-To apply the patch edit the file `/gitops-argocd/apps/kustomization.yaml` like in the example below:
+To apply the patch edit the file `/gitops/apps/kustomization.yaml` like in the example below:
 
 ```file
-automation/gitops/argocd-codecommit/update-application/kustomization.yaml
+automation/gitops/argocd/update-application/kustomization.yaml
 ```
 
-You can execute commands to add necessary changes to the file `/gitops-argocd/apps/kustomization.yaml`:
+You can execute commands to add necessary changes to the file `/gitops/apps/kustomization.yaml`:
 
 ```bash
-$ echo "patches:" >> ~/environment/gitops-argocd/apps/kustomization.yaml
-$ echo "- deployment-patch.yaml" >> ~/environment/gitops-argocd/apps/kustomization.yaml
+$ echo "patches:" >> ~/environment/gitops/apps/kustomization.yaml
+$ echo "- deployment-patch.yaml" >> ~/environment/gitops/apps/kustomization.yaml
 ```
 
 Push changes to CodeCommit
 
 ```bash
-$ (cd ~/environment/gitops-argocd && \
+$ (cd ~/environment/gitops && \
 git add . && \
 git commit -am "Update UI service replicas" && \
 git push)
@@ -44,7 +44,7 @@ git push)
 Go to Argo CD UI, `Refresh` and `Sync` and you should now have all the changes the UI services deployed once more.
 We should have now 3 pods in `ui` deployment
 
-![argocd-update-application](argocd-update-application.png)
+![argocd-update-application](assets/argocd-update-application.png)
 
 To verify, run the following commands:
 

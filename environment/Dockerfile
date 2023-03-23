@@ -19,5 +19,6 @@ USER learner
 WORKDIR /workspace
 COPY --chmod=755 bin/* /usr/local/bin
 ADD --chown=learner:learner workspace /workspace/
+RUN mkdir -p /home/learner/environment
 
 ENTRYPOINT ["bash", "/entrypoint.sh"]

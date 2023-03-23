@@ -8,6 +8,10 @@ if [ ! -z "$module" ]; then
   absolute_path="/workspace/modules/$module/base"
 fi
 
+# backup local copy of the gitops repository from previous run
+# prepares environment to new git clone ...
+mv ~/environment/gitops ~/environment/backup.gitops.$(date +"%Y%m%d%H%M%S") >/dev/null 2>&1
+
 set -Eeuo pipefail
 
 if [[ ! -d "$absolute_path" ]]; then
@@ -16,6 +20,10 @@ if [[ ! -d "$absolute_path" ]]; then
 fi
 
 echo "Resetting the environment, please wait"
+
+# recreate AWS CodeCommit repository for GitOps
+aws codecommit delete-repository --repository-name eks-workshop-gitops > /dev/null
+aws codecommit create-repository --repository-name eks-workshop-gitops --repository-description "CodeCommit repository for GitOps" > /dev/null
 
 kubectl apply -k $absolute_path --prune --all \
   --prune-whitelist=autoscaling/v1/HorizontalPodAutoscaler \
