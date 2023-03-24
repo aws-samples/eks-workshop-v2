@@ -1,4 +1,4 @@
-FROM public.ecr.aws/amazonlinux/amazonlinux:2
+FROM --platform=linux/amd64 public.ecr.aws/amazonlinux/amazonlinux:2
 
 ADD installer.sh /installer.sh
 
