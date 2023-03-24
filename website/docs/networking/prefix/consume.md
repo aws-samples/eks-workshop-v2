@@ -6,13 +6,13 @@ sidebar_position: 40
 To demonstrate VPC CNI behavior of adding additional prefixes to our worker nodes, we'll deploy pause pods to utilize more IP addresses than are currently assigned. We're utilizing a large number of these pods to simulate the addition of application pods in to the cluster either through deployments or scaling operations.
 
 ```file
-networking/prefix/deployment-pause.yaml
+modules/networking/prefix/deployment-pause.yaml
 ```
 
 This will spin up `150 pods` and may take some time:
 
 ```bash
-$ kubectl apply -k /workspace/modules/networking/prefix
+$ kubectl apply -k /manifests/modules/networking/prefix
 deployment.apps/pause-pods-prefix created
 $ kubectl wait --for=condition=available --timeout=60s deployment/pause-pods-prefix -n other
 ```

@@ -15,13 +15,13 @@ $ curl $ADDRESS/catalogue
 The first thing we'll do is re-create the Ingress for `ui` component adding the annotation `alb.ingress.kubernetes.io/group.name`:
 
 ```file
-exposing/ingress/multiple-ingress/ingress-ui.yaml
+modules/exposing/ingress/multiple-ingress/ingress-ui.yaml
 ```
 
 Now, let's create a separate Ingress for the `catalog` component that also leverages the same `group.name`:
 
 ```file
-exposing/ingress/multiple-ingress/ingress-catalog.yaml
+modules/exposing/ingress/multiple-ingress/ingress-catalog.yaml
 ```
 
 This ingress is also configuring rules to route requests prefixed with `/catalogue` to the `catalog` component.
@@ -29,7 +29,7 @@ This ingress is also configuring rules to route requests prefixed with `/catalog
 Apply these manifests to the cluster:
 
 ```bash timeout=180 hook=add-ingress hookTimeout=430
-$ kubectl apply -k /workspace/modules/exposing/ingress/multiple-ingress
+$ kubectl apply -k /manifests/modules/exposing/ingress/multiple-ingress
 ```
 
 We'll now have two separate Ingress objects in our cluster:

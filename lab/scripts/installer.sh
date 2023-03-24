@@ -23,6 +23,9 @@ yq_checksum='30459aa144a26125a1b22c62760f9b3872123233a5658934f7bd9fe714d7864d'
 flux_version='0.38.3'
 flux_checksum='268b8d9a2fa5b0c9e462b551eaefdadb9e03370eb53061a88a2a9ac40e95e8e4'
 
+terraform_version='1.4.1'
+terraform_checksum='9e9f3e6752168dea8ecb3643ea9c18c65d5a52acc06c22453ebc4e3fc2d34421'
+
 download_and_verify () {
   url=$1
   checksum=$2
@@ -92,3 +95,10 @@ tar zxf flux.tar.gz
 chmod +x flux
 mv ./flux /usr/local/bin
 rm -rf flux.tar.gz
+
+# terraform
+download_and_verify "https://releases.hashicorp.com/terraform/1.4.1/terraform_1.4.1_linux_amd64.zip" "$terraform_checksum" "terraform.zip"
+unzip terraform.zip
+chmod +x terraform
+mv ./terraform /usr/local/bin
+rm terraform.zip

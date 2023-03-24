@@ -8,14 +8,14 @@ In order to test the custom networking updates we have made so far, lets update 
 To make the change, run the following command to modify the `checkout` deployment in your cluster
 
 ```bash timeout=240
-$ kubectl apply -k /workspace/modules/networking/custom-networking/sampleapp
+$ kubectl apply -k /manifests/modules/networking/custom-networking/sampleapp
 $ kubectl rollout status deployment/checkout -n checkout --timeout 180s
 ```
 
 The command adds a `nodeSelector` to the `checkout` deployment.
 
 ```kustomization
-networking/custom-networking/sampleapp/checkout.yaml
+modules/networking/custom-networking/sampleapp/checkout.yaml
 Deployment/checkout
 ```
 

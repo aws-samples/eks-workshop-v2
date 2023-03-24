@@ -18,7 +18,7 @@ An AWS CodeCommit repository has already been created for you so let's bootstrap
 
 ```bash
 $ flux bootstrap git \
-  --url=ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_DEFAULT_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-gitops \
+  --url=ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-gitops \
   --branch=main \
   --private-key-file=${HOME}/.ssh/gitops_ssh.pem \
   --silent

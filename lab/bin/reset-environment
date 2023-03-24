@@ -2,11 +2,7 @@
 
 module=$1
 
-absolute_path='/workspace/manifests'
-
-if [ ! -z "$module" ]; then
-  absolute_path="/workspace/modules/$module/base"
-fi
+absolute_path='/manifests/base'
 
 set -Eeuo pipefail
 
@@ -17,6 +13,10 @@ fi
 
 echo "Resetting the environment, please wait"
 
+if [ -f "/eks-workshop/hooks/cleanup.sh" ]; then
+  bash /eks-workshop/hooks/cleanup.sh
+fi
+
 kubectl apply -k $absolute_path --prune --all \
   --prune-whitelist=autoscaling/v1/HorizontalPodAutoscaler \
   --prune-whitelist=core/v1/Service \
@@ -26,20 +26,7 @@ kubectl apply -k $absolute_path --prune --all \
   --prune-whitelist=core/v1/ServiceAccount \
   --prune-whitelist=core/v1/Secret \
   --prune-whitelist=core/v1/PersistentVolumeClaim \
-  --prune-whitelist=karpenter.sh/v1alpha5/Provisioner \
   --prune-whitelist=scheduling.k8s.io/v1/PriorityClass \
-  --prune-whitelist=opentelemetry.io/v1alpha1/OpenTelemetryCollector \
-  --prune-whitelist=crd.k8s.amazonaws.com/v1alpha1/ENIConfig \
-  --prune-whitelist=vpcresources.k8s.aws/v1beta1/SecurityGroupPolicy \
-  --prune-whitelist=database.aws.crossplane.io/v1beta1/DBSubnetGroup \
-  --prune-whitelist=rds.aws.crossplane.io/v1alpha1/DBInstance \
-  --prune-whitelist=ec2.aws.crossplane.io/v1beta1/SecurityGroup \
-  --prune-whitelist=apiextensions.crossplane.io/v1/Composition \
-  --prune-whitelist=apiextensions.crossplane.io/v1/CompositeResourceDefinition \
-  --prune-whitelist=services.k8s.aws/v1alpha1/FieldExport \
-  --prune-whitelist=rds.services.k8s.aws/v1alpha1/DBSubnetGroup \
-  --prune-whitelist=rds.services.k8s.aws/v1alpha1/DBInstance \
-  --prune-whitelist=ec2.services.k8s.aws/v1alpha1/SecurityGroup \
   --prune-whitelist=networking.k8s.io/v1/Ingress > /dev/null
 
 echo "Waiting for application to become ready..."
@@ -49,11 +36,58 @@ sleep 10
 kubectl wait --for=condition=available --timeout=240s deployments -l app.kubernetes.io/created-by=eks-workshop -A > /dev/null
 kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A > /dev/null
 
-kubectl scale --replicas=0 -n kube-system deployment/cluster-autoscaler-aws-cluster-autoscaler > /dev/null
+# Addons
+mkdir -p /eks-workshop/terraform
+cp /manifests/terraform/base.tf /eks-workshop/terraform
 
-aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_TAINTED_MNG_NAME \
-    --scaling-config desiredSize=0,minSize=0,maxSize=1 > /dev/null
+export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
 
+RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-""}
+
+echo "Cleaning up addons..."
+
+tf_dir=$(realpath --relative-to='$PWD' '/eks-workshop/terraform')
+
+terraform -chdir="$tf_dir" init -upgrade > /tmp/terraform-destroy-init.log
+terraform -chdir="$tf_dir" destroy --auto-approve > /tmp/terraform-destroy.log
+
+rm -rf /eks-workshop/terraform/addon*.tf
+
+rm -rf /eks-workshop/hooks
+
+if [ ! -z "$module" ]; then
+  module_path="/manifests/modules/$module"
+
+  if [ -f "$module_path/.workshop/cleanup.sh" ]; then
+    mkdir -p /eks-workshop/hooks
+    cp "$module_path/.workshop/cleanup.sh" /eks-workshop/hooks
+  fi
+
+  if [ -f "$module_path/.workshop/addon.tf" ]; then
+    echo "Applying lab addons..."
+
+    cp "$module_path/.workshop/addon.tf" /eks-workshop/terraform
+
+    if [ "$RESOURCES_PRECREATED" != "true" ]; then
+      if [ -f "$module_path/.workshop/addon_infrastructure.tf" ]; then
+        cp "$module_path/.workshop/addon_infrastructure.tf" /eks-workshop/terraform
+      fi
+    fi
+
+    terraform -chdir="$tf_dir" init -upgrade > /tmp/terraform-apply-init.log
+    terraform -chdir="$tf_dir" apply -refresh=false --auto-approve > /tmp/terraform-apply.log
+  fi
+
+  if [ -f "$module_path/.workshop/kustomization.yaml" ]; then
+    echo "Applying lab manifests..."
+
+    kubectl apply -k "$module_path/.workshop" > /dev/null
+  fi
+fi
+
+terraform -chdir="$tf_dir" output -json | jq -r '.environment.value | select(. != null)' > ~/.bashrc.d/workshop-env.bash
+
+# Node groups
 expected_size_config="$EKS_DEFAULT_MNG_MIN $EKS_DEFAULT_MNG_MAX $EKS_DEFAULT_MNG_DESIRED"
 
 mng_size_config=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME | jq -r '.nodegroup.scalingConfig | "\(.minSize) \(.maxSize) \(.desiredSize)"')
@@ -98,4 +132,5 @@ kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernete
 
 kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A > /dev/null
 
-echo 'Environment is reset'
+# Finished
+echo 'Environment is ready'

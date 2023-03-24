@@ -7,13 +7,13 @@ sidebar_position: 2
 In this lab exercise, we'll be installing CPA using Kustomize manifests, the main part of which is the `Deployment` resource below:
 
 ```file
-autoscaling/workloads/cpa/deployment.yaml
+modules/autoscaling/workloads/cpa/deployment.yaml
 ```
 
 Let's apply this to our cluster:
 
 ```bash hook=cpa-install timeout=180
-$ kubectl apply -k /workspace/modules/autoscaling/workloads/cpa
+$ kubectl apply -k /manifests/modules/autoscaling/workloads/cpa
 ```
 
 This will create a `Deployment` in the `kube-system` namespace which we can inspect:

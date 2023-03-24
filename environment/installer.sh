@@ -26,6 +26,9 @@ flux_checksum='268b8d9a2fa5b0c9e462b551eaefdadb9e03370eb53061a88a2a9ac40e95e8e4'
 argocd_version='2.6.6'
 argocd_checksum='d3ed61494dba51fff3e8568da7c38f620622f04d5cc2c3310d5c28ca66d7b033'
 
+terraform_version='1.4.1'
+terraform_checksum='9e9f3e6752168dea8ecb3643ea9c18c65d5a52acc06c22453ebc4e3fc2d34421'
+
 download_and_verify () {
   url=$1
   checksum=$2
@@ -100,3 +103,10 @@ rm -rf flux.tar.gz
 download_and_verify "https://github.com/argoproj/argo-cd/releases/download/v${argocd_version}/argocd-linux-amd64" "$argocd_checksum" "argocd-linux-amd64"
 chmod +x ./argocd-linux-amd64
 mv ./argocd-linux-amd64 /usr/local/bin/argocd
+
+# terraform
+download_and_verify "https://releases.hashicorp.com/terraform/1.4.1/terraform_1.4.1_linux_amd64.zip" "$terraform_checksum" "terraform.zip"
+unzip terraform.zip
+chmod +x terraform
+mv ./terraform /usr/local/bin
+rm terraform.zip

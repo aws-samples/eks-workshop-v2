@@ -8,9 +8,15 @@ sidebar_custom_props: {"module": true}
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=300 wait=30
-$ reset-environment 
+```bash timeout=900 wait=30
+$ prepare-environment networking/securitygroups-for-pods
 ```
+
+This will make the following changes to your lab environment:
+- Create an Amazon Relational Database Service instance
+- Create an Amazon EC2 security group to allow access to the RDS instance
+
+You can view the Terraform that applies these changes [here](asd).
 
 :::
 

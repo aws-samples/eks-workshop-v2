@@ -6,10 +6,10 @@ sidebar_position: 20
 Create an EKS managed node group:
 
 ```bash
-$ aws eks create-nodegroup --region $AWS_DEFAULT_REGION \
+$ aws eks create-nodegroup --region $AWS_REGION \
   --cluster-name $EKS_CLUSTER_NAME \
   --nodegroup-name custom-networking \
-  --instance-types t3.medium --node-role $MANAGED_NODE_GROUP_IAM_ROLE_ARN \
+  --instance-types t3.medium --node-role $CUSTOM_NETWORKING_NODE_ROLE \
   --subnets $PRIMARY_SUBNET_1 $PRIMARY_SUBNET_2 $PRIMARY_SUBNET_3 \
   --labels type=customnetworking \
   --scaling-config minSize=1,maxSize=1,desiredSize=1

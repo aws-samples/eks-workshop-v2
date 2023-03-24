@@ -60,4 +60,4 @@ In this case you can either copy each command individually or copy all of the co
 
 ## Resetting your EKS cluster
 
-In the event that you accidentally configure your cluster in a way that is not functioning you have been provided with a mechanism to reset your EKS cluster as best we can which can be run at any time. Simply run the command `reset-environment` and wait until it completes. This may take several minutes depending on the state of your cluster when it is run.
+In the event that you accidentally configure your cluster in a way that is not functioning you have been provided with a mechanism to reset your EKS cluster as best we can which can be run at any time. Simply run the command `prepare-environment` and wait until it completes. This may take several minutes depending on the state of your cluster when it is run.

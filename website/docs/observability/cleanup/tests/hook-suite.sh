@@ -5,11 +5,11 @@ before() {
 }
 
 after() {
-  reset-environment
+  prepare-environment
 
   sleep 60
 
-  kubectl delete -k /workspace/manifests --all
+  kubectl delete -k /manifests/base --all
 
   sleep 60
 }

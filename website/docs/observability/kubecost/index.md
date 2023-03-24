@@ -4,6 +4,15 @@ sidebar_position: 60
 sidebar_custom_props: {"module": true}
 ---
 
+:::tip Before you start
+Prepare your environment for this section:
+
+```bash timeout=300 wait=30
+$ prepare-environment observability/kubecost
+```
+
+:::
+
 Kubecost provides real-time cost visibility and insights for teams using Kubernetes, helping you continuously reduce your cloud costs.
 
 While you can track Kubernetes control plane and EC2 costs using AWS Cost and Usage Reports, some may need deeper insight. Kubecost allows you to accurately track Kubernetes resources by namespace, cluster, pod, or organizational concepts (e.g., by team or application). This can also be helpful when running a multi tenant cluster environment and need to break down costs by tenant in your cluster. For example, Kubecost allows you to determine the resources used by a specific group of pods, customers have typically had to manually aggregate the compute resource usage for a particular period to calculate the cost. Containers are also often short-lived and scale at various levels, so the resource usage fluctuates over time, further adding complexity to this equation.

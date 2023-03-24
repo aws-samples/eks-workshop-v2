@@ -13,7 +13,7 @@ const remarkBlueprintsAddon = require('./src/remark/blueprints-addon');
 require('dotenv').config({ path: '.kustomize-env' })
 
 const rootDir = path.dirname(require.resolve('./package.json'));
-const manifestsDir = `${rootDir}/../environment/workspace/modules`;
+const manifestsDir = `${rootDir}/../manifests`;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {

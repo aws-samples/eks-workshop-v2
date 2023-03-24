@@ -8,13 +8,13 @@ This finding indicates that a container was launched with a sensitive external h
 To simulate the finding we'll be reusing Privileged Container manifest and patch it with host path volume mount. Let's apply the patched version of privileged container from earlier example with host path `/etc` mounted to container's path `/test-pd`.
 
 ```file
-security/Guardduty/mount/privileged-pod-example.yaml
+modules/security/Guardduty/mount/privileged-pod-example.yaml
 ```
 
 Run the below command to patch the deployment.
 
 ```bash
-$ kubectl apply -f /workspace/modules/security/Guardduty/mount/privileged-pod-example.yaml
+$ kubectl apply -f /manifests/modules/security/Guardduty/mount/privileged-pod-example.yaml
 ```
 
 Within a few minutes we'll see the finding `Persistence:Kubernetes/ContainerWithSensitiveMount` in the GuardDuty portal.
@@ -24,5 +24,5 @@ Within a few minutes we'll see the finding `Persistence:Kubernetes/ContainerWith
 Cleanup:
 
 ```bash
-$ kubectl delete -f /workspace/modules/security/Guardduty/mount/privileged-pod-example.yaml
+$ kubectl delete -f /manifests/modules/security/Guardduty/mount/privileged-pod-example.yaml
 ```

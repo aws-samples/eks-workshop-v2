@@ -6,7 +6,7 @@ sidebar_position: 50
 In this lab exercise, we'll deploy the rest of the sample application efficiently using the power of Kustomize. The following kustomization file shows how you can reference other kustomizations and deploy multiple components together:
 
 ```file
-../manifests/kustomization.yaml
+base/kustomization.yaml
 ```
 
 :::tip
@@ -18,7 +18,7 @@ Because Kubernetes uses a declarative mechanism we can apply the manifests for t
 Apply this kustomization to our cluster to deploy the rest of the components:
 
 ```bash wait=10
-$ kubectl apply -k /workspace/manifests
+$ kubectl apply -k /manifests/base
 ```
 
 After this is complete we can use `kubectl wait` to make sure all the components have started before we proceed:

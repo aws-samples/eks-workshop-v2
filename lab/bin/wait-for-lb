@@ -1,0 +1,21 @@
+#!/bin/bash
+
+export host=$1
+
+set -Eeuo pipefail
+
+echo "Waiting for ${host}..."
+
+EXIT_CODE=0
+
+timeout -s TERM 600 bash -c \
+  'while [[ "$(curl -s -o /dev/null -L -w ''%{http_code}'' ${host}/home)" != "200" ]];\
+  do sleep 5;\
+  done' || EXIT_CODE=$?
+
+if [ $EXIT_CODE -ne 0 ]; then
+  echo "Load balancer did not become available or return HTTP 200 for 600 seconds"
+  exit 1
+fi
+
+echo "You can now access http://${host}"

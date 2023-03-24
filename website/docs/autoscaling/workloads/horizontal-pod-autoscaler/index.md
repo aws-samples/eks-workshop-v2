@@ -8,7 +8,7 @@ sidebar_custom_props: {"module": true}
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30
-$ reset-environment 
+$ prepare-environment autoscaling/workloads/hpa
 ```
 
 :::

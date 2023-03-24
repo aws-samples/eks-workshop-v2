@@ -4,6 +4,8 @@ ADD scripts/installer.sh /tmp/installer.sh
 
 RUN bash /tmp/installer.sh
 
+ADD scripts/entrypoint.sh /entrypoint.sh
+
 RUN useradd \
     --home "/home/ec2-user" \
     --create-home \
@@ -12,6 +14,8 @@ RUN useradd \
     ec2-user
 
 COPY --chmod=755 bin/* /usr/local/bin
+
+RUN mkdir -p /eks-workshop && chown ec2-user /eks-workshop
 
 USER ec2-user
 
@@ -22,3 +26,5 @@ RUN bash /tmp/setup.sh
 RUN mkdir -p ~/environment
 
 WORKDIR /home/ec2-user/environment
+
+ENTRYPOINT ["bash", "/entrypoint.sh"]

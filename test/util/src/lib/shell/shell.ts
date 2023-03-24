@@ -1,5 +1,6 @@
 import { rejects } from 'assert';
 import * as child from 'child_process';
+import * as os from 'os';
 
 export interface Shell {
   exec:(command: string, timeout: number, expect: boolean) => Promise<ExecutionResult>
@@ -12,20 +13,78 @@ export class ExecutionResult {
 
 export class DefaultShell implements Shell {
 
+  private environment : { [key: string]: string | undefined } = process.env
+
+  static ENV_MARKER: string = '%%% ENV %%%';
+
+  constructor(private beforeEach: string) {}
+
   exec(command: string, timeout: number = 300, expect: boolean = false) : Promise<ExecutionResult> {
     if(!command) {
       throw new Error("Command should not be empty")
     }
 
+    const prefix = this.beforeEach === '' ? '' : `${this.beforeEach} &&`
+
     try {
-      const buffer: Buffer = child.execSync(command, {
+      const buffer: Buffer = child.execSync(`${prefix} ${command} && echo '${DefaultShell.ENV_MARKER}' && env`, {
         timeout: timeout * 1000,
         killSignal: 'SIGKILL',
-        stdio: 'pipe',
-        shell: '/bin/bash'
+        stdio: ['inherit', 'pipe', 'pipe'],
+        shell: '/bin/bash',
+        env: this.environment
       });
 
-      return Promise.resolve(new ExecutionResult(String(buffer)));
+      const output = String(buffer);
+
+      const parts = output.split(os.EOL);
+
+      let processingEnv = false;
+      let processingFunction = false;
+      let env : { [key: string]: string } = {};
+
+      let processedOutput = "";
+
+      for (let step = 0; step < parts.length; step++) {
+        const line = parts[step];
+
+        if(processingEnv) {
+          if(processingFunction) {
+            if(line.startsWith("{")) {
+              processingFunction = false;
+            }
+          }
+          else {
+            let key = `${line.substr(0, line.indexOf("="))}`;
+            let val = `${line.substr(line.indexOf("=") + 1)}`;
+  
+            if(key.startsWith("BASH_FUNC")) {
+              processingFunction = true;
+            }
+            else {
+              env[key] = val;
+            }
+          }
+          
+        }
+        else {
+          if(line === DefaultShell.ENV_MARKER) {
+            processingEnv = true;
+          }
+          else {
+            processedOutput += `${line}\n`
+          }
+        }
+      }
+
+      if(processingEnv) {
+        this.environment = {
+          ...this.environment,
+          ...env
+        };
+      }
+
+      return Promise.resolve(new ExecutionResult(processedOutput));
     }
     catch(e: any) {
       if(e.code) {

@@ -8,7 +8,7 @@ By default the catalog component in the sample application uses a MySQL database
 Let's explore the various Crossplane resources that we'll create. The first is an EC2 security group that will be applied to control access to the RDS database, which is done with a `ec2.aws.crossplane.io.SecurityGroup` resource:
 
 ```file
-automation/controlplanes/crossplane/managed/rds-security-group.yaml
+modules/automation/controlplanes/crossplane/managed/rds-security-group.yaml
 ```
 
 :::info
@@ -20,19 +20,19 @@ The EC2 security group above allows any traffic from the CIDR range of the VPC u
 Next, we want the RDS database to use the private subnets in our VPC. We'll create a `database.aws.crossplane.io.DBSubnetGroup` which selects the appropriate subnet IDs:
 
 ```file
-automation/controlplanes/crossplane/managed/rds-dbgroup.yaml
+modules/automation/controlplanes/crossplane/managed/rds-dbgroup.yaml
 ```
 
 Finally, we can create the configuration for the RDS database itself with a `rds.aws.crossplane.io.DBInstance` resource:
 
 ```file
-automation/controlplanes/crossplane/managed/rds-instance.yaml
+modules/automation/controlplanes/crossplane/managed/rds-instance.yaml
 ```
 
 Apply this configuration to the EKS cluster:
 
 ```bash wait=30
-$ kubectl apply -k /workspace/modules/automation/controlplanes/crossplane/managed
+$ kubectl apply -k /manifests/modules/automation/controlplanes/crossplane/managed
 dbsubnetgroup.database.aws.crossplane.io/rds-eks-workshop created
 securitygroup.ec2.aws.crossplane.io/rds-eks-workshop created
 dbinstance.rds.aws.crossplane.io/rds-eks-workshop created
@@ -87,7 +87,7 @@ type: connection.crossplane.io/v1alpha1
 Update the application to use the RDS endpoint and credentials:
 
 ```bash
-$ kubectl apply -k /workspace/modules/automation/controlplanes/crossplane/application
+$ kubectl apply -k /manifests/modules/automation/controlplanes/crossplane/application
 namespace/catalog unchanged
 serviceaccount/catalog unchanged
 configmap/catalog unchanged

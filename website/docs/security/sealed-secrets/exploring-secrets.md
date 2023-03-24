@@ -109,7 +109,7 @@ $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.co
 Upon exploring the `catalog-db` Secret we can see that it is only encoded with base64 which can be easily decoded as follows hence making it difficult for the secrets manifests to be part of the GitOps workflow.
 
 ```file
-../manifests/catalog/secrets.yaml
+base/catalog/secrets.yaml
 ```
 
 ```bash

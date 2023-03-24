@@ -22,14 +22,14 @@ Let's reconfigure our NLB to use IP mode and look at the effect it has on the in
 This is the patch we'll be applying to re-configure the Service:
 
 ```kustomization
-exposing/load-balancer/ip-mode/nlb.yaml
+modules/exposing/load-balancer/ip-mode/nlb.yaml
 Service/ui-nlb
 ```
 
 Apply the manifest with kustomize:
 
 ```bash
-$ kubectl apply -k /workspace/modules/exposing/load-balancer/ip-mode
+$ kubectl apply -k /manifests/modules/exposing/load-balancer/ip-mode
 ```
 
 It will take a few minutes for the configuration of the load balancer to be updated. Run the following command to ensure the annotation is updated:

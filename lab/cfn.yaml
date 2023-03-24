@@ -34,7 +34,6 @@ Conditions:
   Create3rdPartyResources: !Equals [ !Ref ExampleC9EnvType, 3rdParty ]
 
 Resources:
-################## PERMISSIONS AND ROLES #################
   ExampleC9Role:
     Type: AWS::IAM::Role
     Properties:
@@ -99,8 +98,6 @@ Resources:
             - iam:ListInstanceProfiles
             - iam:PassRole
             Resource: "*"
-
-################## LAMBDA BOOTSTRAP FUNCTION ################
 
   ExampleC9BootstrapInstanceLambda:
     Description: Bootstrap Cloud9 instance
@@ -284,29 +281,6 @@ Resources:
                 touch $marker_file
                 
                 sudo yum install -y git
-
-                #sudo -H -u ec2-user bash -c "sh <(curl -L https://nixos.org/nix/install) --daemon"
-
-                cat << EOT > /tmp/environment.nix
-                { pkgs ? import <nixpkgs> {} }:
-                pkgs.stdenv.mkDerivation {
-                  name = "kubectl";
-                  src = pkgs.fetchurl {
-                    url = "https://dl.k8s.io/release/v1.23.9/bin/linux/amd64/kubectl";
-                    sha256 = "053561f7c68c5a037a69c52234e3cf1f91798854527692acd67091d594b616ce";
-                  };
-                  phases = ["installPhase" "patchPhase"];
-                  installPhase = ''
-                    mkdir -p $out/bin
-                    cp $src $out/bin/kexpand
-                    chmod +x $out/bin/kexpand
-                  '';
-                }
-                EOT
-
-                #sudo -H -u ec2-user bash -c "nix-env -i -f /tmp/environment.nix"
-
-                
   
   ExampleC9BootstrapAssociation: 
     Type: AWS::SSM::Association
