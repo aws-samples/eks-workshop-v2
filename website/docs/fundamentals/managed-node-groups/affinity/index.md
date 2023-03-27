@@ -39,7 +39,7 @@ fundamentals/affinity/checkout/checkout.yaml
 Deployment/checkout
 ```
 
-To make the change, run the following command to modify the **checkout** deployment in your cluster:
+To make the change, run the following commands to modify the **checkout** deployment in your cluster:
 
 ```bash
 $ kubectl apply -k /workspace/modules/fundamentals/affinity/checkout/
@@ -50,6 +50,8 @@ service/checkout unchanged
 service/checkout-redis unchanged
 deployment.apps/checkout configured
 deployment.apps/checkout-redis unchanged
+```
+```bash
 $ kubectl rollout status deployment/checkout \
   -n checkout --timeout 180s
 ```
@@ -79,7 +81,7 @@ fundamentals/affinity/checkout-redis/checkout-redis.yaml
 Deployment/checkout-redis
 ```
 
-Apply it with the following command:
+Apply it with the following commands:
 
 ```bash
 $ kubectl apply -k /workspace/modules/fundamentals/affinity/checkout-redis/
@@ -90,6 +92,8 @@ service/checkout unchanged
 service/checkout-redis unchanged
 deployment.apps/checkout unchanged
 deployment.apps/checkout-redis configured
+```
+```bash
 $ kubectl rollout status deployment/checkout-redis \
   -n checkout --timeout 180s
 ```
