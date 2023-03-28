@@ -1,0 +1,7 @@
+# Create a new Gateway Class for AWS VPC lattice provider
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: GatewayClass
+metadata:
+  name: amazon-vpc-lattice
+spec:
+  controllerName: application-networking.k8s.aws/gateway-api-controller
