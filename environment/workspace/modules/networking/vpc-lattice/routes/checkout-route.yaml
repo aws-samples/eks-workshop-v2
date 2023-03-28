@@ -1,0 +1,22 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: checkoutroute
+  namespace: checkout
+spec:
+  parentRefs:
+  - name: eks-workshop-gw
+    sectionName: http 
+  rules:
+  - backendRefs:  
+    - name: checkout
+      namespace: checkout
+      kind: Service
+      port: 80
+      weight: 50
+    - name: checkout
+      namespace: checkoutv2
+      kind: Service
+      port: 80
+      weight: 50
+
