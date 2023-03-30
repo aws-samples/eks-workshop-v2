@@ -96,7 +96,7 @@ rm -rf flux.tar.gz
 
 # terraform
 download_and_verify "https://releases.hashicorp.com/terraform/1.4.1/terraform_1.4.1_linux_amd64.zip" "$terraform_checksum" "terraform.zip"
-unzip terraform.zip
+unzip -o terraform.zip
 chmod +x terraform
 mv ./terraform /usr/local/bin
-rm terraform.zip
+rm -rf terraform.zip
