@@ -12,13 +12,13 @@ Argo CD applies the `GitOps` methodology to Kubernetes. It uses Git as a source 
 
 In this lab exercise, we will deploy an applications specified in Kustomize using Argo CD. We will use the `ui` application from [EKS Workshop](https://github.com/aws-samples/eks-workshop-v2/tree/main/environment/workspace/manifests/ui) repository.
 
-An AWS CodeCommit repository has already been created for you.
+The Git repository in AWS CodeCommit has already been created for you.
 
 :::info
 If you want to use your own GitHub private repository you could re define
 GITOPS_REPO_URL=https://github.com/username/reponame
 echo $GITOPS_REPO_URL > ~/environment/gitops_repo_url
-and use [those instructions](https://argo-cd.readthedocs.io/en/stable/user-guide/private-repositories/) to create an Argo CD secret to give access to Git repository from Argo CD
+and use [those instructions](https://argo-cd.readthedocs.io/en/stable/user-guide/private-repositories/) to create an Argo CD secret to give access to the Git repository from Argo CD
 :::
 
 ```bash
@@ -26,7 +26,7 @@ $ GITOPS_REPO_URL=ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_DEFAULT_RE
 $ echo $GITOPS_REPO_URL > ~/environment/gitops_repo_url
 ```
 
-Let's clone the repository.
+Let's clone the Git repository.
 
 ```bash
 $ git clone $(cat ~/environment/gitops_repo_url) ~/environment/gitops
@@ -39,10 +39,10 @@ git commit -am "Initial commit" && \
 git push --set-upstream origin main)
 ```
 
-Create an Argo CD secret to give access to Git repository from Argo CD:
+Create an Argo CD secret to give access to the Git repository from Argo CD:
 
 ```bash
-$ argocd repo add $(cat ~/environment/gitops_repo_url) --ssh-private-key-path ${HOME}/.ssh/gitops_ssh.pem --insecure-ignore-host-key --upsert
+$ argocd repo add $(cat ~/environment/gitops_repo_url) --ssh-private-key-path ${HOME}/.ssh/gitops_ssh.pem --insecure-ignore-host-key --upsert --name git-repo
 Repository 'ssh://APKA232DOTYWDIYNGJC6@git-codecommit.eu-central-1.amazonaws.com/v1/repos/eks-workshop-gitops' added
 ```
 
