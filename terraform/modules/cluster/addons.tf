@@ -23,7 +23,7 @@ locals {
 }
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.16.0//modules/kubernetes-addons"
+  source = "github.com/niallthomson/terraform-aws-eks-blueprints?ref=workshop-fix//modules/kubernetes-addons"
 
   depends_on = [
     aws_eks_addon.vpc_cni
