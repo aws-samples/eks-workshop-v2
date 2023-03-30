@@ -16,7 +16,7 @@ service "ui" deleted
 deployment.apps "ui" deleted
 ```
 
-Now, let's get into the cloned repository and start creating our GitOps configuration. Copy the existing kustomize configuration for the UI service:
+Now, let's get into the cloned Git repository and start creating our GitOps configuration. Copy the existing kustomize configuration for the UI service:
 
 ```bash
 $ cp -R /workspace/manifests/ui ~/environment/gitops/apps
@@ -51,7 +51,7 @@ You Git directory should now look something like this which you can validate by 
 2 directories, 7 files
 ```
 
-Finally we can push our configuration to AWS CodeCommit:
+Finally we can push our configuration to the Git repository:
 
 ```bash
 $ (cd ~/environment/gitops && \
@@ -68,7 +68,7 @@ Notice that the application might be in `OutOfSync` state. This means that the a
 
 ![argocd-ui-outofsync-apps.png](assets/argocd-ui-outofsync-apps.png)
 
-It will take Argo CD some time to notice the changes in AWS CodeCommit and reconcile. You can use the Argo CD UI to `Refresh` and `Sync` for our new `apps` kustomization to appear.
+It will take Argo CD some time to notice the changes in the Git repository and reconcile. You can use the Argo CD UI to `Refresh` and `Sync` for our new `apps` kustomization to appear.
 
 Now, we're going to `Sync` the application. This will deploy the application to the cluster and bring it to the desired state.
 
@@ -79,7 +79,7 @@ Click on the `Sync` button in the UI of the app.
 Or, you can also use the `argocd` CLI:
 
 ```bash
-$ argocd app sync apps
+$ argocd app sync apps --prune
 ```
 
 After a short period of time, the application should be in `Synced` state and the resources should be deployed, the UI should look like this:

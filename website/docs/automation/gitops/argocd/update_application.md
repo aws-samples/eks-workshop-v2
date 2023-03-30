@@ -32,7 +32,7 @@ $ echo "patches:" >> ~/environment/gitops/apps/kustomization.yaml
 $ echo "- deployment-patch.yaml" >> ~/environment/gitops/apps/kustomization.yaml
 ```
 
-Push changes to CodeCommit
+Push changes to the Git repository
 
 ```bash
 $ (cd ~/environment/gitops && \
