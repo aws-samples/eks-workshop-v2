@@ -8,7 +8,7 @@ We have successfully configured Argo CD on our cluster so now we can deploy an a
 First let's remove the existing UI component so we can replace it:
 
 ```bash
-$ kubectl delete -k /workspace/manifests/ui
+$ kubectl delete -k /workspace/manifests/ui --ignore-not-found=true
 namespace "ui" deleted
 serviceaccount "ui" deleted
 configmap "ui" deleted
