@@ -21,24 +21,3 @@ touch ~/.bashrc.d/workshop-env.bash
 cat << EOT > /home/ec2-user/.bashrc.d/aliases.bash
 function prepare-environment() { bash /usr/local/bin/reset-environment \$1; source ~/.bashrc.d/workshop-env.bash; }
 EOT
-
-if [ ! -z "$REPOSITORY_REF" ]; then
-  cat << EOT > /usr/local/bin/reset-environment
-#!/bin/bash
-set -e
-curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/\$REPOSITORY_REF/lab/bin/reset-environment | bash
-EOT
-  chmod +x /usr/local/bin/reset-environment
-  cat << EOT > /usr/local/bin/delete-environment
-#!/bin/bash
-set -e
-curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/\$MANIFESTS_REF/lab/bin/delete-environment | bash
-EOT
-  chmod +x /usr/local/bin/delete-environment
-  cat << EOT > /usr/local/bin/wait-for-lb
-#!/bin/bash
-set -e
-curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/\$MANIFESTS_REF/lab/bin/wait-for-lb | bash -s -- \$1
-EOT
-  chmod +x /usr/local/bin/wait-for-lb
-fi
