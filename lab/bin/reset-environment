@@ -106,8 +106,6 @@ if [ ! -z "$module" ]; then
 
   mkdir -p /home/ec2-user/environment/lab
 
-  echo "Copying to lab"
-
   cp -R $module_path/* /home/ec2-user/environment/lab
 fi
 

@@ -105,7 +105,7 @@ if [ ! -z "$REPOSITORY_REF" ]; then
   cat << EOT > /usr/local/bin/reset-environment
 #!/bin/bash
 set -e
-curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/$REPOSITORY_REF/lab/bin/reset-environment | bash
+curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/$REPOSITORY_REF/lab/bin/reset-environment | bash -s -- \$1
 EOT
   chmod +x /usr/local/bin/reset-environment
   cat << EOT > /usr/local/bin/delete-environment
