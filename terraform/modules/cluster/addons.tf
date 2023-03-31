@@ -418,11 +418,7 @@ module "eks_blueprints_kubernetes_addons" {
         name  = "applicationSet.tolerations[0].effect"
         value = "NoSchedule"
         type  = "string"
-      },
-      {
-        name  = "timeout.reconciliation"
-        value = "60s"
-    }], local.system_component_values)
+      }], local.system_component_values)
   }
 
   tags = local.tags

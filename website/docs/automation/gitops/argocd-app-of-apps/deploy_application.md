@@ -117,11 +117,11 @@ git commit -am "Adding apps-kustomization" && \
 git push)
 ```
 
-It will take Argo CD some time to notice the changes in the Git repository and reconcile. You can use the Argo CD UI to `Sync Apps` and `Refresh Apps` and wait for our new `apps` configuration to appear
+It will take Argo CD some time to notice the changes in the Git repository and reconcile. You can use the Argo CD UI to `Refresh Apps` or wait about 5s for our new `apps` configuration to appear
 
 We've now successfully migrated the all the applications to deploy using Argo CD, and any further changes pushed to the Git repository will be automatically reconciled to our EKS cluster.
 
-All our applications are in `Synced` state now
+When Argo CD finish the sync, all our applications will be in `Synced` state
 
 ![argocd-ui-apps.png](assets/argocd-ui-apps-synced.png)
 

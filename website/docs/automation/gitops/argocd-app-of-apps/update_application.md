@@ -28,7 +28,7 @@ git commit -am "Update UI service replicas" && \
 git push)
 ```
 
-Go to Argo CD UI, `Sync` and `Refresh` and you should now have all the changes the UI services deployed once more.
+Go to Argo CD UI, wait about 5s or hit `Refresh`/`Sync` and you should now have all the changes to the UI services deployed once more.
 We should have now 3 pods in `ui` deployment
 
 ![argocd-update-application](assets/argocd-update-application.png)
@@ -39,6 +39,9 @@ To verify, run the following commands:
 $ kubectl get deployment -n ui ui
 NAME   READY   UP-TO-DATE   AVAILABLE   AGE
 ui     3/3     3            3           3m33s
+```
+
+```bash
 $ kubectl get pod -n ui
 NAME                  READY   STATUS    RESTARTS   AGE
 ui-6d5bb7b95-hzmgp   1/1     Running   0          61s

@@ -124,18 +124,27 @@ git push)
 
 Open the Argo CD UI and navigate to the `apps` application.
 
-![argocd-ui-outofsync.png](assets/argocd-ui-outofsync.png)
+![argocd-ui-app-of-apps.png](assets/argocd-ui-app-of-apps.png)
 
-Notice that the application might be in `OutOfSync` state. This means that the application is not yet deployed and not in sync with the desired state.
+The default `Refresh` interval is 3 minutes (180 seconds). You could change the interval by updating the "timeout.reconciliation" value in the argocd-cm config map. If the interval is to 0 then Argo CD will not poll Git repositories automatically and alternative methods such as webhooks and/or manual syncs should be used.
 
-It will take Argo CD some time to notice changes in the Git repository and reconcile. You can use the Argo CD UI to `Sync Apps` and `Refresh Apps` for our new `apps` configuration to appear.
+For training purposes, let's set `Refresh` interval to 5s and restart argocd application controller to deploy our changes faster
+
+```bash
+$ kubectl patch configmap/argocd-cm -n argocd --type merge \
+  -p '{"data":{"timeout.reconciliation":"5s"}}'
+$ kubectl -n argocd rollout restart deploy argocd-repo-server
+$ kubectl -n argocd rollout status deploy/argocd-repo-server
+$ kubectl -n argocd rollout restart statefulset argocd-application-controller
+$ kubectl -n argocd rollout status statefulset argocd-application-controller
+```
+
+We can also use the `Refresh` button to sync an application
+
+We have Argo CD `App of Apps Application` deployed and synced
 
 Our applications, except Argo CD `App of Apps Application`, are in `Unknown` state because we didn't deploy their configuration yet.
 
 ![argocd-ui-apps.png](assets/argocd-ui-apps-unknown.png)
-
-We have Argo CD `App of Apps Application` deployed and synced
-
-![argocd-ui-app-of-apps.png](assets/argocd-ui-app-of-apps.png)
 
 We will deploy applications configurations for the applications in the next step
