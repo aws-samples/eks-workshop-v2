@@ -73,7 +73,7 @@ terraform -chdir="$tf_dir" destroy --auto-approve > /tmp/terraform-destroy.log
 rm -rf /eks-workshop/terraform/addon*.tf
 
 rm -rf /eks-workshop/hooks
-rm -rf ~/environment/lab
+rm -rf /home/ec2-user/environment/lab
 
 if [ ! -z "$module" ]; then
   module_path="$manifests_path/modules/$module"
@@ -105,6 +105,8 @@ if [ ! -z "$module" ]; then
   fi
 
   mkdir -p /home/ec2-user/environment/lab
+
+  echo "Copying to lab"
 
   cp -R $module_path/* /home/ec2-user/environment/lab
 fi
