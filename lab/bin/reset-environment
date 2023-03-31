@@ -17,8 +17,8 @@ REPOSITORY_REF=${REPOSITORY_REF:-""}
 if [ ! -z "${REPOSITORY_REF}" ]; then
   rm -rf $repository_path
 
-  git clone https://github.com/aws-samples/eks-workshop-v2.git $repository_path
-  (cd $repository_path && git checkout "${REPOSITORY_REF}")
+  git clone https://github.com/aws-samples/eks-workshop-v2.git $repository_path > /dev/null
+  (cd $repository_path && git checkout "${REPOSITORY_REF}" > /dev/null)
 
   cp -R $repository_path/manifests $manifests_path
 fi

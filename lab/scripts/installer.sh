@@ -120,4 +120,10 @@ set -e
 curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/$REPOSITORY_REF/lab/bin/wait-for-lb | bash -s -- \$1
 EOT
   chmod +x /usr/local/bin/wait-for-lb
+  cat << EOT > /usr/local/bin/use-cluster
+#!/bin/bash
+set -e
+curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/$REPOSITORY_REF/lab/bin/use-cluster | bash -s -- \$1
+EOT
+  chmod +x /usr/local/bin/use-cluster
 fi
