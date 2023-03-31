@@ -58,6 +58,7 @@ cp $manifests_path/terraform/base.tf /eks-workshop/terraform
 
 export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
 
+
 RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-""}
 
 echo "Cleaning up addons..."
@@ -70,6 +71,7 @@ terraform -chdir="$tf_dir" destroy --auto-approve > /tmp/terraform-destroy.log
 rm -rf /eks-workshop/terraform/addon*.tf
 
 rm -rf /eks-workshop/hooks
+rm -rf ~/environment/lab
 
 if [ ! -z "$module" ]; then
   module_path="$manifests_path/modules/$module"
@@ -99,8 +101,6 @@ if [ ! -z "$module" ]; then
 
     kubectl apply -k "$module_path/.workshop" > /dev/null
   fi
-
-  rm -rf ~/environment/lab
 
   mkdir -p ~/environment/lab
 
