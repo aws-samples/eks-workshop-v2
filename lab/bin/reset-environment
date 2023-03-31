@@ -25,6 +25,8 @@ if [ ! -z "${REPOSITORY_REF}" ]; then
   echo ""
 
   cp -R $repository_path/manifests $manifests_path
+elif [ -d "/manifests" ]; then
+  cp -R /manifests $manifests_path
 fi
 
 echo "Resetting the environment, please wait"
@@ -102,9 +104,9 @@ if [ ! -z "$module" ]; then
     kubectl apply -k "$module_path/.workshop" > /dev/null
   fi
 
-  mkdir -p ~/environment/lab
+  mkdir -p /home/ec2-user/environment/lab
 
-  cp -R $module_path/* ~/environment/lab
+  cp -R $module_path/* /home/ec2-user/environment/lab
 fi
 
 terraform -chdir="$tf_dir" output -json | jq -r '.environment.value | select(. != null)' > ~/.bashrc.d/workshop-env.bash
