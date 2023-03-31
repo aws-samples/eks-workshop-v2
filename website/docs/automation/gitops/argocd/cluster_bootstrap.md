@@ -48,10 +48,12 @@ Repository 'ssh://APKA232DOTYWDIYNGJC6@git-codecommit.eu-central-1.amazonaws.com
 
 Argo CD application is a CRD Kubernetes resource object representing a deployed application instance in an environment. It defines key information about the application, such as the application name, the Git repository, and the path to the Kubernetes manifests. The application resource also defines the desired state of the application, such as the target revision, the sync policy, and the health check policy.
 
-As the next step let's create an Argo CD Application:
+As the next step let's create an Argo CD Application which automatically `Sync` application with desired state in the Git repository:
 
 ```bash
-$ argocd app create apps --repo $(cat ~/environment/gitops_repo_url) --path apps --dest-server https://kubernetes.default.svc
+$ argocd app create apps --repo $(cat ~/environment/gitops_repo_url) \
+  --path apps --dest-server https://kubernetes.default.svc \
+  --sync-policy automated --self-heal --auto-prune
  application 'apps' created
 ```
 
@@ -60,8 +62,10 @@ Verify that the application has been created:
 ```bash
 $ argocd app list
 NAME         CLUSTER                         NAMESPACE  PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS  REPO                                                                                               PATH  TARGET
-argocd/apps  https://kubernetes.default.svc             default  Synced  Healthy  <none>      <none>      ssh://APKA232DOTYWDIYNGJC6@git-codecommit.eu-central-1.amazonaws.com/v1/repos/eks-workshop-gitops  apps
+argocd/apps  https://kubernetes.default.svc             default  Synced  Healthy  Auto-Prune  <none>      ssh://APKA232DOTYWAHY2N54E@git-codecommit.eu-central-1.amazonaws.com/v1/repos/eks-workshop-gitops  apps
 ```
+
+![argocd-ui-insync.png](assets/argocd-ui-insync.png)
 
 Alternatively, you can also interact with Argo CD objects in the cluster using the `kubectl` command:
 

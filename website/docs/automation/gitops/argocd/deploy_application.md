@@ -51,6 +51,10 @@ You Git directory should now look something like this which you can validate by 
 2 directories, 7 files
 ```
 
+Open the Argo CD UI and navigate to the `apps` application.
+
+![argocd-ui-insync-apps.png](assets/argocd-ui-insync-apps.png)
+
 Finally we can push our configuration to the Git repository:
 
 ```bash
@@ -60,23 +64,20 @@ git commit -am "Adding the UI service" && \
 git push)
 ```
 
-Open the Argo CD UI and navigate to the `apps` application.
+The default `Refresh` interval is 3 minutes (180 seconds). You could change the interval by updating the "timeout.reconciliation" value in the argocd-cm config map. If the interval is to 0 then Argo CD will not poll Git repositories automatically and alternative methods such as webhooks and/or manual syncs should be used.
 
-![argocd-ui-outofsync.png](assets/argocd-ui-outofsync.png)
+For training purposes, let's set `Refresh` interval to 5s and restart argocd application controller to deploy our changes faster
 
-Notice that the application might be in `OutOfSync` state. This means that the application is not deployed and not in sync with the desired state.
+```bash
+$ kubectl patch configmap/argocd-cm -n argocd --type merge \
+  -p '{"data":{"timeout.reconciliation":"5s"}}'
+$ kubectl -n argocd rollout restart deploy argocd-repo-server
+$ kubectl -n argocd rollout status deploy/argocd-repo-server
+$ kubectl -n argocd rollout restart statefulset argocd-application-controller
+$ kubectl -n argocd rollout status statefulset argocd-application-controller
+```
 
-![argocd-ui-outofsync-apps.png](assets/argocd-ui-outofsync-apps.png)
-
-It will take Argo CD some time to notice the changes in the Git repository and reconcile. You can use the Argo CD UI to `Refresh` and `Sync` for our new `apps` kustomization to appear.
-
-Now, we're going to `Sync` the application. This will deploy the application to the cluster and bring it to the desired state.
-
-Click on the `Sync` button in the UI of the app.
-
-![argocd-sync.png](assets/argocd-sync.png)
-
-Or, you can also use the `argocd` CLI:
+We can also use the `Sync` button or the `argocd` CLI to `Sync` an application:
 
 ```bash
 $ argocd app sync apps --prune

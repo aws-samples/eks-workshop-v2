@@ -6,5 +6,5 @@ sidebar_position: 90
 To uninstall Argo CD apps from the cluster run:
 
 ```bash
-$ argocd app delete apps -y
+$ argocd app delete apps --cascade -y
 ```
