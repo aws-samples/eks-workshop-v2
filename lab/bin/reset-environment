@@ -73,7 +73,9 @@ terraform -chdir="$tf_dir" destroy --auto-approve > /tmp/terraform-destroy.log
 rm -rf /eks-workshop/terraform/addon*.tf
 
 rm -rf /eks-workshop/hooks
-rm -rf /home/ec2-user/environment/lab
+rm -rf /home/ec2-user/environment/lab /home/ec2-user/environment/base
+
+cp -R $manifests_path/base /home/ec2-user/environment/base
 
 if [ ! -z "$module" ]; then
   module_path="$manifests_path/modules/$module"
