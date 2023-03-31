@@ -4,4 +4,4 @@ set -Eeuo pipefail
 
 reset-environment
 
-kubectl delete -k /manifests/base > /dev/null
+kubectl delete -k /eks-workshop/manifests/base > /dev/null

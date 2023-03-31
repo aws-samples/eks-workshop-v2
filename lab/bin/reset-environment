@@ -2,13 +2,25 @@
 
 module=$1
 
-absolute_path='/manifests/base'
+repository_path="/eks-workshop/repository"
+manifests_path="/eks-workshop/manifests"
+base_path="$manifests_path/base"
 
 set -Eeuo pipefail
 
-if [[ ! -d "$absolute_path" ]]; then
-  echo "Error: Manifest directory not found to reset"
-  exit 1
+mkdir -p /eks-workshop
+
+rm -rf $manifests_path
+
+REPOSITORY_REF=${REPOSITORY_REF:-""}
+
+if [ ! -z "${REPOSITORY_REF}" ]; then
+  rm -rf $repository_path
+
+  git clone https://github.com/aws-samples/eks-workshop-v2.git $repository_path
+  (cd $repository_path && git checkout "${REPOSITORY_REF}")
+
+  cp -R $repository_path/manifests $manifests_path
 fi
 
 echo "Resetting the environment, please wait"
@@ -17,7 +29,7 @@ if [ -f "/eks-workshop/hooks/cleanup.sh" ]; then
   bash /eks-workshop/hooks/cleanup.sh
 fi
 
-kubectl apply -k $absolute_path --prune --all \
+kubectl apply -k $base_path --prune --all \
   --prune-whitelist=autoscaling/v1/HorizontalPodAutoscaler \
   --prune-whitelist=core/v1/Service \
   --prune-whitelist=core/v1/ConfigMap \
@@ -38,7 +50,7 @@ kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/crea
 
 # Addons
 mkdir -p /eks-workshop/terraform
-cp /manifests/terraform/base.tf /eks-workshop/terraform
+cp $manifests_path/terraform/base.tf /eks-workshop/terraform
 
 export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
 
@@ -56,7 +68,7 @@ rm -rf /eks-workshop/terraform/addon*.tf
 rm -rf /eks-workshop/hooks
 
 if [ ! -z "$module" ]; then
-  module_path="/manifests/modules/$module"
+  module_path="$manifests_path/modules/$module"
 
   if [ -f "$module_path/.workshop/cleanup.sh" ]; then
     mkdir -p /eks-workshop/hooks
