@@ -21,3 +21,7 @@ touch ~/.bashrc.d/workshop-env.bash
 cat << EOT > /home/ec2-user/.bashrc.d/aliases.bash
 function prepare-environment() { bash /usr/local/bin/reset-environment \$1; source ~/.bashrc.d/workshop-env.bash; }
 EOT
+
+if [ ! -z "$REPOSITORY_REF" ]; then
+  echo 'export REPOSITORY_REF="${REPOSITORY_REF}"' > ~/.bashrc.d/repository.bash
+fi
