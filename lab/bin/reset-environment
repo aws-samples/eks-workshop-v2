@@ -17,8 +17,12 @@ REPOSITORY_REF=${REPOSITORY_REF:-""}
 if [ ! -z "${REPOSITORY_REF}" ]; then
   rm -rf $repository_path
 
+  echo "Loading workshop repository..."
+
   git clone https://github.com/aws-samples/eks-workshop-v2.git $repository_path > /dev/null
   (cd $repository_path && git checkout "${REPOSITORY_REF}" > /dev/null)
+
+  echo ""
 
   cp -R $repository_path/manifests $manifests_path
 fi
@@ -95,6 +99,12 @@ if [ ! -z "$module" ]; then
 
     kubectl apply -k "$module_path/.workshop" > /dev/null
   fi
+
+  rm -rf ~/environment/lab
+
+  mkdir -p ~/environment/lab
+
+  cp -R $module_path/* ~/environment/lab
 fi
 
 terraform -chdir="$tf_dir" output -json | jq -r '.environment.value | select(. != null)' > ~/.bashrc.d/workshop-env.bash
