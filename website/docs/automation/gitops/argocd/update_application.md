@@ -17,15 +17,15 @@ Copy patch file to the Git repository directory:
 $ cp /workspace/modules/automation/gitops/argocd/update-application/deployment-patch.yaml ~/environment/gitops/apps/deployment-patch.yaml
 ```
 
-You can review planned changes in the file `/gitops/apps/deployment-patch.yaml`
+You can review planned changes in the file `apps/deployment-patch.yaml`
 
-To apply the patch edit the file `/gitops/apps/kustomization.yaml` like in the example below:
+To apply the patch edit the file `apps/kustomization.yaml` like in the example below:
 
 ```file
 automation/gitops/argocd/update-application/kustomization.yaml
 ```
 
-You can execute commands to add necessary changes to the file `/gitops/apps/kustomization.yaml`:
+You can execute commands to add necessary changes to the file `apps/kustomization.yaml`:
 
 ```bash
 $ echo "patches:" >> ~/environment/gitops/apps/kustomization.yaml
@@ -52,6 +52,9 @@ To verify, run the following commands:
 $ kubectl get deployment -n ui ui
 NAME   READY   UP-TO-DATE   AVAILABLE   AGE
 ui     3/3     3            3           3m33s
+```
+
+```bash
 $ kubectl get pod -n ui
 NAME                  READY   STATUS    RESTARTS   AGE
 ui-6d5bb7b95-hzmgp   1/1     Running   0          61s
