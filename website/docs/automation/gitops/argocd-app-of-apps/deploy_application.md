@@ -110,7 +110,7 @@ You final Git directory should now look something like this which you can valida
 
 Finally we can push our configuration to the Git repository
 
-```bash
+```bash wait=300 hook=argocd-deployment
 $ (cd ~/environment/gitops && \
 git add . && \
 git commit -am "Adding apps-kustomization" && \

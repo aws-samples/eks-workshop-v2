@@ -21,7 +21,7 @@ Deployment/ui
 
 Push changes to the Git repository
 
-```bash
+```bash wait=300 hook=argocd-deployment
 $ (cd ~/environment/gitops && \
 git add . && \
 git commit -am "Update UI service replicas" && \
