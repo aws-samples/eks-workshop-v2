@@ -109,6 +109,10 @@ if [ ! -z "$module" ]; then
   mkdir -p /home/ec2-user/environment/lab
 
   cp -R $module_path/* /home/ec2-user/environment/lab
+
+  relative_path=$(realpath --relative-to=$module_path $base_path)
+
+  find /home/ec2-user/environment/lab -type f -name "*.yaml" -print0 | xargs -0 sed -i'' -e "s/${relative_path//\//\\/}/..\/base/g"
 fi
 
 terraform -chdir="$tf_dir" output -json | jq -r '.environment.value | select(. != null)' > ~/.bashrc.d/workshop-env.bash
