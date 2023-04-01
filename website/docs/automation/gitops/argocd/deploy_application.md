@@ -97,7 +97,10 @@ You should now have all the resources related to the UI services deployed. To ve
 $ kubectl get deployment -n ui ui
 NAME   READY   UP-TO-DATE   AVAILABLE   AGE
 ui     1/1     1            1           61s
+```
+
+```bash
 $ kubectl get pod -n ui
-NAME                  READY   STATUS    RESTARTS   AGE
-ui-6d5bb7b95-rjfxd   1/1     Running   0          62s
+NAME READY STATUS RESTARTS AGE
+ui-6d5bb7b95-rjfxd 1/1 Running 0 62s
 ```

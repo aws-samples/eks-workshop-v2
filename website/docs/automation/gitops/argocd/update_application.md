@@ -19,17 +19,16 @@ $ cp /workspace/modules/automation/gitops/argocd/update-application/deployment-p
 
 You can review planned changes in the file `apps/deployment-patch.yaml`
 
-To apply the patch edit the file `apps/kustomization.yaml` like in the example below:
+To apply the patch you can edit the file `apps/kustomization.yaml` like in the example below:
 
 ```file
-automation/gitops/argocd/update-application/kustomization.yaml
+automation/gitops/argocd/update-application/kustomization.yaml.example
 ```
 
-You can execute commands to add necessary changes to the file `apps/kustomization.yaml`:
+Copy edited file `kustomization.yaml` to the Git repository directory:
 
 ```bash
-$ echo "patches:" >> ~/environment/gitops/apps/kustomization.yaml
-$ echo "- deployment-patch.yaml" >> ~/environment/gitops/apps/kustomization.yaml
+$ cp /workspace/modules/automation/gitops/argocd/update-application/kustomization.yaml.example ~/environment/gitops/apps/kustomization.yaml
 ```
 
 Push changes to the Git repository
