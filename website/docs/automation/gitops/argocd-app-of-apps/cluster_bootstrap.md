@@ -58,7 +58,7 @@ Next, we create templates for each child app:
 automation/gitops/argocd-app-of-apps/apps-config/templates/ui.yaml
 ```
 
-`values.yaml` contains values which are specific for a particular (DEV) environment and which will be applied to all app templates.
+`values.yaml` contains values which are specific for a particular (for example DEV) environment and which will be applied to all app templates.
 
 ```file
 automation/gitops/argocd-app-of-apps/apps-config/values.yaml

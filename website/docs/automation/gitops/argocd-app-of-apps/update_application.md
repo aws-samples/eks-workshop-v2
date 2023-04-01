@@ -6,13 +6,13 @@ sidebar_position: 40
 Now we can use Argo CD and Kustomize to deploy patches to our application manifests using GitOps
 For example, lets increase the number of `replicas` for `ui` deployment to `3`
 
-You can execute commands to add necessary changes to the file `/gitops/apps-kustomization/ui/deployment-patch.yaml`:
+You can execute commands to add necessary changes to the file `apps-kustomization/ui/deployment-patch.yaml`:
 
 ```bash
 $ yq -i '.spec.replicas = 3' ~/environment/gitops/apps-kustomization/ui/deployment-patch.yaml
 ```
 
-You can review planned changes in the file `/gitops/apps-kustomization/ui/deployment-patch.yaml`
+You can review planned changes in the file `apps-kustomization/ui/deployment-patch.yaml`
 
 ```kustomization
 automation/gitops/argocd-app-of-apps/update-application/deployment-patch.yaml
