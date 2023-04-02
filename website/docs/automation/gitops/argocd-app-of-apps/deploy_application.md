@@ -120,7 +120,7 @@ git push)
 It will take Argo CD some time to notice the changes in the Git repository and reconcile.
 We can also use the `Refresh` button or the `argocd` CLI to `Sync` an application:
 
-```bash wait=90 hook=deployment
+```bash timeout=300 hook=deployment
 $ argocd app sync apps --prune
 $ argocd app sync ui --prune
 ```
