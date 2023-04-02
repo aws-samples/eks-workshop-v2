@@ -110,14 +110,20 @@ You final Git directory should now look something like this which you can valida
 
 Finally we can push our configuration to the Git repository
 
-```bash wait=300 hook=argocd-deployment
+```bash
 $ (cd ~/environment/gitops && \
 git add . && \
 git commit -am "Adding apps-kustomization" && \
 git push)
 ```
 
-It will take Argo CD some time to notice the changes in the Git repository and reconcile. You can use the Argo CD UI to `Refresh Apps` or wait about 5s for our new `apps` configuration to appear
+It will take Argo CD some time to notice the changes in the Git repository and reconcile.
+We can also use the `Refresh` button or the `argocd` CLI to `Sync` an application:
+
+```bash wait=90 hook=deployment
+$ argocd app sync apps --prune
+$ argocd app sync ui --prune
+```
 
 We've now successfully migrated the all the applications to deploy using Argo CD, and any further changes pushed to the Git repository will be automatically reconciled to our EKS cluster.
 
