@@ -31,7 +31,7 @@ $ ARGOCD_PWD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonp
 $ echo "ArgoCD admin password: $ARGOCD_PWD"
 ```
 
-Log in to the Argo CD UI using the URL and credentials you just obtained.
+Log in to the Argo CD UI using the URL and credentials you just obtained
 
 You will be presented with a screen that looks like this:
 
