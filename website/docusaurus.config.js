@@ -117,6 +117,12 @@ const config = {
             label: 'Automation',
           },
           {
+            type: 'doc',
+            docId: 'servicemesh/index',
+            position: 'left',
+            label: 'Service Mesh',
+          },          
+          {
             href: 'https://github.com/aws-samples/eks-workshop-v2',
             position: 'right',
             className: 'header-github-link',
