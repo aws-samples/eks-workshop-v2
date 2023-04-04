@@ -5,6 +5,13 @@ weight: 10
 sidebar_custom_props: {"module": true}
 ---
 
+:::danger Read before you start this module
+
+This module currently only works on the [self-hosted version](https://www.eksworkshop.com/docs/introduction/setup/your-account) of eksworkshop as Amazon VPC Lattice resources are not yet supported on [Workshop Studio](https://www.eksworkshop.com/docs/introduction/setup/aws-event).
+:::
+
+
+
 :::tip Before you start
 Prepare your environment for this section:
 
