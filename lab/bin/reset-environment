@@ -73,7 +73,7 @@ terraform -chdir="$tf_dir" destroy --auto-approve > /tmp/terraform-destroy.log
 rm -rf /eks-workshop/terraform/addon*.tf
 
 rm -rf /eks-workshop/hooks
-rm /home/ec2-user/environment/lab /home/ec2-user/environment/base
+rm -f /home/ec2-user/environment/lab /home/ec2-user/environment/base
 
 ln -s $manifests_path/base /home/ec2-user/environment/base
 
