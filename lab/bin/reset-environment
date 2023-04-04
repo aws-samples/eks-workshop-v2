@@ -63,7 +63,7 @@ export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
 
 RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-""}
 
-echo "Cleaning up addons..."
+echo "Cleaning up previous lab infrastructure..."
 
 tf_dir=$(realpath --relative-to='$PWD' '/eks-workshop/terraform')
 
@@ -73,9 +73,9 @@ terraform -chdir="$tf_dir" destroy --auto-approve > /tmp/terraform-destroy.log
 rm -rf /eks-workshop/terraform/addon*.tf
 
 rm -rf /eks-workshop/hooks
-rm -rf /home/ec2-user/environment/lab /home/ec2-user/environment/base
+rm /home/ec2-user/environment/lab /home/ec2-user/environment/base
 
-cp -R $manifests_path/base /home/ec2-user/environment/base
+ln -s $manifests_path/base /home/ec2-user/environment/base
 
 if [ ! -z "$module" ]; then
   module_path="$manifests_path/modules/$module"
@@ -86,7 +86,7 @@ if [ ! -z "$module" ]; then
   fi
 
   if [ -f "$module_path/.workshop/addon.tf" ]; then
-    echo "Applying lab addons..."
+    echo "Creating infrastructure for next lab..."
 
     cp "$module_path/.workshop/addon.tf" /eks-workshop/terraform
 
@@ -101,18 +101,11 @@ if [ ! -z "$module" ]; then
   fi
 
   if [ -f "$module_path/.workshop/kustomization.yaml" ]; then
-    echo "Applying lab manifests..."
-
     kubectl apply -k "$module_path/.workshop" > /dev/null
   fi
 
-  mkdir -p /home/ec2-user/environment/lab
-
-  cp -R $module_path/* /home/ec2-user/environment/lab
-
-  relative_path=$(realpath --relative-to=$module_path $base_path)
-
-  find /home/ec2-user/environment/lab -type f -name "*.yaml" -print0 | xargs -0 sed -i'' -e "s/${relative_path//\//\\/}/..\/base/g"
+  # Link manifests to Cloud9 workspace
+  ln -s $module_path /home/ec2-user/environment/lab
 fi
 
 terraform -chdir="$tf_dir" output -json | jq -r '.environment.value | select(. != null)' > ~/.bashrc.d/workshop-env.bash
