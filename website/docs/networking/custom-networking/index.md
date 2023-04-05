@@ -11,6 +11,12 @@ Prepare your environment for this section:
 $ prepare-environment networking/custom-networking
 ```
 
+This will make the following changes to your lab environment:
+- Attach a secondary CIDR range to the VPC
+- Create three additional subnets from the secondary CIDR range
+
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/networking/custom-networking/.workshop).
+
 :::
 
 By default, Amazon VPC CNI will assign Pods an IP address selected from the primary subnet. The primary subnet is the subnet CIDR that the primary ENI is attached to, usually the subnet of the node/host.

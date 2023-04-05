@@ -16,7 +16,7 @@ modules/automation/controlplanes/crossplane/compositions/definition.yaml
 Create this composite definition:
 
 ```bash
-$ kubectl apply -f /manifests/modules/automation/controlplanes/crossplane/compositions/definition.yaml
+$ kubectl apply -f /eks-workshop/manifests/modules//automation/controlplanes/crossplane/compositions/definition.yaml
 compositeresourcedefinition.apiextensions.crossplane.io "xrelationaldatabases.awsblueprints.io" deleted
 ```
 
@@ -31,7 +31,7 @@ modules/automation/controlplanes/crossplane/compositions/composition/composition
 Apply this to our EKS cluster:
 
 ```bash
-$ kubectl apply -k /manifests/modules/automation/controlplanes/crossplane/compositions/composition
+$ kubectl apply -k /eks-workshop/manifests/modules/automation/controlplanes/crossplane/compositions/composition
 composition.apiextensions.crossplane.io/rds-mysql.awsblueprints.io created
 ```
 
@@ -46,7 +46,7 @@ modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml
 Create the database by creating a `Claim`:
 
 ```bash
-$ kubectl apply -k /manifests/modules/automation/controlplanes/crossplane/compositions/claim
+$ kubectl apply -k /eks-workshop/manifests/modules/automation/controlplanes/crossplane/compositions/claim
 relationaldatabase.awsblueprints.io/rds-eks-workshop created
 ```
 
@@ -88,7 +88,7 @@ type: connection.crossplane.io/v1alpha1
 Update the application to use the RDS endpoint and credentials:
 
 ```bash
-$ kubectl apply -k /manifests/modules/automation/controlplanes/crossplane/compositions/application
+$ kubectl apply -k /eks-workshop/manifests/modules/automation/controlplanes/crossplane/compositions/application
 namespace/catalog unchanged
 serviceaccount/catalog unchanged
 configmap/catalog unchanged

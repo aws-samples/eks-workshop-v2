@@ -9,7 +9,7 @@ after() {
 
   sleep 60
 
-  kubectl delete -k /manifests/base --all
+  kubectl delete -k /eks-workshop/manifests/base --all
 
   sleep 60
 }

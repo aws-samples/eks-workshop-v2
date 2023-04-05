@@ -10,6 +10,8 @@ set -Eeuo pipefail
 
 mkdir -p /eks-workshop
 
+rm -f /home/ec2-user/environment/lab /home/ec2-user/environment/base
+
 rm -rf $manifests_path
 
 REPOSITORY_REF=${REPOSITORY_REF:-""}
@@ -60,7 +62,6 @@ cp $manifests_path/terraform/base.tf /eks-workshop/terraform
 
 export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
 
-
 RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-""}
 
 echo "Cleaning up previous lab infrastructure..."
@@ -73,7 +74,6 @@ terraform -chdir="$tf_dir" destroy --auto-approve > /tmp/terraform-destroy.log
 rm -rf /eks-workshop/terraform/addon*.tf
 
 rm -rf /eks-workshop/hooks
-rm -f /home/ec2-user/environment/lab /home/ec2-user/environment/base
 
 ln -s $manifests_path/base /home/ec2-user/environment/base
 

@@ -26,5 +26,5 @@ modules/autoscaling/workloads/hpa/hpa.yaml
 Let's apply this configuration:
 
 ```bash
-$ kubectl apply -k /manifests/modules/autoscaling/workloads/hpa
+$ kubectl apply -k /eks-workshop/manifests/modules/autoscaling/workloads/hpa
 ```

@@ -44,7 +44,7 @@ modules/observability/oss-metrics/adot/serviceaccount.yaml
 Create the resources:
 
 ```bash
-$ kubectl apply -k /manifests/modules/observability/oss-metrics/adot
+$ kubectl apply -k /eks-workshop/manifests/modules/observability/oss-metrics/adot
 ```
 
 The specification for the collector is too long to show here, but you can view it like so:

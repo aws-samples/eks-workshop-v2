@@ -18,7 +18,7 @@ Because Kubernetes uses a declarative mechanism we can apply the manifests for t
 Apply this kustomization to our cluster to deploy the rest of the components:
 
 ```bash wait=10
-$ kubectl apply -k /manifests/base
+$ kubectl apply -k /eks-workshop/manifests/base
 ```
 
 After this is complete we can use `kubectl wait` to make sure all the components have started before we proceed:

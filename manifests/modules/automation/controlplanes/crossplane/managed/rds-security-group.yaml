@@ -4,7 +4,7 @@ metadata:
   name: $(EKS_CLUSTER_NAME)-catalog-crossplane
 spec:
   forProvider:
-    region: $(AWS_DEFAULT_REGION)
+    region: $(AWS_REGION)
     description: SecurityGroup
     groupName: $(EKS_CLUSTER_NAME)-catalog-crossplane
     vpcId: $(VPC_ID)
@@ -27,4 +27,4 @@ spec:
     - key: managed-by
       value: crossplane
   providerConfigRef:
-    name: aws-provider-config
+    name: default

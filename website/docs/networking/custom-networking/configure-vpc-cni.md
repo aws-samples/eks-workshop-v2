@@ -48,7 +48,7 @@ modules/networking/custom-networking/provision/eniconfigs.yaml
 Let's apply these to our cluster:
 
 ```bash
-$ kubectl apply -k /manifests/modules/networking/custom-networking/provision
+$ kubectl apply -k /eks-workshop/manifests/modules/networking/custom-networking/provision
 ```
 
 Confirm that the `ENIConfig` objects were created:

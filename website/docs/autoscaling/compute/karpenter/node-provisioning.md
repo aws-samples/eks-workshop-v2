@@ -34,7 +34,7 @@ You'll notice in this example we're using the image `public.ecr.aws/eks-distro/k
 Apply this deployment:
 
 ```bash
-$ kubectl apply -k /manifests/modules/autoscaling/compute/karpenter/scale
+$ kubectl apply -k /eks-workshop/manifests/modules/autoscaling/compute/karpenter/scale
 ```
 
 Now, let's deliberately scale this deployment to demonstrate that Karpenter is making optimized decisions. Since we've requested 1Gi of memory, if we scale the deployment to 5 replicas that will request a total of 5Gi of memory.

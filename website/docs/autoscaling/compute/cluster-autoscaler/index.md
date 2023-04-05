@@ -11,6 +11,11 @@ Prepare your environment for this section:
 $ prepare-environment autoscaling/compute/cluster-autoscaler
 ```
 
+This will make the following changes to your lab environment:
+- Install the Kubernetes Cluster Autoscaler in the Amazon EKS cluster
+
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/autoscaling/compute/cluster-autoscaler/.workshop).
+
 :::
 
 In this lab, we'll look at the [Kubernetes Cluster Autoscaler](https://github.com/kubernetes/autoscaler), a component that automatically adjusts the size of a Kubernetes Cluster so that all pods have a place to run without unneeded nodes. The Cluster Autoscaler is a great tool to ensure that the underlying cluster infrastructure is elastic, scalable, and can meet the changing demands of workloads.

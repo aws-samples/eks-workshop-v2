@@ -41,7 +41,7 @@ const plugin = (options) => {
         });
         const mutatedPromise = generateYaml(kustomizationPath, resourceKind, resourceName, true)
 
-        const nicePath = `/workspace/modules/${file}`
+        const nicePath = `/eks-workshop/manifests/modules//${file}`
 
         const p = Promise.all([filePromise, originalPromise, mutatedPromise]).then(res => {
           const mutatedManifest = res[2].manifest

@@ -26,7 +26,7 @@ In this case we're going to schedule a single pause pod requesting `7Gi` of memo
 Apply the updates to your cluster:
 
 ```bash timeout=340 hook=overprovisioning-setup
-$ kubectl apply -k /manifests/modules/autoscaling/compute/overprovisioning/setup
+$ kubectl apply -k /eks-workshop/manifests/modules/autoscaling/compute/overprovisioning/setup
 priorityclass.scheduling.k8s.io/default created
 priorityclass.scheduling.k8s.io/pause-pods created
 deployment.apps/pause-pods created

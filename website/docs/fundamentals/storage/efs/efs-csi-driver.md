@@ -37,7 +37,7 @@ StorageClass/efs-sc
 Let's apply this kustomization:
 
 ```bash
-$ kubectl apply -k /manifests/modules/fundamentals/storage/efs/storageclass
+$ kubectl apply -k /eks-workshop/manifests/modules/fundamentals/storage/efs/storageclass
 storageclass.storage.k8s.io/efs-sc created
 configmap/assets-efsid-48hg67g6fd created
 ```

@@ -27,7 +27,7 @@ Provisioner/default
 Let's apply this update:
 
 ```bash
-$ kubectl apply -k /manifests/modules/autoscaling/compute/karpenter/consolidation
+$ kubectl apply -k /eks-workshop/manifests/modules/autoscaling/compute/karpenter/consolidation
 ```
 
 Now, let's scale our `inflate` workload again to consume more resources:

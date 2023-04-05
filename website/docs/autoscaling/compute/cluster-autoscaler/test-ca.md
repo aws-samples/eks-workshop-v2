@@ -18,7 +18,7 @@ modules/autoscaling/compute/cluster-autoscaler/deployment.yaml
 Let's apply this to our cluster:
 
 ```bash hook=ca-pod-scaleout timeout=180
-$ kubectl apply -k /manifests/modules/autoscaling/compute/cluster-autoscaler
+$ kubectl apply -k /eks-workshop/manifests/modules/autoscaling/compute/cluster-autoscaler
 ```
 
 Some pods will be in the `Pending` state, which triggers the cluster-autoscaler to scale out the EC2 fleet.

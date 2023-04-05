@@ -103,7 +103,7 @@ Now lets check the value of `CARTS_IAM_ROLE` which will provide the ARN of the I
 ```bash
 $ echo $CARTS_IAM_ROLE
 arn:aws:iam::1234567890:role/eks-workshop-carts-dynamo
-$ kubectl apply -k /manifests/modules/security/irsa/service-account
+$ kubectl apply -k /eks-workshop/manifests/modules/security/irsa/service-account
 ```
 
 

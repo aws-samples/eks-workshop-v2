@@ -34,10 +34,10 @@ $ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
 No resources found
 ```
 
-The first thing we'll do is deploy the catalog component by itself. The manifests for this component can be found in `/manifests/base/catalog`.
+The first thing we'll do is deploy the catalog component by itself. The manifests for this component can be found in `/eks-workshop/manifests/base/catalog`.
 
 ```bash
-$ ls /manifests/base/catalog
+$ ls /eks-workshop/manifests/base/catalog
 configMap.yaml
 deployment.yaml
 kustomization.yaml
@@ -79,7 +79,7 @@ This Service:
 Let's create the catalog component:
 
 ```bash
-$ kubectl apply -k /manifests/base/catalog
+$ kubectl apply -k /eks-workshop/manifests/base/catalog
 namespace/catalog created
 serviceaccount/catalog created
 configmap/catalog created

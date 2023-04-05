@@ -34,7 +34,7 @@ Deployment/catalog
 Apply the changes and wait for the new Pods to be rolled out:
 
 ```bash hook=check-pvc
-$ kubectl apply -k /manifests/modules/fundamentals/storage/ebs/
+$ kubectl apply -k /eks-workshop/manifests/modules/fundamentals/storage/ebs/
 $ kubectl rollout status --timeout=60s statefulset/catalog-mysql-ebs -n catalog
 ```
 

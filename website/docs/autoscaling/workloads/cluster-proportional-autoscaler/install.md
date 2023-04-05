@@ -13,7 +13,7 @@ modules/autoscaling/workloads/cpa/deployment.yaml
 Let's apply this to our cluster:
 
 ```bash hook=cpa-install timeout=180
-$ kubectl apply -k /manifests/modules/autoscaling/workloads/cpa
+$ kubectl apply -k /eks-workshop/manifests/modules/autoscaling/workloads/cpa
 ```
 
 This will create a `Deployment` in the `kube-system` namespace which we can inspect:

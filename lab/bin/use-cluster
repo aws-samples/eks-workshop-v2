@@ -33,6 +33,6 @@ AWS_ACCOUNT_ID=${AWS_ACCOUNT_ID}
 set +a
 EOT
 
-aws eks update-kubeconfig --name $cluster_name
+aws eks update-kubeconfig --name $cluster_name > /dev/null
 
 echo "Run this command: 'source /home/ec2-user/.bashrc.d/env.bash'"

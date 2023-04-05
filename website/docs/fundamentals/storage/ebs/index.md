@@ -11,6 +11,11 @@ Prepare your environment for this section:
 $ prepare-environment fundamentals/storage/ebs
 ```
 
+This will make the following changes to your lab environment:
+- Install the EKS managed addon for the EBS CSI driver
+
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/fundamentals/storage/ebs/.workshop).
+
 :::
 
 [Amazon Elastic Block Store](https://aws.amazon.com/ebs/) is an easy-to-use, scalable, high-performance block-storage service. It provides persistent volume (non-volatile storage) to users. Persistent storage enables users to store their data until they decide to delete the data.

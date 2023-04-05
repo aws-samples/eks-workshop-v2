@@ -12,7 +12,7 @@ modules/security/sealed-secrets/new-catalog-db.yaml
 Now, let’s create SealedSecret YAML manifests with kubeseal.
 
 ```bash
-$ kubeseal --format=yaml < /manifests/modules/security/sealed-secrets/new-catalog-db.yaml \
+$ kubeseal --format=yaml < /eks-workshop/manifests/modules//security/sealed-secrets/new-catalog-db.yaml \
   > /tmp/sealed-catalog-db.yaml
 ```
 
@@ -20,7 +20,7 @@ Alternatively, the public key can be fetched from the controller and use it offl
 
 ```bash test=false
 $ kubeseal --fetch-cert > /tmp/public-key-cert.pem
-$ kubeseal --cert=/tmp/public-key-cert.pem --format=yaml < /manifests/modules/security/sealed-secrets/new-catalog-db.yaml \
+$ kubeseal --cert=/tmp/public-key-cert.pem --format=yaml < /eks-workshop/manifests/modules//security/sealed-secrets/new-catalog-db.yaml \
   > /tmp/sealed-catalog-db.yaml
 ```
 
@@ -78,7 +78,7 @@ Deployment/catalog
 ```
 
 ```bash
-$ kubectl apply -k /manifests/modules/security/sealed-secrets
+$ kubectl apply -k /eks-workshop/manifests/modules/security/sealed-secrets
 $ kubectl rollout status -n catalog deployment/catalog --timeout 30s
 ```
 

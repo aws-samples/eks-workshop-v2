@@ -4,7 +4,7 @@ metadata:
   name: $(EKS_CLUSTER_NAME)-catalog-crossplane
 spec:
   forProvider:
-    region: $(AWS_DEFAULT_REGION)
+    region: $(AWS_REGION)
     allocatedStorage: 20
     dbInstanceClass: db.t4g.micro
     dbName: catalog
@@ -33,4 +33,4 @@ spec:
     name: catalog-db-crossplane
     namespace: catalog
   providerConfigRef:
-    name: aws-provider-config
+    name: default

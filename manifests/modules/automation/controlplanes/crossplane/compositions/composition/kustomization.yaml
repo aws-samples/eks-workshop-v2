@@ -12,13 +12,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.EKS_CLUSTER_NAME
-- name: AWS_DEFAULT_REGION
+- name: AWS_REGION
   objref:
     kind: ConfigMap
     name: options
     apiVersion: v1
   fieldref:
-    fieldpath: data.AWS_DEFAULT_REGION
+    fieldpath: data.AWS_REGION
 - name: VPC_ID
   objref:
     kind: ConfigMap
@@ -33,13 +33,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.VPC_CIDR
-- name: VPC_PRIVATE_SUBNET_ID_0
+- name: VPC_PRIVATE_SUBNET_ID_3
   objref:
     kind: ConfigMap
     name: options
     apiVersion: v1
   fieldref:
-    fieldpath: data.VPC_PRIVATE_SUBNET_ID_0
+    fieldpath: data.VPC_PRIVATE_SUBNET_ID_3
 - name: VPC_PRIVATE_SUBNET_ID_1
   objref:
     kind: ConfigMap

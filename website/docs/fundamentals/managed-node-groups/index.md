@@ -11,6 +11,11 @@ Prepare your environment for this section:
 $ prepare-environment fundamentals/mng
 ```
 
+This will make the following changes to your lab environment:
+- Create an additional managed node group in the Amazon EKS cluster
+
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/fundamentals/mng/.workshop).
+
 :::
 
 In the Getting started lab, we deployed our sample application to EKS and saw the running Pods. But where are these Pods running?

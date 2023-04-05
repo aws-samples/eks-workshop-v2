@@ -24,7 +24,7 @@ Deployment/assets
 We can apply the changes by running the following command:
 
 ```bash
-$ kubectl apply -k /manifests/modules/fundamentals/storage/efs/deployment
+$ kubectl apply -k /eks-workshop/manifests/modules/fundamentals/storage/efs/deployment
 namespace/assets unchanged
 serviceaccount/assets unchanged
 configmap/assets unchanged

@@ -11,6 +11,12 @@ Prepare your environment for this section:
 $ prepare-environment observability/oss-metrics
 ```
 
+This will make the following changes to your lab environment:
+- Install the EKS managed addon for AWS Distro for OpenTelemetry
+- Create an IAM role for the ADOT collector to access Amazon Managed Prometheus
+
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/oss-metrics/.workshop).
+
 :::
 
 In this lab, we'll collect the metrics from the application using [AWS Distro for OpenTelemetry](https://aws-otel.github.io/), store the metrics in Amazon Managed Service for Prometheus and visualize using Amazon Managed Grafana.

@@ -27,13 +27,13 @@ Deployment/checkout
 You can generate the final Kubernetes YAML that applies this kustomization with the `kustomize` CLI:
 
 ```bash
-$ kustomize build /manifests/modules/introduction/kustomize
+$ kustomize build /eks-workshop/manifests/modules//introduction/kustomize
 ```
 
 This will generate a lot of YAML files, which represents the final manifests you can apply directly to Kubernetes. Let's demonstrate this by piping the output from `kustomize` directly to `kubectl`:
 
 ```bash
-$ kustomize build /manifests/modules/introduction/kustomize | kubectl apply -f -
+$ kustomize build /eks-workshop/manifests/modules//introduction/kustomize | kubectl apply -f -
 namespace/checkout unchanged
 serviceaccount/checkout unchanged
 configmap/checkout unchanged
@@ -43,7 +43,7 @@ deployment.apps/checkout configured
 deployment.apps/checkout-redis unchanged
 ```
 
-You'll notice that a number of different `checkout`-related resources are "unchanged", with the `deployment.apps/checkout` being "configured". This is intentional — we only want to apply changes to the `checkout` deployment. This happens because running the previous command actually applied two files: the Kustomize `deployment.yaml` that we saw above, as well as the following `kustomization.yaml` file which matches all files in the `/manifests/base/checkout` folder. The `patches` field specifies the specific file to be patched:
+You'll notice that a number of different `checkout`-related resources are "unchanged", with the `deployment.apps/checkout` being "configured". This is intentional — we only want to apply changes to the `checkout` deployment. This happens because running the previous command actually applied two files: the Kustomize `deployment.yaml` that we saw above, as well as the following `kustomization.yaml` file which matches all files in the `/eks-workshop/manifests/base/checkout` folder. The `patches` field specifies the specific file to be patched:
 
 ```file
 modules/introduction/kustomize/kustomization.yaml
@@ -64,13 +64,13 @@ Although we have used the `kustomize` CLI directly in this section, Kustomize is
 Let's try that:
 
 ```bash
-$ kubectl apply -k /manifests/modules/introduction/kustomize
+$ kubectl apply -k /eks-workshop/manifests/modules/introduction/kustomize
 ```
 
 To reset the application manifests back to their initial state, you can simply apply the original set of manifests:
 
 ```bash timeout=300 wait=30
-$ kubectl apply -k /manifests/base
+$ kubectl apply -k /eks-workshop/manifests/base
 ```
 
 Now that you understand how Kustomize works, proceed to the [Fundamentals module](/docs/fundamentals).

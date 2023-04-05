@@ -32,7 +32,7 @@ modules/automation/controlplanes/crossplane/managed/rds-instance.yaml
 Apply this configuration to the EKS cluster:
 
 ```bash wait=30
-$ kubectl apply -k /manifests/modules/automation/controlplanes/crossplane/managed
+$ kubectl apply -k /eks-workshop/manifests/modules/automation/controlplanes/crossplane/managed
 dbsubnetgroup.database.aws.crossplane.io/rds-eks-workshop created
 securitygroup.ec2.aws.crossplane.io/rds-eks-workshop created
 dbinstance.rds.aws.crossplane.io/rds-eks-workshop created
@@ -87,7 +87,7 @@ type: connection.crossplane.io/v1alpha1
 Update the application to use the RDS endpoint and credentials:
 
 ```bash
-$ kubectl apply -k /manifests/modules/automation/controlplanes/crossplane/application
+$ kubectl apply -k /eks-workshop/manifests/modules/automation/controlplanes/crossplane/application
 namespace/catalog unchanged
 serviceaccount/catalog unchanged
 configmap/catalog unchanged

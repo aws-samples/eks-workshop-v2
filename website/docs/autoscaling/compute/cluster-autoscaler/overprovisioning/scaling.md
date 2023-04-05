@@ -12,7 +12,7 @@ modules/autoscaling/compute/overprovisioning/scale/deployment.yaml
 Apply the updates to your cluster:
 
 ```bash timeout=180 hook=overprovisioning-scale
-$ kubectl apply -k /manifests/modules/autoscaling/compute/overprovisioning/scale
+$ kubectl apply -k /eks-workshop/manifests/modules/autoscaling/compute/overprovisioning/scale
 $ kubectl wait --for=condition=Ready --timeout=180s pods -l app.kubernetes.io/created-by=eks-workshop -A
 ```
 

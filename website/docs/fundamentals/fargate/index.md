@@ -11,6 +11,11 @@ Prepare your environment for this section:
 $ prepare-environment fundamentals/fargate
 ```
 
+This will make the following changes to your lab environment:
+- Create a Fargate profile in the Amazon EKS cluster
+
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/fundamentals/fargate/.workshop).
+
 :::
 
 In the previous module we saw how to provision EC2 compute instances to run Pods in our EKS cluster, and how managed node groups help reduce the operational burden. However, in this model you’re still responsible for the availability, capacity, and maintenance of the underlying infrastructure.

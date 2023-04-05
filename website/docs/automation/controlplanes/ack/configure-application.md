@@ -17,7 +17,7 @@ Apply this configuration:
 
 ```bash
 $ export CATALOG_PASSWORD=$(kubectl get secrets -n default catalog-rds-pw -n catalog -o go-template='{{.data.password|base64decode}}')
-$ kubectl apply -k /manifests/modules/automation/controlplanes/ack/rds/fieldexports
+$ kubectl apply -k /eks-workshop/manifests/modules/automation/controlplanes/ack/rds/fieldexports
 secret/catalog-db configured
 fieldexport.services.k8s.aws/catalog-db-endpoint created
 fieldexport.services.k8s.aws/catalog-db-user created
@@ -35,7 +35,7 @@ username: YWRtaW4=
 Finally, we can update the application to use the RDS endpoint and credentials sourced from the `catalog-db-ack` secret:
 
 ```bash
-$ kubectl apply -k /manifests/modules/automation/controlplanes/ack/rds/application
+$ kubectl apply -k /eks-workshop/manifests/modules/automation/controlplanes/ack/rds/application
 namespace/catalog unchanged
 serviceaccount/catalog unchanged
 configmap/catalog unchanged

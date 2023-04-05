@@ -4,12 +4,12 @@ metadata:
   name: $(EKS_CLUSTER_NAME)-catalog-crossplane
 spec:
   forProvider:
-    region: $(AWS_DEFAULT_REGION)
+    region: $(AWS_REGION)
     description: DBSubnet group
     subnetIds:
-    - $(VPC_PRIVATE_SUBNET_ID_0)
     - $(VPC_PRIVATE_SUBNET_ID_1)
     - $(VPC_PRIVATE_SUBNET_ID_2)
+    - $(VPC_PRIVATE_SUBNET_ID_3)
     tags:
     - key: created-by
       value: eks-workshop-v2
@@ -18,4 +18,4 @@ spec:
     - key: managed-by
       value: crossplane
   providerConfigRef:
-    name: aws-provider-config
+    name: default

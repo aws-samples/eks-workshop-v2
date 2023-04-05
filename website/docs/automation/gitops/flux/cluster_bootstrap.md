@@ -14,7 +14,7 @@ $ flux check --pre
 > prerequisites checks passed
 ```
 
-An AWS CodeCommit repository has already been created for you so let's bootstrap Flux on our EKS cluster:
+Now let's bootstrap Flux on our EKS cluster using the CodeCommit repository:
 
 ```bash
 $ flux bootstrap git \

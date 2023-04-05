@@ -12,13 +12,13 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.VPC_ID
-- name: VPC_PRIVATE_SUBNET_ID_0
+- name: VPC_PRIVATE_SUBNET_ID_3
   objref:
     kind: ConfigMap
     name: mq-ack-options
     apiVersion: v1
   fieldref:
-    fieldpath: data.VPC_PRIVATE_SUBNET_ID_0
+    fieldpath: data.VPC_PRIVATE_SUBNET_ID_3
 configurations:
   - env-var-transformer.yaml
 resources:

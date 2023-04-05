@@ -12,6 +12,11 @@ Prepare your environment for this section:
 $ prepare-environment exposing/load-balancer
 ```
 
+This will make the following changes to your lab environment:
+- Install the AWS Load Balancer Controller in the Amazon EKS cluster
+
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/exposing/load-balancer/.workshop).
+
 :::
 
 Kubernetes uses services to expose pods outside of a cluster. One of the most popular ways to use services in AWS is with the `LoadBalancer` type. With a simple YAML file declaring your service name, port, and label selector, the cloud controller will provision a load balancer for you automatically.

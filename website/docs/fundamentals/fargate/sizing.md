@@ -31,7 +31,7 @@ Deployment/checkout
 Apply the kustomization and wait for the rollout to complete:
 
 ```bash timeout=220
-$ kubectl apply -k /manifests/modules/fundamentals/fargate/sizing
+$ kubectl apply -k /eks-workshop/manifests/modules/fundamentals/fargate/sizing
 [...]
 $ kubectl rollout status -n checkout deployment/checkout --timeout=200s
 ```
