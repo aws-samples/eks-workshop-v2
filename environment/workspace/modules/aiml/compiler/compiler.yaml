@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: compiler
+  labels:
+    role: compiler
+    namespace: aiml
+spec:
+  containers:
+  - command:
+    - sh
+    - -c
+    - sleep infinity
+    name: compiler
+    image: ${AIML_DL_IMAGE}
+  serviceAccount: inference
