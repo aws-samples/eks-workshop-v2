@@ -133,13 +133,3 @@ Top 5 labels:
 ```
 
 You can see the result of the inference on the Inferentia.
-
-## Clean up
-
-```bash timeout=180
-$ envsubst < <(cat /workspace/modules/aiml/inferentia/inference.yaml) | kubectl -n aiml delete -f -
-$ envsubst < <(cat /workspace/modules/aiml/inferentia/compiler.yaml) | kubectl -n aiml delete -f -
-$ envsubst < <(cat /workspace/modules/aiml/inferentia/provisioner.yaml) | kubectl delete -f -
-$ kubectl delete -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.6.0/src/k8/k8s-neuron-device-plugin.yml
-$ kubectl delete -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.6.0/src/k8/k8s-neuron-device-plugin-rbac.yml
-```

@@ -20,7 +20,18 @@ replacements:
       kind: AWSNodeTemplate
       name: aiml
     fieldPaths:
-    - spec.subnetSelector.[karpenter.sh/discovery]
     - spec.securityGroupSelector.[karpenter.sh/discovery]
+- source:
+    kind: ConfigMap
+    name: inference-vars
+    version: v1
+    namespace: aiml
+    fieldPath: data.AI_ML_SUBNET
+  targets:
+  - select:
+      kind: AWSNodeTemplate
+      name: aiml
+    fieldPaths:
+    - spec.subnetSelector.aws-ids
 resources:
 - provisioner.yaml
