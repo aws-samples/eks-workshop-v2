@@ -77,3 +77,66 @@ Output:
 [1] 2113
           <div class="container" style="text-align: center">ui-v3-5b476c4744-ptw94</div>
 [1]+  Done                    curl -s $ISTIO_IG_HOSTNAME/home | grep --color=auto "ui-v"
+
+Now, let's open **Kiali**. Get the DNS name of the AWS ALB of Kilai, then hit it in the browser.
+
+![productpage](../assets/kilali-ui-before-traffic.png)
+Navigate to *Graph* in the Kiali dashboard. Choose the *ui* namespace next. Then, in the display dropdown, tick the boxes next to "Traffic Animation" and "Traffic Distribution". Finally, set the *Traffic metric per refresh* to **Last 5m**, and the *Refresh interval* to **Every 10s**.
+
+Now, execute the same loop command again for enough time and while the loop is running, check how Kiali shows the distribution of traffic to the 3 pod versions of the reviews service, which should still be almost equally distributed.
+```bash
+$ for i in {1..300}; do curl -s $ISTIO_IG_HOSTNAME/home | grep "ui-" & sleep 1; done
+```
+
+Wait a minute, and then you will notice that the traffic to the reviews versions are distributed almost equally. 
+
+You now understand the behavior of Kubernetes when distributing traffic to different versions of service backend pods. But the question now is, how to route traffic to each version by percentage of the coming taffic? 
+![split-pattern](../assets/split-pattern.png)
+
+For example, the ui service backed by 3 different versions. Is it possible to route 80% of traffic to v1, 10% to v2, and 10% to v3?
+
+Yes, you can easily accomplish this with Istio by creating a `VirtualService` that lists the different versions subsets with their weights, and a `DestinationRule` that defines policies that apply to traffic intended for a service after routing has occurred.
+
+Now, each deployment version is labeled with the label `version`, but with a different value. For example deployment of version 1, has the version label defined like this `version=ui-v1`, and deployment of version 2, has the version label defined like this `version=ui-v2`, etc.
+
+For example, if you want to list reviews pods of version 1, run the following command:
+```bash
+$ kubectl get pod -n ui -l version=ui-v1 | grep ui
+```
+Output:
+```bash
+ui-v1-9c6bb6658-s97gt       2/2     Running   0          22h
+```
+
+Now, let's define a subset per version using a DestinationRule. The label attached to the pods of each version must match the label defined here for each subset.
+
+```bash
+$ kubectl apply -n ui -f /UPDATE PATH
+```
+```file
+../manifests/ui/destinationrule.yaml
+```
+
+For the weight-based routing to happen, you create a VirtualService where you define a routing rule per version. Weights associated with the version determine the proportion of traffic it receives. For example, the rules defined here will route 80% of traffic for the “ui” service to instances with the “v1” label 10% of traffic for "v2", and the remaining 10% for "v3".
+
+```bash
+$ kubectl apply -n ui -f /UPDATE PATH
+```
+```file
+../manifests/ui/virtualservice.yaml
+```
+
+Now, execute the same loop command you executed earlier. 
+```bash
+$ for i in {1..300}; do curl -s $ISTIO_IG_HOSTNAME/home | grep "ui-" & sleep 1; done
+```
+
+Wait a minute, and then Open Kiali to look at the distribution of traffic to the 3 pod versions of the ui service, 
+
+![kiali-reviews-weight-traffic](../UPDATE.png)
+
+This time, the traffic to the ui versions are distributed following the weight based rules we defined in the VirtualService. 
+
+
+You can also use this weight-based method to gradually `traffic shifting` from one version to another, or to have `Canary Deployment` to test a newer version of a service by incrementally rolling out to users to minimize the risk and impact of any bugs introduced by the newer version. 
+
