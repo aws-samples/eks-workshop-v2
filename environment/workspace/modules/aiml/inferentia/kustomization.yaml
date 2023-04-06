@@ -21,7 +21,6 @@ replacements:
         name: inference
         namespace: aiml
       fieldPaths:
-        - spec.container.0.image
+        - spec.containers.0.image
 resources:
 - inference.yaml
-- provisioner.yaml

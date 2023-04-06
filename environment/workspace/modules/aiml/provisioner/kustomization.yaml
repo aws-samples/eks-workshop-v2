@@ -18,7 +18,7 @@ replacements:
   targets:
   - select:
       kind: AWSNodeTemplate
-      name: default
+      name: aiml
     fieldPaths:
     - spec.subnetSelector.[karpenter.sh/discovery]
     - spec.securityGroupSelector.[karpenter.sh/discovery]

@@ -79,7 +79,7 @@ The lab uses Karpenter to provison an Inferentia node. Karpenter can detect the 
 Karpenter requires a provisioner to provision nodes. This is the Karpenter provisioner that we will create:
 
 ```file
-aiml/inferentia/provisioner.yaml
+aiml/provisioner/provisioner.yaml
 ```
 
 Apply the provisioner yaml:
@@ -93,7 +93,7 @@ $ kubectl apply -k /workspace/modules/aiml/provisioner/
 Now we can deploy a Pod for inference:
 
 ```bash
-$ kubectl apply -k /workspace/modules/aiml/inference/
+$ kubectl apply -k /workspace/modules/aiml/inferentia/
 ```
 
 Karpenter detects the pending pod which needs Neuron cores and launches an inf1 instance which has the Inferentia chip. Monitor the instance provisioning with:
