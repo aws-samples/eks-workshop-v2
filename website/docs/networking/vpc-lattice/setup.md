@@ -1,5 +1,5 @@
 ---
-title: "VPC Lattice Setup"
+title: "Deploy the Controller"
 sidebar_position: 10
 ---
 
@@ -48,28 +48,28 @@ $ eksctl create iamserviceaccount \
     --approve
 ```
 
-Run either `kubectl` or `helm` to deploy the controller:
+---
+**CHOOSE AN INSTALLATION METHOD** for the controller between the two options below:
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **Option 1:** *Install with kubectl*
 
 ```bash
 $ kubectl apply -f workspace/modules/networking/vpc-lattice/controller/deploy-resources.yaml
 ```
       
-**or**
-
-Login to ECR:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **Option 2:** *Install with Helm*
 ```bash
 $ aws ecr-public get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin public.ecr.aws
-```
-And run `helm` with either install or upgrade
-
-```bash
 $ helm install gateway-api-controller \
     oci://public.ecr.aws/aws-application-networking-k8s/aws-gateway-controller-chart\
     --version=v0.0.7 \
     --set=aws.region=${AWS_DEFAULT_REGION} --set=serviceAccount.create=false --namespace system
 ```
+---
 
-Create the `amazon-vpc-lattice` GatewayClass:
+Before creating a `Gateway`, we need to formalize the types of load balancing implementations with a [GatewayClass](https://gateway-api.sigs.k8s.io/concepts/api-overview/#gatewayclass).  
+
+Create the `GatewayClass`:
 ```bash
 $ kubectl apply -f workspace/modules/networking/vpc-lattice/controller/gatewayclass.yaml
 ```
