@@ -14,14 +14,13 @@ replacements:
     name: inference-vars
     version: v1
     namespace: aiml
-    fieldPath: data.AIML_DL_IMAGE
+    fieldPath: data.EKS_CLUSTER_NAME
   targets:
-    - select:
-        kind: Pod
-        name: inference
-        namespace: aiml
-      fieldPaths:
-        - spec.container.0.image
+  - select:
+      kind: AWSNodeTemplate
+      name: default
+    fieldPaths:
+    - spec.subnetSelector.[karpenter.sh/discovery]
+    - spec.securityGroupSelector.[karpenter.sh/discovery]
 resources:
-- inference.yaml
 - provisioner.yaml

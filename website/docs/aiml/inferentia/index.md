@@ -76,7 +76,7 @@ aiml/inferentia/inference.yaml
 
 The lab uses Karpenter to provison an Inferentia node. Karpenter can detect the pending pod which requires Neuron cores and launch an inf1 instance which has the required Neuron cores.
 
-Karpenter requires the provisioner settings to provision nodes:
+Karpenter requires a provisioner to provision nodes. This is the Karpenter provisioner that we will create:
 
 ```file
 aiml/inferentia/provisioner.yaml
@@ -85,18 +85,18 @@ aiml/inferentia/provisioner.yaml
 Apply the provisioner yaml:
 
 ```bash
-$ envsubst < <(cat /workspace/modules/aiml/inferentia/provisioner.yaml) | kubectl apply -f -
+$ kubectl apply -k /workspace/modules/aiml/provisioner/
 ```
 
 ### Create a pod for inference
 
-Now we can deploy a pod for inference:
+Now we can deploy a Pod for inference:
 
 ```bash
-$ envsubst < <(cat /workspace/modules/aiml/inferentia/inference.yaml) | kubectl -n aiml apply -f -
+$ kubectl apply -k /workspace/modules/aiml/inference/
 ```
 
-Karpenter detects the pending pod which needs Neuron cores and launches an inf1 instance which has the Inferentia chip:
+Karpenter detects the pending pod which needs Neuron cores and launches an inf1 instance which has the Inferentia chip. Monitor the instance provisioning with:
 
 ```bash test=false
 $ kubectl logs -f -n karpenter deploy/karpenter -c controller
@@ -107,7 +107,7 @@ $ kubectl logs -f -n karpenter deploy/karpenter -c controller
 2022-10-28T08:24:45.136Z        INFO    controller.provisioning Waiting for unschedulable pods  {"commit": "37c8653"}
 ```
 
-The inference pod should be scheduled on the node provisioned by Karpenter:
+The inference pod should be scheduled on the node provisioned by Karpenter. Check if the Pod is in it's ready state:
 
 ```bash timeout=360
 $ kubectl -n aiml wait --for=condition=Ready --timeout=5m pod/inference
@@ -115,7 +115,7 @@ $ kubectl -n aiml wait --for=condition=Ready --timeout=5m pod/inference
 
 ### Run a inference
 
-It's the inference code using a Neuron core on Inferentia:
+This is the code that we will be using to run inference using a Neuron core on Inferentia:
 
 ```file
 aiml/inferentia/inference.py
