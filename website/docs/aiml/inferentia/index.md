@@ -124,3 +124,13 @@ Top 5 labels:
 ```
 
 You can see the result of the inference as out put. This concludes this lab on using AWS Inferentia with Amazon EKS.
+
+## Clean up
+
+Run the following commands to clean up the resources from this lab:
+
+```bash
+$ kubectl delete namespace aiml
+$ kubectl delete awsnodetemplate.karpenter.k8s.aws/aiml
+$ kubectl delete provisioner/aiml
+```
