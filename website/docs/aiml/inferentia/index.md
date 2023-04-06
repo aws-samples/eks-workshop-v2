@@ -7,47 +7,46 @@ sidebar_position: 2
 
 Inferentia has processing cores, called Neuron Cores which have high-speed access to models that are stored in on-chip memory.
 
-You can easily use the accelerator on EKS. Neuron device plugin exposes Neuron cores & devices to kubernetes as a resource. When your workloads require the exposed neuron cores, Kubernetes scheduler can assign the Inferentia node to the workloads.  You can even provision the node automatically by Karpenter.
+You can easily use the accelerator on EKS. The Neuron device plugin exposes Neuron cores & devices to Kubernetes as a resource. When your workloads requires neuron cores, the Kubernetes scheduler can assign the Inferentia node to the workloads. You can even provision the node automatically using Karpenter.
 
-The lab provides the tutorial to know how to use the Inferentia to accelerate deep learning inference workloads on EKS.
+This lab provides a tutorial on how to use the Inferentia to accelerate deep learning inference workloads on EKS.
 
 ## Compile a model for AWS Neuron
 
-The model used on AWS Inferentia should be compiled for it.
+When a model uses AWS Inferentia it should be compiled for it.
 
-It's the code for compiling:
-
-```file
-aiml/inferentia/trace.py
-```
-
-In the lab the code is running on a pod on EKS:
+This is the code for compiling the model that we will use:
 
 ```file
-aiml/inferentia/compiler.yaml
+aiml/compiler/trace.py
 ```
 
-Deploy the pod on the EKS cluster and compile a sample model for Inferentia.
+We will run this code using a Pod on EKS. This is the manifest file for the Pod:
 
-We need [AWS Neuron SDK](https://aws.amazon.com/jp/machine-learning/neuron/) to compile a model.
+```file
+aiml/compiler/compiler.yaml
+```
+
+Deploy the Pod on the EKS cluster and compile a sample model for Inferentia.
+
+We need [AWS Neuron SDK](https://aws.amazon.com/machine-learning/neuron/) to compile a model.
 
 The [Deep Learning Containers (DLCs)](https://github.com/aws/deep-learning-containers/blob/v8.12-tf-1.15.5-tr-gpu-py37/available_images.md#neuron-inference-containers) provided by AWS has the SDK in it.
 The lab uses DLCs to compile a model on EKS and has the image URI as a environment variable.
 
 ```bash timeout=300
-$ echo $AIML_DL_IMAGE
-$ envsubst < <(cat /workspace/modules/aiml/inferentia/compiler.yaml) | kubectl -n aiml apply -f -
+$ kubectl apply -k /workspace/modules/aiml/compiler/
 $ kubectl -n aiml wait --for=condition=Ready --timeout=5m pod/compiler
 ```
 
 Copy the code for compiling a model on the pod and run it:
 
 ```bash timeout=180
-$ kubectl -n aiml cp /workspace/modules/aiml/inferentia/trace.py compiler:/
+$ kubectl -n aiml cp /workspace/modules/aiml/compiler/trace.py compiler:/
 $ kubectl -n aiml exec -it compiler -- python /trace.py
 ```
 
-Upload the model to the S3 bucket. The workshop already created the bucket for it.
+Upload the model to the S3 bucket that has been created for you.
 
 ```bash
 $ echo $AIML_NEURON_BUCKET_NAME
@@ -60,14 +59,14 @@ Now we can use the compiled model to run a inference workload on Inferentia.
 
 ### Install Device Plugin for AWS Inferentia
 
-We need to deploy the Neuron device plugin on EKS. It exposes Neuron cores to kubernetes as a resource. 
+We need to deploy the Neuron device plugin on EKS. It exposes Neuron cores to kubernetes as a resource.
 
 ```bash
 $ kubectl apply -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.6.0/src/k8/k8s-neuron-device-plugin-rbac.yml
 $ kubectl apply -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.6.0/src/k8/k8s-neuron-device-plugin.yml
 ```
 
-When a pod requires the exposed Neuron cores, Kubernetes scheduler can assign a Inferentia node to the pod.
+When a pod requires the exposed Neuron cores, Kubernetes scheduler can create an Inferentia node to schedule the Pod too.
 
 ```file
 aiml/inferentia/inference.yaml
@@ -75,7 +74,7 @@ aiml/inferentia/inference.yaml
 
 ### Set up a provisioner of Karpenter for launching a node which has the Inferentia chip
 
-The lab uses Karpenter to provison an Inferentia node. Karpenter can detect the pending pod which requires Neuron cores and launch an inf1 instance which has required Neuron cores.
+The lab uses Karpenter to provison an Inferentia node. Karpenter can detect the pending pod which requires Neuron cores and launch an inf1 instance which has the required Neuron cores.
 
 Karpenter requires the provisioner settings to provision nodes:
 
