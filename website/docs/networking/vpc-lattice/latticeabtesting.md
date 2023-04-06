@@ -47,7 +47,7 @@ $ kubectl patch svc checkout -n checkout --patch '{"spec": { "type": "ClusterIP"
 $ kubectl patch svc checkout -n checkoutv2 --patch '{"spec": { "type": "ClusterIP", "ports": [ { "name": "http", "port": 80, "protocol": "TCP", "targetPort": 8080 } ] } }' 
 ```
 
-1. Create the Kubernetes `HTTPRoute` route that evenly distributes the traffic between `checkout`and `checkoutv2`:
+1. Create the Kubernetes `HTTPRoute` route that evenly distributes the traffic between `checkout` and `checkoutv2`:
    ```bash
    $ kubectl apply -f workspace/modules/networking/vpc-lattice/routes/checkout-route.yaml
    ```
@@ -55,7 +55,7 @@ $ kubectl patch svc checkout -n checkoutv2 --patch '{"spec": { "type": "ClusterI
    /networking/vpc-lattice/routes/checkout-route.yaml
    ```
 
-1. Find out the `HTTPRoute`'s DNS name from `HTTPRoute` status (highlighted here on the `message` line):
+2. Find out the `HTTPRoute`'s DNS name from `HTTPRoute` status (highlighted here on the `message` line):
 
 ```bash
 $ kubectl describe httproute checkoutroute -n checkout
@@ -83,7 +83,7 @@ parents:
  Now you can see the associated Service created in the VPC console under the Lattice resources.
 ![CheckoutRoute Service](assets/checkoutroute.png)
 
-1. Patch the configmap to point to the new endpoint.
+3. Patch the configmap to point to the new endpoint.
 
 ```bash
 $ export CHECKOUT_ROUTE_DNS='http://'$(kubectl get httproute checkoutroute -n checkout -o json | jq -r '.status.parents[0].conditions[0].message' | cut  -c 11-)
