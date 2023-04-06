@@ -3,17 +3,17 @@ kind: Kustomization
 bases:
 - ../base
 configMapGenerator:
-- name: provisioner-vars
-  namespace: other
+- name: inference-vars
+  namespace: aiml
   env: config.properties
   options:
     disableNameSuffixHash: true
 replacements:
 - source:
     kind: ConfigMap
-    name: provisioner-vars
+    name: inference-vars
     version: v1
-    namespace: other
+    namespace: aiml
     fieldPath: data.EKS_CLUSTER_NAME
   targets:
   - select:
@@ -24,9 +24,9 @@ replacements:
     - spec.securityGroupSelector.[karpenter.sh/discovery]
 - source:
     kind: ConfigMap
-    name: provisioner-vars
+    name: inference-vars
     version: v1
-    namespace: other
+    namespace: aiml
     fieldPath: data.AIML_DL_IMAGE
   targets:
     - select:

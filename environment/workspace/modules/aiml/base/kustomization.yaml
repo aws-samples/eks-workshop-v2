@@ -1,17 +1,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 configMapGenerator:
-- name: provisioner-vars
-  namespace: other
+- name: base-vars
+  namespace: aiml
   env: config.properties
   options:
     disableNameSuffixHash: true
 replacements:
 - source:
     kind: ConfigMap
-    name: provisioner-vars
+    name: base-vars
     version: v1
-    namespace: other
+    namespace: aiml
     fieldPath: data.AIML_NEURON_ROLE_ARN
   targets:
     - select:

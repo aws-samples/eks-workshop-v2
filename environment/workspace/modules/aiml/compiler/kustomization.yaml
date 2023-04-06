@@ -3,17 +3,17 @@ kind: Kustomization
 bases:
   - ../base
 configMapGenerator:
-- name: provisioner-vars
-  namespace: other
+- name: compiler-vars
+  namespace: aiml
   env: config.properties
   options:
     disableNameSuffixHash: true
 replacements:
 - source:
     kind: ConfigMap
-    name: provisioner-vars
+    name: compiler-vars
     version: v1
-    namespace: other
+    namespace: aiml
     fieldPath: data.AIML_DL_IMAGE
   targets:
     - select:
@@ -21,6 +21,6 @@ replacements:
         name: compiler
         namespace: aiml
       fieldPaths:
-        - spec.container.0.image
+        - spec.containers.0.image
 resources:
 - compiler.yaml
