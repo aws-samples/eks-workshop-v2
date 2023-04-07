@@ -13,9 +13,12 @@ When the main Cloud9 screen opens expand the menu on the left side of the screen
 
 ![Access Cloud9 service menu](./assets/menu.png)
 
-There will be a Cloud9 environment available, click the **Open** button to launch the IDE:
+There will be a Cloud9 environment named **eks-workshop** available, click the **Open** button to launch the IDE:
 
 ![Open the Cloud9 IDE](./assets/environment.png)
+
+*If you do not see the eks-workshop Cloud9 environment this is becuse it is owned by another IAM user. ![Click here](./fix-cloud9.md) to see how to resolve the issue.*
+
 
 Once the IDE has loaded, we recommend you use the **+** button and select **New Terminal** to open a new full screen terminal window.
 
