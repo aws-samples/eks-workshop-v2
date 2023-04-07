@@ -31,5 +31,17 @@ The arn can be found by clicking on the instance name.  Everything after the las
 ![cloud9-arn](./assets/cloud9-arn.png)
 
 After entering the code wth the replaced text in the CLI you should now be able to access the Cloud9 Instance.
+```
+$aws cloud9 create-environment-membership --environment-id environment_id_from_arn  --user-arn arn:aws:sts::1234567890:assumed-role/Admin/somerole --permissions read-write
+{
+    "membership": {
+        "permissions": "read-write",
+        "userId": "XXXXXXXXXXXXXXXXXXX:someone",
+        "userArn": "arn:aws:sts::111111111111:assumed-role/Admin/someone",
+        "environmentId": "environment_id_from_arn",
+        "lastAccess": "2023-04-07T09:27:56-04:00"
+    }
+}
+```
 
 [Click Here](./ide.md) to go back to the Accessing the IDE page.
