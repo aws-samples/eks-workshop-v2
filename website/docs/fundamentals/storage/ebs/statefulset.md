@@ -3,19 +3,19 @@ title: StatefulSets
 sidebar_position: 10
 ---
 
-Kubernetes  [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) are like a Deployment, a StatefulSet manages Pods that are based on an identical container spec. Unlike a Deployment, a StatefulSet maintains a sticky identity for each of their Pods. These Pods are created from the same spec, but are not interchangeable: each has a persistent identifier that it maintains across any rescheduling.
+Like Deployments, [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) manage Pods that are based on an identical container spec. Unlike Deployments, StatefulSets maintain a sticky identity for each of its Pods. These Pods are created from the same spec, but are not interchangeable with each having a persistent identifier that it maintains across any rescheduling event.
 
 If you want to use storage volumes to provide persistence for your workload, you can use a StatefulSet as part of the solution. Although individual Pods in a StatefulSet are susceptible to failure, the persistent Pod identifiers make it easier to match existing volumes to the new Pods that replace any that have failed.
 
-StatefulSets are valuable for applications that require one or more of the following.
+StatefulSets are valuable for applications that require one or more of the following:
 
-* Stable, unique network identifiers.
-* Stable, persistent storage.
-* Ordered, graceful deployment and scaling.
-* Ordered, automated rolling updates.
+* Stable, unique network identifiers
+* Stable, persistent storage
+* Ordered, graceful deployment and scaling
+* Ordered, automated rolling updates
 
 
-On our ecommerce application, we have a StatefulSet already deployed part of our Catalog microservice. The Catalog microservice utilizes a MySQL database running on EKS. Databases are a great example for the use of StatefulSet because they require **persistent storage**. We can analyze our MySQL DB Pod to see its current volume configuration:
+In our ecommerce application, we have a StatefulSet already deployed as part of the Catalog microservice. The Catalog microservice utilizes a MySQL database running on EKS. Databases are a great example for the use of StatefulSets because they require **persistent storage**. We can analyze our MySQL Database Pod to see its current volume configuration:
 
 ```bash
 $ kubectl describe statefulset -n catalog catalog-mysql
@@ -49,15 +49,15 @@ As you can see the [`Volumes`](https://kubernetes.io/docs/concepts/storage/volum
 
 ![MySQL with emptyDir](./assets/mysql-emptydir.png)
 
-An `emptyDir` volume is first created when a Pod is assigned to a node, and exists as long as that Pod is running on that node. As the name says, the emptyDir volume is initially empty. All containers in the Pod can read and write the same files in the emptyDir volume, though that volume can be mounted at the same or different paths in each container. **When a Pod is removed from a node for any reason, the data in the emptyDir is deleted permanently.** Therefore EmptyDir is not a good fit for our MySQL Database. 
+An `emptyDir` volume is first created when a Pod is assigned to a node, and exists as long as that Pod is running on that node. As the name implies, the emptyDir volume is initially empty. All containers in the Pod can read and write the same files in the emptyDir volume, though that volume can be mounted on the same or different paths in each container. **When a Pod is removed from a node for any reason, the data in the emptyDir is deleted permanently.** Therefore EmptyDir is not a good fit for our MySQL Database. 
 
-We can test by creating a shell inside the container that is running MySQL and creating a test file. Then after that, we'll delete the Pod that is running our StatefulSet. Because that Pod is not using a Persistent Volume (PV), it's using a EmptyDir, the file will not survive a Pod restart. First let's run a command inside our MySQL container to create a file on the emptyDir `/var/lib/mysql` path (where MySQL saves database files): 
+We can demonstrate this by starting a shell session inside the MySQL container and creating a test file. After that we'll delete the Pod that is running in our StatefulSet. Because the pod is using an emptyDir and not a Persistent Volume (PV), the file will not survive a Pod restart. First let's run a command inside our MySQL container to create a file in the emptyDir `/var/lib/mysql` path (where MySQL saves database files): 
 
 ```bash
 $ kubectl exec catalog-mysql-0 -n catalog -- bash -c  "echo 123 > /var/lib/mysql/test.txt"
 ```
 
-Now, let's verify that our `test.txt` file got created on the `/var/lib/mysql` directory:
+Now, let's verify our `test.txt` file was created in the `/var/lib/mysql` directory:
 
 ```bash
 $ kubectl exec catalog-mysql-0 -n catalog -- ls -larth /var/lib/mysql/ | grep -i test
@@ -71,7 +71,7 @@ $ kubectl delete pods -n catalog -l app.kubernetes.io/component=mysql
 pod "catalog-mysql-0" deleted
 ```
 
-Wait for a few seconds, and run the command below to check if the `catalog-mysql` Pod has been re-created:
+Wait for a few seconds and run the command below to check if the `catalog-mysql` Pod has been re-created:
 
 ```bash
 $ kubectl wait --for=condition=Ready pod -n catalog \
@@ -82,7 +82,7 @@ NAME              READY   STATUS    RESTARTS   AGE
 catalog-mysql-0   1/1     Running   0          29s
 ```
 
-Finally, let's exec back into the MySQL container shell and run a `ls` command on the `/var/lib/mysql` path trying to look for the `test.txt` file that we created:
+Finally, let's exec back into the MySQL container shell and run a `ls` command in the `/var/lib/mysql` path to look for the `test.txt` file that was previously created:
 
 ```bash expectError=true
 $ kubectl exec catalog-mysql-0 -n catalog -- cat /var/lib/mysql/test.txt
@@ -90,6 +90,6 @@ cat: /var/lib/mysql/test.txt: No such file or directory
 command terminated with exit code 1
 ```
 
-As you can see the `test.txt` file is no longer there, because `emptyDir` volumes are ephemeral. On future sections, we'll run the same experiment and demostrate how Persistent Volumes (PVs) will keep the `test.txt` file and survive Pod restarts and/or failures. 
+As you can see the `test.txt` file no longer exists due to `emptyDir` volumes being ephemeral. In future sections, we'll run the same experiment and demostrate how Persistent Volumes (PVs) will persist the `test.txt` file and survive Pod restarts and/or failures. 
 
-On the next page, we'll on understanding the main concepts of Storage on Kubernetes and its integration with the AWS cloud ecosystem. 
+On the next page, we'll work on understanding the main concepts of Storage on Kubernetes and its integration with the AWS cloud ecosystem. 
