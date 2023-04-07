@@ -30,6 +30,6 @@ The arn can be found by clicking on the instance name.  Everything after the las
 
 ![cloud9-arn](./assets/cloud9-arn.png)
 
-You should now be able to access the Cloud9 Instance.
+After entering the code wth the replaced text in the CLI you should now be able to access the Cloud9 Instance.
 
 [Click Here](/ide.md) to go back to the Accessing the IDE page.
