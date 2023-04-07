@@ -10,7 +10,7 @@ Before bootstraping a cluster, Flux allows us to run pre-bootstrap checks to ver
 ```bash
 $ flux check --pre
 > checking prerequisites
-> Kubernetes 1.23.7-eks-4721010 >=1.20.6-0
+> Kubernetes VAR::KUBERNETES_NODE_VERSION >=1.20.6-0
 > prerequisites checks passed
 ```
 

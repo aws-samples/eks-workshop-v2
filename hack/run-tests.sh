@@ -44,10 +44,18 @@ if [ ! -z "$ASSUME_ROLE" ]; then
   aws_credential_args="-e 'AWS_ACCESS_KEY_ID' -e 'AWS_SECRET_ACCESS_KEY' -e 'AWS_SESSION_TOKEN'"
 fi
 
+BACKGROUND=${BACKGROUND:-""}
+
+background_args="--rm"
+
+if [ ! -z "$BACKGROUND" ]; then
+  background_args="--detach"
+fi
+
 echo "Running test suite..."
 
-docker run --rm \
+docker run $background_args \
   -v $SCRIPT_DIR/../website/docs:/content \
   -v $SCRIPT_DIR/../manifests:/manifests \
   -e 'EKS_CLUSTER_NAME' -e 'AWS_DEFAULT_REGION' -e 'AWS_REGION' \
-  $aws_credential_args $container_image -g "{$module,$module/**}" --hook-timeout 600 --timeout 1200 ${AWS_EKS_WORKSHOP_TEST_FLAGS}
+  $aws_credential_args $container_image -g "{$module,$module/**}" --hook-timeout 1200 --timeout 1200 ${AWS_EKS_WORKSHOP_TEST_FLAGS}

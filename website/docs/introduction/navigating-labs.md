@@ -37,9 +37,9 @@ You will also come across commands with sample output like this:
 ```bash test=false
 $ kubectl get nodes
 NAME                                         STATUS   ROLES    AGE     VERSION
-ip-10-42-10-104.us-west-2.compute.internal   Ready    <none>   6h      v1.23.9-eks-ba74326
-ip-10-42-10-210.us-west-2.compute.internal   Ready    <none>   6h      v1.23.9-eks-ba74326
-ip-10-42-11-198.us-west-2.compute.internal   Ready    <none>   6h      v1.23.9-eks-ba74326
+ip-10-42-10-104.us-west-2.compute.internal   Ready    <none>   6h      vVAR::KUBERNETES_NODE_VERSION
+ip-10-42-10-210.us-west-2.compute.internal   Ready    <none>   6h      vVAR::KUBERNETES_NODE_VERSION
+ip-10-42-11-198.us-west-2.compute.internal   Ready    <none>   6h      vVAR::KUBERNETES_NODE_VERSION
 ```
 
 Using the 'click to copy' function will only copy the command and ignore the sample output.
@@ -51,9 +51,9 @@ $ kubectl get pods
 No resources found in default namespace.
 $ kubectl get nodes
 NAME                                         STATUS   ROLES    AGE     VERSION
-ip-10-42-10-104.us-west-2.compute.internal   Ready    <none>   6h2m    v1.23.9-eks-ba74326
-ip-10-42-10-210.us-west-2.compute.internal   Ready    <none>   22h     v1.23.9-eks-ba74326
-ip-10-42-11-198.us-west-2.compute.internal   Ready    <none>   6h19m   v1.23.9-eks-ba74326
+ip-10-42-10-104.us-west-2.compute.internal   Ready    <none>   6h2m    vVAR::KUBERNETES_NODE_VERSION
+ip-10-42-10-210.us-west-2.compute.internal   Ready    <none>   22h     vVAR::KUBERNETES_NODE_VERSION
+ip-10-42-11-198.us-west-2.compute.internal   Ready    <none>   6h19m   vVAR::KUBERNETES_NODE_VERSION
 ```
 
 In this case you can either copy each command individually or copy all of the commands using the clipboard icon in the top right of the terminal window. Give it a shot!

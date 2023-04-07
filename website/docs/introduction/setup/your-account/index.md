@@ -17,7 +17,15 @@ $ aws cloudformation deploy --stack-name eks-workshop-ide \
     --capabilities CAPABILITY_NAMED_IAM
 ```
 
+You can access the Cloud9 IDE created by using [these instructions](../../ide.md).
+
+:::info
+
+All subsequent steps should be run in the Cloud9 instance.
+
+:::
+
 The next step is to create an EKS cluster to perform the lab exercises in. Please follow one of the guides below to provision a cluster that meets the requirements for these labs:
-- **(Recommended)** eksctl
+- **(Recommended)** [eksctl](./using-eksctl.md)
 - (Coming soon!) Terraform 
 - (Coming soon!) CDK

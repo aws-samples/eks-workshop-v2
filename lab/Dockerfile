@@ -1,17 +1,17 @@
 FROM public.ecr.aws/amazonlinux/amazonlinux:2
 
-ADD scripts/installer.sh /tmp/installer.sh
-
-RUN bash /tmp/installer.sh
-
-ADD scripts/entrypoint.sh /entrypoint.sh
-
-RUN useradd \
+RUN yum install -y shadow-utils && useradd \
     --home "/home/ec2-user" \
     --create-home \
     --user-group \
     --shell /bin/bash \
     ec2-user
+
+ADD scripts/installer.sh /tmp/installer.sh
+
+RUN bash /tmp/installer.sh
+
+ADD scripts/entrypoint.sh /entrypoint.sh
 
 COPY --chmod=755 bin/* /usr/local/bin
 

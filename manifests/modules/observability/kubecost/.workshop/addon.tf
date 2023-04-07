@@ -16,6 +16,11 @@ module "aws-load-balancer-controller" {
   addon_context = merge(local.addon_context, { default_repository = local.amazon_container_image_registry_uris[data.aws_region.current.name] })
 }
 
+data "http" "kubecost_values" {
+  url    = "https://raw.githubusercontent.com/kubecost/cost-analyzer-helm-chart/develop/cost-analyzer/values-eks-cost-monitoring.yaml"
+}
+
+
 module "kubecost" {
   depends_on = [
     module.aws-ebs-csi-driver,
@@ -24,4 +29,9 @@ module "kubecost" {
 
   source        = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/kubecost"
   addon_context = local.addon_context
+
+  helm_config = {
+    version = "1.102.0"
+    values = [data.http.kubecost_values.body]
+  }
 }

@@ -41,8 +41,8 @@ Alternatively you can use `kubectl`:
 ```bash
 $ kubectl get nodes -l workshop-default=yes
 NAME                                         STATUS   ROLES    AGE     VERSION
-ip-10-42-10-159.us-west-2.compute.internal   Ready    <none>   3d      v1.23.9-eks-ba74326
-ip-10-42-11-143.us-west-2.compute.internal   Ready    <none>   2m49s   v1.23.9-eks-ba74326
-ip-10-42-11-81.us-west-2.compute.internal    Ready    <none>   3d      v1.23.9-eks-ba74326
-ip-10-42-12-152.us-west-2.compute.internal   Ready    <none>   3m11s   v1.23.9-eks-ba74326
+ip-10-42-10-159.us-west-2.compute.internal   Ready    <none>   3d      vVAR::KUBERNETES_NODE_VERSION
+ip-10-42-11-143.us-west-2.compute.internal   Ready    <none>   2m49s   vVAR::KUBERNETES_NODE_VERSION
+ip-10-42-11-81.us-west-2.compute.internal    Ready    <none>   3d      vVAR::KUBERNETES_NODE_VERSION
+ip-10-42-12-152.us-west-2.compute.internal   Ready    <none>   3m11s   vVAR::KUBERNETES_NODE_VERSION
 ```

@@ -55,7 +55,9 @@ const config = {
               replacements: {
                 MANIFESTS_REF: manifestsRef,
                 MANIFESTS_OWNER: manifestsOwner,
-                MANIFESTS_REPOSITORY: manifestsRepository
+                MANIFESTS_REPOSITORY: manifestsRepository,
+                KUBERNETES_VERSION: '1.25',
+                KUBERNETES_NODE_VERSION: '1.25.6-eks-48e63af'
               }
             }],
             [remarkIncludeCode, { manifestsDir }],

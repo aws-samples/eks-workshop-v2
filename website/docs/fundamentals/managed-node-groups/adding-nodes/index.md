@@ -46,9 +46,9 @@ You can also review changed worker node count with following command, which list
 ```bash
 $ kubectl get nodes -l eks.amazonaws.com/nodegroup=$EKS_DEFAULT_MNG_NAME
 NAME                                         STATUS     ROLES    AGE   VERSION
-ip-10-42-10-11.us-west-2.compute.internal    Ready      <none>   22m   v1.23.9-eks-ba74326
-ip-10-42-11-143.us-west-2.compute.internal   Ready      <none>   22m   v1.23.9-eks-ba74326
-ip-10-42-12-117.us-west-2.compute.internal   NotReady   <none>   10s   v1.23.9-eks-ba74326
+ip-10-42-10-11.us-west-2.compute.internal    Ready      <none>   22m   vVAR::KUBERNETES_NODE_VERSION
+ip-10-42-11-143.us-west-2.compute.internal   Ready      <none>   22m   vVAR::KUBERNETES_NODE_VERSION
+ip-10-42-12-117.us-west-2.compute.internal   NotReady   <none>   10s   vVAR::KUBERNETES_NODE_VERSION
 ```
 
 Notice that the node shows a status of `NotReady`, which happens when the new node is still in the process of joining the cluster. We can also use `kubectl wait` to watch until all the nodes report `Ready`:
