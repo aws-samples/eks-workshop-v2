@@ -1,11 +1,11 @@
-data "aws_vpc" "selected" {
+data "aws_vpc" "selected_sg_rds" {
   tags = {
     created-by = "eks-workshop"
     env        = local.addon_context.eks_cluster_id
   }
 }
 
-data "aws_subnets" "private" {
+data "aws_subnets" "private_sg_rds" {
   tags = {
     created-by = "eks-workshop"
     env        = local.addon_context.eks_cluster_id
@@ -42,7 +42,7 @@ module "catalog_mysql" {
 
   create_db_subnet_group = true
   db_subnet_group_name   = "${local.addon_context.eks_cluster_id}-catalog"
-  subnet_ids             = data.aws_subnets.private.ids
+  subnet_ids             = data.aws_subnets.private_sg_rds.ids
   vpc_security_group_ids = [module.catalog_rds_ingress.security_group_id]
 
   maintenance_window = "Mon:00:00-Mon:03:00"
@@ -64,7 +64,7 @@ module "catalog_rds_ingress" {
 
   name        = "${local.addon_context.eks_cluster_id}-catalog-rds"
   description = "Catalog RDS security group"
-  vpc_id      = data.aws_vpc.selected.id
+  vpc_id      = data.aws_vpc.selected_sg_rds.id
 
   # ingress
   ingress_with_source_security_group_id = [
@@ -84,14 +84,14 @@ resource "aws_security_group" "catalog_rds_ingress" {
   #checkov:skip=CKV2_AWS_5:This is attached in the workshop
   name        = "${local.addon_context.eks_cluster_id}-catalog"
   description = "Applied to catalog application pods"
-  vpc_id      = data.aws_vpc.selected.id
+  vpc_id      = data.aws_vpc.selected_sg_rds.id
 
   ingress {
     description = "Allow inbound HTTP API traffic"
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = [data.aws_vpc.selected.cidr_block]
+    cidr_blocks = [data.aws_vpc.selected_sg_rds.cidr_block]
   }
 
   egress {

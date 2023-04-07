@@ -1,11 +1,11 @@
-data "aws_vpc" "selected" {
+data "aws_vpc" "selected_efs" {
   tags = {
     created-by = "eks-workshop"
     env        = local.addon_context.eks_cluster_id
   }
 }
 
-data "aws_subnets" "private" {
+data "aws_subnets" "private_efs" {
   tags = {
     created-by = "eks-workshop"
     env        = local.addon_context.eks_cluster_id
@@ -20,14 +20,14 @@ data "aws_subnets" "private" {
 resource "aws_security_group" "efs" {
   name        = "${local.addon_context.eks_cluster_id}-efs"
   description = "efs security group allow access to port 2049"
-  vpc_id      = data.aws_vpc.selected.id
+  vpc_id      = data.aws_vpc.selected_efs.id
 
   ingress {
     description = "allow inbound NFS traffic"
     from_port   = 2049
     to_port     = 2049
     protocol    = "tcp"
-    cidr_blocks = [data.aws_vpc.selected.cidr_block]
+    cidr_blocks = [data.aws_vpc.selected_efs.cidr_block]
   }
 
   egress {
@@ -60,10 +60,10 @@ resource "aws_efs_file_system" "efsassets" {
 }
 
 resource "aws_efs_mount_target" "efsmtpvsubnet" {
-  count = length(data.aws_subnets.private.ids)
+  count = length(data.aws_subnets.private_efs.ids)
 
   file_system_id  = aws_efs_file_system.efsassets.id
-  subnet_id       = data.aws_subnets.private.ids[count.index]
+  subnet_id       = data.aws_subnets.private_efs.ids[count.index]
   security_groups = [aws_security_group.efs.id]
 }
 
