@@ -1,6 +1,6 @@
 ---
-title: Accessing the IDE
-sidebar_position: 25
+title: Cloud9 IDE Access
+sidebar_position: 10
 ---
 
 If after running the Terraform script you do not see the Cloud9 instance named **eks-workshop** do the following:
