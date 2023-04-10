@@ -1,6 +1,6 @@
 ---
 title: "Prefix Delegation"
-sidebar_position: 30
+sidebar_position: 5
 sidebar_custom_props: {"module": true}
 ---
 
