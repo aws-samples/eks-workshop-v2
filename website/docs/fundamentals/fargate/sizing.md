@@ -3,7 +3,7 @@ title: Resource allocation
 sidebar_position: 20
 ---
 
-The primary dimensions of [Fargate pricing](https://aws.amazon.com/fargate/pricing/) is based on CPU and memory, and the amount of resources allocated to a Fargate instance depend on the resource requests specified by the Pod. There is a [documented set](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html#fargate-tasks-size) of valid CPU and memory combinations for Fargate that should be considered when assessing if a workload is suitable for Fargate.
+The primary dimensions of [Fargate pricing](https://aws.amazon.com/fargate/pricing/) is based on CPU and memory, and the amount of resources allocated to a Fargate instance depend on the resource requests specified by the Pod. There is a [documented set](https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html#fargate-cpu-and-memory) of valid CPU and memory combinations for Fargate that should be considered when assessing if a workload is suitable for Fargate.
 
 We can confirm what resources were provisioned for our Pod from the previous deployment by inspecting its annotations:
 
