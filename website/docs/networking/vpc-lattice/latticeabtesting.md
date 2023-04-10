@@ -7,11 +7,11 @@ In this section we will show how to use Amazon VPC Lattice to perform A/B testin
 
 # Set up Lattice Service Network
 
-1. Create the Kubernetes Gateway `eks-workshop-gw`:
+Create the Kubernetes Gateway `eks-workshop-gw`:
    ```bash
    $ kubectl apply -f workspace/modules/networking/vpc-lattice/controller/eks-workshop-gw.yaml
    ```
-1. Verify that `eks-workshop-gw` gateway is created:
+Verify that `eks-workshop-gw` gateway is created:
    ```bash
    $ kubectl get gateway  
    ```
@@ -20,7 +20,7 @@ In this section we will show how to use Amazon VPC Lattice to perform A/B testin
    $ eks-workshop-gw   aws-lattice                     12min
    ```
 
-1. Once the gateway is created, find the VPC Lattice service network. Wait until the status is `Reconciled` (this could take about five minutes).
+Once the gateway is created, find the VPC Lattice service network. Wait until the status is `Reconciled` (this could take about five minutes).
    ```bash
    $ kubectl describe gateway eks-workshop-gw
    ```
@@ -46,7 +46,7 @@ We will show how to preform A/B testing between the two versions using `HTTPRout
 $ kubectl patch svc checkout -n checkout --patch '{"spec": { "type": "ClusterIP", "ports": [ { "name": "http", "port": 80, "protocol": "TCP", "targetPort": 8080 } ] } }'
 ```
 
-1. Create the Kubernetes `HTTPRoute` route that evenly distributes the traffic between `checkout` and `checkoutv2`:
+Create the Kubernetes `HTTPRoute` route that evenly distributes the traffic between `checkout` and `checkoutv2`:
    ```bash
    $ kubectl apply -f workspace/modules/networking/vpc-lattice/routes/checkout-route.yaml
    ```
@@ -54,7 +54,7 @@ $ kubectl patch svc checkout -n checkout --patch '{"spec": { "type": "ClusterIP"
    /networking/vpc-lattice/routes/checkout-route.yaml
    ```
 
-2. Find out the `HTTPRoute`'s DNS name from `HTTPRoute` status (highlighted here on the `message` line):
+Find out the `HTTPRoute`'s DNS name from `HTTPRoute` status (highlighted here on the `message` line):
 
 ```bash
 $ kubectl describe httproute checkoutroute -n checkout
@@ -82,7 +82,7 @@ parents:
  Now you can see the associated Service created in the VPC console under the Lattice resources.
 ![CheckoutRoute Service](assets/checkoutroute.png)
 
-3. Patch the configmap to point to the new endpoint.
+Patch the configmap to point to the new endpoint.
 
 ```bash
 $ export CHECKOUT_ROUTE_DNS='http://'$(kubectl get httproute checkoutroute -n checkout -o json | jq -r '.status.parents[0].conditions[0].message' | cut  -c 11-)
