@@ -16,7 +16,7 @@ $ CLUSTER_SG=$(aws eks describe-cluster --name eks-workshop --output json| jq -r
 $ aws ec2 authorize-security-group-ingress --group-id $CLUSTER_SG --cidr $MANAGED_PREFIX --protocol -1
 ```
 
-Create a policy (`recommended-inline-policy.json`) in IAM with the following content that can invoke the gateway API and copy the policy arn for later use:
+Create a policy (`recommended-inline-policy.json`) in IAM with the following content that can invoke the gateway API and copy the policy arn for later use. Please be mindful that the following policy is provided as an example. Please review the permissions before implementing this in a live or production environment. 
 
 ```bash
 $ aws iam create-policy \
@@ -49,7 +49,9 @@ $ eksctl create iamserviceaccount \
 ```
 
 ---
-**CHOOSE AN INSTALLATION METHOD** for the controller between the two options below:
+This step will install the controller and the CRDs (Custom Resource Definitions) required to interact with the Kubernetes Gateway API. Installation is available via `kubectl`or `helm`.
+
+**CHOOSE AN INSTALLATION METHOD** between the two options below.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **Option 1:** *Install with kubectl*
 
@@ -67,9 +69,13 @@ $ helm install gateway-api-controller \
 ```
 ---
 
-Before creating a `Gateway`, we need to formalize the types of load balancing implementations with a [GatewayClass](https://gateway-api.sigs.k8s.io/concepts/api-overview/#gatewayclass).  
+Similar to `IngressClass` for `Ingress` and `StorageClass` for `PersistentVolumes`, before creating a `Gateway`, we need to formalize the types of load balancing implementations that are available via the Kubernetes resource model with a [GatewayClass](https://gateway-api.sigs.k8s.io/concepts/api-overview/#gatewayclass). The controller that listens to the Gateway API relies on an associated `GatewayClass` resource that the user can reference from their `Gateway`.
 
-Create the `GatewayClass`:
 ```bash
 $ kubectl apply -f workspace/modules/networking/vpc-lattice/controller/gatewayclass.yaml
+```
+The command above will create the following resource:
+
+```file
+/networking/vpc-lattice/controller/gatewayclass.yaml
 ```

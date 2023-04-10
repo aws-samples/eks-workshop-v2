@@ -36,7 +36,7 @@ The components of Amazon VPC Lattices include:
 A shareable, managed logical grouping that contains Services and Policy.
 
 * **Service**:
-Represents an Application Unit with a DNS name and can extend across all compute – instances, containers, serverless. It is made up pf Listener, Target Groups, Target.
+Represents an Application Unit with a DNS name and can extend across all compute – instances, containers, serverless. It is made up of Listener, Target Groups, Target.
 
 * **Service directory**:
 A registry within an AWS account that holds a global view of Services by version and their DNS names.

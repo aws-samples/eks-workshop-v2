@@ -3,20 +3,13 @@ title: "Traditional A/B testing"
 sidebar_position: 15
 ---
 
-In this section we will create a new version of the `checkout` service and manually perform A/B testing.
 
-Let's deploy a new version of the `checkout` microservice in a new namespace (`checkoutv2`). We will use kustomize to: 
+We have modified the `checkout` microservice adding a feature that provides an additional shipping option. In this section, we want to test this new feature performing A/B testing. 
 
-* Change the namespace to `checkoutv2`, 
-* Substitute the image with a new version,
-* Create a new version of `checkout`.
+Let's deploy a new version of the `checkout` microservice in a new namespace (`checkoutv2`) using `kustomize`.
 
 ```bash
-$ CHECKOUT_IMG="public.ecr.aws/aws-containers/retail-store-sample-checkout:latest"
-$ CHECKOUT_V2="public.ecr.aws/y1b0a4i8/checkoutv2:latest"
-$ sed -i 's/checkout/checkoutv2/g' workspace/manifests/checkout/kustomization.yaml
-$ sed -i "s|$CHECKOUT_IMG|$CHECKOUT_V2|g" workspace/manifests/checkout/deployment.yaml
-$ kubectl apply -k workspace/manifests/checkout/
+$ kubectl apply -k workspace/modules/networking/vpc-lattice/abtesting/
 ```
 
 We can check how both namespaces contain a version of the application:
