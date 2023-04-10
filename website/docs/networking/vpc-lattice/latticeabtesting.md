@@ -3,7 +3,7 @@ title: "A/B testing with VPC Lattice"
 sidebar_position: 20
 ---
 
-In this section we will show how to use Amazon VPC Lattice to perform A/B testing gradually shifting traffic from the `checkout` service to a new version `checkout-v2`.
+In this section we will show how to use Amazon VPC Lattice to perform A/B testing gradually shifting traffic from the `checkout` service to the new version we created in the previous section.
 
 # Set up Lattice Service Network
 
@@ -38,13 +38,12 @@ In this section we will show how to use Amazon VPC Lattice to perform A/B testin
 ![Checkout Service Network](assets/servicenetwork.png)
 
 # Create Routes to targets
-We will show how to preform A/B testing between the two version (`checkout`and `checkoutv2`) using `HTTPRoutes`.
+We will show how to preform A/B testing between the two versions using `HTTPRoutes`.
 
 **NOTE:** (At the time of writing, the `targetPort` has to be updated  to `8080` for the Lattice Controller to reroute the traffic). This will be improved in future releases.
 
 ```bash
 $ kubectl patch svc checkout -n checkout --patch '{"spec": { "type": "ClusterIP", "ports": [ { "name": "http", "port": 80, "protocol": "TCP", "targetPort": 8080 } ] } }'
-$ kubectl patch svc checkout -n checkoutv2 --patch '{"spec": { "type": "ClusterIP", "ports": [ { "name": "http", "port": 80, "protocol": "TCP", "targetPort": 8080 } ] } }' 
 ```
 
 1. Create the Kubernetes `HTTPRoute` route that evenly distributes the traffic between `checkout` and `checkoutv2`:
@@ -90,6 +89,11 @@ $ export CHECKOUT_ROUTE_DNS='http://'$(kubectl get httproute checkoutroute -n ch
 $ kubectl patch configmap/ui -n ui --type merge -p '{"data":{"ENDPOINTS_CHECKOUT": "'${CHECKOUT_ROUTE_DNS}'"}}'
 ```
 
+:::tip Now traffic is handled by Amazon VPC Lattice
+Now Amazon VPC Lattice automatically redirects the traffic to different backends! This also means that you can take full advantage of all the [features](https://aws.amazon.com/vpc/lattice/features/) of Amazon VPC Lattice.
+
+:::
+
 # Check A/B testing is working
 
 In the real world, A/B testing of new features is normally performed on a percentage of users. 
@@ -107,7 +111,7 @@ Click on the `Preview` button on the top bar and select `Preview Running Applica
 
 ![Preview your application](assets/preview-app.png)
 
-Now, try to checkout multiple times: you will notice how the new feature will be available around 50% of the times: this is because Amazon VPC Lattice automatically redirects traffic to `checkout`and `checkoutv2`. This is because now the UI pod points to the Amazon VPC Lattice endpoint we created earlier whith the `HttpRoute`.
+Now, try to checkout multiple times: you will notice how the new feature will be available around 50% of the times: this is because Amazon VPC Lattice automatically redirects traffic to different versions of `checkout` microservice. This is because now the UI pod points to the Amazon VPC Lattice endpoint we created earlier whith the `HttpRoute`.
 
 
 

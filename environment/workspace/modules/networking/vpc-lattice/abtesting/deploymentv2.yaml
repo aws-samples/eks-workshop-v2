@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkout
+spec:
+  template:
+    spec:
+      containers:
+        - name: checkout
+          image: "public.ecr.aws/y1b0a4i8/checkoutv2:latest"
+          imagePullPolicy: Always

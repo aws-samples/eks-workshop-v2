@@ -7,7 +7,8 @@ Gateway API is an open-source project managed by the Kubernetes networking commu
 
 Originally conceived as a successor to the well-known Ingress API, the benefits of the Gateway API include (but are not limited to) explicit support for many commonly used networking protocols, as well as tightly integrated support for Transport Layer Security (TLS).
 
-At AWS, we implement the Gateway API to integrate with Amazon VPC Lattice. AWS Gateway API Controller is an open-source project and fully supported by Amazon. When the AWS Gateway API controller is installed in your cluster, the controller watches for the creation of Gateway API resources such as gateways and routes and provisions corresponding Amazon VPC Lattice objects as shown above.
+At AWS, we implement the Gateway API to integrate with Amazon VPC Lattice with the AWS Gateway API Controller. When 
+installed in your cluster, the controller watches for the creation of Gateway API resources such as gateways and routes and provisions corresponding Amazon VPC Lattice objects according to the mapping in the image below. The AWS Gateway API Controller is an open-source project and fully supported by Amazon.
 
 ![Kubernetes Gateway API Objects and VPC Lattice Components](assets/fundamentals-mapping.png)
 
