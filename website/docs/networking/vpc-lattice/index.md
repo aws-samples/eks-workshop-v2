@@ -30,7 +30,7 @@ The primary benefits of using Lattice are:
 * Improved application scalability and resilience: Lattice makes it easy to create a network of deployed applications with rich routing, authentication, authorization, monitoring, and more. Lattice provides all of these benefits with no resource overhead on workloads and can support large scale deployments and many requests per second without adding significant latency. 
 * Deployment flexibility with heterogeneous infrastructure: Lattice  provides  consistent  features  across  all  compute  services – EC2, ECS, EKS, Lambda, and can include services living on-premises, allowing organizations the flexibility to choose the optimal compute infrastructure for their use-case.
 
-The components of Amazon VPC Lattices include:
+The [components](https://docs.aws.amazon.com/vpc-lattice/latest/ug/what-is-vpc-service-network.html#vpc-service-network-components-overview) of Amazon VPC Lattices include:
 
 * **Service network**:
 A shareable, managed logical grouping that contains Services and Policy.
