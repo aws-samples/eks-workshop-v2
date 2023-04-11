@@ -241,7 +241,7 @@ module "eks_blueprints_kubernetes_addons" {
     name             = "argocd"
     chart            = "argo-cd"
     repository       = "https://argoproj.github.io/argo-helm"
-    version          = "5.25.0"
+    version          = "5.27.1"
     namespace        = "argocd"
     timeout          = 1200
     create_namespace = true
@@ -418,11 +418,7 @@ module "eks_blueprints_kubernetes_addons" {
         name  = "applicationSet.tolerations[0].effect"
         value = "NoSchedule"
         type  = "string"
-      },
-      {
-        name  = "timeout.reconciliation"
-        value = "60s"
-    }], local.system_component_values)
+      }], local.system_component_values)
   }
 
   tags = local.tags
