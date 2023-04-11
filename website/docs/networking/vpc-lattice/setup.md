@@ -36,7 +36,7 @@ Retrieve the policy ARN:
 ```bash
 $ export VPCLatticeControllerIAMPolicyArn=$(aws iam list-policies --query 'Policies[?PolicyName==`VPCLatticeControllerIAMPolicy`].Arn' --output text)
 ```
-Create an `iamserviceaccount` for pod level permission:
+Create an `iamserviceaccount` for pod level permission. `eksctl` creates a Service Account and then annotates it with the IAM role ARN we retrieved above.
 ```bash
 $ eksctl create iamserviceaccount \
     --cluster=${EKS_CLUSTER_NAME} \
