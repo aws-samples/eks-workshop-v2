@@ -19,7 +19,7 @@ There will be a Cloud9 environment named **eks-workshop** available, click the *
 
 :::tip
 *If you do not see the eks-workshop Cloud9 environment this is because it is owned by another IAM user. [Click here](./misc/readme.md) to see how to resolve the issue.*
-
+:::
 
 Once the IDE has loaded, we recommend you use the **+** button and select **New Terminal** to open a new full screen terminal window.
 

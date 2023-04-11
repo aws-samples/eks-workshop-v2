@@ -1,6 +1,6 @@
 ---
-title: Misc
-sidebar_position: 10
+title: Misc - Cloud9
+sidebar_position: 40
 ---
 
 If after running the Terraform script you do not see the Cloud9 instance named **eks-workshop** do the following:
