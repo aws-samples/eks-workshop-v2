@@ -19,7 +19,7 @@ deployment.apps "ui" deleted
 Now, let's get into the cloned Git repository and start creating our GitOps configuration. Copy the existing kustomize configuration for the UI service:
 
 ```bash
-$ cp -R /workspace/manifests/ui ~/environment/gitops/apps
+$ cp -R /workspace/manifests/ui ~/environment/argocd/apps
 ```
 
 We'll then need to create a kustomization in the `apps` directory:
@@ -31,10 +31,10 @@ automation/gitops/argocd/kustomization.yaml
 Copy this file to the Git repository directory:
 
 ```bash
-$ cp /workspace/modules/automation/gitops/argocd/kustomization.yaml ~/environment/gitops/apps/kustomization.yaml
+$ cp /workspace/modules/automation/gitops/argocd/kustomization.yaml ~/environment/argocd/apps/kustomization.yaml
 ```
 
-You Git directory should now look something like this which you can validate by running `tree ~/environment/gitops`:
+You Git directory should now look something like this which you can validate by running `tree ~/environment/argocd`:
 
 ```
 .
@@ -58,17 +58,16 @@ Open the Argo CD UI and navigate to the `apps` application.
 Finally we can push our configuration to the Git repository:
 
 ```bash
-$ (cd ~/environment/gitops && \
-git add . && \
-git commit -am "Adding the UI service" && \
-git push)
+$ git -C ~/environment/argocd add .
+$ git -C ~/environment/argocd commit -am "Adding the UI service"
+$ git -C ~/environment/argocd push
 ```
 
 The default `Refresh` interval is 3 minutes (180 seconds). You could change the interval by updating the "timeout.reconciliation" value in the argocd-cm config map. If the interval is to 0 then Argo CD will not poll Git repositories automatically and alternative methods such as webhooks and/or manual syncs should be used.
 
 For training purposes, let's set `Refresh` interval to 5s and restart argocd application controller to deploy our changes faster
 
-```bash
+```bash wait=30
 $ kubectl patch configmap/argocd-cm -n argocd --type merge \
   -p '{"data":{"timeout.reconciliation":"5s"}}'
 $ kubectl -n argocd rollout restart deploy argocd-repo-server
@@ -93,14 +92,11 @@ We've now successfully migrated the UI component to deploy using Argo CD, and an
 
 You should now have all the resources related to the UI services deployed. To verify, run the following commands:
 
-```bash
+```bash hook=deploy
 $ kubectl get deployment -n ui ui
 NAME   READY   UP-TO-DATE   AVAILABLE   AGE
 ui     1/1     1            1           61s
-```
-
-```bash
 $ kubectl get pod -n ui
-NAME READY STATUS RESTARTS AGE
-ui-6d5bb7b95-rjfxd 1/1 Running 0 62s
+NAME                 READY   STATUS   RESTARTS   AGE
+ui-6d5bb7b95-rjfxd   1/1     Running  0          62s
 ```

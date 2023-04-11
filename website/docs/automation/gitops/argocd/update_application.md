@@ -14,7 +14,7 @@ Deployment/ui
 Copy patch file to the Git repository directory:
 
 ```bash
-$ cp /workspace/modules/automation/gitops/argocd/update-application/deployment-patch.yaml ~/environment/gitops/apps/deployment-patch.yaml
+$ cp /workspace/modules/automation/gitops/argocd/update-application/deployment-patch.yaml ~/environment/argocd/apps/deployment-patch.yaml
 ```
 
 You can review planned changes in the file `apps/deployment-patch.yaml`
@@ -28,16 +28,15 @@ automation/gitops/argocd/update-application/kustomization.yaml.example
 Copy edited file `kustomization.yaml` to the Git repository directory:
 
 ```bash
-$ cp /workspace/modules/automation/gitops/argocd/update-application/kustomization.yaml.example ~/environment/gitops/apps/kustomization.yaml
+$ cp /workspace/modules/automation/gitops/argocd/update-application/kustomization.yaml.example ~/environment/argocd/apps/kustomization.yaml
 ```
 
 Push changes to the Git repository
 
 ```bash
-$ (cd ~/environment/gitops && \
-git add . && \
-git commit -am "Update UI service replicas" && \
-git push)
+$ git -C ~/environment/argocd add .
+$ git -C ~/environment/argocd commit -am "Update UI service replicas"
+$ git -C ~/environment/argocd push
 ```
 
 Go to Argo CD UI, wait about 5s or hit `Refresh`/`Sync` and you should now have all the changes to the UI services deployed once more.
@@ -47,15 +46,12 @@ We should have now 3 pods in `ui` deployment
 
 To verify, run the following commands:
 
-```bash
+```bash hook=update
 $ kubectl get deployment -n ui ui
 NAME   READY   UP-TO-DATE   AVAILABLE   AGE
 ui     3/3     3            3           3m33s
-```
-
-```bash
 $ kubectl get pod -n ui
-NAME                  READY   STATUS    RESTARTS   AGE
+NAME                 READY   STATUS    RESTARTS   AGE
 ui-6d5bb7b95-hzmgp   1/1     Running   0          61s
 ui-6d5bb7b95-j28ww   1/1     Running   0          61s
 ui-6d5bb7b95-rjfxd   1/1     Running   0          3m34s
