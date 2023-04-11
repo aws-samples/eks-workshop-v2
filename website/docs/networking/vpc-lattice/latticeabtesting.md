@@ -40,7 +40,7 @@ Once the gateway is created, find the VPC Lattice service network. Wait until th
 # Create Routes to targets
 We will show how to preform A/B testing between the two versions using `HTTPRoutes`.
 
-**NOTE:** (At the time of writing, the `targetPort` has to be updated  to `8080` for the Lattice Controller to reroute the traffic). This will be improved in future releases.
+At the time of writing (Apr 2023), the controller requires a port number for `targetPort` . We are working on a better solution, progress is tracked [here](https://github.com/aws/aws-application-networking-k8s/issues/86).
 
 ```bash
 $ kubectl patch svc checkout -n checkout --patch '{"spec": { "type": "ClusterIP", "ports": [ { "name": "http", "port": 80, "protocol": "TCP", "targetPort": 8080 } ] } }'
