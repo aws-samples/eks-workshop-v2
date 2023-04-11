@@ -11,7 +11,7 @@ if [[ ! -d "~/.bashrc.d" ]]; then
 fi
 
 if [ ! -z "$CLOUD9_ENVIRONMENT_ID" ]; then
-  echo 'aws cloud9 update-environment --environment-id $CLOUD9_ENVIRONMENT_ID --managed-credentials-action DISABLE &> /dev/null || true' > ~/.bashrc.d/c9.bash
+  echo "aws cloud9 update-environment --environment-id $CLOUD9_ENVIRONMENT_ID --managed-credentials-action DISABLE &> /dev/null || true" > ~/.bashrc.d/c9.bash
 fi
 
 echo 'export AWS_PAGER=""' > ~/.bashrc.d/aws.bash
@@ -25,5 +25,5 @@ function use-cluster() { bash /usr/local/bin/use-cluster \$1; source ~/.bashrc.d
 EOT
 
 if [ ! -z "$REPOSITORY_REF" ]; then
-  echo 'export REPOSITORY_REF="${REPOSITORY_REF}"' > ~/.bashrc.d/repository.bash
+  echo "export REPOSITORY_REF='${REPOSITORY_REF}'" > ~/.bashrc.d/repository.bash
 fi
