@@ -9,7 +9,7 @@ One of the *Retail Store*'s services is *ui*. At the time being, we only have on
 To practice this lab, you need to have mutiple deployment of a service, and you will do that with the *ui* service.
 
 ```bash
-$ kibectl delete deployment ui -n ui 
+$ kubectl delete deployment ui -n ui 
 $ kubectl apply -n ui -f - <<EOF
 apiVersion: apps/v1
 kind: Deployment
@@ -18,6 +18,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: eks-workshop
     app.kubernetes.io/type: app
+    version: ui-v1
 spec:
   replicas: 1
   selector:
@@ -36,6 +37,7 @@ spec:
         app.kubernetes.io/instance: ui
         app.kubernetes.io/component: service
         app.kubernetes.io/created-by: eks-workshop
+        version: ui-v1
     spec:
       serviceAccountName: ui
       securityContext:
@@ -96,6 +98,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: eks-workshop
     app.kubernetes.io/type: app
+    version: ui-v2
 spec:
   replicas: 1
   selector:
@@ -114,6 +117,7 @@ spec:
         app.kubernetes.io/instance: ui
         app.kubernetes.io/component: service
         app.kubernetes.io/created-by: eks-workshop
+        version: ui-v2
     spec:
       serviceAccountName: ui
       securityContext:
@@ -172,6 +176,7 @@ metadata:
   labels:
     app.kubernetes.io/created-by: eks-workshop
     app.kubernetes.io/type: app
+    version: ui-v3
 spec:
   replicas: 1
   selector:
@@ -190,6 +195,7 @@ spec:
         app.kubernetes.io/instance: ui
         app.kubernetes.io/component: service
         app.kubernetes.io/created-by: eks-workshop
+        version: ui-v3
     spec:
       serviceAccountName: ui
       securityContext:
@@ -310,7 +316,7 @@ Navigate to *Graph* in the Kiali dashboard. Choose the *ui* namespace next. Then
 
 Now, execute the same loop command again for enough time and while the loop is running, check how Kiali shows the distribution of traffic to the 3 pod versions of the reviews service, which should still be almost equally distributed.
 ```bash
-$ for i in {1..300}; do curl -s $ISTIO_IG_HOSTNAME/productpage | grep "reviews-" & sleep 1; done
+$ for i in {1..300}; do curl -s $ISTIO_IG_HOSTNAME/home | grep "ui-v" & sleep 1; done
 ```
 
 Wait a minute, and then you will notice that the traffic to the reviews versions are distributed amost equally. 
@@ -322,77 +328,87 @@ For example, the reviews service backed by 3 different versions. Is it possible 
 
 Yes, you can easily accomplish this with Istio by creating a `VirtualService` that lists the different versions subsets with their weights, and a `DestinationRule` that defines policies that apply to traffic intended for a service after routing has occurred.
 
-Now, each deployment version is labeled with the label `version`, but with a different value. For example deployment of version 1, has the version label defined like this `version=v1`, and deployment of version 2, has the version label defined like this `version=v2`, etc.
+Now, each deployment version is labeled with the label `version`, but with a different value. For example deployment of version 1, has the version label defined like this `version=ui-v1`, and deployment of version 2, has the version label defined like this `version=ui-v2`, etc.
 
 For example, if you want to list reviews pods of version 1, run the following command:
 ```bash
-$ kubectl get pod -n test -l version=v1 | grep reviews
+$ kubectl get pod -n ui -l version=ui-v1 | grep ui
 ```
 Output:
 ```bash
-reviews-v1-9c6bb6658-s97gt       2/2     Running   0          22h
+ui-v1-7bdb5d65dc-xpx87   2/2     Running   0          174m
 ```
 
 Now, let's define a subset per version using a DestinationRule. The label attached to the pods of each version must match the label defined here for each subset.
 
 ```bash
-$ kubectl apply -n test -f - <<EOF
+kubectl apply -n ui -f - <<EOF
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: reviews
+  name: ui
 spec:
-  host: reviews # reviews.<namespace>.svc.cluster.local
+  host: ui # reviews.<namespace>.svc.cluster.local
   subsets: 
   - name: v1
     labels:
-      version: v1 # This is a label attached to the pods of version 1.
+      version: ui-v1 # This is a label attached to the pods of version 1.
   - name: v2
     labels:
-      version: v2 # This is a label attached to the pods of version 2.
+      version: ui-v2 # This is a label attached to the pods of version 2.
   - name: v3
     labels:
-      version: v3 # This is a label attached to the pods of version 3.
+      version: ui-v3 # This is a label attached to the pods of version 3.
 EOF
 ```
 
 
-For the weight-based routing to happen, you create a VirtualService where you define a routing rule per version. Weights associated with the version determine the proportion of traffic it receives. For example, the rules defined here will route 80% of traffic for the “reviews” service to instances with the “v1” label 10% of traffic for "v2", and the remaining 10% for "v3".
+For the weight-based routing to happen, you create a VirtualService where you define a routing rule per version. Weights associated with the version determine the proportion of traffic it receives. For example, the rules defined here will route 80% of traffic for the “ui” service to instances with the “v1” label 10% of traffic for "v2", and the remaining 10% for "v3".
 
 ```bash
-$ kubectl apply -n test -f - <<EOF
+
+kubectl apply -n ui -f - <<EOF
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: reviews
+  name: ui
 spec:
   hosts:
-  - reviews # reviews.<namespace>.svc.cluster.local
-  gateways: 
-    # Here you bind this virtualService to the gateway bookinfo-gateway, and to the whole mesh. 
-    # Which means that the rules of this virtualservice will apply to this gateway level, and to the whole mesh. 
-  - bookinfo-gateway 
-  - mesh 
-  http: 
-  - route:
+  - "*"
+
+  gateways:
+  - ui-gateway 
+  
+  http:
+  - match:
+    - uri:
+        prefix: /  
+    route:
     - destination:
-        host: reviews
+        host: ui
         subset: v1
+        port:
+          number: 80        
       weight: 80 
     - destination:
-        host: reviews
+        host: ui
         subset: v2
+        port:
+          number: 80        
       weight: 10
     - destination:
-        host: reviews
+        host: ui
         subset: v3
+        port:
+          number: 80        
       weight: 10
+
 EOF
 ```
 
 Now, execute the same loop command you executed earlier. 
 ```bash
-$ for i in {1..300}; do curl -s $ISTIO_IG_HOSTNAME/productpage | grep "reviews-" & sleep 1; done
+$ for i in {1..300}; do curl -s $ISTIO_IG_HOSTNAME/home | grep "ui-v" & sleep 1; done
 ```
 
 Wait a minute, and then Open Kiali to look at the distribution of traffic to the 3 pod versions of the reviews service, 
