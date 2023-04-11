@@ -24,7 +24,7 @@ $ kubectl create ns argocd-demo
 Create an Argo CD application:
 
 ```bash
-$ argocd app create argocd-demo --repo https://github.com/aws-samples/eks-workshop-v2.git --path environment/workspace/modules/automation/gitops/argocd --dest-server https://kubernetes.default.svc --dest-namespace argocd-demo
+$ argocd app create argocd-demo --repo https://github.com/aws-samples/eks-workshop-v2.git --path environment/workspace/modules/automation/gitops/argocd --dest-server https://kubernetes.default.svc --dest-namespace argocd-demo --revision stable
  application 'argocd-demo' created
 ```
 
