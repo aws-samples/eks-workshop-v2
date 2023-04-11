@@ -1,5 +1,5 @@
 ---
-title: Cloud9 IDE Access
+title: Misc
 sidebar_position: 10
 ---
 
@@ -44,4 +44,4 @@ $aws cloud9 create-environment-membership --environment-id environment_id_from_a
 }
 ```
 
-[Click Here](./ide.md) to go back to the Accessing the IDE page.
+[Click Here](/website/docs/introduction/ide.md) to go back to the Accessing the IDE page.
