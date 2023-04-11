@@ -43,5 +43,3 @@ $aws cloud9 create-environment-membership --environment-id environment_id_from_a
     }
 }
 ```
-
-[Click Here](/website/docs/introduction/ide.md) to go back to the Accessing the IDE page.
