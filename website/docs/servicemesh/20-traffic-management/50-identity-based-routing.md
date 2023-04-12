@@ -20,6 +20,9 @@ To check Cookie ID in Chrome:
   * Expand the Cookies dropdown under the Storage section. 
   * Under Cookies, select the website with Path / to see the Cookie ID
 
+![cookie-id-browser](../assets/ui-cookie-id-browser.png)
+test
+
 
 Run the following command to re-configure the virtualService reviews you created in the previous task with the following one to enable user-based routing:
 
