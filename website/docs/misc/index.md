@@ -1,6 +1,5 @@
 ---
 title: Misc - Cloud9
-sidebar_position: 40
 ---
 
 If after running the Terraform script you do not see the Cloud9 instance named **eks-workshop** do the following:
@@ -33,6 +32,7 @@ The arn can be found by clicking on the instance name.  Everything after the las
 After entering the code with the replaced text in the CLI you should now be able to access the Cloud9 Instance.
 ```
 $aws cloud9 create-environment-membership --environment-id environment_id_from_arn  --user-arn arn:aws:sts::1234567890:assumed-role/Admin/somerole --permissions read-write
+
 {
     "membership": {
         "permissions": "read-write",
