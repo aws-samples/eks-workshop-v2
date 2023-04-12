@@ -12,7 +12,14 @@ In this case, all traffic from a user with a unique *COOKIE ID=XXX* will be rout
 
 To check which version of the UI traffic is routed to, the grep banner at the of the page should display the pod name which includes the deployment version.
 
-The Cookie ID can be found:
+
+To check Cookie ID in Chrome: 
+
+  * Right-click and click on Inspect to open the developer console. 
+  * Go to the Applications tab on the console. 
+  * Expand the Cookies dropdown under the Storage section. 
+  * Under Cookies, select the website with Path / to see the Cookie ID
+
 
 Run the following command to re-configure the virtualService reviews you created in the previous task with the following one to enable user-based routing:
 
