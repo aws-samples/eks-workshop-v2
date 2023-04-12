@@ -67,14 +67,16 @@ Now, let's see what happens when sending a request over with a Cookie Session ID
 Copy the `Session ID` and replace XXX:
 ```bash
 regex: "^(.*?;)?(SESSIONID=XXX)(;.*)?$"
-EOF
 ```
 
-![tester-login](../assets/tester-login.png)
+Copy the `Session ID` and replace XXX:
+```bash
+regex: "^(.*?;)?(SESSIONID=XXX)(;.*)?$"
+```
 
-Once the tester user is in, you will notice that the displayed page include the star ratings feature and show `reviews-v2` as it's expected.
+Once the browser is refreshed, you will notice that the grep banner on the displayed page will now route to `ui-v2`.
 
-![login-with-tester](../assets/login-with-tester.png)
+![ui-grep-banner](../assets/ui-grep-banner.png)
 
 
 And if you singed out and signed in back with any user other than *tester* (pick any name you wish). You will see that review stars are not there and it shows reviews-v1. This is because traffic is routed to reviews:v1 for all users except tester.
