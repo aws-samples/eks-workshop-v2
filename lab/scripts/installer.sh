@@ -101,29 +101,37 @@ chmod +x terraform
 mv ./terraform /usr/local/bin
 rm -rf terraform.zip
 
+# argocd
+download_and_verify "https://github.com/argoproj/argo-cd/releases/download/v${argocd_version}/argocd-linux-amd64" "$argocd_checksum" "argocd-linux-amd64"
+chmod +x ./argocd-linux-amd64
+mv ./argocd-linux-amd64 /usr/local/bin/argocd
+
+REPOSITORY_OWNER=${REPOSITORY_OWNER:-"aws-samples"}
+REPOSITORY_NAME=${REPOSITORY_NAME:-"eks-workshop-v2"}
+
 if [ ! -z "$REPOSITORY_REF" ]; then
   cat << EOT > /usr/local/bin/reset-environment
 #!/bin/bash
 set -e
-curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/$REPOSITORY_REF/lab/bin/reset-environment | bash -s -- \$1
+curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/$REPOSITORY_REF/lab/bin/reset-environment | bash -s -- \$1
 EOT
   chmod +x /usr/local/bin/reset-environment
   cat << EOT > /usr/local/bin/delete-environment
 #!/bin/bash
 set -e
-curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/$REPOSITORY_REF/lab/bin/delete-environment | bash
+curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/$REPOSITORY_REF/lab/bin/delete-environment | bash
 EOT
   chmod +x /usr/local/bin/delete-environment
   cat << EOT > /usr/local/bin/wait-for-lb
 #!/bin/bash
 set -e
-curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/$REPOSITORY_REF/lab/bin/wait-for-lb | bash -s -- \$1
+curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/$REPOSITORY_REF/lab/bin/wait-for-lb | bash -s -- \$1
 EOT
   chmod +x /usr/local/bin/wait-for-lb
   cat << EOT > /usr/local/bin/use-cluster
 #!/bin/bash
 set -e
-curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/$REPOSITORY_REF/lab/bin/use-cluster | bash -s -- \$1
+curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/$REPOSITORY_REF/lab/bin/use-cluster | bash -s -- \$1
 EOT
   chmod +x /usr/local/bin/use-cluster
 fi

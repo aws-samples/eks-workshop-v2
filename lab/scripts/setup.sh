@@ -24,6 +24,13 @@ function prepare-environment() { bash /usr/local/bin/reset-environment \$1; sour
 function use-cluster() { bash /usr/local/bin/use-cluster \$1; source ~/.bashrc.d/env.bash; }
 EOT
 
+REPOSITORY_OWNER=${REPOSITORY_OWNER:-"aws-samples"}
+REPOSITORY_NAME=${REPOSITORY_NAME:-"eks-workshop-v2"}
+
 if [ ! -z "$REPOSITORY_REF" ]; then
-  echo "export REPOSITORY_REF='${REPOSITORY_REF}'" > ~/.bashrc.d/repository.bash
+  cat << EOT > ~/.bashrc.d/repository.bash
+REPOSITORY_OWNER='${REPOSITORY_OWNER}'
+REPOSITORY_NAME='${REPOSITORY_NAME}'
+REPOSITORY_REF='${REPOSITORY_REF}'
+EOT
 fi

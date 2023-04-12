@@ -21,7 +21,7 @@ if [ ! -z "${REPOSITORY_REF}" ]; then
 
   echo "Loading workshop repository..."
 
-  git clone https://github.com/aws-samples/eks-workshop-v2.git $repository_path > /dev/null
+  git clone https://github.com/$REPOSITORY_OWNER/$REPOSITORY_NAME.git $repository_path > /dev/null
   (cd $repository_path && git checkout "${REPOSITORY_REF}" > /dev/null)
 
   echo ""
@@ -105,7 +105,7 @@ if [ ! -z "$module" ]; then
   fi
 
   # Link manifests to Cloud9 workspace
-  ln -s $module_path /home/ec2-user/environment/lab
+  ln -s $module_path ~/environment/lab
 fi
 
 terraform -chdir="$tf_dir" output -json | jq -r '.environment.value | select(. != null)' > ~/.bashrc.d/workshop-env.bash
