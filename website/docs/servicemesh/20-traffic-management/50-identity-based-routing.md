@@ -12,18 +12,6 @@ In this case, all traffic from a user with a unique *COOKIE ID=XXX* will be rout
 
 To check which version of the UI traffic is routed to, the grep banner at the of the page should display the pod name which includes the deployment version.
 
-
-To check Cookie ID in Chrome: 
-
-  * Right-click and click on Inspect to open the developer console. 
-  * Go to the Applications tab on the console. 
-  * Expand the Cookies dropdown under the Storage section. 
-  * Under Cookies, select the website with Path / to see the Cookie ID
-
-![cookie-id-browser](../assets/ui-cookie-id-browser.png)
-test
-
-
 Run the following command to re-configure the virtualService reviews you created in the previous task with the following one to enable user-based routing:
 
 ```bash
@@ -52,6 +40,7 @@ spec:
         subset: v1
 EOF
 ```
+
 Now, let's open the retail store sample using the browser:
 ```bash
 $ echo $ISTIO_IG_HOSTNAME/home
@@ -61,12 +50,25 @@ Output:
 http://af08b29901d054f489ffb6473b1593a9-510276527.us-east-1.elb.amazonaws.com/home
 ```
 
-Notice here before logging, that the displayed page shows `reviews-v1` and does not includes the star ratings feature.
-![productpage-with-no-user-identity](../assets/productpage-with-no-user-identity.png)
+To check Cookie ID in Chrome: 
 
-Now, let's see what happens when logging with the *tester* user?
+  * Right-click and click on Inspect to open the developer console. 
+  * Go to the Applications tab on the console. 
+  * Expand the Cookies dropdown under the Storage section. 
+  * Under Cookies, select the website with Path / to see the Cookie ID
 
-Hit the `Sign In` button, to log in with the `tester` user, with no password:
+![cookie-id-browser](../assets/ui-cookie-id-browser.png)
+
+
+Notice here before logging, that on the grep banner, the displayed page shows `ui-v1` and not `ui-v2`. This is due to the Cookie Session ID assigned to your browser is not `XXX`.
+
+Now, let's see what happens when sending a request over with a Cookie Session ID matching your browser.
+
+Copy the `Session ID` and replace XXX:
+```bash
+regex: "^(.*?;)?(SESSIONID=XXX)(;.*)?$"
+EOF
+```
 
 ![tester-login](../assets/tester-login.png)
 
