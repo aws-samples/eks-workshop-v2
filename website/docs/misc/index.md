@@ -16,6 +16,7 @@ From the AWS CLI modify the following code to give your user access to the Cloud
 aws cloud9 create-environment-membership --environment-id environment_id_from_arn  --user-arn arn:aws:sts::1234567890:assumed-role/Admin/somerole --permissions read-write
 
 ```
+
 Two replacements will need to be made:
 
     arn:aws:sts::1234567890:assumed-role/Admin/somerole
