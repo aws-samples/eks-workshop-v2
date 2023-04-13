@@ -14,5 +14,5 @@ In this chapter,  we'll cover how you can use AWS observability solutions integr
 * Monitoring EKS Metrics with AMP and ADOT.
 
 :::info
-To dive deeper into AWS Observability features take a look at the [One Observability Workshop](https://observability.workshop.aws)
+To dive deeper into AWS Observability features take a look at the [One Observability Workshop](https://observability.workshop/terraform.aws)
 :::

@@ -14,7 +14,7 @@ $ prepare-environment automation/controlplanes/crossplane
 This will make the following changes to your lab environment:
 - Install Crossplane and the AWS provider in the Amazon EKS cluster
 
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/automation/controlplanes/crossplane/.workshop).
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/automation/controlplanes/crossplane/.workshop/terraform).
 
 :::
 

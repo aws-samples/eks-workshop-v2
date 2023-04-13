@@ -15,7 +15,7 @@ This will make the following changes to your lab environment:
 - Install the EKS managed addon for AWS Distro for OpenTelemetry
 - Create an IAM role for the ADOT collector to access CloudWatch
 
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/container-insights/.workshop).
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/container-insights/.workshop/terraform).
 
 :::
 
