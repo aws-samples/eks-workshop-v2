@@ -85,14 +85,14 @@ if [ ! -z "$module" ]; then
     cp "$module_path/.workshop/cleanup.sh" /eks-workshop/hooks
   fi
 
-  if [ -f "$module_path/.workshop/addon.tf" ]; then
+  if [ -f "$module_path/.workshop/terraform/addon.tf" ]; then
     echo "Creating infrastructure for next lab..."
 
-    cp "$module_path/.workshop/addon.tf" /eks-workshop/terraform
+    cp "$module_path/.workshop/terraform/addon.tf" /eks-workshop/terraform
 
     if [ "$RESOURCES_PRECREATED" != "true" ]; then
-      if [ -f "$module_path/.workshop/addon_infrastructure.tf" ]; then
-        cp "$module_path/.workshop/addon_infrastructure.tf" /eks-workshop/terraform
+      if [ -f "$module_path/.workshop/terraform/addon_infrastructure.tf" ]; then
+        cp "$module_path/.workshop/terraform/addon_infrastructure.tf" /eks-workshop/terraform
       fi
     fi
 
@@ -100,8 +100,8 @@ if [ ! -z "$module" ]; then
     terraform -chdir="$tf_dir" apply -refresh=false --auto-approve > /tmp/terraform-apply.log
   fi
 
-  if [ -f "$module_path/.workshop/kustomization.yaml" ]; then
-    kubectl apply -k "$module_path/.workshop" > /dev/null
+  if [ -d "$module_path/.workshop/manifests" ]; then
+    kubectl apply -k "$module_path/.workshop/manifests" > /dev/null
   fi
 
   # Link manifests to Cloud9 workspace

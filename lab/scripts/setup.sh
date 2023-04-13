@@ -14,7 +14,10 @@ if [ ! -z "$CLOUD9_ENVIRONMENT_ID" ]; then
   echo "aws cloud9 update-environment --environment-id $CLOUD9_ENVIRONMENT_ID --managed-credentials-action DISABLE &> /dev/null || true" > ~/.bashrc.d/c9.bash
 fi
 
-echo 'export AWS_PAGER=""' > ~/.bashrc.d/aws.bash
+cat << EOT > ~/.bashrc.d/aws.bash
+export AWS_PAGER=""
+export AWS_REGION="${AWS_REGION}"
+EOT
 
 touch ~/.bashrc.d/workshop-env.bash
 
@@ -29,9 +32,9 @@ REPOSITORY_NAME=${REPOSITORY_NAME:-"eks-workshop-v2"}
 
 if [ ! -z "$REPOSITORY_REF" ]; then
   cat << EOT > ~/.bashrc.d/repository.bash
-REPOSITORY_OWNER='${REPOSITORY_OWNER}'
-REPOSITORY_NAME='${REPOSITORY_NAME}'
-REPOSITORY_REF='${REPOSITORY_REF}'
+export REPOSITORY_OWNER='${REPOSITORY_OWNER}'
+export REPOSITORY_NAME='${REPOSITORY_NAME}'
+export REPOSITORY_REF='${REPOSITORY_REF}'
 EOT
 fi
 

@@ -72,7 +72,7 @@ module "catalog_rds_ingress" {
       from_port                = 3306
       to_port                  = 3306
       protocol                 = "tcp"
-      description              = "MySQL access from within VPC"
+      description              = "MySQL access from specific security group"
       source_security_group_id = aws_security_group.catalog_rds_ingress.id
     },
   ]

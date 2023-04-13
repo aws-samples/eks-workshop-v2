@@ -7,4 +7,4 @@ kubectl delete SecurityGroupPolicy --all -A > /dev/null
 sleep 5
 
 # Clear the catalog pods so the SG can be deleted
-kubectl rollout restart -n catalog deployment/catalog
+kubectl rollout restart -n catalog deployment/catalog > /dev/null
