@@ -2,8 +2,8 @@
 
 set -e
 
-kubectl_version='1.25.8'
-kubectl_checksum='80e70448455f3d19c3cb49bd6ff6fc913677f4f240d368fa2b9f0d400c8cd16e'
+kubectl_version='1.23.9'
+kubectl_checksum='053561f7c68c5a037a69c52234e3cf1f91798854527692acd67091d594b616ce'
 
 helm_version='3.10.1'
 helm_checksum='c12d2cd638f2d066fec123d0bd7f010f32c643afdf288d39a4610b1f9cb32af3'
