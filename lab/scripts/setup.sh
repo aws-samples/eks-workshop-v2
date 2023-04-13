@@ -41,3 +41,5 @@ fi
 RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-"false"}
 
 echo "export RESOURCES_PRECREATED='${RESOURCES_PRECREATED}'" > ~/.bashrc.d/infra.bash
+
+kubectl completion bash >>  ~/.bashrc.d/kubectl_completion.bash
