@@ -28,7 +28,11 @@ modules/autoscaling/compute/karpenter/scale/deployment.yaml
 ```
 
 :::info What's a pause container?
-You'll notice in this example we're using the image `public.ecr.aws/eks-distro/kubernetes/pause`. This is a small container that will consume no real resources and starts quickly, which makes it great for demonstrating scaling scenarios. We'll be using this for many of the examples in this particular lab.
+You'll notice in this example we're using the image:
+
+`public.ecr.aws/eks-distro/kubernetes/pause`
+
+This is a small container that will consume no real resources and starts quickly, which makes it great for demonstrating scaling scenarios. We'll be using this for many of the examples in this particular lab.
 :::
 
 Apply this deployment:
