@@ -10,7 +10,7 @@ resource "aws_security_group_rule" "dns_udp" {
   from_port         = 53
   to_port           = 53
   protocol          = "udp"
-  cidr_blocks       = [data.aws_vpc.selected.cidr_block]
+  cidr_blocks       = [data.aws_vpc.this.cidr_block]
   security_group_id = data.aws_eks_cluster.eks_cluster.vpc_config[0].cluster_security_group_id
 }
 
@@ -19,7 +19,7 @@ resource "aws_security_group_rule" "dns_tcp" {
   from_port         = 53
   to_port           = 53
   protocol          = "tcp"
-  cidr_blocks       = [data.aws_vpc.selected.cidr_block]
+  cidr_blocks       = [data.aws_vpc.this.cidr_block]
   security_group_id = data.aws_eks_cluster.eks_cluster.vpc_config[0].cluster_security_group_id
 }
 
