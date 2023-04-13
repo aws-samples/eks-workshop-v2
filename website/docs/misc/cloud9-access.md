@@ -1,5 +1,5 @@
 ---
-title: Misc - Cloud9
+title: Cloud9 Access
 ---
 
 If after running the Terraform script you do not see the Cloud9 instance named **eks-workshop** do the following:
@@ -14,16 +14,19 @@ From the AWS CLI modify the following code to give your user access to the Cloud
 
 ```
 aws cloud9 create-environment-membership --environment-id environment_id_from_arn  --user-arn arn:aws:sts::1234567890:assumed-role/Admin/somerole --permissions read-write
-
 ```
 
 Two replacements will need to be made:
 
-    arn:aws:sts::1234567890:assumed-role/Admin/somerole
+```
+arn:aws:sts::1234567890:assumed-role/Admin/somerole
+```
 
 The above arn should be replaced with the arn of the user or role that needs access to the Cloud9 instance.
 
-    environment_id_from_arn
+```
+environment_id_from_arn
+```
 
 The environment_id_from_arn should be replaced with the environment-id from the arn of the instance you want to manage. 
 The arn can be found by clicking on the instance name.  Everything after the last colon in the arn is the environment-id.
@@ -31,9 +34,9 @@ The arn can be found by clicking on the instance name.  Everything after the las
 ![cloud9-arn](./assets/cloud9-arn.png)
 
 After entering the code with the replaced text in the CLI you should now be able to access the Cloud9 Instance.
-```
-$aws cloud9 create-environment-membership --environment-id environment_id_from_arn  --user-arn arn:aws:sts::1234567890:assumed-role/Admin/somerole --permissions read-write
 
+```
+$ aws cloud9 create-environment-membership --environment-id environment_id_from_arn  --user-arn arn:aws:sts::1234567890:assumed-role/Admin/somerole --permissions read-write
 {
     "membership": {
         "permissions": "read-write",
@@ -44,3 +47,5 @@ $aws cloud9 create-environment-membership --environment-id environment_id_from_a
     }
 }
 ```
+
+[Click here](/introduction/ide.md) to return to "Accessing the IDE".
