@@ -91,4 +91,4 @@ You can view these subnets in the AWS console:
 
 https://console.aws.amazon.com/vpc/home#subnets:tag:created-by=eks-workshop-v2;sort=desc:CidrBlock
 
-Currently our pods are leveraging the private subnets `10.42.0.0/24`, `10.42.1.0/24` and `10.42.2.0/24`. In this lab exercise, we'll move them to consume IP addresses from the `100.64` subnets.
+Currently our pods are leveraging the private subnets `10.42.10.0/24`, `10.42.11.0/24` and `10.42.12.0/24`. In this lab exercise, we'll move them to consume IP addresses from the `100.64` subnets.
