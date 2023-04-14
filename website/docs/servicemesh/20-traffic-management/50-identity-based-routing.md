@@ -6,9 +6,9 @@ weight: 5
 
 In this task, you use Istio to send 100% of the traffic to `ui-v1`. You then set a rule to selectively send traffic to `ui-v2` based on the cookie ID added to the end-user header request by the UI service. 
 
-Most cookies contain a unique identifier called a cookie ID: a string of characters that websites and servers associate with the browser on which the cookie is stored.
+Most cookies contain a unique identifier called a Session ID: a string of characters that websites and servers associate with the browser on which the cookie is stored.
 
-In this case, all traffic from a user with a unique *COOKIE ID=XXX* will be routed to the deployment `ui-v2`, but all remaining user traffic goes to `ui-v1`.
+In this case, all traffic from a user with a unique *SESSION ID=XXX* will be routed to the deployment `ui-v2`, but all remaining user traffic goes to `ui-v1`.
 
 To check which version of the UI traffic is routed to, the grep banner at the top of the page should display the pod name which includes the deployment version.
 
@@ -23,7 +23,7 @@ http://af08b29901d054f489ffb6473b1593a9-510276527.us-east-1.elb.amazonaws.com/ho
 
 Currently, your virtualservice routes to all 3 versions of the ui.
 
-To check Cookie ID in Chrome: 
+To check Session ID in Chrome: 
 
   * Right-click and click on Inspect to open the developer console. 
   * Go to the Applications tab on the console. 
