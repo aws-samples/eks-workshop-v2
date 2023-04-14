@@ -31,7 +31,7 @@ spec:
   - match:
     - headers:
         cookie:
-          regex: "^(.*?;)?(SESSIONID=*XXX*)(;.*)?$"
+          regex: "^(.*?;)?(SESSIONID=XXX)(;.*)?$"
     route:
     - destination:
         host: ui
@@ -70,9 +70,9 @@ Copy the `Session ID` and replace XXX:
 regex: "^(.*?;)?(SESSIONID=XXX)(;.*)?$"
 ```
 
-Copy the `Session ID` and replace XXX:
+Run:
 ```bash
-regex: "^(.*?;)?(SESSIONID=XXX)(;.*)?$"
+kubectl apply -k /workspace/manifests/ -n ui
 ```
 
 Once the browser is refreshed, you will notice that the grep banner on the displayed page will now route to `ui-v2`.
