@@ -137,7 +137,7 @@ $ for i in {1..300}; do curl -s $ISTIO_IG_HOSTNAME/home | grep "ui-v" & sleep 1;
 ```
 
 Wait a minute, and then Open Kiali to look at the distribution of traffic to the 3 pod versions of the reviews service, 
-![kiali-reviews-weight-traffic](https://github.com/deepikra/eks-workshop-v2/blob/e936816a516a6b1b7363eb375a4bdcb4d95c89e9/website/docs/servicemesh/assets/kiali-reviews-weight-traffic.png)
+![kiali-reviews-weight-traffic](../assets/kiali-reviews-weight-traffic.png)
 
 This time, the traffic to the reviews versions are distributed following the weight based rules we defined in the VirtualService. 
 
