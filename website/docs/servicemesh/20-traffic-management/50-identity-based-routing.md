@@ -14,8 +14,9 @@ To check which version of the UI traffic is routed to, the grep banner at the of
 
 Run the following command to re-configure the virtualService reviews you created in the previous task with the following one to enable user-based routing:
 
+```
 /workspace/manifests/ui-identity.yaml
-
+```
 ```
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
