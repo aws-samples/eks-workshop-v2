@@ -16,7 +16,8 @@ Run the following command to re-configure the virtualService reviews you created
 
 /workspace/manifests/ui-identity.yaml
 
-`apiVersion: networking.istio.io/v1alpha3
+```
+apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: ui
@@ -37,8 +38,8 @@ spec:
   - route:
     - destination:
         host: ui
-        subset: v1`
-
+        subset: v1
+```
 
 Now, let's open the retail store sample using the browser:
 ```bash
