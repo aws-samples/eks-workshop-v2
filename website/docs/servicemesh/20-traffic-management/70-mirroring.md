@@ -8,22 +8,22 @@ In this task, you will learn how to use the Istio's traffic mirroring capability
 
 Traffic mirroring is a powerful concept that enables introducing new features/changes into production with the least amount of risk. Mirroring copies live traffic and sends it to a mirrored service. The mirrored traffic occurs outside of the critical request path for the primary service.
 
-In this taks, all traffic will be directed to v1 of the *reviews* service, but when logging with the user *tester*, traffic will be routed to reviews:v2. You will create a VirtualService rule to force all traffic that go to v2, to be mirrored and directed to a mirror service, which can be helpful for troubleshooting, testing, or monitorization.
+In this taks, all traffic will be directed to ui-v1 of the *ui* service, but when logging with the user *tester*, traffic will be routed to ui-v2. You will create a VirtualService rule to force all traffic that go to ui-v2, to be mirrored and directed to a mirror service, which can be helpful for troubleshooting, testing, or monitorization.
 
-Assuming you have already the bookinfo application deployed with the three versions of the reviews service.
+Assuming you have the application already deployed with the three versions of the ui service.
 
 ```bash
-$ kubectl get po -n test | grep reviews
+$ kubectl get po -n ui | grep ui
 ```
 
 Output:
 ```bash
-reviews-v1-9c6bb6658-gsf5p       2/2     Running   0          14h
-reviews-v2-8454bb78d8-qthqq      2/2     Running   0          14h
-reviews-v3-6dc9897554-894cg      2/2     Running   0          14h
+ui-v1-9c6bb6658-gsf5p       2/2     Running   0          14h
+ui-v2-8454bb78d8-qthqq      2/2     Running   0          14h
+ui-v3-6dc9897554-894cg      2/2     Running   0          14h
 ```
 
-Create a DestinationRule to define a subset for the versions available for the reviews service
+Create a DestinationRule to define a subset for the versions available for the ui service
 ```bash
 $ kubectl apply -n test -f - <<EOF
 apiVersion: networking.istio.io/v1alpha3
