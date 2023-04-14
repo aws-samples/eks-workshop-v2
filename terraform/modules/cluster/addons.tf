@@ -530,6 +530,21 @@ module "eks_blueprints_kubernetes_grafana_addon" {
   }
 }
 
+resource "kubernetes_config_map" "business-metrics-dashboard" {
+  metadata {
+    name      = "business-metrics-dashboard"
+    namespace = "grafana"
+
+    labels = {
+      grafana_dashboard = 1
+    }
+  }
+  
+  data = {
+    "business-metrics-dashboard.json" = file("${path.module}/templates/dashboards/business-metrics-dashboard.json")
+  }
+}
+
 resource "aws_iam_policy" "grafana" {
   name = "${var.environment_name}-grafana-other"
 
