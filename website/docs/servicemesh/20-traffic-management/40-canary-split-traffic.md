@@ -19,6 +19,10 @@ Now, let's create multiple version of the deployment with the following manifest
 /workspace/modules/servicemesh/traffic-management/canary/deployment.yaml
 ```
 
+```bash
+kubectl apply -k /workspace/modules/servicemesh/traffic-management/canary/deployment.yaml
+```
+
 You should have three different versions for the ui service now.
 ```bash
 $ kubectl get deployment,pod -n ui
