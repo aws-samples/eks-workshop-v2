@@ -3,10 +3,10 @@ title: Exposing a service with ISTIO Ingress Gateway
 sidebar_position: 30
 weight: 5
 ---
-It's common to us a Kubernetes Ingress to access an internal kubernetes service from the outside. In this module, you configure the traffic to enter through an Istio ingress gateway, in order to apply Istio control on traffic to your microservices.
+It's common for us to use a Kubernetes Ingress to access an internal kubernetes service from the outside. In this module, you configure the traffic to enter through an Istio ingress gateway, in order to apply Istio control on traffic to your microservices.
 
 
-By default, kubernetes services running in namespaces managed by Istio service mesh are not exposed outside the cluster. For the Kubernetes service you want to expose externally, you must deploy an Istio Ingress Gateway as a LoadBalancer for it, and then define an Istio VirtualService with the necessary routes. Let's see how that works.
+By default, Kubernetes services running in namespaces managed by the Istio service mesh are not exposed outside the cluster. For the Kubernetes service you want to expose externally, you must deploy an Istio Ingress Gateway as a LoadBalancer for it, and then define an Istio VirtualService with the necessary routes. Let's see how that works.
 
 ### Enable Istio in a Namespace
 You must manually enable Istio in each namespace that you want to track or control with Istio. When Istio is enabled in a namespace, the Envoy sidecar proxy is injected into all new workloads deployed in that namespace. 
@@ -15,7 +15,7 @@ This namespace setting will only affect new workloads in the namespace. Any pree
 
 Assuming that you have deployed the example application as explained in the Introduction module, in the [Getting started](../../introduction/getting-started.md) section. Each microservice is deployed to its own separate Namespace to provide some degree of isolation.
 
-Now you need to To get the list of namespaces specific to this example app:
+Now you need to get the list of namespaces specific to this example app:
 ```bash
 $ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
 ```
@@ -38,7 +38,7 @@ $ kubectl label namespace -l app.kubernetes.io/created-by=eks-workshop istio-inj
 ```
 
 #### Verifying it:
-To verify that automatic Istio sidecar injection is enabled, you need to delete the existing deployments pods in those namespaces and then they will be redeployed automatically by Kubernetes.
+To verify that automatic Istio sidecar injection is enabled, you need to delete the existing deployment pods in those namespaces and then they will be redeployed automatically by Kubernetes.
 
 But before deleting them, if you listed pods into those namespaces you will notice that each pod has only one (1/1) container
 ```bash
@@ -114,7 +114,7 @@ $ kubectl apply -n ui -f - <<EOF
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: watchn-gateway
+  name: ui-gateway
 spec:
   selector:  
     istio: ingressgateway 
@@ -141,26 +141,18 @@ $ kubectl apply -n ui -f - <<EOF
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: watchn
+  name: ui
 spec:
   hosts:
   - "*"
 
   gateways:
-  - watchn-gateway 
+  - ui-gateway 
   
   http:
   - match:
     - uri:
         prefix: /  
-    # - uri:
-    #     exact: /home
-    # - uri:
-    #     prefix: /catalog
-    # - uri:
-    #     exact: /login
-    # - uri:
-    #     exact: /logout
     route:
     - destination:
         # Provide the destination service name using either a relative or an absolute path.
@@ -178,7 +170,7 @@ The `hosts` field contains a list of the destinations/addresses that the client 
 
 As in this example, you can make a single set of routing rules that apply to all matching services by using wildcard ("*") prefixes under `hosts`.
 
-To make the gateway to work as intended with those routing rules, you must bind/link this virtual service resource to the gateway resource name **watchn-gateway** you created in the previous step. 
+To make the gateway to work as intended with those routing rules, you must bind/link this virtual service resource to the gateway resource name **ui-gateway** you created in the previous step. 
 
 **_Note:_**
 
