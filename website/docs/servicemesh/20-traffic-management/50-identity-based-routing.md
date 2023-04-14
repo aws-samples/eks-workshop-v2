@@ -31,7 +31,7 @@ spec:
   - match:
     - headers:
         cookie:
-          regex: "^(.*?;)?(SESSIONID=XXX)(;.*)?$"
+          regex: "^(.*?;)?(SESSIONID=*XXX*)(;.*)?$"
     route:
     - destination:
         host: ui
