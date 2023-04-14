@@ -29,6 +29,8 @@ To check Cookie ID in Chrome:
   * Go to the Applications tab on the console. 
   * Expand the Cookies dropdown under the Storage section. 
   * Under Cookies, select the website with Path / to see the SESSION ID
+
+
 NOTE: Make note of the SESSION ID with Path /. This will be used below.
 
 ![cookie-id-browser](../assets/ui-cookie-id-browser.png)
@@ -81,6 +83,6 @@ Once the browser is refreshed, you will notice that the grep banner on the displ
 
 You have successfully configured Istio to route traffic based on user identity.
 
-**Try it out:** Clear cache and obtain new Cookie ID. The routing rule to direct your traffic to v2 is longer valid and new traffic is now going to v1.
+**Try it out:** Clear cache and obtain new Cookie ID. The routing rule to direct your traffic to `ui-v2` is longer valid and new traffic is now going to `ui-v1`.
 
 
