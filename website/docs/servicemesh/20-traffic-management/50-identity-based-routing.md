@@ -14,9 +14,9 @@ To check which version of the UI traffic is routed to, the grep banner at the of
 
 Run the following command to re-configure the virtualService reviews you created in the previous task with the following one to enable user-based routing:
 
-```bash
-$ kubectl apply -n test -f - <<EOF
-apiVersion: networking.istio.io/v1alpha3
+/workspace/manifests/ui-identity.yaml
+
+`apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: ui
@@ -37,9 +37,8 @@ spec:
   - route:
     - destination:
         host: ui
-        subset: v1
-EOF
-```
+        subset: v1`
+
 
 Now, let's open the retail store sample using the browser:
 ```bash
