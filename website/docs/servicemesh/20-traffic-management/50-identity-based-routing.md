@@ -79,11 +79,6 @@ Once the browser is refreshed, you will notice that the grep banner on the displ
 
 ![ui-grep-banner](../assets/ui-grep-banner.png)
 
-
-And if you singed out and signed in back with any user other than *tester* (pick any name you wish). You will see that review stars are not there and it shows reviews-v1. This is because traffic is routed to reviews:v1 for all users except tester.
-
-![not-tester](../assets/not-tester.png)
-
 You have successfully configured Istio to route traffic based on user identity.
 
 **Try it out:** Change the routing rule to direct tester user to v1, and remaining traffic to goes to v2.
