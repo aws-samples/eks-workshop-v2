@@ -8,247 +8,18 @@ One of the *Retail Store*'s services is *ui*. At the time being, we only have on
 
 To practice this lab, you need to have mutiple deployment of a service, and you will do that with the *ui* service.
 
+First, lets delete the existing *ui* deployment
+
 ```bash
 $ kubectl delete deployment ui -n ui 
-$ kubectl apply -n ui -f - <<EOF
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ui-v1
-  labels:
-    app.kubernetes.io/created-by: eks-workshop
-    app.kubernetes.io/type: app
-    version: ui-v1
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: ui
-      app.kubernetes.io/instance: ui
-      app.kubernetes.io/component: service
-  template:
-    metadata:
-      annotations:
-        prometheus.io/path: /actuator/prometheus
-        prometheus.io/port: "8080"
-        prometheus.io/scrape: "true"
-      labels:
-        app.kubernetes.io/name: ui
-        app.kubernetes.io/instance: ui
-        app.kubernetes.io/component: service
-        app.kubernetes.io/created-by: eks-workshop
-        version: ui-v1
-    spec:
-      serviceAccountName: ui
-      securityContext:
-        fsGroup: 1000
-      containers:
-        - name: ui
-          env:
-            - name: JAVA_OPTS
-              value: -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
-            - name: RETAIL_UI_BANNER
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-          envFrom:
-            - configMapRef:
-                name: ui
-          securityContext:
-            capabilities:
-              add:
-              - NET_BIND_SERVICE
-              drop:
-              - ALL
-            readOnlyRootFilesystem: true
-            runAsNonRoot: true
-            runAsUser: 1000
-          image: "public.ecr.aws/aws-containers/retail-store-sample-ui:latest"
-          imagePullPolicy: IfNotPresent
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /actuator/health/liveness
-              port: 8080
-            initialDelaySeconds: 45
-            periodSeconds: 20
-          resources:
-            limits:
-              memory: 1.5Gi
-            requests:
-              cpu: 250m
-              memory: 1.5Gi
-          volumeMounts:
-            - mountPath: /tmp
-              name: tmp-volume
-      volumes:
-        - name: tmp-volume
-          emptyDir:
-            medium: Memory
-
----
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ui-v2
-  labels:
-    app.kubernetes.io/created-by: eks-workshop
-    app.kubernetes.io/type: app
-    version: ui-v2
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: ui
-      app.kubernetes.io/instance: ui
-      app.kubernetes.io/component: service
-  template:
-    metadata:
-      annotations:
-        prometheus.io/path: /actuator/prometheus
-        prometheus.io/port: "8080"
-        prometheus.io/scrape: "true"
-      labels:
-        app.kubernetes.io/name: ui
-        app.kubernetes.io/instance: ui
-        app.kubernetes.io/component: service
-        app.kubernetes.io/created-by: eks-workshop
-        version: ui-v2
-    spec:
-      serviceAccountName: ui
-      securityContext:
-        fsGroup: 1000
-      containers:
-        - name: ui
-          env:
-            - name: JAVA_OPTS
-              value: -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
-            - name: RETAIL_UI_BANNER
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-          envFrom:
-            - configMapRef:
-                name: ui
-          securityContext:
-            capabilities:
-              add:
-              - NET_BIND_SERVICE
-              drop:
-              - ALL
-            readOnlyRootFilesystem: true
-            runAsNonRoot: true
-            runAsUser: 1000
-          image: "public.ecr.aws/aws-containers/retail-store-sample-ui:latest"
-          imagePullPolicy: IfNotPresent
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /actuator/health/liveness
-              port: 8080
-            initialDelaySeconds: 45
-            periodSeconds: 20
-          resources:
-            limits:
-              memory: 1.5Gi
-            requests:
-              cpu: 250m
-              memory: 1.5Gi
-          volumeMounts:
-            - mountPath: /tmp
-              name: tmp-volume
-      volumes:
-        - name: tmp-volume
-          emptyDir:
-            medium: Memory
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ui-v3
-  labels:
-    app.kubernetes.io/created-by: eks-workshop
-    app.kubernetes.io/type: app
-    version: ui-v3
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: ui
-      app.kubernetes.io/instance: ui
-      app.kubernetes.io/component: service
-  template:
-    metadata:
-      annotations:
-        prometheus.io/path: /actuator/prometheus
-        prometheus.io/port: "8080"
-        prometheus.io/scrape: "true"
-      labels:
-        app.kubernetes.io/name: ui
-        app.kubernetes.io/instance: ui
-        app.kubernetes.io/component: service
-        app.kubernetes.io/created-by: eks-workshop
-        version: ui-v3
-    spec:
-      serviceAccountName: ui
-      securityContext:
-        fsGroup: 1000
-      containers:
-        - name: ui
-          env:
-            - name: JAVA_OPTS
-              value: -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
-            - name: RETAIL_UI_BANNER
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-          envFrom:
-            - configMapRef:
-                name: ui
-          securityContext:
-            capabilities:
-              add:
-              - NET_BIND_SERVICE
-              drop:
-              - ALL
-            readOnlyRootFilesystem: true
-            runAsNonRoot: true
-            runAsUser: 1000
-          image: "public.ecr.aws/aws-containers/retail-store-sample-ui:latest"
-          imagePullPolicy: IfNotPresent
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /actuator/health/liveness
-              port: 8080
-            initialDelaySeconds: 45
-            periodSeconds: 20
-          resources:
-            limits:
-              memory: 1.5Gi
-            requests:
-              cpu: 250m
-              memory: 1.5Gi
-          volumeMounts:
-            - mountPath: /tmp
-              name: tmp-volume
-      volumes:
-        - name: tmp-volume
-          emptyDir:
-            medium: Memory
-EOF
 ```
-now you have three different versions for the ui service.
+
+Now, let's create multiple version of the deployment with the following manifest:
+```file
+/workspace/modules/servicemesh/traffic-management/canary/deployment.yaml
+```
+
+You should have three different versions for the ui service now.
 ```bash
 $ kubectl get deployment,pod -n ui
 ```
@@ -341,70 +112,24 @@ ui-v1-7bdb5d65dc-xpx87   2/2     Running   0          174m
 
 Now, let's define a subset per version using a DestinationRule. The label attached to the pods of each version must match the label defined here for each subset.
 
-```bash
-kubectl apply -n ui -f - <<EOF
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: ui
-spec:
-  host: ui # reviews.<namespace>.svc.cluster.local
-  subsets: 
-  - name: v1
-    labels:
-      version: ui-v1 # This is a label attached to the pods of version 1.
-  - name: v2
-    labels:
-      version: ui-v2 # This is a label attached to the pods of version 2.
-  - name: v3
-    labels:
-      version: ui-v3 # This is a label attached to the pods of version 3.
-EOF
+```file
+/workspace/modules/servicemesh/traffic-management/canary/destinationrule.yaml
 ```
 
+```bash
+kubectl apply -k /workspace/modules/servicemesh/traffic-management/canary/destinationrule.yaml
+```
 
 For the weight-based routing to happen, you create a VirtualService where you define a routing rule per version. Weights associated with the version determine the proportion of traffic it receives. For example, the rules defined here will route 80% of traffic for the “ui” service to instances with the “v1” label 10% of traffic for "v2", and the remaining 10% for "v3".
 
-```bash
-
-kubectl apply -n ui -f - <<EOF
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: ui
-spec:
-  hosts:
-  - "*"
-
-  gateways:
-  - ui-gateway 
-  
-  http:
-  - match:
-    - uri:
-        prefix: /  
-    route:
-    - destination:
-        host: ui
-        subset: v1
-        port:
-          number: 80        
-      weight: 80 
-    - destination:
-        host: ui
-        subset: v2
-        port:
-          number: 80        
-      weight: 10
-    - destination:
-        host: ui
-        subset: v3
-        port:
-          number: 80        
-      weight: 10
-
-EOF
+```file
+/workspace/modules/servicemesh/traffic-management/canary/virtualservice.yaml
 ```
+
+```bash
+kubectl apply -k /workspace/modules/servicemesh/traffic-management/canary/virtualservice.yaml
+```
+
 
 Now, execute the same loop command you executed earlier. 
 ```bash
