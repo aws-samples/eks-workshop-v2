@@ -168,6 +168,14 @@
         "rds:DescribeDBInstances"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "codecommit:DeleteRepository",
+        "codecommit:CreateRepository"
+      ],
+      "Resource": "arn:aws:codecommit:${region}:${account_id}:${cluster_name}-gitops"
     }
   ]
 }

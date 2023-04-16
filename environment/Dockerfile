@@ -1,4 +1,4 @@
-FROM public.ecr.aws/amazonlinux/amazonlinux:2
+FROM --platform=linux/amd64 public.ecr.aws/amazonlinux/amazonlinux:2
 
 ADD installer.sh /installer.sh
 
@@ -19,5 +19,6 @@ USER learner
 WORKDIR /workspace
 COPY --chmod=755 bin/* /usr/local/bin
 ADD --chown=learner:learner workspace /workspace/
+RUN mkdir -p /home/learner/environment
 
 ENTRYPOINT ["bash", "/entrypoint.sh"]
