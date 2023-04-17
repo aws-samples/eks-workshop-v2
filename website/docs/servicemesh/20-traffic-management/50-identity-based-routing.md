@@ -39,7 +39,7 @@ NOTE: Make note of the SESSION ID with Path /. This will be used below.
 The following virtualservice manifest file shows how you can create an identity-based route. Now, let's see what happens when sending a request over with a Cookie Session ID matching your browser.
 
 ```
-/workspace/manifests/ui-identity.yaml
+/workspace/manifests/ui/identiy-based-routing/ui-identity.yaml
 ```
 ```
 apiVersion: networking.istio.io/v1alpha3
@@ -74,7 +74,7 @@ regex: "^(.*?;)?(SESSIONID=XXX)(;.*)?$"
 Run the following command to configure the virtualService `ui` you created above to enable identity-based routing:
 
 ```bash
-kubectl apply -k /workspace/manifests/ -n ui
+kubectl apply -f /workspace/manifests/ui/identiy-based-routing/ui-identity.yaml -n ui
 ```
 
 Once the browser is refreshed, you will notice that the grep banner on the displayed page will now only route to `ui-v2`.

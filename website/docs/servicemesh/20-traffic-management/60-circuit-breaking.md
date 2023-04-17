@@ -14,7 +14,7 @@ You will configure circuit breaking rules in this task and then test the configu
 ### Configuring the circuit breaker
 Create a destination rule in the *ui* namespace to apply circuit breaking settings when calling the *ui* service:
 ```
-/workspace/manifests/ui-circuit.yaml
+/workspace/manifests/ui/circuit-breaking/ui-circuit.yaml
 ```
 ```bash
 apiVersion: networking.istio.io/v1alpha3
@@ -42,7 +42,7 @@ Fortio allows you to control the number of connections, concurrency, and delay f
 
 Deploy the Fortio application to the *ui* namespace
 ```
-/workspace/manifests/ui-fortio.yaml
+/workspace/manifests/ui/circuit-breaking/ui-fortio.yaml
 ```
 ```bash
 apiVersion: v1
@@ -94,7 +94,7 @@ In your DestinationRule above, you specified `maxConnections: 1` and `http1MaxPe
 Log in to *Fortio* pod and use the fortio tool to call the *productpage* service. Call the service with two concurrent connections and send 20 requests:
 ```bash
 $ FORTIO_POD_NAME=$(kubectl get pod -n ui | grep fortio | awk '{ print $1 }')
-$ kubectl exec -n test -it $FORTIO_POD_NAME  -c fortio -- /usr/bin/fortio load -c 2 -qps 0 -n 20 http://ui/home
+$ kubectl exec -n ui -it $FORTIO_POD_NAME  -c fortio -- /usr/bin/fortio load -c 2 -qps 0 -n 20 http://ui/home
 ```
 Output:
 ```bash
@@ -112,7 +112,7 @@ You probably get surprised that most of the requests (80%) were successful. That
 
 Let's see, how it will look like when you increase the number of concurrent connections up to 10 and number of requests to 100.
 ```bash
-$ kubectl exec -n test -it $FORTIO_POD_NAME  -c fortio -- /usr/bin/fortio load -c 10 -qps 0 -n 100 http://ui/home
+$ kubectl exec -n ui -it $FORTIO_POD_NAME  -c fortio -- /usr/bin/fortio load -c 10 -qps 0 -n 100 http://ui/home
 ```
 Output:
 ```bash

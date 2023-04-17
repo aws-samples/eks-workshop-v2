@@ -109,8 +109,11 @@ How we can expose a service outside the cluster? Let's see how we can do that wi
 
 To do so you define two Istio resources, `Gateway` and `VirtualService` into the namespace `ui`.
 Gateway configurations are applied to standalone Envoy proxies that are running at the edge of the mesh. 
+
+```
+/workspace/manifests/ui/expose-a-service/ui-gateway.yaml
+```
 ```bash
-$ kubectl apply -n ui -f - <<EOF
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
@@ -125,7 +128,6 @@ spec:
       protocol: HTTP   
     hosts: # The addresses that can be used by a client when attempting to connect to a service.
     - "*"
-EOF
 ```
 Here we point to the default istio `ingressgateway` proxy service running in `istio-system` namespace to expose the service throug the AWS ELB created for this ingress gateway.
 
@@ -135,9 +137,10 @@ This gateway configuration here, allows clients to connect on port 80 and to use
 
 The gateway here, does not specify any traffic routing rules for the kuberenets service ***ui***. To make the gateway work as intended, you must also create a virtual service that defines traffic routing rules for the intended kuberenets service ***ui*** and bind it to the gateway.
 
-
+```
+/workspace/manifests/ui/expose-a-service/ui-virtualservice.yaml
+```
 ```bash
-$ kubectl apply -n ui -f - <<EOF
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -159,7 +162,6 @@ spec:
         host: ui # ui.ui.svc.cluster.local 
         port:
           number: 80
-EOF
 ```
 
 In VirtualService, you can define the routing rules for the external traffic.
