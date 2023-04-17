@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: ui
+spec:
+  hosts:
+    - ui
+  http:
+  - match:
+    - headers:
+        cookie:
+          regex: "^(.*?;)?(SESSIONID=9af9874c-f8ce-4e50-b0eb-8aa456f4db7e)(;.*)?$"
+    route:
+    - destination:
+        host: ui
+        subset: v2
+    mirror:
+      host: mirror
+    mirror_percent: 100
+  - route:
+    - destination:
+        host: ui
+        subset: v1
