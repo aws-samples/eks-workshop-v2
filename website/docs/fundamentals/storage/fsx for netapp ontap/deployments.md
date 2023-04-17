@@ -68,7 +68,7 @@ Now let us try to put a new product image named `newproduct.png` in the director
 
 ```bash
 $ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[0].metadata.name}')
-$ kubectl exec --stdin deployment/assets $POD_NAME \
+$ kubectl exec $POD_NAME \
   -n assets -- bash -c 'touch /usr/share/nginx/html/assets/newproduct.png'
 ```
 
@@ -76,7 +76,7 @@ Now confirm the new product image `newproduct.png` isn't present on the file sys
 
 ```bash
 $ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
-$ kubectl exec --stdin deployment/assets $POD_NAME \
+$ kubectl exec $POD_NAME \
   -n assets -- bash -c 'ls /usr/share/nginx/html/assets'
 ```
 
