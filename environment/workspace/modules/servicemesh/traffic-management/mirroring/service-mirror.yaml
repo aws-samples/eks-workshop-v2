@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mirror
+  labels:
+    app: mirror
+    service: mirror
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    app: mirror
