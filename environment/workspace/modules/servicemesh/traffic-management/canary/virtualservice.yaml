@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: ui
+spec:
+  hosts:
+  - "*"
+
+  gateways:
+  - ui-gateway 
+  
+  http:
+  - match:
+    - uri:
+        prefix: /  
+    route:
+    - destination:
+        host: ui
+        subset: v1
+        port:
+          number: 80        
+      weight: 80 
+    - destination:
+        host: ui
+        subset: v2
+        port:
+          number: 80        
+      weight: 10
+    - destination:
+        host: ui
+        subset: v3
+        port:
+          number: 80        
+      weight: 10
