@@ -1,9 +1,9 @@
 ---
 title: "Deploying applications"
-sidebar_position: 30
+sidebar_position: 60
 ---
 
-We have successfully configured Argo CD on our cluster so now we can deploy an environment specific customization for the set of application.
+We have successfully configured Argo CD App of Apps, so now we can deploy an environment specific customization for the set of application.
 
 First let's remove the existing Applications so we can replace it:
 
@@ -24,9 +24,7 @@ We will then need to create a customization for each application:
 
 ```
 .
-|-- app
-|   |-- ...
-|-- apps-config
+|-- app-of-apps
 |   |-- ...
 `-- apps-kustomization
     |-- assets
@@ -49,14 +47,14 @@ We will then need to create a customization for each application:
 ```
 
 ```file
-automation/gitops/argocd-app-of-apps/apps-kustomization/ui/kustomization.yaml
+automation/gitops/argocd/apps-kustomization/ui/kustomization.yaml
 ```
 
 We define a path to `Common manifests` for an application, in this case `ui`, using `resources`
 We also define which configuration should be applied to `ui` in our cluster using `patches`
 
 ```file
-automation/gitops/argocd-app-of-apps/apps-kustomization/ui/deployment-patch.yaml
+automation/gitops/argocd/apps-kustomization/ui/deployment-patch.yaml
 ```
 
 We would like to have `1` replica for `ui` application. All other application will use base configuration from `Common manifests`
@@ -64,17 +62,13 @@ We would like to have `1` replica for `ui` application. All other application wi
 Copy files to the Git repository directory:
 
 ```bash
-$ cp -R /workspace/modules/automation/gitops/argocd-app-of-apps/apps-kustomization ~/environment/gitops/
+$ cp -R /workspace/modules/automation/gitops/argocd/apps-kustomization ~/environment/argocd/
 ```
 
-You final Git directory should now look something like this which you can validate by running `tree ~/environment/gitops`:
+Your final Git directory should now look like this. You can validate it by running `tree ~/environment/argocd`:
 
 ```
-|-- app
-|   |-- application.yaml
-|   |-- gitops_repo_url
-|   `-- kustomization.yaml
-|-- apps-config
+|-- app-of-apps
 |   |-- Chart.yaml
 |   |-- templates
 |   |   |-- assets.yaml
@@ -86,6 +80,16 @@ You final Git directory should now look something like this which you can valida
 |   |   |-- rabbitmq.yaml
 |   |   `-- ui.yaml
 |   `-- values.yaml
+|-- apps
+|   |-- deployment-patch.yaml
+|   |-- kustomization.yaml
+|   `-- ui
+|       |-- configMap.yaml
+|       |-- deployment.yaml
+|       |-- kustomization.yaml
+|       |-- namespace.yaml
+|       |-- service.yaml
+|       `-- serviceAccount.yaml
 `-- apps-kustomization
     |-- assets
     |   `-- kustomization.yaml
@@ -105,22 +109,21 @@ You final Git directory should now look something like this which you can valida
         |-- deployment-patch.yaml
         `-- kustomization.yaml
 
-12 directories, 22 files
+13 directories, 27 files
 ```
 
-Finally we can push our configuration to the Git repository
+Push changes to the Git repository:
 
 ```bash
-$ (cd ~/environment/gitops && \
-git add . && \
-git commit -am "Adding apps-kustomization" && \
-git push)
+$ git -C ~/environment/argocd add .
+$ git -C ~/environment/argocd commit -am "Adding apps kustomization"
+$ git -C ~/environment/argocd push
 ```
 
 It will take Argo CD some time to notice the changes in the Git repository and reconcile.
 We can also use the `Refresh` button or the `argocd` CLI to `Sync` an application:
 
-```bash timeout=300 hook=deployment
+```bash timeout=300
 $ argocd app sync apps --prune
 $ argocd app sync ui --prune
 ```
@@ -133,16 +136,13 @@ When Argo CD finish the sync, all our applications will be in `Synced` state
 
 You should also have all the resources related to the UI services deployed. To verify, run the following commands:
 
-```bash
+```bash hook=deploy
 $ kubectl get deployment -n ui ui
 NAME   READY   UP-TO-DATE   AVAILABLE   AGE
 ui     1/1     1            1           61s
-```
-
-```bash
 $ kubectl get pod -n ui
-NAME                  READY   STATUS    RESTARTS   AGE
-ui-6d5bb7b95-rjfxd   1/1     Running   0          62s
+NAME                 READY   STATUS   RESTARTS   AGE
+ui-6d5bb7b95-rjfxd   1/1     Running  0          62s
 ```
 
 ![argocd-deploy-application](assets/argocd-deploy-application.png)
