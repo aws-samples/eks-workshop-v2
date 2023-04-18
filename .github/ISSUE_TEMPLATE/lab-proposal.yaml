@@ -16,7 +16,7 @@ body:
     validations:
       required: true
       
- - type: textarea
+  - type: textarea
     id: infrastructure
     attributes:
       label: What additional AWS infrastructure or EKS addons/components will need to be created or installed to support this lab?
