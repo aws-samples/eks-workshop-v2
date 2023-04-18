@@ -44,9 +44,9 @@ There are several attributes of managed node groups that we can see from this ou
 
 
 We can also inspect the nodes and the placement in the availability zones.
-```bash
 
-kubectl get nodes -o wide --label-columns topology.kubernetes.io/zone
+```bash
+$ kubectl get nodes -o wide --label-columns topology.kubernetes.io/zone
 ```
 
 You should see:
