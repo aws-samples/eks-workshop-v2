@@ -4,72 +4,85 @@ sidebar_position: 40
 weight: 5
 ---
 
-In this task, you use Istio to send 100% of the traffic to `reviews-v1`. You then set a rule to selectively send traffic to `reviews-v2` based on a custom end-user header added to the request by the productpage service. In this case, all traffic from a user named *tester* will be routed to the service `reviews:v2`, but all remaining traffic goes to `reviews-v1`.
+In this task, you use Istio to send 100% of the traffic to `ui-v1`. You then set a rule to selectively send traffic to `ui-v2` based on the cookie added to the end-user header request by the UI service. 
 
-`reviews:v1` is the version that does not include the star ratings feature. `reviews:v2` is the version that includes the star ratings feature.
+Most cookies contain a unique identifier called a Session ID: a string of characters that websites and servers associate with the browser on which the cookie is stored.
 
-Run the following command to re-configure the virtualService reviews you created in the previous task with the following one to enable user-based routing:
+In this case, all traffic from a user with a unique *SESSION ID=XXX* will be routed to the deployment `ui-v2`, but all remaining user traffic goes to `ui-v1`.
 
+To check which version of the UI traffic is routed to, the grep banner at the top of the page should display the pod name which includes the deployment version.
+
+Now, let's open the retail store sample using the browser:
 ```bash
-$ kubectl apply -n test -f - <<EOF
+$ echo $ISTIO_IG_HOSTNAME/home
+```
+Output Similar to:
+```bash
+http://af08b29901d054f489ffb6473b1593a9-510276527.us-east-1.elb.amazonaws.com/home
+```
+
+Currently, your virtualservice routes to all 3 versions of the ui.
+
+To check Session ID in Chrome: 
+
+  * Right-click and click on Inspect to open the developer console. 
+  * Go to the Applications tab on the console. 
+  * Expand the Cookies dropdown under the Storage section. 
+  * Under Cookies, select the website with Path / to see the SESSION ID
+
+
+NOTE: Make note of the SESSION ID with Path /. This will be used below.
+
+![cookie-id-browser](../assets/ui-cookie-id-browser.png)
+
+
+The following virtualservice manifest file shows how you can create an identity-based route. Now, let's see what happens when sending a request over with a Cookie Session ID matching your browser.
+
+```
+/workspace/manifests/servicemesh/20-traffic-management/50-identity-based-routing/ui-identity.yaml
+```
+```
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: reviews
+  name: ui
 spec:
-  hosts: 
-  - reviews
-  
-  # When this field is omitted, the default gateway (mesh) will be used, which would apply the rules to all sidecars in the mesh. 
-  # If a list of gateway names is provided, the rules will apply only to those gateways. 
-  # To apply the rules to both gateways and sidecars, specify mesh as one of the gateway names.
+  hosts:
+  - "*"
   gateways:
-  - bookinfo-gateway
-  - mesh
-  http: 
-  - match: 
+  - ui-gateway
+  http:
+  - match:
     - headers:
-        end-user:
-          exact: tester
+        cookie:
+          regex: "SESSIONID=XXX"
     route:
     - destination:
-        host: reviews
+        host: ui
         subset: v2
-      weight: 100
   - route:
     - destination:
-        host: reviews
-        subset: v1      
-EOF
+        host: ui
+        subset: v1
 ```
-Now, let's open the productpage using the browser:
+
+Paste in the `Session ID` and replace `XXX` in the below line:
 ```bash
-$ echo $ISTIO_IG_HOSTNAME/productpage
+regex: "SESSIONID=XXX"
 ```
-Output:
+
+Run the following command to configure the virtualService `ui` you created above to enable identity-based routing:
+
 ```bash
-ac8bed13fd78247e995b42664063ce47-1403049919.us-east-1.elb.amazonaws.com/productpage
+kubectl apply -k workspace/manifests/servicemesh/20-traffic-management/50-identity-based-routing
 ```
-Notice here before logging, that the displayed page shows `reviews-v1` and does not includes the star ratings feature.
-![productpage-with-no-user-identity](../assets/productpage-with-no-user-identity.png)
 
-Now, let's see what happens when logging with the *tester* user?
+Once the browser is refreshed, you will notice that the grep banner on the displayed page will now only route to `ui-v2`.
 
-Hit the `Sign In` button, to log in with the `tester` user, with no password:
-
-![tester-login](../assets/tester-login.png)
-
-Once the tester user is in, you will notice that the displayed page include the star ratings feature and show `reviews-v2` as it's expected.
-
-![login-with-tester](../assets/login-with-tester.png)
-
-
-And if you singed out and signed in back with any user other than *tester* (pick any name you wish). You will see that review stars are not there and it shows reviews-v1. This is because traffic is routed to reviews:v1 for all users except tester.
-
-![not-tester](../assets/not-tester.png)
+![ui-grep-banner](../assets/ui-grep-banner.png)
 
 You have successfully configured Istio to route traffic based on user identity.
 
-**Try it out:** Change the routing rule to direct tester user to v1, and remaining traffic to goes to v2.
+**Try it out:** Clear cache and obtain new Cookie ID. The routing rule to direct your traffic to `ui-v2` is longer valid and new traffic is now going to `ui-v1`.
 
 
