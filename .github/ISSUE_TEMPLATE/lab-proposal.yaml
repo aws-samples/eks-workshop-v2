@@ -24,6 +24,13 @@ body:
       required: true
       
   - type: textarea
+    id: cloud9
+    attributes:
+      label: What additional software or configuration will be required in the Cloud9 IDE?
+    validations:
+      required: true
+      
+  - type: textarea
     id: sample-enhancements
     attributes:
       label: Are enhancements to the retail sample application required to support this lab exercise?
