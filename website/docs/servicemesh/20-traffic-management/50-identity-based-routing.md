@@ -4,7 +4,7 @@ sidebar_position: 40
 weight: 5
 ---
 
-In this task, you use Istio to send 100% of the traffic to `ui-v1`. You then set a rule to selectively send traffic to `ui-v2` based on the cookie ID added to the end-user header request by the UI service. 
+In this task, you use Istio to send 100% of the traffic to `ui-v1`. You then set a rule to selectively send traffic to `ui-v2` based on the cookie added to the end-user header request by the UI service. 
 
 Most cookies contain a unique identifier called a Session ID: a string of characters that websites and servers associate with the browser on which the cookie is stored.
 
