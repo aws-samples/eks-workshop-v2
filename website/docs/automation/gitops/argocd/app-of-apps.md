@@ -108,4 +108,4 @@ Our applications, except Argo CD `App of Apps Application`, are in `Unknown` sta
 
 ![argocd-ui-apps.png](assets/argocd-ui-apps-unknown.png)
 
-We will deploy applications configurations for the applications in the next step.
+We will deploy application configurations for the applications in the next step.
