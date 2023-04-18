@@ -50,14 +50,13 @@ We will then need to create a customization for each application:
 automation/gitops/argocd/apps-kustomization/ui/kustomization.yaml
 ```
 
-We define a path to `Common manifests` for an application, in this case `ui`, using `resources`
-We also define which configuration should be applied to `ui` in our cluster using `patches`
+We define a path to `Common manifests` for an application, in this case `ui`, using `resources`. We also define which configuration should be applied to `ui` application in EKS cluster using `patches`.
 
 ```file
 automation/gitops/argocd/apps-kustomization/ui/deployment-patch.yaml
 ```
 
-We would like to have `1` replica for `ui` application. All other application will use base configuration from `Common manifests`
+We would like to have `1` replica for `ui` application. All other application will use base configuration from `Common manifests`.
 
 Copy files to the Git repository directory:
 
@@ -121,20 +120,20 @@ $ git -C ~/environment/argocd push
 ```
 
 It will take Argo CD some time to notice the changes in the Git repository and reconcile.
-We can also use the `Refresh` button or the `argocd` CLI to `Sync` an application:
+We can also use the `Refresh` button or the `argocd` CLI to `Sync` the application:
 
 ```bash timeout=300
 $ argocd app sync apps --prune
 $ argocd app sync ui --prune
 ```
 
-We've now successfully migrated the all the applications to deploy using Argo CD, and any further changes pushed to the Git repository will be automatically reconciled to our EKS cluster.
+We've now successfully migrated the all the applications to deploy using Argo CD, and any further changes pushed to the Git repository will be automatically reconciled to EKS cluster.
 
-When Argo CD finish the sync, all our applications will be in `Synced` state
+When Argo CD finish the sync, all our applications will be in `Synced` state.
 
 ![argocd-ui-apps.png](assets/argocd-ui-apps-synced.png)
 
-You should also have all the resources related to the UI services deployed. To verify, run the following commands:
+You should also have all the resources related to the `ui` application deployed. To verify, run the following commands:
 
 ```bash hook=deploy
 $ kubectl get deployment -n ui ui

@@ -24,7 +24,7 @@ We use [EKS Workshop Git repository](https://github.com/aws-samples/eks-workshop
 | `-- ui
 ```
 
-This example shows how to use Helm to create a configuration for a particular (for example DEV) environment.
+This example shows how to use Helm to create a configuration for a particular, for example DEV, environment.
 A typical layout of a Git repository could be:
 
 ```
@@ -35,7 +35,7 @@ A typical layout of a Git repository could be:
     ...
 ```
 
-We create templates for each child app:
+We create templates for each child application:
 
 ```
 .
@@ -55,13 +55,13 @@ We create templates for each child app:
     ...
 ```
 
-`Chart.yaml` is a boiler-plate. `templates` contains one file for each child app, for example:
+`Chart.yaml` is a boiler-plate. `templates` contains one file for each child application, for example:
 
 ```file
 automation/gitops/argocd/app-of-apps/templates/ui.yaml
 ```
 
-`values.yaml` contains values which are specific for a particular (for example DEV) environment and which will be applied to all app templates.
+`values.yaml` contains values which are specific for a particular environment and which will be applied to all application templates.
 
 ```file
 automation/gitops/argocd/app-of-apps/values.yaml
@@ -84,9 +84,8 @@ $ git -C ~/environment/argocd commit -am "Adding App of Apps"
 $ git -C ~/environment/argocd push
 ```
 
-Finally, we need to update (--upsert) existing an Argo CD `Application` to support `App of Apps` pattern.
-We define a new path to Argo CD `Application`
---path app-of-apps
+Finally, we need to update `--upsert` existing an Argo CD `Application` to support `App of Apps` pattern.
+We define a new path to Argo CD `Application` using `--path app-of-apps`.
 
 ```bash
 $ argocd app create apps --repo $(cat ~/environment/argocd_repo_url) \
@@ -101,12 +100,12 @@ Open the Argo CD UI and navigate to the `apps` application.
 
 ![argocd-ui-app-of-apps.png](assets/argocd-ui-app-of-apps.png)
 
-We can also use the `Refresh` button to sync an application
+We can also use the `Refresh` button to sync an application.
 
-We have Argo CD `App of Apps Application` deployed and synced
+We have Argo CD `App of Apps Application` deployed and synced.
 
 Our applications, except Argo CD `App of Apps Application`, are in `Unknown` state because we didn't deploy their configuration yet.
 
 ![argocd-ui-apps.png](assets/argocd-ui-apps-unknown.png)
 
-We will deploy applications configurations for the applications in the next step
+We will deploy applications configurations for the applications in the next step.
