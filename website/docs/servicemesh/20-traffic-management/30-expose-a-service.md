@@ -110,8 +110,13 @@ How we can expose a service outside the cluster? Let's see how we can do that wi
 To do so you define two Istio resources, `Gateway` and `VirtualService` into the namespace `ui`.
 Gateway configurations are applied to standalone Envoy proxies that are running at the edge of the mesh. 
 
+The two manifests to this lab can be deployed with the below command:
+```bash
+kubectl apply -k workspace/manifests/servicemesh/20-traffic-management/30-expose-a-service
 ```
-/workspace/manifests/ui/expose-a-service/ui-gateway.yaml
+
+```
+/workspace/manifests/servicemesh/20-traffic-management/30-expose-a-service/ui-gateway.yaml
 ```
 ```bash
 apiVersion: networking.istio.io/v1alpha3
@@ -138,7 +143,7 @@ This gateway configuration here, allows clients to connect on port 80 and to use
 The gateway here, does not specify any traffic routing rules for the kuberenets service ***ui***. To make the gateway work as intended, you must also create a virtual service that defines traffic routing rules for the intended kuberenets service ***ui*** and bind it to the gateway.
 
 ```
-/workspace/manifests/ui/expose-a-service/ui-virtualservice.yaml
+/workspace/manifests/servicemesh/20-traffic-management/30-expose-a-service/ui-virtualservice.yaml
 ```
 ```bash
 apiVersion: networking.istio.io/v1alpha3
@@ -155,7 +160,7 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /  
+        prefix: /
     route:
     - destination:
         # Provide the destination service name using either a relative or an absolute path.
@@ -166,7 +171,7 @@ spec:
 
 In VirtualService, you can define the routing rules for the external traffic.
 
-In this example, traffic will be directed to the `destination` service, if it meets any of the listed rules. For instance, they will be directed to the destination service *ui* if the uri provided was */*, */catalog*, */login*, etc.
+In this example, traffic will be directed to the `destination` service, if it meets any of the listed rules. For instance, they will be directed to the destination service *ui* if the uri provided was */home, */catalog*, etc.
 
 The `hosts` field contains a list of the destinations/addresses that the client uses when sending requests to the service where routing rules listed below apply.
 
@@ -193,9 +198,9 @@ Output:
 ```bash
 ac8bed13fd78247e995b42664063ce47-1403049919.us-east-1.elb.amazonaws.com
 ```
-Remember, the gateway you created earlier is exposed throug this istio-ingressgateway service which is in turn exposed throug an AWS Loadbalancer, and the destination service of the virtualService you created was *home* 
+Remember, the gateway you created earlier is exposed through this istio-ingressgateway service which is in turn exposed through an AWS Loadbalancer, and the destination service of the virtualService you created was *home* 
 
-So to access it we hit the same dns name of the istio-ingressgateway loadbalancer, by using the path */home*
+So to access it, we hit the same dns name of the istio-ingressgateway loadbalancer, by using the path */home*
 
 ```bash
 $ curl -s $ISTIO_IG_HOSTNAME/home | grep "Retail Store Sample App"

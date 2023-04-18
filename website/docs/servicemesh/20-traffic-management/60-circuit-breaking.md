@@ -10,14 +10,18 @@ This task will show you how to configure circuit breaking for connections, reque
 
 You will configure circuit breaking rules in this task and then test the configuration by intentionally "tripping" the circuit breaker.
 
+The two manifests to this lab can be deployed with the below command:
+```
+kubectl apply -k workspace/manifests/servicemesh/20-traffic-management/60-circuit-breaking
+```
 
 ### Configuring the circuit breaker
 Create a destination rule in the *ui* namespace to apply circuit breaking settings when calling the *ui* service:
 ```
-/workspace/manifests/ui/circuit-breaking/ui-circuit.yaml
+/workspace/manifests/servicemesh/20-traffic-management/60-circuit-breaking/ui-circuit.yaml
 ```
 ```bash
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: ui-circuit
@@ -25,15 +29,16 @@ spec:
   host: ui
   trafficPolicy:
     connectionPool:
-      tcp:
-        maxConnections: 1
       http:
         http1MaxPendingRequests: 1
+        http2MaxRequests: 1
         maxRequestsPerConnection: 1
+      tcp:
+        maxConnections: 1
     outlierDetection:
-      consecutiveErrors: 1
+      baseEjectionTime: 15m
+      consecutive5xxErrors: 1
       interval: 1s
-      baseEjectionTime: 3m
       maxEjectionPercent: 100
 ```
 
@@ -42,7 +47,7 @@ Fortio allows you to control the number of connections, concurrency, and delay f
 
 Deploy the Fortio application to the *ui* namespace
 ```
-/workspace/manifests/ui/circuit-breaking/ui-fortio.yaml
+/workspace/manifests/servicemesh/20-traffic-management/60-circuit-breaking/ui-fortio.yaml
 ```
 ```bash
 apiVersion: v1
@@ -112,7 +117,8 @@ You probably get surprised that most of the requests (80%) were successful. That
 
 Let's see, how it will look like when you increase the number of concurrent connections up to 10 and number of requests to 100.
 ```bash
-$ kubectl exec -n ui -it $FORTIO_POD_NAME  -c fortio -- /usr/bin/fortio load -c 10 -qps 0 -n 100 http://ui/home
+$ kubectl exec -n ui -it $FORTIO_POD_NAME  -n ui -c fortio -- /usr/bin/fortio load -c 30 -qps 0 -n 100 http://ui/home
+
 ```
 Output:
 ```bash
@@ -121,11 +127,11 @@ Code 200 : 10 (10.0 %)
 Code 503 : 90 (90.0 %)
 ...
 ```
-This time, you can see the expected circuit breaking behavior. Only 10% of the requests were successful, and the rest were trapped by circuit breaking.
+This time, you can see the expected circuit breaking behavior. Only 10% of the requests were successful, and the rest were trapped by circuit breaking. The exact percentages can vary, but you can see an increased percentage for Code *503* has appeared. An increase in concurrent connections will further the HTTP 503 request percentage. 
 
 To get more details, you can query the stats of GET requests on the istio-proxy 
 ```bash
-$ kubectl exec -n ui $FORTIO_POD_NAME -n ui -c istio-proxy -- pilot-agent request GET stats | grep ui | grep pending
+$ kubectl exec $FORTIO_POD_NAME -n ui -c istio-proxy -- pilot-agent request GET stats | grep ui | grep pending
 ```
 Output:
 ```bash
@@ -141,5 +147,5 @@ You can see 1594 for the upstream_rq_pending_overflow value which means 1594 cal
 
 Now, because you have completed this task, there is no need to keep the destinationRule you created at the begining of this task. So go ahead and delete it.
 ```bash
-$ kubectl delete -n ui destinationrule ui-circuit
+$ kubectl delete -k workspace/manifests/servicemesh/20-traffic-management/60-circuit-breaking
 ```
