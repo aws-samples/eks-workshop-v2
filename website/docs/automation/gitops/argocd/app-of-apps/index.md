@@ -1,15 +1,16 @@
 ---
 title: "Argo CD App of Apps"
+chapter: true
 sidebar_position: 50
 ---
 
-[Argo CD](https://argoproj.github.io/cd/) can be used to deploy a set of applications to different environments (DEV, TEST, PROD ...) using common set of Kubernetes manifest and customizations specific to an environment.
+[Argo CD](https://argoproj.github.io/cd/) can deploy a set of applications to different environments (DEV, TEST, PROD ...) using common set of Kubernetes manifest and customizations specific to an environment.
 
-We can use [Argo CD App of Apps pattern](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) to implement this use case. This pattern allows us to specify one Argo CD Application that consists of other applications.
+We can leverage [Argo CD App of Apps pattern](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) to implement this use case. This pattern allows us to specify one Argo CD Application that consists of other applications.
 
 ![argo-cd-app-of-apps](assets/argocd-app-of-apps.png)
 
-We use [EKS Workshop Git repository](https://github.com/aws-samples/eks-workshop-v2/tree/main/environment/workspace/manifests) as a Git repository with Common Manifest. This repository will be used as a basis for each environment.
+We reference [EKS Workshop Git repository](https://github.com/aws-samples/eks-workshop-v2/tree/main/environment/workspace/manifests) as a Git repository with Common Manifest. This repository will contain an initial resource state for each application.
 
 ```
 .
@@ -76,6 +77,11 @@ $ yq -i '.spec.source.repoURL = load("./argocd_repo_url")' ~/environment/argocd/
 
 ```
 
+Delete existing `Application`:
+```bash
+$ argocd app delete apps --cascade -y
+```
+
 Next, push changes to the Git repository:
 
 ```bash
@@ -84,7 +90,7 @@ $ git -C ~/environment/argocd commit -am "Adding App of Apps"
 $ git -C ~/environment/argocd push
 ```
 
-Finally, we need to update `--upsert` existing an Argo CD `Application` to support `App of Apps` pattern.
+Finally, we need to create new Argo CD `Application` to support `App of Apps` pattern.
 We define a new path to Argo CD `Application` using `--path app-of-apps`.
 
 ```bash
@@ -92,8 +98,8 @@ $ argocd app create apps --repo $(cat ~/environment/argocd_repo_url) \
   --dest-server https://kubernetes.default.svc \
   --sync-policy automated --self-heal --auto-prune \
   --set-finalizer \
-  --upsert --path app-of-apps
- application 'apps' updated
+  --path app-of-apps
+ application 'apps' created
 ```
 
 Open the Argo CD UI and navigate to the `apps` application.

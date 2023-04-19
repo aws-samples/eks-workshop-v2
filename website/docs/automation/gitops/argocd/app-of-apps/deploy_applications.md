@@ -80,15 +80,7 @@ Your final Git directory should now look like this. You can validate it by runni
 |   |   `-- ui.yaml
 |   `-- values.yaml
 |-- apps
-|   |-- deployment-patch.yaml
-|   |-- kustomization.yaml
-|   `-- ui
-|       |-- configMap.yaml
-|       |-- deployment.yaml
-|       |-- kustomization.yaml
-|       |-- namespace.yaml
-|       |-- service.yaml
-|       `-- serviceAccount.yaml
+|   |-- ...
 `-- apps-kustomization
     |-- assets
     |   `-- kustomization.yaml
@@ -144,4 +136,4 @@ NAME                 READY   STATUS   RESTARTS   AGE
 ui-6d5bb7b95-rjfxd   1/1     Running  0          62s
 ```
 
-![argocd-deploy-application](assets/argocd-deploy-application.png)
+![argocd-deploy-application](../assets/argocd-deploy-application.png)
