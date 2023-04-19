@@ -115,7 +115,9 @@ $ kubectl wait --for=condition=Ready pods --all -n catalog --timeout=180s
 
 Now that the Pods are running we can [check their logs](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#logs), for example the catalog API:
 
-Note:  You can ["follow" the kubectl logs output](https://kubernetes.io/docs/reference/kubectl/cheatsheet/) by using the '-f' option with the command.  (Use CTRL-C to stop following the output)
+:::tip 
+You can ["follow" the kubectl logs output](https://kubernetes.io/docs/reference/kubectl/cheatsheet/) by using the '-f' option with the command.  (Use CTRL-C to stop following the output)
+:::
 
 ```bash
 $ kubectl logs -n catalog deployment/catalog
