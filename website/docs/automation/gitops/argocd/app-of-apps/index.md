@@ -1,7 +1,7 @@
 ---
 title: "Argo CD App of Apps"
 chapter: true
-sidebar_position: 50
+sidebar_position: 100
 ---
 
 [Argo CD](https://argoproj.github.io/cd/) can deploy a set of applications to different environments (DEV, TEST, PROD ...) using common set of Kubernetes manifest and customizations specific to an environment.
@@ -77,14 +77,9 @@ $ yq -i '.spec.source.repoURL = load("./argocd_repo_url")' ~/environment/argocd/
 
 ```
 
-Delete existing `Application`:
-```bash
-$ argocd app delete apps --cascade -y
-```
-
 Next, push changes to the Git repository:
 
-```bash
+```bash wait=10
 $ git -C ~/environment/argocd add .
 $ git -C ~/environment/argocd commit -am "Adding App of Apps"
 $ git -C ~/environment/argocd push
@@ -98,6 +93,7 @@ $ argocd app create apps --repo $(cat ~/environment/argocd_repo_url) \
   --dest-server https://kubernetes.default.svc \
   --sync-policy automated --self-heal --auto-prune \
   --set-finalizer \
+  --upsert \
   --path app-of-apps
  application 'apps' created
 ```
