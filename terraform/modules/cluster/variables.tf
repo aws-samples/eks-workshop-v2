@@ -12,7 +12,7 @@ variable "cluster_version" {
 variable "ami_release_version" {
   description = "Default EKS AMI release version for node groups"
   type        = string
-  default     = "1.23.9-20221027"
+  default     = "1.23.15-20230203"
 }
 
 variable "map_roles" {

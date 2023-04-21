@@ -128,7 +128,7 @@ All looks good on the pod scheduling, but we can further verify by scaling the `
 $ kubectl scale --replicas=3 deployment/checkout --namespace checkout
 ```
 
-If we check the running pods we can see that the third `checkout` pod has been placed in a **Pending** state since there are only two nodes and both already have a pod deployed:
+If we check the running pods we can see that the third `checkout` pod has been placed in a Pending state since two of the nodes already have a pod deployed and the third node does not have a `checkout-redis` pod running.
 
 ```bash
 $ kubectl get pods -n checkout
