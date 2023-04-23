@@ -50,13 +50,13 @@ We will then need to create a customization for each application:
 automation/gitops/argocd/apps-kustomization/ui/kustomization.yaml
 ```
 
-We define a path to `Common manifests` for an application, in this case `ui`, using `resources`. We also define which configuration should be applied to `ui` application in EKS cluster using `patches`.
+We define a path to `base` Kubernetes manifests for an application, in this case `ui`, using `resources`. We also define which configuration should be applied to `ui` application in EKS cluster using `patches`.
 
 ```file
 automation/gitops/argocd/apps-kustomization/ui/deployment-patch.yaml
 ```
 
-We would like to have `1` replica for `ui` application. All other application will use base configuration from `Common manifests`.
+We would like to have `1` replica for `ui` application. All other application will use configuration from `base` Kubernetes manifests.
 
 Copy files to the Git repository directory:
 
