@@ -14,7 +14,7 @@ The command below will run the load generator with:
 ```bash hook=hpa-pod-scaleout hookTimeout=330
 $ kubectl run load-generator \
   --image=williamyeh/hey:latest \
-  --restart=Never -- -c 10 -q 5 -z 60m http://ui.ui.svc/home
+  --restart=Never -- -c 10 -q 5 -z 60m http:/ui.ui.svc/home/
 ```
 
 Now that we have requests hitting our application we can watch the HPA resource to follow its progress:
