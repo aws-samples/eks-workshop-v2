@@ -51,7 +51,7 @@ $ kubectl -n aiml exec -it compiler -- aws s3 cp ./resnet50_neuron.pt s3://$AIML
 
 ## Inference on AWS Inferentia node of Amazon EKS
 
-Now we can use the compiled model to run a inference workload on Inferentia.
+Now we can use the compiled model to run an inference workload on Inferentia.
 
 ### Install Device Plugin for AWS Inferentia
 
@@ -104,7 +104,7 @@ The inference pod should be scheduled on the node provisioned by Karpenter. Chec
 $ kubectl -n aiml wait --for=condition=Ready --timeout=5m pod/inference
 ```
 
-### Run a inference
+### Run an inference
 
 This is the code that we will be using to run inference using a Neuron core on Inferentia:
 
