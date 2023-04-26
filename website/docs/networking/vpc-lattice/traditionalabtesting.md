@@ -4,7 +4,7 @@ sidebar_position: 15
 ---
 
 
-We have modified the `checkout` microservice adding a feature that provides an additional shipping option. In this section, we want to test this new feature performing A/B testing. 
+We have modified the `checkout` microservice adding a prefix *"Lattice"* to the shipping options. In this section, we want to test this new feature performing A/B testing. 
 
 Let's deploy a new version of the `checkout` microservice in a new namespace (`checkoutv2`) using `kustomize`.
 
@@ -61,6 +61,6 @@ And fill in the required information (zip code must be 5 numbers):
 
 ![Checkout](assets/checkout2.png)
 
-Checking out items, we can see that a new shipping option is available: 
+Checking out items, we can see that a the *"Lattice"* prefix for the shipping options: 
 
-![Preview your application](assets/shippingoptions.png)
+![Preview your application](assets/latticeprefix.png)
