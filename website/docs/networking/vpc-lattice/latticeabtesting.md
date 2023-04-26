@@ -114,6 +114,11 @@ Click on the `Preview` button on the top bar and select `Preview Running Applica
 Now, try to checkout multiple times: you will notice how the new feature will be available around 50% of the times: this is because Amazon VPC Lattice automatically redirects traffic to different versions of `checkout` microservice. This is because now the UI pod points to the Amazon VPC Lattice endpoint we created earlier whith the `HttpRoute`.
 
 
+:::danger Don't forget to clean-up
+
+This module is currently in beta, so you must manually run the [Cleanup](https://www.eksworkshop.com/docs/networking/vpc-lattice/cleanup) steps before proceeding to the next module.
+:::
+
 
 
 

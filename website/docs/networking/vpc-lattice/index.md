@@ -5,9 +5,10 @@ weight: 10
 sidebar_custom_props: {"module": true}
 ---
 
-:::danger Read before you start this module
+:::danger This module is in beta - Read before you start
 
-This module currently only works on the [self-hosted version](https://www.eksworkshop.com/docs/introduction/setup/your-account) of eksworkshop as Amazon VPC Lattice resources are not yet supported on [at an AWS Event](https://www.eksworkshop.com/docs/introduction/setup/aws-event).
+- This module currently only works on the [self-hosted version](https://www.eksworkshop.com/docs/introduction/setup/your-account) of eksworkshop as Amazon VPC Lattice resources are not yet supported [at an AWS Event](https://www.eksworkshop.com/docs/introduction/setup/aws-event).
+- You must manually run the [Cleanup](https://www.eksworkshop.com/docs/networking/vpc-lattice/cleanup) steps before proceeding to the next module.
 :::
 
 :::tip Before you start
