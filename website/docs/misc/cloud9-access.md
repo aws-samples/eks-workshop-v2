@@ -35,7 +35,7 @@ The arn can be found by clicking on the instance name. Everything after the last
 
 After entering the code with the replaced text in the CLI you should now be able to access the Cloud9 Instance.
 
-```
+```bash
 $ aws cloud9 create-environment-membership --environment-id environment_id_from_arn  --user-arn arn:aws:sts::1234567890:assumed-role/Admin/somerole --permissions read-write
 {
     "membership": {
