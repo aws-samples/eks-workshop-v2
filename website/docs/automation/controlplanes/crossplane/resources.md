@@ -54,7 +54,8 @@ $ kubectl get dbinstances.rds.aws.crossplane.io ${EKS_CLUSTER_NAME}-catalog-cros
 We can use this `status` field to instruct `kubectl` to wait until the RDS database has been successfully created:
 
 ```bash timeout=1200
-$ kubectl wait dbinstances.rds.aws.crossplane.io ${EKS_CLUSTER_NAME}-catalog-crossplane --for=condition=Ready --timeout=20m
+$ kubectl wait dbinstances.rds.aws.crossplane.io ${EKS_CLUSTER_NAME}-catalog-crossplane \
+    --for=condition=Ready --timeout=20m
 dbinstances.rds.services.k8s.aws/rds-eks-workshop condition met
 ```
 

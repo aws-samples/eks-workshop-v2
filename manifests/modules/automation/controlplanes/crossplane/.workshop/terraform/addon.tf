@@ -1,4 +1,16 @@
+resource "terraform_data" "cluster" {
+  provisioner "local-exec" {
+    command = <<EOF
+echo "ASDASD"
+EOF
+  }
+}
+
 module "crossplane" {
+  depends_on = [
+    terraform_data.cluster
+  ]
+
   source        = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/crossplane"
   addon_context = local.addon_context
 

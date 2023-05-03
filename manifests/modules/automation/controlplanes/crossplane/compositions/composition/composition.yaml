@@ -16,6 +16,9 @@ spec:
     - base:
         apiVersion: database.aws.crossplane.io/v1beta1
         kind: DBSubnetGroup
+        metadata:
+          labels:
+            app.kubernetes.io/created-by: eks-workshop
         spec:
           forProvider:
             region: $(AWS_REGION)
@@ -37,6 +40,9 @@ spec:
     - base:
         apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: SecurityGroup
+        metadata:
+          labels:
+            app.kubernetes.io/created-by: eks-workshop
         spec:
           forProvider:
             region: $(AWS_REGION)
@@ -67,6 +73,9 @@ spec:
     - base:
         apiVersion: rds.aws.crossplane.io/v1alpha1
         kind: DBInstance
+        metadata:
+          labels:
+            app.kubernetes.io/created-by: eks-workshop
         spec:
           forProvider:
             region: $(AWS_REGION)
