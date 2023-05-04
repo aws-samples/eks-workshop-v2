@@ -5,7 +5,5 @@ metadata:
   namespace: catalog
 type: Opaque
 data:
-  endpoint: Y2F0YWxvZy1teXNxbDozMzA2
-  name: Y2F0YWxvZw==
   password: ZGVmYXVsdF9wYXNzd29yZA==
   username: Y2F0YWxvZ191c2Vy
