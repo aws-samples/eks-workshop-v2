@@ -3,7 +3,7 @@ title: "Custom Metrics"
 sidebar_position: 50
 ---
 
-Custom metrics are user defined metrics that help track your application KPIs. These metrics help analyze data and derive insights to meet your business needs. Let's look at some custom metrics using AWS Distro for OpenTelemetry and visualize the metrics using grafana.
+Custom metrics are user defined metrics that help track your application KPIs. These metrics help analyze data and derive insights to meet your application needs. Let's look at some custom metrics using AWS Distro for OpenTelemetry and visualize the metrics using grafana.
 
 The custom metrics we want to capture and show in the dashboard for the sample application are:
 - number of total orders created
@@ -14,7 +14,7 @@ The "retail-store-sample-app" has already been instrumented to capture the above
 
 Access the ui in your web browser ,following instructions detailed in workshop under [Exposing applications](https://www.eksworkshop.com/docs/fundamentals/exposing/). Once you load the ui page, add a couple of watch orders so we can generate the metrics.
 
-The application code will capture the business metrics outline above. These metrics are exported to Amazon Managed Prometheus. We will use Amazon Managed Grafana to visualize the metrics. 
+The application code will capture the application metrics outline above. These metrics are exported to Amazon Managed Prometheus. We will use Amazon Managed Grafana to visualize the metrics. 
 
 Use the below script to run load-generator to place watch orders to capture the custom metrics.
 
