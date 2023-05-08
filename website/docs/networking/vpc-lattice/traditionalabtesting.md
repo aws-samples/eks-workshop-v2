@@ -6,7 +6,7 @@ sidebar_position: 15
 
 We have modified the `checkout` microservice adding a prefix *"Lattice"* to the shipping options. In this section, we want to test this new feature performing A/B testing. 
 
-Let's deploy a new version of the `checkout` microservice in a new namespace (`checkoutv2`) using `kustomize`.
+Let's deploy a new version of the `checkout` microservice in a new namespace (`checkoutv2`) using Kustomize.
 
 ```bash
 $ kubectl apply -k workspace/modules/networking/vpc-lattice/abtesting/
@@ -50,7 +50,7 @@ Port-forward the `ui` pod:
 $ kubectl port-forward svc/ui 8080:80 -n ui
 ```
 
-and the preview of your application in `Cloud9`. To do so, click on the `Preview` button on the top bar and select `Preview Running Application` to preview the UI application on the right:
+and the preview of your application in **Cloud9**. To do so, click on the **Preview** button on the top bar and select **Preview Running Application** to preview the UI application on the right:
 
 ![Preview your application](assets/preview-app.png)
 
