@@ -7,8 +7,8 @@ sidebar_custom_props: {"module": true}
 
 :::danger This module is in beta - Read before you start
 
-- This module currently only works on the [self-hosted version](https://www.eksworkshop.com/docs/introduction/setup/your-account) of eksworkshop as Amazon VPC Lattice resources are not yet supported [at an AWS Event](https://www.eksworkshop.com/docs/introduction/setup/aws-event).
-- You must manually run the [Cleanup](https://www.eksworkshop.com/docs/networking/vpc-lattice/cleanup) steps before proceeding to the next module.
+- This module currently only works on the [self-hosted version](../../introduction/setup/your-account.md) of eksworkshop as Amazon VPC Lattice resources are not yet supported [at an AWS Event](../../introduction/setup/aws-event.md).
+- You must manually run the [Cleanup](cleanup.md) steps before proceeding to the next module.
 :::
 
 :::tip Before you start
@@ -26,10 +26,10 @@ Amazon VPC Lattice takes care of common networking tasks such as discovering com
 
 The primary benefits of using Lattice are:
 
-* Increased developer productivity:  Lattice boosts developer productivity by letting them focus on building features that matters to their business, while it handles networking, security and observability challenges in a uniform way across all compute platforms
-* Improved Security Posture: Lattice  enables  developers  to  easily  authenticate  and  secure  communication  across  applications, without the operational overhead of current mechanisms (e.g. certificate management). With Lattice access policies, developers and cloud admins can enforce granular access control. Lattice can also enforce encryption for traffic in-transit, further increasing security posture
-* Improved application scalability and resilience: Lattice makes it easy to create a network of deployed applications with rich routing, authentication, authorization, monitoring, and more. Lattice provides all of these benefits with no resource overhead on workloads and can support large scale deployments and many requests per second without adding significant latency. 
-* Deployment flexibility with heterogeneous infrastructure: Lattice  provides  consistent  features  across  all  compute  services – EC2, ECS, EKS, Lambda, and can include services living on-premises, allowing organizations the flexibility to choose the optimal compute infrastructure for their use-case.
+* **Increased developer productivity**:  Lattice boosts developer productivity by letting them focus on building features that matters to their business, while it handles networking, security and observability challenges in a uniform way across all compute platforms
+* **Improved Security Posture**: Lattice  enables  developers  to  easily  authenticate  and  secure  communication  across  applications, without the operational overhead of current mechanisms (e.g. certificate management). With Lattice access policies, developers and cloud admins can enforce granular access control. Lattice can also enforce encryption for traffic in-transit, further increasing security posture
+* **Improved application scalability and resilience**: Lattice makes it easy to create a network of deployed applications with rich routing, authentication, authorization, monitoring, and more. Lattice provides all of these benefits with no resource overhead on workloads and can support large scale deployments and many requests per second without adding significant latency. 
+* **Deployment flexibility with heterogeneous infrastructure**: Lattice  provides  consistent  features  across  all  compute  services – EC2, ECS, EKS, Lambda, and can include services living on-premises, allowing organizations the flexibility to choose the optimal compute infrastructure for their use-case.
 
 The [components](https://docs.aws.amazon.com/vpc-lattice/latest/ug/what-is-vpc-service-network.html#vpc-service-network-components-overview) of Amazon VPC Lattices include:
 
