@@ -82,7 +82,7 @@ parents:
  Now you can see the associated Service created in the VPC console under the Lattice resources.
 ![CheckoutRoute Service](assets/checkoutroute.png)
 
-Patch the configmap to point to the new endpoint.
+Patch the `configmap` to point to the new endpoint.
 
 ```bash
 $ export CHECKOUT_ROUTE_DNS='http://'$(kubectl get httproute checkoutroute -n checkout -o json | jq -r '.status.parents[0].conditions[0].message' | cut  -c 11-)
@@ -100,13 +100,13 @@ In the real world, A/B testing of new features is normally performed on a percen
 To simulate this scenario, we will configure the httproutes so that 50% of the traffic is routed to the old version and the other 50% to the new version of the application. 
 Completing the checkout procedure multiple times with different objects in the cart should present the users with the 2 version of the applications. 
 
-Again, we need to port-forward and open the preview of your application with `Cloud9`.
+Again, we need to port-forward and open the preview of your application with Cloud9.
 
 ```bash
 $ kubectl delete --all po -n ui
 $ kubectl port-forward svc/ui 8080:80 -n ui
 ```
-Click on the `Preview` button on the top bar and select `Preview Running Application` to preview the UI application on the right:
+Click on the **Preview** button on the top bar and select **Preview Running Application** to preview the UI application on the right:
 
 
 ![Preview your application](assets/preview-app.png)
@@ -116,7 +116,7 @@ Now, try to checkout multiple times: you will notice how the new feature will be
 
 :::danger Don't forget to clean-up
 
-This module is currently in beta, so you must manually run the [Cleanup](https://www.eksworkshop.com/docs/networking/vpc-lattice/cleanup) steps before proceeding to the next module.
+This module is currently in beta, so you must manually run the [Cleanup](cleanup.md) steps before proceeding to the next module.
 :::
 
 
