@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkout
+spec:
+  template:
+    spec:
+      containers:
+        - name: checkout
+          env: 
+          - name: SHIPPING_NAME_PREFIX
+            value: "Lattice "
+          image: "public.ecr.aws/aws-containers/retail-store-sample-checkout:0.3.0"

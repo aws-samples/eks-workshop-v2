@@ -35,8 +35,6 @@ metadata:
   namespace: catalog
 spec:
   encryptedData:
-    endpoint: AgCS(...)9O0=
-    name: AgCk(...)+Ojm
     password: AgBe(...)R91c
     username: AgBu(...)Ykc=
   template:
@@ -69,7 +67,7 @@ Verify that the `catalog-sealed-db` Secret unsealed from the SealedSecret was de
 $ kubectl get secret -n catalog catalog-sealed-db 
 
 NAME                       TYPE     DATA   AGE
-catalog-sealed-db   Opaque   4      7m51s
+catalog-sealed-db          Opaque   4      7m51s
 ```
 
 Let's redeploy the **catalog** deployment that reads from the above Secret. We have updated the `catalog` deployment to read the `catalog-sealed-db` Secret as follows:
