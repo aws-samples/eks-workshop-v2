@@ -26,7 +26,7 @@ replacements:
     name: inference-vars
     version: v1
     namespace: aiml
-    fieldPath: data.AI_ML_SUBNET
+    fieldPath: data.AIML_SUBNET
   targets:
   - select:
       kind: AWSNodeTemplate

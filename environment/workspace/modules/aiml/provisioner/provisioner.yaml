@@ -18,7 +18,7 @@ metadata:
   name: aiml
 spec:
   subnetSelector:
-    aws-ids: ${AI_ML_SUBNET}
+    aws-ids: ${AIML_SUBNET}
   securityGroupSelector:
     karpenter.sh/discovery: ${EKS_SUBNETS}
   # Increase the ephemeral storage for hosting a large Deep Learning Container
