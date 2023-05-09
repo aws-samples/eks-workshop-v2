@@ -12,19 +12,19 @@ If the Open link does not work, you will need to grant your user access to the C
 
 From the AWS CLI modify the following code to give your user access to the Cloud9 instance:
 
-```bash
+```shell
 aws cloud9 create-environment-membership --environment-id environment_id_from_arn  --user-arn arn:aws:sts::1234567890:assumed-role/Admin/somerole --permissions read-write
 ```
 
 Two replacements will need to be made:
 
-```bash
+```text
 arn:aws:sts::1234567890:assumed-role/Admin/somerole
 ```
 
 The above arn should be replaced with the arn of the user or role that needs access to the Cloud9 instance.
 
-```bash
+```text
 environment_id_from_arn
 ```
 
@@ -35,7 +35,7 @@ The arn can be found by clicking on the instance name. Everything after the last
 
 After entering the code with the replaced text in the CLI you should now be able to access the Cloud9 Instance.
 
-```bash
+```shell
 $ aws cloud9 create-environment-membership --environment-id environment_id_from_arn  --user-arn arn:aws:sts::1234567890:assumed-role/Admin/somerole --permissions read-write
 {
     "membership": {
