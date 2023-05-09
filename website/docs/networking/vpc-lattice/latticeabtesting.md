@@ -7,7 +7,7 @@ In this section we will show how to use Amazon VPC Lattice to perform A/B testin
 
 # Set up Lattice Service Network
 
-Create the Kubernetes Gateway `eks-workshop-gw`:
+Create Kubernetes Gateway API object `eks-workshop-gw`:
    ```bash
    $ kubectl apply -f workspace/modules/networking/vpc-lattice/controller/eks-workshop-gw.yaml
    ```
@@ -90,13 +90,13 @@ $ kubectl patch configmap/ui -n ui --type merge -p '{"data":{"ENDPOINTS_CHECKOUT
 ```
 
 :::tip Now traffic is handled by Amazon VPC Lattice
-Now Amazon VPC Lattice automatically redirects the traffic to different backends! This also means that you can take full advantage of all the [features](https://aws.amazon.com/vpc/lattice/features/) of Amazon VPC Lattice.
+Now Amazon VPC Lattice automatically redirects the traffic to different backends! This also means that you can take full advantage of all the Amazon VPC Lattice [features](https://aws.amazon.com/vpc/lattice/features/) of Amazon VPC Lattice.
 
 :::
 
 # Check A/B testing is working
 
-In the real world, A/B testing of new features is normally performed on a percentage of users. 
+In the real world, A/B testing of new features is normally performed on a percentage of requests.
 To simulate this scenario, we will configure the httproutes so that 50% of the traffic is routed to the old version and the other 50% to the new version of the application. 
 Completing the checkout procedure multiple times with different objects in the cart should present the users with the 2 version of the applications. 
 
@@ -111,12 +111,13 @@ Click on the **Preview** button on the top bar and select **Preview Running Appl
 
 ![Preview your application](assets/preview-app.png)
 
-Now, try to checkout multiple times: you will notice how the new feature will be available around 50% of the times: this is because Amazon VPC Lattice automatically redirects traffic to different versions of `checkout` microservice. This is because now the UI pod points to the Amazon VPC Lattice endpoint we created earlier whith the `HttpRoute`.
+Now, try to checkout multiple times: you will notice how the new feature will be available around 50% of the times: this is because Amazon VPC Lattice automatically redirects traffic to different versions of `checkout` microservice. This is because now the UI pod points to the Amazon VPC Lattice endpoint we created earlier with the `HttpRoute` specification.
 
 
 :::danger Don't forget to clean-up
 
-This module is currently in beta, so you must manually run the [Cleanup](cleanup.md) steps before proceeding to the next module.
+This module is in beta; therefore, we recommend manually running the [Cleanup] (cleanup.md) steps prior moving on to the next module.
+
 :::
 
 

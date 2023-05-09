@@ -13,7 +13,7 @@ automation/controlplanes/crossplane/managed/rds-security-group.yaml
 
 :::info
 
-The EC2 security group above allows any traffic from the CIDR range of the VPC used by the EKS cluster. This has been done to keep the example clear and understandable. A more secure approach would be to use [Security Groups for Pods](../../../networking/security-groups-for-pods/index.md) to allow traffic from specific pods.
+The EC2 security group above allows any traffic from the CIDR range of the VPC used by the EKS cluster. This has been done to keep the example clear and understandable. A more secure approach would be to use [Security Groups for Pods](../../../networking/vpc-cni-options/security-groups-for-pods/index.md) to allow traffic from specific pods.
 
 :::
 
