@@ -14,9 +14,8 @@ In this chapter,  we'll cover how you can use AWS observability solutions integr
 * Monitoring EKS Metrics with AMP and ADOT.
 <br><br>
 
-
 ---
-If you did not a complete the Introduction Session, you can apply this command to our cluster to deploy all of the components:
+If you did not a complete the [Introduction Session](Introduction), you can apply this command to our cluster to deploy all of the components:
 ```bash wait=10
 $ kubectl apply -k /workspace/manifests
 ```
