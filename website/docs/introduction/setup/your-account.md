@@ -69,11 +69,11 @@ $ delete-environment
 ```bash test=false
 # To delete general add-ons, run the following command:
 $ cd terraform
-$ terraform destroy -target=module.cluster.module.eks_blueprints_kubernetes_addons --auto-approve
+$ terraform destroy -target module.cluster.module.eks_blueprints_kubernetes_addons --auto-approve
 # To delete the descheduler add-on, run the following command:
-$ terraform destroy -target=module.cluster.module.descheduler --auto-approve
+$ terraform destroy -target module.cluster.module.descheduler --auto-approve
 # To delete the core blueprints add-ons, run the following command:
-$ terraform destroy -target=module.cluster.module.eks_blueprints --auto-approve
+$ terraform destroy -target module.cluster.module.eks_blueprints --auto-approve
 # To delete the remaining resources created by Terraform, run the following command:
 $ terraform destroy --auto-approve
 ```
