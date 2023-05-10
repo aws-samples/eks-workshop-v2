@@ -12,6 +12,15 @@ In this chapter,  we'll cover how you can use AWS observability solutions integr
 * Control Plane and Pod Logs utilizing Fluentbit
 * Monitoring Metrics with CloudWatch Container Insights
 * Monitoring EKS Metrics with AMP and ADOT.
+<br><br>
+
+
+---
+If you did not a complete the Introduction Session, you can apply this command to our cluster to deploy all of the components:
+```bash wait=10
+$ kubectl apply -k /workspace/manifests
+```
+---
 
 :::info
 To dive deeper into AWS Observability features take a look at the [One Observability Workshop](https://observability.workshop.aws)
