@@ -13,9 +13,11 @@ In this chapter,  we'll cover how you can use AWS observability solutions integr
 * Monitoring Metrics with CloudWatch Container Insights
 * Monitoring EKS Metrics with AMP and ADOT.
 <br><br>
+ntroduction/getting-started
 
 ---
-If you did not a complete the [Introduction Session](../introduction/getting-started/finish.md), you can apply this command to our cluster to deploy all of the components:
+If you did not a complete the [Introduction Getting Started session](../introduction/getting-started/finish.md), you can run this command to deploy all of the components
+
 ```bash wait=10
 $ kubectl apply -k /workspace/manifests
 ```
