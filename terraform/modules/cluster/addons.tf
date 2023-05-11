@@ -43,7 +43,6 @@ module "eks_blueprints_kubernetes_addons" {
   enable_self_managed_aws_ebs_csi_driver = true
   enable_crossplane                      = true
   enable_argocd                          = true
-  enable_argocd                          = true
 
   self_managed_aws_ebs_csi_driver_helm_config = {
     set = [{
@@ -419,7 +418,7 @@ module "eks_blueprints_kubernetes_addons" {
         name  = "applicationSet.tolerations[0].effect"
         value = "NoSchedule"
         type  = "string"
-      }], local.system_component_values)
+    }], local.system_component_values)
   }
 
   tags = local.tags
