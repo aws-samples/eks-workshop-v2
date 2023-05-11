@@ -3,9 +3,9 @@ resource "aws_codecommit_repository" "gitops" {
   description     = "CodeCommit repository for GitOps"
 }
 
-resource "aws_codecommit_repository" "gitops_argocd" {
-  repository_name = "${var.environment_name}-gitops-argocd"
-  description     = "CodeCommit repository for GitOps with Argo CD"
+resource "aws_codecommit_repository" "argocd" {
+  repository_name = "${var.environment_name}-argocd"
+  description     = "CodeCommit repository for ArgoCD"
 }
 
 resource "aws_iam_user" "gitops" {
