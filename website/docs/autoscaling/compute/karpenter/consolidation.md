@@ -93,8 +93,5 @@ Since the total memory request with 1 replica is much lower around 1Gi, it would
 
 ```
 $ kubectl get nodes -l type=karpenter -o jsonpath="{range .items[*]}{.metadata.labels.node\.kubernetes\.io/instance-type}{'\n'}{end}"
-```
-
-```
 c5.large
 ```
