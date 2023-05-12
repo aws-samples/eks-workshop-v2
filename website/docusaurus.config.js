@@ -52,6 +52,9 @@ const config = {
           ],
           editUrl:
             'https://github.com/aws-samples/eks-workshop-v2/tree/main/website',
+          exclude: [
+            '**/vpc-lattice/**'
+          ]
         },
         theme: {
           customCss: require.resolve('./src/css/custom.scss'),

@@ -24,5 +24,5 @@ Within a few minutes we'll see the finding `Persistence:Kubernetes/ContainerWith
 Cleanup:
 
 ```bash
-$ kubectl delete -f /workspace/modules/security/Guardduty/privileged/mount/privileged-pod-example.yaml
+$ kubectl delete -f /workspace/modules/security/Guardduty/mount/privileged-pod-example.yaml
 ```

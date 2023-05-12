@@ -1,4 +1,4 @@
-name: E2E Tests
+name: E2E Tests - Parallel
 
 on:
   workflow_dispatch:
@@ -8,11 +8,13 @@ permissions:
   contents: read
 
 jobs:
-  test-content:
-    if: ${{ (github.event.action == 'labeled' && github.event.label.name == 'automation/e2e-tests') || (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'automation/e2e-tests')) }}
-
+  run-tests:
     name: run-tests
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module: [ fundamentals, security, autoscaling, observability, automation, networking ]
     steps:
     - name: Check out code
       uses: actions/checkout@v2
@@ -38,10 +40,12 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
         role-session-name: GithubActionsSession
     - name: Set cluster ID
-      env:
-        RUN_ID: "${{ github.run_id }}"
       run: |
-        CLUSTER_ID="ci-${RUN_ID}"
+        RANDOM_ID=$(echo $RANDOM | md5sum | head -c 8; echo)
+        CLUSTER_ID="ci-${RANDOM_ID}"
+
+        echo "Cluster ID is ${CLUSTER_ID}"
+
         echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
         echo "TF_VAR_environment_suffix=${CLUSTER_ID}" >> $GITHUB_ENV
     - name: Create infrastructure
@@ -64,48 +68,12 @@ jobs:
         DEV_MODE: 1
       run: |
         make test terraform_context="test/terraform" module="introduction"
-    - name: Run tests - Fundamentals
-      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/fundamentals') }}
+    - name: Run tests
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="fundamentals"
-    - name: Run tests - Security
-      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/security') }}
-      env:
-        DOCKER_BUILDKIT: 1
-        DEV_MODE: 1
-      run: |
-        make test terraform_context="test/terraform" module="security"
-    - name: Run tests - Networking
-      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/networking') }}
-      env:
-        DOCKER_BUILDKIT: 1
-        DEV_MODE: 1
-      run: |
-        make test terraform_context="test/terraform" module="networking"
-    - name: Run tests - Autoscaling
-      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/autoscaling') }}
-      env:
-        DOCKER_BUILDKIT: 1
-        DEV_MODE: 1
-      run: |
-        make test terraform_context="test/terraform" module="autoscaling"
-    - name: Run tests - Observability
-      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/observability') }}
-      env:
-        DOCKER_BUILDKIT: 1
-        DEV_MODE: 1
-      run: |
-        make test terraform_context="test/terraform" module="observability"
-    - name: Run tests - Automation
-      if: ${{ github.event_name == 'workflow_dispatch' || contains( github.event.pull_request.labels.*.name, 'content/automation') }}
-      env:
-        DOCKER_BUILDKIT: 1
-        DEV_MODE: 1
-      run: |
-        make test terraform_context="test/terraform" module="automation"
+        make test terraform_context="test/terraform" module="${{ matrix.module }}"
     - name: Run tests - Cleanup
       if: always()
       env:
@@ -129,8 +97,13 @@ jobs:
         terraform destroy -target=module.core.module.cluster.module.descheduler --auto-approve
 
         terraform destroy -target=module.core.module.cluster.module.eks_blueprints --auto-approve
+
+        export CLEANUP_ENVIRONMENT_NAME="$CLUSTER_ID"
         
         envsubst < ../../hack/lib/filter.yml > filter.yml
+
+        cat filter.yml
+
         awsweeper --force filter.yml
 
         terraform destroy --auto-approve
