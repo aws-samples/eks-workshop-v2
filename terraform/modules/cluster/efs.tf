@@ -47,3 +47,29 @@ resource "aws_efs_mount_target" "efsmtpvsubnet" {
   subnet_id       = local.private_subnet_ids[count.index]
   security_groups = [aws_security_group.efs.id]
 }
+
+resource "aws_iam_policy" "efs_patch" {
+  name        = "${var.environment_name}-efs-tag"
+  path        = "/"
+  description = "Supplemental tag for EFS tag resource"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "EFSTagResource",
+      "Effect": "Allow",
+      "Action": "elasticfilesystem:TagResource",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/efs.csi.aws.com/cluster": "true"
+        }
+      }
+    }
+  ]
+}
+EOF
+  tags   = local.tags
+}
