@@ -29,14 +29,19 @@ $ aws iam create-policy \
 ```
 
 Create the `system` namespace:
+
 ```bash
 $ kubectl apply -f workspace/modules/networking/vpc-lattice/controller/deploy-namesystem.yaml
 ```
+
 Retrieve the policy ARN:
+
 ```bash
 $ export VPCLatticeControllerIAMPolicyArn=$(aws iam list-policies --query 'Policies[?PolicyName==`VPCLatticeControllerIAMPolicy`].Arn' --output text)
 ```
+
 Create an `iamserviceaccount` for pod level permission. `eksctl` creates a Service Account and then annotates it with the IAM role ARN we retrieved above.
+
 ```bash
 $ eksctl create iamserviceaccount \
     --cluster=${EKS_CLUSTER_NAME} \
@@ -48,18 +53,8 @@ $ eksctl create iamserviceaccount \
     --approve
 ```
 
----
-This step will install the controller and the CRDs (Custom Resource Definitions) required to interact with the Kubernetes Gateway API. Installation is available via `kubectl`or `helm`.
-
-**CHOOSE AN INSTALLATION METHOD** between the two options below.
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **Option 1:** *Install with kubectl*
-
-```bash
-$ kubectl apply -f workspace/modules/networking/vpc-lattice/controller/deploy-resources.yaml
-```
+This step will install the controller and the CRDs (Custom Resource Definitions) required to interact with the Kubernetes Gateway API.
       
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **Option 2:** *Install with Helm*
 ```bash
 $ aws ecr-public get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin public.ecr.aws
 $ helm install gateway-api-controller \
@@ -67,13 +62,13 @@ $ helm install gateway-api-controller \
     --version=v0.0.7 \
     --set=aws.region=${AWS_DEFAULT_REGION} --set=serviceAccount.create=false --namespace system
 ```
----
 
 Similar to `IngressClass` for `Ingress` and `StorageClass` for `PersistentVolumes`, before creating a `Gateway`, we need to formalize the types of load balancing implementations that are available via the Kubernetes resource model with a [GatewayClass](https://gateway-api.sigs.k8s.io/concepts/api-overview/#gatewayclass). The controller that listens to the Gateway API relies on an associated `GatewayClass` resource that the user can reference from their `Gateway`.
 
 ```bash
 $ kubectl apply -f workspace/modules/networking/vpc-lattice/controller/gatewayclass.yaml
 ```
+
 The command above will create the following resource:
 
 ```file

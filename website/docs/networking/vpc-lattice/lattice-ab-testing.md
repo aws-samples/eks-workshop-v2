@@ -8,32 +8,32 @@ In this section we will show how to use Amazon VPC Lattice to perform A/B testin
 # Set up Lattice Service Network
 
 Create the Kubernetes Gateway `eks-workshop-gw`:
-   ```bash
-   $ kubectl apply -f workspace/modules/networking/vpc-lattice/controller/eks-workshop-gw.yaml
-   ```
+
+```bash
+$ kubectl apply -f workspace/modules/networking/vpc-lattice/controller/eks-workshop-gw.yaml
+```
+
 Verify that `eks-workshop-gw` gateway is created:
-   ```bash
-   $ kubectl get gateway  
-   ```
-   ```
-   $ NAME              CLASS         ADDRESS   READY   AGE
-   $ eks-workshop-gw   aws-lattice                     12min
-   ```
+
+```bash
+$ kubectl get gateway  
+NAME              CLASS         ADDRESS   READY   AGE
+eks-workshop-gw   aws-lattice                     12min
+```
 
 Once the gateway is created, find the VPC Lattice service network. Wait until the status is `Reconciled` (this could take about five minutes).
-   ```bash
-   $ kubectl describe gateway eks-workshop-gw
-   ```
-   ```
-   $ apiVersion: gateway.networking.k8s.io/v1alpha2
-   kind: Gateway
-   ...
-   $ status:
+
+```bash
+$ kubectl describe gateway eks-workshop-gw
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: Gateway
+status:
    conditions:
-   message: 'aws-gateway-arn: arn:aws:vpc-lattice:us-west-2:<YOUR_ACCOUNT>:servicenetwork/sn-03015ffef38fdc005'
-   reason: Reconciled
-   status: "True"
-   ```
+      message: 'aws-gateway-arn: arn:aws:vpc-lattice:us-west-2:<YOUR_ACCOUNT>:servicenetwork/sn-03015ffef38fdc005'
+      reason: Reconciled
+      status: "True"
+```
+
  Now you can see the associated Service Network created in the VPC console under the Lattice resources.
 ![Checkout Service Network](assets/servicenetwork.png)
 
@@ -47,36 +47,35 @@ $ kubectl patch svc checkout -n checkout --patch '{"spec": { "type": "ClusterIP"
 ```
 
 Create the Kubernetes `HTTPRoute` route that evenly distributes the traffic between `checkout` and `checkoutv2`:
-   ```bash
-   $ kubectl apply -f workspace/modules/networking/vpc-lattice/routes/checkout-route.yaml
-   ```
-   ```file
-   /networking/vpc-lattice/routes/checkout-route.yaml
-   ```
+
+```bash
+$ kubectl apply -f workspace/modules/networking/vpc-lattice/routes/checkout-route.yaml
+```
+
+```file
+/networking/vpc-lattice/routes/checkout-route.yaml
+```
 
 Find out the `HTTPRoute`'s DNS name from `HTTPRoute` status (highlighted here on the `message` line):
 
 ```bash
 $ kubectl describe httproute checkoutroute -n checkout
-```
-
-```bash
-$ apiVersion: gateway.networking.k8s.io/v1alpha2
+apiVersion: gateway.networking.k8s.io/v1alpha2
 kind: HTTPRoute
-    ...
+...
 status:
-parents:
-- conditions:
-    - lastTransitionTime: "2023-02-27T14:36:26Z"
-    message: 'DNS Name: checkout-checkouroute-05bcd5fb087c79394.7d67968.vpc-lattice-svcs.us-west-2.on.aws'
-    reason: Reconciled
-    status: "True"
-    type: httproute
-    controllerName: application-networking.k8s.aws/gateway-api-controller
-    parentRef:
-    group: gateway.networking.k8s.io
-    kind: Gateway
-    name: eks-workshop-gw
+   parents:
+   - conditions:
+      - lastTransitionTime: "2023-02-27T14:36:26Z"
+         message: 'DNS Name: checkout-checkouroute-05bcd5fb087c79394.7d67968.vpc-lattice-svcs.us-west-2.on.aws'
+         reason: Reconciled
+      status: "True"
+      type: httproute
+      controllerName: application-networking.k8s.aws/gateway-api-controller
+      parentRef:
+         group: gateway.networking.k8s.io
+         kind: Gateway
+         name: eks-workshop-gw
 ```
 
  Now you can see the associated Service created in the VPC console under the Lattice resources.
@@ -106,19 +105,14 @@ Again, we need to port-forward and open the preview of your application with Clo
 $ kubectl delete --all po -n ui
 $ kubectl port-forward svc/ui 8080:80 -n ui
 ```
-Click on the **Preview** button on the top bar and select **Preview Running Application** to preview the UI application on the right:
 
+Click on the **Preview** button on the top bar and select **Preview Running Application** to preview the UI application on the right:
 
 ![Preview your application](assets/preview-app.png)
 
 Now, try to checkout multiple times: you will notice how the new feature will be available around 50% of the times: this is because Amazon VPC Lattice automatically redirects traffic to different versions of `checkout` microservice. This is because now the UI pod points to the Amazon VPC Lattice endpoint we created earlier whith the `HttpRoute`.
 
-
 :::danger Don't forget to clean-up
 
 This module is currently in beta, so you must manually run the [Cleanup](cleanup.md) steps before proceeding to the next module.
 :::
-
-
-
-

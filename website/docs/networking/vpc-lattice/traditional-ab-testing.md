@@ -25,7 +25,8 @@ checkout-698856df4d-zdhn7         1/1     Running   0          45s
 checkout-redis-6cfd7d8787-cmj6g   1/1     Running   0          45s
 ```
 
-Now we shift the traffic to the new version. To do so, we will manually update the user interface config map to point to our new service: 
+Now we shift the traffic to the new version. To do so, we will manually update the user interface config map to point to our new service:
+
 ```bash
 $ CHECKOUT_V2_SVC="http://checkout.checkoutv2.svc:80"
 $ kubectl patch configmap/ui -n ui --type merge -p '{"data":{"ENDPOINTS_CHECKOUT": "'${CHECKOUT_V2_SVC}'"}}'
@@ -55,6 +56,7 @@ and the preview of your application in **Cloud9**. To do so, click on the **Prev
 ![Preview your application](assets/preview-app.png)
 
 Go to the checkout page:
+
 ![Checkout](assets/checkout1.png)
 
 And fill in the required information (zip code must be 5 numbers):
