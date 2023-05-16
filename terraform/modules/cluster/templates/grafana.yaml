@@ -59,7 +59,7 @@ dashboardProviders:
         path: /var/lib/grafana/dashboards/bmetrics       
 
 dashboardsConfigMaps:
-  bmetrics: "business-metrics-dashboard"
+  bmetrics: "order-service-metrics-dashboard"
 
 dashboards:
   default:

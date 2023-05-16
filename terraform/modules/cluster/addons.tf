@@ -526,9 +526,9 @@ module "eks_blueprints_kubernetes_grafana_addon" {
   }
 }
 
-resource "kubernetes_config_map" "business-metrics-dashboard" {
+resource "kubernetes_config_map" "order-service-metrics-dashboard" {
   metadata {
-    name      = "business-metrics-dashboard"
+    name      = "order-service-metrics-dashboard"
     namespace = "grafana"
 
     labels = {
@@ -537,7 +537,7 @@ resource "kubernetes_config_map" "business-metrics-dashboard" {
   }
   
   data = {
-    "business-metrics-dashboard.json" = file("${path.module}/templates/dashboards/business-metrics-dashboard.json")
+    "order-service-metrics-dashboard.json" = file("${path.module}/templates/dashboards/order-service-metrics-dashboard.json")
   }
 }
 
