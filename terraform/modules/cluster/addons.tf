@@ -75,6 +75,10 @@ module "eks_blueprints_kubernetes_addons" {
     }]
   }
 
+  aws_efs_csi_driver_irsa_policies = [
+    aws_iam_policy.efs_patch.arn
+  ]
+
   cluster_autoscaler_helm_config = {
     version   = var.helm_chart_versions["cluster_autoscaler"]
     namespace = "kube-system"
@@ -418,7 +422,7 @@ module "eks_blueprints_kubernetes_addons" {
         name  = "applicationSet.tolerations[0].effect"
         value = "NoSchedule"
         type  = "string"
-      }], local.system_component_values)
+    }], local.system_component_values)
   }
 
   tags = local.tags

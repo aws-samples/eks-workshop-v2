@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "gitops_access" {
       "codecommit:GitPull",
       "codecommit:GitPush"
     ]
-    effect    = "Allow"
+    effect = "Allow"
     resources = [
       aws_codecommit_repository.gitops.arn,
       aws_codecommit_repository.argocd.arn
