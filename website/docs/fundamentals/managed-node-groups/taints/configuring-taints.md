@@ -62,7 +62,7 @@ In the next few sections, we'll explore how to add taints to our preconfigured m
 
 Let's start by adding a `taint` to our managed node group using the following `aws` cli command: 
 
-```bash
+```bash timeout=180
 $ aws eks update-nodegroup-config \
     --cluster-name $EKS_CLUSTER_NAME \
     --nodegroup-name $EKS_TAINTED_MNG_NAME \

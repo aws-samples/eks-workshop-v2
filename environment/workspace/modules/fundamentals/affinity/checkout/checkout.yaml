@@ -24,4 +24,8 @@ spec:
                 operator: In
                 values:
                 - service
+              - key: app.kubernetes.io/instance
+                operator: In
+                values:
+                - checkout
             topologyKey: kubernetes.io/hostname
