@@ -42,6 +42,7 @@ Deployment/checkout
 To make the change, run the following command to modify the **checkout** deployment in your cluster:
 
 ```bash
+$ kubectl delete -n checkout deployment checkout
 $ kubectl apply -k /workspace/modules/fundamentals/affinity/checkout/
 namespace/checkout unchanged
 serviceaccount/checkout unchanged
@@ -82,6 +83,7 @@ Deployment/checkout-redis
 Apply it with the following command:
 
 ```bash
+$ kubectl delete -n checkout deployment checkout-redis
 $ kubectl apply -k /workspace/modules/fundamentals/affinity/checkout-redis/
 namespace/checkout unchanged
 serviceaccount/checkout unchanged
