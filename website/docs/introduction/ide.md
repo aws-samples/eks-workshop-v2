@@ -3,7 +3,7 @@ title: Accessing the IDE
 sidebar_position: 25
 ---
 
-As part of the lab environment you have access to an AWS Cloud9 IDE.
+The provisioned lab environment includes an AWS Cloud9 IDE with the prerequisite tools and environment setup to simplify cluster access and reset of the environment between exercises.
 
 To access the Cloud9 IDE, log into your [AWS console](https://console.aws.amazon.com/). Search for Cloud9 in the menu bar at the top of the screen:
 

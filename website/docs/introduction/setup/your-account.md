@@ -12,7 +12,9 @@ The pre-requisites for deploying the lab environment in your AWS account are:
 
 ## Provisioning
 
-We'll use Terraform to provision the required infrastructure and get everything up and running. This workshop is tested in us-east-2, us-west-2, and eu-west-1.
+We'll use Terraform to provision the required infrastructure and get everything up and running. This workshop is tested in us-east-2, us-west-2, and eu-west-1. 
+
+The Terraform modules provision an EKS cluster, named eks-workshop, and a Cloud9 IDE of the same name that will be used throughtout the workshop. The provisioned Cloud9 environment has the prerequisite tools and environment setup to simplify cluster access and reset of the environment between exercises.  
 
 For Terraform to be able to deploy resources in your AWS account, it is recommended to configure your AWS credentials in environment variables or shared configuration/credentials files. Follow the instructions in the [Terraform documentation for the AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#shared-configuration-and-credentials-files) to set up these credentials. In addition, ensure that `AWS_REGION` is set to the region you intend to deploy. If you have multiple profiles in your credentials file, you will also need to set `AWS_PROFILE`.
 
