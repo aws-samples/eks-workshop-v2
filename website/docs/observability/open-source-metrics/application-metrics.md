@@ -48,7 +48,7 @@ spec:
     args:
     - "run"
     - "-t"
-    - "http://ui.default.svc"
+    - "http://ui.ui.svc"
     - "/scripts/scenario.yml"
     volumeMounts:
     - name: scripts
