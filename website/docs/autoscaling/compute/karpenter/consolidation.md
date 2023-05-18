@@ -57,7 +57,7 @@ $ kubectl -n karpenter logs deployment/karpenter -c controller | grep Consolidat
 
 The output will show Karpenter identifying specific nodes to cordon, drain and then terminate:
 
-```
+```text
 2022-09-06T19:30:06.285Z        INFO    controller.consolidation        Consolidating via Delete, terminating 1 nodes ip-192-168-159-233.us-west-2.compute.internal/m5.large    {"commit": "b157d45"}
 2022-09-06T19:30:06.341Z        INFO    controller.termination  Cordoned node   {"commit": "b157d45", "node": "ip-192-168-159-233.us-west-2.compute.internal"}
 2022-09-06T19:30:07.441Z        INFO    controller.termination  Deleted node    {"commit": "b157d45", "node": "ip-192-168-159-233.us-west-2.compute.internal"}
@@ -83,7 +83,7 @@ $ kubectl -n karpenter logs deployment/karpenter -c controller | grep Consolidat
 
 The output will show Karpenter consolidating via replace, replacing the m5.large node with the cheaper c5.large instance type defined in the Provisioner:
 
-```
+```text
 2023-05-04T17:15:11.660Z        INFO    controller.consolidation        Consolidating via Replace, terminating 1 nodes ip-100-64-10-237.us-east-2.compute.internal/m5.large and replacing with a node from types c5.large   {"commit": "51becf8-dirty"}
 2023-05-04T17:15:11.679Z        INFO    controller.consolidation        Launching node with 1 pods requesting {"cpu":"175m","memory":"1074Mi","pods":"7"} from types c5.large       {"commit": "51becf8-dirty", "provisioner": "default"}
 2023-05-04T17:16:08.402Z        INFO    controller.termination  Deleted node    {"commit": "51becf8-dirty", "node": "ip-100-64-10-237.us-east-2.compute.internal"}
@@ -91,7 +91,7 @@ The output will show Karpenter consolidating via replace, replacing the m5.large
 
 Since the total memory request with 1 replica is much lower around 1Gi, it would be more efficient to run it on the cheaper c5.large instance type with 4GB of memory. Once the node is replaced, we can check the metadata on the new node and confirm the instance type is the c5.large: 
 
-```
+```bash
 $ kubectl get nodes -l type=karpenter -o jsonpath="{range .items[*]}{.metadata.labels.node\.kubernetes\.io/instance-type}{'\n'}{end}"
 c5.large
 ```
