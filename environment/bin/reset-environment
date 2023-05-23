@@ -19,6 +19,8 @@ echo "Resetting the environment, please wait"
 
 kubectl delete app -A --all > /dev/null
 
+kubectl delete pod -n other load-generator --ignore-not-found > /dev/null
+
 kubectl apply -k $absolute_path --prune --all \
   --prune-whitelist=autoscaling/v1/HorizontalPodAutoscaler \
   --prune-whitelist=core/v1/Service \
