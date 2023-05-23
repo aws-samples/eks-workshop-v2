@@ -84,7 +84,7 @@ Now create a new file `newproduct.png` under the assets directory in the first P
 
 ```bash
 $ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[0].metadata.name}')
-$ kubectl exec --stdin deployment/assets $POD_NAME \
+$ kubectl exec --stdin $POD_NAME \
   -n assets -c assets -- bash -c 'touch /usr/share/nginx/html/assets/newproduct.png'
 ```
 
@@ -92,7 +92,7 @@ And verify that the file now also exists in the second Pod:
 
 ```bash
 $ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
-$ kubectl exec --stdin deployment/assets $POD_NAME \
+$ kubectl exec --stdin $POD_NAME \
   -n assets -c assets -- bash -c 'ls /usr/share/nginx/html/assets'
 chrono_classic.jpg
 gentleman.jpg
