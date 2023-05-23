@@ -3,24 +3,23 @@ title: "Application Metrics"
 sidebar_position: 50
 ---
 
-Application metrics are user defined metrics that help track your application KPIs. These metrics help analyze data and derive insights to meet your business needs. Let's look at some application metrics using AWS Distro for OpenTelemetry and visualize the metrics using Grafana.
+In this section we'll look at gaining insight in to metrics exposed by our workloads. Some examples of these could be:
 
-The application metrics we want to capture and show in the dashboard for the sample application are:
-- number of total orders created
-- most popular watch type order, based on number of each watch type ordered
-- total cost of each order
+* System metrics such as Java heap metrics or database connection pool status
+* Application metrics related to business KPIs
 
-The "retail-store-sample-app" has already been instrumented to capture the above mentioned metrics. The OrderMetrics class uses Spring Boot [Micrometer](https://spring.io/blog/2018/03/16/micrometer-spring-boot-2-s-new-application-metrics-collector) a metrics collection facade which collects metrics data from the application with a vendor neutral API. In the sample application we use [AWS Distro for OpenTelemetry (ADOT Collector)](https://aws-otel.github.io/) to instrument, generate, collect and export telemetry data (logs, traces and metrics). The OpenTelemetry Collector offers a vendor-agnostic implementation of how to receive, process and export telemetry data. It removes the need to run, operate, and maintain multiple agents/collectors.
+Let's look at how to ingest application metrics using AWS Distro for OpenTelemetry and visualize the metrics using Grafana.
 
-Take a look at the OpenTelementy collector configuration using below command. You will notice two main components - Receivers and Exporters
+Each of the components in this workshop have been instrumented to provide Prometheus metrics using libraries relevant to the particular programming language or framework. We can look at an example of these metrics from the orders service like so:
+
 ```bash
-$ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.config}'
-```
-
-**Receivers** - scrape metrics from targets that expose a Prometheus endpoint. Prometheus uses a pull based system to pull the application metrics exposed via an HTTP endoint at regular intervals. The retail-store-sample-app microservice exposes an endpoint **/actuator/prometheus** which is scarped to retrieve the application metrics. Each of the sample microservices expose a Prometheus endpoint making this a consistent metrics implementation.
-Use the curl command below to look at the application metrics for **watch_orders** that are exposed through the Prometheus endpoint.
-```bash
-$ kubectl -n orders exec $(kubectl -n orders get pods -o name) -- curl http://localhost:8080/actuator/prometheus | grep "watch_orders"
+$ kubectl -n orders exec deployment/orders -- curl http://localhost:8080/actuator/prometheus
+[...]
+# HELP jdbc_connections_idle Number of established but idle connections.
+# TYPE jdbc_connections_idle gauge
+jdbc_connections_idle{name="reader",} 10.0
+jdbc_connections_idle{name="writer",} 10.0
+[...]
 # HELP watch_orders_total The number of orders placed
 # TYPE watch_orders_total counter
 watch_orders_total{productId="510a0d7e-8e83-4193-b483-e27e09ddc34d",} 2.0
@@ -28,14 +27,80 @@ watch_orders_total{productId="808a2de1-1aaa-4c25-a9b9-6612e8f29a38",} 1.0
 watch_orders_total{productId="*",} 3.0
 watch_orders_total{productId="6d62d909-f957-430e-8689-b5129c0bb75e",} 1.0
 ```
-**Exporters** - send these application metrics to a Prometheus remote write endpoint which in our case is Amazon Managaed Prometheus.
 
-We will use Amazon Managed Grafana to visualize these application metrics collected in AMP. AMG has built-in support for Prometheus as datasource. Each datasource in Grafana has its query language to query the metrics data. [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/) is the query language for Prometheus. Using the metrics key - 'watch_order_total' and the Query builder, we will build a query for retail-store-sample-app application to get the count of all orders of a certain productId as shown below![PromQL](./assets/query.png)
+The output from this command is verbose so the example above has been pruned to show:
 
-Now that we understand how the application metrics are generated, captured, and visualized, we will drive some traffic to see this in action. Use the below script to run load-generator to place watch orders to capture the application metrics.
+* System metric - How many JDBC connections are idle
+* Application metric - How many orders have been placed through the retail store
 
-```kubectl wait --for=condition=Ready --timeout=180s pods \
-cat <<'EOF' | kubectl apply -f -
+You can execute similar requests to other components, for example the checkout service:
+
+```bash
+$ kubectl -n checkout exec deployment/checkout -- curl http://localhost:8080/metrics
+[...]
+# HELP nodejs_heap_size_total_bytes Process heap size from Node.js in bytes.
+# TYPE nodejs_heap_size_total_bytes gauge
+nodejs_heap_size_total_bytes 48668672
+[...]
+```
+
+In this lab we'll leverage ADOT to ingest the metrics for all the components and explore a dashboard to show the number of orders that have been placed. Let's take a look at the OpenTelemetry configuration used to scrape metrics from the application pods, specifically this section:
+
+```bash
+$ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.config}' \
+  | yq '.receivers.prometheus.config.scrape_configs[2]'
+job_name: 'kubernetes-pods'
+honor_labels: true
+kubernetes_sd_configs:
+  - role: pod
+relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+    action: keep
+    regex: true
+  - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape_slow]
+    action: drop
+    regex: true
+  - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scheme]
+    action: replace
+    regex: (https?)
+    target_label: __scheme__
+  - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+    action: replace
+    target_label: __metrics_path__
+    regex: (.+)
+  - action: labelmap
+    regex: __meta_kubernetes_pod_annotation_prometheus_io_param_(.+)
+    replacement: __param_$1
+  - action: labelmap
+    regex: __meta_kubernetes_pod_label_(.+)
+  - source_labels: [__meta_kubernetes_namespace]
+    action: replace
+    target_label: namespace
+  - source_labels: [__meta_kubernetes_pod_name]
+    action: replace
+    target_label: pod
+  - source_labels: [__meta_kubernetes_pod_phase]
+    regex: Pending|Succeeded|Failed|Completed
+    action: drop
+```
+
+This configuration leverages the Prometheus [Kubernetes service discovery](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config) mechanism to automatically discover all pods with specific annotations. This particular configuration will discover any pods with the annotation `prometheus.io/scrape`, and will enrich metrics it scrapes with Kubernetes metadata such as the namespace and pod name.
+
+We can check the annotations on the order component pods:
+
+```bash
+$ kubectl get -o yaml -n orders deployment/orders | yq '.spec.template.metadata.annotations'
+prometheus.io/path: /actuator/prometheus
+prometheus.io/port: "8080"
+prometheus.io/scrape: "true"
+```
+
+As we saw in the section regarding cluster metrics, these pod metrics will also be sent to AMP using the same OpenTelemetry exporter.
+
+Next use the below script to run a load generator which will place orders through the store and generate application metrics:
+
+```bash
+$ cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
@@ -70,26 +135,38 @@ spec:
 EOF
 ```
 
-Open the Grafana dashboard![Grafana dashboard](./assets/order-service-metrics-dashboard.png)
+Open the Grafana as we did in the previous section:
 
-Go to the dashboard section and click on the dashboard **Order Service Metrics** and let's review the panels wintin the dashboard.
+![Grafana dashboard](./assets/order-service-metrics-dashboard.png)
 
-The dashboard displays the panels that represent all the metrics we outlined![Business Metrics](./assets/retailMetrics.png)
+Go to the dashboard page and click on the dashboard **Order Service Metrics** to review the panels within the dashboard:
 
-You can view / edit each panel to look more closely at the metrics.
+![Business Metrics](./assets/retailMetrics.png)
 
-This panel displays the toal number of orders placed by the user in the given time range.
-![Total Orders Placed](./assets/totalOrders.png)
+We can see how the dashboard was configured to query AMP by hovering over the title of the "Orders by Product" panel and clicking the "Edit" button:
 
-This panel displays the number of each watch type ordered, displayed as a pie chart.
-![Most Popular Watch Ordered](./assets/watchCount.png)
+![Edit Panel](./assets/editPanel.png)
 
-This panel displays the toal price of the order in the given time range.
-![Total Order Price](./assets/totalOrderPrice.png)
+The PromQL query used to create this panel is displayed at the bottom of the page:
 
-Once you're satisfied with observing metrics, you can stop the load generator using the below command.
+![PromQL query](./assets/promqlQuery.png)
+
+In this case we are using the query:
+
+```
+sum by(productId) (watch_orders_total{productId!="*"})
+```
+
+Which is doing the following:
+
+* Query for the metric `watch_orders_total`
+* Ignore metrics with a `productId` value of `*`
+* Sum these metrics and group them by `productId`
+
+You can similarly explore the other panels to understand how they have been created.
+
+Once you're satisfied with observing the metrics, you can stop the load generator using the below command.
 
 ```bash timeout=180
 $ kubectl delete pod load-generator -n other
 ```
-
