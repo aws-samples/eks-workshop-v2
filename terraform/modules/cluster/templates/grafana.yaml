@@ -48,7 +48,18 @@ dashboardProviders:
       disableDeletion: false
       editable: false
       options:
-        path: /var/lib/grafana/dashboards/default
+        path: /var/lib/grafana/dashboards/default  
+    - name: bmetrics
+      orgId: 1
+      folder: "retail-app-metrics"
+      type: file
+      disableDeletion: false
+      editable: false
+      options:
+        path: /var/lib/grafana/dashboards/bmetrics       
+
+dashboardsConfigMaps:
+  bmetrics: "order-service-metrics-dashboard"
 
 dashboards:
   default:
@@ -56,10 +67,3 @@ dashboards:
       gnetId: 3119
       revision: 2
       datasource: Prometheus
-
-sidecar:
-  dashboards:
-    enabled: true
-    searchNamespace: ALL
-    label: app.kubernetes.io/component
-    labelValue: grafana
