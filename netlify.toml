@@ -1,0 +1,15 @@
+[build]
+  base = "website"
+
+  publish = "build"
+
+  command = "bash netlify-build.sh"
+
+  environment = { NODE_VERSION = "18.13.0" }
+
+[context.production.environment]
+  MANIFESTS_REF = "stable"
+  ENABLE_INDEX = "1"
+
+[context.main.environment]
+  MANIFESTS_REF = "main"

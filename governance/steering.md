@@ -19,11 +19,12 @@ The working groups are led by chairs (6 month terms) and maintainers (6 month te
 |Infrastructure|[Niall Thomson](https://github.com/niallthomson)||
 |Fundamentals|[Sai Vennam](https://github.com/svennam92)|[Hemanth AVS](https://github.com/hemanth-avs)|
 |Autoscaling|[Sanjeev Ganjihal](https://github.com/sanjeevrg89)||
-|Automation|[Carlos Santana](https://github.com/csantanapr)|[Tsahi Duek](https://github.com/tsahiduek), [Christina Andonov](https://github.com/candonov)|
+|Automation|[Carlos Santana](https://github.com/csantanapr)|[Tsahi Duek](https://github.com/tsahiduek), [Christina Andonov](https://github.com/candonov), [Sébastien Allamand](https://github.com/allamand)|
 |Machine Learning|[Masatoshi Hayashi](https://github.com/literalice)||
-|Networking|[Sheetal Joshi](https://github.com/sheetaljoshi)||
+|Networking|[Sheetal Joshi](https://github.com/sheetaljoshi)|[Umair Ishaq](https://github.com/umairishaq)|
 |Observability|[Nirmal Mehta](https://github.com/normalfaults)|[Steven David](https://github.com/StevenDavid)|
 |Security|[Jimmy Ray](https://github.com/jimmyraywv)|[Rodrigo Bersa](https://github.com/rodrigobersa)|
+|Storage|[Eric Heinrichs](https://github.com/heinrichse)|[Andrew Peng](https://github.com/pengc99)|
 
 ## Wranglers
 Wranglers will work across all topic areas and serve for at least 6 months.

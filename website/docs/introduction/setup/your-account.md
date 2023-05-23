@@ -7,19 +7,18 @@ sidebar_position: 30
 Provisioning this workshop environment in your AWS account will create resources and **there will be cost associated with them**. The cleanup section provides a guide to remove them, preventing further charges.
 :::
 
+The pre-requisites for deploying the lab environment in your AWS account are:
+ - [Install Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) v1.3.7+
+
 ## Provisioning
 
-In this workshop, we'll use Terraform to provision the required infrastructure and get everything up and running. This workshop is tested in us-east-2, us-west-2, and eu-west-1.
+We'll use Terraform to provision the required infrastructure and get everything up and running. This workshop is tested in us-east-2, us-west-2, and eu-west-1. 
 
-### Prerequisites:
- - [Install Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
+The Terraform modules provision an EKS cluster, named eks-workshop, and a Cloud9 IDE of the same name that will be used throughtout the workshop. The provisioned Cloud9 environment has the prerequisite tools and environment setup to simplify cluster access and reset of the environment between exercises.  
 
-### Set up
-Use the following instructions to set up the Terraform project.
+For Terraform to be able to deploy resources in your AWS account, it is recommended to configure your AWS credentials in environment variables or shared configuration/credentials files. Follow the instructions in the [Terraform documentation for the AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#shared-configuration-and-credentials-files) to set up these credentials. In addition, ensure that `AWS_REGION` is set to the region you intend to deploy. If you have multiple profiles in your credentials file, you will also need to set `AWS_PROFILE`.
 
-1. For Terraform to be able to deploy resources in your AWS account, it is recommended to configure your AWS credentials in environment variables or shared configuration/credentials files. Follow the instructions in the [Terraform documentation for the AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#shared-configuration-and-credentials-files) to set up these credentials. In addition, ensure that `AWS_REGION` is set to the region you intend to deploy. If you have multiple profiles in your credentials file, you will also need to set `AWS_PROFILE`.
-
-1. Clone the GitHub repository or download and unzip an archive file.
+Clone the GitHub repository or download and unzip a source archive file:
 
 ```bash test=false
 $ git clone https://github.com/aws-samples/eks-workshop-v2.git
@@ -28,13 +27,13 @@ $ git checkout latest
 $ cd terraform
 ```
 
-2. The workshops require Terraform version 1.3.7+. Check your version:
+The workshop requires Terraform version 1.3.7+. Check your version:
 
 ```bash test=false
 $ terraform version
 ```
 
-3. Run the following command to launch Terraform and create the supporting infrastructure.
+Run the following command to launch Terraform and create the supporting infrastructure.
 
 ```bash test=false
 $ terraform init
@@ -46,11 +45,22 @@ $ terraform apply --auto-approve
 The Terraform state file (`terraform.tfstate`) is used by Terraform to track the resources that were provisioned which is critical for the cleanup process. If you delete/lose it, you will have to manually delete the resources.
 :::
 
+## Updating
+
+As the workshop is updated with new content it may be necessary to update your lab environment. You can do so by running the following:
+
+```bash test=false
+$ git pull origin latest
+$ terraform init -upgrade
+# You can use plan command to preview the resources that will be create if you want
+$ terraform apply --auto-approve 
+```
+
 ## Cleanup
 
 When you're done with the workshop, to avoid any unexpected costs, you'll be responsible for the cleanup of any resources in your account. This section has the instructions for cleanup.
 
-1. From Cloud9, run the following to clean the environment.
+1. In Cloud9 run the following to clean up the environment. This is necessary to ensure Terraform can clean up the EKS cluster and VPC.
 
 ```bash test=false
 $ delete-environment

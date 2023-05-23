@@ -37,7 +37,7 @@ spec:
               drop:
               - ALL
             readOnlyRootFilesystem: true
-          image: "public.ecr.aws/aws-containers/retail-store-sample-checkout:latest"
+          image: "public.ecr.aws/aws-containers/retail-store-sample-checkout:0.4.0"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

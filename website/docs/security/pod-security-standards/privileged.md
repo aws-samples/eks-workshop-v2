@@ -43,7 +43,7 @@ containers:
   - envFrom:
       - configMapRef:
           name: assets
-    image: public.ecr.aws/aws-containers/retail-store-sample-assets:latest
+    image: public.ecr.aws/aws-containers/retail-store-sample-assets:0.4.0
     imagePullPolicy: IfNotPresent
     livenessProbe:
       failureThreshold: 3

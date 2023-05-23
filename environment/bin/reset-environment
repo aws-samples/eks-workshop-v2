@@ -17,6 +17,8 @@ fi
 
 echo "Resetting the environment, please wait"
 
+kubectl delete app -A --all > /dev/null
+
 kubectl apply -k $absolute_path --prune --all \
   --prune-whitelist=autoscaling/v1/HorizontalPodAutoscaler \
   --prune-whitelist=core/v1/Service \
@@ -40,6 +42,7 @@ kubectl apply -k $absolute_path --prune --all \
   --prune-whitelist=rds.services.k8s.aws/v1alpha1/DBSubnetGroup \
   --prune-whitelist=rds.services.k8s.aws/v1alpha1/DBInstance \
   --prune-whitelist=ec2.services.k8s.aws/v1alpha1/SecurityGroup \
+  --prune-whitelist=argoproj.io/v1alpha1/Application \
   --prune-whitelist=networking.k8s.io/v1/Ingress > /dev/null
 
 echo "Waiting for application to become ready..."

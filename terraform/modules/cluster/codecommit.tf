@@ -3,6 +3,11 @@ resource "aws_codecommit_repository" "gitops" {
   description     = "CodeCommit repository for GitOps"
 }
 
+resource "aws_codecommit_repository" "argocd" {
+  repository_name = "${var.environment_name}-argocd"
+  description     = "CodeCommit repository for ArgoCD"
+}
+
 resource "aws_iam_user" "gitops" {
   name = "${var.environment_name}-gitops"
   path = "/"
@@ -32,8 +37,11 @@ data "aws_iam_policy_document" "gitops_access" {
       "codecommit:GitPull",
       "codecommit:GitPush"
     ]
-    effect    = "Allow"
-    resources = [aws_codecommit_repository.gitops.arn]
+    effect = "Allow"
+    resources = [
+      aws_codecommit_repository.gitops.arn,
+      aws_codecommit_repository.argocd.arn
+    ]
   }
 }
 

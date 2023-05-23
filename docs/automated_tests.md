@@ -85,7 +85,7 @@ make test module="autoscaling/compute/karpenter"
 But prior to raising a PR should verify the autoscaling module in its entirety:
 
 ```
-make test module="autoscaling/compute/karpenter"
+make test module="autoscaling"
 ```
 
 You can pass extra flag to the test framework by using environment variable `AWS_EKS_WORKSHOP_TEST_FLAGS`

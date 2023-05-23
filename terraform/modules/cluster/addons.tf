@@ -23,7 +23,7 @@ locals {
 }
 
 module "eks_blueprints_kubernetes_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.16.0//modules/kubernetes-addons"
+  source = "github.com/niallthomson/terraform-aws-eks-blueprints?ref=workshop-fix//modules/kubernetes-addons"
 
   depends_on = [
     aws_eks_addon.vpc_cni
@@ -42,6 +42,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_aws_for_fluentbit               = true
   enable_self_managed_aws_ebs_csi_driver = true
   enable_crossplane                      = true
+  enable_argocd                          = true
 
   self_managed_aws_ebs_csi_driver_helm_config = {
     set = [{
@@ -73,6 +74,10 @@ module "eks_blueprints_kubernetes_addons" {
         type  = "string"
     }]
   }
+
+  aws_efs_csi_driver_irsa_policies = [
+    aws_iam_policy.efs_patch.arn
+  ]
 
   cluster_autoscaler_helm_config = {
     version   = var.helm_chart_versions["cluster_autoscaler"]
@@ -234,6 +239,190 @@ module "eks_blueprints_kubernetes_addons" {
     enable                   = true
     provider_aws_version     = "v0.36.0"
     additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
+  }
+
+  argocd_helm_config = {
+    name             = "argocd"
+    chart            = "argo-cd"
+    repository       = "https://argoproj.github.io/argo-helm"
+    version          = "5.27.1"
+    namespace        = "argocd"
+    timeout          = 1200
+    create_namespace = true
+
+    set = concat([
+      {
+        name  = "server.service.type"
+        value = "LoadBalancer"
+      },
+      {
+        name  = "controller.replicas"
+        value = "1"
+      },
+      {
+        name  = "controller.nodeSelector.workshop-system"
+        value = "yes"
+        type  = "string"
+      },
+      {
+        name  = "controller.tolerations[0].key"
+        value = "systemComponent"
+        type  = "string"
+      },
+      {
+        name  = "controller.tolerations[0].operator"
+        value = "Exists"
+        type  = "string"
+      },
+      {
+        name  = "controller.tolerations[0].effect"
+        value = "NoSchedule"
+        type  = "string"
+      },
+      {
+        name  = "dex.nodeSelector.workshop-system"
+        value = "yes"
+        type  = "string"
+      },
+      {
+        name  = "dex.tolerations[0].key"
+        value = "systemComponent"
+        type  = "string"
+      },
+      {
+        name  = "dex.tolerations[0].operator"
+        value = "Exists"
+        type  = "string"
+      },
+      {
+        name  = "dex.tolerations[0].effect"
+        value = "NoSchedule"
+        type  = "string"
+      },
+      {
+        name  = "notifications.nodeSelector.workshop-system"
+        value = "yes"
+        type  = "string"
+      },
+      {
+        name  = "notifications.tolerations[0].key"
+        value = "systemComponent"
+        type  = "string"
+      },
+      {
+        name  = "notifications.tolerations[0].operator"
+        value = "Exists"
+        type  = "string"
+      },
+      {
+        name  = "notifications.tolerations[0].effect"
+        value = "NoSchedule"
+        type  = "string"
+      },
+      {
+        name  = "redis.nodeSelector.workshop-system"
+        value = "yes"
+        type  = "string"
+      },
+      {
+        name  = "redis.tolerations[0].key"
+        value = "systemComponent"
+        type  = "string"
+      },
+      {
+        name  = "redis.tolerations[0].operator"
+        value = "Exists"
+        type  = "string"
+      },
+      {
+        name  = "redis.tolerations[0].effect"
+        value = "NoSchedule"
+        type  = "string"
+      },
+      {
+        name  = "server.replicas"
+        value = "1"
+      },
+      {
+        name  = "server.autoscaling.enabled"
+        value = "false"
+      },
+      {
+        name  = "server.nodeSelector.workshop-system"
+        value = "yes"
+        type  = "string"
+      },
+      {
+        name  = "server.tolerations[0].key"
+        value = "systemComponent"
+        type  = "string"
+      },
+      {
+        name  = "server.tolerations[0].operator"
+        value = "Exists"
+        type  = "string"
+      },
+      {
+        name  = "server.tolerations[0].effect"
+        value = "NoSchedule"
+        type  = "string"
+      },
+      {
+        name  = "repoServer.replicas"
+        value = "1"
+      },
+      {
+        name  = "repoServer.autoscaling.enabled"
+        value = "false"
+      },
+      {
+        name  = "repoServer.nodeSelector.workshop-system"
+        value = "yes"
+        type  = "string"
+      },
+      {
+        name  = "repoServer.tolerations[0].key"
+        value = "systemComponent"
+        type  = "string"
+      },
+      {
+        name  = "repoServer.tolerations[0].operator"
+        value = "Exists"
+        type  = "string"
+      },
+      {
+        name  = "repoServer.tolerations[0].effect"
+        value = "NoSchedule"
+        type  = "string"
+      },
+      {
+        name  = "redis-ha.enabled"
+        value = "false"
+      },
+      {
+        name  = "applicationSet.replicaCount"
+        value = "1"
+      },
+      {
+        name  = "applicationSet.nodeSelector.workshop-system"
+        value = "yes"
+        type  = "string"
+      },
+      {
+        name  = "applicationSet.tolerations[0].key"
+        value = "systemComponent"
+        type  = "string"
+      },
+      {
+        name  = "applicationSet.tolerations[0].operator"
+        value = "Exists"
+        type  = "string"
+      },
+      {
+        name  = "applicationSet.tolerations[0].effect"
+        value = "NoSchedule"
+        type  = "string"
+    }], local.system_component_values)
   }
 
   tags = local.tags

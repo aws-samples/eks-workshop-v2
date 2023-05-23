@@ -11,7 +11,7 @@ For example, take a look at the following manifest file for the `checkout` Deplo
 ../manifests/checkout/deployment.yaml
 ```
 
-This file has already been applied in the previous [Getting Started](../getting-started) lab, but let's say we wanted to scale this component horizontally by updating the `replicas` field using Kustomize. Rather than manually updating this YAML file, we'll use Kustomize to update the `spec/replicas` field from 1 to 2.
+This file has already been applied in the previous [Getting Started](../getting-started) lab, but let's say we wanted to scale this component horizontally by updating the `replicas` field using Kustomize. Rather than manually updating this YAML file, we'll use Kustomize to update the `spec/replicas` field from 1 to 3.
 
 To do so, we'll apply the following kustomization.
 

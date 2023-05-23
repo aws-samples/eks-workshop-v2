@@ -23,6 +23,9 @@ yq_checksum='30459aa144a26125a1b22c62760f9b3872123233a5658934f7bd9fe714d7864d'
 flux_version='0.38.3'
 flux_checksum='268b8d9a2fa5b0c9e462b551eaefdadb9e03370eb53061a88a2a9ac40e95e8e4'
 
+argocd_version='2.6.6'
+argocd_checksum='d3ed61494dba51fff3e8568da7c38f620622f04d5cc2c3310d5c28ca66d7b033'
+
 download_and_verify () {
   url=$1
   checksum=$2
@@ -92,3 +95,8 @@ tar zxf flux.tar.gz
 chmod +x flux
 mv ./flux /usr/local/bin
 rm -rf flux.tar.gz
+
+# argocd
+download_and_verify "https://github.com/argoproj/argo-cd/releases/download/v${argocd_version}/argocd-linux-amd64" "$argocd_checksum" "argocd-linux-amd64"
+chmod +x ./argocd-linux-amd64
+mv ./argocd-linux-amd64 /usr/local/bin/argocd

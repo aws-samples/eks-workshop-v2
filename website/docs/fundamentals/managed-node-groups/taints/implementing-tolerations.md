@@ -68,7 +68,7 @@ ui-659df48c56-z496x   0/1     Pending   0          16s
 ui-795bd46545-mrglh   1/1     Running   0          8m
 ```
 
-Investingating the individual pods under the `ui` namespace we can observe that one pod is in `Pending` state. Diving deeper into the `Pending` Pod's details provides some information on the experienced issue.  
+Investigating the individual pods under the `ui` namespace we can observe that one pod is in `Pending` state. Diving deeper into the `Pending` Pod's details provides some information on the experienced issue.  
 
 ```bash
 $ podname=$(kubectl get pod --namespace ui --field-selector=status.phase=Pending -o json | \
