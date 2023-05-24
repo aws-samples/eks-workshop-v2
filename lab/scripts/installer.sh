@@ -23,6 +23,9 @@ yq_checksum='30459aa144a26125a1b22c62760f9b3872123233a5658934f7bd9fe714d7864d'
 flux_version='0.38.3'
 flux_checksum='268b8d9a2fa5b0c9e462b551eaefdadb9e03370eb53061a88a2a9ac40e95e8e4'
 
+argocd_version='2.6.6'
+argocd_checksum='d3ed61494dba51fff3e8568da7c38f620622f04d5cc2c3310d5c28ca66d7b033'
+
 terraform_version='1.4.1'
 terraform_checksum='9e9f3e6752168dea8ecb3643ea9c18c65d5a52acc06c22453ebc4e3fc2d34421'
 
