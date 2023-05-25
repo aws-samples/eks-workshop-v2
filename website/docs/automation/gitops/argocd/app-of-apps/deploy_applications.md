@@ -67,7 +67,6 @@ $ cp -R /workspace/modules/automation/gitops/argocd/apps-kustomization ~/environ
 Your final Git directory should now look like this. You can validate it by running `tree ~/environment/argocd`:
 
 ```
-/home/learner/environment/argocd
 |-- app-of-apps
 |   |-- Chart.yaml
 |   |-- templates
