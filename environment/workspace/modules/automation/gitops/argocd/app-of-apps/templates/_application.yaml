@@ -1,4 +1,5 @@
 {{- define "application" -}}
+{{- $root:= . }}
 {{- range $application := .Values.applications}}
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -11,12 +12,14 @@ metadata:
 spec:
   project: default
   destination:
-    server: {{ .Values.spec.destination.server }}
+    server: {{ $root.Values.spec.destination.server }}
   source:
-    repoURL: {{ .Values.spec.source.repoURL }}
-    targetRevision: {{ .Values.spec.source.targetRevision }}
+    repoURL: {{ $root.Values.spec.source.repoURL }}
+    targetRevision: {{ $root.Values.spec.source.targetRevision }}
     path: apps-kustomization/{{  $application.name }}
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+{{- end -}}
+{{- end -}}

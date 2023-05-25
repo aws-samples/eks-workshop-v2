@@ -9,33 +9,23 @@ Before we start to setup Argo CD applications, let's delete Argo CD `Application
 $ argocd app delete apps --cascade -y
 ```
 
-We create templates for each child application:
+We create templates for set of AroCD applications using DRY approach in Helm charts:
 
 ```
 .
 |-- app-of-apps
 |   |-- Chart.yaml
 |   |-- templates
-|   |   |-- assets.yaml
-|   |   |-- carts.yaml
-|   |   |-- catalog.yaml
-|   |   |-- checkout.yaml
-|   |   |-- orders.yaml
-|   |   |-- other.yaml
-|   |   |-- rabbitmq.yaml
-|   |   `-- ui.yaml
+|   |   |-- _application.yaml
+|   |   `-- application.yaml
 |   `-- values.yaml
 `-- apps-kustomization
     ...
 ```
 
-`Chart.yaml` is a boiler-plate. `templates` contains one file for each child application, for example:
-<!--
-```file
-automation/gitops/argocd/app-of-apps/templates/ui.yaml
-```
- -->
-`values.yaml` contains values which are specific for a particular environment and which will be applied to all application templates.
+`Chart.yaml` is a boiler-plate. `templates` contains a template file which will be used to create applications defined in values.yaml.
+
+`values.yaml` also contains values which are specific for a particular environment and which will be applied to all application templates.
 
 ```file
 automation/gitops/argocd/app-of-apps/values.yaml
@@ -45,7 +35,7 @@ First, copy `App of Apps` configuration which we described above to the Git repo
 
 ```bash
 $ cp -R /workspace/modules/automation/gitops/argocd/app-of-apps ~/environment/argocd/
-$ yq -i ".spec.source.repoURL = $GITOPS_REPO_URL_ARGOCD)" ~/environment/argocd/app-of-apps/values.yaml
+$ yq -i ".spec.source.repoURL = env(GITOPS_REPO_URL_ARGOCD)" ~/environment/argocd/app-of-apps/values.yaml
 
 ```
 
@@ -74,7 +64,11 @@ Open the Argo CD UI and navigate to the `apps` application.
 
 ![argocd-ui-app-of-apps.png](assets/argocd-ui-app-of-apps.png)
 
-We can also use the `Refresh` button to sync an application.
+Click `Sync` and `Refresh` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
+
+```bash
+$ argocd app sync apps --prune
+```
 
 We have Argo CD `App of Apps Application` deployed and synced.
 

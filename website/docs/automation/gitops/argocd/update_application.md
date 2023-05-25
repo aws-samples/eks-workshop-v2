@@ -4,6 +4,7 @@ sidebar_position: 40
 ---
 
 Now we can use Argo CD and Kustomize to deploy patches to our application manifests using GitOps
+
 For example, lets increase the number of `replicas` for `ui` deployment to `3`
 
 <!--
@@ -47,7 +48,7 @@ $ git -C ~/environment/argocd commit -am "Update UI service replicas"
 $ git -C ~/environment/argocd push
 ```
 
-We can use the `Sync` button or the `argocd` CLI to `Sync` an application:
+Click `Sync` and `Refresh` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
 
 ```bash
 $ argocd app sync apps --prune

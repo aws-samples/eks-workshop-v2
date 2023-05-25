@@ -67,20 +67,15 @@ $ cp -R /workspace/modules/automation/gitops/argocd/apps-kustomization ~/environ
 Your final Git directory should now look like this. You can validate it by running `tree ~/environment/argocd`:
 
 ```
+/home/learner/environment/argocd
 |-- app-of-apps
 |   |-- Chart.yaml
 |   |-- templates
-|   |   |-- assets.yaml
-|   |   |-- carts.yaml
-|   |   |-- catalog.yaml
-|   |   |-- checkout.yaml
-|   |   |-- orders.yaml
-|   |   |-- other.yaml
-|   |   |-- rabbitmq.yaml
-|   |   `-- ui.yaml
+|   |   |-- _application.yaml
+|   |   `-- application.yaml
 |   `-- values.yaml
 |-- apps
-|   |-- ...
+|   ...
 `-- apps-kustomization
     |-- assets
     |   `-- kustomization.yaml
@@ -100,7 +95,7 @@ Your final Git directory should now look like this. You can validate it by runni
         |-- deployment-patch.yaml
         `-- kustomization.yaml
 
-13 directories, 27 files
+12 directories, 19 files
 ```
 
 Push changes to the Git repository:
@@ -111,8 +106,7 @@ $ git -C ~/environment/argocd commit -am "Adding apps kustomization"
 $ git -C ~/environment/argocd push
 ```
 
-It will take Argo CD some time to notice the changes in the Git repository and reconcile.
-We can also use the `Refresh` button or the `argocd` CLI to `Sync` the application:
+We can click `Sync` -> `Refresh` or the `argocd` CLI to `Sync` an application:
 
 ```bash timeout=300
 $ argocd app sync apps --prune

@@ -77,7 +77,7 @@ $ kubectl -n argocd rollout status statefulset argocd-application-controller
 ```
 -->
 
-We can use the `Sync` button or the `argocd` CLI to `Sync` an application:
+Click `Sync` and `Refresh` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
 
 ```bash
 $ argocd app sync apps --prune
