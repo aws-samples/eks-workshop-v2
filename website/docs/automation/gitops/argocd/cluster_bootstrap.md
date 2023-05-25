@@ -53,8 +53,8 @@ As the next step let's create an Argo CD Application which `Sync` with desired s
 
 ```bash
 $ argocd app create apps --repo $GITOPS_REPO_URL_ARGOCD \
-  --path apps --dest-server https://kubernetes.default.svc \
- application 'apps' created
+  --path apps --dest-server https://kubernetes.default.svc
+application 'apps' created
 ```
 
 Verify that the application has been created:
