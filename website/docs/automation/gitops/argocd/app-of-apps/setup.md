@@ -45,7 +45,7 @@ First, copy `App of Apps` configuration which we described above to the Git repo
 
 ```bash
 $ cp -R /workspace/modules/automation/gitops/argocd/app-of-apps ~/environment/argocd/
-$ yq -i ".spec.source.repoURL = load(\"$HOME/environment/argocd_repo_url\")" ~/environment/argocd/app-of-apps/values.yaml
+$ yq -i ".spec.source.repoURL = $GITOPS_REPO_URL_ARGOCD)" ~/environment/argocd/app-of-apps/values.yaml
 
 ```
 
@@ -61,7 +61,7 @@ Finally, we need to create new Argo CD `Application` to support `App of Apps` pa
 We define a new path to Argo CD `Application` using `--path app-of-apps`.
 
 ```bash
-$ argocd app create apps --repo $(cat ~/environment/argocd_repo_url) \
+$ argocd app create apps --repo $GITOPS_REPO_URL_ARGOCD \
   --dest-server https://kubernetes.default.svc \
   --sync-policy automated --self-heal --auto-prune \
   --set-finalizer \

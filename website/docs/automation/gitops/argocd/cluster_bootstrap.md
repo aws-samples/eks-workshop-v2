@@ -18,22 +18,20 @@ The Git repository in AWS CodeCommit has already been created for you.
 If you want to use your own GitHub private repository you could re define
 
 ```
-GITOPS_REPO_URL=https://github.com/username/reponame
-echo $GITOPS_REPO_URL > ~/environment/argocd_repo_url
+export GITOPS_REPO_URL_ARGOCD=https://github.com/username/reponame
 ```
 
 and use [those instructions](https://argo-cd.readthedocs.io/en/stable/user-guide/private-repositories/) to create an Argo CD secret to give access to the Git repository from Argo CD
 :::
 
 ```bash
-$ GITOPS_REPO_URL=ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_DEFAULT_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-argocd
-$ echo $GITOPS_REPO_URL > ~/environment/argocd_repo_url
+$ export GITOPS_REPO_URL_ARGOCD=ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_DEFAULT_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-argocd
 ```
 
 Let's clone the Git repository.
 
 ```bash
-$ git clone $(cat ~/environment/argocd_repo_url) ~/environment/argocd
+$ git clone $GITOPS_REPO_URL_ARGOCD ~/environment/argocd
 $ git -C ~/environment/argocd checkout -b main
 Switched to a new branch 'main'
 $ mkdir ~/environment/argocd/apps && touch ~/environment/argocd/apps/.gitkeep
@@ -45,7 +43,7 @@ $ git -C ~/environment/argocd push --set-upstream origin main
 Create an Argo CD secret to give access to the Git repository from Argo CD:
 
 ```bash
-$ argocd repo add $(cat ~/environment/argocd_repo_url) --ssh-private-key-path ${HOME}/.ssh/gitops_ssh.pem --insecure-ignore-host-key --upsert --name git-repo
+$ argocd repo add $GITOPS_REPO_URL_ARGOCD --ssh-private-key-path ${HOME}/.ssh/gitops_ssh.pem --insecure-ignore-host-key --upsert --name git-repo
 Repository 'ssh://APKA232DOTYWDIYNGJC6@git-codecommit.eu-central-1.amazonaws.com/v1/repos/eks-workshop-argocd' added
 ```
 
@@ -54,7 +52,7 @@ Argo CD application is a CRD Kubernetes resource object representing a deployed 
 As the next step let's create an Argo CD Application which automatically `Sync` application with desired state in the Git repository:
 
 ```bash
-$ argocd app create apps --repo $(cat ~/environment/argocd_repo_url) \
+$ argocd app create apps --repo $GITOPS_REPO_URL_ARGOCD \
   --path apps --dest-server https://kubernetes.default.svc \
   --sync-policy automated --self-heal --auto-prune
  application 'apps' created

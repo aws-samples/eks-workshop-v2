@@ -4,6 +4,16 @@ spec:
     server: https://kubernetes.default.svc
   source:
     # HIGHLIGHT
-    repoURL: ${GITOPS_REPO_URL}
+    repoURL: ${GITOPS_REPO_URL_ARGOCD}
     # HIGHLIGHT
     targetRevision: main
+
+applications:
+  - name: assets
+  - name: carts
+  - name: catalog
+  - name: checkout
+  - name: orders
+  - name: other
+  - name: rabbitmq
+  - name: ui
