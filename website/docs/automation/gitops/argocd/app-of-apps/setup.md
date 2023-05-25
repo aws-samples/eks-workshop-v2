@@ -5,7 +5,7 @@ sidebar_position: 50
 
 Before we start to setup Argo CD applications, let's delete Argo CD `Application` which we created for `ui`:
 
-```bash
+```bash wait=30
 $ argocd app delete apps --cascade -y
 ```
 
