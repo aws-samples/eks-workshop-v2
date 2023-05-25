@@ -98,6 +98,13 @@ if [ $EXIT_CODE -ne 0 ]; then
   exit 1
 fi
 
+if [ -d "~/environment/argocd" ]
+then
+  rm -rf ~/environment/argocd/*
+  git -C ~/environment/argocd commit . -m 'Reset'
+  git -C ~/environment/argocd push
+fi
+
 # Recycle workload pods in case stateful pods got restarted
 kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernetes.io/component=service -A > /dev/null
 
