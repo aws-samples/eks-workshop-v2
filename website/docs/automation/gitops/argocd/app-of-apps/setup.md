@@ -53,7 +53,6 @@ We define a new path to Argo CD `Application` using `--path app-of-apps`.
 ```bash
 $ argocd app create apps --repo $GITOPS_REPO_URL_ARGOCD \
   --dest-server https://kubernetes.default.svc \
-  --sync-policy automated --self-heal --auto-prune \
   --set-finalizer \
   --upsert \
   --path app-of-apps

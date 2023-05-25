@@ -49,12 +49,11 @@ Repository 'ssh://APKA232DOTYWDIYNGJC6@git-codecommit.eu-central-1.amazonaws.com
 
 Argo CD application is a CRD Kubernetes resource object representing a deployed application instance in an environment. It defines key information about the application, such as the application name, the Git repository, and the path to the Kubernetes manifests. The application resource also defines the desired state of the application, such as the target revision, the sync policy, and the health check policy.
 
-As the next step let's create an Argo CD Application which automatically `Sync` application with desired state in the Git repository:
+As the next step let's create an Argo CD Application which `Sync` with desired state in the Git repository:
 
 ```bash
 $ argocd app create apps --repo $GITOPS_REPO_URL_ARGOCD \
   --path apps --dest-server https://kubernetes.default.svc \
-  --sync-policy automated --self-heal --auto-prune
  application 'apps' created
 ```
 
