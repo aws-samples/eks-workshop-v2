@@ -5,7 +5,7 @@ weight: 10
 ---
 
 For the purpose of this lab, Argo CD server UI has been exposed outside of the cluster using Kubernetes Service of `Load Balancer` type. To see how to set up Argo CD in the cluster with Amazon EKS Blueprint for Terraform please refer to this [guide](https://aws-ia.github.io/terraform-aws-eks-blueprints/).
-<!-- 
+<!--
 :::info
 If you need to reset Argo CD `admin` password you can use the following commands:
 

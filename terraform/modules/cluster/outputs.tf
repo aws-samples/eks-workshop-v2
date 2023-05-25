@@ -169,6 +169,6 @@ output "gitops_iam_ssh_key_id" {
 }
 
 output "gitops_repo_url_argocd" {
-  value       = aws_codecommit_repository.argocd.clone_url_ssh
+  value       = "ssh://${aws_iam_user_ssh_key.gitops.id}@git-codecommit.${data.aws_region.current.id}.amazonaws.com/v1/repos/${module.eks_blueprints.eks_cluster_id}-argocd"
   description = "SSH Clone Url of GitOps CodeCommit repository for ArgoCD"
 }
