@@ -30,11 +30,11 @@ We create templates for each child application:
 ```
 
 `Chart.yaml` is a boiler-plate. `templates` contains one file for each child application, for example:
-
+<!--
 ```file
 automation/gitops/argocd/app-of-apps/templates/ui.yaml
 ```
-
+ -->
 `values.yaml` contains values which are specific for a particular environment and which will be applied to all application templates.
 
 ```file
