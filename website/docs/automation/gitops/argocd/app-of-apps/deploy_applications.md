@@ -109,9 +109,6 @@ $ git -C ~/environment/argocd push
 Click `Refresh` and `Sync` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
 
 ```bash
-$ argocd app get apps --refresh
-$ argocd app sync apps --prune
-$ argocd app get ui --refresh
 $ argocd app sync ui --prune
 ```
 

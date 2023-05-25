@@ -28,8 +28,7 @@ $ git -C ~/environment/argocd push
 
 Click `Refresh` and `Sync` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
 
-```bash
-$ argocd app get ui --refresh
+```bash expectError=true
 $ argocd app sync ui --prune
 ```
 
