@@ -167,3 +167,8 @@ output "gitops_iam_ssh_key_id" {
   value       = aws_iam_user_ssh_key.gitops.id
   description = "ID of the IAM SSH key for GitOps"
 }
+
+output "gitops_repo_url_argocd" {
+  value       = aws_codecommit_repository.argocd.clone_url_ssh
+  description = "SSH Clone Url of GitOps CodeCommit repository for ArgoCD"
+}
