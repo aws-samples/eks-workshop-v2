@@ -64,9 +64,10 @@ Open the Argo CD UI and navigate to the `apps` application.
 
 ![argocd-ui-app-of-apps.png](assets/argocd-ui-app-of-apps.png)
 
-Click `Sync` and `Refresh` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
+Click `Refresh` and `Sync` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
 
 ```bash
+$ argocd app get apps --refresh
 $ argocd app sync apps --prune
 ```
 

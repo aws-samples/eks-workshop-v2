@@ -106,10 +106,12 @@ $ git -C ~/environment/argocd commit -am "Adding apps kustomization"
 $ git -C ~/environment/argocd push
 ```
 
-We can click `Sync` -> `Refresh` or the `argocd` CLI to `Sync` an application:
+Click `Refresh` and `Sync` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
 
-```bash timeout=300
+```bash
+$ argocd app get apps --refresh
 $ argocd app sync apps --prune
+$ argocd app get ui --refresh
 $ argocd app sync ui --prune
 ```
 
