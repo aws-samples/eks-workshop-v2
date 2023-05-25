@@ -29,7 +29,7 @@ $ git -C ~/environment/argocd push
 Click `Sync` and `Refresh` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
 
 ```bash
-$ argocd app sync apps --prune
+$ argocd app sync ui --prune
 ```
 
 ![argocd-update-application](../assets/argocd-update-application.png)
