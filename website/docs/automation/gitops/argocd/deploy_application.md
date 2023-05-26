@@ -25,7 +25,7 @@ $ cp -R /workspace/manifests/ui ~/environment/argocd/apps
 We'll then need to create a kustomization in the `apps` directory:
 
 ```file
-automation/gitops/argocd/kustomization.yaml
+modules/automation/gitops/argocd/kustomization.yaml
 ```
 
 Copy this file to the Git repository directory:

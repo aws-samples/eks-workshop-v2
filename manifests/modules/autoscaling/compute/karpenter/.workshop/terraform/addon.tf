@@ -3,6 +3,13 @@ module "karpenter" {
   addon_context = merge(local.addon_context, { default_repository = local.amazon_container_image_registry_uris[data.aws_region.current.name] })
 
   node_iam_instance_profile = aws_iam_instance_profile.karpenter_node.name
+
+  helm_config = {
+    set = [{
+      name  = "replicas"
+      value = "1"
+    }]
+  }
 }
 
 module "aws-load-balancer-controller" {

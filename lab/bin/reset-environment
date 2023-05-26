@@ -37,6 +37,8 @@ if [ -f "/eks-workshop/hooks/cleanup.sh" ]; then
   bash /eks-workshop/hooks/cleanup.sh
 fi
 
+kubectl delete pod load-generator --ignore-not-found > /dev/null
+
 kubectl apply -k $base_path --prune --all \
   --prune-whitelist=autoscaling/v1/HorizontalPodAutoscaler \
   --prune-whitelist=core/v1/Service \

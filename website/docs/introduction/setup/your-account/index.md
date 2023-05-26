@@ -17,7 +17,15 @@ $ aws cloudformation deploy --stack-name eks-workshop-ide \
     --capabilities CAPABILITY_NAMED_IAM
 ```
 
-You can access the Cloud9 IDE created by using [these instructions](../../ide.md).
+Once the CloudFormation stack has deployed retrieve the URL for the Cloud9 IDE like so:
+
+```bash test=false
+$ aws cloudformation describe-stacks --stack-name eks-workshop-ide \
+    --query 'Stacks[0].Outputs[?OutputKey==`Cloud9Url`].OutputValue' --output text
+https://us-west-2.console.aws.amazon.com/cloud9/ide/7b05513358534d11afeb7119845c5461?region=us-west-2
+```
+
+Open this URL in a web browser to access the IDE.
 
 :::info
 

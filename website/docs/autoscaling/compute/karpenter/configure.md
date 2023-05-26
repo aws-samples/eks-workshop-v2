@@ -7,6 +7,8 @@ Karpenter has been installed in our EKS cluster, and runs as a deployment:
 
 ```bash
 $ kubectl get deployment -n karpenter
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+karpenter   2/2     2            2           105s
 ```
 
 The only setup that we will need to do is to update our EKS IAM mappings to allow Karpenter nodes to join the cluster:

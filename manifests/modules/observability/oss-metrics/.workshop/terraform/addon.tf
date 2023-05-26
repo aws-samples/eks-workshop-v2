@@ -424,17 +424,17 @@ dashboardProviders:
       editable: false
       options:
         path: /var/lib/grafana/dashboards/default
-    - name: retail-sample
+    - name: orders-service
       orgId: 1
       folder: "retail-app-metrics"
       type: file
       disableDeletion: false
       editable: false
       options:
-        path: /var/lib/grafana/dashboards/retail-sample       
+        path: /var/lib/grafana/dashboards/orders-service    
 
 dashboardsConfigMaps:
-  bmetrics: "order-service-metrics-dashboard"
+  orders-service: "order-service-metrics-dashboard"
 
 dashboards:
   default:
