@@ -9,15 +9,26 @@ Provisioning this workshop environment in your AWS account will create resources
 
 This section outlines how to set up the environment to run the labs in your own AWS account.
 
-The first step is to create an IDE with the provided CloudFormation template. Download the template to your machine with [this link](https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/lab/cfn/eks-workshop-ide-cfn.yaml). Next deploy then template either using the AWS console or the command below:
+The first step is to create an IDE with the provided CloudFormation template. The easiest way to do this is using AWS CloudShell in the account you will be running the lab exercises. Open CloudShell with the link below or following (this documentation)[https://docs.aws.amazon.com/cloudshell/latest/userguide/getting-started.html#launch-region-shell]:
+
+https://console.aws.amazon.com/cloudshell/home
+
+:::tip
+
+If using the link above make sure the AWS console has opened in the region that you wish to run the labs in.
+
+:::
+
+Once CloudShell has loaded run the following commands:
 
 ```bash test=false
+$ wget https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/lab/cfn/eks-workshop-ide-cfn.yaml
 $ aws cloudformation deploy --stack-name eks-workshop-ide \
-    --template-file <path to eks-workshop-ide-cfn.yaml> \
+    --template-file ./eks-workshop-ide-cfn.yaml \
     --capabilities CAPABILITY_NAMED_IAM
 ```
 
-Once the CloudFormation stack has deployed retrieve the URL for the Cloud9 IDE like so:
+The CloudFormation stack will take roughly 5 minutes to deploy, and once completed you can retrieve the URL for the Cloud9 IDE like so:
 
 ```bash test=false
 $ aws cloudformation describe-stacks --stack-name eks-workshop-ide \
@@ -25,13 +36,7 @@ $ aws cloudformation describe-stacks --stack-name eks-workshop-ide \
 https://us-west-2.console.aws.amazon.com/cloud9/ide/7b05513358534d11afeb7119845c5461?region=us-west-2
 ```
 
-Open this URL in a web browser to access the IDE.
-
-:::info
-
-All subsequent steps should be run in the Cloud9 instance.
-
-:::
+Open this URL in a web browser to access the IDE. You can now close CloudShell, all further commands will be run in the Cloud9 IDE.
 
 The next step is to create an EKS cluster to perform the lab exercises in. Please follow one of the guides below to provision a cluster that meets the requirements for these labs:
 - **(Recommended)** [eksctl](./using-eksctl.md)
