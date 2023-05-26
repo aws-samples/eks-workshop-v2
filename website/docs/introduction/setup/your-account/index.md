@@ -9,7 +9,7 @@ Provisioning this workshop environment in your AWS account will create resources
 
 This section outlines how to set up the environment to run the labs in your own AWS account.
 
-The first step is to create an IDE with the provided CloudFormation template. The easiest way to do this is using AWS CloudShell in the account you will be running the lab exercises. Open CloudShell with the link below or following (this documentation)[https://docs.aws.amazon.com/cloudshell/latest/userguide/getting-started.html#launch-region-shell]:
+The first step is to create an IDE with the provided CloudFormation template. The easiest way to do this is using AWS CloudShell in the account you will be running the lab exercises. Open CloudShell with the link below or following [this documentation](https://docs.aws.amazon.com/cloudshell/latest/userguide/getting-started.html#launch-region-shell):
 
 https://console.aws.amazon.com/cloudshell/home
 
@@ -22,7 +22,7 @@ If using the link above make sure the AWS console has opened in the region that 
 Once CloudShell has loaded run the following commands:
 
 ```bash test=false
-$ wget https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/lab/cfn/eks-workshop-ide-cfn.yaml
+$ wget -q https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/lab/cfn/eks-workshop-ide-cfn.yaml
 $ aws cloudformation deploy --stack-name eks-workshop-ide \
     --template-file ./eks-workshop-ide-cfn.yaml \
     --capabilities CAPABILITY_NAMED_IAM
