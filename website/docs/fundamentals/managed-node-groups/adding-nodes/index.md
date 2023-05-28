@@ -23,7 +23,7 @@ $ eksctl get nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME
 We'll scale the nodegroup in `eks-workshop` by changing the node count from `2` to `3` for **minimum size** and **desired capacity** using below command:
 >Note: You do not need to run below command if you have changed the size of nodegroup using `Amazon EKS Console`.
 
-```bash
+```bash wait=60
 $ eksctl scale nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME --nodes 3 --nodes-min 3 --nodes-max 6
 ```
 
@@ -53,6 +53,6 @@ ip-10-42-12-117.us-west-2.compute.internal   NotReady   <none>   10s   v1.23.9-e
 
 Notice that the node shows a status of `NotReady`, which happens when the new node is still in the process of joining the cluster. We can also use `kubectl wait` to watch until all the nodes report `Ready`:
 
-```bash
+```bash hook=add-node
 $ kubectl wait --for=condition=Ready nodes --all --timeout=300s
 ```

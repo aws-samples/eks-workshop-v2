@@ -512,41 +512,6 @@ locals {
   }]
 }
 
-module "eks_blueprints_kubernetes_grafana_addon" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.16.0//modules/kubernetes-addons/grafana"
-
-  depends_on = [
-    module.eks_blueprints_kubernetes_addons
-  ]
-
-  addon_context = local.addon_context
-
-  irsa_policies = [
-    aws_iam_policy.grafana.arn
-  ]
-
-  helm_config = {
-    values = [templatefile("${path.module}/templates/grafana.yaml", { prometheus_endpoint = aws_prometheus_workspace.this.prometheus_endpoint, region = data.aws_region.current.name })]
-  }
-}
-
-resource "aws_iam_policy" "grafana" {
-  name = "${var.environment_name}-grafana-other"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-          "aps:*",
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      },
-    ]
-  })
-}
-
 module "descheduler" {
   source = "../addons/descheduler"
 
