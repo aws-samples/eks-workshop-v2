@@ -48,7 +48,7 @@ $ aws rds describe-db-instances \
 It takes some time to provision the AWS managed services, in the case of RDS up to 10 minutes. Crossplane will report the status of the reconciliation in the `status` field of the Kubernetes custom resources.
 
 ```bash
-$ kubectl get dbinstances.rds.services.k8s.aws ${EKS_CLUSTER_NAME}-catalog-crossplane -n catalog -o yaml | yq '.status'
+$ kubectl get dbinstances.rds.aws.crossplane.io ${EKS_CLUSTER_NAME}-catalog-crossplane -n catalog -o yaml | yq '.status'
 ```
 
 We can use this `status` field to instruct `kubectl` to wait until the RDS database has been successfully created:
