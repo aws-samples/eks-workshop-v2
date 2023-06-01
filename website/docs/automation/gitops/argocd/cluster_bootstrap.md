@@ -44,7 +44,7 @@ Create an Argo CD secret to give access to the Git repository from Argo CD:
 
 ```bash
 $ argocd repo add $GITOPS_REPO_URL_ARGOCD --ssh-private-key-path ${HOME}/.ssh/gitops_ssh.pem --insecure-ignore-host-key --upsert --name git-repo
-Repository 'ssh://APKA232DOTYWDIYNGJC6@git-codecommit.eu-central-1.amazonaws.com/v1/repos/eks-workshop-argocd' added
+Repository 'ssh://...' added
 ```
 
 Argo CD application is a CRD Kubernetes resource object representing a deployed application instance in an environment. It defines key information about the application, such as the application name, the Git repository, and the path to the Kubernetes manifests. The application resource also defines the desired state of the application, such as the target revision, the sync policy, and the health check policy.
@@ -61,8 +61,8 @@ Verify that the application has been created:
 
 ```bash
 $ argocd app list
-NAME         CLUSTER                         NAMESPACE  PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS  REPO                                                                                               PATH  TARGET
-argocd/apps  https://kubernetes.default.svc             default  Synced  Healthy  Auto-Prune  <none>      ssh://APKA232DOTYWAHY2N54E@git-codecommit.eu-central-1.amazonaws.com/v1/repos/eks-workshop-argocd  apps
+NAME         CLUSTER                         NAMESPACE  PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS
+argocd/apps  https://kubernetes.default.svc             default  Synced  Healthy  <none>      <none>
 ```
 
 We can also see this Application in the ArgoCD UI now:

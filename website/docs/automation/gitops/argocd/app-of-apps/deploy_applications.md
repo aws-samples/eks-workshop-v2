@@ -109,6 +109,7 @@ Click `Refresh` and `Sync` in ArgoCD UI, use `argocd` CLI to `Sync` the applicat
 
 ```bash
 $ argocd app sync apps
+$ argocd app sync ui
 ```
 
 We've now successfully migrated the all the applications to deploy using Argo CD, and any further changes pushed to the Git repository will be automatically reconciled to EKS cluster.
