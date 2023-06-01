@@ -20,7 +20,7 @@
     "@types/mdast": "^3.0.11",
     "@types/mocha": "^10.0.1",
     "@types/mock-fs": "^4.13.1",
-    "@types/node": "^18.14.6",
+    "@types/node": "^20.2.5",
     "@types/sinon": "^10.0.13",
     "@types/unist": "^2.0.6",
     "@types/yargs": "^17.0.24",
