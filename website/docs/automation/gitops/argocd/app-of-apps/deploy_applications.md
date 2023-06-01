@@ -105,10 +105,10 @@ $ git -C ~/environment/argocd commit -am "Adding apps kustomization"
 $ git -C ~/environment/argocd push
 ```
 
-Click `Refresh` and `Sync` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
+Click `Refresh` and `Sync` in ArgoCD UI, use `argocd` CLI to `Sync` the application or wait until automatic `Sync` will be finished:
 
 ```bash
-$ argocd app sync ui --prune
+$ argocd app sync apps
 ```
 
 We've now successfully migrated the all the applications to deploy using Argo CD, and any further changes pushed to the Git repository will be automatically reconciled to EKS cluster.

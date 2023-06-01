@@ -25,7 +25,7 @@ and use [those instructions](https://argo-cd.readthedocs.io/en/stable/user-guide
 :::
 
 ```bash
-$ export GITOPS_REPO_URL_ARGOCD=ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_DEFAULT_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-argocd
+$ GITOPS_REPO_URL_ARGOCD=ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_DEFAULT_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-argocd
 ```
 
 Let's clone the Git repository.

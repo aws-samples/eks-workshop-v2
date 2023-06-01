@@ -62,25 +62,11 @@ $ git -C ~/environment/argocd add .
 $ git -C ~/environment/argocd commit -am "Adding the UI service"
 $ git -C ~/environment/argocd push
 ```
-<!--
-The default `Refresh` interval is 3 minutes (180 seconds). You could change the interval by updating the "timeout.reconciliation" value in the argocd-cm config map. If the interval is to 0 then Argo CD will not poll Git repositories automatically and alternative methods such as webhooks and/or manual syncs should be used.
-
-For training purposes, let's set `Refresh` interval to 5s and restart argocd application controller to deploy our changes faster
-
-```bash wait=30
-$ kubectl patch configmap/argocd-cm -n argocd --type merge \
-  -p '{"data":{"timeout.reconciliation":"5s"}}'
-$ kubectl -n argocd rollout restart deploy argocd-repo-server
-$ kubectl -n argocd rollout status deploy/argocd-repo-server
-$ kubectl -n argocd rollout restart statefulset argocd-application-controller
-$ kubectl -n argocd rollout status statefulset argocd-application-controller
-```
--->
 
 Click `Refresh` and `Sync` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
 
 ```bash
-$ argocd app sync apps --prune
+$ argocd app sync apps
 ```
 
 After a short period of time, the application should be in `Synced` state and the resources should be deployed, the UI should look like this:

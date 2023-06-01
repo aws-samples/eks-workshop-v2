@@ -26,10 +26,10 @@ $ git -C ~/environment/argocd commit -am "Update UI service replicas"
 $ git -C ~/environment/argocd push
 ```
 
-Click `Refresh` and `Sync` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
+Click `Refresh` and `Sync` in ArgoCD UI, use `argocd` CLI to `Sync` the application or wait until automatic `Sync` will be finished:
 
-```bash expectError=true
-$ argocd app sync ui --prune
+```bash
+$ argocd app sync apps
 ```
 
 ![argocd-update-application](../assets/argocd-update-application.png)

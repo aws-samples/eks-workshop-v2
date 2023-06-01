@@ -50,23 +50,39 @@ $ git -C ~/environment/argocd push
 Finally, we need to create new Argo CD `Application` to support `App of Apps` pattern.
 We define a new path to Argo CD `Application` using `--path app-of-apps`.
 
+We also enable ArgoCD Application to automatically [synchronize](https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/) the state in the cluster with the configuration in the Git repository using `--sync-policy automated`
+
 ```bash
 $ argocd app create apps --repo $GITOPS_REPO_URL_ARGOCD \
   --dest-server https://kubernetes.default.svc \
+  --sync-policy automated --self-heal --auto-prune \
   --set-finalizer \
   --upsert \
   --path app-of-apps
  application 'apps' created
 ```
 
+The default `Refresh` interval is 3 minutes (180 seconds). You could change the interval by updating the "timeout.reconciliation" value in the argocd-cm config map. If the interval is to 0 then Argo CD will not poll Git repositories automatically and alternative methods such as webhooks and/or manual syncs should be used.
+
+For training purposes, let's set `Refresh` interval to 5s and restart argocd application controller to deploy our changes faster
+
+```bash wait=30
+$ kubectl patch configmap/argocd-cm -n argocd --type merge \
+  -p '{"data":{"timeout.reconciliation":"5s"}}'
+$ kubectl -n argocd rollout restart deploy argocd-repo-server
+$ kubectl -n argocd rollout status deploy/argocd-repo-server
+$ kubectl -n argocd rollout restart statefulset argocd-application-controller
+$ kubectl -n argocd rollout status statefulset argocd-application-controller
+```
+
 Open the Argo CD UI and navigate to the `apps` application.
 
 ![argocd-ui-app-of-apps.png](assets/argocd-ui-app-of-apps.png)
 
-Click `Refresh` and `Sync` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
+Click `Refresh` and `Sync` in ArgoCD UI, use `argocd` CLI to `Sync` the application or wait until automatic `Sync` will be finished:
 
 ```bash
-$ argocd app sync apps --prune
+$ argocd app sync apps
 ```
 
 We have Argo CD `App of Apps Application` deployed and synced.

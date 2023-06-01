@@ -51,7 +51,7 @@ $ git -C ~/environment/argocd push
 Click `Refresh` and `Sync` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
 
 ```bash
-$ argocd app sync apps --prune
+$ argocd app sync apps
 ```
 
 We should have now 3 pods in `ui` deployment
