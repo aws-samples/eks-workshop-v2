@@ -19,6 +19,7 @@ prepare your environment using this command:
 ```bash timeout=300 wait=30
 $ reset-environment 
 ```
+
 :::
 
 :::info
