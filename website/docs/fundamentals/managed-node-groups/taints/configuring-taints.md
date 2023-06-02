@@ -56,7 +56,7 @@ A few things to point out:
 
 ## Configuring taints for Managed Node Groups
 
-While it's easy to taint nodes using the `kubectl` CLI as described [here](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#concepts), an administrator will have to make this change every time the underlying node group scales up or down. To overcome this challenge, AWS supports adding both `labels` and `taints` to managed node groups, ensuring every node within the MNG will have the asociated labels and taints configured automatically. 
+While it's easy to taint nodes using the `kubectl` CLI as described [here](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#concepts), an administrator will have to make this change every time the underlying node group scales up or down. To overcome this challenge, AWS supports adding both `labels` and `taints` to managed node groups, ensuring every node within the MNG will have the associated labels and taints configured automatically. 
 
 In the next few sections, we'll explore how to add taints to our preconfigured managed node group `$EKS_TAINTED_MNG_NAME`. 
 
