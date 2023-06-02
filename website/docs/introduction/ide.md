@@ -1,5 +1,5 @@
 ---
-title: Accessing the IDE
+title: Exploring the IDE
 sidebar_position: 25
 ---
 

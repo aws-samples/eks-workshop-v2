@@ -7,7 +7,7 @@ sidebar_position: 2
 In this lab exercise, we'll be installing CPA using Kustomize manifests, the main part of which is the `Deployment` resource below:
 
 ```file
-modules/autoscaling/workloads/cpa/deployment.yaml
+manifests/modules/autoscaling/workloads/cpa/deployment.yaml
 ```
 
 Let's apply this to our cluster:

@@ -24,7 +24,7 @@ No resources found
 The following Deployment uses a simple `pause` container image, and we'll use resource requests to predictably scale the cluster. Initially this has `0` replicas so we can gradually scale it deliberately:
 
 ```file
-modules/autoscaling/compute/karpenter/scale/deployment.yaml
+manifests/modules/autoscaling/compute/karpenter/scale/deployment.yaml
 ```
 
 :::info What's a pause container?

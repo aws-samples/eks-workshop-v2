@@ -6,7 +6,7 @@ sidebar_position: 20
 Let's create an additional Service that provisions a load balancer with the following kustomization:
 
 ```file
-modules/exposing/load-balancer/nlb/nlb.yaml
+manifests/modules/exposing/load-balancer/nlb/nlb.yaml
 ```
 
 This `Service` will create a Network Load Balancer that listens on port 80 and forwards connections to the `ui` Pods on port 8080. An NLB is a layer 4 load balancer that on our case operates at the TCP layer.

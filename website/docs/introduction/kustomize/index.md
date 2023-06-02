@@ -8,7 +8,7 @@ sidebar_position: 40
 For example, take a look at the following manifest file for the `checkout` Deployment:
 
 ```file
-base/checkout/deployment.yaml
+manifests/base/checkout/deployment.yaml
 ```
 
 This file has already been applied in the previous [Getting Started](../getting-started) lab, but let's say we wanted to scale this component horizontally by updating the `replicas` field using Kustomize. Rather than manually updating this YAML file, we'll use Kustomize to update the `spec/replicas` field from 1 to 3.
@@ -46,7 +46,7 @@ deployment.apps/checkout-redis unchanged
 You'll notice that a number of different `checkout`-related resources are "unchanged", with the `deployment.apps/checkout` being "configured". This is intentional — we only want to apply changes to the `checkout` deployment. This happens because running the previous command actually applied two files: the Kustomize `deployment.yaml` that we saw above, as well as the following `kustomization.yaml` file which matches all files in the `/eks-workshop/manifests/base/checkout` folder. The `patches` field specifies the specific file to be patched:
 
 ```file
-modules/introduction/kustomize/kustomization.yaml
+manifests/modules/introduction/kustomize/kustomization.yaml
 ```
 
 To check that the number of replicas has been updated, run the following command:

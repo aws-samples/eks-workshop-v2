@@ -27,7 +27,7 @@ $ cp -R /eks-workshop/manifests/base/ui /eks-workshop/gitops/apps
 We'll then need to create a kustomization in the `apps` directory:
 
 ```file
-modules/automation/gitops/flux/apps-kustomization.yaml
+manifests/modules/automation/gitops/flux/apps-kustomization.yaml
 ```
 
 Copy this file to the Git repository directory:
@@ -39,7 +39,7 @@ $ cp /eks-workshop/manifests/modules//automation/gitops/flux/apps-kustomization.
 The last step before we push our changes is to ensure that Flux is aware of our `apps` directory. We do that by creating an additional file in the `flux` directory:
 
 ```file
-modules/automation/gitops/flux/flux-kustomization.yaml
+manifests/modules/automation/gitops/flux/flux-kustomization.yaml
 ```
 
 Copy this file to the Git repository directory:

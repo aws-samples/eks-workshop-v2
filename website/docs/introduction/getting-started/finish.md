@@ -6,7 +6,7 @@ sidebar_position: 50
 In this lab exercise, we'll deploy the rest of the sample application efficiently using the power of Kustomize. The following kustomization file shows how you can reference other kustomizations and deploy multiple components together:
 
 ```file
-base/kustomization.yaml
+manifests/base/kustomization.yaml
 ```
 
 :::tip

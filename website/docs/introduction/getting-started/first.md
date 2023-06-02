@@ -52,7 +52,7 @@ statefulset-mysql.yaml
 These manifests include the Deployment for the catalog API:
 
 ```file
-base/catalog/deployment.yaml
+manifests/base/catalog/deployment.yaml
 ```
 
 This Deployment expresses the desired state of the catalog API component:
@@ -67,7 +67,7 @@ This Deployment expresses the desired state of the catalog API component:
 The manifests also include the Service used by other components to access the catalog API:
 
 ```file
-base/catalog/service.yaml
+manifests/base/catalog/service.yaml
 ```
 
 This Service:

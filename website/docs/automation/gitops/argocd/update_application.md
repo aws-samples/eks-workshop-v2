@@ -22,7 +22,7 @@ You can review planned changes in the file `apps/deployment-patch.yaml`
 To apply the patch you can edit the file `apps/kustomization.yaml` like in the example below:
 
 ```file
-modules/automation/gitops/argocd/update-application/kustomization.yaml.example
+manifests/modules/automation/gitops/argocd/update-application/kustomization.yaml.example
 ```
 
 Copy edited file `kustomization.yaml` to the Git repository directory:

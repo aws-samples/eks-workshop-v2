@@ -12,7 +12,7 @@ $ kubectl get deployment -n kube-system cluster-autoscaler-aws-cluster-autoscale
 In this lab exercise, we'll update all of the application components to increase their replica count to 4. This will cause more resources to be consumed than are available in a cluster, triggering more compute to be provisioned.
 
 ```file
-modules/autoscaling/compute/cluster-autoscaler/deployment.yaml
+manifests/modules/autoscaling/compute/cluster-autoscaler/deployment.yaml
 ```
 
 Let's apply this to our cluster:

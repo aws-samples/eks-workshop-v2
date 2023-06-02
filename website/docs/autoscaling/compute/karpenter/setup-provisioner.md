@@ -10,7 +10,7 @@ One of the main objectives of Karpenter is to simplify the management of capacit
 This is the provisioner we'll created initially:
 
 ```file
-modules/autoscaling/compute/karpenter/provisioner/provisioner.yaml
+manifests/modules/autoscaling/compute/karpenter/provisioner/provisioner.yaml
 ```
 
 :::info

@@ -32,13 +32,13 @@ We create templates for each child application:
 `Chart.yaml` is a boiler-plate. `templates` contains one file for each child application, for example:
 
 ```file
-modules/automation/gitops/argocd/app-of-apps/templates/ui.yaml
+manifests/modules/automation/gitops/argocd/app-of-apps/templates/ui.yaml
 ```
 
 `values.yaml` contains values which are specific for a particular environment and which will be applied to all application templates.
 
 ```file
-modules/automation/gitops/argocd/app-of-apps/values.yaml
+manifests/modules/automation/gitops/argocd/app-of-apps/values.yaml
 ```
 
 First, copy `App of Apps` configuration which we described above to the Git repository directory:

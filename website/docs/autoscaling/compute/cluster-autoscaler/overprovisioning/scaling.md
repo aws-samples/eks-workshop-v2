@@ -6,7 +6,7 @@ sidebar_position: 50
 In this lab exercise, we'll scale up our entire application architecture further than we did in the CA section and see how the responsiveness differs.
 
 ```file
-modules/autoscaling/compute/overprovisioning/scale/deployment.yaml
+manifests/modules/autoscaling/compute/overprovisioning/scale/deployment.yaml
 ```
 
 Apply the updates to your cluster:

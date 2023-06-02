@@ -19,7 +19,7 @@ Why are we not updating the existing StatefulSet? The fields we need to update a
 Here in the new catalog database StatefulSet:
 
 ```file
-modules/fundamentals/storage/ebs/statefulset-mysql.yaml
+manifests/modules/fundamentals/storage/ebs/statefulset-mysql.yaml
 ```
 
 Notice the `volumeClaimTemplates` field which specifies the instructs Kubernetes to utilize Dynamic Volume Provisioning to create a new EBS Volume, a [PersistentVolume (PV)](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and a [PersistentVolumeClaim (PVC)](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims) all automatically.

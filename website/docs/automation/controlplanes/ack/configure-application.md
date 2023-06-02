@@ -10,7 +10,7 @@ The ACK `FieldExport` custom resource was designed to bridge the gap between man
 The `DBInstance` resource contains the information for connecting to the RDS database instance. The host information can be found in `status.endpoint.address` and the master username  in `spec.masterUsername`. Lets create some `FieldExport` objects to extract these values in to a Kubernetes secret named `catalog-db-ack`.
 
 ```file
-modules/automation/controlplanes/ack/rds/fieldexports/rds-fieldexports.yaml
+manifests/modules/automation/controlplanes/ack/rds/fieldexports/rds-fieldexports.yaml
 ```
 
 Apply this configuration:

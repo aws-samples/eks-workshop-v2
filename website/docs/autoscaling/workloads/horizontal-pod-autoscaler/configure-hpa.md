@@ -20,7 +20,7 @@ Deployment/ui
 Next, we need to create a `HorizontalPodAutoscaler` resource which defines the parameters HPA will use to determine how to scale our workload.
 
 ```file
-modules/autoscaling/workloads/hpa/hpa.yaml
+manifests/modules/autoscaling/workloads/hpa/hpa.yaml
 ```
 
 Let's apply this configuration:

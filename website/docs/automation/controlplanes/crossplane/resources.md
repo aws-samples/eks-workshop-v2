@@ -8,7 +8,7 @@ By default the catalog component in the sample application uses a MySQL database
 Let's explore the various Crossplane resources that we'll create. The first is an EC2 security group that will be applied to control access to the RDS database, which is done with a `ec2.aws.crossplane.io.SecurityGroup` resource:
 
 ```file
-modules/automation/controlplanes/crossplane/managed/rds-security-group.yaml
+manifests/modules/automation/controlplanes/crossplane/managed/rds-security-group.yaml
 ```
 
 :::info
@@ -20,13 +20,13 @@ The EC2 security group above allows any traffic from the CIDR range of the VPC u
 Next, we want the RDS database to use the private subnets in our VPC. We'll create a `database.aws.crossplane.io.DBSubnetGroup` which selects the appropriate subnet IDs:
 
 ```file
-modules/automation/controlplanes/crossplane/managed/rds-dbgroup.yaml
+manifests/modules/automation/controlplanes/crossplane/managed/rds-dbgroup.yaml
 ```
 
 Finally, we can create the configuration for the RDS database itself with a `rds.aws.crossplane.io.DBInstance` resource:
 
 ```file
-modules/automation/controlplanes/crossplane/managed/rds-instance.yaml
+manifests/modules/automation/controlplanes/crossplane/managed/rds-instance.yaml
 ```
 
 Apply this configuration to the EKS cluster:

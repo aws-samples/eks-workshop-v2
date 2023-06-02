@@ -25,7 +25,7 @@ $ aws iam create-policy \
 ```
 
 ```file
-/networking/vpc-lattice/controller/recommended-inline-policy.json
+manifests//networking/vpc-lattice/controller/recommended-inline-policy.json
 ```
 
 Create the `system` namespace:
@@ -77,5 +77,5 @@ $ kubectl apply -f workspace/modules/networking/vpc-lattice/controller/gatewaycl
 The command above will create the following resource:
 
 ```file
-/networking/vpc-lattice/controller/gatewayclass.yaml
+manifests//networking/vpc-lattice/controller/gatewayclass.yaml
 ```

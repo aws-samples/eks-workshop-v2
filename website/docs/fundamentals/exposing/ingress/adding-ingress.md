@@ -6,7 +6,7 @@ sidebar_position: 20
 Let's create an Ingress resource with the following manifest:
 
 ```file
-modules/exposing/ingress/creating-ingress/ingress.yaml
+manifests/modules/exposing/ingress/creating-ingress/ingress.yaml
 ```
 
 This will cause the AWS Load Balancer Controller to provision an Application Load Balancer and configure it to route traffic to the Pods for the `ui` application.

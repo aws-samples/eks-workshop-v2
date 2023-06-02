@@ -15,13 +15,13 @@ $ curl $ADDRESS/catalogue
 The first thing we'll do is re-create the Ingress for `ui` component adding the annotation `alb.ingress.kubernetes.io/group.name`:
 
 ```file
-modules/exposing/ingress/multiple-ingress/ingress-ui.yaml
+manifests/modules/exposing/ingress/multiple-ingress/ingress-ui.yaml
 ```
 
 Now, let's create a separate Ingress for the `catalog` component that also leverages the same `group.name`:
 
 ```file
-modules/exposing/ingress/multiple-ingress/ingress-catalog.yaml
+manifests/modules/exposing/ingress/multiple-ingress/ingress-catalog.yaml
 ```
 
 This ingress is also configuring rules to route requests prefixed with `/catalogue` to the `catalog` component.

@@ -14,7 +14,8 @@ const remarkParameters = require('./src/remark/parameters');
 require('dotenv').config({ path: '.kustomize-env' })
 
 const rootDir = path.dirname(require.resolve('./package.json'));
-const manifestsDir = `${rootDir}/../manifests`;
+const manifestsDir = `${rootDir}/..`;
+const kustomizationsDir = `${manifestsDir}/manifests`
 
 const manifestsRef = process.env.MANIFESTS_REF || 'rearchitecture'
 const manifestsOwner = process.env.MANIFESTS_OWNER || 'aws-samples'
@@ -61,7 +62,7 @@ const config = {
               }
             }],
             [remarkIncludeCode, { manifestsDir }],
-            [remarkIncludeKustomization, { manifestsDir }],
+            [remarkIncludeKustomization, { manifestsDir: kustomizationsDir }],
             //[remarkBlueprintsAddon, {terraformDir: `${rootDir}/../terraform/local`}]
           ],
           editUrl:

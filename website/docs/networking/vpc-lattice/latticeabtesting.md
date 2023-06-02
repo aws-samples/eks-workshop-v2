@@ -51,7 +51,7 @@ Create the Kubernetes `HTTPRoute` route that evenly distributes the traffic betw
    $ kubectl apply -f workspace/modules/networking/vpc-lattice/routes/checkout-route.yaml
    ```
    ```file
-   /networking/vpc-lattice/routes/checkout-route.yaml
+manifests/   /networking/vpc-lattice/routes/checkout-route.yaml
    ```
 
 Find out the `HTTPRoute`'s DNS name from `HTTPRoute` status (highlighted here on the `message` line):

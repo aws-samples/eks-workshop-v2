@@ -6,7 +6,7 @@ sidebar_position: 70
 Let's create a new secret `catalog-sealed-db`. We'll create a new file `new-catalog-db.yaml` with the same keys and values as the `catalog-db` Secret.
 
 ```file
-modules/security/sealed-secrets/new-catalog-db.yaml
+manifests/modules/security/sealed-secrets/new-catalog-db.yaml
 ```
 
 Now, let’s create SealedSecret YAML manifests with kubeseal.

@@ -15,7 +15,7 @@ const plugin = (options) => {
         const extension = path.extname(filePath).slice(1)
 
         node.lang = extension
-        node.meta = `title="/eks-workshop/manifests/${path.normalize(`${value}`)}"`
+        node.meta = `title="/eks-workshop/${path.normalize(`${value}`)}"`
 
         const p = fs.readFile(filePath, { encoding: 'utf8' }).then(res => {
           node.value = res

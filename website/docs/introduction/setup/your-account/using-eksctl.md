@@ -8,7 +8,7 @@ This section outlines how to build a cluster for the lab exercises using the [ek
 The `eksctl` utility has been pre-installed in Cloud9 so we can immediately create the cluster. This is the configuration that will be used to build the cluster:
 
 ```file
-../cluster/eksctl/cluster.yaml
+manifests/../cluster/eksctl/cluster.yaml
 ```
 
 Based on this configuration `eksctl` will:

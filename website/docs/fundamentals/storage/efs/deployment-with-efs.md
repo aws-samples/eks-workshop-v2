@@ -8,7 +8,7 @@ Now that we understand the EFS storage class for Kubernetes let's create a [Pers
 First inspect the `efspvclaim.yaml` file to see the parameters in the file and the claim of the specific storage size of 5GB from the Storage class `efs-sc` we created in the earlier step:
 
 ```file
-modules/fundamentals/storage/efs/deployment/efspvclaim.yaml
+manifests/modules/fundamentals/storage/efs/deployment/efspvclaim.yaml
 ```
 
 We'll also modify the assets service is two ways:
