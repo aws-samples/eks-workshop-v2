@@ -5,7 +5,7 @@ sidebar_position: 20
 
 Create an EKS managed node group:
 
-```bash
+```bash wait=30
 $ aws eks create-nodegroup --region $AWS_REGION \
   --cluster-name $EKS_CLUSTER_NAME \
   --nodegroup-name custom-networking \
@@ -17,19 +17,19 @@ $ aws eks create-nodegroup --region $AWS_REGION \
 
 Node group creation takes several minutes. You can wait for the node group creation to complete using this command:
 
-```bash timeout=300
+```bash wait=30 timeout=300
 $ aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME --nodegroup-name custom-networking
 ```
 
 Once this is complete we can see the new nodes registered in the EKS cluster:
 
-```bash
+```bash wait=30
 $ kubectl get nodes -L eks.amazonaws.com/nodegroup
-NAME                                         STATUS   ROLES    AGE    VERSION               NODEGROUP
-ip-10-42-10-104.us-west-2.compute.internal   Ready    <none>   46m    vVAR::KUBERNETES_NODE_VERSION   managed-system-2022111302580566270000001d
-ip-10-42-10-14.us-west-2.compute.internal    Ready    <none>   3m9s   vVAR::KUBERNETES_NODE_VERSION   custom-networking
-ip-10-42-10-212.us-west-2.compute.internal   Ready    <none>   46m    vVAR::KUBERNETES_NODE_VERSION   managed-ondemand-2022111302580566000000001b
-ip-10-42-12-155.us-west-2.compute.internal   Ready    <none>   46m    vVAR::KUBERNETES_NODE_VERSION   managed-ondemand-2022111302580566000000001b
+NAME                                            STATUS   ROLES    AGE   VERSION               NODEGROUP
+ip-192-168-104-242.us-west-2.compute.internal   Ready    <none>   84m   v1.25.6-eks-48e63af   default
+ip-192-168-110-28.us-west-2.compute.internal    Ready    <none>   61s   v1.25.9-eks-0a21954   custom-networking
+ip-192-168-139-60.us-west-2.compute.internal    Ready    <none>   65m   v1.25.6-eks-48e63af   default
+ip-192-168-180-105.us-west-2.compute.internal   Ready    <none>   65m   v1.25.6-eks-48e63af   default
 ```
 
 You can see that 1 new node provisioned labeled with the name of the new node group.

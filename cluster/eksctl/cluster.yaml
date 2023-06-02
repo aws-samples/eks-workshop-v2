@@ -12,7 +12,7 @@ metadata:
   version: '1.25'
   tags:
     karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
-    created-by: eks-workshop
+    created-by: eks-workshop-v2
     env: ${EKS_CLUSTER_NAME}
 
 iam:

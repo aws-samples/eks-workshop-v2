@@ -4,9 +4,13 @@ echo "Deleting ENI configs..."
 
 kubectl delete ENIConfig --all -A > /dev/null
 
+sleep 10
+
 echo "Resetting VPC CNI configuration..."
 
 kubectl set env daemonset aws-node -n kube-system AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG=false > /dev/null
+
+sleep 10
 
 custom_nodegroup=$(aws eks list-nodegroups --cluster-name $EKS_CLUSTER_NAME --query "nodegroups[? @ == 'custom-networking']" --output text)
 
