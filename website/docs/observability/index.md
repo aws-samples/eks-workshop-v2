@@ -13,15 +13,6 @@ In this chapter,  we'll cover how you can use AWS observability solutions integr
 * Monitoring Metrics with CloudWatch Container Insights
 * Monitoring EKS Metrics with AMP and ADOT.
 
-:::tip If you did not a complete the [Introduction Getting Started session](../introduction/getting-started/finish.md) you can  
-prepare your environment using this command:
-
-```bash timeout=300 wait=30
-$ reset-environment 
-```
-
-:::
-
 :::info
 To dive deeper into AWS Observability features take a look at the [One Observability Workshop](https://observability.workshop.aws)
 :::
