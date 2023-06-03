@@ -10,13 +10,3 @@ Containers are grouped as Pods within a Kubernetes cluster and are scheduled to 
 In this lab, we'll see 
  - How to enable EKS Control Plane logs and verify it in the Amazon CloudWatch
  - How to setup the logging agent (Fluent Bit) to stream the Pod logs to Amazon CloudWatch
-
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=300 wait=30
-$ reset-environment 
-```
-
-:::
