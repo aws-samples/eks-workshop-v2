@@ -6,7 +6,7 @@ module=$2
 set -Eeuo pipefail
 set -u
 
-# You can run script with finch like CONTAINER_CLI=finch ./run-tests.sh
+# You can run script with finch like CONTAINER_CLI=finch ./run-tests.sh <terraform_context> <module>
 CONTAINER_CLI=${CONTAINER_CLI:-docker}
 
 # Right now the container images are only designed for amd64
