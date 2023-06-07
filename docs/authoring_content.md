@@ -91,7 +91,7 @@ All Terraform configuration resides in the `terraform` directory, and is structu
 
 The workshop content has various tools and utilities that are necessary to for the learner to complete it, the primary example being `kubectl` along with supporting tools like `jq` and `curl`.
 
-See `environment/Dockerfile` and `environment/installer.sh` to configure the installed utilities. 
+See `environment/Dockerfile` and `environment/installer.sh` to configure the installed utilities.
 
 ## Testing
 
@@ -127,6 +127,12 @@ To use this utility you must:
 
 The shell session created will have AWS credentials injected, so you will immediately be able to use the `aws` CLI and `kubectl` commands with no further configuration:
 
+If using [finch CLI](https://github.com/runfinch/finch) instead of `docker` CLI you need to set two environment variable `CONTAINER_CLI` or run `make` with the variable set like `CONTAINER_CLI=finch make shell` here how to set the variable in the terminal session for every command.
+```bash
+export CONTAINER_CLI=finch
+```
+
+Run the `make shell`
 ```bash
 ➜  eks-workshop-v2 git:(main) ✗ make shell
 bash hack/shell.sh
@@ -154,10 +160,10 @@ descheduler-5c496c46df-8sr5b                    1/1     Running   0          10h
 kube-proxy-nq5qp                                1/1     Running   0          17h
 kube-proxy-rpt7c                                1/1     Running   0          17h
 kube-proxy-v5zft                                1/1     Running   0          17h
-[root@43267b0ac0c8 /]$ 
+[root@43267b0ac0c8 /]$
 ```
 
-Depending on your Docker version, you might need to add a flag to enable [BuildKit builds](https://docs.docker.com/develop/develop-images/build_enhancements/). To do that just run this command `export DOCKER_BUILDKIT=1`, which will set the required env var. After that, you can run again `make shell`. 
+Depending on your Docker/Finch version, you might need to add a flag to enable [BuildKit builds](https://docs.docker.com/develop/develop-images/build_enhancements/). To do that just run this command `export DOCKER_BUILDKIT=1`, which will set the required env var. After that, you can run again `make shell`.
 
 If your AWS credentials expire you can `exit` and restart the shell, which will not affect your cluster.
 
