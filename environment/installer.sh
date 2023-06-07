@@ -49,13 +49,7 @@ pip3 install awscurl
 download_and_verify "https://dl.k8s.io/release/v$kubectl_version/bin/linux/amd64/kubectl" "$kubectl_checksum" "kubectl"
 chmod +x ./kubectl
 mv ./kubectl /usr/local/bin
-kubectl completion bash > ~/.kube/completion.bash.inc
-printf "
-# Kubectl shell completion
-source '$HOME/.kube/completion.bash.inc'
-alias k=kubectl
-complete -F __start_kubectl k
-" >> $HOME/.bash_profile
+
 
 # helm
 download_and_verify "https://get.helm.sh/helm-v$helm_version-linux-amd64.tar.gz" "$helm_checksum" "helm.tar.gz"
