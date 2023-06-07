@@ -29,8 +29,5 @@ spec:
       value: $(EKS_CLUSTER_NAME)
     - key: managed-by
       value: crossplane
-  writeConnectionSecretToRef:
-    name: catalog-db-crossplane
-    namespace: catalog
   providerConfigRef:
     name: aws-provider-config

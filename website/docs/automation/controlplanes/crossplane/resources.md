@@ -23,7 +23,8 @@ Next, we want the RDS database to use the private subnets in our VPC. We'll crea
 automation/controlplanes/crossplane/managed/rds-dbgroup.yaml
 ```
 
-Finally, we can create the configuration for the RDS database itself with a `rds.aws.crossplane.io.DBInstance` resource:
+Finally, we can create the configuration for the RDS database itself with a `rds.aws.crossplane.io.DBInstance` resource, the master password will be generated in the location specified by `masterUserPasswordSecretRef` since we are
+setting `autogeneratePassword: true`:
 
 ```file
 automation/controlplanes/crossplane/managed/rds-instance.yaml
