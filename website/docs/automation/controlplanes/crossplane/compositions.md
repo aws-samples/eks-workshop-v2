@@ -22,7 +22,12 @@ compositeresourcedefinition.apiextensions.crossplane.io "xrelationaldatabases.aw
 
 A Composition lets Crossplane know what to do when someone creates a Composite Resource. Each Composition creates a link between an XR and a set of one or more Managed Resources - when the XR is created, updated, or deleted the set of Managed Resources are created, updated or deleted accordingly.
 
-The following Composition provisions the managed resources `DBSubnetGroup`, `SecurityGroup` and `DBInstance`:
+The following Composition provisions the managed resources `DBSubnetGroup`, `SecurityGroup` and `DBInstance`
+
+The `DBInstance` is configure to auto generate the DB password, and store it in a Kubernetes secret with
+the name specified in the claim `spec.secret` in the same namespace as the claim. The location of the secret
+is specified by `masterUserPasswordSecretRef`. The DB username and endpoint values are stored in the same
+secret specified by `spec.writeConnectionSecretToRef`:
 
 ```file
 automation/controlplanes/crossplane/compositions/composition/composition.yaml
