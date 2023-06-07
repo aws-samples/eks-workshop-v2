@@ -3,6 +3,9 @@ kind: DBInstance
 metadata:
   name: $(EKS_CLUSTER_NAME)-catalog-crossplane
 spec:
+  writeConnectionSecretToRef:
+    name: catalog-db-crossplane
+    namespace: catalog
   forProvider:
     region: $(AWS_DEFAULT_REGION)
     allocatedStorage: 20

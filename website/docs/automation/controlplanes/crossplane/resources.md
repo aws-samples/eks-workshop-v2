@@ -24,7 +24,7 @@ automation/controlplanes/crossplane/managed/rds-dbgroup.yaml
 ```
 
 Finally, we can create the configuration for the RDS database itself with a `rds.aws.crossplane.io.DBInstance` resource, the master password will be generated in the location specified by `masterUserPasswordSecretRef` since we are
-setting `autogeneratePassword: true`:
+setting `autogeneratePassword: true`, and the `endpoint` and `username` will be populated by `writeConnectionSecretToRef` on the same Kubernetes secret:
 
 ```file
 automation/controlplanes/crossplane/managed/rds-instance.yaml
