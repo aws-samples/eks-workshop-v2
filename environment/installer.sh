@@ -50,7 +50,6 @@ download_and_verify "https://dl.k8s.io/release/v$kubectl_version/bin/linux/amd64
 chmod +x ./kubectl
 mv ./kubectl /usr/local/bin
 
-
 # helm
 download_and_verify "https://get.helm.sh/helm-v$helm_version-linux-amd64.tar.gz" "$helm_checksum" "helm.tar.gz"
 tar zxf helm.tar.gz
