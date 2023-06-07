@@ -42,7 +42,8 @@ The Crossplane controllers in the cluster will react to these new resources and 
 
 ```bash
 $ aws rds describe-db-instances \
-    --db-instance-identifier ${EKS_CLUSTER_NAME}-catalog-crossplane
+    --db-instance-identifier ${EKS_CLUSTER_NAME}-catalog-crossplane \
+    --output json | jq .
 ```
 
 It takes some time to provision the AWS managed services, in the case of RDS up to 10 minutes. Crossplane will report the status of the reconciliation in the `status` field of the Kubernetes custom resources.
