@@ -213,6 +213,7 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   crossplane_helm_config = {
+    version = "1.12.1"
     set = concat([{
       name  = "rbacManager.nodeSelector.workshop-system"
       value = "yes"
@@ -237,7 +238,7 @@ module "eks_blueprints_kubernetes_addons" {
 
   crossplane_aws_provider = {
     enable                   = true
-    provider_aws_version     = "v0.36.0"
+    provider_aws_version     = "v0.40.0"
     additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
   }
 
