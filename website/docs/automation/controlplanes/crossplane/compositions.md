@@ -17,7 +17,7 @@ Create this composite definition:
 
 ```bash
 $ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/compositions/definition.yaml
-compositeresourcedefinition.apiextensions.crossplane.io "xrelationaldatabases.awsblueprints.io" deleted
+compositeresourcedefinition.apiextensions.crossplane.io/xrelationaldatabases.awsblueprints.io created
 ```
 
 A Composition lets Crossplane know what to do when someone creates a Composite Resource. Each Composition creates a link between an XR and a set of one or more Managed Resources - when the XR is created, updated, or deleted the set of Managed Resources are created, updated or deleted accordingly.
