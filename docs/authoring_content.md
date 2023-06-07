@@ -127,10 +127,9 @@ To use this utility you must:
 
 The shell session created will have AWS credentials injected, so you will immediately be able to use the `aws` CLI and `kubectl` commands with no further configuration:
 
-If using [finch CLI](https://github.com/runfinch/finch) instead of `docker` CLI you need to set two environment variables `CONTAINER_CLI` and `TEMP`
+If using [finch CLI](https://github.com/runfinch/finch) instead of `docker` CLI you need to set two environment variable `CONTAINER_CLI` or run `make` with the variable set like `CONTAINER_CLI=finch make shell` here how to set the variable in the terminal session for every command.
 ```bash
 export CONTAINER_CLI=finch
-export TEMP=$HOME/tmp
 ```
 
 Run the `make shell`

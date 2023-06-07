@@ -27,7 +27,7 @@ command_args=""
 
 echo "Starting shell in container..."
 
-$CONTAINER_CLI run --rm -it --env-file ${TEMP:-/tmp}/eks-workshop-shell-env \
+$CONTAINER_CLI run --rm -it --env-file /tmp/eks-workshop-shell-env \
   -v $SCRIPT_DIR/../environment/workspace:/workspace \
-  -e AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" -e AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" -e AWS_SESSION_TOKEN="$AWS_SESSION_TOKEN" \
+  -e "AWS_ACCESS_KEY_ID" -e "AWS_SECRET_ACCESS_KEY" -e "AWS_SESSION_TOKEN" \
   $container_image $shell_command
