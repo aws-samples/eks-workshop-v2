@@ -1,0 +1,8 @@
+apiVersion: awsblueprints.io/v1alpha1
+kind: Catalog
+metadata:
+  name: catalog-nested
+  namespace: nested
+spec:
+  resourceConfig:
+    providerConfigName: aws-provider-config

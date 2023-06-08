@@ -1,0 +1,24 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: catalog.awsblueprints.io
+spec:
+  compositeTypeRef:
+    apiVersion: awsblueprints.io/v1alpha1
+    kind: XCatalog
+  resources:
+    - base:
+        apiVersion: awsblueprints.io/v1alpha1
+        kind: XRelationalDatabase
+        spec:
+          databaseName: catalog
+          storageGB: 20
+          secret: to-be-patched
+      patches:
+        - fromFieldPath: spec.resourceConfig.providerConfigName
+          toFieldPath: spec.resourceConfig.providerConfigName
+        - fromFieldPath: "metadata.name"
+          toFieldPath: "spec.secret"
+
+
+
