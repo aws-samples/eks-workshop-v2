@@ -230,6 +230,11 @@ module "eks_blueprints_kubernetes_addons" {
     additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
   }
 
+  crossplane_kubernetes_provider = {
+    enable = true
+    provider_kubernetes_version = "v0.9.0"
+  }
+
   argocd_helm_config = {
     name             = "argocd"
     chart            = "argo-cd"
