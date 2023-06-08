@@ -130,16 +130,16 @@ spec:
         - fromFieldPath: metadata.name
           toFieldPath: spec.references[0].dependsOn.name
         - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
-          toFieldPath: spec.references[0].dependsOn.name
+          toFieldPath: spec.references[0].dependsOn.namespace
         - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
           toFieldPath: spec.forProvider.manifest.metadata.namespace
         - fromFieldPath: metadata.name
-          toFieldPath: spec.forProvider.manifest.spec.containers[0].env[0].valueFrom.secretKeyRef.name
+          toFieldPath: spec.forProvider.manifest.spec.template.spec.containers[0].env[0].valueFrom.secretKeyRef.name
         - fromFieldPath: metadata.name
-          toFieldPath: spec.forProvider.manifest.spec.containers[0].env[1].valueFrom.secretKeyRef.name
+          toFieldPath: spec.forProvider.manifest.spec.template.spec.containers[0].env[1].valueFrom.secretKeyRef.name
         - fromFieldPath: metadata.name
-          toFieldPath: spec.forProvider.manifest.spec.containers[0].env[2].valueFrom.secretKeyRef.name
+          toFieldPath: spec.forProvider.manifest.spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.name
         - fromFieldPath: metadata.name
-          toFieldPath: spec.forProvider.manifest.spec.containers[0].env[3].valueFrom.secretKeyRef.name
+          toFieldPath: spec.forProvider.manifest.spec.template.spec.containers[0].env[3].valueFrom.secretKeyRef.name
 
 
