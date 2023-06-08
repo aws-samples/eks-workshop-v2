@@ -47,7 +47,7 @@ automation/controlplanes/crossplane/app-db/claim/claim.yaml
 Create the database by creating a `Claim`:
 
 ```bash
-$ kubectl create ns nested --dry-run=client -o yaml | kubectl -f -
+$ kubectl create ns nested --dry-run=client -o yaml | kubectl apply -f -
 $ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/app-db/claim/claim.yaml
 catalog.awsblueprints.io/catalog-claim created
 ```

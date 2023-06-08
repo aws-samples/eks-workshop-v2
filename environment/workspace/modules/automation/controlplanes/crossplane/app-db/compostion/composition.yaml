@@ -19,6 +19,127 @@ spec:
           toFieldPath: spec.resourceConfig.providerConfigName
         - fromFieldPath: "metadata.name"
           toFieldPath: "spec.secret"
-
+    - base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
+        spec:
+          providerConfigRef:
+            name: kubernetes-provider-config
+          references:
+            - dependsOn:
+                apiVersion: v1
+                kind: Secret
+                name: to-be-patched
+                namespace: to-be-patched
+          forProvider:
+            manifest:
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: catalog
+                labels:
+                  app.kubernetes.io/created-by: eks-workshop
+                  app.kubernetes.io/type: app
+                namespace: to-be-patched
+              spec:
+                replicas: 1
+                selector:
+                  matchLabels:
+                    app.kubernetes.io/name: catalog
+                    app.kubernetes.io/instance: catalog
+                    app.kubernetes.io/component: service
+                template:
+                  metadata:
+                    annotations:
+                      prometheus.io/path: /metrics
+                      prometheus.io/port: "8080"
+                      prometheus.io/scrape: "true"
+                    labels:
+                      app.kubernetes.io/name: catalog
+                      app.kubernetes.io/instance: catalog
+                      app.kubernetes.io/component: service
+                      app.kubernetes.io/created-by: eks-workshop
+                  spec:
+                    #serviceAccountName: catalog
+                    securityContext:
+                      fsGroup: 1000
+                    containers:
+                      - name: catalog
+                        env:
+                          - name: DB_USER
+                            valueFrom:
+                              secretKeyRef:
+                                name: to-be-patched
+                                key: username
+                          - name: DB_PASSWORD
+                            valueFrom:
+                              secretKeyRef:
+                                name: to-be-patched
+                                key: password
+                          - name: DB_READ_ENDPOINT
+                            valueFrom:
+                              secretKeyRef:
+                                name: to-be-patched
+                                key: endpoint
+                          - name: DB_ENDPOINT
+                            valueFrom:
+                              secretKeyRef:
+                                name: to-be-patched
+                                key: endpoint
+                          - name: DB_NAME
+                            value: catalog
+                        securityContext:
+                          capabilities:
+                            drop:
+                            - ALL
+                          readOnlyRootFilesystem: true
+                          runAsNonRoot: true
+                          runAsUser: 1000
+                        image: "public.ecr.aws/aws-containers/retail-store-sample-catalog:0.4.0"
+                        imagePullPolicy: IfNotPresent
+                        ports:
+                          - name: http
+                            containerPort: 8080
+                            protocol: TCP
+                        livenessProbe:
+                          httpGet:
+                            path: /health
+                            port: 8080
+                          initialDelaySeconds: 30
+                          periodSeconds: 3
+                        readinessProbe:
+                          httpGet:
+                            path: /health
+                            port: 8080
+                          successThreshold: 3
+                          periodSeconds: 5
+                        resources:
+                          limits:
+                            memory: 512Mi
+                          requests:
+                            cpu: 250m
+                            memory: 512Mi
+                        volumeMounts:
+                          - mountPath: /tmp
+                            name: tmp-volume
+                    volumes:
+                      - name: tmp-volume
+                        emptyDir:
+                          medium: Memory
+      patches:
+        - fromFieldPath: metadata.name
+          toFieldPath: spec.references[0].dependsOn.name
+        - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+          toFieldPath: spec.references[0].dependsOn.name
+        - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+          toFieldPath: spec.forProvider.manifest.metadata.namespace
+        - fromFieldPath: metadata.name
+          toFieldPath: spec.forProvider.manifest.spec.containers[0].env[0].valueFrom.secretKeyRef.name
+        - fromFieldPath: metadata.name
+          toFieldPath: spec.forProvider.manifest.spec.containers[0].env[1].valueFrom.secretKeyRef.name
+        - fromFieldPath: metadata.name
+          toFieldPath: spec.forProvider.manifest.spec.containers[0].env[2].valueFrom.secretKeyRef.name
+        - fromFieldPath: metadata.name
+          toFieldPath: spec.forProvider.manifest.spec.containers[0].env[3].valueFrom.secretKeyRef.name
 
 
