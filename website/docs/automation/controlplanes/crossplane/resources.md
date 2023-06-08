@@ -65,25 +65,16 @@ Crossplane will have automatically created a Kubernetes `Secret` object that con
 ```bash
 $ kubectl get secret catalog-db-crossplane -n catalog -o yaml
 apiVersion: v1
+metadata:
+  creationTimestamp: "2023-01-26T15:12:41Z"
+  name: catalog-db-crossplane
+  namespace: catalog
+type: connection.crossplane.io/v1alpha1
 data:
   endpoint: cmRzLWVrcy13b3Jrc2hvcC5jamthdHFkMWNucnoudXMtd2VzdC0yLnJkcy5hbWF6b25hd3MuY29t
   password: eGRnS1NNN2RSQ3dlc2VvRmhrRUEwWDN3OXpp
   port: MzMwNg==
   username: YWRtaW4=
-kind: Secret
-metadata:
-  creationTimestamp: "2023-01-26T15:12:41Z"
-  name: catalog-db-crossplane
-  namespace: catalog
-  ownerReferences:
-  - apiVersion: rds.aws.crossplane.io/v1alpha1
-    controller: true
-    kind: DBInstance
-    name: rds-eks-workshop
-    uid: bff607d9-86f2-4710-aabd-e60985b56995
-  resourceVersion: "28395"
-  uid: 1407281b-d282-42d8-b898-733400d3d11a
-type: connection.crossplane.io/v1alpha1
 ```
 
 Update the application to use the RDS endpoint and credentials:
@@ -99,6 +90,7 @@ service/catalog-mysql unchanged
 service/ui-nlb created
 deployment.apps/catalog configured
 statefulset.apps/catalog-mysql unchanged
+$ kubectl rollout restart -n catalog deployment/catalog
 $ kubectl rollout status -n catalog deployment/catalog --timeout=30s
 ```
 

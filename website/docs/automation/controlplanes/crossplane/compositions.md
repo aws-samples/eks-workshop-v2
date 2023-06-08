@@ -94,6 +94,7 @@ service/catalog-mysql unchanged
 service/ui-nlb created
 deployment.apps/catalog configured
 statefulset.apps/catalog-mysql unchanged
+$ kubectl rollout restart -n catalog deployment/catalog
 $ kubectl rollout status -n catalog deployment/catalog --timeout=30s
 ```
 

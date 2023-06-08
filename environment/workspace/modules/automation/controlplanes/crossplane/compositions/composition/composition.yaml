@@ -109,5 +109,5 @@ spec:
           toFieldPath: spec.writeConnectionSecretToRef.name
         - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
           toFieldPath: spec.forProvider.masterUserPasswordSecretRef.namespace
-        - fromFieldPath: spec.secret
+        - fromFieldPath: metadata.name
           toFieldPath: spec.forProvider.masterUserPasswordSecretRef.name
