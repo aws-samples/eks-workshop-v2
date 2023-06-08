@@ -51,8 +51,8 @@ automation/controlplanes/crossplane/compositions/claim/claim.yaml
 Create the database by creating a `Claim`:
 
 ```bash
-$ kubectl apply -k /workspace/modules/automation/controlplanes/crossplane/compositions/claim
-relationaldatabase.awsblueprints.io/rds-eks-workshop created
+$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml
+relationaldatabase.awsblueprints.io/catalog-composition created
 ```
 
 It takes some time to provision the AWS managed services, in the case of RDS up to 10 minutes. Crossplane will report the status of the reconciliation in the status field of the Kubernetes custom resources.
@@ -60,7 +60,7 @@ It takes some time to provision the AWS managed services, in the case of RDS up 
 To verify that the provisioning is done you can check that the condition “Ready” is true using the Kubernetes CLI. Run the following commands and they will exit once the condition is met:
 
 ```bash timeout=1200
-$ kubectl wait relationaldatabase.awsblueprints.io ${EKS_CLUSTER_NAME}-catalog-composition -n catalog --for=condition=Ready --timeout=20m
+$ kubectl wait relationaldatabase.awsblueprints.io catalog-composition -n catalog --for=condition=Ready --timeout=20m
 dbinstances.rds.services.k8s.aws/rds-eks-workshop condition met
 ```
 

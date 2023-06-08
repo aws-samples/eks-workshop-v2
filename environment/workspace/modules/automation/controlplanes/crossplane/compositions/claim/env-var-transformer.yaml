@@ -1,4 +1,0 @@
-varReference:
-- apiVersion: awsblueprints.io/v1alpha1
-  kind: RelationalDatabase
-  path: metadata/name

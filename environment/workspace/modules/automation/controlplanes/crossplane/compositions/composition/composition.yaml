@@ -34,6 +34,12 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: common-fields
+        - fromFieldPath: metadata.name
+          toFieldPath: metadata.annotations[crossplane.io/external-name]
+          transforms:
+            - type: string
+              string:
+                fmt: $(EKS_CLUSTER_NAME)-%s
     - base:
         apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: SecurityGroup
@@ -55,15 +61,23 @@ spec:
               value: $(EKS_CLUSTER_NAME)
             - key: managed-by
               value: crossplane
+            - key: Name
+              value: to-be-patch
       patches:
         - type: PatchSet
           patchSetName: common-fields
-        - fromFieldPath: "metadata.uid"
+        - fromFieldPath: "metadata.name"
           toFieldPath: "spec.forProvider.groupName"
           transforms:
             - type: string
               string:
-                fmt: "rds-mysql-sg-%s"
+                fmt: $(EKS_CLUSTER_NAME)-rds-mysql-sg-%s
+        - fromFieldPath: "metadata.name"
+          toFieldPath: "spec.forProvider.tags[3].value"
+          transforms:
+            - type: string
+              string:
+                fmt: $(EKS_CLUSTER_NAME)-rds-mysql-sg-%s
     - base:
         apiVersion: rds.aws.crossplane.io/v1alpha1
         kind: DBInstance
@@ -109,5 +123,15 @@ spec:
           toFieldPath: spec.writeConnectionSecretToRef.name
         - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
           toFieldPath: spec.forProvider.masterUserPasswordSecretRef.namespace
-        - fromFieldPath: metadata.name
+        - fromFieldPath: spec.secret
           toFieldPath: spec.forProvider.masterUserPasswordSecretRef.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-passwd"
+        - fromFieldPath: metadata.name
+          toFieldPath: metadata.annotations[crossplane.io/external-name]
+          transforms:
+            - type: string
+              string:
+                fmt: $(EKS_CLUSTER_NAME)-%s
