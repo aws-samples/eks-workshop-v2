@@ -66,4 +66,5 @@ catalog.awsblueprints.io/catalog-nested condition met
 Clean up, you can delete the claim
 ```bash test=false
 $ kubectl delete -f /workspace/modules/automation/controlplanes/crossplane/app-db/claim/claim.yaml
+catalog.awsblueprints.io "catalog-nested" deleted
 ```
