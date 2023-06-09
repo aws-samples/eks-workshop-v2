@@ -25,3 +25,8 @@ $ curl -fsSL https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFES
 envsubst | eksctl create cluster -f -
 ```
 
+Once the cluster is created run this command to use the cluster for the lab exercises:
+
+```bash test=false
+$ use-cluster $EKS_CLUSTER_NAME
+```
