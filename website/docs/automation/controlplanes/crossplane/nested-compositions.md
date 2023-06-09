@@ -87,7 +87,7 @@ With this claim the developer only needs to specify the database size (optional)
 automation/controlplanes/crossplane/app-db/claim/claim.yaml
 ```
 
-Create the database by creating a `Claim`:
+Create the database and the serivce by creating a `Claim`:
 
 ```bash
 $ kubectl create ns nested --dry-run=client -o yaml | kubectl apply -f -
