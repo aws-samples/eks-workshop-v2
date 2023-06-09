@@ -25,12 +25,6 @@ spec:
         spec:
           providerConfigRef:
             name: kubernetes-provider-config
-          references:
-            - dependsOn:
-                apiVersion: v1
-                kind: Secret
-                name: to-be-patched
-                namespace: to-be-patched
           forProvider:
             manifest:
               apiVersion: apps/v1
@@ -127,10 +121,6 @@ spec:
                         emptyDir:
                           medium: Memory
       patches:
-        - fromFieldPath: metadata.name
-          toFieldPath: spec.references[0].dependsOn.name
-        - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
-          toFieldPath: spec.references[0].dependsOn.namespace
         - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
           toFieldPath: spec.forProvider.manifest.metadata.namespace
         - fromFieldPath: metadata.name
