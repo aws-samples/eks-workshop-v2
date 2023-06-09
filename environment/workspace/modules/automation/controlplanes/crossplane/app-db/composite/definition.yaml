@@ -21,6 +21,9 @@ spec:
           properties:
             spec:
               properties:
+                replicas:
+                  type: integer
+                  default: 1
                 storageGB:
                   type: integer
                   default: 20

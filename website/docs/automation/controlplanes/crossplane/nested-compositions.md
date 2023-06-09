@@ -4,6 +4,8 @@ sidebar_position: 40
 ---
 
 
+
+## Catalog Application
 First, lets provide a definition that can be used to create a database and the catalog service.
 
 ```file
@@ -21,19 +23,60 @@ A Composition lets Crossplane know what to do when someone creates a Composite R
 
 A Composition can include other Composite Resources which entels another Composition creating a "Nested Composition"
 
-The following Composition provisions the composite resource `XRelationalDatabase` and managed resource for helm provider `CatalogService`
+The following Composition provisions the composite resource `XRelationalDatabase` and managed resource for helm provider `XCatalogService`
 
 
 ```file
-automation/controlplanes/crossplane/app-db/compostion/composition.yaml
+automation/controlplanes/crossplane/app-db/composition/composition.yaml
 ```
 
 Apply this to our EKS cluster:
 
 ```bash
-$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/app-db/compostion/composition.yaml
+$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/app-db/composition/composition.yaml
 composition.apiextensions.crossplane.io/catalog.awsblueprints.io created
 ```
+
+
+
+
+
+## Catalog Service
+
+First, lets provide a definition that can be used to create a database and the catalog service.
+
+```file
+automation/controlplanes/crossplane/app-db/app/composite/definition.yaml
+```
+
+
+Create this composite definition:
+
+```bash
+$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/app-db/app/composite/definition.yaml
+compositeresourcedefinition.apiextensions.crossplane.io/xcatalogapps.awsblueprints.io created
+```
+
+
+The following Composition provisions the managed resources from Kubernetes provider `Deployment`, `ServiceAccount`, and `Service`
+
+
+```file
+automation/controlplanes/crossplane/app-db/app/composition/composition.yaml
+```
+
+Apply this to our EKS cluster:
+
+```bash
+$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/app-db/app/composition/composition.yaml
+composition.apiextensions.crossplane.io/catalog.awsblueprints.io created
+```
+
+
+
+
+
+## Catalog Claim
 
 
 Once we’ve configured Crossplane with the details of the new XR we can either create one directly or use a Claim. Typically only the team responsible for configuring Crossplane (often a platform or SRE team) have permission to create XRs directly. Everyone else manages XRs via a lightweight proxy resource called a Composite Resource Claim (or claim for short).
@@ -61,10 +104,9 @@ $ kubectl wait catalog.awsblueprints.io catalog-nested -n nested --for=condition
 catalog.awsblueprints.io/catalog-nested condition met
 ```
 
-
-
 Clean up, you can delete the claim
 ```bash test=false
 $ kubectl delete -f /workspace/modules/automation/controlplanes/crossplane/app-db/claim/claim.yaml
 catalog.awsblueprints.io "catalog-nested" deleted
 ```
+

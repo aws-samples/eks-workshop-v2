@@ -1,0 +1,32 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xcatalogservices.awsblueprints.io
+spec:
+  defaultCompositionRef:
+    name: catalogservice.awsblueprints.io
+  group: awsblueprints.io
+  names:
+    kind: XCatalogService
+    plural: xcatalogservices
+  # No Claims offered
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          properties:
+            spec:
+              properties:
+                replicas:
+                  type: integer
+                  default: 1
+                namespace:
+                  type: string
+                secret:
+                  type: string
+              required:
+              - namespace
+              - secret
+              type: object
