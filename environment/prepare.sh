@@ -4,6 +4,13 @@ set -e
 
 if [ ! -z "$EKS_CLUSTER_NAME" ]; then
   aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
+  kubectl completion bash > $HOME/.kube/completion.bash.inc
+  printf "
+  # Kubectl shell completion
+  source '$HOME/.kube/completion.bash.inc'
+  alias k=kubectl
+  complete -F __start_kubectl k
+  " >> $HOME/.bash_profile
 fi
 
 mkdir -p ~/.ssh

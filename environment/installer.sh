@@ -35,7 +35,7 @@ download_and_verify () {
 
   echo "$checksum $out_file" > "$out_file.sha256"
   sha256sum --check "$out_file.sha256"
-  
+
   rm "$out_file.sha256"
 }
 

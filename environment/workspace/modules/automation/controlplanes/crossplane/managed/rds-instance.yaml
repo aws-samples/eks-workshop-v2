@@ -20,7 +20,7 @@ spec:
       - name: $(EKS_CLUSTER_NAME)-catalog-crossplane
     masterUserPasswordSecretRef:
       key: password
-      name: catalog-db-crossplane
+      name: catalog-db-crossplane-passwd
       namespace: catalog
     tags:
     - key: created-by
