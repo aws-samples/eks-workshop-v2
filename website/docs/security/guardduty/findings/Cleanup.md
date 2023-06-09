@@ -14,7 +14,7 @@ $ kubectl delete rolebinding pod-access psp-access -n default
 $ kubectl delete role pod-create psp-use -n default
 $ kubectl delete rolebinding sa-default-admin --namespace=default
 $ kubectl delete -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.1/aio/deploy/recommended.yaml
-$ kubectl delete -f /eks-workshop/manifests/modules//security/Guardduty/privileged/mount/privileged-pod-example.yaml
+$ kubectl delete -f /eks-workshop/manifests/modules/security/Guardduty/privileged/mount/privileged-pod-example.yaml
 ```
 
 Finally disable GuardDuty:

@@ -27,13 +27,13 @@ Deployment/checkout
 You can generate the final Kubernetes YAML that applies this kustomization with the `kustomize` CLI:
 
 ```bash
-$ kustomize build /eks-workshop/manifests/modules//introduction/kustomize
+$ kustomize build /eks-workshop/manifests/modules/introduction/kustomize
 ```
 
 This will generate a lot of YAML files, which represents the final manifests you can apply directly to Kubernetes. Let's demonstrate this by piping the output from `kustomize` directly to `kubectl`:
 
 ```bash
-$ kustomize build /eks-workshop/manifests/modules//introduction/kustomize | kubectl apply -f -
+$ kustomize build /eks-workshop/manifests/modules/introduction/kustomize | kubectl apply -f -
 namespace/checkout unchanged
 serviceaccount/checkout unchanged
 configmap/checkout unchanged

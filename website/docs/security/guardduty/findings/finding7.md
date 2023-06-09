@@ -14,7 +14,7 @@ manifests/modules/security/Guardduty/mount/privileged-pod-example.yaml
 Run the below command to patch the deployment.
 
 ```bash
-$ kubectl apply -f /eks-workshop/manifests/modules//security/Guardduty/mount/privileged-pod-example.yaml
+$ kubectl apply -f /eks-workshop/manifests/modules/security/Guardduty/mount/privileged-pod-example.yaml
 ```
 
 Within a few minutes we'll see the finding `Persistence:Kubernetes/ContainerWithSensitiveMount` in the GuardDuty portal.
@@ -24,5 +24,5 @@ Within a few minutes we'll see the finding `Persistence:Kubernetes/ContainerWith
 Cleanup:
 
 ```bash
-$ kubectl delete -f /eks-workshop/manifests/modules//security/Guardduty/mount/privileged-pod-example.yaml
+$ kubectl delete -f /eks-workshop/manifests/modules/security/Guardduty/mount/privileged-pod-example.yaml
 ```

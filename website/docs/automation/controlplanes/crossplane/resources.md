@@ -101,21 +101,14 @@ statefulset.apps/catalog-mysql unchanged
 $ kubectl rollout status -n catalog deployment/catalog --timeout=30s
 ```
 
-An NLB has been created to expose the sample application for testing:
+We can now check the logs of the catalog service to verify its connecting to the RDS database provisioned by Crossplane:
 
 ```bash
-$ kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
-k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
+$ kubectl -n catalog logs deployment/catalog
+2023/06/02 21:16:18 Running database migration...
+2023/06/02 21:16:18 Schema migration applied
+2023/06/02 21:16:18 Connecting to eks-workshop-test-catalog-crossplane.cjkatqd1cnrz.us-west-2.rds.amazonaws.com/catalog?timeout=5s
+2023/06/02 21:16:18 Connected
+2023/06/02 21:16:18 Connecting to eks-workshop-test-catalog-crossplane.cjkatqd1cnrz.us-west-2.rds.amazonaws.com/catalog?timeout=5s
+2023/06/02 21:16:18 Connected
 ```
-
-To wait until the load balancer has finished provisioning you can run this command:
-
-```bash timeout=300
-$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
-```
-
-Once the load balancer is provisioned you can access it by pasting the URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
-
-<browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
-<img src={require('@site/static/img/sample-app-screens/home.png').default}/>
-</browser>
