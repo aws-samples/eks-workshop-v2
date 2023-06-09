@@ -3,7 +3,7 @@ title: "Nested Compositions"
 sidebar_position: 40
 ---
 
-
+Make sure you completed the [compositions](/docs/automation/controlplanes/crossplane/compositions) lab before starting this lab.
 
 ## Catalog Application
 First, lets provide a definition that can be used to create a database and the catalog service.
@@ -102,6 +102,36 @@ To verify that the provisioning is done you can check that the condition “Read
 ```bash timeout=1200
 $ kubectl wait catalog.awsblueprints.io catalog-nested -n nested --for=condition=Ready --timeout=20m
 catalog.awsblueprints.io/catalog-nested condition met
+```
+
+Verify that the Catalog App deployed in the `nested` namespace connects to the RDS Database and returns products from the catalog
+
+```bash
+$ kubectl exec -n ui deploy/ui -- curl -s http://catalog.nested/catalogue | jq .
+[
+  {
+    "id": "510a0d7e-8e83-4193-b483-e27e09ddc34d",
+    "name": "Gentleman",
+    "description": "Touch of class for a bargain.",
+    "imageUrl": "/assets/gentleman.jpg",
+    "price": 795,
+    "count": 51,
+    "tag": [
+      "dress"
+    ]
+  },
+  {
+    "id": "6d62d909-f957-430e-8689-b5129c0bb75e",
+    "name": "Pocket Watch",
+    "description": "Properly dapper.",
+    "imageUrl": "/assets/pocket_watch.jpg",
+    "price": 385,
+    "count": 33,
+    "tag": [
+      "dress"
+    ]
+  },
+...
 ```
 
 Clean up, you can delete the claim
