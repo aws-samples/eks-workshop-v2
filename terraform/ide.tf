@@ -41,6 +41,7 @@ VPC_PRIVATE_SUBNET_ID_2=${try(module.cluster.private_subnet_ids[2], "")}
 GITOPS_IAM_SSH_KEY_ID=${try(module.cluster.gitops_iam_ssh_key_id, "")}
 GITOPS_IAM_SSH_USER=${try(module.cluster.gitops_ssh_iam_user, "")}
 GITOPS_SSH_SSM_NAME=${try(module.cluster.gitops_ssh_ssm_name, "")}
+GITOPS_REPO_URL_ARGOCD=${try(module.cluster.gitops_repo_url_argocd, "")}
 EOT
 
   bootstrap_script = <<EOF

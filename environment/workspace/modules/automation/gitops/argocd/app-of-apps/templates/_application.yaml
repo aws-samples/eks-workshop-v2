@@ -1,0 +1,25 @@
+{{- define "application" -}}
+{{- $root:= . }}
+{{- range $application := .Values.applications}}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{  $application.name }}
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    server: {{ $root.Values.spec.destination.server }}
+  source:
+    repoURL: {{ $root.Values.spec.source.repoURL }}
+    targetRevision: {{ $root.Values.spec.source.targetRevision }}
+    path: apps-kustomization/{{  $application.name }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+{{- end -}}
+{{- end -}}

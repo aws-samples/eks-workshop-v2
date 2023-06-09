@@ -26,8 +26,11 @@ $ git -C ~/environment/argocd commit -am "Update UI service replicas"
 $ git -C ~/environment/argocd push
 ```
 
-Go to Argo CD UI, wait about 5s or hit `Refresh`/`Sync` and you should now have all the changes to the UI services deployed once more.
-We should have now 3 pods in `ui` deployment.
+Click `Refresh` and `Sync` in ArgoCD UI, use `argocd` CLI to `Sync` the application or wait until automatic `Sync` will be finished:
+
+```bash
+$ argocd app sync ui
+```
 
 ![argocd-update-application](../assets/argocd-update-application.png)
 
