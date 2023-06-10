@@ -4,6 +4,6 @@ metadata:
   name: catalog-nested
   namespace: nested
 spec:
-  replicas: 3
+  size: medium
   resourceConfig:
     providerConfigName: aws-provider-config

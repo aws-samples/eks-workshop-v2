@@ -1,0 +1,21 @@
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: catalog-svc-test
+  namespace: nested
+stringData:
+  username: May the Force be with you
+  password: May the Force be with you
+  endpoint: May the Force be with you
+---
+apiVersion: awsblueprints.io/v1alpha1
+kind: XCatalogService
+metadata:
+  name: catalog-svc-test
+spec:
+  namespace: nested # make sure this namespace exists to target the service into it
+  secret: catalog-svc-test # test secret created above
+  databaseName: r2d2
+  resourceConfig:
+    providerConfigName: kubernetes-provider-config

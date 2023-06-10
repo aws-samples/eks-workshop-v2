@@ -11,29 +11,29 @@ spec:
       patches:
         - fromFieldPath: spec.namespace
           toFieldPath: spec.forProvider.manifest.metadata.namespace
+        - fromFieldPath: metadata.name
+          toFieldPath: spec.forProvider.manifest.metadata.name
+        - fromFieldPath: spec.resourceConfig.providerConfigName
+          toFieldPath: spec.providerConfigRef.name
   resources:
     - base:
         apiVersion: kubernetes.crossplane.io/v1alpha1
         kind: Object
         spec:
-          providerConfigRef:
-            name: kubernetes-provider-config
           forProvider:
             manifest:
               apiVersion: apps/v1
               kind: Deployment
               metadata:
-                name: catalog
                 labels:
                   app.kubernetes.io/created-by: eks-workshop
                   app.kubernetes.io/type: app
                 namespace: to-be-patched
               spec:
-                replicas: 1
                 selector:
                   matchLabels:
                     app.kubernetes.io/name: catalog
-                    app.kubernetes.io/instance: catalog
+                    app.kubernetes.io/instance: to-be-patched
                     app.kubernetes.io/component: service
                 template:
                   metadata:
@@ -43,11 +43,11 @@ spec:
                       prometheus.io/scrape: "true"
                     labels:
                       app.kubernetes.io/name: catalog
-                      app.kubernetes.io/instance: catalog
+                      app.kubernetes.io/instance: to-be-patched
                       app.kubernetes.io/component: service
                       app.kubernetes.io/created-by: eks-workshop
                   spec:
-                    serviceAccountName: catalog
+                    serviceAccountName: to-be-patched
                     securityContext:
                       fsGroup: 1000
                     containers:
@@ -74,7 +74,7 @@ spec:
                                 name: to-be-patched
                                 key: endpoint
                           - name: DB_NAME
-                            value: catalog
+                            value: to-be-patched
                         securityContext:
                           capabilities:
                             drop:
@@ -126,33 +126,42 @@ spec:
           toFieldPath: spec.forProvider.manifest.spec.template.spec.containers[0].env[2].valueFrom.secretKeyRef.name
         - fromFieldPath: spec.secret
           toFieldPath: spec.forProvider.manifest.spec.template.spec.containers[0].env[3].valueFrom.secretKeyRef.name
+        - fromFieldPath: spec.databaseName
+          toFieldPath: spec.forProvider.manifest.spec.template.spec.containers[0].env[4].value
+        - fromFieldPath: spec.forProvider.manifest.metadata.name
+          toFieldPath: spec.forProvider.manifest.spec.selector.matchLabels[app.kubernetes.io/instance]
+        - fromFieldPath: spec.forProvider.manifest.metadata.name
+          toFieldPath: spec.forProvider.manifest.spec.template.metadata.labels[app.kubernetes.io/instance]
+        - fromFieldPath: status.serviceAccountName
+          toFieldPath: spec.forProvider.manifest.spec.template.spec.serviceAccountName
+          policy:
+            # By default a patch from a field path that does not exist is simply
+            # skipped until it does. Use the 'Required' policy to instead block and
+            # return an error when the field path does not exist.
+            fromFieldPath: Required
     - base:
         apiVersion: kubernetes.crossplane.io/v1alpha1
         kind: Object
         spec:
-          providerConfigRef:
-            name: kubernetes-provider-config
           forProvider:
             manifest:
               apiVersion: v1
               kind: ServiceAccount
-              metadata:
-                name: catalog
       patches:
         - type: PatchSet
           patchSetName: common-fields
+        - type: ToCompositeFieldPath
+          fromFieldPath: spec.forProvider.manifest.metadata.name
+          toFieldPath: status.serviceAccountName
     - base:
         apiVersion: kubernetes.crossplane.io/v1alpha1
         kind: Object
         spec:
-          providerConfigRef:
-            name: kubernetes-provider-config
           forProvider:
             manifest:
               apiVersion: v1
               kind: Service
               metadata:
-                name: catalog
                 labels:
                   app.kubernetes.io/created-by: eks-workshop
               spec:
@@ -164,8 +173,21 @@ spec:
                     name: http
                 selector:
                   app.kubernetes.io/name: catalog
-                  app.kubernetes.io/instance: catalog
+                  app.kubernetes.io/instance: to-be-patched
                   app.kubernetes.io/component: service
       patches:
         - type: PatchSet
           patchSetName: common-fields
+        - fromFieldPath: spec.forProvider.manifest.metadata.name
+          toFieldPath: spec.forProvider.manifest.spec.selector[app.kubernetes.io/instance]
+        - type: CombineToComposite
+          combine:
+            # The patch will only be applied when all variables have non-zero values.
+            variables:
+            - fromFieldPath: spec.forProvider.manifest.metadata.name
+            - fromFieldPath: spec.forProvider.manifest.metadata.namespace
+            strategy: string
+            string:
+              fmt: "http://%s.%s"
+          toFieldPath: status.serviceURL
+

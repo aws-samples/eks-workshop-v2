@@ -1,0 +1,9 @@
+apiVersion: awsblueprints.io/v1alpha1
+kind: Catalog
+metadata:
+  name: catalog-nested-micro
+  namespace: nested
+spec:
+  size: micro
+  resourceConfig:
+    providerConfigName: aws-provider-config

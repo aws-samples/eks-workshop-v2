@@ -9,13 +9,13 @@ Make sure you completed the [compositions](/docs/automation/controlplanes/crossp
 First, lets provide a definition that can be used to create a database and the catalog service.
 
 ```file
-automation/controlplanes/crossplane/app-db/composite/definition.yaml
+automation/controlplanes/crossplane/nested/composite/definition.yaml
 ```
 
 Create this composite definition:
 
 ```bash
-$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/app-db/composite/definition.yaml
+$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/nested/composite/definition.yaml
 compositeresourcedefinition.apiextensions.crossplane.io/xcatalogs.awsblueprints.io created
 ```
 
@@ -27,13 +27,13 @@ The following Composition provisions the composite resource `XRelationalDatabase
 
 
 ```file
-automation/controlplanes/crossplane/app-db/composition/composition.yaml
+automation/controlplanes/crossplane/nested/composition/composition.yaml
 ```
 
 Apply this to our EKS cluster:
 
 ```bash
-$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/app-db/composition/composition.yaml
+$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/nested/composition/composition.yaml
 composition.apiextensions.crossplane.io/catalog.awsblueprints.io created
 ```
 
@@ -46,14 +46,14 @@ composition.apiextensions.crossplane.io/catalog.awsblueprints.io created
 First, lets provide a definition that can be used to create a database and the catalog service.
 
 ```file
-automation/controlplanes/crossplane/app-db/app/composite/definition.yaml
+automation/controlplanes/crossplane/nested/service/composite/definition.yaml
 ```
 
 
 Create this composite definition:
 
 ```bash
-$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/app-db/app/composite/definition.yaml
+$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/nested/service/composite/definition.yaml
 compositeresourcedefinition.apiextensions.crossplane.io/xcatalogapps.awsblueprints.io created
 ```
 
@@ -62,13 +62,13 @@ The following Composition provisions the managed resources from Kubernetes provi
 
 
 ```file
-automation/controlplanes/crossplane/app-db/app/composition/composition.yaml
+automation/controlplanes/crossplane/nested/service/composition/composition.yaml
 ```
 
 Apply this to our EKS cluster:
 
 ```bash
-$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/app-db/app/composition/composition.yaml
+$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/nested/service/composition/composition.yaml
 composition.apiextensions.crossplane.io/catalog.awsblueprints.io created
 ```
 
@@ -84,14 +84,14 @@ Once we’ve configured Crossplane with the details of the new XR we can either 
 With this claim the developer only needs to specify the database size (optional)
 
 ```file
-automation/controlplanes/crossplane/app-db/claim/claim.yaml
+automation/controlplanes/crossplane/nested/claim/claim.yaml
 ```
 
 Create the database and the serivce by creating a `Claim`:
 
 ```bash
 $ kubectl create ns nested --dry-run=client -o yaml | kubectl apply -f -
-$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/app-db/claim/claim.yaml
+$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/nested/claim/claim.yaml
 catalog.awsblueprints.io/catalog-claim created
 ```
 
@@ -107,7 +107,8 @@ catalog.awsblueprints.io/catalog-nested condition met
 Verify that the Catalog App deployed in the `nested` namespace connects to the RDS Database and returns products from the catalog
 
 ```bash
-$ kubectl exec -n ui deploy/ui -- curl -s http://catalog.nested/catalogue | jq .
+$ SERVICE_URL=$(kubectl get catalogs.awsblueprints.io catalog-nested -n nested --template="{{.status.serviceURL}}")
+$ kubectl exec -n ui deploy/ui -- curl -s $SERVICE_URL/catalogue | jq .
 [
   {
     "id": "510a0d7e-8e83-4193-b483-e27e09ddc34d",
@@ -136,7 +137,7 @@ $ kubectl exec -n ui deploy/ui -- curl -s http://catalog.nested/catalogue | jq .
 
 Delete the claim:
 ```bash test=false
-$ kubectl delete -f /workspace/modules/automation/controlplanes/crossplane/app-db/claim/claim.yaml
+$ kubectl delete -f /workspace/modules/automation/controlplanes/crossplane/nested/claim/claim.yaml
 catalog.awsblueprints.io "catalog-nested" deleted
 ```
 

@@ -85,6 +85,7 @@ spec:
           forProvider:
             dbInstanceClass: to-be-patched # something like db.t4g.micro
             allocatedStorage: 0 # to be patched
+            dbName: to-be-patched
             region: $(AWS_DEFAULT_REGION)
             applyImmediately: true
             autogeneratePassword: true
@@ -93,7 +94,6 @@ spec:
             masterUsername: admin
             engine: mysql
             engineVersion: "8.0"
-            dbName: to-be-patched
             skipFinalSnapshot: true
             publiclyAccessible: false
             vpcSecurityGroupIDs: []

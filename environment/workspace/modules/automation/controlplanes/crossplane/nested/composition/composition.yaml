@@ -1,0 +1,68 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: catalog.awsblueprints.io
+spec:
+  compositeTypeRef:
+    apiVersion: awsblueprints.io/v1alpha1
+    kind: XCatalog
+  resources:
+    - base:
+        apiVersion: awsblueprints.io/v1alpha1
+        kind: XRelationalDatabase
+        spec:
+          dbInstanceClass: to-be-patched
+          storageGB: 0 # to be patched
+          databaseName: to-be-patched
+          secret: to-be-patched
+      patches:
+        - fromFieldPath: spec.resourceConfig.providerConfigName
+          toFieldPath: spec.resourceConfig.providerConfigName
+        - fromFieldPath: metadata.name
+          toFieldPath: spec.secret
+        - fromFieldPath: spec.databaseName
+          toFieldPath: spec.databaseName
+        - fromFieldPath: spec.size
+          toFieldPath: spec.storageGB
+          transforms:
+            - type: map
+              map:
+                micro: 5
+                small: 10
+                medium: 15
+                large: 20
+        - fromFieldPath: spec.size
+          toFieldPath: spec.dbInstanceClass
+          transforms:
+            - type: map
+              map:
+                micro: db.t4g.micro
+                small: db.t4g.small
+                medium: db.t4g.medium
+                large: db.t4g.large
+    - base:
+        apiVersion: awsblueprints.io/v1alpha1
+        kind: XCatalogService
+        spec: {}
+      patches:
+        - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+          toFieldPath: spec.namespace
+        - fromFieldPath: metadata.name
+          toFieldPath: spec.secret
+        - type: ToCompositeFieldPath
+          fromFieldPath: status.serviceURL
+          toFieldPath: status.serviceURL
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: spec.namespace
+          toFieldPath: status.namespace
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: spec.secret
+          toFieldPath: status.secret
+          policy:
+            fromFieldPath: Required
+
+
