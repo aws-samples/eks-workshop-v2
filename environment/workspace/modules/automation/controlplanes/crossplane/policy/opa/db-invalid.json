@@ -1,0 +1,16 @@
+{
+  "request": {
+    "kind": {
+      "kind": "DBInstance"
+    },
+    "operation": "CREATE",
+    "object": {
+      "spec": {
+        "forProvider": {
+          "engine": "mysql",
+          "allocatedStorage": 30
+        }
+      }
+    }
+  }
+}
