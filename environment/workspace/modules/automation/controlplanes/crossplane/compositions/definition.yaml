@@ -3,7 +3,7 @@ kind: CompositeResourceDefinition
 metadata:
   name: xrelationaldatabases.awsblueprints.io
 spec:
-  defaultCompositionRef: 
+  defaultCompositionRef:
     name: rds-mysql.awsblueprints.io
   group: awsblueprints.io
   names:
@@ -25,6 +25,8 @@ spec:
                   type: string
                 storageGB:
                   type: integer
+                dbInstanceClass:
+                  type: string
                 secret:
                   type: string
                 resourceConfig:
@@ -38,4 +40,5 @@ spec:
               - secret
               - databaseName
               - storageGB
+              - dbInstanceClass
               type: object

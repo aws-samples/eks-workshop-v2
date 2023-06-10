@@ -134,7 +134,7 @@ $ kubectl exec -n ui deploy/ui -- curl -s http://catalog.nested/catalogue | jq .
 ...
 ```
 
-Clean up, you can delete the claim
+Delete the claim:
 ```bash test=false
 $ kubectl delete -f /workspace/modules/automation/controlplanes/crossplane/app-db/claim/claim.yaml
 catalog.awsblueprints.io "catalog-nested" deleted

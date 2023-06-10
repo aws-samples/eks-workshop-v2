@@ -7,7 +7,7 @@ In addition to provisioning individual cloud resources, Crossplane offers a high
 
 A `CompositeResourceDefinition` (or XRD) defines the type and schema of your Composite Resource (XR). It lets Crossplane know that you want a particular kind of XR to exist, and what fields that XR should have. An XRD is a little like a CustomResourceDefinition (CRD), but slightly more opinionated. Writing an XRD is mostly a matter of specifying an OpenAPI ["structural schema"](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/).
 
-First, lets provide a definition that can be used to create a database by members of the application team in their corresponding namespace. In this example the user only needs to specify `databaseName`, `storageGB` and `secret` location
+First, lets provide a definition that can be used to create a database by members of the application team in their corresponding namespace. In this example the user only needs to specify `databaseName`, `dbInstanceClass`, `storageGB` and `secret` location
 
 ```file
 automation/controlplanes/crossplane/compositions/definition.yaml
@@ -42,7 +42,7 @@ composition.apiextensions.crossplane.io/rds-mysql.awsblueprints.io created
 
 Once we’ve configured Crossplane with the details of the new XR we can either create one directly or use a Claim. Typically only the team responsible for configuring Crossplane (often a platform or SRE team) have permission to create XRs directly. Everyone else manages XRs via a lightweight proxy resource called a Composite Resource Claim (or claim for short).
 
-With this claim the developer only needs to specify a default database name, size, and location to store the credentials to connect to the database. This allows the platform or SRE team to standardize on aspects such as database engine, high-availability architecture and security configuration.
+With this claim the developer only needs to specify a default database name, database instance class, size, and location to store the credentials to connect to the database. This allows the platform or SRE team to standardize on aspects such as database engine, high-availability architecture and security configuration.
 
 ```file
 automation/controlplanes/crossplane/compositions/claim/claim.yaml
@@ -64,55 +64,29 @@ $ kubectl wait relationaldatabase.awsblueprints.io catalog-composition -n catalo
 dbinstances.rds.services.k8s.aws/rds-eks-workshop condition met
 ```
 
-Crossplane will have automatically created a Kubernetes secret object that contains the credentials to connect to the RDS instance:
+Crossplane will have automatically created a Kubernetes secret object that contains the credentials to connect to the RDS instance.
 
+
+Verify that you can access RDS instance using the credentials specified in the claim:
 ```bash
-$ kubectl get secret catalog-db-composition -n catalog -o yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: catalog-db-composition
-  namespace: catalog
-type: connection.crossplane.io/v1alpha1
-data:
-  endpoint: cmRzLWVrcy13b3Jrc2hvcC5jamthdHFkMWNucnoudXMtd2VzdC0yLnJkcy5hbWF6b25hd3MuY29t
-  password: eGRnS1NNN2RSQ3dlc2VvRmhrRUEwWDN3OXpp
-  port: MzMwNg==
-  username: YWRtaW4=
+$ DB_USERNAME=$(kubectl get secret catalog-db-composition -n catalog --template="{{index .data.username | base64decode}}")
+$ DB_PASSWORD=$(kubectl get secret catalog-db-composition -n catalog --template="{{index .data.password | base64decode}}")
+$ DB_ENDPOINT=$(kubectl get secret catalog-db-composition -n catalog --template="{{index .data.endpoint | base64decode}}")
+$ DB_PORT=$(kubectl get secret catalog-db-composition -n catalog --template="{{index .data.port | base64decode}}")
+$ echo $DB_USERNAME $DB_PASSWORD $DB_ENDPOINT $DB_PORT
+$ kubectl run -n catalog mysql-client --image=mysql:8 -it --rm --restart=Never -- \
+mysql -h $DB_ENDPOINT -u$DB_USERNAME -p$DB_PASSWORD -e \
+'set sql_notes=0;show databases like "catalog";'
++--------------------+
+| Database (catalog) |
++--------------------+
+| catalog            |
++--------------------+
 ```
 
-Update the application to use the RDS endpoint and credentials:
 
-```bash
-$ kubectl apply -k /workspace/modules/automation/controlplanes/crossplane/compositions/application
-namespace/catalog unchanged
-serviceaccount/catalog unchanged
-configmap/catalog unchanged
-secret/catalog-db unchanged
-service/catalog unchanged
-service/catalog-mysql unchanged
-service/ui-nlb created
-deployment.apps/catalog configured
-statefulset.apps/catalog-mysql unchanged
-$ kubectl rollout restart -n catalog deployment/catalog
-$ kubectl rollout status -n catalog deployment/catalog --timeout=30s
+Delete the claim:
+```bash test=false
+$ kubectl delete -f /workspace/modules/automation/controlplanes/crossplane/app-db/claim/claim.yaml
+catalog.awsblueprints.io "catalog-nested" deleted
 ```
-
-An NLB has been created to expose the sample application for testing:
-
-```bash
-$ kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
-k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
-```
-
-To wait until the load balancer has finished provisioning you can run this command:
-
-```bash timeout=300
-$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
-```
-
-Once the load balancer is provisioned you can access it by pasting the URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
-
-<browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
-<img src={require('@site/static/img/sample-app-screens/home.png').default}/>
-</browser>

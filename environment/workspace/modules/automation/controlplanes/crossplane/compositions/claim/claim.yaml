@@ -5,7 +5,8 @@ metadata:
   namespace: catalog
 spec:
   databaseName: catalog
-  storageGB: 20
+  dbInstanceClass: db.t4g.micro
+  storageGB: 5
   secret: catalog-db-composition
   resourceConfig:
     providerConfigName: aws-provider-config

@@ -83,17 +83,17 @@ spec:
         kind: DBInstance
         spec:
           forProvider:
+            dbInstanceClass: to-be-patched # something like db.t4g.micro
+            allocatedStorage: 0 # to be patched
             region: $(AWS_DEFAULT_REGION)
             applyImmediately: true
             autogeneratePassword: true
             dbSubnetGroupNameSelector:
               matchControllerRef: true
-            dbInstanceClass: db.t4g.micro
             masterUsername: admin
             engine: mysql
             engineVersion: "8.0"
             dbName: to-be-patched
-            allocatedStorage: 20
             skipFinalSnapshot: true
             publiclyAccessible: false
             vpcSecurityGroupIDs: []
@@ -113,6 +113,8 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: common-fields
+        - fromFieldPath: "spec.dbInstanceClass"
+          toFieldPath: "spec.forProvider.dbInstanceClass"
         - fromFieldPath: "spec.storageGB"
           toFieldPath: "spec.forProvider.allocatedStorage"
         - fromFieldPath: "spec.databaseName"
