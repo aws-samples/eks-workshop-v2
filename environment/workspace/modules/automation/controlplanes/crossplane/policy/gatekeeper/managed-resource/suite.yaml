@@ -1,21 +1,21 @@
 kind: Suite
 apiVersion: test.gatekeeper.sh/v1alpha1
 metadata:
-  name: block-namespace-mismatch
+  name: crossplane-gatekeeper-test-suite
 tests:
-- name: block-namespace-mismatch
+- name: Test Cases
   template: template.yaml
   constraint: samples/constraint.yaml
   cases:
-  - name: missing owner ref
+  - name: RDS missing owner reference
     object: samples/missing_owner_ref_disallowed.yaml
     assertions:
     - violations: yes
-  - name: invalid owner ref
+  - name: RDS with invalid owner reference
     object: samples/invalid_ownere_ref_disallowed.yaml
     assertions:
     - violations: yes
-  - name: allowed
+  - name: RDS allowed
     object: samples/allowed.yaml
     assertions:
     - violations: no
