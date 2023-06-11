@@ -3,6 +3,15 @@ title: "Nested Compositions"
 sidebar_position: 40
 ---
 
+:::tip Before you start
+Prepare your environment for this section:
+
+```bash
+$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/compositions/definition.yaml
+$ kubectl apply -k /workspace/modules/automation/controlplanes/crossplane/compositions/composition
+
+```
+:::
 Make sure you completed the [compositions](/docs/automation/controlplanes/crossplane/compositions) lab before starting this lab.
 
 ## Catalog Application
