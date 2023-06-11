@@ -78,6 +78,12 @@ You should shoud not see a violation message indicating that the database specif
 
 ## Gatekeeper
 
+Gatekeeper's engine is designed to be portable, allowing administrators to detect and reject non-compliant commits to an infrastructure-as-code system's source-of-truth, further strengthening compliance efforts and preventing bad state from slowing down the organization.
+
+The gator CLI is a tool for evaluating Gatekeeper ConstraintTemplates and Constraints in a local environment.
+
+The following
+
 ```bash test=false
 $ GATOR_CLI="/workspace/modules/automation/controlplanes/crossplane/policy/gatekeeper/gator"
 $ GATOR_TEST="/workspace/modules/automation/controlplanes/crossplane/policy/gatekeeper/managed-resource/"

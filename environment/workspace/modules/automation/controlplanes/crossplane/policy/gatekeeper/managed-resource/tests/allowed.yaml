@@ -1,0 +1,22 @@
+apiVersion: rds.aws.crossplane.io/v1alpha1
+kind: DBInstance
+metadata:
+  labels:
+    crossplane.io/claim-name: catalog-composition
+    crossplane.io/claim-namespace: catalog
+    crossplane.io/composite: catalog-composition-zz7zm
+  name: catalog-composition-zz7zm-xkzq7
+  ownerReferences:
+  - apiVersion: awsblueprints.io/v1alpha1
+    kind: XRelationalDatabase
+    name: catalog-composition-zz7zm
+spec:
+  forProvider:
+    allocatedStorage: 5
+    dbInstanceClass: db.t4g.micro
+    dbName: catalog
+    engine: mysql
+    engineVersion: 8.0.32
+    region: us-west-2
+
+

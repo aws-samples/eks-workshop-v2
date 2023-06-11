@@ -39,7 +39,7 @@ spec:
 
         violation[{"msg": msg}] {
           ownerRef = input.review.object.metadata.ownerReferences[0]
-          not re_match("^crossplane.aws.amazon.com", ownerRef.apiVersion)
+          not re_match("^awsblueprints.io/v1alpha1", ownerRef.apiVersion)
           msg := "owner reference is not valid"
         }
 

@@ -5,17 +5,17 @@ metadata:
 tests:
 - name: Test Cases
   template: template.yaml
-  constraint: samples/constraint.yaml
+  constraint: tests/constraint.yaml
   cases:
   - name: RDS missing owner reference
-    object: samples/missing_owner_ref_disallowed.yaml
+    object: tests/missing_owner_ref_disallowed.yaml
     assertions:
     - violations: yes
   - name: RDS with invalid owner reference
-    object: samples/invalid_ownere_ref_disallowed.yaml
+    object: tests/invalid_ownere_ref_disallowed.yaml
     assertions:
     - violations: yes
   - name: RDS allowed
-    object: samples/allowed.yaml
+    object: tests/allowed.yaml
     assertions:
     - violations: no
