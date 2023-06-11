@@ -28,6 +28,7 @@ automation/controlplanes/crossplane/policy/opa/db.rego
 ```
 
 
+
 In this policy, we define a package called `crossplane.example`. The policy has a single rule called `deny` that will trigger if the specified conditions are met. The conditions include checking that the resource `kind` is "DBInstance", and the `size` is greater than 20. If these conditions are satisfied, the policy will generate a denial message indicating that the RDS database size exceeds the allowed limit of 20.
 
 This policy can be deployed and enforced by OPA and Gatekeeper within the Crossplane environment. When a user attempts to provision an RDS database resource through Crossplane with a size larger than 20, the policy will be evaluated, and if the conditions are met, the provisioning request will be denied.
@@ -77,6 +78,6 @@ You should shoud not see a violation message indicating that the database specif
 
 
 
-
-More example here https://github.com/crossplane/tbs/blob/master/episodes/14/assets/gatekeeper/constraint-template.yaml
-Youtube video on Crossplane and OPA https://www.youtube.com/watch?v=TaF0_syejXc
+### Resources
+- [Crossplane Examples with OPA and Gatekeeper](https://github.com/crossplane/tbs/tree/master/episodes/14/assets)
+- [Youtube video on Crossplane and OPA](https://www.youtube.com/watch?v=TaF0_syejXc)
