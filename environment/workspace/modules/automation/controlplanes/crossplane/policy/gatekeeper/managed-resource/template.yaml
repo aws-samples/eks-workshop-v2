@@ -1,0 +1,45 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: requirecomposition
+  annotations:
+    description: >-
+      Disallows managed resource creation without going through composition
+spec:
+  crd:
+    spec:
+      names:
+        kind: RequireComposition
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package requirecomposition
+
+        # this is necessary since there are no way to match based on glob expressions within constrains.
+        default should_process = false
+        should_process = true {
+          re_match("^.*.aws.crossplane.io$", input.review.kind.group)
+        }
+
+        violation[{"msg": msg}] {
+          should_process
+          not input.review.object.metadata.labels
+          msg := "label not present"
+        }
+
+        violation[{"msg": msg}] {
+          not input.review.object.metadata.labels["crossplane.io/composite"]
+          msg := "crossplane composition not used"
+        }
+
+        violation[{"msg": msg}] {
+          not input.review.object.metadata.ownerReferences
+          msg := "ownerReferences field not present"
+        }
+
+        violation[{"msg": msg}] {
+          ownerRef = input.review.object.metadata.ownerReferences[0]
+          not re_match("^crossplane.aws.amazon.com", ownerRef.apiVersion)
+          msg := "owner reference is not valid"
+        }
+

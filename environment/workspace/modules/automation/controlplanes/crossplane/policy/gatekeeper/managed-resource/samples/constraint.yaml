@@ -1,0 +1,10 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: RequireComposition
+metadata:
+  name: crossplane-provider-config-ns
+spec:
+  match:
+    scope: "Cluster"
+    kinds:
+      - apiGroups: ["*"] # not possible to partial match. e.g. *.aws.crossplane.io does not work.
+        kinds: ["*"]

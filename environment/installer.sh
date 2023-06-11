@@ -29,6 +29,8 @@ argocd_checksum='1b9a5f7c47b3c1326a622533f073cef46511e391d296d9b075f583b47478035
 opa_version='0.53.1'
 opa_checksum='54e58abab85d125038152476f7c7987d352ca314c5e49e1f10d8e6800e6f6bef'
 
+gator_version='3.12.0'
+gator_checksum='209211a93907564b2d68210b90ec30162e2b4ba5ca6cb6ddc345e0ce41f50a93'
 
 download_and_verify () {
   url=$1
@@ -109,3 +111,10 @@ mv ./argocd-linux-amd64 /usr/local/bin/argocd
 download_and_verify "https://github.com/open-policy-agent/opa/releases/download/v${opa_version}/opa_linux_amd64_static" "$opa_checksum" "opa_linux_amd64_static"
 chmod +x ./opa_linux_amd64_static
 mv ./opa_linux_amd64_static /usr/local/bin/opa
+
+# gator
+download_and_verify "https://github.com/open-policy-agent/gatekeeper/releases/download/v${gator_version}/gator-v${gator_version}-linux-amd64.tar.gz" "$gator_checksum" "gator.tar.gz"
+tar zxf gator.tar.gz
+chmod +x gator
+mv ./gator /usr/local/bin
+rm -rf gator.tar.gz

@@ -76,7 +76,14 @@ $ echo "Exit Code is $?"
 
 You should shoud not see a violation message indicating that the database specification is allowed based on the OPA policy. The `opa` CLI should return an exit code of zero as indicated by the message **Exit Code is 0**
 
+## Gatekeeper
 
+```bash test=false
+$ GATOR_CLI="/workspace/modules/automation/controlplanes/crossplane/policy/gatekeeper/gator"
+$ GATOR_TEST="/workspace/modules/automation/controlplanes/crossplane/policy/gatekeeper/managed-resource/"
+$ $GATOR_CLI verify $GATOR_TEST -v
+
+```
 
 ### Resources
 - [Crossplane Examples with OPA and Gatekeeper](https://github.com/crossplane/tbs/tree/master/episodes/14/assets)

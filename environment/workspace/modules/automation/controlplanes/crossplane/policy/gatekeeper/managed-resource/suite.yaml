@@ -1,0 +1,21 @@
+kind: Suite
+apiVersion: test.gatekeeper.sh/v1alpha1
+metadata:
+  name: block-namespace-mismatch
+tests:
+- name: block-namespace-mismatch
+  template: template.yaml
+  constraint: samples/constraint.yaml
+  cases:
+  - name: missing owner ref
+    object: samples/missing_owner_ref_disallowed.yaml
+    assertions:
+    - violations: yes
+  - name: invalid owner ref
+    object: samples/invalid_ownere_ref_disallowed.yaml
+    assertions:
+    - violations: yes
+  - name: allowed
+    object: samples/allowed.yaml
+    assertions:
+    - violations: no

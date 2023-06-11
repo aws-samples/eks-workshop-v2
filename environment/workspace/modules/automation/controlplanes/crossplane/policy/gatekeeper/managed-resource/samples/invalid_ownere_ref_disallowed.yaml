@@ -1,0 +1,50 @@
+apiVersion: s3.aws.crossplane.io/v1beta1
+kind: Bucket
+metadata:
+  annotations:
+    crossplane.io/composition-resource-name: s3-bucket
+    crossplane.io/external-name: standard-object-storage-9mfmk-xgqv8
+  creationTimestamp: "2022-09-29T16:36:08Z"
+  finalizers:
+  - finalizer.managedresource.crossplane.io
+  generateName: standard-object-storage-9mfmk-
+  generation: 2
+  labels:
+    crossplane.io/claim-name: standard-object-storage
+    crossplane.io/claim-namespace: application4
+    crossplane.io/composite: standard-object-storage-9mfmk
+  ownerReferences:
+  - apiVersion: crossplane..io/v1alpha1
+    controller: true
+    kind: XObjectStorage
+    name: standard-object-storage-9mfmk
+    uid: be95b67b-30ca-4f58-9ac2-6232927eab11
+  name: standard-object-storage-9mfmk-xgqv8
+spec:
+  deletionPolicy: Delete
+  forProvider:
+    acl: private
+    locationConstraint: us-west-2
+    paymentConfiguration:
+      payer: BucketOwner
+    publicAccessBlockConfiguration:
+      blockPublicAcls: true
+      blockPublicPolicy: true
+      ignorePublicAcls: true
+      restrictPublicBuckets: true
+    serverSideEncryptionConfiguration:
+      rules:
+      - applyServerSideEncryptionByDefault:
+          sseAlgorithm: AES256
+    tagging:
+      tagSet:
+      - key: env
+        value: test
+      - key: anotherKey
+        value: anotherValue
+  providerConfigRef:
+    name: aws-provider-config
+  writeConnectionSecretToRef:
+    name: be95b67b-30ca-4f58-9ac2-6232927eab11-bucket
+    namespace: application4
+
