@@ -31,15 +31,42 @@ automation/controlplanes/crossplane/policy/opa/db.rego
 ```
 
 
-In this policy, we define a package called `crossplane.example`. The policy has a single rule called `deny` that will trigger if the specified conditions are met. The conditions include checking that the resource `kind` is "DBInstance", the `engine` is "mysql", and the `size` is greater than 20. If these conditions are satisfied, the policy will generate a denial message indicating that the RDS database size exceeds the allowed limit of 20.
+In this policy, we define a package called `crossplane.example`. The policy has a single rule called `deny` that will trigger if the specified conditions are met. The conditions include checking that the resource `kind` is "DBInstance", and the `size` is greater than 20. If these conditions are satisfied, the policy will generate a denial message indicating that the RDS database size exceeds the allowed limit of 20.
 
 This policy can be deployed and enforced by OPA and Gatekeeper within the Crossplane environment. When a user attempts to provision an RDS database resource through Crossplane with a size larger than 20, the policy will be evaluated, and if the conditions are met, the provisioning request will be denied.
 
-More example here https://github.com/crossplane/tbs/blob/master/episodes/14/assets/gatekeeper/constraint-template.yaml
-Youtube video on Crossplane and OPA https://www.youtube.com/watch?v=TaF0_syejXc
+Lets use the `opa` to evaluate our policy against different an invalid database specifications (i.e. 30GB).
 
-Lets use the `opa` to evaluate our policy against different database specifications.
+```file
+automation/controlplanes/crossplane/policy/opa/db-invalid.json
+```
+
 
 ```bash
-$
+$ OPA_POLICY=/workspace/modules/automation/controlplanes/crossplane/policy/opa/db.rego
+$ OPA_INPUT=/workspace/modules/automation/controlplanes/crossplane/policy/opa/db-invalid.json
+$ opa eval --data $OPA_POLICY --input $OPA_INPUT "data.crossplane.violation[_]" --fail-defined  --format pretty
+"database size of 30 GB is larger than limit of 20 GB"
+$ echo "Exit Code is $?"
+echo "Exit Code is 1"
 ```
+
+Using a valid database specification (i.e. 10GB) lets use opa to evaluate
+
+```file
+automation/controlplanes/crossplane/policy/opa/db-valid.json
+```
+
+```bash
+$ OPA_POLICY=/workspace/modules/automation/controlplanes/crossplane/policy/opa/db.rego
+$ OPA_INPUT=/workspace/modules/automation/controlplanes/crossplane/policy/opa/db-valid.json
+$ opa eval --data $OPA_POLICY --input $OPA_INPUT "data.crossplane.violation[_]" --fail-defined  --format pretty
+[ ]
+$ echo "Exit Code is $?"
+echo "Exit Code is 0"
+```
+
+
+
+More example here https://github.com/crossplane/tbs/blob/master/episodes/14/assets/gatekeeper/constraint-template.yaml
+Youtube video on Crossplane and OPA https://www.youtube.com/watch?v=TaF0_syejXc
