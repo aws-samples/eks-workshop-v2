@@ -26,6 +26,10 @@ flux_checksum='268b8d9a2fa5b0c9e462b551eaefdadb9e03370eb53061a88a2a9ac40e95e8e4'
 argocd_version='2.7.4'
 argocd_checksum='1b9a5f7c47b3c1326a622533f073cef46511e391d296d9b075f583b474780356'
 
+opa_version='0.53.1'
+opa_checksum='54e58abab85d125038152476f7c7987d352ca314c5e49e1f10d8e6800e6f6bef'
+
+
 download_and_verify () {
   url=$1
   checksum=$2
@@ -100,3 +104,8 @@ rm -rf flux.tar.gz
 download_and_verify "https://github.com/argoproj/argo-cd/releases/download/v${argocd_version}/argocd-linux-amd64" "$argocd_checksum" "argocd-linux-amd64"
 chmod +x ./argocd-linux-amd64
 mv ./argocd-linux-amd64 /usr/local/bin/argocd
+
+# opa
+download_and_verify "https://github.com/open-policy-agent/opa/releases/download/v${opa_version}/opa_linux_amd64_static" "$opa_checksum" "opa_linux_amd64_static"
+chmod +x ./opa_linux_amd64_static
+mv ./opa_linux_amd64_static /usr/local/bin/opa
