@@ -1,6 +1,6 @@
 ---
 title: "GitOps"
-sidebar_position: 60
+sidebar_position: 50
 ---
 
 :::tip Before you start
