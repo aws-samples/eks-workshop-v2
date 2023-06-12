@@ -12,7 +12,6 @@ $ kubectl apply -k /workspace/modules/automation/controlplanes/crossplane/compos
 
 ```
 :::
-Make sure you completed the [compositions](/docs/automation/controlplanes/crossplane/compositions) lab before starting this lab.
 
 ## Catalog Application
 First, lets provide a definition that can be used to create a database and the catalog service.
