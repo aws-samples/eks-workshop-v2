@@ -2,18 +2,19 @@
 title: "AWS Controllers for Kubernetes (ACK)"
 sidebar_position: 1
 sidebar_custom_props: {"module": true}
+sidebar_label: "Skip"
 ---
 
 :::tip Before you start
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30
-$ reset-environment 
+$ reset-environment
 ```
 
 :::
 
-[AWS Controllers for Kubernetes (ACK)](https://aws-controllers-k8s.github.io/community/) lets you define and use AWS service resources directly from Kubernetes. 
+[AWS Controllers for Kubernetes (ACK)](https://aws-controllers-k8s.github.io/community/) lets you define and use AWS service resources directly from Kubernetes.
 
 With ACK, you can take advantage of AWS managed services for your Kubernetes applications without having to define resources outside of the cluster. This reduces the overall complexity for managing the dependencies of your application.
 

@@ -2,13 +2,14 @@
 title: "Flux"
 sidebar_position: 2
 sidebar_custom_props: {"module": true}
+sidebar_label: "Skip"
 ---
 
 :::tip Before you start
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30
-$ reset-environment 
+$ reset-environment
 ```
 
 :::
