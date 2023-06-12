@@ -6,5 +6,5 @@ spec:
   match:
     scope: "Cluster"
     kinds:
-      - apiGroups: ["*"] # not possible to partial match. e.g. *.aws.crossplane.io does not work.
+      - apiGroups: ["rds.aws.crossplane.io"] # not possible to partial match. e.g. *.aws.crossplane.io does not work.
         kinds: ["*"]

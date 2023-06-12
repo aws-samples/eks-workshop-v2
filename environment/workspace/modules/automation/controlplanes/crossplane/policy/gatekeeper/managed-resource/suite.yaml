@@ -15,6 +15,14 @@ tests:
     object: tests/invalid_ownere_ref_disallowed.yaml
     assertions:
     - violations: yes
+  - name: RDS follow storag size limit
+    object: tests/too_large.yaml
+    assertions:
+    - violations: yes
+  - name: RDS not following any policy
+    object: tests/all_things_wrong.yaml
+    assertions:
+    - violations: yes
   - name: RDS allowed
     object: tests/allowed.yaml
     assertions:

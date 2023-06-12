@@ -80,16 +80,58 @@ You should shoud not see a violation message indicating that the database specif
 
 Gatekeeper's engine is designed to be portable, allowing administrators to detect and reject non-compliant commits to an infrastructure-as-code system's source-of-truth, further strengthening compliance efforts and preventing bad state from slowing down the organization.
 
-The gator CLI is a tool for evaluating Gatekeeper ConstraintTemplates and Constraints in a local environment.
+The [gator CLI](https://open-policy-agent.github.io/gatekeeper/website/docs/gator) is a tool for evaluating Gatekeeper ConstraintTemplates and Constraints in a local environment.
 
-The following
+
+Before you can define a constraint, you must first define a ConstraintTemplate, which describes both the Rego that enforces the constraint and the schema of the constraint. The schema of the constraint allows an admin to fine-tune the behavior of a constraint, much like arguments to a function.
+
+Here is an example constraint template that requires the `DBInstance` Manage Resource (MR) to meet the following policies:
+- Should have a storage size smaller than 20GB
+- Sould reference a Claim via the label `crossplane.io/claim-name`
+- Should only be created via Composition using a Composite with apiVersion `awsblueprints.io/v1alpha1`
+
+```file
+automation/controlplanes/crossplane/policy/gatekeeper/managed-resource/template.yaml
+```
+
+Here is Managed Resource not following any of the policies in the Gatekeeper template:
+```file
+automation/controlplanes/crossplane/policy/gatekeeper/managed-resource/tests/all_things_wrong.yaml
+```
+
+Here is Managed Resource following all the policies in the Gatekeeper template:
+```file
+automation/controlplanes/crossplane/policy/gatekeeper/managed-resource/tests/allowed.yaml
+```
+
+You would specify the suite of test cases using a file
+
+```file
+automation/controlplanes/crossplane/policy/gatekeeper/managed-resource/suite.yaml
+```
+
+Lets use the `gator` to run tests against a sample of inputs
 
 ```bash test=false
 $ GATOR_CLI="/workspace/modules/automation/controlplanes/crossplane/policy/gatekeeper/gator"
 $ GATOR_TEST="/workspace/modules/automation/controlplanes/crossplane/policy/gatekeeper/managed-resource/"
 $ $GATOR_CLI verify $GATOR_TEST -v
-
+=== RUN   Test Cases
+    === RUN   RDS missing owner reference
+    --- PASS: RDS missing owner reference       (0.005s)
+    === RUN   RDS with invalid owner reference
+    --- PASS: RDS with invalid owner reference  (0.002s)
+    === RUN   RDS follow storag size limit
+    --- PASS: RDS follow storag size limit      (0.004s)
+    === RUN   RDS not following any policy
+    --- PASS: RDS not following any policy      (0.002s)
+    === RUN   RDS allowed
+    --- PASS: RDS allowed       (0.002s)
 ```
+
+Once you have have tested the ConstraintTemplate, you can enforce the polcies using Gatekeeper in EKS
+follow the instructions on the Gatekeeper website [Deploying via Helm
+](https://open-policy-agent.github.io/gatekeeper/website/docs/install#deploying-via-helm)
 
 ### Resources
 - [Crossplane Examples with OPA and Gatekeeper](https://github.com/crossplane/tbs/tree/master/episodes/14/assets)

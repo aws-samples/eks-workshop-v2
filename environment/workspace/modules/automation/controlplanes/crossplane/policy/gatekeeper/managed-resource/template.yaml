@@ -15,20 +15,14 @@ spec:
       rego: |
         package requirecomposition
 
-        # this is necessary since there are no way to match based on glob expressions within constrains.
-        default should_process = false
-        should_process = true {
-          re_match("^.*.aws.crossplane.io$", input.review.kind.group)
+        violation[{"msg": msg}] {
+          size := input.review.object.spec.forProvider.allocatedStorage
+          size >= 20
+          msg = sprintf("database size of %d GB is larger than limit of 20 GB", [size])
         }
 
         violation[{"msg": msg}] {
-          should_process
-          not input.review.object.metadata.labels
-          msg := "label not present"
-        }
-
-        violation[{"msg": msg}] {
-          not input.review.object.metadata.labels["crossplane.io/composite"]
+          not input.review.object.metadata.labels["crossplane.io/claim-name"]
           msg := "crossplane composition not used"
         }
 
