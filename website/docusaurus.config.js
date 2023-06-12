@@ -51,7 +51,9 @@ const config = {
             //[remarkBlueprintsAddon, {terraformDir: `${rootDir}/../terraform/local`}]
           ],
           editUrl:
-            'https://github.com/aws-samples/eks-workshop-v2/tree/main/website'
+            'https://github.com/aws-samples/eks-workshop-v2/tree/main/website',
+          exclude: [
+          ]
         },
         theme: {
           customCss: require.resolve('./src/css/custom.scss'),
