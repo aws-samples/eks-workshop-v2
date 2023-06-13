@@ -19,9 +19,10 @@ deployment.apps "ui" deleted
 Now, let's get into the cloned Git repository and start creating our GitOps configuration. Copy the existing kustomize configuration for the UI service:
 
 ```bash
-$ cp -R /workspace/manifests/ui ~/environment/argocd/apps
+$ cp -R /workspace/manifests/ui/* ~/environment/argocd/apps
 ```
 
+<!--
 We'll then need to create a kustomization in the `apps` directory:
 
 ```file
@@ -33,22 +34,21 @@ Copy this file to the Git repository directory:
 ```bash
 $ cp /workspace/modules/automation/gitops/argocd/kustomization.yaml ~/environment/argocd/apps/kustomization.yaml
 ```
+-->
 
 You Git directory should now look something like this which you can validate by running `tree ~/environment/argocd`:
 
 ```
 .
 └── apps
+    ├── configMap.yaml
+    ├── deployment.yaml
     ├── kustomization.yaml
-    └── ui
-        ├── configMap.yaml
-        ├── deployment.yaml
-        ├── kustomization.yaml
-        ├── namespace.yaml
-        ├── serviceAccount.yaml
-        └── service.yaml
+    ├── namespace.yaml
+    ├── serviceAccount.yaml
+    └── service.yaml
 
-2 directories, 7 files
+1 directory, 6 files
 ```
 
 Open the Argo CD UI and navigate to the `apps` application.
@@ -63,23 +63,10 @@ $ git -C ~/environment/argocd commit -am "Adding the UI service"
 $ git -C ~/environment/argocd push
 ```
 
-The default `Refresh` interval is 3 minutes (180 seconds). You could change the interval by updating the "timeout.reconciliation" value in the argocd-cm config map. If the interval is to 0 then Argo CD will not poll Git repositories automatically and alternative methods such as webhooks and/or manual syncs should be used.
-
-For training purposes, let's set `Refresh` interval to 5s and restart argocd application controller to deploy our changes faster
-
-```bash wait=30
-$ kubectl patch configmap/argocd-cm -n argocd --type merge \
-  -p '{"data":{"timeout.reconciliation":"5s"}}'
-$ kubectl -n argocd rollout restart deploy argocd-repo-server
-$ kubectl -n argocd rollout status deploy/argocd-repo-server
-$ kubectl -n argocd rollout restart statefulset argocd-application-controller
-$ kubectl -n argocd rollout status statefulset argocd-application-controller
-```
-
-We can also use the `Sync` button or the `argocd` CLI to `Sync` an application:
+Click `Refresh` and `Sync` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
 
 ```bash
-$ argocd app sync apps --prune
+$ argocd app sync apps
 ```
 
 After a short period of time, the application should be in `Synced` state and the resources should be deployed, the UI should look like this:

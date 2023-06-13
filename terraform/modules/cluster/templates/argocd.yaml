@@ -1,0 +1,180 @@
+dex:
+  enabled: false
+notifications:
+  enabled: false
+redis-ha:
+  enabled: false
+
+redis:
+  nodeSelector:
+    workshop-system: "yes"
+  tolerations:
+    - key: systemComponent
+      operator: Exists
+      effect: NoSchedule
+
+controller:
+  replicas: 1 # Additional replicas will cause sharding of managed clusters across number of replicas.
+  metrics:
+    enabled: true
+    service:
+      annotations:
+        prometheus.io/scrape: true
+  env:
+  - name: ARGOCD_K8S_CLIENT_QPS #required for Crossplane too many CRDs https://github.com/crossplane/crossplane/issues/3272
+    value: "300"
+  nodeSelector:
+    workshop-system: "yes"
+  tolerations:
+    - key: systemComponent
+      operator: Exists
+      effect: NoSchedule
+
+repoServer:
+  replicas: 1
+  autoscaling:
+    enabled: false
+  resources: # Adjust based on your specific use case (required for HPA)
+    requests:
+      cpu : "100m"
+      memory : "256Mi"
+    limits:
+      memory: "512Mi"
+  metrics:
+    enabled: true
+    service:
+      annotations:
+        prometheus.io/scrape: true
+  nodeSelector:
+    workshop-system: "yes"
+  tolerations:
+    - key: systemComponent
+      operator: Exists
+      effect: NoSchedule
+
+applicationSet:
+  replicaCount: 1 # The controller doesn't scale horizontally, is active-standby replicas
+  metrics:
+    enabled: true
+    service:
+      annotations:
+        prometheus.io/scrape: true
+  nodeSelector:
+    workshop-system: "yes"
+  tolerations:
+    - key: systemComponent
+      operator: Exists
+      effect: NoSchedule
+
+server:
+  replicas: 1
+  autoscaling:
+    enabled: false
+  resources: # Adjust based on your specific use case (required for HPA)
+    requests:
+      cpu : "100m"
+      memory : "256Mi"
+    limits:
+      memory: "512Mi"
+  metrics:
+    enabled: true
+    service:
+      annotations:
+        prometheus.io/scrape: true
+  service:
+    type: "LoadBalancer"
+  nodeSelector:
+    workshop-system: "yes"
+  tolerations:
+    - key: systemComponent
+      operator: Exists
+      effect: NoSchedule
+
+configs:
+  params:
+    application.namespaces: "cluster-*"
+  cm:
+    application.resourceTrackingMethod: "annotation" #use annotation for tracking required for Crossplane
+    resource.exclusions: |
+      - kinds:
+        - ProviderConfigUsage
+        apiGroups:
+        - "*"
+    resource.customizations: |
+      "awsblueprints.io/*":
+        health.lua: |
+          health_status = {
+            status = "Progressing",
+            message = "Provisioning ..."
+          }
+
+          if obj.status == nil or obj.status.conditions == nil then
+            return health_status
+          end
+
+          for i, condition in ipairs(obj.status.conditions) do
+            if condition.type == "Ready" then
+              if condition.status == "True" then
+                health_status.status = "Healthy"
+                health_status.message = "Resource is up-to-date."
+                return health_status
+              end
+            end
+
+            if condition.type == "LastAsyncOperation" then
+              if condition.status == "False" then
+                health_status.status = "Degraded"
+                health_status.message = condition.message
+                return health_status
+              end
+            end
+
+            if condition.type == "Synced" then
+              if condition.status == "False" then
+                health_status.status = "Degraded"
+                health_status.message = condition.message
+                return health_status
+              end
+            end
+          end
+
+          return health_status
+
+      "*.aws.*.io/*":
+        health.lua: |
+          health_status = {
+            status = "Progressing",
+            message = "Provisioning ..."
+          }
+
+          if obj.status == nil or obj.status.conditions == nil then
+            return health_status
+          end
+
+          for i, condition in ipairs(obj.status.conditions) do
+            if condition.type == "Ready" then
+              if condition.status == "True" then
+                health_status.status = "Healthy"
+                health_status.message = "Resource is up-to-date."
+                return health_status
+              end
+            end
+
+            if condition.type == "LastAsyncOperation" then
+              if condition.status == "False" then
+                health_status.status = "Degraded"
+                health_status.message = condition.message
+                return health_status
+              end
+            end
+
+            if condition.type == "Synced" then
+              if condition.status == "False" then
+                health_status.status = "Degraded"
+                health_status.message = condition.message
+                return health_status
+              end
+            end
+          end
+
+          return health_status

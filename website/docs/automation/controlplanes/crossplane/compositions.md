@@ -17,12 +17,17 @@ Create this composite definition:
 
 ```bash
 $ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/compositions/definition.yaml
-compositeresourcedefinition.apiextensions.crossplane.io "xrelationaldatabases.awsblueprints.io" deleted
+compositeresourcedefinition.apiextensions.crossplane.io/xrelationaldatabases.awsblueprints.io created
 ```
 
 A Composition lets Crossplane know what to do when someone creates a Composite Resource. Each Composition creates a link between an XR and a set of one or more Managed Resources - when the XR is created, updated, or deleted the set of Managed Resources are created, updated or deleted accordingly.
 
-The following Composition provisions the managed resources `DBSubnetGroup`, `SecurityGroup` and `DBInstance`:
+The following Composition provisions the managed resources `DBSubnetGroup`, `SecurityGroup` and `DBInstance`
+
+The `DBInstance` is configure to auto generate the DB password, and store it in a Kubernetes secret with
+the name specified in the claim `spec.secret` in the same namespace as the claim. The location of the secret
+is specified by `masterUserPasswordSecretRef`. The DB username and endpoint values are stored in the same
+secret specified by `spec.writeConnectionSecretToRef`:
 
 ```file
 automation/controlplanes/crossplane/compositions/composition/composition.yaml
@@ -46,8 +51,8 @@ automation/controlplanes/crossplane/compositions/claim/claim.yaml
 Create the database by creating a `Claim`:
 
 ```bash
-$ kubectl apply -k /workspace/modules/automation/controlplanes/crossplane/compositions/claim
-relationaldatabase.awsblueprints.io/rds-eks-workshop created
+$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml
+relationaldatabase.awsblueprints.io/catalog-composition created
 ```
 
 It takes some time to provision the AWS managed services, in the case of RDS up to 10 minutes. Crossplane will report the status of the reconciliation in the status field of the Kubernetes custom resources.
@@ -55,7 +60,7 @@ It takes some time to provision the AWS managed services, in the case of RDS up 
 To verify that the provisioning is done you can check that the condition “Ready” is true using the Kubernetes CLI. Run the following commands and they will exit once the condition is met:
 
 ```bash timeout=1200
-$ kubectl wait relationaldatabase.awsblueprints.io ${EKS_CLUSTER_NAME}-catalog-composition -n catalog --for=condition=Ready --timeout=20m
+$ kubectl wait relationaldatabase.awsblueprints.io catalog-composition -n catalog --for=condition=Ready --timeout=20m
 dbinstances.rds.services.k8s.aws/rds-eks-workshop condition met
 ```
 
@@ -64,25 +69,16 @@ Crossplane will have automatically created a Kubernetes secret object that conta
 ```bash
 $ kubectl get secret catalog-db-composition -n catalog -o yaml
 apiVersion: v1
+kind: Secret
+metadata:
+  name: catalog-db-composition
+  namespace: catalog
+type: connection.crossplane.io/v1alpha1
 data:
   endpoint: cmRzLWVrcy13b3Jrc2hvcC5jamthdHFkMWNucnoudXMtd2VzdC0yLnJkcy5hbWF6b25hd3MuY29t
   password: eGRnS1NNN2RSQ3dlc2VvRmhrRUEwWDN3OXpp
   port: MzMwNg==
   username: YWRtaW4=
-kind: Secret
-metadata:
-  creationTimestamp: "2023-01-26T15:12:41Z"
-  name: catalog-db-composition
-  namespace: catalog
-  ownerReferences:
-  - apiVersion: rds.aws.crossplane.io/v1alpha1
-    controller: true
-    kind: DBInstance
-    name: rds-eks-workshop
-    uid: bff607d9-86f2-4710-aabd-e60985b56995
-  resourceVersion: "28395"
-  uid: 1407281b-d282-42d8-b898-733400d3d11a
-type: connection.crossplane.io/v1alpha1
 ```
 
 Update the application to use the RDS endpoint and credentials:
@@ -98,6 +94,7 @@ service/catalog-mysql unchanged
 service/ui-nlb created
 deployment.apps/catalog configured
 statefulset.apps/catalog-mysql unchanged
+$ kubectl rollout restart -n catalog deployment/catalog
 $ kubectl rollout status -n catalog deployment/catalog --timeout=30s
 ```
 

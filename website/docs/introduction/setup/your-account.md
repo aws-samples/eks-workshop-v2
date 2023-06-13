@@ -47,10 +47,11 @@ The Terraform state file (`terraform.tfstate`) is used by Terraform to track the
 
 ## Updating
 
-As the workshop is updated with new content it may be necessary to update your lab environment. You can do so by running the following:
+As the workshop is updated with new content it may be necessary to update your lab environment. You can do so by running the following inside of the `eks-workshop-v2` directory:
 
 ```bash test=false
 $ git pull origin latest
+$ cd terraform 
 $ terraform init -upgrade
 # You can use plan command to preview the resources that will be create if you want
 $ terraform apply --auto-approve 

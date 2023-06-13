@@ -213,216 +213,38 @@ module "eks_blueprints_kubernetes_addons" {
   }
 
   crossplane_helm_config = {
-    set = concat([{
-      name  = "rbacManager.nodeSelector.workshop-system"
-      value = "yes"
-      type  = "string"
-      },
-      {
-        name  = "rbacManager.tolerations[0].key"
-        value = "systemComponent"
-        type  = "string"
-      },
-      {
-        name  = "rbacManager.tolerations[0].operator"
-        value = "Exists"
-        type  = "string"
-      },
-      {
-        name  = "rbacManager.tolerations[0].effect"
-        value = "NoSchedule"
-        type  = "string"
-    }], local.system_component_values)
+    name             = "crossplane"
+    chart            = "crossplane"
+    repository       = "https://charts.crossplane.io/stable/"
+    version          = "1.12.1"
+    namespace        = "crossplane-system"
+    timeout          = 1200
+    create_namespace = true
+    values           = [templatefile("${path.module}/templates/crossplane.yaml",{})]
+    set              = concat([], local.system_component_values)
   }
 
   crossplane_aws_provider = {
     enable                   = true
-    provider_aws_version     = "v0.36.0"
+    provider_aws_version     = "v0.40.0"
     additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
+  }
+
+  crossplane_kubernetes_provider = {
+    enable = true
+    provider_kubernetes_version = "v0.9.0"
   }
 
   argocd_helm_config = {
     name             = "argocd"
     chart            = "argo-cd"
     repository       = "https://argoproj.github.io/argo-helm"
-    version          = "5.27.1"
+    version          = "5.36.0"
     namespace        = "argocd"
     timeout          = 1200
     create_namespace = true
-
-    set = concat([
-      {
-        name  = "server.service.type"
-        value = "LoadBalancer"
-      },
-      {
-        name  = "controller.replicas"
-        value = "1"
-      },
-      {
-        name  = "controller.nodeSelector.workshop-system"
-        value = "yes"
-        type  = "string"
-      },
-      {
-        name  = "controller.tolerations[0].key"
-        value = "systemComponent"
-        type  = "string"
-      },
-      {
-        name  = "controller.tolerations[0].operator"
-        value = "Exists"
-        type  = "string"
-      },
-      {
-        name  = "controller.tolerations[0].effect"
-        value = "NoSchedule"
-        type  = "string"
-      },
-      {
-        name  = "dex.nodeSelector.workshop-system"
-        value = "yes"
-        type  = "string"
-      },
-      {
-        name  = "dex.tolerations[0].key"
-        value = "systemComponent"
-        type  = "string"
-      },
-      {
-        name  = "dex.tolerations[0].operator"
-        value = "Exists"
-        type  = "string"
-      },
-      {
-        name  = "dex.tolerations[0].effect"
-        value = "NoSchedule"
-        type  = "string"
-      },
-      {
-        name  = "notifications.nodeSelector.workshop-system"
-        value = "yes"
-        type  = "string"
-      },
-      {
-        name  = "notifications.tolerations[0].key"
-        value = "systemComponent"
-        type  = "string"
-      },
-      {
-        name  = "notifications.tolerations[0].operator"
-        value = "Exists"
-        type  = "string"
-      },
-      {
-        name  = "notifications.tolerations[0].effect"
-        value = "NoSchedule"
-        type  = "string"
-      },
-      {
-        name  = "redis.nodeSelector.workshop-system"
-        value = "yes"
-        type  = "string"
-      },
-      {
-        name  = "redis.tolerations[0].key"
-        value = "systemComponent"
-        type  = "string"
-      },
-      {
-        name  = "redis.tolerations[0].operator"
-        value = "Exists"
-        type  = "string"
-      },
-      {
-        name  = "redis.tolerations[0].effect"
-        value = "NoSchedule"
-        type  = "string"
-      },
-      {
-        name  = "server.replicas"
-        value = "1"
-      },
-      {
-        name  = "server.autoscaling.enabled"
-        value = "false"
-      },
-      {
-        name  = "server.nodeSelector.workshop-system"
-        value = "yes"
-        type  = "string"
-      },
-      {
-        name  = "server.tolerations[0].key"
-        value = "systemComponent"
-        type  = "string"
-      },
-      {
-        name  = "server.tolerations[0].operator"
-        value = "Exists"
-        type  = "string"
-      },
-      {
-        name  = "server.tolerations[0].effect"
-        value = "NoSchedule"
-        type  = "string"
-      },
-      {
-        name  = "repoServer.replicas"
-        value = "1"
-      },
-      {
-        name  = "repoServer.autoscaling.enabled"
-        value = "false"
-      },
-      {
-        name  = "repoServer.nodeSelector.workshop-system"
-        value = "yes"
-        type  = "string"
-      },
-      {
-        name  = "repoServer.tolerations[0].key"
-        value = "systemComponent"
-        type  = "string"
-      },
-      {
-        name  = "repoServer.tolerations[0].operator"
-        value = "Exists"
-        type  = "string"
-      },
-      {
-        name  = "repoServer.tolerations[0].effect"
-        value = "NoSchedule"
-        type  = "string"
-      },
-      {
-        name  = "redis-ha.enabled"
-        value = "false"
-      },
-      {
-        name  = "applicationSet.replicaCount"
-        value = "1"
-      },
-      {
-        name  = "applicationSet.nodeSelector.workshop-system"
-        value = "yes"
-        type  = "string"
-      },
-      {
-        name  = "applicationSet.tolerations[0].key"
-        value = "systemComponent"
-        type  = "string"
-      },
-      {
-        name  = "applicationSet.tolerations[0].operator"
-        value = "Exists"
-        type  = "string"
-      },
-      {
-        name  = "applicationSet.tolerations[0].effect"
-        value = "NoSchedule"
-        type  = "string"
-    }], local.system_component_values)
+    values           = [templatefile("${path.module}/templates/argocd.yaml",{})]
+    set              = concat([], local.system_component_values)
   }
 
   tags = local.tags
@@ -510,41 +332,6 @@ locals {
       value = "NoSchedule"
       type  = "string"
   }]
-}
-
-module "eks_blueprints_kubernetes_grafana_addon" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.16.0//modules/kubernetes-addons/grafana"
-
-  depends_on = [
-    module.eks_blueprints_kubernetes_addons
-  ]
-
-  addon_context = local.addon_context
-
-  irsa_policies = [
-    aws_iam_policy.grafana.arn
-  ]
-
-  helm_config = {
-    values = [templatefile("${path.module}/templates/grafana.yaml", { prometheus_endpoint = aws_prometheus_workspace.this.prometheus_endpoint, region = data.aws_region.current.name })]
-  }
-}
-
-resource "aws_iam_policy" "grafana" {
-  name = "${var.environment_name}-grafana-other"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-          "aps:*",
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      },
-    ]
-  })
 }
 
 module "descheduler" {

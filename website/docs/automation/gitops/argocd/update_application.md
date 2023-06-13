@@ -4,8 +4,10 @@ sidebar_position: 40
 ---
 
 Now we can use Argo CD and Kustomize to deploy patches to our application manifests using GitOps
+
 For example, lets increase the number of `replicas` for `ui` deployment to `3`
 
+<!--
 ```kustomization
 automation/gitops/argocd/update-application/deployment-patch.yaml
 Deployment/ui
@@ -30,6 +32,13 @@ Copy edited file `kustomization.yaml` to the Git repository directory:
 ```bash
 $ cp /workspace/modules/automation/gitops/argocd/update-application/kustomization.yaml.example ~/environment/argocd/apps/kustomization.yaml
 ```
+-->
+
+You can execute commands to add necessary changes to the file `apps/deployment.yaml`:
+
+```bash
+$ yq -i '.spec.replicas = 3' ~/environment/argocd/apps/deployment.yaml
+```
 
 Push changes to the Git repository
 
@@ -39,7 +48,12 @@ $ git -C ~/environment/argocd commit -am "Update UI service replicas"
 $ git -C ~/environment/argocd push
 ```
 
-Go to Argo CD UI, wait about 5s or hit `Refresh`/`Sync` and you should now have all the changes to the UI services deployed once more.
+Click `Refresh` and `Sync` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
+
+```bash
+$ argocd app sync apps
+```
+
 We should have now 3 pods in `ui` deployment
 
 ![argocd-update-application](assets/argocd-update-application.png)

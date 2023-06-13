@@ -164,7 +164,7 @@ class TerminalCommand extends TerminalContext {
   private isMultiLine = false;
 
   addLine(line: string) {
-    super.addLine(line.trim())
+    super.addLine(line)
   }
 
   getCommand() {
@@ -188,9 +188,7 @@ class TerminalCommand extends TerminalContext {
   }
 
   renderCommand(command: string, indent: boolean) {
-    let output = indent ? `     ${command}` : command;
-
-    return (<span className={styles.terminalPromptCommand}>{output}</span>)
+    return (<span className={styles.terminalPromptCommand}>{command}</span>)
   }
 }
 

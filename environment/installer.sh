@@ -23,8 +23,8 @@ yq_checksum='30459aa144a26125a1b22c62760f9b3872123233a5658934f7bd9fe714d7864d'
 flux_version='0.38.3'
 flux_checksum='268b8d9a2fa5b0c9e462b551eaefdadb9e03370eb53061a88a2a9ac40e95e8e4'
 
-argocd_version='2.6.6'
-argocd_checksum='d3ed61494dba51fff3e8568da7c38f620622f04d5cc2c3310d5c28ca66d7b033'
+argocd_version='2.7.4'
+argocd_checksum='1b9a5f7c47b3c1326a622533f073cef46511e391d296d9b075f583b474780356'
 
 download_and_verify () {
   url=$1
@@ -35,7 +35,7 @@ download_and_verify () {
 
   echo "$checksum $out_file" > "$out_file.sha256"
   sha256sum --check "$out_file.sha256"
-  
+
   rm "$out_file.sha256"
 }
 
