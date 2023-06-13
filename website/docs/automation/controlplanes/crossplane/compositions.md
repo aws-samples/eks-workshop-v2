@@ -87,6 +87,6 @@ mysql -h $DB_ENDPOINT -u$DB_USERNAME -p$DB_PASSWORD -e \
 
 Delete the claim:
 ```bash test=false
-$ kubectl delete -f /workspace/modules/automation/controlplanes/crossplane/app-db/claim/claim.yaml
+$ kubectl delete -f /workspace/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml
 catalog.awsblueprints.io "catalog-nested" deleted
 ```
