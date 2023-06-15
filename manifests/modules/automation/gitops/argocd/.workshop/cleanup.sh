@@ -1,9 +1,5 @@
 #!/bin/bash
 
-echo "Deleting ArgoCD application..."
+echo "Deleting ArgoCD applications..."
 
-argocd app delete argocd-demo -y > /dev/null || true
-
-echo "Deleting ArgoCD demo namespace..."
-
-kubectl delete namespace argocd-demo > /dev/null || true
+delete-all-if-crd-exists applications.argoproj.io

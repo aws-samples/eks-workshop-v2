@@ -26,7 +26,7 @@ and use [those instructions](https://argo-cd.readthedocs.io/en/stable/user-guide
 :::
 
 ```bash
-$ GITOPS_REPO_URL=ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_DEFAULT_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-argocd
+$ GITOPS_REPO_URL=ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-argocd
 $ echo $GITOPS_REPO_URL > ~/environment/argocd_repo_url
 ```
 

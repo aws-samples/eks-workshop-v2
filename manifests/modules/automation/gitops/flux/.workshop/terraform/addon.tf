@@ -19,12 +19,6 @@ resource "tls_private_key" "gitops" {
   rsa_bits  = 4096
 }
 
-resource "aws_ssm_parameter" "gitops" {
-  name  = "${local.addon_context.eks_cluster_id}-gitops-ssh"
-  type  = "SecureString"
-  value = tls_private_key.gitops.private_key_pem
-}
-
 data "aws_iam_policy_document" "gitops_access" {
   statement {
     sid = ""
@@ -48,10 +42,25 @@ resource "aws_iam_user_policy_attachment" "gitops_access" {
   policy_arn = aws_iam_policy.gitops_access.arn
 }
 
+resource "local_file" "ssh_private_key" {
+  content         = tls_private_key.gitops.private_key_pem
+  filename        = "/home/ec2-user/.ssh/gitops_ssh.pem"
+  file_permission = "0400"
+}
+
+resource "local_file" "ssh_config" {
+  content         = <<EOF
+Host git-codecommit.*.amazonaws.com
+  User ${aws_iam_user.gitops.unique_id}
+  IdentityFile ~/.ssh/gitops_ssh.pem
+EOF
+  filename        = "/home/ec2-user/.ssh/config"
+  file_permission = "0600"
+}
+
 output "environment" {
   value = <<EOF
 export GITOPS_IAM_SSH_KEY_ID=${aws_iam_user_ssh_key.gitops.id}
 export GITOPS_IAM_SSH_USER=${aws_iam_user.gitops.unique_id}
-export GITOPS_SSH_SSM_NAME=${aws_ssm_parameter.gitops.name}
 EOF
 }
