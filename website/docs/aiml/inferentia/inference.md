@@ -56,8 +56,12 @@ $ kubectl logs -f -n karpenter deploy/karpenter -c controller
 
 The inference pod should be scheduled on the node provisioned by Karpenter. Check if the Pod is in it's ready state:
 
+:::note
+It can take up to 7 minutes to provision the node, add it to the EKS cluster, and start the pod.
+:::
+
 ```bash timeout=360
-$ kubectl -n aiml wait --for=condition=Ready --timeout=5m pod/inference
+$ kubectl -n aiml wait --for=condition=Ready --timeout=8m pod/inference
 ```
 
 ### Run an inference
