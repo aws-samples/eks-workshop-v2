@@ -13,7 +13,7 @@ You must manually enable Istio in each namespace that you want to track or contr
 
 This namespace setting will only affect new workloads in the namespace. Any preexisting workloads will need to be re-deployed to leverage the sidecar auto injection.
 
-Assuming that you have deployed the example application as explained in the Introduction module, in the [Getting started](../../introduction/getting-started.md) section. Each microservice is deployed to its own separate Namespace to provide some degree of isolation.
+Assuming that you have deployed the example application as explained in the Introduction module, in the [Getting started](../../introduction/getting-started/index.md) section. Each microservice is deployed to its own separate Namespace to provide some degree of isolation.
 
 Now you need to get the list of namespaces specific to this example app:
 ```bash

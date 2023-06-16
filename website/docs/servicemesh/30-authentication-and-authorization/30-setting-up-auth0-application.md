@@ -12,7 +12,7 @@ To proceed with the task, you must:
 * Set up the ingress gateway to direct traffic to your bookinfo services through the configuration of a VirtualService resource.
 
 #### Routing Traffic to Services Using An Istio Gateway
-Remember you created the `bookinfo-gateway` resource in the ["Expose a Service" section under the "Traffic Management"](../20-traffic-management/30-expose_a_service.md) chapter. 
+Remember you created the `bookinfo-gateway` resource in the ["Expose a Service" section under the "Traffic Management"](../20-traffic-management/30-expose-a-service.md) chapter. 
 
 ```bash
 $ kubectl get gw bookinfo-gateway -n test -o yaml
