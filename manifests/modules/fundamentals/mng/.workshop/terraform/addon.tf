@@ -1,13 +1,13 @@
 data "aws_vpc" "selected" {
   tags = {
-    created-by = "eks-workshop"
+    created-by = "eks-workshop-v2"
     env        = local.addon_context.eks_cluster_id
   }
 }
 
 data "aws_subnets" "private" {
   tags = {
-    created-by = "eks-workshop"
+    created-by = "eks-workshop-v2"
     env        = local.addon_context.eks_cluster_id
   }
 

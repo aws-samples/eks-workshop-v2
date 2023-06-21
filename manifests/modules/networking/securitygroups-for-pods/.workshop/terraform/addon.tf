@@ -1,6 +1,6 @@
 data "aws_vpc" "this" {
   tags = {
-    created-by = "eks-workshop"
+    created-by = "eks-workshop-v2"
     env        = local.addon_context.eks_cluster_id
   }
 }
