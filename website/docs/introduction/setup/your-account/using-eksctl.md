@@ -21,6 +21,7 @@ Based on this configuration `eksctl` will:
 Apply the configuration file like so:
 
 ```bash test=false
+$ export EKS_CLUSTER_NAME=eks-workshop
 $ curl -fsSL https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/cluster/eksctl/cluster.yaml | \
 envsubst | eksctl create cluster -f -
 ```
@@ -29,4 +30,20 @@ Once the cluster is created run this command to use the cluster for the lab exer
 
 ```bash test=false
 $ use-cluster $EKS_CLUSTER_NAME
+```
+
+## Cleaning Up
+
+Before deleting the Cloud9 environment we need to clean up the cluster that we set up above.
+
+First use `prepare-environment` to ensure that any left-over lab infrastructure is removed:
+
+```bash test=false
+$ prepare-environment
+```
+
+Next delete the cluster with `eksctl`:
+
+```bash test=false
+$ eksctl delete cluster $EKS_CLUSTER_NAME --wait
 ```
