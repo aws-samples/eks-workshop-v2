@@ -4,7 +4,3 @@ resources:
 - deploy-namesystem.yaml
 - gatewayclass.yaml
 - latticegw.yaml
-- deploy-resources.yaml
-
-
-
