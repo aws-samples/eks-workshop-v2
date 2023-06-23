@@ -15,13 +15,37 @@ $ curl $ADDRESS/catalogue
 The first thing we'll do is re-create the Ingress for `ui` component adding the annotation `alb.ingress.kubernetes.io/group.name`:
 
 ```file
-manifests/modules/exposing/ingress/multiple-ingress/ingress-ui.yaml
+manifests/modules/exposing/ingress/multiple-ingress/ipv4/ingress-ui.yaml
 ```
 
 Now, let's create a separate Ingress for the `catalog` component that also leverages the same `group.name`:
 
 ```file
-manifests/modules/exposing/ingress/multiple-ingress/ingress-catalog.yaml
+manifests/modules/exposing/ingress/multiple-ingress/ipv4/ingress-catalog.yaml
+```
+
+This ingress is also configuring rules to route requests prefixed with `/catalogue` to the `catalog` component.
+
+## IPv4
+
+Apply these manifests to the cluster:
+
+```bash timeout=180 hook=add-ingress hookTimeout=430
+$ kubectl apply -k /eks-workshop/manifests/modules/exposing/ingress/multiple-ingress/ipv4
+```
+
+## IPv6
+
+Along with `alb.ingress.kubernetes.io/group.name` name annotations, you will also see `alb.ingress.kubernetes.io/ip-address-type: dualstack` annotation added. 
+
+```file
+manifests/modules/exposing/ingress/multiple-ingress/ipv6/ingress-ui.yaml
+```
+
+Now, let's create a separate Ingress for the `catalog` component that also leverages the same `group.name`:
+
+```file
+manifests/modules/exposing/ingress/multiple-ingress/ipv6/ingress-catalog.yaml
 ```
 
 This ingress is also configuring rules to route requests prefixed with `/catalogue` to the `catalog` component.
@@ -29,8 +53,11 @@ This ingress is also configuring rules to route requests prefixed with `/catalog
 Apply these manifests to the cluster:
 
 ```bash timeout=180 hook=add-ingress hookTimeout=430
-$ kubectl apply -k /eks-workshop/manifests/modules/exposing/ingress/multiple-ingress
+$ kubectl apply -k /eks-workshop/manifests/modules/exposing/ingress/multiple-ingress/ipv6
 ```
+
+
+## Verify Ingress resource
 
 We'll now have two separate Ingress objects in our cluster:
 

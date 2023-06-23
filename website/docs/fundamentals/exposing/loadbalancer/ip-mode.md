@@ -3,6 +3,8 @@ title: "IP mode"
 sidebar_position: 40
 ---
 
+## IPv4 
+
 As mentioned previously, the NLB we have created is operating in "instance mode". Instance target mode supports pods running on AWS EC2 instances. In this mode, AWS NLB sends traffic to the instances and the `kube-proxy` on the individual worker nodes forward it to the pods through one or more worker nodes in the Kubernetes cluster.
 
 The AWS Load Balancer Controller also supports creating NLBs operating in "IP mode". In this mode, the AWS NLB sends traffic directly to the Kubernetes pods behind the service, eliminating the need for an extra network hop through the worker nodes in the Kubernetes cluster. IP target mode supports pods running on both AWS EC2 instances and AWS Fargate.
@@ -22,15 +24,32 @@ Let's reconfigure our NLB to use IP mode and look at the effect it has on the in
 This is the patch we'll be applying to re-configure the Service:
 
 ```kustomization
-modules/exposing/load-balancer/ip-mode/nlb.yaml
+modules/exposing/load-balancer/ipv4/ip-mode/nlb.yaml
 Service/ui-nlb
 ```
 
 Apply the manifest with kustomize:
 
 ```bash
-$ kubectl apply -k /eks-workshop/manifests/modules/exposing/load-balancer/ip-mode
+$ kubectl apply -k /eks-workshop/manifests/modules/exposing/load-balancer/ipv4/ip-mode
 ```
+
+## IPv6
+Currently, NLB only supports "IP mode" for IPv6 targets. The AWS Load Balancer Controller supports creating dual-stack NLBs on IPv6 cluster. The ELB controller supports dual-stack NLB ffor  pods running on both AWS EC2 instances and AWS Fargate. 
+
+You can see `service.beta.kubernetes.io/aws-load-balancer-ip-address-type: "dualstack"` annotatios added to the service manifest. 
+
+```file
+manifests/modules/exposing/load-balancer/ipv6/nlb/nlb.yaml
+```
+
+This Service will create a dual-stack Network Load Balancer with both "A" and "AAAA" records that listens on port 80 and forwards connections to the IPv6 address of ui Pods on port 8080. 
+
+```bash
+$ kubectl apply -k /eks-workshop/manifests/modules/exposing/load-balancer/ipv6/nlb
+```
+
+## Verify the service
 
 It will take a few minutes for the configuration of the load balancer to be updated. Run the following command to ensure the annotation is updated:
 

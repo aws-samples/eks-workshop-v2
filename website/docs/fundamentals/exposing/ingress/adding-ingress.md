@@ -3,18 +3,34 @@ title: "Creating the Ingress"
 sidebar_position: 20
 ---
 
+## IPv4
+
 Let's create an Ingress resource with the following manifest:
 
 ```file
-manifests/modules/exposing/ingress/creating-ingress/ingress.yaml
+manifests/modules/exposing/ingress/creating-ingress/ipv4/ingress.yaml
 ```
 
 This will cause the AWS Load Balancer Controller to provision an Application Load Balancer and configure it to route traffic to the Pods for the `ui` application.
 
 ```bash timeout=180 hook=add-ingress hookTimeout=430
-$ kubectl apply -k /eks-workshop/manifests/modules/exposing/ingress/creating-ingress
+$ kubectl apply -k /eks-workshop/manifests/modules/exposing/ingress/creating-ingress/ipv4
 ```
 
+## IPv6
+AWS Loadbalancer controller provisions a dual-stack Application Load Balancer when you create Ingress resource on IPv6 cluster. You will see `alb.ingress.kubernetes.io/ip-address-type: dualstack` annotation added. 
+
+```file
+manifests/modules/exposing/ingress/creating-ingress/ipv6/ingress.yaml
+```
+
+This will cause the AWS Load Balancer Controller to provision an Application Load Balancer with both "A" and "AAAA" records and configures it to route traffic to the Pods for the `ui` application.
+
+```bash timeout=180 hook=add-ingress hookTimeout=430
+$ kubectl apply -k /eks-workshop/manifests/modules/exposing/ingress/creating-ingress/ipv6
+```
+
+## Verify Ingress resource
 Let's inspect the Ingress object created:
 
 ```bash

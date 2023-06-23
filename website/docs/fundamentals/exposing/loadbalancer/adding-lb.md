@@ -3,16 +3,20 @@ title: "Creating the load balancer"
 sidebar_position: 20
 ---
 
+:::note
+As of today, NLB doesn't support "instance mode" for IPv6 targets. You can skip this module if you are running this workshop on IPv6 cluster.
+:::
+
 Let's create an additional Service that provisions a load balancer with the following kustomization:
 
 ```file
-manifests/modules/exposing/load-balancer/nlb/nlb.yaml
+manifests/modules/exposing/load-balancer/ipv4/nlb/nlb.yaml
 ```
 
 This `Service` will create a Network Load Balancer that listens on port 80 and forwards connections to the `ui` Pods on port 8080. An NLB is a layer 4 load balancer that on our case operates at the TCP layer.
 
 ```bash timeout=180 hook=add-lb hookTimeout=430
-$ kubectl apply -k /eks-workshop/manifests/modules/exposing/load-balancer/nlb
+$ kubectl apply -k /eks-workshop/manifests/modules/exposing/load-balancer/ipv4/nlb
 ```
 
 Let's inspect the Service resources for the `ui` application again:
