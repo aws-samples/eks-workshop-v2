@@ -23,7 +23,7 @@ metadata:
 The following kustomization overwrites the ConfigMap, removing the DynamoDB endpoint configuration which tells the SDK to default to the real DynamoDB service instead of our test Pod. We've also provided it with the name of the DynamoDB table thats been created already for us which is being pulled from the environment variable `CARTS_DYNAMODB_TABLENAME`.
 
 ```kustomization
-modules/security/irsa/dynamo/kustomization.yaml
+modules/security/irsa/dynamo/ipv4/kustomization.yaml
 ConfigMap/carts
 ```
 
@@ -32,7 +32,7 @@ Let's check the value of `CARTS_DYNAMODB_TABLENAME` then run Kustomize to use th
 ```bash
 $ echo $CARTS_DYNAMODB_TABLENAME
 eks-workshop-carts
-$ kubectl apply -k /eks-workshop/manifests/modules/security/irsa/dynamo
+$ kubectl apply -k /eks-workshop/manifests/modules/security/irsa/dynamo/ipv4
 ```
 
 This will overwrite our ConfigMap with new values:
@@ -57,6 +57,17 @@ $ kubectl rollout restart -n carts deployment/carts
 deployment.apps/carts restarted
 $ kubectl rollout status -n carts deployment/carts
 ```
+
+:::note
+Apply a patch to nlb of you are running this workshop on IPv6 cluster
+```file
+modules/security/irsa/dynamo/ipv6/nlb.yaml
+```
+
+```bash
+$ kubectl apply -k /eks-workshop/manifests/modules/security/irsa/dynamo/ipv6
+```
+:::
 
 Let us try to access our application using the browser. A `LoadBalancer` type service named `ui-nlb` is provisioned in the `ui` namespace from which the application's UI can be accessed.
 

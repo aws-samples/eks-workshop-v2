@@ -2,8 +2,21 @@
 title: "Accessing Grafana"
 sidebar_position: 30
 ---
-
 An instance of Grafana has been pre-installed in your EKS cluster. To access it you first need to retrieve the URL:
+
+:::note
+On IPv6 clusters, you need to update ingress to add dual-stack annotation.
+:::
+
+```file
+manifests/modules/observability/oss-metrics/grafana/ipv6/ingress.yaml
+```
+
+```bash
+$ kubectl apply -k manifests/modules/observability/oss-metrics/grafana/ipv6/
+```
+
+To access it you first need to retrieve the URL:
 
 ```bash hook=check-grafana
 $ kubectl get ingress -n grafana grafana -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}'

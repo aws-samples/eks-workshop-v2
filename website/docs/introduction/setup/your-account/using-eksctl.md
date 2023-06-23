@@ -12,7 +12,7 @@ The `eksctl` utility has been pre-installed in Cloud9 so we can immediately crea
 This is the configuration that will be used to build IPv4 cluster:
 
 ```file
-manifests/../cluster/eksctl/cluster-ipv4.yaml
+manifests/../cluster/eksctl/ipv4/cluster.yaml
 ```
 
 Based on this configuration `eksctl` will:
@@ -25,7 +25,7 @@ Based on this configuration `eksctl` will:
 
 ```bash test=false
 $ export EKS_CLUSTER_NAME=eks-workshop
-$ curl -fsSL https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/cluster/eksctl/cluster-ipv4.yaml | \
+$ curl -fsSL https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/cluster/eksctl/ipv4/cluster.yaml | \
 envsubst | eksctl create cluster -f -
 ```
 
@@ -33,13 +33,13 @@ envsubst | eksctl create cluster -f -
 The configuration file for IPv6 cluster is:
 
 ```file
-manifests/../cluster/eksctl/clusteri-ipv6.yaml
+manifests/../cluster/eksctl/ipv6/cluster.yaml
 ```
 To create IPv6 cluster, apply the configuration file like so:
 
 ```bash test=false
 $ export EKS_CLUSTER_NAME=eks-workshop
-$ curl -fsSL https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/cluster/eksctl/cluster-ipv6.yaml | \
+$ curl -fsSL https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/cluster/eksctl/ipv6/cluster.yaml | \
 envsubst | eksctl create cluster -f -
 ```
 
