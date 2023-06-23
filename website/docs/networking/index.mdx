@@ -17,3 +17,7 @@ Amazon EKS uses Amazon VPC to provide networking capabilities to worker nodes an
 Worker nodes connect to the EKS control plane through the EKS public endpoint or EKS-managed elastic network interfaces (ENIs). The subnets that you pass when you create a cluster influence where EKS places these ENIs. You need to provide a minimum of two subnets in at least two Availability Zones. The route that worker nodes take to connect is determined by whether you have enabled or disabled the private endpoint for your cluster. EKS uses the EKS-managed ENI to communicate with worker nodes.
 
 Amazon EKS officially supports Amazon Virtual Private Cloud (VPC) CNI plugin to implement Kubernetes Pod networking. The VPC CNI provides native integration with AWS VPC and works in underlay mode. In underlay mode, Pods and hosts are located at the same network layer and share the network namespace. The IP address of the Pod is consistent from the cluster and VPC perspective.
+
+:::note
+You may skip this lab if you are running IPv6 cluster. Amazon EKS support for IPv6 primary goal is to solve IPv4 exhaustion issues. Hence custom networking doesn't apply to IPv6 clusters. By default, Amamzon VPC CNI is deployed in "PREFIX MODE" on IPv6 clusters. Amazon VPC CNI configure /80 IPv6 prefix during the node startup time. The CNI supports both IPv4 and IPv6 egress from within the Pods. Security groups for pods is not supported on IPv6 clusters yet.
+:::
