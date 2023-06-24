@@ -2,7 +2,7 @@
 title: "Accessing Grafana"
 sidebar_position: 30
 ---
-An instance of Grafana has been pre-installed in your EKS cluster. To access it you first need to retrieve the URL:
+An instance of Grafana has been pre-installed in your EKS cluster.
 
 :::note
 On IPv6 clusters, you need to update ingress to add dual-stack annotation.
