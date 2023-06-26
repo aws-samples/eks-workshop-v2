@@ -10,4 +10,3 @@ spec:
           env: 
           - name: SHIPPING_NAME_PREFIX
             value: "Lattice "
-          image: "public.ecr.aws/aws-containers/retail-store-sample-checkout:0.3.0"

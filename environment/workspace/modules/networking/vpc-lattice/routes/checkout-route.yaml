@@ -13,10 +13,9 @@ spec:
       namespace: checkout
       kind: Service
       port: 80
-      weight: 50
+      weight: 25
     - name: checkout
       namespace: checkoutv2
       kind: Service
       port: 80
-      weight: 50
-
+      weight: 75

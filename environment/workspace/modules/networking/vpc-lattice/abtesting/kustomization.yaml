@@ -4,5 +4,7 @@ namespace: checkoutv2
 resources:
 - ../../../../manifests/checkout
 patches:
-- path: deploymentv2.yaml
-- path: servicev2.yaml
+- deploymentv2.yaml
+- servicev2.yaml
+- delete-deployment-redis.yaml
+- delete-service-redis.yaml
