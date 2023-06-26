@@ -14,6 +14,9 @@ terraform {
       source  = "gavinbunney/kubectl"
       version = ">= 1.14"
     }
+    local = {
+      version = "~> 2.1"
+    }
   }
 }
 
