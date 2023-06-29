@@ -47,6 +47,22 @@ Open this URL in a web browser to access the IDE.
 
 You can now close CloudShell, all further commands will be run in the Cloud9 IDE.
 
+Once you have accessed the IDE, we recommend you use the **+** button and select **New Terminal** to open a new full screen terminal window.
+
+![Open new Cloud9 terminal](./assets/terminal-open.png)
+
+This will open a new tab with a fresh terminal.
+
+![Shows new Cloud9 terminal](./assets/terminal.png)
+
+You may also close the small terminal at the bottom if you wish.
+
+The AWS CLI is already installed and will assume the credentials attached to the Cloud9 IDE:
+
+```bash test=false
+$ aws sts get-caller-identity
+```
+
 The next step is to create an EKS cluster to perform the lab exercises in. Please follow one of the guides below to provision a cluster that meets the requirements for these labs:
 - **(Recommended)** [eksctl](./using-eksctl.md)
 - (Coming soon!) Terraform 
