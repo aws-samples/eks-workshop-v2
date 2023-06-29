@@ -33,8 +33,10 @@ fi
 
 ln -s $manifests_path/base /home/ec2-user/environment/base
 
-if [ $module = "introduction/getting-started" ]; then
-  exit
+if [ ! -z "$module" ]; then
+  if [ $module = "introduction/getting-started" ]; then
+    exit
+  fi
 fi
 
 echo "Resetting the environment, please wait"
