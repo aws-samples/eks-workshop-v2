@@ -1,5 +1,5 @@
 module "aws-for-fluentbit" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/aws-for-fluentbit"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1//modules/kubernetes-addons/aws-for-fluentbit"
 
   cw_log_group_name = "/${local.addon_context.eks_cluster_id}/worker-fluentbit-logs-${random_string.fluentbit_log_group.result}"
 
