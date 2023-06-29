@@ -137,6 +137,18 @@ set -e
 curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/$REPOSITORY_REF/lab/bin/use-cluster | bash -s -- \$1
 EOT
   chmod +x /usr/local/bin/use-cluster
+  cat << EOT > /usr/local/bin/awshttp
+#!/bin/bash
+set -e
+curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/$REPOSITORY_REF/lab/bin/awshttp | bash -s -- \$1
+EOT
+  chmod +x /usr/local/bin/awshttp
+  cat << EOT > /usr/local/bin/delete-all-if-crd-exists
+#!/bin/bash
+set -e
+curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/$REPOSITORY_REF/lab/bin/delete-all-if-crd-exists | bash -s -- \$1
+EOT
+  chmod +x /usr/local/bin/delete-all-if-crd-exists
 fi
 
 mkdir -p /eks-workshop
