@@ -31,6 +31,12 @@ elif [ -d "/manifests" ]; then
   cp -R /manifests $manifests_path
 fi
 
+ln -s $manifests_path/base /home/ec2-user/environment/base
+
+if [ $module = "introduction/getting-started" ]; then
+  exit
+fi
+
 echo "Resetting the environment, please wait"
 
 if [ -f "/eks-workshop/hooks/cleanup.sh" ]; then
@@ -76,8 +82,6 @@ terraform -chdir="$tf_dir" destroy --auto-approve > /tmp/terraform-destroy.log
 rm -rf /eks-workshop/terraform/addon*.tf
 
 rm -rf /eks-workshop/hooks
-
-ln -s $manifests_path/base /home/ec2-user/environment/base
 
 if [ ! -z "$module" ]; then
   module_path="$manifests_path/modules/$module"
