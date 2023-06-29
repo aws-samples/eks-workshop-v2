@@ -26,11 +26,13 @@ $ curl -fsSL https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFES
 envsubst | eksctl create cluster -f -
 ```
 
-Once the cluster is created run this command to use the cluster for the lab exercises:
+This generally takes 20 minutes. Once the cluster is created run this command to use the cluster for the lab exercises:
 
 ```bash test=false
 $ use-cluster $EKS_CLUSTER_NAME
 ```
+
+Now that the cluster is ready, head to the [Getting Started](/docs/introduction/getting-started) module or skip ahead to any module in the workshop with the top navigation bar.
 
 ## Cleaning Up
 
