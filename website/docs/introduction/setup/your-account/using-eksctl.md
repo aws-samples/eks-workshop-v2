@@ -32,7 +32,7 @@ This generally takes 20 minutes. Once the cluster is created run this command to
 $ use-cluster $EKS_CLUSTER_NAME
 ```
 
-Now that the cluster is ready, head to the [Getting Started](/docs/introduction/getting-started) module or skip ahead to any module in the workshop with the top navigation bar.
+Now that the cluster is ready, head to the [Getting Started](/docs/introduction/getting-started) module or skip ahead to any module in the workshop with the top navigation bar. Once you're completed with the workshop, follow the steps below to clean-up your environment.
 
 ## Cleaning Up
 
