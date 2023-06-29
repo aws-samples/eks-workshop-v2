@@ -8,7 +8,7 @@ We have successfully configured Argo CD App of Apps, so now we can deploy an env
 First let's remove the existing Applications so we can replace it:
 
 ```bash
-$ kubectl delete -k /workspace/manifests --ignore-not-found=true
+$ kubectl delete -k /eks-workshop/manifests/base --ignore-not-found=true
 namespace "assets" deleted
 namespace "carts" deleted
 namespace "catalog" deleted

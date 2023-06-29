@@ -10,7 +10,7 @@ Argo CD applies the `GitOps` methodology to Kubernetes. It uses Git as a source 
 - Jsonnet files
 - Plain directories of Kubernetes YAML files
 
-In this lab exercise, we will deploy an applications specified in Kustomize using Argo CD. We will use the `ui` application from [EKS Workshop](https://github.com/aws-samples/eks-workshop-v2/tree/stable/environment/workspace/manifests/ui) repository.
+In this lab exercise, we will deploy an applications specified in Kustomize using Argo CD. We will use the `ui` application from [EKS Workshop](https://github.com/aws-samples/eks-workshop-v2/tree/stable/environment/eks-workshop/manifests/base/ui) repository.
 
 The Git repository in AWS CodeCommit has already been created for you.
 
