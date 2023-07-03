@@ -8,7 +8,7 @@ In this section we will show how to use Amazon VPC Lattice for advanced traffic 
 Let's deploy a modified version of the `checkout` microservice with an added prefix *"Lattice"* in the shipping options. Let's deploy this new version in a new namespace (`checkoutv2`) using Kustomize.
 
 ```bash
-$ kubectl apply -k /workspace/modules/networking/vpc-lattice/abtesting/
+$ kubectl apply -k /eks-workshop/manifests/modules/networking/vpc-lattice/abtesting/
 ```
 
 The `checkoutv2` namespace now contains a second version of the application, while using the same `redis` instance in the `checkout` namespace.
@@ -24,13 +24,13 @@ checkout-854cd7cd66-s2blp   1/1     Running   0          26s
 The following YAML will create a Kubernetes gateway resource which is associated with a VPC Lattice **Service Network**.
 
 ```file
-networking/vpc-lattice/controller/eks-workshop-gw.yaml
+manifests/modules/networking/vpc-lattice/controller/eks-workshop-gw.yaml
 ```
 
 Apply it with the following command:
 
 ```bash
-$ kubectl apply -f /workspace/modules/networking/vpc-lattice/controller/eks-workshop-gw.yaml
+$ kubectl apply -f /eks-workshop/manifests/modules/networking/vpc-lattice/controller/eks-workshop-gw.yaml
 ```
 
 Verify that `eks-workshop-gw` gateway is created:
@@ -71,11 +71,11 @@ $ kubectl patch svc checkout -n checkout --patch '{"spec": { "type": "ClusterIP"
 Create the Kubernetes `HTTPRoute` route that distributes 75% traffic to `checkoutv2` and remaining 25% traffic to `checkout`:
 
 ```bash
-$ kubectl apply -f /workspace/modules/networking/vpc-lattice/routes/checkout-route.yaml
+$ kubectl apply -f /eks-workshop/manifests/modules/networking/vpc-lattice/routes/checkout-route.yaml
 ```
 
 ```file
-/networking/vpc-lattice/routes/checkout-route.yaml
+manifests/modules/networking/vpc-lattice/routes/checkout-route.yaml
 ```
 
 This step may take 2-3 minutes, run the following command to wait for it to completed:
