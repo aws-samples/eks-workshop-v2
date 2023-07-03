@@ -17,14 +17,4 @@ In this lab, we'll view all Kubernetes API resource types using the AWS Manageme
 
 We'll be viewing the resources created by the sample application. Note that you’ll only see resources that you have [RBAC permissions](https://docs.aws.amazon.com/eks/latest/userguide/view-kubernetes-resources.html#view-kubernetes-resources-permissions) to access.
 
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=300 wait=30
-$ reset-environment 
-```
-
-:::
-
 ![Insights](/img/resource-view/eks-overview.jpg)
