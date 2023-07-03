@@ -1,5 +1,11 @@
-module "aws-efs-csi-driver" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.31.0//modules/kubernetes-addons/aws-efs-csi-driver"
+module "eks_blueprints_addons" {
+  source = "aws-ia/eks-blueprints-addons/aws"
+  version = "~> 1.0"
 
-  addon_context = local.addon_context
+  enable_aws_efs_csi_driver = true
+
+  cluster_name      = local.addon_context.eks_cluster_id
+  cluster_endpoint  = local.addon_context.aws_eks_cluster_endpoint
+  cluster_version   = local.eks_cluster_version
+  oidc_provider_arn = local.addon_context.eks_oidc_provider_arn
 }
