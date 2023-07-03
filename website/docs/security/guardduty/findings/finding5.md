@@ -7,11 +7,11 @@ This finding informs you that Kubernetes dashboard for your cluster was exposed 
 
 To simulate this we'll need to expose the Kubernetes dashboard to the Internet with service type `LoadBalancer`.
 
-First off, we'll install the Kubernetes dashboard component. We'll be using the version v2.5.1 of the dashboard, which is compatible with Kubernetes cluster v1.23 based on the [release notes](https://github.com/kubernetes/dashboard/releases/tag/v2.5.1).
+First off, we'll install the Kubernetes dashboard component. We'll be using the version v2.7.0 of the dashboard, which is compatible with Kubernetes cluster vVAR::KUBERNETES_VERSION based on the [release notes](https://github.com/kubernetes/dashboard/releases/tag/v2.7.0).
 
 
 ```bash
-$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.1/aio/deploy/recommended.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
 ```
 
 Let us patch the `kubernetes-dashboard` service to be type LoadBalancer.
@@ -27,5 +27,5 @@ Within a few minutes we'll see the finding `Policy:Kubernetes/ExposedDashboard` 
 Cleanup:
 
 ```bash
-$ kubectl delete -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.1/aio/deploy/recommended.yaml
+$ kubectl delete -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
 ```

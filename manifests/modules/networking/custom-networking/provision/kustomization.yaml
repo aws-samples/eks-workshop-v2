@@ -1,0 +1,60 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+configMapGenerator:
+- name: eni-env
+  namespace: other
+  env: config.properties
+vars:
+- name: EKS_CLUSTER_SECURITY_GROUP_ID
+  objref:
+    kind: ConfigMap
+    name: eni-env
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.EKS_CLUSTER_SECURITY_GROUP_ID
+- name: SUBNET_AZ_1
+  objref:
+    kind: ConfigMap
+    name: eni-env
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.SUBNET_AZ_1
+- name: SUBNET_AZ_2
+  objref:
+    kind: ConfigMap
+    name: eni-env
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.SUBNET_AZ_2
+- name: SUBNET_AZ_3
+  objref:
+    kind: ConfigMap
+    name: eni-env
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.SUBNET_AZ_3
+- name: SECONDARY_SUBNET_1
+  objref:
+    kind: ConfigMap
+    name: eni-env
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.SECONDARY_SUBNET_1
+- name: SECONDARY_SUBNET_2
+  objref:
+    kind: ConfigMap
+    name: eni-env
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.SECONDARY_SUBNET_2
+- name: SECONDARY_SUBNET_3
+  objref:
+    kind: ConfigMap
+    name: eni-env
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.SECONDARY_SUBNET_3
+resources:
+- eniconfigs.yaml
+configurations:
+- configuration.yaml

@@ -24,7 +24,7 @@ $ kubectl get nodes \
     --label-columns eks.amazonaws.com/nodegroup \
     --selector eks.amazonaws.com/nodegroup=$EKS_TAINTED_MNG_NAME
 NAME                                         STATUS   ROLES    AGE   VERSION               NODEGROUP
-ip-10-42-12-233.eu-west-1.compute.internal   Ready    <none>   63m   v1.23.9-eks-ba74326   managed-ondemand-tainted-20221103142426393800000006
+ip-10-42-12-233.eu-west-1.compute.internal   Ready    <none>   63m   vVAR::KUBERNETES_NODE_VERSION   managed-ondemand-tainted-20221103142426393800000006
 ```
 
 The above command makes use of the `--selector` flag to query for all nodes that have a label of `eks.amazonaws.com/nodegroup` that matches the name of our managed node group `$EKS_TAINTED_MNG_NAME`. The `--label-columns` flag also allows us to display the value of the `eks.amazonaws.com/nodegroup` label in the node list. 

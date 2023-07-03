@@ -28,7 +28,7 @@ We create templates for set of AroCD applications using DRY approach in Helm cha
 `values.yaml` also contains values which are specific for a particular environment and which will be applied to all application templates.
 
 ```file
-automation/gitops/argocd/app-of-apps/values.yaml
+manifests/modules/automation/gitops/argocd/app-of-apps/values.yaml
 ```
 
 First, copy `App of Apps` configuration which we described above to the Git repository directory:

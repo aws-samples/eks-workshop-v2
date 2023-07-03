@@ -8,8 +8,13 @@ sidebar_custom_props: {"module": true}
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30
-$ reset-environment 
+$ prepare-environment observability/logging/pods
 ```
+
+This will make the following changes to your lab environment:
+- Install AWS for Fluent Bit in the Amazon EKS cluster
+
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/pod-logging/.workshop/terraform).
 
 :::
 

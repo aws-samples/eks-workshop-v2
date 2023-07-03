@@ -6,14 +6,14 @@ sidebar_position: 30
 Finally we can take a look at the Restricted profile, which is the most heavily restricted policy following current Pod hardening best practices. Add labels to the `assets` namespace to enable all PSA modes for the Restricted PSS profile:
 
 ```kustomization
-security/pss-psa/restricted-namespace/namespace.yaml
+modules/security/pss-psa/restricted-namespace/namespace.yaml
 Namespace/assets
 ```
 
 Run Kustomize to apply this change to add labels to the `assets` namespace:
 
 ```bash  timeout=180 hook=restricted-namespace
-$ kubectl apply -k /workspace/modules/security/pss-psa/restricted-namespace
+$ kubectl apply -k /eks-workshop/manifests/modules/security/pss-psa/restricted-namespace
 Warning: existing pods in namespace "assets" violate the new PodSecurity enforce level "restricted:latest"
 Warning: assets-d59d88b99-flkgp: allowPrivilegeEscalation != false, runAsNonRoot != true, seccompProfile
 namespace/assets configured
@@ -42,14 +42,14 @@ The above output indicates that PSA did not allow creation of Pods in the `asset
 In the case of the Restricted profile we actually need to proactively lock down some of the security configuration to meet the profile. Let's add some security controls to the Pod configuration to make it compliant with the Privileged PSS profile configured for the `assets` namespace:
 
 ```kustomization
-security/pss-psa/restricted-workload/deployment.yaml
+modules/security/pss-psa/restricted-workload/deployment.yaml
 Deployment/assets
 ```
 
 Run Kustomize to apply these changes, which we re-create the Deployment:
 
 ```bash timeout=180 hook=restricted-deploy-with-changes
-$ kubectl apply -k /workspace/modules/security/pss-psa/restricted-workload
+$ kubectl apply -k /eks-workshop/manifests/modules/security/pss-psa/restricted-workload
 namespace/assets unchanged
 serviceaccount/assets unchanged
 configmap/assets unchanged

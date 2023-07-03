@@ -3,42 +3,62 @@ title: "Configure Amazon VPC CNI"
 sidebar_position: 10
 ---
 
-In this lab exercise, we'll start configuring the Amazon VPC CNI.
+We'll start by configuring the Amazon VPC CNI. Our VPC has been reconfigured with the addition of a secondary CIDR with the range `100.64.0.0/16`:
 
-Let's review the existing VPC and Availability Zone configuration.
-
-```bash
-$ echo "The secondary subnet in AZ $AZ1 is $SECONDARY_SUBNET_1"
-$ echo "The secondary subnet in AZ $AZ2 is $SECONDARY_SUBNET_2"
-$ echo "The secondary subnet in AZ $AZ3 is $SECONDARY_SUBNET_3"
+```bash wait=30
+$ aws ec2 describe-vpcs --vpc-ids $VPC_ID | jq '.Vpcs[0].CidrBlockAssociationSet'
+[
+  {
+    "AssociationId": "vpc-cidr-assoc-0ef3fae4a0abc4a42",
+    "CidrBlock": "192.168.0.0/16",
+    "CidrBlockState": {
+      "State": "associated"
+    }
+  },
+  {
+    "AssociationId": "vpc-cidr-assoc-0a6577e1404081aef",
+    "CidrBlock": "100.64.0.0/16",
+    "CidrBlockState": {
+      "State": "associated"
+    }
+  }
+]
 ```
 
-Set the `AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG` environment variable to *true* in the aws-node DaemonSet.
+This means that we now have a separate CIDR range we can use in addition to the default CIDR range, which in the above output is `192.168.0.0/16`. From this new CIDR range we have added 3 new subnets to the VPC which will be used for running our pods:
 
-```bash
+```bash wait=30
+$ echo "The secondary subnet in AZ $SUBNET_AZ_1 is $SECONDARY_SUBNET_1"
+$ echo "The secondary subnet in AZ $SUBNET_AZ_2 is $SECONDARY_SUBNET_2"
+$ echo "The secondary subnet in AZ $SUBNET_AZ_3 is $SECONDARY_SUBNET_3"
+```
+
+To enable custom networking we have to set the `AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG` environment variable to *true* in the aws-node DaemonSet.
+
+```bash wait=30
 $ kubectl set env daemonset aws-node -n kube-system AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG=true
 ```
 
-Create an ENIConfig custom resource for each subnet that you want to deploy pods in. Here is the ENIConfig configuration.
+Then we'll create an `ENIConfig` custom resource for each subnet that pods will be deployed in:
 
 ```file
-networking/custom-networking/provision/eniconfigs.yaml
+manifests/modules/networking/custom-networking/provision/eniconfigs.yaml
 ```
 
-Let's apply this to our cluster:
+Let's apply these to our cluster:
 
-```bash
-$ envsubst < <(cat /workspace/modules/networking/custom-networking/provision/eniconfigs.yaml) | kubectl apply -f -
+```bash wait=30
+$ kubectl apply -k /eks-workshop/manifests/modules/networking/custom-networking/provision
 ```
 
-Confirm that your ENIConfigs were created.
+Confirm that the `ENIConfig` objects were created:
 
-```bash
+```bash wait=30
 $ kubectl get ENIConfigs
 ```
 
-Update your aws-node DaemonSet to automatically apply the `ENIConfig` for an Availability Zone to any new Amazon EC2 nodes created in your cluster.
+Finally we'll update the aws-node DaemonSet to automatically apply the `ENIConfig` for an Availability Zone to any new Amazon EC2 nodes created in the EKS cluster.
 
-```bash
+```bash wait=30
 $ kubectl set env daemonset aws-node -n kube-system ENI_CONFIG_LABEL_DEF=topology.kubernetes.io/zone
 ```

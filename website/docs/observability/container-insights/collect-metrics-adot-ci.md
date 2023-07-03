@@ -8,7 +8,7 @@ In this lab exercise, we'll explore how to enable CloudWatch Container Insights 
 Now, let's create resources to allow the ADOT collector the permissions it needed. We'll start with the ClusterRole that gives the collector permissions to access the Kubernetes API:
 
 ```file
-observability/container-insights/adot/clusterrole.yaml
+manifests/modules/observability/container-insights/adot/clusterrole.yaml
 ```
 
 We'll use the managed IAM policy `CloudWatchAgentServerPolicy` to provide the collector with the IAM permissions it needs via IAM Roles for Service Accounts:
@@ -29,13 +29,13 @@ $ aws iam list-attached-role-policies \
 This IAM role will be added to the ServiceAccount for the collector:
 
 ```file
-observability/container-insights/adot/serviceaccount.yaml
+manifests/modules/observability/container-insights/adot/serviceaccount.yaml
 ```
 
 Create the resources:
 
 ```bash
-$ kubectl apply -k /workspace/modules/observability/container-insights/adot
+$ kubectl apply -k /eks-workshop/manifests/modules/observability/container-insights/adot
 ```
 
 The specification for the collector is too long to show here, but you can view it like so:

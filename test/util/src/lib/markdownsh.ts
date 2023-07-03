@@ -8,7 +8,6 @@ import fs from 'fs'
 
 export class MarkdownSh {
   private gatherer = new Gatherer();
-  private shell = new DefaultShell();
 
   constructor(private glob: string,
     private debug: boolean) { 
@@ -29,9 +28,12 @@ export class MarkdownSh {
       dryRun: boolean, 
       timeout: number, 
       hookTimeout: number, 
-      junitReport: string) {
+      bail: boolean,
+      junitReport: string,
+      beforeEach: string) {
     const mochaOpts : Mocha.MochaOptions = {
       timeout: timeout * 1000,
+      bail
     };
 
     if(junitReport !== '') {
@@ -46,6 +48,8 @@ export class MarkdownSh {
     const mocha = new Mocha(mochaOpts);
 
     let root;
+
+    let shell = new DefaultShell(beforeEach);
     
     try {
       root = await this.gatherer.gather(path.normalize(directory))
@@ -59,7 +63,7 @@ export class MarkdownSh {
       console.log('No tests found')
     }
     else {
-      await this.buildTestSuites(path.normalize(directory), root, mocha.suite, hookTimeout, dryRun)
+      await this.buildTestSuites(path.normalize(directory), root, mocha.suite, hookTimeout, dryRun, shell)
 
       try {
         await this.runMochaTests(mocha)
@@ -79,7 +83,7 @@ export class MarkdownSh {
     });
   }
 
-  private async buildTestSuites(rootDirectory: string, category: Category, parentSuite: Suite, hookTimeout: number, dryRun: boolean) {
+  private async buildTestSuites(rootDirectory: string, category: Category, parentSuite: Suite, hookTimeout: number, dryRun: boolean, shell: DefaultShell) {
     const suite = Mocha.Suite.create(parentSuite, category.title)
 
     if(!category.run) {
@@ -99,32 +103,32 @@ export class MarkdownSh {
   
     if(addTests) {
       for(const test in category.pages) {
-        suite.addTest(this.buildTests(category.pages[test], category, hookTimeout, dryRun))
+        suite.addTest(this.buildTests(category.pages[test], category, hookTimeout, dryRun, shell))
       }
   
       if(category.path !== undefined) {
-        this.suiteHooks(category, suite, hookTimeout, dryRun)
+        this.suiteHooks(category, suite, hookTimeout, dryRun, shell)
       }
     }
   
     for(const child in category.children) {
-      await this.buildTestSuites(rootDirectory, category.children[child], suite, hookTimeout, dryRun)
+      await this.buildTestSuites(rootDirectory, category.children[child], suite, hookTimeout, dryRun, shell)
     }
   
     return suite;
   }
 
-  private buildTests(page: Page, category: Category, hookTimeout: number, dryRun: boolean): Test {
+  private buildTests(page: Page, category: Category, hookTimeout: number, dryRun: boolean, shell: DefaultShell): Test {
     let skip = false;
 
     if(page.scripts.length == 0) {
       skip = true;
     }
 
-    return new CustomTest(page, category, hookTimeout, this.debug, dryRun, this.shell)
+    return new CustomTest(page, category, hookTimeout, this.debug, dryRun, shell)
   }
 
-  private suiteHooks(record: Category, suite: Suite, hookTimeout: number, dryRun: boolean) {
+  private suiteHooks(record: Category, suite: Suite, hookTimeout: number, dryRun: boolean, shell: DefaultShell) {
     const suiteDir = path.dirname(record.path)
   
     const hookPath = `${record.path}/tests/hook-suite.sh`
@@ -134,7 +138,7 @@ export class MarkdownSh {
         this.debugMessage(`Calling suite ${hook} hook at ${hookPath}`)
   
         if(!dryRun) {
-          let response = await this.shell.exec(`bash ${hookPath} ${hook}`, hookTimeout, false)
+          let response = await shell.exec(`bash ${hookPath} ${hook}`, hookTimeout, false)
 
           this.debugMessage(response.output)
         }

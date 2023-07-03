@@ -9,6 +9,9 @@ In order for our catalog Pod to successfully connect to the RDS instance we'll n
 A security group which allows access to the RDS database has already been set up for you, and we can view it like so:
 
 ```bash
+$ export CATALOG_SG_ID=$(aws ec2 describe-security-groups \
+    --filters Name=vpc-id,Values=$VPC_ID Name=group-name,Values=$EKS_CLUSTER_NAME-catalog \
+    --query "SecurityGroups[0].GroupId" --output text)
 $ aws ec2 describe-security-groups \
   --group-ids $CATALOG_SG_ID | jq '.'
 {
@@ -63,14 +66,14 @@ This security group:
 In order for our Pod to use this security group we need to use the `SecurityGroupPolicy` CRD to tell EKS which security group is to be mapped to a specific set of Pods. This is what we'll configure:
 
 ```kustomization
-networking/securitygroups-for-pods/sg/policy.yaml
+modules/networking/securitygroups-for-pods/sg/policy.yaml
 SecurityGroupPolicy/catalog-rds-access
 ```
 
 Apply this to the cluster then recycle the catalog Pods once again:
 
 ```bash
-$ kubectl apply -k /workspace/modules/networking/securitygroups-for-pods/sg
+$ kubectl apply -k /eks-workshop/manifests/modules/networking/securitygroups-for-pods/sg
 namespace/catalog unchanged
 serviceaccount/catalog unchanged
 configmap/catalog unchanged
