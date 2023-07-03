@@ -93,14 +93,14 @@ In the above Pod security configuration, the `securityContext` is nil at the Pod
 But what are the other security controls this PSA allows? To check that, lets add some more permissions to the above Pod security configuration and check if the PSA still allows it or not in the `assets` namespace. Specifically lets add the `privileged` and the `runAsUser:0` flags to the Pod, which means that it can access the hosts resources which is commonly required workloads like monitoring agents and service mesh sidecars, and also allowed to run as the `root` user:
 
 ```kustomization
-security/pss-psa/privileged-workload/deployment.yaml
+modules/security/pss-psa/privileged-workload/deployment.yaml
 Deployment/assets
 ```
 
 Run Kustomize to apply the above changes and check if PSA allows the Pod with the above security permissions.
 
 ```bash
-$ kubectl apply -k /workspace/modules/security/pss-psa/privileged-workload
+$ kubectl apply -k /eks-workshop/manifests/modules/security/pss-psa/privileged-workload
 namespace/assets unchanged
 serviceaccount/assets unchanged
 configmap/assets unchanged

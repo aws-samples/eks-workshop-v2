@@ -8,7 +8,7 @@ sidebar_position: 40
 For example, take a look at the following manifest file for the `checkout` Deployment:
 
 ```file
-../manifests/checkout/deployment.yaml
+manifests/base/checkout/deployment.yaml
 ```
 
 This file has already been applied in the previous [Getting Started](../getting-started) lab, but let's say we wanted to scale this component horizontally by updating the `replicas` field using Kustomize. Rather than manually updating this YAML file, we'll use Kustomize to update the `spec/replicas` field from 1 to 3.
@@ -20,20 +20,20 @@ To do so, we'll apply the following kustomization.
 * Finally, the third tab shows just the diff of what has changed
 
 ```kustomization
-introduction/kustomize/deployment.yaml
+modules/introduction/kustomize/deployment.yaml
 Deployment/checkout
 ```
 
 You can generate the final Kubernetes YAML that applies this kustomization with the `kustomize` CLI:
 
 ```bash
-$ kustomize build /workspace/modules/introduction/kustomize
+$ kustomize build /eks-workshop/manifests/modules/introduction/kustomize
 ```
 
 This will generate a lot of YAML files, which represents the final manifests you can apply directly to Kubernetes. Let's demonstrate this by piping the output from `kustomize` directly to `kubectl`:
 
 ```bash
-$ kustomize build /workspace/modules/introduction/kustomize | kubectl apply -f -
+$ kustomize build /eks-workshop/manifests/modules/introduction/kustomize | kubectl apply -f -
 namespace/checkout unchanged
 serviceaccount/checkout unchanged
 configmap/checkout unchanged
@@ -43,10 +43,10 @@ deployment.apps/checkout configured
 deployment.apps/checkout-redis unchanged
 ```
 
-You'll notice that a number of different `checkout`-related resources are "unchanged", with the `deployment.apps/checkout` being "configured". This is intentional — we only want to apply changes to the `checkout` deployment. This happens because running the previous command actually applied two files: the Kustomize `deployment.yaml` that we saw above, as well as the following `kustomization.yaml` file which matches all files in the `/workspace/manifests/checkout` folder. The `patches` field specifies the specific file to be patched:
+You'll notice that a number of different `checkout`-related resources are "unchanged", with the `deployment.apps/checkout` being "configured". This is intentional — we only want to apply changes to the `checkout` deployment. This happens because running the previous command actually applied two files: the Kustomize `deployment.yaml` that we saw above, as well as the following `kustomization.yaml` file which matches all files in the `/eks-workshop/manifests/base/checkout` folder. The `patches` field specifies the specific file to be patched:
 
 ```file
-introduction/kustomize/kustomization.yaml
+manifests/modules/introduction/kustomize/kustomization.yaml
 ```
 
 To check that the number of replicas has been updated, run the following command:
@@ -64,13 +64,13 @@ Although we have used the `kustomize` CLI directly in this section, Kustomize is
 Let's try that:
 
 ```bash
-$ kubectl apply -k /workspace/modules/introduction/kustomize
+$ kubectl apply -k /eks-workshop/manifests/modules/introduction/kustomize
 ```
 
 To reset the application manifests back to their initial state, you can simply apply the original set of manifests:
 
 ```bash timeout=300 wait=30
-$ kubectl apply -k /workspace/manifests
+$ kubectl apply -k /eks-workshop/manifests/base
 ```
 
 Now that you understand how Kustomize works, proceed to the [Fundamentals module](/docs/fundamentals).

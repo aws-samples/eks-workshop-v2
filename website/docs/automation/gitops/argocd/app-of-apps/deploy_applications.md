@@ -8,7 +8,7 @@ We have successfully configured Argo CD App of Apps, so now we can deploy an env
 First let's remove the existing Applications so we can replace it:
 
 ```bash
-$ kubectl delete -k /workspace/manifests --ignore-not-found=true
+$ kubectl delete -k /eks-workshop/manifests/base --ignore-not-found=true
 namespace "assets" deleted
 namespace "carts" deleted
 namespace "catalog" deleted
@@ -47,13 +47,13 @@ We will then need to create a customization for each application:
 ```
 
 ```file
-automation/gitops/argocd/apps-kustomization/ui/kustomization.yaml
+manifests/modules/automation/gitops/argocd/apps-kustomization/ui/kustomization.yaml
 ```
 
 We define a path to `base` Kubernetes manifests for an application, in this case `ui`, using `resources`. We also define which configuration should be applied to `ui` application in EKS cluster using `patches`.
 
 ```file
-automation/gitops/argocd/apps-kustomization/ui/deployment-patch.yaml
+manifests/modules/automation/gitops/argocd/apps-kustomization/ui/deployment-patch.yaml
 ```
 
 We would like to have `1` replica for `ui` application. All other application will use configuration from `base` Kubernetes manifests.

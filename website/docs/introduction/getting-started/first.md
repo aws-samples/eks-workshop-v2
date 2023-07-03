@@ -14,17 +14,10 @@ Before we do anything lets inspect the current Namespaces in our EKS cluster:
 ```bash
 $ kubectl get namespaces
 NAME                            STATUS   AGE
-aws-for-fluent-bit              Active   1h
-aws-load-balancer-controller    Active   1h
-cert-manager                    Active   1h
 default                         Active   1h
-grafana                         Active   1h
-karpenter                       Active   1h
 kube-node-lease                 Active   1h
 kube-public                     Active   1h
 kube-system                     Active   1h
-kubecost                        Active   1h
-opentelemetry-operator-system   Active   1h
 ```
 
 All of the entries listed are Namespaces for system components that were pre-installed for us. We'll ignore these by using [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) to filter the Namespaces down to only those we've created:
@@ -34,10 +27,10 @@ $ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
 No resources found
 ```
 
-The first thing we'll do is deploy the catalog component by itself. The manifests for this component can be found in `/workspace/manifests/catalog`.
+The first thing we'll do is deploy the catalog component by itself. The manifests for this component can be found in `/eks-workshop/manifests/base/catalog`.
 
 ```bash
-$ ls /workspace/manifests/catalog
+$ ls /eks-workshop/manifests/base/catalog
 configMap.yaml
 deployment.yaml
 kustomization.yaml
@@ -52,7 +45,7 @@ statefulset-mysql.yaml
 These manifests include the Deployment for the catalog API:
 
 ```file
-../manifests/catalog/deployment.yaml
+manifests/base/catalog/deployment.yaml
 ```
 
 This Deployment expresses the desired state of the catalog API component:
@@ -67,7 +60,7 @@ This Deployment expresses the desired state of the catalog API component:
 The manifests also include the Service used by other components to access the catalog API:
 
 ```file
-../manifests/catalog/service.yaml
+manifests/base/catalog/service.yaml
 ```
 
 This Service:
@@ -79,7 +72,7 @@ This Service:
 Let's create the catalog component:
 
 ```bash
-$ kubectl apply -k /workspace/manifests/catalog
+$ kubectl apply -k /eks-workshop/manifests/base/catalog
 namespace/catalog created
 serviceaccount/catalog created
 configmap/catalog created

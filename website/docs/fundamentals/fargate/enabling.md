@@ -27,14 +27,14 @@ $ kubectl get pod -n checkout -l app.kubernetes.io/component=service -o json | j
 Looks like our Pod is missing the label `fargate=yes`, so lets fix that by updating the deployment for that service so the Pod spec includes the label needed for the profile to schedule it on Fargate.
 
 ```kustomization
-fundamentals/fargate/enabling/deployment.yaml
+modules/fundamentals/fargate/enabling/deployment.yaml
 Deployment/checkout
 ```
 
 Apply the kustomization to the cluster:
 
 ```bash timeout=220 hook=enabling
-$ kubectl apply -k /workspace/modules/fundamentals/fargate/enabling
+$ kubectl apply -k /eks-workshop/manifests/modules/fundamentals/fargate/enabling
 [...]
 $ kubectl rollout status -n checkout deployment/checkout --timeout=200s
 ```

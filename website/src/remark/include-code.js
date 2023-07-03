@@ -2,8 +2,6 @@ const visit = require('unist-util-visit');
 const fs = require('fs/promises');
 var path = require('path');
 
-const modulesPath = '/workspace/modules'
-
 const plugin = (options) => {
   const manifestsDir = options.manifestsDir
 
@@ -17,7 +15,7 @@ const plugin = (options) => {
         const extension = path.extname(filePath).slice(1)
 
         node.lang = extension
-        node.meta = `title="${path.normalize(`${modulesPath}/${value}`)}"`
+        node.meta = `title="/eks-workshop/${path.normalize(`${value}`)}"`
 
         const p = fs.readFile(filePath, { encoding: 'utf8' }).then(res => {
           node.value = res

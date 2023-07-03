@@ -188,7 +188,9 @@ class TerminalCommand extends TerminalContext {
   }
 
   renderCommand(command: string, indent: boolean) {
-    return (<span className={styles.terminalPromptCommand}>{command}</span>)
+    let output = command;
+
+    return (<span className={styles.terminalPromptCommand}>{output}</span>)
   }
 }
 

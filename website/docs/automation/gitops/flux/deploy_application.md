@@ -8,47 +8,47 @@ We have successfully bootstrapped Flux on our cluster so now we can deploy an ap
 First let's remove the existing UI component so we can replace it:
 
 ```bash
-$ kubectl delete -k /workspace/manifests/ui
+$ kubectl delete -k /eks-workshop/manifests/base/ui
 ```
 
 Next, clone the repository we used to bootstrap Flux in the previous section:
 
 ```bash
-$ git clone ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_DEFAULT_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-gitops ~/environment/gitops
+$ git clone ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-gitops /eks-workshop/gitops
 ```
 
 Now, let's get into the cloned repository and start creating our GitOps configuration. Copy the existing kustomize configuration for the UI service:
 
 ```bash
-$ mkdir ~/environment/gitops/apps
-$ cp -R /workspace/manifests/ui ~/environment/gitops/apps
+$ mkdir /eks-workshop/gitops/apps
+$ cp -R /eks-workshop/manifests/base/ui /eks-workshop/gitops/apps
 ```
 
 We'll then need to create a kustomization in the `apps` directory:
 
 ```file
-automation/gitops/flux/apps-kustomization.yaml
+manifests/modules/automation/gitops/flux/apps-kustomization.yaml
 ```
 
 Copy this file to the Git repository directory:
 
 ```bash
-$ cp /workspace/modules/automation/gitops/flux/apps-kustomization.yaml ~/environment/gitops/apps/kustomization.yaml
+$ cp /eks-workshop/manifests/modules/automation/gitops/flux/apps-kustomization.yaml /eks-workshop/gitops/apps/kustomization.yaml
 ```
 
 The last step before we push our changes is to ensure that Flux is aware of our `apps` directory. We do that by creating an additional file in the `flux` directory:
 
 ```file
-automation/gitops/flux/flux-kustomization.yaml
+manifests/modules/automation/gitops/flux/flux-kustomization.yaml
 ```
 
 Copy this file to the Git repository directory:
 
 ```bash
-$ cp /workspace/modules/automation/gitops/flux/flux-kustomization.yaml ~/environment/gitops/apps.yaml
+$ cp /eks-workshop/manifests/modules/automation/gitops/flux/flux-kustomization.yaml /eks-workshop/gitops/apps.yaml
 ```
 
-You Git directory should now look something like this which you can validate by running `tree ~/environment/gitops`:
+You Git directory should now look something like this which you can validate by running `tree /eks-workshop/gitops`:
 
 ```
 .
@@ -74,7 +74,7 @@ You Git directory should now look something like this which you can validate by 
 Finally we can push our configuration to CodeCommit:
 
 ```bash
-$ (cd ~/environment/gitops && \
+$ (cd /eks-workshop/gitops && \
 git add . && \
 git commit -am "Adding the UI service" && \
 git push origin main)

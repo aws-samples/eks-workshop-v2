@@ -8,7 +8,7 @@ Now that we understand the EFS storage class for Kubernetes let's create a [Pers
 First inspect the `efspvclaim.yaml` file to see the parameters in the file and the claim of the specific storage size of 5GB from the Storage class `efs-sc` we created in the earlier step:
 
 ```file
-fundamentals/storage/efs/deployment/efspvclaim.yaml
+manifests/modules/fundamentals/storage/efs/deployment/efspvclaim.yaml
 ```
 
 We'll also modify the assets service is two ways:
@@ -17,14 +17,14 @@ We'll also modify the assets service is two ways:
 * Add an [init container](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) to copy the initial images to the EFS volume
 
 ```kustomization
-fundamentals/storage/efs/deployment/deployment.yaml
+modules/fundamentals/storage/efs/deployment/deployment.yaml
 Deployment/assets
 ```
 
 We can apply the changes by running the following command:
 
 ```bash
-$ kubectl apply -k /workspace/modules/fundamentals/storage/efs/deployment
+$ kubectl apply -k /eks-workshop/manifests/modules/fundamentals/storage/efs/deployment
 namespace/assets unchanged
 serviceaccount/assets unchanged
 configmap/assets unchanged
