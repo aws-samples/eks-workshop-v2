@@ -44,7 +44,7 @@ IP:                172.20.62.119
 IPs:               172.20.62.119
 Port:              http  80/TCP
 TargetPort:        http/TCP
-Endpoints:         10.42.11.143:8080
+Endpoints:         192.168.105.38:8080
 Session Affinity:  None
 Events:            <none>
 ```
