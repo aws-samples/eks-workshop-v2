@@ -81,7 +81,7 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
     "TargetHealthDescriptions": [
         {
             "Target": {
-                "Id": "10.42.12.225",
+                "Id": "192.168.180.183",
                 "Port": 8080,
                 "AvailabilityZone": "us-west-2c"
             },
