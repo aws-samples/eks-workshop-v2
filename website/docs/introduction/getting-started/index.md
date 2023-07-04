@@ -4,7 +4,7 @@ sidebar_position: 30
 sidebar_custom_props: {"module": true}
 ---
 
-Welcome to the first hands-on lab in the EKS workshop. This goal of this exercise it to familiar ourselves with the sample application we'll use for many of the coming lab exercises and in doing so touch on some basic concepts related to deploying workloads to EKS. We'll explore the architecture of the application and deploy out the components to our EKS cluster.
+Welcome to the first hands-on lab in the EKS workshop. The goal of this exercise is to familiarize ourselves with the sample application we'll use for many of the coming lab exercises and in doing so touch on some basic concepts related to deploying workloads to EKS. We'll explore the architecture of the application and deploy out the components to our EKS cluster.
 
 Let's deploy your first workload to the EKS cluster in your lab environment and explore!
 
@@ -14,7 +14,7 @@ Before we begin we need to run the following command to prepare our Cloud9 envir
 $ prepare-environment introduction/getting-started
 ```
 
-What is this command doing? For this lab it is closing the EKS Workshop Git repository on to the Cloud9 environment so the Kubernetes manifest files we need are present on the file system. 
+What is this command doing? For this lab it is cloning the EKS Workshop Git repository on to the Cloud9 environment so the Kubernetes manifest files we need are present on the file system. 
 
 You'll notice in subsequent labs we'll also run this command, where it will perform two important additional functions:
 
