@@ -112,11 +112,7 @@ Upon exploring the `catalog-db` Secret we can see that it is only encoded with b
 ../manifests/catalog/secrets.yaml
 ```
 
-```bash
-$ kubectl -n catalog get secrets catalog-db --template {{.data.endpoint}} | base64 -d
-catalog-mysql:3306%                                                                                                                                                                                             
-$ kubectl -n catalog get secrets catalog-db --template {{.data.name}} | base64 -d
-catalog%                                                                                                                                                                                                        
+```bash                                                                                                                                                                                                     
 $ kubectl -n catalog get secrets catalog-db --template {{.data.username}} | base64 -d
 catalog_user%                                                                                                                                                                                                   
 $ kubectl -n catalog get secrets catalog-db --template {{.data.password}} | base64 -d
