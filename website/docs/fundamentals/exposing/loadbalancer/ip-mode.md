@@ -51,7 +51,7 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
     "TargetHealthDescriptions": [
         {
             "Target": {
-                "Id": "192.168.180.183",
+                "Id": "10.42.180.183",
                 "Port": 8080,
                 "AvailabilityZone": "us-west-2a"
             },
@@ -85,7 +85,7 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
     "TargetHealthDescriptions": [
         {
             "Target": {
-                "Id": "192.168.180.181",
+                "Id": "10.42.180.181",
                 "Port": 8080,
                 "AvailabilityZone": "us-west-2c"
             },
@@ -98,7 +98,7 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
         },
         {
             "Target": {
-                "Id": "192.168.140.129",
+                "Id": "10.42.140.129",
                 "Port": 8080,
                 "AvailabilityZone": "us-west-2a"
             },
@@ -109,7 +109,7 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
         },
         {
             "Target": {
-                "Id": "192.168.105.38",
+                "Id": "10.42.105.38",
                 "Port": 8080,
                 "AvailabilityZone": "us-west-2a"
             },

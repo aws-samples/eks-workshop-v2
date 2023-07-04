@@ -11,9 +11,9 @@ Currently we're running a 3 node cluster:
 ```bash
 $ kubectl get nodes
 NAME                                            STATUS   ROLES    AGE   VERSION
-ip-192-168-109-155.us-east-2.compute.internal   Ready    <none>   76m   vVAR::KUBERNETES_NODE_VERSION
-ip-192-168-142-113.us-east-2.compute.internal   Ready    <none>   76m   vVAR::KUBERNETES_NODE_VERSION
-ip-192-168-80-39.us-east-2.compute.internal     Ready    <none>   76m   vVAR::KUBERNETES_NODE_VERSION
+ip-10-42-109-155.us-east-2.compute.internal   Ready    <none>   76m   vVAR::KUBERNETES_NODE_VERSION
+ip-10-42-142-113.us-east-2.compute.internal   Ready    <none>   76m   vVAR::KUBERNETES_NODE_VERSION
+ip-10-42-80-39.us-east-2.compute.internal     Ready    <none>   76m   vVAR::KUBERNETES_NODE_VERSION
 ```
 
 Based on autoscaling parameters defined in the `ConfigMap`, we see cluster proportional autoscaler scale `CoreDNS` to 2 replicas:

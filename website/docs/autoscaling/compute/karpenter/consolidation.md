@@ -58,9 +58,9 @@ $ kubectl -n karpenter logs deployment/karpenter -c controller | grep Consolidat
 The output will show Karpenter identifying specific nodes to cordon, drain and then terminate:
 
 ```text
-2022-09-06T19:30:06.285Z        INFO    controller.consolidation        Consolidating via Delete, terminating 1 nodes ip-192-168-159-233.us-west-2.compute.internal/m5.large    {"commit": "b157d45"}
-2022-09-06T19:30:06.341Z        INFO    controller.termination  Cordoned node   {"commit": "b157d45", "node": "ip-192-168-159-233.us-west-2.compute.internal"}
-2022-09-06T19:30:07.441Z        INFO    controller.termination  Deleted node    {"commit": "b157d45", "node": "ip-192-168-159-233.us-west-2.compute.internal"}
+2022-09-06T19:30:06.285Z        INFO    controller.consolidation        Consolidating via Delete, terminating 1 nodes ip-10-42-159-233.us-west-2.compute.internal/m5.large    {"commit": "b157d45"}
+2022-09-06T19:30:06.341Z        INFO    controller.termination  Cordoned node   {"commit": "b157d45", "node": "ip-10-42-159-233.us-west-2.compute.internal"}
+2022-09-06T19:30:07.441Z        INFO    controller.termination  Deleted node    {"commit": "b157d45", "node": "ip-10-42-159-233.us-west-2.compute.internal"}
 ```
 
 This will result in the Kubernetes scheduler placing any Pods on those nodes on the remaining capacity, and now we can see that Karpenter is managing a total of 1 node:
