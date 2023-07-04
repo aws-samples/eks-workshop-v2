@@ -15,7 +15,7 @@ Name:             ui-7bdbf967f9-qzh7f
 Namespace:        ui
 Priority:         0
 Service Account:  ui
-Node:             ip-10-42-11-43.eu-west-1.compute.internal/10.42.11.43
+Node:             ip-10-42-11-43.us-west-2.compute.internal/10.42.11.43
 Start Time:       Wed, 09 Nov 2022 16:40:32 +0000
 Labels:           app.kubernetes.io/component=service
                   app.kubernetes.io/created-by=eks-workshop
@@ -83,16 +83,15 @@ Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists fo
 Events:
   Type     Reason            Age   From               Message
   ----     ------            ----  ----               -------
-  Warning  FailedScheduling  74s   default-scheduler  0/4 nodes are available: 1 node(s) had taint {frontend: true}, that the pod didn't tolerate, 1 node(s) had taint {systemComponent: true}, that the pod didn't tolerate, 2 node(s) didn't match Pod's node affinity/selector.
-  Warning  FailedScheduling  3s    default-scheduler  0/4 nodes are available: 1 node(s) had taint {frontend: true}, that the pod didn't tolerate, 1 node(s) had taint {systemComponent: true}, that the pod didn't tolerate, 2 node(s) didn't match Pod's node affinity/selector.
+  Warning  FailedScheduling  19s   default-scheduler  0/4 nodes are available: 1 node(s) had untolerated taint {frontend: true}, 3 node(s) didn't match Pod's node affinity/selector. preemption: 0/4 nodes are available: 4 Preemption is not helpful for scheduling.
 ```
 
 Our changes are reflected in the new configuration of the `Pending` pod. We can see that we have pinned the pod to any node with the `tainted=yes` label but this introduced a new problem as our pod cannot be scheduled (`PodScheduled False`). A more useful explanation can be found under the `events`:
 ```
-0/4 nodes are available: 1 node(s) had taint {frontend: true}, that the pod didn't tolerate, 1 node(s) had taint {systemComponent: true}, that the pod didn't tolerate, 2 node(s) didn't match Pod's node affinity/selector.` 
+0/4 nodes are available: 1 node(s) had untolerated taint {frontend: true}, 3 node(s) didn't match Pod's node affinity/selector. preemption: 0/4 nodes are available: 4 Preemption is not helpful for scheduling.
 ```
 
-To fix this, we need to add a toleration. Let's ensure our deployment and associated pods are able to tolerate the `frontend: true` taint. We can use the below `Kustomize` patch to make the necessary changes:
+To fix this, we need to add a toleration. Let's ensure our deployment and associated pods are able to tolerate the `frontend: true` taint. We can use the below `kustomize` patch to make the necessary changes:
  
 ```kustomization
 modules/fundamentals/mng/taints/nodeselector-w-toleration/deployment.yaml
@@ -120,7 +119,7 @@ $ kubectl describe pod --namespace ui -l app.kubernetes.io/name=ui
 Name:         ui-6c5c9f6b5f-7jxp8
 Namespace:    ui
 Priority:     0
-Node:         ip-10-42-10-138.eu-west-1.compute.internal/10.42.10.138
+Node:         ip-10-42-10-138.us-west-2.compute.internal/10.42.10.138
 Start Time:   Fri, 11 Nov 2022 13:00:36 +0000
 Labels:       app.kubernetes.io/component=service
               app.kubernetes.io/created-by=eks-workshop
@@ -152,18 +151,18 @@ Tolerations:                 frontend:NoExecute op=Exists
                              node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
 [...]
 $ kubectl describe node --selector tainted=yes
-Name:               ip-10-42-10-138.eu-west-1.compute.internal
+Name:               ip-10-42-10-138.us-west-2.compute.internal
 Roles:              <none>
 Labels:             beta.kubernetes.io/arch=amd64
-                    beta.kubernetes.io/instance-type=m5.large
+                    beta.kubernetes.io/instance-type=t3.medium
                     beta.kubernetes.io/os=linux
                     eks.amazonaws.com/capacityType=ON_DEMAND
-                    eks.amazonaws.com/nodegroup=managed-ondemand-tainted-2022111013323682780000001d
+                    eks.amazonaws.com/nodegroup=tainted
                     eks.amazonaws.com/nodegroup-image=ami-03e8f91597dcf297b
                     kubernetes.io/arch=amd64
-                    kubernetes.io/hostname=ip-10-42-10-138.eu-west-1.compute.internal
+                    kubernetes.io/hostname=ip-10-42-10-138.us-west-2.compute.internal
                     kubernetes.io/os=linux
-                    node.kubernetes.io/instance-type=m5.large
+                    node.kubernetes.io/instance-type=t3.medium
                     tainted=yes
 [...]
 Taints:             frontend=true:NoExecute
