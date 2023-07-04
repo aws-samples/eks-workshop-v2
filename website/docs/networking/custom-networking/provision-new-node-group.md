@@ -26,10 +26,10 @@ Once this is complete we can see the new nodes registered in the EKS cluster:
 ```bash wait=30
 $ kubectl get nodes -L eks.amazonaws.com/nodegroup
 NAME                                            STATUS   ROLES    AGE   VERSION               NODEGROUP
-ip-192-168-104-242.us-west-2.compute.internal   Ready    <none>   84m   v1.25.6-eks-48e63af   default
-ip-192-168-110-28.us-west-2.compute.internal    Ready    <none>   61s   v1.25.9-eks-0a21954   custom-networking
-ip-192-168-139-60.us-west-2.compute.internal    Ready    <none>   65m   v1.25.6-eks-48e63af   default
-ip-192-168-180-105.us-west-2.compute.internal   Ready    <none>   65m   v1.25.6-eks-48e63af   default
+ip-10-42-104-242.us-west-2.compute.internal   Ready    <none>   84m   v1.25.6-eks-48e63af   default
+ip-10-42-110-28.us-west-2.compute.internal    Ready    <none>   61s   v1.25.9-eks-0a21954   custom-networking
+ip-10-42-139-60.us-west-2.compute.internal    Ready    <none>   65m   v1.25.6-eks-48e63af   default
+ip-10-42-180-105.us-west-2.compute.internal   Ready    <none>   65m   v1.25.6-eks-48e63af   default
 ```
 
 You can see that 1 new node provisioned labeled with the name of the new node group.

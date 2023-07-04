@@ -41,10 +41,10 @@ It can take a minute or so for the node to appear in the output below, if the li
 ```bash
 $ kubectl get nodes -l eks.amazonaws.com/nodegroup=$EKS_DEFAULT_MNG_NAME
 NAME                                            STATUS     ROLES    AGE     VERSION
-ip-192-168-104-151.us-west-2.compute.internal   Ready      <none>   2d23h   vVAR::KUBERNETES_NODE_VERSION
-ip-192-168-144-11.us-west-2.compute.internal    Ready      <none>   2d23h   vVAR::KUBERNETES_NODE_VERSION
-ip-192-168-146-166.us-west-2.compute.internal   NotReady   <none>   18s     vVAR::KUBERNETES_NODE_VERSION
-ip-192-168-182-134.us-west-2.compute.internal   Ready      <none>   2d23h   vVAR::KUBERNETES_NODE_VERSION
+ip-10-42-104-151.us-west-2.compute.internal   Ready      <none>   2d23h   vVAR::KUBERNETES_NODE_VERSION
+ip-10-42-144-11.us-west-2.compute.internal    Ready      <none>   2d23h   vVAR::KUBERNETES_NODE_VERSION
+ip-10-42-146-166.us-west-2.compute.internal   NotReady   <none>   18s     vVAR::KUBERNETES_NODE_VERSION
+ip-10-42-182-134.us-west-2.compute.internal   Ready      <none>   2d23h   vVAR::KUBERNETES_NODE_VERSION
 ```
 
 Notice that the node shows a status of `NotReady`, which happens when the new node is still in the process of joining the cluster. We can also use `kubectl wait` to watch until all the nodes report `Ready`:

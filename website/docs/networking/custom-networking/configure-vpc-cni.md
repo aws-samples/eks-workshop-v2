@@ -10,7 +10,7 @@ $ aws ec2 describe-vpcs --vpc-ids $VPC_ID | jq '.Vpcs[0].CidrBlockAssociationSet
 [
   {
     "AssociationId": "vpc-cidr-assoc-0ef3fae4a0abc4a42",
-    "CidrBlock": "192.168.0.0/16",
+    "CidrBlock": "10.42.0.0/16",
     "CidrBlockState": {
       "State": "associated"
     }
@@ -25,7 +25,7 @@ $ aws ec2 describe-vpcs --vpc-ids $VPC_ID | jq '.Vpcs[0].CidrBlockAssociationSet
 ]
 ```
 
-This means that we now have a separate CIDR range we can use in addition to the default CIDR range, which in the above output is `192.168.0.0/16`. From this new CIDR range we have added 3 new subnets to the VPC which will be used for running our pods:
+This means that we now have a separate CIDR range we can use in addition to the default CIDR range, which in the above output is `10.42.0.0/16`. From this new CIDR range we have added 3 new subnets to the VPC which will be used for running our pods:
 
 ```bash wait=30
 $ echo "The secondary subnet in AZ $SUBNET_AZ_1 is $SECONDARY_SUBNET_1"
