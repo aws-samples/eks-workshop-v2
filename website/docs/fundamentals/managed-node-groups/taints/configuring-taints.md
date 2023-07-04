@@ -3,18 +3,12 @@ title: Configuring taints
 sidebar_position: 10
 ---
 
-For the purpose of this exercise, we have provisioned a separate managed node group that current has no nodes running. Use the following command to scale the node group up to 1:
-
-```bash hook=configure-taints
-$ eksctl scale nodegroup --name $EKS_TAINTED_MNG_NAME --cluster $EKS_CLUSTER_NAME --nodes 1 --nodes-min 0 --nodes-max 1
-```
-
-Now check the status of the node group:
+For the purpose of this exercise we have provisioned a separate managed node group. Check the status of the node group:
 
 ```bash
 $ eksctl get nodegroup --name $EKS_TAINTED_MNG_NAME --cluster $EKS_CLUSTER_NAME
-CLUSTER			NODEGROUP						STATUS	CREATED			MIN SIZE	MAX SIZE	DESIRED CAPACITY	INSTANCE TYPE	IMAGE ID		ASG NAME									TYPE
-eks-workshop	managed-ondemand-tainted-20221103142426393800000006	ACTIVE	2022-11-03T14:24:28Z	0		1		1			m5.large	ami-0b55230f107a87100	eks-managed-ondemand-tainted-20221103142426393800000006-d0c21ef0-8024-f793-52a9-3ed57ca9d457	managed
+CLUSTER       NODEGROUP  STATUS CREATED               MIN SIZE MAX SIZE DESIRED CAPACITY INSTANCE TYPE  IMAGE ID              ASG NAME                                         TYPE
+eks-workshop  tainted    ACTIVE 2022-11-03T14:24:28Z  0        1        1                t3.medium      ami-0b55230f107a87100 eks-tainted-d0c21ef0-8024-f793-52a9-3ed57ca9d457 managed
 ```
 
 It will take *2-3* minutes for the node to join the EKS cluster, until you see this command give the following output:
@@ -24,7 +18,7 @@ $ kubectl get nodes \
     --label-columns eks.amazonaws.com/nodegroup \
     --selector eks.amazonaws.com/nodegroup=$EKS_TAINTED_MNG_NAME
 NAME                                         STATUS   ROLES    AGE   VERSION               NODEGROUP
-ip-10-42-12-233.eu-west-1.compute.internal   Ready    <none>   63m   vVAR::KUBERNETES_NODE_VERSION   managed-ondemand-tainted-20221103142426393800000006
+ip-10-42-12-233.us-west-2.compute.internal   Ready    <none>   63m   vVAR::KUBERNETES_NODE_VERSION   tainted
 ```
 
 The above command makes use of the `--selector` flag to query for all nodes that have a label of `eks.amazonaws.com/nodegroup` that matches the name of our managed node group `$EKS_TAINTED_MNG_NAME`. The `--label-columns` flag also allows us to display the value of the `eks.amazonaws.com/nodegroup` label in the node list. 
@@ -34,13 +28,13 @@ Before configuring our taints, let's explore the current configuration of our no
 ```bash
 $ kubectl describe nodes \
     --selector eks.amazonaws.com/nodegroup=$EKS_TAINTED_MNG_NAME
-Name:               ip-10-42-12-233.eu-west-1.compute.internal
+Name:               ip-10-42-12-233.us-west-2.compute.internal
 Roles:              <none>
 Labels:             beta.kubernetes.io/arch=amd64
-                    beta.kubernetes.io/instance-type=m5.large
+                    beta.kubernetes.io/instance-type=t3.medium
                     beta.kubernetes.io/os=linux
                     eks.amazonaws.com/capacityType=ON_DEMAND
-                    eks.amazonaws.com/nodegroup=managed-ondemand-tainted-20221103142426393800000006
+                    eks.amazonaws.com/nodegroup=tainted
                     eks.amazonaws.com/nodegroup-image=ami-0b55230f107a87100
                     eks.amazonaws.com/sourceLaunchTemplateId=lt-07afc97c4940b6622
                     [...]
