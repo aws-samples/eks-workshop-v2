@@ -43,7 +43,7 @@ To make the change, run the following command to modify the **checkout** deploym
 
 ```bash
 $ kubectl delete -n checkout deployment checkout
-$ kubectl apply -k /eks-workshop/manifests/modules/fundamentals/affinity/checkout/
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/affinity/checkout/
 namespace/checkout unchanged
 serviceaccount/checkout unchanged
 configmap/checkout unchanged
@@ -84,7 +84,7 @@ Apply it with the following command:
 
 ```bash
 $ kubectl delete -n checkout deployment checkout-redis
-$ kubectl apply -k /eks-workshop/manifests/modules/fundamentals/affinity/checkout-redis/
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/affinity/checkout-redis/
 namespace/checkout unchanged
 serviceaccount/checkout unchanged
 configmap/checkout unchanged

@@ -14,7 +14,7 @@ manifests/modules/security/Guardduty/privileged/privileged-pod-example.yaml
 Create the deployment by running the following command.
 
 ```bash
-$ kubectl apply -f /eks-workshop/manifests/modules/security/Guardduty/privileged/privileged-pod-example.yaml
+$ kubectl apply -f ~/environment/eks-workshop/modules/security/Guardduty/privileged/privileged-pod-example.yaml
 ```
 
 Within a few minutes we'll see the finding `PrivilegeEscalation:Kubernetes/PrivilegedContainer` in the GuardDuty portal.
@@ -24,5 +24,5 @@ Within a few minutes we'll see the finding `PrivilegeEscalation:Kubernetes/Privi
 Cleanup:
 
 ```bash
-$ kubectl delete -f /eks-workshop/manifests/modules/security/Guardduty/privileged/privileged-pod-example.yaml
+$ kubectl delete -f ~/environment/eks-workshop/modules/security/Guardduty/privileged/privileged-pod-example.yaml
 ```

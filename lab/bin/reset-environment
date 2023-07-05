@@ -9,13 +9,13 @@ module=$1
 
 repository_path="/eks-workshop/repository"
 manifests_path="/eks-workshop/manifests"
-base_path="$manifests_path/base"
+base_path="$manifests_path/base-application"
 
 set -Eeuo pipefail
 
 mkdir -p /eks-workshop
 
-rm -f /home/ec2-user/environment/lab /home/ec2-user/environment/base
+rm -f /home/ec2-user/environment/eks-workshop
 
 rm -rf $manifests_path
 
@@ -36,7 +36,7 @@ elif [ -d "/manifests" ]; then
   cp -R /manifests $manifests_path
 fi
 
-ln -s $manifests_path/base /home/ec2-user/environment/base
+ln -s $manifests_path /home/ec2-user/environment/eks-workshop
 
 if [ ! -z "$module" ]; then
   if [ $module = "introduction/getting-started" ]; then
@@ -79,7 +79,7 @@ kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/crea
 
 # Addons
 mkdir -p /eks-workshop/terraform
-cp $manifests_path/terraform/base.tf /eks-workshop/terraform
+cp $manifests_path/.workshop/terraform/base.tf /eks-workshop/terraform
 
 export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
 
@@ -122,9 +122,6 @@ if [ ! -z "$module" ]; then
   if [ -d "$module_path/.workshop/manifests" ]; then
     kubectl apply -k "$module_path/.workshop/manifests" > /dev/null
   fi
-
-  # Link manifests to Cloud9 workspace
-  ln -s $module_path ~/environment/lab
 fi
 
 terraform -chdir="$tf_dir" output -json | jq -r '.environment.value | select(. != null)' > ~/.bashrc.d/workshop-env.bash

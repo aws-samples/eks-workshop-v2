@@ -18,7 +18,7 @@ $ kubectl patch svc checkout -n checkout --patch '{"spec": { "type": "ClusterIP"
 $ CHECKOUT_SVC="http://checkout.checkout.svc:80"
 $ kubectl patch configmap/ui -n ui --type merge -p '{"data":{"ENDPOINTS_CHECKOUT": "'${CHECKOUT_SVC}'"}}'
 $ kubectl delete --all pods --namespace=ui
-$ kubectl delete -k /eks-workshop/manifests/modules/networking/vpc-lattice/abtesting/
+$ kubectl delete -k ~/environment/eks-workshop/modules/networking/vpc-lattice/abtesting/
 ```
 
 Delete the AWS Gateway API Controller. 
@@ -33,5 +33,5 @@ Delete the IAM Service account, policy and `system` namespace.
 $ eksctl delete iamserviceaccount --name=gateway-api-controller --cluster=${EKS_CLUSTER_NAME} --region ${AWS_DEFAULT_REGION} --namespace=system
 $ export VPCLatticeControllerIAMPolicyArn=$(aws iam list-policies --query 'Policies[?PolicyName==`VPCLatticeControllerIAMPolicy`].Arn' --output text)
 $ aws iam delete-policy --policy-arn=${VPCLatticeControllerIAMPolicyArn}
-$ kubectl delete -f /eks-workshop/manifests/modules/networking/vpc-lattice/controller/deploy-namesystem.yaml
+$ kubectl delete -f ~/environment/eks-workshop/modules/networking/vpc-lattice/controller/deploy-namesystem.yaml
 ```

@@ -12,7 +12,7 @@ manifests/modules/networking/prefix/deployment-pause.yaml
 This will spin up `150 pods` and may take some time:
 
 ```bash
-$ kubectl apply -k /eks-workshop/manifests/modules/networking/prefix
+$ kubectl apply -k ~/environment/eks-workshop/modules/networking/prefix
 deployment.apps/pause-pods-prefix created
 $ kubectl wait --for=condition=available --timeout=60s deployment/pause-pods-prefix -n other
 ```

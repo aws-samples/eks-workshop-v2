@@ -13,7 +13,7 @@ Namespace/assets
 Run Kustomize to apply this change to add labels to the `assets` namespace:
 
 ```bash  timeout=180 hook=restricted-namespace
-$ kubectl apply -k /eks-workshop/manifests/modules/security/pss-psa/restricted-namespace
+$ kubectl apply -k ~/environment/eks-workshop/modules/security/pss-psa/restricted-namespace
 Warning: existing pods in namespace "assets" violate the new PodSecurity enforce level "restricted:latest"
 Warning: assets-d59d88b99-flkgp: allowPrivilegeEscalation != false, runAsNonRoot != true, seccompProfile
 namespace/assets configured
@@ -49,7 +49,7 @@ Deployment/assets
 Run Kustomize to apply these changes, which we re-create the Deployment:
 
 ```bash timeout=180 hook=restricted-deploy-with-changes
-$ kubectl apply -k /eks-workshop/manifests/modules/security/pss-psa/restricted-workload
+$ kubectl apply -k ~/environment/eks-workshop/modules/security/pss-psa/restricted-workload
 namespace/assets unchanged
 serviceaccount/assets unchanged
 configmap/assets unchanged

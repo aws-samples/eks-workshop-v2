@@ -42,7 +42,7 @@ manifests/modules/automation/controlplanes/ack/rds/k8s/rds-instance.yaml
 Apply this configuration to the Amazon EKS cluster:
 
 ```bash wait=30
-$ kubectl apply -k /eks-workshop/manifests/modules/automation/controlplanes/ack/rds/k8s
+$ kubectl apply -k ~/environment/eks-workshop/modules/automation/controlplanes/ack/rds/k8s
 securitygroup.ec2.services.k8s.aws/rds-eks-workshop created
 dbinstance.rds.services.k8s.aws/rds-eks-workshop created
 dbsubnetgroup.rds.services.k8s.aws/rds-eks-workshop created

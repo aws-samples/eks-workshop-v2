@@ -47,7 +47,7 @@ manifests/modules/networking/vpc-lattice/controller/recommended-inline-policy.js
 Create the `system` namespace:
 
 ```bash
-$ kubectl apply -f /eks-workshop/manifests/modules/networking/vpc-lattice/controller/deploy-namesystem.yaml
+$ kubectl apply -f ~/environment/eks-workshop/modules/networking/vpc-lattice/controller/deploy-namesystem.yaml
 ```
 
 Retrieve the policy ARN:
@@ -82,7 +82,7 @@ $ helm install gateway-api-controller \
 Similar to `IngressClass` for `Ingress` and `StorageClass` for `PersistentVolumes`, before creating a `Gateway`, we need to formalize the types of load balancing implementations that are available via the Kubernetes resource model with a [GatewayClass](https://gateway-api.sigs.k8s.io/concepts/api-overview/#gatewayclass). The controller that listens to the Gateway API relies on an associated `GatewayClass` resource that the user can reference from their `Gateway`.
 
 ```bash
-$ kubectl apply -f /eks-workshop/manifests/modules/networking/vpc-lattice/controller/gatewayclass.yaml
+$ kubectl apply -f ~/environment/eks-workshop/modules/networking/vpc-lattice/controller/gatewayclass.yaml
 ```
 
 The command above will create the following resource:

@@ -29,7 +29,7 @@ This ingress is also configuring rules to route requests prefixed with `/catalog
 Apply these manifests to the cluster:
 
 ```bash timeout=180 hook=add-ingress hookTimeout=430
-$ kubectl apply -k /eks-workshop/manifests/modules/exposing/ingress/multiple-ingress
+$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/multiple-ingress
 ```
 
 We'll now have two separate Ingress objects in our cluster:

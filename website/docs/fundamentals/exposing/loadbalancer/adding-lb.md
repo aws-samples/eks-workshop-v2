@@ -12,7 +12,7 @@ manifests/modules/exposing/load-balancer/nlb/nlb.yaml
 This `Service` will create a Network Load Balancer that listens on port 80 and forwards connections to the `ui` Pods on port 8080. An NLB is a layer 4 load balancer that on our case operates at the TCP layer.
 
 ```bash timeout=180 hook=add-lb hookTimeout=430
-$ kubectl apply -k /eks-workshop/manifests/modules/exposing/load-balancer/nlb
+$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/load-balancer/nlb
 ```
 
 Let's inspect the Service resources for the `ui` application again:
