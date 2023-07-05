@@ -34,7 +34,7 @@ Deployment/checkout
 Apply the kustomization to the cluster:
 
 ```bash timeout=220 hook=enabling
-$ kubectl apply -k /eks-workshop/manifests/modules/fundamentals/fargate/enabling
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/fargate/enabling
 [...]
 $ kubectl rollout status -n checkout deployment/checkout --timeout=200s
 ```

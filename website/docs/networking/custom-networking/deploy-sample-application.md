@@ -8,7 +8,7 @@ In order to test the custom networking updates we have made so far, lets update 
 To make the change, run the following command to modify the `checkout` deployment in your cluster
 
 ```bash wait=30 timeout=240
-$ kubectl apply -k /eks-workshop/manifests/modules/networking/custom-networking/sampleapp
+$ kubectl apply -k ~/environment/eks-workshop/modules/networking/custom-networking/sampleapp
 $ kubectl rollout status deployment/checkout -n checkout --timeout 180s
 ```
 

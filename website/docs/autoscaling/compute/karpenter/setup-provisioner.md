@@ -25,7 +25,7 @@ The configuration for the provider is split into two parts. The first one define
 * **Selectors**: This `AWSNodeTemplate` resource uses `securityGroupSelector` and `subnetSelector` to discover resources used to launch nodes. These tags were automatically set on the associated AWS infrastructure provided for the workshop.
 
 ```bash timeout=180
-$ kubectl apply -k /eks-workshop/manifests/modules/autoscaling/compute/karpenter/provisioner
+$ kubectl apply -k ~/environment/eks-workshop/modules/autoscaling/compute/karpenter/provisioner
 ```
 
 Throughout the workshop you can inspect the Karpenter logs with the following command to understand its behavior:

@@ -35,7 +35,7 @@ manifests/modules/observability/container-insights/adot/serviceaccount.yaml
 Create the resources:
 
 ```bash
-$ kubectl apply -k /eks-workshop/manifests/modules/observability/container-insights/adot
+$ kubectl apply -k ~/environment/eks-workshop/modules/observability/container-insights/adot
 ```
 
 The specification for the collector is too long to show here, but you can view it like so:

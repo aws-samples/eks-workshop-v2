@@ -73,7 +73,7 @@ SecurityGroupPolicy/catalog-rds-access
 Apply this to the cluster then recycle the catalog Pods once again:
 
 ```bash
-$ kubectl apply -k /eks-workshop/manifests/modules/networking/securitygroups-for-pods/sg
+$ kubectl apply -k ~/environment/eks-workshop/modules/networking/securitygroups-for-pods/sg
 namespace/catalog unchanged
 serviceaccount/catalog unchanged
 configmap/catalog unchanged

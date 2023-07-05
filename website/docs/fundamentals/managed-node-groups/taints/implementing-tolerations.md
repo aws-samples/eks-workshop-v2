@@ -44,7 +44,7 @@ Deployment/ui
 To apply the Kustomize changes run the following command: 
 
 ```bash
-$ kubectl apply -k /eks-workshop/manifests/modules/fundamentals/mng/taints/nodeselector-wo-toleration/
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/mng/taints/nodeselector-wo-toleration/
 namespace/ui unchanged
 serviceaccount/ui unchanged
 configmap/ui unchanged
@@ -99,7 +99,7 @@ Deployment/ui
 ```
 
 ```bash
-$ kubectl apply -k /eks-workshop/manifests/modules/fundamentals/mng/taints/nodeselector-w-toleration/
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/mng/taints/nodeselector-w-toleration/
 namespace/ui unchanged
 serviceaccount/ui unchanged
 configmap/ui unchanged

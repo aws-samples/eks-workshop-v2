@@ -100,7 +100,7 @@ Deployment/assets
 Run Kustomize to apply the above changes and check if PSA allows the Pod with the above security permissions.
 
 ```bash
-$ kubectl apply -k /eks-workshop/manifests/modules/security/pss-psa/privileged-workload
+$ kubectl apply -k ~/environment/eks-workshop/modules/security/pss-psa/privileged-workload
 namespace/assets unchanged
 serviceaccount/assets unchanged
 configmap/assets unchanged
