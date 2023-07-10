@@ -6,7 +6,7 @@ resource "aws_prometheus_workspace" "this" {
 
 module "iam_assumable_role_adot" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "~> v5.5.0"
+  version                       = "~> v5.27.0"
   create_role                   = true
   role_name                     = "${var.environment_name}-adot-collector"
   provider_url                  = local.oidc_url
