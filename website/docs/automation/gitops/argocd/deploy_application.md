@@ -19,7 +19,7 @@ deployment.apps "ui" deleted
 Now, let's get into the cloned Git repository and start creating our GitOps configuration. Copy the existing kustomize configuration for the UI service:
 
 ```bash
-$ cp -R ~/environment/eks-workshop/base-application/ui ~/environment/argocd/apps
+$ cp -R ~/environment/eks-workshop/base-application/ui/* ~/environment/argocd/apps
 ```
 
 Your Git directory should now look something like this which you can validate by running `tree ~/environment/argocd`:

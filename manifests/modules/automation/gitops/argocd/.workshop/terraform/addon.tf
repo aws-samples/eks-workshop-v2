@@ -6,7 +6,7 @@ module "argocd" {
     name             = "argocd"
     chart            = "argo-cd"
     repository       = "https://argoproj.github.io/argo-helm"
-    version          = "5.25.0"
+    version          = "5.36.0"
     namespace        = "argocd"
     timeout          = 1200
     create_namespace = true
@@ -99,5 +99,6 @@ output "environment" {
   value = <<EOF
 export GITOPS_IAM_SSH_KEY_ID=${aws_iam_user_ssh_key.gitops.id}
 export GITOPS_IAM_SSH_USER=${aws_iam_user.gitops.unique_id}
+export GITOPS_REPO_URL_ARGOCD="ssh://${aws_iam_user_ssh_key.gitops.id}@git-codecommit.${data.aws_region.current.id}.amazonaws.com/v1/repos/${local.addon_context.eks_cluster_id}-argocd"
 EOF
 }

@@ -24,10 +24,6 @@ export GITOPS_REPO_URL_ARGOCD=https://github.com/username/reponame
 and use [those instructions](https://argo-cd.readthedocs.io/en/stable/user-guide/private-repositories/) to create an Argo CD secret to give access to the Git repository from Argo CD
 :::
 
-```bash
-$ export GITOPS_REPO_URL_ARGOCD=ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-argocd
-```
-
 Let's clone the Git repository.
 
 ```bash

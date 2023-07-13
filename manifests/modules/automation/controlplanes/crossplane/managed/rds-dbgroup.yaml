@@ -2,6 +2,8 @@ apiVersion: database.aws.crossplane.io/v1beta1
 kind: DBSubnetGroup
 metadata:
   name: $(EKS_CLUSTER_NAME)-catalog-crossplane
+  labels:
+    app.kubernetes.io/created-by: eks-workshop
 spec:
   forProvider:
     region: $(AWS_REGION)

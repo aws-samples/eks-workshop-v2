@@ -51,7 +51,7 @@ manifests/modules/automation/controlplanes/crossplane/compositions/claim/claim.y
 Create the database by creating a `Claim`:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml
+$ kubectl apply -f ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml
 relationaldatabase.awsblueprints.io/rds-eks-workshop created
 ```
 

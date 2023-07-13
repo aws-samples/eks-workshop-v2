@@ -61,7 +61,7 @@ We would like to have `1` replica for `ui` application. All other application wi
 Copy files to the Git repository directory:
 
 ```bash
-$ cp -R /workspace/modules/automation/gitops/argocd/apps-kustomization ~/environment/argocd/
+$ cp -R ~/environment/eks-workshop/modules/automation/gitops/argocd/apps-kustomization ~/environment/argocd/
 ```
 
 Your final Git directory should now look like this. You can validate it by running `tree ~/environment/argocd`:
