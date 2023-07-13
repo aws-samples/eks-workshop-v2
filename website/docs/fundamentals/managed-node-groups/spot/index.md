@@ -15,13 +15,15 @@ In this lab exercise, we'll look at how we can provision Spot capacity for our E
 
 Amazon EKS managed node groups with Spot capacity enhances the managed node group experience with ease to provision and manage EC2 Spot Instances. EKS managed node groups launch an EC2 Auto Scaling group with Spot best practices and handle Spot Instance interruptions automatically. This enables you to take advantage of the steep savings that Spot Instances provide for your interruption tolerant containerized applications. In addition, EKS managed node groups with Spot capacity have the following advantages:
 
-* Allocation strategy to provision Spot capacity is set to Capacity Optimized to ensure that Spot nodes are provisioned in the optimal Spot capacity pools.
+* The allocation strategy to provision Spot capacity is set to "capacity-optimized" to ensure that your Spot nodes are provisioned in the optimal Spot capacity pools. To increase the number of Spot capacity pools available for allocating capacity from, configure a managed node group to use multiple instance types.
 * Specify multiple instance types during managed node groups creation, to increase the number of Spot capacity pools available for allocating capacity.
 * Nodes provisioned under managed node groups with Spot capacity are automatically tagged with capacity type: `eks.amazonaws.com/capacityType: SPOT`. You can use this label to schedule fault tolerant applications on Spot nodes.
 * Amazon EC2 Spot Capacity Rebalancing enabled to ensure Amazon EKS can gracefully drain and rebalance your Spot nodes to minimize application disruption when a Spot node is at elevated risk of interruption.
 
 
-Let’s get started by listing all of the nodegroups in our existing EKS Cluster, The `kubectl get nodes` command can be used to list the nodes in your Kubernetes cluster. To include additional labels such as `eks.amazonaws.com/capacityType` and `eks.amazonaws.com/nodegroup` in the output, you can use <b>“-L, —label-columns”</b> as additional attributes 
+Let’s get started by listing all of the nodes in our existing EKS Cluster. The `kubectl get nodes` command can be used to list the nodes in your Kubernetes cluster. To include additional labels such as `eks.amazonaws.com/capacityType` and `eks.amazonaws.com/nodegroup`,  You can use <b>“-L, —label-columns”</b>. 
+
+The following output provides a list of available nodes that are exclusively on-demand instances.
 
 ```bash
 $ kubectl get nodes -L eks.amazonaws.com/capacityType,eks.amazonaws.com/nodegroup
@@ -33,7 +35,8 @@ ip-10-42-12-45.us-west-2.compute.internal    Ready    <none>   113m   v1.23.15-e
 ```
 
 :::tip
-You can leverage <b>label selectors</b> if you want to pull nodes based on specific capacity type, In this case we have set `capacityType=ON_DEMAND`
+
+If you want to retrieve nodes based on a specific capacity type, such as `on-demand` instances, you can utilize "<b>label selectors</b>". In this particular scenario, you can achieve this by setting the label selector to `capacityType=ON_DEMAND`.
 
 ```bash
 $ kubectl get nodes -l eks.amazonaws.com/capacityType=ON_DEMAND
@@ -46,17 +49,13 @@ ip-10-42-12-235.us-east-2.compute.internal   Ready    <none>   4h34m   v1.23.15-
 
 :::
 
-In the below diagram, there are two separate Node Group representing the managed node groups within the cluster. The first Node Group box represents the node group containing On-Demand instances while the second represents the node group containing Spot instances, Both are associated with the specified EKS cluster.
+In the below diagram, there are two separate "node groups" representing the managed node groups within the cluster. The first Node Group box represents the node group containing On-Demand instances while the second represents the node group containing Spot instances. Both are associated with the specified EKS cluster.
 
 ![spot arch](../assets/managed-spot-arch.png)
 
-As our existing cluster already has a nodegroup with `On-Demand` instances, The next step would be to setup a node group which has EC2 instances with capacity type as `SPOT`. 
+As our existing cluster already has a nodegroup with `On-Demand` instances, the next step would be to setup a node group which has EC2 instances with capacity type as `SPOT`. 
 
-To achieve that, We will do following:
-
-* Export the Managed Node Group name for SPOT
-
-* Use AWS CLI to create EKS managed node group for SPOT
+To achieve that, we will perform the following steps: first, Export the environment variable <b>EKS_DEFAULT_MNG_NAME_SPOT</b> with the value set as '<b>managed-spot</b>', and then use the AWS CLI to create an EKS managed node group specifically designed for `SPOT` instances.
 
 ```bash
 
@@ -73,7 +72,7 @@ $ aws eks create-nodegroup \
 --labels capacity_type=managed_spot
 
 ```
-To track the status of Node Group creation, You can running below command in a separate terminal.
+To track the status of Node Group creation, Run below command in a separate terminal.
 
 ```bash
 $ eksctl get nodegroup --cluster=$EKS_CLUSTER_NAME
@@ -110,9 +109,7 @@ ip-10-42-12-234.us-west-2.compute.internal   Ready    <none>   77s    v1.23.17-e
 ip-10-42-12-45.us-west-2.compute.internal    Ready    <none>   113m   v1.23.15-eks-49d8fe8   ON_DEMAND      managed-ondemand-20230605211738568600000028
 
 ```
-From the above output you can see that now we have two managed nodegroups available. Next, let’s deploy the “Sample Retail Store” app and leverage [nodeSelector](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector) as node selection constraint to deploy app on top of the spot instances instead of On-Demand. Using the nodeSelector field, you can specify key-value pairs to filter and select which nodes in the cluster should run particular pods. It is used to define constraints for pod placement based on node labels. 
-
-Now because our existing manifest `deployment.yaml` located under `/workspace/manifests/catalog`  does not have `nodeSelector` as an attribute, we will use [kustomize](https://www.eksworkshop.com/docs/introduction/kustomize/) to modify the existing resource configuration without directly modifying the original manifests. 
+The above output indicates the availability of two managed node groups. To deploy the “<b>Sample Retail Store</b>” app and utilize `nodeSelector` for deploying it on spot instances instead of `On-Demand`, you can employ the `nodeSelector` field to define constraints based on node labels. As the existing deployment.yaml manifest in `/workspace/manifests/catalog` lacks the `nodeSelector` attribute, you can use kustomize to modify the resource configuration without directly altering the original manifests.
 
 ```kustomization
 fundamentals/mng/spot/deployment.yaml
@@ -134,20 +131,21 @@ deployment.apps/catalog created
 statefulset.apps/catalog-mysql created
 ```
 
-To make sure your app got deployed successfully, We will use `kubectl rollout status` command that allows you to check the status of a deployment in Kubernetes. It provides information about the progress of the rollout and the current state of the associated resources.
+To ensure the successful deployment of your app, you can utilize the kubectl rollout status command, which allows you to check the status of a deployment in Kubernetes. This command provides detailed information regarding the progress of the rollout and the current state of the associated resources, enabling you to verify the app's deployment status.
+
 ```bash
 $ kubectl rollout status deployment/catalog -n catalog --timeout=5m
 ```
-Once the application get’s deployed successfully, The Final step would be to check whether the app got deployed on `SPOT` instances, To do that run below script on your terminal.
+After successfully deploying the application, the final step is to verify if it has been deployed on the `SPOT` instances. To accomplish this, run the below command.
 
 ```bash
-$ for pod in $(kubectl get pods -l app.kubernetes.io/name=catalog -n $CATALOG_RDS_DATABASE_NAME  | awk 'NR>1 {print $1}'); do if [ "$pod" != "NAME" ]; then node=$(kubectl get pod $pod -o json -n $CATALOG_RDS_DATABASE_NAME | jq -r '.spec.nodeName'); node_group=$(kubectl get node $node -o json | jq -r '.metadata.labels."eks.amazonaws.com/capacityType"'); echo "$pod | $node | $node_group"; fi; done
-
+$ kubectl get pod -n $CATALOG_RDS_DATABASE_NAME -o=custom-columns=NAME:.metadata.name,STATUS:.status.phase,NODE:.spec.nodeName 
 ```
-
+The output of the command will display the details of the pods, including the node that is identified as a SPOT instance.
 ```
 Output:
 
-catalog-5c48f886c-txk8c | ip-10-42-11-113.us-west-2.compute.internal | managed_spot
-catalog-mysql-0 | ip-10-42-12-155.us-west-2.compute.internal | managed_spot
+NAME                      STATUS    NODE
+catalog-5c48f886c-rrbck   Running   ip-10-42-11-17.us-west-2.compute.internal
+catalog-mysql-0           Running   ip-10-42-12-234.us-west-2.compute.internal
 ```
