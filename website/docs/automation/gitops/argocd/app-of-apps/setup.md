@@ -34,9 +34,8 @@ manifests/modules/automation/gitops/argocd/app-of-apps/values.yaml
 First, copy `App of Apps` configuration which we described above to the Git repository directory:
 
 ```bash
-$ cp -R /workspace/modules/automation/gitops/argocd/app-of-apps ~/environment/argocd/
+$ cp -R ~/environment/eks-workshop/modules/automation/gitops/argocd/app-of-apps ~/environment/argocd/
 $ yq -i ".spec.source.repoURL = env(GITOPS_REPO_URL_ARGOCD)" ~/environment/argocd/app-of-apps/values.yaml
-
 ```
 
 Next, push changes to the Git repository:

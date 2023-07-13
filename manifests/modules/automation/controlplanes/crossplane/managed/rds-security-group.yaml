@@ -2,6 +2,8 @@ apiVersion: ec2.aws.crossplane.io/v1beta1
 kind: SecurityGroup
 metadata:
   name: $(EKS_CLUSTER_NAME)-catalog-crossplane
+  labels:
+    app.kubernetes.io/created-by: eks-workshop
 spec:
   forProvider:
     region: $(AWS_REGION)
