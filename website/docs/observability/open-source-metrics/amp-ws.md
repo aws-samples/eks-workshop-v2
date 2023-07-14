@@ -12,7 +12,7 @@ To view the workspace, click on the **All Workspaces** tab on the left control p
 Let's verify the successful ingestion of the metrics:
 
 ```bash
-$ awshttp -X POST --region $AWS_REGION --service aps "${AMP_ENDPOINT}api/v1/query?query=up" | jq '.data.result[1]'
+$ awshttp -X POST --service aps --url "${AMP_ENDPOINT}api/v1/query?query=up" | jq '.data.result[1]'
 {
   "metric": {
     "__name__": "up",
