@@ -27,7 +27,7 @@ if [ ! -z "${REPOSITORY_REF}" ]; then
   echo "Loading workshop repository..."
 
   git clone --quiet https://github.com/$REPOSITORY_OWNER/$REPOSITORY_NAME.git $repository_path > /dev/null
-  (cd $repository_path && git checkout "${REPOSITORY_REF}" > /dev/null)
+  (cd $repository_path && git checkout --quiet "${REPOSITORY_REF}" > /dev/null)
 
   echo ""
 
