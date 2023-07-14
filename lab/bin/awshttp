@@ -104,6 +104,6 @@ fi
 
 curl \
   -X "${method}" \
-  --aws-sigv4 "aws:amz:us-west-2:${aws_service}" \
+  --aws-sigv4 "aws:amz:${AWS_REGION}:${aws_service}" \
   --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" \
   -H "x-amz-security-token:$AWS_SESSION_TOKEN" $url
