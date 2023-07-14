@@ -146,7 +146,7 @@ EOT
   cat << EOT > /usr/local/bin/delete-all-if-crd-exists
 #!/bin/bash
 set -e
-curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/$REPOSITORY_REF/lab/bin/delete-all-if-crd-exists | bash -s -- \$1
+curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/$REPOSITORY_REF/lab/bin/delete-all-if-crd-exists | bash -s -- \$@
 EOT
   chmod +x /usr/local/bin/delete-all-if-crd-exists
   cat << EOT > /usr/local/bin/delete-nodegroup
