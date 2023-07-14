@@ -1,0 +1,15 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-fsxn-ontap-nas
+  namespace: trident
+spec:
+  version: 1
+  backendName: backend-fsxn-ontap-
+  storageDriverName: ontap-nas
+  managementLIF: $(FSXN_IP)
+  svm: fsxnsvm
+  autoExportPolicy: true
+  autoExportCIDRs: ["10.42.0.0/16","100.64.0.0/16"]
+  credentials:
+    name: backend-fsxn-ontap-nas-secret

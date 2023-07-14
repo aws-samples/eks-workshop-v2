@@ -10,7 +10,8 @@
         "descheduler": "0.24.1",
         "karpenter": "0.18.1",
         "cluster_autoscaler": "9.19.2",
-        "metrics_server": "3.8.2"
+        "metrics_server": "3.8.2",
+        "trident-operator": "23.01.0"
       }
     }
   }
