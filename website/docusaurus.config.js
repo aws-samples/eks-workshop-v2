@@ -80,6 +80,14 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      announcementBar: {
+        id: 'rearch-migration',
+        content:
+          '🚩 EKS Workshop underwent major changes 21st July. If you have an existing lab environment please see the <a target="_blank" rel="noopener noreferrer" href="/docs/misc/migrating">migration instructions</a>. 🚩',
+        backgroundColor: '#20232A',
+        textColor: '#fff',
+        isCloseable: false,
+      },
       colorMode: {
         disableSwitch: true,
       },
