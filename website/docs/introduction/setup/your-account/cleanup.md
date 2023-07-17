@@ -8,8 +8,6 @@ sidebar_position: 90
 Make sure you have run the respective clean up instructions for the mechanism you used to provision the lab EKS cluster before proceeding.
 
 * [eksctl](./using-eksctl#cleaning-up)
-* [Terraform](./using-terraform#cleaning-up)
-* [CDK](./using-cdk#cleaning-up)
 
 :::
 
