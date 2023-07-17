@@ -3,7 +3,7 @@ title: Graviton Processors
 sidebar_position: 5
 ---
 
-Whether you're using On-demand or [Spot instances](../../spot/index.md), AWS offers 3 processor types for EC2 as well as EC2-backed EKS managed node groups. Customers have the choice of Intel, AMD, and ARM (AWS Graviton) processors. [AWS Graviton processors](https://aws.amazon.com/ec2/graviton/) are designed by AWS to deliver the best price performance for your cloud workloads running in Amazon EC2.
+Whether you're using On-demand or Spot instances, AWS offers 3 processor types for EC2 as well as EC2-backed EKS managed node groups. Customers have the choice of Intel, AMD, and ARM (AWS Graviton) processors. [AWS Graviton processors](https://aws.amazon.com/ec2/graviton/) are designed by AWS to deliver the best price performance for your cloud workloads running in Amazon EC2.
 
 Graviton-based instances can be identified by the letter `g` in the Processor family section of the [Instance type naming convention](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#instance-type-names).
 
