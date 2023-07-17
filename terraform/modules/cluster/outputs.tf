@@ -118,6 +118,16 @@ output "efsid" {
   value       = aws_efs_file_system.efsassets.id
 }
 
+output "fsxnip" {
+  description = "FSxN filesystem management address"
+  value = aws_fsx_ontap_file_system.fsxnassets.endpoints[0].management[0].ip_addresses
+}
+
+output "fsxnid" {
+  description = "FSxN filesystem ID"
+  value = aws_fsx_ontap_file_system.fsxnassets.id
+}
+
 output "amp_endpoint" {
   description = "Endpoint of the AMP workspace"
   value       = aws_prometheus_workspace.this.prometheus_endpoint

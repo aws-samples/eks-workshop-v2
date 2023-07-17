@@ -18,3 +18,6 @@ charts:
 - name: metrics_server
   repository: https://kubernetes-sigs.github.io/metrics-server
   chart: metrics-server    
+- name: trident-operator
+  repository: https://netapp.github.io/trident-helm-chart
+  chart: trident-operator  
