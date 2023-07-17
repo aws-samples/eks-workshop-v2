@@ -130,14 +130,14 @@ module "eks_blueprints" {
 
     mg_tainted = {
       node_group_name = "managed-ondemand-tainted"
-      instance_types  = ["m5.large"]
+      instance_types  = ["m6g.large"]
       subnet_ids      = local.private_subnet_ids
       min_size        = 0
       max_size        = 1
       desired_size    = 0
 
 
-      ami_type        = "AL2_x86_64"
+      ami_type        = "AL2_ARM_64"
       release_version = var.ami_release_version
 
       k8s_labels = {

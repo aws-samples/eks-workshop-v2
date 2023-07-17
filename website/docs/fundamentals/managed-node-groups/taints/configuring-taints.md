@@ -3,7 +3,11 @@ title: Configuring taints
 sidebar_position: 10
 ---
 
-For the purpose of this exercise, we have provisioned a separate managed node group that current has no nodes running. Use the following command to scale the node group up to 1:
+:::info
+A Graviton-based tainted node group was already created as part of the cluster deployment. 
+:::
+
+For the purpose of this exercise, we have provisioned a separate managed node group that currently has no nodes running. [View the code](https://github.com/aws-samples/eks-workshop-v2/blob/main/terraform/modules/cluster/eks.tf) that created the tainted Graviton-based managed node group. Use the following command to scale the node group up to 1:
 
 ```bash hook=configure-taints
 $ eksctl scale nodegroup --name $EKS_TAINTED_MNG_NAME --cluster $EKS_CLUSTER_NAME --nodes 1 --nodes-min 0 --nodes-max 1
@@ -27,7 +31,17 @@ NAME                                         STATUS   ROLES    AGE   VERSION    
 ip-10-42-12-233.eu-west-1.compute.internal   Ready    <none>   63m   v1.23.9-eks-ba74326   managed-ondemand-tainted-20221103142426393800000006
 ```
 
-The above command makes use of the `--selector` flag to query for all nodes that have a label of `eks.amazonaws.com/nodegroup` that matches the name of our managed node group `$EKS_TAINTED_MNG_NAME`. The `--label-columns` flag also allows us to display the value of the `eks.amazonaws.com/nodegroup` label in the node list. 
+The above command makes use of the `--selector` flag to query for all nodes that have a label of `eks.amazonaws.com/nodegroup` that matches the name of our managed node group `$EKS_TAINTED_MNG_NAME`. The `--label-columns` flag also allows us to display the value of the `eks.amazonaws.com/nodegroup` label in the node list.
+
+To include additional processor architecture label in the output, we can specify the `kubernetes.io/arch` label. Your output should be similar to the below. The `ARCH` column shows that the `tainted` node group is running Graviton `arm64` processors.
+
+```bash
+$ kubectl get nodes \
+    --label-columns eks.amazonaws.com/nodegroup,kubernetes.io/arch \
+    --selector eks.amazonaws.com/nodegroup=$EKS_TAINTED_MNG_NAME -o wide
+NAME                                       STATUS   ROLES    AGE   VERSION                INTERNAL-IP   EXTERNAL-IP   OS-IMAGE         KERNEL-VERSION                  CONTAINER-RUNTIME   NODEGROUP                                             ARCH
+ip-10-42-10-7.us-east-2.compute.internal   Ready    <none>   54m   v1.23.15-eks-49d8fe8   10.42.10.7    <none>        Amazon Linux 2   5.4.228-131.415.amzn2.aarch64   docker://20.10.17   managed-ondemand-tainted-20230706002413588900000001   arm64
+```
 
 Before configuring our taints, let's explore the current configuration of our node. Note that the following command will list the details of all nodes that are part of our managed node group. In our lab, the managed node group has just one instance. 
 
