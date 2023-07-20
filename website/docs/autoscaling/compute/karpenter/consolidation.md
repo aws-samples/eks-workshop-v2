@@ -52,15 +52,15 @@ $ kubectl scale -n other deployment/inflate --replicas 5
 We can check the Karpenter logs to get an idea of what actions it took in response to our scaling in the deployment:
 
 ```bash test=false
-$ kubectl -n karpenter logs deployment/karpenter -c controller | grep Consolidating -A 2
+$ kubectl -n karpenter logs deployment/karpenter -c controller | grep 'deprovisioning via consolidation delete' -A 2
 ```
 
 The output will show Karpenter identifying specific nodes to cordon, drain and then terminate:
 
 ```text
-2022-09-06T19:30:06.285Z        INFO    controller.consolidation        Consolidating via Delete, terminating 1 nodes ip-10-42-159-233.us-west-2.compute.internal/m5.large    {"commit": "b157d45"}
-2022-09-06T19:30:06.341Z        INFO    controller.termination  Cordoned node   {"commit": "b157d45", "node": "ip-10-42-159-233.us-west-2.compute.internal"}
-2022-09-06T19:30:07.441Z        INFO    controller.termination  Deleted node    {"commit": "b157d45", "node": "ip-10-42-159-233.us-west-2.compute.internal"}
+2023-07-20T22:06:33.926Z        INFO    controller.deprovisioning       deprovisioning via consolidation delete, terminating 1 nodes ip-10-42-159-233.us-west-2.compute.internal/m5.large/on-demand  {"commit": "5a7faa0-dirty"}
+2023-07-20T22:06:33.984Z        INFO    controller.termination  cordoned node   {"commit": "5a7faa0-dirty", "node": "ip-10-42-159-233.us-west-2.compute.internal"}
+2023-07-20T22:06:34.263Z        INFO    controller.termination  deleted node    {"commit": "5a7faa0-dirty", "node": "ip-10-42-159-233.us-west-2.compute.internal"}
 ```
 
 This will result in the Kubernetes scheduler placing any Pods on those nodes on the remaining capacity, and now we can see that Karpenter is managing a total of 1 node:
@@ -78,15 +78,15 @@ $ kubectl scale -n other deployment/inflate --replicas 1
 We can check the Karpenter logs and see what actions the controller took in response: 
 
 ```bash test=false
-$ kubectl -n karpenter logs deployment/karpenter -c controller | grep Consolidating -A 2
+$ kubectl -n karpenter logs deployment/karpenter -c controller | grep 'deprovisioning via consolidation replace' -A 2
 ```
 
 The output will show Karpenter consolidating via replace, replacing the m5.large node with the cheaper c5.large instance type defined in the Provisioner:
 
 ```text
-2023-05-04T17:15:11.660Z        INFO    controller.consolidation        Consolidating via Replace, terminating 1 nodes ip-100-64-10-237.us-east-2.compute.internal/m5.large and replacing with a node from types c5.large   {"commit": "51becf8-dirty"}
-2023-05-04T17:15:11.679Z        INFO    controller.consolidation        Launching node with 1 pods requesting {"cpu":"175m","memory":"1074Mi","pods":"7"} from types c5.large       {"commit": "51becf8-dirty", "provisioner": "default"}
-2023-05-04T17:16:08.402Z        INFO    controller.termination  Deleted node    {"commit": "51becf8-dirty", "node": "ip-100-64-10-237.us-east-2.compute.internal"}
+2023-07-20T22:08:54.965Z        INFO    controller.deprovisioning       deprovisioning via consolidation replace, terminating 1 nodes ip-10-42-83-198.us-west-2.compute.internal/m5.large/on-demand and replacing with on-demand node from types c5.large   {"commit": "5a7faa0-dirty"}
+2023-07-20T22:08:54.980Z        INFO    controller.deprovisioning       launching node with 1 pods requesting {"cpu":"125m","memory":"1Gi","pods":"3"} from types c5.large  {"commit": "5a7faa0-dirty", "provisioner": "default"}
+2023-07-20T22:08:55.229Z        DEBUG   controller.deprovisioning.cloudprovider discovered launch template      {"commit": "5a7faa0-dirty", "provisioner": "default", "launch-template-name": "Karpenter-eks-workshop-16555401392435391284"}
 ```
 
 Since the total memory request with 1 replica is much lower around 1Gi, it would be more efficient to run it on the cheaper c5.large instance type with 4GB of memory. Once the node is replaced, we can check the metadata on the new node and confirm the instance type is the c5.large: 
