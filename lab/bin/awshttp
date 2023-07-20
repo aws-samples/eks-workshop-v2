@@ -102,7 +102,7 @@ if [ -z "$AWS_ACCESS_KEY_ID" ]; then
   AWS_SESSION_TOKEN=$(echo $security_credentials | jq -r '.Token')
 fi
 
-curl -s \
+curl \
   -X "${method}" \
   --aws-sigv4 "aws:amz:${AWS_REGION}:${aws_service}" \
   --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" \
