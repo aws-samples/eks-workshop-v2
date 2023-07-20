@@ -31,14 +31,8 @@ Next return to the personal dashboard page and scroll down to the **Event Output
 
 ![Cloud9 Link](./assets/cloud9.png)
 
-Press **Get started** to access the workshop content:
+Press **Get started** to access the workshop splash page:
 
 ![Get Started](./assets/workshop-event-page.png)
 
-The link to the lab content will be at the bottom of the page:
-
-![Get Started](./assets/content-link.png)
-
-:::tip
-You must use the specific link to eksworkshop.com from your dashboard, otherwise labs may not behave as expected.
-:::
+You can now proceed to the [Navigating the labs section](/docs/introduction/navigating-labs).

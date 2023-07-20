@@ -22,6 +22,18 @@ This module contains a single lab named **Getting started** which will be visibl
 You should start each lab from the page indicated by this badge. Starting in the middle of a lab will cause unpredictable behavior.
 :::
 
+## Cloud9 IDE
+
+Once you have accessed the Cloud9 IDE, we recommend you use the **+** button and select **New Terminal** to open a new full screen terminal window.
+
+![Open new Cloud9 terminal](./assets/terminal-open.png)
+
+This will open a new tab with a fresh terminal.
+
+![Shows new Cloud9 terminal](./assets/terminal.png)
+
+You may also close the small terminal at the bottom if you wish.
+
 ## Terminal commands
 
 Most of the interaction you will do in this workshop will be done with terminal commands, which you can either manually type or copy/paste to the Cloud9 IDE terminal. You will see this terminal commands displayed like this:
