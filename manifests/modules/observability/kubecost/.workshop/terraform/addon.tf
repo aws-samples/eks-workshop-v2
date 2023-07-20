@@ -17,9 +17,8 @@ module "aws-load-balancer-controller" {
 }
 
 data "http" "kubecost_values" {
-  url    = "https://raw.githubusercontent.com/kubecost/cost-analyzer-helm-chart/develop/cost-analyzer/values-eks-cost-monitoring.yaml"
+  url    = "https://raw.githubusercontent.com/kubecost/cost-analyzer-helm-chart/v1.102.0/cost-analyzer/values-eks-cost-monitoring.yaml"
 }
-
 
 module "kubecost" {
   depends_on = [
@@ -33,5 +32,10 @@ module "kubecost" {
   helm_config = {
     version = "1.102.0"
     values = [data.http.kubecost_values.body]
+
+     set = [{
+      name  = "service.type"
+      value = "LoadBalancer"
+    }]
   }
 }
