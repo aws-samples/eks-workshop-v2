@@ -27,10 +27,6 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
-    - uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: ~1.4.0
-        terraform_wrapper: false
     - name: Install utilities
       run: |
         sudo apt install -y gettext
@@ -57,9 +53,11 @@ jobs:
     - name: Set cluster ID
       env:
         RUN_ID: "${{ github.run_id }}"
+        AWS_REGION: "${{ secrets.AWS_REGION }}"
       run: |
         CLUSTER_ID="ci-${RUN_ID}"
         echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
+        echo "AWS_DEFAULT_REGION=$AWS_REGION" >> $GITHUB_ENV
     - name: Create infrastructure
       id: create-infrastructure
       env:
@@ -85,43 +83,9 @@ jobs:
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
+        MODULE: ${{ inputs.module }}
       run: |
-        make test environment="$CLUSTER_ID" module="fundamentals"
-    - name: Run tests - Security
-      if: ${{ (inputs.module == 'security') }}
-      env:
-        DOCKER_BUILDKIT: 1
-        DEV_MODE: 1
-      run: |
-        make test environment="$CLUSTER_ID" module="security"
-    - name: Run tests - Autoscaling
-      if: ${{ (inputs.module == 'autoscaling') }}
-      env:
-        DOCKER_BUILDKIT: 1
-        DEV_MODE: 1
-      run: |
-        make test environment="$CLUSTER_ID" module="autoscaling"
-    - name: Run tests - Observability
-      if: ${{ (inputs.module == 'observability') }}
-      env:
-        DOCKER_BUILDKIT: 1
-        DEV_MODE: 1
-      run: |
-        make test environment="$CLUSTER_ID" module="observability"
-    - name: Run tests - Automation
-      if: ${{ (inputs.module == 'automation') }}
-      env:
-        DOCKER_BUILDKIT: 1
-        DEV_MODE: 1
-      run: |
-        make test environment="$CLUSTER_ID" module="automation"
-    - name: Run tests - Networking
-      if: ${{ (inputs.module == 'networking') }}
-      env:
-        DOCKER_BUILDKIT: 1
-        DEV_MODE: 1
-      run: |
-        make test environment="$CLUSTER_ID" module="networking"
+        make test environment="$CLUSTER_ID" module="$MODULE"
     - name: Run tests - Cleanup
       if: always()
       env:
@@ -139,6 +103,8 @@ jobs:
         role-session-name: GithubActionsSession
     - name: Cleanup environment
       if: always()
+      env:
+        AWS_REGION: "${{ secrets.AWS_REGION }}"
       run: |
         export CLEANUP_ENVIRONMENT_NAME="$CLUSTER_ID"
         
@@ -148,4 +114,4 @@ jobs:
 
         awsweeper --force filter.yml
 
-        make destroy-infrastructure
+        make destroy-infrastructure environment="$CLUSTER_ID"
