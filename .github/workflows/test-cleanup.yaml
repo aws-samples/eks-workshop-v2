@@ -45,13 +45,14 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
         role-session-name: GithubActionsSession
     - name: Cleanup environment
-      working-directory: test/terraform
       timeout-minutes: 60
       env:
         BUILD_ID: ${{ github.event.inputs.buildId }}
+        AWS_REGION: "${{ secrets.AWS_REGION }}"
       run: |
         export CLUSTER_ID="ci-${BUILD_ID}"
         export CLEANUP_ENVIRONMENT_NAME="$CLUSTER_ID"
+        export AWS_DEFAULT_REGION="$AWS_REGION"
         
         envsubst < hack/lib/filter.yml > filter.yml
 
