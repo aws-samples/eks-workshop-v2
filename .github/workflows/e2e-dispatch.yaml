@@ -71,13 +71,7 @@ jobs:
         role-duration-seconds: 3600
         aws-region: ${{ secrets.AWS_REGION }}
         role-session-name: GithubActionsSession
-    - name: Run tests - Introduction
-      env:
-        DOCKER_BUILDKIT: 1
-        DEV_MODE: 1
-      run: |
-        make test environment="$CLUSTER_ID" module="introduction"
-    - name: Run tests - Fundamentals
+    - name: Run tests - Module
       if: ${{ (inputs.module == 'fundamentals') }}
       env:
         DOCKER_BUILDKIT: 1
@@ -92,7 +86,9 @@ jobs:
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
+        AWS_REGION: "${{ secrets.AWS_REGION }}"
       run: |
+        export AWS_DEFAULT_REGION="$AWS_REGION"
         make test environment="$CLUSTER_ID" module="cleanup"
     - name: Refresh AWS credentials
       if: always()
