@@ -40,6 +40,12 @@ jobs:
         tar zxf awsweeper_0.12.0_linux_amd64.tar.gz
         mv awsweeper_0.12.0_linux_amd64/awsweeper ${HOME}/.local/bin
 
+        wget https://github.com/eksctl-io/eksctl/releases/download/v0.150.0/eksctl_Linux_amd64.tar.gz
+        tar zxf eksctl_Linux_amd64.tar.gz
+        mv eksctl ${HOME}/.local/bin
+
+        chmod +x ${HOME}/.local/bin/*
+
         echo "${HOME}/.local/bin" >> $GITHUB_PATH
     - name: Get AWS credentials
       uses: aws-actions/configure-aws-credentials@v1.6.1
