@@ -8,7 +8,7 @@ We have successfully configured Argo CD on our cluster so now we can deploy an a
 First let's remove the existing UI component so we can replace it:
 
 ```bash
-$ kubectl delete -k /workspace/manifests/ui --ignore-not-found=true
+$ kubectl delete -k ~/environment/eks-workshop/base-application/ui --ignore-not-found=true
 namespace "ui" deleted
 serviceaccount "ui" deleted
 configmap "ui" deleted
@@ -19,24 +19,10 @@ deployment.apps "ui" deleted
 Now, let's get into the cloned Git repository and start creating our GitOps configuration. Copy the existing kustomize configuration for the UI service:
 
 ```bash
-$ cp -R /workspace/manifests/ui/* ~/environment/argocd/apps
+$ cp -R ~/environment/eks-workshop/base-application/ui/* ~/environment/argocd/apps
 ```
 
-<!--
-We'll then need to create a kustomization in the `apps` directory:
-
-```file
-automation/gitops/argocd/kustomization.yaml
-```
-
-Copy this file to the Git repository directory:
-
-```bash
-$ cp /workspace/modules/automation/gitops/argocd/kustomization.yaml ~/environment/argocd/apps/kustomization.yaml
-```
--->
-
-You Git directory should now look something like this which you can validate by running `tree ~/environment/argocd`:
+Your Git directory should now look something like this which you can validate by running `tree ~/environment/argocd`:
 
 ```
 .

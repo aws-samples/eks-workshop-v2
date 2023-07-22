@@ -9,10 +9,10 @@ https://console.aws.amazon.com/prometheus/home#/workspaces
 
 To view the workspace, click on the **All Workspaces** tab on the left control panel. Select the workspace that starts with **eks-workshop** and you can view several tabs under the workspace such as rules management, alert manager etc.
 
-Let's verify the successful ingestion of the metrics using `awscurl`:
+Let's verify the successful ingestion of the metrics:
 
 ```bash
-$ awscurl -X POST --region $AWS_DEFAULT_REGION --service aps "${AMP_ENDPOINT}api/v1/query?query=up" | jq '.data.result[1]'
+$ awscurl -X POST --region us-west-2 --service aps "${AMP_ENDPOINT}api/v1/query?query=up" | jq '.data.result[1]'
 {
   "metric": {
     "__name__": "up",

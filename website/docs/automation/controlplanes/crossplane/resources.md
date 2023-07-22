@@ -8,7 +8,7 @@ By default the catalog component in the sample application uses a MySQL database
 Let's explore the various Crossplane resources that we'll create. The first is an EC2 security group that will be applied to control access to the RDS database, which is done with a `ec2.aws.crossplane.io.SecurityGroup` resource:
 
 ```file
-automation/controlplanes/crossplane/managed/rds-security-group.yaml
+manifests/modules/automation/controlplanes/crossplane/managed/rds-security-group.yaml
 ```
 
 :::info
@@ -20,20 +20,20 @@ The EC2 security group above allows any traffic from the CIDR range of the VPC u
 Next, we want the RDS database to use the private subnets in our VPC. We'll create a `database.aws.crossplane.io.DBSubnetGroup` which selects the appropriate subnet IDs:
 
 ```file
-automation/controlplanes/crossplane/managed/rds-dbgroup.yaml
+manifests/modules/automation/controlplanes/crossplane/managed/rds-dbgroup.yaml
 ```
 
 Finally, we can create the configuration for the RDS database itself with a `rds.aws.crossplane.io.DBInstance` resource, the master password will be generated in the location specified by `masterUserPasswordSecretRef` since we are
 setting `autogeneratePassword: true`, and the `endpoint` and `username` will be populated by `writeConnectionSecretToRef` on the same Kubernetes secret:
 
 ```file
-automation/controlplanes/crossplane/managed/rds-instance.yaml
+manifests/modules/automation/controlplanes/crossplane/managed/rds-instance.yaml
 ```
 
 Apply this configuration to the EKS cluster:
 
 ```bash wait=30
-$ kubectl apply -k /workspace/modules/automation/controlplanes/crossplane/managed
+$ kubectl apply -k ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/managed
 dbsubnetgroup.database.aws.crossplane.io/rds-eks-workshop created
 securitygroup.ec2.aws.crossplane.io/rds-eks-workshop created
 dbinstance.rds.aws.crossplane.io/rds-eks-workshop created
@@ -56,7 +56,8 @@ $ kubectl get dbinstances.rds.aws.crossplane.io ${EKS_CLUSTER_NAME}-catalog-cros
 We can use this `status` field to instruct `kubectl` to wait until the RDS database has been successfully created:
 
 ```bash timeout=1200
-$ kubectl wait dbinstances.rds.aws.crossplane.io ${EKS_CLUSTER_NAME}-catalog-crossplane --for=condition=Ready --timeout=20m
+$ kubectl wait dbinstances.rds.aws.crossplane.io ${EKS_CLUSTER_NAME}-catalog-crossplane \
+    --for=condition=Ready --timeout=20m
 dbinstances.rds.services.k8s.aws/rds-eks-workshop condition met
 ```
 
@@ -80,7 +81,7 @@ data:
 Update the application to use the RDS endpoint and credentials:
 
 ```bash
-$ kubectl apply -k /workspace/modules/automation/controlplanes/crossplane/application
+$ kubectl apply -k ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/application
 namespace/catalog unchanged
 serviceaccount/catalog unchanged
 configmap/catalog unchanged
@@ -94,21 +95,14 @@ $ kubectl rollout restart -n catalog deployment/catalog
 $ kubectl rollout status -n catalog deployment/catalog --timeout=30s
 ```
 
-An NLB has been created to expose the sample application for testing:
+We can now check the logs of the catalog service to verify its connecting to the RDS database provisioned by Crossplane:
 
 ```bash
-$ kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
-k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
+$ kubectl -n catalog logs deployment/catalog
+2023/06/02 21:16:18 Running database migration...
+2023/06/02 21:16:18 Schema migration applied
+2023/06/02 21:16:18 Connecting to eks-workshop-test-catalog-crossplane.cjkatqd1cnrz.us-west-2.rds.amazonaws.com/catalog?timeout=5s
+2023/06/02 21:16:18 Connected
+2023/06/02 21:16:18 Connecting to eks-workshop-test-catalog-crossplane.cjkatqd1cnrz.us-west-2.rds.amazonaws.com/catalog?timeout=5s
+2023/06/02 21:16:18 Connected
 ```
-
-To wait until the load balancer has finished provisioning you can run this command:
-
-```bash timeout=300
-$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
-```
-
-Once the load balancer is provisioned you can access it by pasting the URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
-
-<browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
-<img src={require('@site/static/img/sample-app-screens/home.png').default}/>
-</browser>

@@ -18,7 +18,7 @@ secret/catalog-rds-pw created
 Now let's explore the various ACK resources that we'll create. The first is an EC2 security group that will be applied to control access to the RDS database, which is done with a `SecurityGroup` resource:
 
 ```file
-automation/controlplanes/ack/rds/k8s/rds-security-group.yaml
+manifests/modules/automation/controlplanes/ack/rds/k8s/rds-security-group.yaml
 ```
 
 :::info
@@ -30,19 +30,19 @@ The EC2 security group above allows any traffic from the CIDR range of the VPC u
 Next we want the RDS database to use the private subnets in our VPC. To accomplish this, we'll create a `DBSubnetGroup` which selects the appropriate subnet IDs:
 
 ```file
-automation/controlplanes/ack/rds/k8s/rds-dbgroup.yaml
+manifests/modules/automation/controlplanes/ack/rds/k8s/rds-dbgroup.yaml
 ```
 
 Finally, we can create the configuration for the RDS database itself with a `DBInstance` resource:
 
 ```file
-automation/controlplanes/ack/rds/k8s/rds-instance.yaml
+manifests/modules/automation/controlplanes/ack/rds/k8s/rds-instance.yaml
 ```
 
 Apply this configuration to the Amazon EKS cluster:
 
 ```bash wait=30
-$ kubectl apply -k /workspace/modules/automation/controlplanes/ack/rds/k8s
+$ kubectl apply -k ~/environment/eks-workshop/modules/automation/controlplanes/ack/rds/k8s
 securitygroup.ec2.services.k8s.aws/rds-eks-workshop created
 dbinstance.rds.services.k8s.aws/rds-eks-workshop created
 dbsubnetgroup.rds.services.k8s.aws/rds-eks-workshop created

@@ -5,7 +5,7 @@ sidebar_position: 5
 
 We can start by inspecting the VPC that has been set up. For example describe the VPC:
 
-```bash
+```bash wait=30
 $ aws ec2 describe-vpcs --vpc-ids $VPC_ID
 {
     "Vpcs": [
@@ -63,19 +63,19 @@ https://console.aws.amazon.com/vpc/home#vpcs:tag:created-by=eks-workshop-v2
 
 Describing the subnets associated with the VPC will show 9 subnets:
 
-```bash
+```bash wait=30
 $ aws ec2 describe-subnets --filters "Name=tag:created-by,Values=eks-workshop-v2" \
   --query "Subnets[*].CidrBlock"
 [
-    "10.42.2.0/24",
-    "100.64.12.0/24",
-    "10.42.11.0/24",
-    "100.64.10.0/24",
-    "10.42.1.0/24",
-    "10.42.0.0/24",
-    "10.42.12.0/24",
-    "100.64.11.0/24",
-    "10.42.10.0/24"
+    "10.42.64.0/19",
+    "100.64.32.0/19",
+    "100.64.0.0/19",
+    "100.64.64.0/19",
+    "10.42.160.0/19",
+    "10.42.0.0/19",
+    "10.42.96.0/19",
+    "10.42.128.0/19",
+    "10.42.32.0/19"
 ]
 ```
 
@@ -91,4 +91,4 @@ You can view these subnets in the AWS console:
 
 https://console.aws.amazon.com/vpc/home#subnets:tag:created-by=eks-workshop-v2;sort=desc:CidrBlock
 
-Currently our pods are leveraging the private subnets `10.42.10.0/24`, `10.42.11.0/24` and `10.42.12.0/24`. In this lab exercise, we'll move them to consume IP addresses from the `100.64` subnets.
+Currently our pods are leveraging the private subnets `10.42.96.0/19`, `10.42.128.0/19` and `10.42.160.0/19`. In this lab exercise, we'll move them to consume IP addresses from the `100.64` subnets.

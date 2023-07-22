@@ -9,6 +9,9 @@ In order for our catalog Pod to successfully connect to the RDS instance we'll n
 A security group which allows access to the RDS database has already been set up for you, and we can view it like so:
 
 ```bash
+$ export CATALOG_SG_ID=$(aws ec2 describe-security-groups \
+    --filters Name=vpc-id,Values=$VPC_ID Name=group-name,Values=$EKS_CLUSTER_NAME-catalog \
+    --query "SecurityGroups[0].GroupId" --output text)
 $ aws ec2 describe-security-groups \
   --group-ids $CATALOG_SG_ID | jq '.'
 {
@@ -63,14 +66,14 @@ This security group:
 In order for our Pod to use this security group we need to use the `SecurityGroupPolicy` CRD to tell EKS which security group is to be mapped to a specific set of Pods. This is what we'll configure:
 
 ```kustomization
-networking/securitygroups-for-pods/sg/policy.yaml
+modules/networking/securitygroups-for-pods/sg/policy.yaml
 SecurityGroupPolicy/catalog-rds-access
 ```
 
 Apply this to the cluster then recycle the catalog Pods once again:
 
 ```bash
-$ kubectl apply -k /workspace/modules/networking/securitygroups-for-pods/sg
+$ kubectl apply -k ~/environment/eks-workshop/modules/networking/securitygroups-for-pods/sg
 namespace/catalog unchanged
 serviceaccount/catalog unchanged
 configmap/catalog unchanged
@@ -92,7 +95,9 @@ deployment "catalog" successfully rolled out
 This time the catalog Pod will start and the rollout will succeed. You can check the logs to confirm its connecting to the RDS database:
 
 ```bash
-$ kubectl -n catalog logs deployment/catalog | grep Connecting
+$ kubectl -n catalog logs deployment/catalog | grep Connect
 2022/12/20 20:52:10 Connecting to catalog_user:xxxxxxxxxx@tcp(eks-workshop-catalog.cjkatqd1cnrz.us-west-2.rds.amazonaws.com:3306)/catalog?timeout=5s
+2022/12/20 20:52:10 Connected
 2022/12/20 20:52:10 Connecting to catalog_user:xxxxxxxxxx@tcp(eks-workshop-catalog.cjkatqd1cnrz.us-west-2.rds.amazonaws.com:3306)/catalog?timeout=5s
+2022/12/20 20:52:10 Connected
 ```

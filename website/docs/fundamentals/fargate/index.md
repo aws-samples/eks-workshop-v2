@@ -8,8 +8,13 @@ sidebar_custom_props: {"module": true}
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30
-$ reset-environment 
+$ prepare-environment fundamentals/fargate
 ```
+
+This will make the following changes to your lab environment:
+- Create a Fargate profile in the Amazon EKS cluster
+
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/fundamentals/fargate/.workshop/terraform).
 
 :::
 

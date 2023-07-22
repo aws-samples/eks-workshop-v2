@@ -6,13 +6,13 @@ sidebar_position: 70
 Let's create a new secret `catalog-sealed-db`. We'll create a new file `new-catalog-db.yaml` with the same keys and values as the `catalog-db` Secret.
 
 ```file
-security/sealed-secrets/new-catalog-db.yaml
+manifests/modules/security/sealed-secrets/new-catalog-db.yaml
 ```
 
 Now, let’s create SealedSecret YAML manifests with kubeseal.
 
 ```bash
-$ kubeseal --format=yaml < /workspace/modules/security/sealed-secrets/new-catalog-db.yaml \
+$ kubeseal --format=yaml < ~/environment/eks-workshop/modules/security/sealed-secrets/new-catalog-db.yaml \
   > /tmp/sealed-catalog-db.yaml
 ```
 
@@ -20,7 +20,7 @@ Alternatively, the public key can be fetched from the controller and use it offl
 
 ```bash test=false
 $ kubeseal --fetch-cert > /tmp/public-key-cert.pem
-$ kubeseal --cert=/tmp/public-key-cert.pem --format=yaml < /workspace/modules/security/sealed-secrets/new-catalog-db.yaml \
+$ kubeseal --cert=/tmp/public-key-cert.pem --format=yaml < ~/environment/eks-workshop/modules/security/sealed-secrets/new-catalog-db.yaml \
   > /tmp/sealed-catalog-db.yaml
 ```
 
@@ -73,12 +73,12 @@ catalog-sealed-db          Opaque   4      7m51s
 Let's redeploy the **catalog** deployment that reads from the above Secret. We have updated the `catalog` deployment to read the `catalog-sealed-db` Secret as follows:
 
 ```kustomization
-security/sealed-secrets/deployment.yaml
+modules/security/sealed-secrets/deployment.yaml
 Deployment/catalog
 ```
 
 ```bash
-$ kubectl apply -k /workspace/modules/security/sealed-secrets
+$ kubectl apply -k ~/environment/eks-workshop/modules/security/sealed-secrets
 $ kubectl rollout status -n catalog deployment/catalog --timeout 30s
 ```
 

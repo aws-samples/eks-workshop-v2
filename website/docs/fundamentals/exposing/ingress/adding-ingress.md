@@ -6,13 +6,13 @@ sidebar_position: 20
 Let's create an Ingress resource with the following manifest:
 
 ```file
-exposing/ingress/creating-ingress/ingress.yaml
+manifests/modules/exposing/ingress/creating-ingress/ingress.yaml
 ```
 
 This will cause the AWS Load Balancer Controller to provision an Application Load Balancer and configure it to route traffic to the Pods for the `ui` application.
 
 ```bash timeout=180 hook=add-ingress hookTimeout=430
-$ kubectl apply -k /workspace/modules/exposing/ingress/creating-ingress
+$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/creating-ingress
 ```
 
 Let's inspect the Ingress object created:
@@ -81,7 +81,7 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
     "TargetHealthDescriptions": [
         {
             "Target": {
-                "Id": "10.42.12.225",
+                "Id": "10.42.180.183",
                 "Port": 8080,
                 "AvailabilityZone": "us-west-2c"
             },
