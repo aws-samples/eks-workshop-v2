@@ -1,0 +1,18 @@
+args:
+  - "--enable-environment-configs"
+metrics:
+  enabled: true
+resourcesCrossplane:
+  limits:
+    memory: 2Gi
+  requests:
+    cpu: 100m
+    memory: 1Gi
+resourcesRBACManager:
+  limits:
+    memory: 1Gi
+  requests:
+    cpu: 100m
+    memory: 512Mi
+nodeSelector:
+  kubernetes.io/os: linux

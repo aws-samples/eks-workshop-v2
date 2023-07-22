@@ -7,15 +7,15 @@ sidebar_custom_props: {"module": true}
 
 :::danger This module is in beta - Read before you start
 
-- This module currently only works on the [self-hosted version](../../introduction/setup/your-account.md) of eksworkshop as Amazon VPC Lattice resources are not yet supported [at an AWS Event](../../introduction/setup/aws-event.md).
-- You must manually run the [Cleanup](cleanup.md) steps before proceeding to the next module.
+- This module currently only works on the [self-hosted version](../../introduction/setup/your-account) of eksworkshop as Amazon VPC Lattice resources are not yet supported [at an AWS Event](../../introduction/setup/aws-event.md).
+- You must manually run the [Cleanup](cleanup.md) steps after you have completed this lab before proceeding to the next module.
 :::
 
 :::tip Before you start
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30
-$ reset-environment 
+$ prepare-environment networking/vpc-lattice 
 ```
 
 :::

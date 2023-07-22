@@ -15,7 +15,7 @@ after() {
 
   num_nodes=$(kubectl get nodes -l workshop-default=yes -o json | jq -r '.items | length')
 
-  if [[ $num_nodes -lt 3 ]]; then
+  if [[ $num_nodes -lt 4 ]]; then
     >&2 echo "Nodes did not scale up"
 
     exit 1

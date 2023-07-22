@@ -3,6 +3,12 @@ title: "Scraping metrics using AWS Distro for OpenTelemetry"
 sidebar_position: 10
 ---
 
+In this lab we'll be storing metrics in an Amazon Managed Service for Prometheus workspace which is already created for you. You should be able to see it in the console:
+
+https://console.aws.amazon.com/prometheus/home#/workspaces
+
+To view the workspace, click on the **All Workspaces** tab on the left control panel. Select the workspace that starts with **eks-workshop** and you can view several tabs under the workspace such as rules management, alert manager etc.
+
 To gather the metrics from the Amazon EKS Cluster, we'll deploy a `OpenTelemetryCollector` custom resource. The ADOT operator running on the EKS cluster detects the presence of or changes of the this resource and for any such changes, the operator performs the following actions:
 
 - Verifies that all the required connections for these creation, update, or deletion requests to the Kubernetes API server are available.
@@ -11,14 +17,14 @@ To gather the metrics from the Amazon EKS Cluster, we'll deploy a `OpenTelemetry
 Now, let's create resources to allow the ADOT collector the permissions it needed. We'll start with the ClusterRole that gives the collector permissions to access the Kubernetes API:
 
 ```file
-observability/oss-metrics/adot/clusterrole.yaml
+manifests/modules/observability/oss-metrics/adot/clusterrole.yaml
 ```
 
 We'll use the managed IAM policy `AmazonPrometheusRemoteWriteAccess` to provide the collector with the IAM permissions it needs via IAM Roles for Service Accounts:
 
 ```bash
 $ aws iam list-attached-role-policies \
-  --role-name eks-workshop-adot-collector | jq .
+  --role-name $EKS_CLUSTER_NAME-adot-collector | jq .
 {
   "AttachedPolicies": [
     {
@@ -32,13 +38,13 @@ $ aws iam list-attached-role-policies \
 This IAM role will be added to the ServiceAccount for the collector:
 
 ```file
-observability/oss-metrics/adot/serviceaccount.yaml
+manifests/modules/observability/oss-metrics/adot/serviceaccount.yaml
 ```
 
 Create the resources:
 
 ```bash
-$ kubectl apply -k /workspace/modules/observability/oss-metrics/adot
+$ kubectl apply -k ~/environment/eks-workshop/modules/observability/oss-metrics/adot
 ```
 
 The specification for the collector is too long to show here, but you can view it like so:
@@ -50,7 +56,7 @@ $ kubectl -n other get opentelemetrycollector adot -o yaml
 Let's break this down in to sections to get a better understanding of what has been deployed. This is the OpenTelemetry collector configuration:
 
 ```bash
-$ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.config}'
+$ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.config}' | yq
 ```
 
 This is configuring an OpenTelemetry pipeline with the following structure:

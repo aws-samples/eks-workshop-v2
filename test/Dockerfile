@@ -18,6 +18,6 @@ RUN npm run build
 
 COPY run.sh /
 
-USER learner
+USER ec2-user
 
 ENTRYPOINT ["bash", "-l", "/run.sh"]

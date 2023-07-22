@@ -37,17 +37,17 @@ Create a policy (`recommended-inline-policy.json`) in IAM with the following con
 ```bash
 $ aws iam create-policy \
 --policy-name VPCLatticeControllerIAMPolicy \
---policy-document file://workspace/modules/networking/vpc-lattice/controller/recommended-inline-policy.json
+--policy-document file://eks-workshop/manifests/modules/networking/vpc-lattice/controller/recommended-inline-policy.json
 ```
 
 ```file
-/networking/vpc-lattice/controller/recommended-inline-policy.json
+manifests/modules/networking/vpc-lattice/controller/recommended-inline-policy.json
 ```
 
 Create the `system` namespace:
 
 ```bash
-$ kubectl apply -f /workspace/modules/networking/vpc-lattice/controller/deploy-namesystem.yaml
+$ kubectl apply -f ~/environment/eks-workshop/modules/networking/vpc-lattice/controller/deploy-namesystem.yaml
 ```
 
 Retrieve the policy ARN:
@@ -74,7 +74,7 @@ This step will install the controller and the CRDs (Custom Resource Definitions)
 ```bash
 $ aws ecr-public get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin public.ecr.aws
 $ helm install gateway-api-controller \
-    oci://public.ecr.aws/aws-application-networking-k8s/aws-gateway-controller-chart\
+    oci://public.ecr.aws/aws-application-networking-k8s/aws-gateway-controller-chart \
     --version=v0.0.11 \
     --set=aws.region=${AWS_DEFAULT_REGION} --set=serviceAccount.create=false --namespace system
 ```
@@ -82,11 +82,11 @@ $ helm install gateway-api-controller \
 Similar to `IngressClass` for `Ingress` and `StorageClass` for `PersistentVolumes`, before creating a `Gateway`, we need to formalize the types of load balancing implementations that are available via the Kubernetes resource model with a [GatewayClass](https://gateway-api.sigs.k8s.io/concepts/api-overview/#gatewayclass). The controller that listens to the Gateway API relies on an associated `GatewayClass` resource that the user can reference from their `Gateway`.
 
 ```bash
-$ kubectl apply -f /workspace/modules/networking/vpc-lattice/controller/gatewayclass.yaml
+$ kubectl apply -f ~/environment/eks-workshop/modules/networking/vpc-lattice/controller/gatewayclass.yaml
 ```
 
 The command above will create the following resource:
 
 ```file
-/networking/vpc-lattice/controller/gatewayclass.yaml
+manifests/modules/networking/vpc-lattice/controller/gatewayclass.yaml
 ```
