@@ -39,7 +39,7 @@ Parameters:
   RepositoryRef: 
     Type: String
     Description: The Git reference to be used to bootstrap Cloud9
-    Default: "rearchitecture"
+    Default: "main"
   Cloud9Name: 
     Type: String
     Description: Name of the Cloud9 instance
