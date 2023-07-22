@@ -10,5 +10,7 @@ mv ./kubectl ~/bin
 
 export PATH="$PATH:$HOME/bin"
 
+export MANIFESTS_REF="$BRANCH"
+
 npm install
 npm run build
