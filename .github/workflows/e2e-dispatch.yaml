@@ -54,13 +54,12 @@ jobs:
       run: |
         CLUSTER_ID="ci-${RUN_ID}"
         echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
-        echo "TF_VAR_environment_suffix=${CLUSTER_ID}" >> $GITHUB_ENV
     - name: Create infrastructure
       id: create-infrastructure
-      working-directory: test/terraform
+      env:
+        AWS_REGION: "${{ secrets.AWS_REGION }}"
       run: |
-        terraform init -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="key=ci/${CLUSTER_ID}/terraform.tfstate"
-        terraform apply --auto-approve
+        make create-infrastructure environment="$CLUSTER_ID"
     - name: Refresh AWS credentials
       if: always()
       uses: aws-actions/configure-aws-credentials@v1.6.1
@@ -74,56 +73,56 @@ jobs:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="introduction"
+        make test environment="$CLUSTER_ID" module="introduction"
     - name: Run tests - Fundamentals
       if: ${{ (inputs.module == 'fundamentals') }}
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="fundamentals"
+        make test environment="$CLUSTER_ID" module="fundamentals"
     - name: Run tests - Security
       if: ${{ (inputs.module == 'security') }}
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="security"
+        make test environment="$CLUSTER_ID" module="security"
     - name: Run tests - Autoscaling
       if: ${{ (inputs.module == 'autoscaling') }}
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="autoscaling"
+        make test environment="$CLUSTER_ID" module="autoscaling"
     - name: Run tests - Observability
       if: ${{ (inputs.module == 'observability') }}
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="observability"
+        make test environment="$CLUSTER_ID" module="observability"
     - name: Run tests - Automation
       if: ${{ (inputs.module == 'automation') }}
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="automation"
+        make test environment="$CLUSTER_ID" module="automation"
     - name: Run tests - Networking
       if: ${{ (inputs.module == 'networking') }}
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="networking"
+        make test environment="$CLUSTER_ID" module="networking"
     - name: Run tests - Cleanup
       if: always()
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="cleanup"
+        make test environment="$CLUSTER_ID" module="cleanup"
     - name: Refresh AWS credentials
       if: always()
       uses: aws-actions/configure-aws-credentials@v1.6.1
@@ -134,19 +133,13 @@ jobs:
         role-session-name: GithubActionsSession
     - name: Cleanup environment
       if: always()
-      working-directory: test/terraform
       run: |
-        terraform destroy -target=module.core.module.cluster.module.eks_blueprints_kubernetes_addons --auto-approve
-        terraform destroy -target=module.core.module.cluster.module.descheduler --auto-approve
-
-        terraform destroy -target=module.core.module.cluster.module.eks_blueprints --auto-approve
-
         export CLEANUP_ENVIRONMENT_NAME="$CLUSTER_ID"
         
-        envsubst < ../../hack/lib/filter.yml > filter.yml
+        envsubst < hack/lib/filter.yml > filter.yml
 
         cat filter.yml
 
         awsweeper --force filter.yml
 
-        terraform destroy --auto-approve
+        make destroy-infrastructure
