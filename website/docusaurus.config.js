@@ -17,7 +17,7 @@ const rootDir = path.dirname(require.resolve('./package.json'));
 const manifestsDir = `${rootDir}/..`;
 const kustomizationsDir = `${manifestsDir}/manifests`
 
-const manifestsRef = process.env.MANIFESTS_REF || 'rearchitecture'
+const manifestsRef = process.env.MANIFESTS_REF || 'main'
 const manifestsOwner = process.env.MANIFESTS_OWNER || 'aws-samples'
 const manifestsRepository = process.env.MANIFESTS_REPOSITORY || 'eks-workshop-v2'
 
