@@ -57,7 +57,6 @@ jobs:
       run: |
         CLUSTER_ID="ci-${RUN_ID}"
         echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
-        echo "AWS_DEFAULT_REGION=$AWS_REGION" >> $GITHUB_ENV
     - name: Create infrastructure
       id: create-infrastructure
       env:
@@ -84,7 +83,9 @@ jobs:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
         MODULE: ${{ inputs.module }}
+        AWS_REGION: "${{ secrets.AWS_REGION }}"
       run: |
+        export AWS_DEFAULT_REGION="$AWS_REGION"
         make test environment="$CLUSTER_ID" module="$MODULE"
     - name: Run tests - Cleanup
       if: always()
