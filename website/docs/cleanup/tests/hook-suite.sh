@@ -1,4 +1,4 @@
-set -Eeuo pipefail
+set -e
 
 before() {
   echo "noop"
