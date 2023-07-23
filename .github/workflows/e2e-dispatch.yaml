@@ -77,6 +77,7 @@ jobs:
         DEV_MODE: 1
         MODULE: ${{ inputs.module }}
         AWS_REGION: "${{ secrets.AWS_REGION }}"
+        ASSUME_ROLE: "${{ secrets.AWS_ROLE_ARN }}"
       run: |
         export AWS_DEFAULT_REGION="$AWS_REGION"
         make test environment="$CLUSTER_ID" module="$MODULE"
@@ -86,6 +87,7 @@ jobs:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
         AWS_REGION: "${{ secrets.AWS_REGION }}"
+        ASSUME_ROLE: "${{ secrets.AWS_ROLE_ARN }}"
       run: |
         export AWS_DEFAULT_REGION="$AWS_REGION"
         make test environment="$CLUSTER_ID" module="cleanup"
