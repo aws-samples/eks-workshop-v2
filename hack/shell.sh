@@ -35,7 +35,7 @@ ASSUME_ROLE=${ASSUME_ROLE:-""}
 if [ ! -z "$ASSUME_ROLE" ]; then
   source $SCRIPT_DIR/lib/generate-aws-creds.sh
 
-  aws_credential_args="-e 'AWS_ACCESS_KEY_ID' -e 'AWS_SECRET_ACCESS_KEY' -e 'AWS_SESSION_TOKEN'"
+  aws_credential_args="-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN"
 fi
 
 command_args=""
