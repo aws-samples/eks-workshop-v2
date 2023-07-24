@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -e
+
+crd=$1
+
+if [ -z "$crd" ]; then
+  echo "Error: You must provide a CRD"
+  exit 1
+fi
+
+crd_result=$(kubectl get crds | grep $crd || [[ $? == 1 ]])
+
+if [ ! -z "$crd_result" ]; then
+  kubectl delete $crd -A --all > /dev/null
+
+  kubectl wait --for=delete -A --all $crd --timeout=600s > /dev/null
+fi
