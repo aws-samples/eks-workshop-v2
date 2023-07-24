@@ -99,7 +99,7 @@ As we saw in the section regarding cluster metrics, these pod metrics will also 
 
 Next use the below script to run a load generator which will place orders through the store and generate application metrics:
 
-```bash
+```bash test=false
 $ cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -167,6 +167,6 @@ You can similarly explore the other panels to understand how they have been crea
 
 Once you're satisfied with observing the metrics, you can stop the load generator using the below command.
 
-```bash timeout=180
+```bash timeout=180 test=false
 $ kubectl delete pod load-generator -n other
 ```
