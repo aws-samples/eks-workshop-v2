@@ -37,7 +37,7 @@ Create a policy (`recommended-inline-policy.json`) in IAM with the following con
 ```bash
 $ aws iam create-policy \
 --policy-name VPCLatticeControllerIAMPolicy \
---policy-document file://eks-workshop/manifests/modules/networking/vpc-lattice/controller/recommended-inline-policy.json
+--policy-document file://eks-workshop/modules/networking/vpc-lattice/controller/recommended-inline-policy.json
 ```
 
 ```file
