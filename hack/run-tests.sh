@@ -12,13 +12,6 @@ CONTAINER_CLI=${CONTAINER_CLI:-docker}
 # Right now the container images are only designed for amd64
 export DOCKER_DEFAULT_PLATFORM=linux/amd64
 
-AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-""}
-
-if [ ! -z "$AWS_DEFAULT_REGION" ]; then
-  echo "Error: AWS_DEFAULT_REGION must be set"
-  exit 1
-fi
-
 AWS_EKS_WORKSHOP_TEST_FLAGS=${AWS_EKS_WORKSHOP_TEST_FLAGS:-""}
 
 if [[ "$module" == "*" ]]; then
@@ -45,7 +38,7 @@ ASSUME_ROLE=${ASSUME_ROLE:-""}
 if [ ! -z "$ASSUME_ROLE" ]; then
   source $SCRIPT_DIR/lib/generate-aws-creds.sh
 
-  aws_credential_args="-e 'AWS_ACCESS_KEY_ID' -e 'AWS_SECRET_ACCESS_KEY' -e 'AWS_SESSION_TOKEN'"
+  aws_credential_args="-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN"
 fi
 
 BACKGROUND=${BACKGROUND:-""}
@@ -61,5 +54,5 @@ echo "Running test suite..."
 $CONTAINER_CLI run $background_args \
   -v $SCRIPT_DIR/../website/docs:/content \
   -v $SCRIPT_DIR/../manifests:/manifests \
-  -e 'EKS_CLUSTER_NAME' -e 'AWS_DEFAULT_REGION' -e 'AWS_REGION' \
+  -e 'EKS_CLUSTER_NAME' -e 'AWS_REGION' \
   $aws_credential_args $container_image -g "{$module,$module/**}" --hook-timeout 1200 --timeout 1200 ${AWS_EKS_WORKSHOP_TEST_FLAGS}
