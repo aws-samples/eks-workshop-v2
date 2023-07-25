@@ -12,9 +12,9 @@ $ eksctl get nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME
 
 We'll scale the nodegroup in `eks-workshop` by changing the node count from `3` to `4` for **minimum size** and **desired capacity** using below command:
 
-```bash wait=60
+```bash
 $ eksctl scale nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME \
-    --nodes 4 --nodes-min 4 --nodes-max 6
+    --nodes 4 --nodes-min 3 --nodes-max 6
 ```
 
 :::tip
@@ -32,7 +32,13 @@ After making changes to the node group it may take up to **2-3 minutes** for nod
 $ eksctl get nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME
 ```
 
-You can also review changed worker node count with following command, which lists all nodes in our managed node group by using the label as a filter:
+To wait until the node group update operation is complete you can run this command:
+
+```bash hook=wait-node
+$ aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME
+```
+
+Once the command above completes we can review the changed worker node count with following command, which lists all nodes in our managed node group by using the label as a filter:
 
 :::tip
 It can take a minute or so for the node to appear in the output below, if the list still shows 3 nodes be patient.
@@ -40,7 +46,7 @@ It can take a minute or so for the node to appear in the output below, if the li
 
 ```bash
 $ kubectl get nodes -l eks.amazonaws.com/nodegroup=$EKS_DEFAULT_MNG_NAME
-NAME                                            STATUS     ROLES    AGE     VERSION
+NAME                                          STATUS     ROLES    AGE     VERSION
 ip-10-42-104-151.us-west-2.compute.internal   Ready      <none>   2d23h   vVAR::KUBERNETES_NODE_VERSION
 ip-10-42-144-11.us-west-2.compute.internal    Ready      <none>   2d23h   vVAR::KUBERNETES_NODE_VERSION
 ip-10-42-146-166.us-west-2.compute.internal   NotReady   <none>   18s     vVAR::KUBERNETES_NODE_VERSION
