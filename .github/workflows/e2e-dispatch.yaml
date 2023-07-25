@@ -9,7 +9,10 @@ on:
         default: 'fundamentals'
         type: choice
         options:
-        - fundamentals
+        - fundamentals/managed-node-groups
+        - fundamentals/fargate
+        - fundamentals/exposing
+        - fundamentals/storage
         - security
         - networking
         - autoscaling
