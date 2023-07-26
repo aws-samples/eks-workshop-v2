@@ -46,7 +46,7 @@ jobs:
         RUN_ID: "${{ github.job }}"
         AWS_REGION: "${{ secrets.AWS_REGION }}"
       run: |
-        CLUSTER_ID="ci-${RUN_ID}"
+        CLUSTER_ID=$(echo $RANDOM | md5sum | head -c 11)
         echo "Using cluster ID ${CLUSTER_ID}"
         echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
     - name: Create infrastructure
