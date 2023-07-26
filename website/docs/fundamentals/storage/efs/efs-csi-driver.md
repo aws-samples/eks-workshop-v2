@@ -19,10 +19,10 @@ efs-csi-node   3         3         3       3            3           beta.kuberne
 
 The EFS CSI driver supports dynamic and static provisioning. Currently dynamic provisioning creates an access point for each PersistentVolume. This mean an AWS EFS file system has to be created manually on AWS first and should be provided as an input to the StorageClass parameter. For static provisioning, AWS EFS file system needs to be created manually on AWS first. After that it can be mounted inside a container as a volume using the driver.
 
-The workshop environment also has an EFS file system, mount targets and the required security group pre-provisioned with an inbound rule that allows inbound NFS traffic for your Amazon EFS mount points. You can retrieve information about the EFS file system by running the following AWS CLI command:
+We have provisioned an EFS file system, mount targets and the required security group pre-provisioned with an inbound rule that allows inbound NFS traffic for your Amazon EFS mount points. Let's retrieve some information about it that will be used later:
 
 ```bash
-$ aws efs describe-file-systems --file-system-id $EFS_ID
+$ export EFS_ID=$(aws efs describe-file-systems --query "FileSystems[?Name=='$EKS_CLUSTER_NAME-efs-assets'] | [0].FileSystemId" --output text)
 ```
 
 Now, we'll need to create a StorageClass(https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured to use the pre-provisioned EFS file system as part of this workshop infrastructure and use [EFS Access points](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html) in provisioning mode.
@@ -30,14 +30,14 @@ Now, we'll need to create a StorageClass(https://kubernetes.io/docs/concepts/sto
 We'll be using Kustomize to create for us the storage class and to ingest the environment variable `EFS_ID` in the parameter `filesystemid` value in the configuration of the storage class object: 
 
 ```kustomization
-fundamentals/storage/efs/storageclass/efsstorageclass.yaml
+modules/fundamentals/storage/efs/storageclass/efsstorageclass.yaml
 StorageClass/efs-sc
 ```
 
 Let's apply this kustomization:
 
 ```bash
-$ kubectl apply -k /workspace/modules/fundamentals/storage/efs/storageclass
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/efs/storageclass
 storageclass.storage.k8s.io/efs-sc created
 configmap/assets-efsid-48hg67g6fd created
 ```

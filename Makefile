@@ -18,19 +18,19 @@ tf-fmt:
 
 .PHONY: test
 test:
-	bash hack/run-tests.sh $(terraform_context) $(module)
+	bash hack/run-tests.sh $(environment) $(module)
 
 .PHONY: shell
 shell:
-	bash hack/shell.sh $(terraform_context) $(shell_command)
+	bash hack/shell.sh $(environment) $(shell_command)
 
 .PHONY: reset-environment
 reset-environment:
-	bash hack/shell.sh $(terraform_context) reset-environment
+	bash hack/shell.sh $(environment) reset-environment
 
 .PHONY: delete-environment
 delete-environment:
-	bash hack/shell.sh $(terraform_context) delete-environment
+	bash hack/shell.sh $(environment) delete-environment
 
 .PHONY: update-helm-versions
 update-helm-versions:
@@ -42,11 +42,11 @@ verify-helm-metadata:
 
 .PHONY: create-infrastructure
 create-infrastructure:
-	bash hack/create-infrastructure.sh $(environment) $(terraform_context)
+	bash hack/create-infrastructure.sh $(environment)
 
 .PHONY: destroy-infrastructure
 destroy-infrastructure:
-	bash hack/destroy-infrastructure.sh $(environment) $(terraform_context)
+	bash hack/destroy-infrastructure.sh $(environment)
 
 .PHONY: lint-markdown
 lint-markdown:

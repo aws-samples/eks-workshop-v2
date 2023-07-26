@@ -24,17 +24,21 @@ No resources found
 The following Deployment uses a simple `pause` container image, and we'll use resource requests to predictably scale the cluster. Initially this has `0` replicas so we can gradually scale it deliberately:
 
 ```file
-autoscaling/compute/karpenter/scale/deployment.yaml
+manifests/modules/autoscaling/compute/karpenter/scale/deployment.yaml
 ```
 
 :::info What's a pause container?
-You'll notice in this example we're using the image `public.ecr.aws/eks-distro/kubernetes/pause`. This is a small container that will consume no real resources and starts quickly, which makes it great for demonstrating scaling scenarios. We'll be using this for many of the examples in this particular lab.
+You'll notice in this example we're using the image:
+
+`public.ecr.aws/eks-distro/kubernetes/pause`
+
+This is a small container that will consume no real resources and starts quickly, which makes it great for demonstrating scaling scenarios. We'll be using this for many of the examples in this particular lab.
 :::
 
 Apply this deployment:
 
 ```bash
-$ kubectl apply -k /workspace/modules/autoscaling/compute/karpenter/scale
+$ kubectl apply -k ~/environment/eks-workshop/modules/autoscaling/compute/karpenter/scale
 ```
 
 Now, let's deliberately scale this deployment to demonstrate that Karpenter is making optimized decisions. Since we've requested 1Gi of memory, if we scale the deployment to 5 replicas that will request a total of 5Gi of memory.
@@ -56,13 +60,13 @@ $ kubectl rollout status -n other deployment/inflate --timeout=180s
 Once all of the Pods are running, lets see what instance type it selecting:
 
 ```bash
-$ kubectl -n karpenter logs deployment/karpenter -c controller | grep 'Launched instance' | tail -1
+$ kubectl -n karpenter logs deployment/karpenter -c controller | grep 'launched new instance' | tail -1
 ```
 
 You should see output that indicates the instance type and the purchase option:
 
 ```
-2022-09-03T05:27:20.771Z        INFO    controller.provisioning.cloudprovider   Launched instance: i-03c39c66e4c19b955, hostname: ip-192-168-189-92.us-west-2.compute.internal, type: m5.large, zone: us-west-2c, capacityType: on-demand {"commit": "b157d45", "provisioner": "default"}
+2022-09-03T05:27:20.771Z        INFO    controller.provisioning.cloudprovider   Launched instance: i-03c39c66e4c19b955, hostname: ip-10-42-189-92.us-west-2.compute.internal, type: m5.large, zone: us-west-2c, capacityType: on-demand {"commit": "b157d45", "provisioner": "default"}
 ```
 
 The Pods that we scheduled will fit nicely in to an EC2 instance with 8GB of memory, and since Karpenter will always prioritize the lowest price instance type for on-demand instances, it will select `m5.large`.

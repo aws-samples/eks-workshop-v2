@@ -18,10 +18,6 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
-    - uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: ~1.4.0
-        terraform_wrapper: false
     - name: Install utilities
       run: |
         sudo apt install -y gettext
@@ -30,6 +26,12 @@ jobs:
         wget https://github.com/jckuester/awsweeper/releases/download/v0.12.0/awsweeper_0.12.0_linux_amd64.tar.gz
         tar zxf awsweeper_0.12.0_linux_amd64.tar.gz
         mv awsweeper_0.12.0_linux_amd64/awsweeper ${HOME}/.local/bin
+
+        wget https://github.com/eksctl-io/eksctl/releases/download/v0.150.0/eksctl_Linux_amd64.tar.gz
+        tar zxf eksctl_Linux_amd64.tar.gz
+        mv eksctl ${HOME}/.local/bin
+
+        chmod +x ${HOME}/.local/bin/*
 
         echo "${HOME}/.local/bin" >> $GITHUB_PATH
     - name: Get AWS credentials
@@ -40,6 +42,8 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
         role-session-name: GithubActionsSession
     - name: Set cluster ID
+      env:
+        AWS_REGION: "${{ secrets.AWS_REGION }}"
       run: |
         RANDOM_ID=$(echo $RANDOM | md5sum | head -c 8; echo)
         CLUSTER_ID="ci-${RANDOM_ID}"
@@ -47,13 +51,13 @@ jobs:
         echo "Cluster ID is ${CLUSTER_ID}"
 
         echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
-        echo "TF_VAR_environment_suffix=${CLUSTER_ID}" >> $GITHUB_ENV
+        echo "AWS_DEFAULT_REGION=$AWS_REGION" >> $GITHUB_ENV
     - name: Create infrastructure
       id: create-infrastructure
-      working-directory: test/terraform
+      env:
+        AWS_REGION: "${{ secrets.AWS_REGION }}"
       run: |
-        terraform init -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="key=ci/${CLUSTER_ID}/terraform.tfstate"
-        terraform apply --auto-approve
+        make create-infrastructure environment="$CLUSTER_ID"
     - name: Refresh AWS credentials
       if: always()
       uses: aws-actions/configure-aws-credentials@v1.6.1
@@ -67,20 +71,20 @@ jobs:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="introduction"
+        make test environment="$CLUSTER_ID" module="introduction"
     - name: Run tests
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="${{ matrix.module }}"
+        make test environment="$CLUSTER_ID" module="${{ matrix.module }}"
     - name: Run tests - Cleanup
       if: always()
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
       run: |
-        make test terraform_context="test/terraform" module="cleanup"
+        make test environment="$CLUSTER_ID" module="cleanup"
     - name: Refresh AWS credentials
       if: always()
       uses: aws-actions/configure-aws-credentials@v1.6.1
@@ -91,19 +95,15 @@ jobs:
         role-session-name: GithubActionsSession
     - name: Cleanup environment
       if: always()
-      working-directory: test/terraform
+      env:
+        AWS_REGION: "${{ secrets.AWS_REGION }}"
       run: |
-        terraform destroy -target=module.core.module.cluster.module.eks_blueprints_kubernetes_addons --auto-approve
-        terraform destroy -target=module.core.module.cluster.module.descheduler --auto-approve
-
-        terraform destroy -target=module.core.module.cluster.module.eks_blueprints --auto-approve
-
         export CLEANUP_ENVIRONMENT_NAME="$CLUSTER_ID"
         
-        envsubst < ../../hack/lib/filter.yml > filter.yml
+        envsubst < hack/lib/filter.yml > filter.yml
 
         cat filter.yml
 
         awsweeper --force filter.yml
 
-        terraform destroy --auto-approve
+        make destroy-infrastructure environment="$CLUSTER_ID"

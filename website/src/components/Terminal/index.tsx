@@ -61,7 +61,7 @@ export default function Terminal({
         <div className={styles.browserWindowMenuIcon}>
           <div className={styles.copyAll}>
             <FontAwesomeIcon icon={faClipboard} onClick={handler} data-tip="Copy all commands" />
-            <ReactTooltip effect="solid" border={true} />
+            <ReactTooltip place="top" effect="float" border={true} />
           </div>
         </div>
       </div>
@@ -188,7 +188,9 @@ class TerminalCommand extends TerminalContext {
   }
 
   renderCommand(command: string, indent: boolean) {
-    return (<span className={styles.terminalPromptCommand}>{command}</span>)
+    let output = command;
+
+    return (<span className={styles.terminalPromptCommand}>{output}</span>)
   }
 }
 
