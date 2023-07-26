@@ -43,10 +43,11 @@ jobs:
         role-session-name: GithubActionsSession
     - name: Set cluster ID
       env:
-        RUN_ID: "${{ github.run_id }}"
+        RUN_ID: "${{ github.job }}"
         AWS_REGION: "${{ secrets.AWS_REGION }}"
       run: |
         CLUSTER_ID="ci-${RUN_ID}"
+        echo "Using cluster ID ${CLUSTER_ID}"
         echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
     - name: Create infrastructure
       id: create-infrastructure
