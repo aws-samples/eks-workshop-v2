@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   test-module:
-    uses: ./.github/workflows/module-test.yml
+    uses: ./.github/workflows/module-test.yaml
     with:
       module: autoscaling
     secrets: inherit

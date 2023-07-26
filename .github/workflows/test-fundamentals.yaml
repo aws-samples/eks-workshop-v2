@@ -19,7 +19,7 @@ jobs:
         - fundamentals/fargate
         - fundamentals/exposing
         - fundamentals/storage
-    uses: ./.github/workflows/module-test.yml
+    uses: ./.github/workflows/module-test.yaml
     with:
       module: ${{ matrix.module }}
     secrets: inherit
