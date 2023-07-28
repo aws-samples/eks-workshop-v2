@@ -9,7 +9,6 @@ Run the below commands to generate this finding.
 
 ```bash
 $ kubectl -n kube-system exec $(kubectl -n kube-system get pods -o name -l k8s-app=kube-proxy| head -n1) -c kube-proxy -- pwd
-/
 ```
 
 Within a few minutes we'll see the finding `Execution:Kubernetes/ExecInKubeSystemPod` in the GuardDuty portal.
