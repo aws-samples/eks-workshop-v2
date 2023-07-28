@@ -11,7 +11,13 @@ permissions:
 
 jobs:
   test-module:
+    strategy:
+      fail-fast: false
+      matrix:
+        module:
+        - automation/gitops
+        - automation/controlplanes
     uses: ./.github/workflows/module-test.yaml
     with:
-      module: automation
+      module: ${{ matrix.module }}
     secrets: inherit
