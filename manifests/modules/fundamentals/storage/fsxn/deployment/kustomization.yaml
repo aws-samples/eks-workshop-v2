@@ -5,4 +5,4 @@ bases:
 resources:
 - fsxnpvclaim.yaml
 patches:
-- deployment.yaml
+- path: deployment.yaml

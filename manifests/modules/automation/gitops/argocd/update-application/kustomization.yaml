@@ -5,4 +5,4 @@ bases:
 # HIGHLIGHT
 patches:
 # HIGHLIGHT
-- deployment-patch.yaml
+- path: deployment-patch.yaml
