@@ -1,5 +1,5 @@
 ---
-title: "Unauthorized creation or tampering of resourses by unauthenticated user" 
+title: "Unauthorized creation or tampering of resources by unauthenticated user" 
 sidebar_position: 128
 ---
 
