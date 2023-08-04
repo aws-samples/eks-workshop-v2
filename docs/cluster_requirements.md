@@ -17,6 +17,7 @@ The VPC for the lab cluster must implement the following:
 4. The private subnet CIDR ranges should be `10.42.96.0/19`, `10.42.128.0/19` and `10.42.160.0/19`
 5. The VPC must provide an Internet Gateway and NAT Gateway for internet access from both public and private subnets
 6. The private subnets must have name that includes the string `Private` in it for lookup purposes
+7. The public subnets should be tagged with `kubernetes.io/role/elb: 1`
 
 ## EKS Cluster
 
