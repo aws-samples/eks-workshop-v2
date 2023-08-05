@@ -11,7 +11,7 @@ manifests/modules/fundamentals/mng/taints/nodegroup.yaml
 
 Note: This configuration file does not yet configure the taints, it only applies a label `tainted: 'yes'`. We will configure the taints on this node group further below.
 
-The following command create this node group:
+The following command creates this node group:
 
 ```bash timeout=600 hook=configure-taints
 $ cat ~/environment/eks-workshop/modules/fundamentals/mng/taints/nodegroup.yaml | envsubst | eksctl create nodegroup -f -
