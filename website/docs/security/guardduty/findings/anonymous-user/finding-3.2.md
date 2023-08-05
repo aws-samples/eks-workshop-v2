@@ -1,5 +1,5 @@
 ---
-title: "Unauthorized creation or tampering of resourses by unauthenticated user" 
+title: "Unauthorized creation or tampering of resources by unauthenticated user" 
 sidebar_position: 128
 ---
 
@@ -9,14 +9,12 @@ To simulate this we'll create two `role` resources, **pod-create** and **psp-use
 
 ```bash
 $ kubectl create role pod-create --verb=create --resource=pods -n default
-$ kubectl create role psp-use --verb=use --resource=podsecuritypolicies -n default
 ```
 
 Once the `role` is created we'll need to bind it with the `system:anonymous` user. Below command will create `rolebinding` named **pod-access** and **psp-access** binding the `roles` **pod-create** and **psp-use** to the user named `system:anonymous`.
 
 ```bash
 $ kubectl create rolebinding pod-access --role=pod-create --user=system:anonymous -n default
-$ kubectl create rolebinding psp-access --role=psp-use --user=system:anonymous -n default
 ```
 
 Note that the above rolebinding command will trigger `Policy:Kubernetes/AnonymousAccessGranted` finding in guard duty within few minutes.
@@ -26,7 +24,7 @@ Now let us create a Pod named nginx using a HTTP post call.
 ```bash
 $ API_URL=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --query "cluster.endpoint" --region $AWS_REGION --output text)
 $ curl -k -v $API_URL/api/v1/namespaces/default/pods -X POST -H 'Content-Type: application/yaml' \
-    -d @/eks-workshop/manifests/modules/security/Guardduty/anonymous/pod.yaml
+    --data-binary @eks-workshop/modules/security/Guardduty/anonymous/pod.yaml
 ```
 
 Verify if the Pod is Running.
@@ -46,6 +44,6 @@ Cleanup:
 
 ```bash
 $ kubectl delete pod nginx -n default
-$ kubectl delete rolebinding pod-access psp-access -n default
-$ kubectl delete role pod-create psp-use -n default
+$ kubectl delete rolebinding pod-access -n default
+$ kubectl delete role pod-create -n default
 ```
