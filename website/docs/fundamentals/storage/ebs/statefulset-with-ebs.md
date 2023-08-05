@@ -35,7 +35,7 @@ Apply the changes and wait for the new Pods to be rolled out:
 
 ```bash hook=check-pvc
 $ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/ebs/
-$ kubectl rollout status --timeout=60s statefulset/catalog-mysql-ebs -n catalog
+$ kubectl rollout status --timeout=100s statefulset/catalog-mysql-ebs -n catalog
 ```
 
 Let's now confirm that our newly deployed StatefulSet is running:
