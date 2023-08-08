@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 echo "Deleting Karpenter provisioners..."
 
 kubectl delete provisioner --all > /dev/null
