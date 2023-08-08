@@ -5,7 +5,7 @@ sidebar_position: 30
 
 Enabling EKS control plane logs is done on a per-cluster basis through the EKS API. This will often be configured using Terraform or CloudFormation, but in this lab we'll use the AWS CLI to enable the functionality:
 
-```bash
+```bash hook=cluster-logging
 $ aws eks update-cluster-config \
     --region $AWS_REGION \
     --name $EKS_CLUSTER_NAME \
@@ -25,6 +25,7 @@ $ aws eks update-cluster-config \
         "errors": []
     }
 }
+$ sleep 10
 $ aws eks wait cluster-active --name $EKS_CLUSTER_NAME
 ```
 
