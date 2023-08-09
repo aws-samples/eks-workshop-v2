@@ -36,7 +36,7 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/networking/vpc-lattice/con
 Verify that `eks-workshop-gw` gateway is created:
 
 ```bash
-$ kubectl get gateway  
+$ kubectl get gateway
 NAME              CLASS         ADDRESS   READY   AGE
 eks-workshop-gw   aws-lattice                     12min
 ```
@@ -62,10 +62,8 @@ $ kubectl wait --for=jsonpath='{.status.conditions[-1:].reason}'=Reconciled gate
 # Create Routes to targets
 Let's demonstrate how weighted routing works by creating  `HTTPRoutes`.
 
-At the time of writing (Apr 2023), the controller requires a port number for `targetPort`, rather than simply specifying `http`. We are working on a better solution, progress is tracked [here](https://github.com/aws/aws-application-networking-k8s/issues/86).
-
 ```bash
-$ kubectl patch svc checkout -n checkout --patch '{"spec": { "type": "ClusterIP", "ports": [ { "name": "http", "port": 80, "protocol": "TCP", "targetPort": 8080 } ] } }'
+$ kubectl patch svc checkout -n checkout --patch '{"spec": { "type": "ClusterIP", "ports": [ { "name": "http", "port": 80, "protocol": "TCP", "targetPort": "http" } ] } }'
 ```
 
 Create the Kubernetes `HTTPRoute` route that distributes 75% traffic to `checkoutv2` and remaining 25% traffic to `checkout`:
@@ -123,7 +121,7 @@ Amazon VPC Lattice can now automatically redirect traffic to this service from a
 
 # Check weighted routing is working
 
-In the real world, canary deployments are regularly used to release a feature to a subset of users. In this scenario, we are artifically routing 75% of users to the new version of the checkout service. Completing the checkout procedure multiple times with different objects in the cart should present the users with the 2 version of the applications. 
+In the real world, canary deployments are regularly used to release a feature to a subset of users. In this scenario, we are artifically routing 75% of users to the new version of the checkout service. Completing the checkout procedure multiple times with different objects in the cart should present the users with the 2 version of the applications.
 
 Let's ensure that the UI pods are restarted and then port-forward to the preview of your application with Cloud9.
 
