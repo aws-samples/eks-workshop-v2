@@ -5,12 +5,24 @@ weight: 10
 sidebar_custom_props: {"module": true}
 ---
 
+:::caution Preview
+
+This module is currently in preview, please [report any issues](https://github.com/aws-samples/eks-workshop-v2/issues) encountered.
+
+:::
+
 :::tip Before you start
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30
 $ prepare-environment networking/vpc-lattice
 ```
+
+This will make the following changes to your lab environment:
+- Create an IAM role for the Gateway API controller to access AWS APIs
+- Install the AWS Load Balancer Controller in the Amazon EKS cluster
+
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/networking/vpc-lattice/.workshop/terraform).
 
 :::
 
