@@ -3,12 +3,18 @@ title: Configuring taints
 sidebar_position: 10
 ---
 
-For the purpose of this exercise we have provisioned a separate managed node group. Check the status of the node group:
+For the purpose of this exercise we'll provision a separate managed node group which we'll apply taints to. 
 
-```bash
-$ eksctl get nodegroup --name $EKS_TAINTED_MNG_NAME --cluster $EKS_CLUSTER_NAME
-CLUSTER       NODEGROUP  STATUS CREATED               MIN SIZE MAX SIZE DESIRED CAPACITY INSTANCE TYPE  IMAGE ID              ASG NAME                                         TYPE
-eks-workshop  tainted    ACTIVE 2022-11-03T14:24:28Z  0        1        1                t3.medium      ami-0b55230f107a87100 eks-tainted-d0c21ef0-8024-f793-52a9-3ed57ca9d457 managed
+```file
+manifests/modules/fundamentals/mng/taints/nodegroup.yaml
+```
+
+Note: This configuration file does not yet configure the taints, it only applies a label `tainted: 'yes'`. We will configure the taints on this node group further below.
+
+The following command creates this node group:
+
+```bash timeout=600 hook=configure-taints
+$ cat ~/environment/eks-workshop/modules/fundamentals/mng/taints/nodegroup.yaml | envsubst | eksctl create nodegroup -f -
 ```
 
 It will take *2-3* minutes for the node to join the EKS cluster, until you see this command give the following output:
@@ -16,25 +22,25 @@ It will take *2-3* minutes for the node to join the EKS cluster, until you see t
 ```bash
 $ kubectl get nodes \
     --label-columns eks.amazonaws.com/nodegroup \
-    --selector eks.amazonaws.com/nodegroup=$EKS_TAINTED_MNG_NAME
+    --selector eks.amazonaws.com/nodegroup=taint-mng
 NAME                                         STATUS   ROLES    AGE   VERSION               NODEGROUP
-ip-10-42-12-233.us-west-2.compute.internal   Ready    <none>   63m   vVAR::KUBERNETES_NODE_VERSION   tainted
+ip-10-42-12-233.us-west-2.compute.internal   Ready    <none>   63m   vVAR::KUBERNETES_NODE_VERSION   taint-mng
 ```
 
-The above command makes use of the `--selector` flag to query for all nodes that have a label of `eks.amazonaws.com/nodegroup` that matches the name of our managed node group `$EKS_TAINTED_MNG_NAME`. The `--label-columns` flag also allows us to display the value of the `eks.amazonaws.com/nodegroup` label in the node list. 
+The above command makes use of the `--selector` flag to query for all nodes that have a label of `eks.amazonaws.com/nodegroup` that matches the name of our managed node group `taint-mng`. The `--label-columns` flag also allows us to display the value of the `eks.amazonaws.com/nodegroup` label in the node list. 
 
 Before configuring our taints, let's explore the current configuration of our node. Note that the following command will list the details of all nodes that are part of our managed node group. In our lab, the managed node group has just one instance. 
 
 ```bash
 $ kubectl describe nodes \
-    --selector eks.amazonaws.com/nodegroup=$EKS_TAINTED_MNG_NAME
+    --selector eks.amazonaws.com/nodegroup=taint-mng
 Name:               ip-10-42-12-233.us-west-2.compute.internal
 Roles:              <none>
 Labels:             beta.kubernetes.io/arch=amd64
                     beta.kubernetes.io/instance-type=t3.medium
                     beta.kubernetes.io/os=linux
                     eks.amazonaws.com/capacityType=ON_DEMAND
-                    eks.amazonaws.com/nodegroup=tainted
+                    eks.amazonaws.com/nodegroup=taint-mng
                     eks.amazonaws.com/nodegroup-image=ami-0b55230f107a87100
                     eks.amazonaws.com/sourceLaunchTemplateId=lt-07afc97c4940b6622
                     [...]
@@ -52,14 +58,14 @@ A few things to point out:
 
 While it's easy to taint nodes using the `kubectl` CLI as described [here](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#concepts), an administrator will have to make this change every time the underlying node group scales up or down. To overcome this challenge, AWS supports adding both `labels` and `taints` to managed node groups, ensuring every node within the MNG will have the associated labels and taints configured automatically. 
 
-In the next few sections, we'll explore how to add taints to our preconfigured managed node group `$EKS_TAINTED_MNG_NAME`. 
+In the next few sections, we'll explore how to add taints to our preconfigured managed node group `taint-mng`. 
 
 Let's start by adding a `taint` to our managed node group using the following `aws` cli command: 
 
 ```bash timeout=180
 $ aws eks update-nodegroup-config \
     --cluster-name $EKS_CLUSTER_NAME \
-    --nodegroup-name $EKS_TAINTED_MNG_NAME \
+    --nodegroup-name taint-mng \
     --taints "addOrUpdateTaints=[{key=frontend, value=true, effect=NO_EXECUTE}]"
 {
     "update": {
@@ -77,7 +83,7 @@ $ aws eks update-nodegroup-config \
     }
 }
 $ aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME \
-  --nodegroup-name $EKS_TAINTED_MNG_NAME
+  --nodegroup-name taint-mng
 ```
 
 The addition, removal, or replacement of taints can be done by using the [`aws eks update-nodegroup-config`](https://docs.aws.amazon.com/cli/latest/reference/eks/update-nodegroup-config.html) CLI command to update the configuration of the managed node group. This can be done by passing either `addOrUpdateTaints` or `removeTaints` and a list of taints to the `--taints` command flag. 
@@ -98,7 +104,7 @@ We can use the following command to check the taints have been correctly configu
 ```bash
 $ aws eks describe-nodegroup \
   --cluster-name $EKS_CLUSTER_NAME \
-  --nodegroup-name $EKS_TAINTED_MNG_NAME \
+  --nodegroup-name taint-mng \
   | jq .nodegroup.taints
 [
   {
@@ -119,6 +125,6 @@ Verifying with the `kubectl` cli command, we can also see that the taint has bee
 
 ```bash
 $ kubectl describe nodes \
-    --selector eks.amazonaws.com/nodegroup=$EKS_TAINTED_MNG_NAME | grep Taints
+    --selector eks.amazonaws.com/nodegroup=taint-mng | grep Taints
 Taints:             frontend=true:NoExecute
 ```
