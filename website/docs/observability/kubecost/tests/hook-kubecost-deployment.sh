@@ -7,7 +7,6 @@ before() {
 after() {
   sleep 10
 
-
   analyzer_success=$(kubectl rollout status deployment -n kubecost kubecost-cost-analyzer --timeout=60s)
   metrics_success=$(kubectl rollout status deployment -n kubecost kubecost-kube-state-metrics --timeout=60s)
   prometheus_success=$(kubectl rollout status deployment -n kubecost kubecost-prometheus-server --timeout=60s)

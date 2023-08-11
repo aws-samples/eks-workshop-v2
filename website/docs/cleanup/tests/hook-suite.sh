@@ -1,15 +1,15 @@
-set -Eeuo pipefail
+set -e
 
 before() {
   echo "noop"
 }
 
 after() {
-  reset-environment
+  prepare-environment
 
   sleep 60
 
-  kubectl delete -k /workspace/manifests --all
+  kubectl delete -k /eks-workshop/manifests/base-application --all
 
   sleep 60
 }

@@ -1,20 +1,25 @@
 #!/bin/bash
 
 environment=$1
-terraform_context=$2
 
 set -Eeuo pipefail
 
-if [ ! -z "$environment" ]; then
-  export TF_VAR_environment_suffix=${environment}
+if [ -z "$environment" ]; then
+  export EKS_CLUSTER_NAME="eks-workshop"
+else
+  export EKS_CLUSTER_NAME="eks-workshop-${environment}"
+fi
+
+AWS_REGION=${AWS_REGION:-""}
+
+if [ -z "$AWS_REGION" ]; then
+  echo "Warning: Defaulting region to us-west-2"
+
+  export AWS_REGION="us-west-2"
 fi
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-PROJECT_ROOT="$SCRIPT_DIR/.."
+root="$SCRIPT_DIR/.."
 
-terraform_dir="$PROJECT_ROOT/$terraform_context"
-
-terraform -chdir=$terraform_dir init -upgrade
-
-terraform -chdir=$terraform_dir apply --auto-approve
+cat $root/cluster/eksctl/cluster.yaml | envsubst | eksctl create cluster -f -

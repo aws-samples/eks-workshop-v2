@@ -7,9 +7,15 @@ sidebar_custom_props: {"module": true}
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=300 wait=30
-$ reset-environment 
+```bash wait=30 timeout=300
+$ prepare-environment networking/custom-networking
 ```
+
+This will make the following changes to your lab environment:
+- Attach a secondary CIDR range to the VPC
+- Create three additional subnets from the secondary CIDR range
+
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/networking/custom-networking/.workshop/terraform).
 
 :::
 
@@ -19,6 +25,6 @@ If the subnet CIDR is too small, the CNI may not be able to acquire enough secon
 
 Custom networking is one solution to this problem.
 
-Custom networking addresses the IP exhaustion issue by assigning the node and Pod IPs from secondary VPC address spaces (CIDR). Custom networking support supports ENIConfig custom resource. The ENIConfig includes an alternate subnet CIDR range (carved from a secondary VPC CIDR), along with the security group(s) that the Pods will belong to. When custom networking is enabled, the VPC CNI creates secondary ENIs in the subnet  defined under ENIConfig. The CNI assigns Pods an IP addresses from a CIDR range defined in a ENIConfig CRD.
+Custom networking addresses the IP exhaustion issue by assigning the Pod IPs from secondary VPC address spaces (CIDR). Custom networking support supports ENIConfig custom resource. The ENIConfig includes an alternate subnet CIDR range (carved from a secondary VPC CIDR), along with the security group(s) that the Pods will belong to. When custom networking is enabled, the VPC CNI creates secondary ENIs in the subnet  defined under ENIConfig. The CNI assigns Pods an IP addresses from a CIDR range defined in a ENIConfig CRD.
 
 ![Insights](/img/networking/custom-networking/custom-networking-intro.png)

@@ -9,11 +9,17 @@ const remarkCodeTerminal = require('./src/remark/code-terminal');
 const remarkIncludeCode = require('./src/remark/include-code');
 const remarkIncludeKustomization = require('./src/remark/include-kustomization');
 const remarkBlueprintsAddon = require('./src/remark/blueprints-addon');
+const remarkParameters = require('./src/remark/parameters');
 
 require('dotenv').config({ path: '.kustomize-env' })
 
 const rootDir = path.dirname(require.resolve('./package.json'));
-const manifestsDir = `${rootDir}/../environment/workspace/modules`;
+const manifestsDir = `${rootDir}/..`;
+const kustomizationsDir = `${manifestsDir}/manifests`
+
+const manifestsRef = process.env.MANIFESTS_REF || 'main'
+const manifestsOwner = process.env.MANIFESTS_OWNER || 'aws-samples'
+const manifestsRepository = process.env.MANIFESTS_REPOSITORY || 'eks-workshop-v2'
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -46,13 +52,23 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           remarkPlugins: [remarkCodeTerminal],
           beforeDefaultRemarkPlugins: [
+            [remarkParameters, {
+              replacements: {
+                MANIFESTS_REF: manifestsRef,
+                MANIFESTS_OWNER: manifestsOwner,
+                MANIFESTS_REPOSITORY: manifestsRepository,
+                KUBERNETES_VERSION: '1.25',
+                KUBERNETES_NODE_VERSION: '1.25.6-eks-48e63af'
+              }
+            }],
             [remarkIncludeCode, { manifestsDir }],
-            [remarkIncludeKustomization, { manifestsDir }],
+            [remarkIncludeKustomization, { manifestsDir: kustomizationsDir }],
             //[remarkBlueprintsAddon, {terraformDir: `${rootDir}/../terraform/local`}]
           ],
           editUrl:
             'https://github.com/aws-samples/eks-workshop-v2/tree/main/website',
           exclude: [
+            'fundamentals/storage/fsx-for-netapp-ontap'
           ]
         },
         theme: {
@@ -65,6 +81,14 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      announcementBar: {
+        id: 'rearch-migration',
+        content:
+          '🚩 EKS Workshop underwent major changes 21st July. If you have an existing lab environment please see the <a target="_blank" rel="noopener noreferrer" href="/docs/misc/migrating">migration instructions</a>. 🚩',
+        backgroundColor: '#20232A',
+        textColor: '#fff',
+        isCloseable: false,
+      },
       colorMode: {
         disableSwitch: true,
       },

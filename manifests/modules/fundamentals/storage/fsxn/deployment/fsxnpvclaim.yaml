@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fsxn-nfs-claim
+  namespace: assets
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: fsxn-sc-nfs
+  resources:
+    requests:
+      storage: 5Gi

@@ -71,10 +71,8 @@ With the above Pod specification, the following will occur:
 
 The `catalog` deployment in the `catalog` Namespace accesses the following database values from the catalog-db secret via environment variables:
 
-* `DB_ENDPOINT`
 * `DB_USER`
 * `DB_PASSWORD`
-* `DB_NAME`
 
 ```bash
 $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.containers[] | .env'
@@ -109,10 +107,10 @@ $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.co
 Upon exploring the `catalog-db` Secret we can see that it is only encoded with base64 which can be easily decoded as follows hence making it difficult for the secrets manifests to be part of the GitOps workflow.
 
 ```file
-../manifests/catalog/secrets.yaml
+manifests/base-application/catalog/secrets.yaml
 ```
 
-```bash                                                                                                                                                                                                     
+```bash
 $ kubectl -n catalog get secrets catalog-db --template {{.data.username}} | base64 -d
 catalog_user%                                                                                                                                                                                                   
 $ kubectl -n catalog get secrets catalog-db --template {{.data.password}} | base64 -d
