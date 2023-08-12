@@ -25,7 +25,7 @@ $ aws eks update-cluster-config \
         "errors": []
     }
 }
-$ sleep 10
+$ sleep 30
 $ aws eks wait cluster-active --name $EKS_CLUSTER_NAME
 ```
 
