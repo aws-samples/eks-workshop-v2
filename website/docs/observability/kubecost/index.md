@@ -28,7 +28,7 @@ This is the exact challenge that Kubecost is dedicated to tackling. Founded in 2
 
 In this chapter, we'll take a look at how to use Kubecost to measure the cost allocation of various components at namespace level, deployment level and pod level. We'll also see the resource efficiency to check whether the deployments are over provisioned or under provisioned, health of the system, etc.
 
-:::info 
+:::tip 
 After completing this module checkout how to use Kubecost and [Amazon Managed Service for Prometheus](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html) to extend cost visibility beyond a single EKS cluster with [Multi-Cluster Cost Monitoring](https://aws.amazon.com/blogs/containers/multi-cluster-cost-monitoring-using-kubecost-with-amazon-eks-and-amazon-managed-service-for-prometheus/). 
 
 :::
