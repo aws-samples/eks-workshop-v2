@@ -3,6 +3,8 @@ title: Managed Node Groups
 sidebar_position: 30
 ---
 
+{{% required-time %}}
+
 :::tip Before you start
 Prepare your environment for this section:
 

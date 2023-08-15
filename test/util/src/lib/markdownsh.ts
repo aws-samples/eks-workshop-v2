@@ -1,5 +1,5 @@
 import { Category, Gatherer, Page, Script } from "./gatherer/gatherer.js";
-import Mocha, { Suite, Test } from 'mocha'
+import Mocha, { Runner, Suite, Test } from 'mocha'
 import path from 'path'
 import GlobToRegExp from 'glob-to-regexp'
 import { assert } from 'chai'
@@ -29,20 +29,24 @@ export class MarkdownSh {
       timeout: number, 
       hookTimeout: number, 
       bail: boolean,
-      junitReport: string,
+      output: string,
+      outputPath: string,
       beforeEach: string) {
     const mochaOpts : Mocha.MochaOptions = {
       timeout: timeout * 1000,
       bail
     };
 
-    if(junitReport !== '') {
-      mochaOpts.reporter = 'mocha-junit-reporter'
-      mochaOpts.reporterOptions = {
-        mochaFile: junitReport,
-        includePending: true,
-        testCaseSwitchClassnameAndName: true
-      }
+    mochaOpts.reporter = 'mocha-multi'
+    mochaOpts.reporterOptions = {
+      spec: '-',
+    }
+
+    if(output == 'xunit') {
+      mochaOpts.reporterOptions.xunit = outputPath;
+    }
+    else if(output == 'json') {
+      mochaOpts.reporterOptions.json = outputPath;
     }
 
     const mocha = new Mocha(mochaOpts);
@@ -142,7 +146,7 @@ export class MarkdownSh {
 
           this.debugMessage(response.output)
         }
-      
+        
         this.debugMessage(`Completed suite ${hook} hook`)
       
         return Promise.resolve();
