@@ -6,6 +6,7 @@ var path = require('path');
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const remarkCodeTerminal = require('./src/remark/code-terminal');
+const remarkTime = require('./src/remark/time');
 const remarkIncludeCode = require('./src/remark/include-code');
 const remarkIncludeKustomization = require('./src/remark/include-kustomization');
 const remarkParameters = require('./src/remark/parameters');
@@ -49,7 +50,7 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          remarkPlugins: [remarkCodeTerminal],
+          remarkPlugins: [remarkCodeTerminal, remarkTime],
           beforeDefaultRemarkPlugins: [
             [remarkParameters, {
               replacements: {
@@ -59,7 +60,7 @@ const config = {
                 KUBERNETES_VERSION: '1.27',
                 KUBERNETES_NODE_VERSION: '1.27.3-eks-48e63af'
               }
-            }],
+            }], 
             [remarkIncludeCode, { manifestsDir }],
             [remarkIncludeKustomization, { manifestsDir: kustomizationsDir }]
           ],

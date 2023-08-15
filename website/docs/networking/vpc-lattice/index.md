@@ -5,6 +5,8 @@ weight: 10
 sidebar_custom_props: {"module": true}
 ---
 
+{{% required-time %}}
+
 :::caution Preview
 
 This module is currently in preview, please [report any issues](https://github.com/aws-samples/eks-workshop-v2/issues) encountered.
