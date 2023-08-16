@@ -139,8 +139,8 @@ resource "aws_security_group_rule" "dns_tcp" {
 
 
 locals {
-  private_subnets = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 8, k + 10)]
-  public_subnets  = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 3, k + 3)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 3, k)]
   azs             = slice(data.aws_availability_zones.available.names, 0, 3)
 }
 
