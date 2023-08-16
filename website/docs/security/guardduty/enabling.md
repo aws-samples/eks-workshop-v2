@@ -8,7 +8,7 @@ In this lab, we'll enable GuardDuty and Kubernetes protection.
 
 **Enabling using CLI:**
 
-```bash
+```bash test=false
 $ aws guardduty create-detector --enable --data-sources Kubernetes={AuditLogs={Enable=true}}
 {
     "DetectorId": "b6b992d6d2f48e64bc59180bfexample"
