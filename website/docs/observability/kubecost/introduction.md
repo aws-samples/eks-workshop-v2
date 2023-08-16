@@ -17,11 +17,11 @@ Kubecost has been exposed using a `LoadBalancer` service, and we can find the UR
 ```bash
 $ kubectl get service -n kubecost kubecost-cost-analyzer \
     -o jsonpath="{.status.loadBalancer.ingress[*].hostname}:9090{'\n'}"
-a9e6e1f6b373f44bf8e1c1cb70f6a95b-1567842963.us-west-2.elb.amazonaws.com:9090
+k8s-kubecost-kubecost-e83ecf8fc1-fc26f5c92767520f.elb.us-west-2.amazonaws.com:9090
 ```
 
 Open this link in your browser to access Kubecost:
 
-<browser url='http://a9e6e1f6b373f44bf8e1c1cb70f6a95b-1567842963.us-west-2.elb.amazonaws.com:9090'>
+<browser url='http://k8s-kubecost-kubecost-e83ecf8fc1-fc26f5c92767520f.elb.us-west-2.amazonaws.com:9090'>
 <img src={require('./assets/overview.png').default}/>
 </browser>

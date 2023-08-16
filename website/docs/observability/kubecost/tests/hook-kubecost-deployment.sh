@@ -23,11 +23,13 @@ after() {
     exit 1
   fi
 
-    if [[ $prometheus_success != "deployment \"kubecost-prometheus-server\" successfully rolled out" ]]; then
+  if [[ $prometheus_success != "deployment \"kubecost-prometheus-server\" successfully rolled out" ]]; then
     >&2 echo "Prometheus did not rollout"
 
     exit 1
   fi
+
+  wait-for-lb $(kubectl get service -n kubecost kubecost-cost-analyzer -o jsonpath="{.status.loadBalancer.ingress[*].hostname}:9090")
 }
 
 "$@"
