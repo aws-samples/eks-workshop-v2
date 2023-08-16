@@ -155,9 +155,11 @@ module "vpc" {
   name = var.environment_name
   cidr = var.vpc_cidr
 
-  azs             = local.azs
-  public_subnets  = local.public_subnets
-  private_subnets = local.private_subnets
+  azs                   = local.azs
+  public_subnets        = local.public_subnets
+  private_subnets       = local.private_subnets
+  private_subnet_suffix = "Private"
+  public_subnet_suffix  = "Public"
 
   enable_nat_gateway   = true
   create_igw           = true
