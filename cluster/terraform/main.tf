@@ -158,8 +158,8 @@ module "vpc" {
   azs                   = local.azs
   public_subnets        = local.public_subnets
   private_subnets       = local.private_subnets
-  public_subnet_suffix  = "Public"
-  private_subnet_suffix = "Private"
+  public_subnet_suffix  = "SubnetPublic"
+  private_subnet_suffix = "SubnetPrivate"
 
   enable_nat_gateway   = true
   create_igw           = true
