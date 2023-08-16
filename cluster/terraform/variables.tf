@@ -24,7 +24,9 @@ variable "vpc_cidr" {
 variable "public_subnet_tags" {
   description = "Tags to be added specifically on public facing subnets."
   type        = map(string)
-  default     = {}
+  default     = {
+    "kubernetes.io/role/elb" = "1"
+  }
 }
 
 variable "private_subnet_tags" {
