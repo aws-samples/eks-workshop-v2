@@ -1,5 +1,5 @@
 ---
-title: "Container With Sensitive Mount"
+title: "Container with sensitive mount"
 sidebar_position: 132
 ---
 
@@ -21,7 +21,7 @@ Within a few minutes we'll see the finding `Persistence:Kubernetes/ContainerWith
 
 ![](ContainerWithSensitiveMount.png)
 
-Cleanup:
+Lets delete this pod before we move on:
 
 ```bash
 $ kubectl delete -f ~/environment/eks-workshop/modules/security/Guardduty/mount/privileged-pod-example.yaml
