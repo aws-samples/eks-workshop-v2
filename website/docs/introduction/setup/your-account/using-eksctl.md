@@ -5,7 +5,7 @@ sidebar_position: 20
 
 This section outlines how to build a cluster for the lab exercises using the [eksctl tool](https://eksctl.io/). This is the easiest way to get started, and is recommended for most learners.
 
-The `eksctl` utility has been pre-installed in Cloud9 so we can immediately create the cluster. This is the configuration that will be used to build the cluster:
+The `eksctl` utility has been pre-installed in your Amazon Cloud9 Environment, so we can immediately create the cluster. This is the configuration that will be used to build the cluster:
 
 ```file hidePath=true
 manifests/../cluster/eksctl/cluster.yaml
