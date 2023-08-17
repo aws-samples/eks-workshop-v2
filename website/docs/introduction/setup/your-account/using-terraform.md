@@ -5,21 +5,25 @@ sidebar_position: 30
 
 This section outlines how to build a cluster for the lab exercises using the [Hashicorp Terraform](https://developer.hashicorp.com/terraform). This is intent to be for learners that are used work with Terraform IaC.
 
-The `terraform` CLI has been pre-installed in your Amazon Cloud9 Environment, so we can immediately create the cluster. This is the configuration that will be used to build the cluster:
+The `terraform` CLI has been pre-installed in your Amazon Cloud9 Environment, so we can immediately create the cluster. These are the configuration files that will be used to build the cluster:
 
-```file hidePath=true
-manifests/../cluster/terraform/main.tf
-```
-
-```file hidePath=true
-manifests/../cluster/terraform/variables.tf
-```
-
-```file hidePath=true
+versions.tf
+```hcl
 manifests/../cluster/terraform/versions.tf
 ```
 
-```file hidePath=true
+main.tf
+```hcl
+manifests/../cluster/terraform/main.tf
+```
+
+variables.tf
+```hcl
+manifests/../cluster/terraform/variables.tf
+```
+
+outputs.tf
+```hcl
 manifests/../cluster/terraform/outputs.tf
 ```
 
