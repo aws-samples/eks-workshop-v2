@@ -8,13 +8,20 @@ sidebar_custom_props: {"module": true}
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30
-$ prepare-environment
+$ prepare-environment observability/base
 ```
+
+This will make the following changes to your lab environment:
+- Creates an additional kubernetes ClusterRole with the name "eks-console-dashboard-full-access-clusterrole"
+- Creates a Kubernetes ClusterRoleBinding with the name "eks-console-dashboard-full-access-binding"
+- Mapps the Cloud9 IAM User/ Role to the ClusterRoleBinding ad RBAC group, to grant access the AWS console to view Kubernetes resources.
+
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/base/.workshop/terraform).
 
 :::
 
 In this lab, we'll view all Kubernetes API resource types using the AWS Management Console for Amazon EKS. You will be able to view and explore all standard Kubernetes API resource types such as configuration, authorization resources, policy resources, service resources and more. [Kubernetes resource view](https://docs.aws.amazon.com/eks/latest/userguide/view-kubernetes-resources.html) is supported for all Kubernetes clusters hosted by Amazon EKS. You can use [Amazon EKS Connector](https://docs.aws.amazon.com/eks/latest/userguide/eks-connector.html) to register and connect any conformant Kubernetes cluster to AWS and visualize it in the Amazon EKS console.
 
-We'll be viewing the resources created by the sample application. Note that you’ll only see resources that you have [RBAC permissions](https://docs.aws.amazon.com/eks/latest/userguide/view-kubernetes-resources.html#view-kubernetes-resources-permissions) to access.
+We'll be viewing the resources created by the sample application. Note that you’ll only see resources that you have [RBAC permissions](https://docs.aws.amazon.com/eks/latest/userguide/view-kubernetes-resources.html#view-kubernetes-resources-permissions) to access, which were created during the environment preparation. 
 
 ![Insights](/img/resource-view/eks-overview.jpg)
