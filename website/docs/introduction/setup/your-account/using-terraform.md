@@ -37,8 +37,8 @@ For the given configuration, `terraform` will create the Workshop environment wi
 Download the Terraform files:
 
 ```bash test=false
-$ mkdir ~/environment/terraform; cd ~/environment/terraform
-$ curl --remote-name-all https://raw.githubusercontent.com/rodrigobersa/eks-workshop-v2/cluster/terraform/cluster/terraform/{main.tf,variables.tf,versions.tf,outputs.tf}
+$ mkdir -p ~/environment/terraform; cd ~/environment/terraform
+$ curl --remote-name-all https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/cluster/terraform/{main.tf,variables.tf,versions.tf,outputs.tf}
 ```
 
 Run Terraform commands to deploy your Workshop environment.
