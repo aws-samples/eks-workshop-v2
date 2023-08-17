@@ -7,22 +7,22 @@ This section outlines how to build a cluster for the lab exercises using the [Ha
 
 The `terraform` CLI has been pre-installed in your Amazon Cloud9 Environment, so we can immediately create the cluster. These are the configuration files that will be used to build the cluster:
 
-versions.tf
+*versions.tf*
 ```file hidePath=true
 manifests/../cluster/terraform/versions.tf
 ```
 
-main.tf
+*main.tf*
 ```file hidePath=true
 manifests/../cluster/terraform/main.tf
 ```
 
-variables.tf
+*variables.tf*
 ```file hidePath=true
 manifests/../cluster/terraform/variables.tf
 ```
 
-outputs.tf
+*outputs.tf*
 ```file hidePath=true
 manifests/../cluster/terraform/outputs.tf
 ```
@@ -34,7 +34,7 @@ For the given configuration, `terraform` will create the Workshop environment wi
 - Add a managed node group named `default`
 - Configure the VPC CNI to use prefix delegation
 
-Download the Terraform file:
+Download the Terraform files:
 
 ```bash test=false
 $ mkdir ~/environment/terraform; cd ~/environment/terraform
@@ -44,8 +44,8 @@ $ curl --remote-name-all https://raw.githubusercontent.com/rodrigobersa/eks-work
 Run Terraform commands to deploy your Workshop environment.
 
 ```bash test=false
-terraform init
-terraform apply -auto-approve
+$ terraform init
+$ terraform apply -auto-approve
 ```
 
 This generally takes 20-25 minutes to complete. Once the cluster is created run this command to use the cluster for the lab exercises:
