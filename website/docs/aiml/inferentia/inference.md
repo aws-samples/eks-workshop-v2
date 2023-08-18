@@ -28,7 +28,7 @@ Karpenter has been installed in our EKS cluster, and runs as a deployment:
 ```bash
 $ kubectl get deployment -n karpenter
 NAME        READY   UP-TO-DATE   AVAILABLE   AGE
-karpenter   2/2     2            2           105s
+karpenter   1/1     1            1           5m52s
 ```
 
 The only setup that we will need to do is to update our EKS IAM mappings to allow Karpenter nodes to join the cluster:
@@ -80,6 +80,32 @@ It can take up to 8 minutes to provision the node, add it to the EKS cluster, an
 ```bash timeout=360
 $ kubectl -n aiml wait --for=condition=Ready --timeout=8m pod/inference
 ```
+
+We can use the following command to get more details on the node that was provisioned to schedule our pod onto:
+
+```bash
+$ kubectl get node -l karpenter.sh/provisioner-name=aiml -o jsonpath='{.items[0].status.capacity}' | jq .
+```
+
+This output shows the capacity this node has:
+
+```json
+{
+  "attachable-volumes-aws-ebs": "39",
+  "aws.amazon.com/neuron": "1",
+  "aws.amazon.com/neuroncore": "4",
+  "aws.amazon.com/neurondevice": "1",
+  "cpu": "4",
+  "ephemeral-storage": "104845292Ki",
+  "hugepages-1Gi": "0",
+  "hugepages-2Mi": "0",
+  "memory": "7832960Ki",
+  "pods": "38",
+  "vpc.amazonaws.com/pod-eni": "38"
+}
+```
+
+We can see that this node as a `aws.amazon.com/neuron` of 1. Karpenter provisioned this node for us as that's how many neuron the pod requested.
 
 ### Run an inference
 
