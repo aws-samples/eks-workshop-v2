@@ -110,7 +110,7 @@ Upon exploring the `catalog-db` Secret we can see that it is only encoded with b
 manifests/base-application/catalog/secrets.yaml
 ```
 
-```bash                                                
+```bash
 $ kubectl -n catalog get secrets catalog-db --template {{.data.username}} | base64 -d
 catalog_user%                                                                                                                                                                                                   
 $ kubectl -n catalog get secrets catalog-db --template {{.data.password}} | base64 -d

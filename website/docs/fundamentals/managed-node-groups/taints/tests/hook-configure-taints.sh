@@ -8,7 +8,7 @@ after() {
   EXIT_CODE=0
 
   timeout -s TERM 180 bash -c \
-    'while [[ $(kubectl get nodes -l eks.amazonaws.com/nodegroup=$EKS_TAINTED_MNG_NAME -o json | jq -r ".items | length") -lt 1 ]];\
+    'while [[ $(kubectl get nodes -l eks.amazonaws.com/nodegroup=taint-mng -o json | jq -r ".items | length") -lt 1 ]];\
     do sleep 10;\
     done' || EXIT_CODE=$?
 

@@ -1,0 +1,18 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: $EKS_CLUSTER_NAME
+  region: $AWS_REGION
+
+fargateProfiles:
+- name: checkout-profile
+  selectors:
+  - namespace: checkout
+    labels:
+      fargate: 'yes'
+  subnets:
+  - $PRIVATE_SUBNET_1
+  - $PRIVATE_SUBNET_2
+  - $PRIVATE_SUBNET_3
+  podExecutionRoleARN: $FARGATE_IAM_PROFILE_ARN

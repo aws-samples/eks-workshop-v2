@@ -5,7 +5,7 @@ metadata:
   namespace: checkout
 spec:
   parentRefs:
-  - name: eks-workshop-gw
+  - name: ${EKS_CLUSTER_NAME}
     sectionName: http 
   rules:
   - backendRefs:  

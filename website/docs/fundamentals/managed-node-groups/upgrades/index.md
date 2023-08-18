@@ -67,7 +67,7 @@ $ kubectl get nodes --watch
 
 If you want to wait until the MNG is updated you can run the following command:
 
-```bash timeout=1200
+```bash timeout=1800
 $ aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME
 ```
 

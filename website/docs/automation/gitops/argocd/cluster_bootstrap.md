@@ -68,7 +68,7 @@ We can also see this Application in the ArgoCD UI now:
 Alternatively, you can also interact with Argo CD objects in the cluster using the `kubectl` command:
 
 ```bash
-$ kubectl get apps -n argocd
+$ kubectl get applications.argoproj.io -n argocd
 NAME   SYNC STATUS   HEALTH STATUS
 apps   Synced        Healthy
 ```

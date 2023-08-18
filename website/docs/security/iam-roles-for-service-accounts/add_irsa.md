@@ -41,7 +41,7 @@ $ aws eks describe-cluster --name ${EKS_CLUSTER_NAME} --query 'cluster.identity'
 ```
 
 
-A IAM role which provides the required permissions for the `carts` service to read and write to DynamoDB table has been created for you. You can view the policy like so:
+An IAM role which provides the required permissions for the `carts` service to read and write to DynamoDB table has been created for you. You can view the policy like so:
 
 ```bash
 $ aws iam get-policy-version \
@@ -98,11 +98,16 @@ $ kubectl -n carts describe deployment carts | grep 'Service Account'
   Service Account:  cart
 ```
 
-Now lets check the value of `CARTS_IAM_ROLE` which will provide the ARN of the IAM Role for the Service Account annotation. Then run Kustomize to apply this change:
+Now lets check the value of `CARTS_IAM_ROLE` which will provide the ARN of the IAM Role for the Service Account annotation.
 
 ```bash
 $ echo $CARTS_IAM_ROLE
 arn:aws:iam::1234567890:role/eks-workshop-carts-dynamo
+```
+
+Once we've verified the IAM Role to be used, we can run Kustomize to apply the change on the Service Account.
+
+```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/security/irsa/service-account
 ```
 

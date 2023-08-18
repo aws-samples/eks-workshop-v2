@@ -61,7 +61,7 @@ Waiting for deployment "ui" rollout to finish: 1 old replicas are pending termin
 
 Given the default `RollingUpdate` strategy for our `ui` deployment, the K8s deployment will wait for the newly created pod to be in `Ready` state before terminating the old one. The deployment rollout seems stuck so let's investigate further: 
 
-```bash
+```bash hook=pending-pod
 $ kubectl get pod --namespace ui -l app.kubernetes.io/name=ui
 NAME                  READY   STATUS    RESTARTS   AGE
 ui-659df48c56-z496x   0/1     Pending   0          16s

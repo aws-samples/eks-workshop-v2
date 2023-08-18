@@ -27,9 +27,10 @@ If using the link above make sure the AWS console has opened in the region that 
 Once CloudShell has loaded run the following commands:
 
 ```bash test=false
-$ wget -q https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/lab/cfn/eks-workshop-ide-cfn.yaml
+$ wget -q https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/lab/cfn/eks-workshop-ide-cfn.yaml -O eks-workshop-ide-cfn.yaml
 $ aws cloudformation deploy --stack-name eks-workshop-ide \
     --template-file ./eks-workshop-ide-cfn.yaml \
+    --parameter-overrides RepositoryRef=VAR::MANIFESTS_REF \
     --capabilities CAPABILITY_NAMED_IAM
 Waiting for changeset to be created..
 Waiting for stack create/update to complete

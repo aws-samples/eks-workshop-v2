@@ -3,8 +3,8 @@ name: Test cleanup
 on:
   workflow_dispatch:
     inputs:
-      buildId:
-        description: 'Build ID'
+      clusterId:
+        description: 'Cluster ID'
         required: true
 
 permissions:
@@ -47,10 +47,9 @@ jobs:
     - name: Cleanup environment
       timeout-minutes: 60
       env:
-        BUILD_ID: ${{ github.event.inputs.buildId }}
+        CLUSTER_ID: ${{ github.event.inputs.clusterId }}
         AWS_REGION: "${{ secrets.AWS_REGION }}"
       run: |
-        export CLUSTER_ID="ci-${BUILD_ID}"
         export CLEANUP_ENVIRONMENT_NAME="$CLUSTER_ID"
         export AWS_DEFAULT_REGION="$AWS_REGION"
         
