@@ -3,6 +3,8 @@ kind: Provisioner
 metadata:
   name: aiml
 spec:
+  labels:
+    type: karpenter
   requirements:
     - key: "karpenter.sh/capacity-type"
       operator: In
