@@ -3,7 +3,17 @@ title: "Using Amazon RDS"
 sidebar_position: 20
 ---
 
-The first step in this process is to re-configure the catalog service to use an Amazon RDS dabase that has already been created. The application loads most of its configuration from a ConfigMap, lets take look at it:
+An RDS database has been created in our account, let's retrieve its endpoint and password to be used later:
+
+```bash
+$ export CATALOG_RDS_ENDPOINT_QUERY=$(aws rds describe-db-instances --db-instance-identifier $EKS_CLUSTER_NAME-catalog --query 'DBInstances[0].Endpoint')
+$ export CATALOG_RDS_ENDPOINT=$(echo $CATALOG_RDS_ENDPOINT_QUERY | jq -r '.Address+":"+(.Port|tostring)')
+$ echo $CATALOG_RDS_ENDPOINT
+eks-workshop-catalog.cluster-cjkatqd1cnrz.us-west-2.rds.amazonaws.com:3306
+$ export CATALOG_RDS_PASSWORD=$(aws ssm get-parameter --name $EKS_CLUSTER_NAME-catalog-db --region $AWS_REGION --query "Parameter.Value" --output text --with-decryption)
+```
+
+The first step in this process is to re-configure the catalog service to use an Amazon RDS dabase that has already been created. The application loads most of its configuration from a ConfigMap, let's take look at it:
 
 ```bash
 $ kubectl -n catalog get -o yaml cm catalog
@@ -20,16 +30,14 @@ metadata:
 The following kustomization overwrites the ConfigMap, altering the MySQL endpoint so that the application will connect to the Amazon RDS database thats been created already for us which is being pulled from the environment variable `CATALOG_RDS_ENDPOINT`.
 
 ```kustomization
-networking/securitygroups-for-pods/rds/kustomization.yaml
+modules/networking/securitygroups-for-pods/rds/kustomization.yaml
 ConfigMap/catalog
 ```
 
-Let's check the value of `CATALOG_RDS_ENDPOINT` then run Kustomize to use the real DynamoDB service:
+Let's apply this change to use the the RDS database:
 
 ```bash
-$ echo $CATALOG_RDS_ENDPOINT
-eks-workshop-catalog.cluster-cjkatqd1cnrz.us-west-2.rds.amazonaws.com:3306
-$ kubectl apply -k /workspace/modules/networking/securitygroups-for-pods/rds
+$ kubectl apply -k ~/environment/eks-workshop/modules/networking/securitygroups-for-pods/rds
 ```
 
 Check that the ConfigMap has been updated with the new values:
@@ -71,7 +79,7 @@ Our Pod is unable to connect to the RDS database. We can check the EC2 Security 
 
 ```bash
 $ aws ec2 describe-security-groups \
-    --group-ids "$CATALOG_RDS_SG_ID" | jq '.'
+    --filters Name=vpc-id,Values=$VPC_ID Name=tag:Name,Values=$EKS_CLUSTER_NAME-catalog-rds | jq '.'
 {
   "SecurityGroups": [
     {

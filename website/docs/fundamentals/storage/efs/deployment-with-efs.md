@@ -8,7 +8,7 @@ Now that we understand the EFS storage class for Kubernetes let's create a [Pers
 First inspect the `efspvclaim.yaml` file to see the parameters in the file and the claim of the specific storage size of 5GB from the Storage class `efs-sc` we created in the earlier step:
 
 ```file
-fundamentals/storage/efs/deployment/efspvclaim.yaml
+manifests/modules/fundamentals/storage/efs/deployment/efspvclaim.yaml
 ```
 
 We'll also modify the assets service is two ways:
@@ -17,14 +17,14 @@ We'll also modify the assets service is two ways:
 * Add an [init container](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) to copy the initial images to the EFS volume
 
 ```kustomization
-fundamentals/storage/efs/deployment/deployment.yaml
+modules/fundamentals/storage/efs/deployment/deployment.yaml
 Deployment/assets
 ```
 
 We can apply the changes by running the following command:
 
 ```bash
-$ kubectl apply -k /workspace/modules/fundamentals/storage/efs/deployment
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/efs/deployment
 namespace/assets unchanged
 serviceaccount/assets unchanged
 configmap/assets unchanged
@@ -73,11 +73,11 @@ Access Modes:  RWX
 VolumeMode:    Filesystem
 Used By:       <none>
 Events:
-  Type    Reason                 Age                From                                                                               Message
-  ----    ------                 ----               ----                                                                               -------
-  Normal  ExternalProvisioning   22m (x2 over 22m)  persistentvolume-controller                                                        waiting for a volume to be created, either by external provisioner "efs.csi.aws.com" or manually created by system administrator
-  Normal  Provisioning           22m                efs.csi.aws.com_ip-10-42-11-246.ec2.internal_1b9196ea-2586-49a6-87dd-5ce1d78c4c0d  External provisioner is provisioning volume for claim "assets/efs-claim"
-  Normal  ProvisioningSucceeded  22m                efs.csi.aws.com_ip-10-42-11-246.ec2.internal_1b9196ea-2586-49a6-87dd-5ce1d78c4c0d  Successfully provisioned volume pvc-342a674d-b426-4214-b8b6-7847975ae121
+  Type    Reason                 Age   From                                                                                      Message
+  ----    ------                 ----  ----                                                                                      -------
+  Normal  ExternalProvisioning   34s   persistentvolume-controller                                                               waiting for a volume to be created, either by external provisioner "efs.csi.aws.com" or manually created by system administrator
+  Normal  Provisioning           34s   efs.csi.aws.com_efs-csi-controller-6b4ff45b65-fzqjb_7efe91cc-099a-45c7-8419-6f4b0a4f9e01  External provisioner is provisioning volume for claim "assets/efs-claim"
+  Normal  ProvisioningSucceeded  33s   efs.csi.aws.com_efs-csi-controller-6b4ff45b65-fzqjb_7efe91cc-099a-45c7-8419-6f4b0a4f9e01  Successfully provisioned volume pvc-342a674d-b426-4214-b8b6-7847975ae121
 ```
 
 Now create a new file `newproduct.png` under the assets directory in the first Pod:

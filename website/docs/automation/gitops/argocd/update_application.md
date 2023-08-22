@@ -9,7 +9,7 @@ For example, lets increase the number of `replicas` for `ui` deployment to `3`
 
 <!--
 ```kustomization
-automation/gitops/argocd/update-application/deployment-patch.yaml
+modules/automation/gitops/argocd/update-application/deployment-patch.yaml
 Deployment/ui
 ```
 
@@ -24,7 +24,7 @@ You can review planned changes in the file `apps/deployment-patch.yaml`
 To apply the patch you can edit the file `apps/kustomization.yaml` like in the example below:
 
 ```file
-automation/gitops/argocd/update-application/kustomization.yaml.example
+manifests/modules/automation/gitops/argocd/update-application/kustomization.yaml.example
 ```
 
 Copy edited file `kustomization.yaml` to the Git repository directory:

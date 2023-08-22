@@ -46,5 +46,3 @@ $ aws cloud9 create-environment-membership --environment-id environment_id_from_
     
 }
 ```
-
-[Click here](/introduction/ide.md) to return to "Accessing the IDE".

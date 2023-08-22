@@ -35,7 +35,7 @@ Let's set up a `podAffinity` and `podAntiAffinity` policy in the **checkout** de
 The following kustomization adds an `affinity` section to the **checkout** deployment specifying both **podAffinity** and **podAntiAffinity** policies:
 
 ```kustomization
-fundamentals/affinity/checkout/checkout.yaml
+modules/fundamentals/affinity/checkout/checkout.yaml
 Deployment/checkout
 ```
 
@@ -43,7 +43,7 @@ To make the change, run the following command to modify the **checkout** deploym
 
 ```bash
 $ kubectl delete -n checkout deployment checkout
-$ kubectl apply -k /workspace/modules/fundamentals/affinity/checkout/
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/affinity/checkout/
 namespace/checkout unchanged
 serviceaccount/checkout unchanged
 configmap/checkout unchanged
@@ -76,7 +76,7 @@ In this example, the first `checkout` pod runs on the same pod as the existing c
 Next, we'll scale the `checkout-redis` to two instances for our two nodes, but first let's modify the `checkout-redis` deployment policy to spread out our `checkout-redis` instances across each node. To do this, we'll simply need to create a **podAntiAffinity** rule.
 
 ```kustomization
-fundamentals/affinity/checkout-redis/checkout-redis.yaml
+modules/fundamentals/affinity/checkout-redis/checkout-redis.yaml
 Deployment/checkout-redis
 ```
 
@@ -84,7 +84,7 @@ Apply it with the following command:
 
 ```bash
 $ kubectl delete -n checkout deployment checkout-redis
-$ kubectl apply -k /workspace/modules/fundamentals/affinity/checkout-redis/
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/affinity/checkout-redis/
 namespace/checkout unchanged
 serviceaccount/checkout unchanged
 configmap/checkout unchanged

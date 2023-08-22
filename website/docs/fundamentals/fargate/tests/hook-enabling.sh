@@ -3,7 +3,12 @@ before() {
 }
 
 after() {
-  kubectl rollout status -n checkout deployment/checkout --timeout=200s
+  check=$(kubectl get po -n checkout -l app.kubernetes.io/instance=checkout,app.kubernetes.io/component=service -o json | jq -r '.items[0].spec.nodeName' | grep 'fargate' || true)
+
+  if [ -z "$check" ]; then
+    echo "checkout pod not scheduled on fargate"
+    exit 1
+  fi
 }
 
 "$@"

@@ -8,8 +8,14 @@ sidebar_custom_props: {"module": true}
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30
-$ reset-environment 
+$ prepare-environment fundamentals/storage/efs
 ```
+
+This will make the following changes to your lab environment:
+- Install the Amazon EFS CSI driver in the Amazon EKS cluster
+- Create an Amazon EFS file system
+
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/fundamentals/storage/ebs/.workshop/terraform).
 
 :::
 
