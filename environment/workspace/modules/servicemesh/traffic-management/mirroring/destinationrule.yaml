@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: ui
+spec:
+  host: ui # reviews.<namespace>.svc.cluster.local
+  subsets: 
+  - name: v1
+    labels:
+      version: ui-v1 # This is a label attached to the pods of version 1.
+  - name: v2
+    labels:
+      version: ui-v2 # This is a label attached to the pods of version 2.
+  - name: v3
+    labels:
+      version: ui-v3 # This is a label attached to the pods of version 3.

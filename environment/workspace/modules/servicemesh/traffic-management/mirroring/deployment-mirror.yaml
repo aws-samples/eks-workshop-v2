@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mirror
+  labels:
+    app: mirror
+    version: v1
+    #app.kubernetes.io/part-of: Mirror
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mirror
+  template:
+    metadata:
+      labels:
+        app: mirror
+        version: v1
+    spec:
+      containers:
+        - name: mirror
+          image: mendhak/http-https-echo
+          ports:
+            - containerPort: 9080
+              protocol: TCP
+            - containerPort: 9443
+              protocol: TCP
+          env:
+            - name: HTTP_PORT
+              value: '9080'
+            - name: HTTPS_PORT
+              value: '9443'

@@ -1,0 +1,67 @@
+# A ServiceMonitor is a resource that describes which pods to scrape based on a Service.
+# https://www.tetrate.io/blog/how-to-configure-prometheus-operator-scrape-metrics-from-istio-1-6/
+
+# The following resource is to configure Prometheus operator to monitor Istio control plane
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-oper-istio-controlplane
+  labels:
+    release: prometheus
+spec:
+  jobLabel: istio
+
+  # the spec.selector label tells Prometheus which services should be scraped. 
+  # in this case it will be istiod, as it has the label istio with on of the following 
+  # values [mixer,pilot,galley,citadel,sidecar-injector]   
+  selector:
+    matchExpressions:
+      - {key: istio, operator: In, values: [mixer,pilot,galley,citadel,sidecar-injector]}
+
+  # By default, Prometheus will only pick up ServiceMonitors from the current namespace. 
+  # To select ServiceMonitors from other namespaces, you can update the 
+  # spec.serviceMonitorNamespaceSelector field of the Prometheus resource.      
+  namespaceSelector:
+    any: true
+
+  # Here it scrapes port named http-monitoring and http-policy-monitoring every 15s
+  endpoints:
+  - port: http-monitoring
+    interval: 15s
+  - port: http-policy-monitoring
+    interval: 15s
+
+
+---
+# The following resource is to configure Prometheus operator to monitor Istio data plane
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-oper-istio-dataplane
+  labels:
+    monitoring: istio-dataplane
+    release: prometheus
+spec:
+  selector:
+    matchExpressions:
+      - {key: istio-prometheus-ignore, operator: DoesNotExist}
+  namespaceSelector:
+    any: true
+  jobLabel: envoy-stats
+  endpoints:
+  - path: /stats/prometheus
+    targetPort: http-envoy-prom
+    interval: 15s
+    relabelings:
+    - sourceLabels: [__meta_kubernetes_pod_container_port_name]
+      action: keep
+      regex: '.*-envoy-prom'
+    - action: labelmap
+      regex: "__meta_kubernetes_pod_label_(.+)"
+    - sourceLabels: [__meta_kubernetes_namespace]
+      action: replace
+      targetLabel: namespace
+    - sourceLabels: [__meta_kubernetes_pod_name]
+      action: replace
+      targetLabel: pod_name
+      
