@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+configMapGenerator:
+- name: base-vars
+  namespace: aiml
+  env: config.properties
+  options:
+    disableNameSuffixHash: true
+replacements:
+- source:
+    kind: ConfigMap
+    name: base-vars
+    version: v1
+    namespace: aiml
+    fieldPath: data.AIML_NEURON_ROLE_ARN
+  targets:
+    - select:
+        kind: ServiceAccount
+        name: inference
+        namespace: aiml
+      fieldPaths:
+        - metadata.annotations.[eks.amazonaws.com/role-arn]
+resources:
+- serviceaccount.yaml
+- namespace.yaml
