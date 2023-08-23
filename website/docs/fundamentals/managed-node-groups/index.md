@@ -1,6 +1,6 @@
 ---
 title: Managed Node Groups
-sidebar_position: 10
+sidebar_position: 30
 sidebar_custom_props: {"module": true}
 ---
 
