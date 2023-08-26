@@ -1,6 +1,6 @@
 ---
 title: "Privileged container"
-sidebar_position: 131
+sidebar_position: 134
 ---
 
 This finding indicates that a privileged container with root level access was launched on your Kubernetes cluster.
@@ -19,7 +19,7 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/security/Guardduty/privile
 
 Within a few minutes we'll see the finding `PrivilegeEscalation:Kubernetes/PrivilegedContainer` in the GuardDuty portal.
 
-![](PrivilegedContainer.png)
+![](assets/PrivilegedContainer.png)
 
 Lets delete this pod before we move on:
 

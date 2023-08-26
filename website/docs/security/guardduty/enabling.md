@@ -1,6 +1,6 @@
 ---
 title: "Enable GuardDuty findings on EKS"
-sidebar_position: 122
+sidebar_position: 121
 ---
 
 
@@ -18,15 +18,15 @@ $ aws guardduty create-detector --enable --data-sources Kubernetes={AuditLogs={E
 **Enabling using Console:**
 Search for GuardDuty in AWS console
 
-![](Gsearch.png)
+![](assets/Gsearch.png)
 
 Click Get Started
 
-![](gpage.png)
+![](assets/gpage.png)
 
 Click **Enable GuardDuty**
 
 ![](genable.png.png)
 
 Double check that Kubernetes Protection is enabled and go to Findings. You should find that there are no findings available yet.
-![](gkubernetesenable.png)
+![](assets/gkubernetesenable.png)
