@@ -26,7 +26,7 @@ Click Get Started
 
 Click **Enable GuardDuty**
 
-![](genable.png.png)
+![](assets/genable.png)
 
 Double check that Kubernetes Protection is enabled and go to Findings. You should find that there are no findings available yet.
 ![](assets/gkubernetesenable.png)
