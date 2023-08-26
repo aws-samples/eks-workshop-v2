@@ -1,6 +1,6 @@
 ---
 title: "Container with sensitive mount"
-sidebar_position: 132
+sidebar_position: 135
 ---
 
 This finding indicates that a container was launched with a sensitive external host path mounted inside.
@@ -19,7 +19,7 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/security/Guardduty/mount/p
 
 Within a few minutes we'll see the finding `Persistence:Kubernetes/ContainerWithSensitiveMount` in the GuardDuty portal.
 
-![](ContainerWithSensitiveMount.png)
+![](assets/ContainerWithSensitiveMount.png)
 
 Lets delete this pod before we move on:
 

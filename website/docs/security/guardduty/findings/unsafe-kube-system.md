@@ -1,6 +1,6 @@
 ---
-title: "Unsafe execution in kube-system namespace"
-sidebar_position: 124
+title: "Unsafe execution in `kube-system` Namespace"
+sidebar_position: 131
 ---
 
 This finding indicates that a command was executed inside a pod in kube-system namespace on EKS Cluster.
@@ -21,7 +21,7 @@ $ kubectl -n kube-system exec nginx -- pwd
 
 Within a few minutes we'll see the finding `Execution:Kubernetes/ExecInKubeSystemPod` in the GuardDuty portal.
 
-![](exec_finding.png)
+![](assets/exec_finding.png)
 
 Clean up the pod we used to generate the finding:
 
