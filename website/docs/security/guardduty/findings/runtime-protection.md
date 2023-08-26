@@ -16,8 +16,8 @@ $ kubectl run -ti ubuntu --image ubuntu
 Inside the Pod, run the following commands to simulate a crypto miniing process.
 
 ```bash
-curl -s http://pool.minergate.com/zaq12wsxcde34rfvbgt56yhnmju78iklo90p /dev/null &
-curl -s http://xmr.pool.minergate.com/p09olki87ujmnhy65tgbvfr43edcxsw21qaz  > /dev/null &
+$ curl -s http://pool.minergate.com/zaq12wsxcde34rfvbgt56yhnmju78iklo90p /dev/null &
+$ curl -s http://xmr.pool.minergate.com/p09olki87ujmnhy65tgbvfr43edcxsw21qaz  > /dev/null &
 ```
 
 Go back to [AWS GuardDuty console](https://console.aws.amazon.com/guardduty/home/), go to the **Findings** menu on the left hand side.
