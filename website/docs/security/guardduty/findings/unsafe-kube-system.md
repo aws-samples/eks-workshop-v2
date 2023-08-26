@@ -1,5 +1,5 @@
 ---
-title: "Unsafe execution in `kube-system` Namespace"
+title: "Unsafe execution in kube-system Namespace"
 sidebar_position: 131
 ---
 
