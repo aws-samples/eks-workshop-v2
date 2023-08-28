@@ -3,30 +3,38 @@ title: "Enable GuardDuty findings on EKS"
 sidebar_position: 121
 ---
 
+In this lab, we'll enable Amazon GuardDuty EKS Protection. This will provide threat detection coverage for EKS Audit Log Monitoring and EKS Runtime Monitoring to help you protect your clusters.
 
-In this lab, we'll enable GuardDuty and Kubernetes protection.
+ EKS Audit Log Monitoring uses Kubernetes audit logs to capture chronological activities from users, applications using the Kubernetes API, and the control plane searching for potentially suspicious activities.
 
-**Enabling using CLI:**
+EKS Runtime Monitoring uses operating system-level events to help you detect potential threats in Amazon EKS nodes and containers.
+
+**Enabling Amazon GuardDuty via AWS CLI**
 
 ```bash test=false
-$ aws guardduty create-detector --enable --data-sources Kubernetes={AuditLogs={Enable=true}}
+$ aws guardduty create-detector --enable --features '[{"Name" : "EKS_AUDIT_LOGS", "Status" : "ENABLED"}, {"Name" : "EKS_RUNTIME_MONITORING", "Status" : "ENABLED", "AdditionalConfiguration" : [{"Name" : "EKS_ADDON_MANAGEMENT", "Status" : "ENABLED"}]}]'
 {
-    "DetectorId": "b6b992d6d2f48e64bc59180bfexample"
+    "DetectorId": "1qaz0p2wsx9ol3edc8ik4rfv7ujm5tgb6yhn"
 }
 ```
 
-**Enabling using Console:**
-Search for GuardDuty in AWS console
+**Enabling Amazon GuardDuty via AWS Console**
 
-![](assets/Gsearch.png)
+Navigate to [Amazon GuardDuty Console](https://console.aws.amazon.com/guardduty/home)
 
-Click Get Started
+Click on **Get Started** button.
 
-![](assets/gpage.png)
+![](assets/gd_getstart.png)
 
-Click **Enable GuardDuty**
+Click on **Enable GuardDuty**
 
-![](assets/genable.png)
+![](assets/gd_enable.png)
 
-Double check that Kubernetes Protection is enabled and go to Findings. You should find that there are no findings available yet.
-![](assets/gkubernetesenable.png)
+
+Navigate to **EKS Protection** on the left hand side menu, and double check that EKS Protection is enabled for both Audit Logs, and Runtime Monitoring.
+
+![](assets/eksprotection.png)
+
+Then navigate to **Findings** on the left hand side menu. You should find that there are no findings available yet.
+
+![](assets/findings.png)
