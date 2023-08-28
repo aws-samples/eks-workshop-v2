@@ -12,22 +12,16 @@ kubecost-kube-state-metrics   1/1     1            1           16m
 kubecost-prometheus-server    1/1     1            1           16m
 ```
 
-To access the Kubecost dashboard we'll expose it through a `kubectl port-forward` command. Expose the Kubecost dashboard open a new terminal in your Cloud9 IDE and run the following command:
+Kubecost has been exposed using a `LoadBalancer` service, and we can find the URL to access it like so:
 
-```bash test=false
-$ kubectl port-forward --namespace kubecost deployment/kubecost-cost-analyzer 8080:9090
-Forwarding from 127.0.0.1:8080 -> 9090
-Forwarding from [::1]:8080 -> 9090
+```bash
+$ kubectl get service -n kubecost kubecost-cost-analyzer \
+    -o jsonpath="{.status.loadBalancer.ingress[*].hostname}:9090{'\n'}"
+k8s-kubecost-kubecost-e83ecf8fc1-fc26f5c92767520f.elb.us-west-2.amazonaws.com:9090
 ```
 
-In your Cloud9 environment, click <b>Preview / Preview Running Application</b> to access dashboard. You can click on Pop out window button to maximize the browser into a new tab. Leave the current terminal running because if you kill the process, you will loose access to the dashboard. See the below immage for more details.
+Open this link in your browser to access Kubecost:
 
-<browser url='https://us-east-1.console.aws.amazon.com/cloud9/ide/2an0f568zlmnfkfb3w59iviyx6dedjmi'>
-<img src={require('./assets/cloud9.png').default}/>
-</browser>
-
-You should see the below dashboard once you have completed the steps.
-
-<browser url='https://2an0f568zlmnfkfb3w59iviyx6dedjmi.vfs.cloud9.us-east-1.amazonaws.com/overview'>
+<browser url='http://k8s-kubecost-kubecost-e83ecf8fc1-fc26f5c92767520f.elb.us-west-2.amazonaws.com:9090'>
 <img src={require('./assets/overview.png').default}/>
 </browser>

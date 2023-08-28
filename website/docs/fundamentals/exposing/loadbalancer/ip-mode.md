@@ -22,14 +22,14 @@ Let's reconfigure our NLB to use IP mode and look at the effect it has on the in
 This is the patch we'll be applying to re-configure the Service:
 
 ```kustomization
-exposing/load-balancer/ip-mode/nlb.yaml
+modules/exposing/load-balancer/ip-mode/nlb.yaml
 Service/ui-nlb
 ```
 
 Apply the manifest with kustomize:
 
 ```bash
-$ kubectl apply -k /workspace/modules/exposing/load-balancer/ip-mode
+$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/load-balancer/ip-mode
 ```
 
 It will take a few minutes for the configuration of the load balancer to be updated. Run the following command to ensure the annotation is updated:
@@ -51,7 +51,7 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
     "TargetHealthDescriptions": [
         {
             "Target": {
-                "Id": "10.42.10.197",
+                "Id": "10.42.180.183",
                 "Port": 8080,
                 "AvailabilityZone": "us-west-2a"
             },
@@ -85,7 +85,7 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
     "TargetHealthDescriptions": [
         {
             "Target": {
-                "Id": "10.42.12.102",
+                "Id": "10.42.180.181",
                 "Port": 8080,
                 "AvailabilityZone": "us-west-2c"
             },
@@ -98,7 +98,7 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
         },
         {
             "Target": {
-                "Id": "10.42.10.197",
+                "Id": "10.42.140.129",
                 "Port": 8080,
                 "AvailabilityZone": "us-west-2a"
             },
@@ -109,7 +109,7 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
         },
         {
             "Target": {
-                "Id": "10.42.10.169",
+                "Id": "10.42.105.38",
                 "Port": 8080,
                 "AvailabilityZone": "us-west-2a"
             },

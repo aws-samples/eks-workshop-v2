@@ -7,7 +7,6 @@ before() {
 after() {
   sleep 10
 
-
   analyzer_success=$(kubectl rollout status deployment -n kubecost kubecost-cost-analyzer --timeout=60s)
   metrics_success=$(kubectl rollout status deployment -n kubecost kubecost-kube-state-metrics --timeout=60s)
   prometheus_success=$(kubectl rollout status deployment -n kubecost kubecost-prometheus-server --timeout=60s)
@@ -24,11 +23,13 @@ after() {
     exit 1
   fi
 
-    if [[ $prometheus_success != "deployment \"kubecost-prometheus-server\" successfully rolled out" ]]; then
+  if [[ $prometheus_success != "deployment \"kubecost-prometheus-server\" successfully rolled out" ]]; then
     >&2 echo "Prometheus did not rollout"
 
     exit 1
   fi
+
+  wait-for-lb $(kubectl get service -n kubecost kubecost-cost-analyzer -o jsonpath="{.status.loadBalancer.ingress[*].hostname}:9090")
 }
 
 "$@"

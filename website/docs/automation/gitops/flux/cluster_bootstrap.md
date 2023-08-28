@@ -10,15 +10,15 @@ Before bootstraping a cluster, Flux allows us to run pre-bootstrap checks to ver
 ```bash
 $ flux check --pre
 > checking prerequisites
-> Kubernetes 1.23.7-eks-4721010 >=1.20.6-0
+> Kubernetes VAR::KUBERNETES_NODE_VERSION >=1.20.6-0
 > prerequisites checks passed
 ```
 
-An AWS CodeCommit repository has already been created for you so let's bootstrap Flux on our EKS cluster:
+Now let's bootstrap Flux on our EKS cluster using the CodeCommit repository:
 
 ```bash
 $ flux bootstrap git \
-  --url=ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_DEFAULT_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-gitops \
+  --url=ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-gitops \
   --branch=main \
   --private-key-file=${HOME}/.ssh/gitops_ssh.pem \
   --silent

@@ -14,7 +14,7 @@ $ yq -i '.spec.replicas = 3' ~/environment/argocd/apps-kustomization/ui/deployme
 You can review planned changes in the file `apps-kustomization/ui/deployment-patch.yaml`.
 
 ```kustomization
-automation/gitops/argocd/update-application/deployment-patch.yaml
+modules/automation/gitops/argocd/update-application/deployment-patch.yaml
 Deployment/ui
 ```
 

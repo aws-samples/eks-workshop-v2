@@ -19,7 +19,7 @@ Why are we not updating the existing StatefulSet? The fields we need to update a
 Here in the new catalog database StatefulSet:
 
 ```file
-fundamentals/storage/ebs/statefulset-mysql.yaml
+manifests/modules/fundamentals/storage/ebs/statefulset-mysql.yaml
 ```
 
 Notice the `volumeClaimTemplates` field which specifies the instructs Kubernetes to utilize Dynamic Volume Provisioning to create a new EBS Volume, a [PersistentVolume (PV)](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and a [PersistentVolumeClaim (PVC)](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims) all automatically.
@@ -27,15 +27,15 @@ Notice the `volumeClaimTemplates` field which specifies the instructs Kubernetes
 This is how we'll re-configure the catalog component itself to use the new StatefulSet:
 
 ```kustomization
-fundamentals/storage/ebs/deployment.yaml
+modules/fundamentals/storage/ebs/deployment.yaml
 Deployment/catalog
 ```
 
 Apply the changes and wait for the new Pods to be rolled out:
 
 ```bash hook=check-pvc
-$ kubectl apply -k /workspace/modules/fundamentals/storage/ebs/
-$ kubectl rollout status --timeout=60s statefulset/catalog-mysql-ebs -n catalog
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/ebs/
+$ kubectl rollout status --timeout=100s statefulset/catalog-mysql-ebs -n catalog
 ```
 
 Let's now confirm that our newly deployed StatefulSet is running:

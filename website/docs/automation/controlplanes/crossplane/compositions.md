@@ -10,13 +10,13 @@ A `CompositeResourceDefinition` (or XRD) defines the type and schema of your Com
 First, lets provide a definition that can be used to create a database by members of the application team in their corresponding namespace. In this example the user only needs to specify `databaseName`, `storageGB` and `secret` location
 
 ```file
-automation/controlplanes/crossplane/compositions/definition.yaml
+manifests/modules/automation/controlplanes/crossplane/compositions/definition.yaml
 ```
 
 Create this composite definition:
 
 ```bash
-$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/compositions/definition.yaml
+$ kubectl apply -f ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/compositions/definition.yaml
 compositeresourcedefinition.apiextensions.crossplane.io/xrelationaldatabases.awsblueprints.io created
 ```
 
@@ -30,13 +30,13 @@ is specified by `masterUserPasswordSecretRef`. The DB username and endpoint valu
 secret specified by `spec.writeConnectionSecretToRef`:
 
 ```file
-automation/controlplanes/crossplane/compositions/composition/composition.yaml
+manifests/modules/automation/controlplanes/crossplane/compositions/composition/composition.yaml
 ```
 
 Apply this to our EKS cluster:
 
 ```bash
-$ kubectl apply -k /workspace/modules/automation/controlplanes/crossplane/compositions/composition
+$ kubectl apply -k ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/compositions/composition
 composition.apiextensions.crossplane.io/rds-mysql.awsblueprints.io created
 ```
 
@@ -45,14 +45,14 @@ Once we’ve configured Crossplane with the details of the new XR we can either 
 With this claim the developer only needs to specify a default database name, size, and location to store the credentials to connect to the database. This allows the platform or SRE team to standardize on aspects such as database engine, high-availability architecture and security configuration.
 
 ```file
-automation/controlplanes/crossplane/compositions/claim/claim.yaml
+manifests/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml
 ```
 
 Create the database by creating a `Claim`:
 
 ```bash
-$ kubectl apply -f /workspace/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml
-relationaldatabase.awsblueprints.io/catalog-composition created
+$ kubectl apply -f ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml
+relationaldatabase.awsblueprints.io/rds-eks-workshop created
 ```
 
 It takes some time to provision the AWS managed services, in the case of RDS up to 10 minutes. Crossplane will report the status of the reconciliation in the status field of the Kubernetes custom resources.
@@ -84,7 +84,7 @@ data:
 Update the application to use the RDS endpoint and credentials:
 
 ```bash
-$ kubectl apply -k /workspace/modules/automation/controlplanes/crossplane/compositions/application
+$ kubectl apply -k ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/compositions/application
 namespace/catalog unchanged
 serviceaccount/catalog unchanged
 configmap/catalog unchanged
@@ -98,21 +98,14 @@ $ kubectl rollout restart -n catalog deployment/catalog
 $ kubectl rollout status -n catalog deployment/catalog --timeout=30s
 ```
 
-An NLB has been created to expose the sample application for testing:
+We can now check the logs of the catalog service to verify its connecting to the RDS database provisioned by Crossplane:
 
 ```bash
-$ kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
-k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
+$ kubectl -n catalog logs deployment/catalog
+2023/06/02 21:16:18 Running database migration...
+2023/06/02 21:16:18 Schema migration applied
+2023/06/02 21:16:18 Connecting to eks-workshop-test-catalog-composition-68jlv-gd6q5.cjkatqd1cnrz.us-west-2.rds.amazonaws.com/catalog?timeout=5s
+2023/06/02 21:16:18 Connected
+2023/06/02 21:16:18 Connecting to eks-workshop-test-catalog-composition-68jlv-gd6q5.cjkatqd1cnrz.us-west-2.rds.amazonaws.com/catalog?timeout=5s
+2023/06/02 21:16:18 Connected
 ```
-
-To wait until the load balancer has finished provisioning you can run this command:
-
-```bash timeout=300
-$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
-```
-
-Once the load balancer is provisioned you can access it by pasting the URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
-
-<browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
-<img src={require('@site/static/img/sample-app-screens/home.png').default}/>
-</browser>
