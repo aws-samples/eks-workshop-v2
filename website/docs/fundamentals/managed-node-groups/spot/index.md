@@ -112,10 +112,10 @@ ip-10-42-12-45.us-west-2.compute.internal    Ready    <none>   113m   v1.23.15-e
 ```
 The above output indicates the availability of two managed node groups. To deploy the “<b>Sample Retail Store</b>” app and utilize `nodeSelector` for deploying it on spot instances instead of `On-Demand`, you can employ the `nodeSelector` field to define constraints based on node labels. As the existing deployment.yaml manifest in `/workspace/manifests/catalog` lacks the `nodeSelector` attribute, you can use kustomize to modify the resource configuration without directly altering the original manifests.
 
-```kustomization
-fundamentals/mng/spot/deployment.yaml
-Deployment/catalog
-```
+#```kustomization
+#fundamentals/mng/spot/deployment.yaml
+#Deployment/catalog
+#```
 
 Next, Deploy the app.
 
@@ -149,4 +149,27 @@ Output:
 NAME                      STATUS    NODE
 catalog-5c48f886c-rrbck   Running   ip-10-42-11-17.us-west-2.compute.internal
 catalog-mysql-0           Running   ip-10-42-12-234.us-west-2.compute.internal
+```
+
+### Visualize the Node Usage
+
+Install "[eks-node-viewer](https://github.com/awslabs/eks-node-viewer)"  for visualizing dynamic node usage within a cluster.
+
+```bash
+$ go install github.com/awslabs/eks-node-viewer/cmd/eks-node-viewer@latest
+$ sudo mv -v ~/go/bin/eks-node-viewer /usr/local/bin
+```
+:::info
+* This step may take about 2-3 minutes to download all the dependencies and install <b>eks-node-viewer</b>
+* Post Installation, Make sure you run `eks-node-viewer` in a seperate terminal or else you will not see the colors in the output
+:::
+
+Please open a separate terminal and execute below commands for the EKS Node Viewer tool for both `ON_DEMAND` and `SPOT` nodegroups. This will allow you to observe the number of pods currently running on each node and view the corresponding monthly cost associated with those nodes.
+
+```bash
+$ eks-node-viewer --node-selector "eks.amazonaws.com/capacityType=ON_DEMAND"
+```
+
+```bash
+$ eks-node-viewer --node-selector "eks.amazonaws.com/capacityType=SPOT"
 ```
