@@ -21,7 +21,7 @@ $ kubectl -n kube-system exec nginx -- pwd
 
 Within a few minutes we'll see the finding `Execution:Kubernetes/ExecInKubeSystemPod` in the GuardDuty portal.
 
-![](assets/exec_finding.png)
+![](assets/exec-finding.png)
 
 Clean up the pod we used to generate the finding:
 

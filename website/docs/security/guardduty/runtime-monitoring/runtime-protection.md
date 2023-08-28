@@ -24,7 +24,7 @@ Go back to [AWS GuardDuty console](https://console.aws.amazon.com/guardduty/home
 
 Within a few minutes we'll see a couple of findings `CryptoCurrency:Runtime/BitcoinTool.B!DNS`.
 
-![](assets/CryptoCurrencyRuntime.png)
+![](assets/crypto-runtime.png)
 
 Lets delete this pod before we move on:
 

@@ -1,6 +1,6 @@
 ---
 title: "Cleanup"
-sidebar_position: 137
+sidebar_position: 150
 ---
 
 To disable GuardDuty run the following command:
