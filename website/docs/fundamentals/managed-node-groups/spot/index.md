@@ -60,6 +60,7 @@ To achieve that, we will perform the following steps: first, Export the environm
 ```bash
 
 $ export EKS_DEFAULT_MNG_NAME_SPOT=managed-spot
+$ export MANAGED_NODE_GROUP_IAM_ROLE_ARN=`aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name default | jq -r .nodegroup.nodeRole`
 $ aws eks create-nodegroup \
 --cluster-name $EKS_CLUSTER_NAME \
 --nodegroup-name $EKS_DEFAULT_MNG_NAME_SPOT \
