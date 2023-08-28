@@ -15,7 +15,7 @@ $ kubectl create rolebinding sa-default-admin --clusterrole=cluster-admin --serv
 
 Within a few minutes we'll see the finding `Policy:Kubernetes/AdminAccessToDefaultServiceAccount` in the GuardDuty portal.
 
-![](assets/policy_AdminAccessToDefaultServiceAccount.png)
+![](assets/admin-access-sa.png)
 
 Run the following command to delete the role binding.
 

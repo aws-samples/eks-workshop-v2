@@ -19,7 +19,7 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/security/Guardduty/mount/p
 
 Within a few minutes we'll see the finding `Persistence:Kubernetes/ContainerWithSensitiveMount` in the GuardDuty portal.
 
-![](assets/ContainerWithSensitiveMount.png)
+![](assets/sensitive-mount.png)
 
 Lets delete this pod before we move on:
 

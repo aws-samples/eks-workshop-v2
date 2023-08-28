@@ -13,5 +13,3 @@ In this lab exercise, we'll generate few Kubernetes findings in your Amazon EKS 
 - `Policy:Kubernetes/ExposedDashboard`
 - `PrivilegeEscalation:Kubernetes/PrivilegedContainer` 
 - `Persistence:Kubernetes/ContainerWithSensitiveMount`
-- `Execution:Runtime/NewBinaryExecuted`
-- `CryptoCurrency:Runtime/BitcoinTool.B!DNS`

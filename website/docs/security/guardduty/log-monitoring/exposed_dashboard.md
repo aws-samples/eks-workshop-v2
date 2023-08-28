@@ -23,7 +23,7 @@ $ kubectl patch svc kubernetes-dashboard -n kubernetes-dashboard -p='{"spec": {"
 
 Within a few minutes we'll see the finding `Policy:Kubernetes/ExposedDashboard` in the GuardDuty portal.
 
-![](assets/ExposedDashboard.png)
+![](assets/exposed-dashboard.png)
 
 Uninstall the dashboard with the following command:
 

@@ -7,10 +7,6 @@ This finding indicates that a privileged container with root level access was la
 
 To simulate the finding we'll apply the following yaml.
 
-```file
-manifests/modules/security/Guardduty/privileged/privileged-pod-example.yaml
-```
-
 Create the deployment by running the following command.
 
 ```bash
@@ -19,7 +15,7 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/security/Guardduty/privile
 
 Within a few minutes we'll see the finding `PrivilegeEscalation:Kubernetes/PrivilegedContainer` in the GuardDuty portal.
 
-![](assets/PrivilegedContainer.png)
+![](assets/privileged-container.png)
 
 Lets delete this pod before we move on:
 
