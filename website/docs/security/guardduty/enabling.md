@@ -35,6 +35,23 @@ Navigate to **EKS Protection** on the left hand side menu, and double check that
 
 ![](assets/eksprotection.png)
 
+Also check the tab **EKS clusters runtime coverage**.
+
+![](assets/runtime-coverage.png)
+
+*If your cluster is not showing in the Cluster list or the coverage statistics is not showing 1/1(100%), wait a few more minutes to Amazon GuardDuty finish the monitoring stack deployment.*
+
+You can also validate the `aws-guardduty-agent` Pod deployment in your EKS Cluster.
+
+```bash test=false
+$ kubectl -n amazon-guardduty get pods                                                                                                                
+NAME                        READY   STATUS    RESTARTS   AGE
+aws-guardduty-agent-h7qg5   1/1     Running   0          58s
+aws-guardduty-agent-hgbsg   1/1     Running   0          58s
+aws-guardduty-agent-k7x2b   1/1     Running   0          58s
+```
+
+
 Then navigate to **Findings** on the left hand side menu. You should find that there are no findings available yet.
 
 ![](assets/findings.png)
