@@ -21,7 +21,7 @@ $ kubectl -n kube-system exec nginx -- pwd
 /
 ```
 
-Within a few minutes we'll see the finding `Execution:Kubernetes/ExecInKubeSystemPod` in the [GuardDuty console](https://console.aws.amazon.com/guardduty/home).
+Within a few minutes we'll see the finding `Execution:Kubernetes/ExecInKubeSystemPod` in the [GuardDuty Findings console](https://console.aws.amazon.com/guardduty/home#/findings)
 
 ![](assets/exec-finding.png)
 
@@ -38,7 +38,7 @@ One importand information that is worth to take a look is the **Action** of the 
 
 ![](assets/finding-action.png)
 
-Clean up the offensor Pod we used to generate the findin:
+Clean up the offensor Pod we used to generate the finding:
 
 ```bash
 $ kubectl -n kube-system delete pod nginx
