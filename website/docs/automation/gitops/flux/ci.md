@@ -9,32 +9,194 @@ Next, clone the repository for the application sources:
 
 ```bash
 $ git clone ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-retail-store-sample ~/environment/retail-store-sample-codecommit
+```
 
-$ git clone https://github.com/aws-containers/retail-store-sample-app
+```bash
+$ git clone https://github.com/aws-containers/retail-store-sample-app ~/environment/retail-store-sample-app
 
 $ git -C ~/environment/retail-store-sample-codecommit checkout -b main
 
 $ cp -R retail-store-sample-app/src retail-store-sample-codecommit
 $ cp -R retail-store-sample-app/scripts retail-store-sample-codecommit
 $ cp -R retail-store-sample-app/images retail-store-sample-codecommit
+```
 
+```bash
 $ cp ~/environment/eks-workshop/modules/automation/gitops/flux/buildspec.yml ~/environment/retail-store-sample-codecommit/buildspec.yml
+```
 
-$ cd ~/environment/retail-store-sample-codecommit/
-
-$ git config --global user.email "you@example.com"
-$ git config --global user.name "Your Name"
-
+```bash
 $ git -C ~/environment/retail-store-sample-codecommit add .
 $ git -C ~/environment/retail-store-sample-codecommit commit -am "initial commit"
 $ git -C ~/environment/retail-store-sample-codecommit push --set-upstream origin main
-
 ```
 
 As a result of a CodePipeline run with CodeBuild you will have a new image in ECR
 
 ```bash
 $ flux install --components-extra=image-reflector-controller,image-automation-controller
+```
+Edit file
+```bash
+$ vi ~/environment/flux/apps/ui/deployment.yaml
+```
+
+Change
+
+image: "public.ecr.aws/aws-containers/retail-store-sample-ui:0.4.0" `# {"$imagepolicy": "flux-system:ui"}`
+
+```bash
+$ git -C ~/environment/flux add .
+$ git -C ~/environment/flux commit -am "Adding ImagePolicy"
+$ git -C ~/environment/flux push
+```
+
+```bash
+$ cat <<EOF | envsubst | kubectl create -f -
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: ui
+  namespace: flux-system
+spec:
+  provider: aws
+  interval: 1m
+  image: ${IMAGE_URI_UI}
+  accessFrom:
+    namespaceSelectors:
+      - matchLabels:
+          kubernetes.io/metadata.name: flux-system
+EOF
+imagerepository.image.toolkit.fluxcd.io/ui created
+```
+
+```bash
+$ cat <<EOF | kubectl create -f -
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: ui
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: ui
+  filterTags:
+    pattern: '^i[a-fA-F0-9]'
+  policy:
+    alphabetical:
+      order: asc
+EOF
+imagepolicy.image.toolkit.fluxcd.io/ui created
+```
+
+```bash
+$ cat <<EOF | kubectl create -f -
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageUpdateAutomation
+metadata:
+  name: ui
+  namespace: flux-system
+spec:
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        email: fluxcdbot@users.noreply.github.com
+        name: fluxcdbot
+      messageTemplate: '{{range .Updated.Images}}{{println .}}{{end}}'
+    push:
+      branch: main
+  interval: 1m0s
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  update:
+    path: ./apps
+    strategy: Setters
+EOF
+imageupdateautomation.image.toolkit.fluxcd.io/ui created
+```
+
+```bash
+$ flux reconcile image repository ui
+$ flux reconcile source git flux-system
+$ flux reconcile kustomization apps
+$ kubectl wait deployment -n ui ui --for condition=Available=True --timeout=120s
+$ git -C ~/environment/flux pull
+$ kubectl -n ui get pods
+```
+
+```bash
+$ kubectl -n ui describe deployment ui | grep Image
+```
+
+Let's create an Ingress resource with the following manifest:
+
+```file
+manifests/modules/exposing/ingress/creating-ingress/ingress.yaml
+```
+
+This will cause the AWS Load Balancer Controller to provision an Application Load Balancer and configure it to route traffic to the Pods for the `ui` application.
+
+```bash timeout=180 hook=add-ingress hookTimeout=430
+$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/creating-ingress
+```
+
+Let's inspect the Ingress object created:
+
+```bash
+$ kubectl get ingress ui -n ui
+NAME   CLASS   HOSTS   ADDRESS                                            PORTS   AGE
+ui     alb     *       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com   80      15s
+```
+
+Check the UI page using url of the ingress
+
+```bash
+$ export UI_URL=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ curl $UI_URL/home | grep "Retail Store Sample"
+```
+
+Edit file
+```bash
+$ vi ~/environment/retail-store-sample-codecommit/src/ui/src/main/resources/templates/fragments/layout.html
+```
+
+Change
+
+`<a class="navbar-brand" href="/home">Retail Store Sample</a>` to `<a class="navbar-brand" href="/home">Retail Store Sample New</a>`
+
+```bash
+$ git -C ~/environment/retail-store-sample-codecommit status
+$ git -C ~/environment/retail-store-sample-codecommit add .
+$ git -C ~/environment/retail-store-sample-codecommit commit -am "Update UI src"
+$ git -C ~/environment/retail-store-sample-codecommit push
+```
+
+Wait until CI will build the new image and Flux will deploy it
+
+```bash
+$ kubectl -n ui describe deployment ui | grep Image
+$ aws codepipeline start-pipeline-execution --name eks-workshop-retail-store-sample
+$ sleep 10
+$ while [[ "$(aws codepipeline get-pipeline-state --name eks-workshop-retail-store-sample --query 'stageStates[1].actionStates[0].latestExecution.status' --output text)" != "Succeeded" ]]; do echo "Waiting for pipeline to reach 'Succeeded' state..."; sleep 10; done && echo "Pipeline has reached the 'Succeeded' state."
+
+$ flux reconcile image repository ui
+$ sleep 5
+$ flux reconcile source git flux-system
+$ flux reconcile kustomization apps
+$ kubectl wait deployment -n ui ui --for condition=Available=True --timeout=120s
+$ git -C ~/environment/flux pull
+$ kubectl -n ui get pods
+
+$ kubectl -n ui describe deployment ui | grep Image
+
+$ export UI_URL=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ while [[ $(curl -s -o /dev/null -w "%{http_code}" $UI_URL/home) != "200" ]]; do sleep 1; done
+$ curl $UI_URL/home | grep "Retail Store Sample"
 ```
 
 Work in progress ...
