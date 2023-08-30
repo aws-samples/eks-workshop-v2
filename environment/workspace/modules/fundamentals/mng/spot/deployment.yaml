@@ -6,4 +6,4 @@ spec:
   template:
     spec:
       nodeSelector:
-        capacity_type: maanaged_spot
+        capacity_type: managed_spot
