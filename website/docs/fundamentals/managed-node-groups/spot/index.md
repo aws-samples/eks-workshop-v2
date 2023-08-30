@@ -112,15 +112,15 @@ ip-10-42-12-45.us-west-2.compute.internal    Ready    <none>   113m   v1.23.15-e
 ```
 The above output indicates the availability of two managed node groups. To deploy the “<b>Sample Retail Store</b>” app and utilize `nodeSelector` for deploying it on spot instances instead of `On-Demand`, you can employ the `nodeSelector` field to define constraints based on node labels. As the existing deployment.yaml manifest in `/workspace/manifests/catalog` lacks the `nodeSelector` attribute, you can use kustomize to modify the resource configuration without directly altering the original manifests.
 
-#```kustomization
-#fundamentals/mng/spot/deployment.yaml
-#Deployment/catalog
-#```
+```kustomization
+modules/fundamentals/mng/spot/deployment.yaml
+Deployment/catalog
+```
 
 Next, Deploy the app.
 
 ```bash
-$ kubectl apply -k /workspace/modules/fundamentals/mng/spot
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/mng/spot
 
 namespace/catalog created
 serviceaccount/catalog created
