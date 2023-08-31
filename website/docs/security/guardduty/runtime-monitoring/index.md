@@ -11,4 +11,6 @@ In this lab exercise, we'll generate a few EKS runtime findings in your Amazon E
 
 - `Execution:Runtime/NewBinaryExecuted`
 - `CryptoCurrency:Runtime/BitcoinTool.B!DNS`
-- `ReverseShell`
+- `Execution:Runtime/NewLibraryLoaded`
+- `DefenseEvasion:Runtime/FilelessExecution`
+- `Execution:Runtime/ReverseShell`

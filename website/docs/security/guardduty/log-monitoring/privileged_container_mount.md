@@ -3,7 +3,7 @@ title: "Privileged Container with sensitive mount"
 sidebar_position: 134
 ---
 
-In this lab you will be creating a container with `privileged` Security Context, with root level access in the `default` Namespace of your EKS Cluster. Also this privileged container will also have a sensitive directory from the host, mounted and accessible as a volume within your container.
+In this lab you will be creating a container with `privileged` Security Context, with root level access in the `default` Namespace of your EKS Cluster. This privileged container will also have a sensitive directory from the host, mounted and accessible as a volume within your container.
 
 This exercise will generate two different findings, `PrivilegeEscalation:Kubernetes/PrivilegedContainer` which indicates that a container was launched with Privileged permissions, and `Persistence:Kubernetes/ContainerWithSensitiveMount` indicating a sensitive external host path mounted inside the container.
 
