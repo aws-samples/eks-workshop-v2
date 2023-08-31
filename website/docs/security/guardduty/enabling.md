@@ -1,5 +1,5 @@
 ---
-title: "Enable GuardDuty findings on EKS"
+title: "Enable GuardDuty Protection on EKS"
 sidebar_position: 121
 ---
 

