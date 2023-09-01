@@ -35,7 +35,7 @@
     "chai": "^4.3.6",
     "commander": "^11.0.0",
     "glob-to-regexp": "^0.4.1",
-    "mocha-junit-reporter": "^2.0.2",
+    "mocha-junit-reporter": "^2.2.1",
     "mochawesome": "^7.0.1",
     "remark": "^14.0.3",
     "remark-frontmatter": "^4.0.1",
