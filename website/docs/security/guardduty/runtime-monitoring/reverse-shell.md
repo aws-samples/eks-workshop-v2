@@ -63,11 +63,8 @@ $ exit
 
 ```
 
-On the `eks-workshop-ide` Cloud9 IDE, you'll see the following message.
+On the `eks-workshop-ide` Cloud9 IDE, you'll see the following message `pod "reverse-shell" deleted`.
 
-```bash
-pod "reverse-shell" deleted
-```
 
 If you open the [GuardDuty Findings console](https://console.aws.amazon.com/guardduty/home#/findings), you will see the `Execution:Runtime/ReverseShell` finding.
 
@@ -77,5 +74,5 @@ If you open the [GuardDuty Findings console](https://console.aws.amazon.com/guar
 To clean up, delete the `reverse-shell` Cloud9 IDE environment, on your [CloudShell](https://console.aws.amazon.com/cloudshell/home).
 
 ```bash
-$ aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --query 'StackSummaries[].StackName' | awk -F , '/rshell/ {print $1}' | xargs aws cloudformation delete-stack --stack-name
+$ aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --query 'StackSummaries[].StackName' | awk -F , '/reverse-shell/ {print $1}' | xargs aws cloudformation delete-stack --stack-name
 ```
