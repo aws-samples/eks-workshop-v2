@@ -11,13 +11,15 @@ Run the below command to run the Pod in an interactive mode.
 
 ```bash
 $ kubectl run -ti crypto --image ubuntu --rm --restart=Never
+If you don't see a command prompt, try pressing enter.
+root@crypto:/# 
 ```
 
 Inside the Pod, run the following commands to simulate a crypto miniing process.
 
 ```bash
 $ apt update && apt install -y curl
-$ curl -s http://pool.minergate.com/zaq12wsxcde34rfvbgt56yhnmju78iklo90p /dev/null &
+$ curl -s http://pool.minergate.com/zaq12wsxcde34rfvbgt56yhnmju78iklo90p > /dev/null &
 $ curl -s http://xmr.pool.minergate.com/p09olki87ujmnhy65tgbvfr43edcxsw21qaz  > /dev/null &
 ```
 
@@ -32,3 +34,12 @@ Take a closer look to the details of this findings, because they are related to 
 Second and third ones, are `CryptoCurrency:Runtime/BitcoinTool.B!DNS` findings. Notice again that the finding details brings different information, this time showing the DNS_REQUEST action, and the **Threat inteligene Evidences**.
 
 ![](assets/crypto-runtime.png)
+
+
+To cleanup, just exit the Pod, and it should be deleted aftewards.
+
+```bash
+$ root@crypto:/# exit
+exit
+pod "crypto" deleted
+```
