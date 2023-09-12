@@ -35,4 +35,10 @@ EKS_IP_FAMILY=ipv4
 set +a
 EOT
 
-aws eks update-kubeconfig --name $cluster_name > /dev/null
+aws eks update-kubeconfig --name $cluster_name > /dev/null 2>&1
+
+if [[ -v C9_USER ]]; then
+    echo "Granting C9_USER access to the cluster via the AWS Console ${C9_USER}"
+    eksctl create iamidentitymapping --cluster $cluster_name --arn arn:aws:iam::${AWS_ACCOUNT_ID}:user/${C9_USER} --username console-iam-user --group system:masters --no-duplicate-arns -d > /dev/null  2>&1
+    eksctl create iamidentitymapping --cluster $cluster_name --arn arn:aws:iam::${AWS_ACCOUNT_ID}:role/${C9_USER} --username console-iam-role --group system:masters --no-duplicate-arns -d > /dev/null  2>&1  
+fi
