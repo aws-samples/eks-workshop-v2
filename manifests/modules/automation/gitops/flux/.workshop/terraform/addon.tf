@@ -202,7 +202,10 @@ data "aws_iam_policy_document" "codepipeline_policy" {
       "codebuild:BatchGetBuilds",
       "codebuild:StartBuild",
     ]
-    resources = [aws_codebuild_project.codebuild.arn]
+    resources = [aws_codebuild_project.codebuild_amd64.arn,
+      aws_codebuild_project.codebuild_arm64.arn,
+      aws_codebuild_project.codebuild_manifest.arn
+    ]
   }
 
   statement {
@@ -321,8 +324,8 @@ resource "aws_kms_key" "artifact_encryption_key" {
   deletion_window_in_days = 10
 }
 
-resource "aws_codebuild_project" "codebuild" {
-  name            = "${local.addon_context.eks_cluster_id}-retail-store-sample"
+resource "aws_codebuild_project" "codebuild_amd64" {
+  name            = "${local.addon_context.eks_cluster_id}-retail-store-sample-amd64"
   service_role    = aws_iam_role.codebuild_role.arn
   encryption_key  = aws_kms_key.artifact_encryption_key.arn
 
@@ -332,20 +335,95 @@ resource "aws_codebuild_project" "codebuild" {
 
   environment {
     compute_type    = "BUILD_GENERAL1_LARGE"
-    image           = "aws/codebuild/standard:5.0"
+    image           = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
     privileged_mode = true
     type            = "LINUX_CONTAINER"
 
     environment_variable {
       name  = "ECR_URI"
-      value = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com"
-      # value = aws_ecr_repository.ecr_ui.repository_url
+      value = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/retail-store-sample-ui"
+    }
+
+    environment_variable {
+      name  = "IMAGE_TAG"
+      value = "latest-amd64"
     }
   }
 
   source {
     type      = "CODEPIPELINE"
     buildspec = "buildspec.yml"
+  }
+
+  vpc_config {
+      vpc_id  = data.aws_vpc.selected.id
+      subnets = data.aws_subnets.private.ids
+      security_group_ids = [data.aws_security_group.default.id]
+  }
+}
+
+resource "aws_codebuild_project" "codebuild_arm64" {
+  name            = "${local.addon_context.eks_cluster_id}-retail-store-sample-arm64"
+  service_role    = aws_iam_role.codebuild_role.arn
+  encryption_key  = aws_kms_key.artifact_encryption_key.arn
+
+  artifacts {
+    type = "CODEPIPELINE"
+  }
+
+  environment {
+    compute_type    = "BUILD_GENERAL1_LARGE"
+    image           = "aws/codebuild/amazonlinux2-aarch64-standard:3.0"
+    privileged_mode = true
+    type            = "ARM_CONTAINER"
+
+    environment_variable {
+      name  = "ECR_URI"
+      value = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/retail-store-sample-ui"
+    }
+
+    environment_variable {
+      name  = "IMAGE_TAG"
+      value = "latest-arm64"
+    }
+  }
+
+  source {
+    type      = "CODEPIPELINE"
+    buildspec = "buildspec.yml"
+  }
+
+  vpc_config {
+      vpc_id  = data.aws_vpc.selected.id
+      subnets = data.aws_subnets.private.ids
+      security_group_ids = [data.aws_security_group.default.id]
+  }
+}
+
+resource "aws_codebuild_project" "codebuild_manifest" {
+  name            = "${local.addon_context.eks_cluster_id}-retail-store-sample-manifest"
+  service_role    = aws_iam_role.codebuild_role.arn
+  encryption_key  = aws_kms_key.artifact_encryption_key.arn
+
+  artifacts {
+    type = "CODEPIPELINE"
+  }
+
+  environment {
+    compute_type    = "BUILD_GENERAL1_SMALL"
+    image           = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
+    privileged_mode = true
+    type            = "LINUX_CONTAINER"
+
+    environment_variable {
+      name  = "ECR_URI"
+      value = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/retail-store-sample-ui"
+    }
+  }
+
+  source {
+    type      = "CODEPIPELINE"
+    buildspec = "buildspec-manifest.yml"
   }
 
   vpc_config {
@@ -391,15 +469,43 @@ resource "aws_codepipeline" "codepipeline" {
     name = "Build"
 
     action {
-      name             = "Build"
+      name             = "build_amd64"
       category         = "Build"
       owner            = "AWS"
       provider         = "CodeBuild"
       input_artifacts  = ["source"]
       version          = "1"
+      run_order        = 1
 
       configuration = {
-        ProjectName = aws_codebuild_project.codebuild.name
+        ProjectName = aws_codebuild_project.codebuild_amd64.name
+      }
+    }
+
+    action {
+      name             = "build_arm64"
+      category         = "Build"
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      input_artifacts  = ["source"]
+      version          = "1"
+      run_order        = 1
+
+      configuration = {
+        ProjectName = aws_codebuild_project.codebuild_arm64.name
+      }
+    }
+    action {
+      name             = "build-manifest"
+      category         = "Build"
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      input_artifacts  = ["source"]
+      version          = "1"
+      run_order        = 2
+
+      configuration = {
+        ProjectName = aws_codebuild_project.codebuild_manifest.name
       }
     }
   }

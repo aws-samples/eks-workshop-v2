@@ -4,29 +4,27 @@ phases:
   install:
     commands:
       - echo Build started on `date`
-      - export BUILDX_VERSION=$(curl --silent "https://api.github.com/repos/docker/buildx/releases/latest" |jq -r .tag_name)
-      - curl -JLO "https://github.com/docker/buildx/releases/download/$BUILDX_VERSION/buildx-$BUILDX_VERSION.linux-amd64"
-      - mkdir -p ~/.docker/cli-plugins
-      - mv "buildx-$BUILDX_VERSION.linux-amd64" ~/.docker/cli-plugins/docker-buildx
-      - chmod +x ~/.docker/cli-plugins/docker-buildx
   pre_build:
     commands:
       - echo Logging in to Amazon ECR in $AWS_REGION
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-8)
       - IMAGE_TAG_I=i$(date +%Y%m%d%H%M%S)-${COMMIT_HASH:=latest}
       - echo ECR_URI=$ECR_URI
-      # - echo IMAGE_TAG=$IMAGE_TAG
+      - echo IMAGE_TAG=$IMAGE_TAG
       - echo IMAGE_TAG_I=$IMAGE_TAG_I
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_URI
   build:
     commands:
       - echo Building a container image ...
-      # - docker build -t $ECR_URI:$IMAGE_TAG .
-      # - docker tag $ECR_URI:$IMAGE_TAG $ECR_URI:$IMAGE_TAG_I
-      - ./scripts/build-image.sh -t $IMAGE_TAG_I -r $ECR_URI -p -s ui
+      - component=ui
+      - component_dir="./src/$component"
+      - source "$component_dir/scripts/build.source"
+      - cd $component_dir
+      - docker build -f $dockerfile $docker_build_args -t $ECR_URI:$IMAGE_TAG .
+      - docker tag $ECR_URI:$IMAGE_TAG $ECR_URI:$IMAGE_TAG_I
       - docker images
   post_build:
     commands:
-      # - docker push $ECR_URI:$IMAGE_TAG_I
-      # - docker push $ECR_URI:$IMAGE_TAG
+      - docker push $ECR_URI:$IMAGE_TAG_I
+      - docker push $ECR_URI:$IMAGE_TAG
       - echo Build completed on `date`
