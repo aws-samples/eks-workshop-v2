@@ -17,7 +17,6 @@ $ git clone https://github.com/aws-containers/retail-store-sample-app ~/environm
 $ git -C ~/environment/retail-store-sample-codecommit checkout -b main
 
 $ cp -R retail-store-sample-app/src retail-store-sample-codecommit
-$ cp -R retail-store-sample-app/scripts retail-store-sample-codecommit
 $ cp -R retail-store-sample-app/images retail-store-sample-codecommit
 ```
 
@@ -180,9 +179,10 @@ Wait until CI will build the new image and Flux will deploy it
 
 ```bash
 $ kubectl -n ui describe deployment ui | grep Image
-$ aws codepipeline start-pipeline-execution --name eks-workshop-retail-store-sample
-$ sleep 10
-$ while [[ "$(aws codepipeline get-pipeline-state --name eks-workshop-retail-store-sample --query 'stageStates[1].actionStates[0].latestExecution.status' --output text)" != "Succeeded" ]]; do echo "Waiting for pipeline to reach 'Succeeded' state..."; sleep 10; done && echo "Pipeline has reached the 'Succeeded' state."
+$ # aws codepipeline start-pipeline-execution --name eks-workshop-retail-store-sample
+$ # sleep 10
+$ while [[ "$(aws codepipeline get-pipeline-state --name eks-workshop-retail-store-sample --query 'stageStates[1].actionStates[0].latestExecution.status' --output text)" != "InProgress" ]]; do echo "Waiting for pipeline to start ..."; sleep 10; done && echo "Pipeline started."
+$ while [[ "$(aws codepipeline get-pipeline-state --name eks-workshop-retail-store-sample --query 'stageStates[1].actionStates[2].latestExecution.status' --output text)" != "Succeeded" ]]; do echo "Waiting for pipeline to reach 'Succeeded' state ..."; sleep 10; done && echo "Pipeline has reached the 'Succeeded' state."
 
 $ flux reconcile image repository ui
 $ sleep 5
