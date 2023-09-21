@@ -8,7 +8,7 @@ sidebar_custom_props: {"module": true}
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30
-$ prepare-environment observability/base
+$ prepare-environment
 ```
 
 This will make the following changes to your lab environment:
