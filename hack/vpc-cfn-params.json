@@ -1,0 +1,22 @@
+[
+    {
+        "ParameterKey":"VpcBlock",
+        "ParameterValue":"192.168.0.0/16"
+    },
+    {
+        "ParameterKey":"PublicSubnet01Block",
+        "ParameterValue":"192.168.0.0/19"
+    },
+    {
+        "ParameterKey":"PublicSubnet02Block",
+        "ParameterValue":"192.168.32.0/19"
+    },
+    {
+        "ParameterKey":"PrivateSubnet01Block",
+        "ParameterValue":"192.168.64.0/19"
+    },
+    {
+        "ParameterKey":"PrivateSubnet02Block",
+        "ParameterValue":"192.168.96.0/19"
+    }
+]
