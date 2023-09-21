@@ -52,6 +52,5 @@ echo "Starting shell in container... with cluster name ${EKS_CLUSTER_NAME}"
 
 $CONTAINER_CLI run --rm -it \
   -v $SCRIPT_DIR/../manifests:/manifests \
-  -v $SCRIPT_DIR/../cluster:/cluster \
-  -e 'EKS_CLUSTER_NAME' -e 'AWS_REGION' \
+  -e 'EKS_CLUSTER_NAME' -e 'AWS_REGION' -e 'USEBETA' \
   $aws_credential_args $container_image $shell_command
