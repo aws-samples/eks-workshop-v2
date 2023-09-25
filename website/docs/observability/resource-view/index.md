@@ -11,11 +11,6 @@ Prepare your environment for this section:
 $ prepare-environment
 ```
 
-This will make the following changes to your lab environment:
-- Creates an additional kubernetes ClusterRole with the name "eks-console-dashboard-full-access-clusterrole"
-- Creates a Kubernetes ClusterRoleBinding with the name "eks-console-dashboard-full-access-binding"
-- Mapps the Cloud9 IAM User/ Role to the ClusterRoleBinding ad RBAC group, to grant access the AWS console to view Kubernetes resources.
-
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/base/.workshop/terraform).
 
 :::
