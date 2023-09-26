@@ -73,7 +73,7 @@ Next, edit file `deployment.yaml` and add placeholder for new container image ur
 
 ```bash
 $ git -C ~/environment/flux pull
-$ vi ~/environment/flux/apps/ui/deployment.yaml
+$ sed -i 's/^\(\s*\)image: "public.ecr.aws\/aws-containers\/retail-store-sample-ui:0.4.0"/\1image: "public.ecr.aws\/aws-containers\/retail-store-sample-ui:0.4.0" # {"$imagepolicy": "flux-system:ui"}/' ~/environment/flux/apps/ui/deployment.yaml
 ```
 
 Change to:
@@ -191,7 +191,7 @@ manifests/modules/exposing/ingress/creating-ingress/ingress.yaml
 
 This will cause the AWS Load Balancer Controller to provision an Application Load Balancer and configure it to route traffic to the Pods for the `ui` application.
 
-```bash timeout=180 hook=add-ingress hookTimeout=430
+```bash timeout=180
 $ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/creating-ingress
 ```
 
@@ -205,7 +205,7 @@ ui     alb     *       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com   80    
 
 We wait 2-5 minutes until Application Load Balancer will be provisioned and check the UI page using url of the ingress.
 
-```bash
+```bash test=false
 $ export UI_URL=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
 $ curl $UI_URL/home | grep "Retail Store Sample"
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -222,7 +222,7 @@ Let's introduce changes to the source code of the Sample Application.
 Edit the file:
 
 ```bash
-$ vi ~/environment/retail-store-sample-codecommit/src/ui/src/main/resources/templates/fragments/layout.html
+$ sed -i 's/\(^\s*<a class="navbar-brand" href="\/home">\)Retail Store Sample/\1Retail Store Sample New/' ~/environment/retail-store-sample-codecommit/src/ui/src/main/resources/templates/fragments/layout.html
 ```
 
 Change line 24
@@ -240,7 +240,7 @@ $ git -C ~/environment/retail-store-sample-codecommit push
 
 Wait until CodePipeline will build the new image and Flux will deploy it.
 
-```bash
+```bash test=false
 $ kubectl -n ui describe deployment ui | grep Image
 $ # aws codepipeline start-pipeline-execution --name eks-workshop-retail-store-sample
 $ # sleep 10
