@@ -1,0 +1,37 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+bases:
+- ../base
+configMapGenerator:
+- name: inference-vars
+  namespace: aiml
+  env: config.properties
+  options:
+    disableNameSuffixHash: true
+replacements:
+- source:
+    kind: ConfigMap
+    name: inference-vars
+    version: v1
+    namespace: aiml
+    fieldPath: data.EKS_CLUSTER_NAME
+  targets:
+  - select:
+      kind: AWSNodeTemplate
+      name: aiml
+    fieldPaths:
+    - spec.securityGroupSelector.[karpenter.sh/discovery]
+- source:
+    kind: ConfigMap
+    name: inference-vars
+    version: v1
+    namespace: aiml
+    fieldPath: data.AIML_SUBNETS
+  targets:
+  - select:
+      kind: AWSNodeTemplate
+      name: aiml
+    fieldPaths:
+    - spec.subnetSelector.aws-ids
+resources:
+- provisioner.yaml

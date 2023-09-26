@@ -1,5 +1,5 @@
 ---
-title: "Exposed Kubernetes Dashboard"
+title: "Exposed Kubernetes dashboard"
 sidebar_position: 130
 ---
 
@@ -12,6 +12,7 @@ First off, we'll install the Kubernetes dashboard component. We'll be using the 
 
 ```bash
 $ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+$ kubectl rollout status deployment/kubernetes-dashboard -n kubernetes-dashboard --timeout=60s
 ```
 
 Let us patch the `kubernetes-dashboard` service to be type LoadBalancer.
@@ -24,7 +25,7 @@ Within a few minutes we'll see the finding `Policy:Kubernetes/ExposedDashboard` 
 
 ![](ExposedDashboard.png)
 
-Cleanup:
+Uninstall the dashboard with the following command:
 
 ```bash
 $ kubectl delete -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
