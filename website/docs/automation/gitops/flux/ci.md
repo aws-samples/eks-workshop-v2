@@ -22,8 +22,8 @@ $ git clone https://github.com/aws-containers/retail-store-sample-app ~/environm
 
 $ git -C ~/environment/retail-store-sample-codecommit checkout -b main
 
-$ cp -R retail-store-sample-app/src retail-store-sample-codecommit
-$ cp -R retail-store-sample-app/images retail-store-sample-codecommit
+$ cp -R ~/environment/retail-store-sample-app/src ~/environment/retail-store-sample-codecommit
+$ cp -R ~/environment/retail-store-sample-app/images ~/environment/retail-store-sample-codecommit
 ```
 
 We use AWS CodeBuild and define `buildspec.yml` to build new `x86_64` and `arm64` images in parallel.
