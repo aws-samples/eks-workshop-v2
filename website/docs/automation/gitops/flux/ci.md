@@ -19,9 +19,7 @@ Next, populate the CodeCommit repository with the sources from the public reposi
 
 ```bash
 $ git clone https://github.com/aws-containers/retail-store-sample-app ~/environment/retail-store-sample-app
-
 $ git -C ~/environment/retail-store-sample-codecommit checkout -b main
-
 $ cp -R ~/environment/retail-store-sample-app/src ~/environment/retail-store-sample-codecommit
 $ cp -R ~/environment/retail-store-sample-app/images ~/environment/retail-store-sample-codecommit
 ```
