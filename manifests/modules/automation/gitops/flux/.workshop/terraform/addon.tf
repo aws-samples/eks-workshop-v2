@@ -62,7 +62,7 @@ output "environment" {
   value = <<EOF
 export GITOPS_IAM_SSH_KEY_ID=${aws_iam_user_ssh_key.gitops.id}
 export GITOPS_IAM_SSH_USER=${aws_iam_user.gitops.unique_id}
-IMAGE_URI_UI=${aws_ecr_repository.ecr_ui.repository_url}
+export IMAGE_URI_UI=${aws_ecr_repository.ecr_ui.repository_url}
 EOF
 }
 
