@@ -72,6 +72,8 @@ Next, edit file `deployment.yaml` and add placeholder for new container image ur
 ```bash
 $ git -C ~/environment/flux pull
 $ sed -i 's/^\(\s*\)image: "public.ecr.aws\/aws-containers\/retail-store-sample-ui:0.4.0"/\1image: "public.ecr.aws\/aws-containers\/retail-store-sample-ui:0.4.0" # {"$imagepolicy": "flux-system:ui"}/' ~/environment/flux/apps/ui/deployment.yaml
+$ less ~/environment/flux/apps/ui/deployment.yaml | grep imagepolicy
+          image: "public.ecr.aws/aws-containers/retail-store-sample-ui:0.4.0" # {"$imagepolicy": "flux-system:ui"}
 ```
 
 Change to:
@@ -108,10 +110,11 @@ manifests/modules/automation/gitops/flux/imageupdateautomation.yaml
 
 ```bash
 $ cp ~/environment/eks-workshop/modules/automation/gitops/flux/image*.yaml ~/environment/retail-store-sample-codecommit/
-yq -i ".spec.image = env(IMAGE_URI_UI)" ~/environment/retail-store-sample-codecommit/imagerepository.yaml
-kubectl apply -f ~/environment/retail-store-sample-codecommit/imagerepository.yaml
-kubectl apply -f ~/environment/retail-store-sample-codecommit/imagerepolicy.yaml
-kubectl apply -f ~/environment/retail-store-sample-codecommit/imageupdateautomation.yaml
+$ yq -i ".spec.image = env(IMAGE_URI_UI)" ~/environment/retail-store-sample-codecommit/imagerepository.yaml
+$ less ~/environment/retail-store-sample-codecommit/imagerepository.yaml | grep image:
+$ kubectl apply -f ~/environment/retail-store-sample-codecommit/imagerepository.yaml
+$ kubectl apply -f ~/environment/retail-store-sample-codecommit/imagerepolicy.yaml
+$ kubectl apply -f ~/environment/retail-store-sample-codecommit/imageupdateautomation.yaml
 ```
 
 We created the following architecture:
@@ -177,6 +180,7 @@ Edit the file:
 
 ```bash
 $ sed -i 's/\(^\s*<a class="navbar-brand" href="\/home">\)Retail Store Sample/\1Retail Store Sample New/' ~/environment/retail-store-sample-codecommit/src/ui/src/main/resources/templates/fragments/layout.html
+$ less ~/environment/retail-store-sample-codecommit/src/ui/src/main/resources/templates/fragments/layout.html | grep New
 ```
 
 Change line 24
