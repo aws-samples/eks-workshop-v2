@@ -88,74 +88,30 @@ $ git -C ~/environment/flux push
 
 We need to deploy custom resource definitions (ImageRepository, ImagePolicy, ImageUpdateAutomation) for Flux to enable monitoring of new container images in ECR and automated deployment using GitOps.
 
-```bash
-$ echo $IMAGE_URI_UI
-$ cat <<EOF | envsubst | kubectl create -f -
-apiVersion: image.toolkit.fluxcd.io/v1beta2
-kind: ImageRepository
-metadata:
-  name: ui
-  namespace: flux-system
-spec:
-  provider: aws
-  interval: 1m
-  image: ${IMAGE_URI_UI}
-  accessFrom:
-    namespaceSelectors:
-      - matchLabels:
-          kubernetes.io/metadata.name: flux-system
-EOF
-imagerepository.image.toolkit.fluxcd.io/ui created
+1. ImageRepository:
+
+```file
+manifests/modules/automation/gitops/flux/imagerepository.yaml
+```
+
+2. ImagePolicy:
+
+```file
+manifests/modules/automation/gitops/flux/imagerepolicy.yaml
+```
+
+3. ImageUpdateAutomation:
+
+```file
+manifests/modules/automation/gitops/flux/imageupdateautomation.yaml
 ```
 
 ```bash
-$ cat <<EOF | kubectl create -f -
-apiVersion: image.toolkit.fluxcd.io/v1beta2
-kind: ImagePolicy
-metadata:
-  name: ui
-  namespace: flux-system
-spec:
-  imageRepositoryRef:
-    name: ui
-  filterTags:
-    pattern: '^i[a-fA-F0-9]'
-  policy:
-    alphabetical:
-      order: asc
-EOF
-imagepolicy.image.toolkit.fluxcd.io/ui created
-```
-
-```bash
-$ cat <<EOF | kubectl create -f -
-apiVersion: image.toolkit.fluxcd.io/v1beta1
-kind: ImageUpdateAutomation
-metadata:
-  name: ui
-  namespace: flux-system
-spec:
-  git:
-    checkout:
-      ref:
-        branch: main
-    commit:
-      author:
-        email: fluxcdbot@users.noreply.github.com
-        name: fluxcdbot
-      messageTemplate: '{{range .Updated.Images}}{{println .}}{{end}}'
-    push:
-      branch: main
-  interval: 1m0s
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  update:
-    path: ./apps
-    strategy: Setters
-EOF
-imageupdateautomation.image.toolkit.fluxcd.io/ui created
+$ cp ~/environment/eks-workshop/modules/automation/gitops/flux/image*.yaml ~/environment/retail-store-sample-codecommit/
+yq -i ".spec.image = env(IMAGE_URI_UI)" ~/environment/retail-store-sample-codecommit/imagerepository.yaml
+kubectl apply -f ~/environment/retail-store-sample-codecommit/imagerepository.yaml
+kubectl apply -f ~/environment/retail-store-sample-codecommit/imagerepolicy.yaml
+kubectl apply -f ~/environment/retail-store-sample-codecommit/imageupdateautomation.yaml
 ```
 
 We created the following architecture:
