@@ -99,7 +99,7 @@ manifests/modules/automation/gitops/flux/imagerepository.yaml
 2. ImagePolicy:
 
 ```file
-manifests/modules/automation/gitops/flux/imagerepolicy.yaml
+manifests/modules/automation/gitops/flux/imagepolicy.yaml
 ```
 
 3. ImageUpdateAutomation:
@@ -113,7 +113,7 @@ $ cp ~/environment/eks-workshop/modules/automation/gitops/flux/image*.yaml ~/env
 $ yq -i ".spec.image = env(IMAGE_URI_UI)" ~/environment/retail-store-sample-codecommit/imagerepository.yaml
 $ less ~/environment/retail-store-sample-codecommit/imagerepository.yaml | grep image:
 $ kubectl apply -f ~/environment/retail-store-sample-codecommit/imagerepository.yaml
-$ kubectl apply -f ~/environment/retail-store-sample-codecommit/imagerepolicy.yaml
+$ kubectl apply -f ~/environment/retail-store-sample-codecommit/imagepolicy.yaml
 $ kubectl apply -f ~/environment/retail-store-sample-codecommit/imageupdateautomation.yaml
 ```
 
@@ -164,6 +164,7 @@ We wait 2-5 minutes until Application Load Balancer will be provisioned and chec
 
 ```bash test=false
 $ export UI_URL=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ while [[ $(curl -s -o /dev/null -w "%{http_code}" $UI_URL/home) != "200" ]]; do sleep 1; done
 $ curl $UI_URL/home | grep "Retail Store Sample"
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
