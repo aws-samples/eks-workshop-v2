@@ -6,7 +6,12 @@ sidebar_custom_props: {"module": true}
 
 :::tip Before you start
 Prepare your environment for this section:
+Reset your environment and prepare your environment 
 
+
+```bash timeout=600 wait=30
+$ reset-environment
+```
 ```bash timeout=600 wait=30
 $ prepare-environment fundamentals/mng
 ```
