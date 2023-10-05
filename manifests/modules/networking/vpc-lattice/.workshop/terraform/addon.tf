@@ -1,5 +1,5 @@
 module "eks_blueprints_addons" {
-  source = "aws-ia/eks-blueprints-addons/aws"
+  source  = "aws-ia/eks-blueprints-addons/aws"
   version = "~> 1.0"
 
   enable_aws_load_balancer_controller = true
@@ -40,7 +40,8 @@ resource "aws_iam_policy" "lattice" {
                 "vpc-lattice:*",
                 "iam:CreateServiceLinkedRole",
                 "ec2:DescribeVpcs",
-                "ec2:DescribeSubnets"
+                "ec2:DescribeSubnets",
+                "ec2:DescribeTags"
             ],
             "Resource": "*"
         }

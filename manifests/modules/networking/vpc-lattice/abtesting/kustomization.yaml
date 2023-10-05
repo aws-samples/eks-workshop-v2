@@ -6,5 +6,6 @@ resources:
 patches:
   - deploymentv2.yaml
   - servicev2.yaml
+  - nlb.yaml
   - delete-deployment-redis.yaml
   - delete-service-redis.yaml

@@ -38,7 +38,7 @@ This step will install the controller and the CRDs (Custom Resource Definitions)
 $ aws ecr-public get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin public.ecr.aws
 $ helm install gateway-api-controller \
     oci://public.ecr.aws/aws-application-networking-k8s/aws-gateway-controller-chart \
-    --version=v0.0.15 \
+    --version=v0.0.16 \
     --create-namespace \
     --set=aws.region=${AWS_REGION} \
     --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="$LATTICE_IAM_ROLE" \
