@@ -1,6 +1,6 @@
 ---
 title: "Managing Secrets with AWS Secrets Manager"
-sidebar_position: 52
+sidebar_position: 70
 ---
 
 :::tip Before you start
