@@ -1,7 +1,6 @@
 ---
-title: "Securing Secrets Using Sealed Secrets"
-sidebar_position: 50
-sidebar_custom_props: {"module": true}
+title: "Managing Secrets with AWS Secrets Manager"
+sidebar_position: 52
 ---
 
 :::tip Before you start
