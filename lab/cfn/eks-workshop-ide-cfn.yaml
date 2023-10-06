@@ -25,9 +25,9 @@ Parameters:
     Description: The Arn of the Cloud9 Owner to be set if 3rdParty deployment.
     Default: ""
   EksWorkshopC9InstanceVolumeSize: 
-    Type: String
+    Type: Number
     Description: The Size in GB of the Cloud9 Instance Volume. 
-    Default: "50"
+    Default: 50
   RepositoryOwner: 
     Type: String
     Description: The owner of the GitHub repository to be used to bootstrap Cloud9
@@ -233,10 +233,11 @@ Resources:
 
                       block_device = ec2.describe_volumes(VolumeIds=[block_volume_id])['Volumes'][0]
 
-                      DiskSize = os.environ['DiskSize'];
+                      DiskSize = int(os.environ['DiskSize'])
                       if block_device['Size'] < DiskSize:
                         ec2.modify_volume(VolumeId=block_volume_id,Size=DiskSize)
                         logger.info('Modifying block volume: {}'.format(block_volume_id))
+                        time.sleep(10)
 
                       for i in range(1, 30):
                         response = ssm.describe_instance_information(Filters=[{'Key': 'InstanceIds', 'Values': [instance_id]}])
