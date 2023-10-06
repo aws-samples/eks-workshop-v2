@@ -1,6 +1,6 @@
 ---
 title: "Securing Secrets Using Sealed Secrets"
-sidebar_position: 51
+sidebar_position: 60
 ---
 
 [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) provides a mechanism to encrypt a Secret object so that it is safe to store - even to a public repository. A SealedSecret can be decrypted only by the controller running in the Kubernetes cluster and nobody else is able to obtain the original Secret from a SealedSecret.

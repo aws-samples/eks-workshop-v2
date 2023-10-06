@@ -1,6 +1,6 @@
 ---
 title: "Exploring Secrets"
-sidebar_position: 40
+sidebar_position: 51
 ---
 
 Kubernetes secrets can be exposed to the Pods in different ways such as via environment variables and volumes.
