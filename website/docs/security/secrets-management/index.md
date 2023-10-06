@@ -8,9 +8,8 @@ sidebar_custom_props: {"module": true}
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30
-$ prepare-environment security/sealed-secrets
+$ prepare-environment security/secrets
 ```
-
 :::
 
 [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/) is a resource that helps cluster operators manage the deployment of sensitive information such as passwords, OAuth tokens, and ssh keys etc. These secrets can be mounted as data volumes or exposed as environment variables to the containers in a Pod, thus decoupling Pod deployment from managing sensitive data needed by the containerized applications within a Pod.

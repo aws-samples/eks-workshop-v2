@@ -1,6 +1,6 @@
 ---
 title: "Sealing your Secrets"
-sidebar_position: 70
+sidebar_position: 63
 ---
 
 Let's create a new secret `catalog-sealed-db`. We'll create a new file `new-catalog-db.yaml` with the same keys and values as the `catalog-db` Secret.
