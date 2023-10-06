@@ -12,11 +12,10 @@ $ prepare-environment security/sealed-secrets
 
 :::
 
-[Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/) is a resource that helps cluster operators manage the deployment of sensitive information such as passwords, OAuth tokens, and ssh keys etc. These secrets can be mounted as data volumes or exposed as environment variables to the containers in a Pod, thus decoupling Pod deployment from managing sensitive data needed by the containerized applications within a Pod.
+AWS Secrets Manager (Secrets Manager) allows you to easily rotate, manage, and retrieve sensitive data such as credentials, API keys, certificates, among others. You can use AWS Secrets and Configuration Provider (ASCP) for Kubernetes Secrets Store CSI Driver to mount secrets stored in Secrets Manager as volumes in Kubernetes Pods.
 
-It has become a common practice for a DevOps Team to manage the YAML manifests for various Kubernetes resources and version control them using a Git repository. This enables them to integrate a Git repository with a GitOps workflow to do Continuous Delivery of such resources to an EKS cluster. 
-Kubernetes obfuscate sensitive data in a Secret by using a merely base64 encoding, also storing such files in a Git repository is extremely insecure as it is trivial to decode the base64 encoded data. This makes it difficult to manage the YAML manifests for Kubernetes Secrets outside a cluster.
+With the ASCP, you can store and manage your secrets in Secrets Manager and then retrieve them through your workloads running on Amazon EKS. You can use IAM roles and policies to limit access to your secrets to specific Kubernetes Pods in a cluster. The ASCP retrieves the Pod identity and exchanges the identity for an IAM role. ASCP assumes the IAM role of the Pod, and then it can retrieve secrets from Secrets Manager that are authorized for that role.
 
-[Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) provides a mechanism to encrypt a Secret object so that it is safe to store - even to a public repository. A SealedSecret can be decrypted only by the controller running in the Kubernetes cluster and nobody else is able to obtain the original Secret from a SealedSecret.
+If you use Secrets Manager automatic rotation for your secrets, you can also use the Secrets Store CSI Driver rotation reconciler feature to ensure you are retrieving the latest secret from Secrets Manager.
 
-In this chapter, you will use SealedSecrets to encrypt YAML manifests pertaining to Kubernetes Secrets as well as be able to deploy these encrypted Secrets to your EKS clusters using normal workflows with tools such as [kubectl](https://kubernetes.io/docs/reference/kubectl/).
+In this lab following section, we will create an example scenario of using secrets from AWS Secrets Manager.
