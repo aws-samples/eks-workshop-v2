@@ -1,6 +1,6 @@
 ---
 title: "Installing Sealed Secrets"
-sidebar_position: 60
+sidebar_position: 62
 ---
 
 The `kubeseal` CLI is used to interact with the sealed secrets controller, and has already been installed in Cloud9.

@@ -7,8 +7,16 @@ sidebar_position: 70
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30
-$ prepare-environment security/sealed-secrets
+$ prepare-environment security/secrets-manager
 ```
+
+This will make the following changes to your lab environment:
+
+Install the following Kuberentes Addons in your EKS Cluter:
+* Kubernetes Secrets Store CSI Driver
+* AWS Secrets and Configuration Provider 
+
+You can view the Terraform that applies these changes [here](https://github.com/aws-samples/eks-workshop-v2/tree/main/manifests/modules/security/secrets/secrets-manager/.workshop/terraform).
 
 :::
 
