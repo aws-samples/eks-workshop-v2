@@ -27,7 +27,7 @@ Parameters:
   EksWorkshopC9InstanceVolumeSize: 
     Type: Number
     Description: The Size in GB of the Cloud9 Instance Volume. 
-    Default: 30
+    Default: "30"
   RepositoryOwner: 
     Type: String
     Description: The owner of the GitHub repository to be used to bootstrap Cloud9
@@ -170,10 +170,12 @@ Resources:
           import time
           import traceback
           import cfnresponse
+          import logging
+          logger = logging.getLogger(__name__)
           
           def lambda_handler(event, context):
               print(event.values())
-              # logger.info('context: {}'.format(context))
+              logger.info('context: {}'.format(context))
               responseData = {}
 
               status = cfnresponse.SUCCESS
@@ -189,7 +191,7 @@ Resources:
           
                       # Get the InstanceId of the Cloud9 IDE
                       instance = ec2.describe_instances(Filters=[{'Name': 'tag:Name','Values': ['aws-cloud9-'+event['ResourceProperties']['Cloud9Name']+'-'+event['ResourceProperties']['EnvironmentId']]}])['Reservations'][0]['Instances'][0]
-                      # logger.info('instance: {}'.format(instance))
+                      logger.info('instance: {}'.format(instance))
                       instance_id = instance['InstanceId']
           
                       # Create the IamInstanceProfile request object
@@ -197,17 +199,17 @@ Resources:
                           'Arn': event['ResourceProperties']['LabIdeInstanceProfileArn'],
                           'Name': event['ResourceProperties']['LabIdeInstanceProfileName']
                       }
-                      # logger.info('iam_instance_profile: {}'.format(iam_instance_profile))
+                      logger.info('iam_instance_profile: {}'.format(iam_instance_profile))
 
                       time.sleep(10)
           
                       # Wait for Instance to become ready before adding Role
                       instance_state = instance['State']['Name']
-                      # logger.info('instance_state: {}'.format(instance_state))
+                      logger.info('instance_state: {}'.format(instance_state))
                       while instance_state != 'running':
                           time.sleep(5)
                           instance_state = ec2.describe_instances(InstanceIds=[instance_id])
-                          # logger.info('instance_state: {}'.format(instance_state))
+                          logger.info('instance_state: {}'.format(instance_state))
 
                       associations = ec2.describe_iam_instance_profile_associations(
                           Filters=[
@@ -232,6 +234,7 @@ Resources:
 
                       if block_device['Size'] != 30:
                         ec2.modify_volume(VolumeId=block_volume_id,Size=30)
+                        logger.info('Modifying block volume: {}'.format(block_volume_id))
 
                       for i in range(1, 30):
                         response = ssm.describe_instance_information(Filters=[{'Key': 'InstanceIds', 'Values': [instance_id]}])
@@ -294,20 +297,20 @@ Resources:
                 if [[ ! -f "$marker_file" ]]; then
                   if [ $(readlink -f /dev/xvda) = "/dev/xvda" ]
                   then
-                    sudo growpart /dev/xvda 1
+                    growpart /dev/xvda 1
                     if [[ "$STR" == *"$SUB"* ]]
                     then
-                      sudo xfs_growfs -d /
+                      xfs_growfs -d /
                     else
-                      sudo resize2fs /dev/xvda1
+                      resize2fs /dev/xvda1
                     fi
                   else
-                    sudo growpart /dev/nvme0n1 1
+                    growpart /dev/nvme0n1 1
                     if [[ "$STR" == *"$SUB"* ]]
                     then
-                      sudo xfs_growfs -d /
+                      xfs_growfs -d /
                     else
-                      sudo resize2fs /dev/nvme0n1p1
+                      resize2fs /dev/nvme0n1p1
                     fi
                   fi
                 fi
