@@ -3,7 +3,6 @@ title: "Securing Secrets Using Sealed Secrets"
 sidebar_position: 60
 ---
 
-
 :::tip Before you start
 Prepare your environment for this section:
 
