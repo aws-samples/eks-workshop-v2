@@ -1,26 +1,5 @@
-locals {
-  helm_config = {
-    name             = "trident-operator"
-    chart            = "trident-operator"
-    repository       = "https://netapp.github.io/trident-helm-chart"
-    version          = "23.01.0"
-    namespace        = "trident"
-    create_namespace = true
-    values           = local.default_helm_values
-    set              = []
-    description      = "Amazon FSx for NetApp ONTAP CSI storage provisioner using the Trident Operator."
-    wait             = false
-  }
-
-  default_helm_values = [templatefile("${path.module}/values.yaml", {})]
-}
-
-module "helm_addon" {
-  source            = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon?ref=v4.16.0"
-  manage_via_gitops = false
-  helm_config       = local.helm_config
-  irsa_config       = []
-  addon_context     = local.addon_context
+module "fsxn_driver" {
+  source = "github.com/NetApp/terraform-aws-netapp-fsxn-eks-addon.git?ref=v1.0"
 }
 
 data "aws_vpc" "selected_vpc_fsx" {
@@ -111,6 +90,7 @@ resource "aws_security_group_rule" "fsxn_outbound" {
 output "environment" {
   value = <<EOF
 export FSXN_ID=${aws_fsx_ontap_file_system.fsxnassets.id}
+export FSXN_ADMIN_PASSWORD=${random_string.fsx_password.result}
 export FSXN_IP="${tolist(aws_fsx_ontap_file_system.fsxnassets.endpoints[0].management[0].ip_addresses)[0]}"
 EOF
 }
