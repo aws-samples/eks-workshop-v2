@@ -27,7 +27,7 @@ Parameters:
   EksWorkshopC9InstanceVolumeSize: 
     Type: Number
     Description: The Size in GB of the Cloud9 Instance Volume. 
-    Default: 50
+    Default: 30
   RepositoryOwner: 
     Type: String
     Description: The owner of the GitHub repository to be used to bootstrap Cloud9
@@ -44,6 +44,10 @@ Parameters:
     Type: String
     Description: Name of the Cloud9 instance
     Default: "none"
+  Cloud9Subnet:
+    Type: String
+    Description: If you want Cloud9 in a specific subnet
+    Default: "none"
   ResourcesPrecreated: 
     Type: String
     Description: Whether lab infrastructure has been pre-provisioned
@@ -55,6 +59,7 @@ Parameters:
 Conditions: 
   Create3rdPartyResources: !Equals [ !Ref EksWorkshopC9EnvType, 3rdParty ]
   IsCloud9NotNamed: !Equals [ !Ref Cloud9Name, none ]
+  IsCloud9SubnetSpecified: !Not [ !Equals [ !Ref Cloud9Subnet, none ]]
 
 Resources:
   EksWorkshopC9Role:
@@ -124,7 +129,6 @@ Resources:
             Resource: "*"
 
   EksWorkshopC9BootstrapInstanceLambda:
-    Description: Bootstrap Cloud9 instance
     Type: Custom::EksWorkshopC9BootstrapInstanceLambda
     DependsOn:
     - EksWorkshopC9LambdaExecutionRole
@@ -314,7 +318,6 @@ Resources:
       - Ref: EksWorkshopC9Role
 
   EksWorkshopC9Instance:
-    Description: "-"
     Type: AWS::Cloud9::EnvironmentEC2
     Properties:
       Description: AWS Cloud9 instance for EKS Workshop
@@ -322,6 +325,7 @@ Resources:
       AutomaticStopTimeMinutes: 3600
       InstanceType:
         Ref: EksWorkshopC9InstanceType
+      SubnetId: !If [ IsCloud9SubnetSpecified, !Ref Cloud9Subnet, !Ref "AWS::NoValue" ]
       Name: !If [ IsCloud9NotNamed, !Ref AWS::StackName, !Ref Cloud9Name ]
       OwnerArn: !If [ Create3rdPartyResources, !Ref WorkshopOwnerArn, !Ref "AWS::NoValue" ]
       Tags: 
