@@ -7,7 +7,7 @@ To store a secret in AWS Secrets Manager, you can either use the AWS Console or 
 
 ### AWS Console
 
-If you choose to use the AWS Console, navigate to the [AWS Secrets Manager Console](https://console.aws.amazon.com/secretsmanager/landing), an click on the **Store a new Secret** orange button, on the right hand side of the screen.
+If you choose to use the AWS Console, navigate to the [AWS Secrets Manager Console](https://console.aws.amazon.com/secretsmanager/landing), an click on the **Store a new secret** orange button, on the right hand side of the screen.
 
 ![store-new-secret](./assets/store-new-secret.png)
 
