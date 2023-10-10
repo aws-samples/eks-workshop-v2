@@ -1,108 +1,83 @@
 locals {
-  ec2_name = "ack-ec2"
-  rds_name = "ack-rds"
+  ddb_name = "ack-ddb"
 }
 
-module "rds" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon?ref=v4.12.2"
+module "dynamodb" {
+  source = "aws-ia/eks-blueprints-addon/aws"
+  version = "~> 1.0"
 
-  helm_config = {
-    name             = local.rds_name
-    chart            = "rds-chart"
-    repository       = "oci://public.ecr.aws/aws-controllers-k8s"
-    version          = "v0.1.1"
-    namespace        = local.rds_name
-    create_namespace = true
-    description      = "ACK RDS Controller Helm chart deployment configuration"
-    values = [
-      # shortens pod name from `ack-rds-rds-chart-xxxxxxxxxxxxx` to `ack-rds-xxxxxxxxxxxxx`
+  name=local.ddb_name
+  chart = "dynamodb-chart"
+  chart_version = "1.2.3"
+  repository = "oci://public.ecr.aws/aws-controllers-k8s"
+  description = "ACK DynamoDB Controller Helm chart deployment configuration for cart service"
+  namespace = "carts"
+  create_namespace = false
+  values = [
+      # shortens pod name from `ack-dynamodb-chart-xxxxxxxxxxxxx` to `ack-ddb-xxxxxxxxxxxxx`
       <<-EOT
-        nameOverride: ack-rds
+        nameOverride: ack-ddb
       EOT
     ]
-  }
-
-  set_values = [
+  
+  set = [
     {
-      name  = "serviceAccount.name"
-      value = local.rds_name
+      name = "clusterName"
+      value = local.addon_context.eks_cluster_id
     },
     {
-      name  = "serviceAccount.create"
-      value = false
+      name = "clusterEndpoint"
+      value = local.addon_context.aws_eks_cluster_endpoint
     },
     {
-      name  = "aws.region"
+      name = "aws.region"
       value = data.aws_region.current.id
+    },
+    {
+      name = "serviceAccount.name"
+      value = "carts"
+    },
+    {
+      name = "serviceAccount.create"
+      value = false
     }
   ]
 
-  irsa_config = {
-    create_kubernetes_namespace = true
-    kubernetes_namespace        = local.rds_name
-
-    create_kubernetes_service_account = true
-    kubernetes_service_account        = local.rds_name
-
-    irsa_iam_policies = [data.aws_iam_policy.rds.arn]
-  }
-
-  addon_context = local.addon_context
 }
 
-data "aws_iam_policy" "rds" {
-  name = "AmazonRDSFullAccess"
+module "iam_assumable_role_carts" {
+  source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+  version                       = "~> v5.5.5"
+  create_role                   = true
+  role_name                     = "${local.addon_context.eks_cluster_id}-carts-dynamo"
+  provider_url                  = local.addon_context.eks_oidc_issuer_url
+  role_policy_arns              = [aws_iam_policy.carts_dynamo.arn]
+  oidc_subjects_with_wildcards  = ["system:serviceaccount:carts:*"]
+
+  tags = local.tags
 }
 
-module "ec2" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons/helm-addon?ref=v4.12.2"
+resource "aws_iam_policy" "carts_dynamo" {
+  name        = "${local.addon_context.eks_cluster_id}-carts-dynamo"
+  path        = "/"
+  description = "DynamoDB policy for AWS Sample Carts Application"
 
-  helm_config = {
-    name             = local.ec2_name
-    chart            = "ec2-chart"
-    repository       = "oci://public.ecr.aws/aws-controllers-k8s"
-    version          = "v0.1.1"
-    namespace        = local.ec2_name
-    create_namespace = true
-    description      = "ACK EC2 Controller Helm chart deployment configuration"
-    values = [
-      # shortens pod name from `ack-ec2-ec2-chart-xxxxxxxxxxxxx` to `ack-ec2-xxxxxxxxxxxxx`
-      <<-EOT
-        nameOverride: ack-ec2
-      EOT
-    ]
-  }
-
-  set_values = [
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
     {
-      name  = "serviceAccount.name"
-      value = local.ec2_name
-    },
-    {
-      name  = "serviceAccount.create"
-      value = false
-    },
-    {
-      name  = "aws.region"
-      value = data.aws_region.current.id
+      "Sid": "AllAPIActionsOnCart",
+      "Effect": "Allow",
+      "Action": "dynamodb:*",
+      "Resource": [
+        "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*"        
+      ]
     }
   ]
-
-  irsa_config = {
-    create_kubernetes_namespace = true
-    kubernetes_namespace        = local.ec2_name
-
-    create_kubernetes_service_account = true
-    kubernetes_service_account        = local.ec2_name
-
-    irsa_iam_policies = [data.aws_iam_policy.ec2.arn]
-  }
-
-  addon_context = local.addon_context
 }
-
-data "aws_iam_policy" "ec2" {
-  name = "AmazonEC2FullAccess"
+EOF
+  tags   = local.tags
 }
 
 module "eks_blueprints_addons" {
@@ -120,31 +95,10 @@ module "eks_blueprints_addons" {
   oidc_provider_arn = local.addon_context.eks_oidc_provider_arn
 }
 
-data "aws_vpc" "selected" {
-  tags = {
-    created-by = "eks-workshop-v2"
-    env        = local.addon_context.eks_cluster_id
-  }
-}
-
-data "aws_subnets" "private" {
-  tags = {
-    created-by = "eks-workshop-v2"
-    env        = local.addon_context.eks_cluster_id
-  }
-
-  filter {
-    name   = "tag:Name"
-    values = ["*Private*"]
-  }
-}
-
 output "environment" {
   value = <<EOF
-export VPC_ID=${data.aws_vpc.selected.id}
-export VPC_CIDR=${data.aws_vpc.selected.cidr_block}
-%{for index, id in data.aws_subnets.private.ids}
-export VPC_PRIVATE_SUBNET_ID_${index + 1}=${id}
-%{endfor}
+export DYNAMODB_POLICY_ARN=${aws_iam_policy.carts_dynamo.arn}
+export DYNAMODB_ACKROLE_ARN=${module.iam_assumable_role_carts.iam_role_arn}
+
 EOF
 }
