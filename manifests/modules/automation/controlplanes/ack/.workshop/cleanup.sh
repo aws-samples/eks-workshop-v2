@@ -1,5 +1,5 @@
 #!/bin/bash
 
-echo "Deleting RDS resources created by ACK..."
+echo "Deleting resources created by ACK..."
 
-kubectl delete namespace catalog > /dev/null
+kubectl delete table items -n carts > /dev/null
