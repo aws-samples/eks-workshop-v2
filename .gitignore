@@ -31,3 +31,6 @@ env
 *.zip
 
 cdk.out
+
+.envrc
+node_modules

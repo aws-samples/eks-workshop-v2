@@ -21,5 +21,12 @@ vars:
     apiVersion: v1
   fieldref:
     fieldpath: data.FSXN_IP
+- name: FSXN_ADMIN_PASSWORD
+  objref:
+    kind: ConfigMap
+    name: fsxnconfig
+    apiVersion: v1
+  fieldref:
+    fieldpath: data.FSXN_ADMIN_PASSWORD
 configurations:
   - env-var-transformer.yaml

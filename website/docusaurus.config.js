@@ -31,7 +31,7 @@ const config = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.png',
-  noIndex: process.env.ENABLE_INDEX!=="1",
+  noIndex: process.env.ENABLE_INDEX !== "1",
 
   organizationName: 'aws-samples',
   projectName: 'eks-workshop-v2',
@@ -66,10 +66,7 @@ const config = {
             //[remarkBlueprintsAddon, {terraformDir: `${rootDir}/../terraform/local`}]
           ],
           editUrl:
-            'https://github.com/aws-samples/eks-workshop-v2/tree/main/website',
-          exclude: [
-            'fundamentals/storage/fsx-for-netapp-ontap'
-          ]
+            'https://github.com/aws-samples/eks-workshop-v2/tree/main/website'
         },
         theme: {
           customCss: require.resolve('./src/css/custom.scss'),
@@ -81,14 +78,6 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      announcementBar: {
-        id: 'rearch-migration',
-        content:
-          '🚩 EKS Workshop underwent major changes 21st July. If you have an existing lab environment please see the <a target="_blank" rel="noopener noreferrer" href="/docs/misc/migrating">migration instructions</a>. 🚩',
-        backgroundColor: '#20232A',
-        textColor: '#fff',
-        isCloseable: false,
-      },
       colorMode: {
         disableSwitch: true,
       },
@@ -141,6 +130,12 @@ const config = {
             docId: 'automation/index',
             position: 'left',
             label: 'Automation',
+          },
+          {
+            type: 'doc',
+            docId: 'aiml/index',
+            position: 'left',
+            label: 'AIML',
           },
           {
             href: 'https://github.com/aws-samples/eks-workshop-v2',

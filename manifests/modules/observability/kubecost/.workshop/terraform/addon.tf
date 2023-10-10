@@ -16,6 +16,9 @@ module "eks_blueprints_addons" {
   version = "~> 1.0"
 
   enable_aws_load_balancer_controller = true
+  aws_load_balancer_controller = {
+    wait = true
+  }
 
   cluster_name      = local.addon_context.eks_cluster_id
   cluster_endpoint  = local.addon_context.aws_eks_cluster_endpoint
@@ -38,11 +41,6 @@ module "kubecost" {
 
   helm_config = {
     version = "1.102.0"
-    values = [data.http.kubecost_values.body]
-
-     set = [{
-      name  = "service.type"
-      value = "LoadBalancer"
-    }]
+    values = [data.http.kubecost_values.body, templatefile("${path.module}/values.yaml", {})]
   }
 }

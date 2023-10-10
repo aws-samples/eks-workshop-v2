@@ -1,5 +1,5 @@
 ---
-title: "Privileged Container"
+title: "Privileged container"
 sidebar_position: 131
 ---
 
@@ -21,7 +21,7 @@ Within a few minutes we'll see the finding `PrivilegeEscalation:Kubernetes/Privi
 
 ![](PrivilegedContainer.png)
 
-Cleanup:
+Lets delete this pod before we move on:
 
 ```bash
 $ kubectl delete -f ~/environment/eks-workshop/modules/security/Guardduty/privileged/privileged-pod-example.yaml
