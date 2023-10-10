@@ -3,7 +3,7 @@ title: "Validating AWS Secrets and Configuration Provider (ASCP)"
 sidebar_position: 62
 ---
 
-If you ran the `prepare-environment` script detailed in the [previous step](index.md), it has already installed the AWS Secrets and Configuration Provider (ASCP) for the Kubernetes Secrets Store CSI Driver that's required for this lab.
+If you ran the `prepare-environment` script detailed in the [previous step](./index.md), it has already installed the AWS Secrets and Configuration Provider (ASCP) for the Kubernetes Secrets Store CSI Driver that's required for this lab.
 
 Lets then, validate if the addons deployed.
 
