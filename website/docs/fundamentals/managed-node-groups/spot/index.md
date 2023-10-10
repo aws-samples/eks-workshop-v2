@@ -9,8 +9,6 @@ A Spot Instance uses spare EC2 capacity that is available for less than the On-D
 
 Spot Instances are a good fit for stateless, fault-tolerant, flexible applications. These include batch and machine learning training workloads, big data ETLs such as Apache Spark, queue processing applications, and stateless API endpoints. Because Spot is spare Amazon EC2 capacity, which can change over time, we recommend that you use Spot capacity for interruption-tolerant workloads. More specifically, Spot capacity is suitable for workloads that can tolerate periods where the required capacity isn't available.
 
-In this lab exercise, we'll look at how we can provision Spot capacity for our EKS cluster and deploy workloads that leverage it.
-
 # EKS managed node groups with Spot capacity
 
 In this module, we will first deploy a managed node group that creates Spot instances, followed by modifying the existing `catalog` component of our application to run on the newly created Spot instances.
@@ -79,12 +77,12 @@ Once our new managed node group is **Active**, run the following command.
 ```bash
 $ kubectl get nodes -L eks.amazonaws.com/capacityType,eks.amazonaws.com/nodegroup
 
-NAME                                         STATUS   ROLES    AGE    VERSION                CAPACITYTYPE   NODEGROUP
-ip-10-42-10-232.us-west-2.compute.internal   Ready    <none>   113m   v1.23.15-eks-49d8fe8   ON_DEMAND      managed-system-20230605211737831800000026
-ip-10-42-10-96.us-west-2.compute.internal    Ready    <none>   113m   v1.23.15-eks-49d8fe8   ON_DEMAND      managed-ondemand-20230605211738568600000028
-ip-10-42-11-17.us-west-2.compute.internal    Ready    <none>   78s    v1.23.17-eks-0a21954   SPOT           managed-spot
-ip-10-42-12-234.us-west-2.compute.internal   Ready    <none>   77s    v1.23.17-eks-0a21954   SPOT           managed-spot
-ip-10-42-12-45.us-west-2.compute.internal    Ready    <none>   113m   v1.23.15-eks-49d8fe8   ON_DEMAND      managed-ondemand-20230605211738568600000028
+NAME                                          STATUS   ROLES    AGE     VERSION                CAPACITYTYPE   NODEGROUP
+ip-10-42-103-103.us-east-2.compute.internal   Ready    <none>   3h38m   v1.25.6-eks-48e63af    ON_DEMAND      default
+ip-10-42-142-197.us-east-2.compute.internal   Ready    <none>   3h38m   v1.25.6-eks-48e63af    ON_DEMAND      default
+ip-10-42-161-44.us-east-2.compute.internal    Ready    <none>   3h38m   v1.25.6-eks-48e63af    ON_DEMAND      default
+ip-10-42-178-46.us-east-2.compute.internal    Ready    <none>   103s    v1.25.13-eks-43840fb   SPOT           managed-spot
+ip-10-42-97-19.us-east-2.compute.internal     Ready    <none>   104s    v1.25.13-eks-43840fb   SPOT           managed-spot
 
 ```
 
