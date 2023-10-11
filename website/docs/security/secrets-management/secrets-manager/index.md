@@ -21,7 +21,7 @@ You can view the Terraform that applies these changes [here](https://github.com/
 
 :::
 
-AWS Secrets Manager (Secrets Manager) allows you to easily rotate, manage, and retrieve sensitive data such as credentials, API keys, certificates, among others. You can use AWS Secrets and Configuration Provider (ASCP) for Kubernetes Secrets Store CSI Driver to mount secrets stored in Secrets Manager as volumes in Kubernetes Pods.
+[AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) allows you to easily rotate, manage, and retrieve sensitive data such as credentials, API keys, certificates, among others. You can use [AWS Secrets and Configuration Provider (ASCP)](https://github.com/aws/secrets-store-csi-driver-provider-aws) for [Kubernetes Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/) to mount secrets stored in Secrets Manager as volumes in Kubernetes Pods.
 
 With the ASCP, you can store and manage your secrets in Secrets Manager and then retrieve them through your workloads running on Amazon EKS. You can use IAM roles and policies to limit access to your secrets to specific Kubernetes Pods in a cluster. The ASCP retrieves the Pod identity and exchanges the identity for an IAM role. ASCP assumes the IAM role of the Pod, and then it can retrieve secrets from Secrets Manager that are authorized for that role.
 
