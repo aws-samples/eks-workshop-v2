@@ -83,7 +83,7 @@ $ kubectl -n catalog get secrets catalog-db --template {{.data.password}} | base
 default_password% 
 ```
 
-You should also see that we already have created a *SecretProviderClass*, which is a namespaced custom resource that's used provide driver configurations and specific parameters to the your secrets in AWS Secrets Manger via CSI driver.
+You should also see that we already have created a *SecretProviderClass*, which is a namespaced custom resource that's used provide driver configurations and specific parameters to access your secrets stored in AWS Secrets Manger via CSI driver.
 
 ```bash
 $ kubectl -n catalog get secretproviderclass -o yaml
