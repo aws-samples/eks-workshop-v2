@@ -3,6 +3,14 @@ module "secrets-store-csi-driver" {
 
   helm_config = {
     version = "1.3.4"
+    set = [{
+      name  = "syncSecret.enabled"
+      value = true
+      },
+      {
+        name  = "enableSecretRotation"
+        value = true
+    }]
   }
 
   addon_context = local.addon_context
