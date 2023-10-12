@@ -33,41 +33,6 @@ pod/secrets-store-csi-driver-provider-aws-djtf5   1/1     Running   0          2
 pod/secrets-store-csi-driver-provider-aws-dzg9r   1/1     Running   0          2m2s
 ```
 
-### Exploring the catalog Pod
-
-The `catalog` deployment in the `catalog` Namespace accesses the following database values from the catalog-db secret via environment variables:
-
-* `DB_USER`
-* `DB_PASSWORD`
-
-```bash
-$ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.containers[] | .env'
-
-- name: DB_USER
-  valueFrom:
-    secretKeyRef:
-      key: username
-      name: catalog-db
-- name: DB_PASSWORD
-  valueFrom:
-    secretKeyRef:
-      key: password
-      name: catalog-db
-```
-
-Upon exploring the `catalog-db` Secret we can see that it is only encoded with *base64* which can be easily decoded as follows.
-
-```file
-manifests/base-application/catalog/secrets.yaml
-```
-
-```bash
-$ kubectl -n catalog get secrets catalog-db --template {{.data.username}} | base64 -d
-catalog_user%                                                                                                                                                                                                   
-$ kubectl -n catalog get secrets catalog-db --template {{.data.password}} | base64 -d
-default_password% 
-```
-
 You should also see that we already have created a SecretProviderClass, which is a namespaced custom resource that's used provide driver configurations and specific parameters to access your secrets stored in AWS Secrets Manger via CSI driver.
 
 ```file
@@ -76,7 +41,7 @@ manifests/modules/security/secrets-manager/secret-provider-class.yaml
 
 In the above resource, we have two main configurations that we should be focusing.
 
-The *objects* parameter, which is pointing to a secret named as `eks-workshop/catalog-secret` that we will store in AWS Secrets Manager in the next step.
+The *objects* parameter, which is pointing to a secret named as `eks-workshop/catalog-secret` that we will store in AWS Secrets Manager in the next step. Note that we are using [jmesPath](https://jmespath.org/), to extract a specific key-value from the secret that is JSON-formatted.
 
 ```bash
 $ kubectl get secretproviderclass -n catalog catalog-spc -o yaml | yq '.spec.parameters.objects'
