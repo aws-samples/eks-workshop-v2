@@ -25,22 +25,6 @@ $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.co
       name: catalog-db
 ```
 
-If you take a closer look to the `catalog-db` Secret you can see that it is only encoded with *base64* which can be easily decoded as follows. Also the `catalog-db` is the only Secret in the Namespace.
-
-```file
-manifests/base-application/catalog/secrets.yaml
-```
-
-```bash
-$ kubectl -n catalog get secrets
-NAME             TYPE     DATA   AGE
-catalog-db       Opaque   2      15h
-$ kubectl -n catalog get secrets catalog-db --template {{.data.username}} | base64 -d
-catalog_user                                                                                                                                                                                                
-$ kubectl -n catalog get secrets catalog-db --template {{.data.password}} | base64 -d
-default_password
-```
-
 Notice that the `catalog` Deployment don't have any `volumes` or `volumeMounts` other than an `emptyDir` mounted on `/tmp`
 
 ```bash
