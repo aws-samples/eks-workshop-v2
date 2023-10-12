@@ -2,47 +2,23 @@ locals {
   ddb_name = "ack-ddb"
 }
 
-module "dynamodb" {
-  source = "aws-ia/eks-blueprints-addon/aws"
-  version = "~> 1.0"
+module "thiru_test" {
 
-  name=local.ddb_name
-  chart = "dynamodb-chart"
-  chart_version = "1.2.3"
-  repository = "oci://public.ecr.aws/aws-controllers-k8s"
-  description = "ACK DynamoDB Controller Helm chart deployment configuration for cart service"
-  namespace = "carts"
-  create_namespace = false
-  values = [
-      # shortens pod name from `ack-dynamodb-chart-xxxxxxxxxxxxx` to `ack-ddb-xxxxxxxxxxxxx`
-      <<-EOT
-        nameOverride: ack-ddb
-      EOT
-    ]
+  source = "aws-ia/eks-ack-addons/aws"
+  version = "2.1.0"
   
-  set = [
-    {
-      name = "clusterName"
-      value = local.addon_context.eks_cluster_id
-    },
-    {
-      name = "clusterEndpoint"
-      value = local.addon_context.aws_eks_cluster_endpoint
-    },
-    {
-      name = "aws.region"
-      value = data.aws_region.current.id
-    },
-    {
-      name = "serviceAccount.name"
-      value = "carts"
-    },
-    {
-      name = "serviceAccount.create"
-      value = false
-    }
-  ]
+  # Cluster Info
+  cluster_name      = local.addon_context.eks_cluster_id
+  cluster_endpoint  = local.addon_context.aws_eks_cluster_endpoint
+  oidc_provider_arn = local.addon_context.eks_oidc_issuer_url
 
+  # Controllers to enable
+  enable_apigatewayv2      = true
+  enable_dynamodb          = true
+  
+  tags = {
+    Environment = "dev"
+  }
 }
 
 module "iam_assumable_role_carts" {
