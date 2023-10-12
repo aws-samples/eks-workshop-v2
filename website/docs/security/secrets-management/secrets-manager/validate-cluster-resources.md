@@ -53,24 +53,9 @@ $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.co
     secretKeyRef:
       key: password
       name: catalog-db
-- name: DB_NAME
-  valueFrom:
-    configMapKeyRef:
-      key: name
-      name: catalog
-- name: DB_READ_ENDPOINT
-  valueFrom:
-    secretKeyRef:
-      key: endpoint
-      name: catalog-db
-- name: DB_ENDPOINT
-  valueFrom:
-    secretKeyRef:
-      key: endpoint
-      name: catalog-db
 ```
 
-Upon exploring the `catalog-db` Secret we can see that it is only encoded with base64 which can be easily decoded as follows hence making it difficult for the secrets manifests to be part of the GitOps workflow.
+Upon exploring the `catalog-db` Secret we can see that it is only encoded with *base64* which can be easily decoded as follows hence making it difficult for the secrets manifests to be part of the GitOps workflow.
 
 ```file
 manifests/base-application/catalog/secrets.yaml
@@ -83,7 +68,7 @@ $ kubectl -n catalog get secrets catalog-db --template {{.data.password}} | base
 default_password% 
 ```
 
-You should also see that we already have created a *SecretProviderClass*, which is a namespaced custom resource that's used provide driver configurations and specific parameters to access your secrets stored in AWS Secrets Manger via CSI driver.
+You should also see that we already have created a SecretProviderClass, which is a namespaced custom resource that's used provide driver configurations and specific parameters to access your secrets stored in AWS Secrets Manger via CSI driver.
 
 ```bash
 $ kubectl -n catalog get secretproviderclass -o yaml
@@ -94,9 +79,14 @@ metadata:
   name: catalog-spc
   namespace: catalog
 spec:
-  provider: aws
   parameters:
     objects: |
-        - objectName: "catalog-secret"
-          objectType: "secretsmanager"
+      - objectName: "eks-workshop/catalog-secret"
+        objectType: "secretsmanager"
+        jmesPath:
+          - path: username
+            objectAlias: username
+          - path: password
+            objectAlias: password
+  provider: aws
 ```
