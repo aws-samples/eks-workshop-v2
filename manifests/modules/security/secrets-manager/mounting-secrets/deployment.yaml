@@ -8,6 +8,17 @@ spec:
     spec:
       containers:
         - name: catalog
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-secret
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-secret
+                  key: password
           volumeMounts:
             - name: catalog-secret
               mountPath: "/etc/catalog-secret"
