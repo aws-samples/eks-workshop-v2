@@ -57,7 +57,7 @@ $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.co
 Let's go and apply the changes in the `catalog` Deployment to use the secret stored in AWS Secrets Manager as the source of our credentials.
 
 ```kustomization
-manifests/modules/security/secrets-manager/mounting-secrets/kustomization.yaml
+modules/security/secrets-manager/mounting-secrets/kustomization.yaml
 Deployment/catalog
 ```
 
