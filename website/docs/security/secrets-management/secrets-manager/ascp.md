@@ -1,5 +1,5 @@
 ---
-title: "Validating AWS Secrets and Configuration Provider (ASCP)"
+title: "AWS Secrets and Configuration Provider (ASCP)"
 sidebar_position: 61
 ---
 

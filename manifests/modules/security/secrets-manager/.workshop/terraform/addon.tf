@@ -26,6 +26,16 @@ module "secrets_store_csi_driver_provider_aws" {
   addon_context = local.addon_context
 }
 
+module "external_secrets" {
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1//modules/kubernetes-addons/external-secrets"
+
+  helm_config = {
+    version = "0.9.5"
+  }
+
+  addon_context = local.addon_context
+}
+
 module "secrets_manager_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.30"
@@ -83,4 +93,31 @@ resource "kubernetes_annotations" "catalog-sa" {
     "eks.amazonaws.com/role-arn" = "${module.secrets_manager_role.iam_role_arn}"
   }
   force = true
+}
+
+resource "kubernetes_manifest" "cluster_secretstore" {
+  manifest = {
+    "apiVersion" = "external-secrets.io/v1beta1"
+    "kind"       = "ClusterSecretStore"
+    "metadata" = {
+      "name" = "cluster-secret-store"
+    }
+    "spec" = {
+      "provider" = {
+        "aws" = {
+          "service" = "SecretsManager"
+          "region"  = "${data.aws_region.current.name}"
+          "auth" = {
+            "jwt" = {
+              "serviceAccountRef" = {
+                "name"      = "external-secrets-sa"
+                "namespace" = "external-secrets"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  depends_on = [module.external_secrets]
 }
