@@ -116,7 +116,7 @@ Now check that the `catalog` Pod, is already updated with the values from this n
 ```bash
 $ kubectl -n catalog get pods
 NAME                       READY   STATUS    RESTARTS   AGE
-catalog-777c4d5dc8-lmf6v   1/1     Running   0          14m
+catalog-777c4d5dc8-lmf6v   1/1     Running   0          1m
 catalog-mysql-0            1/1     Running   0          24h
 $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.containers[] | .env'
 - name: DB_USER
