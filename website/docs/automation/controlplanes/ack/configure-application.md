@@ -3,9 +3,11 @@ title: "Bind Application to AWS Resources"
 sidebar_position: 10
 ---
 
-Now that the RDS database has been created successfully, we can reconfigure the catalog component to use it for persistence instead of its existing pod-based MySQL. But how do we configure the catalog component with the RDS endpoint and credentials for the connection?
+In general when new resources are created, application configuration also needs to be updated to use these new resources. A lot of application developers use environment variables to store configuration, and in Kubernetes it is fairly easy to pass environment variables to containers through the ```env``` spec when creating deployments.
 
-The ACK `FieldExport` custom resource was designed to bridge the gap between managing the control plane of your ACK resources and using the properties of those resources in your application. This configures an ACK controller to export any `spec` or `status` field from an ACK resource into a Kubernetes ConfigMap or Secret. These fields are automatically updated when any field value changes. You are then able to mount the ConfigMap or Secret onto your Kubernetes Pods as environment variables that can ingest those values.
+Now, there are two ways to achieve this. First, Configmaps. Configmaps are a core resource in Kubernetes that allow us to pass configuration elements such as Environment variables, text fields and other items in a key-value format to be used in pod specs. Then, we have secrets (which are not encrypted by design - this is important to remember) to push things like passwords/secrets. 
+
+The ACK `FieldExport` custom resource was designed to bridge the gap between managing the control plane of your ACK resources and using the *properties* of those resources in your application. This configures an ACK controller to export any `spec` or `status` field from an ACK resource into a Kubernetes ConfigMap or Secret. These fields are automatically updated when any field value changes. You are then able to mount the ConfigMap or Secret onto your Kubernetes Pods as environment variables that can ingest those values.
 
 The `DBInstance` resource contains the information for connecting to the RDS database instance. The host information can be found in `status.endpoint.address` and the master username  in `spec.masterUsername`. Lets create some `FieldExport` objects to extract these values in to a Kubernetes secret named `catalog-db-ack`.
 
@@ -35,7 +37,7 @@ username: YWRtaW4=
 Finally, we can update the application to use the RDS endpoint and credentials sourced from the `catalog-db-ack` secret:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/automation/controlplanes/ack/rds/application
+$ kubectl apply -k ~/environment/eks-workshop/modules/automation/controlplanes/ack/dynamo
 namespace/catalog unchanged
 serviceaccount/catalog unchanged
 configmap/catalog unchanged
