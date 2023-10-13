@@ -95,29 +95,22 @@ resource "kubernetes_annotations" "catalog-sa" {
   force = true
 }
 
-resource "kubernetes_manifest" "cluster_secretstore" {
-  manifest = {
-    "apiVersion" = "external-secrets.io/v1beta1"
-    "kind"       = "ClusterSecretStore"
-    "metadata" = {
-      "name" = "cluster-secret-store"
-    }
-    "spec" = {
-      "provider" = {
-        "aws" = {
-          "service" = "SecretsManager"
-          "region"  = "${data.aws_region.current.name}"
-          "auth" = {
-            "jwt" = {
-              "serviceAccountRef" = {
-                "name"      = "external-secrets-sa"
-                "namespace" = "external-secrets"
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+resource "kubectl_manifest" "cluster_secretstore" {
+  yaml_body  = <<YAML
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterSecretStore
+metadata:
+  name: "cluster-secret-store"
+spec:
+  provider:
+    aws:
+      service: SecretsManager
+      region: "${data.aws_region.current.name}"
+      auth:
+        jwt:
+          serviceAccountRef:
+            name: "external-secrets-sa"
+            namespace: "external-secrets"
+YAML
   depends_on = [module.external_secrets]
 }

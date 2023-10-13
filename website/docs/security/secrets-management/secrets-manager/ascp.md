@@ -1,9 +1,9 @@
 ---
 title: "AWS Secrets and Configuration Provider (ASCP)"
-sidebar_position: 61
+sidebar_position: 62
 ---
 
-If you ran the `prepare-environment` script detailed in the [previous step](./index.md), it has already installed the AWS Secrets and Configuration Provider (ASCP) for the Kubernetes Secrets Store CSI Driver that's required for this lab.
+If you ran the `prepare-environment` script detailed in a [previous step](./index.md), it has already installed the AWS Secrets and Configuration Provider (ASCP) for the Kubernetes Secrets Store CSI Driver that's required for this lab.
 
 Lets then, validate if the addons deployed.
 
@@ -39,7 +39,7 @@ You should also see that we already have created a SecretProviderClass, which is
 manifests/modules/security/secrets-manager/secret-provider-class.yaml
 ```
 
-In the above resource, we have two main configurations that we should be focusing.
+In the above resource, you have two main configurations that you should be focusing.
 
 The *objects* parameter, which is pointing to a secret named as `eks-workshop/catalog-secret` that we will store in AWS Secrets Manager in the next step. Note that we are using [jmesPath](https://jmespath.org/), to extract a specific key-value from the secret that is JSON-formatted.
 
@@ -55,7 +55,7 @@ $ kubectl get secretproviderclass -n catalog catalog-spc -o yaml | yq '.spec.par
       objectAlias: password
 ```
 
-And the *secretObjects*, that will create and/or sync a Kubernetes secret with the data from the secret stored in AWS Secrets Manager. This means that when mounted to a Pod, the SecretProviderClass, will create a Kubernetes Secret, if it doesn't exist yet, and sync the values stored in AWS Secrets Manager with this Kubernetes Secret, in our case, it will be called as `catalog-secret`.
+And the *secretObjects*, that will create and/or sync a Kubernetes secret with the data from the secret stored in AWS Secrets Manager. This means that when mounted to a Pod, the SecretProviderClass, will create a Kubernetes Secret, if it doesn't exist yet, and sync the values stored in AWS Secrets Manager with this Kubernetes Secret, in our case, it is named `catalog-secret`.
 
 ```bash
 $ kubectl get secretproviderclass -n catalog catalog-spc -o yaml | yq '.spec.secretObjects'
@@ -68,5 +68,3 @@ $ kubectl get secretproviderclass -n catalog catalog-spc -o yaml | yq '.spec.sec
   secretName: catalog-secret
   type: Opaque
 ```
-
-Lets move on, and store our credentials on AWS Secrets Manager.
