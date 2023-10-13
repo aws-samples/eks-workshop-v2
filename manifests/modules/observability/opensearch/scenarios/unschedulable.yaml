@@ -1,0 +1,17 @@
+# Bad container port 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-unschedulable
+  namespace: observability-opensearch
+  labels:
+    app.kubernetes.io/created-by: eks-workshop  
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    resources:
+      requests:
+        cpu: "999999m"
+

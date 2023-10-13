@@ -1,0 +1,18 @@
+# username, password and host are dynamically updated during provisioning process
+---
+config:
+  logLevel: debug
+  logFormat: json
+  route:
+    routes:
+      - match:
+          - receiver: opensearch-receiver
+  receivers:
+    - name: "opensearch-receiver"
+      opensearch:
+        index: kube-events
+        indexFormat: "kube-events-{2006-01-02}"
+        username: aaa
+        password: bbb
+        hosts:
+          - ccc
