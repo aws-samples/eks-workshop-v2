@@ -1,6 +1,6 @@
 ---
-title : "Testing Custom Policies using Kyverno CLI"
-weight : 138
+title: "Testing Custom Policies using Kyverno CLI"
+sidebar_position: 138
 ---
 
 Writing & Validating Custom Kyverno Policies can be challenging at times. So far in the lab, we have directly applied  Kyverno Policies to our EKS Clusters. It’s not always optimal to test policy evaluation in Kubernetes clusters. It’s cheaper (time and money) to catch potential policy issues (violations, errors, etc.) upstream of Kubernetes in an automated DevOps pipeline. To shift policy testing to the left (for less cost and overhead), before we touch our clusters, we can use the Kyverno command-line interface (CLI) to apply policies to Kubernetes resource YAML files.

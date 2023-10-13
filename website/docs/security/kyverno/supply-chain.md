@@ -1,6 +1,6 @@
 ---
-title : "Supply Chain Security(Image Signing & Verification) on Amazon EKS using AWS KMS & CoSign with Kyverno"
-weight : 136
+title: "Supply Chain Security(Image Signing & Verification) on Amazon EKS using AWS KMS & CoSign with Kyverno"
+sidebar_position: 136
 ---
 
 Supply chains require more than one linked process, and their security relies on the validation and verification of each process. Preventing supply chain attacks is a rapidly developing field and consensus on “best practices” and security has been lacking. The Cloud Native Computing Foundation [(CNCF) Security Technical Advisory Group (TAG)](https://github.com/cncf/tag-security) has published a new paper, [Software Supply Chain Security Best Practices](https://project.linuxfoundation.org/hubfs/CNCF_SSCP_v1.pdf), designed to provide the cloud native and open source communities with a holistic approach to architect a secure supply chain regardless of whether they are a software producer or consumer.

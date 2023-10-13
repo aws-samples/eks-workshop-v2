@@ -1,6 +1,6 @@
 ---
-title : "Restricting Image Registries"
-weight : 135
+title: "Restricting Image Registries"
+sidebar_position: 135
 ---
 
 Images used to run Containers on EKS Clusters from unkwown sources may not be a scanned and trusted, representing a risk factor. Using Container Images from Trusted Registries helps reducing the threat exposure of vulnerability. 
