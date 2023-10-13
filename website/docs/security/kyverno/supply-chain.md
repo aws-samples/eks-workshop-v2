@@ -187,7 +187,7 @@ Using an image digest guarantees immutability of images and hence improves secur
 
 The rule is executed in the mutating admission controller, but runs after resources are mutated to allow policies to mutate image registries and other configurations, before the image signature is verified.
 
-We will Install an image validation policy file named ```verify-image.yaml```. Be sure to make sure that you have added the correct public key.
+We will Install an image validation policy file named `verify-image.yaml`. Be sure to make sure that you have added the correct public key.
 
 ```
 apiVersion: kyverno.io/v1
@@ -229,7 +229,7 @@ spec:
                 -----END PUBLIC KEY-----
 ```
 
-We will create the Policy using ```Kubectl apply -f <file_name>```. Sample Output below.
+We will create the Policy using `Kubectl apply -f <file_name>`. Sample Output below.
 
 ```text
 clusterpolicy.kyverno.io/verify-image created
@@ -241,7 +241,7 @@ Try running a signed test image as a deployment from the Amazon ECR repository:
 kubectl run signed --image=<AWS Account ID>.dkr.ecr.us-east-1.amazonaws.com/supply-chain-security:latest
 ```
 
-> Replace <AWS Account ID> with your AWS Account ID above
+> Replace `AWS Account ID` with your AWS Account ID above
 
 The Pod will be successfully created. 
 
