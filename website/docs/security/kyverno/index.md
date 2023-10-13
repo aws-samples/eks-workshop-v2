@@ -39,7 +39,7 @@ The default (cluster-wide) settings for PSA and PSS are seen below.
 
 > Note: These settings can not be changed (customized) at the Kubernetes API server for Amazon EKS.
 
-:::code 
+```
 defaults:
   enforce: "privileged"
   enforce-version: "latest"
@@ -54,7 +54,7 @@ exemptions:
   runtimeClasses: []
   # Array of namespaces to exempt.
   namespaces: []
-:::
+```
 
 The above settings configure the following cluster-wide scenario:
 

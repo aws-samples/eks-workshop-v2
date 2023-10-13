@@ -7,7 +7,7 @@ To get an understanding of Kyverno Policies, we will start our workshop with a S
 
 Below we have a Sample policy requiring a Label "CostCenter". 
 
-:::code{showLineNumbers=true showCopyAction=true}
+```
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -27,7 +27,7 @@ spec:
         metadata:
           labels:
             CostCenter: "?*"
-:::
+```
 
 Kyverno has 2 types of Policies 1/**ClusterPolicy** used for Cluster-Wide Resources & 2/**Policy** used for Namespaced Resources. 
 
@@ -42,21 +42,21 @@ The Above Example Policy, will block any Pod Creation which doesn't have the lab
 
 Create a Require_Label_Policy.yaml file containing the Above Sample Policy.
 
-:::code{}
+```
 $ kubectl create -f Require_Label_Policy.yaml 
 
 clusterpolicy.kyverno.io/require-labels created
-:::
+```
 
 Next we will try to create a `Sample Nginx Pod` without any label `CostCenter` using the below command
 
-:::code{showCopyAction=true}
+```
 kubectl run nginx --image=nginx:latest
-:::
+```
 
 The Pod Creation will fail, with the admission webhook denying the request due to our `require-labels Kyverno Policy`, with the below output. 
 
-:::code{}
+```
 Error from server: admission webhook "validate.kyverno.svc-fail" denied the request: 
 
 resource Pod/default/nginx was blocked due to the following policies 
@@ -64,18 +64,18 @@ resource Pod/default/nginx was blocked due to the following policies
 require-labels:
   check-team: 'validation error: Label ''CostCenter'' is required to deploy the Pod.
     rule check-team failed at path /metadata/labels/CostCenter/'
-:::
+```
 
 If we try to create another Sample Pod, for example `Redis` with Label `CostCenter` it should pass the Policy Validation & get successfully created.
 
-:::code{showCopyAction=true}
+```
 kubectl run redis --image=redis:latest --labels=CostCenter=IT
-:::
+```
 
 The above will give a sample output as below:
-:::code{}
+```
 pod/redis created
-:::
+```
 
 ---
 ### Mutating Rules
@@ -85,7 +85,7 @@ In the above examples, we checked out Validation Policies. Kyverno can also be u
 
 Below is the sample mutation policy which we can use to automatically add our label `CostCenter=IT` as default to any `Pod`.
 
-:::code{showCopyAction=true, showLineNumbers=true}
+```
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -103,7 +103,7 @@ spec:
         metadata:
           labels:
             CostCenter: IT
-:::
+```
 
 You can create a Policy using the above policy yaml, and try creating an Sample Nginx Pod without Labels. The Policy will automatically add a label `CostCenter=IT` to the pod, resulting a successfull Pod Creation. 
 

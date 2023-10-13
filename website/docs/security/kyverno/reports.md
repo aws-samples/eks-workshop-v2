@@ -11,13 +11,13 @@ For example, if a validate policy in ```Audit``` mode exists containing a single
 
 Now, we will check on our cluster's status on compliance with the policies we have created so far in this workshop. We will run the below command, to get a overview of the Kyverno policy reports:
 
-:::code{showCopyAction=true showLineNumbers=true}
+```
 kubectl get policyreports -A
-:::
+```
 
 Sample Output should be as below, the number of policies might differ & we can ignore the same.
 
-:::code{}
+```
 NAMESPACE         NAME                                PASS   FAIL   WARN   ERROR   SKIP   AGE
 default           cpol-baseline-policy                1      1      0      0       0      6d21h
 default           cpol-podsecurity-subrule-baseline   1      1      0      0       0      6d21h
@@ -35,19 +35,19 @@ kyverno           cpol-restrict-image-registries      0      18     0      0    
 policy-reporter   cpol-baseline-policy                3      0      0      0       0      6d18h
 policy-reporter   cpol-podsecurity-subrule-baseline   3      0      0      0       0      6d18h
 policy-reporter   cpol-restrict-image-registries      0      3      0      0       0      22s
-:::
+```
 
 In the above output, we can see a number of policies that we created such as **verify-image**, **baseline-policy**, **restrict-image-registries**. You can also see the status of objects such as **Pass**, **Fail**, **WARN**, **ERROR**, **SKIP**. 
 
 To check in detail on the violations for a policy, we can run the below command. In our case, we will select **cpol-restrict-image-registries**, But you can select any other policy as well.
 
-:::code{showCopyAction=true showLineNumbers=true}
+```
 kubectl get policyreports cpol-restrict-image-registries -o yaml
-:::
+```
 
 Sample Output:
 
-:::code{language=yaml highlightLines=33-40,50-56}
+```
 apiVersion: wgpolicyk8s.io/v1alpha2
 kind: PolicyReport
 metadata:
@@ -119,7 +119,7 @@ summary:
   pass: 0
   skip: 0
   warn: 0
-  :::
+```
 
 As we can see in the above output, Our Pods namely Privileged-Pod & Signed failed the rules for our policy ```restrict-image-registries```. Monitoring reports in this way could be an overhead for administrators. Kyverno also supports a GUI based tool namely [Policy reporter](https://github.com/kyverno/policy-reporter#readme). This is outside of this workshop's scope., but can be tried in the workshop accounts.
 
