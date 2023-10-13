@@ -1,6 +1,6 @@
 ---
-title : "Summary"
-weight : 139
+title: "Summary"
+sidebar_position: 139
 ---
 
 ## Cleaning Up:

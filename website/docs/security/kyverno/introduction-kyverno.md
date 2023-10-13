@@ -1,6 +1,6 @@
 ---
-title : "Introduction on Kyverno"
-weight : 131
+title: "Introduction on Kyverno"
+sidebar_position: 131
 ---
 
 Kyverno (Greek for “govern”) is a policy engine designed specifically for Kubernetes. Kyverno a Cloud Native Computing Foundation (CNCF) incubating project, is a Policy-as-Code (PaC) solution that includes a policy engine designed for Kubernetes. 

@@ -1,6 +1,6 @@
 ---
-title : "Baselining Pod Security Standards"
-weight : 134
+title: "Baselining Pod Security Standards"
+sidebar_position: 134
 ---
 
 As Discussed, in our Introduction,  Policy levels are defined in **3 types 1/Baseline 2/Restricted & 3/Priveleged.** While it is recommended to setup a Restricted PSS, it can cause unknown issues on the Application level unless set properly. To get started it is recommended to setup a Baseline Policy that will prevent known Privileged escalations such as Containers accessing HostProcess, HostPath, Access to Host Ports to allow snopping of traffic and much more. 

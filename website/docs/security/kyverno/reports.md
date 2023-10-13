@@ -1,6 +1,6 @@
 ---
-title : "Policy Reports in Kyverno"
-weight : 137
+title: "Policy Reports in Kyverno"
+sidebar_position: 137
 ---
 
 Kyverno includes [policy reporting](https://kyverno.io/docs/policy-reports/), using the open format defined by the Kubernetes Policy Working Group. Kyverno emits these policy reports when admission actions (CREATE, UPDATE, DELETE) are performed. These reports are also generated as a result of background scans that apply policies on existing resources. 

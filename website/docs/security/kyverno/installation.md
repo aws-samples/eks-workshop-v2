@@ -1,6 +1,6 @@
 ---
 title: "Setup & Installation"
-weight: 132
+sidebar_position: 132
 ---
 
 ### Install Kyverno

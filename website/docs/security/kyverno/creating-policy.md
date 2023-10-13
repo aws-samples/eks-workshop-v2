@@ -1,6 +1,6 @@
 ---
-title : "Creating a Simple Policy for Validation & Mutation of Pod Labels"
-weight : 133
+title: "Creating a Simple Policy for Validation & Mutation of Pod Labels"
+sidebar_position: 133
 ---
 
 To get an understanding of Kyverno Policies, we will start our workshop with a Simple Pod Label requirement. Labels in Kubernetes can be used to tag objects & resources in the cluster. 
