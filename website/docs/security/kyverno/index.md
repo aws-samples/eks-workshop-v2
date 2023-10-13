@@ -32,7 +32,7 @@ The PSA admission controller implements the controls, outlined by the PSS profil
 
 In the following diagram, we outline how PSA and PSS work together, with pods and namespaces, to define pod security profiles and apply admission control based on those profiles. As seen in the following diagram, the PSA enforcement modes and PSS policies are defined as labels in the target Namespaces.
 
-![PSS-PSA-Image](/assets/psa-pss.jpeg)
+![PSS-PSA-Image](assets/psa-pss.jpeg)
 
 ### Default PSA and PSS settings
 The default (cluster-wide) settings for PSA and PSS are seen below.
