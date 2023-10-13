@@ -32,50 +32,49 @@ ___
 
 To generate keys using a KMS provider, use the cosign ```generate-key-pair``` command with the ```--kms``` flag.
 
-:::code{showCopyAction=true showLineNumbers=true}
+```
 cosign generate-key-pair --kms awskms:///alias/image-signing-cosign
-:::
+```
 
 > Above command needs **Administrative access** to create KMS keys in the account. It might also through such as "Error: creating key: retrieving PublicKey from cache: getting public key: operation error KMS: GetPublicKey, https response error StatusCode: 400". We can ignore the same. It takes a little while for KMS to create the Key and setup alias for the same.
 
 We can check our KMS key creation status using the below command:
 
-:::code{showCopyAction=true showLineNumbers=true}
+```
 aws kms list-aliases | grep -i image-signing-cosign
-:::
+```
 
 Sample Output:
 
-:::code{}
+```
  "AliasName": "alias/image-signing-cosign",
  "AliasArn": "arn:aws:kms:us-east-1:xxxxxxxxxxxx:alias/image-signing-cosign"
-:::
+```
 
 The public key can be retrieved later with:
 
-:::code{showCopyAction=true showLineNumbers=true}
+```
 cosign public-key --key awskms:///alias/image-signing-cosign
-:::
+```
 
-::::expand{header="Sample Output"}
+
 ```text
 -----BEGIN PUBLIC KEY-----
 MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAETW6Ja+nNUCWdvzUulvB81PHUovkb
 LoSVgmMqxZeZAcNTrkbEn+vW1oyUJKCMSmp/QwUmB4DazTWxPxRJRaB/4A==
 -----END PUBLIC KEY-----
 ```
-::::
 
 ## Step 2: Build and Sign a Container Image using Cosign
 ___
 
 We will use an sample ECR repository named, ```supply-chain-security```. You can create the same using the below command:
 
-:::code{showCopyAction=true showLineNumbers=true}
+```
 aws ecr create-repository --repository-name supply-chain-security
-:::
+```
 
-::::expand{header="Sample Output"}
+
 ```json
 {
     "repository": {
@@ -94,26 +93,25 @@ aws ecr create-repository --repository-name supply-chain-security
     }
 }
 ```
-::::
 
 Use the following steps to authenticate and push an image to your repository.
 
 Retrieve an authentication token and authenticate your Docker client to your registry.
 
-:::code{showCopyAction=true showLineNumbers=true}
+```
 aws ecr get-login-password —region us-east-1 | docker login —username AWS —password-stdin <AWS Account ID>.dkr.ecr.us-east-1.amazonaws.com
-:::
+```
 
 > Replace the Account ID with your own Workshop AWS AccountID. You should get output as ```Login Succeeded```
 
 For this example, we will use an “nginx” image. Tag your image so you can push the image to the repository and then push it, by running the following commands (substituting your AWS Account ID as indicated):
 
-:::code{}
+```
 docker tag nginx:latest <AWS Account ID>.dkr.ecr.us-east-1.amazonaws.com/supply-chain-security:latest
 docker push <AWS Account ID>.dkr.ecr.us-east-1.amazonaws.com/supply-chain-security:latest
-:::
+```
 
-::::expand{header="Sample Output"}
+```
 The push refers to repository [xxxxxxxxxxxx.dkr.ecr.us-east-1.amazonaws.com/supply-chain-security]
 563c64030925: Pushed 
 6fb960878295: Pushed 
@@ -123,18 +121,17 @@ d0a62f56ef41: Pushed
 4713cb24eeff: Pushed 
 511780f88f80: Pushed 
 latest: digest: sha256:48a84a0728cab8ac558f48796f901f6d31d287101bc8b317683678125e0d2d35 size: 1778
-::::
+```
 
 
 After pushing the image to Amazon ECR, sign the image using the public key named “image-signing-cosign” we created in step 1. Run the following cosign command to sign the “supply-chain-security” image and re-upload it to your AWS repository:
 
-:::code{}
+```
 cosign sign --key awskms:///alias/image-signing-cosign --upload=true <AWS Account ID>.dkr.ecr.us-east-1.amazonaws.com/supply-chain-security:latest
-:::
+```
 
 It will have a sample output as below. It will ask for confirmation of the correct tag, & confirmation for the operation.
 
-::::expand{header="Output"}
 ```text
 WARNING: Image reference xxxxxxxxxxxx.dkr.ecr.us-east-1.amazonaws.com/supply-chain-security:latest uses a tag, not a digest, to identify the image to sign.
     This can lead you to sign a different image than the intended one. Please use a
@@ -155,17 +152,16 @@ Are you sure you would like to continue? [y/N] y
 tlog entry created with index: 38102819
 Pushing signature to: xxxxxxxxxxxx.dkr.ecr.us-east-1.amazonaws.com/supply-chain-security
 ```
-::::
 
 Next, run this command to list your container images and verify your container against the public key:
 
-:::code{showCopyAction=true showLineNumbers=true}
+```
 aws ecr list-images --repository-name supply-chain-security
-:::
+```
 
 Sample Output:
 
-:::code{}
+```
 {
     "imageIds": [
         {
@@ -178,7 +174,7 @@ Sample Output:
         }
     ]
 }
-:::
+```
 
 ## Step 3: Apply Image Verification Policy using Kyverno
 ___
@@ -193,7 +189,7 @@ The rule is executed in the mutating admission controller, but runs after resour
 
 We will Install an image validation policy file named ```verify-image.yaml```. Be sure to make sure that you have added the correct public key.
 
-:::code{showCopyAction=true showLineNumbers=true}
+```
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -231,39 +227,37 @@ spec:
                 MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAETW6Ja+nNUCWdvzUulvB81PHUovkb
                 LoSVgmMqxZeZAcNTrkbEn+vW1oyUJKCMSmp/QwUmB4DazTWxPxRJRaB/4A==
                 -----END PUBLIC KEY-----
-:::
+```
 
 We will create the Policy using ```Kubectl apply -f <file_name>```. Sample Output below.
 
-::::expand{header="Output"}
 ```text
 clusterpolicy.kyverno.io/verify-image created
 ```
-::::
 
 Try running a signed test image as a deployment from the Amazon ECR repository:
 
-:::code{showCopyAction=true showLineNumbers=true}
+```
 kubectl run signed --image=<AWS Account ID>.dkr.ecr.us-east-1.amazonaws.com/supply-chain-security:latest
-:::
+```
 
 > Replace <AWS Account ID> with your AWS Account ID above
 
 The Pod will be successfully created. 
 
-:::code{}
+```
 pod/signed created
-:::
+```
 
 Try running an unsigned image that matches the configured rule:
 
-:::code{showCopyAction=true showLineNumbers=true}
+```
 kubectl run deployment unsigned --image=public.ecr.aws/b3u2a5x0/nginx:latest
-:::
+```
 
 It will be rejected due to signature mismatch. You should expect the below as an sample output for the above request.
 
-:::code{}
+```
 Error from server: admission webhook "mutate.kyverno.svc-fail" denied the request: 
 
 resource Pod/default/deployment was blocked due to the following policies 
@@ -272,20 +266,19 @@ verify-image:
   verify-image: |-
     failed to verify image public.ecr.aws/b3u2a5x0/nginx:latest: .attestors[0].entries[0].keys: no matching signatures:
     invalid signature when validating ASN.1 encoded signature
-:::
+```
 
 
 We will delete the KMS Keys. As we do not need it for the rest of the Labs.
 
-:::code{showCopyAction=true showLineNumbers=true}
+```
 aws kms delete-alias --alias-name "alias/image-signing-cosign"
-:::
+```
 
 We will also delete the ECR repository created in this lab.
 
-:::code{}
+```
 aws ecr delete-repository --repository-name supply-chain-security --force
-:::
+```
 
 In this Lab, we outlined how to integrate Cosign with AWS KMS. Then we ensured supply chain security is maintained using Kyverno ImageVerify policy on an existing Amazon EKS cluster. Kyverno policy checks the signature of our ECR repository to ensure it has been signed by verifying its signature against the provided AWS KMS public key.
-
