@@ -2,9 +2,8 @@ FROM eks-workshop-environment
 
 USER root
 
-RUN curl -sL https://rpm.nodesource.com/setup_16.x | bash - && \
-    yum install -y nodejs npm aws-cli procps && \
-    yum clean all
+RUN yum install https://rpm.nodesource.com/pub_16.x/nodistro/repo/nodesource-release-nodistro-1.noarch.rpm -y && \
+    yum install nodejs -y --setopt=nodesource-nodejs.module_hotfixes=1
 
 WORKDIR /app
 

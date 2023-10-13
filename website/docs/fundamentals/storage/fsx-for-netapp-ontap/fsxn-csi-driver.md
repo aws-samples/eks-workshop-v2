@@ -33,15 +33,14 @@ Now, we'll need to create a TridentBackendConfig object configured to use the pr
 
 We'll be using Kustomize to create the backend and to ingest the environment variable `FSXN_IP` in the parameter`managementLIF` value in the configuration of the storage class object: 
 
-```kustomization
-fundamentals/storage/fsxn/backend/fsxn-backend-nas.yaml
-TridentBackendConfig/backend-fsxn-ontap-nas
+```file
+manifests/modules/fundamentals/storage/fsxn/backend/fsxn-backend-nas.yaml
 ```
 
 Let's apply this kustomization:
 
 ```bash
-$ kubectl apply -k /workspace/modules/fundamentals/storage/fsxn/backend
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/fsxn/backend
 configmap/fsxnconfig created
 secret/backend-fsxn-ontap-nas-secret created
 tridentbackendconfig.trident.netapp.io/backend-fsxn-ontap-nas created
@@ -58,15 +57,14 @@ Now, we'll need to create a StorageClass(https://kubernetes.io/docs/concepts/sto
 
 We'll be using Kustomize to create for the storage class:
 
-```kustomization
-fundamentals/storage/fsxn/storageclass/fsxnstorageclass.yaml
-StorageClass/fsxn-sc-nfs
+```file
+manifests/modules/fundamentals/storage/fsxn/storageclass/fsxnstorageclass.yaml
 ```
 
 Let's apply this kustomization:
 
 ```bash
-$ kubectl apply -k /workspace/modules/fundamentals/storage/fsxn/storageclass/
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/fsxn/storageclass/
 storageclass.storage.k8s.io/fsxn-sc-nfs created
 ```
 
