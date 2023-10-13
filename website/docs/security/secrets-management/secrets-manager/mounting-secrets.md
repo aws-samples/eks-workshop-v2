@@ -3,7 +3,7 @@ title: "Mounting AWS Secrets Manager secret on Kubernetes Pod"
 sidebar_position: 63
 ---
 
-Now that you have a secret stored in AWS Secrets Manager, let's mount it inside the Pod, but first you should take a look on the `catalog` Deployment and the existing Secrets in the `catalog` Namespace.
+Now that you have a secret stored in AWS Secrets Manager and synced with a Kubernetes Secret, let's mount it inside the Pod, but first you should take a look on the `catalog` Deployment and the existing Secrets in the `catalog` Namespace.
 
 The `catalog` Deployment accesses the following database credentials from the `catalog-db` secret via environment variables:
 
@@ -73,7 +73,31 @@ $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.co
   name: tmp-volume
 ```
 
-Also, the Environment Variables are now being consumed from a new Secret, called `catalog-secret` that didn't exist earlier, and it was created by the SecretProviderClass via CSI Secret Store driver.
+Mounted Secrets are a good way to have sensitive information available as a file inside the filesystem of one or more of the Pod's containers, some benefits are not exposing the value of the secret as environment variables and when a volume contains data from a Secret, and that Secret is updated, Kubernetes tracks this and updates the data in the volume.
+
+You can take a look on the contents of the mounted Secret inside your Pod.
+
+```bash
+$ kubectl -n catalog exec -ti $(kubectl -n catalog get pods -l app.kubernetes.io/component=service -o name --no-headers) -- /bin/bash
+
+[appuser@catalog-76c48477ff-d9dfh ~]$ ls /etc/catalog-secret/ 
+eks-workshop_catalog-secret  password  username
+
+[appuser@catalog-76c48477ff-d9dfh ~]$ ls /etc/catalog-secret/ | while read SECRET; do cat /etc/catalog-secret/$SECRET; echo; done
+{"username":"catalog_user", "password":"default_password"}
+default_password
+catalog_user
+
+[appuser@catalog-76c48477ff-d9dfh ~]$ exit
+```
+
+You could verify that there are 3 files in the mountPath `/etc/catalog-secret`. `
+1. `eks-workshop_catalog-secret`: With the unformated value of the secret.
+2. `password`: password jmesPath filtered and formatted value.
+3. `username`: username jmesPath filtered and formatted value.
+
+
+Also, the Environment Variables are now being consumed from the new Secret, `catalog-secret` that didn't exist earlier, and it was created by the SecretProviderClass via CSI Secret Store driver.
 
 ```bash
 $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.containers[] | .env'
