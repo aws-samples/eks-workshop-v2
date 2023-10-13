@@ -36,7 +36,7 @@ pod/secrets-store-csi-driver-provider-aws-dzg9r   1/1     Running   0          2
 You should also see that we already have created a SecretProviderClass, which is a namespaced custom resource that's used provide driver configurations and specific parameters to access your secrets stored in AWS Secrets Manger via CSI driver.
 
 ```file
-manifests/modules/security/secrets-manager/secret-provider-class.yaml
+manifests/modules/security/secrets-manager/.workshop/manifests/secret-provider-class.yaml
 ```
 
 In the above resource, you have two main configurations that you should be focusing.
