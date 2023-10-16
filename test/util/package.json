@@ -15,13 +15,13 @@
   "keywords": [],
   "author": "",
   "devDependencies": {
-    "@types/chai": "^4.3.5",
+    "@types/chai": "^4.3.6",
     "@types/glob-to-regexp": "^0.4.1",
     "@types/mdast": "^3.0.11",
     "@types/mocha": "^10.0.1",
     "@types/mock-fs": "^4.13.1",
     "@types/node": "^20.3.3",
-    "@types/sinon": "^10.0.13",
+    "@types/sinon": "^10.0.16",
     "@types/unist": "^2.0.6",
     "@types/yargs": "^17.0.24",
     "mock-fs": "^5.1.4",
@@ -32,10 +32,10 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "chai": "^4.3.6",
+    "chai": "^4.3.10",
     "commander": "^11.0.0",
     "glob-to-regexp": "^0.4.1",
-    "mocha-junit-reporter": "^2.0.2",
+    "mocha-junit-reporter": "^2.2.1",
     "mochawesome": "^7.0.1",
     "remark": "^14.0.3",
     "remark-frontmatter": "^4.0.1",

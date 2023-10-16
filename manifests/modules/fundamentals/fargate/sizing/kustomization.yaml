@@ -3,4 +3,4 @@ kind: Kustomization
 bases:
 - ../enabling
 patches:
-- deployment.yaml
+- path: deployment.yaml

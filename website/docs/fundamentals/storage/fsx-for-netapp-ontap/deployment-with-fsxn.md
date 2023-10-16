@@ -8,7 +8,7 @@ Now that we understand the FSxN storage class for Kubernetes let's create a [Per
 First inspect the `fsxnpvclaim.yaml` file to see the parameters in the file and the claim of the specific storage size of 5GB from the Storage class `fsxn-sc-nfs` we created in the earlier step:
 
 ```file
-fundamentals/storage/fsxn/deployment/fsxnpvclaim.yaml
+manifests/modules/fundamentals/storage/fsxn/deployment/fsxnpvclaim.yaml
 ```
 
 We'll also modify the assets service is two ways:
@@ -17,14 +17,14 @@ We'll also modify the assets service is two ways:
 * Add an [init container](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) to copy the initial images to the FSxN volume
 
 ```kustomization
-fundamentals/storage/fsxn/deployment/deployment.yaml
+modules/fundamentals/storage/fsxn/deployment/deployment.yaml
 Deployment/assets
 ```
 
 We can apply the changes by running the following command:
 
 ```bash
-$ kubectl apply -k /workspace/modules/fundamentals/storage/fsxn/deployment
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/fsxn/deployment
 namespace/assets unchanged
 serviceaccount/assets unchanged
 configmap/assets unchanged

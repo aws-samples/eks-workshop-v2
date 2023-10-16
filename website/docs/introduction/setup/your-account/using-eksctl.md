@@ -32,11 +32,17 @@ This generally takes 20 minutes. Once the cluster is created run this command to
 $ use-cluster $EKS_CLUSTER_NAME
 ```
 
+## Next Steps
+
 Now that the cluster is ready, head to the [Getting Started](/docs/introduction/getting-started) module or skip ahead to any module in the workshop with the top navigation bar. Once you're completed with the workshop, follow the steps below to clean-up your environment.
 
-## Cleaning Up
+## Cleaning Up (steps once you are done with the Workshop)
 
-Before deleting the Cloud9 environment we need to clean up the cluster that we set up above.
+:::tip
+The following demonstrates how you will later clean up resources once you are done using the EKS Cluster you created in previous steps to complete the modules.  
+:::
+
+Before deleting the Cloud9 environment we need to clean up the cluster that we set up in previous steps.
 
 First use `delete-environment` to ensure that the sample application and any left-over lab infrastructure is removed:
 
