@@ -56,3 +56,41 @@ $ printf "\nOpenSearch dashboard: https://$OPENSEARCH_HOST/_dashboards \nUsernam
 
 
 
+See OpenSearch indices
+
+
+1. Create new OpenSearch index for Kubernetes events
+1. 
+
+
+
+```bash
+$ curl -X PUT -H 'Content-Type: application/json' -u $OPENSEARCH_USER:$OPENSEARCH_PASSWORD \
+  "https://$OPENSEARCH_HOST/eks-kubernetes-events" -d '{"settings":{"index":{"number_of_replicas":0}}}'
+
+$ curl -u $OPENSEARCH_USER:$OPENSEARCH_PASSWORD "https://$OPENSEARCH_HOST/_cat/indices?v"
+
+```
+
+
+Your output should look like this: 
+```
+
+```
+
+
+
+
+Create dashboard cookie and load 
+
+```bash
+$ curl https://$OPENSEARCH_HOST/_dashboards/auth/login \
+      -H 'content-type: application/json' \
+      -H 'osd-xsrf: osd-fetch' \
+      --data-raw '{"username":"'"$OPENSEARCH_USER"'","password":"'"$OPENSEARCH_PASSWORD"'"}' \
+      -c dashboards_cookie
+
+$ curl -X POST https://$OPENSEARCH_HOST/_dashboards/api/saved_objects/_import?overwrite=true \
+      -H "osd-xsrf: true" --form file=@kubernetes-events-dashboard.ndjson  -b dashboards_cookie
+
+```

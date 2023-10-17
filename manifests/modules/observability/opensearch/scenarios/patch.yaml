@@ -1,0 +1,10 @@
+# Fix unschedulable pod 
+---
+spec:
+  template:
+    spec:
+      containers:
+        - name: nginx
+          resources:
+            requests:
+              cpu: 100m
