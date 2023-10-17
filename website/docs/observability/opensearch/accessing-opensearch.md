@@ -34,3 +34,10 @@ $ helm install events-to-opensearch \
     --set="config.receivers[0].opensearch.hosts[0]"="https://$OPENSEARCH_HOST" \
     --wait
 ```
+
+
+
+
+
+
+

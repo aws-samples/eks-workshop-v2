@@ -1,17 +1,26 @@
-# Bad container port 
+# Unschedulable pod 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-unschedulable
-  namespace: observability-opensearch
+  name: nginx
+  namespace: o11y-test
   labels:
     app.kubernetes.io/created-by: eks-workshop  
-spec:
-  containers:
-  - name: nginx
-    image: nginx
-    resources:
-      requests:
-        cpu: "999999m"
-
+    app: nginx-test
+spec: 
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: nginx-test
+  template:
+    metadata:
+      labels:
+        app: nginx-test  
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        resources:
+          requests:
+            cpu: "999999m"
