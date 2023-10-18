@@ -40,10 +40,7 @@ fi
 
 command_args=""
 
-aws_credential_args="-e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} -e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} -e AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}"
-echo "AWS Credentials used ${aws_credential_args}"
-
-echo "Starting shell in container... with cluster name ${EKS_CLUSTER_NAME}"
+echo "Starting shell in container..."
 
 $CONTAINER_CLI run --rm -it \
   -v $SCRIPT_DIR/../manifests:/manifests \
