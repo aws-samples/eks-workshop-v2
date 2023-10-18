@@ -4,9 +4,8 @@ if [ -z "$EKS_CLUSTER_NAME" ]; then
   echo "Error: The EKS_CLUSTER_NAME environment variable must be set. Please run 'use-cluster <your cluster name>'"
   exit 1
 fi
-module=$1
 
-echo "Running for cluster ${EKS_CLUSTER_NAME} with module ${module}"
+module=$1
 
 repository_path="/eks-workshop/repository"
 manifests_path="/eks-workshop/manifests"
