@@ -26,7 +26,6 @@ ip-10-42-161-44.us-east-2.compute.internal    Ready    <none>   133m   v1.25.6-e
 ```
 
 :::tip
-
 If you want to retrieve nodes based on a specific capacity type, such as `on-demand` instances, you can utilize "<b>label selectors</b>". In this particular scenario, you can achieve this by setting the label selector to `capacityType=ON_DEMAND`.
 
 ```bash
@@ -37,7 +36,7 @@ ip-10-42-10-119.us-east-2.compute.internal   Ready    <none>   3d10h   v1.23.15-
 ip-10-42-10-200.us-east-2.compute.internal   Ready    <none>   3d10h   v1.23.15-eks-49d8fe8
 ip-10-42-11-94.us-east-2.compute.internal    Ready    <none>   3d10h   v1.23.15-eks-49d8fe8
 ip-10-42-12-235.us-east-2.compute.internal   Ready    <none>   4h34m   v1.23.15-eks-49d8fe8
-
+```
 :::
 
 In the below diagram, there are two separate "node groups" representing the managed node groups within the cluster. The first Node Group box represents the node group containing On-Demand instances while the second represents the node group containing Spot instances. Both are associated with the specified EKS cluster.
@@ -46,9 +45,9 @@ In the below diagram, there are two separate "node groups" representing the mana
 
 Let's create a node group with Spot instances. The following command executes two steps:
 1. Set an environment variable with the same node role we used for the `default` node group.
-1. Create a new node group `managed-spot` with our existing node role and subnets, and specify the instance types, capacity type, and scaling config for our new spot node group.
+2. Create a new node group `managed-spot` with our existing node role and subnets, and specify the instance types, capacity type, and scaling config for our new spot node group.
 
-```bash
+```bash wait=30
 $ export MANAGED_NODE_GROUP_IAM_ROLE_ARN=`aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name default | jq -r .nodegroup.nodeRole`
 $ aws eks create-nodegroup \
 --cluster-name $EKS_CLUSTER_NAME \
@@ -65,7 +64,7 @@ $ aws eks create-nodegroup \
 :::tip
 The aws `eks wait nodegroup-active` command can be used to wait until a specific EKS node group is active and ready for use. This command is part of the AWS CLI and can be used to ensure that the specified node group has been successfully created and all the associated instances are running and ready.
 
-```bash
+```bash wait=30 timeout=300
 $ aws eks wait nodegroup-active \
 --cluster-name $EKS_CLUSTER_NAME \
 --nodegroup-name managed-spot
