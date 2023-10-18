@@ -3,6 +3,15 @@ title: Spot instances
 sidebar_position: 50
 ---
 
+:::tip Before you start
+Prepare your environment for this section.
+
+```bash timeout=600 wait=30
+$ prepare-environment fundamentals/mng
+```
+
+:::
+
 All of our existing compute nodes are using On-Demand capacity. However, there are multiple "[purchase options](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html)" available to EC2 customers for running their EKS workloads.
 
 A Spot Instance uses spare EC2 capacity that is available for less than the On-Demand price. Because Spot Instances enable you to request unused EC2 instances at steep discounts, you can lower your Amazon EC2 costs significantly. The hourly price for a Spot Instance is called a Spot price. The Spot price of each instance type in each Availability Zone is set by Amazon EC2, and is adjusted gradually based on the long-term supply of and demand for Spot Instances. Your Spot Instance runs whenever capacity is available.
@@ -43,16 +52,13 @@ In the below diagram, there are two separate "node groups" representing the mana
 
 ![spot arch](../assets/managed-spot-arch.png)
 
-Let's create a node group with Spot instances. The following command executes two steps:
-1. Set an environment variable with the same node role we used for the `default` node group.
-2. Create a new node group `managed-spot` with our existing node role and subnets, and specify the instance types, capacity type, and scaling config for our new spot node group.
+Let's create a node group with Spot instances. The following command creates a new node group `managed-spot`.
 
 ```bash wait=30
-$ export MANAGED_NODE_GROUP_IAM_ROLE_ARN=`aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name default | jq -r .nodegroup.nodeRole`
 $ aws eks create-nodegroup \
 --cluster-name $EKS_CLUSTER_NAME \
 --nodegroup-name managed-spot \
---node-role $MANAGED_NODE_GROUP_IAM_ROLE_ARN \
+--node-role $SPOT_NODE_ROLE \
 --subnets $PRIMARY_SUBNET_1 $PRIMARY_SUBNET_2 $PRIMARY_SUBNET_3 \
 --instance-types m5.large m5d.large m5a.large m5ad.large m5n.large m5dn.large \
 --capacity-type SPOT \
