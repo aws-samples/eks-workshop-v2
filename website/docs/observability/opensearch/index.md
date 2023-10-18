@@ -7,90 +7,18 @@ sidebar_custom_props: {"module": true}
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=300 wait=30 hook=install
+```bash timeout=3600 wait=30 hook=install
 $ prepare-environment observability/opensearch
 ```
 
 This will make the following changes to your lab environment:
-- Provisiong an OpenSearch domain
+- Cleanup resources from earlier EKS workshop modules 
+- Provision an [Amazon OpenSearch Service](https://aws.amazon.com/opensearch-service/) domain (see **note** below)
+
+**Note**: If you are participating in an AWS event, the OpenSearch domain has been pre-provisioned for you to save time. On the other hand, if you are following these instructions within your own account, the ```prepare-environment``` step above provisions an OpenSearch domain, which can take up to 30 minutes to complete. 
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/.workshop/terraform).
 
 :::
 
-The steps are: 
-1. pull this helm chart - https://artifacthub.io/packages/helm/bitnami/kubernetes-event-exporter, 
-2. set up an opensearch instance that's publicly available with a user/pass. 
-3. Enter user/pass info with other config info in helm values chart and deploy. 
-4. create a pod with an error - wrong image, port, etc. 
-5. user logs into opensearch, creates an index, and searches for errors. 
-6. finds pod error. 
-7. fixes pod spec and watches error disappear. Would this scenario work, and should @alidonmez make any modifications?
-
-
-
-In this lab, we'll ...
-
-OpenSearch is ... 
-
-Kubernetes events are ... 
-
- 
-
-In this lab, we'll learn about the following concepts:
-
-
-
-We have provisioned an OpenSearch domain. Let's retrieve some information about it that will be used later:
-
-
-TODO: Add architecture diagram
-
-
-```bash
-$ export OPENSEARCH_HOST=$(aws ssm get-parameter --region $AWS_REGION --name /eksworkshop/$EKS_CLUSTER_NAME/opensearch/host  | jq .Parameter.Value)
-$ export OPENSEARCH_USER=$(aws ssm get-parameter --region $AWS_REGION --with-decryption --name /eksworkshop/$EKS_CLUSTER_NAME/opensearch/user  | jq .Parameter.Value)
-$ export OPENSEARCH_PASSWORD=$(aws ssm get-parameter --region $AWS_REGION --with-decryption --name /eksworkshop/$EKS_CLUSTER_NAME/opensearch/password  | jq .Parameter.Value)
-$ printf "\nOpenSearch dashboard: https://$OPENSEARCH_HOST/_dashboards \nUsername: $OPENSEARCH_USER \nPassword: $OPENSEARCH_PASSWORD\n\n"
-```
-
-
-
-See OpenSearch indices
-
-
-1. Create new OpenSearch index for Kubernetes events
-1. 
-
-
-
-```bash
-$ curl -X PUT -H 'Content-Type: application/json' -u $OPENSEARCH_USER:$OPENSEARCH_PASSWORD \
-  "https://$OPENSEARCH_HOST/eks-kubernetes-events" -d '{"settings":{"index":{"number_of_replicas":0}}}'
-
-$ curl -u $OPENSEARCH_USER:$OPENSEARCH_PASSWORD "https://$OPENSEARCH_HOST/_cat/indices?v"
-
-```
-
-
-Your output should look like this: 
-```
-
-```
-
-
-
-
-Create dashboard cookie and load 
-
-```bash
-$ curl https://$OPENSEARCH_HOST/_dashboards/auth/login \
-      -H 'content-type: application/json' \
-      -H 'osd-xsrf: osd-fetch' \
-      --data-raw '{"username":"'"$OPENSEARCH_USER"'","password":"'"$OPENSEARCH_PASSWORD"'"}' \
-      -c dashboards_cookie
-
-$ curl -X POST https://$OPENSEARCH_HOST/_dashboards/api/saved_objects/_import?overwrite=true \
-      -H "osd-xsrf: true" --form file=@kubernetes-events-dashboard.ndjson  -b dashboards_cookie
-
-```
+In this lab, we will explore the use of [OpenSearch](https://opensearch.org/about.html) for observability. OpenSearch is a community-driven, open-source search and analytics suite used to ingest, search, visualize and analyze data. OpenSearch consists of a data store and search engine (OpenSearch), a visualization and user interface (OpenSearch Dashboards), and a server-side data collector (Data Prepper). We will be using [Amazon OpenSearch Service](https://aws.amazon.com/opensearch-service/), which is a managed service that makes it easy for you to perform interactive log analytics, real-time application monitoring, search, and more.

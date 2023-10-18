@@ -102,7 +102,7 @@ resource "aws_ssm_parameter" "opensearch_host" {
   tags = local.tags
 }
 
-// Store OpenSearch user name
+// Store OpenSearch user name in parameter store
 resource "aws_ssm_parameter" "opensearch_user" {
   name            = "${local.opensearch_parameter_path}/user"
   description     = "OpenSearch domain user name" 
@@ -112,7 +112,7 @@ resource "aws_ssm_parameter" "opensearch_user" {
   tags = local.tags
 }
 
-// Store OpenSearch password 
+// Store OpenSearch password in parameter store
 resource "aws_ssm_parameter" "opensearch_password" {
   name            = "${local.opensearch_parameter_path}/password"
   description     = "OpenSearch domain password" 
