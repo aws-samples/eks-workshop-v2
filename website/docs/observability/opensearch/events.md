@@ -1,21 +1,44 @@
 ---
 title: "Kubernetes events"
-sidebar_position: 10
+sidebar_position: 20
 ---
+**Kubernetes Events** provide a rich source of information that can be used to monitor application and cluster state, respond to failures and perform diagnostics. Events generally denote some state change. Examples include pod creation, adding replicas, scheduling resources. Each event includes a ```type``` field which is set to Normal or Warning to indicate success of failure. A complete list of data fields for Kubernetes events can be found on [kubernetes.io](https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1/#list-list-or-watch-objects-of-kind-event) or by running ```kubectl explain events```. Events have a limited retention period within the cluster. OpenSearch provides a durable store that simplifies collection, analysis and visualization of the events.   
 
-Deploy the Kubernetes events exporter 
+The following diagram provides an overview of the setup for this module. ```kubernetes-events-exporter``` will be deployed within the EKS cluster to forward events to the OpenSearch domain. An OpenSearch Dashboard that we loaded earlier is used to visualize the events as they occur.
 
+# TODO - Add architecture diagram
 
-```bash wait=60
+We will explore Kubernetes events using the following steps:
+1. Deploy Kubernetes events exporter to forward events to OpenSearch 
+1. Generate Kubernetes events by spinning up test workloads
+1. Explore the events from within the cluster using kubectl 
+1. Explore the events using the OpenSearch dashboard 
+
+**Step 1:** Deploy Kubernetes events exporter and configure it to send events to our OpenSearch domain. The base configuration is available [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/events-exporter). The OpenSearch credentials we retrieved earlier are used to configure the exporter. The second command verifies that the Kubernetes events pod is running.     
+
+```bash timeout=120 wait=30 
 $ helm install events-to-opensearch \
     oci://registry-1.docker.io/bitnamicharts/kubernetes-event-exporter \
     --namespace opensearch-exporter --create-namespace \
     -f ~/environment/eks-workshop/modules/observability/opensearch/kube-events/values.yaml \
-    --set="config.receivers[0].opensearch.username"=$OPENSEARCH_USER \
-    --set="config.receivers[0].opensearch.password"=$OPENSEARCH_PASSWORD \
+    --set="config.receivers[0].opensearch.username"="$OPENSEARCH_USER" \
+    --set="config.receivers[0].opensearch.password"="$OPENSEARCH_PASSWORD" \
     --set="config.receivers[0].opensearch.hosts[0]"="https://$OPENSEARCH_HOST" \
     --wait
+ 
+$ kubectl get pods -n opensearch-exporter
+NAME                                                              READY   STATUS    RESTARTS      AGE
+events-to-opensearch-kubernetes-event-exporter-67fc698978-2f9wc   1/1     Running   0             10s
 ```
+**Step 2**: Generate Kubernetes events by spinning up test workloads
+
+
+
+
+
+
+**Step 3:** 
+
 
 After this step you should see the kubernetes events appear in the Opensearch domain
 
