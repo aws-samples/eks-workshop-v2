@@ -64,7 +64,7 @@ $ kubectl exec -it ${UI_POD_1} -n ui -- curl -v catalog.catalog/catalogue --conn
 < HTTP/1.1 200 OK
 ...
 ```
-```bash wait=30 timeout=240
+```bash wait=30 timeout=240 expectError=true
 $ ORDER_POD_1=$(kubectl get pod --selector app.kubernetes.io/component=service -n orders -o json | jq -r '.items[0].metadata.name')
 $ echo $ORDER_POD_1
 orders-XXXX-XXX
@@ -86,7 +86,7 @@ manifests/modules/networking/network-policies/apply-network-policies/allow-catal
 $ kubectl apply -f ~/environment/eks-workshop/modules/networking/network-policies/apply-network-policies/allow-catalog-ingress-db.yaml
 ```
 Let us validate the network policy.
-```bash wait=30 timeout=240
+```bash wait=30 timeout=240 expectError=true
 $ ORDER_POD_1=$(kubectl get pod --selector app.kubernetes.io/component=service -n orders -o json | jq -r '.items[0].metadata.name')
 $ echo $ORDER_POD_1
 orders-XXXX-XXX

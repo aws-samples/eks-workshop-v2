@@ -7,7 +7,7 @@ sidebar_custom_props: {"module": true}
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash wait=30 timeout=300
+```bash wait=30 timeout=600
 $ prepare-environment networking/network-policies
 ```
 

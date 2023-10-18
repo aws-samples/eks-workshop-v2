@@ -15,7 +15,7 @@ manifests/modules/networking/network-policies/apply-network-policies/allow-order
 $ kubectl apply -f ~/environment/eks-workshop/modules/networking/network-policies/apply-network-policies/allow-order-ingress-fail-debug.yaml
 ```
 Let us validate the network policy.
-```bash wait=30 timeout=240
+```bash wait=30 timeout=240 expectError=true
 $ UI_POD_1=$(kubectl get pod --selector app.kubernetes.io/name=ui -n ui -o json | jq -r '.items[0].metadata.name')
 $ echo $UI_POD_1
 ui-5dfb7d65fc-r7gc5

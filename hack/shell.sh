@@ -26,12 +26,7 @@ echo "Building container images..."
 
 container_image='eks-workshop-environment'
 
-if [ "$(uname -s)" = "Darwin" ]; then
-  echo "Running docker build in MAC M1"
-  (cd $SCRIPT_DIR/../lab && $CONTAINER_CLI buildx build -q --platform linux/amd64  -t $container_image .)
-else
-  (cd $SCRIPT_DIR/../lab && $CONTAINER_CLI build -q -t $container_image .)
-fi
+(cd $SCRIPT_DIR/../lab && $CONTAINER_CLI build -q -t $container_image .)
 
 aws_credential_args=""
 
@@ -52,5 +47,5 @@ echo "Starting shell in container... with cluster name ${EKS_CLUSTER_NAME}"
 
 $CONTAINER_CLI run --rm -it \
   -v $SCRIPT_DIR/../manifests:/manifests \
-  -e 'EKS_CLUSTER_NAME' -e 'AWS_REGION' -e 'USEBETA' \
+  -e 'EKS_CLUSTER_NAME' -e 'AWS_REGION' \
   $aws_credential_args $container_image $shell_command

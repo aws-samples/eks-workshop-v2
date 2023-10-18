@@ -14,7 +14,7 @@ manifests/modules/networking/network-policies/apply-network-policies/default-den
 $ kubectl apply -n ui -f ~/environment/eks-workshop/modules/networking/network-policies/apply-network-policies/default-deny.yaml 
 ```
 Now let us try accessing the 'catalog' database from tbe 'ui' component,
-```bash wait=30 timeout=240
+```bash wait=30 timeout=240 expectError=true
 $ UI_POD_1=$(kubectl get pod --selector app.kubernetes.io/name=ui -n ui -o json | jq -r '.items[0].metadata.name')
 $ echo $UI_POD_1
 ui-XXXX-XXX
@@ -44,8 +44,8 @@ Before we apply the new policy, we have to delete the 'deny' policy and then app
 $ kubectl delete -n ui -f ~/environment/eks-workshop/modules/networking/network-policies/apply-network-policies/default-deny.yaml 
 $ kubectl apply -f ~/environment/eks-workshop/modules/networking/network-policies/apply-network-policies/allow-ui-egress.yaml
 ```
-Now, we can test to see if we are able to connect to 'catlog' service but not the 'catalog' database
-```bash wait=30 timeout=240
+Now, we can test to see if we are able to connect to 'catalog' service but not the 'catalog' database
+```bash wait=30 timeout=240 expectError=true
 $ UI_POD_1=$(kubectl get pod --selector app.kubernetes.io/name=ui -n ui -o json | jq -r '.items[0].metadata.name')
 $ echo $UI_POD_1
 ui-XXXX-XXX
@@ -88,7 +88,7 @@ $ kubectl exec -it ${UI_POD_1} -n ui -- curl -v orders.orders/orders --connect-t
 < HTTP/1.1 200 
 ...
 ```
-```bash wait=30 timeout=240
+```bash wait=30 timeout=240 expectError=true
 $ UI_POD_1=$(kubectl get pod --selector app.kubernetes.io/name=ui -n ui -o json | jq -r '.items[0].metadata.name')
 $ echo $UI_POD_1
 ui-XXXX-XXXX
