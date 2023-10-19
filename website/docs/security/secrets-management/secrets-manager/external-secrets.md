@@ -143,6 +143,6 @@ $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.co
 
 ### Conclusion
 
-In conclusion, there is no best option on choosing between **AWS Secrets and Configuration Provider (ASCP)** vs. **External Secrets Operator (ESO)** in order to store your secrets on **AWS Secrets Manager**. 
+In conclusion, there is no best option on choosing between **AWS Secrets and Configuration Provider (ASCP)** vs. **External Secrets Operator (ESO)** in order to manage your secrets stored on **AWS Secrets Manager**. 
 
 Both tools have their specific advantages, for example, ASCP can help you avoid exposing secrets as environment variables, mounting them as volumes directly from AWS Secrets Manager into a Pod, the drawback is the need to manage those volumes. In the other hand ESO makes easier the Kubernetes Secrets lifecycle management, having also a cluster wide SecretStore, however it doesn't allow you to use Secrets as volumes. It all depends on your use case, and having both can bring you a lot more flexibility and security with Secrets Management.
