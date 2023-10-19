@@ -3,23 +3,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx
-  namespace: o11y-test
+  name: scenario-c
+  namespace: testcases
   labels:
     app.kubernetes.io/created-by: eks-workshop  
-    app: nginx-test
+    app: scenario-c
 spec: 
   replicas: 1
   selector: 
     matchLabels:
-      app: nginx-test
+      app: scenario-c
   template:
     metadata:
       labels:
-        app: nginx-test  
+        app: scenario-c  
     spec:
       containers:
-      - name: nginx
+      - name: scenario-c
         image: nginx
         resources:
           requests:

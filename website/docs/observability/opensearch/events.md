@@ -7,13 +7,14 @@ sidebar_position: 20
 The following diagram provides an overview of the setup for this module. ```kubernetes-events-exporter``` will be deployed within the EKS cluster to forward events to the OpenSearch domain. An OpenSearch Dashboard that we loaded earlier is used to visualize the events as they occur.
 
 # TODO - Add architecture diagram
-
+---
 We will explore Kubernetes events using the following steps:
 1. Deploy Kubernetes events exporter to forward events to OpenSearch 
+1. View events within the cluster
 1. Generate Kubernetes events by spinning up test workloads
 1. Explore the events from within the cluster using kubectl 
 1. Explore the events using the OpenSearch dashboard 
-
+---
 **Step 1:** Deploy Kubernetes events exporter and configure it to send events to our OpenSearch domain. The base configuration is available [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/events-exporter). The OpenSearch credentials we retrieved earlier are used to configure the exporter. The second command verifies that the Kubernetes events pod is running.     
 
 ```bash timeout=120 wait=30 
@@ -30,17 +31,20 @@ $ kubectl get pods -n opensearch-exporter
 NAME                                                              READY   STATUS    RESTARTS      AGE
 events-to-opensearch-kubernetes-event-exporter-67fc698978-2f9wc   1/1     Running   0             10s
 ```
+---
 **Step 2**: Generate Kubernetes events by spinning up test workloads
 
 
 
 
 
-
+---
 **Step 3:** 
 
 
 After this step you should see the kubernetes events appear in the Opensearch domain
+
+Kubernetes events are available inside of the cluster for about 1 hour. You will see 
 
 
 
@@ -48,19 +52,19 @@ After this step you should see the kubernetes events appear in the Opensearch do
 See the Kubernetes events in all namespaces 
 
 ```bash 
-$ kubectl get events --sort-by='.metadata.creationTimestamp' -A
+$ kubectl get events --sort-by='.lastTimestamp' -A
 ```
 
 
 See the most recent event as json in all namespaces 
 ```bash 
-$ kubectl get events --sort-by='.metadata.creationTimestamp' -o json -A | jq '.items[-1]'
+$ kubectl get events --sort-by='.lastTimestamp' -o json -A | jq '.items[-1]'
 
 ```
 
 See events with a warning or failed status
 ```bash
-$ kubectl get events --sort-by='.metadata.creationTimestamp' --field-selector type!=Normal -A 
+$ kubectl get events --sort-by='.lastTimestamp' --field-selector type!=Normal -A 
 ```
 
 
