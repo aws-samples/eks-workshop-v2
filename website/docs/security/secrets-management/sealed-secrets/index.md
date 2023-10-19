@@ -4,7 +4,7 @@ sidebar_position: 70
 sidebar_custom_props: {"module": true}
 ---
 
-:::warning
+:::caution
 The [Sealed Secrets](https://docs.bitnami.com/tutorials/sealed-secrets) project is not related to AWS Services but a third party open-source tool from [Btinami Labs](https://bitnami.com/)
 :::
 
