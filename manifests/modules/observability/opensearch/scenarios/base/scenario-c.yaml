@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: scenario-c
-  namespace: testcases
+  namespace: test
   labels:
     app.kubernetes.io/created-by: eks-workshop  
     app: scenario-c
