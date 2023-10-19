@@ -6,18 +6,18 @@ metadata:
   name: scenario-b
   namespace: test
   labels:
-    app.kubernetes.io/created-by: eks-workshop  
+    app.kubernetes.io/created-by: eks-workshop
     app: scenario-b
-spec: 
+spec:
   replicas: 1
-  selector: 
+  selector:
     matchLabels:
       app: scenario-b
   template:
     metadata:
       labels:
-        app: scenario-b  
+        app: scenario-b
     spec:
-      containers:    
+      containers:
         - name: scenario-b
           image: wrong-image

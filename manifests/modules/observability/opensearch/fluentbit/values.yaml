@@ -1,8 +1,8 @@
 # OpenSearch host, awsRegion, httpUser and httpPasswd are dynamically
-# updated during provisioning. 
+# updated during provisioning.
 # CloudWatch logs are on by default and need to be turned off for this example
 # See https://artifacthub.io/packages/helm/aws/aws-for-fluent-bit
-#additionalInputs: |
+# additionalInputs: |
 #  [INPUT]
 #      Name              kubernetes_events
 #      Tag               k8s_events
