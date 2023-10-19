@@ -1,5 +1,5 @@
 ---
-title: "Securing Secrets Using Sealed Secrets (optional)"
+title: "Securing Secrets Using Sealed Secrets"
 sidebar_position: 70
 sidebar_custom_props: {"module": true}
 ---
