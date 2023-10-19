@@ -7,7 +7,7 @@ First, we will setup OpenSearch for the upcoming section using these steps:
 1. Retrieve credentials for OpenSearch from the AWS Systems Manager Parameter Store
 1. Load an OpenSearch dashboard for Kubernetes events
 1. Confirm access to the OpenSearch dashboard
-
+---
 **Step 1:** Credentials for the OpenSearch domain have been saved in the AWS Systems Manager Parameter Store. Retrieve this information and set up the necessary environment variables.
 
 ```bash
@@ -24,7 +24,7 @@ $ export OPENSEARCH_PASSWORD=$(aws ssm get-parameter \
       --region $AWS_REGION --with-decryption | jq .Parameter.Value | tr -d '"')
 
 ```
-
+---
 **Step 2:** Load a pre-created OpenSearch Dashboard to display Kubernetes events. The dashboard is available in [kubernetes-events-dashboard.ndjson](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/dashboard)
 
 ```bash
@@ -53,7 +53,7 @@ $ curl -X POST https://$OPENSEARCH_HOST/_dashboards/api/saved_objects/_import?ov
   ]
 }
 ```
-
+---
 **Step 3:** Confirm that the OpenSearch dashboard is accessible
 
 View the OpenSearch server coordinates and credentials that we retrieved earlier.
