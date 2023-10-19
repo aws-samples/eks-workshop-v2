@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/created-by: eks-workshop
   annotations:
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/healthcheck-path: /catalogue
+    alb.ingress.kubernetes.io/healthcheck-path: /health
     # HIGHLIGHT
     alb.ingress.kubernetes.io/group.name: retail-app-group
 spec:
