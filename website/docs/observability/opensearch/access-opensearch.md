@@ -2,12 +2,14 @@
 title: "Access OpenSearch"
 sidebar_position: 10
 ---
+## Objective
 
-First, we will setup OpenSearch for the upcoming section using these steps: 
+In this section we setup OpenSearch for the upcoming labs using these steps: 
 1. Retrieve credentials for OpenSearch from the AWS Systems Manager Parameter Store
 1. Load an OpenSearch dashboard for Kubernetes events
 1. Confirm access to the OpenSearch dashboard
 ---
+## Lab
 **Step 1:** Credentials for the OpenSearch domain have been saved in the AWS Systems Manager Parameter Store. Retrieve this information and set up the necessary environment variables.
 
 ```bash
@@ -59,7 +61,7 @@ $ curl -X POST https://$OPENSEARCH_HOST/_dashboards/api/saved_objects/_import?ov
 View the OpenSearch server coordinates and credentials that we retrieved earlier.
 
 ```bash
-$ printf "\nOpenSearch dashboard: https://$OPENSEARCH_HOST/_dashboards \
+$ printf "\nOpenSearch dashboard: https://$OPENSEARCH_HOST/_dashboards/app/dashboards \
       \nUsername: $OPENSEARCH_USER \
       \nPassword: $OPENSEARCH_PASSWORD\n\n"
  
@@ -81,5 +83,6 @@ Tenants in OpenSearch can be used to safely share resources such as index patter
 ![OpenSearch login confirmation](./assets/opensearch-confirm-2.png)
 
 Navigate to the hamburger menu and click on dashboard. You should see the dashboard we loaded in Step 2.  The dashboard is empty since we are yet to configure the events exporter to feed OpenSearch.
+TODO update
 
 ![OpenSearch login confirmation](./assets/opensearch-dashboard-launch.png)
