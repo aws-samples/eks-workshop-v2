@@ -26,7 +26,17 @@ $ kubectl -n external-secrets describe sa external-secrets-sa | grep Annotations
 Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::068535243777:role/eks-workshop-external-secrets-sa-irsa
 ```
 
-There is also a ClusterResource called `ClusterSecretStore` which is a cluster wide SecretStore that can be referenced by all ExternalSecrets from all namespaces. 
+In addition to that, you'll need to create a new cluster resource called `ClusterSecretStore` which is a cluster wide SecretStore that can be referenced by all ExternalSecrets from all namespaces.
+
+```file
+manifests/modules/security/secrets-manager/cluster-secret-store.yaml
+```
+
+```bash
+$ cat eks-workshop/modules/security/secrets-manager/cluster-secret-store.yaml | envsubst | kubectl apply -f -
+```
+
+Take a deeper look in this newly created resource specifications.
 
 ```bash
 $ kubectl get clustersecretstores.external-secrets.io 

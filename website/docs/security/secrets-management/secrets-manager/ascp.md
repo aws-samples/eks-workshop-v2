@@ -3,7 +3,7 @@ title: "AWS Secrets and Configuration Provider (ASCP)"
 sidebar_position: 62
 ---
 
-If you ran the `prepare-environment` script detailed in a [previous step](./index.md), it has already installed the AWS Secrets and Configuration Provider (ASCP) for the Kubernetes Secrets Store CSI Driver that's required for this lab.
+When you ran the `prepare-environment` script detailed in a [previous step](./index.md), it has already installed the AWS Secrets and Configuration Provider (ASCP) for the Kubernetes Secrets Store CSI Driver that's required for this lab.
 
 Lets then, validate if the addons deployed.
 
@@ -33,15 +33,20 @@ pod/secrets-store-csi-driver-provider-aws-djtf5   1/1     Running   0          2
 pod/secrets-store-csi-driver-provider-aws-dzg9r   1/1     Running   0          2m2s
 ```
 
-You should also see that we already have created a SecretProviderClass, which is a namespaced custom resource that's used provide driver configurations and specific parameters to access your secrets stored in AWS Secrets Manger via CSI driver.
+In order to provide access to your secrets stored in AWS Secrets Manager via CSI driver, you'll need a *SecretProviderClass*, which is a namespaced custom resource that's used provide driver configurations and specific parameters that match the information in AWS Secrets Manager. 
 
 ```file
-manifests/modules/security/secrets-manager/.workshop/manifests/secret-provider-class.yaml
+manifests/modules/security/secrets-manager/secret-provider-class.yaml
 ```
 
-In the above resource, you have two main configurations that you should be focusing.
+In the above resource, you have two main configurations that you should be focusing. So go head and create the resource.
+
+```bash
+$ cat eks-workshop/modules/security/secrets-manager/secret-provider-class.yaml | envsubst | kubectl apply -f -
+```
 
 The *objects* parameter, which is pointing to a secret named as `eks-workshop/catalog-secret` that we will store in AWS Secrets Manager in the next step. Note that we are using [jmesPath](https://jmespath.org/), to extract a specific key-value from the secret that is JSON-formatted.
+
 
 ```bash
 $ kubectl get secretproviderclass -n catalog catalog-spc -o yaml | yq '.spec.parameters.objects'
