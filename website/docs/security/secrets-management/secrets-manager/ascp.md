@@ -39,7 +39,7 @@ In order to provide access to your secrets stored in AWS Secrets Manager via CSI
 manifests/modules/security/secrets-manager/secret-provider-class.yaml
 ```
 
-In the above resource, you have two main configurations that you should be focusing. So go head and create the resource.
+In the above resource, you have two main configurations that you should be focusing. So go head and create the resource and explore those specifications.
 
 ```bash
 $ cat eks-workshop/modules/security/secrets-manager/secret-provider-class.yaml | envsubst | kubectl apply -f -
