@@ -26,7 +26,7 @@ vpc:
 
 addons:
 - name: vpc-cni
-  version: '1.14.1'
+  version: 'v1.14.0-eksbuild.3'
   configurationValues: "{\"env\":{\"ENABLE_PREFIX_DELEGATION\":\"true\", \"ENABLE_POD_ENI\":\"true\", \"POD_SECURITY_GROUP_ENFORCING_MODE\":\"standard\"}}"
   resolveConflicts: overwrite
 
