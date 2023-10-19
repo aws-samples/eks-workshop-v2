@@ -2,8 +2,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+# relative path to base directory
 resources:
-- ../base # relative path to base directory
+  - ../base
 
 patches:
   - target:
@@ -14,12 +15,12 @@ patches:
     patch: |-
       - op: replace
         path: /spec/template/spec/volumes/0/secret/secretName
-        value: some-secret    
+        value: some-secret
   - target:
       group: apps
       version: v1
-      kind: Deployment 
-      name: scenario-b    
+      kind: Deployment
+      name: scenario-b
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/image
@@ -27,10 +28,9 @@ patches:
   - target:
       group: apps
       version: v1
-      kind: Deployment 
-      name: scenario-c    
+      kind: Deployment
+      name: scenario-c
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/cpu
         value: "100m"
-    

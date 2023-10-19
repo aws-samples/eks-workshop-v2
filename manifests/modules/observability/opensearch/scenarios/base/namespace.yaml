@@ -1,4 +1,4 @@
-# Namespace where OpenSearch scenarios are deployed 
+# Namespace where OpenSearch scenarios are deployed
 ---
 apiVersion: v1
 kind: Namespace

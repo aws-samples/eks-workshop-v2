@@ -6,19 +6,19 @@ metadata:
   name: scenario-a
   namespace: test
   labels:
-    app.kubernetes.io/created-by: eks-workshop  
+    app.kubernetes.io/created-by: eks-workshop
     app: scenario-a
-spec: 
+spec:
   replicas: 1
-  selector: 
+  selector:
     matchLabels:
       app: scenario-a
   template:
     metadata:
       labels:
-        app: scenario-a  
+        app: scenario-a
     spec:
-      containers:    
+      containers:
         - name: scenario-a
           image: nginx
           volumeMounts:
@@ -28,7 +28,7 @@ spec:
       volumes:
         - name: secret-volume
           secret:
-            secretName: misspelt-secret-name     
+            secretName: misspelt-secret-name
 ---
 apiVersion: v1
 kind: Secret
@@ -36,6 +36,6 @@ metadata:
   name: some-secret
   namespace: test
   labels:
-    app.kubernetes.io/created-by: eks-workshop    
+    app.kubernetes.io/created-by: eks-workshop
 data:
   .secret-file: dmFsdWUtMg0KDQo=
