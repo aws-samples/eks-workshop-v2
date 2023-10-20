@@ -113,7 +113,8 @@ if [ ! -z "$REPOSITORY_REF" ]; then
   cat << EOT > /usr/local/bin/reset-environment
 #!/bin/bash
 set -e
-curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/$REPOSITORY_REF/lab/bin/reset-environment | bash -s -- \$1
+ts=$(date +%s)
+curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/$REPOSITORY_REF/lab/bin/reset-environment | bash -s -- \$1 2>&1 | tee /eks-workshop/logs/action-\$ts.log
 EOT
   chmod +x /usr/local/bin/reset-environment
   cat << EOT > /usr/local/bin/delete-environment
@@ -172,6 +173,6 @@ EOT
   chmod +x /usr/local/bin/update-ide
 fi
 
-mkdir -p /eks-workshop
+mkdir -p /eks-workshop/logs
 
-chown ec2-user /eks-workshop
+chown -R ec2-user /eks-workshop
