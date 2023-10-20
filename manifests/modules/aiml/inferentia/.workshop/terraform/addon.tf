@@ -10,6 +10,14 @@ data "aws_subnets" "private" {
   }
 }
 
+resource "aws_s3_bucket" "inference" {
+  bucket_prefix = "eksworkshop-inference"
+  force_destroy = true
+
+  tags = local.tags
+}
+
+
 module "iam_assumable_role_inference" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version                       = "~> v5.5.0"
@@ -21,7 +29,6 @@ module "iam_assumable_role_inference" {
 
   tags = local.tags
 }
-
 
 resource "aws_iam_policy" "inference" {
   name        = "${local.addon_context.eks_cluster_id}-inference"
