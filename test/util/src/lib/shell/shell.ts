@@ -27,7 +27,7 @@ export class DefaultShell implements Shell {
     const prefix = this.beforeEach === '' ? '' : `${this.beforeEach} &&`
 
     try {
-      const buffer: Buffer = child.execSync(`${prefix} ${command} && echo '${DefaultShell.ENV_MARKER}' && env`, {
+      const buffer: Buffer = child.execSync(`${prefix} set -e && ${command} && echo '${DefaultShell.ENV_MARKER}' && env`, {
         timeout: timeout * 1000,
         killSignal: 'SIGKILL',
         stdio: ['inherit', 'pipe', 'pipe'],
