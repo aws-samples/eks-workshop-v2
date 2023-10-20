@@ -14,7 +14,7 @@ We'll scale the nodegroup in `eks-workshop` by changing the node count from `3` 
 
 ```bash
 $ eksctl scale nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME \
-    --nodes 4 --nodes-min 3 --nodes-max 6
+    --nodes 4 --nodes-min 4 --nodes-max 6
 ```
 
 :::tip
