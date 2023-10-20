@@ -52,6 +52,9 @@ fi
 
 kubectl delete pod load-generator --ignore-not-found > /dev/null
 
+
+
+
 kubectl apply -k $base_path --prune --all \
   --prune-whitelist=autoscaling/v1/HorizontalPodAutoscaler \
   --prune-whitelist=core/v1/Service \
@@ -122,7 +125,46 @@ if [ ! -z "$module" ]; then
   fi
 fi
 
-terraform -chdir="$tf_dir" output -json | jq -r '.environment.value | select(. != null)' > ~/.bashrc.d/workshop-env.bash
+# terraform -chdir="$tf_dir" output -json | jq -r '.environment.value | select(. != null)' > ~/.bashrc.d/workshop-env.bash
+
+#Cleaning up Lattice Resources
+echo "Cleaning up VPC Lattice Resources..."
+NAMESPACE=checkout
+httproute=$(kubectl get httproutes -n $NAMESPACE  | grep NAME || [[ $? == 1 ]] )
+if [ ! -z "$httproute" ]; then
+    for routes in $(kubectl get httproutes -n $NAMESPACE -o=jsonpath='{.items..metadata.name}'); do
+        kubectl delete httproutes -n $NAMESPACE $routes >/dev/null 2>&1
+    done
+fi
+
+gateway=$(kubectl get gateway -n $NAMESPACE | grep NAME || [[ $? == 1 ]] )
+if [ ! -z "$gateway" ]; then
+    for gw in $(kubectl get gateway -n $NAMESPACE -o=jsonpath='{.items..metadata.name}'); do
+        kubectl delete gateway -n $NAMESPACE $gw >/dev/null 2>&1
+    done
+fi
+
+gatewayclass=$(kubectl get GatewayClass -n $NAMESPACE | grep NAME || [[ $? == 1 ]] )
+if [ ! -z "$gatewayclass" ]; then
+    for gc in $(kubectl get GatewayClass -o=jsonpath='{.items..metadata.name}'); do
+        kubectl delete GatewayClass -n $NAMESPACE $gc >/dev/null 2>&1
+    done
+fi
+sleep 20
+#Cleaning up SG group rules
+PREFIX_LIST_ID=$(aws ec2 describe-managed-prefix-lists --query "PrefixLists[?PrefixListName=="\'com.amazonaws.$AWS_REGION.vpc-lattice\'"].PrefixListId" | jq --raw-output .[])
+MANAGED_PREFIX=$(aws ec2 get-managed-prefix-list-entries --prefix-list-id $PREFIX_LIST_ID --output json  | jq -r '.Entries[0].Cidr')
+CLUSTER_SG=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --output json| jq -r '.cluster.resourcesVpcConfig.clusterSecurityGroupId')
+aws ec2 revoke-security-group-ingress --group-id $CLUSTER_SG --cidr $MANAGED_PREFIX --protocol -1 >/dev/null 2>&1  || true
+#Removing the AWS Gateway controller
+if $(helm ls -A | grep "gateway-api-controller"); then
+    helm delete gateway-api-controller -n gateway-api-controller >/dev/null 2>&1
+fi
+
+EKS_DEFAULT_MNG_MIN=3
+EKS_DEFAULT_MNG_MAX=6
+EKS_DEFAULT_MNG_DESIRED=3
+EKS_DEFAULT_MNG_NAME=$(aws eks list-nodegroups --cluster-name=eks-workshop | jq .nodegroups[0] -r)
 
 # Node groups
 expected_size_config="$EKS_DEFAULT_MNG_MIN $EKS_DEFAULT_MNG_MAX $EKS_DEFAULT_MNG_DESIRED"
