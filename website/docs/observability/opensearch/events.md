@@ -45,11 +45,16 @@ The following diagram provides an overview of the setup for this section. ```kub
 $ helm install events-to-opensearch \
     oci://registry-1.docker.io/bitnamicharts/kubernetes-event-exporter \
     --namespace opensearch-exporter --create-namespace \
-    -f ~/environment/eks-workshop/modules/observability/opensearch/kube-events/values.yaml \
+    -f ~/environment/eks-workshop/modules/observability/opensearch/events-exporter/values.yaml \
     --set="config.receivers[0].opensearch.username"="$OPENSEARCH_USER" \
     --set="config.receivers[0].opensearch.password"="$OPENSEARCH_PASSWORD" \
     --set="config.receivers[0].opensearch.hosts[0]"="https://$OPENSEARCH_HOST" \
     --wait
+...
+NAME: events-to-opensearch
+LAST DEPLOYED: Fri Oct 20 01:04:56 2023
+NAMESPACE: opensearch-exporter
+...
  
 $ kubectl get pods -n opensearch-exporter
 NAME                                                              READY   STATUS    RESTARTS      AGE
@@ -64,7 +69,7 @@ The Kubernetes events exporter we launched in the previous step sends events fro
 We will launch three deployments labelled ```scenario-a, scenario-b and scenario-c``` within the ```test``` namespace to demonstrate Normal and Warning events. Each deployment intentionally includes different errors.
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/observability/opensearch/scenarios/base
+$ kubectl apply -k ./eks-workshop/modules/observability/opensearch/scenarios/base
 namespace/test created
 secret/some-secret created
 deployment.apps/scenario-a created
@@ -119,7 +124,7 @@ Compare your findings to the answers provided at the end of this page.
 Fix the issues we had with the three deployments.  
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/observability/opensearch/scenarios/fix
+$ kubectl apply -k ./eks-workshop/modules/observability/opensearch/scenarios/fix
 namespace/test unchanged
 secret/some-secret unchanged
 deployment.apps/scenario-a configured
@@ -136,23 +141,27 @@ As issues are fixed, a new set of Normal Kubernetes events are generated. The ea
 ---
 **[Optional] Step 6:** Explore events within the Kubernetes cluster
 
+Show last 5 events
+
 ```bash 
-$ kubectl get events --sort-by='.lastTimestamp' -A
-NAMESPACE   LAST SEEN   TYPE      REASON              OBJECT                             MESSAGE
-...
-test        21m         Normal    Pulling             pod/scenario-a-85cfddd4bf-xlpkh    Pulling image "nginx"
-test        21m         Normal    Created             pod/scenario-c-596bd55d6-rl9x9     Created container scenario-c
-...
+$ kubectl get events --sort-by='.lastTimestamp' -A | head -5
+NAMESPACE             LAST SEEN   TYPE      REASON              OBJECT                                                                 MESSAGE
+catalog               44m         Normal    SuccessfulCreate    replicaset/catalog-857f89d57d                                          Created pod: catalog-857f89d57d-xl4xc
+assets                44m         Normal    Scheduled           pod/assets-7ccc84cb4d-k5btz                                            Successfully assigned assets/assets-7ccc84cb4d-k5btz to ip-10-42-153-25.us-west-2.compute.internal
+orders                44m         Normal    Scheduled           pod/orders-5696b978f5-gk2d7                                            Successfully assigned orders/orders-5696b978f5-gk2d7 to ip-10-42-104-177.us-west-2.compute.internal
+ui                    44m         Normal    Scheduled           pod/ui-5dfb7d65fc-7l94z                                                Successfully assigned ui/ui-5dfb7d65fc-7l94z to ip-10-42-190-29.us-west-2.compute.internal
+
 ```
 
 See events with a warning or failed status
 ```bash
-$ kubectl get events --sort-by='.lastTimestamp' --field-selector type!=Normal -A 
+$ kubectl get events --sort-by='.lastTimestamp' --field-selector type!=Normal -A | head -5
 NAMESPACE   LAST SEEN   TYPE      REASON             OBJECT                            MESSAGE
-...
-test        31m         Warning   FailedMount        pod/scenario-a-7c94d9b94b-qwxrg   Unable to attach or mount volumes: unmounted volumes=[secret-volume], unattached volumes=[secret-volume kube-api-access-tfwdj]: timed out waiting for the condition
-test        22m         Warning   FailedScheduling   pod/scenario-c-6d988b8d84-9fv59   0/3 nodes are available: 3 Insufficient cpu. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
-...
+orders      44m         Warning   Unhealthy          pod/orders-5696b978f5-gk2d7       Readiness probe failed: Get "http://10.42.127.4:8080/actuator/health/liveness": dial tcp 10.42.127.4:8080: connect: connection refused
+test        7m6s        Warning   FailedScheduling   pod/scenario-c-6d988b8d84-gghjv   0/3 nodes are available: 3 Insufficient cpu. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.
+test        6m39s       Warning   Failed             pod/scenario-b-cff56c84-xn9hh     Error: ImagePullBackOff
+test        6m28s       Warning   Failed             pod/scenario-b-cff56c84-xn9hh     Failed to pull image "wrong-image": rpc error: code = Unknown desc = failed to pull and unpack image "docker.io/library/wrong-image:latest": failed to resolve reference "docker.io/library/wrong-image:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed
+
 ```
 
 See the most recent event as json in all namespaces 
