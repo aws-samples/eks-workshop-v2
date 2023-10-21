@@ -30,7 +30,7 @@ jobs:
         tar zxf awsweeper_0.12.0_linux_amd64.tar.gz
         mv awsweeper_0.12.0_linux_amd64/awsweeper ${HOME}/.local/bin
 
-        wget https://github.com/eksctl-io/eksctl/releases/download/v0.150.0/eksctl_Linux_amd64.tar.gz
+        wget https://github.com/eksctl-io/eksctl/releases/download/v0.162.0/eksctl_Linux_amd64.tar.gz
         tar zxf eksctl_Linux_amd64.tar.gz
         mv eksctl ${HOME}/.local/bin
 
