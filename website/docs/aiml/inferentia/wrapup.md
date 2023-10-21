@@ -1,5 +1,5 @@
 ---
-title: "Real World Implementation"
+title: "Real world implementation"
 sidebar_position: 40
 ---
 
