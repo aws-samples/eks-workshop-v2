@@ -77,8 +77,6 @@ $ kubectl apply -k ~/environment/eks-workshop/modules/networking/securitygroups-
 namespace/catalog unchanged
 serviceaccount/catalog unchanged
 configmap/catalog unchanged
-configmap/catalog-env-97g7bft95f unchanged
-configmap/catalog-sg-env-54k244c6t7 created
 secret/catalog-db unchanged
 service/catalog unchanged
 service/catalog-mysql unchanged

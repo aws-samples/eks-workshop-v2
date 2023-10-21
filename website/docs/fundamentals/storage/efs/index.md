@@ -24,4 +24,4 @@ You can view the Terraform that applies these changes [here](https://github.com/
 In this lab, we'll learn about the following concepts:
 * Assets microservice deployment
 * EFS CSI Driver
-* Dynamic provisioning using EFS and Kuberneties deployment 
+* Dynamic provisioning using EFS and Kubernetes deployment 

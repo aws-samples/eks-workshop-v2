@@ -36,7 +36,7 @@ data "aws_route_table" "private" {
 resource "aws_fsx_ontap_file_system" "fsxnassets" {
   storage_capacity    = 2048
   subnet_ids          = slice(data.aws_subnets.private_subnets_fsx.ids, 0, 2)
-  deployment_type     = "MULTI_AZ_1"
+  deployment_type     = "SINGLE_AZ_1"
   throughput_capacity = 512
   preferred_subnet_id = data.aws_subnets.private_subnets_fsx.ids[0]
   security_group_ids  = [aws_security_group.fsxn.id]

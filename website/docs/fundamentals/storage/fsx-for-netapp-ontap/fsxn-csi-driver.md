@@ -40,13 +40,14 @@ manifests/modules/fundamentals/storage/fsxn/backend/fsxn-backend-nas.yaml
 Let's apply this kustomization:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/fsxn/backend
-configmap/fsxnconfig created
+$ kubectl kustomize ~/environment/eks-workshop/modules/fundamentals/storage/fsxn/backend \
+  | envsubst | kubectl apply -f-
 secret/backend-fsxn-ontap-nas-secret created
 tridentbackendconfig.trident.netapp.io/backend-fsxn-ontap-nas created
 ```
 
 Now we'll get check that the TridentBackendConfig was create using the below command:
+
 ```bash
 $ kubectl get tbc -n trident 
 NAME                     BACKEND NAME          BACKEND UUID                           PHASE   STATUS
