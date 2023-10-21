@@ -53,16 +53,16 @@ fi
 kubectl delete pod load-generator --ignore-not-found > /dev/null
 
 kubectl apply -k $base_path --prune --all \
-  --prune-whitelist=autoscaling/v1/HorizontalPodAutoscaler \
-  --prune-whitelist=core/v1/Service \
-  --prune-whitelist=core/v1/ConfigMap \
-  --prune-whitelist=apps/v1/Deployment \
-  --prune-whitelist=apps/v1/StatefulSet \
-  --prune-whitelist=core/v1/ServiceAccount \
-  --prune-whitelist=core/v1/Secret \
-  --prune-whitelist=core/v1/PersistentVolumeClaim \
-  --prune-whitelist=scheduling.k8s.io/v1/PriorityClass \
-  --prune-whitelist=networking.k8s.io/v1/Ingress > /dev/null
+  --prune-allowlist=autoscaling/v1/HorizontalPodAutoscaler \
+  --prune-allowlist=core/v1/Service \
+  --prune-allowlist=core/v1/ConfigMap \
+  --prune-allowlist=apps/v1/Deployment \
+  --prune-allowlist=apps/v1/StatefulSet \
+  --prune-allowlist=core/v1/ServiceAccount \
+  --prune-allowlist=core/v1/Secret \
+  --prune-allowlist=core/v1/PersistentVolumeClaim \
+  --prune-allowlist=scheduling.k8s.io/v1/PriorityClass \
+  --prune-allowlist=networking.k8s.io/v1/Ingress > /dev/null
 
 crossplane_crd=$(kubectl get crds | grep relationaldatabases.awsblueprints.io || [[ $? == 1 ]])
 
