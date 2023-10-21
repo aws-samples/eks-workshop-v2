@@ -20,6 +20,7 @@ metadata:
   namespace: carts
 ```
 
+
 The following kustomization overwrites the ConfigMap, removing the DynamoDB endpoint configuration which tells the SDK to default to the real DynamoDB service instead of our test Pod. We've also provided it with the name of the DynamoDB table thats been created already for us which is being pulled from the environment variable `CARTS_DYNAMODB_TABLENAME`.
 
 ```kustomization
@@ -32,7 +33,8 @@ Let's check the value of `CARTS_DYNAMODB_TABLENAME` then run Kustomize to use th
 ```bash
 $ echo $CARTS_DYNAMODB_TABLENAME
 eks-workshop-carts
-$ kubectl apply -k ~/environment/eks-workshop/modules/security/irsa/dynamo
+$ kubectl kustomize ~/environment/eks-workshop/modules/security/irsa/dynamo \
+  | envsubst | kubectl apply -f-
 ```
 
 This will overwrite our ConfigMap with new values:

@@ -112,6 +112,7 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/security/irsa/service-acc
   | envsubst | kubectl apply -f-
 ```
 
+This will modify the service account like so:
 
 ```kustomization
 modules/security/irsa/service-account/carts-serviceAccount.yaml

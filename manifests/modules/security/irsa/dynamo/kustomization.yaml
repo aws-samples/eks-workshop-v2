@@ -9,5 +9,3 @@ configMapGenerator:
   behavior: replace
   options:
     disableNameSuffixHash: true
-resources:
-- nlb.yaml
