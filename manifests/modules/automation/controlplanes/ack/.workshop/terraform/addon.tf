@@ -2,7 +2,8 @@ locals {
   ddb_name = "ack-ddb"
 }
 
-module "thiru_test" {
+#This module installs the ACK controller for DynamoDB through the AWS EKS Addons for ACK
+module "dynamodb_ack_addon" {
 
   source = "aws-ia/eks-ack-addons/aws"
   version = "2.1.0"
@@ -13,25 +14,24 @@ module "thiru_test" {
   oidc_provider_arn = local.addon_context.eks_oidc_issuer_url
 
   # Controllers to enable
-  enable_apigatewayv2      = true
   enable_dynamodb          = true
+
+  #TODO - add namespace configuration to add to carts
   
-  tags = {
-    Environment = "dev"
-  }
-}
-
-module "iam_assumable_role_carts" {
-  source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "~> v5.5.5"
-  create_role                   = true
-  role_name                     = "${local.addon_context.eks_cluster_id}-carts-dynamo"
-  provider_url                  = local.addon_context.eks_oidc_issuer_url
-  role_policy_arns              = [aws_iam_policy.carts_dynamo.arn]
-  oidc_subjects_with_wildcards  = ["system:serviceaccount:carts:*"]
-
   tags = local.tags
 }
+
+#module "iam_assumable_role_carts" {
+#  source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+#  version                       = "~> v5.5.5"
+#  create_role                   = true
+#  role_name                     = "${local.addon_context.eks_cluster_id}-carts-dynamo"
+#  provider_url                  = local.addon_context.eks_oidc_issuer_url
+#  role_policy_arns              = [aws_iam_policy.carts_dynamo.arn]
+#  oidc_subjects_with_wildcards  = ["system:serviceaccount:carts:*"]
+#
+# tags = local.tags
+#}
 
 resource "aws_iam_policy" "carts_dynamo" {
   name        = "${local.addon_context.eks_cluster_id}-carts-dynamo"
@@ -75,6 +75,5 @@ output "environment" {
   value = <<EOF
 export DYNAMODB_POLICY_ARN=${aws_iam_policy.carts_dynamo.arn}
 export DYNAMODB_ACKROLE_ARN=${module.iam_assumable_role_carts.iam_role_arn}
-
 EOF
 }
