@@ -11,7 +11,7 @@ module "dynamodb_ack_addon" {
   # Cluster Info
   cluster_name      = local.addon_context.eks_cluster_id
   cluster_endpoint  = local.addon_context.aws_eks_cluster_endpoint
-  oidc_provider_arn = local.addon_context.eks_oidc_issuer_url
+  oidc_provider_arn = local.addon_context.eks_oidc_provider_arn
 
   # Controllers to enable
   enable_dynamodb          = true
