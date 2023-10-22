@@ -11,3 +11,4 @@ spec:
           envFrom:
             - configMapRef:
                 name: carts-ack
+      serviceAccountName: carts-ack
