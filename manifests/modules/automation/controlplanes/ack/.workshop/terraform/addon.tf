@@ -74,6 +74,6 @@ module "eks_blueprints_addons" {
 output "environment" {
   value = <<EOF
 export DYNAMODB_POLICY_ARN=${aws_iam_policy.carts_dynamo.arn}
-export DYNAMODB_ACKROLE_ARN=${module.iam_assumable_role_carts.iam_role_arn}
+#export DYNAMODB_ACKROLE_ARN=${module.iam_assumable_role_carts.iam_role_arn}
 EOF
 }
