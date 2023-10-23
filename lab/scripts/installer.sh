@@ -44,7 +44,7 @@ download_and_verify () {
 
 yum install --quiet -y findutils jq tar gzip zsh git diffutils wget tree unzip openssl gettext bash-completion python3 pip3 python3-pip amazon-linux-extras
 
-pip3 install awscurl
+pip3 install -q awscurl==0.28 urllib3==1.26.6
 
 # kubectl
 download_and_verify "https://dl.k8s.io/release/v$kubectl_version/bin/linux/amd64/kubectl" "$kubectl_checksum" "kubectl"
