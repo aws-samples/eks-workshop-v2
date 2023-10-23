@@ -7,21 +7,23 @@ sidebar_custom_props: {"module": true}
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=3600 wait=30 hook=install
+```bash timeout=3600 wait=30
 $ prepare-environment observability/opensearch
 ```
 
 This will make the following changes to your lab environment:
-- Cleanup resources from earlier EKS workshop modules 
+
+- Cleanup resources from earlier EKS workshop modules
 - Provision an Amazon OpenSearch Service domain (see **note** below)
 
-**Note**: If you are participating in an AWS event, the OpenSearch domain has been pre-provisioned for you to save time. On the other hand, if you are following these instructions within your own account, the ```prepare-environment``` step above provisions an OpenSearch domain, which can take up to 30 minutes to complete. 
+**Note**: If you are participating in an AWS event, the OpenSearch domain has been pre-provisioned for you to save time. On the other hand, if you are following these instructions within your own account, the ```prepare-environment``` step above provisions an OpenSearch domain, which can take up to 30 minutes to complete.
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/.workshop/terraform).
 
 :::
 
 ## Objective
-In this lab, we will explore the use of [OpenSearch](https://opensearch.org/about.html) for observability. OpenSearch is a community-driven, open-source search and analytics suite used to ingest, search, visualize and analyze data. OpenSearch consists of a data store and search engine (OpenSearch), a visualization and user interface (OpenSearch Dashboards), and a server-side data collector (Data Prepper). We will be using [Amazon OpenSearch Service](https://aws.amazon.com/opensearch-service/), which is a managed service that makes it easy for you to perform interactive log analytics, real-time application monitoring, search, and more. 
 
-We will be using Kubernetes events to demonstrate how EKS and OpenSearch can be used together to improve observability.
+In this lab, we will explore the use of [OpenSearch](https://opensearch.org/about.html) for observability. OpenSearch is a community-driven, open-source search and analytics suite used to ingest, search, visualize and analyze data. OpenSearch consists of a data store and search engine (OpenSearch), a visualization and user interface (OpenSearch Dashboards), and a server-side data collector (Data Prepper). We will be using [Amazon OpenSearch Service](https://aws.amazon.com/opensearch-service/), which is a managed service that makes it easy for you to perform interactive log analytics, real-time application monitoring, search, and more.
+
+Kubernetes events are exported from EKS to OpenSearch to demonstrate how the two services can be used together to improve observability.
