@@ -23,7 +23,7 @@ resource "aws_opensearch_domain" "opensearch" {
   // Specify a single instance cluster
   cluster_config {
     instance_count          = 1
-    instance_type           = "t3.medium.search"
+    instance_type           = "r6g.large.search"
     zone_awareness_enabled  = false
   }
 
