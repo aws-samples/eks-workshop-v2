@@ -4,13 +4,17 @@ sidebar_position: 10
 ---
 ## Objective
 
-In this section we setup OpenSearch for the upcoming labs using these steps: 
+In this section we setup OpenSearch for the upcoming labs using these steps:
+
 1. Retrieve credentials for OpenSearch from the AWS Systems Manager Parameter Store
-1. Load an OpenSearch dashboard for Kubernetes events
+1. Load a pre-created OpenSearch dashboard for Kubernetes events
 1. Confirm access to the OpenSearch dashboard
+
 ---
+
 ## Lab
-**Step 1:** Credentials for the OpenSearch domain have been saved in the AWS Systems Manager Parameter Store. Retrieve this information and set up the necessary environment variables.
+
+**Step 1:** Credentials for the OpenSearch domain have been saved in the AWS Systems Manager Parameter Store during the provisioning process. Retrieve this information and set up the necessary environment variables.
 
 ```bash
 $ export OPENSEARCH_HOST=$(aws ssm get-parameter \
@@ -22,9 +26,11 @@ $ export OPENSEARCH_USER=$(aws ssm get-parameter \
 $ export OPENSEARCH_PASSWORD=$(aws ssm get-parameter \
       --name /eksworkshop/$EKS_CLUSTER_NAME/opensearch/password \
       --region $AWS_REGION --with-decryption | jq .Parameter.Value | tr -d '"')
+$ export OPENSEARCH_DASHBOARD_FILE=~/environment/eks-workshop/modules/observability/opensearch/dashboard/events-dashboard.ndjson
 ```
+
 ---
-**Step 2:** Load a pre-created OpenSearch Dashboard to display Kubernetes events. The dashboard is available in [kubernetes-events-dashboard.ndjson](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/dashboard)
+**Step 2:** Load a pre-created OpenSearch Dashboard to display Kubernetes events. The dashboard is available in [kubernetes-events-dashboard.ndjson](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/dashboard). It includes the OpenSearch index patterns, visualizations and dashboard for the Kubernetes Events Dashboard.
 
 ```bash
 $ curl https://$OPENSEARCH_HOST/_dashboards/auth/login \
@@ -45,7 +51,7 @@ $ curl https://$OPENSEARCH_HOST/_dashboards/auth/login \
 }
  
 $ curl -X POST https://$OPENSEARCH_HOST/_dashboards/api/saved_objects/_import?overwrite=true \
-        --form file=@./eks-workshop/modules/observability/opensearch/dashboard/kubernetes-events-dashboard.ndjson  \
+        --form file=@$OPENSEARCH_DASHBOARD_FILE \
         -H "osd-xsrf: true" -b dashboards_cookie | jq .
 {
   "successCount": 7,
@@ -63,10 +69,11 @@ $ curl -X POST https://$OPENSEARCH_HOST/_dashboards/api/saved_objects/_import?ov
   ]
 }
 ```
+
 ---
 **Step 3:** Confirm that the OpenSearch dashboard is accessible
 
-View the OpenSearch server coordinates and credentials that we retrieved earlier.
+View the OpenSearch server coordinates and credentials that we retrieved in Step 1.
 
 ```bash
 $ printf "\nOpenSearch dashboard: https://%s/_dashboards/app/dashboards \nUserName: %q \nPassword: %q \n\n" \
@@ -81,10 +88,10 @@ Point your browser to the OpenSearch dashboard URL above and use the credentials
 
 ![OpenSearch login](./assets/opensearch-login.png)
 
-Tenants in OpenSearch can be used to safely share resources such as index patterns, visualizations and dashboards. For this lab we will use the Global tenant that is shared across all users.   
+Select the Global tenant as shown below.  Tenants in OpenSearch can be used to safely share resources such as index patterns, visualizations and dashboards.
 
 ![OpenSearch login confirmation](./assets/opensearch-confirm-2.png)
 
-You should see the dashboard we loaded in Step 2. The dashboard is currently empty since there is no data in OpenSearch yet. 
+You should see a dashboard called "EKS Workshop - Kubernetes Events Dashboard", which we loaded in Step 2. The dashboard is currently empty since there is no data in OpenSearch yet.  Keep this browser tab open or save the dashboard URL. We will return to the dashboard in the next section.  
 
 ![OpenSearch login confirmation](./assets/opensearch-dashboard-launch.png)
