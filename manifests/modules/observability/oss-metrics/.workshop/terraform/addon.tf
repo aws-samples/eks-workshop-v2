@@ -26,6 +26,12 @@ module "eks_blueprints_addons" {
   }
 }
 
+resource "time_sleep" "blueprints_addons_sleep" {
+  depends_on = [module.eks_blueprints_addons]
+
+  create_duration = "15s"
+}
+
 module "adot-operator" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/opentelemetry-operator"
 
@@ -68,7 +74,7 @@ module "eks_blueprints_kubernetes_grafana_addon" {
 
   depends_on = [
     module.aws-ebs-csi-driver,
-    module.eks_blueprints_addons,
+    time_sleep.blueprints_addons_sleep,
     kubernetes_config_map.order-service-metrics-dashboard
   ]
 

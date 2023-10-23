@@ -14,7 +14,9 @@ To gather the metrics from the Amazon EKS Cluster, we'll deploy a `OpenTelemetry
 - Verifies that all the required connections for these creation, update, or deletion requests to the Kubernetes API server are available.
 - Deploys ADOT collector instances in the way the user expressed in the `OpenTelemetryCollector` resource configuration.
 
-Now, let's create resources to allow the ADOT collector the permissions it needed. We'll start with the ClusterRole that gives the collector permissions to access the Kubernetes API:
+First lets create a ConfigMap that contains parameters the collector will need:
+
+Let's create resources to allow the ADOT collector the permissions it needed. We'll start with the ClusterRole that gives the collector permissions to access the Kubernetes API:
 
 ```file
 manifests/modules/observability/oss-metrics/adot/clusterrole.yaml
@@ -44,7 +46,9 @@ manifests/modules/observability/oss-metrics/adot/serviceaccount.yaml
 Create the resources:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/observability/oss-metrics/adot
+$ kubectl kustomize ~/environment/eks-workshop/modules/observability/oss-metrics/adot \
+  | envsubst | kubectl apply -f-
+$ kubectl rollout status -n other deployment/adot-collector --timeout=120s
 ```
 
 The specification for the collector is too long to show here, but you can view it like so:
