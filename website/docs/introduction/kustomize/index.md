@@ -24,16 +24,16 @@ modules/introduction/kustomize/deployment.yaml
 Deployment/checkout
 ```
 
-You can generate the final Kubernetes YAML that applies this kustomization with the `kustomize` CLI:
+You can generate the final Kubernetes YAML that applies this kustomization with the `kubectl kustomize` command, which invokes `kustomize` that is bundled with the `kubectl` CLI:
 
 ```bash
-$ kustomize build ~/environment/eks-workshop/modules/introduction/kustomize
+$ kubectl kustomize ~/environment/eks-workshop/modules/introduction/kustomize
 ```
 
-This will generate a lot of YAML files, which represents the final manifests you can apply directly to Kubernetes. Let's demonstrate this by piping the output from `kustomize` directly to `kubectl`:
+This will generate a lot of YAML files, which represents the final manifests you can apply directly to Kubernetes. Let's demonstrate this by piping the output from `kustomize` directly to `kubectl apply`:
 
 ```bash
-$ kustomize build ~/environment/eks-workshop/modules/introduction/kustomize | kubectl apply -f -
+$ kubectl kustomize ~/environment/eks-workshop/modules/introduction/kustomize | kubectl apply -f -
 namespace/checkout unchanged
 serviceaccount/checkout unchanged
 configmap/checkout unchanged
@@ -59,7 +59,7 @@ checkout-585c9b45c7-b2rrz   1/1     Running   0          2m12s
 checkout-585c9b45c7-xmx2t   1/1     Running   0          40m
 ```
 
-Although we have used the `kustomize` CLI directly in this section, Kustomize is also integrated directly with the `kubectl` CLI, and can be applied with `kubectl apply -k <kustomization_directory>`. This approach is used through this workshop to make it easier to apply changes to manifest files, while clearly surfacing the changes to be applied.
+Instead of using the combination of `kubectl kustomize` and `kubectl apply` we can instead accomplish the same thing with `kubectl apply -k <kustomization_directory>` (note the `-k` flag instead of `-f`). This approach is used through this workshop to make it easier to apply changes to manifest files, while clearly surfacing the changes to be applied.
 
 Let's try that:
 
@@ -72,6 +72,15 @@ To reset the application manifests back to their initial state, you can simply a
 ```bash timeout=300 wait=30
 $ kubectl apply -k ~/environment/eks-workshop/base-application
 ```
+
+Another pattern you will see used in some lab exercises looks like this:
+
+```bash
+$ kubectl kustomize ~/environment/eks-workshop/base-application \
+  | envsubst | kubectl apply -f-
+```
+
+This uses `envsubst` to substitute environment variable placeholders in the Kubernetes manifest files with the actual values based on your particular environment. For example in some manifests we need to reference the EKS cluster name with `$EKS_CLUSTER_NAME` or the AWS region with `$AWS_REGION`.
 
 Now that you understand how Kustomize works, proceed to the [Fundamentals module](/docs/fundamentals).
 

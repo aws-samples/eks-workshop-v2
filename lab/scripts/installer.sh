@@ -11,9 +11,6 @@ helm_checksum='c12d2cd638f2d066fec123d0bd7f010f32c643afdf288d39a4610b1f9cb32af3'
 eksctl_version='0.162.0'
 eksctl_checksum='d0f49636eca2ae5e85dd790e0510761c5efd18c1d35ceec512220f813dd2cfcd'
 
-kustomize_version='4.5.7'
-kustomize_checksum='701e3c4bfa14e4c520d481fdf7131f902531bfc002cb5062dcf31263a09c70c9'
-
 kubeseal_version='0.18.4'
 kubeseal_checksum='2e765b87889bfcf06a6249cde8e28507e3b7be29851e4fac651853f7638f12f3'
 
@@ -64,13 +61,6 @@ tar zxf eksctl_Linux_amd64.tar.gz
 chmod +x eksctl
 mv ./eksctl /usr/local/bin
 rm -rf eksctl_Linux_amd64.tar.gz
-
-# kustomize
-download_and_verify "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${kustomize_version}/kustomize_v${kustomize_version}_linux_amd64.tar.gz" "$kustomize_checksum" "kustomize.tar.gz"
-tar zxf kustomize.tar.gz
-chmod +x kustomize
-mv ./kustomize /usr/local/bin
-rm -rf kustomize.tar.gz
 
 # aws cli v2
 curl --location --show-error --silent "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
