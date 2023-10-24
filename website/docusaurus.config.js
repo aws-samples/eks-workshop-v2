@@ -68,7 +68,8 @@ const config = {
           editUrl:
             'https://github.com/aws-samples/eks-workshop-v2/tree/main/website',
           exclude: [
-            'fundamentals/storage/fsx-for-netapp-ontap'
+            'fundamentals/storage/fsx-for-netapp-ontap',
+            'security/guardduty/runtime-monitoring/reverse-shell.md'
           ]
         },
         theme: {
