@@ -11,25 +11,7 @@ module "argocd" {
     timeout          = 1200
     create_namespace = true
 
-    set = [{
-      name  = "server.replicas"
-      value = "1"
-    },{
-      name  = "controller.replicas"
-      value = "1"
-    },{
-      name  = "repoServer.replicas"
-      value = "1"
-    },{
-      name  = "applicationSet.replicaCount"
-      value = "1"
-    },{
-      name  = "redis-ha.enabled"
-      value = "false"
-    },{
-      name  = "server.service.type"
-      value = "LoadBalancer"
-    }]
+    values = [templatefile("${path.module}/values.yaml", {})]
   }
 }
 
