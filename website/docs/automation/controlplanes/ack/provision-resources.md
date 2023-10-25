@@ -1,5 +1,5 @@
 ---
-title: "Provision ACK Resources"
+title: "Provisionining ACK Resources"
 sidebar_position: 5
 ---
 
@@ -10,20 +10,21 @@ By default the **Carts** component in the sample application uses a DynamoDB loc
 The AWS Java SDK in the **Carts** component is able to use IAM Roles to interact with AWS services which means that we do not need to pass credentials, thus reducing the attack surfacec. In the EKS context, IRSA allows us to define per pod IAM Roles for applications to consume. To leverage IRSA, we first need to:
 
 - Create a Kubernetes Service Account in the Carts namespace
-- Create an IAM Role in AWS with the requisite DynamoDB permissions (by way of the right IAM Policy)
+- Create an IAM Policy with necessary DynamoDB permissions
+- Create an IAM Role in AWS with the above permissions
 - Map the Service Account to use the IAM role using Annotations in the Service Account definition.
 
-Fortunately, we have a handy one-line command to help with this. Run the below:
+Fortunately, we have a handy one-liner to help with this process. Run the below:
 
 ```bash
 
 $ eksctl create iamserviceaccount --name carts-ack \ 
---namespace carts --cluster $EKS_CLUSTER_NAME \
---role-name carts-dynamodb-role \
---attach-policy-arn $DYNAMODB_POLICY_ARN --approve       
+  --namespace carts --cluster $EKS_CLUSTER_NAME \
+  --role-name carts-dynamodb-role \
+  --attach-policy-arn $DYNAMODB_POLICY_ARN --approve       
 
 ```
-eksctl provisions a CloudFormation stack to help manage these resources which can be seen in this output
+```eksctl``` provisions a CloudFormation stack to help manage these resources which can be seen in this output
 
 ![IRSA screenshot](./assets/eksctl-irsa-cfn.png)
 
@@ -57,8 +58,8 @@ Next we want to populate the environment variable within the manifest. Run
 ```bash
 
 $ envsubst < ~/environment/eks-workshop/modules/automation/controlplanes/ack/dynamodb/dynamodb-ack-configmap.yaml \
-| tee ~/environment/eks-workshop/modules/automation/controlplanes/ack/dynamodb/dynamodb-ack-configmap.yaml \
-> /dev/null
+  | tee ~/environment/eks-workshop/modules/automation/controlplanes/ack/dynamodb/dynamodb-ack-configmap.yaml \
+  > /dev/null
 
 ```
 
@@ -76,6 +77,10 @@ configmap/carts-ack created
 table.dynamodb.services.k8s.aws/items created
 deployment.apps/carts configured
 ```
+:::info
+Note that the above output only is describing the changed resources and not all. The final output you see may differ.
+:::
+
 
 The ACK controllers in the cluster will react to these new resources and provision the AWS infrastructure it has expressed. Using the AWS CLI, we can simply run
 
