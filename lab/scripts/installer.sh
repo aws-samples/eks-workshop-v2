@@ -8,8 +8,8 @@ kubectl_checksum='e5fe510ba6f421958358d3d43b3f0b04c2957d4bc3bb24cf541719af61a06d
 helm_version='3.10.1'
 helm_checksum='c12d2cd638f2d066fec123d0bd7f010f32c643afdf288d39a4610b1f9cb32af3'
 
-eksctl_version='0.162.0'
-eksctl_checksum='d0f49636eca2ae5e85dd790e0510761c5efd18c1d35ceec512220f813dd2cfcd'
+eksctl_version='0.160.0'
+eksctl_checksum='24fc2ea2295f1a0687271ecd6f9b66e6e674560617cced8f19ef5bbe92a1e4a2'
 
 kubeseal_version='0.18.4'
 kubeseal_checksum='2e765b87889bfcf06a6249cde8e28507e3b7be29851e4fac651853f7638f12f3'
