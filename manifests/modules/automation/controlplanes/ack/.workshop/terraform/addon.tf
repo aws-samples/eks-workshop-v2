@@ -16,7 +16,6 @@ module "dynamodb_ack_addon" {
   # Controllers to enable
   enable_dynamodb          = true
 
-  #TODO - add namespace configuration to add to carts
   
   tags = local.tags
 }
@@ -74,6 +73,5 @@ module "eks_blueprints_addons" {
 output "environment" {
   value = <<EOF
 export DYNAMODB_POLICY_ARN=${aws_iam_policy.carts_dynamo.arn}
-export AWS_REGION_CURRENT=${local.addon_context.aws_region_name}
 EOF
 }

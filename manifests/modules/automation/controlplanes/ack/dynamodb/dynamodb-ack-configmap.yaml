@@ -5,4 +5,4 @@ metadata:
   namespace: carts
 data:
   CARTS_DYNAMODB_TABLENAME: Items
-  CARTS_DYNAMODB_ENDPOINT: https://dynamodb.${AWS_REGION_CURRENT}.amazonaws.com
+  CARTS_DYNAMODB_ENDPOINT: https://dynamodb.${AWS_REGION}.amazonaws.com
