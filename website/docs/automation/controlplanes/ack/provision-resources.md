@@ -3,68 +3,86 @@ title: "Provision ACK Resources"
 sidebar_position: 5
 ---
 
-By default the catalog component in the sample application uses a MySQL database running as a pod in the EKS cluster. In this lab, we'll provision an Amazon RDS database for our application using Kubernetes custom resources to specify the desired configuration required by the workload.
+By default the **Carts** component in the sample application uses a DynamoDB local instance running as a pod in the EKS cluster called ```carts-dynamodb```. In this section of the lab, we'll provision an Amazon DynamoDB cloud based table for our application using Kubernetes custom resources and point the **Carts** deployment to use the newly provisioned DynamoDB table instead of the local copy.
 
-![ACK reconciler concept](./assets/ack-desired-current.jpg)
+![ACK reconciler concept](./assets/ack-desired-current-ddb.png)
 
-The first thing we need to do is create a Kubernetes secret that'll be used to provide the master password for the RDS database. We'll configure ACK to read this secret as a source for the password:
+The AWS Java SDK in the **Carts** component is able to use IAM Roles to interact with AWS services which means that we do not need to pass credentials, thus reducing the attack surfacec. In the EKS context, IRSA allows us to define per pod IAM Roles for applications to consume. To leverage IRSA, we first need to:
 
-```bash hook=create-secret
-$ kubectl create secret generic catalog-rds-pw \
-  --from-literal=password="$(date +%s | sha256sum | base64 | head -c 32)" -n catalog
-secret/catalog-rds-pw created
+- Create a Kubernetes Service Account in the Carts namespace
+- Create an IAM Role in AWS with the requisite DynamoDB permissions (by way of the right IAM Policy)
+- Map the Service Account to use the IAM role using Annotations in the Service Account definition.
+
+Fortunately, we have a handy one-line command to help with this. Run the below:
+
+```bash
+
+$ eksctl create iamserviceaccount --name carts-ack \ 
+--namespace carts --cluster $EKS_CLUSTER_NAME \
+--role-name carts-dynamodb-role \
+--attach-policy-arn $DYNAMODB_POLICY_ARN --approve       
+
 ```
+eksctl provisions a CloudFormation stack to help manage these resources which can be seen in this output
 
-Now let's explore the various ACK resources that we'll create. The first is an EC2 security group that will be applied to control access to the RDS database, which is done with a `SecurityGroup` resource:
+![IRSA screenshot](./assets/eksctl-irsa-cfn.png)
+
+In the AWS Console, navigate to ```IAM -> Roles -> carts-dynamodb-role ``` and the Trust Relationships tab:
+
+![Trusted Entities](./assets/trust-entities.png)
+
+---
+
+
+Now, let's explore how we'll create the DynamoDB Table via a Kubernetes manifest
 
 ```file
-manifests/modules/automation/controlplanes/ack/rds/k8s/rds-security-group.yaml
+manifests/modules/automation/controlplanes/ack/dynamodb/dynamodb-create.yaml
 ```
 
 :::info
 
-The EC2 security group above allows any traffic from the CIDR range of the VPC used by the EKS cluster. This has been done to keep the example clear and understandable. A more secure approach would be to use [Security Groups for Pods](../../../networking/security-groups-for-pods/index.md) to allow traffic from specific pods.
+Astute readers will notice the YAML Spec to be similar to the API endpoints and calls for DynamoDB such as ```tableName``` and ```attributeDefinitions```.
 
 :::
 
-Next we want the RDS database to use the private subnets in our VPC. To accomplish this, we'll create a `DBSubnetGroup` which selects the appropriate subnet IDs:
+Next, we will need to update the regional endpoint for DynamoDB within the Configmap used by the Kustomization to update the **Carts** deployment.
 
 ```file
-manifests/modules/automation/controlplanes/ack/rds/k8s/rds-dbgroup.yaml
+manifests/modules/automation/controlplanes/ack/dynamodb/dynamodb-ack-configmap.yaml
 ```
 
-Finally, we can create the configuration for the RDS database itself with a `DBInstance` resource:
+Next we want to populate the environment variable within the manifest. Run
 
-```file
-manifests/modules/automation/controlplanes/ack/rds/k8s/rds-instance.yaml
+```bash
+
+$ envsubst < ~/environment/eks-workshop/modules/automation/controlplanes/ack/dynamodb/dynamodb-ack-configmap.yaml \
+| tee ~/environment/eks-workshop/modules/automation/controlplanes/ack/dynamodb/dynamodb-ack-configmap.yaml \
+> /dev/null
+
 ```
 
-Apply this configuration to the Amazon EKS cluster:
+:::info
+This process uses the ```envsubst``` utility to rewrite the environment variable into the manifest to reflect the 
+current region.
+:::
+
+
+We're now finally able to apply these configurations to the Amazon EKS cluster:
 
 ```bash wait=30
-$ kubectl apply -k ~/environment/eks-workshop/modules/automation/controlplanes/ack/rds/k8s
-securitygroup.ec2.services.k8s.aws/rds-eks-workshop created
-dbinstance.rds.services.k8s.aws/rds-eks-workshop created
-dbsubnetgroup.rds.services.k8s.aws/rds-eks-workshop created
+$ kubectl apply -k ~/environment/eks-workshop/modules/automation/controlplanes/ack/dynamodb
+configmap/carts-ack created
+table.dynamodb.services.k8s.aws/items created
+deployment.apps/carts configured
 ```
 
-The ACK controllers in the cluster will react to these new resources and provision the AWS infrastructure it has expressed. For example, we can use the AWS CLI to query the RDS database:
+The ACK controllers in the cluster will react to these new resources and provision the AWS infrastructure it has expressed. Using the AWS CLI, we can simply run
 
 ```bash
-$ aws rds describe-db-instances \
-    --db-instance-identifier ${EKS_CLUSTER_NAME}-catalog-ack
+$ aws dynamodb list-tables
 ```
 
-It takes some time to provision the AWS managed services, in the case of RDS up to 10 minutes. The AWS provider controller will report the status of the reconciliation in the status field of the Kubernetes custom resources.
+Creating a DynamoDB table is almost instantaneous, so you should see the Items table created. If not, wait a few seconds and try again.
 
-```bash
-$ kubectl get dbinstances.rds.services.k8s.aws ${EKS_CLUSTER_NAME}-catalog-ack -n catalog -o yaml | yq '.status'
-```
-
-We can use this status field to instruct `kubectl` to wait until the RDS database has been successfully created:
-
-```bash timeout=1080
-$ kubectl wait dbinstances.rds.services.k8s.aws ${EKS_CLUSTER_NAME}-catalog-ack \
-  -n catalog --for=condition=ACK.ResourceSynced --timeout=15m
-dbinstances.rds.services.k8s.aws/rds-eks-workshop condition met
-```
+In the AWS Console, navigate to ```DynamoDB --> Tables``` and you should see the new Table provisioned.
