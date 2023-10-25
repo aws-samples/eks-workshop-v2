@@ -5,26 +5,55 @@ sidebar_position: 20
 
 This section outlines how to build a cluster for the lab exercises using the [eksctl tool](https://eksctl.io/). This is the easiest way to get started, and is recommended for most learners.
 
-The `eksctl` utility has been pre-installed in Cloud9 so we can immediately create the cluster. This is the configuration that will be used to build the cluster:
+The `eksctl` utility has been pre-installed in Cloud9 so we can immediately create the cluster.
+
+:::tip
+
+You can choose to do the labs using either IPv4 or IPv6 VPC networking. Unless otherwise needed it is recommended to use IPv4 since there are some labs that do not function with IPv6. Select the appropriate tab below.
+
+Once you have built a cluster with a particular network family you will need to recreate the cluster if you wish to switch.
+
+:::
+
+<tabs groupId="ip-version">
+  <tabItem value="ipv4" label="IPv4">
+
+This is the configuration that will be used to build a cluster that uses IPv4 networking:
 
 ```file hidePath=true
-manifests/../cluster/eksctl/cluster.yaml
+manifests/../cluster/eksctl/ipv4/cluster.yaml
 ```
+
+```bash test=false
+$ export EKS_CLUSTER_NAME=eks-workshop
+$ curl -fsSL https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/cluster/eksctl/ipv4/cluster.yaml | \
+envsubst | eksctl create cluster -f -
+```
+
+  </tabItem>
+  <tabItem value="ipv6" label="IPv6">
+
+This is the configuration that will be used to build a cluster that uses IPv6 networking:
+
+```file hidePath=true
+manifests/../cluster/eksctl/ipv6/cluster.yaml
+```
+
+```bash test=false
+$ export EKS_CLUSTER_NAME=eks-workshop
+$ curl -fsSL https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/cluster/eksctl/ipv6/cluster.yaml | \
+envsubst | eksctl create cluster -f -
+```
+
+  </tabItem>
+</tabs>
 
 Based on this configuration `eksctl` will:
 - Create a VPC across three availability zones
 - Create an EKS cluster
 - Create an IAM OIDC provider
 - Add a managed node group named `default`
-- Configure the VPC CNI to use prefix delegation
-
-Apply the configuration file like so:
-
-```bash test=false
-$ export EKS_CLUSTER_NAME=eks-workshop
-$ curl -fsSL https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/cluster/eksctl/cluster.yaml | \
-envsubst | eksctl create cluster -f -
-```
+- Configure the VPC CNI to use prefix delegation (only in IPv4 mode)
 
 This generally takes 20 minutes. Once the cluster is created run this command to use the cluster for the lab exercises:
 

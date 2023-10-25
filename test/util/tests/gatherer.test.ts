@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import mock from 'mock-fs'
 import sinon from 'sinon'
 import {Category, Gatherer} from '../src/lib/gatherer/gatherer.js'
+import { log } from 'console';
 
 describe('Gatherer', () => { 
   let gatherer: Gatherer
@@ -13,7 +14,7 @@ describe('Gatherer', () => {
   });
 
   beforeEach(() => {
-    gatherer = new Gatherer()
+    gatherer = new Gatherer(["tag1"])
   });
   
   context('when loading basic content', () => {
@@ -117,6 +118,12 @@ describe('Gatherer', () => {
       const emptyBlockPage = result?.children[0].pages[1]
 
       expect(emptyBlockPage?.scripts.length).to.equal(1)
+    });
+
+    it('should ignore blocks with skipped tag', async () => {
+      const tagPage = result?.children[2].pages[0]
+
+      expect(tagPage?.scripts.length).to.equal(1)
     });
   })
   

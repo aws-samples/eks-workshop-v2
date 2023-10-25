@@ -25,29 +25,22 @@ if [ ! -z "$helm_check" ]; then
   helm delete gateway-api-controller --namespace gateway-api-controller > /dev/null
 fi
 
-#echo "Deleting VPC Lattice target groups..."
-
-#tg1=$(aws vpc-lattice list-target-groups --query "items[?name=='k8s-checkout-checkout'].id" --output text)
-#
-#if [ ! -z "$tg1" ]; then
-#  for id in $(aws vpc-lattice list-targets --target-group-identifier $tg1 --query 'items[].id' --output text); do
-#    aws vpc-lattice deregister-targets --target-group-identifier $tg1 --targets id=$id,port=8080 > /dev/null
-#  done
-#
-#  aws vpc-lattice delete-target-group --target-group-identifier $tg1 > /dev/null
-#fi
-#
-#tg2=$(aws vpc-lattice list-target-groups --query "items[?name=='k8s-checkout-checkoutv2'].id" --output text)
-#
-#if [ ! -z "$tg2" ]; then
-#  for id in $(aws vpc-lattice list-targets --target-group-identifier $tg2 --query 'items[].id' --output text); do
-#    aws vpc-lattice deregister-targets --target-group-identifier $tg2 --targets id=$id,port=8080 > /dev/null
-#  done
-#
-#  aws vpc-lattice delete-target-group --target-group-identifier $tg2 > /dev/null
-#fi
-
-PREFIX_LIST_ID=$(aws ec2 describe-managed-prefix-lists --query "PrefixLists[?PrefixListName=="\'com.amazonaws.$AWS_REGION.vpc-lattice\'"].PrefixListId" | jq --raw-output .[])
-MANAGED_PREFIX=$(aws ec2 get-managed-prefix-list-entries --prefix-list-id $PREFIX_LIST_ID --output json  | jq -r '.Entries[0].Cidr')
 CLUSTER_SG=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --output json| jq -r '.cluster.resourcesVpcConfig.clusterSecurityGroupId')
-aws ec2 revoke-security-group-ingress --group-id $CLUSTER_SG --cidr $MANAGED_PREFIX --protocol -1 > /dev/null
+
+IPV4_PREFIX_LIST_ID=$(aws ec2 describe-managed-prefix-lists --query "PrefixLists[?PrefixListName=="\'com.amazonaws.$AWS_REGION.vpc-lattice\'"].PrefixListId" | jq --raw-output .[])
+IPV4_MANAGED_PREFIX=$(aws ec2 get-managed-prefix-list-entries --prefix-list-id $IPV4_PREFIX_LIST_ID --output json  | jq -r '.Entries[0].Cidr')
+
+ipv4_sg_check=$(aws ec2 describe-security-group-rules --filters Name="group-id",Values="$CLUSTER_SG" --query "SecurityGroupRules[?CidrIpv4=='$IPV4_MANAGED_PREFIX'].SecurityGroupRuleId" --output text)
+
+if [ ! -z "$ipv4_sg_check" ]; then
+  aws ec2 revoke-security-group-ingress --group-id $CLUSTER_SG --ip-permissions IpProtocol=-1,IpRanges=[{CidrIp=$IPV4_MANAGED_PREFIX}] > /dev/null
+fi
+
+IPV6_PREFIX_LIST_ID=$(aws ec2 describe-managed-prefix-lists --query "PrefixLists[?PrefixListName=="\'com.amazonaws.$AWS_REGION.ipv6.vpc-lattice\'"].PrefixListId" | jq --raw-output .[])
+IPV6_MANAGED_PREFIX=$(aws ec2 get-managed-prefix-list-entries --prefix-list-id $IPV6_PREFIX_LIST_ID --output json  | jq -r '.Entries[0].Cidr')
+
+ipv6_sg_check=$(aws ec2 describe-security-group-rules --filters Name="group-id",Values="$CLUSTER_SG" --query "SecurityGroupRules[?CidrIpv6=='$IPV6_MANAGED_PREFIX'].SecurityGroupRuleId" --output text)
+
+if [ ! -z "$ipv6_sg_check" ]; then
+  aws ec2 revoke-security-group-ingress --group-id $CLUSTER_SG --ip-permissions IpProtocol=-1,Ipv6Ranges=[{CidrIpv6=$IPV6_MANAGED_PREFIX}] > /dev/null
+fi

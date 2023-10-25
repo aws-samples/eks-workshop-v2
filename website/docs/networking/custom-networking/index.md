@@ -7,7 +7,7 @@ sidebar_custom_props: {"module": true}
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash wait=30 timeout=300
+```bash tags=ipv4 wait=30 timeout=300
 $ prepare-environment networking/custom-networking
 ```
 

@@ -405,6 +405,7 @@ ingress:
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
+    %{ if local.is_ipv6 }alb.ingress.kubernetes.io/ip-address-type: dualstack%{ endif }
   ingressClassName: alb
 
 datasources:

@@ -41,6 +41,8 @@ module "kubecost" {
 
   helm_config = {
     version = "1.102.0"
-    values = [data.http.kubecost_values.body, templatefile("${path.module}/values.yaml", {})]
+    values = [data.http.kubecost_values.body, templatefile("${path.module}/values.yaml", {
+      is_ipv6 = local.is_ipv6
+    })]
   }
 }

@@ -2,4 +2,5 @@ service:
   type: LoadBalancer
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: instance
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+    %{ if is_ipv6 }service.beta.kubernetes.io/aws-load-balancer-ip-address-type: dualstack%{ endif }

@@ -14,23 +14,64 @@ $ curl $ADDRESS/catalogue
 
 The first thing we'll do is re-create the Ingress for `ui` component adding the annotation `alb.ingress.kubernetes.io/group.name`:
 
+<tabs groupId="ip-version">
+  <tabItem value="ipv4" label="IPv4">
+
 ```file
-manifests/modules/exposing/ingress/multiple-ingress/ingress-ui.yaml
+manifests/modules/exposing/ingress/multiple-ingress/ipv4/ingress-ui.yaml
 ```
+
+  </tabItem>
+  <tabItem value="ipv6" label="IPv6">
+
+```file
+manifests/modules/exposing/ingress/multiple-ingress/ipv6/ingress-ui.yaml
+```
+
+  </tabItem>
+</tabs>
 
 Now, let's create a separate Ingress for the `catalog` component that also leverages the same `group.name`:
 
+<tabs groupId="ip-version">
+  <tabItem value="ipv4" label="IPv4">
+
 ```file
-manifests/modules/exposing/ingress/multiple-ingress/ingress-catalog.yaml
+manifests/modules/exposing/ingress/multiple-ingress/ipv4/ingress-catalog.yaml
 ```
+
+  </tabItem>
+  <tabItem value="ipv6" label="IPv6">
+
+```file
+manifests/modules/exposing/ingress/multiple-ingress/ipv6/ingress-catalog.yaml
+```
+
+  </tabItem>
+</tabs>
+
+Lets apply these manifests:
+
+<tabs groupId="ip-version">
+  <tabItem value="ipv4" label="IPv4">
+
+```bash timeout=180 hook=add-ingress hookTimeout=430 tags=ipv4
+$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/multiple-ingress/ipv4
+```
+
+  </tabItem>
+  <tabItem value="ipv6" label="IPv6">
+
+```bash timeout=180 hook=add-ingress hookTimeout=430 tags=ipv6
+$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/multiple-ingress/ipv6
+```
+
+  </tabItem>
+</tabs>
 
 This ingress is also configuring rules to route requests prefixed with `/catalogue` to the `catalog` component.
 
-Apply these manifests to the cluster:
-
-```bash timeout=180 hook=add-ingress hookTimeout=430
-$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/multiple-ingress
-```
+## Verify Ingress resource
 
 We'll now have two separate Ingress objects in our cluster:
 
@@ -64,7 +105,7 @@ https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=
 To wait until the load balancer has finished provisioning you can run this command:
 
 ```bash
-$ wait-for-lb $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ wait-for-lb $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")/home
 ```
 
 Try accessing the new Ingress URL in the browser as before to check the web UI still works:

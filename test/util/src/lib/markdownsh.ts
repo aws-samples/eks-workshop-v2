@@ -7,10 +7,12 @@ import { DefaultShell, Shell, ShellError, ShellTimeout } from "./shell/shell.js"
 import fs from 'fs'
 
 export class MarkdownSh {
-  private gatherer = new Gatherer();
+  private gatherer : Gatherer;
 
   constructor(private glob: string,
-    private debug: boolean) { 
+    private debug: boolean,
+    private skipTags: string) { 
+    this.gatherer  = new Gatherer(skipTags.split(','));
   }
 
   async plan(directory: string) {

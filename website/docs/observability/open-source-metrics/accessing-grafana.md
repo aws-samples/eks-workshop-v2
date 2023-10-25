@@ -2,7 +2,6 @@
 title: "Accessing Grafana"
 sidebar_position: 30
 ---
-
 An instance of Grafana has been pre-installed in your EKS cluster. To access it you first need to retrieve the URL:
 
 ```bash hook=check-grafana

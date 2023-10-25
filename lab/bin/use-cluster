@@ -22,6 +22,8 @@ fi
 
 default_nodegroup_name=$(echo "$nodegroup_output" | jq '.nodegroups[0]')
 
+network_family=$(aws eks describe-cluster --name $cluster_name --query "cluster.kubernetesNetworkConfig.ipFamily" --output text)
+
 cat << EOT > /home/ec2-user/.bashrc.d/env.bash
 aws eks update-kubeconfig --name ${cluster_name}
 set -a
@@ -31,7 +33,7 @@ EKS_DEFAULT_MNG_MIN=3
 EKS_DEFAULT_MNG_MAX=6
 EKS_DEFAULT_MNG_DESIRED=3
 AWS_ACCOUNT_ID=${AWS_ACCOUNT_ID}
-EKS_IP_FAMILY=ipv4
+EKS_IP_FAMILY=${network_family}
 set +a
 EOT
 

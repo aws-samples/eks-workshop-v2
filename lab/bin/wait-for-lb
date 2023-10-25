@@ -9,7 +9,7 @@ echo "Waiting for ${host}..."
 EXIT_CODE=0
 
 timeout -s TERM 600 bash -c \
-  'while [[ "$(curl -s -o /dev/null -L -w ''%{http_code}'' ${host}/home)" != "200" ]];\
+  'while [[ "$(curl -s -o /dev/null -L -w ''%{http_code}'' ${host})" != "200" ]];\
   do sleep 5;\
   done' || EXIT_CODE=$?
 

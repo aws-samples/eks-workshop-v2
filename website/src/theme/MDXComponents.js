@@ -15,4 +15,6 @@ export default {
   terminal: Terminal,
   browser: BrowserWindow,
   kustomization: Kustomization,
+  tabs: Tabs,
+  tabItem: TabItem,
 };

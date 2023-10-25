@@ -26,7 +26,7 @@ export class Page {
 
 export class Script {
   constructor(public command: string, public wait: number, public timeout: number, 
-    public hook: string | null, public hookTimeout: number, public expectError: boolean, public lineNumber: number | undefined) { 
+    public hook: string | null, public hookTimeout: number, public expectError: boolean, public lineNumber: number | undefined, public tags: string[]) { 
   }
 }
 
@@ -41,6 +41,7 @@ export class Gatherer {
   static TEST_KEY: string = 'test';
   static EXPECT_ERROR_KEY: string = 'expectError';
   static RAW_KEY: string = 'raw';
+  static TAGS_KEY: string = 'tags';
 
   static INDEX_PAGES : Array<string> = ['_index.md', 'index.en.md', 'index.md']
 
@@ -48,6 +49,8 @@ export class Gatherer {
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkFrontmatter);
+
+  constructor(public skipTags: string[]) {}
 
   public async gather(directory: string): Promise<Category | null> {
     if(!fs.existsSync(directory)) {
@@ -171,6 +174,7 @@ export class Gatherer {
           let hookTimeout = 0
           let expectError = false
           let raw = false;
+          let tags : string[] = [];
   
           if(meta) {
             // TODO: Change this to regex https://regex101.com/r/uB4sI9/1
@@ -206,6 +210,9 @@ export class Gatherer {
                     case Gatherer.HOOK_TIMEOUT_KEY:
                       hookTimeout = parseInt(value)
                       break;
+                    case Gatherer.TAGS_KEY:
+                      tags = value.split(',')
+                      break;
                     default:
                       console.log(`Warning: Unrecognized param ${key} in code block`);
                   }
@@ -213,12 +220,15 @@ export class Gatherer {
               });
             }
           }
+
+          const skipTagsIntersection = tags.filter(value => this.skipTags.includes(value));
+          const skip = skipTagsIntersection.length > 0;
   
-          if(add) {
+          if(add && !skip) {
             let command = this.extractCommand(child.value, raw)
 
             if(command.length > 0) {
-              data.push(new Script(command, wait, timeout, hook, hookTimeout, expectError, child.position?.start.line));
+              data.push(new Script(command, wait, timeout, hook, hookTimeout, expectError, child.position?.start.line, tags));
             }
           }
         }

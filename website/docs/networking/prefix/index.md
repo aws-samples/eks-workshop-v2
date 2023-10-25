@@ -7,7 +7,7 @@ sidebar_custom_props: {"module": true}
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=300 wait=30
+```bash tags=ipv4 timeout=300 wait=30
 $ prepare-environment networking/prefix
 ```
 
@@ -26,3 +26,14 @@ As more Pods scheduled additional prefixes will be requested for the existing EN
 ![prefix-flow](prefix_flow.jpeg)
 
 Please visit [EKS best practices guide](https://aws.github.io/aws-eks-best-practices/networking/prefix-mode/) for the list of recommendations for using VPC CNI in prefix mode.
+
+<table>
+  <tr>
+    <th>Fruit</th>
+    <td>Banana</td>
+  </tr>
+  <tr>
+    <th>Vegetable</th>
+    <td>Carrot</td>
+  </tr>
+</table>

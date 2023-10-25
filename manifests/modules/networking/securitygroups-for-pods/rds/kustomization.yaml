@@ -24,7 +24,5 @@ vars:
 patches:
 - catalog-configMap.yaml
 - secrets.yaml
-resources:
-- nlb.yaml
 configurations:
 - configuration.yaml

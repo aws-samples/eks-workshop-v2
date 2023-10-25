@@ -5,7 +5,7 @@ sidebar_position: 20
 
 An RDS database has been created in our account, let's retrieve its endpoint and password to be used later:
 
-```bash
+```bash tags=ipv4
 $ export CATALOG_RDS_ENDPOINT_QUERY=$(aws rds describe-db-instances --db-instance-identifier $EKS_CLUSTER_NAME-catalog --query 'DBInstances[0].Endpoint')
 $ export CATALOG_RDS_ENDPOINT=$(echo $CATALOG_RDS_ENDPOINT_QUERY | jq -r '.Address+":"+(.Port|tostring)')
 $ echo $CATALOG_RDS_ENDPOINT
@@ -15,7 +15,7 @@ $ export CATALOG_RDS_PASSWORD=$(aws ssm get-parameter --name $EKS_CLUSTER_NAME-c
 
 The first step in this process is to re-configure the catalog service to use an Amazon RDS dabase that has already been created. The application loads most of its configuration from a ConfigMap, let's take look at it:
 
-```bash
+```bash tags=ipv4
 $ kubectl -n catalog get -o yaml cm catalog
 apiVersion: v1
 data:
@@ -36,13 +36,13 @@ ConfigMap/catalog
 
 Let's apply this change to use the the RDS database:
 
-```bash
+```bash tags=ipv4
 $ kubectl apply -k ~/environment/eks-workshop/modules/networking/securitygroups-for-pods/rds
 ```
 
 Check that the ConfigMap has been updated with the new values:
 
-```bash
+```bash tags=ipv4
 $ kubectl get -n catalog cm catalog -o yaml
 apiVersion: v1
 data:
@@ -58,7 +58,7 @@ metadata:
 
 Now we need to recycle the catalog Pods to pick up our new ConfigMap contents:
 
-```bash expectError=true
+```bash tags=ipv4 expectError=true
 $ kubectl delete pod -n catalog -l app.kubernetes.io/component=service
 pod "catalog-788bb5d488-9p6cj" deleted
 $ kubectl rollout status -n catalog deployment/catalog --timeout 30s
@@ -68,7 +68,7 @@ error: timed out waiting for the condition
 
 We got an error, it looks like our catalog Pods failed to restart in time. What's gone wrong? Let's check the Pod logs to see what happened:
 
-```bash
+```bash tags=ipv4
 $ kubectl -n catalog logs deployment/catalog
 2022/12/19 17:43:05 Error: Failed to prep migration dial tcp 10.42.11.72:3306: i/o timeout
 2022/12/19 17:43:05 Error: Failed to run migration dial tcp 10.42.11.72:3306: i/o timeout
@@ -77,7 +77,7 @@ $ kubectl -n catalog logs deployment/catalog
 
 Our Pod is unable to connect to the RDS database. We can check the EC2 Security Group thats been applied to the RDS database like so:
 
-```bash
+```bash tags=ipv4
 $ aws ec2 describe-security-groups \
     --filters Name=vpc-id,Values=$VPC_ID Name=tag:Name,Values=$EKS_CLUSTER_NAME-catalog-rds | jq '.'
 {

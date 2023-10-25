@@ -14,19 +14,7 @@ after() {
     exit 1
   fi
 
-  EXIT_CODE=0
-
-  timeout -s TERM 400 bash -c \
-    'while [[ "$(curl -s -o /dev/null -L -w ''%{http_code}'' ${ui_endpoint}/home)" != "200" ]];\
-    do sleep 20;\
-    done' || EXIT_CODE=$?
-
-  echo "Timeout completed"
-
-  if [ $EXIT_CODE -ne 0 ]; then
-    >&2 echo "Ingress did not become available after 400 seconds"
-    exit 1
-  fi
+  wait-for-lb ${ui_endpoint}/home
 }
 
 "$@"

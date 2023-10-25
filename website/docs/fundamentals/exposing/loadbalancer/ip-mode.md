@@ -21,16 +21,40 @@ Let's reconfigure our NLB to use IP mode and look at the effect it has on the in
 
 This is the patch we'll be applying to re-configure the Service:
 
+<tabs groupId="ip-version">
+  <tabItem value="ipv4" label="IPv4">
+
 ```kustomization
-modules/exposing/load-balancer/ip-mode/nlb.yaml
+modules/exposing/load-balancer/ipv4/ip-mode/nlb.yaml
 Service/ui-nlb
 ```
 
 Apply the manifest with kustomize:
 
-```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/load-balancer/ip-mode
+```bash tags=ipv4
+$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/load-balancer/ipv4/ip-mode
 ```
+
+  </tabItem>
+  <tabItem value="ipv6" label="IPv6">
+
+```kustomization
+modules/exposing/load-balancer/ipv6/ip-mode/nlb.yaml
+Service/ui-nlb
+```
+
+Currently, NLB only supports "IP mode" for IPv6 targets. The AWS Load Balancer Controller supports creating dual-stack NLBs on IPv6 cluster. The ELB controller supports dual-stack NLB ffor  pods running on both AWS EC2 instances and AWS Fargate. This Service will create a dual-stack Network Load Balancer with both "A" and "AAAA" records that listens on port 80 and forwards connections to the IPv6 address of ui Pods on port 8080.
+
+Apply the manifest with kustomize:
+
+```bash tags=ipv6
+$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/load-balancer/ipv6/ip-mode
+```
+
+  </tabItem>
+</tabs>
+
+## Verify the service
 
 It will take a few minutes for the configuration of the load balancer to be updated. Run the following command to ensure the annotation is updated:
 
@@ -129,5 +153,5 @@ As expected we now have 3 targets, matching the number of replicas in the ui Dep
 If you want to wait to make sure the application still functions the same, run the following command. Otherwise you can proceed to the next module.
 
 ```bash timeout=240
-$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")/home
 ```

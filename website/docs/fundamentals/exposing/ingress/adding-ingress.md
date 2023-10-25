@@ -5,16 +5,36 @@ sidebar_position: 20
 
 Let's create an Ingress resource with the following manifest:
 
+<tabs groupId="ip-version">
+  <tabItem value="ipv4" label="IPv4">
+
 ```file
-manifests/modules/exposing/ingress/creating-ingress/ingress.yaml
+manifests/modules/exposing/ingress/creating-ingress/ipv4/ingress.yaml
 ```
 
 This will cause the AWS Load Balancer Controller to provision an Application Load Balancer and configure it to route traffic to the Pods for the `ui` application.
 
-```bash timeout=180 hook=add-ingress hookTimeout=430
-$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/creating-ingress
+```bash timeout=180 hook=add-ingress hookTimeout=430 tags=ipv4
+$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/creating-ingress/ipv4
 ```
 
+  </tabItem>
+  <tabItem value="ipv6" label="IPv6">
+
+```file
+manifests/modules/exposing/ingress/creating-ingress/ipv6/ingress.yaml
+```
+
+This will cause the AWS Load Balancer Controller to provision an Application Load Balancer with both "A" and "AAAA" records and configures it to route traffic to the Pods for the `ui` application. The `alb.ingress.kubernetes.io/ip-address-type: dualstack` annotation is key to enabling IPv6 support.
+
+```bash timeout=180 hook=add-ingress hookTimeout=430 tags=ipv6
+$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/creating-ingress/ipv6
+```
+  
+  </tabItem>
+</tabs>
+
+## Verify Ingress resource
 Let's inspect the Ingress object created:
 
 ```bash
@@ -110,7 +130,7 @@ k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
 To wait until the load balancer has finished provisioning you can run this command:
 
 ```bash
-$ wait-for-lb $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ wait-for-lb $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")/home
 ```
 
 And access it in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.

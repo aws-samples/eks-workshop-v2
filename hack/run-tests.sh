@@ -49,10 +49,18 @@ if [ ! -z "$BACKGROUND" ]; then
   background_args="--detach"
 fi
 
+network_family=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --query "cluster.kubernetesNetworkConfig.ipFamily" --output text)
+
+skip_tags_args="--skip-tags ipv6"
+
+if [[ "$network_family" == "ipv6" ]]; then
+  skip_tags_args="--skip-tags ipv4"
+fi
+
 echo "Running test suite..."
 
 $CONTAINER_CLI run $background_args \
   -v $SCRIPT_DIR/../website/docs:/content \
   -v $SCRIPT_DIR/../manifests:/manifests \
   -e 'EKS_CLUSTER_NAME' -e 'AWS_REGION' \
-  $aws_credential_args $container_image -g "{$module,$module/**}" --hook-timeout 1200 --timeout 1200 ${AWS_EKS_WORKSHOP_TEST_FLAGS}
+  $aws_credential_args $container_image -g "{$module,$module/**}" --hook-timeout 1200 --timeout 1200 $skip_tags_args --debug ${AWS_EKS_WORKSHOP_TEST_FLAGS}

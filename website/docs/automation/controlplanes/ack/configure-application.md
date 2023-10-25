@@ -58,7 +58,7 @@ k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
 To wait until the load balancer has finished provisioning you can run this command:
 
 ```bash timeout=610
-$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")/home
 ```
 
 Once the load balancer is provisioned you can access it by pasting the URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.

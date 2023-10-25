@@ -37,6 +37,11 @@ variable "resources_precreated" {
   default = false
 }
 
+variable "eks_network_family" {
+  type    = string
+  default = "ipv4"
+}
+
 data "aws_partition" "current" {}
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
@@ -80,6 +85,9 @@ locals {
   eks_oidc_issuer_url  = replace(data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer, "https://", "")
   eks_cluster_endpoint = data.aws_eks_cluster.eks_cluster.endpoint
   eks_cluster_version  = data.aws_eks_cluster.eks_cluster.version
+
+  is_ipv4 = var.eks_network_family == "ipv4"
+  is_ipv6 = ! local.is_ipv4
 
   addon_context = {
     aws_caller_identity_account_id = data.aws_caller_identity.current.account_id

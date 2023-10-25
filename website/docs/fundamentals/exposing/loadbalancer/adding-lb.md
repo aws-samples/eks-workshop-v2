@@ -3,21 +3,25 @@ title: "Creating the load balancer"
 sidebar_position: 20
 ---
 
+:::note
+As of today, NLB doesn't support "instance mode" for IPv6 targets. You can skip ahead to the "IP mode" section if you are running this workshop on IPv6 cluster.
+:::
+
 Let's create an additional Service that provisions a load balancer with the following kustomization:
 
 ```file
-manifests/modules/exposing/load-balancer/nlb/nlb.yaml
+manifests/modules/exposing/load-balancer/ipv4/nlb/nlb.yaml
 ```
 
 This `Service` will create a Network Load Balancer that listens on port 80 and forwards connections to the `ui` Pods on port 8080. An NLB is a layer 4 load balancer that on our case operates at the TCP layer.
 
-```bash timeout=180 hook=add-lb hookTimeout=430
-$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/load-balancer/nlb
+```bash timeout=180 hook=add-lb hookTimeout=430 tags=ipv4
+$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/load-balancer/ipv4/nlb
 ```
 
 Let's inspect the Service resources for the `ui` application again:
 
-```bash
+```bash tags=ipv4
 $ kubectl get service -n ui
 ```
 
@@ -27,7 +31,7 @@ The NLB will take several minutes to provision and register its targets so take 
 
 First, take a look at the load balancer itself:
 
-```bash
+```bash tags=ipv4
 $ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`]'
 [
     {
@@ -71,7 +75,7 @@ What does this tell us?
 
 We can also inspect the targets in the target group that was created by the controller:
 
-```bash
+```bash tags=ipv4
 $ ALB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`].LoadBalancerArn' | jq -r '.[0]')
 $ TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --load-balancer-arn $ALB_ARN | jq -r '.TargetGroups[0].TargetGroupArn')
 $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
@@ -119,15 +123,15 @@ https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:service.k8s.aws/stack=
 
 Get the URL from the Service resource:
 
-```bash
+```bash tags=ipv4
 $ kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
 k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
 
 To wait until the load balancer has finished provisioning you can run this command:
 
-```bash
-$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+```bash tags=ipv4
+$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")/home
 ```
 
 Now that our application is exposed to the outside world, lets try to access it by pasting that URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.

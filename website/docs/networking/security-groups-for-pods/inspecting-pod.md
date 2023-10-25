@@ -7,7 +7,7 @@ Now that the catalog Pod is running and successfully using our Amazon RDS databa
 
 The first thing we can do is check the annotations of the Pod:
 
-```bash
+```bash tags=ipv4
 $ kubectl get pod -n catalog -l app.kubernetes.io/component=service -o yaml \
   | yq '.items[0].metadata.annotations'
 kubernetes.io/psp: eks.privileged
@@ -21,7 +21,7 @@ The `vpc.amazonaws.com/pod-eni` annotation shows metadata regarding things like 
 
 The Kubernetes events will also show the VPC resource controller taking action in response to the configuration we added:
 
-```bash
+```bash tags=ipv4
 $ kubectl get events -n catalog | grep SecurityGroupRequested
 5m         Normal    SecurityGroupRequested   pod/catalog-6ccc6b5575-w2fvm    Pod will get the following Security Groups [sg-037ec36e968f1f5e7]
 ```

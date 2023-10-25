@@ -82,6 +82,7 @@ mkdir -p /eks-workshop/terraform
 cp $manifests_path/.workshop/terraform/base.tf /eks-workshop/terraform
 
 export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
+export TF_VAR_eks_network_family="$EKS_IP_FAMILY"
 
 RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-""}
 
@@ -117,7 +118,9 @@ if [ ! -z "$module" ]; then
     terraform -chdir="$tf_dir" apply -refresh=false --auto-approve > /tmp/terraform-apply.log
   fi
 
-  if [ -d "$module_path/.workshop/manifests" ]; then
+  if [ -d "$module_path/.workshop/manifests/$EKS_IP_FAMILY" ]; then
+    kubectl apply -k "$module_path/.workshop/manifests/$EKS_IP_FAMILY" > /dev/null
+  elif [ -d "$module_path/.workshop/manifests" ]; then
     kubectl apply -k "$module_path/.workshop/manifests" > /dev/null
   fi
 fi

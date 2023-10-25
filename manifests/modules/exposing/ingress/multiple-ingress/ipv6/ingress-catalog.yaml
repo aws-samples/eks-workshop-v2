@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: catalog
+  namespace: catalog
+  labels:
+    app.kubernetes.io/created-by: eks-workshop
+  annotations:
+    alb.ingress.kubernetes.io/target-type: ip
+    # HIGHLIGHT
+    alb.ingress.kubernetes.io/group.name: retail-app-group
+    alb.ingress.kubernetes.io/ip-address-type: dualstack
+spec:
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - path: /catalogue
+        pathType: Prefix
+        backend:
+          service:
+            name: catalog
+            port:
+              number: 80
