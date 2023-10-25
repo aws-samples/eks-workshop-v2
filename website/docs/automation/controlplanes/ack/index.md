@@ -15,7 +15,7 @@ This will make the following changes to your lab environment:
 - Install the AWS Controllers for DynamoDB in the Amazon EKS cluster
 - Install the AWS Load Balancer controller in the Amazon EKS cluster
 
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/automation/controlplanes/ack/.workshop/terraform).
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/automation/controlplanes/ack/.workshop/terraform). 
 
 :::
 
@@ -27,4 +27,6 @@ The sample application could be run completely within your cluster, including st
 
 In this lab, we'll leverage ACK to provision these services and create secrets and configmaps containing the binding information connecting the application to these AWS managed services.
 
-![EKS with RDS and MQ](./assets/eks-workshop-ddb.png)
+An important point to note here is that during the provisioning process above, we're using the new ACK Terraform module which allows you to rapidly deploy AWS Service Controllers to your cluster. See [here](https://registry.terraform.io/modules/aws-ia/eks-ack-addons/aws/latest#module_dynamodb) for more information.
+
+![EKS with DynamoDB](./assets/eks-workshop-ddb.png)
