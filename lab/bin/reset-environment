@@ -87,7 +87,7 @@ RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-""}
 
 echo "Cleaning up previous lab infrastructure..."
 
-tf_dir=$(realpath --relative-to='$PWD' '/eks-workshop/terraform')
+tf_dir=$(realpath --relative-to="$PWD" '/eks-workshop/terraform')
 
 terraform -chdir="$tf_dir" init -upgrade > /tmp/terraform-destroy-init.log
 terraform -chdir="$tf_dir" destroy --auto-approve > /tmp/terraform-destroy.log
