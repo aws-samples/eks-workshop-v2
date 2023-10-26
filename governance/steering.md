@@ -11,9 +11,6 @@ The Steering Committee is a 6 member body, overseeing the governance of the EKS 
 | Sai Vennam    | [@svennam92](https://github.com/svennam92)       | Principal EKS DA                            |
 | Niall Thomson | [@niallthomson](https://github.com/niallthomson) | Specialist Solution Architect, Containers   |
 | Ray Krueger   | [@raykrueger](https://github.com/raykrueger)     | Principal Container Specialist              |
-| Ameet Naik    | [@ameetnaik](https://github.com/ameetnaik)       | Technical Account Manager                   |
-| Kamran Habib  | [@kmhabib](https://github.com/kmhabib)           | Solution Architect (TFC at large)           |
-| Theo Salvo    | [@buzzsurfr](https://github.com/buzzsurfr)       | Container Specialist (TFC core team member) |
 
 ## Working Groups
 
@@ -23,10 +20,10 @@ The working groups are led by chairs (6 month terms) and maintainers (6 month te
 | :--------------- | :------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------- |
 | Infrastructure   | [Niall Thomson](https://github.com/niallthomson)   |                                                                                                                                                 |
 | Fundamentals     | [Sai Vennam](https://github.com/svennam92)         | [Bijith Nair](https://github.com/bijithnair), [Tolu Okuboyejo](https://github.com/oktab1), [Hemanth AVS](https://github.com/hemanth-avs)        |
-| Autoscaling      | [Sanjeev Ganjihal](https://github.com/sanjeevrg89) |                                                                                                                                                 |
-| Automation       | [Carlos Santana](https://github.com/csantanapr)    | [Tsahi Duek](https://github.com/tsahiduek), [Christina Andonov](https://github.com/candonov), [Sébastien Allamand](https://github.com/allamand) |
-| Machine Learning | [Masatoshi Hayashi](https://github.com/literalice) | [Benjamin Gardiner](https://github.com/bkgardiner)                                                                                              |
-| Networking       | [Sheetal Joshi](https://github.com/sheetaljoshi)   | [Umair Ishaq](https://github.com/umairishaq)                                                                                                    |
+| Autoscaling      | _Open_ |                                                                                                                                                 |
+| Automation       | [Carlos Santana](https://github.com/csantanapr)    | [Tsahi Duek](https://github.com/tsahiduek), [Sébastien Allamand](https://github.com/allamand), [Yuriy Bezsonov](https://github.com/ybezsonov)   |
+| Machine Learning | [Benjamin Gardiner](https://github.com/bkgardiner) | [Masatoshi Hayashi](https://github.com/literalice)                                                                                              |
+| Networking       | [Sheetal Joshi](https://github.com/sheetaljoshi)   |                                                                                                    |
 | Observability    | [Nirmal Mehta](https://github.com/normalfaults)    | [Steven David](https://github.com/StevenDavid)                                                                                                  |
 | Security         | [Rodrigo Bersa](https://github.com/rodrigobersa)   |                                                                                                                                                 |
 | Storage          | [Eric Heinrichs](https://github.com/heinrichse)    | [Andrew Peng](https://github.com/pengc99)                                                                                                       |
