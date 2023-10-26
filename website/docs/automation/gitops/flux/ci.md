@@ -57,6 +57,12 @@ You can navigate to `CodePipeline` in AWS Console and explore `eks-workshop-reta
 
 As a result of a CodePipeline run with CodeBuild you will have a new image in ECR
 
+```bash
+$ echo IMAGE_URI_UI=$IMAGE_URI_UI
+```
+
+The suffix `z7llv2` in the name `retail-store-sample-ui-z7llv2` is random and will be different in your case.
+
 ![ci-start](assets/ecr.png)
 
 While we are waiting for pipeline to create new images (5-10 minutes), let's [automate image updates to Git](https://fluxcd.io/flux/guides/image-update/) using Flux Image Automation Controller.
@@ -162,7 +168,7 @@ ui     alb     *       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com   80    
 
 We wait 2-5 minutes until Application Load Balancer will be provisioned and check the UI page using url of the ingress.
 
-```bash test=false
+```bash timeout=300
 $ export UI_URL=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
 $ wait-for-lb $UI_URL
 ```
@@ -193,10 +199,8 @@ $ git -C ~/environment/retail-store-sample-codecommit push
 
 Wait until CodePipeline will build the new image and Flux will deploy it.
 
-```bash test=false
+```bash timeout=900
 $ kubectl -n ui describe deployment ui | grep Image
-$ # aws codepipeline start-pipeline-execution --name eks-workshop-retail-store-sample
-$ # sleep 10
 $ while [[ "$(aws codepipeline get-pipeline-state --name eks-workshop-retail-store-sample --query 'stageStates[1].actionStates[0].latestExecution.status' --output text)" != "InProgress" ]]; do echo "Waiting for pipeline to start ..."; sleep 10; done && echo "Pipeline started."
 $ while [[ "$(aws codepipeline get-pipeline-state --name eks-workshop-retail-store-sample --query 'stageStates[1].actionStates[2].latestExecution.status' --output text)" != "Succeeded" ]]; do echo "Waiting for pipeline to reach 'Succeeded' state ..."; sleep 10; done && echo "Pipeline has reached the 'Succeeded' state."
 
