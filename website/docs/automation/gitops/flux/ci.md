@@ -211,13 +211,7 @@ $ kubectl -n ui get pods
 $ kubectl -n ui describe deployment ui | grep Image
 
 $ export UI_URL=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
-$ while [[ $(curl -s -o /dev/null -w "%{http_code}" $UI_URL/home) != "200" ]]; do sleep 1; done
-$ curl $UI_URL/home | grep "Retail Store Sample"
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-10        <title>Retail Store Sample App</title>
-                <a class="navbar-brand" href="/home">Retail Store Sample New</a>
-0 13258  100 13258    0     0   289k      0 --:--:-- --:--:-- --:--:--  294k
+$ wait-for-lb $UI_URL
 ```
 
 After successful build and deployment (5-10 minutes) we will have the new version of UI application up and running.
