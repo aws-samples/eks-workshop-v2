@@ -3,7 +3,7 @@ title: "AWS Secrets and Configuration Provider (ASCP)"
 sidebar_position: 62
 ---
 
-When you ran the `prepare-environment` script detailed in a [previous step](./index.md), it has already installed the AWS Secrets and Configuration Provider (ASCP) for the Kubernetes Secrets Store CSI Driver that's required for this lab.
+When we ran the `prepare-environment` script detailed in a [previous step](./index.md), it has already installed the AWS Secrets and Configuration Provider (ASCP) for the Kubernetes Secrets Store CSI Driver that's required for this lab.
 
 Lets then, validate if the addons deployed.
 
@@ -39,10 +39,11 @@ In order to provide access to your secrets stored in AWS Secrets Manager via CSI
 manifests/modules/security/secrets-manager/secret-provider-class.yaml
 ```
 
-In the above resource, you have two main configurations that you should be focusing. So go head and create the resource to explore those specifications.
+In the above resource, we have two main configurations that we should be focusing. So go ahead and create the resource to explore those specifications.
 
 ```bash
-$ cat eks-workshop/modules/security/secrets-manager/secret-provider-class.yaml | envsubst | kubectl apply -f -
+$ cat ~/environment/eks-workshop/modules/security/secrets-manager/secret-provider-class.yaml \
+  | envsubst | kubectl apply -f -
 ```
 
 The *objects* parameter, which is pointing to a secret named as `eks-workshop/catalog-secret` that we will store in AWS Secrets Manager in the next step. Note that we are using [jmesPath](https://jmespath.org/), to extract a specific key-value from the secret that is JSON-formatted.
