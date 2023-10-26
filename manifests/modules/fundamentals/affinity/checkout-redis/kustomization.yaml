@@ -3,5 +3,5 @@ kind: Kustomization
 bases:
 - ../checkout
 patches:
-- checkout-redis.yaml
-- checkout.yaml
+- path: checkout-redis.yaml
+- path: checkout.yaml

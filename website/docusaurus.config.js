@@ -65,10 +65,9 @@ const config = {
             [remarkIncludeKustomization, { manifestsDir: kustomizationsDir }],
             //[remarkBlueprintsAddon, {terraformDir: `${rootDir}/../terraform/local`}]
           ],
-          editUrl:
-            'https://github.com/aws-samples/eks-workshop-v2/tree/main/website',
+          editUrl: 'https://github.com/aws-samples/eks-workshop-v2/tree/main/website',
           exclude: [
-            'fundamentals/storage/fsx-for-netapp-ontap'
+            'security/guardduty/runtime-monitoring/reverse-shell.md'
           ]
         },
         theme: {

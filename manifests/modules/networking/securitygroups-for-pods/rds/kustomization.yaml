@@ -22,8 +22,8 @@ vars:
   fieldref:
     fieldpath: data.CATALOG_RDS_PASSWORD
 patches:
-- catalog-configMap.yaml
-- secrets.yaml
+- path: catalog-configMap.yaml
+- path: secrets.yaml
 resources:
 - nlb.yaml
 configurations:

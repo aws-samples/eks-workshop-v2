@@ -26,9 +26,6 @@ flux_checksum='fe6d32da40d5f876434e964c46bc07d00af138c560e063fdcfa8f73e37224087'
 argocd_version='2.7.4'
 argocd_checksum='1b9a5f7c47b3c1326a622533f073cef46511e391d296d9b075f583b474780356'
 
-terraform_version='1.4.1'
-terraform_checksum='9e9f3e6752168dea8ecb3643ea9c18c65d5a52acc06c22453ebc4e3fc2d34421'
-
 download_and_verify () {
   url=$1
   checksum=$2
@@ -42,9 +39,9 @@ download_and_verify () {
   rm "$out_file.sha256"
 }
 
-yum install --quiet -y findutils jq tar gzip zsh git diffutils wget tree unzip openssl gettext bash-completion python3 pip3 python3-pip amazon-linux-extras
+yum install --quiet -y findutils jq tar gzip zsh git diffutils wget tree unzip openssl gettext bash-completion python3 pip3 python3-pip amazon-linux-extras yum-utils
 
-pip3 install awscurl
+pip3 install -q awscurl==0.28 urllib3==1.26.6
 
 # kubectl
 download_and_verify "https://dl.k8s.io/release/v$kubectl_version/bin/linux/amd64/kubectl" "$kubectl_checksum" "kubectl"
@@ -97,12 +94,9 @@ chmod +x flux
 mv ./flux /usr/local/bin
 rm -rf flux.tar.gz
 
-# terraform
-download_and_verify "https://releases.hashicorp.com/terraform/1.4.1/terraform_1.4.1_linux_amd64.zip" "$terraform_checksum" "terraform.zip"
-unzip -o terraform.zip
-chmod +x terraform
-mv ./terraform /usr/local/bin
-rm -rf terraform.zip
+# terraform using Yum
+yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo && yum makecache fast
+yum -y install terraform-1.5.5-1.x86_64
 
 # argocd
 download_and_verify "https://github.com/argoproj/argo-cd/releases/download/v${argocd_version}/argocd-linux-amd64" "$argocd_checksum" "argocd-linux-amd64"
