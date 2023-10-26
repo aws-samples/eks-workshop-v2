@@ -5,7 +5,7 @@ sidebar_position: 20
 
 This section outlines how to build a cluster for the lab exercises using the [eksctl tool](https://eksctl.io/). This is the easiest way to get started, and is recommended for most learners.
 
-The `eksctl` utility has been pre-installed in Cloud9 so we can immediately create the cluster. This is the configuration that will be used to build the cluster:
+The `eksctl` utility has been pre-installed in your Amazon Cloud9 Environment, so we can immediately create the cluster. This is the configuration that will be used to build the cluster:
 
 ```file hidePath=true
 manifests/../cluster/eksctl/cluster.yaml
@@ -20,7 +20,7 @@ Based on this configuration `eksctl` will:
 
 Apply the configuration file like so:
 
-```bash test=false
+```bash
 $ export EKS_CLUSTER_NAME=eks-workshop
 $ curl -fsSL https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/cluster/eksctl/cluster.yaml | \
 envsubst | eksctl create cluster -f -
@@ -28,7 +28,7 @@ envsubst | eksctl create cluster -f -
 
 This generally takes 20 minutes. Once the cluster is created run this command to use the cluster for the lab exercises:
 
-```bash test=false
+```bash
 $ use-cluster $EKS_CLUSTER_NAME
 ```
 
@@ -46,12 +46,12 @@ Before deleting the Cloud9 environment we need to clean up the cluster that we s
 
 First use `delete-environment` to ensure that the sample application and any left-over lab infrastructure is removed:
 
-```bash test=false
+```bash
 $ delete-environment
 ```
 
 Next delete the cluster with `eksctl`:
 
-```bash test=false
+```bash
 $ eksctl delete cluster $EKS_CLUSTER_NAME --wait
 ```

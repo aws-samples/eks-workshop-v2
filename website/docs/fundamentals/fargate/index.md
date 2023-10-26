@@ -1,6 +1,6 @@
 ---
 title: Fargate
-sidebar_position: 20
+sidebar_position: 40
 sidebar_custom_props: {"module": true}
 ---
 

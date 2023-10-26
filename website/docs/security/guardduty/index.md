@@ -14,6 +14,12 @@ $ prepare-environment
 
 :::
 
-Amazon GuardDuty for EKS Protection monitors control plane activity by analyzing Kubernetes audit logs from existing and new Amazon EKS clusters in your accounts. GuardDuty is integrated with Amazon EKS, giving it direct access to the Kubernetes audit logs without requiring you to turn on or store these logs. Once a threat is detected, GuardDuty generates a security finding that includes container details such as pod ID, container image ID, and associated tags.
+Amazon GuardDuty offers threat detection enabling you to continuously monitor and protect your AWS accounts, workloads, and data stored in Amazon Simple Storage Service (Amazon S3). GuardDuty analyzes continuous metadata streams generated from your account and network activity found in AWS CloudTrail Events, Amazon Virtual Private Cloud (VPC) Flow Logs, and domain name system (DNS) Logs. GuardDuty also uses integrated threat intelligence such as known malicious IP addresses, anomaly detection, and machine learning (ML) to more accurately identify threats.
 
-At launch, GuardDuty for EKS Protection includes 27 new GuardDuty finding types that can help detect threats related to user and application activity captured in Kubernetes audit logs.
+Amazon GuardDuty makes it easy for you to continuously monitor your AWS accounts, workloads, and data stored in Amazon S3. GuardDuty operates completely independently from your resources, so there is no risk of performance or availability impacts to your workloads. The service is fully managed with integrated threat intelligence, anomaly detection, and ML. Amazon GuardDuty delivers detailed and actionable alerts that are easy to integrate with existing event management and workflow systems. There are no upfront costs and you pay only for the events analyzed, with no additional software to deploy or threat intelligence feed subscriptions required.
+
+GuardDuty has two categories of protection for EKS:
+1. EKS Audit Log Monitoring helps you detect potentially suspicious activities in your EKS clusters using Kubernetes audit log activity
+1. EKS Runtime Monitoring provides runtime threat detection coverage for Amazon Elastic Kubernetes Service (Amazon EKS) nodes and containers within your AWS environment
+
+In this section we'll look at both types of protection with practical examples.
