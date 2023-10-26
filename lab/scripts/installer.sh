@@ -116,8 +116,15 @@ if [ ! -z "$REPOSITORY_REF" ]; then
   cat << EOT > /usr/local/bin/reset-environment
 #!/bin/bash
 set -e
-ts=$(date +%s)
-curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/$REPOSITORY_REF/lab/bin/reset-environment | bash -s -- \$1 2>&1 | tee /eks-workshop/logs/action-\$ts.log
+ts=\$(date +%s)
+error=/eks-workshop/logs/action-\$ts.log
+set -o pipefail
+curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/$REPOSITORY_REF/lab/bin/reset-environment | bash -s -- \$1 2>&1 | tee \$error
+if [ \$? -ne 0 ]; then
+  echo "An error occurred, please contact your workshop proctor or raise an issue at https://github.com/aws-samples/eks-workshop-v2/issues"
+  echo "This is the log of that last action: \$error"
+fi
+set +o pipefail
 EOT
   chmod +x /usr/local/bin/reset-environment
   cat << EOT > /usr/local/bin/delete-environment
