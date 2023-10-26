@@ -59,7 +59,7 @@ As a result of a CodePipeline run with CodeBuild you will have a new image in EC
 
 ![ci-start](assets/ecr.png)
 
-While we are waiting for pipeline to create new images, let's [automate image updates to Git](https://fluxcd.io/flux/guides/image-update/) using Flux Image Automation Controller.
+While we are waiting for pipeline to create new images (5-10 minutes), let's [automate image updates to Git](https://fluxcd.io/flux/guides/image-update/) using Flux Image Automation Controller.
 
 First, we need to install Flux components.
 
