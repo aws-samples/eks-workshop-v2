@@ -131,8 +131,14 @@ resource "aws_iam_user_policy_attachment" "ci_access" {
   policy_arn = aws_iam_policy.ci_access.arn
 }
 
+resource "random_string" "ecr_ui_suffix" {
+  length = 6
+  upper = false
+  special = false
+}
+
 resource "aws_ecr_repository" "ecr_ui" {
-  name                 = "retail-store-sample-ui"
+  name                 = "retail-store-sample-ui-${random_string.ecr_ui_suffix.result}"
   image_tag_mutability = "MUTABLE"
   force_delete = true
 
@@ -341,7 +347,7 @@ resource "aws_codebuild_project" "codebuild_amd64" {
 
     environment_variable {
       name  = "ECR_URI"
-      value = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/retail-store-sample-ui"
+      value = aws_ecr_repository.ecr_ui.repository_url
     }
 
     environment_variable {
@@ -379,7 +385,7 @@ resource "aws_codebuild_project" "codebuild_arm64" {
 
     environment_variable {
       name  = "ECR_URI"
-      value = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/retail-store-sample-ui"
+      value = aws_ecr_repository.ecr_ui.repository_url
     }
 
     environment_variable {
@@ -417,7 +423,7 @@ resource "aws_codebuild_project" "codebuild_manifest" {
 
     environment_variable {
       name  = "ECR_URI"
-      value = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/retail-store-sample-ui"
+      value = aws_ecr_repository.ecr_ui.repository_url
     }
   }
 
