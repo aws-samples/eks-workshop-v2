@@ -27,20 +27,25 @@ module "eks_blueprints_addons" {
 }
 
 data "http" "kubecost_values" {
-  url    = "https://raw.githubusercontent.com/kubecost/cost-analyzer-helm-chart/v1.102.0/cost-analyzer/values-eks-cost-monitoring.yaml"
+  url    = "https://raw.githubusercontent.com/kubecost/cost-analyzer-helm-chart/v1.106.3/cost-analyzer/values-eks-cost-monitoring.yaml"
 }
 
 module "kubecost" {
+  source  = "aws-ia/eks-blueprints-addon/aws"
+  version = "1.1.1"
+
   depends_on = [
     module.aws-ebs-csi-driver,
     module.eks_blueprints_addons
   ]
 
-  source        = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/kubecost"
-  addon_context = local.addon_context
-
-  helm_config = {
-    version = "1.102.0"
-    values = [data.http.kubecost_values.body, templatefile("${path.module}/values.yaml", {})]
-  }
+  name             = "kubecost"
+  description      = "Kubecost Helm Chart deployment configuration"
+  namespace        = "kubecost"
+  create_namespace = true
+  chart            = "cost-analyzer"
+  chart_version    = "1.106.3"
+  repository       = "oci://public.ecr.aws/kubecost"
+  values           = [data.http.kubecost_values.body, templatefile("${path.module}/values.yaml", {})]
+  wait             = true
 }
