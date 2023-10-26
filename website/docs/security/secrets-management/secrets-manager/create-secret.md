@@ -3,10 +3,13 @@ title: "Storing secrets in AWS Secrets Manager"
 sidebar_position: 61
 ---
 
-First, we need to store a secret in AWS Secrets Manager, lets do that using the AWS CLI, by running the command like the example below in you Cloud9 Environment.
+First, we need to store a secret in AWS Secrets Manager, lets do that using the AWS CLI:
 
 ```bash
-$ aws secretsmanager create-secret --name "$EKS_CLUSTER_NAME/catalog-secret" --secret-string '{"username":"catalog_user", "password":"default_password"}' --region $AWS_REGION
+$ export SECRET_SUFFIX=$(openssl rand -hex 4)
+$ export SECRET_NAME="$EKS_CLUSTER_NAME-catalog-secret-${SECRET_SUFFIX}"
+$ aws secretsmanager create-secret --name "$SECRET_NAME" \
+  --secret-string '{"username":"catalog_user", "password":"default_password"}' --region $AWS_REGION
 {
     "ARN": "arn:aws:secretsmanager:$AWS_REGION:$AWS_ACCOUNT_ID:secret:$EKS_CLUSTER_NAME/catalog-secret-ABCdef",
     "Name": "eks-workshop/static-secret",
@@ -16,10 +19,10 @@ $ aws secretsmanager create-secret --name "$EKS_CLUSTER_NAME/catalog-secret" --s
 
 The command above is storing a secret with a JSON encoded key/value content, for `username` and `password` credentials.
 
-Validate the new stored secret in the [AWS Secrets Manager Console](https://console.aws.amazon.com/secretsmanager/listsecrets) or run the below command in your Cloud9 Environment.
+Validate the new stored secret in the [AWS Secrets Manager Console](https://console.aws.amazon.com/secretsmanager/listsecrets) or using this command:
 
 ```bash
-$ aws secretsmanager describe-secret --secret-id "$EKS_CLUSTER_NAME/catalog-secret"
+$ aws secretsmanager describe-secret --secret-id "$SECRET_NAME"
 {
     "ARN": "arn:aws:secretsmanager:us-west-2:068535243777:secret:eks-workshop/catalog-secret-WDD8yS",
     "Name": "eks-workshop/catalog-secret",

@@ -82,35 +82,8 @@ resource "aws_iam_policy" "secrets_manager" {
 POLICY
 }
 
-resource "kubernetes_annotations" "catalog-sa" {
-  api_version = "v1"
-  kind        = "ServiceAccount"
-  metadata {
-    name      = "catalog"
-    namespace = "catalog"
-  }
-  annotations = {
-    "eks.amazonaws.com/role-arn" = "${module.secrets_manager_role.iam_role_arn}"
-  }
-  force = true
-}
-
-resource "kubectl_manifest" "cluster_secretstore" {
-  yaml_body  = <<YAML
-apiVersion: external-secrets.io/v1beta1
-kind: ClusterSecretStore
-metadata:
-  name: "cluster-secret-store"
-spec:
-  provider:
-    aws:
-      service: SecretsManager
-      region: "${data.aws_region.current.name}"
-      auth:
-        jwt:
-          serviceAccountRef:
-            name: "external-secrets-sa"
-            namespace: "external-secrets"
-YAML
-  depends_on = [module.external_secrets]
+output "environment" {
+  value = <<EOF
+export CATALOG_IAM_ROLE="${module.secrets_manager_role.iam_role_arn}"
+EOF
 }

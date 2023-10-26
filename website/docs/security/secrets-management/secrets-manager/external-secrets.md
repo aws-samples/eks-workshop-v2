@@ -3,9 +3,7 @@ title: "External Secrets Operator"
 sidebar_position: 64
 ---
 
-The `prepare-environment` script that you ran in a [previous step](./index.md), has already deployed the External Secrets Operator addon required for this lab.
-
-Let's validate the created addon.
+Now we can explore integrating with Secrets Managed using the External Secrets operator. This has already been installed in our EKS cluster:
 
 ```bash
 $ kubectl -n external-secrets get pods
@@ -19,24 +17,25 @@ default               0         7m
 external-secrets-sa   0         7m
 ```
 
-As you can see, you have a ServiceAccount named `external-secrets-sa`, this SA is tied to an [IRSA](../../iam-roles-for-service-accounts/), with access to AWS Secrets Manager, for retrieving secrets information.
+As we can see theres a ServiceAccount named `external-secrets-sa` which is tied to an IAM role via [IRSA](../../iam-roles-for-service-accounts/), with access to AWS Secrets Manager for retrieving secrets information.
 
 ```bash
 $ kubectl -n external-secrets describe sa external-secrets-sa | grep Annotations
 Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::068535243777:role/eks-workshop-external-secrets-sa-irsa
 ```
 
-In addition to that, you'll need to create a new cluster resource called `ClusterSecretStore` which is a cluster wide SecretStore that can be referenced by all ExternalSecrets from all namespaces.
+In addition to that, we'll need to create a new cluster resource called `ClusterSecretStore` which is a cluster-wide SecretStore that can be referenced by all ExternalSecrets from all namespaces.
 
 ```file
 manifests/modules/security/secrets-manager/cluster-secret-store.yaml
 ```
 
 ```bash
-$ cat eks-workshop/modules/security/secrets-manager/cluster-secret-store.yaml | envsubst | kubectl apply -f -
+$ cat ~/environment/eks-workshop/modules/security/secrets-manager/cluster-secret-store.yaml \
+  | envsubst | kubectl apply -f -
 ```
 
-Take a deeper look in this newly created resource specifications.
+Take a deeper look at this newly created resources specifications.
 
 ```bash
 $ kubectl get clustersecretstores.external-secrets.io 
@@ -57,7 +56,7 @@ provider:
 
 You can see here, that it's using a [JSON Web Token (jwt)](https://jwt.io/), referenced to the ServiceAccount we just checked, to sync with AWS Secrets Manager.
 
-Let's move forward and create an `ExternalSecret`, that describes what data should be fetched from AWS Secrets Manager, how the data should be transformed and saved as a Kubernetes Secret. And also patch our `catalog` Deployment to use the External Secret as source for the credentials.
+Let's move forward and create an `ExternalSecret` that describes what data should be fetched from AWS Secrets Manager, how the data should be transformed and saved as a Kubernetes Secret. Then we can patch our `catalog` Deployment to use the External Secret as source for the credentials.
 
 ```kustomization
 modules/security/secrets-manager/external-secrets/kustomization.yaml
@@ -66,18 +65,20 @@ ExternalSecret/catalog-external-secret
 ```
 
 ```bash
-$ kubectl apply -k eks-workshop/modules/security/secrets-manager/external-secrets/
+$ kubectl kustomize ~/environment/eks-workshop/modules/security/secrets-manager/external-secrets/ \
+  | envsubst | kubectl apply -f-
+$ kubectl rollout status -n catalog deployment/catalog --timeout=120s
 ```
 
-Check the newly created `ExternalSecret` resouce.
+Check the newly created `ExternalSecret` resource.
 
 ```bash
-$ kubectl -n catalog get externalsecrets.external-secrets.io                                                                                                                                                                                                                            
+$ kubectl -n catalog get externalsecrets.external-secrets.io
 NAME                      STORE                  REFRESH INTERVAL   STATUS         READY
 catalog-external-secret   cluster-secret-store   1h                 SecretSynced   True
 ```
 
-Verify that the resource has a `SecretSynced` status, which means that it was successfully syncronized from AWS Secrets Manager. Let's take a closer look to this resource specifications.
+Verify that the resource has a `SecretSynced` status, which means that it was successfully synchronized from AWS Secrets Manager. Let's take a closer look to this resources specifications.
 
 ```bash
 $ kubectl -n catalog get externalsecrets.external-secrets.io catalog-external-secret -o yaml | yq '.spec'
@@ -95,9 +96,9 @@ target:
   deletionPolicy: Retain
 ```
 
-Notice the `key` and the `secretStoreRef` parameter, pointing to the secret we stored on AWS Secrets Manager, and the `ClusterSecretStore` previously created. Also the `refreshInterval` is set to 1 hours, which means that the value from this secret will be checked and refreshed every hour.
+Notice the `key` and the `secretStoreRef` parameters pointing to the secret we stored on AWS Secrets Manager, and the `ClusterSecretStore` previously created. Also the `refreshInterval` is set to 1 hours which means that the value from this secret will be checked and refreshed every hour.
 
-But how do we use this ExternalSecret in our Pods? After we create this resouces, it automatically created a Kubernetes secret with the same name in the Namespace.
+But how do we use this ExternalSecret in our Pods? After we create this resource it automatically created a Kubernetes secret with the same name in the namespace.
 
 ```bash
 $ kubectl -n catalog get secrets
@@ -121,7 +122,7 @@ $ kubectl -n catalog get secret catalog-external-secret -o yaml | yq '.metadata.
 
 See that it has an `ownerReference` that points to External Secrets Operator.
 
-Now check that the `catalog` Pod, is already updated with the values from this new secret, and it's up and running!
+Now check that the `catalog` pod is already updated with the values from this new secret, and it's up and running!
 
 ```bash
 $ kubectl -n catalog get pods
@@ -143,6 +144,6 @@ $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.co
 
 ### Conclusion
 
-In conclusion, there is no best option on choosing between **AWS Secrets and Configuration Provider (ASCP)** vs. **External Secrets Operator (ESO)** in order to manage your secrets stored on **AWS Secrets Manager**. 
+In conclusion there is no best option on choosing between **AWS Secrets and Configuration Provider (ASCP)** vs. **External Secrets Operator (ESO)** in order to manage your secrets stored on **AWS Secrets Manager**. 
 
 Both tools have their specific advantages, for example, ASCP can help you avoid exposing secrets as environment variables, mounting them as volumes directly from AWS Secrets Manager into a Pod, the drawback is the need to manage those volumes. In the other hand ESO makes easier the Kubernetes Secrets lifecycle management, having also a cluster wide SecretStore, however it doesn't allow you to use Secrets as volumes. It all depends on your use case, and having both can bring you a lot more flexibility and security with Secrets Management.
