@@ -52,6 +52,8 @@ fi
 
 kubectl delete pod load-generator --ignore-not-found > /dev/null
 
+kubectl delete namespace other --ignore-not-found > /dev/null
+
 kubectl apply -k $base_path --prune --all \
   --prune-whitelist=autoscaling/v1/HorizontalPodAutoscaler \
   --prune-whitelist=core/v1/Service \
@@ -87,7 +89,7 @@ RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-""}
 
 echo "Cleaning up previous lab infrastructure..."
 
-tf_dir=$(realpath --relative-to='$PWD' '/eks-workshop/terraform')
+tf_dir=$(realpath --relative-to="$PWD" '/eks-workshop/terraform')
 
 terraform -chdir="$tf_dir" init -upgrade > /tmp/terraform-destroy-init.log
 terraform -chdir="$tf_dir" destroy --auto-approve > /tmp/terraform-destroy.log

@@ -3,4 +3,4 @@ kind: Kustomization
 bases:
 - ../../../../base-application/checkout/
 patches:
-- checkout.yaml
+- path: checkout.yaml

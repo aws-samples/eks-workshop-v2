@@ -57,5 +57,5 @@ $ aws sts get-caller-identity
 
 The next step is to create an EKS cluster to perform the lab exercises in. Please follow one of the guides below to provision a cluster that meets the requirements for these labs:
 - **(Recommended)** [eksctl](./using-eksctl.md)
-- (Coming soon!) Terraform 
+- Terraform
 - (Coming soon!) CDK

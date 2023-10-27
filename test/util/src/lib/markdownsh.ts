@@ -3,7 +3,7 @@ import Mocha, { Suite, Test } from 'mocha'
 import path from 'path'
 import GlobToRegExp from 'glob-to-regexp'
 import { assert } from 'chai'
-import { DefaultShell, Shell, ShellError, ShellTimeout } from "./shell/shell.js";
+import { DefaultShell, ExecutionResult, Shell, ShellError, ShellTimeout } from "./shell/shell.js";
 import fs from 'fs'
 
 export class MarkdownSh {
@@ -138,7 +138,7 @@ export class MarkdownSh {
         this.debugMessage(`Calling suite ${hook} hook at ${hookPath}`)
   
         if(!dryRun) {
-          let response = await shell.exec(`bash ${hookPath} ${hook}`, hookTimeout, false)
+          let response = await shell.exec(`bash ${hookPath} ${hook}`, hookTimeout, false, {})
 
           this.debugMessage(response.output)
         }
@@ -187,10 +187,12 @@ class CustomTest extends Test {
               hookTimeout = testCase.hookTimeout
             }
   
-            await this.hook(testCase, category, 'before', hookTimeout)
+            await this.hook(testCase, category, 'before', hookTimeout, {})
+
+            let result: ExecutionResult | undefined;
   
             try {
-              await this.executeShell(testCase.command, testCase.timeout, testCase.expectError)
+              result = await this.executeShell(testCase.command, testCase.timeout, testCase.expectError, {})
             }
             catch(e: any) {
               e.message = `Error running test case command at line ${testCase.lineNumber} - ${e.message}`
@@ -198,7 +200,9 @@ class CustomTest extends Test {
               throw e
             }
   
-            await this.hook(testCase, category, 'after', hookTimeout)
+            await this.hook(testCase, category, 'after', hookTimeout, {
+              'TEST_OUTPUT': result?.output
+            });
   
             if(testCase.wait > 0) {
               await this.sleep(testCase.wait * 1000)
@@ -233,14 +237,14 @@ class CustomTest extends Test {
     });
   }
 
-  async hook(testCase: Script, category: Category, hook: string, timeout: number) {
+  async hook(testCase: Script, category: Category, hook: string, timeout: number, env: { [key: string]: string | undefined }) {
     if(testCase.hook) {
       this.debugMessage(`Calling ${hook} hook ${testCase.hook}`)
 
       const hookPath = `${category.path}/tests/hook-${testCase.hook}.sh`;
   
       try {
-        const response = await this.executeShell(`bash ${hookPath} ${hook}`, timeout, false)
+        const response = await this.executeShell(`bash ${hookPath} ${hook}`, timeout, false, env)
   
         this.debugMessage(`Completed ${hook} hook ${testCase.hook}`)
       }
@@ -252,7 +256,7 @@ class CustomTest extends Test {
     }
   }
 
-  async executeShell(command: string, timeout: number, expectError: boolean) {
+  async executeShell(command: string, timeout: number, expectError: boolean, env: { [key: string]: string | undefined }): Promise<ExecutionResult | undefined> {
 
     this.debugMessage(`Executing shell:
   Command ${command}
@@ -260,10 +264,14 @@ class CustomTest extends Test {
   `)
   
     if (!this.dryRun) {
-      let response = await this.shell.exec(command, timeout, expectError)
+      let response = await this.shell.exec(command, timeout, expectError, env)
   
       this.debugMessage(response.output)
+
+      return response;
     }
+
+    return undefined;
   }
 
   async sleep(ms: number): Promise<void> {

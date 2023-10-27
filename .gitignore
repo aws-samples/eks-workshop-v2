@@ -33,3 +33,4 @@ env
 cdk.out
 
 .envrc
+node_modules

@@ -3,7 +3,7 @@ import * as child from 'child_process';
 import * as os from 'os';
 
 export interface Shell {
-  exec:(command: string, timeout: number, expect: boolean) => Promise<ExecutionResult>
+  exec:(command: string, timeout: number, expect: boolean, additionalEnv: { [key: string]: string | undefined }) => Promise<ExecutionResult>
 }
 
 export class ExecutionResult {
@@ -19,7 +19,7 @@ export class DefaultShell implements Shell {
 
   constructor(private beforeEach: string) {}
 
-  exec(command: string, timeout: number = 300, expect: boolean = false) : Promise<ExecutionResult> {
+  exec(command: string, timeout: number = 300, expect: boolean = false, additionalEnv: { [key: string]: string | undefined }) : Promise<ExecutionResult> {
     if(!command) {
       throw new Error("Command should not be empty")
     }
@@ -27,12 +27,15 @@ export class DefaultShell implements Shell {
     const prefix = this.beforeEach === '' ? '' : `${this.beforeEach} &&`
 
     try {
-      const buffer: Buffer = child.execSync(`${prefix} ${command} && echo '${DefaultShell.ENV_MARKER}' && env`, {
+      const buffer: Buffer = child.execSync(`${prefix} set -e && ${command} && echo '${DefaultShell.ENV_MARKER}' && env`, {
         timeout: timeout * 1000,
         killSignal: 'SIGKILL',
         stdio: ['inherit', 'pipe', 'pipe'],
         shell: '/bin/bash',
-        env: this.environment
+        env: {
+          ...this.environment,
+          ...additionalEnv
+        }
       });
 
       const output = String(buffer);
@@ -61,7 +64,7 @@ export class DefaultShell implements Shell {
             if(key.startsWith("BASH_FUNC")) {
               processingFunction = true;
             }
-            else {
+            else if(!(key in additionalEnv)) {
               env[key] = val;
             }
           }
@@ -91,7 +94,11 @@ export class DefaultShell implements Shell {
         throw new ShellTimeout(`Timed out after ${timeout} seconds`, e.stdout, e.stderr, timeout)
       }
 
-      throw new ShellError(e.status, e.message, e.stdout, e.stderr)
+      if(!expect) {
+        throw new ShellError(e.status, e.message, e.stdout, e.stderr)
+      }
+
+      return Promise.resolve(new ExecutionResult(e.stderr));
     }
   }
 }
