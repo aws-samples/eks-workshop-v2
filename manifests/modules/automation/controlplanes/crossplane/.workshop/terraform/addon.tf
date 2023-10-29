@@ -6,10 +6,6 @@ EOF
   }
 }
 
-locals {
-  ddb_name = "upbound-ddb"
-}
-
 module "crossplane" {
   depends_on = [
     terraform_data.cluster
@@ -18,37 +14,60 @@ module "crossplane" {
   source  = "aws-ia/eks-blueprints-addon/aws"
   version = "1.1.0"
 
-    # https://github.com/crossplane/crossplane/tree/master/cluster/charts/crossplane
-    name             = "crossplane"
-    description      = "A Helm chart to deploy crossplane project"
-    namespace        = "crossplane-system"
-    create_namespace = true
-    chart            = "crossplane"
-    chart_version    = "1.13.2"
-    repository       = "https://charts.crossplane.io/stable/"
-    values           = templatefile("${path.module}/templates/crossplane.yaml", [])
-  }
+  create = true
+
+  # https://github.com/crossplane/crossplane/tree/master/cluster/charts/crossplane
+  name             = "crossplane"
+  description      = "A Helm chart to deploy crossplane project"
+  namespace        = "crossplane-system"
+  create_namespace = true
+  chart            = "crossplane"
+  chart_version    = "1.13.2"
+  repository       = "https://charts.crossplane.io/stable/"
+}
 locals {
   crossplane_namespace = "crossplane-system"
   upbound_aws_provider = {
     enable               = true
     version              = "v0.40.0"
+    controller_config    = "upbound-aws-controller-config"
     provider_config_name = "aws-provider-config" 
     families = [
       "dynamodb"
     ]
+  ddb_name = "upbound-ddb"
   }
 }
 
+module "upbound_irsa_aws" {
+  # count = local.upbound_aws_provider.enable == true ? 1 : 0
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.30"
+
+  role_name_prefix = "ddb-upbound-aws-"
+  assume_role_condition_test = "StringLike"
+
+  role_policy_arns = {
+    policy = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+  }
+
+  oidc_providers = {
+    main = {
+      provider_arn               = local.addon_context.eks_oidc_provider_arn
+      namespace_service_accounts = ["${local.crossplane_namespace}:upbound-aws-provider-*"]
+    }
+  }
+  tags = local.tags
+}
 
 resource "kubectl_manifest" "upbound_aws_controller_config" {
   count = local.upbound_aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/providers/aws-upbound/controller-config.yaml", {
-    iam-role-arn          = module.upbound_irsa_aws[0].iam_role_arn
+    iam-role-arn          = module.upbound_irsa_aws.iam_role_arn
     controller-config = local.upbound_aws_provider.controller_config
   })
 
-  depends_on = [module.crossplane]
+  depends_on = [module.upbound_irsa_aws]
 }
 
 resource "kubectl_manifest" "upbound_aws_provider" {
