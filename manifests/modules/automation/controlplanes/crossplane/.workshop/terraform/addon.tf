@@ -56,6 +56,7 @@ module "crossplane" {
     additional_irsa_policies = []
     provider_aws_version     = ""
   }
+}
 
 resource "kubectl_manifest" "upbound_aws_controller_config" {
   count = local.upbound_aws_provider.enable == true ? 1 : 0
