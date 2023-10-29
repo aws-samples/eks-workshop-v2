@@ -6,6 +6,10 @@ EOF
   }
 }
 
+locals {
+  ddb_name = "upbound-ddb"
+}
+
 module "crossplane" {
   depends_on = [
     terraform_data.cluster
@@ -14,19 +18,18 @@ module "crossplane" {
   source  = "aws-ia/eks-blueprints-addon/aws"
   version = "1.1.0"
 
-  create = true
-
-  # https://github.com/crossplane/crossplane/tree/master/cluster/charts/crossplane
-  name             = "crossplane"
-  description      = "A Helm chart to deploy crossplane project"
-  namespace        = "crossplane-system"
-  create_namespace = true
-  chart            = "crossplane"
-  chart_version    = "1.13.2"
-  repository       = "https://charts.crossplane.io/stable/"
-  values           = templatefile("${path.module}/templates/crossplane.yaml", [])
-  
-
+    # https://github.com/crossplane/crossplane/tree/master/cluster/charts/crossplane
+    name             = "crossplane"
+    description      = "A Helm chart to deploy crossplane project"
+    namespace        = "crossplane-system"
+    create_namespace = true
+    chart            = "crossplane"
+    chart_version    = "1.13.2"
+    repository       = "https://charts.crossplane.io/stable/"
+    values           = templatefile("${path.module}/templates/crossplane.yaml", [])
+  }
+locals {
+  crossplane_namespace = "crossplane-system"
   upbound_aws_provider = {
     enable               = true
     version              = "v0.40.0"
@@ -35,28 +38,8 @@ module "crossplane" {
       "dynamodb"
     ]
   }
-
-  aws_provider = {
-    enable                   = false
-    provider_aws_version     = "v0.40.0"
-    additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
-  }
-
-  kubernetes_provider = {
-    enable = false
-  }
-
-  helm_provider = {
-    enable = false
-  }
-
-  jet_aws_provider = {
-    enable = false
-
-    additional_irsa_policies = []
-    provider_aws_version     = ""
-  }
 }
+
 
 resource "kubectl_manifest" "upbound_aws_controller_config" {
   count = local.upbound_aws_provider.enable == true ? 1 : 0
@@ -97,7 +80,6 @@ resource "kubectl_manifest" "upbound_aws_provider_config" {
   depends_on = [kubectl_manifest.upbound_aws_provider, time_sleep.upbound_wait_60_seconds]
 }
 
-
 resource "aws_iam_policy" "carts_dynamo" {
   name        = "${local.addon_context.eks_cluster_id}-carts-dynamo"
   path        = "/"
@@ -120,8 +102,6 @@ resource "aws_iam_policy" "carts_dynamo" {
 EOF
   tags   = local.tags
 }
-
-
 
 module "eks_blueprints_addons" {
   source = "aws-ia/eks-blueprints-addons/aws"
