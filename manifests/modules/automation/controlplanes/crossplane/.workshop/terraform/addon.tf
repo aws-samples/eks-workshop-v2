@@ -57,11 +57,6 @@ module "crossplane" {
     provider_aws_version     = ""
   }
 
-  upbound_aws_provider = {
-    enable = false
-  }
-}
-
 resource "kubectl_manifest" "upbound_aws_controller_config" {
   count = local.upbound_aws_provider.enable == true ? 1 : 0
   yaml_body = templatefile("${path.module}/providers/aws-upbound/controller-config.yaml", {
