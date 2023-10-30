@@ -19,7 +19,7 @@ spec:
       - hashKey: customerId
         name: idx_global_customerId
         projectionType: ALL
-    region: us-east-1
+    region: ''
     tags:
       namespace: carts
   providerConfigRef:
