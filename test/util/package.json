@@ -15,7 +15,7 @@
   "keywords": [],
   "author": "",
   "devDependencies": {
-    "@types/chai": "^4.3.6",
+    "@types/chai": "^4.3.9",
     "@types/glob-to-regexp": "^0.4.1",
     "@types/mdast": "^3.0.11",
     "@types/mocha": "^10.0.1",
@@ -29,7 +29,7 @@
     "sinon": "^15.2.0",
     "ts-mocha": "^10.0.0",
     "ts-node": "^10.9.1",
-    "typescript": "^5.1.6"
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "chai": "^4.3.10",

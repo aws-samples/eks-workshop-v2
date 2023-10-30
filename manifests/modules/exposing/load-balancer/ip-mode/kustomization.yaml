@@ -3,4 +3,4 @@ kind: Kustomization
 bases:
 - ../nlb
 patches:
-- nlb.yaml
+- path: nlb.yaml

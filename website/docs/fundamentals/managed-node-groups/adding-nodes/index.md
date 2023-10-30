@@ -10,7 +10,7 @@ First let's retrieve the current nodegroup scaling configuration and look at **m
 $ eksctl get nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME
 ```
 
-We'll scale the nodegroup in `eks-workshop` by changing the node count from `3` to `4` for **minimum size** and **desired capacity** using below command:
+We'll scale the nodegroup in `eks-workshop` by changing the node count from `3` to `4` for **desired capacity** using below command:
 
 ```bash
 $ eksctl scale nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME \

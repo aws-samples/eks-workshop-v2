@@ -15,4 +15,4 @@ vars:
   fieldref:
     fieldpath: data.CARTS_IAM_ROLE
 patches:
-- carts-serviceAccount.yaml
+- path: carts-serviceAccount.yaml
