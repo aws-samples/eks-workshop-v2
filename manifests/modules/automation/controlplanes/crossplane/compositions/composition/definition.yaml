@@ -102,11 +102,7 @@ spec:
                         required:
                           - hashKey
                           - name
-                          - rangeKey
-                          - readCapacity
-                          - writeCapacity
                           - projectionType
-                          - nonKeyAttributes
                       type: array
                     localSecondaryIndex:
                       items:
