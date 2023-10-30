@@ -1,11 +1,22 @@
 apiVersion: awsblueprints.io/v1alpha1
-kind: RelationalDatabase
+kind: DynamoDBTable
 metadata:
-  name: catalog-composition
-  namespace: catalog
+  name: items
 spec:
-  databaseName: catalog
-  storageGB: 20
-  secret: catalog-db-composition
+  writeConnectionSecretToRef:
+    name: cartsdynamo
   resourceConfig:
-    providerConfigName: default
+    name: items
+    region: ''
+  dynamoConfig:
+    attribute:
+      - name: id
+        type: S
+      - name: customerId
+        type: S
+    billingMode: PAY_PER_REQUEST
+    globalSecondaryIndex:
+      - hashKey: customerId
+        name: idx_global_customerId
+        projectionType: ALL
+    hashKey: id
