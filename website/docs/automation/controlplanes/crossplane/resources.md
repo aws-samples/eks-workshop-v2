@@ -106,7 +106,7 @@ To verify that the **Carts** module is in fact using the DynamoDB table we just 
 
 ![Cart screenshot](./assets/cart-items-present.png)
 
-And to check if items are in the cart as well, run
+And to check if items are in the DynamoDB table as well, run
 
 ```bash
 aws dynamodb scan --table-name items
