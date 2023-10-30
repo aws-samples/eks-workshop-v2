@@ -158,10 +158,6 @@ data "aws_subnets" "private" {
 
 output "environment" {
   value = <<EOF
-export VPC_ID=${data.aws_vpc.selected.id}
-export VPC_CIDR=${data.aws_vpc.selected.cidr_block}
-%{for index, id in data.aws_subnets.private.ids}
-export VPC_PRIVATE_SUBNET_ID_${index + 1}=${id}
-%{endfor}
+export DYNAMODB_POLICY_ARN=${aws_iam_policy.carts_dynamo.arn}
 EOF
 }
