@@ -56,7 +56,7 @@ table.dynamodb.aws.upbound.io/items created
 It takes some time to provision the AWS managed services, in the case of DynamoDB up to 2 minutes. Crossplane will report the status of the reconciliation in the `status` field of the Kubernetes custom resources.
 
 ```bash
-$ kubectl get table'
+$ kubectl get table
 ```
 When new resources are created or updated, application configurations also need to be updated to use these new resources. 
 Update the application to use the DynamoDB endpoint:
