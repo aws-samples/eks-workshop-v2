@@ -40,7 +40,6 @@ locals {
 }
 
 module "upbound_irsa_aws" {
-  # count = local.upbound_aws_provider.enable == true ? 1 : 0
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.30"
 
@@ -136,25 +135,6 @@ module "eks_blueprints_addons" {
   cluster_endpoint  = local.addon_context.aws_eks_cluster_endpoint
   cluster_version   = local.eks_cluster_version
   oidc_provider_arn = local.addon_context.eks_oidc_provider_arn
-}
-
-data "aws_vpc" "selected" {
-  tags = {
-    created-by = "eks-workshop-v2"
-    env        = local.addon_context.eks_cluster_id
-  }
-}
-
-data "aws_subnets" "private" {
-  tags = {
-    created-by = "eks-workshop-v2"
-    env        = local.addon_context.eks_cluster_id
-  }
-
-  filter {
-    name   = "tag:Name"
-    values = ["*Private*"]
-  }
 }
 
 output "environment" {
