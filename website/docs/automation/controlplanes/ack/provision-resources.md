@@ -22,7 +22,7 @@ $ eksctl create iamserviceaccount --name carts-ack \
   --namespace carts --cluster $EKS_CLUSTER_NAME \
   --role-name carts-dynamodb-role \
   --attach-policy-arn $DYNAMODB_POLICY_ARN --approve
-
+  
 2023-10-30 12:45:17 [ℹ]  1 iamserviceaccount (carts/carts-ack) was included (based on the include/exclude rules)
 2023-10-30 12:45:17 [!]  serviceaccounts that exist in Kubernetes will be excluded, use --override-existing-serviceaccounts to override
 2023-10-30 12:45:17 [ℹ]  1 task: { 

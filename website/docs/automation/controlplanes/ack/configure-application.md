@@ -57,9 +57,12 @@ To verify that the **Carts** module is in fact using the DynamoDB table we just 
 
 ![Cart screenshot](./assets/cart-items-present.png)
 
-And navigating to the Items table in the DynamoDB console to *Explore table items* shows
+And to check if items are in the cart as well, run
 
-![DynamoDB screenshot](./assets/dynamodb-items-table.png)
+```bash
+aws dynamodb scan --table-name items
+```
+
 
 Congratulations! You've successfully created AWS Resources without leaving the confines of the Kubernetes API!
 
