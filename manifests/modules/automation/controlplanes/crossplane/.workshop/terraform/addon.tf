@@ -114,7 +114,7 @@ resource "aws_iam_policy" "carts_dynamo" {
       "Action": "dynamodb:*",
       "Resource": [
         "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/items",
-        "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/items/index/*",        
+        "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/items/index/*"       
       ]
     }
   ]
