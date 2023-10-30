@@ -7,7 +7,7 @@ By default the **Carts** component in the sample application uses a DynamoDB loc
 
 ![ACK reconciler concept](./assets/ack-desired-current-ddb.png)
 
-The AWS Java SDK in the **Carts** component is able to use IAM Roles to interact with AWS services which means that we do not need to pass credentials, thus reducing the attack surfacec. In the EKS context, IRSA allows us to define per pod IAM Roles for applications to consume. To leverage IRSA, we first need to:
+The AWS Java SDK in the **Carts** component is able to use IAM Roles to interact with AWS services which means that we do not need to pass credentials, thus reducing the attack surface. In the EKS context, IRSA allows us to define per pod IAM Roles for applications to consume. To leverage IRSA, we first need to:
 
 - Create a Kubernetes Service Account in the Carts namespace
 - Create an IAM Policy with necessary DynamoDB permissions
@@ -18,22 +18,27 @@ Fortunately, we have a handy one-liner to help with this process. Run the below:
 
 ```bash
 
-$ eksctl create iamserviceaccount --name carts-ack \ 
+$ eksctl create iamserviceaccount --name carts-ack \
   --namespace carts --cluster $EKS_CLUSTER_NAME \
   --role-name carts-dynamodb-role \
-  --attach-policy-arn $DYNAMODB_POLICY_ARN --approve       
+  --attach-policy-arn $DYNAMODB_POLICY_ARN --approve
+
+2023-10-30 12:45:17 [ℹ]  1 iamserviceaccount (carts/carts-ack) was included (based on the include/exclude rules)
+2023-10-30 12:45:17 [!]  serviceaccounts that exist in Kubernetes will be excluded, use --override-existing-serviceaccounts to override
+2023-10-30 12:45:17 [ℹ]  1 task: { 
+    2 sequential sub-tasks: { 
+        create IAM role for serviceaccount "carts/carts-ack",
+        create serviceaccount "carts/carts-ack",
+    } }2023-10-30 12:45:17 [ℹ]  building iamserviceaccount stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-ack"
+2023-10-30 12:45:18 [ℹ]  deploying stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-ack"
+2023-10-30 12:45:18 [ℹ]  waiting for CloudFormation stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-ack"
 
 ```
-```eksctl``` provisions a CloudFormation stack to help manage these resources which can be seen in this output
+```eksctl``` provisions a CloudFormation stack to help manage these resources which can be seen in the  output above.
 
-![IRSA screenshot](./assets/eksctl-irsa-cfn.png)
-
-In the AWS Console, navigate to ```IAM -> Roles -> carts-dynamodb-role ``` and the Trust Relationships tab:
-
-![Trusted Entities](./assets/trust-entities.png)
+To learn more about how IRSA works, check out the [IRSA Lab](../../../security/iam-roles-for-service-accounts/index.md).
 
 ---
-
 
 Now, let's explore how we'll create the DynamoDB Table via a Kubernetes manifest
 
@@ -53,41 +58,48 @@ Next, we will need to update the regional endpoint for DynamoDB within the Confi
 manifests/modules/automation/controlplanes/ack/dynamodb/dynamodb-ack-configmap.yaml
 ```
 
-Next we want to populate the environment variable within the manifest. Run
+Using the ```envsubst``` utility, we will rewrite the environment variable AWS_REGION into the manifest and apply all the updates to the cluster. Run the below
 
 ```bash
 
-$ envsubst < ~/environment/eks-workshop/modules/automation/controlplanes/ack/dynamodb/dynamodb-ack-configmap.yaml \
-  | tee ~/environment/eks-workshop/modules/automation/controlplanes/ack/dynamodb/dynamodb-ack-configmap.yaml \
-  > /dev/null
-
-```
-
-:::info
-This process uses the ```envsubst``` utility to rewrite the environment variable into the manifest to reflect the 
-current region.
-:::
-
-
-We're now finally able to apply these configurations to the Amazon EKS cluster:
-
-```bash wait=30
-$ kubectl apply -k ~/environment/eks-workshop/modules/automation/controlplanes/ack/dynamodb
+$ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/ack/dynamodb \
+  | envsubst | kubectl apply -f-
+namespace/carts unchanged
+serviceaccount/carts unchanged
+configmap/carts unchanged
 configmap/carts-ack created
-table.dynamodb.services.k8s.aws/items created
+service/carts unchanged
+service/carts-dynamodb unchanged
 deployment.apps/carts configured
+deployment.apps/carts-dynamodb unchanged
+table.dynamodb.services.k8s.aws/items created
+$ kubectl rollout status -n carts deployment/carts --timeout=120s
 ```
+
 :::info
-Note that the above output only is describing the changed resources and not all. The final output you see may differ.
+This command 'builds' the manifests using the kubectl kustomize command, pipes it to ```envsubst``` and then to kubectl apply. This makes it easy to template manifests and populate them at run-time.
 :::
 
+The ACK controllers in the cluster will react to these new resources and provision the AWS infrastructure we have expressed with the manifests earlier. Lets check if ACK created the table by running
 
-The ACK controllers in the cluster will react to these new resources and provision the AWS infrastructure it has expressed. Using the AWS CLI, we can simply run
+```bash
+$ kubectl wait table.dynamodb.services.k8s.aws items -n carts --for=condition=ACK.ResourceSynced --timeout=15m
+table.dynamodb.services.k8s.aws/items condition met
+$ kubectl get table.dynamodb.services.k8s.aws items -n carts -ojson | yq '.status."tableStatus"'
+ACTIVE
+```
+
+And now to check if the Table has been created using the AWS CLI, run
 
 ```bash
 $ aws dynamodb list-tables
+
+{
+    "TableNames": [
+        "items"
+    ]
+}
+
 ```
 
-Creating a DynamoDB table is almost instantaneous, so you should see the Items table created. If not, wait a few seconds and try again.
-
-In the AWS Console, navigate to ```DynamoDB --> Tables``` and you should see the new Table provisioned.
+This output tells us that the new table has been created!
