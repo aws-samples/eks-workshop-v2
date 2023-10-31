@@ -6,4 +6,4 @@ spec:
   template:
     spec:
       nodeSelector:
-        capacity_type: managed_spot
+        eks.amazonaws.com/capacityType: SPOT
