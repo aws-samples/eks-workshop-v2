@@ -20,11 +20,17 @@ spec:
           fromFieldPath: spec.resourceConfig.providerConfigName
           toFieldPath: spec.providerConfigRef.name
         - type: FromCompositeFieldPath
-          fromFieldPath: spec.resourceConfig.region
-          toFieldPath: spec.forProvider.region
-        - type: FromCompositeFieldPath
-          fromFieldPath: spec.resourceConfig.name
+          fromFieldPath: spec.name
           toFieldPath: metadata.annotations[crossplane.io/external-name]
+        - type: FromCompositeFieldPath
+          fromFieldPath: metadata.name
+          toFieldPath: metadata.annotations[crossplane.io/external-name]
+          transforms:
+            - type: string
+              string:
+                type: Regexp
+                regexp:
+                  match: ^.{0,5}
   resources:
     - name: table
       connectionDetails:
@@ -37,7 +43,11 @@ spec:
         spec:
           forProvider:
             writeConnectionSecretToRef:
+              name: cartsdynamo
               namespace: crossplane-system
+            region: ''
+          providerConfigRef:
+            name: aws-provider-config
       patches:
         - type: PatchSet
           patchSetName: common-fields
@@ -55,7 +65,7 @@ spec:
             mergeOptions:
               keepMapValues: true
         - type: FromCompositeFieldPath
-          fromFieldPath: spec.dynamoConfig.hashKey
+          fromFieldPath: spec.dynamoConfig.attribute[0].name
           toFieldPath: spec.forProvider.hashKey
         - type: FromCompositeFieldPath
           fromFieldPath: spec.dynamoConfig.billingMode
@@ -70,8 +80,14 @@ spec:
           fromFieldPath: spec.dynamoConfig.writeCapacity
           toFieldPath: spec.forProvider.writeCapacity
         - type: FromCompositeFieldPath
-          fromFieldPath: spec.dynamoConfig.globalSecondaryIndex
-          toFieldPath: spec.forProvider.globalSecondaryIndex
+          fromFieldPath: spec.dynamoConfig.globalSecondaryIndex[0].name
+          toFieldPath: spec.forProvider.globalSecondaryIndex[0].name
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.dynamoConfig.attribute[1].name
+          toFieldPath: spec.forProvider.globalSecondaryIndex[0].hashKey
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.dynamoConfig.globalSecondaryIndex[0].projectionType
+          toFieldPath: spec.forProvider.globalSecondaryIndex[0].projectionType  
           policy:
             mergeOptions:
               keepMapValues: true

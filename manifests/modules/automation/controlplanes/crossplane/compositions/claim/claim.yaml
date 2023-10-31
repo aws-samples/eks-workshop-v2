@@ -3,20 +3,11 @@ kind: DynamoDBTable
 metadata:
   name: items
 spec:
-  writeConnectionSecretToRef:
-    name: cartsdynamo
-  resourceConfig:
-    name: items
-    region: ''
   dynamoConfig:
     attribute:
       - name: id
         type: S
       - name: customerId
         type: S
-    billingMode: PAY_PER_REQUEST
     globalSecondaryIndex:
-      - hashKey: customerId
-        name: idx_global_customerId
-        projectionType: ALL
-    hashKey: id
+      - name: idx_global_customerId
