@@ -1,5 +1,5 @@
 ---
-title: "Provisionining ACK Resources"
+title: "Provisioning ACK Resources"
 sidebar_position: 5
 ---
 
