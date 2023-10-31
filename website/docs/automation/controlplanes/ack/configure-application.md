@@ -60,7 +60,7 @@ To verify that the **Carts** module is in fact using the DynamoDB table we just 
 And to check if items are in the cart as well, run
 
 ```bash
-aws dynamodb scan --table-name items
+$ aws dynamodb scan --table-name items
 ```
 
 
