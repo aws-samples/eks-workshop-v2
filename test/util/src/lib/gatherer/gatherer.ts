@@ -3,8 +3,9 @@ import path from 'path'
 import YAML from 'yaml'
 import {unified} from 'unified'
 import remarkParse from 'remark-parse'
-import remarkFrontmatter, { Root } from 'remark-frontmatter'
+import remarkFrontmatter from 'remark-frontmatter'
 import remarkGfm from 'remark-gfm'
+import { Root } from 'remark-frontmatter/lib';
 
 export class Category {
   constructor(public title: string, public weight: number, public children: Array<Category>, public pages: Array<Page>, public run: boolean, public path: string) { 
