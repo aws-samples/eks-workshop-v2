@@ -7,7 +7,6 @@ In addition to provisioning individual cloud resources, Crossplane offers a high
 
 A `CompositeResourceDefinition` (or XRD) defines the type and schema of your Composite Resource (XR). It lets Crossplane know that you want a particular kind of XR to exist, and what fields that XR should have. An XRD is a little like a CustomResourceDefinition (CRD), but slightly more opinionated. Writing an XRD is mostly a matter of specifying an OpenAPI ["structural schema"](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/).
 
-
 First, lets provide a definition that can be used to create a DynamoDB table by members of the application team in their corresponding namespace. In this example the user only needs to specify **name**, **key attributes** and **index name** fields.
 
 ```file
@@ -58,6 +57,7 @@ $ kubectl get table
 NAME                READY   SYNCED   EXTERNAL-NAME   AGE
 items-m5gnc-6w87d   True    True     items           3m37s
 ```
+
 ---
 
 Now, lets try to understand how the DynamoDB table is deployed using this claim:
@@ -82,6 +82,7 @@ $ kubectl get composition
 NAME                              XR-KIND          XR-APIVERSION               AGE
 table.dynamodb.awsblueprints.io   XDynamoDBTable   awsblueprints.io/v1alpha1   143m
 ```
+
 On querying the `XDynamoDBTable` XR which is not confined to any namespace, we can observe that it creates DynamoDB Managed Resource `Table`.
 
 ```bash
@@ -92,10 +93,10 @@ $ kubectl get XDynamoDBTable -o yaml | grep "resourceRefs:" -A 3
       kind: Table
       name: items-m5gnc-6w87d
 ```
+
 ---
 
-When new resources are created or updated, application configurations also need to be updated to use these new resources. 
-Update the application to use the DynamoDB endpoint:
+When new resources are created or updated, application configurations also need to be updated to use these new resources. Update the application to use the DynamoDB endpoint:
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/application
@@ -115,7 +116,7 @@ $ kubectl rollout status -n carts deployment/carts --timeout=30s
 deployment "carts" successfully rolled out
 ```
 
-----
+---
 
 Now, how do we know that the application is working with the new DynamoDB table?
 
@@ -125,10 +126,10 @@ An NLB has been created to expose the sample application for testing, allowing u
 $ kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
 k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
+
 :::info
 Please note that the actual endpoint will be different when you run this command as a new Network Load Balancer endpoint will be provisioned.
 :::
-
 
 To wait until the load balancer has finished provisioning you can run this command:
 
@@ -157,6 +158,5 @@ ITEMID  6d62d909-f957-430e-8689-b5129c0bb75e
 PRICE   50
 ITEMID  a0a4f044-b040-410d-8ead-4de0446aec7e
 ```
-
 
 Congratulations! You've successfully created AWS Resources without leaving the confines of the Kubernetes API!

@@ -5,7 +5,7 @@ sidebar_position: 20
 
 By default the **Carts** component in the sample application uses a DynamoDB local instance running as a pod in the EKS cluster called ```carts-dynamodb```. In this section of the lab, we'll provision an Amazon DynamoDB cloud based table for our application using Crossplane managed resources and point the **Carts** deployment to use the newly provisioned DynamoDB table instead of the local copy.
 
-![ACK reconciler concept](./assets/Crossplane-desired-current-ddb.png)
+![Crossplane reconciler concept](./assets/Crossplane-desired-current-ddb.png)
 
 The AWS Java SDK in the **Carts** component is able to use IAM Roles to interact with AWS services which means that we do not need to pass credentials, thus reducing the attack surface. In the EKS context, IRSA allows us to define per pod IAM Roles for applications to consume. To leverage IRSA, we first need to:
 
@@ -34,9 +34,10 @@ $ eksctl create iamserviceaccount --name carts-crossplane \
 2023-10-30 12:45:18 [ℹ]  waiting for CloudFormation stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-crossplane"
 
 ```
+
 ```eksctl``` provisions a CloudFormation stack to help manage these resources which can be seen in the  output above.
 
-To learn more about how IRSA works, check out the [IRSA Lab](../../../security/iam-roles-for-service-accounts/index.md).
+To learn more about how IRSA works, go [here](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html).
 
 ---
 
@@ -61,8 +62,7 @@ NAME                READY   SYNCED   EXTERNAL-NAME   AGE
 items-m5gnc-6w87d   True    True     items           3m37s
 ```
 
-When new resources are created or updated, application configurations also need to be updated to use these new resources. 
-Update the application to use the DynamoDB endpoint:
+When new resources are created or updated, application configurations also need to be updated to use these new resources. Update the application to use the DynamoDB endpoint:
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/application
@@ -82,7 +82,7 @@ $ kubectl rollout status -n carts deployment/carts --timeout=30s
 deployment "carts" successfully rolled out
 ```
 
-----
+---
 
 Now, how do we know that the application is working with the new DynamoDB table?
 
@@ -92,10 +92,10 @@ An NLB has been created to expose the sample application for testing, allowing u
 $ kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
 k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
+
 :::info
 Please note that the actual endpoint will be different when you run this command as a new Network Load Balancer endpoint will be provisioned.
 :::
-
 
 To wait until the load balancer has finished provisioning you can run this command:
 
@@ -124,6 +124,5 @@ ITEMID  6d62d909-f957-430e-8689-b5129c0bb75e
 PRICE   50
 ITEMID  a0a4f044-b040-410d-8ead-4de0446aec7e
 ```
-
 
 Congratulations! You've successfully created AWS Resources without leaving the confines of the Kubernetes API!
