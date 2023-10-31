@@ -40,7 +40,7 @@ To learn more about how IRSA works, check out the [IRSA Lab](../../../security/i
 
 ---
 
-Now, let's explore how we'll create the DynamoDB Table via a Crossplane managed resource manifest
+Now, let's explore how we'll create the DynamoDB table via a Crossplane managed resource manifest
 
 ```file
 manifests/modules/automation/controlplanes/crossplane/managed/table.yaml
@@ -57,7 +57,10 @@ It takes some time to provision the AWS managed services, in the case of DynamoD
 
 ```bash
 $ kubectl get table
+NAME                READY   SYNCED   EXTERNAL-NAME   AGE
+items-m5gnc-6w87d   True    True     items           3m37s
 ```
+
 When new resources are created or updated, application configurations also need to be updated to use these new resources. 
 Update the application to use the DynamoDB endpoint:
 
@@ -71,8 +74,12 @@ service/carts unchanged
 service/carts-dynamodb unchanged
 deployment.apps/carts configured
 deployment.apps/carts-dynamodb unchanged
+```
+
+```bash
 $ kubectl rollout restart -n carts deployment/carts
 $ kubectl rollout status -n carts deployment/carts --timeout=30s
+deployment "carts" successfully rolled out
 ```
 
 ----
@@ -109,7 +116,13 @@ To verify that the **Carts** module is in fact using the DynamoDB table we just 
 And to check if items are in the DynamoDB table as well, run
 
 ```bash
-aws dynamodb scan --table-name items
+$ aws dynamodb scan --table-name items --query 'Items[].{itemId:itemId,Price:unitPrice}' --output text
+PRICE   795
+ITEMID  510a0d7e-8e83-4193-b483-e27e09ddc34d
+PRICE   385
+ITEMID  6d62d909-f957-430e-8689-b5129c0bb75e
+PRICE   50
+ITEMID  a0a4f044-b040-410d-8ead-4de0446aec7e
 ```
 
 
