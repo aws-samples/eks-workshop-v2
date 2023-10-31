@@ -13,7 +13,7 @@ spec:
     - attributeName: customerId
       attributeType: 'S'
   billingMode: PAY_PER_REQUEST
-  tableName: "Items"
+  tableName: "${EKS_CLUSTER_NAME}-carts-ack"
   globalSecondaryIndexes:
     - indexName: idx_global_customerId
       keySchema:

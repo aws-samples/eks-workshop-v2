@@ -17,22 +17,20 @@ The AWS Java SDK in the **Carts** component is able to use IAM Roles to interact
 Fortunately, we have a handy one-liner to help with this process. Run the below:
 
 ```bash
-
 $ eksctl create iamserviceaccount --name carts-ack \
   --namespace carts --cluster $EKS_CLUSTER_NAME \
-  --role-name carts-dynamodb-role \
+  --role-name ${EKS_CLUSTER_NAME}-carts-ack \
   --attach-policy-arn $DYNAMODB_POLICY_ARN --approve
-
-2023-10-30 12:45:17 [ℹ]  1 iamserviceaccount (carts/carts-ack) was included (based on the include/exclude rules)
-2023-10-30 12:45:17 [!]  serviceaccounts that exist in Kubernetes will be excluded, use --override-existing-serviceaccounts to override
-2023-10-30 12:45:17 [ℹ]  1 task: { 
-    2 sequential sub-tasks: { 
+2023-10-31 16:20:46 [i]  1 iamserviceaccount (carts/carts-ack) was included (based on the include/exclude rules)
+2023-10-31 16:20:46 [i]  1 task: {
+    2 sequential sub-tasks: {
         create IAM role for serviceaccount "carts/carts-ack",
         create serviceaccount "carts/carts-ack",
-    } }2023-10-30 12:45:17 [ℹ]  building iamserviceaccount stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-ack"
-2023-10-30 12:45:18 [ℹ]  deploying stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-ack"
-2023-10-30 12:45:18 [ℹ]  waiting for CloudFormation stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-ack"
-
+    } }2023-10-31 16:20:46 [ℹ]  building iamserviceaccount stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-ack"
+2023-10-31 16:20:46 [i]  deploying stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-ack"
+2023-10-31 16:20:47 [i]  waiting for CloudFormation stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-ack"
+2023-10-31 16:21:17 [i]  waiting for CloudFormation stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-ack"
+2023-10-31 16:21:17 [i]  created serviceaccount "carts/carts-ack"
 ```
 ```eksctl``` provisions a CloudFormation stack to help manage these resources which can be seen in the  output above.
 
@@ -60,8 +58,7 @@ manifests/modules/automation/controlplanes/ack/dynamodb/dynamodb-ack-configmap.y
 
 Using the ```envsubst``` utility, we will rewrite the environment variable AWS_REGION into the manifest and apply all the updates to the cluster. Run the below
 
-```bash
-
+```bash wait=10
 $ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/ack/dynamodb \
   | envsubst | kubectl apply -f-
 namespace/carts unchanged
@@ -96,10 +93,9 @@ $ aws dynamodb list-tables
 
 {
     "TableNames": [
-        "items"
+        "eks-workshop-carts-ack"
     ]
 }
-
 ```
 
 This output tells us that the new table has been created!
