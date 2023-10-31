@@ -6,7 +6,7 @@ eksctl delete iamserviceaccount --name carts-crossplane  --namespace carts --clu
 
 kubectl delete -k /eks-workshop/manifests/modules/automation/controlplanes/crossplane/managed/ --ignore-not-found=true > /dev/null
 
-kubectl delete -f /eks-workshop/manifests/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml > /dev/null
+kubectl delete table items -n carts --ignore-not-found=true > /dev/null
 
 kubectl delete -k /eks-workshop/manifests/modules/automation/controlplanes/crossplane/compositions/composition --ignore-not-found=true > /dev/null
 

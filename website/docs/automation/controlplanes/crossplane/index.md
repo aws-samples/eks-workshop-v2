@@ -22,4 +22,4 @@ You can view the Terraform that applies these changes [here](https://github.com/
 
 Crossplane extends your Kubernetes cluster to support orchestrating any infrastructure or managed service. Compose Crossplane’s granular resources into higher level abstractions that can be versioned, managed, deployed and consumed using your favorite tools and existing processes. 
 
-![EKS with RDS and MQ](./assets/eks-workshop-crossplane.jpg)
+![EKS with Dynamodb](./assets/eks-workshop-crossplane.png)
