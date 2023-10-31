@@ -31,8 +31,16 @@ const plugin = (options) => {
 
         const filePromise = fs.readFile(filePath, { encoding: 'utf8' });
         const originalPromise = readKustomization(kustomizationPath).then(res => {
+          let base = '';
           if('bases' in res) {
-            const actualPath = path.normalize(`${kustomizationPath}/${res['bases'][0]}`)
+            base = res['bases'][0];
+          }
+          else if('resources' in res) {
+            base = res['resources'][0];
+          }
+
+          if(base) {
+            const actualPath = path.normalize(`${kustomizationPath}/${base}`)
 
             return generateYaml(actualPath, resourceKind, resourceName, false)
           }
