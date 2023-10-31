@@ -1,94 +1,37 @@
 ---
-title: "Managing Pod Security on Amazon EKS with Kyverno"
+title: "Enforcing Pod Security Standards & More with Kyverno"
 sidebar_position: 130
 sidebar_custom_props: {"module": true}
 ---
 
-As containers are used in cloud native production environments, DevOps and security teams need to gain real-time visibility into container activity, restrict container access to host and network resources, and detect and prevent exploits and attacks on running containers.
+As containers are used in cloud native production environments, DevOps, Security teams and Platform teams, need a solution and way to effectively collaborate and execute on the Governance and [Policy-as-Code (PaC)](https://aws.github.io/aws-eks-best-practices/security/docs/pods/#policy-as-code-pac) journey. This ensures that all teams which have a stake in Security are able to have the same source of truth, as well as use the same baseline "language" when describing their individual needs, thus furthering the march towards being Cloud Native
 
-Introducing Pods that lack correct security configurations in a cluster, is an example of an unwanted change, which can disrupt cluster operations. To control Pod security Kubernetes provide (starting on version 1.23) [Pod Security Admission (PSA)](https://kubernetes.io/docs/concepts/security/pod-security-admission/) , a built-in admission controller that implements the security controls outlined in the [Pod Security Standards (PSS)](https://kubernetes.io/docs/concepts/security/pod-security-standards/) , enabled in Amazon Elastic Kubernetes Service (EKS) by default.
+Kubernetes by its nature is meant to be a tool to build on and with, this means that out of the box it lacks pre-defined guardrails. In order to give builders a way to control security Kubernetes provides (starting on version 1.23) [Pod Security Admission (PSA)](https://kubernetes.io/docs/concepts/security/pod-security-admission/), a built-in admission controller that implements the security controls outlined in the [Pod Security Standards (PSS)](https://kubernetes.io/docs/concepts/security/pod-security-standards/), enabled in Amazon Elastic Kubernetes Service (EKS) by default.
 
-### Pod Security Standards (PSS) and Pod Security Admission (PSA)
-
-According to [the Kubernetes documentation](https://v1-23.docs.kubernetes.io/docs/concepts/security/pod-security-standards/), the PSS "define three different policies to broadly cover the security spectrum. These policies are cumulative and range from highly-permissive to highly-restrictive." The policy levels are defined as:
-
-**Privileged:** Unrestricted (unsecure) policy, providing the widest possible level of permissions. This policy allows for known privilege escalations. It is the absence of a policy. This is good for applications such as logging agents, CNIs, storage drivers, and other system wide applications that need privileged access.
-
-**Baseline:** Minimally restrictive policy which prevents known privilege escalations. Allows the default (minimally specified) Pod configuration. The baseline policy prohibits use of hostNetwork, hostPID, hostIPC, hostPath, hostPort, the inability to add Linux capabilities, along with several other restrictions.
-
-**Restricted:** Heavily restricted policy, following current Pod hardening best practices. This policy inherits from the baseline and adds further restrictions such as the inability to run as root or a root-group. Restricted policies may impact an application's ability to function. They are primarily targeted at running security critical applications.
-
-PSA is a Kubernetes in-tree admission controller to enforce:
-
->"…requirements on a Pod's Security Context and other related fields according to the three levels defined by the Pod Security Standards” – Kubernetes Documentation
-
-The PSA admission controller implements the controls, outlined by the PSS profiles, via three modes of operation:
-
-- **enforce:** Policy violations will cause the pod to be rejected.
-
-- **audit:** Policy violations trigger the addition of an audit annotation to the event recorded in the audit log, but are otherwise allowed.
-
-- **warn:** Policy violations will trigger a user-facing warning, but are otherwise allowed.
-
-In the following diagram, we outline how PSA and PSS work together, with pods and namespaces, to define pod security profiles and apply admission control based on those profiles. As seen in the following diagram, the PSA enforcement modes and PSS policies are defined as labels in the target Namespaces.
-
-![PSS-PSA-Image](assets/psa-pss.jpeg)
-
-### Default PSA and PSS settings
-The default (cluster-wide) settings for PSA and PSS are seen below.
-
-> Note: These settings can not be changed (customized) at the Kubernetes API server for Amazon EKS.
-
-```
-defaults:
-  enforce: "privileged"
-  enforce-version: "latest"
-  audit: "privileged"
-  audit-version: "latest"
-  warn: "privileged"
-  warn-version: "latest"
-exemptions:
-  # Array of authenticated usernames to exempt.
-  usernames: []
-  # Array of runtime class names to exempt.
-  runtimeClasses: []
-  # Array of namespaces to exempt.
-  namespaces: []
-```
-
-The above settings configure the following cluster-wide scenario:
-
-- No PSA exemptions are configured at Kubernetes API server startup.
-- The Privileged PSS profile is configured by default for all PSA modes, and set to latest versions.
-- Namespaces are opted into more restrictive PSS policies via labels.
+### What is Kyverno
 
 ---
 
-Till now we have covered on a brief on PSA & PSS for Kubernetes workloads. By the end of this workshop, you will have gained familiarity with approaches to Manage Pod Level Security using the aforementioned concepts via implementing [Kyverno](https://kyverno.io/docs/) on Amazon EKS. You will also have hands-on experience with approaches that you can bring back to your organization.
+Kyverno (Greek for “govern”) is a policy engine designed specifically for Kubernetes. It is a Cloud Native Computing Foundation (CNCF) project allowing teams to collaborate and enforce Policy-as-Code.
 
-### Target audience
-These workshops assume you have some familiarity with Amazon EKS & Kubernetes and are interested in learning more about applying Security solutions to modern applications.
+The Kyverno policy engine is installed and integrates with the Kubernetes API server as [Dynamic Admission Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/). This allows written policies to be used to **mutate** and **validate** inbound Kubernetes API requests, thus ensuring compliance with the defined rules prior to the data being persisted and ultimately applied into the cluster.
 
-- Architects
-- Security Architects
-- Governance Professionals
+Kyverno allows for declarative Kubernetes resources, **written in YAML, with no new policy language to learn.** Results are also available as Kubernetes resources and as events.
 
-Coding experience is not required for this workshop. Any code, configuration, or commands required are provided.
+Kyverno policies can be used to **validate, mutate, and generate resource configurations, and validate image signatures and attestations.** Ultimately providing all the necessary building blocks for a complete software supply chain as well as security standards enforcement.
 
+### How Kyverno Works
 
-This workshop is designed to run in AWS Workshop Studio in us-east-1.
-
-### Summary
-
-In this workshop, we will go through the below Agenda:
-
-- Installation of Kyverno on the EKS Cluster
-
-Labs:
 ---
-- Creating a Simple Policy for Validation & Mutation of Pod Labels
-- Restricting Image Registries
-- Baselining Pod Security Standards
-- Supply Chain Security(Image Signing & Verification) on Amazon EKS using AWS KMS & CoSign with Kyverno
-- Policy Reports
-- Kyverno CLI
+
+As mentioned above, Kyverno runs as a Dynamic Admission Controller in an Kubernetes Cluster. Kyverno receives validating and mutating admission webhook HTTP callbacks from the Kubernetes API server and applies matching policies to return results that enforce admission policies or reject requests. It can also be used to Audit the requests, to monitor the Security posture of the environment before enforcing.
+
+Kyverno policies can be created for resources using Resource Kind, Labels, Namespaces, Roles, ClusterRoles and many more.
+
+The diagram below shows the high-level logical architecture of Kyverno.
+
+![KyvernoArchitecture](assets/ky-arch.png)
+
+The two major components are the Webhook Server & the Webhook Controller. The **Webhook server** handles incoming AdmissionReview requests from the Kubernetes API server and sends them to the Engine for processing. It is dynamically configured by the **Webhook Controller** which watches the installed policies and modifies the webhooks to request only the resources matched by those policies.
+
+Next we will take a look at the Workshop Activities. Click Next to Start with the Lab
