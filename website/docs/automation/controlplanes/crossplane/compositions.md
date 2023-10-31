@@ -47,7 +47,7 @@ $ kubectl delete table items -n carts --ignore-not-found=true > /dev/null
 Create the table by creating a `Claim`:
 
 ```bash
-$ kubectl apply -f ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml
+$ kubectl apply -f ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml -n carts
 dynamodbtable.awsblueprints.io/items created
 ```
 
@@ -64,10 +64,10 @@ Now, lets try to understand how the DynamoDB table is deployed using this claim:
 
 ![Crossplane reconciler concept](./assets/ddb-claim-architecture.png)
 
-On querying the deployed claim `DynamoDBTable`, we can observe that it points to and creates a Composite Resource (XR) `XDynamoDBTable`
+On querying the claim `DynamoDBTable` deployed in the carts namespace, we can observe that it points to and creates a Composite Resource (XR) `XDynamoDBTable`
 
 ```bash
-$ kubectl get DynamoDBTable -o yaml | grep "resourceRef:" -A 3
+$ kubectl get DynamoDBTable -n carts -o yaml | grep "resourceRef:" -A 3
     
     resourceRef:
       apiVersion: awsblueprints.io/v1alpha1
@@ -82,11 +82,11 @@ $ kubectl get composition
 NAME                              XR-KIND          XR-APIVERSION               AGE
 table.dynamodb.awsblueprints.io   XDynamoDBTable   awsblueprints.io/v1alpha1   143m
 ```
-On querying the `XDynamoDBTable` XR, we can observe that it creates DynamoDB Managed Resource `Table`.
+On querying the `XDynamoDBTable` XR which is not confined to any namespace, we can observe that it creates DynamoDB Managed Resource `Table`.
 
 ```bash
 $ kubectl get XDynamoDBTable -o yaml | grep "resourceRefs:" -A 3  
- 
+
     resourceRefs:
     - apiVersion: dynamodb.aws.upbound.io/v1beta1
       kind: Table
