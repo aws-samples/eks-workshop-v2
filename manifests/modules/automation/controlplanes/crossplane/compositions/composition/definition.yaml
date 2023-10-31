@@ -42,13 +42,14 @@ spec:
                       default: aws-provider-config
                     region:
                       type: string
+                      default: ''
                     tags:
                       additionalProperties:
                         type: string
                       description: Key-value map of resource tags.
                       type: object
                   required:
-                  - region
+                  - region                    
                   type: object
                 dynamoConfig:
                   properties:
@@ -94,15 +95,14 @@ spec:
                             type: number
                           projectionType:
                             type: string
+                            default: ALL
                           nonKeyAttributes: #required for gsi
                             items:
                               type: string
                             type: array
                         type: object
                         required:
-                          - hashKey
                           - name
-                          - projectionType
                       type: array
                     localSecondaryIndex:
                       items:
@@ -126,10 +126,8 @@ spec:
                       type: array
                   required:
                   - attribute
-                  - hashKey
                   type: object
               required:
-              - resourceConfig 
               - dynamoConfig    
             status:
               type: object
