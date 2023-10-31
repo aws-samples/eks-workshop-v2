@@ -1,23 +1,19 @@
 ---
-title: "Policy Reports in Kyverno"
+title: "Reports & Auditing"
 sidebar_position: 137
 ---
 
-Kyverno includes [policy reporting](https://kyverno.io/docs/policy-reports/), using the open format defined by the Kubernetes Policy Working Group. Kyverno emits these policy reports when admission actions (CREATE, UPDATE, DELETE) are performed. These reports are also generated as a result of background scans that apply policies on existing resources. 
+Kyverno includes [policy reporting](https://kyverno.io/docs/policy-reports/), using the open format defined by the Kubernetes Policy Working Group. Kyverno emits these policy reports when admission actions (CREATE, UPDATE, DELETE) are performed. These reports are also generated as a result of background scans that apply policies on existing resources.
 
 Policy reports are Kubernetes Custom resources, and in our case it is managed by Kyverno. So far, in the workshop we have created a couple of Policy reports. They are created for specific rules, when a resource is matched by one or more rules according to the policy definition & violate multiple rules, there will be multiple entries. When resources are deleted, their entry will be removed from the report. Reports, therefore, always represent the current state of the cluster and do not record historical information.
 
-For example, if a validate policy in ```Audit``` mode exists containing a single rule which requires that all resources set the label ```CostCenter``` and a user creates a Pod which does not set the team label, Kyverno will allow the Pod’s creation but record it as a fail result in a policy report due to the Pod being in violation of the policy and rule. Policies configured with ```spec.validationFailureAction: Enforce``` immediately block violating resources and results will only be reported for pass evaluations.
+For example, if a validate policy in `Audit` mode exists containing a single rule which requires that all resources set the label `CostCenter` and a user creates a Pod which does not set the team label, Kyverno will allow the Pod’s creation but record it as a fail result in a policy report due to the Pod being in violation of the policy and rule. Policies configured with `spec.validationFailureAction: Enforce` immediately block violating resources and results will only be reported for pass evaluations.
 
-Now, we will check on our cluster's status on compliance with the policies we have created so far in this workshop. We will run the below command, to get a overview of the Kyverno policy reports:
+Now, we will check on our cluster's status on compliance with the policies we have created so far in this workshop. We will run the below command, to get a overview of the Kyverno policy reports, the number of policies might differ & we can ignore the same.:
 
-```
+``` shell
 kubectl get policyreports -A
-```
 
-Sample Output should be as below, the number of policies might differ & we can ignore the same.
-
-```
 NAMESPACE         NAME                                PASS   FAIL   WARN   ERROR   SKIP   AGE
 default           cpol-baseline-policy                1      1      0      0       0      6d21h
 default           cpol-podsecurity-subrule-baseline   1      1      0      0       0      6d21h
@@ -37,17 +33,11 @@ policy-reporter   cpol-podsecurity-subrule-baseline   3      0      0      0    
 policy-reporter   cpol-restrict-image-registries      0      3      0      0       0      22s
 ```
 
-In the above output, we can see a number of policies that we created such as **verify-image**, **baseline-policy**, **restrict-image-registries**. You can also see the status of objects such as **Pass**, **Fail**, **WARN**, **ERROR**, **SKIP**. 
+In the above output, we can see a number of policies that we created such as **verify-image**, **baseline-policy**, **restrict-image-registries**. You can also see the status of objects such as **Pass**, **Fail**, **WARN**, **ERROR**, **SKIP**.
 
-To check in detail on the violations for a policy, we can run the below command. In our case, we will select **cpol-restrict-image-registries**, But you can select any other policy as well.
+To check in detail on the violations for a policy, we can run the below command. In our case, we will select **cpol-restrict-image-registries**, however, you can select any other policy as well, simply fire off `kubectl get policyreports cpol-restrict-image-registries -o yaml`.
 
-```
-kubectl get policyreports cpol-restrict-image-registries -o yaml
-```
-
-Sample Output:
-
-```
+``` yaml
 apiVersion: wgpolicyk8s.io/v1alpha2
 kind: PolicyReport
 metadata:
@@ -121,5 +111,4 @@ summary:
   warn: 0
 ```
 
-As we can see in the above output, Our Pods namely Privileged-Pod & Signed failed the rules for our policy ```restrict-image-registries```. Monitoring reports in this way could be an overhead for administrators. Kyverno also supports a GUI based tool namely [Policy reporter](https://github.com/kyverno/policy-reporter#readme). This is outside of this workshop's scope., but can be tried in the workshop accounts.
-
+As we can see in the above output, Our Pods namely Privileged-Pod & Signed failed the rules for our policy `restrict-image-registries`. Monitoring reports in this way could be an overhead for administrators. Kyverno also supports a GUI based tool namely [Policy reporter](https://github.com/kyverno/policy-reporter#readme). This is outside of this workshop's scope., but can be tried in the workshop accounts.
