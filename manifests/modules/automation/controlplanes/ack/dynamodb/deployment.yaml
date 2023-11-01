@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: carts
+  namespace: carts
+spec:
+  template:
+    spec:
+      containers:
+        - name: carts
+          envFrom:
+            - configMapRef:
+                name: carts-ack
+      serviceAccountName: carts-ack

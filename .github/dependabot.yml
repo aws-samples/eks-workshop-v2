@@ -1,10 +1,6 @@
 version: 2
 
 updates:
-  - package-ecosystem: pip
-    directory: "/helm"
-    schedule:
-      interval: monthly
   - package-ecosystem: "terraform" 
     directory: "/terraform/modules/cluster" 
     schedule:
