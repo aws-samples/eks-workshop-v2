@@ -30,7 +30,7 @@ spec:
               string:
                 type: Regexp
                 regexp:
-                  match: ^.{0,5}
+                  match: ^(.*?)-crossplane
   resources:
     - name: table
       connectionDetails:

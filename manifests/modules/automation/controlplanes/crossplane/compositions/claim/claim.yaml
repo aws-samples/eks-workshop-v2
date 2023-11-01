@@ -1,7 +1,7 @@
 apiVersion: awsblueprints.io/v1alpha1
 kind: DynamoDBTable
 metadata:
-  name: items
+  name: "${EKS_CLUSTER_NAME}-carts-crossplane"
 spec:
   dynamoConfig:
     attribute:

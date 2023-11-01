@@ -40,22 +40,22 @@ manifests/modules/automation/controlplanes/crossplane/compositions/claim/claim.y
 Cleanup the Dynamodb table created from the previous Managed Resource section.
 
 ```bash
-$ kubectl delete table items -n carts --ignore-not-found=true > /dev/null
+$ kubectl delete table --all --ignore-not-found=true > /dev/null
 ```
 
 Create the table by creating a `Claim`:
 
 ```bash
-$ kubectl apply -f ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml -n carts
-dynamodbtable.awsblueprints.io/items created
+$ envsubst <  ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml | kubectl -n carts apply -f -
+dynamodbtable.awsblueprints.io/eks-workshop-carts-crossplane created
 ```
 
 It takes some time to provision the AWS managed services, in the case of DynamoDB up to 2 minutes. Crossplane will report the status of the reconciliation in the `SYNCED` field of the Kubernetes Composite and Managed resource.
 
 ```bash
 $ kubectl get table
-NAME                READY   SYNCED   EXTERNAL-NAME   AGE
-items-m5gnc-6w87d   True    True     items           3m37s
+NAME                                        READY   SYNCED   EXTERNAL-NAME                   AGE
+eks-workshop-carts-crossplane-bt28w-lnb4r   True   True     eks-workshop-carts-crossplane   6s
 ```
 
 ---
@@ -72,7 +72,7 @@ $ kubectl get DynamoDBTable -n carts -o yaml | grep "resourceRef:" -A 3
     resourceRef:
       apiVersion: awsblueprints.io/v1alpha1
       kind: XDynamoDBTable
-      name: items-m5gnc
+      name: eks-workshop-v2-carts-crossplane-bt28w
 ```
 
 The Composition `table.dynamodb.awsblueprints.io` shows Composite Resource Kind (XR-KIND) as `XDynamoDBTable`. This Composition lets Crossplane know what to do when we created the `XDynamoDBTable` XR. Each Composition creates a link between an XR and a set of one or more Managed Resources.
@@ -91,7 +91,7 @@ $ kubectl get XDynamoDBTable -o yaml | grep "resourceRefs:" -A 3
     resourceRefs:
     - apiVersion: dynamodb.aws.upbound.io/v1beta1
       kind: Table
-      name: items-m5gnc-6w87d
+      name: eks-workshop-v2-carts-crossplane-bt28w-lnb4r
 ```
 
 ---
@@ -150,7 +150,7 @@ To verify that the **Carts** module is in fact using the DynamoDB table we just 
 And to check if items are in the DynamoDB table as well, run
 
 ```bash
-$ aws dynamodb scan --table-name items --query 'Items[].{itemId:itemId,Price:unitPrice}' --output text
+$ aws dynamodb scan --table-name "${EKS_CLUSTER_NAME}-carts-crossplane" --query 'Items[].{itemId:itemId,Price:unitPrice}' --output text
 PRICE   795
 ITEMID  510a0d7e-8e83-4193-b483-e27e09ddc34d
 PRICE   385
