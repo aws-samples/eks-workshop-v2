@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "chai": "^4.3.10",
-    "commander": "^11.0.0",
+    "commander": "^11.1.0",
     "glob-to-regexp": "^0.4.1",
     "mocha-junit-reporter": "^2.2.1",
     "mochawesome": "^7.0.1",
