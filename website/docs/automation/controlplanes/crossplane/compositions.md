@@ -99,7 +99,7 @@ $ kubectl get XDynamoDBTable -o yaml | grep "resourceRefs:" -A 3
 When new resources are created or updated, application configurations also need to be updated to use these new resources. Update the application to use the DynamoDB endpoint:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/application
+$ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/application | envsubst | kubectl apply -f-
 namespace/carts unchanged
 serviceaccount/carts unchanged
 configmap/carts unchanged
