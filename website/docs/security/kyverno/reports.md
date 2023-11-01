@@ -112,3 +112,7 @@ summary:
 ```
 
 As we can see in the above output, Our Pods namely Privileged-Pod & Signed failed the rules for our policy `restrict-image-registries`. Monitoring reports in this way could be an overhead for administrators. Kyverno also supports a GUI based tool namely [Policy reporter](https://github.com/kyverno/policy-reporter#readme). This is outside of this workshop's scope., but can be tried in the workshop accounts.
+
+In this Lab, we showed you how to augment the Kubernetes PSA/PSS configurations with Kyverno. Pod Security Standards (PSS) and the in-tree Kubernetes implementation of these standards, Pod Security Admission (PSA), provide good building blocks for managing pod security. The majority of users switching from Kubernetes Pod Security Policies (PSP) should be successful using the PSA/PSS features.
+
+Kyverno augments the user experience created by PSA/PSS, by leveraging the in-tree Kubernetes pod security implementation, and providing several helpful enhancements for operationalizing of policy. You can use Kyverno to govern the proper use of pod security labels. In addition, you can use the new Kyverno `validate.podSecurity` rule to easily manage pod security standards with additional flexibility and an enhanced user experience. And, with the Kyverno CLI, you can automate policy evaluation, upstream of your clusters.
