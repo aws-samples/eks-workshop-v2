@@ -2,7 +2,6 @@
 title: "Kubernetes events"
 sidebar_position: 20
 ---
-## Objective
 
 This section demonstrates how we can export Kubernetes events to OpenSearch and use OpenSearch to improve observability of the EKS cluster.
 
@@ -16,8 +15,6 @@ Here is a summary of steps we will follow:
 1. [Optional] Explore events within the Kuberntes cluster
 
 ---
-
-## Introduction
 
 **Kubernetes Events** provide a rich source of information that can be used to monitor applications and cluster state, respond to failures and perform diagnostics. Events generally denote some state change. Examples include pod creation, adding replicas and scheduling resources. Each event includes a ```type``` field which is set to Normal or Warning to indicate success of failure.
 
@@ -44,8 +41,6 @@ The following diagram provides an overview of the setup for this section. ```kub
 ![OpenSearch](./assets/eks-opensearch-overview.svg)
 
 ---
-
-## Lab
 
 **Step 1:** Deploy Kubernetes events exporter and configure it to send events to our OpenSearch domain. The base configuration is available [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/events-exporter). The OpenSearch credentials we retrieved earlier are being used to configure the exporter. The second command verifies that the Kubernetes events pod is running.
 
@@ -222,7 +217,7 @@ $ kubectl get events --sort-by='.lastTimestamp' -o json -A | jq '.items[-1]'
 
 ---
 
-## Answers for Step 3
+### Answers for Step 3
 
 **scenario-a:** From the dashboard we can see that ```scenario-a``` has a reason of 'FailedMount' and the message 'MountVolume.SetUp failed for volume "secret-volume" : secret "misspelt-secret-name" not found'.  The pod is attempting to mount a secret that does not exist.
 

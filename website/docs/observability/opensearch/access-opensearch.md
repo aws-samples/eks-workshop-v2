@@ -2,8 +2,6 @@
 title: "Access OpenSearch"
 sidebar_position: 10
 ---
-## Objective
-
 In this section we setup OpenSearch for the upcoming labs using these steps:
 
 1. Retrieve credentials for OpenSearch from the AWS Systems Manager Parameter Store
@@ -11,8 +9,6 @@ In this section we setup OpenSearch for the upcoming labs using these steps:
 1. Confirm access to the OpenSearch dashboard
 
 ---
-
-## Lab
 
 **Step 1:** Credentials for the OpenSearch domain have been saved in the AWS Systems Manager Parameter Store during the provisioning process. Retrieve this information and set up the necessary environment variables.
 
