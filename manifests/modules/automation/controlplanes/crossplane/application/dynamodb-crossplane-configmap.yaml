@@ -4,4 +4,4 @@ metadata:
   name: carts-crossplane
   namespace: carts
 data:
-  CARTS_DYNAMODB_TABLENAME: items
+  CARTS_DYNAMODB_TABLENAME: "${EKS_CLUSTER_NAME}-carts-crossplane"

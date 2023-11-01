@@ -1,11 +1,11 @@
 apiVersion: dynamodb.aws.upbound.io/v1beta1
 kind: Table
 metadata:
-  name: items
+  name: "${EKS_CLUSTER_NAME}-carts-crossplane"
   labels:
     testing.upbound.io/example-name: dynamodb
   annotations: 
-    crossplane.io/external-name: items
+    crossplane.io/external-name: "${EKS_CLUSTER_NAME}-carts-crossplane"
 spec:
   forProvider:
     attribute:

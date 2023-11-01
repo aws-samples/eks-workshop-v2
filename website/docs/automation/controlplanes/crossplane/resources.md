@@ -20,7 +20,7 @@ Fortunately, we have a handy one-liner to help with this process. Run the below:
 
 $ eksctl create iamserviceaccount --name carts-crossplane \
   --namespace carts --cluster $EKS_CLUSTER_NAME \
-  --role-name carts-dynamodb-role \
+  --role-name ${EKS_CLUSTER_NAME}-carts-crossplane \
   --attach-policy-arn $DYNAMODB_POLICY_ARN --approve
   
 2023-10-30 12:45:17 [ℹ]  1 iamserviceaccount (carts/carts-crossplane) was included (based on the include/exclude rules)
@@ -50,22 +50,22 @@ manifests/modules/automation/controlplanes/crossplane/managed/table.yaml
 Finally, we can create the configuration for the DynamoDB itself with a `dynamodb.aws.upbound.io` resource.
 
 ```bash wait=30
-$ kubectl apply -k ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/managed
-table.dynamodb.aws.upbound.io/items created
+$ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/managed  | envsubst | kubectl apply -f-
+dynamodbtable.awsblueprints.io/eks-workshop-carts-crossplane created
 ```
 
 It takes some time to provision the AWS managed services, in the case of DynamoDB up to 2 minutes. Crossplane will report the status of the reconciliation in the `status` field of the Kubernetes custom resources.
 
 ```bash
 $ kubectl get table
-NAME                READY   SYNCED   EXTERNAL-NAME   AGE
-items-m5gnc-6w87d   True    True     items           3m37s
+NAME                                        READY  SYNCED   EXTERNAL-NAME                   AGE
+eks-workshop-carts-crossplane-bt28w-lnb4r   True   True     eks-workshop-carts-crossplane   6s
 ```
 
 When new resources are created or updated, application configurations also need to be updated to use these new resources. Update the application to use the DynamoDB endpoint:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/application
+$ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/application | envsubst | kubectl apply -f-
 namespace/carts unchanged
 serviceaccount/carts unchanged
 configmap/carts unchanged
@@ -116,7 +116,7 @@ To verify that the **Carts** module is in fact using the DynamoDB table we just 
 And to check if items are in the DynamoDB table as well, run
 
 ```bash
-$ aws dynamodb scan --table-name items --query 'Items[].{itemId:itemId,Price:unitPrice}' --output text
+$ aws dynamodb scan --table-name "${EKS_CLUSTER_NAME}-carts-crossplane" --query 'Items[].{itemId:itemId,Price:unitPrice}' --output text
 PRICE   795
 ITEMID  510a0d7e-8e83-4193-b483-e27e09ddc34d
 PRICE   385
