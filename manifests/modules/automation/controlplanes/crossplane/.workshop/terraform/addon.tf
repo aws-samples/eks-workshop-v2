@@ -25,6 +25,7 @@ module "crossplane" {
   chart_version    = "1.13.2"
   repository       = "https://charts.crossplane.io/stable/"
 }
+
 locals {
   crossplane_namespace = "crossplane-system"
   upbound_aws_provider = {

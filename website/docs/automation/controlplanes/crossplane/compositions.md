@@ -40,14 +40,18 @@ manifests/modules/automation/controlplanes/crossplane/compositions/claim/claim.y
 Cleanup the Dynamodb table created from the previous Managed Resource section.
 
 ```bash
-$ kubectl delete table --all --ignore-not-found=true > /dev/null
+$ kubectl delete tables.dynamodb.aws.upbound.io --all --ignore-not-found=true
+$ kubectl wait --for=delete tables.dynamodb.aws.upbound.io --all --timeout=5m
 ```
 
 Create the table by creating a `Claim`:
 
-```bash
-$ envsubst <  ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml | kubectl -n carts apply -f -
+```bash timeout=400
+$ cat ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml \
+  | envsubst | kubectl -n carts apply -f -
 dynamodbtable.awsblueprints.io/eks-workshop-carts-crossplane created
+$ kubectl wait dynamodbtables.awsblueprints.io ${EKS_CLUSTER_NAME}-carts-crossplane -n carts \
+  --for=condition=Ready --timeout=5m
 ```
 
 It takes some time to provision the AWS managed services, in the case of DynamoDB up to 2 minutes. Crossplane will report the status of the reconciliation in the `SYNCED` field of the Kubernetes Composite and Managed resource.
@@ -55,7 +59,7 @@ It takes some time to provision the AWS managed services, in the case of DynamoD
 ```bash
 $ kubectl get table
 NAME                                        READY   SYNCED   EXTERNAL-NAME                   AGE
-eks-workshop-carts-crossplane-bt28w-lnb4r   True   True     eks-workshop-carts-crossplane   6s
+eks-workshop-carts-crossplane-bt28w-lnb4r   True   True      eks-workshop-carts-crossplane   6s
 ```
 
 ---
@@ -72,7 +76,7 @@ $ kubectl get DynamoDBTable -n carts -o yaml | grep "resourceRef:" -A 3
     resourceRef:
       apiVersion: awsblueprints.io/v1alpha1
       kind: XDynamoDBTable
-      name: eks-workshop-v2-carts-crossplane-bt28w
+      name: eks-workshop-carts-crossplane-bt28w
 ```
 
 The Composition `table.dynamodb.awsblueprints.io` shows Composite Resource Kind (XR-KIND) as `XDynamoDBTable`. This Composition lets Crossplane know what to do when we created the `XDynamoDBTable` XR. Each Composition creates a link between an XR and a set of one or more Managed Resources.
@@ -91,24 +95,12 @@ $ kubectl get XDynamoDBTable -o yaml | grep "resourceRefs:" -A 3
     resourceRefs:
     - apiVersion: dynamodb.aws.upbound.io/v1beta1
       kind: Table
-      name: eks-workshop-v2-carts-crossplane-bt28w-lnb4r
+      name: eks-workshop-carts-crossplane-bt28w-lnb4r
 ```
 
 ---
 
-When new resources are created or updated, application configurations also need to be updated to use these new resources. Update the application to use the DynamoDB endpoint:
-
-```bash
-$ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/application | envsubst | kubectl apply -f-
-namespace/carts unchanged
-serviceaccount/carts unchanged
-configmap/carts unchanged
-configmap/carts-crossplane created
-service/carts unchanged
-service/carts-dynamodb unchanged
-deployment.apps/carts configured
-deployment.apps/carts-dynamodb unchanged
-```
+When new resources are created or updated, application configurations also need to be updated to use these new resources. We've already configured the workload to use the correct table name in the previous section so lets just restart the pods:
 
 ```bash
 $ kubectl rollout restart -n carts deployment/carts
