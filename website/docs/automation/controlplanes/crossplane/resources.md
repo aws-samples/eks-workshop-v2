@@ -17,7 +17,6 @@ The AWS Java SDK in the **Carts** component is able to use IAM Roles to interact
 Fortunately, we have a handy one-liner to help with this process. Run the below:
 
 ```bash
-
 $ eksctl create iamserviceaccount --name carts-crossplane \
   --namespace carts --cluster $EKS_CLUSTER_NAME \
   --role-name ${EKS_CLUSTER_NAME}-carts-crossplane \
@@ -32,7 +31,6 @@ $ eksctl create iamserviceaccount --name carts-crossplane \
     } }2023-10-30 12:45:17 [i]  building iamserviceaccount stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-crossplane"
 2023-10-30 12:45:18 [i]  deploying stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-crossplane"
 2023-10-30 12:45:18 [i]  waiting for CloudFormation stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-crossplane"
-
 ```
 
 ```eksctl``` provisions a CloudFormation stack to help manage these resources which can be seen in the  output above.
@@ -49,10 +47,10 @@ manifests/modules/automation/controlplanes/crossplane/managed/table.yaml
 
 Finally, we can create the configuration for the DynamoDB itself with a `dynamodb.aws.upbound.io` resource.
 
-```bash wait=10 timeout=400
+```bash wait=10 timeout=400 hook=table
 $ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/managed \
   | envsubst | kubectl apply -f-
-dynamodbtable.awsblueprints.io/eks-workshop-carts-crossplane created
+table.dynamodb.aws.upbound.io/eks-workshop-carts-crossplane created
 $ kubectl wait tables.dynamodb.aws.upbound.io ${EKS_CLUSTER_NAME}-carts-crossplane \
   --for=condition=Ready --timeout=5m
 ```
@@ -67,7 +65,7 @@ eks-workshop-carts-crossplane               True   True     eks-workshop-carts-c
 
 When new resources are created or updated, application configurations also need to be updated to use these new resources. Update the application to use the DynamoDB endpoint:
 
-```bash
+```bash timeout=180
 $ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/application \
   | envsubst | kubectl apply -f-
 namespace/carts unchanged
@@ -78,7 +76,7 @@ service/carts unchanged
 service/carts-dynamodb unchanged
 deployment.apps/carts configured
 deployment.apps/carts-dynamodb unchanged
-$ kubectl rollout status -n carts deployment/carts --timeout=30s
+$ kubectl rollout status -n carts deployment/carts --timeout=2m
 deployment "carts" successfully rolled out
 ```
 

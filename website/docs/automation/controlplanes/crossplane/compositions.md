@@ -104,7 +104,7 @@ When new resources are created or updated, application configurations also need 
 
 ```bash
 $ kubectl rollout restart -n carts deployment/carts
-$ kubectl rollout status -n carts deployment/carts --timeout=30s
+$ kubectl rollout status -n carts deployment/carts --timeout=2m
 deployment "carts" successfully rolled out
 ```
 
