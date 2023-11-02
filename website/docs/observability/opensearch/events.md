@@ -3,18 +3,7 @@ title: "Kubernetes events"
 sidebar_position: 20
 ---
 
-This section demonstrates how we can export Kubernetes events to OpenSearch and use OpenSearch to improve observability of the EKS cluster.
-
-Here is a summary of steps we will follow:
-
-1. Deploy Kubernetes events exporter to forward events to OpenSearch
-1. Generate additional Kubernetes events by spinning up test workloads
-1. Explore the OpenSearch Kubernetes events dashboard
-1. Identify issues using the OpenSearch dashboard
-1. Fix the issues and revisit OpenSearch dashboard to see changes
-1. [Optional] Explore events within the Kuberntes cluster
-
----
+This section demonstrates how we can export Kubernetes events to OpenSearch and use OpenSearch to improve observability of the EKS cluster. You will deploy the Kubernetes events exporter to forward events to OpenSearch, generate additional Kubernetes events by spinning up test workloads, explore the OpenSearch Kubernetes events dashboard, identify issues and optionally explore events within the Kuberntes cluster
 
 **Kubernetes Events** provide a rich source of information that can be used to monitor applications and cluster state, respond to failures and perform diagnostics. Events generally denote some state change. Examples include pod creation, adding replicas and scheduling resources. Each event includes a ```type``` field which is set to Normal or Warning to indicate success of failure.
 
@@ -40,9 +29,7 @@ The following diagram provides an overview of the setup for this section. ```kub
 
 ![OpenSearch](./assets/eks-opensearch-overview.svg)
 
----
-
-**Step 1:** Deploy Kubernetes events exporter and configure it to send events to our OpenSearch domain. The base configuration is available [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/events-exporter). The OpenSearch credentials we retrieved earlier are being used to configure the exporter. The second command verifies that the Kubernetes events pod is running.
+Deploy Kubernetes events exporter and configure it to send events to our OpenSearch domain. The base configuration is available [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/events-exporter). The OpenSearch credentials we retrieved earlier are being used to configure the exporter. The second command verifies that the Kubernetes events pod is running.
 
 ```bash timeout=120 wait=30
 $ helm install events-to-opensearch \
@@ -64,8 +51,7 @@ NAME                                                              READY   STATUS
 events-to-opensearch-kubernetes-event-exporter-67fc698978-2f9wc   1/1     Running   0             10s
 ```
 
----
-**Step 2**: Generate additional Kubernetes events by spinning up test workloads
+Generate additional Kubernetes events by spinning up test workloads
 
 We will launch three deployments labelled ```scenario-a, scenario-b and scenario-c``` within the ```test``` namespace to demonstrate Normal and Warning events. Each deployment intentionally includes an error.
 
@@ -78,16 +64,13 @@ deployment.apps/scenario-b created
 deployment.apps/scenario-c created
 ```
 
----
-**Step 3:** Explore the OpenSearch Kubernetes events dashboard
-
 :::tip
 
 The Kubernetes events exporter we launched in the previous step sends events from the last hour and any new ones to OpenSearch. Therefore, the exact list of events you see when you run the following commands and inspect the OpenSearch dashboard will vary depending on the EKS cluster activity within the last hour.
 
 :::
 
-Point your browser to the OpenSearch dashboard URL that we used in the previous page. Your live dashboard should look similar to the image below, but the numbers and messages will vary depending on cluster activity. An explanation of the dashboards sections and fields follows.
+Explore the OpenSearch Kubernetes events dashboard by pointing your browser to the OpenSearch dashboard URL that we used in the previous page. Your live dashboard should look similar to the image below, but the numbers and messages will vary depending on cluster activity. An explanation of the dashboards sections and fields follows.
 
 1. [Header] Shows date / time  range.  You can customize the time range that you are exploring with this dashboard (Last 30 minutes in this example)
 2. [Top section] Date histogram of events (split between Normal and Warning events)
@@ -116,23 +99,21 @@ An explanation of data fields within Kubernetes events can be found on [kubernet
 
 ![Kubernetes Events detail](./assets/events-detail.png)
 
----
-**Step 4:** Identify issues with earlier deployment using the OpenSearch dashboard
+You can use the Kubernetes events dashboard to identify why the three deployments (```scenario-a, scenario-b and scenario-c```) are  experiencing issues. All the pods we deployed earlier are in the ```test``` namespace.
 
-Use the Kubernetes events dashboard to identify why the three deployments (```scenario-a, scenario-b and scenario-c```) are  experiencing issues. Recall that all the pods we deployed earlier are in the ```test``` namespace.
+**scenario-a:** From the dashboard we can see that ```scenario-a``` has a reason of 'FailedMount' and the message 'MountVolume.SetUp failed for volume "secret-volume" : secret "misspelt-secret-name" not found'.  The pod is attempting to mount a secret that does not exist.
 
-|            | Reason for failure  |
-| ---------- | ------------------- |
-| scenario-a |  |
-| scenario-b |  |
-| scenario-c |  |
+![Answer for scenario-a](./assets/scenario-a.png)
 
-Compare your findings to the answers provided at the end of this page.
+**scenario-b:**  ```scenario-b``` has failed with a message 'Failed to pull image "wrong-image": rpc error: code = Unknown desc = failed to pull and unpack image "docker.io/library/wrong-image:latest": failed to resolve reference "docker.io/library/wrong-image:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed.' The pod is not getting created because it references a non-existent image.
 
----
-**Step 5:** Fix the issues and revisit OpenSearch dashboard to see changes
+![Answer for scenario-b](./assets/scenario-b.png)
 
-Fix the issues we had with the three deployments.  
+**scenario-c:** The dashboard shows a reason of 'FailedScheduling' and the message '0/3 nodes are available: 3 Insufficient cpu. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.' This deployment is requesting CPU that exceeds what any of the current cluster nodes can provide. (We do not have any of the cluster autoscaling capabilities enabled within this module of EKS workshop.)
+
+![Answer for scenario-c](./assets/scenario-c.png)
+
+Fix the issues and revisit OpenSearch dashboard to see changes
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/observability/opensearch/scenarios/fix
@@ -148,9 +129,6 @@ Go back to the OpenSearch dashboard and notice that the earlier issues have been
 :::tip
 As issues are fixed, a new set of Normal Kubernetes events are generated. The earlier events (Normal or Warning) remain as part of the history. Therefore, the number of Normal and Warning events always *increases*.
 :::
-
----
-**[Optional] Step 6:** Explore events within the Kubernetes cluster
 
 Optionally, you can explore Kubernetes events from within the EKS cluster. The events you were exploring from within the OpenSearch dashboard mirror the information that is available within the cluster.
 
@@ -214,19 +192,3 @@ $ kubectl get events --sort-by='.lastTimestamp' -o json -A | jq '.items[-1]'
   "type": "Normal"
 }
 ```
-
----
-
-### Answers for Step 3
-
-**scenario-a:** From the dashboard we can see that ```scenario-a``` has a reason of 'FailedMount' and the message 'MountVolume.SetUp failed for volume "secret-volume" : secret "misspelt-secret-name" not found'.  The pod is attempting to mount a secret that does not exist.
-
-![Answer for scenario-a](./assets/scenario-a.png)
-
-**scenario-b:** The dashboard shows that the ```scenario-b``` pod has failed with a message 'Failed to pull image "wrong-image": rpc error: code = Unknown desc = failed to pull and unpack image "docker.io/library/wrong-image:latest": failed to resolve reference "docker.io/library/wrong-image:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed.' The pod is not getting created because it references a non-existent image.
-
-![Answer for scenario-b](./assets/scenario-b.png)
-
-**scenario-c:** The dashboard shows a reason of 'FailedScheduling' and the message '0/3 nodes are available: 3 Insufficient cpu. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.' This deployment is requesting CPU that exceeds what any of the current cluster nodes can provide. (We do not have any of the cluster autoscaling capabilities enabled within this module of EKS workshop.)
-
-![Answer for scenario-c](./assets/scenario-c.png)

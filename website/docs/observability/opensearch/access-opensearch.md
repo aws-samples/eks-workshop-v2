@@ -2,15 +2,9 @@
 title: "Access OpenSearch"
 sidebar_position: 10
 ---
-In this section we setup OpenSearch for the upcoming labs using these steps:
+In this section you will retrieve credentials for OpenSearch from the AWS Systems Manager Parameter Store, load a pre-created OpenSearch dashboard for Kubernetes events and confirm access to the OpenSearch dashboard.
 
-1. Retrieve credentials for OpenSearch from the AWS Systems Manager Parameter Store
-1. Load a pre-created OpenSearch dashboard for Kubernetes events
-1. Confirm access to the OpenSearch dashboard
-
----
-
-**Step 1:** Credentials for the OpenSearch domain have been saved in the AWS Systems Manager Parameter Store during the provisioning process. Retrieve this information and set up the necessary environment variables.
+Credentials for the OpenSearch domain have been saved in the AWS Systems Manager Parameter Store during the provisioning process. Retrieve this information and set up the necessary environment variables.
 
 ```bash
 $ export OPENSEARCH_HOST=$(aws ssm get-parameter \
@@ -25,8 +19,7 @@ $ export OPENSEARCH_PASSWORD=$(aws ssm get-parameter \
 $ export OPENSEARCH_DASHBOARD_FILE=~/environment/eks-workshop/modules/observability/opensearch/dashboard/events-dashboard.ndjson
 ```
 
----
-**Step 2:** Load a pre-created OpenSearch Dashboard to display Kubernetes events. The dashboard is available in [kubernetes-events-dashboard.ndjson](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/dashboard). It includes the OpenSearch index patterns, visualizations and dashboard for the Kubernetes Events Dashboard.
+Load a pre-created OpenSearch Dashboard to display Kubernetes events. The dashboard is available in [kubernetes-events-dashboard.ndjson](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/dashboard). It includes the OpenSearch index patterns, visualizations and dashboard for the Kubernetes Events Dashboard.
 
 ```bash
 $ curl https://$OPENSEARCH_HOST/_dashboards/auth/login \
@@ -66,10 +59,7 @@ $ curl -X POST https://$OPENSEARCH_HOST/_dashboards/api/saved_objects/_import?ov
 }
 ```
 
----
-**Step 3:** Confirm that the OpenSearch dashboard is accessible
-
-View the OpenSearch server coordinates and credentials that we retrieved in Step 1.
+View the OpenSearch server coordinates and credentials that we retrieved earlier and confirm that the OpenSearch dashboard is accessible.
 
 ```bash
 $ printf "\nOpenSearch dashboard: https://%s/_dashboards/app/dashboards \nUserName: %q \nPassword: %q \n\n" \
