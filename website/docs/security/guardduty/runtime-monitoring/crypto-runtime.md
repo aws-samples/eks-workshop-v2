@@ -10,7 +10,8 @@ To simulate the finding we'll be running a `ubuntu` image Pod in the `default` n
 Run the below command to start the Pod:
 
 ```bash
-$ kubectl run crypto --namespace other --image ubuntu --restart=Never --command -- sleep infinity
+$ kubectl run crypto -n other --image ubuntu --restart=Never --command -- sleep infinity
+$ kubectl wait --for=condition=ready pod crypto -n other
 ```
 
 Next we can use `kubectl exec` to run a series of commands inside the Pod. First lets install the `curl` utility:
@@ -22,7 +23,7 @@ $ kubectl exec crypto -n other -- bash -c 'apt update && apt install -y curl'
 Next lets download the crypto mining process but dump the output to `/dev/null`:
 
 ```bash
-$ kubectl exec crypto -n other -- bash -c 'curl -s http://pool.minergate.com/zaq12wsxcde34rfvbgt56yhnmju78iklo90p > /dev/null'
+$ kubectl exec crypto -n other -- bash -c 'curl -s -o /dev/null http://pool.minergate.com/zaq12wsxcde34rfvbgt56yhnmju78iklo90p && echo "Done!"'
 ```
 
 These commands will trigger two different findings in the [GuardDuty Findings console](https://console.aws.amazon.com/guardduty/home#/findings).

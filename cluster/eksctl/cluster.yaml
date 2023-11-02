@@ -37,6 +37,6 @@ managedNodeGroups:
   maxSize: 6
   instanceType: m5.large
   privateNetworking: true
-  releaseVersion: 1.27.4-20230825
+  releaseVersion: 1.27.3-20230816
   labels:
     workshop-default: 'yes'
