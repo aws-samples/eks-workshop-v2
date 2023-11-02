@@ -19,7 +19,7 @@ spec:
       consoleAccess: true
       username: admin
   subnetIDs:
-  - $(VPC_PRIVATE_SUBNET_ID_3)
+  - ${VPC_PRIVATE_SUBNET_ID_3}
   securityGroupRefs:
     - from: 
         name: mq-eks-workshop

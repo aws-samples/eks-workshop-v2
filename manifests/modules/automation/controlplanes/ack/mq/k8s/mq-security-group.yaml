@@ -6,7 +6,7 @@ metadata:
 spec:
   description: SecurityGroup
   name: mq-eks-workshop
-  vpcID: $(VPC_ID)
+  vpcID: ${VPC_ID}
   ingressRules:
   - ipProtocol: tcp
     ipRanges:
