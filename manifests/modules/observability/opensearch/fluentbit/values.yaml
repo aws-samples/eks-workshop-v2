@@ -2,15 +2,10 @@
 # updated during provisioning.
 # CloudWatch logs are on by default and need to be turned off for this example
 # See https://artifacthub.io/packages/helm/aws/aws-for-fluent-bit
-# additionalInputs: |
-#  [INPUT]
-#      Name              kubernetes_events
-#      Tag               k8s_events
-#      Kube_URL          https://kubernetes.default.svc
 ---
 opensearch:
   enabled: true
-  index: "eks-logs"
+  index: "eks-pod-logs"
   tls: "On"
   awsAuth: "Off"
   traceError: "On"
