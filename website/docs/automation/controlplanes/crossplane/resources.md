@@ -23,15 +23,15 @@ $ eksctl create iamserviceaccount --name carts-crossplane \
   --role-name ${EKS_CLUSTER_NAME}-carts-crossplane \
   --attach-policy-arn $DYNAMODB_POLICY_ARN --approve
   
-2023-10-30 12:45:17 [ℹ]  1 iamserviceaccount (carts/carts-crossplane) was included (based on the include/exclude rules)
+2023-10-30 12:45:17 [i]  1 iamserviceaccount (carts/carts-crossplane) was included (based on the include/exclude rules)
 2023-10-30 12:45:17 [!]  serviceaccounts that exist in Kubernetes will be excluded, use --override-existing-serviceaccounts to override
-2023-10-30 12:45:17 [ℹ]  1 task: { 
+2023-10-30 12:45:17 [i]  1 task: { 
     2 sequential sub-tasks: { 
         create IAM role for serviceaccount "carts/carts-crossplan",
         create serviceaccount "carts/carts-crossplane",
-    } }2023-10-30 12:45:17 [ℹ]  building iamserviceaccount stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-crossplane"
-2023-10-30 12:45:18 [ℹ]  deploying stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-crossplane"
-2023-10-30 12:45:18 [ℹ]  waiting for CloudFormation stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-crossplane"
+    } }2023-10-30 12:45:17 [i]  building iamserviceaccount stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-crossplane"
+2023-10-30 12:45:18 [i]  deploying stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-crossplane"
+2023-10-30 12:45:18 [i]  waiting for CloudFormation stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-crossplane"
 
 ```
 
@@ -49,23 +49,27 @@ manifests/modules/automation/controlplanes/crossplane/managed/table.yaml
 
 Finally, we can create the configuration for the DynamoDB itself with a `dynamodb.aws.upbound.io` resource.
 
-```bash wait=30
-$ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/managed  | envsubst | kubectl apply -f-
+```bash wait=10 timeout=400
+$ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/managed \
+  | envsubst | kubectl apply -f-
 dynamodbtable.awsblueprints.io/eks-workshop-carts-crossplane created
+$ kubectl wait tables.dynamodb.aws.upbound.io ${EKS_CLUSTER_NAME}-carts-crossplane \
+  --for=condition=Ready --timeout=5m
 ```
 
 It takes some time to provision the AWS managed services, in the case of DynamoDB up to 2 minutes. Crossplane will report the status of the reconciliation in the `status` field of the Kubernetes custom resources.
 
 ```bash
-$ kubectl get table
+$ kubectl get tables.dynamodb.aws.upbound.io
 NAME                                        READY  SYNCED   EXTERNAL-NAME                   AGE
-eks-workshop-carts-crossplane-bt28w-lnb4r   True   True     eks-workshop-carts-crossplane   6s
+eks-workshop-carts-crossplane               True   True     eks-workshop-carts-crossplane   6s
 ```
 
 When new resources are created or updated, application configurations also need to be updated to use these new resources. Update the application to use the DynamoDB endpoint:
 
 ```bash
-$ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/application | envsubst | kubectl apply -f-
+$ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/application \
+  | envsubst | kubectl apply -f-
 namespace/carts unchanged
 serviceaccount/carts unchanged
 configmap/carts unchanged
@@ -74,10 +78,6 @@ service/carts unchanged
 service/carts-dynamodb unchanged
 deployment.apps/carts configured
 deployment.apps/carts-dynamodb unchanged
-```
-
-```bash
-$ kubectl rollout restart -n carts deployment/carts
 $ kubectl rollout status -n carts deployment/carts --timeout=30s
 deployment "carts" successfully rolled out
 ```
@@ -116,7 +116,8 @@ To verify that the **Carts** module is in fact using the DynamoDB table we just 
 And to check if items are in the DynamoDB table as well, run
 
 ```bash
-$ aws dynamodb scan --table-name "${EKS_CLUSTER_NAME}-carts-crossplane" --query 'Items[].{itemId:itemId,Price:unitPrice}' --output text
+$ aws dynamodb scan --table-name "${EKS_CLUSTER_NAME}-carts-crossplane" \
+  --query 'Items[].{itemId:itemId,Price:unitPrice}' --output text
 PRICE   795
 ITEMID  510a0d7e-8e83-4193-b483-e27e09ddc34d
 PRICE   385
