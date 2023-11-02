@@ -12,18 +12,24 @@ module "aws-ebs-csi-driver" {
 }
 
 module "eks_blueprints_addons" {
-  source = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.0"
+  source  = "aws-ia/eks-blueprints-addons/aws"
+  version = "1.9.2"
+
+  cluster_name      = local.eks_cluster_id
+  cluster_endpoint  = local.eks_cluster_endpoint
+  cluster_version   = local.eks_cluster_version
+  oidc_provider_arn = local.eks_oidc_provider_arn
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
     wait = true
   }
+}
 
-  cluster_name      = local.addon_context.eks_cluster_id
-  cluster_endpoint  = local.addon_context.aws_eks_cluster_endpoint
-  cluster_version   = local.eks_cluster_version
-  oidc_provider_arn = local.addon_context.eks_oidc_provider_arn
+resource "time_sleep" "blueprints_addons_sleep" {
+  depends_on = [module.eks_blueprints_addons]
+
+  create_duration = "15s"
 }
 
 module "adot-operator" {
@@ -68,7 +74,7 @@ module "eks_blueprints_kubernetes_grafana_addon" {
 
   depends_on = [
     module.aws-ebs-csi-driver,
-    module.eks_blueprints_addons,
+    time_sleep.blueprints_addons_sleep,
     kubernetes_config_map.order-service-metrics-dashboard
   ]
 

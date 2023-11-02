@@ -108,9 +108,11 @@ arn:aws:iam::1234567890:role/eks-workshop-carts-dynamo
 Once we've verified the IAM Role to be used, we can run Kustomize to apply the change on the Service Account.
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/security/irsa/service-account
+$ kubectl kustomize ~/environment/eks-workshop/modules/security/irsa/service-account \
+  | envsubst | kubectl apply -f-
 ```
 
+This will modify the service account like so:
 
 ```kustomization
 modules/security/irsa/service-account/carts-serviceAccount.yaml
