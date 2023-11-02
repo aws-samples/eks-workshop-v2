@@ -16,7 +16,7 @@ manifests/modules/security/Guardduty/mount/privileged-pod-example.yaml
 Apply the manifest shown above with the following command:
 
 ```bash
-$ kubectl apply -f https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/main/manifests/modules/security/guardduty/mount/privileged-pod-example.yaml
+$ kubectl apply -f ~/environment/eks-workshop/modules/security/Guardduty/mount/privileged-pod-example.yaml
 ```
 *This Pod will just run once, until it reaches the State `Completed`*
 
@@ -32,5 +32,5 @@ Once again take sometime to analyze the Finding details, Action, and Detective I
 Cleanup the Pod by running the command below:
 
 ```bash
-$ kubectl delete -f https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/main/manifests/modules/security/guardduty/mount/privileged-pod-example.yaml
+$ kubectl delete -f ~/environment/eks-workshop/modules/security/Guardduty/mount/privileged-pod-example.yaml
 ```

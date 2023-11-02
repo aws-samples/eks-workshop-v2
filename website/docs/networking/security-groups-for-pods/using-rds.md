@@ -37,7 +37,8 @@ ConfigMap/catalog
 Let's apply this change to use the the RDS database:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/networking/securitygroups-for-pods/rds
+$ kubectl kustomize ~/environment/eks-workshop/modules/networking/securitygroups-for-pods/rds \
+  | envsubst | kubectl apply -f-
 ```
 
 Check that the ConfigMap has been updated with the new values:
