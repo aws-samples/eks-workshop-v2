@@ -4,7 +4,7 @@
 # https://artifacthub.io/packages/helm/bitnami/kubernetes-event-exporter
 # for full set of options
 #
-# Enable two sinks - OpenSearch and stdout (for Fluentbit)
+# Enable OpenSearch as a sink
 #
 # deDot is set to true to avoid mapper errors
 # See https://github.com/resmoio/kubernetes-event-exporter/issues/20
@@ -22,8 +22,6 @@ config:
     routes:
       - match:
           - receiver: opensearch-receiver
-      - match:
-          - receiver: stdout-receiver
   receivers:
     - name: "opensearch-receiver"
       opensearch:
@@ -38,7 +36,3 @@ config:
         password: bbb
         hosts:
           - ccc
-    - name: "stdout-receiver"
-      stdout:
-        # Dots in labels and annotation keys are replaced by underscores.
-        deDot: true
