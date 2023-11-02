@@ -80,14 +80,14 @@ resource "kubectl_manifest" "upbound_aws_provider" {
   wait = true
 
   depends_on = [kubectl_manifest.upbound_aws_controller_config]
-}
 
-# Wait for the Upbound AWS Provider CRDs to be fully created before initiating upbound_aws_provider_config
-resource "time_sleep" "upbound_wait_60_seconds" {
-  count           = local.upbound_aws_provider.enable == true ? 1 : 0
-  create_duration = "60s"
-
-  depends_on = [kubectl_manifest.upbound_aws_provider]
+  provisioner "local-exec" {
+    command = <<EOF
+sleep 10
+kubectl wait --for condition=established --timeout=60s crd/providerconfigs.aws.upbound.io
+sleep 10
+EOF
+  }
 }
 
 resource "kubectl_manifest" "upbound_aws_provider_config" {
@@ -96,7 +96,7 @@ resource "kubectl_manifest" "upbound_aws_provider_config" {
     provider-config-name = local.upbound_aws_provider.provider_config_name
   })
 
-  depends_on = [kubectl_manifest.upbound_aws_provider, time_sleep.upbound_wait_60_seconds]
+  depends_on = [kubectl_manifest.upbound_aws_provider]
 }
 
 resource "aws_iam_policy" "carts_dynamo" {

@@ -7,7 +7,7 @@ sidebar_custom_props: {"module": true}
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=300 wait=30
+```bash timeout=300 wait=120
 $ prepare-environment automation/controlplanes/crossplane
 ```
 
