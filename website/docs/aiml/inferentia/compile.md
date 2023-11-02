@@ -25,11 +25,11 @@ This lab uses DLC to compile the model on EKS. Create the Pod by running the fol
 
 ```bash timeout=600
 $ kubectl apply -k ~/environment/eks-workshop/modules/aiml/inferentia/compiler/
-$ kubectl -n aiml wait --for=condition=Ready --timeout=7m pod/compiler
+$ kubectl -n aiml wait --for=condition=Ready --timeout=10m pod/compiler
 ```
 
 :::note
-This command can take up to 7 min.
+This command can take up to 10 min.
 :::
 
 Next, copy the code for compiling a model on to the pod and run it:
