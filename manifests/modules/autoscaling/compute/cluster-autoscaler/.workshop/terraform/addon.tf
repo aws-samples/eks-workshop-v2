@@ -1,6 +1,14 @@
-module "cluster-autoscaler" {
-  source        = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/cluster-autoscaler"
-  addon_context = merge(local.addon_context, { default_repository = local.amazon_container_image_registry_uris[data.aws_region.current.name] })
+module "eks_blueprints_addons" {
+  source = "aws-ia/eks-blueprints-addons/aws"
+  version = "1.9.2"
 
-  eks_cluster_version = local.eks_cluster_version
+  cluster_name      = local.eks_cluster_id
+  cluster_endpoint  = local.eks_cluster_endpoint
+  cluster_version   = local.eks_cluster_version
+  oidc_provider_arn = local.eks_oidc_provider_arn
+
+  enable_cluster_autoscaler = true
+  cluster_autoscaler        = {
+    wait = true
+  }
 }

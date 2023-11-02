@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   run-tests:
+    if: github.repository == 'aws-samples/eks-workshop-v2'
     name: run-tests
     runs-on: ubuntu-latest
     steps:
@@ -27,7 +28,7 @@ jobs:
         tar zxf awsweeper_0.12.0_linux_amd64.tar.gz
         mv awsweeper_0.12.0_linux_amd64/awsweeper ${HOME}/.local/bin
 
-        wget -q https://github.com/eksctl-io/eksctl/releases/download/v0.150.0/eksctl_Linux_amd64.tar.gz
+        wget -q https://github.com/eksctl-io/eksctl/releases/download/v0.164.0/eksctl_Linux_amd64.tar.gz
         tar zxf eksctl_Linux_amd64.tar.gz
         mv eksctl ${HOME}/.local/bin
 

@@ -1,5 +1,5 @@
 ---
-title: "Run Inference on an AWS Inferentia Node using Amazon EKS"
+title: "Run inference on an AWS Inferentia Node using Amazon EKS"
 sidebar_position: 30
 ---
 
@@ -49,7 +49,8 @@ manifests/modules/aiml/inferentia/provisioner/provisioner.yaml
 Apply the provisioner manifest:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/aiml/inferentia/provisioner/
+$ kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/provisioner \
+  | envsubst | kubectl apply -f-
 ```
 
 ### Create a pod for inference
@@ -57,7 +58,8 @@ $ kubectl apply -k ~/environment/eks-workshop/modules/aiml/inferentia/provisione
 Now we can deploy a Pod for inference:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/aiml/inferentia/inference/
+$ kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/inference \
+  | envsubst | kubectl apply -f-
 ```
 
 Karpenter detects the pending pod which needs Neuron cores and launches an inf1 instance which has the Inferentia chip. Monitor the instance provisioning with the following command:
@@ -77,7 +79,7 @@ The inference pod should be scheduled on the node provisioned by Karpenter. Chec
 It can take up to 8 minutes to provision the node, add it to the EKS cluster, and start the pod.
 :::
 
-```bash timeout=360
+```bash timeout=600
 $ kubectl -n aiml wait --for=condition=Ready --timeout=8m pod/inference
 ```
 
@@ -128,8 +130,8 @@ We copy this code to the Pod, download our previously uploaded model, and run th
 
 ```bash
 $ kubectl -n aiml cp ~/environment/eks-workshop/modules/aiml/inferentia/inference/inference.py inference:/
-$ kubectl -n aiml exec -it inference -- aws s3 cp s3://$AIML_NEURON_BUCKET_NAME/resnet50_neuron.pt ./
-$ kubectl -n aiml exec -it inference -- python /inference.py
+$ kubectl -n aiml exec inference -- aws s3 cp s3://$AIML_NEURON_BUCKET_NAME/resnet50_neuron.pt ./
+$ kubectl -n aiml exec inference -- python /inference.py
 
 Top 5 labels:
  ['tiger', 'lynx', 'tiger_cat', 'Egyptian_cat', 'tabby']

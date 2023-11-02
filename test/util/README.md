@@ -176,3 +176,76 @@ Here is a complete list of the available annotations:
 | hookTimeout | Time limit in seconds for the hooks to complete before the script block will be marked as failed                                                                                      | 300     |
 | expectError | Ignore any errors that occur when the script block is executed                                                                                                                        | false   |
 | raw         | By default a script block will be smartly interpreted to extract commands and distinguish this from sample output. Enabling this flag will executed the entire script block, assuming there is no output, and will not look for `$` as a prefix for commands | false   |
+
+## Hooks
+
+Test hooks are designed to be able to wrap the script included in the content with instructions that can be run before or after. This can be especially helpful to perform assertions/validation.
+
+Hooks are expressed using an annotation like so:
+
+````
+```bash hook=my-hook
+$ echo "Showing hooks"
+```
+````
+
+This will check for a shell script at `tests/hook-my-hook.sh` relative to the location of the Markdown file. For example if the Markdown above was in `introduction.md` the file structure would look something like this.
+
+```
+├── index.md
+└── chapter1
+    ├── tests
+    │   └── hook-my-hook.sh
+    └── introduction.md
+```
+
+The shell script will be invoked with a single argument with a value of either `before` or `after` indicating whether its being run as a before or after hook.
+
+A good template to use for a hook file is:
+
+```bash
+set -Eeuo pipefail
+
+before() {
+  echo "This hook executes before the test"
+}
+
+after() {
+  echo "This hook executes after the test"
+}
+
+"$@"
+```
+
+If the hook file fails then the associated test will fail:
+
+```bash
+set -Eeuo pipefail
+
+before() {
+  echo "noop"
+}
+
+after() {
+  echo "This will fail the test"
+  exit 1
+}
+
+"$@"
+```
+
+When invoked as an "after" hook the stdout/stderr of the test script will be provided using the environment variable `TEST_OUTPUT`:
+
+```bash
+set -Eeuo pipefail
+
+before() {
+  echo "noop"
+}
+
+after() {
+  echo "The actual test output: ${TEST_OUTPUT}"
+}
+
+"$@"
+```

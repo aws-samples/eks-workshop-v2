@@ -1,11 +1,13 @@
 apiVersion: awsblueprints.io/v1alpha1
-kind: RelationalDatabase
+kind: DynamoDBTable
 metadata:
-  name: catalog-composition
-  namespace: catalog
+  name: "${EKS_CLUSTER_NAME}-carts-crossplane"
 spec:
-  databaseName: catalog
-  storageGB: 20
-  secret: catalog-db-composition
-  resourceConfig:
-    providerConfigName: default
+  dynamoConfig:
+    attribute:
+      - name: id
+        type: S
+      - name: customerId
+        type: S
+    globalSecondaryIndex:
+      - name: idx_global_customerId

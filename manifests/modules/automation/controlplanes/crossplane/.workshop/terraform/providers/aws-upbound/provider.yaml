@@ -1,0 +1,10 @@
+# https://github.com/upbound/provider-aws/blob/main/docs/Configuration.md#create-a-provider
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: upbound-aws-provider-${family}
+spec:
+  package: xpkg.upbound.io/upbound/provider-aws-${family}:${version}
+  controllerConfigRef:
+    name: ${controller-config}

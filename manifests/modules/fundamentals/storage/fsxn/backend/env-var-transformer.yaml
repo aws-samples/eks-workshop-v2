@@ -1,5 +1,0 @@
-varReference:
-  - kind: TridentBackendConfig
-    path: spec/managementLIF
-  - kind: Secret
-    path: stringData/password
