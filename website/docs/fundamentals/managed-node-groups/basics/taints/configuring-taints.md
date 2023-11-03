@@ -6,7 +6,7 @@ sidebar_position: 10
 For the purpose of this exercise we'll provision a separate managed node group which we'll apply taints to. 
 
 ```file
-manifests/modules/fundamentals/mng/taints/nodegroup.yaml
+manifests/modules/fundamentals/mng/basics/taints/nodegroup.yaml
 ```
 
 Note: This configuration file does not yet configure the taints, it only applies a label `tainted: 'yes'`. We will configure the taints on this node group further below.
@@ -14,7 +14,8 @@ Note: This configuration file does not yet configure the taints, it only applies
 The following command creates this node group:
 
 ```bash timeout=600 hook=configure-taints
-$ cat ~/environment/eks-workshop/modules/fundamentals/mng/taints/nodegroup.yaml | envsubst | eksctl create nodegroup -f -
+$ cat ~/environment/eks-workshop/modules/fundamentals/mng/basics/taints/nodegroup.yaml \
+  | envsubst | eksctl create nodegroup -f -
 ```
 
 It will take *2-3* minutes for the node to join the EKS cluster, until you see this command give the following output:

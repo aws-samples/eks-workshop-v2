@@ -13,5 +13,6 @@ if [ ! -z "$check" ]; then
   echo "Deleting node group $nodegroup..."
 
   aws eks delete-nodegroup --region $AWS_REGION --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $nodegroup > /dev/null
-  aws eks wait nodegroup-deleted --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $nodegroup > /dev/null
+  # Skip waiting for node group to finish, allowing reset-environment/prepare-environment to finish more quickly
+  # aws eks wait nodegroup-deleted --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $nodegroup > /dev/null
 fi
