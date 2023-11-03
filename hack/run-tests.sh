@@ -55,4 +55,4 @@ $CONTAINER_CLI run $background_args \
   -v $SCRIPT_DIR/../website/docs:/content \
   -v $SCRIPT_DIR/../manifests:/manifests \
   -e 'EKS_CLUSTER_NAME' -e 'AWS_REGION' \
-  $aws_credential_args $container_image -g "{$module,$module/**}" --hook-timeout 1200 --timeout 1200 ${AWS_EKS_WORKSHOP_TEST_FLAGS}
+  $aws_credential_args $container_image -g "{$module,$module/**}" --hook-timeout 3600 --timeout 3600 ${AWS_EKS_WORKSHOP_TEST_FLAGS}

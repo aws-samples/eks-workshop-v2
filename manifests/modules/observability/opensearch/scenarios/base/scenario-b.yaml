@@ -1,0 +1,23 @@
+# Intentionally deploy with wrong image
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scenario-b
+  namespace: test
+  labels:
+    app.kubernetes.io/created-by: eks-workshop
+    app: scenario-b
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scenario-b
+  template:
+    metadata:
+      labels:
+        app: scenario-b
+    spec:
+      containers:
+        - name: scenario-b
+          image: wrong-image
