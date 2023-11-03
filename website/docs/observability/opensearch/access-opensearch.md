@@ -22,7 +22,7 @@ $ export OPENSEARCH_DASHBOARD_FILE=~/environment/eks-workshop/modules/observabil
 Load a pre-created OpenSearch Dashboard to display Kubernetes events. The dashboard is available in [kubernetes-events-dashboard.ndjson](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/dashboard). It includes the OpenSearch index patterns, visualizations and dashboard for the Kubernetes Events Dashboard.
 
 ```bash
-$ curl https://$OPENSEARCH_HOST/_dashboards/auth/login \
+$ curl -s https://$OPENSEARCH_HOST/_dashboards/auth/login \
       -H 'content-type: application/json' -H 'osd-xsrf: osd-fetch' \
       --data-raw '{"username":"'"$OPENSEARCH_USER"'","password":"'"$OPENSEARCH_PASSWORD"'"}' \
       -c dashboards_cookie | jq .
@@ -39,7 +39,7 @@ $ curl https://$OPENSEARCH_HOST/_dashboards/auth/login \
   "backendroles": []
 }
  
-$ curl -X POST https://$OPENSEARCH_HOST/_dashboards/api/saved_objects/_import?overwrite=true \
+$ curl -s -X POST https://$OPENSEARCH_HOST/_dashboards/api/saved_objects/_import?overwrite=true \
         --form file=@$OPENSEARCH_DASHBOARD_FILE \
         -H "osd-xsrf: true" -b dashboards_cookie | jq .
 {

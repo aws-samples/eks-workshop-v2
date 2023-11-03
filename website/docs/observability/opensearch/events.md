@@ -3,13 +3,13 @@ title: "Kubernetes events"
 sidebar_position: 20
 ---
 
-This section demonstrates how we can export Kubernetes events to OpenSearch and use OpenSearch to improve observability of the EKS cluster. You will deploy the Kubernetes events exporter to forward events to OpenSearch, generate additional Kubernetes events by spinning up test workloads, explore the OpenSearch Kubernetes events dashboard, identify issues and optionally explore events within the Kuberntes cluster
+This section demonstrates how we can export Kubernetes events to OpenSearch and use OpenSearch to improve observability of the EKS cluster. We'll deploy the Kubernetes [events exporter](https://github.com/resmoio/kubernetes-event-exporter) to forward events to OpenSearch, generate additional Kubernetes events by creating test workloads, explore the OpenSearch Kubernetes events dashboard, identify issues and optionally explore events within the Kubernetes cluster
 
-**Kubernetes Events** provide a rich source of information that can be used to monitor applications and cluster state, respond to failures and perform diagnostics. Events generally denote some state change. Examples include pod creation, adding replicas and scheduling resources. Each event includes a ```type``` field which is set to Normal or Warning to indicate success of failure.
+[Kubernetes Events](https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1/) provide a rich source of information that can be used to monitor applications and cluster state, respond to failures and perform diagnostics. Events generally denote some state change. Examples include pod creation, adding replicas and scheduling resources. Each event includes a ```type``` field which is set to Normal or Warning to indicate success of failure.
 
-You are already worked with Kubernetes events if you have ever run ``kubectl describe`` on a resource. As shown below, the last section of output from ```kubectl describe``` displays the Kubernetes events related to the resource.
+You've already worked with Kubernetes events if you have ever run ``kubectl describe`` on a resource. As shown below the last section of output from `kubectl describe` displays the Kubernetes events related to the resource.
 
-```
+```shell
 kubectl describe pod nginx
 ...
 Events:
@@ -20,12 +20,11 @@ Events:
   Normal  Pulled     4s    kubelet            Successfully pulled image "nginx" in 627.545722ms (627.553403ms including waiting)
   Normal  Created    4s    kubelet            Created container nginx
   Normal  Started    3s    kubelet            Started container nginx
-
 ```
 
-Kubernetes events are continuously generated, but are retained within the cluster for only one hour.  This retention period is consistent with the Kubernetes upstream default event time-to-live (TTL) of 60 minutes.  OpenSearch provides a durable store that simplifies collection, analysis and visualization of these events.
+Kubernetes events are continuously generated but retained within the cluster for only one hour.  This retention period is consistent with the Kubernetes upstream default event time-to-live (TTL) of 60 minutes. OpenSearch provides a durable store that simplifies collection, analysis and visualization of these events.
 
-The following diagram provides an overview of the setup for this section. ```kubernetes-events-exporter``` will be deployed within the ```opensearch-exporter``` namespace to forward events to the OpenSearch domain. Events are stored within the ```eks-kubernetes-events``` index in OpenSearch.  An OpenSearch Dashboard that we loaded earlier is used to visualize the events.
+The following diagram provides an overview of the setup for this section. ```kubernetes-events-exporter``` will be deployed in the ```opensearch-exporter``` namespace to forward events to the OpenSearch domain. Events are stored in the ```eks-kubernetes-events``` index in OpenSearch.  An OpenSearch dashboard that we loaded earlier is used to visualize the events.
 
 ![OpenSearch](./assets/eks-opensearch-overview.svg)
 
@@ -51,9 +50,7 @@ NAME                                                              READY   STATUS
 events-to-opensearch-kubernetes-event-exporter-67fc698978-2f9wc   1/1     Running   0             10s
 ```
 
-Generate additional Kubernetes events by spinning up test workloads
-
-We will launch three deployments labelled ```scenario-a, scenario-b and scenario-c``` within the ```test``` namespace to demonstrate Normal and Warning events. Each deployment intentionally includes an error.
+Now we'll generate additional Kubernetes events by launching three deployments labelled `scenario-a, scenario-b and scenario-c` within the `test` namespace to demonstrate `Normal`` and `Warning`` events. Each deployment intentionally includes an error.
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/observability/opensearch/scenarios/base
@@ -66,13 +63,13 @@ deployment.apps/scenario-c created
 
 :::tip
 
-The Kubernetes events exporter we launched in the previous step sends events from the last hour and any new ones to OpenSearch. Therefore, the exact list of events you see when you run the following commands and inspect the OpenSearch dashboard will vary depending on the EKS cluster activity within the last hour.
+The Kubernetes events exporter we launched in the previous step sends events from the last hour and any new ones to OpenSearch. Therefore, the exact list of events we see when we run the following commands and inspect the OpenSearch dashboard will vary depending on the EKS cluster activity within the last hour.
 
 :::
 
-Explore the OpenSearch Kubernetes events dashboard by pointing your browser to the OpenSearch dashboard URL that we used in the previous page. Your live dashboard should look similar to the image below, but the numbers and messages will vary depending on cluster activity. An explanation of the dashboards sections and fields follows.
+Explore the OpenSearch Kubernetes events dashboard by returning to the OpenSearch dashboard that we used in the previous page. The live dashboard should look similar to the image below but the numbers and messages will vary depending on cluster activity. An explanation of the dashboards sections and fields follows.
 
-1. [Header] Shows date / time  range.  You can customize the time range that you are exploring with this dashboard (Last 30 minutes in this example)
+1. [Header] Shows date / time  range.  We can customize the time range that we are exploring with this dashboard (Last 30 minutes in this example)
 2. [Top section] Date histogram of events (split between Normal and Warning events)
 3. [Middle section] Kubernetes events shows the total number of events (Normal and Warning)
 4. [Middle section] Warning events seen during the selected time interval.
@@ -84,13 +81,13 @@ Explore the OpenSearch Kubernetes events dashboard by pointing your browser to t
 The next image focuses on the bottom section with detailed messages. In this section of the dashboard we see event details including:
 
 1. Last timestamp for the event
-1. Event type (normal or warning).  Notice that hovering your mouse over a field enables you to filter by that value (e.g. filter for Warning events)
+1. Event type (normal or warning).  Notice that hovering our mouse over a field enables us to filter by that value (e.g. filter for Warning events)
 1. Name of Kubernetes resource (along with the object type and namespace)
 1. Human readable message
 
 ![Kubernetes Events debugging](./assets/events-debug.png)
 
-You can drill down into the full event details as shown in the following image:
+We can drill down into the full event details as shown in the following image:
 
 1. Clicking on the '>' next to each event opens up a new section
 1. The full event document can be viewed as a table or in JSON format
@@ -99,7 +96,7 @@ An explanation of data fields within Kubernetes events can be found on [kubernet
 
 ![Kubernetes Events detail](./assets/events-detail.png)
 
-You can use the Kubernetes events dashboard to identify why the three deployments (```scenario-a, scenario-b and scenario-c```) are  experiencing issues. All the pods we deployed earlier are in the ```test``` namespace.
+We can use the Kubernetes events dashboard to identify why the three deployments (```scenario-a, scenario-b and scenario-c```) are  experiencing issues. All the pods we deployed earlier are in the ```test``` namespace.
 
 **scenario-a:** From the dashboard we can see that ```scenario-a``` has a reason of 'FailedMount' and the message 'MountVolume.SetUp failed for volume "secret-volume" : secret "misspelt-secret-name" not found'.  The pod is attempting to mount a secret that does not exist.
 
@@ -127,10 +124,10 @@ deployment.apps/scenario-c configured
 Go back to the OpenSearch dashboard and notice that the earlier issues have been resolved. The updated deployment launches new pods that are successful and the pods created earlier (with errors) are deleted.
 
 :::tip
-As issues are fixed, a new set of Normal Kubernetes events are generated. The earlier events (Normal or Warning) remain as part of the history. Therefore, the number of Normal and Warning events always *increases*.
+As issues are fixed, a new set of Normal Kubernetes events are generated. The earlier events (Normal or Warning) remain as part of the history. Therefore the number of Normal and Warning events always *increases*.
 :::
 
-Optionally, you can explore Kubernetes events from within the EKS cluster. The events you were exploring from within the OpenSearch dashboard mirror the information that is available within the cluster.
+We can optionally explore Kubernetes events from within the EKS cluster. The events we were exploring from within the OpenSearch dashboard mirror the information that is available within the cluster.
 
 Retrieve the five most recent events in the cluster.
 
