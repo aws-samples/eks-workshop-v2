@@ -38,5 +38,7 @@ managedNodeGroups:
   instanceType: m5.large
   privateNetworking: true
   releaseVersion: 1.27.3-20230816
+  updateConfig:
+    maxUnavailablePercentage: 50
   labels:
     workshop-default: 'yes'

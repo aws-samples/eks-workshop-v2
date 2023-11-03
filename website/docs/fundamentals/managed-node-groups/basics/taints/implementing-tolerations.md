@@ -37,14 +37,14 @@ As anticipated, the application is running succesfully on a non-tainted node. Th
 Let's update our `ui` deployment to bind its pods to our tainted managed node group. We have pre-configured our tainted managed node group with a label of `tainted=yes` that we can use with a `nodeSelector`. The following `Kustomize` patch describes the changes needed to our deployment configuration in order to enable this setup: 
 
 ```kustomization
-modules/fundamentals/mng/taints/nodeselector-wo-toleration/deployment.yaml
+modules/fundamentals/mng/basics/taints/nodeselector-wo-toleration/deployment.yaml
 Deployment/ui
 ```
 
 To apply the Kustomize changes run the following command: 
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/mng/taints/nodeselector-wo-toleration/
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/mng/basics/taints/nodeselector-wo-toleration/
 namespace/ui unchanged
 serviceaccount/ui unchanged
 configmap/ui unchanged
@@ -94,12 +94,12 @@ Our changes are reflected in the new configuration of the `Pending` pod. We can 
 To fix this, we need to add a toleration. Let's ensure our deployment and associated pods are able to tolerate the `frontend: true` taint. We can use the below `kustomize` patch to make the necessary changes:
  
 ```kustomization
-modules/fundamentals/mng/taints/nodeselector-w-toleration/deployment.yaml
+modules/fundamentals/mng/basics/taints/nodeselector-w-toleration/deployment.yaml
 Deployment/ui
 ```
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/mng/taints/nodeselector-w-toleration/
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/mng/basics/taints/nodeselector-w-toleration/
 namespace/ui unchanged
 serviceaccount/ui unchanged
 configmap/ui unchanged
