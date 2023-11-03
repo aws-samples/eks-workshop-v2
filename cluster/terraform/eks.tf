@@ -16,6 +16,8 @@ module "eks" {
           ENABLE_PREFIX_DELEGATION          = "true"
           POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
         }
+
+        enableNetworkPolicy = "true"
       })
     }
   }
