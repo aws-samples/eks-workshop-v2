@@ -2,17 +2,14 @@
 
 set -e
 
-kubectl_version='1.23.9'
-kubectl_checksum='053561f7c68c5a037a69c52234e3cf1f91798854527692acd67091d594b616ce'
+kubectl_version='1.27.7'
+kubectl_checksum='e5fe510ba6f421958358d3d43b3f0b04c2957d4bc3bb24cf541719af61a06d79'
 
 helm_version='3.10.1'
 helm_checksum='c12d2cd638f2d066fec123d0bd7f010f32c643afdf288d39a4610b1f9cb32af3'
 
-eksctl_version='0.144.0'
-eksctl_checksum='f91a12e7f72bce41a2529053d3a22351ba1fd9bb3517f9d1d1ee74dda1e43afc'
-
-kustomize_version='4.5.7'
-kustomize_checksum='701e3c4bfa14e4c520d481fdf7131f902531bfc002cb5062dcf31263a09c70c9'
+eksctl_version='0.164.0'
+eksctl_checksum='2ed5de811dd26a3ed041ca3e6f26717288dc02dfe87ac752ae549ed69576d03e'
 
 kubeseal_version='0.18.4'
 kubeseal_checksum='2e765b87889bfcf06a6249cde8e28507e3b7be29851e4fac651853f7638f12f3'
@@ -20,11 +17,17 @@ kubeseal_checksum='2e765b87889bfcf06a6249cde8e28507e3b7be29851e4fac651853f7638f1
 yq_version='4.30.4'
 yq_checksum='30459aa144a26125a1b22c62760f9b3872123233a5658934f7bd9fe714d7864d'
 
-flux_version='0.38.3'
-flux_checksum='268b8d9a2fa5b0c9e462b551eaefdadb9e03370eb53061a88a2a9ac40e95e8e4'
+flux_version='2.1.0'
+flux_checksum='fe6d32da40d5f876434e964c46bc07d00af138c560e063fdcfa8f73e37224087'
 
 argocd_version='2.7.4'
 argocd_checksum='1b9a5f7c47b3c1326a622533f073cef46511e391d296d9b075f583b474780356'
+
+terraform_version='1.4.1'
+terraform_checksum='9e9f3e6752168dea8ecb3643ea9c18c65d5a52acc06c22453ebc4e3fc2d34421'
+
+ec2_instance_selector_version='2.4.1'
+ec2_instance_selector_checksum='dfd6560a39c98b97ab99a34fc261b6209fc4eec87b0bc981d052f3b13705e9ff'
 
 download_and_verify () {
   url=$1
@@ -64,13 +67,6 @@ chmod +x eksctl
 mv ./eksctl /usr/local/bin
 rm -rf eksctl_Linux_amd64.tar.gz
 
-# kustomize
-download_and_verify "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${kustomize_version}/kustomize_v${kustomize_version}_linux_amd64.tar.gz" "$kustomize_checksum" "kustomize.tar.gz"
-tar zxf kustomize.tar.gz
-chmod +x kustomize
-mv ./kustomize /usr/local/bin
-rm -rf kustomize.tar.gz
-
 # aws cli v2
 curl --location --show-error --silent "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip -o -q awscliv2.zip -d /tmp
@@ -104,6 +100,11 @@ yum -y install terraform-1.5.5-1.x86_64
 download_and_verify "https://github.com/argoproj/argo-cd/releases/download/v${argocd_version}/argocd-linux-amd64" "$argocd_checksum" "argocd-linux-amd64"
 chmod +x ./argocd-linux-amd64
 mv ./argocd-linux-amd64 /usr/local/bin/argocd
+
+# ec2 instance selector
+download_and_verify "https://github.com/aws/amazon-ec2-instance-selector/releases/download/v${ec2_instance_selector_version}/ec2-instance-selector-linux-amd64" "$ec2_instance_selector_checksum" "ec2-instance-selector-linux-amd64"
+chmod +x ./ec2-instance-selector-linux-amd64
+mv ./ec2-instance-selector-linux-amd64 /usr/local/bin/ec2-instance-selector
 
 REPOSITORY_OWNER=${REPOSITORY_OWNER:-"aws-samples"}
 REPOSITORY_NAME=${REPOSITORY_NAME:-"eks-workshop-v2"}

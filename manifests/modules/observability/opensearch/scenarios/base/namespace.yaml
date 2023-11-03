@@ -1,0 +1,8 @@
+# Namespace where OpenSearch scenarios are deployed
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test
+  labels:
+    app.kubernetes.io/created-by: eks-workshop
