@@ -5,4 +5,4 @@ resources:
 - dynamodb-ack-configmap.yaml
 - dynamodb-create.yaml
 patches:
-- deployment.yaml
+- path: deployment.yaml
