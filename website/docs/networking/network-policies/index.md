@@ -11,11 +11,6 @@ Prepare your environment for this section:
 $ prepare-environment networking/network-policies
 ```
 
-This will make the following changes to your lab environment:
-- Will mount the BPF directory on all of the managed nodegroup nodes within the cluster if the cluster version is 1.25 or 1.26.
-
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/networking/network-policies/.workshop/terraform).
-
 :::
 
 By default, Kubernetes allows all pods to freely communicate with each other with no restrictions. Kubernetes Network Policies enable you to define and enforce rules on the flow of traffic between pods, namespaces, and IP blocks (CIDR ranges). They act as a virtual firewall, allowing you to segment and secure your cluster by specifying ingress (incoming) and egress (outgoing) network traffic rules based on various criteria such as pod labels, namespaces, IP addresses, and ports. 
