@@ -9,7 +9,7 @@ Before we start to setup Argo CD applications, let's delete Argo CD `Application
 $ argocd app delete apps --cascade -y
 ```
 
-We create templates for set of AroCD applications using DRY approach in Helm charts:
+We create templates for set of ArgoCD applications using DRY approach in Helm charts:
 
 ```
 .
@@ -23,7 +23,7 @@ We create templates for set of AroCD applications using DRY approach in Helm cha
     ...
 ```
 
-`Chart.yaml` is a boiler-plate. `templates` contains a template file which will be used to create applications defined in values.yaml.
+`Chart.yaml` is a boiler-plate. `templates` contains a template file which will be used to create applications defined in `values.yaml`.
 
 `values.yaml` also contains values which are specific for a particular environment and which will be applied to all application templates.
 
@@ -61,9 +61,9 @@ $ argocd app create apps --repo $GITOPS_REPO_URL_ARGOCD \
  application 'apps' created
 ```
 
-The default `Refresh` interval is 3 minutes (180 seconds). You could change the interval by updating the "timeout.reconciliation" value in the argocd-cm config map. If the interval is to 0 then Argo CD will not poll Git repositories automatically and alternative methods such as webhooks and/or manual syncs should be used.
+The default `Refresh` interval is 3 minutes (180 seconds). You could change the interval by updating the `timeout.reconciliation` value in the `argocd-cm` ConfigMap. If the interval is to 0 then Argo CD will not poll Git repositories automatically and alternative methods such as webhooks and/or manual syncs should be used.
 
-For training purposes, let's set `Refresh` interval to 5s and restart argocd application controller to deploy our changes faster
+For training purposes, let's set `Refresh` interval to 5 seconds and restart the ArgoCD application controller to deploy our changes faster:
 
 ```bash wait=30
 $ kubectl patch configmap/argocd-cm -n argocd --type merge \
