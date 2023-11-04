@@ -80,7 +80,7 @@ First, we need to install Flux components.
 $ flux install --components-extra=image-reflector-controller,image-automation-controller
 ```
 
-Next, edit file `deployment.yaml` and add placeholder for new container image url
+Next, edit file `deployment.yaml` and add placeholder for new container image URL:
 
 ```bash
 $ git -C ~/environment/flux pull
@@ -177,7 +177,7 @@ NAME   CLASS   HOSTS   ADDRESS                                            PORTS 
 ui     alb     *       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com   80      15s
 ```
 
-We wait 2-5 minutes until Application Load Balancer will be provisioned and check the UI page using url of the ingress.
+We wait 2-5 minutes until Application Load Balancer will be provisioned and check the UI page using URL of the ingress.
 
 ```bash timeout=300
 $ export UI_URL=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
