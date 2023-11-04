@@ -1,0 +1,21 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  namespace: ui
+  name: allow-ui-egress
+spec:
+  podSelector:
+    matchLabels: 
+      app.kubernetes.io/name: ui
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector: 
+            matchLabels:
+          podSelector:
+            matchLabels: 
+              app.kubernetes.io/component: service
+        - namespaceSelector: 
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
