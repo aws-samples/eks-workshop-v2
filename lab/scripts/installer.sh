@@ -23,6 +23,12 @@ flux_checksum='fe6d32da40d5f876434e964c46bc07d00af138c560e063fdcfa8f73e37224087'
 argocd_version='2.7.4'
 argocd_checksum='1b9a5f7c47b3c1326a622533f073cef46511e391d296d9b075f583b474780356'
 
+terraform_version='1.4.1'
+terraform_checksum='9e9f3e6752168dea8ecb3643ea9c18c65d5a52acc06c22453ebc4e3fc2d34421'
+
+ec2_instance_selector_version='2.4.1'
+ec2_instance_selector_checksum='dfd6560a39c98b97ab99a34fc261b6209fc4eec87b0bc981d052f3b13705e9ff'
+
 download_and_verify () {
   url=$1
   checksum=$2
@@ -36,7 +42,9 @@ download_and_verify () {
   rm "$out_file.sha256"
 }
 
-yum install --quiet -y findutils jq tar gzip zsh git diffutils wget tree unzip openssl gettext bash-completion python3 pip3 python3-pip amazon-linux-extras yum-utils
+yum install --quiet -y findutils jq tar gzip zsh git diffutils wget \
+  tree unzip openssl gettext bash-completion python3 pip3 python3-pip \
+  amazon-linux-extras nc
 
 pip3 install -q awscurl==0.28 urllib3==1.26.6
 
@@ -92,6 +100,11 @@ yum -y install terraform-1.5.5-1.x86_64
 download_and_verify "https://github.com/argoproj/argo-cd/releases/download/v${argocd_version}/argocd-linux-amd64" "$argocd_checksum" "argocd-linux-amd64"
 chmod +x ./argocd-linux-amd64
 mv ./argocd-linux-amd64 /usr/local/bin/argocd
+
+# ec2 instance selector
+download_and_verify "https://github.com/aws/amazon-ec2-instance-selector/releases/download/v${ec2_instance_selector_version}/ec2-instance-selector-linux-amd64" "$ec2_instance_selector_checksum" "ec2-instance-selector-linux-amd64"
+chmod +x ./ec2-instance-selector-linux-amd64
+mv ./ec2-instance-selector-linux-amd64 /usr/local/bin/ec2-instance-selector
 
 REPOSITORY_OWNER=${REPOSITORY_OWNER:-"aws-samples"}
 REPOSITORY_NAME=${REPOSITORY_NAME:-"eks-workshop-v2"}

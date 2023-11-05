@@ -26,8 +26,8 @@ vpc:
 
 addons:
 - name: vpc-cni
-  version: '1.14.1'
-  configurationValues: "{\"env\":{\"ENABLE_PREFIX_DELEGATION\":\"true\", \"ENABLE_POD_ENI\":\"true\", \"POD_SECURITY_GROUP_ENFORCING_MODE\":\"standard\"}}"
+  version: 1.14.1
+  configurationValues:  "{\"env\":{\"ENABLE_PREFIX_DELEGATION\":\"true\", \"ENABLE_POD_ENI\":\"true\", \"POD_SECURITY_GROUP_ENFORCING_MODE\":\"standard\"},\"enableNetworkPolicy\": \"true\"}"
   resolveConflicts: overwrite
 
 managedNodeGroups:
@@ -38,5 +38,7 @@ managedNodeGroups:
   instanceType: m5.large
   privateNetworking: true
   releaseVersion: 1.27.3-20230816
+  updateConfig:
+    maxUnavailablePercentage: 50
   labels:
     workshop-default: 'yes'

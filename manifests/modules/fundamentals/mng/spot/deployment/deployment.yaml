@@ -1,0 +1,9 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog
+spec:
+  template:
+    spec:
+      nodeSelector:
+        eks.amazonaws.com/capacityType: SPOT
