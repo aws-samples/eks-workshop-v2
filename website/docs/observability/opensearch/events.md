@@ -26,7 +26,7 @@ Kubernetes events are continuously generated but retained within the cluster for
 
 The following diagram provides an overview of the setup for this section. ```kubernetes-events-exporter``` will be deployed in the ```opensearch-exporter``` namespace to forward events to the OpenSearch domain. Events are stored in the ```eks-kubernetes-events``` index in OpenSearch.  An OpenSearch dashboard that we loaded earlier is used to visualize the events.
 
-![OpenSearch](./assets/eks-opensearch-overview.svg)
+![Kubernetes events to OpenSearch](./assets/eks-events-overview.svg)
 
 Deploy Kubernetes events exporter and configure it to send events to our OpenSearch domain. The base configuration is available [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/events-exporter). The OpenSearch credentials we retrieved earlier are being used to configure the exporter. The second command verifies that the Kubernetes events pod is running.
 
@@ -50,7 +50,7 @@ NAME                                                              READY   STATUS
 events-to-opensearch-kubernetes-event-exporter-67fc698978-2f9wc   1/1     Running   0             10s
 ```
 
-Now we'll generate additional Kubernetes events by launching three deployments labelled `scenario-a, scenario-b and scenario-c` within the `test` namespace to demonstrate `Normal`` and `Warning`` events. Each deployment intentionally includes an error.
+Now we'll generate additional Kubernetes events by launching three deployments labelled `scenario-a, scenario-b and scenario-c` within the `test` namespace to demonstrate `Normal` and `Warning` events. Each deployment intentionally includes an error.
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/observability/opensearch/scenarios/base
@@ -73,7 +73,7 @@ Explore the OpenSearch Kubernetes events dashboard by returning to the OpenSearc
 2. [Top section] Date histogram of events (split between Normal and Warning events)
 3. [Middle section] Kubernetes events shows the total number of events (Normal and Warning)
 4. [Middle section] Warning events seen during the selected time interval.
-5. [Middle section] Warnings broken out by namespace. All the warnings are in the ```test``` namespace in this example
+5. [Middle section] Warnings broken out by namespace. All the warnings are in the `test` namespace in this example
 6. [Bottom section] Detailed events and messages with most recent event first
 
 ![Kubernetes Events dashboard](./assets/events-dashboard.png)
@@ -92,7 +92,7 @@ We can drill down into the full event details as shown in the following image:
 1. Clicking on the '>' next to each event opens up a new section
 1. The full event document can be viewed as a table or in JSON format
 
-An explanation of data fields within Kubernetes events can be found on [kubernetes.io](https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1) or by running ```kubectl explain events```.
+An explanation of data fields within Kubernetes events can be found on [kubernetes.io](https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1) or by running `kubectl explain events`.
 
 ![Kubernetes Events detail](./assets/events-detail.png)
 
