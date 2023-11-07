@@ -34,7 +34,7 @@ Deploy Kubernetes events exporter and configure it to send events to our OpenSea
 $ helm install events-to-opensearch \
     oci://registry-1.docker.io/bitnamicharts/kubernetes-event-exporter \
     --namespace opensearch-exporter --create-namespace \
-    -f ~/environment/eks-workshop/modules/observability/opensearch/events-exporter/values.yaml \
+    -f ~/environment/eks-workshop/modules/observability/opensearch/config/events-exporter-values.yaml \
     --set="config.receivers[0].opensearch.username"="$OPENSEARCH_USER" \
     --set="config.receivers[0].opensearch.password"="$OPENSEARCH_PASSWORD" \
     --set="config.receivers[0].opensearch.hosts[0]"="https://$OPENSEARCH_HOST" \
@@ -53,7 +53,7 @@ events-to-opensearch-kubernetes-event-exporter-67fc698978-2f9wc   1/1     Runnin
 Now we'll generate additional Kubernetes events by launching three deployments labelled `scenario-a, scenario-b and scenario-c` within the `test` namespace to demonstrate `Normal` and `Warning` events. Each deployment intentionally includes an error.
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/observability/opensearch/scenarios/base
+$ kubectl apply -k ~/environment/eks-workshop/modules/observability/opensearch/scenarios/events/base
 namespace/test created
 secret/some-secret created
 deployment.apps/scenario-a created
@@ -113,7 +113,7 @@ We can use the Kubernetes events dashboard to identify why the three deployments
 Fix the issues and revisit OpenSearch dashboard to see changes
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/observability/opensearch/scenarios/fix
+$ kubectl apply -k ~/environment/eks-workshop/modules/observability/opensearch/scenarios/events/fix
 namespace/test unchanged
 secret/some-secret unchanged
 deployment.apps/scenario-a configured
