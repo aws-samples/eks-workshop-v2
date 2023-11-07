@@ -28,7 +28,7 @@ The following diagram provides an overview of the setup for this section. ```kub
 
 ![Kubernetes events to OpenSearch](./assets/eks-events-overview.svg)
 
-Deploy Kubernetes events exporter and configure it to send events to our OpenSearch domain. The base configuration is available [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/events-exporter). The OpenSearch credentials we retrieved earlier are being used to configure the exporter. The second command verifies that the Kubernetes events pod is running.
+Deploy Kubernetes events exporter and configure it to send events to our OpenSearch domain. The base configuration is available [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/config/events-exporter-values.yaml). The OpenSearch credentials we retrieved earlier are being used to configure the exporter. The second command verifies that the Kubernetes events pod is running.
 
 ```bash timeout=120 wait=30
 $ helm install events-to-opensearch \
@@ -67,7 +67,7 @@ The Kubernetes events exporter we launched in the previous step sends events fro
 
 :::
 
-Explore the OpenSearch Kubernetes events dashboard by returning to the OpenSearch dashboard that we used in the previous page. Access the Kubernetes events dashboard from the dashboard landing page we saw earlier or use the command below to obtain its coordinates:
+Explore the OpenSearch Kubernetes events dashboard by returning to the OpenSearch dashboard that we used in the previous page. Access the `EKS Workshop - Kubernetes Events Dashboard` from the dashboard landing page we saw earlier or use the command below to obtain its coordinates:
 
 ```bash
 $ printf "\nKubernetes Events dashboard: https://%s/_dashboards/app/dashboards#/view/06cca640-6a05-11ee-bdf2-9d2ccb0785e7 \
@@ -90,7 +90,7 @@ The live dashboard should look similar to the image below but the numbers and me
 
 ![Kubernetes Events dashboard](./assets/events-dashboard.png)
 
-The next image focuses on the bottom section with detailed messages. In this section of the dashboard we see event details including:
+The next image focuses on the bottom section with event details including:
 
 1. Last timestamp for the event
 1. Event type (normal or warning).  Notice that hovering our mouse over a field enables us to filter by that value (e.g. filter for Warning events)
@@ -108,17 +108,17 @@ An explanation of data fields within Kubernetes events can be found on [kubernet
 
 ![Kubernetes Events detail](./assets/events-detail.png)
 
-We can use the Kubernetes events dashboard to identify why the three deployments (```scenario-a, scenario-b and scenario-c```) are  experiencing issues. All the pods we deployed earlier are in the ```test``` namespace.
+We can use the Kubernetes events dashboard to identify why the three deployments (```scenario-a, scenario-b and scenario-c```) are experiencing issues. All the pods we deployed earlier are in the ```test``` namespace.
 
-**scenario-a:** From the dashboard we can see that ```scenario-a``` has a reason of 'FailedMount' and the message 'MountVolume.SetUp failed for volume "secret-volume" : secret "misspelt-secret-name" not found'.  The pod is attempting to mount a secret that does not exist.
+**scenario-a:** From the dashboard we can see that ```scenario-a``` has a reason of `FailedMount` and the message `MountVolume.SetUp failed for volume "secret-volume" : secret "misspelt-secret-name" not found`.  The pod is attempting to mount a secret that does not exist.
 
 ![Answer for scenario-a](./assets/scenario-a.png)
 
-**scenario-b:**  ```scenario-b``` has failed with a message 'Failed to pull image "wrong-image": rpc error: code = Unknown desc = failed to pull and unpack image "docker.io/library/wrong-image:latest": failed to resolve reference "docker.io/library/wrong-image:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed.' The pod is not getting created because it references a non-existent image.
+**scenario-b:**  ```scenario-b``` has failed with a message `Failed to pull image "wrong-image": rpc error: code = Unknown desc = failed to pull and unpack image "docker.io/library/wrong-image:latest": failed to resolve reference "docker.io/library/wrong-image:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed.` The pod is not getting created because it references a non-existent image.
 
 ![Answer for scenario-b](./assets/scenario-b.png)
 
-**scenario-c:** The dashboard shows a reason of 'FailedScheduling' and the message '0/3 nodes are available: 3 Insufficient cpu. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.' This deployment is requesting CPU that exceeds what any of the current cluster nodes can provide. (We do not have any of the cluster autoscaling capabilities enabled within this module of EKS workshop.)
+**scenario-c:** The dashboard shows a reason of `FailedScheduling` and the message `0/3 nodes are available: 3 Insufficient cpu. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.` This deployment is requesting CPU that exceeds what any of the current cluster nodes can provide. (We do not have any of the cluster autoscaling capabilities enabled within this module of EKS workshop.)
 
 ![Answer for scenario-c](./assets/scenario-c.png)
 
