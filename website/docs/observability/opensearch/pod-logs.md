@@ -25,7 +25,7 @@ The following diagram provides an overview of the setup for this section. Fluent
 
 ![Pod logs to OpenSearch](./assets/eks-pod-logs-overview.svg)
 
-Deploy Fluent Bit as a [Daemon Set](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) and configure it to send pod logs to the OpenSearch domain. The base configuration is available [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/fluentbit). The OpenSearch credentials we retrieved earlier are used to configure Fluent Bit. The last command verifies that Fluent Bit is running with one pod running on each of the three cluster nodes.
+Deploy Fluent Bit as a [Daemon Set](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) and configure it to send pod logs to the OpenSearch domain. The base configuration is available [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/fluentbit). The OpenSearch credentials we retrieved earlier are used to configure Fluent Bit. The last command verifies that Fluent Bit is running with one pod on each of the three cluster nodes.
 
 ```bash wait=60
 $ helm repo add eks https://aws.github.io/eks-charts
@@ -47,16 +47,15 @@ fluentbit-aws-for-fluent-bit   3         3         3       3            3       
  
 ```
 
-Next, we will confirm that the Kubernetes pod logs are being forwarded by the Fluent Bit agent deployed on each node to OpenSearch.  The deployed application components write logs to `stdout`, which are saved in the `/var/log/containers/*.log` path on each node.We will recycle the pods for the `ui` component to make sure fresh logs are written since we enabled Fluent Bit:
+Next, we will confirm that the Kubernetes pod logs are being forwarded to OpenSearch by the Fluent Bit agent deployed on each node.  The deployed application components write logs to `stdout`, which are saved in the `/var/log/containers/*.log` path on each node.  We will recycle the pods for the `ui` component to make sure fresh logs are written since we enabled Fluent Bit:
 
 ```bash
 $ kubectl delete pod -n ui --all
-$ kubectl rollout status deployment/ui \
-  -n ui --timeout 30s
+$ kubectl rollout status deployment/ui -n ui --timeout 30s
 deployment "ui" successfully rolled out
 ```
 
-Now we can check that our `ui` component is creating logs by directly using `kubectl logs`. The timestamps in the logs should match your current time (shown in UTC Time Format).  
+Now we can check that our `ui` component is creating logs by directly using `kubectl logs`. The timestamps in the logs should match your current time (shown in UTC format).  
 
 ```bash
 $ kubectl logs -n ui deployment/ui 
@@ -81,9 +80,33 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
  
 ```
 
-Confirm that the samme log entries are also visible through OpenSearch.  Access the EKS Pod Logs Opensearch Dashboard.
+We can confirm that the same log entries are also visible through OpenSearch.  Access the Pod logs dashboard from the dashboard landing page we saw earlier or use the command below to obtain its coordinates:
 
+```bash
+$ printf "\nPod logs dashboard: https://%s/_dashboards/app/dashboards#/view/31a8bd40-790a-11ee-8b75-b9bb31eee1c2 \
+        \nUserName: %q \nPassword: %q \n\n" \
+        "$OPENSEARCH_HOST" "$OPENSEARCH_USER" "$OPENSEARCH_PASSWORD"
+ 
+Pod logs dashboard: <OpenSearch Dashboard URL>       
+Username: <user name>       
+Password: <password>
+```
 
+The pod log dashboard includes:
 
+1. [Header] Shows date / time range. We can customize the time range that we are exploring with this dashboard (Last 15 minutes in this example)
+1. [Top section] Date histogram of log messages showing split between the `stdout` and `stderr` streams (including all namsepaces)
+1. [Middle section] Date histogram of log messages showing the split across all cluster namespaces
+1. [Bottom section] Data table with most recent messages shown first. The stream name (`stdout` and `stderr`) are shown along with details such as the pod name.  For demonstration purposes, this section has been filtered to only show logs from the `ui` namespace
+1. [Bottom section] Log messages gathered from the individual pods. In this example, the most recent log message shown is `2023-11-07T02:05:10.616Z  INFO 1 --- [           main] c.a.s.u.UiApplication                    : Started UiApplication in 5.917 seconds (process running for 7.541)`, which matches the last line of the output we saw when we ran `kubectl logs -n ui deployment/ui` in an earlier step.
 
+![Pod logging dashboard](./assets/pod-logging-dashboard.png)
 
+We can drill down into the log entries to see the full JSON payload:
+
+1. Clicking on the '>' next to each event opens up a new section
+2. The full event document can be viewed as a table or in JSON format
+3. The `log` attribute contains the log message generated by the pod 
+4. Metadata about the log message including the pod name, namespace and pod labels are included 
+
+![Pod logging detail](./assets/pod-logging-detail.png)
