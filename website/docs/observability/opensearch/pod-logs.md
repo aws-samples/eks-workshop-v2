@@ -31,9 +31,9 @@ Deploy Fluent Bit as a [Daemon Set](https://kubernetes.io/docs/concepts/workload
 $ helm repo add eks https://aws.github.io/eks-charts
 "eks" has been added to your repositories
  
-$ helm install fluentbit eks/aws-for-fluent-bit --namespace opensearch-exporter \
-    --create-namespace \
-    -f ~/environment/eks-workshop/modules/observability/opensearch/fluentbit/values.yaml \
+$ helm upgrade fluentbit eks/aws-for-fluent-bit --install \
+    --namespace opensearch-exporter --create-namespace \
+    -f ~/environment/eks-workshop/modules/observability/opensearch/config/fluentbit-values.yaml \
     --set="opensearch.host"="$OPENSEARCH_HOST" \
     --set="opensearch.awsRegion"=$AWS_REGION \
     --set="opensearch.httpUser"="$OPENSEARCH_USER" \
@@ -47,7 +47,43 @@ fluentbit-aws-for-fluent-bit   3         3         3       3            3       
  
 ```
 
-@TODO launch test workload that curls
+Next, we will confirm that the Kubernetes pod logs are being forwarded by the Fluent Bit agent deployed on each node to OpenSearch.  The deployed application components write logs to `stdout`, which are saved in the `/var/log/containers/*.log` path on each node.We will recycle the pods for the `ui` component to make sure fresh logs are written since we enabled Fluent Bit:
+
+```bash
+$ kubectl delete pod -n ui --all
+$ kubectl rollout status deployment/ui \
+  -n ui --timeout 30s
+deployment "ui" successfully rolled out
+```
+
+Now we can check that our `ui` component is creating logs by directly using `kubectl logs`. The timestamps in the logs should match your current time (shown in UTC Time Format).  
+
+```bash
+$ kubectl logs -n ui deployment/ui 
+Picked up JAVA_TOOL_OPTIONS: -javaagent:/opt/aws-opentelemetry-agent.jar
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[otel.javaagent 2023-11-07 02:05:03:383 +0000] [main] INFO io.opentelemetry.javaagent.tooling.VersionLogger - opentelemetry-javaagent - version: 1.24.0-aws
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.0.6)
+
+2023-11-07T02:05:05.512Z  INFO 1 --- [           main] c.a.s.u.UiApplication                    : Starting UiApplication v0.0.1-SNAPSHOT using Java 17.0.7 with PID 1 (/app/app.jar started by appuser in /app)
+2023-11-07T02:05:05.524Z  INFO 1 --- [           main] c.a.s.u.UiApplication                    : No active profile set, falling back to 1 default profile: "default"
+2023-11-07T02:05:09.906Z  WARN 1 --- [           main] o.s.b.a.e.EndpointId                     : Endpoint ID 'fail-cart' contains invalid characters, please migrate to a valid format.
+2023-11-07T02:05:10.060Z  INFO 1 --- [           main] o.s.b.a.e.w.EndpointLinksResolver        : Exposing 15 endpoint(s) beneath base path '/actuator'
+2023-11-07T02:05:10.590Z  INFO 1 --- [           main] o.s.b.w.e.n.NettyWebServer               : Netty started on port 8080
+2023-11-07T02:05:10.616Z  INFO 1 --- [           main] c.a.s.u.UiApplication                    : Started UiApplication in 5.917 seconds (process running for 7.541)
+ 
+```
+
+Confirm that the samme log entries are also visible through OpenSearch.  Access the EKS Pod Logs Opensearch Dashboard.
+
+
 
 
 
