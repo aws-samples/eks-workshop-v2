@@ -67,7 +67,19 @@ The Kubernetes events exporter we launched in the previous step sends events fro
 
 :::
 
-Explore the OpenSearch Kubernetes events dashboard by returning to the OpenSearch dashboard that we used in the previous page. The live dashboard should look similar to the image below but the numbers and messages will vary depending on cluster activity. An explanation of the dashboards sections and fields follows.
+Explore the OpenSearch Kubernetes events dashboard by returning to the OpenSearch dashboard that we used in the previous page. Access the Kubernetes events dashboard from the dashboard landing page we saw earlier or use the command below to obtain its coordinates:
+
+```bash
+$ printf "\nKubernetes Events dashboard: https://%s/_dashboards/app/dashboards#/view/06cca640-6a05-11ee-bdf2-9d2ccb0785e7 \
+        \nUserName: %q \nPassword: %q \n\n" \
+        "$OPENSEARCH_HOST" "$OPENSEARCH_USER" "$OPENSEARCH_PASSWORD"
+ 
+Kubernetes Events dashboard: <OpenSearch Dashboard URL>       
+Username: <user name>       
+Password: <password>
+```
+
+The live dashboard should look similar to the image below but the numbers and messages will vary depending on cluster activity. An explanation of the dashboards sections and fields follows.
 
 1. [Header] Shows date / time  range.  We can customize the time range that we are exploring with this dashboard (Last 30 minutes in this example)
 2. [Top section] Date histogram of events (split between Normal and Warning events)
