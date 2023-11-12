@@ -8,16 +8,17 @@ after() {
   grafana_endpoint=$(kubectl get ingress -n grafana grafana -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}')
   grafana_url="${grafana_endpoint}/healthz"
 
-  echo "Checking $grafana_url"
+  EXIT_CODE=0
 
-  http_status=$(curl -s -o /dev/null -w ''%{http_code}'' ${grafana_url})
+  timeout -s TERM 600 bash -c \
+    'while [[ "$(curl -s -o /dev/null -L -w ''%{http_code}'' ${grafana_url})" != "200" ]];\
+    do sleep 5;\
+    done' || EXIT_CODE=$?
 
-  if [[ "$http_status" != "200" ]]; then
-    >&2 echo "Grafana did not return HTTP 200, got $http_status"
+  if [ $EXIT_CODE -ne 0 ]; then
+    echo "Grafana did not become available or return HTTP 200 for 600 seconds"
     exit 1
   fi
-
-  echo "Grafana got $http_status"
 }
 
 "$@"
