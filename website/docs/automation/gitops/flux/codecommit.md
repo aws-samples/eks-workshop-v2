@@ -8,6 +8,7 @@ As AWS CodeCommit repository has been created in our lab environment, but we'll 
 We can add the SSH keys for CodeCommit to the known hosts file to prevent warnings later on:
 
 ```bash
+$ mkdir -p ~/.ssh/
 $ ssh-keyscan -H git-codecommit.${AWS_REGION}.amazonaws.com &> ~/.ssh/known_hosts
 ```
 

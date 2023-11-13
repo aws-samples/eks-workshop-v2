@@ -35,6 +35,10 @@ resource "time_sleep" "blueprints_addons_sleep" {
 module "adot-operator" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/opentelemetry-operator"
 
+  depends_on = [
+    time_sleep.blueprints_addons_sleep
+  ]
+
   addon_config = {
     kubernetes_version = local.eks_cluster_version
     preserve           = false
