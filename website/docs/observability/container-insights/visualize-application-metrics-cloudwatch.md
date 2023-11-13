@@ -4,7 +4,7 @@ sidebar_position: 50
 weight: 7
 ---
 
-In this section we'll look at gaining insight into metrics exposed by our workloads and visualizing those metrics using Amazon CloudWatch Dashboards. Some examples of these metrics could be:
+In this section we'll look at gaining insight into metrics exposed by our workloads and visualizing those metrics using Amazon CloudWatch Insights Prometheus. Some examples of these metrics could be:
 
 * System metrics such as Java heap metrics or database connection pool status
 * Application metrics related to business KPIs
