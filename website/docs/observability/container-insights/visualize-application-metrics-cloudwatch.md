@@ -4,7 +4,7 @@ sidebar_position: 50
 weight: 7
 ---
 
-In this section we'll look at gaining insight in to metrics exposed by our workloads and visualizing those metrics using Amazon CloudWatch Insights. Some examples of these metrics could be:
+In this section we'll look at gaining insight into metrics exposed by our workloads and visualizing those metrics using Amazon CloudWatch Insights Prometheus. Some examples of these metrics could be:
 
 * System metrics such as Java heap metrics or database connection pool status
 * Application metrics related to business KPIs
@@ -29,10 +29,8 @@ watch_orders_total{productId="*",} 3.0
 watch_orders_total{productId="6d62d909-f957-430e-8689-b5129c0bb75e",} 1.0
 ```
 
-The output from this command is verbose so the example above has been pruned to show:
-
-* System metric - How many JDBC connections are idle
-* Application metric - How many orders have been placed through the retail store
+The output from this command is verbose, for the sake of this lab let us focus on the metric - watch_orders_total: 
+* watch_orders_total - Application metric - How many orders have been placed through the retail store
 
 You can execute similar requests to other components, for example the checkout service:
 
@@ -45,10 +43,12 @@ nodejs_heap_size_total_bytes 48668672
 [...]
 ```
 
-In this lab we'll leverage ADOT to ingest the metrics for all the components and explore a dashboard to show the number of orders that have been placed. Let's take a look at the OpenTelemetry configuration used to scrape metrics from the application pods, specifically this section:
+In this lab we'll leverage CloudWatch Container Insights Prometheus Support with AWS Distro for OpenTelemetry to ingest the metrics from all the components and build Amazon CloudWatch Dashboard to show the number of orders that have been placed. There are two parts to solve for integrating Prometheus with CloudWatch Container Insights Prometheus. The first is getting the metrics from Prometheus from application pods. The second problem is exposing them in CloudWatch-specific format with the right sets of metadata. 
+
+First, we have to scrape the metrics from the application pods. The OpenTelemetry configuration to do this is detailed below:
 
 ```bash
-$ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.config}' \
+$ kubectl -n other get opentelemetrycollector adot-container-ci -o jsonpath='{.spec.config}' \
   | yq '.receivers.prometheus.config.scrape_configs[2]'
 job_name: 'kubernetes-pods'
 honor_labels: true
@@ -87,19 +87,10 @@ relabel_configs:
 
 This configuration leverages the Prometheus [Kubernetes service discovery](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config) mechanism to automatically discover all pods with specific annotations. This particular configuration will discover any pods with the annotation `prometheus.io/scrape`, and will enrich metrics it scrapes with Kubernetes metadata such as the namespace and pod name.
 
-We can check the annotations on the order component pods:
+For supporting CloudWatch Container Insights Prometheus, we export metrics with specific dimnesions in [Embedded Metric Format - EMF](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Specification.html). The CloudWatch EMF Exporter converts the metrics data into performance log events with EMF and then sends it directly to a CloudWatch log group using the PutLogEvents API.
 
 ```bash
-$ kubectl get -o yaml -n orders deployment/orders | yq '.spec.template.metadata.annotations'
-prometheus.io/path: /actuator/prometheus
-prometheus.io/port: "8080"
-prometheus.io/scrape: "true"
-```
-
-The exporters define awsemf section that exports the metrics in EMF format. As shown below, we are filtering the metrics by 'watch_orders_total'
-
-```bash
-$ kubectl -n other get opentelemetrycollector adot-container-ci -o jsonpath='{.spec.config' \
+$ kubectl -n other get opentelemetrycollector adot-container-ci -o jsonpath='{.spec.config}' \
    | yq '.exporters.awsemf/prometheus'
 namespace: ContainerInsights/Prometheus
 log_group_name: "/aws/containerinsights/${EKS_CLUSTER_NAME}/prometheus"
@@ -109,12 +100,28 @@ resource_to_telemetry_conversion:
   enabled: true
 dimension_rollup_option: NoDimensionRollup
 metric_declarations:
-  - dimensions: [[EKS_Cluster, EKS_Namespace, EKS_PodName, productId]]
+  - dimensions: [[pod, productId]]
     metric_name_selectors:
       - "^watch_orders_total$"
 ```
+Pipelines are defined in the configuration file- opentelemetrycollector.yaml. A pipeline defines the data flow in OpenTelemetry collector and includes receiving, processing, and exporting metrics. In each stage, there can be multiple components and they may run in serial (processor) or in parallel (receiver, exporter). Internally, all the components communicate using OpenTelemetry’s unified data models so components from different vendors can work together. Receivers collect data from source systems and translate them into internal models. Processors can filter and modify metrics. Exporters convert the data to other schema and send to target systems. From this configuration, your metrics from orders will be made available under the CloudWatch Metrics namespace ContainerInsights/Prometheus with the dimensions pod and productId per the exporter configuration settings.
 
-Next use the below script to run a load generator which will place orders through the store and generate application metrics:
+```bash
+$ kubectl -n other get opentelemetrycollector adot-container-ci -o jsonpath='{.spec.config}' \
+   | yq '.service'
+    pipelines:
+        metrics/perf:
+          receivers: [awscontainerinsightreceiver]
+          processors: [batch/metrics]
+          exporters: [awsemf/performance]
+        metrics/promo:
+          receivers: [prometheus]
+          processors: [batch/metrics]
+          exporters: [awsemf/prometheus]
+      extensions: [health_check,pprof, zpages, sigv4auth]
+```
+
+Now we have the setup complete, we will use the below script to run a load generator which will place orders through the store and generate application metrics:
 
 ```bash test=false
 $ cat <<EOF | kubectl apply -f -
@@ -167,7 +174,7 @@ We can see how the dashboard was configured to query CloudWatch by hovering over
 The query used to create this panel is displayed at the bottom of the page:
 
 ```
-count by(productId) (watch_orders_total{productId!="*"})
+SELECT COUNT(watch_orders_total) FROM "ContainerInsights/Prometheus" WHERE productId != '*' GROUP BY productId
 ```
 
 Which is doing the following:
@@ -175,8 +182,6 @@ Which is doing the following:
 * Query for the metric `watch_orders_total`
 * Ignore metrics with a `productId` value of `*`
 * Sum these metrics and group them by `productId`
-
-You can similarly explore the other panels to understand how they have been created.
 
 Once you're satisfied with observing the metrics, you can stop the load generator using the below command.
 
