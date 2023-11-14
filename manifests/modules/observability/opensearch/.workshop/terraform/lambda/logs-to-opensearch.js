@@ -118,8 +118,6 @@ function transform(payload) {
     var bulkRequestBody = '';
 
     payload.logEvents.forEach(function(logEvent) {
-        var timestamp = new Date(1 * logEvent.timestamp);
-
         // Name of OpenSearch Index to store logs
         var indexName = process.env.OPENSEARCH_INDEX_NAME;
 
@@ -193,7 +191,7 @@ function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-async function post(body, endpoint, callback) {
+function post(body, endpoint, callback) {
     var requestParams = buildRequest(endpoint, body);
 
     var request = https.request(requestParams, function(response) {
