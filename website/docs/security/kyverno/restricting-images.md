@@ -51,6 +51,7 @@ We will apply the above policy and run an Application on our EKS Cluster.
 
 ``` shell
 $ kubectl apply -f <file_name>.yaml
+
 clusterpolicy.kyverno.io/restrict-image-registries created
 ```
 

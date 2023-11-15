@@ -7,7 +7,7 @@ Before start, validate the Kyverno resources provisioned in the last session whe
 
 You can check the resources created in the Kyverno Namespace as below:
 
-```bash
+``` shell
 $ kubectl -n kyverno get all
 NAME                                                           READY   STATUS      RESTARTS   AGE
 pod/kyverno-admission-controller-594c99487b-wpnsr              1/1     Running     0          8m15s
@@ -113,6 +113,7 @@ If we try to create another Sample Pod, for example `Redis` with Label `CostCent
 
 ``` shell
 $ kubectl run redis --image=redis:latest --labels=CostCenter=IT
+
 pod/redis created
 ```
 

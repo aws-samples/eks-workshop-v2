@@ -30,6 +30,7 @@ We will create the test pod. Sample Output below.
 
 ``` shell
 $ kubectl apply -f <file_name>
+
 pod/privileged-pod created
 ```
 
