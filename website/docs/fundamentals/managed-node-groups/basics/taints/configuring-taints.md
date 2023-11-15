@@ -3,13 +3,15 @@ title: Configuring taints
 sidebar_position: 10
 ---
 
-For the purpose of this exercise we'll provision a separate managed node group which we'll apply taints to. 
+In this exercise, we'll provision a separate managed node group with Graviton-based instances and apply a taint to it.
 
 ```file
 manifests/modules/fundamentals/mng/basics/taints/nodegroup.yaml
 ```
 
-Note: This configuration file does not yet configure the taints, it only applies a label `tainted: 'yes'`. We will configure the taints on this node group further below.
+:::note
+This configuration file does not yet configure the taints, it only applies a label `tainted: 'yes'`. We will configure the taints on this node group further below.
+:::
 
 The following command creates this node group:
 
@@ -29,6 +31,15 @@ ip-10-42-12-233.us-west-2.compute.internal   Ready    <none>   63m   vVAR::KUBER
 ```
 
 The above command makes use of the `--selector` flag to query for all nodes that have a label of `eks.amazonaws.com/nodegroup` that matches the name of our managed node group `taint-mng`. The `--label-columns` flag also allows us to display the value of the `eks.amazonaws.com/nodegroup` label in the node list. 
+
+To include additional processor architecture label in the output, we can specify the `kubernetes.io/arch` label. Your output should be similar to the below. The `ARCH` column shows that the `tainted` node group is running Graviton `arm64` processors.
+
+```bash
+$ kubectl get nodes \
+    --label-columns eks.amazonaws.com/nodegroup,kubernetes.io/arch \
+    --selector eks.amazonaws.com/nodegroup=$EKS_TAINTED_MNG_NAME
+TODO
+```
 
 Before configuring our taints, let's explore the current configuration of our node. Note that the following command will list the details of all nodes that are part of our managed node group. In our lab, the managed node group has just one instance. 
 
