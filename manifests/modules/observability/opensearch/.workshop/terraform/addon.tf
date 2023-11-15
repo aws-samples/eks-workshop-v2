@@ -13,11 +13,8 @@
  * control plane logs is created only within the lab module as part of the 
  * lab instructions.  
  * 
- * See: https://repost.aws/knowledge-center/opensearch-troubleshoot-cloudwatch-logs
- * Without the role mapping that is outined in this document, the Lambda function will 
- * get an HTTP 403 when trying to write to the OpenSearch index. To address this,  
- * workshop participants will add this OpenSearch role mapping as part of the 
- * lab instructions. 
+ * The Lambda function is provisioned with the AWS Parmeter and Secrets Lambda extension
+ * layer to facilitate caching of the SSM Parameter Store values. 
  */
 
 locals {
