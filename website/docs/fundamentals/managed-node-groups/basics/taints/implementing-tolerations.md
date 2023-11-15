@@ -1,5 +1,5 @@
 ---
-title: Configure our application with tolerations
+title: Configure pods with tolerations
 sidebar_position: 20
 ---
 
@@ -174,5 +174,7 @@ Taints:             frontend=true:NoExecute
 Unschedulable:      false
 [...]
 ```
+
+As you can see, the `ui` pod is now running on the Graviton-based node in our tainted managed node group. In addition, you can see the Taints on the `kubectl describe node` command, and the matching Tolerations on the `kubectl describe pod` command.
 
 You've successfully scheduled the `ui` application, which can run on both Intel and ARM-based processors, to run on the new Graviton-based managed node group we created in the previous step. Taints and tolerations are a powerful tool that can be used to configure how pods get scheduled onto nodes, whether it's for Graviton/GPU-enhanced nodes, or for multi-tenant Kubernetes clusters.
