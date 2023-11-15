@@ -1,5 +1,5 @@
 ---
-title: Configuring nodes with taints
+title: Configure nodes with taints
 sidebar_position: 10
 ---
 
