@@ -114,7 +114,9 @@ Checking the UI pod, we can see that the configuration now includes the specifie
 $ kubectl get pod --namespace ui -l app.kubernetes.io/name=ui
 NAME                  READY   STATUS    RESTARTS   AGE
 ui-6c5c9f6b5f-7jxp8   1/1     Running   0          29s
+```
 
+```bash
 $ kubectl describe pod --namespace ui -l app.kubernetes.io/name=ui
 Name:         ui-6c5c9f6b5f-7jxp8
 Namespace:    ui
@@ -150,6 +152,9 @@ Tolerations:                 frontend:NoExecute op=Exists
                              node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
                              node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
 [...]
+```
+
+```bash
 $ kubectl describe node --selector tainted=yes
 Name:               ip-10-42-10-138.us-west-2.compute.internal
 Roles:              <none>
@@ -169,3 +174,5 @@ Taints:             frontend=true:NoExecute
 Unschedulable:      false
 [...]
 ```
+
+You've successfully scheduled the `ui` application, which can run on both Intel and ARM-based processors, to run on the new Graviton-based managed node group we created in the previous step. Taints and tolerations are a powerful tool that can be used to configure how pods get scheduled onto nodes, whether it's for Graviton/GPU-enhanced nodes, or for multi-tenant Kubernetes clusters.
