@@ -35,9 +35,9 @@ spec:
   role: "${KARPENTER_NODE_ROLE}"
   subnetSelectorTerms:
     - tags:
-        karpenter.sh/discovery: "eks-workshop"
+        karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
   securityGroupSelectorTerms:
     - tags:
-        karpenter.sh/discovery: "eks-workshop"
+        karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
   tags:
     app.kubernetes.io/created-by: eks-workshop
