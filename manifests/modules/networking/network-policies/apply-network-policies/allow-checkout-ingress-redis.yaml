@@ -1,0 +1,21 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  namespace: checkout
+  name: allow-checkout-ingress-redis
+spec:
+  podSelector:
+    matchLabels: 
+      app.kubernetes.io/name: checkout
+      app.kubernetes.io/component: redis
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: checkout     
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: checkout
+              app.kubernetes.io/component: service
