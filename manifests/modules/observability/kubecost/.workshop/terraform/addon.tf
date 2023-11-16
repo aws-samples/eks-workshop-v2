@@ -39,6 +39,14 @@ module "eks_blueprints_addons" {
   }
 }
 
+resource "time_sleep" "wait" {
+  depends_on = [
+    module.eks_blueprints_addons
+  ]
+
+  create_duration = "10s"
+}
+
 data "http" "kubecost_values" {
   url    = "https://raw.githubusercontent.com/kubecost/cost-analyzer-helm-chart/v1.106.3/cost-analyzer/values-eks-cost-monitoring.yaml"
 }
@@ -48,7 +56,7 @@ module "kubecost" {
   version = "1.1.1"
 
   depends_on = [
-    module.eks_blueprints_addons
+    time_sleep.wait
   ]
 
   name             = "kubecost"
