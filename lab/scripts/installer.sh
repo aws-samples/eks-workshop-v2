@@ -158,6 +158,12 @@ set -e
 curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/$REPOSITORY_REF/lab/bin/delete-nodegroup | bash -s -- \$1
 EOT
   chmod +x /usr/local/bin/delete-nodegroup
+  cat << EOT > /usr/local/bin/uninstall-helm-chart
+#!/bin/bash
+set -e
+curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/$REPOSITORY_REF/lab/bin/uninstall-helm-chart | bash -s -- \$@
+EOT
+  chmod +x /usr/local/bin/uninstall-helm-chart
 fi
 
 mkdir -p /eks-workshop
