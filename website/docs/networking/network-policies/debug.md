@@ -29,8 +29,15 @@ As you can see, an error-500 page is displayed, which means something went wrong
 
 Network policy agent logs are available by default in the file `/var/log/aws-routed-eni/network-policy-agent.log` on each worker node. We can also configure logs to be sent to Amazon CloudWatch by the CNI plugin, or we can configure the 'fluentbit' agent to send the logs to Amazon CloudWatch as shown in the [documentation](https://docs.aws.amazon.com/eks/latest/userguide/cni-network-policy.html#network-policies-troubleshooting).
 
-For this lab, we have pre-configured the CNI plugin to send the logs to CloudWatch. The logs would be available under the log group '/aws/eks/eks-workshop/cluster'. We can search all the logs streams under the log group '/aws/eks/eks-workshop/cluster' to identify the failure cause by searching for pattern "DIP: IP of the Pod" "PolicyVerdict: DENY". We can find the IP of the 'carts' pod using the below command,
+For this lab, we have pre-configured the CNI plugin to send the logs to CloudWatch. To enable logging, we need to ensure the VPC CNI addon's IAM role has permissions to log to CloudWatch. We can attach relevant permissions using the below commands:
 
+```bash wait=30
+$ ADDON_ROLE_ARN=$(aws eks describe-addon --cluster-name "eks-workshop" --addon-name "vpc-cni" | jq -r '.addon.serviceAccountRoleArn')
+$ ADDON_ROLE_NM=$(aws iam list-roles | jq -r ".Roles[] | select(.Arn == \"$ADDON_ROLE_ARN\") | .RoleName")
+$ aws iam put-role-policy --role-name $ADDON_ROLE_NM --policy-name "addon.cwlogs.allow" --policy-document '{"Version": "2012-10-17", "Statement": [ { "Sid": "VisualEditor0", "Effect": "Allow", "Action": ["logs:DescribeLogGroups", "logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"], "Resource": "*" }]}'
+```
+
+Now that we have enabled logging for the VPC CNI plugin, the logs should be available under the log group '/aws/eks/eks-workshop/cluster'. We can search all the log streams under the log group '/aws/eks/eks-workshop/cluster' to identify the failure cause by searching for the pattern "DIP: Pod IP" and "PolicyVerdict: DENY". We can find the IP of the 'carts' pod using the below command:
 
 ```bash test=false
 $ kubectl get pod -n carts  -l app.kubernetes.io/name=carts -l app.kubernetes.io/component=service -o json | jq -r '.items[].status.podIP'

@@ -52,7 +52,11 @@ manifests/modules/networking/network-policies/apply-network-policies/allow-check
 Lets apply the policy and restart the 'checkout' pod to ensure proper initialization of the database components:
 
 ```bash
-$ kubectl get pod -n carts  -l app.kubernetes.io/name=carts -l app.kubernetes.io/component=service -o json | jq -r '.items[].status.podIP'
+$ kubectl apply -f ~/environment/eks-workshop/modules/networking/network-policies/apply-network-policies/allow-checkout-ingress-redis.yaml
+networkpolicy.networking.k8s.io/allow-checkout-ingress-redis created
+$ kubectl rollout restart deploy checkout -n checkout
+deployment.apps/checkout restarted
+$ kubectl wait --for=condition=ready pod -n checkout -l app.kubernetes.io/name=checkout  -l app.kubernetes.io/component=service
 ```
 
 Now, we should be able to checkout one or more products and place an order.
