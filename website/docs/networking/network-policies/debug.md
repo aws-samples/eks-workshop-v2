@@ -17,6 +17,7 @@ Lets apply this policy:
 
 ```bash wait=30
 $ kubectl apply -f ~/environment/eks-workshop/modules/networking/network-policies/apply-network-policies/allow-carts-ingress-fail-debug.yaml
+networkpolicy.networking.k8s.io/allow-carts-ingress-webservice created
 ```
 
 And validate it:
@@ -27,7 +28,7 @@ And validate it:
 
 As you can see, an error-500 page is displayed, which means something went wrong here. The call from the 'ui' component should have succeeded, but instead it failed. To debug this, we can leverage network policy agent logs to see where the issue is.
 
-Network policy agent logs are available by default in the file `/var/log/aws-routed-eni/network-policy-agent.log` on each worker node. We can also configure logs to be sent to Amazon CloudWatch by the CNI plugin, or we can configure the 'fluentbit' agent to send the logs to Amazon CloudWatch as shown in the [documentation](https://docs.aws.amazon.com/eks/latest/userguide/cni-network-policy.html#network-policies-troubleshooting).
+Network policy agent logs are available by default in the file `/var/log/aws-routed-eni/network-policy-agent.log` on each worker node. We can also configure logs to be sent to Amazon CloudWatch by the CNI plugin, or we can configure the 'fluentbit' agent to send the logs to Amazon CloudWatch as shown in this [user guide](https://docs.aws.amazon.com/eks/latest/userguide/cni-network-policy.html#network-policies-troubleshooting).
 
 For this lab, we have pre-configured the CNI plugin to send the logs to CloudWatch. To enable logging, we need to ensure the VPC CNI addon's IAM role has permissions to log to CloudWatch. We can attach relevant permissions using the below commands:
 

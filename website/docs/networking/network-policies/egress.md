@@ -29,7 +29,7 @@ In the case of the 'ui' component, it needs to communicate with all the other se
 
 The below network policy was designed considering the above requirements. It has two key sections:
 
-* The first section focuses on allowing egress traffic to all service components such as 'catalog', 'orders' etc.  which allows for egress traffic to any namespace as long as the pod labels match "app.kubernetes.io/component: service".
+* The first section focuses on allowing egress traffic to all service components, such as 'catalog', 'orders', etc., which means allowing egress traffic to any namespace as long as the pod labels match "app.kubernetes.io/component: service".
 * The second section focuses on allowing egress traffic to all components in the kube-system namespace, which enables DNS lookups and other key communications with the components in the system namespace.
 
 ```file
@@ -40,6 +40,7 @@ Lets apply this additional policy:
 
 ```bash wait=30
 $ kubectl apply -f ~/environment/eks-workshop/modules/networking/network-policies/apply-network-policies/allow-ui-egress.yaml
+networkpolicy.networking.k8s.io/allow-ui-egress created
 ```
 
 Now, we can test to see if we are able to view the 'catalog' page of the sample application:

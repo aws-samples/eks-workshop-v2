@@ -14,6 +14,7 @@ manifests/modules/networking/network-policies/apply-network-policies/default-den
 
 ```bash wait=30
 $ kubectl apply -n checkout -f ~/environment/eks-workshop/modules/networking/network-policies/apply-network-policies/default-deny-ingress.yaml 
+networkpolicy.networking.k8s.io/default-deny-ingress created
 ```
 >**Note**   : There is no namespace specified in the network policy, as it is a generic policy that can potentially be applied to any namespace in our cluster.
 
@@ -31,8 +32,9 @@ manifests/modules/networking/network-policies/apply-network-policies/allow-check
 
 Lets apply the policy:
 
-```bash wait=30
+```bash
 $ kubectl apply -f ~/environment/eks-workshop/modules/networking/network-policies/apply-network-policies/allow-checkout-ingress-webservice.yaml
+networkpolicy.networking.k8s.io/allow-checkout-ingress-webservice created
 ```
 
 Now, we can validate the policy by confirming that we can select products from the 'catalog' page and checkout them:
@@ -86,4 +88,4 @@ curl: (28) Failed to connect to catalog.catalog port 80 after 5001 ms: Timeout w
 ```
 As you could see from the above outputs, only the 'ui' component is able to communicate with the 'checkout' service component, and the 'orders' service component is not able to.
 
-Now that we have implemented an effective ingress policy for the 'checkout' namespace, we extend the same logic to other namespaces and components for the sample application, thereby greatly reducing the attack surface for the sample application and increasing network security.
+Now that we have implemented an effective ingress policy for the 'checkout' namespace, we can extend the same logic to other namespaces and components for the sample application, thereby greatly reducing the attack surface for the sample application and increasing network security.
