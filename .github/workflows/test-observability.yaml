@@ -13,5 +13,10 @@ jobs:
   test-module:
     uses: ./.github/workflows/module-test.yaml
     with:
-      module: observability
+      glob: observability/{container-insights,kubecost,logging,open-source-metrics,resource-view}**
+    secrets: inherit
+  test-opensearch:
+    uses: ./.github/workflows/module-test.yaml
+    with:
+      module: observability/opensearch
     secrets: inherit
