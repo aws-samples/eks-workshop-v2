@@ -5,7 +5,7 @@ before() {
 }
 
 after() {
-  sleep 10
+  sleep 30
 
   num_nodes=$(kubectl get nodes --selector=type=karpenter -o json | jq -r '.items | length')
 
