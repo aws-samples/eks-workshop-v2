@@ -61,7 +61,7 @@ $ kubectl rollout status -n other deployment/inflate --timeout=180s
 Once all of the Pods are running, lets see what instance type it selecting:
 
 ```bash
-$ kubectl -n karpenter logs deployment/karpenter -c controller | grep 'launched nodeclaim' | tail -1 | jq
+$ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter | grep 'launched nodeclaim' | jq
 ```
 
 You should see output that indicates the instance type and the purchase option:
