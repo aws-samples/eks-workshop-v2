@@ -7,7 +7,7 @@ As seen in the earlier section on [Logging in EKS](https://www.eksworkshop.com/d
 
 The next two paragraphs provide an overview of control plane logging in EKS. Feel free to skip this overview if you already followed the earlier section on Logging in EKS.
 
-There are five types of control plane logs available. Each log type, which can be individually enabled or disabled, corresponds to a component of the Kubernetes control plane. To learn more about these components, see Kubernetes Components in the [Kubernetes documentation](https://kubernetes.io/docs/concepts/overview/components/) and the [Amazon EKS control plane logging documentation](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html). 
+There are five types of control plane logs available. Each log type, which can be individually enabled or disabled, corresponds to a component of the Kubernetes control plane. To learn more about these components, see Kubernetes Components in the [Kubernetes documentation](https://kubernetes.io/docs/concepts/overview/components/) and the [Amazon EKS control plane logging documentation](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html).
 
 - **Kubernetes API server component logs (api)** – Your cluster's API server is the control plane component that exposes the Kubernetes API
 - **Audit (audit)** – Kubernetes audit logs provide a record of the individual users, administrators, or system components that have affected your cluster
@@ -60,7 +60,7 @@ Access the CloudWatch log group named [/aws/eks/eks-workshop/cluster](https://co
 - `kube-controller-manager-*` for controller manager logs
 - `kube-scheduler-*` for scheduler logs
 
-Navigate to the Lambda function named [eks-workshop-Control-Plane-Logs-To-OpenSearch](https://console.aws.amazon.com/lambda/home#/functions/eks-workshop-Control-Plane-Logs-To-OpenSearch) to to export control plane logs has been pre-provisioned during the `prepare-environment` step. Notice that the Lambda function does not have any triggers setup at the moment.
+Navigate to the Lambda function named [eks-workshop-Control-Plane-Logs-To-OpenSearch](https://console.aws.amazon.com/lambda/home#/functions/eks-workshop-Control-Plane-Logs-To-OpenSearch) to export control plane logs has been pre-provisioned during the `prepare-environment` step. Notice that the Lambda function does not have any triggers setup at the moment.
 
 There are three steps to connect up the Lambda function to CloudWatch Logs and to OpenSearch as shown in the overview diagram above:
 
@@ -128,7 +128,7 @@ $ aws logs describe-subscription-filters \
 }
 ```
 
-Return to the Lambda function in the console https://console.aws.amazon.com/lambda/home#/functions/eks-workshop-Control-Plane-Logs-To-OpenSearch. We notice that CloudWatch Logs is now shown as a trigger for the Lambda function.
+Return to the Lambda function [eks-workshop-Control-Plane-Logs-To-OpenSearch](https://console.aws.amazon.com/lambda/home#/functions/eks-workshop-Control-Plane-Logs-To-OpenSearch). CloudWatch Logs is now shown as a trigger for the Lambda function after the subscription filter was added.
 
 This completes the steps necessary to feed control plane logs from EKS to OpenSearch.  
 
@@ -151,6 +151,12 @@ The dashboard provides a histogram and detailed messages for each of the five co
 3. Log messages for API Server
 4. The log stream field in the dashboard is identical to the CloudWatch log stream name we saw earlier within the AWS console. The log stream field is used to filter the index for each of the five control plane log types. In this case, the filter displays just the API Server logs
 5. Message count per minute and log message shown for each of the remaining four log types
+
+:::tip
+
+Depending on the level of the EKS cluster activity, some of the control plane log panels may display `No result found` if there is no log activity of that type within the selected time range. If you encounter this situation, feel free to continue with the instructions and return to the Control Plane Logs dashboard before leaving the `Observability with OpenSearch` section.
+
+:::
 
 ![Control plane logs detail](./assets/eks-control-plane-logs-dashboard.png)
 
