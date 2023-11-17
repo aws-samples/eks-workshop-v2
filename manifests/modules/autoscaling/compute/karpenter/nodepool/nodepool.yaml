@@ -32,7 +32,7 @@ metadata:
   name: default
 spec:
   amiFamily: AL2 # Amazon Linux 2
-  role: "${KARPENTER_ROLE}"
+  role: "${KARP_ROLE}"
   subnetSelectorTerms:
     - tags:
         karpenter.sh/discovery: ${EKS_CLUSTER_NAME}

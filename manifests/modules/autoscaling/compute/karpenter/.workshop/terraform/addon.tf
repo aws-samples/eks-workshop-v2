@@ -28,7 +28,7 @@ module "eks_blueprints_addons" {
 
 output "environment" {
   value = <<EOF
-export KARPENTER_ROLE="${module.eks_blueprints_addons.karpenter.node_iam_role_name}"
-export KARPENTER_ARN="${module.eks_blueprints_addons.karpenter.node_iam_role_arn}"
+export KARP_ROLE="${module.eks_blueprints_addons.karpenter.node_iam_role_name}"
+export KARP_ARN="${module.eks_blueprints_addons.karpenter.node_iam_role_arn}"
 EOF
 }
