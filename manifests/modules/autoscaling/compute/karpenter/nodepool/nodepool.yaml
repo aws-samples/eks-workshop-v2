@@ -1,0 +1,43 @@
+apiVersion: karpenter.sh/v1beta1
+# HIGHLIGHT
+kind: NodePool
+metadata:
+  name: default
+spec:
+  template:
+    metadata:
+      labels:
+        type: karpenter
+    spec:
+      requirements:
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values: ["on-demand"]
+        - key: "node.kubernetes.io/instance-type"
+          operator: In
+          values: ["c5.large", "m5.large", "r5.large", "m5.xlarge"]
+      nodeClassRef:
+        name: default
+  limits:
+    cpu: "1000"
+    memory: 1000Gi
+  disruption:
+    consolidationPolicy: WhenUnderutilized
+    expireAfter: 720h # 30 * 24h = 720h
+---
+apiVersion: karpenter.k8s.aws/v1beta1
+# HIGHLIGHT
+kind: EC2NodeClass
+metadata:
+  name: default
+spec:
+  amiFamily: AL2 # Amazon Linux 2
+  role: "${KARP_ROLE}"
+  subnetSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
+  securityGroupSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
+  tags:
+    app.kubernetes.io/created-by: eks-workshop
