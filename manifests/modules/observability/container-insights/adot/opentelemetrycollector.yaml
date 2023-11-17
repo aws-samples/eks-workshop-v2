@@ -206,8 +206,6 @@ spec:
       extensions: [health_check,pprof, zpages, sigv4auth]
 
   env:
-  - name: EKS_CLUSTER_NAME
-    value: $(EKS_CLUSTER_NAME)
   - name: K8S_NODE_NAME
     valueFrom:
       fieldRef:
