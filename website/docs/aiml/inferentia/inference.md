@@ -105,7 +105,7 @@ $ kubectl -n aiml wait --for=condition=Ready --timeout=8m pod/inference
 We can use the following command to get more details on the node that was provisioned to schedule our pod onto:
 
 ```bash
-$ kubectl get node -l karpenter.sh/provisioner-name=aiml -o jsonpath='{.items[0].status.capacity}' | jq .
+$ kubectl get node -l karpenter.sh/nodepool=aiml -o jsonpath='{.items[0].status.capacity}' | jq .
 ```
 
 This output shows the capacity this node has:
