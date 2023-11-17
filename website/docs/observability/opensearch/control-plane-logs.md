@@ -3,23 +3,28 @@ title: "Control plane logs"
 sidebar_position: 30
 ---
 
-As seen in the earlier section on [Logging in EKS](https://www.eksworkshop.com/docs/observability/logging/cluster-logging/), Amazon EKS control plane logging provides audit and diagnotic logs directly from the Amazon EKS control plane to CloudWatch Logs in your account. We build upon that earlier setup by forwarding control plane logs from CloudWatch Logs to OpenSearch. A Lambda function to export CloudWatch Logs was setup as part of the `prepare-environment` step for this module. In this section, we will enable all EKS control plane logging, add a CloudWatch Logs subscription filter that will trigger the Lamdbda function and explore the OpenSearch control plane logs dashboard.
+As seen in the earlier section on [Logging in EKS](https://www.eksworkshop.com/docs/observability/logging/cluster-logging/), Amazon EKS control plane logging provides audit and diagnotic logs directly from the Amazon EKS control plane to CloudWatch Logs in your account. We build upon that earlier setup by forwarding these control plane logs from CloudWatch Logs to OpenSearch. A Lambda function to export CloudWatch Logs was setup as part of the `prepare-environment` step for this module. In this section, we will enable all EKS control plane logging, add a CloudWatch Logs subscription filter that will trigger the Lamdbda function and explore the OpenSearch control plane logs dashboard.
 
 The next two paragraphs provide an overview of control plane logging in EKS. Feel free to skip this overview if you already followed the earlier section on Logging in EKS.
 
 There are five types of control plane logs available. Each log type, which can be individually enabled or disabled, corresponds to a component of the Kubernetes control plane. To learn more about these components, see Kubernetes Components in the [Kubernetes documentation](https://kubernetes.io/docs/concepts/overview/components/) and the [Amazon EKS control plane logging documentation](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html). 
 
-- **Kubernetes API server component logs (api)** – Your cluster's API server is the control plane component that exposes the Kubernetes API.
-- **Audit (audit)** – Kubernetes audit logs provide a record of the individual users, administrators, or system components that have affected your cluster.
-- **Authenticator (authenticator)** – Authenticator logs are unique to Amazon EKS. These logs represent the control plane component that Amazon EKS uses for Kubernetes [Role Based Access Control](https://kubernetes.io/docs/admin/authorization/rbac/) (RBAC) authentication using IAM credentials.
-- **Controller manager (controllerManager)** – The controller manager manages the core control loops that are shipped with Kubernetes.
-- **Scheduler (scheduler)** – The scheduler component manages when and where to run pods in your cluster.
+- **Kubernetes API server component logs (api)** – Your cluster's API server is the control plane component that exposes the Kubernetes API
+- **Audit (audit)** – Kubernetes audit logs provide a record of the individual users, administrators, or system components that have affected your cluster
+- **Authenticator (authenticator)** – Authenticator logs are unique to Amazon EKS. These logs represent the control plane component that Amazon EKS uses for Kubernetes [Role Based Access Control](https://kubernetes.io/docs/admin/authorization/rbac/) (RBAC) authentication using IAM credentials
+- **Controller manager (controllerManager)** – The controller manager manages the core control loops that are shipped with Kubernetes
+- **Scheduler (scheduler)** – The scheduler component manages when and where to run pods in your cluster
 
-The following diagram provides an overview of the setup for this section. Enabling control plane logs in Amazon EKS creates a CloudWatch log group as the destination. A CloudWatch Logs subscription filter is setup for this log group, which triggers a Lamdda function. The Lambda function writes the control plane logs to an OpenSearch index. All five control plane log types are enabled in this lab and are sent to a single OpenSearch index. Later in the lab we will see how we can filter the different log types within the OpenSearch dashboard.
+The following diagram provides an overview of the setup for this section. From left to right, the flow is as follows:
+
+1. Control plane logs are enabled in Amazon EKS, which sends logs to CloudWatch Logs
+2. A CloudWatch Logs subscription filter triggers a Lamdda function and sends it the log messages
+3. The Lambda function writes the control plane logs to an OpenSearch index
+4. A single OpenSearch index named `eks-control-plane-logs` stores all the control plane logs. Later in the lab we will see how we can filter the different log types within the OpenSearch dashboard
 
 ![EKS Control Plane Logs to OpenSearch](./assets/eks-control-plane-logs-overview.svg)
 
-EKS control plane logs are enabled on a per-cluster basis through the EKS API. This will often be configured using Terraform or CloudFormation, but in this lab we'll use the AWS CLI to enable the functionality. As you can see we can enable each of the cluster log types individually, and in this lab we're enabling everything. 
+EKS control plane logs are enabled on a per-cluster basis through the EKS API. This will often be configured using Terraform or CloudFormation, but in this lab we'll use the AWS CLI to enable the functionality. As you can see we can enable each of the cluster log types individually, and in this lab we're enabling everything.
 
 ```bash hook=cluster-logging
 $ aws eks update-cluster-config \
@@ -45,9 +50,9 @@ $ sleep 30
 $ aws eks wait cluster-active --name $EKS_CLUSTER_NAME
 ```
 
-We can optionally inspect the EKS control plane logging setting using the AWS console: https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab.  The **Logging** tab shows the current configuration for control plane logs for the cluster.
+We can optionally inspect the EKS control plane logging setting using the AWS console: https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab.  The **Logging** tab shows the current configuration for control plane logs for the EKS cluster.
 
-The control plane logs can be accessed in the [/aws/eks/eks-workshop/cluster](https://console.aws.amazon.com/cloudwatch/home#logsV2:log-groups/log-group/$252Faws$252Feks$252Feks-workshop$252Fcluster) CloudWatch log group within the AWS console. You will find at least one log stream associated with each of the control plane log types:
+Access the CloudWatch log group named [/aws/eks/eks-workshop/cluster](https://console.aws.amazon.com/cloudwatch/home#logsV2:log-groups/log-group/$252Faws$252Feks$252Feks-workshop$252Fcluster) within the AWS console. You will find at least one log stream associated with each of the control plane log types:
 
 - `kube-apiserver-*` for Kubernetes API server logs
 - `*-audit-*` for audit logs
@@ -55,7 +60,7 @@ The control plane logs can be accessed in the [/aws/eks/eks-workshop/cluster](ht
 - `kube-controller-manager-*` for controller manager logs
 - `kube-scheduler-*` for scheduler logs
 
-Navigate to https://console.aws.amazon.com/lambda/home#/functions/eks-workshop-Control-Plane-Logs-To-OpenSearch to confirm that the Lambda function to export control plane logs has been pre-provisioned during the `prepare-environment` step. Notice that the Lambda function does not have any triggers setup at the moment.
+Navigate to the Lambda function named [eks-workshop-Control-Plane-Logs-To-OpenSearch](https://console.aws.amazon.com/lambda/home#/functions/eks-workshop-Control-Plane-Logs-To-OpenSearch) to to export control plane logs has been pre-provisioned during the `prepare-environment` step. Notice that the Lambda function does not have any triggers setup at the moment.
 
 There are three steps to connect up the Lambda function to CloudWatch Logs and to OpenSearch as shown in the overview diagram above:
 
@@ -77,7 +82,7 @@ $ export LAMBDA_ROLE_ARN=$(aws lambda get-function \
     jq .Configuration.Role | tr -d '"')
 ```
 
-Grant the Lambda exporter function permissions to create and write to the OpenSearch index named `eks-control-plane-logs`. The first command creates a new role within the OpenSearch domain with the necessary permissions. The second command adds a role mapping specifying the Lambda function's execution role ARN.
+Grant the Lambda exporter function permissions to create the OpenSearch index named `eks-control-plane-logs` and write to it. The first command creates a new role within the OpenSearch domain with the necessary permissions. The second command adds a role mapping specifying the Lambda function's execution role ARN.
 
 ```bash
 $ curl -s -XPUT "https://${OPENSEARCH_HOST}/_plugins/_security/api/roles/lambda_role" \
@@ -123,7 +128,7 @@ $ aws logs describe-subscription-filters \
 }
 ```
 
-Returning to the Lambda function in the console https://console.aws.amazon.com/lambda/home#/functions/eks-workshop-Control-Plane-Logs-To-OpenSearch we notice that CloudWatch Logs is now shown as a trigger for the Lambda function.
+Return to the Lambda function in the console https://console.aws.amazon.com/lambda/home#/functions/eks-workshop-Control-Plane-Logs-To-OpenSearch. We notice that CloudWatch Logs is now shown as a trigger for the Lambda function.
 
 This completes the steps necessary to feed control plane logs from EKS to OpenSearch.  
 
@@ -139,12 +144,20 @@ Username: <user name>
 Password: <password>
 ```
 
+The dashboard provides a histogram and detailed messages for each of the five control plane logs types (in alphabetical order) - Kubernetes API server component logs, Audit logs, Authenticator logs, Controller Manager logs and Scheduler logs.
 
-![Control plane logs detail](./assets/eks-control-plane-logs-detail-1.png)
+1. Date / time range. We can customize the time range that we are exploring with this dashboard (Last hour in this example)
+2. Message count per minute for API Server logs
+3. Log messages for API Server
+4. The log stream field in the dashboard is identical to the CloudWatch log stream name we saw earlier within the AWS console. The log stream field is used to filter the index for each of the five control plane log types. In this case, the filter displays just the API Server logs
+5. Message count per minute and log message shown for each of the remaining four log types
 
+![Control plane logs detail](./assets/eks-control-plane-logs-dashboard.png)
 
-![Control plane logs detail](./assets/eks-control-plane-logs-detail-2.png)
+The scheduler logs are shown at the end of the page. Notice that the scheduler log messages indicates `Unable to schedule pod; no fit; waiting` for `scenario-c`.  This schedule log message from the control plane logs is similar to the Kubernetes event we saw for `scenario-c` on the previous page.
 
+![Control plane logs detail](./assets/eks-control-plane-logs-scheduler.png)
 
+Expanding the row allows us to drill down and view details as a table or in JSON format.
 
-![Control plane logs detail](./assets/eks-control-plane-logs-detail-3.png)
+![Control plane logs detail](./assets/eks-control-plane-logs-detail.png)
