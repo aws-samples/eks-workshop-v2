@@ -1,11 +1,9 @@
 ---
-title: Configure pods with tolerations
+title: Run pods on Graviton
 sidebar_position: 20
 ---
 
-Now that we have tainted our managed node group, we'll need to configure our application to take advantage of this change.  
-
-For the purpose of this module, we'll want to configure our application to deploy the `ui` microservice only on nodes that are part of our recently tainted managed node group. 
+Now that we have tainted our Graviton node group, we'll need to configure our application to take advantage of this change. To do so, let's configure our application to deploy the `ui` microservice only on nodes that are part of our Graviton-based managed node group. 
 
 Before making any changes, let's check the current configuration for the UI pods. Keep in mind that these pods are being controlled by an associated deployment named `ui`.
 
@@ -37,14 +35,14 @@ As anticipated, the application is running succesfully on a non-tainted node. Th
 Let's update our `ui` deployment to bind its pods to our tainted managed node group. We have pre-configured our tainted managed node group with a label of `tainted=yes` that we can use with a `nodeSelector`. The following `Kustomize` patch describes the changes needed to our deployment configuration in order to enable this setup: 
 
 ```kustomization
-modules/fundamentals/mng/basics/taints/nodeselector-wo-toleration/deployment.yaml
+modules/fundamentals/mng/graviton/nodeselector-wo-toleration/deployment.yaml
 Deployment/ui
 ```
 
 To apply the Kustomize changes run the following command: 
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/mng/basics/taints/nodeselector-wo-toleration/
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/mng/graviton/nodeselector-wo-toleration/
 namespace/ui unchanged
 serviceaccount/ui unchanged
 configmap/ui unchanged
@@ -94,12 +92,13 @@ Our changes are reflected in the new configuration of the `Pending` pod. We can 
 To fix this, we need to add a toleration. Let's ensure our deployment and associated pods are able to tolerate the `frontend: true` taint. We can use the below `kustomize` patch to make the necessary changes:
  
 ```kustomization
-modules/fundamentals/mng/basics/taints/nodeselector-w-toleration/deployment.yaml
+modules/fundamentals/mng/graviton/nodeselector-w-toleration/deployment.yaml
 Deployment/ui
 ```
 
+
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/mng/basics/taints/nodeselector-w-toleration/
+$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/mng/graviton/nodeselector-w-toleration/
 namespace/ui unchanged
 serviceaccount/ui unchanged
 configmap/ui unchanged

@@ -1,12 +1,12 @@
 ---
-title: Configure nodes with taints
+title: Create Graviton Nodes
 sidebar_position: 10
 ---
 
 In this exercise, we'll provision a separate managed node group with Graviton-based instances and apply a taint to it.
 
 ```file
-manifests/modules/fundamentals/mng/basics/taints/nodegroup.yaml
+manifests/modules/fundamentals/mng/graviton/nodegroup.yaml
 ```
 
 :::note
@@ -16,7 +16,7 @@ This configuration file does not yet configure the taints, it only applies a lab
 The following command creates this node group:
 
 ```bash timeout=600 hook=configure-taints
-$ cat ~/environment/eks-workshop/modules/fundamentals/mng/basics/taints/nodegroup.yaml \
+$ cat ~/environment/eks-workshop/modules/fundamentals/mng/graviton/nodegroup.yaml \
   | envsubst | eksctl create nodegroup -f -
 ```
 
@@ -25,26 +25,26 @@ It will take *2-3* minutes for the node to join the EKS cluster. Once the above 
 ```bash
 $ kubectl get nodes \
     --label-columns eks.amazonaws.com/nodegroup,kubernetes.io/arch \
-    --selector eks.amazonaws.com/nodegroup=taint-mng
+    --selector eks.amazonaws.com/nodegroup=graviton
 
 NAME                                          STATUS   ROLES    AGE    VERSION               NODEGROUP   ARCH
-ip-10-42-172-231.us-west-2.compute.internal   Ready    <none>   2m5s   v1.27.7-eks-4f4795d   taint-mng   arm64
+ip-10-42-172-231.us-west-2.compute.internal   Ready    <none>   2m5s   v1.27.7-eks-4f4795d   graviton   arm64
 ```
 
-The above command makes use of the `--selector` flag to query for all nodes that have a label of `eks.amazonaws.com/nodegroup` that matches the name of our managed node group `taint-mng`. The `--label-columns` flag also allows us to display the value of the `eks.amazonaws.com/nodegroup` label as well as the processor architecture in the output. Note that the `ARCH` column shows our tainted node group running Graviton `arm64` processors.
+The above command makes use of the `--selector` flag to query for all nodes that have a label of `eks.amazonaws.com/nodegroup` that matches the name of our managed node group `graviton`. The `--label-columns` flag also allows us to display the value of the `eks.amazonaws.com/nodegroup` label as well as the processor architecture in the output. Note that the `ARCH` column shows our tainted node group running Graviton `arm64` processors.
 
-Before configuring our taints, let's explore the current configuration of our node. Note that the following command will list the details of all nodes that are part of our managed node group. In our lab, the managed node group has just one instance. 
+Let's explore the current configuration of our node. The following command will list the details of all nodes that are part of our managed node group.
 
 ```bash
 $ kubectl describe nodes \
-    --selector eks.amazonaws.com/nodegroup=taint-mng
+    --selector eks.amazonaws.com/nodegroup=graviton
 Name:               ip-10-42-12-233.us-west-2.compute.internal
 Roles:              <none>
 Labels:             beta.kubernetes.io/arch=amd64
                     beta.kubernetes.io/instance-type=t3.medium
                     beta.kubernetes.io/os=linux
                     eks.amazonaws.com/capacityType=ON_DEMAND
-                    eks.amazonaws.com/nodegroup=taint-mng
+                    eks.amazonaws.com/nodegroup=graviton
                     eks.amazonaws.com/nodegroup-image=ami-0b55230f107a87100
                     eks.amazonaws.com/sourceLaunchTemplateId=lt-07afc97c4940b6622
                     [...]
@@ -62,14 +62,13 @@ A few things to point out:
 
 While it's easy to taint nodes using the `kubectl` CLI as described [here](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#concepts), an administrator will have to make this change every time the underlying node group scales up or down. To overcome this challenge, AWS supports adding both `labels` and `taints` to managed node groups, ensuring every node within the MNG will have the associated labels and taints configured automatically. 
 
-Now let's add a taint to our preconfigured managed node group `taint-mng`. This taint will have `key=frontend`, `value=true` and `effect=NO_EXECUTE`. This ensures that any pods that are already running on our tainted managed node group are evicted if they do not have a matching toleration. Also, no new pods will be scheduled on to this managed node group without an appropriate toleration.
+Now let's add a taint to our preconfigured managed node group `graviton`. This taint will have `key=frontend`, `value=true` and `effect=NO_EXECUTE`. This ensures that any pods that are already running on our tainted managed node group are evicted if they do not have a matching toleration. Also, no new pods will be scheduled on to this managed node group without an appropriate toleration.
 
 Let's start by adding a `taint` to our managed node group using the following `aws` cli command: 
 
 ```bash timeout=180
 $ aws eks update-nodegroup-config \
-    --cluster-name $EKS_CLUSTER_NAME \
-    --nodegroup-name taint-mng \
+    --cluster-name $EKS_CLUSTER_NAME --nodegroup-name graviton \
     --taints "addOrUpdateTaints=[{key=frontend, value=true, effect=NO_EXECUTE}]"
 {
     "update": {
@@ -91,7 +90,7 @@ $ aws eks update-nodegroup-config \
 Run the following command to wait for the node group to become active.
 ```bash
 $ aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME \
-  --nodegroup-name taint-mng
+  --nodegroup-name graviton
 ```
 
 The addition, removal, or replacement of taints can be done by using the [`aws eks update-nodegroup-config`](https://docs.aws.amazon.com/cli/latest/reference/eks/update-nodegroup-config.html) CLI command to update the configuration of the managed node group. This can be done by passing either `addOrUpdateTaints` or `removeTaints` and a list of taints to the `--taints` command flag. 
@@ -108,9 +107,8 @@ We used `effect=NO_EXECUTE` in our taint configuration. Managed node groups curr
 We can use the following command to check the taints have been correctly configured for the managed node group:
 
 ```bash
-$ aws eks describe-nodegroup \
-  --cluster-name $EKS_CLUSTER_NAME \
-  --nodegroup-name taint-mng \
+$ aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME \
+  --nodegroup-name graviton \
   | jq .nodegroup.taints
 [
   {
@@ -131,6 +129,6 @@ Verifying with the `kubectl` cli command, we can also see that the taint has bee
 
 ```bash
 $ kubectl describe nodes \
-    --selector eks.amazonaws.com/nodegroup=taint-mng | grep Taints
+    --selector eks.amazonaws.com/nodegroup=graviton | grep Taints
 Taints:             frontend=true:NoExecute
 ```

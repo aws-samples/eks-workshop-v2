@@ -6,7 +6,7 @@ metadata:
   region: $AWS_REGION
 
 managedNodeGroups:
-  - name: taint-mng
+  - name: graviton
     instanceTypes:
     # HIGHLIGHT
     - t4g.medium
