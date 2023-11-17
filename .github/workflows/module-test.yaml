@@ -4,8 +4,11 @@ on:
   workflow_call:
     inputs:
       module:
-        required: true
         type: string
+        default: '-'
+      glob:
+        type: string
+        default: '-'
 
 permissions:
   id-token: write
@@ -47,7 +50,7 @@ jobs:
         RUN_ID: "${{ github.job }}"
         AWS_REGION: "${{ secrets.AWS_REGION }}"
       run: |
-        CLUSTER_ID=$(echo $RANDOM | md5sum | head -c 11)
+        CLUSTER_ID=$(echo $RANDOM | md5sum | head -c 8)
         echo "Using cluster ID ${CLUSTER_ID}"
         echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
     - name: Create infrastructure
@@ -69,11 +72,12 @@ jobs:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
         MODULE: ${{ inputs.module }}
+        GLOB: ${{ inputs.glob }}
         AWS_REGION: "${{ secrets.AWS_REGION }}"
         ASSUME_ROLE: "${{ secrets.AWS_ROLE_ARN }}"
       run: |
         export AWS_DEFAULT_REGION="$AWS_REGION"
-        make test environment="$CLUSTER_ID" module="$MODULE"
+        make test environment="$CLUSTER_ID" module="$MODULE" glob="$GLOB"
     - name: Refresh AWS credentials
       if: always()
       uses: aws-actions/configure-aws-credentials@v1.6.1

@@ -150,7 +150,7 @@ resource "aws_ecr_repository" "ecr_ui" {
 # CodePipeline dependencies
 
 resource "aws_s3_bucket" "build_artifact_bucket" {
-  bucket_prefix = "${local.addon_context.eks_cluster_id}-build-artifact-"
+  bucket_prefix = "${local.addon_context.eks_cluster_id}-artifacts-"
   force_destroy = true
 }
 
