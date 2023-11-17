@@ -52,7 +52,7 @@ $ kubectl scale -n other deployment/inflate --replicas 5
 We can check the Karpenter logs to get an idea of what actions it took in response to our scaling in the deployment. Wait about 5-10 seconds before running the following command:
 
 ```bash test=false
-$ kubectl -n karpenter logs deployment/karpenter -c controller | grep 'consolidation delete' | jq
+$ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter | grep 'consolidation delete' | jq
 ```
 
 The output will show Karpenter identifying specific nodes to cordon, drain and then terminate:
@@ -82,7 +82,7 @@ $ kubectl scale -n other deployment/inflate --replicas 1
 We can check the Karpenter logs and see what actions the controller took in response: 
 
 ```bash test=false
-$ kubectl -n karpenter logs deployment/karpenter -c controller -f | jq
+$ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter -f | jq
 ```
 
 :::tip

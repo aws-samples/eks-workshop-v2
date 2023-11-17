@@ -34,5 +34,5 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/autoscaling/compute/karpe
 Throughout the workshop you can inspect the Karpenter logs with the following command to understand its behavior:
 
 ```bash
-$ kubectl logs deployment/karpenter -c controller -n karpenter
+$ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter | jq
 ```

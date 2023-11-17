@@ -15,7 +15,7 @@ When a Pod requires the exposed Neuron cores, the Kubernetes scheduler can provi
 manifests/modules/aiml/inferentia/inference/inference.yaml
 ```
 
-### Set up a provisioner of Karpenter for launching a node which has the Inferentia chip
+### Set up a NodePool of Karpenter for launching a node which has the Inferentia chip
 
 The lab uses Karpenter to provision an Inferentia node. Karpenter can detect the pending pod which requires Neuron cores and launch an inf1 instance which has the required Neuron cores.
 
@@ -28,28 +28,28 @@ Karpenter has been installed in our EKS cluster, and runs as a deployment:
 ```bash
 $ kubectl get deployment -n karpenter
 NAME        READY   UP-TO-DATE   AVAILABLE   AGE
-karpenter   1/1     1            1           5m52s
+karpenter   2/2     2            2           11m
 ```
 
 The only setup that we will need to do is to update our EKS IAM mappings to allow Karpenter nodes to join the cluster:
 
 ```bash
 $ eksctl create iamidentitymapping --cluster $EKS_CLUSTER_NAME \
-    --region=$AWS_REGION --arn $KARPENTER_NODE_ROLE \
+    --region $AWS_REGION --arn $KARPENTER_ARN \
     --group system:bootstrappers --group system:nodes \
     --username system:node:{{EC2PrivateDNSName}}
 ```
 
-Karpenter requires a provisioner to provision nodes. This is the Karpenter provisioner that we will create:
+Karpenter requires a `NodePool` to provision nodes. This is the Karpenter `NodePool` that we will create:
 
 ```file
-manifests/modules/aiml/inferentia/provisioner/provisioner.yaml
+manifests/modules/aiml/inferentia/nodepool/nodepool.yaml
 ```
 
-Apply the provisioner manifest:
+Apply the `NodePool` and `EC2NodeClass` manifest:
 
 ```bash
-$ kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/provisioner \
+$ kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/nodepool \
   | envsubst | kubectl apply -f-
 ```
 
@@ -65,12 +65,31 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/inference
 Karpenter detects the pending pod which needs Neuron cores and launches an inf1 instance which has the Inferentia chip. Monitor the instance provisioning with the following command:
 
 ```bash test=false
-$ kubectl logs -f -n karpenter deploy/karpenter -c controller
-
-2022-10-28T08:24:42.704Z        DEBUG   controller.provisioning.cloudprovider   Created launch template, Karpenter-eks-workshop-cluster-3507260904097783831  {"commit": "37c8653", "provisioner": "default"}
-2022-10-28T08:24:45.125Z        INFO    controller.provisioning.cloudprovider   Launched instance: i-09ddba6280017ae4d, hostname: ip-100-64-10-250.ap-northeast-1.compute.internal, type: inf1.xlarge, zone: ap-northeast-1a, capacityType: spot  {"commit": "37c8653", "provisioner": "default"}
-2022-10-28T08:24:45.136Z        INFO    controller.provisioning Created node with 1 pods requesting {"aws.amazon.com/neuron":"1","cpu":"125m","pods":"6"} from types inf1.xlarge, inf1.2xlarge, inf1.6xlarge, inf1.24xlarge       {"commit": "37c8653", "provisioner": "default"}
-2022-10-28T08:24:45.136Z        INFO    controller.provisioning Waiting for unschedulable pods  {"commit": "37c8653"}
+$ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter | jq
+```
+```json
+{
+  "level": "INFO",
+  "time": "2023-11-17T21:03:58.827Z",
+  "logger": "controller.nodeclaim.lifecycle",
+  "message": "launched nodeclaim",
+  "commit": "1072d3b",
+  "nodeclaim": "aiml-pfwnd",
+  "nodepool": "aiml",
+  "provider-id": "aws:///us-west-2c/i-0826dc93fb39e3f24",
+  "instance-type": "inf1.xlarge",
+  "zone": "us-west-2c",
+  "capacity-type": "on-demand",
+  "allocatable": {
+    "aws.amazon.com/neuron": "1",
+    "cpu": "3920m",
+    "ephemeral-storage": "89Gi",
+    "memory": "6804Mi",
+    "pods": "38",
+    "vpc.amazonaws.com/pod-eni": "38"
+  }
+}
+...
 ```
 
 The inference pod should be scheduled on the node provisioned by Karpenter. Check if the Pod is in it's ready state:
