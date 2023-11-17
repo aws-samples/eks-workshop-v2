@@ -65,7 +65,7 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/inference
 Karpenter detects the pending pod which needs Neuron cores and launches an inf1 instance which has the Inferentia chip. Monitor the instance provisioning with the following command:
 
 ```bash test=false
-$ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter | jq
+$ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter -f | jq
 ```
 ```json
 {
