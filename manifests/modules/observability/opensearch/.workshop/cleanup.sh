@@ -11,7 +11,8 @@ kubectl delete ns opensearch-exporter --ignore-not-found > /dev/null
 kubectl delete ns test --ignore-not-found > /dev/null
 
 # Delete the CloudWatch logs subscription filter
- aws logs delete-subscription-filter \
+echo "Delete CloudWatch subscription filter for EKS control plane logs..."
+aws logs delete-subscription-filter \
     --log-group-name /aws/eks/$EKS_CLUSTER_NAME/cluster \
     --filter-name "${EKS_CLUSTER_NAME}-Control-Plane-Logs-To-OpenSearch"
 
