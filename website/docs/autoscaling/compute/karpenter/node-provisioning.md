@@ -61,7 +61,7 @@ $ kubectl rollout status -n other deployment/inflate --timeout=180s
 Once all of the Pods are running, lets see what instance type it selecting:
 
 ```bash
-$ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter | grep 'launched nodeclaim' | jq
+$ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter | grep 'launched nodeclaim' | jq '.'
 ```
 
 You should see output that indicates the instance type and the purchase option:
@@ -100,7 +100,7 @@ There are certain cases where a different instance type might be selected other 
 We can also check the metadata added to the node by Karpenter:
 
 ```bash
-$ kubectl get node -l type=karpenter -o jsonpath='{.items[0].metadata.labels}' | jq .
+$ kubectl get node -l type=karpenter -o jsonpath='{.items[0].metadata.labels}' | jq '.'
 ```
 
 This output will show the various labels that are set, for example the instance type, purchase option, availability zone etc:
