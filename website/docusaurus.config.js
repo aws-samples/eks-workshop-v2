@@ -78,13 +78,6 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      announcementBar: {
-        id: 'upgrade-1.27',
-        content:
-          '🚩 EKS Workshop upgraded to EKS 1.27 on 17th November. If you have an existing lab environment please see the <a target="_blank" rel="noopener noreferrer" href="/docs/misc/major-upgrade">major upgrade instructions</a>. 🚩',
-        backgroundColor: '#0972d3',
-        textColor: '#fff',
-      },
       colorMode: {
         disableSwitch: true,
       },
