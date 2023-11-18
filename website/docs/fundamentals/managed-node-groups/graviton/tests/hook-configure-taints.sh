@@ -14,7 +14,7 @@ after() {
 
   if [ $EXIT_CODE -ne 0 ]; then
     cat << EOF >&2
-Node not ready in tainted node group in 240 seconds
+Node not ready in graviton node group in 240 seconds
 EOF
     exit 1
   fi

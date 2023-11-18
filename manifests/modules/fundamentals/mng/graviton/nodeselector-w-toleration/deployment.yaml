@@ -10,4 +10,4 @@ spec:
         operator: "Exists"
         effect: "NoExecute"
       nodeSelector:
-        tainted: yes
+        kubernetes.io/arch: arm64

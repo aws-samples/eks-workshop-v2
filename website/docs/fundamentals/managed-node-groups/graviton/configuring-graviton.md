@@ -5,12 +5,26 @@ sidebar_position: 10
 
 In this exercise, we'll provision a separate managed node group with Graviton-based instances and apply a taint to it.
 
+To start with lets confirm the current state of nodes available in our cluster:
+
+```bash
+$ kubectl get nodes -L kubernetes.io/arch
+NAME                                           STATUS   ROLES    AGE     VERSION                ARCH
+ip-192-168-102-2.us-west-2.compute.internal    Ready    <none>   6h56m   vVAR::KUBERNETES_NODE_VERSION    amd64
+ip-192-168-137-20.us-west-2.compute.internal   Ready    <none>   6h56m   vVAR::KUBERNETES_NODE_VERSION    amd64
+ip-192-168-19-31.us-west-2.compute.internal    Ready    <none>   6h56m   vVAR::KUBERNETES_NODE_VERSION    amd64
+```
+
+The output shows our existing nodes with columns that show the CPU architecture of each node. All of these are currently using `amd64` nodes.
+
+We'll use this `eksctl` configuration file to add our new Graviton node group:
+
 ```file
 manifests/modules/fundamentals/mng/graviton/nodegroup.yaml
 ```
 
 :::note
-This configuration file does not yet configure the taints, it only applies a label `tainted: 'yes'`. We will configure the taints on this node group further below.
+This configuration file does not yet configure the taints, which we'll configure below.
 :::
 
 The following command creates this node group:
@@ -24,11 +38,13 @@ It will take *2-3* minutes for the node to join the EKS cluster. Once the above 
 
 ```bash
 $ kubectl get nodes \
-    --label-columns eks.amazonaws.com/nodegroup,kubernetes.io/arch \
-    --selector eks.amazonaws.com/nodegroup=graviton
+    --label-columns eks.amazonaws.com/nodegroup,kubernetes.io/arch
 
 NAME                                          STATUS   ROLES    AGE    VERSION               NODEGROUP   ARCH
-ip-10-42-172-231.us-west-2.compute.internal   Ready    <none>   2m5s   v1.27.7-eks-4f4795d   graviton   arm64
+ip-192-168-102-2.us-west-2.compute.internal   Ready    <none>   6h56m  vVAR::KUBERNETES_NODE_VERSION   default     amd64
+ip-192-168-137-20.us-west-2.compute.internal  Ready    <none>   6h56m  vVAR::KUBERNETES_NODE_VERSION   default     amd64
+ip-192-168-19-31.us-west-2.compute.internal   Ready    <none>   6h56m  vVAR::KUBERNETES_NODE_VERSION   default     amd64
+ip-10-42-172-231.us-west-2.compute.internal   Ready    <none>   2m5s   vVAR::KUBERNETES_NODE_VERSION   graviton    arm64
 ```
 
 The above command makes use of the `--selector` flag to query for all nodes that have a label of `eks.amazonaws.com/nodegroup` that matches the name of our managed node group `graviton`. The `--label-columns` flag also allows us to display the value of the `eks.amazonaws.com/nodegroup` label as well as the processor architecture in the output. Note that the `ARCH` column shows our tainted node group running Graviton `arm64` processors.
@@ -40,13 +56,13 @@ $ kubectl describe nodes \
     --selector eks.amazonaws.com/nodegroup=graviton
 Name:               ip-10-42-12-233.us-west-2.compute.internal
 Roles:              <none>
-Labels:             beta.kubernetes.io/arch=amd64
-                    beta.kubernetes.io/instance-type=t3.medium
+Labels:             beta.kubernetes.io/instance-type=t4g.medium
                     beta.kubernetes.io/os=linux
                     eks.amazonaws.com/capacityType=ON_DEMAND
                     eks.amazonaws.com/nodegroup=graviton
                     eks.amazonaws.com/nodegroup-image=ami-0b55230f107a87100
                     eks.amazonaws.com/sourceLaunchTemplateId=lt-07afc97c4940b6622
+                    kubernetes.io/arch=arm64
                     [...]
 CreationTimestamp:  Wed, 09 Nov 2022 10:36:26 +0000
 Taints:             <none>
@@ -55,7 +71,7 @@ Taints:             <none>
 
 A few things to point out:
 
-1. EKS automatically adds certain labels to allow for easier filtering, including labels for the OS type, managed node group name, instance type and others. While certain labels are provided out-of-the-box with EKS, AWS allows operators to configure their own set of custom labels at the managed node group level. This ensures that every node within a node group will have consistent labels. 
+1. EKS automatically adds certain labels to allow for easier filtering, including labels for the OS type, managed node group name, instance type and others. While certain labels are provided out-of-the-box with EKS, AWS allows operators to configure their own set of custom labels at the managed node group level. This ensures that every node within a node group will have consistent labels. The `kubernetes.io/arch` label shows we're running an EC2 instance with an ARM64 CPU architecture.
 2. Currently there are no taints configured for the explored node, as shown by the `Taints: <none>` stanza. 
 
 ## Configuring taints for Managed Node Groups
@@ -66,7 +82,7 @@ Now let's add a taint to our preconfigured managed node group `graviton`. This t
 
 Let's start by adding a `taint` to our managed node group using the following `aws` cli command: 
 
-```bash timeout=180
+```bash wait=20
 $ aws eks update-nodegroup-config \
     --cluster-name $EKS_CLUSTER_NAME --nodegroup-name graviton \
     --taints "addOrUpdateTaints=[{key=frontend, value=true, effect=NO_EXECUTE}]"
@@ -88,7 +104,8 @@ $ aws eks update-nodegroup-config \
 ```
 
 Run the following command to wait for the node group to become active.
-```bash
+
+```bash timeout=180
 $ aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME \
   --nodegroup-name graviton
 ```
