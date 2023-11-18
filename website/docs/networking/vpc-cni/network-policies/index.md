@@ -1,6 +1,6 @@
 ---
 title: "Network Policies"
-sidebar_position: 50
+sidebar_position: 10
 sidebar_custom_props: {"module": true}
 ---
 
