@@ -5,3 +5,5 @@ metadata:
   namespace: carts
   labels:
     app: carts
+data:
+  CARTS_DYNAMODB_TABLENAME: ${CARTS_DYNAMODB_TABLENAME}

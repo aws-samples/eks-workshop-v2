@@ -1,0 +1,26 @@
+# Unschedulable pod
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scenario-c
+  namespace: test
+  labels:
+    app.kubernetes.io/created-by: eks-workshop
+    app: scenario-c
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scenario-c
+  template:
+    metadata:
+      labels:
+        app: scenario-c
+    spec:
+      containers:
+        - name: scenario-c
+          image: nginx
+          resources:
+            requests:
+              cpu: "999999m"

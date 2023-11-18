@@ -16,12 +16,12 @@ spec:
         {
           "Effect": "Allow",
           "Principal": {
-            "Federated": "arn:aws:iam::$(AWS_ACCOUNT_ID):oidc-provider/$(OIDC_PROVIDER)"
+            "Federated": "arn:aws:iam::${AWS_ACCOUNT_ID):oidc-provider/$(OIDC_PROVIDER}"
           },
           "Action": "sts:AssumeRoleWithWebIdentity",
           "Condition": {
             "StringEquals": {
-              "$(OIDC_PROVIDER):sub": "system:serviceaccount:ack-system:ack-mq-controller"
+              "${OIDC_PROVIDER}:sub": "system:serviceaccount:ack-system:ack-mq-controller"
             }
           }
         }

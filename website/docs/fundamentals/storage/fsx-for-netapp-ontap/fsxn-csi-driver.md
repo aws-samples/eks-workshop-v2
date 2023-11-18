@@ -40,8 +40,8 @@ manifests/modules/fundamentals/storage/fsxn/backend/fsxn-backend-nas.yaml
 Let's apply this kustomization:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/fsxn/backend
-configmap/fsxnconfig created
+$ kubectl kustomize ~/environment/eks-workshop/modules/fundamentals/storage/fsxn/backend \
+  | envsubst | kubectl apply -f-
 secret/backend-fsxn-ontap-nas-secret created
 tridentbackendconfig.trident.netapp.io/backend-fsxn-ontap-nas created
 ```

@@ -11,44 +11,115 @@ module "crossplane" {
     terraform_data.cluster
   ]
 
-  source        = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1//modules/kubernetes-addons/crossplane"
-  addon_context = local.addon_context
+  source  = "aws-ia/eks-blueprints-addon/aws"
+  version = "1.1.0"
 
-  helm_config = {
-    name             = "crossplane"
-    chart            = "crossplane"
-    repository       = "https://charts.crossplane.io/stable/"
-    version          = "1.12.1"
-    namespace        = "crossplane-system"
-    timeout          = 1200
-    create_namespace = true
-    values           = [templatefile("${path.module}/templates/crossplane.yaml",{})]
-  }
+  create = true
 
-  aws_provider = {
-    enable                   = true
-    provider_aws_version     = "v0.40.0"
-    additional_irsa_policies = ["arn:aws:iam::aws:policy/AdministratorAccess"]
-  }
+  # https://github.com/crossplane/crossplane/tree/master/cluster/charts/crossplane
+  name             = "crossplane"
+  description      = "A Helm chart to deploy crossplane project"
+  namespace        = "crossplane-system"
+  create_namespace = true
+  chart            = "crossplane"
+  chart_version    = "1.13.2"
+  repository       = "https://charts.crossplane.io/stable/"
+}
 
-  kubernetes_provider = {
-    enable = false
-  }
-
-  helm_provider = {
-    enable = false
-  }
-
-  jet_aws_provider = {
-    enable = false
-
-    additional_irsa_policies = []
-    provider_aws_version     = ""
-  }
-
+locals {
+  crossplane_namespace = "crossplane-system"
   upbound_aws_provider = {
-    enable = false
+    enable               = true
+    version              = "v0.40.0"
+    controller_config    = "upbound-aws-controller-config"
+    provider_config_name = "aws-provider-config" 
+    families = [
+      "dynamodb"
+    ]
+  ddb_name = "upbound-ddb"
   }
+}
+
+module "upbound_irsa_aws" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.30"
+
+  role_name_prefix = "ddb-upbound-aws-"
+  assume_role_condition_test = "StringLike"
+
+  role_policy_arns = {
+    policy = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+  }
+
+  oidc_providers = {
+    main = {
+      provider_arn               = local.addon_context.eks_oidc_provider_arn
+      namespace_service_accounts = ["${local.crossplane_namespace}:upbound-aws-provider-*"]
+    }
+  }
+  tags = local.tags
+}
+
+resource "kubectl_manifest" "upbound_aws_controller_config" {
+  count = local.upbound_aws_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/providers/aws-upbound/controller-config.yaml", {
+    iam-role-arn          = module.upbound_irsa_aws.iam_role_arn
+    controller-config = local.upbound_aws_provider.controller_config
+  })
+
+  depends_on = [module.upbound_irsa_aws]
+}
+
+resource "kubectl_manifest" "upbound_aws_provider" {
+  for_each = local.upbound_aws_provider.enable ? toset(local.upbound_aws_provider.families) : toset([])
+  yaml_body = templatefile("${path.module}/providers/aws-upbound/provider.yaml", {
+    family            = each.key
+    version           = local.upbound_aws_provider.version
+    controller-config = local.upbound_aws_provider.controller_config
+  })
+  wait = true
+
+  depends_on = [kubectl_manifest.upbound_aws_controller_config]
+
+  provisioner "local-exec" {
+    command = <<EOF
+sleep 10
+kubectl wait --for condition=established --timeout=60s crd/providerconfigs.aws.upbound.io
+sleep 10
+EOF
+  }
+}
+
+resource "kubectl_manifest" "upbound_aws_provider_config" {
+  count = local.upbound_aws_provider.enable == true ? 1 : 0
+  yaml_body = templatefile("${path.module}/providers/aws-upbound/provider-config.yaml", {
+    provider-config-name = local.upbound_aws_provider.provider_config_name
+  })
+
+  depends_on = [kubectl_manifest.upbound_aws_provider]
+}
+
+resource "aws_iam_policy" "carts_dynamo" {
+  name        = "${local.addon_context.eks_cluster_id}-carts-dynamo"
+  path        = "/"
+  description = "DynamoDB policy for AWS Sample Carts Application"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllAPIActionsOnCart",
+      "Effect": "Allow",
+      "Action": "dynamodb:*",
+      "Resource": [
+        "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*"      
+      ]
+    }
+  ]
+}
+EOF
+  tags   = local.tags
 }
 
 module "eks_blueprints_addons" {
@@ -66,31 +137,8 @@ module "eks_blueprints_addons" {
   oidc_provider_arn = local.addon_context.eks_oidc_provider_arn
 }
 
-data "aws_vpc" "selected" {
-  tags = {
-    created-by = "eks-workshop-v2"
-    env        = local.addon_context.eks_cluster_id
-  }
-}
-
-data "aws_subnets" "private" {
-  tags = {
-    created-by = "eks-workshop-v2"
-    env        = local.addon_context.eks_cluster_id
-  }
-
-  filter {
-    name   = "tag:Name"
-    values = ["*Private*"]
-  }
-}
-
 output "environment" {
   value = <<EOF
-export VPC_ID=${data.aws_vpc.selected.id}
-export VPC_CIDR=${data.aws_vpc.selected.cidr_block}
-%{for index, id in data.aws_subnets.private.ids}
-export VPC_PRIVATE_SUBNET_ID_${index + 1}=${id}
-%{endfor}
+export DYNAMODB_POLICY_ARN=${aws_iam_policy.carts_dynamo.arn}
 EOF
 }

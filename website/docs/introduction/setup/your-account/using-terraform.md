@@ -84,5 +84,5 @@ Next delete the cluster with `terraform`:
 
 ```bash
 $ cd ~/environment/terraform
-$ terraform -var="cluster_name=$EKS_CLUSTER_NAME" -auto-approve
+$ terraform destroy -var="cluster_name=$EKS_CLUSTER_NAME" -auto-approve
 ```

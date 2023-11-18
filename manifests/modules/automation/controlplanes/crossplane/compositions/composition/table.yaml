@@ -1,0 +1,105 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: table.dynamodb.awsblueprints.io
+  labels:
+    awsblueprints.io/provider: aws
+    awsblueprints.io/environment: dev
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  compositeTypeRef:
+    apiVersion: awsblueprints.io/v1alpha1
+    kind: XDynamoDBTable
+  patchSets:
+    - name: common-fields
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.resourceConfig.providerConfigName
+          toFieldPath: spec.providerConfigRef.name
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.name
+          toFieldPath: metadata.annotations[crossplane.io/external-name]
+        - type: FromCompositeFieldPath
+          fromFieldPath: metadata.name
+          toFieldPath: metadata.annotations[crossplane.io/external-name]
+          transforms:
+            - type: string
+              string:
+                type: Regexp
+                regexp:
+                  match: ^(.*?)-crossplane
+  resources:
+    - name: table
+      connectionDetails:
+        - type: FromFieldPath
+          name: tableName
+          fromFieldPath: status.atProvider.id
+      base:
+        apiVersion: dynamodb.aws.upbound.io/v1beta1
+        kind: Table
+        spec:
+          forProvider:
+            writeConnectionSecretToRef:
+              name: cartsdynamo
+              namespace: crossplane-system
+            region: ''
+          providerConfigRef:
+            name: aws-provider-config
+      patches:
+        - type: PatchSet
+          patchSetName: common-fields
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.dynamoConfig.attribute
+          toFieldPath: spec.forProvider.attribute
+          policy:
+            mergeOptions:
+              appendSlice: true
+              keepMapValues: true
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.resourceConfig.tags
+          toFieldPath: spec.forProvider.tags
+          policy:
+            mergeOptions:
+              keepMapValues: true
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.dynamoConfig.attribute[0].name
+          toFieldPath: spec.forProvider.hashKey
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.dynamoConfig.billingMode
+          toFieldPath: spec.forProvider.billingMode
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.dynamoConfig.rangeKey
+          toFieldPath: spec.forProvider.rangeKey
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.dynamoConfig.readCapacity
+          toFieldPath: spec.forProvider.readCapacity 
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.dynamoConfig.writeCapacity
+          toFieldPath: spec.forProvider.writeCapacity
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.dynamoConfig.globalSecondaryIndex[0].name
+          toFieldPath: spec.forProvider.globalSecondaryIndex[0].name
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.dynamoConfig.attribute[1].name
+          toFieldPath: spec.forProvider.globalSecondaryIndex[0].hashKey
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.dynamoConfig.globalSecondaryIndex[0].projectionType
+          toFieldPath: spec.forProvider.globalSecondaryIndex[0].projectionType  
+          policy:
+            mergeOptions:
+              keepMapValues: true
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.dynamoConfig.localSecondaryIndex
+          toFieldPath: spec.forProvider.localSecondaryIndex
+          policy:
+            mergeOptions:
+              keepMapValues: true
+        - type: ToCompositeFieldPath
+          fromFieldPath: status.atProvider.id
+          toFieldPath: status.tableName
+        - type: ToCompositeFieldPath
+          fromFieldPath: status.atProvider.arn
+          toFieldPath: status.tableArn
