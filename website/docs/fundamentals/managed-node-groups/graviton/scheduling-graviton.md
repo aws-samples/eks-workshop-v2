@@ -75,7 +75,7 @@ $ podname=$(kubectl get pod --namespace ui --field-selector=status.phase=Pending
 Name:           ui-659df48c56-z496x
 Namespace:      ui
 [...]
-Node-Selectors:              tainted=yes
+Node-Selectors:              kubernetes.io/arch=arm64
 Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
                              node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
 Events:
@@ -146,7 +146,7 @@ Conditions:
   PodScheduled      True
 [...]
 QoS Class:                   Burstable
-Node-Selectors:              tainted=yes
+Node-Selectors:              kubernetes.io/arch=arm64
 Tolerations:                 frontend:NoExecute op=Exists
                              node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
                              node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
@@ -154,26 +154,24 @@ Tolerations:                 frontend:NoExecute op=Exists
 ```
 
 ```bash
-$ kubectl describe node --selector tainted=yes
+$ kubectl describe node --selector kubernetes.io/arch=arm64
 Name:               ip-10-42-10-138.us-west-2.compute.internal
 Roles:              <none>
-Labels:             beta.kubernetes.io/arch=amd64
-                    beta.kubernetes.io/instance-type=t3.medium
+Labels:             beta.kubernetes.io/instance-type=t4g.medium
                     beta.kubernetes.io/os=linux
                     eks.amazonaws.com/capacityType=ON_DEMAND
-                    eks.amazonaws.com/nodegroup=tainted
+                    eks.amazonaws.com/nodegroup=graviton
                     eks.amazonaws.com/nodegroup-image=ami-03e8f91597dcf297b
-                    kubernetes.io/arch=amd64
+                    kubernetes.io/arch=arm64
                     kubernetes.io/hostname=ip-10-42-10-138.us-west-2.compute.internal
                     kubernetes.io/os=linux
-                    node.kubernetes.io/instance-type=t3.medium
-                    tainted=yes
+                    node.kubernetes.io/instance-type=t4g.medium
 [...]
 Taints:             frontend=true:NoExecute
 Unschedulable:      false
 [...]
 ```
 
-As you can see, the `ui` pod is now running on the Graviton-based node in our tainted managed node group. In addition, you can see the Taints on the `kubectl describe node` command, and the matching Tolerations on the `kubectl describe pod` command.
+As you can see, the `ui` pod is now running on the Graviton-based node group. In addition, you can see the Taints on the `kubectl describe node` command, and the matching Tolerations on the `kubectl describe pod` command.
 
 You've successfully scheduled the `ui` application, which can run on both Intel and ARM-based processors, to run on the new Graviton-based managed node group we created in the previous step. Taints and tolerations are a powerful tool that can be used to configure how pods get scheduled onto nodes, whether it's for Graviton/GPU-enhanced nodes, or for multi-tenant Kubernetes clusters.

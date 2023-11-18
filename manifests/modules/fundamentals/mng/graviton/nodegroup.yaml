@@ -13,9 +13,6 @@ managedNodeGroups:
     minSize: 1
     maxSize: 3
     desiredCapacity: 1
-    labels:
-      workshop-default: 'no'
-      tainted: 'yes'
     privateNetworking: true
     subnets:
     - $PRIMARY_SUBNET_1

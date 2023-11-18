@@ -6,4 +6,4 @@ spec:
   template:
     spec:
       nodeSelector:
-        tainted: yes
+        kubernetes.io/arch: arm64

@@ -2,4 +2,4 @@
 
 set -e
 
-delete-nodegroup graviton
+delete-nodegroup graviton yes
