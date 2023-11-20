@@ -86,7 +86,8 @@ const config = {
         textColor: '#fff',
       },
       colorMode: {
-        disableSwitch: true,
+        defaultMode: 'light',
+        disableSwitch: false,
       },
       image: 'img/meta.png',
       navbar: {
@@ -190,6 +191,7 @@ const config = {
       },
       prism: {
         theme: lightCodeTheme,
+        darkTheme: darkCodeTheme,
         magicComments: [
           // Remember to extend the default highlight class name as well!
           {
