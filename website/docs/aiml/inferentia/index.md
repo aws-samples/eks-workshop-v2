@@ -5,6 +5,8 @@ chapter: true
 sidebar_custom_props: { "module": true }
 ---
 
+{{% required-time estimatedLabExecutionTimeMinutes="15" %}}
+
 :::tip Before you start
 Prepare your environment for this section:
 

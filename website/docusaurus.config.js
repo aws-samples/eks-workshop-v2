@@ -50,7 +50,10 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          remarkPlugins: [remarkCodeTerminal, remarkTime],
+          remarkPlugins: [
+            remarkCodeTerminal, 
+            [remarkTime, {enabled: true, factor: 1.25}]
+          ],
           beforeDefaultRemarkPlugins: [
             [remarkParameters, {
               replacements: {

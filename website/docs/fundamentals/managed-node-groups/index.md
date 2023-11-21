@@ -3,17 +3,6 @@ title: Managed Node Groups
 sidebar_position: 30
 ---
 
-{{% required-time %}}
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=600 wait=30
-$ prepare-environment fundamentals/mng
-```
-
-:::
-
 An EKS cluster contains one or more EC2 nodes that Pods are scheduled on. EKS nodes run in your AWS account and connect to the control plane of your cluster through the cluster API server endpoint. You deploy one or more nodes into a node group. A node group is one or more EC2 instances that are deployed in an EC2 Auto Scaling group.
 
 EKS nodes are standard Amazon EC2 instances. You're billed for them based on EC2 prices. For more information, see [Amazon EC2 pricing](https://aws.amazon.com/ec2/pricing/).
