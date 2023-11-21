@@ -70,7 +70,7 @@ export class MarkdownSh {
       await this.buildTestSuites(path.normalize(directory), root, mocha.suite, hookTimeout, dryRun, shell)
 
       try {
-        await this.runMochaTests(mocha)
+       await this.runMochaTests(mocha)
       }
       catch(e: any) {
         process.exit(1)
