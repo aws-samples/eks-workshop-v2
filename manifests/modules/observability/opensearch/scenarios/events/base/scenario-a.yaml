@@ -1,0 +1,41 @@
+# Intentionally reference a missing secret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scenario-a
+  namespace: test
+  labels:
+    app.kubernetes.io/created-by: eks-workshop
+    app: scenario-a
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scenario-a
+  template:
+    metadata:
+      labels:
+        app: scenario-a
+    spec:
+      containers:
+        - name: scenario-a
+          image: nginx
+          volumeMounts:
+            - name: secret-volume
+              readOnly: true
+              mountPath: "/etc/secret"
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: misspelt-secret-name
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: some-secret
+  namespace: test
+  labels:
+    app.kubernetes.io/created-by: eks-workshop
+data:
+  .secret-file: dmFsdWUtMg0KDQo=

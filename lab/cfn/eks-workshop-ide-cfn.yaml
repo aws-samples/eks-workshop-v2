@@ -44,6 +44,10 @@ Parameters:
     Type: String
     Description: Name of the Cloud9 instance
     Default: "none"
+  Cloud9Subnet:
+    Type: String
+    Description: If you want Cloud9 in a specific subnet
+    Default: "none"
   ResourcesPrecreated: 
     Type: String
     Description: Whether lab infrastructure has been pre-provisioned
@@ -51,10 +55,15 @@ Parameters:
     AllowedValues: 
       - "false"
       - "true"
+  UpdateTrigger:
+    Type: String
+    Description: Triggers the Cloud9 to update itself
+    Default: "0"
 
 Conditions: 
   Create3rdPartyResources: !Equals [ !Ref EksWorkshopC9EnvType, 3rdParty ]
   IsCloud9NotNamed: !Equals [ !Ref Cloud9Name, none ]
+  IsCloud9SubnetSpecified: !Not [ !Equals [ !Ref Cloud9Subnet, none ]]
 
 Resources:
   EksWorkshopC9Role:
@@ -116,6 +125,8 @@ Resources:
             - ec2:DescribeIamInstanceProfileAssociations
             - ec2:DescribeVolumes
             - ec2:ModifyVolume
+            - ec2:DescribeVolumesModifications
+            - ec2:RebootInstances
             - iam:ListInstanceProfiles
             - iam:PassRole
             - ssm:DescribeInstanceInformation
@@ -124,12 +135,8 @@ Resources:
             Resource: "*"
 
   EksWorkshopC9BootstrapInstanceLambda:
-    Description: Bootstrap Cloud9 instance
     Type: Custom::EksWorkshopC9BootstrapInstanceLambda
     DependsOn:
-    - EksWorkshopC9BootstrapInstanceLambdaFunction
-    - EksWorkshopC9Instance
-    - EksWorkshopC9InstanceProfile
     - EksWorkshopC9LambdaExecutionRole
     Properties:
       ServiceToken:
@@ -149,6 +156,8 @@ Resources:
         - Arn
       SsmDocument:
         Ref: EksWorkshopC9SSMDocument
+      UpdateTrigger:
+        Ref: UpdateTrigger
 
   EksWorkshopC9BootstrapInstanceLambdaFunction:
     Type: AWS::Lambda::Function
@@ -159,8 +168,12 @@ Resources:
         - EksWorkshopC9LambdaExecutionRole
         - Arn
       Runtime: python3.9
+      Environment:
+        Variables:
+          DiskSize:
+            Ref: EksWorkshopC9InstanceVolumeSize
       MemorySize: 256
-      Timeout: '600'
+      Timeout: '900'
       Code:
         ZipFile: |
           from __future__ import print_function
@@ -170,10 +183,12 @@ Resources:
           import time
           import traceback
           import cfnresponse
+          import logging
+          logger = logging.getLogger(__name__)
           
           def lambda_handler(event, context):
               print(event.values())
-              # logger.info('context: {}'.format(context))
+              print('context: {}'.format(context))
               responseData = {}
 
               status = cfnresponse.SUCCESS
@@ -189,7 +204,7 @@ Resources:
           
                       # Get the InstanceId of the Cloud9 IDE
                       instance = ec2.describe_instances(Filters=[{'Name': 'tag:Name','Values': ['aws-cloud9-'+event['ResourceProperties']['Cloud9Name']+'-'+event['ResourceProperties']['EnvironmentId']]}])['Reservations'][0]['Instances'][0]
-                      # logger.info('instance: {}'.format(instance))
+                      print('instance: {}'.format(instance))
                       instance_id = instance['InstanceId']
           
                       # Create the IamInstanceProfile request object
@@ -197,17 +212,24 @@ Resources:
                           'Arn': event['ResourceProperties']['LabIdeInstanceProfileArn'],
                           'Name': event['ResourceProperties']['LabIdeInstanceProfileName']
                       }
-                      # logger.info('iam_instance_profile: {}'.format(iam_instance_profile))
+                      print('Found IAM instance profile: {}'.format(iam_instance_profile))
 
                       time.sleep(10)
+
+                      print('Waiting for the instance to be ready...')
           
                       # Wait for Instance to become ready before adding Role
                       instance_state = instance['State']['Name']
-                      # logger.info('instance_state: {}'.format(instance_state))
+                      print('Instance is currently in state'.format(instance_state))
                       while instance_state != 'running':
                           time.sleep(5)
-                          instance_state = ec2.describe_instances(InstanceIds=[instance_id])
-                          # logger.info('instance_state: {}'.format(instance_state))
+                          di = ec2.describe_instances(InstanceIds=[instance_id])
+                          instance_state = di['Reservations'][0]['Instances'][0]['State']['Name']
+                          print('Waiting for instance in state: {}'.format(instance_state))
+
+                      print('Instance is ready')
+
+                      reboot = False
 
                       associations = ec2.describe_iam_instance_profile_associations(
                           Filters=[
@@ -219,29 +241,77 @@ Resources:
                       )
 
                       if len(associations['IamInstanceProfileAssociations']) > 0:
+                        print('Replacing existing IAM profile...')
                         for association in associations['IamInstanceProfileAssociations']:
                           if association['State'] == 'associated':
                             print("{} is active with state {}".format(association['AssociationId'], association['State']))
-                            ec2.replace_iam_instance_profile_association(AssociationId=association['AssociationId'], IamInstanceProfile=iam_instance_profile)
+
+                            if association['IamInstanceProfile']['Arn'] == event['ResourceProperties']['LabIdeInstanceProfileArn']:
+                              print("IAM instance profile is already set")
+                            else:
+                              print("Replacing IAM instance profile")
+                              reboot = True
+                              ec2.replace_iam_instance_profile_association(AssociationId=association['AssociationId'], IamInstanceProfile=iam_instance_profile)
                       else:
+                        print('Associating IAM profile...')
                         ec2.associate_iam_instance_profile(IamInstanceProfile=iam_instance_profile, InstanceId=instance_id)
 
                       block_volume_id = instance['BlockDeviceMappings'][0]['Ebs']['VolumeId']
 
                       block_device = ec2.describe_volumes(VolumeIds=[block_volume_id])['Volumes'][0]
 
-                      if block_device['Size'] != 30:
-                        ec2.modify_volume(VolumeId=block_volume_id,Size=30)
+                      DiskSize = int(os.environ['DiskSize'])
+                      if block_device['Size'] < DiskSize:
+                        reboot = True
 
-                      for i in range(1, 30):
-                        response = ssm.describe_instance_information(Filters=[{'Key': 'InstanceIds', 'Values': [instance_id]}])
-                        if len(response["InstanceInformationList"]) > 0 and \
-                              response["InstanceInformationList"][0]["PingStatus"] == "Online" and \
-                              response["InstanceInformationList"][0]["InstanceId"] == instance_id:
-                          break
+                        print('Modifying block volume: {}'.format(block_volume_id))
+                        ec2.modify_volume(VolumeId=block_volume_id,Size=DiskSize)
+                        
                         time.sleep(10)
 
+                        for i in range(1, 30):
+                          response = ec2.describe_volumes_modifications(
+                            VolumeIds=[
+                              block_volume_id
+                            ]
+                          )
+                          modify_state = response['VolumesModifications'][0]['ModificationState']
+                          if modify_state != 'modifying':
+                            print('Volume has been resized')
+                            break
+                          time.sleep(10)
+                      else:
+                        print('Volume is already sized')
+
+                      if reboot:
+                        # Reboot is required to avoid weird race condition with IAM role and SSM agent
+                        # It also causes the file system to expand in the OS
+                        print('Rebooting instance')
+
+                        ec2.reboot_instances(
+                            InstanceIds=[
+                                instance_id,
+                            ],
+                        )
+
+                        time.sleep(60)
+
+                        print('Waiting for instance to come online in SSM...')
+
+                        for i in range(1, 60):
+                          response = ssm.describe_instance_information(Filters=[{'Key': 'InstanceIds', 'Values': [instance_id]}])
+                          if len(response["InstanceInformationList"]) == 0:
+                            print('No instances in SSM')
+                          elif len(response["InstanceInformationList"]) > 0 and \
+                                response["InstanceInformationList"][0]["PingStatus"] == "Online" and \
+                                response["InstanceInformationList"][0]["InstanceId"] == instance_id:
+                            print('Instance is online in SSM')
+                            break
+                          time.sleep(10)
+
                       ssm_document = event['ResourceProperties']['SsmDocument']
+
+                      print('Sending SSM command...')
 
                       response = ssm.send_command(
                         InstanceIds=[instance_id],
@@ -286,34 +356,6 @@ Resources:
             - !Sub |
                 set -e
       
-                STR=$(cat /etc/os-release)
-                SUB="VERSION_ID=\"2\""
-                
-                marker_file="/root/resized.mark"
-                
-                if [[ ! -f "$marker_file" ]]; then
-                  if [ $(readlink -f /dev/xvda) = "/dev/xvda" ]
-                  then
-                    sudo growpart /dev/xvda 1
-                    if [[ "$STR" == *"$SUB"* ]]
-                    then
-                      sudo xfs_growfs -d /
-                    else
-                      sudo resize2fs /dev/xvda1
-                    fi
-                  else
-                    sudo growpart /dev/nvme0n1 1
-                    if [[ "$STR" == *"$SUB"* ]]
-                    then
-                      sudo xfs_growfs -d /
-                    else
-                      sudo resize2fs /dev/nvme0n1p1
-                    fi
-                  fi
-                fi
-                
-                touch $marker_file
-
                 export AWS_REGION="${AWS::Region}"
                 export REPOSITORY_OWNER="${RepositoryOwner}"
                 export REPOSITORY_NAME="${RepositoryName}"
@@ -333,7 +375,6 @@ Resources:
       - Ref: EksWorkshopC9Role
 
   EksWorkshopC9Instance:
-    Description: "-"
     Type: AWS::Cloud9::EnvironmentEC2
     Properties:
       Description: AWS Cloud9 instance for EKS Workshop
@@ -341,6 +382,7 @@ Resources:
       AutomaticStopTimeMinutes: 3600
       InstanceType:
         Ref: EksWorkshopC9InstanceType
+      SubnetId: !If [ IsCloud9SubnetSpecified, !Ref Cloud9Subnet, !Ref "AWS::NoValue" ]
       Name: !If [ IsCloud9NotNamed, !Ref AWS::StackName, !Ref Cloud9Name ]
       OwnerArn: !If [ Create3rdPartyResources, !Ref WorkshopOwnerArn, !Ref "AWS::NoValue" ]
       Tags: 

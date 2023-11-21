@@ -52,23 +52,19 @@ fi
 
 kubectl delete pod load-generator --ignore-not-found > /dev/null
 
+kubectl delete namespace other --ignore-not-found > /dev/null
+
 kubectl apply -k $base_path --prune --all \
-  --prune-whitelist=autoscaling/v1/HorizontalPodAutoscaler \
-  --prune-whitelist=core/v1/Service \
-  --prune-whitelist=core/v1/ConfigMap \
-  --prune-whitelist=apps/v1/Deployment \
-  --prune-whitelist=apps/v1/StatefulSet \
-  --prune-whitelist=core/v1/ServiceAccount \
-  --prune-whitelist=core/v1/Secret \
-  --prune-whitelist=core/v1/PersistentVolumeClaim \
-  --prune-whitelist=scheduling.k8s.io/v1/PriorityClass \
-  --prune-whitelist=networking.k8s.io/v1/Ingress > /dev/null
-
-crossplane_crd=$(kubectl get crds | grep relationaldatabases.awsblueprints.io || [[ $? == 1 ]])
-
-if [ ! -z "$crossplane_crd" ]; then
-  kubectl delete relationaldatabases.awsblueprints.io -A --all > /dev/null
-fi
+  --prune-allowlist=autoscaling/v1/HorizontalPodAutoscaler \
+  --prune-allowlist=core/v1/Service \
+  --prune-allowlist=core/v1/ConfigMap \
+  --prune-allowlist=apps/v1/Deployment \
+  --prune-allowlist=apps/v1/StatefulSet \
+  --prune-allowlist=core/v1/ServiceAccount \
+  --prune-allowlist=core/v1/Secret \
+  --prune-allowlist=core/v1/PersistentVolumeClaim \
+  --prune-allowlist=scheduling.k8s.io/v1/PriorityClass \
+  --prune-allowlist=networking.k8s.io/v1/Ingress > /dev/null
 
 echo "Waiting for application to become ready..."
 
@@ -87,7 +83,7 @@ RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-""}
 
 echo "Cleaning up previous lab infrastructure..."
 
-tf_dir=$(realpath --relative-to='$PWD' '/eks-workshop/terraform')
+tf_dir=$(realpath --relative-to="$PWD" '/eks-workshop/terraform')
 
 terraform -chdir="$tf_dir" init -upgrade > /tmp/terraform-destroy-init.log
 terraform -chdir="$tf_dir" destroy --auto-approve > /tmp/terraform-destroy.log
@@ -139,12 +135,12 @@ if [[ "$mng_size_config" != "$expected_size_config" ]]; then
   sleep 10
 fi
 
-asg_size_config=$(aws autoscaling describe-auto-scaling-groups --filters "Name=tag:eks:nodegroup-name,Values=$EKS_DEFAULT_MNG_NAME" | jq -r '.AutoScalingGroups[0] | "\(.MinSize) \(.MaxSize) \(.DesiredCapacity)"')
+asg_size_config=$(aws autoscaling describe-auto-scaling-groups --filters "Name=tag:eks:nodegroup-name,Values=$EKS_DEFAULT_MNG_NAME" "Name=tag:eks:cluster-name,Values=$EKS_CLUSTER_NAME" | jq -r '.AutoScalingGroups[0] | "\(.MinSize) \(.MaxSize) \(.DesiredCapacity)"')
 
 if [[ "$asg_size_config" != "$expected_size_config" ]]; then
   echo "Setting ASG back to initial sizing..."
 
-  export ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --filters "Name=tag:eks:nodegroup-name,Values=$EKS_DEFAULT_MNG_NAME" --query "AutoScalingGroups[0].AutoScalingGroupName" --output text)
+  export ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --filters "Name=tag:eks:nodegroup-name,Values=$EKS_DEFAULT_MNG_NAME" "Name=tag:eks:cluster-name,Values=$EKS_CLUSTER_NAME" --query "AutoScalingGroups[0].AutoScalingGroupName" --output text)
   aws autoscaling update-auto-scaling-group \
       --auto-scaling-group-name $ASG_NAME \
       --min-size $EKS_DEFAULT_MNG_MIN \

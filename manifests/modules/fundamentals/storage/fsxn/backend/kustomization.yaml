@@ -1,25 +1,5 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
 resources:
 - fsxn-secret.yaml
 - fsxn-backend-nas.yaml
-
-configMapGenerator:
-- name: fsxnconfig
-  envs: 
-  - config.env
-
-generatorOptions:
-  disableNameSuffixHash: true
-
-vars:
-- name: FSXN_IP
-  objref:
-    kind: ConfigMap
-    name: fsxnconfig
-    apiVersion: v1
-  fieldref:
-    fieldpath: data.FSXN_IP
-configurations:
-  - env-var-transformer.yaml

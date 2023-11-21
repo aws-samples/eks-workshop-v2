@@ -1,12 +1,23 @@
-module "aws-ebs-csi-driver" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/aws-ebs-csi-driver"
+module "ebs_csi_driver_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.20"
 
-  enable_amazon_eks_aws_ebs_csi_driver = true
+  role_name_prefix = "${local.eks_cluster_id}-ebs-csi-"
 
-  addon_config = {
-    kubernetes_version = local.eks_cluster_version
-    preserve           = false
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = local.eks_oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
   }
 
-  addon_context = local.addon_context
+  tags = local.tags
+}
+
+output "environment" {
+  value = <<EOF
+export EBS_CSI_ADDON_ROLE="${module.ebs_csi_driver_irsa.iam_role_arn}"
+EOF
 }

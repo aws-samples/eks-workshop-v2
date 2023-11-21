@@ -1,0 +1,26 @@
+apiVersion: dynamodb.aws.upbound.io/v1beta1
+kind: Table
+metadata:
+  name: "${EKS_CLUSTER_NAME}-carts-crossplane"
+  labels:
+    testing.upbound.io/example-name: dynamodb
+  annotations: 
+    crossplane.io/external-name: "${EKS_CLUSTER_NAME}-carts-crossplane"
+spec:
+  forProvider:
+    attribute:
+      - name: id
+        type: S
+      - name: customerId
+        type: S
+    hashKey: id
+    billingMode: PAY_PER_REQUEST
+    globalSecondaryIndex:
+      - hashKey: customerId
+        name: idx_global_customerId
+        projectionType: ALL
+    region: ''
+    tags:
+      namespace: carts
+  providerConfigRef:
+    name: aws-provider-config

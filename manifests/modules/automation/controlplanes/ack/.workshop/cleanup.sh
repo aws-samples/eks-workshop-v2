@@ -1,5 +1,6 @@
 #!/bin/bash
 
-echo "Deleting RDS resources created by ACK..."
+echo "Deleting resources created by ACK..."
 
-kubectl delete namespace catalog > /dev/null
+eksctl delete iamserviceaccount --name carts-ack --namespace carts --cluster $EKS_CLUSTER_NAME -v 0 > /dev/null
+kubectl delete table items -n carts --ignore-not-found=true > /dev/null

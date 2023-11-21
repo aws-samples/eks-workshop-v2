@@ -1,0 +1,15 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  namespace: orders
+  name: allow-orders-ingress-webservice
+spec:
+  podSelector:
+    matchLabels: 
+      app.kubernetes.io/name: orders
+      app.kubernetes.io/component: service
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            app.kubernetes.io/name: ui

@@ -1,7 +1,6 @@
 ---
 title: Managed Node Groups
-sidebar_position: 10
-sidebar_custom_props: {"module": true}
+sidebar_position: 30
 ---
 
 :::tip Before you start
@@ -12,8 +11,6 @@ $ prepare-environment fundamentals/mng
 ```
 
 :::
-
-In the Getting started lab, we deployed our sample application to EKS and saw the running Pods. But where are these Pods running?
 
 An EKS cluster contains one or more EC2 nodes that Pods are scheduled on. EKS nodes run in your AWS account and connect to the control plane of your cluster through the cluster API server endpoint. You deploy one or more nodes into a node group. A node group is one or more EC2 instances that are deployed in an EC2 Auto Scaling group.
 
@@ -31,25 +28,4 @@ Advantages of running Amazon EKS managed node groups include:
 * Node updates and terminations automatically and gracefully drain nodes to ensure that your applications stay available
 * No additional costs to use Amazon EKS managed node groups, pay only for the AWS resources provisioned
 
-We can inspect the default managed node group that was pre-provisioned for you:
-
-```bash
-$ eksctl get nodegroup --cluster $EKS_CLUSTER_NAME --name $EKS_DEFAULT_MNG_NAME
-```
-
-There are several attributes of managed node groups that we can see from this output:
-* Configuration of minimum, maximum and desired counts of the number of nodes in this group
-* The instance type for this node group is `m5.large`
-* Uses the `AL2_x86_64` EKS AMI type
-
-
-We can also inspect the nodes and the placement in the availability zones.
-
-```bash
-$ kubectl get nodes -o wide --label-columns topology.kubernetes.io/zone
-```
-
-You should see:
-* Nodes are distributed over multiple subnets in various availability zones, providing high availability
-
-Over the course of this module we'll make changes to this node group to demonstrate the capabilities of MNGs.
+Tha labs in this section deal with various ways that EKS managed node groups can be used to provide compute capacity to a cluster.
