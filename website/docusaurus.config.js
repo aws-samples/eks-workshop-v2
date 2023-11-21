@@ -21,6 +21,8 @@ const manifestsRef = process.env.MANIFESTS_REF || 'main'
 const manifestsOwner = process.env.MANIFESTS_OWNER || 'aws-samples'
 const manifestsRepository = process.env.MANIFESTS_REPOSITORY || 'eks-workshop-v2'
 
+const labTimesEnabled = process.env.LAB_TIMES_ENABLED || false;
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'EKS Workshop',
@@ -51,8 +53,8 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           remarkPlugins: [
-            remarkCodeTerminal, 
-            [remarkTime, {enabled: true, factor: 1.25}]
+            remarkCodeTerminal,
+            [remarkTime, {enabled: labTimesEnabled, factor: 1.25}]
           ],
           beforeDefaultRemarkPlugins: [
             [remarkParameters, {
