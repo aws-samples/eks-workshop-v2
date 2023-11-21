@@ -135,12 +135,12 @@ if [[ "$mng_size_config" != "$expected_size_config" ]]; then
   sleep 10
 fi
 
-asg_size_config=$(aws autoscaling describe-auto-scaling-groups --filters "Name=tag:eks:nodegroup-name,Values=$EKS_DEFAULT_MNG_NAME" | jq -r '.AutoScalingGroups[0] | "\(.MinSize) \(.MaxSize) \(.DesiredCapacity)"')
+asg_size_config=$(aws autoscaling describe-auto-scaling-groups --filters "Name=tag:eks:nodegroup-name,Values=$EKS_DEFAULT_MNG_NAME" "Name=tag:eks:cluster-name,Values=$EKS_CLUSTER_NAME" | jq -r '.AutoScalingGroups[0] | "\(.MinSize) \(.MaxSize) \(.DesiredCapacity)"')
 
 if [[ "$asg_size_config" != "$expected_size_config" ]]; then
   echo "Setting ASG back to initial sizing..."
 
-  export ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --filters "Name=tag:eks:nodegroup-name,Values=$EKS_DEFAULT_MNG_NAME" --query "AutoScalingGroups[0].AutoScalingGroupName" --output text)
+  export ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --filters "Name=tag:eks:nodegroup-name,Values=$EKS_DEFAULT_MNG_NAME" "Name=tag:eks:cluster-name,Values=$EKS_CLUSTER_NAME" --query "AutoScalingGroups[0].AutoScalingGroupName" --output text)
   aws autoscaling update-auto-scaling-group \
       --auto-scaling-group-name $ASG_NAME \
       --min-size $EKS_DEFAULT_MNG_MIN \

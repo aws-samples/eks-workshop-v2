@@ -13,6 +13,41 @@ module "eks_blueprints_addons" {
   oidc_provider_arn = local.addon_context.eks_oidc_provider_arn
 }
 
+resource "time_sleep" "wait" {
+  depends_on = [module.eks_blueprints_addons]
+
+  create_duration = "10s"
+}
+
+resource "kubernetes_manifest" "ui_nlb" {
+  manifest = {
+    "apiVersion" = "v1"
+    "kind"       = "Service"
+    "metadata" = {
+      "name"      = "ui-nlb"
+      "namespace" = "ui"
+      "annotations" = {
+        "service.beta.kubernetes.io/aws-load-balancer-type" = "external "
+        "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internet-facing"
+        "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "instance"
+      }
+    }
+    "spec" = {
+      "type" = "LoadBalancer"
+      "ports" = [{
+        "port" = 80
+        "targetPort" = 8080
+        "name" = "http"
+      }]
+      "selector" = {
+        "app.kubernetes.io/name" = "ui"
+        "app.kubernetes.io/instance" = "ui"
+        "app.kubernetes.io/component" = "service"
+      }
+    }
+  }
+}
+
 resource "aws_dynamodb_table" "carts" {
   #checkov:skip=CKV2_AWS_28:Point in time backup not required for workshop
   name             = "${local.addon_context.eks_cluster_id}-carts"

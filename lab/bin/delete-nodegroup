@@ -1,6 +1,7 @@
 #!/bin/bash
 
 nodegroup=$1
+is_eksctl=$2
 
 if [ -z "$nodegroup" ]; then
   echo "You must provide a node group name"
@@ -12,7 +13,11 @@ check=$(aws eks list-nodegroups --cluster-name $EKS_CLUSTER_NAME --query "nodegr
 if [ ! -z "$check" ]; then
   echo "Deleting node group $nodegroup..."
 
-  aws eks delete-nodegroup --region $AWS_REGION --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $nodegroup > /dev/null
-  # Skip waiting for node group to finish, allowing reset-environment/prepare-environment to finish more quickly
-  # aws eks wait nodegroup-deleted --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $nodegroup > /dev/null
+  if [ ! -z "$is_eksctl" ]; then
+    eksctl delete nodegroup --cluster $EKS_CLUSTER_NAME --name $nodegroup > /dev/null
+  else
+    aws eks delete-nodegroup --region $AWS_REGION --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $nodegroup > /dev/null
+    # Skip waiting for node group to finish, allowing reset-environment/prepare-environment to finish more quickly
+    # aws eks wait nodegroup-deleted --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $nodegroup > /dev/null
+  fi
 fi

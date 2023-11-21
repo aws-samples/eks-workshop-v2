@@ -117,9 +117,7 @@ async function main() {
 
   let output = generateMarkdown(entries);
 
-  console.log(output);
-
-  /*await octokit.rest.git.createRef({
+  await octokit.rest.git.createRef({
     owner,
     repo,
     ref: `refs/tags/${tagName}`,
@@ -132,7 +130,7 @@ async function main() {
     tag_name: tagName,
     name: milestone.data.title,
     body: output
-  });*/
+  });
 }
 
 await main();

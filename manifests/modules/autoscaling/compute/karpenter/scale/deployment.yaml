@@ -4,6 +4,7 @@ metadata:
   name: inflate
   namespace: other
 spec:
+  # HIGHLIGHT
   replicas: 0
   selector:
     matchLabels:
@@ -13,7 +14,9 @@ spec:
       labels:
         app: inflate
     spec:
+      # HIGHLIGHT
       nodeSelector:
+        # HIGHLIGHT
         type: karpenter
       terminationGracePeriodSeconds: 0
       containers:
@@ -21,4 +24,5 @@ spec:
           image: public.ecr.aws/eks-distro/kubernetes/pause:3.2
           resources:
             requests:
+              # HIGHLIGHT
               memory: 1Gi

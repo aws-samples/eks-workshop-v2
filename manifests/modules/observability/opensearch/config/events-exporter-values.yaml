@@ -1,0 +1,38 @@
+# OpenSearch username, password and host are dynamically
+# updated during provisioning process
+# See https://github.com/jkroepke/resmoio-kubernetes-event-exporter and
+# https://artifacthub.io/packages/helm/bitnami/kubernetes-event-exporter
+# for full set of options
+#
+# Enable OpenSearch as a sink
+#
+# deDot is set to true to avoid mapper errors
+# See https://github.com/resmoio/kubernetes-event-exporter/issues/20
+---
+config:
+  logLevel: warn
+  logFormat: json
+  # To address client-side throttling errors
+  kubeQPS: 100
+  kubeBurst: 500
+  # Increase maxEventsAgeSeconds for demo purposes
+  # Allows capture of all events in the last hour
+  maxEventsAgeSeconds: 3600
+  route:
+    routes:
+      - match:
+          - receiver: opensearch-receiver
+  receivers:
+    - name: "opensearch-receiver"
+      opensearch:
+        index: eks-kubernetes-events
+        indexFormat: "eks-kubernetes-events"
+        # Setting useEventID enables update to same
+        # OpenSearch document using uid from Kubernetes event
+        useEventID: true
+        # Dots in labels and annotation keys are replaced by underscores.
+        deDot: true
+        username: aaa
+        password: bbb
+        hosts:
+          - ccc
