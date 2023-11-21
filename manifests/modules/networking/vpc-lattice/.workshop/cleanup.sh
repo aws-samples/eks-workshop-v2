@@ -5,6 +5,7 @@ set -e
 echo "Deleting VPC Lattice routes and gateway..."
 
 kubectl delete namespace checkoutv2 --ignore-not-found > /dev/null
+kubectl delete namespace checkout --ignore-not-found > /dev/null
 
 kubectl delete -f ~/environment/eks-workshop/modules/networking/vpc-lattice/routes --ignore-not-found > /dev/null
 cat ~/environment/eks-workshop/modules/networking/vpc-lattice/controller/eks-workshop-gw.yaml | envsubst | kubectl delete --ignore-not-found -f - > /dev/null

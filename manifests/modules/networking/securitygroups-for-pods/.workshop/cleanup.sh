@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 echo "Deleting Security Group policies..."
 
 kubectl delete SecurityGroupPolicy --all -A > /dev/null
