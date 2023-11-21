@@ -12,5 +12,9 @@ export PATH="$PATH:$HOME/bin"
 
 export MANIFESTS_REF="$BRANCH"
 
+if [[ $BRANCH = build-* ]]; then
+  export LAB_TIMES_ENABLED='true'
+fi
+
 npm install
 npm run build
