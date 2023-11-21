@@ -10,7 +10,7 @@ Follow these instructions to create a cluster and deploy the AWS Gateway API Con
 First, configure security group to receive traffic from the VPC Lattice network. You must set up security groups so that they allow all Pods communicating with VPC Lattice to allow traffic from the VPC Lattice managed prefix lists.  See [Control traffic to resources using security groups](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html) for details. Lattice has both an IPv4 and IPv6 prefix lists available.
 
 ```bash
-$ CLUSTER_SG=$(aws eks describe-cluster --name $CLUSTER_NAME --output json| jq -r '.cluster.resourcesVpcConfig.clusterSecurityGroupId')
+$ CLUSTER_SG=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --output json| jq -r '.cluster.resourcesVpcConfig.clusterSecurityGroupId')
 $ PREFIX_LIST_ID=$(aws ec2 describe-managed-prefix-lists --query "PrefixLists[?PrefixListName=="\'com.amazonaws.$AWS_REGION.vpc-lattice\'"].PrefixListId" | jq -r '.[]')
 $ aws ec2 authorize-security-group-ingress --group-id $CLUSTER_SG --ip-permissions "PrefixListIds=[{PrefixListId=${PREFIX_LIST_ID}}],IpProtocol=-1"
 $ PREFIX_LIST_ID_IPV6=$(aws ec2 describe-managed-prefix-lists --query "PrefixLists[?PrefixListName=="\'com.amazonaws.$AWS_REGION.ipv6.vpc-lattice\'"].PrefixListId" | jq -r '.[]')
@@ -36,25 +36,23 @@ $ aws ec2 authorize-security-group-ingress --group-id $CLUSTER_SG --ip-permissio
 This step will install the controller and the CRDs (Custom Resource Definitions) required to interact with the Kubernetes Gateway API.
 
 ```bash wait=30
-$ aws ecr-public get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin public.ecr.aws
+$ aws ecr-public get-login-password --region us-east-1 \
+  | helm registry login --username AWS --password-stdin public.ecr.aws
 $ helm install gateway-api-controller \
     oci://public.ecr.aws/aws-application-networking-k8s/aws-gateway-controller-chart \
     --version=v1.0.1 \
     --create-namespace \
     --set=aws.region=${AWS_REGION} \
     --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="$LATTICE_IAM_ROLE" \
+    --set=defaultServiceNetwork=${EKS_CLUSTER_NAME} \
     --namespace gateway-api-controller \
     --wait
 ```
 
-Similar to `IngressClass` for `Ingress` and `StorageClass` for `PersistentVolumes`, before creating a `Gateway`, we need to formalize the types of load balancing implementations that are available via the Kubernetes resource model with a [GatewayClass](https://gateway-api.sigs.k8s.io/concepts/api-overview/#gatewayclass). The controller that listens to the Gateway API relies on an associated `GatewayClass` resource that the user can reference from their `Gateway`.
+The controller will now be running as a deployment:
 
 ```bash
-$ kubectl apply -f ~/environment/eks-workshop/modules/networking/vpc-lattice/controller/gatewayclass.yaml
-```
-
-The command above will create the following resource:
-
-```file
-manifests/modules/networking/vpc-lattice/controller/gatewayclass.yaml
+$ kubectl get deployment -n gateway-api-controller
+NAME                                                  READY   UP-TO-DATE   AVAILABLE   AGE
+gateway-api-controller-aws-gateway-controller-chart   2/2     2            2           24s
 ```
