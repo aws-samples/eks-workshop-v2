@@ -15,7 +15,7 @@ The only setup that we will need to do is to update our EKS IAM mappings to allo
 
 ```bash
 $ eksctl create iamidentitymapping --cluster $EKS_CLUSTER_NAME \
-    --region=$AWS_REGION --arn $KARPENTER_NODE_ROLE \
+    --region $AWS_REGION --arn $KARP_ARN \
     --group system:bootstrappers --group system:nodes \
     --username system:node:{{EC2PrivateDNSName}}
 ```

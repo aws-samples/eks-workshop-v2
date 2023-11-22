@@ -4,6 +4,8 @@ sidebar_position: 2
 sidebar_custom_props: {"module": true}
 ---
 
+{{% required-time %}}
+
 :::tip Before you start
 Prepare your environment for this section:
 
@@ -14,7 +16,7 @@ $ prepare-environment automation/gitops/flux
 This will make the following changes to your lab environment:
 - Create an AWS CodeCommit repository
 - Create an IAM user with access to the CodeCommit repository
-- Create Continuous Integration Pipeline for [Sample Application UI](https://github.com/aws-containers/retail-store-sample-app)
+- Create a Continuous Integration pipeline for the [sample application UI component](https://github.com/aws-containers/retail-store-sample-app)
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/networking/custom-networking/.workshop/terraform).
 

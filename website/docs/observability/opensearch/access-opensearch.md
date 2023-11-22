@@ -2,7 +2,7 @@
 title: "Access OpenSearch"
 sidebar_position: 10
 ---
-In this section you will retrieve credentials for OpenSearch from the AWS Systems Manager Parameter Store, load a pre-created OpenSearch dashboard for Kubernetes events and confirm access to the OpenSearch dashboard.
+In this section we will retrieve credentials for OpenSearch from the AWS Systems Manager Parameter Store, load pre-created OpenSearch dashboards for Kubernetes events and pod logs and confirm access to OpenSearch.
 
 Credentials for the OpenSearch domain have been saved in the AWS Systems Manager Parameter Store during the provisioning process. Retrieve this information and set up the necessary environment variables.
 
@@ -16,10 +16,10 @@ $ export OPENSEARCH_USER=$(aws ssm get-parameter \
 $ export OPENSEARCH_PASSWORD=$(aws ssm get-parameter \
       --name /eksworkshop/$EKS_CLUSTER_NAME/opensearch/password \
       --region $AWS_REGION --with-decryption | jq .Parameter.Value | tr -d '"')
-$ export OPENSEARCH_DASHBOARD_FILE=~/environment/eks-workshop/modules/observability/opensearch/dashboard/events-dashboard.ndjson
+$ export OPENSEARCH_DASHBOARD_FILE=~/environment/eks-workshop/modules/observability/opensearch/opensearch-dashboards.ndjson
 ```
 
-Load a pre-created OpenSearch Dashboard to display Kubernetes events. The dashboard is available in [kubernetes-events-dashboard.ndjson](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/dashboard). It includes the OpenSearch index patterns, visualizations and dashboard for the Kubernetes Events Dashboard.
+Load pre-created OpenSearch dashboards to display Kubernetes events and pods logs. The dashboards are available in [opensearch-dashboards.ndjson](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/opensearch-dashboards.ndjson). This NDJSON file includes the OpenSearch index patterns, visualizations and dashboards for Kubernetes events and pod logs.
 
 ```bash
 $ curl -s https://$OPENSEARCH_HOST/_dashboards/auth/login \
@@ -59,7 +59,7 @@ $ curl -s -X POST https://$OPENSEARCH_HOST/_dashboards/api/saved_objects/_import
 }
 ```
 
-View the OpenSearch server coordinates and credentials that we retrieved earlier and confirm that the OpenSearch dashboard is accessible.
+View the OpenSearch server coordinates and credentials that we retrieved earlier and confirm that the OpenSearch dashboards are accessible.
 
 ```bash
 $ printf "\nOpenSearch dashboard: https://%s/_dashboards/app/dashboards \nUserName: %q \nPassword: %q \n\n" \
@@ -78,6 +78,6 @@ Select the Global tenant as shown below.  Tenants in OpenSearch can be used to s
 
 ![OpenSearch login confirmation](./assets/opensearch-confirm-2.png)
 
-You should see a dashboard called "EKS Workshop - Kubernetes Events Dashboard", which we loaded in Step 2. The dashboard is currently empty since there is no data in OpenSearch yet.  Keep this browser tab open or save the dashboard URL. We will return to the dashboard in the next section.  
+You should see the two dashboards (for Kubernetes events and pod logs) that were loaded in the earlier step. The dashboards are currently empty since there is no data in OpenSearch yet.  Keep this browser tab open or save the dashboard URLs. We will return to the dashboards in the next sections.  
 
 ![OpenSearch login confirmation](./assets/opensearch-dashboard-launch.png)

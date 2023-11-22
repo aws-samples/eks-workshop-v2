@@ -4,8 +4,11 @@ on:
   workflow_call:
     inputs:
       module:
-        required: true
         type: string
+        default: '-'
+      glob:
+        type: string
+        default: '-'
 
 permissions:
   id-token: write
@@ -35,21 +38,21 @@ jobs:
         chmod +x ${HOME}/.local/bin/*
 
         echo "${HOME}/.local/bin" >> $GITHUB_PATH
+    - name: Set cluster ID
+      env:
+        RUN_ID: "${{ github.job }}"
+        AWS_REGION: "${{ secrets.AWS_REGION }}"
+      run: |
+        CLUSTER_ID=$(echo $RANDOM | md5sum | head -c 8)
+        echo "Using cluster ID ${CLUSTER_ID}"
+        echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
     - name: Get AWS credentials
       uses: aws-actions/configure-aws-credentials@v1.6.1
       with:
         role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
         role-duration-seconds: 3600
         aws-region: ${{ secrets.AWS_REGION }}
-        role-session-name: GithubActionsSession
-    - name: Set cluster ID
-      env:
-        RUN_ID: "${{ github.job }}"
-        AWS_REGION: "${{ secrets.AWS_REGION }}"
-      run: |
-        CLUSTER_ID=$(echo $RANDOM | md5sum | head -c 11)
-        echo "Using cluster ID ${CLUSTER_ID}"
-        echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
+        role-session-name: GithubActionsSession-${{ env.CLUSTER_ID }}
     - name: Create infrastructure
       id: create-infrastructure
       env:
@@ -63,17 +66,18 @@ jobs:
         role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
         role-duration-seconds: 3600
         aws-region: ${{ secrets.AWS_REGION }}
-        role-session-name: GithubActionsSession
+        role-session-name: GithubActionsSession-${{ env.CLUSTER_ID }}
     - name: Run tests - Module
       env:
         DOCKER_BUILDKIT: 1
         DEV_MODE: 1
         MODULE: ${{ inputs.module }}
+        GLOB: ${{ inputs.glob }}
         AWS_REGION: "${{ secrets.AWS_REGION }}"
         ASSUME_ROLE: "${{ secrets.AWS_ROLE_ARN }}"
       run: |
         export AWS_DEFAULT_REGION="$AWS_REGION"
-        make test environment="$CLUSTER_ID" module="$MODULE"
+        make test environment="$CLUSTER_ID" module="$MODULE" glob="$GLOB"
     - name: Refresh AWS credentials
       if: always()
       uses: aws-actions/configure-aws-credentials@v1.6.1
@@ -81,7 +85,7 @@ jobs:
         role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
         role-duration-seconds: 3600
         aws-region: ${{ secrets.AWS_REGION }}
-        role-session-name: GithubActionsSession
+        role-session-name: GithubActionsSession-${{ env.CLUSTER_ID }}
     - name: Run tests - Cleanup
       if: always()
       env:
@@ -99,7 +103,7 @@ jobs:
         role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
         role-duration-seconds: 3600
         aws-region: ${{ secrets.AWS_REGION }}
-        role-session-name: GithubActionsSession
+        role-session-name: GithubActionsSession-${{ env.CLUSTER_ID }}
     - name: Cleanup environment
       if: always()
       env:

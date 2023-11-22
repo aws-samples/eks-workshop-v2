@@ -1,7 +1,8 @@
 terraform_context='terraform'
-module='*'
+module='-'
 environment=''
 shell_command=''
+glob='-'
 
 
 .PHONY: install
@@ -18,7 +19,7 @@ tf-fmt:
 
 .PHONY: test
 test:
-	bash hack/run-tests.sh $(environment) $(module)
+	bash hack/run-tests.sh $(environment) $(module) $(glob)
 
 .PHONY: shell
 shell:

@@ -77,7 +77,8 @@ While we are waiting for pipeline to create new images (5-10 minutes), let's [au
 First, we need to install Flux components.
 
 ```bash
-$ flux install --components-extra=image-reflector-controller,image-automation-controller
+$ flux install --components-extra=image-reflector-controller,image-automation-controller \
+  --network-policy=false
 ```
 
 Next, edit file `deployment.yaml` and add placeholder for new container image URL:

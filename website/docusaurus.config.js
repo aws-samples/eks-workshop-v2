@@ -6,9 +6,9 @@ var path = require('path');
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const remarkCodeTerminal = require('./src/remark/code-terminal');
+const remarkTime = require('./src/remark/time');
 const remarkIncludeCode = require('./src/remark/include-code');
 const remarkIncludeKustomization = require('./src/remark/include-kustomization');
-const remarkBlueprintsAddon = require('./src/remark/blueprints-addon');
 const remarkParameters = require('./src/remark/parameters');
 
 require('dotenv').config({ path: '.kustomize-env' })
@@ -20,6 +20,8 @@ const kustomizationsDir = `${manifestsDir}/manifests`
 const manifestsRef = process.env.MANIFESTS_REF || 'main'
 const manifestsOwner = process.env.MANIFESTS_OWNER || 'aws-samples'
 const manifestsRepository = process.env.MANIFESTS_REPOSITORY || 'eks-workshop-v2'
+
+const labTimesEnabled = process.env.LAB_TIMES_ENABLED || false;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -50,7 +52,10 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          remarkPlugins: [remarkCodeTerminal],
+          remarkPlugins: [
+            remarkCodeTerminal,
+            [remarkTime, {enabled: labTimesEnabled, factor: 1.25}]
+          ],
           beforeDefaultRemarkPlugins: [
             [remarkParameters, {
               replacements: {
@@ -60,10 +65,9 @@ const config = {
                 KUBERNETES_VERSION: '1.27',
                 KUBERNETES_NODE_VERSION: '1.27.3-eks-48e63af'
               }
-            }],
+            }], 
             [remarkIncludeCode, { manifestsDir }],
-            [remarkIncludeKustomization, { manifestsDir: kustomizationsDir }],
-            //[remarkBlueprintsAddon, {terraformDir: `${rootDir}/../terraform/local`}]
+            [remarkIncludeKustomization, { manifestsDir: kustomizationsDir }]
           ],
           editUrl: 'https://github.com/aws-samples/eks-workshop-v2/tree/main/website',
           exclude: [
@@ -80,8 +84,16 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      announcementBar: {
+        id: 'upgrade-1.27',
+        content:
+          '🚩 EKS Workshop upgraded to EKS 1.27 on 17th November. If you have an existing lab environment please see the <a target="_blank" rel="noopener noreferrer" href="/docs/misc/major-upgrade">major upgrade instructions</a>. 🚩',
+        backgroundColor: '#0972d3',
+        textColor: '#fff',
+      },
       colorMode: {
-        disableSwitch: true,
+        defaultMode: 'light',
+        disableSwitch: false,
       },
       image: 'img/meta.png',
       navbar: {
@@ -185,6 +197,7 @@ const config = {
       },
       prism: {
         theme: lightCodeTheme,
+        darkTheme: darkCodeTheme,
         magicComments: [
           // Remember to extend the default highlight class name as well!
           {

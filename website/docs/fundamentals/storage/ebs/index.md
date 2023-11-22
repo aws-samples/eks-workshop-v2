@@ -4,6 +4,8 @@ sidebar_position: 30
 sidebar_custom_props: {"module": true}
 ---
 
+{{% required-time %}}
+
 :::tip Before you start
 Prepare your environment for this section:
 
@@ -12,7 +14,7 @@ $ prepare-environment fundamentals/storage/ebs
 ```
 
 This will make the following changes to your lab environment:
-- Install the EKS managed addon for the EBS CSI driver
+- Create the IAM role needed for the EBS CSI driver addon
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/fundamentals/storage/ebs/.workshop/terraform).
 

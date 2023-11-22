@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ui
+  namespace: ui
+data:
+  ENDPOINTS_CHECKOUT: "${CHECKOUT_ROUTE_DNS}"

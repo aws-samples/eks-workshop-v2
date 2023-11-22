@@ -26,3 +26,48 @@ output "environment" {
 export ADOT_IAM_ROLE_CI="${module.iam_assumable_role_adot_ci.iam_role_arn}"
 EOF
 }
+
+resource "aws_cloudwatch_dashboard" "order-metrics-ci" {
+  dashboard_name = "Order-Service-Metrics-1"
+
+  dashboard_body = jsonencode(
+    {
+    "widgets": [
+        {
+            "height": 6,
+            "width": 6,
+            "y": 0,
+            "x": 0,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [ { "expression": "SELECT COUNT(watch_orders_total) FROM \"ContainerInsights/Prometheus\" WHERE productId != '*' GROUP BY productId", "label": "Query1", "id": "q1", "region": "us-west-2" } ]
+                ],
+                "view": "pie",
+                "region": "us-west-2",
+                "title": "Orders by ProductId",
+                "period": 300,
+                "stat": "Average"
+            }
+        },
+        {
+            "height": 6,
+            "width": 6,
+            "y": 0,
+            "x": 6,
+            "type": "metric",
+            "properties": {
+                "sparkline": true,
+                "view": "singleValue",
+                "metrics": [
+                    [ { "expression": "SELECT SUM(watch_orders_total) FROM \"ContainerInsights/Prometheus\" WHERE productId = '*'", "label": "Query1", "id": "q1" } ]
+                ],
+                "region": "us-west-2",
+                "stat": "Average",
+                "period": 300,
+                "title": "Order Count"
+            }
+        }
+    ]
+})
+}

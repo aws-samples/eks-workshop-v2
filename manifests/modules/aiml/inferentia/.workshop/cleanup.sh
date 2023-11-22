@@ -6,10 +6,10 @@ echo "Deleting AIML resources..."
 
 kubectl delete namespace aiml > /dev/null
 
-echo "Deleting Karpenter provisioners..."
+echo "Deleting Karpenter NodePool and EC2NodeClass..."
 
-kubectl delete provisioner --all > /dev/null
-kubectl delete awsnodetemplate --all > /dev/null
+kubectl delete nodepool --all > /dev/null
+kubectl delete ec2nodeclass --all > /dev/null
 
 echo "Waiting for Karpenter nodes to be removed..."
 
