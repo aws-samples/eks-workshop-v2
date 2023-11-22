@@ -30,13 +30,29 @@ As you can see, an error-500 page is displayed, which means something went wrong
 
 Network policy agent logs are available by default in the file `/var/log/aws-routed-eni/network-policy-agent.log` on each worker node. We can also configure logs to be sent to Amazon CloudWatch by the CNI plugin, or we can configure the 'fluentbit' agent to send the logs to Amazon CloudWatch as shown in this [user guide](https://docs.aws.amazon.com/eks/latest/userguide/cni-network-policy.html#network-policies-troubleshooting).
 
-For this lab, we have pre-configured the CNI plugin to send the logs to CloudWatch. To enable logging, we need to ensure the VPC CNI addon's IAM role has permissions to log to CloudWatch. We can attach relevant permissions using the below commands:
+To enable CloudWatch logging, we need to ensure the VPC CNI addon's IAM role has permissions to log to CloudWatch. We can attach relevant permissions using the below commands:
 
 ```bash wait=30
 $ ADDON_ROLE_ARN=$(aws eks describe-addon --cluster-name "eks-workshop" --addon-name "vpc-cni" | jq -r '.addon.serviceAccountRoleArn')
 $ ADDON_ROLE_NM=$(aws iam list-roles | jq -r ".Roles[] | select(.Arn == \"$ADDON_ROLE_ARN\") | .RoleName")
 $ aws iam put-role-policy --role-name $ADDON_ROLE_NM --policy-name "addon.cwlogs.allow" --policy-document '{"Version": "2012-10-17", "Statement": [ { "Sid": "VisualEditor0", "Effect": "Allow", "Action": ["logs:DescribeLogGroups", "logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"], "Resource": "*" }]}'
 ```
+
+Next, we need to enable logging to CloudWatch by updating the VPC CNI addon's configuration using the below command:
+
+```bash
+$ aws eks update-addon --cluster-name ${EKS_CLUSTER_NAME} --addon-name "vpc-cni" --configuration-values '{"env":{"ENABLE_PREFIX_DELEGATION":"true", "ENABLE_POD_ENI":"true", "POD_SECURITY_GROUP_ENFORCING_MODE":"standard"},"enableNetworkPolicy": "true", "nodeAgent": { "enableCloudWatchLogs": "true"}}' --service-account-role-arn ${ADDON_ROLE_ARN}
+```
+
+Ensure the addon update has completed before proceeding.
+
+<browser url='https://us-west-2.console.aws.amazon.com/eks/home?region=us-west-2#/clusters/eks-workshop/add-ons/vpc-cni'>
+<img src={require('@site/static/img/eks/addon-updating.png').default}/>
+</browser>
+
+<browser url='https://us-west-2.console.aws.amazon.com/eks/home?region=us-west-2#/clusters/eks-workshop/add-ons/vpc-cni'>
+<img src={require('@site/static/img/eks/addon-updated.png').default}/>
+</browser>
 
 Now that we have enabled logging for the VPC CNI plugin, the logs should be available under the log group '/aws/eks/eks-workshop/cluster'. We can search all the log streams under the log group '/aws/eks/eks-workshop/cluster' to identify the failure cause by searching for the pattern "DIP: Pod IP" and "PolicyVerdict: DENY". We can find the IP of the 'carts' pod using the below command:
 
