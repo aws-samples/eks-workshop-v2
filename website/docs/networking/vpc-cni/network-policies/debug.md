@@ -5,9 +5,9 @@ sidebar_position: 90
 
 Till now, we were able to apply network policies without issues or errors. But what happens if there are errors or issues? How will we be able to debug these issues?
 
-Amazon VPC CNI provides logs that can be used to debug issues while implementing networking policies. In addition, you can monitor these logs through services such as Amazon CloudWatch, where you can leverage CloudWatch Container Insights that can help you provide insights on your usage related to NetworkPolicy.
+Amazon VPC CNI provides logs that can be used to debug issues while implementing networking policies. In addition, you can monitor these logs through services such as Amazon CloudWatch, which can provide insights on your usage related to NetworkPolicy.
 
-Now, let us try implementing an ingress network policy that will restrict access to the 'carts' service component from 'ui' component only, similar to what we did earlier with the 'checkout' service component.
+Now, let us try implementing an ingress network policy that will restrict access to the 'carts' service component from the 'ui' component only, similar to what we did earlier with the 'checkout' service component.
 
 ```file
 manifests/modules/networking/network-policies/apply-network-policies/allow-carts-ingress-fail-debug.yaml
