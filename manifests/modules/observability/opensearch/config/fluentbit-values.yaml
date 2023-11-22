@@ -1,0 +1,18 @@
+# OpenSearch host, awsRegion, httpUser and httpPasswd are dynamically
+# updated during provisioning.
+# CloudWatch logs are on by default and need to be turned off for this example
+# See https://artifacthub.io/packages/helm/aws/aws-for-fluent-bit
+---
+opensearch:
+  enabled: true
+  index: "eks-pod-logs"
+  tls: "On"
+  awsAuth: "Off"
+  traceError: "On"
+  host: aaa
+  awsRegion: bbb
+  httpUser: ccc
+  httpPasswd: ddd
+
+cloudWatchLogs:
+  enabled: false

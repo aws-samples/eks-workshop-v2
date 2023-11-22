@@ -6,7 +6,7 @@ before() {
 
 after() {
   grafana_endpoint=$(kubectl get ingress -n grafana grafana -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-  grafana_url="${grafana_endpoint}/healthz"
+  export grafana_url="${grafana_endpoint}/healthz"
 
   EXIT_CODE=0
 
@@ -17,6 +17,7 @@ after() {
 
   if [ $EXIT_CODE -ne 0 ]; then
     echo "Grafana did not become available or return HTTP 200 for 600 seconds"
+    kubectl get ingress -n grafana
     exit 1
   fi
 }

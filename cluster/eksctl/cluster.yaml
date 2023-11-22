@@ -27,7 +27,7 @@ vpc:
 addons:
 - name: vpc-cni
   version: 1.14.1
-  configurationValues:  "{\"env\":{\"ENABLE_PREFIX_DELEGATION\":\"true\", \"ENABLE_POD_ENI\":\"true\", \"POD_SECURITY_GROUP_ENFORCING_MODE\":\"standard\"},\"enableNetworkPolicy\": \"true\",\"nodeAgent\": {\"enableCloudWatchLogs\": \"true\", \"healthProbeBindAddr\": \"8163\", \"metricsBindAddr\": \"8162\" }}"
+  configurationValues:  "{\"env\":{\"ENABLE_PREFIX_DELEGATION\":\"true\", \"ENABLE_POD_ENI\":\"true\", \"POD_SECURITY_GROUP_ENFORCING_MODE\":\"standard\"},\"enableNetworkPolicy\": \"true\"}"
   resolveConflicts: overwrite
 
 managedNodeGroups:

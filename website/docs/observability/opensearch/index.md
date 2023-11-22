@@ -4,6 +4,8 @@ sidebar_position: 40
 sidebar_custom_props: {"module": true}
 ---
 
+{{% required-time %}}
+
 :::tip Before you start
 Prepare your environment for this section:
 
@@ -24,4 +26,4 @@ You can view the Terraform that applies these changes [here](https://github.com/
 
 In this lab, we will explore the use of [OpenSearch](https://opensearch.org/about.html) for observability. OpenSearch is a community-driven, open-source search and analytics suite used to ingest, search, visualize and analyze data. OpenSearch consists of a data store and search engine (OpenSearch), a visualization and user interface (OpenSearch Dashboards), and a server-side data collector (Data Prepper). We will be using [Amazon OpenSearch Service](https://aws.amazon.com/opensearch-service/), which is a managed service that makes it easy for you to perform interactive log analytics, real-time application monitoring, search, and more.
 
-Kubernetes events are exported from EKS to OpenSearch to demonstrate how the two services can be used together to improve observability.
+Kubernetes events and pod logs are exported from Amazon EKS to Amazon OpenSearch Service to demonstrate how the two Amazon services can be used together to improve observability.

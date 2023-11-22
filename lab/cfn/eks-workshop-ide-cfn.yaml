@@ -223,8 +223,9 @@ Resources:
                       print('Instance is currently in state'.format(instance_state))
                       while instance_state != 'running':
                           time.sleep(5)
-                          instance_state = ec2.describe_instances(InstanceIds=[instance_id])
-                          print('Waiting for instance in state {}'.format(instance_state))
+                          di = ec2.describe_instances(InstanceIds=[instance_id])
+                          instance_state = di['Reservations'][0]['Instances'][0]['State']['Name']
+                          print('Waiting for instance in state: {}'.format(instance_state))
 
                       print('Instance is ready')
 

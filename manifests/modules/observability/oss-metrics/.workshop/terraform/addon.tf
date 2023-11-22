@@ -27,7 +27,10 @@ module "eks_blueprints_addons" {
 }
 
 resource "time_sleep" "blueprints_addons_sleep" {
-  depends_on = [module.eks_blueprints_addons]
+  depends_on = [
+    module.eks_blueprints_addons,
+    module.aws-ebs-csi-driver
+  ]
 
   create_duration = "15s"
 }
