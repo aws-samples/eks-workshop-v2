@@ -30,6 +30,6 @@ With the ASCP, you can store and manage your secrets in Secrets Manager and then
 
 Another way to integrate AWS Secrets Manager with Kubernetes Secrets, is through [External Secrets](https://external-secrets.io/). External Secrets is an operator that can integrate and synchronize secrets from AWS Secrets Manager reading the information from it and automatically injecting the values into a Kubernetes Secret with an abstraction that stores and manages the lifecycle of the secrets for you.
 
-If you use Secrets Manager automatic rotation for your secrets, you can rely on External Secrets refresh interaval or use the Secrets Store CSI Driver rotation reconciler feature to ensure you are retrieving the latest secret from Secrets Manager, depending on the tool you choose to manage secrets inside your Amazon EKS Cluster.
+If you use Secrets Manager automatic rotation for your secrets, you can rely on External Secrets refresh interval or use the Secrets Store CSI Driver rotation reconciler feature to ensure you are retrieving the latest secret from Secrets Manager, depending on the tool you choose to manage secrets inside your Amazon EKS Cluster.
 
 In this lab following section, we will create a couple of example scenarios of using secrets from AWS Secrets Manager and External Secrets.
