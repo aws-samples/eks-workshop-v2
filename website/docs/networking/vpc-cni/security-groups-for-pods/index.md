@@ -5,6 +5,8 @@ weight: 10
 sidebar_custom_props: {"module": true}
 ---
 
+{{% required-time %}}
+
 :::tip Before you start
 Prepare your environment for this section:
 
