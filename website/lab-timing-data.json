@@ -123,13 +123,13 @@
         "title": "Prefix Delegation",
         "directory": "networking/vpc-cni/prefix",
         "file": "networking/vpc-cni/prefix/index.md",
-        "executionTimeSeconds": 146
+        "executionTimeSeconds": 142
     },
     "networking/vpc-cni/security-groups-for-pods/index.md": {
         "title": "Security Groups for Pods",
         "directory": "networking/vpc-cni/security-groups-for-pods",
         "file": "networking/vpc-cni/security-groups-for-pods/index.md",
-        "executionTimeSeconds": 244
+        "executionTimeSeconds": 227
     },
     "networking/vpc-lattice/index.md": {
         "title": "Amazon VPC Lattice",
@@ -207,7 +207,7 @@
         "title": "Network Policies",
         "directory": "networking/vpc-cni/network-policies",
         "file": "networking/vpc-cni/network-policies/index.md",
-        "executionTimeSeconds": 444
+        "executionTimeSeconds": 431
     },
     "observability/opensearch/index.md": {
         "title": "Observability with OpenSearch",
