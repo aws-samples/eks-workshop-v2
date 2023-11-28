@@ -19,10 +19,6 @@ manifests/modules/aiml/inferentia/inference/inference.yaml
 
 The lab uses Karpenter to provision an Inferentia node. Karpenter can detect the pending pod which requires Neuron cores and launch an inf1 instance which has the required Neuron cores.
 
-:::tip
-You can learn more about Karpenter in the [Karpenter module](../../autoscaling/compute/karpenter/index.md) that's provided in this workshop.
-:::
-
 Karpenter has been installed in our EKS cluster, and runs as a deployment:
 
 ```bash
