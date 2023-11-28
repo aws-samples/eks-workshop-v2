@@ -84,7 +84,14 @@ const config = {
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
-    ({
+    (
+      announcementBar: {
+        id: 'reinvent-23',
+        content:
+          '🚩 The re:Invent capacity team has requested we terminate the infrastructure related to CON305. Apologies for the inconvenience. You can self-service at https://eksworkshop.com. 🚩',
+        backgroundColor: '#0972d3',
+        textColor: '#fff',
+      },
       colorMode: {
         defaultMode: 'light',
         disableSwitch: false,
