@@ -140,6 +140,12 @@ const config = {
             label: 'Automation',
           },
           {
+            type: 'doc',
+            docId: 'aiml/index',
+            position: 'left',
+            label: 'AI/ML',
+          },
+          {
             href: 'https://github.com/aws-samples/eks-workshop-v2',
             position: 'right',
             className: 'header-github-link',
