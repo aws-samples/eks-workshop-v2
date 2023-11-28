@@ -24,13 +24,3 @@ jobs:
           git pull
           git merge --no-ff main -m "Publish to stable"
           git push
-    - name: Update latest tag
-      uses: actions/github-script@v6
-      with:
-        script: |       
-          github.rest.git.updateRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: `tags/latest`,
-              sha: context.sha
-          })

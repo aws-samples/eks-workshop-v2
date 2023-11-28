@@ -1,6 +1,6 @@
 ---
 title: "Traffic Management"
-sidebar_position: 20
+sidebar_position: 30
 ---
 
 In this section we will show how to use Amazon VPC Lattice for advanced traffic management with weighted routing for blue/green and canary-style deployments.
@@ -20,66 +20,20 @@ NAME                        READY   STATUS    RESTARTS   AGE
 checkout-854cd7cd66-s2blp   1/1     Running   0          26s
 ```
 
-# Set up Lattice Service Network
-
-The following YAML will create a Kubernetes gateway resource which is associated with a VPC Lattice **Service Network**.
+Now let's demonstrate how weighted routing works by creating `HTTPRoute` resources. Create the Kubernetes `HTTPRoute` route that distributes 75% traffic to `checkoutv2` and remaining 25% traffic to `checkout`:
 
 ```file
-manifests/modules/networking/vpc-lattice/controller/eks-workshop-gw.yaml
+manifests/modules/networking/vpc-lattice/routes/checkout-route.yaml
 ```
 
-Apply it with the following command:
-
-```bash
-$ cat ~/environment/eks-workshop/modules/networking/vpc-lattice/controller/eks-workshop-gw.yaml \
-  | envsubst | kubectl apply -f -
-```
-
-Verify that `eks-workshop` gateway is created:
-
-```bash
-$ kubectl get gateway -n checkout
-NAME                CLASS                ADDRESS   PROGRAMMED   AGE
-eks-workshop        amazon-vpc-lattice             True         29s
-```
-
-Once the gateway is created, find the VPC Lattice service network. Wait until the status is `Reconciled` (this could take about five minutes).
-
-```bash
-$ kubectl describe gateway ${EKS_CLUSTER_NAME} -n checkout
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: Gateway
-status:
-   conditions:
-      message: 'aws-gateway-arn: arn:aws:vpc-lattice:us-west-2:1234567890:servicenetwork/sn-03015ffef38fdc005'
-      reason: Programmed
-      status: "True"
-
-$ kubectl wait --for=condition=Programmed gateway/${EKS_CLUSTER_NAME} -n checkout
-```
-
- Now you can see the associated **Service Network** created in the VPC console under the Lattice resources in the [AWS console](https://console.aws.amazon.com/vpc/home#ServiceNetworks).
-![Checkout Service Network](assets/servicenetwork.png)
-
-# Create Routes to targets
-Let's demonstrate how weighted routing works by creating  `HTTPRoutes`.
-
-```bash
-$ kubectl patch svc checkout -n checkout --patch '{"spec": { "type": "ClusterIP", "ports": [ { "name": "http", "port": 80, "protocol": "TCP", "targetPort": 8080 } ] } }'
-```
-
-Create the Kubernetes `HTTPRoute` route that distributes 75% traffic to `checkoutv2` and remaining 25% traffic to `checkout`:
+Apply this resource:
 
 ```bash hook=route
 $ cat ~/environment/eks-workshop/modules/networking/vpc-lattice/routes/checkout-route.yaml \
   | envsubst | kubectl apply -f -
 ```
 
-```file
-manifests/modules/networking/vpc-lattice/routes/checkout-route.yaml
-```
-
-This step may take 2-3 minutes, run the following command to wait for it to completed:
+This creation of the associated resources may take 2-3 minutes, run the following command to wait for it to complete:
 
 ```bash wait=10
 $ kubectl wait --for=jsonpath='{.status.parents[-1:].conditions[-1:].reason}'=ResolvedRefs httproute/checkoutroute -n checkout
@@ -126,12 +80,21 @@ $ export CHECKOUT_ROUTE_DNS="http://$(kubectl get httproute checkoutroute -n che
 $ POD_NAME=$(kubectl -n ui get pods -o jsonpath='{.items[0].metadata.name}')
 $ kubectl exec $POD_NAME -n ui -- curl -s $CHECKOUT_ROUTE_DNS/health
 {"status":"ok","info":{},"error":{},"details":{}}
+$ echo "DNS WAS $CHECKOUT_ROUTE_DNS"
 ```
 
 Now we have to point the UI service to the VPC Lattice service endpoint by patching the `ConfigMap` for the UI component:
 
+```kustomization
+modules/networking/vpc-lattice/ui/configmap.yaml
+ConfigMap/ui
+```
+
+Make this configuration change:
+
 ```bash
-$ kubectl patch configmap/ui -n ui --type merge -p '{"data":{"ENDPOINTS_CHECKOUT": "'${CHECKOUT_ROUTE_DNS}'"}}'
+$ kubectl kustomize ~/environment/eks-workshop/modules/networking/vpc-lattice/ui/ \
+  | envsubst | kubectl apply -f -
 ```
 
 Let's ensure that the UI pods are restarted and then port-forward to the preview of your application with Cloud9.
