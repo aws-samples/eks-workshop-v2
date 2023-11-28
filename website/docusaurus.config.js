@@ -73,7 +73,8 @@ const config = {
           exclude: [
             'security/guardduty/runtime-monitoring/reverse-shell.md',
             'introduction/setup/your-account/**',
-            'autoscaling/compute/karpenter'
+            'autoscaling/compute/karpenter',
+            'observability/kubecost'
           ]
         },
         theme: {
