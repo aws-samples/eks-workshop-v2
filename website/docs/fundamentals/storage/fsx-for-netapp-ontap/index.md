@@ -4,6 +4,8 @@ sidebar_position: 30
 sidebar_custom_props: {"module": true}
 ---
 
+{{% required-time estimatedLabExecutionTimeMinutes="60" %}}
+
 :::caution
 
 Provisioning the FSx For NetApp ONTAP file system and associated infrastructure can take up to 30 minutes. Please take that in to account before starting this lab, and expect the `prepare-environment` command to take longer than other labs you may have done.

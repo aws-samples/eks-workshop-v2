@@ -38,7 +38,7 @@
          </div>
        </div>
  
-       <div className={styles.browserWindowBody}>{children}</div>
+       <div className={styles.browserWindowBody} style={{background: '#FFFFFF'}}>{children}</div>
      </div>
    );
  }

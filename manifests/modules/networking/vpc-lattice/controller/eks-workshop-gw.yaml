@@ -3,8 +3,6 @@ kind: Gateway
 metadata:
   name: ${EKS_CLUSTER_NAME}
   namespace: checkout
-  annotations:
-    application-networking.k8s.aws/lattice-vpc-association: "true"
 spec:
   gatewayClassName: amazon-vpc-lattice
   listeners:

@@ -40,7 +40,15 @@ resource "aws_iam_policy" "lattice" {
                 "vpc-lattice:*",
                 "iam:CreateServiceLinkedRole",
                 "ec2:DescribeVpcs",
-                "ec2:DescribeSubnets"
+                "ec2:DescribeSubnets",
+                "ec2:DescribeTags",
+                "ec2:DescribeSecurityGroups",
+                "logs:CreateLogDelivery",
+                "logs:GetLogDelivery",
+                "logs:UpdateLogDelivery",
+                "logs:DeleteLogDelivery",
+                "logs:ListLogDeliveries",
+                "tag:GetResources"
             ],
             "Resource": "*"
         }
@@ -50,8 +58,16 @@ EOF
   tags   = local.tags
 }
 
+data "aws_vpc" "this" {
+  tags = {
+    created-by = "eks-workshop-v2"
+    env        = local.addon_context.eks_cluster_id
+  }
+}
+
 output "environment" {
   value = <<EOF
+export VPC_ID=${data.aws_vpc.this.id}
 export LATTICE_IAM_ROLE="${module.iam_assumable_role_lattice.iam_role_arn}"
 EOF
 }

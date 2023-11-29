@@ -6,6 +6,7 @@ var path = require('path');
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const remarkCodeTerminal = require('./src/remark/code-terminal');
+const remarkTime = require('./src/remark/time');
 const remarkIncludeCode = require('./src/remark/include-code');
 const remarkIncludeKustomization = require('./src/remark/include-kustomization');
 const remarkParameters = require('./src/remark/parameters');
@@ -19,6 +20,8 @@ const kustomizationsDir = `${manifestsDir}/manifests`
 const manifestsRef = process.env.MANIFESTS_REF || 'main'
 const manifestsOwner = process.env.MANIFESTS_OWNER || 'aws-samples'
 const manifestsRepository = process.env.MANIFESTS_REPOSITORY || 'eks-workshop-v2'
+
+const labTimesEnabled = process.env.LAB_TIMES_ENABLED || false;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -49,7 +52,10 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          remarkPlugins: [remarkCodeTerminal],
+          remarkPlugins: [
+            remarkCodeTerminal,
+            [remarkTime, {enabled: labTimesEnabled, factor: 1.25}]
+          ],
           beforeDefaultRemarkPlugins: [
             [remarkParameters, {
               replacements: {
@@ -59,7 +65,7 @@ const config = {
                 KUBERNETES_VERSION: '1.27',
                 KUBERNETES_NODE_VERSION: '1.27.3-eks-48e63af'
               }
-            }],
+            }], 
             [remarkIncludeCode, { manifestsDir }],
             [remarkIncludeKustomization, { manifestsDir: kustomizationsDir }]
           ],
@@ -86,7 +92,8 @@ const config = {
         textColor: '#fff',
       },
       colorMode: {
-        disableSwitch: true,
+        defaultMode: 'light',
+        disableSwitch: false,
       },
       image: 'img/meta.png',
       navbar: {
@@ -190,6 +197,7 @@ const config = {
       },
       prism: {
         theme: lightCodeTheme,
+        darkTheme: darkCodeTheme,
         magicComments: [
           // Remember to extend the default highlight class name as well!
           {
