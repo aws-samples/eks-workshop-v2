@@ -38,17 +38,34 @@ resource "time_sleep" "blueprints_addons_sleep" {
 module "adot-operator" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/opentelemetry-operator"
 
-  depends_on = [
-    time_sleep.blueprints_addons_sleep
-  ]
+  
 
   addon_config = {
     kubernetes_version = local.eks_cluster_version
+    addon_version      = "v0.78.0-eksbuild.2"
+    most_recent        = false
+    
     preserve           = false
   }
 
   addon_context = local.addon_context
 }
+
+#resource "aws_eks_addon" "example" {
+#  depends_on = [
+#    time_sleep.blueprints_addons_sleep
+#  ]
+#
+#  cluster_name                = local.addon_context.eks_cluster_id
+#  addon_name                  = "adot"
+#  addon_version               = "v0.88.0-eksbuild.1"
+#  resolve_conflicts_on_create = "OVERWRITE"
+#
+#  configuration_values = jsonencode({
+#    "collector": {
+#    }
+#  })
+#}
 
 resource "aws_prometheus_workspace" "this" {
   alias = local.addon_context.eks_cluster_id
