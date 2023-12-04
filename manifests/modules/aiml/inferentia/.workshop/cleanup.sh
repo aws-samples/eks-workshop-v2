@@ -4,12 +4,12 @@ set -e
 
 echo "Deleting AIML resources..."
 
-kubectl delete namespace aiml > /dev/null
+kubectl delete namespace aiml --ignore-not-found > /dev/null
 
 echo "Deleting Karpenter NodePool and EC2NodeClass..."
 
-kubectl delete nodepool --all > /dev/null
-kubectl delete ec2nodeclass --all > /dev/null
+delete-all-if-crd-exists nodepools.karpenter.sh
+delete-all-if-crd-exists ec2nodeclasses.karpenter.k8s.aws
 
 echo "Waiting for Karpenter nodes to be removed..."
 
