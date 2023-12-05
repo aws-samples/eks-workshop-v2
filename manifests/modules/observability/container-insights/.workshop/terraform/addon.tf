@@ -3,6 +3,9 @@ module "adot-operator" {
 
   addon_config = {
     kubernetes_version = local.eks_cluster_version
+    addon_version      = "v0.78.0-eksbuild.2"
+    most_recent        = false
+    
     preserve           = false
   }
 
