@@ -186,3 +186,27 @@
 .navbar-sidebar__back {
   color: #d1d5db;
 }
+
+.close {
+  color: white;
+}
+
+img {
+  border-radius: 10px;
+  transition: box-shadow 0.3s ease;
+  max-width: 100%;
+  height: auto;
+}
+
+img {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode specific styles */
+[data-theme="dark"] img {
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+[class^="lightToggleIcon"] {
+  color: white;
+}

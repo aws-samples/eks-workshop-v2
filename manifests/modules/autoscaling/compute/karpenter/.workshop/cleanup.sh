@@ -2,10 +2,10 @@
 
 set -e
 
-echo "Deleting Karpenter provisioners..."
+echo "Deleting Karpenter NodePool and EC2NodeClass..."
 
-kubectl delete provisioner --all > /dev/null
-kubectl delete awsnodetemplate --all > /dev/null
+delete-all-if-crd-exists nodepools.karpenter.sh
+delete-all-if-crd-exists ec2nodeclasses.karpenter.k8s.aws
 
 echo "Waiting for Karpenter nodes to be removed..."
 

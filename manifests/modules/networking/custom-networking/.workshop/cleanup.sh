@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 echo "Deleting ENI configs..."
 
 kubectl delete ENIConfig --all -A > /dev/null

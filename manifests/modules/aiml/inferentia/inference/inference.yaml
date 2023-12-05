@@ -15,5 +15,6 @@ spec:
     name: inference
     resources:
       limits:
+      # HIGHLIGHT
         aws.amazon.com/neuron: 1
   serviceAccountName: inference

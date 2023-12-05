@@ -5,6 +5,8 @@ chapter: true
 sidebar_custom_props: { "module": true }
 ---
 
+{{% required-time estimatedLabExecutionTimeMinutes="15" %}}
+
 :::tip Before you start
 Prepare your environment for this section:
 
@@ -34,7 +36,7 @@ In this lab we will:
 
 1. Compile a ResNet-50 pre-trained model for use with AWS Inferentia
 2. Upload this model to an S3 Bucket for later use
-3. Create a Karpenter Provisioner to provision Inferentia EC2 instances
+3. Create a Karpenter NodePool to provision Inferentia EC2 instances
 4. Launch an inference Pod that uses our previous model to run our inference against
 
 Let's get started.

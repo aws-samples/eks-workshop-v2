@@ -21,6 +21,7 @@ $ flux bootstrap git \
   --url=ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-gitops \
   --branch=main \
   --private-key-file=${HOME}/.ssh/gitops_ssh.pem \
+  --network-policy=false \
   --silent
 ```
 

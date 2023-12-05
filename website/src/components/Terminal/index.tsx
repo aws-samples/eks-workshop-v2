@@ -6,14 +6,10 @@ import { faClipboard } from '@fortawesome/free-solid-svg-icons'
 import styles from './styles.module.css';
 
 interface Props {
-  children: ReactNode;
-  command: string;
   output: string;
 }
 
 export default function Terminal({
-  children,
-  command,
   output,
 }: Props): JSX.Element {
   let decodedOutput = atob(output);
