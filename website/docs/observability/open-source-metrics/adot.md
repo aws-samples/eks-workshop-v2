@@ -43,7 +43,7 @@ manifests/modules/observability/oss-metrics/adot/serviceaccount.yaml
 
 Create the resources:
 
-```bash
+```bash hook=deploy-adot
 $ kubectl kustomize ~/environment/eks-workshop/modules/observability/oss-metrics/adot \
   | envsubst | kubectl apply -f-
 $ kubectl rollout status -n other deployment/adot-collector --timeout=120s
