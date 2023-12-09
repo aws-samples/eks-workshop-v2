@@ -23,7 +23,7 @@ function HomepageHeader() {
           </Link>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/introduction">
+            to="https://developers.eksworkshop.com/">
             Launch Developer Workshop
           </Link>
         </div>
