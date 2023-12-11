@@ -10,7 +10,7 @@ $ aws eks create-nodegroup --region $AWS_REGION \
   --cluster-name $EKS_CLUSTER_NAME \
   --nodegroup-name custom-networking \
   --instance-types t3.medium --node-role $CUSTOM_NETWORKING_NODE_ROLE \
-  --subnets $PRIMARY_SUBNET_1 $PRIMARY_SUBNET_2 $PRIMARY_SUBNET_3 \
+  --subnets $SECONDARY_SUBNET_1 $SECONDARY_SUBNET_2 $SECONDARY_SUBNET_3 \
   --labels type=customnetworking \
   --scaling-config minSize=1,maxSize=1,desiredSize=1
 ```
@@ -27,7 +27,7 @@ Once this is complete we can see the new nodes registered in the EKS cluster:
 $ kubectl get nodes -L eks.amazonaws.com/nodegroup
 NAME                                            STATUS   ROLES    AGE   VERSION               NODEGROUP
 ip-10-42-104-242.us-west-2.compute.internal     Ready    <none>   84m   vVAR::KUBERNETES_NODE_VERSION   default
-ip-10-42-110-28.us-west-2.compute.internal      Ready    <none>   61s   vVAR::KUBERNETES_NODE_VERSION   custom-networking
+ip-100-64-14-49.us-west-2.compute.internal      Ready    <none>   61s   vVAR::KUBERNETES_NODE_VERSION   custom-networking
 ip-10-42-139-60.us-west-2.compute.internal      Ready    <none>   65m   vVAR::KUBERNETES_NODE_VERSION   default
 ip-10-42-180-105.us-west-2.compute.internal     Ready    <none>   65m   vVAR::KUBERNETES_NODE_VERSION   default
 ```
