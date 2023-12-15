@@ -3,7 +3,7 @@ title: "Creating the load balancer"
 sidebar_position: 20
 ---
 
-Let's create an additional Service that provisions a load balancer with the following kustomization:
+Let's create an additional Service that provisions a load balancer with the following customization:
 
 ```file
 manifests/modules/exposing/load-balancer/nlb/nlb.yaml
