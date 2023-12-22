@@ -43,3 +43,16 @@ ipv6_sg_check=$(aws ec2 describe-security-group-rules --filters Name="group-id",
 if [ ! -z "$ipv6_sg_check" ]; then
   aws ec2 revoke-security-group-ingress --group-id $CLUSTER_SG --ip-permissions "PrefixListIds=[{PrefixListId=${PREFIX_LIST_ID_IPV6}}],IpProtocol=-1" > /dev/null
 fi
+
+service_network=$(aws vpc-lattice list-service-networks --query "items[?name=="\'$EKS_CLUSTER_NAME\'"].id" | jq -r '.[]')
+if [ ! -z "$service_network" ]; then
+  association_id=$(aws vpc-lattice list-service-network-vpc-associations --service-network-identifier $service_network --vpc-identifier $VPC_ID --query 'items[].id' | jq -r '.[]')
+  if [ ! -z "$association_id" ]; then
+    echo "Deleting Lattice VPC association..."
+    aws vpc-lattice delete-service-network-vpc-association --service-network-vpc-association-identifier $association_id > /dev/null
+    sleep 30 # Todo replace with wait
+  fi
+
+  echo "Deleting Lattice service network..."
+  aws vpc-lattice delete-service-network --service-network-identifier $service_network > /dev/null
+fi
