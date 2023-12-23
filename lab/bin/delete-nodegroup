@@ -4,14 +4,14 @@ nodegroup=$1
 is_eksctl=$2
 
 if [ -z "$nodegroup" ]; then
-  echo "You must provide a node group name"
+  >&2 echo "You must provide a node group name"
   exit 1
 fi
 
 check=$(aws eks list-nodegroups --cluster-name $EKS_CLUSTER_NAME --query "nodegroups[? @ == '$nodegroup']" --output text)
 
 if [ ! -z "$check" ]; then
-  echo "Deleting node group $nodegroup..."
+  logmessage "Deleting node group $nodegroup..."
 
   if [ ! -z "$is_eksctl" ]; then
     eksctl delete nodegroup --cluster $EKS_CLUSTER_NAME --name $nodegroup > /dev/null

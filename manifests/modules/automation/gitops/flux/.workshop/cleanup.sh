@@ -2,10 +2,10 @@
 
 set -e
 
-echo "Uninstalling flux"
+logmessage "Uninstalling flux"
 
-flux uninstall --silent > /dev/null
+flux uninstall --silent
 
-kubectl delete namespace ui > /dev/null
+kubectl delete namespace ui
 
 rm -rf ~/environment/flux

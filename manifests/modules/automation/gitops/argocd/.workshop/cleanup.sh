@@ -2,7 +2,7 @@
 
 set -e
 
-echo "Deleting ArgoCD applications..."
+logmessage "Deleting ArgoCD applications..."
 
 delete-all-and-wait-if-crd-exists applications.argoproj.io
 
