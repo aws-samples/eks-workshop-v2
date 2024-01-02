@@ -28,7 +28,7 @@
     "shx": "^0.3.4",
     "sinon": "^17.0.1",
     "ts-mocha": "^10.0.0",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.2"
   },
   "dependencies": {
