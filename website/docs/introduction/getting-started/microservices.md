@@ -19,4 +19,4 @@ Each of the components in the microservices architecture is conceptually similar
 
 ![Microservices in Kubernetes](./assets/microservices.png)
 
-The **ui** component receives HTTP requests from, for example, a users browser. It then makes HTTP requests to other API components in the architecture to fulfill that request and returns a response to the user. Each of the downstream components may have their own data stores or other infrastructure. The Namespaces are a logical grouping of the resources for each microservice and also act a soft isolation boundary which can be used to effectively implement controls using Kubernetes RBAC and Network Policies.
+The **ui** component receives HTTP requests from, for example, a users browser. It then makes HTTP requests to other API components in the architecture to fulfill that request and returns a response to the user. Each of the downstream components may have their own data stores or other infrastructure. The Namespaces are a logical grouping of the resources for each microservice and also act as a soft isolation boundary, which can be used to effectively implement controls using Kubernetes RBAC and Network Policies.
