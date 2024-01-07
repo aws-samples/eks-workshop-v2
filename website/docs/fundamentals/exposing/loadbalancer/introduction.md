@@ -49,4 +49,4 @@ Session Affinity:  None
 Events:            <none>
 ```
 
-As we saw earlier this is currently using a type `ClusterIP` and our task in this module to is change this so that the retail store user interface is accessible over the public Internet.
+As we saw earlier this is currently using a type `ClusterIP` and our task in this module is to change this so that the retail store user interface is accessible over the public Internet.
