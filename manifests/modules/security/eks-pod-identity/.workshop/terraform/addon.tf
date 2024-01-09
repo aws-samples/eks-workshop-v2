@@ -19,15 +19,15 @@ resource "time_sleep" "wait" {
   create_duration = "10s"
 }
 
-resource "aws_eks_addon" "pod_identity_agent" {
-  cluster_name  = local.addon_context.eks_cluster_id
-  addon_name    = "eks-pod-identity-agent"
-  resolve_conflicts_on_create = "OVERWRITE"
+# resource "aws_eks_addon" "pod_identity_agent" {
+#   cluster_name  = local.addon_context.eks_cluster_id
+#   addon_name    = "eks-pod-identity-agent"
+#   resolve_conflicts_on_create = "OVERWRITE"
   
-  tags = {
-    "eks_addon" = "eks-pod-identity-agent"
-  }
-}
+#   tags = {
+#     "eks_addon" = "eks-pod-identity-agent"
+#   }
+# }
 
 resource "kubernetes_manifest" "ui_nlb" {
   manifest = {
