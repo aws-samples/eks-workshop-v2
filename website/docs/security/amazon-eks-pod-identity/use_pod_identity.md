@@ -14,14 +14,16 @@ $ aws eks describe-addon --cluster-name ${EKS_CLUSTER_NAME} --addon-name eks-pod
         "addonName": "eks-pod-identity-agent",
         "clusterName": "eks-workshop",
         "status": "ACTIVE",
-        "addonVersion": "v1.1.0-eksbuild.1",
+        "addonVersion": "v1.0.0-eksbuild.1",
         "health": {
             "issues": []
         },
         "addonArn": "arn:aws:eks:us-west-2:123456789012:addon/eks-workshop/eks-pod-identity-agent/6cc61b38-f8b4-a9b3-dc86-82f9828c6ca9",
-        "createdAt": "2023-12-04T15:08:06.746000-05:00",
-        "modifiedAt": "2024-01-06T23:04:53.483000-05:00",
-        "tags": {}
+        "createdAt": "2024-01-09T15:55:35.784000+00:00",
+        "modifiedAt": "2024-01-09T15:56:35.784000+00:00",
+        "tags": {
+          "eks_addon": "eks-pod-identity-agent"
+        }
     }
 }
 ```
@@ -77,18 +79,18 @@ Next, we will use Amazon EKS Pod Identity feature to associate an AWS IAM role t
 ```bash
 $ aws eks create-pod-identity-association --cluster-name ${EKS_CLUSTER_NAME} \
   --role-arn arn:aws:iam::${AWS_ACCOUNT_ID}:role/${EKS_CLUSTER_NAME}-carts-dynamo \
-  --namespace carts --service-account cart
+  --namespace carts --service-account carts
 {
     "association": {
         "clusterName": "eks-workshop",
         "namespace": "carts",
-        "serviceAccount": "cart",
-        "roleArn": "arn:aws:iam::111122223333:role/my-role",
+        "serviceAccount": "carts",
+        "roleArn": "arn:aws:iam::111122223333:role/eks-workshop-carts-dynamo",
         "associationArn": "arn:aws::111122223333:podidentityassociation/eks-workshop/a-abcdefghijklmnop1",
         "associationId": "a-abcdefghijklmnop1",
         "tags": {},
-        "createdAt": 1700862734.922,
-        "modifiedAt": 1700862734.922
+        "createdAt": "2024-01-09T16:16:38.163000+00:00",
+        "modifiedAt": "2024-01-09T16:16:38.163000+00:00"
     }
 }
 ```

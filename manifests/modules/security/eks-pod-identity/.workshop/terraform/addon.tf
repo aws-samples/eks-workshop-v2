@@ -29,12 +29,6 @@ resource "aws_eks_addon" "pod_identity_agent" {
   }
 }
 
-resource "time_sleep" "wait" {
-  depends_on = [module.eks_blueprints_addons]
-
-  create_duration = "10s"
-}
-
 resource "kubernetes_manifest" "ui_nlb" {
   manifest = {
     "apiVersion" = "v1"
@@ -104,6 +98,7 @@ module "iam_assumable_role_carts" {
   role_name                     = "${local.addon_context.eks_cluster_id}-carts-dynamo"
   trusted_role_services         = ["pods.eks.amazonaws.com"]
   custom_role_policy_arns       = [aws_iam_policy.carts_dynamo.arn]
+  trusted_role_actions          = ["sts:AssumeRole", "sts:TagSession"]
 
   tags = local.tags
 }
