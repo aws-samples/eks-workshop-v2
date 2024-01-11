@@ -82,8 +82,18 @@ Resources:
       ManagedPolicyArns:
       - arn:aws:iam::aws:policy/AWSCloud9Administrator
       - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
+      - arn:aws:iam::aws:policy/AmazonEC2FullAccess
       - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      - arn:aws:iam::aws:policy/IAMFullAccess
       Path: "/"
+      Policies:
+      - PolicyName: EksWorkshopC9EKSPermissions
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action: eks:*
+            Resource: '*'
 
   EksWorkshopC9LambdaExecutionRole:
     Type: AWS::IAM::Role
