@@ -80,7 +80,7 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
  
 ```
 
-We can confirm that the same log entries are also visible in OpenSearch.  Access the `EKS Workshop - Pod Logs Dashboard` from the dashboard landing page we saw earlier or use the command below to obtain its coordinates:
+We can confirm that the same log entries are also visible in OpenSearch.  Access the pod logs dashboard from the dashboard landing page we saw earlier or use the command below to obtain its coordinates:
 
 ```bash
 $ printf "\nPod logs dashboard: https://%s/_dashboards/app/dashboards#/view/31a8bd40-790a-11ee-8b75-b9bb31eee1c2 \

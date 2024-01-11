@@ -67,7 +67,7 @@ The Kubernetes events exporter we launched in the previous step sends events fro
 
 :::
 
-Explore the OpenSearch Kubernetes events dashboard by returning to the OpenSearch dashboard that we used in the previous page. Access the `EKS Workshop - Kubernetes Events Dashboard` from the dashboard landing page we saw earlier or use the command below to obtain its coordinates:
+Explore the OpenSearch Kubernetes events dashboard by returning to the OpenSearch dashboard that we used in the previous page. Access the Kubernetes events dashboard from the dashboard landing page we saw earlier or use the command below to obtain its coordinates:
 
 ```bash
 $ printf "\nKubernetes Events dashboard: https://%s/_dashboards/app/dashboards#/view/06cca640-6a05-11ee-bdf2-9d2ccb0785e7 \
