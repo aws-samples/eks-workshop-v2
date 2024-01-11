@@ -80,7 +80,7 @@ Resources:
           Action:
           - sts:AssumeRole
       ManagedPolicyArns:
-      - arn:aws:iam::aws:policy/AdministratorAccess
+      - arn:aws:iam::aws:policy/AWSCloud9Administrator
       - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
       Path: "/"
 
