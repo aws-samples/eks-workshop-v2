@@ -81,6 +81,7 @@ Resources:
           - sts:AssumeRole
       ManagedPolicyArns:
       - arn:aws:iam::aws:policy/AWSCloud9Administrator
+      - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
       - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
       Path: "/"
 
