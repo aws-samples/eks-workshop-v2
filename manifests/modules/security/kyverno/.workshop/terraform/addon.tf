@@ -1,4 +1,4 @@
-module "secrets-store-csi-driver" {
+module "kyverno" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1//modules/kubernetes-addons/kyverno"
 
   enable_kyverno_policies        = true
