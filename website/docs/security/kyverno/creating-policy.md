@@ -93,7 +93,7 @@ require-labels:
 
 The Pod creation failed, with the admission webhook denying the request due to our `require-labels` Kyverno Policy, with the below output.
 
-Now try to create the same sample Pod with the label `CostCenter`. 
+Now try to create the same sample Pod with the label `CostCenter`.
 
 ```bash
 $ kubectl run nginx --image=nginx:latest --labels=CostCenter=IT
