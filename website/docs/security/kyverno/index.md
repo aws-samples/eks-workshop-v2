@@ -15,9 +15,9 @@ This will make the following changes to your lab environment:
 
 Install the following Kuberentes Addons in your EKS Cluter:
 
-    Kyverno Policy Manager
-    Kyverno-Policies
-    Policy Reporter
+* Kyverno Policy Manager
+* Kyverno-Policies
+* Policy Reporter
 
 You can view the Terraform that applies these changes [here](https://github.com/aws-samples/eks-workshop-v2/tree/main/manifests/modules/security/kyverno/.workshop/terraform).
 :::
