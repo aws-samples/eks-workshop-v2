@@ -54,7 +54,7 @@ To get an understanding of Kyverno Policies, we will start our lab with a Simple
 
 Below we have a Sample policy requiring a Label "CostCenter".
 
-```file 
+```file
 manifests/modules/security/kyverno/simple-policy/require-labels-policy.yaml
 ```
 
@@ -77,7 +77,7 @@ $ kubectl apply -f https://raw.githubusercontent.com/aws-samples/eks-workshop-v2
 clusterpolicy.kyverno.io/require-labels created
 ```
 
-Next try to create a Sample `Nginx` Pod without any label.
+Next try to create a sample Pod without any label.
 
 ```bash
 $ kubectl run nginx --image=nginx:latest
@@ -93,17 +93,17 @@ require-labels:
 
 The Pod creation failed, with the admission webhook denying the request due to our `require-labels` Kyverno Policy, with the below output.
 
-Now try to create the same Sample `Nginx` Pod with the label `CostCenter`. 
+Now try to create the same sample Pod with the label `CostCenter`. 
 
-```shell
-$ kubectl run redis --image=redis:latest --labels=CostCenter=IT
+```bash
+$ kubectl run nginx --image=nginx:latest --labels=CostCenter=IT
 
-pod/redis created
+pod/nginx created
 
 $ kubectl get pods
 
 NAME    READY   STATUS    RESTARTS   AGE
-redis   1/1     Running   0          5m
+nginx   1/1     Running   0          5m
 ```
 
 As you can see the admission webhook successfuly validated the Policy, and the Pod was created!
@@ -112,32 +112,47 @@ As you can see the admission webhook successfuly validated the Policy, and the P
 
 ---
 
-In the above examples, we checked out Validation Policies. Kyverno can also be used to create Mutating Policies to modify any API Requests to Satisfy/enforce the Policy on the object. Resource mutation occurs before validation, so the validation rules should not contradict the changes performed by the mutation section.
+In the above examples, we checked how Validation Policies work in their default behavior. However Kyverno can also be used to manage Mutating Policies to modify any API Requests to satisfy/enforce the specified Policy on the Kubernetes resources. The resource mutation occurs before validation, so the validation rules will not contradict the changes performed by the mutation section.
 
 Below is the sample mutation policy which we can use to automatically add our label `CostCenter=IT` as default to any `Pod`.
 
-``` yaml
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
-metadata:
-  name: add-labels
-spec:
-  rules:
-  - name: add-labels
-    match:
-      any:
-      - resources:
-          kinds:
-          - Pod
-    mutate:
-      patchStrategicMerge:
-        metadata:
-          labels:
-            CostCenter: IT
+```file
+manifests/modules/security/kyverno/simple-policy/add-labels-mutation-policy.yaml
 ```
 
-You can create a Policy using the above policy yaml, and try creating an Sample Nginx Pod without Labels. The Policy will automatically add a label `CostCenter=IT` to the pod, resulting a successful Pod Creation.
+Notice the `mudate` section, under the ClusterPolicy `spec`.
 
-We can also mutate Existing Resources in our EKS Clusters using Kyverno Policies using `patchStrategicMerge` and `patchesJson6902`.
+Go ahead, and create the above Policy using the following command.
 
-We just went through a simple Example of Labels for our Pods with Validating & Mutating Policies. It can be applied to various scenarios such as Restricting Pod from unknown registries, Adding Data to Config Maps, Adding Tolerations & much more. We will go through some advanced use-cases in the upcoming labs.
+```bash
+$ kubectl apply -f https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/main/manifests/modules/security/kyverno/simple-policy/add-labels-mutation-policy.yaml
+
+clusterpolicy.kyverno.io/add-labels created
+```
+
+Try creating another sample Pod without labels.
+
+```bash
+$ kubectl run redis --image=redis:latest 
+
+pod/redis created
+```
+
+The policy automatically added a label `CostCenter=IT` to the Pod, in order to meet the policy requirements, resulting a successful Pod creation.
+
+```bash
+$ kubectl get pods --show-labels
+NAME      READY   STATUS    RESTARTS   AGE   LABELS
+nginx     1/1     Running   0          9m   CostCenter=IT
+redis     1/1     Running   0          2m   CostCenter=IT,run=redis
+```
+
+It's also possible to mutate existing resources in your Amazon EKS Clusters with Kyverno Policies using `patchStrategicMerge` and `patchesJson6902` parameters in your Kyverno Policy.
+
+This was just a simple example of Labels for our Pods with Validating & Mutating Policies. This can be applied to various scenarios such as restricting Images from unknown registries, adding Data to Config Maps, Tolerations and much more. In the next upcoming labs, you will go through some advanced use-cases.
+
+Run the following command to cleanup the Pod resources created on this lab.
+
+```bash
+$ kubectl delete pod nginx redis
+```
