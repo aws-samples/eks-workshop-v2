@@ -9,6 +9,7 @@ Prepare your environment for this section:
 
 ```bash timeout=300 wait=30
 $ prepare-environment security/kyverno
+```
 
 This will make the following changes to your lab environment:
 
@@ -19,8 +20,6 @@ Install the following Kuberentes Addons in your EKS Cluter:
     Policy Reporter
 
 You can view the Terraform that applies these changes [here](https://github.com/aws-samples/eks-workshop-v2/tree/main/manifests/modules/security/kyverno/.workshop/terraform).
-```
-
 :::
 
 As containers are used in cloud native production environments, DevOps, Security teams and Platform teams, need a solution and way to effectively collaborate and execute on the Governance and [Policy-as-Code (PaC)](https://aws.github.io/aws-eks-best-practices/security/docs/pods/#policy-as-code-pac) journey. This ensures that all teams which have a stake in Security are able to have the same source of truth, as well as use the same baseline "language" when describing their individual needs, thus furthering the march towards being Cloud Native
