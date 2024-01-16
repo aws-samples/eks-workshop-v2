@@ -54,26 +54,8 @@ To get an understanding of Kyverno Policies, we will start our lab with a Simple
 
 Below we have a Sample policy requiring a Label "CostCenter".
 
-```yaml
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
-metadata:
-  name: require-labels
-spec:
-  validationFailureAction: Enforce
-  rules:
-  - name: check-team
-    match:
-      any:
-      - resources:
-          kinds:
-          - Pod
-    validate:
-      message: "Label 'CostCenter' is required to deploy the Pod"
-      pattern:
-        metadata:
-          labels:
-            CostCenter: "?*"
+```file 
+manifests/modules/security/kyverno/simple-policy/require-labels-policy.yaml
 ```
 
 Kyverno has 2 kinds of Policy resources, **ClusterPolicy** used for Cluster-Wide Resources and **Policy** used for Namespaced Resources.
@@ -89,8 +71,8 @@ The Above Example Policy, will block any Pod Creation which doesn't have the lab
 
 Create a Require_Label_Policy.yaml file containing the Above Sample Policy.
 
-```shell
-$ kubectl create -f Require_Label_Policy.yaml
+```bash
+$ kubectl apply -f https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/main/manifests/modules/security/kyverno/simple-policy/require-labels-policy.yaml
 
 clusterpolicy.kyverno.io/require-labels created
 ```
