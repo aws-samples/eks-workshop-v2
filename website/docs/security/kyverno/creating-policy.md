@@ -69,7 +69,7 @@ Kyverno has 2 kinds of Policy resources, **ClusterPolicy** used for Cluster-Wide
 
 The Above Example Policy, will block any Pod Creation which doesn't have the label `CostCenter`.
 
-Create a Require_Label_Policy.yaml file containing the Above Sample Policy.
+Create the policy using the following command.
 
 ```bash
 $ kubectl apply -f https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/main/manifests/modules/security/kyverno/simple-policy/require-labels-policy.yaml
@@ -77,9 +77,9 @@ $ kubectl apply -f https://raw.githubusercontent.com/aws-samples/eks-workshop-v2
 clusterpolicy.kyverno.io/require-labels created
 ```
 
-Next we will try to create a `Sample Nginx Pod` without any label `CostCenter`. The Pod Creation will fail, with the admission webhook denying the request due to our `require-labels Kyverno Policy`, with the below output.
+Next try to create a Sample `Nginx` Pod without any label.
 
-```shell
+```bash
 $ kubectl run nginx --image=nginx:latest
 
 Error from server: admission webhook "validate.kyverno.svc-fail" denied the request:
@@ -91,13 +91,22 @@ require-labels:
     rule check-team failed at path /metadata/labels/CostCenter/'
 ```
 
-If we try to create another Sample Pod, for example `Redis` with Label `CostCenter` it should pass the Policy Validation & get successfully created.
+The Pod creation failed, with the admission webhook denying the request due to our `require-labels` Kyverno Policy, with the below output.
+
+Now try to create the same Sample `Nginx` Pod with the label `CostCenter`. 
 
 ```shell
 $ kubectl run redis --image=redis:latest --labels=CostCenter=IT
 
 pod/redis created
+
+$ kubectl get pods
+
+NAME    READY   STATUS    RESTARTS   AGE
+redis   1/1     Running   0          5m
 ```
+
+As you can see the admission webhook successfuly validated the Policy, and the Pod was created!
 
 ### Mutating Rules
 
