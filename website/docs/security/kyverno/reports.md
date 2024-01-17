@@ -11,33 +11,46 @@ For example, if a validate policy in `Audit` mode exists containing a single rul
 
 Now, we will check on our cluster's status on compliance with the policies we have created so far in this workshop. We will run the below command, to get a overview of the Kyverno policy reports, the number of policies might differ & we can ignore the same.:
 
-``` shell
+```bash
 kubectl get policyreports -A
 
 NAMESPACE         NAME                                PASS   FAIL   WARN   ERROR   SKIP   AGE
-default           cpol-baseline-policy                1      1      0      0       0      6d21h
-default           cpol-podsecurity-subrule-baseline   1      1      0      0       0      6d21h
-default           cpol-restrict-image-registries      0      2      0      0       0      22s
-default           cpol-verify-image                   1      0      0      0       0      22s
-karpenter         cpol-baseline-policy                4      0      0      0       0      6d21h
-karpenter         cpol-podsecurity-subrule-baseline   4      0      0      0       0      6d21h
-karpenter         cpol-restrict-image-registries      0      4      0      0       0      22s
-kube-system       cpol-baseline-policy                4      4      0      0       0      6d21h
-kube-system       cpol-podsecurity-subrule-baseline   4      6      0      0       0      6d21h
-kube-system       cpol-restrict-image-registries      0      10     0      0       0      22s
-kyverno           cpol-baseline-policy                14     0      0      0       0      6d21h
-kyverno           cpol-podsecurity-subrule-baseline   18     0      0      0       0      6d21h
-kyverno           cpol-restrict-image-registries      0      18     0      0       0      22s
-policy-reporter   cpol-baseline-policy                3      0      0      0       0      6d18h
-policy-reporter   cpol-podsecurity-subrule-baseline   3      0      0      0       0      6d18h
-policy-reporter   cpol-restrict-image-registries      0      3      0      0       0      22s
+assets        cpol-baseline-policy             3      0      0      0       0      41m
+assets        cpol-require-labels              0      3      0      0       0      3h39m
+assets        cpol-restrict-image-registries   3      0      0      0       0      13m
+carts         cpol-baseline-policy             6      0      0      0       0      41m
+carts         cpol-require-labels              0      6      0      0       0      3h39m
+carts         cpol-restrict-image-registries   3      3      0      0       0      13m
+catalog       cpol-baseline-policy             5      0      0      0       0      41m
+catalog       cpol-require-labels              0      5      0      0       0      3h39m
+catalog       cpol-restrict-image-registries   5      0      0      0       0      13m
+checkout      cpol-baseline-policy             6      0      0      0       0      41m
+checkout      cpol-require-labels              0      6      0      0       0      3h39m
+checkout      cpol-restrict-image-registries   6      0      0      0       0      13m
+kube-system   cpol-baseline-policy             4      8      0      0       0      41m
+kube-system   cpol-require-labels              0      12     0      0       0      3h39m
+kube-system   cpol-restrict-image-registries   0      12     0      0       0      13m
+kyverno       cpol-baseline-policy             21     0      0      0       0      40m
+kyverno       cpol-require-labels              0      21     0      0       0      3h39m
+kyverno       cpol-restrict-image-registries   0      21     0      0       0      13m
+orders        cpol-baseline-policy             6      0      0      0       0      41m
+orders        cpol-require-labels              0      6      0      0       0      3h39m
+orders        cpol-restrict-image-registries   6      0      0      0       0      13m
+rabbitmq      cpol-baseline-policy             2      0      0      0       0      41m
+rabbitmq      cpol-require-labels              0      2      0      0       0      3h39m
+rabbitmq      cpol-restrict-image-registries   2      0      0      0       0      13m
+ui            cpol-baseline-policy             3      0      0      0       0      41m
+ui            cpol-require-labels              0      3      0      0       0      3h39m
+ui            cpol-restrict-image-registries   3      0      0      0       0      13m
 ```
 
-In the above output, we can see a number of policies that we created such as **verify-image**, **baseline-policy**, **restrict-image-registries**. You can also see the status of objects such as **Pass**, **Fail**, **WARN**, **ERROR**, **SKIP**.
+In the above output, you can see a number of policies that were created such as **verify-image**, **baseline-policy**, **restrict-image-registries**. You can also see the status of objects such as **Pass**, **Fail**, **WARN**, **ERROR**, **SKIP**.
 
-To check in detail on the violations for a policy, we can run the below command. In our case, we will select **cpol-restrict-image-registries**, however, you can select any other policy as well, simply fire off `kubectl get policyreports cpol-restrict-image-registries -o yaml`.
+To check in detail on the violations for a policy, you can run the below command. In this case, select **cpol-restrict-image-registries**, however, you can select any other policy as well.
 
-``` yaml
+```bash
+ $ kubectl get policyreports cpol-restrict-image-registries -o yaml
+
 apiVersion: wgpolicyk8s.io/v1alpha2
 kind: PolicyReport
 metadata:
@@ -111,8 +124,8 @@ summary:
   warn: 0
 ```
 
-As we can see in the above output, Our Pods namely Privileged-Pod & Signed failed the rules for our policy `restrict-image-registries`. Monitoring reports in this way could be an overhead for administrators. Kyverno also supports a GUI based tool namely [Policy reporter](https://github.com/kyverno/policy-reporter#readme). This is outside of this workshop's scope., but can be tried in the workshop accounts.
+As you can see in the above output, Our Pods namely Privileged-Pod & Signed failed the rules for our policy `restrict-image-registries`. Monitoring reports in this way could be an overhead for administrators. Kyverno also supports a GUI based tool namely [Policy reporter](https://github.com/kyverno/policy-reporter#readme). This is outside of this workshop's scope., but can be tried in the workshop accounts.
 
-In this Lab, we showed you how to augment the Kubernetes PSA/PSS configurations with Kyverno. Pod Security Standards (PSS) and the in-tree Kubernetes implementation of these standards, Pod Security Admission (PSA), provide good building blocks for managing pod security. The majority of users switching from Kubernetes Pod Security Policies (PSP) should be successful using the PSA/PSS features.
+In this Lab, you learned how to augment the Kubernetes PSA/PSS configurations with Kyverno. Pod Security Standards (PSS) and the in-tree Kubernetes implementation of these standards, Pod Security Admission (PSA), provide good building blocks for managing pod security. The majority of users switching from Kubernetes Pod Security Policies (PSP) should be successful using the PSA/PSS features.
 
 Kyverno augments the user experience created by PSA/PSS, by leveraging the in-tree Kubernetes pod security implementation, and providing several helpful enhancements for operationalizing of policy. You can use Kyverno to govern the proper use of pod security labels. In addition, you can use the new Kyverno `validate.podSecurity` rule to easily manage pod security standards with additional flexibility and an enhanced user experience. And, with the Kyverno CLI, you can automate policy evaluation, upstream of your clusters.
