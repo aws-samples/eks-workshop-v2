@@ -155,4 +155,6 @@ Run the following command to cleanup the Pod resources created on this lab.
 
 ```bash
 $ kubectl delete pod nginx redis
+pod "nginx" deleted
+pod "redis" deleted
 ```
