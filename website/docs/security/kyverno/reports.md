@@ -12,7 +12,7 @@ For example, if a validate policy in `Audit` mode exists containing a single rul
 Now, we will check on our cluster's status on compliance with the policies we have created so far in this workshop. We will run the below command, to get a overview of the Kyverno policy reports, the number of policies might differ & we can ignore the same.:
 
 ```bash
-kubectl get policyreports -A
+$ kubectl get policyreports -A
 
 NAMESPACE         NAME                                PASS   FAIL   WARN   ERROR   SKIP   AGE
 assets        cpol-baseline-policy             3      0      0      0       0      41m
@@ -49,7 +49,7 @@ In the above output, you can see a number of policies that were created such as 
 To check in detail on the violations for a policy, you can run the below command. In this case, select **cpol-restrict-image-registries**, however, you can select any other policy as well.
 
 ```bash
- $ kubectl get policyreports cpol-restrict-image-registries -o yaml
+$ kubectl get policyreports cpol-restrict-image-registries -o yaml
 
 apiVersion: wgpolicyk8s.io/v1alpha2
 kind: PolicyReport
