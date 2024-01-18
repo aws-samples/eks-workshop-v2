@@ -18,8 +18,8 @@
  */
 
 locals {
-  cw_logs_arn_prefix        = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}"
-  lambda_function_name      = "${local.eks_cluster_id}-Control-Plane-Logs-To-OpenSearch"
+  cw_logs_arn_prefix   = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}"
+  lambda_function_name = "${local.eks_cluster_id}-control-plane-logs"
 
   // ARNs for Lambda Extension Layer that provides caching of SSM parameter store values
   parameter_lambda_extension_arns = {
@@ -58,29 +58,29 @@ locals {
   }
 }
 
- // Random suffix for IAM roles, policies
+// Random suffix for IAM roles, policies
 resource "random_string" "suffix" {
-  length = 6
+  length  = 6
   special = false
 }
 
 // Lambda execution role for OpenSearch exporter
 resource "aws_iam_role" "lambda_execution_role" {
-  name               = "${local.lambda_function_name}-Role-${random_string.suffix.result}"
+  name = "${local.lambda_function_name}-Role-${random_string.suffix.result}"
 
   // Trust relationship 
   assume_role_policy = jsonencode({
-      "Version": "2012-10-17",
-      "Statement": [
-        {
-          "Action": "sts:AssumeRole",
-          "Principal": {
-            "Service": "lambda.amazonaws.com"
-          },
-          "Effect": "Allow",
-          "Sid": ""
-        }
-      ]
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : "sts:AssumeRole",
+        "Principal" : {
+          "Service" : "lambda.amazonaws.com"
+        },
+        "Effect" : "Allow",
+        "Sid" : ""
+      }
+    ]
   })
 
   // Attach inline policies for Lambda function to: 
@@ -90,30 +90,30 @@ resource "aws_iam_role" "lambda_execution_role" {
   inline_policy {
     name = "policy-${random_string.suffix.result}"
     policy = jsonencode({
-        Version = "2012-10-17"
-        Statement = [
-          {
-            Action   = ["es:*"]
-            Effect   = "Allow"
-            Resource = "*"  
-          },
-          {
-            Action   = ["ssm:GetParameter", "kms:Decrypt"]
-            Effect   = "Allow"
-            Resource = "*"
-          },
-          {
-            Action   = ["logs:CreateLogGroup"]
-            Effect   = "Allow"
-            Resource = local.cw_logs_arn_prefix
-          },
-          {
-            Action   = ["logs:CreateLogStream", "logs:PutLogEvents"]
-            Effect   = "Allow"
-            Resource = "${local.cw_logs_arn_prefix}:log-group:/aws/lambda/${local.lambda_function_name}:*"
-          }          
-        ]
-      })
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Action   = ["es:*"]
+          Effect   = "Allow"
+          Resource = "*"
+        },
+        {
+          Action   = ["ssm:GetParameter", "kms:Decrypt"]
+          Effect   = "Allow"
+          Resource = "*"
+        },
+        {
+          Action   = ["logs:CreateLogGroup"]
+          Effect   = "Allow"
+          Resource = local.cw_logs_arn_prefix
+        },
+        {
+          Action   = ["logs:CreateLogStream", "logs:PutLogEvents"]
+          Effect   = "Allow"
+          Resource = "${local.cw_logs_arn_prefix}:log-group:/aws/lambda/${local.lambda_function_name}:*"
+        }
+      ]
+    })
   }
 }
 
@@ -140,9 +140,9 @@ resource "aws_lambda_function" "eks_control_plane_logs_to_opensearch" {
 
   environment {
     variables = {
-      OPENSEARCH_HOST_PARAMETER_PATH  = "/eksworkshop/${local.eks_cluster_id}/opensearch/host"
-      OPENSEARCH_INDEX_NAME           = "eks-control-plane-logs"
-      SSM_PARAMETER_STORE_TTL         = 300
+      OPENSEARCH_HOST_PARAMETER_PATH = "/eksworkshop/${local.eks_cluster_id}/opensearch/host"
+      OPENSEARCH_INDEX_NAME          = "eks-control-plane-logs"
+      SSM_PARAMETER_STORE_TTL        = 300
     }
   }
 }
