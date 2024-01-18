@@ -75,7 +75,7 @@ Check that for the `restrict-image-registries` ClusterPolicy we have just one `F
 
 The `nginx` Pod, that we left running with a publicly available image, is the only remaining resource that violates the `restrict-image-registries` policy, and it's shown in the report.
 
-Check that in more detail on the violations for this Policy, by describing a specific report. As shown in the example below, use the `kubectl describe` command for the `cpol-restrict-image-registries` Report to see the validation results for the `restrict-image-registries` ClusterPolicy.
+Check that in more detail the violations for this Policy, by describing a specific report. As shown in the example below, use the `kubectl describe` command for the `cpol-restrict-image-registries` Report to see the validation results for the `restrict-image-registries` ClusterPolicy.
 
 ```bash
 $ kubectl describe policyreport cpol-restrict-image-registries
