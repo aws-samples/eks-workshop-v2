@@ -30,25 +30,21 @@ Kubernetes by its nature is meant to be a tool to build on and orchestrate, this
 
 Kyverno (Greek for “govern”) is a policy engine designed specifically for Kubernetes. It is a Cloud Native Computing Foundation (CNCF) project allowing teams to collaborate and enforce Policy-as-Code.
 
-The Kyverno policy engine integrates with the Kubernetes API server as [Dynamic Admission Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/). This allows written policies to be used to **mutate** and **validate** inbound Kubernetes API requests, thus ensuring compliance with the defined rules prior to the data being persisted and ultimately applied into the cluster.
+The Kyverno policy engine integrates with the Kubernetes API server as [Dynamic Admission Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/), allowing policies to **mutate** and **validate** inbound Kubernetes API requests, thus ensuring compliance with the defined rules prior to the data being persisted and ultimately applied into the cluster.
 
-Kyverno allows for declarative Kubernetes resources, **written in YAML, with no new policy language to learn.** Results are also available as Kubernetes resources and as events.
+Kyverno allows for declarative Kubernetes resources written in YAML, with no new policy language to learn, and results are available as Kubernetes resources and as events.
 
-Kyverno policies can be used to **validate, mutate, and generate resource configurations, and validate image signatures and attestations.** Ultimately providing all the necessary building blocks for a complete software supply chain as well as security standards enforcement.
+Kyverno policies can be used to **validate**, **mutate**, and **generate** resource configurations, and also **validate** image signatures and attestations, providing all the necessary building blocks for a complete software supply chain security standards enforcement.
 
 ### How Kyverno Works
 
----
-
-As mentioned above, Kyverno runs as a Dynamic Admission Controller in an Kubernetes Cluster. Kyverno receives validating and mutating admission webhook HTTP callbacks from the Kubernetes API server and applies matching policies to return results that enforce admission policies or reject requests. It can also be used to Audit the requests, to monitor the Security posture of the environment before enforcing.
-
-Kyverno policies can be created for resources using Resource Kind, Labels, Namespaces, Roles, ClusterRoles and many more.
+As mentioned above, Kyverno runs as a Dynamic Admission Controller in an Kubernetes Cluster. Kyverno receives validating and mutating admission webhook HTTP callbacks from the Kubernetes API server and applies matching policies to return results that enforce admission policies or reject requests. It can also be used to Audit the requests and to monitor the Security posture of the environment before enforcing. 
 
 The diagram below shows the high-level logical architecture of Kyverno.
 
 ![KyvernoArchitecture](assets/ky-arch.png)
 
-The two major components are the Webhook Server & the Webhook Controller. The **Webhook server** handles incoming AdmissionReview requests from the Kubernetes API server and sends them to the Engine for processing. It is dynamically configured by the **Webhook Controller** which watches the installed policies and modifies the webhooks to request only the resources matched by those policies.
+The two major components are the Webhook Server & the Webhook Controller. The **Webhook Server** handles incoming AdmissionReview requests from the Kubernetes API server and sends them to the Engine for processing. It is dynamically configured by the **Webhook Controller** which watches the installed policies and modifies the webhooks to request only the resources matched by those policies.
 
 ---
 
