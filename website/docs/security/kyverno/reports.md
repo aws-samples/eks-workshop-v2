@@ -3,7 +3,7 @@ title: "Reports & Auditing"
 sidebar_position: 137
 ---
 
-Kyverno also includes a [policy reporting](https://kyverno.io/docs/policy-reports/) tool, using the open format defined by the Kubernetes Policy Working Group and deployed as custom resources in the cluster. Kyverno emits these reports when admission actions like *CREATE*, *UPDATE*, and *DELETE* are performed in the cluster, they are also generated as a result of background scans that validate policies on already existing resources.
+Kyverno also includes a [Policy Reporting](https://kyverno.io/docs/policy-reports/) tool, using the open format defined by the Kubernetes Policy Working Group and deployed as custom resources in the cluster. Kyverno emits these reports when admission actions like *CREATE*, *UPDATE*, and *DELETE* are performed in the cluster, they are also generated as a result of background scans that validate policies on already existing resources.
 
 So far in the workshop we have created a few Policies for specific rules. When a resource is matched by one or more rules according to the policy definition and violate any of them, an entry will be created in the report for each violation, resulting in multiple entries if the same resouce matches and violate multiple rules. When resources are deleted their entry will be removed from the reports, meaning that Kyverno Reports will always represent the current state of the cluster and do not record historical information.
 
@@ -71,11 +71,11 @@ default       cpol-require-labels              2      0      0      0       0   
 default       cpol-restrict-image-registries   1      1      0      0       0      13m
 ```
 
-Check that we have just one `FAIL` report, for the `restrict-image-registries` ClusterPolicy. This happened because all the ClusterPolicies were created with `Enforce` mode, the blcoked resouces were not reported, and the previously running resources that could violate policy rules, were already removed. 
+Check that for the `restrict-image-registries` ClusterPolicy we have just one `FAIL` and one `PASS` reports. This happened because all the ClusterPolicies were created with `Enforce` mode, and as mentioned the blooked resouces are not reported, also the previously running resources that could violate policy rules, were already removed.
 
-The `nginx` Pod, running with a publicly available image, is the only remaining resource that violates the `restrict-image-registries` policy, and it's shown in the report.
+The `nginx` Pod, that we left running with a publicly available image, is the only remaining resource that violates the `restrict-image-registries` policy, and it's shown in the report.
 
-To check in detail on the violations for a Policy, you can describe a specific report. As the example below, use the `kubectl describe` command for the `cpol-restrict-image-registries` Report to see the validation results for the `restrict-image-registries` ClusterPolicy.
+Check that in more detail on the violations for this Policy, by describing a specific report. As shown in the example below, use the `kubectl describe` command for the `cpol-restrict-image-registries` Report to see the validation results for the `restrict-image-registries` ClusterPolicy.
 
 ```bash
 $ kubectl describe policyreport cpol-restrict-image-registries
@@ -131,8 +131,8 @@ Summary:
 Events:   <none>
 ```
 
-As you can see in the above output, the `nginx` Pod failed in the policy validation, receiving a `fail` Result and validation error Message. In the other hand the `nginx-ecr` passed the policy validation receiving a `pass` Result. Monitoring reports in this way could be an overhead for administrators. Kyverno also supports a GUI based tool for [Policy reporter](https://kyverno.github.io/policy-reporter/core/targets/#policy-reporter-ui). This is outside of this workshop's scope.
+The above output display the `nginx` Pod policy validation receiving a `fail` Result and validation error Message. In the other hand the `nginx-ecr` policy validation received a `pass` Result. Monitoring reports in this way could be an overhead for administrators. Kyverno also supports a GUI based tool for [Policy reporter](https://kyverno.github.io/policy-reporter/core/targets/#policy-reporter-ui). This is outside of this workshop's scope.
 
-In this Lab, you learned how to augment the Kubernetes PSA/PSS configurations with Kyverno. Pod Security Standards (PSS) and the in-tree Kubernetes implementation of these standards, Pod Security Admission (PSA), provide good building blocks for managing pod security. The majority of users switching from Kubernetes Pod Security Policies (PSP) should be successful using the PSA/PSS features.
+This Lab, you learned how to augment the Kubernetes PSA/PSS configurations with Kyverno. Pod Security Standards (PSS) and the in-tree Kubernetes implementation of these standards, Pod Security Admission (PSA), provide good building blocks for managing pod security. The majority of users switching from Kubernetes Pod Security Policies (PSP) should be successful using the PSA/PSS features.
 
 Kyverno augments the user experience created by PSA/PSS, by leveraging the in-tree Kubernetes pod security implementation, and providing several helpful enhancements for operationalizing of policy. You can use Kyverno to govern the proper use of pod security labels. In addition, you can use the new Kyverno `validate.podSecurity` rule to easily manage pod security standards with additional flexibility and an enhanced user experience. And, with the Kyverno CLI, you can automate policy evaluation, upstream of your clusters.
