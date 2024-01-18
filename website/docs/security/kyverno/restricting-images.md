@@ -67,4 +67,4 @@ The Pod was successfuly created!
 
 You have seen how you can block Images from public registries to run on your EKS Clusters, and restrict only allowed Image Repositories. One can further go ahead, and allow only private repositories as a Security Best Practice.
 
-> Don't remove the Pods running on this lab.
+> Don't remove the running Pods created in this task as we will use them for the next lab.
