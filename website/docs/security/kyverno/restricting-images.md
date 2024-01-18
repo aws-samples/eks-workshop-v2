@@ -3,9 +3,9 @@ title: "Restricting Image Registries"
 sidebar_position: 135
 ---
 
-Using container images form unknown sources on your EKS Clusters, that may not be a scanned and in consequence not trusted, represent a risk factor for the overall security of your environment. When defining Container Images sources, you need to ensure that they are originated from Trusted Registries, in order to reduce the threat exposure of vulnerabilities. Some larger organizations also have Security Guidelines to limit containers to use Images from their own hosted Private Image Registry.
+Using container images form unknown sources on your EKS Clusters, that may not be a scanned for Common Vulnerabilities and Exposure (CVE), represent a risk factor for the overall security of your environment. When chossing container images sources, you need to ensure that they are originated from Trusted Registries, in order to reduce the threat exposure and exploits of vulnerabilities. Some larger organizations also have Security Guidelines that limit containers to use images from their own hosted private image registry.
 
-In this section, you will see how Kyverno can help you run secure container workloads by restricting the Image Registries that can be use to run your applications.
+In this section, you will see how Kyverno can help you run secure container workloads by restricting the Image Registries that can be used in your cluster.
 
 As seen in previous labs, you can run Pods with images from any available registry, so run a sample Pod using the default registry that points to `docker.io`.
 
