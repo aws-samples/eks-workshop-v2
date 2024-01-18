@@ -60,7 +60,7 @@ manifests/modules/security/kyverno/simple-policy/require-labels-policy.yaml
 
 Kyverno has 2 kinds of Policy resources, **ClusterPolicy** used for Cluster-Wide Resources and **Policy** used for Namespaced Resources.
 
-1. In the above example, we have a **ClusterPolicy**, Under the spec section of the Policy, there is a an attribute `validationFailureAction` it tells Kyverno if the resource being validated should be allowed but reported (`Audit`) or blocked (`Enforce`). Defaults to Audit.
+1. In the above example, we have a **ClusterPolicy**, Under the spec section of the Policy, there is a an attribute `validationFailureAction` it tells Kyverno if the resource being validated should be allowed but reported `Audit` or blocked `Enforce`. Defaults to Audit.
 2. The `rules` is one or more rules which must be true.
 3. The `match` statement sets the scope of what will be checked. In this case, it is any `Pod` resource.
 4. The `validate` statement tries to positively check what is defined. If the statement, when compared with the requested resource, is true, it is allowed. If false, it is blocked.
