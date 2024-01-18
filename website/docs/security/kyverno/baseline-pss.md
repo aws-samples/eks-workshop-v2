@@ -66,7 +66,7 @@ clusterpolicy.kyverno.io/baseline-policy created
 Now, try to run the privileged Pod again.
 
 ```bash
-kubectl run -ti privileged-pod --image=centos --privileged=true --rm=true --restart=Never
+$ kubectl run -ti privileged-pod --image=centos --privileged=true --rm=true --restart=Never
 Error from server: admission webhook "validate.kyverno.svc-fail" denied the request: 
 
 resource Pod/default/privileged-pod was blocked due to the following policies 
