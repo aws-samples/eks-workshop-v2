@@ -35,7 +35,7 @@ manifests/modules/security/kyverno/images/restrict-registries.yaml
 Apply the above policy with the command below.
 
 ```bash
-$ kubectl apply -f https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/main/manifests/modules/security/kyverno/images/restrict-registries.yaml
+$ kubectl apply -f ~/environment/eks-workshop/modules/security/kyverno/images/restrict-registries.yaml
 
 clusterpolicy.kyverno.io/restrict-image-registries created
 ```

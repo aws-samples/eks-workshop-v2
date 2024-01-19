@@ -25,7 +25,7 @@ The Above Example Policy, will block any Pod Creation which doesn't have the lab
 Create the policy using the following command.
 
 ```bash
-$ kubectl apply -f https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/main/manifests/modules/security/kyverno/simple-policy/require-labels-policy.yaml
+$ kubectl apply -f ~/environment/eks-workshop/modules/security/kyverno/simple-policy/require-labels-policy.yaml
 
 clusterpolicy.kyverno.io/require-labels created
 ```
@@ -76,7 +76,7 @@ Notice the `mudate` section, under the ClusterPolicy `spec`.
 Go ahead, and create the above Policy using the following command.
 
 ```bash
-$ kubectl apply -f https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/main/manifests/modules/security/kyverno/simple-policy/add-labels-mutation-policy.yaml
+$ kubectl apply -f  ~/environment/eks-workshop/modules/security/kyverno/simple-policy/add-labels-mutation-policy.yaml
 
 clusterpolicy.kyverno.io/add-labels created
 ```

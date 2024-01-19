@@ -10,20 +10,10 @@ A Kyverno Baseline Policy will help to restrict all the known privileged escalat
 Privileged containers can do almost everything that the host can do and are often used in CI/CD pipelines to allow building and publishing Container images.
 With the now fixed [CVE-2022-23648](https://github.com/containerd/containerd/security/advisories/GHSA-crp2-qrr5-8pq7) any bad actor, could escape the privileged container by abusing the Control Groups `release_agent` functionality to execute arbitrary commands on the container host.
 
-In this lab, we will create a privileged Pod on our EKS cluster and check its privileged permissions. To do that, run the following command.
+In this lab, you will run a privileged Pod on our EKS cluster and check its privileged permissions. To do that, execute the following command.
 
 ```bash
-$ kubectl run -ti privileged-pod --image=centos --privileged=true --rm=true --restart=Never
-
-pod/privileged-pod created
-```
-
-Notice, that because we used the `-ti` parameter, you were redirected to the container terminal and it is running as the **root** user by default.
-
-Inside the Pod, run the `capsh --print` to validate the privileges granted to the Pod.
-
-```bash
-$ capsh --print
+$ kubectl run privileged-pod --image=centos --restart=Never --privileged --attach --rm --command -- /usr/sbin/capsh --print
 Current: = cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,cap_syslog,cap_wake_alarm,cap_block_suspend,cap_audit_read,38,39,40+ep
 Bounding set =cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,cap_syslog,cap_wake_alarm,cap_block_suspend,cap_audit_read,38,39,40
 Ambient set =
@@ -35,15 +25,10 @@ Securebits: 00/0x0/1'b0
 uid=0(root)
 gid=0(root)
 groups=0(root)
-```
-
-Take sometime to check the existing admin capabilities like `cap_net_admin`, `cap_sys_admin`, and `cap_mac_admin`, or the `(unlocked)` Securebits. Type `exit` to quit and delete the Pod.
-
-```bash
-$ exit
-exit
 pod "privileged-pod" deleted
 ```
+
+Take sometime to check the existing admin capabilities like `cap_net_admin`, `cap_sys_admin`, and `cap_mac_admin`, or the `(unlocked)` Securebits, and also that this Pod is running with the *root* user (uid=0).
 
 In order to avoid such escalated privileged capabilities and avoid unauthorized use of above permissions, it's recommended to setup a Baseline Policy using Kyverno.
 
@@ -58,7 +43,7 @@ Notice that he above policy is in `Enforce` mode, and will block any requests to
 Go ahead and apply the Baseline Policy.
 
 ```bash
-$ kubectl apply -f https://raw.githubusercontent.com/aws-samples/eks-workshop-v2/main/manifests/modules/security/kyverno/baseline-policy/baseline-policy.yaml
+$ kubectl apply -f ~/environment/eks-workshop/modules/security/kyverno/baseline-policy/baseline-policy.yaml
 
 clusterpolicy.kyverno.io/baseline-policy created
 ```
