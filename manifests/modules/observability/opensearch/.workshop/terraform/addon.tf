@@ -159,3 +159,10 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_invoke_lambda" {
   principal     = "logs.${data.aws_region.current.name}.amazonaws.com"
   source_arn    = "${local.cw_logs_arn_prefix}:log-group:/aws/eks/${local.eks_cluster_id}/cluster:*"
 }
+
+output "environment" {
+  value = <<EOF
+export LAMBDA_ARN="${aws_lambda_function.eks_control_plane_logs_to_opensearch.arn}"
+export LAMBDA_ROLE_ARN="${aws_iam_role.lambda_execution_role.arn}"
+EOF
+}
