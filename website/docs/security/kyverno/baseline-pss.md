@@ -28,7 +28,7 @@ groups=0(root)
 pod "privileged-pod" deleted
 ```
 
-Take sometime to check the existing admin capabilities like `cap_net_admin`, `cap_sys_admin`, and `cap_mac_admin`, or the `(unlocked)` Securebits, and also that this Pod is running with the *root* user (uid=0).
+Take sometime to check the existing admin capabilities like `cap_net_admin`, `cap_sys_admin`, and `cap_mac_admin`, or the `(unlocked)` Securebits, and also that this Pod is running with the `root` user `(uid=0)`.
 
 In order to avoid such escalated privileged capabilities and avoid unauthorized use of above permissions, it's recommended to setup a Baseline Policy using Kyverno.
 
@@ -51,7 +51,7 @@ clusterpolicy.kyverno.io/baseline-policy created
 Now, try to run the privileged Pod again.
 
 ```bash
-$ kubectl run -ti privileged-pod --image=centos --privileged=true --rm=true --restart=Never
+$ kubectl run privileged-pod --image=centos --restart=Never --privileged --attach --rm --command -- /usr/sbin/capsh --print
 Error from server: admission webhook "validate.kyverno.svc-fail" denied the request: 
 
 resource Pod/default/privileged-pod was blocked due to the following policies 
