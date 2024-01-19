@@ -1,0 +1,19 @@
+.button {
+  -webkit-appearance: button;
+  -moz-appearance: button;
+  appearance: button;
+
+  text-decoration: none;
+  color: initial;
+  background-color: #f90;
+  padding-inline: 20px;
+  padding-block: 4px;
+  border: 1px solid #f90;
+  font-weight: bold;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.icon {
+  padding-left: 4px;
+}
