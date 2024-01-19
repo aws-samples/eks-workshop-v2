@@ -60,26 +60,18 @@ Access the CloudWatch log group named [/aws/eks/eks-workshop/cluster](https://co
 - `kube-controller-manager-*` for controller manager logs
 - `kube-scheduler-*` for scheduler logs
 
-Navigate to the Lambda function named [eks-workshop-Control-Plane-Logs-To-OpenSearch](https://console.aws.amazon.com/lambda/home#/functions/eks-workshop-Control-Plane-Logs-To-OpenSearch) to export control plane logs has been pre-provisioned during the `prepare-environment` step. Notice that the Lambda function does not have any triggers setup at the moment.
+Navigate to the Lambda function named [eks-workshop-control-plane-logs](https://console.aws.amazon.com/lambda/home#/functions/eks-workshop-control-plane-logs) to export control plane logs has been pre-provisioned during the `prepare-environment` step. Notice that the Lambda function does not have any triggers setup at the moment.
 
-There are three steps to connect up the Lambda function to CloudWatch Logs and to OpenSearch as shown in the overview diagram above:
+There are two steps to connect up the Lambda function to CloudWatch Logs and to OpenSearch as shown in the overview diagram above:
 
-1. Retrieve the Lambda function ARN and the execution role ARN for our exporter function named `eks-workshop-Control-Plane-Logs-To-OpenSearch`
-2. Setup an OpenSearch role that allows the Lambda function to write to the OpenSearch index named `eks-control-plane-logs`
-3. Configure a subscription filter for the CloudWatch log group with the Lambda function as its destination
+1. Setup an OpenSearch role that allows the Lambda function to write to the OpenSearch index named `eks-control-plane-logs`
+2. Configure a subscription filter for the CloudWatch log group with the Lambda function as its destination
 
-Retrieve the Lambda execution role and the Lambda ARN for the log exporter function:
+The Lambda function ARN and its IAM role ARN are already available as environment variables:
 
 ```bash
-$ export LAMBDA_ARN=$(aws lambda get-function \
-    --function-name $EKS_CLUSTER_NAME-Control-Plane-Logs-To-OpenSearch \
-    --region $AWS_REGION | \
-    jq .Configuration.FunctionArn | tr -d '"')
-
-$ export LAMBDA_ROLE_ARN=$(aws lambda get-function \
-    --function-name $EKS_CLUSTER_NAME-Control-Plane-Logs-To-OpenSearch \
-    --region $AWS_REGION | \
-    jq .Configuration.Role | tr -d '"')
+$ echo $LAMBDA_ARN
+$ echo $LAMBDA_ROLE_ARN
 ```
 
 Grant the Lambda exporter function permissions to create the OpenSearch index named `eks-control-plane-logs` and write to it. The first command creates a new role within the OpenSearch domain with the necessary permissions. The second command adds a role mapping specifying the Lambda function's execution role ARN.
@@ -120,7 +112,7 @@ $ aws logs describe-subscription-filters \
       "filterName": "${EKS_CLUSTER_NAME} EKS Control Plane Logs to OpenSearch",
       "logGroupName": "/aws/eks/eks-workshop/cluster",
       "filterPattern": "",
-      "destinationArn": "arn:aws:lambda:us-west-2:012345678901:function:Control-Plane-Logs-To-OpenSearch",
+      "destinationArn": "arn:aws:lambda:us-west-2:012345678901:function:control-plane-logs",
       "distribution": "ByLogStream",
       "creationTime": 1699659802922
     }
@@ -128,7 +120,7 @@ $ aws logs describe-subscription-filters \
 }
 ```
 
-Return to the Lambda function [eks-workshop-Control-Plane-Logs-To-OpenSearch](https://console.aws.amazon.com/lambda/home#/functions/eks-workshop-Control-Plane-Logs-To-OpenSearch). CloudWatch Logs is now shown as a trigger for the Lambda function after the subscription filter was added.
+Return to the Lambda function [eks-workshop-control-plane-logs](https://console.aws.amazon.com/lambda/home#/functions/eks-workshop-control-plane-logs). CloudWatch Logs is now shown as a trigger for the Lambda function after the subscription filter was added.
 
 This completes the steps necessary to feed control plane logs from EKS to OpenSearch.  
 
