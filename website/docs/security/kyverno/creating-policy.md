@@ -30,36 +30,77 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/security/kyverno/simple-po
 clusterpolicy.kyverno.io/require-labels created
 ```
 
-Next try to create a sample Pod without any label.
+Next, take a look on the Pods running in the `ui` Namespace, notice the applied labels.
 
 ```bash
-$ kubectl run nginx --image=nginx:latest
+$ $ kubectl -n ui get pods --show-labels
+NAME                  READY   STATUS    RESTARTS   AGE   LABELS
+ui-67d8cf77cf-d4j47   1/1     Running   0          9m    app.kubernetes.io/component=service,app.kubernetes.io/created-by=eks-workshop,app.kubernetes.io/instance=ui,app.kubernetes.io/name=ui,pod-template-hash=67d8cf77cf
+```
 
-Error from server: admission webhook "validate.kyverno.svc-fail" denied the request:
+Check the running Pod doesn't have the required Label and Kyverno didn't terminate it, this happened because as seen earlier, Kyverno operates as an `AdmissionController` and will not interfere in resources that already exist in the cluster.
 
-resource Pod/default/nginx was blocked due to the following policies
+However if you delete the running Pod, it won't be able to be recreated since it doesn't have the required Label. Go ahead and delete de Pod running in the `ui` Namespace.
+
+```bash
+$ kubectl -n ui delete pod ui-67d8cf77cf-hvqcd 
+pod "ui-67d8cf77cf-d4j47" deleted
+
+$ kubectl -n ui get pods                                                                                                                                                                                                                                                                                                                                                                                     
+No resources found in ui namespace.
+```
+
+As mentioned, the Pod was not recreated, try to force a rollout of the `ui` deployment.
+
+```bash
+$ kubectl -n ui rollout restart deployment/ui                                                                                                                                                                                                                                                                                                                                                                       
+error: failed to patch: admission webhook "validate.kyverno.svc-fail" denied the request: 
+
+resource Deployment/ui/ui was blocked due to the following policies 
 
 require-labels:
-  check-team: 'validation error: Label ''CostCenter'' is required to deploy the Pod.
-    rule check-team failed at path /metadata/labels/CostCenter/'
+  autogen-check-team: 'validation error: Label ''CostCenter'' is required to deploy
+    the Pod. rule autogen-check-team failed at path /spec/template/metadata/labels/CostCenter/'
 ```
 
-The Pod creation failed with the admission webhook denying the request due to the  `require-labels` Kyverno Policy.
+The rollout failed with the admission webhook denying the request due to the  `require-labels` Kyverno Policy.
 
-Now try to create the same sample Pod with the label `CostCenter`.
+You can also check this `error` message describing the `ui` deployment, or visualizing the `events` in the `ui` Namespace.
 
 ```bash
-$ kubectl run nginx --image=nginx:latest --labels=CostCenter=IT
+$ kubectl -n ui describe deploy ui 
+...
+Events:
+  Type     Reason             Age                From                   Message
+  ----     ------             ----               ----                   -------
+  Warning  PolicyViolation    12m (x2 over 9m)   kyverno-scan           policy require-labels/autogen-check-team fail: validation error: Label 'CostCenter' is required to deploy the Pod. rule autogen-check-team failed at path /spec/template/metadata/labels/CostCenter/
 
-pod/nginx created
-
-$ kubectl get pods
-
-NAME    READY   STATUS    RESTARTS   AGE
-nginx   1/1     Running   0          5m
+$ kubectl -n ui get events | grep PolicyViolation
+9m         Warning   PolicyViolation     pod/ui-67d8cf77cf-hvqcd    policy require-labels/check-team fail: validation error: Label 'CostCenter' is required to deploy the Pod. rule check-team failed at path /metadata/labels/CostCenter/
+9m         Warning   PolicyViolation     replicaset/ui-67d8cf77cf   policy require-labels/autogen-check-team fail: validation error: Label 'CostCenter' is required to deploy the Pod. rule autogen-check-team failed at path /spec/template/metadata/labels/CostCenter/
+9m         Warning   PolicyViolation     deployment/ui              policy require-labels/autogen-check-team fail: validation error: Label 'CostCenter' is required to deploy the Pod. rule autogen-check-team failed at path /spec/template/metadata/labels/CostCenter/
 ```
 
-As you can see the admission webhook successfuly validated the Policy and the Pod was created!
+Now add the required label `CostCenter` to the `ui` Deployment, using the Kustomization patch below.
+
+```kustomization
+modules/security/kyverno/simple-policy/ui-labeled/deployment.yaml
+Namespace/assets
+```
+
+```bash
+$ kubectl apply -k  ~/environment/eks-workshop/modules/security/kyverno/simple-policy/ui-labeled/
+namespace/ui unchanged
+serviceaccount/ui unchanged
+configmap/ui unchanged
+service/ui unchanged
+deployment.apps/ui configured
+$ kubectl -n ui get pods --show-labels                                                                                                                                                                                                                                                                                                                                                                              
+NAME                  READY   STATUS    RESTARTS   AGE   LABELS
+ui-5498685db8-k57nk   1/1     Running   0          60s   CostCenter=IT,app.kubernetes.io/component=service,app.kubernetes.io/created-by=eks-workshop,app.kubernetes.io/instance=ui,app.kubernetes.io/name=ui,pod-template-hash=5498685db8
+```
+
+As you can see the admission webhook successfuly validated the Policy and the Pod was created with the correct Label `CostCenter=IT`!
 
 ### Mutating Rules
 
@@ -71,7 +112,7 @@ Below is a sample Policy with a mutation rule defined, which will be used to aut
 manifests/modules/security/kyverno/simple-policy/add-labels-mutation-policy.yaml
 ```
 
-Notice the `mudate` section, under the ClusterPolicy `spec`.
+Notice the `mutate` section, under the ClusterPolicy `spec`.
 
 Go ahead, and create the above Policy using the following command.
 
@@ -81,12 +122,10 @@ $ kubectl apply -f  ~/environment/eks-workshop/modules/security/kyverno/simple-p
 clusterpolicy.kyverno.io/add-labels created
 ```
 
-Try creating another sample Pod without labels.
+In order to validate the Mutation Webhook, rollback the `ui` Deployment configuration, removing the `CostCenter=IT`.
 
-```bash
-$ kubectl run redis --image=redis:latest 
-
-pod/redis created
+```kustomization
+base-application/ui/deployment.yaml
 ```
 
 The policy automatically added a label `CostCenter=IT` to the Pod, in order to meet the policy requirements, resulting a successful Pod creation.
