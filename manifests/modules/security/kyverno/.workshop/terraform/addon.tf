@@ -1,25 +1,42 @@
 module "kyverno" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1//modules/kubernetes-addons/kyverno"
+  source  = "aws-ia/eks-blueprints-addon/aws"
+  version = "~> 1.1"
 
-  enable_kyverno_policies        = true
-  enable_kyverno_policy_reporter = true
+  description      = "Kyverno Kubernetes Native Policy Management"
+  chart            = "kyverno"
+  chart_version    = "3.0.0"
+  namespace        = "kyverno"
+  create_namespace = true
+  repository       = "https://kyverno.github.io/kyverno/"
+}
 
-  kyverno_helm_config = {
-    version = "3.0.0"
-  }
+module "kyverno-policies" {
+  source  = "aws-ia/eks-blueprints-addon/aws"
+  version = "~> 1.1"
 
-  kyverno_policies_helm_config = {
-    version = "2.5.5"
-    values = [
-      <<-EOT
-        podSecurityStandard: privileged
-      EOT
-    ]
-  }
+  description   = "Kyverno policy library"
+  chart         = "kyverno-policies"
+  chart_version = "3.0.0"
+  namespace     = "kyverno"
+  repository    = "https://kyverno.github.io/kyverno/"
+  values = [
+    <<-EOT
+          podSecurityStandard: privileged
+        EOT
+  ]
 
-  kyverno_policy_reporter_helm_config = {
-    version = "2.21.1"
-  }
+  depends_on = [module.kyverno]
+}
 
-  addon_context = local.addon_context
+module "policy-reporter" {
+  source  = "aws-ia/eks-blueprints-addon/aws"
+  version = "~> 1.1"
+
+  description   = "Kyverno Policy Reporter which shows policy reports in a graphical web-based front end."
+  chart         = "policy-reporter"
+  chart_version = "1.3.0"
+  namespace     = "kyverno"
+  repository    = "https://kyverno.github.io/policy-reporter/"
+
+  depends_on = [module.kyverno]
 }
