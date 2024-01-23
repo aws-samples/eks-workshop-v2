@@ -85,7 +85,7 @@ Now add the required label `CostCenter` to the `ui` Deployment, using the Kustom
 
 ```kustomization
 modules/security/kyverno/simple-policy/ui-labeled/deployment.yaml
-Namespace/assets
+Deployment/ui
 ```
 
 ```bash
@@ -122,19 +122,30 @@ $ kubectl apply -f  ~/environment/eks-workshop/modules/security/kyverno/simple-p
 clusterpolicy.kyverno.io/add-labels created
 ```
 
-In order to validate the Mutation Webhook, rollback the `ui` Deployment configuration, removing the `CostCenter=IT`.
+In order to validate the Mutation Webhook, rollback the `ui` Deployment configuration, removing the `CostCenter=IT`, and rollout the Deployment to the latest version.
 
 ```kustomization
 base-application/ui/deployment.yaml
+Deployment/ui
 ```
 
-The policy automatically added a label `CostCenter=IT` to the Pod, in order to meet the policy requirements, resulting a successful Pod creation.
+```bash
+$ kubectl apply -k  ~/environment/eks-workshop/base-application/ui/
+namespace/ui unchanged
+serviceaccount/ui unchanged
+configmap/ui unchanged
+service/ui unchanged
+deployment.apps/ui configured
+
+$ kubectl -n ui rollout restart deployment/ui 
+deployment.apps/ui restarted
+```
+
+Validate the automatically added label `CostCenter=IT` to the Pod, to meet the policy requirements, resulting a successful Pod creation, even with the Deployment not having the Label.
 
 ```bash
-$ kubectl get pods --show-labels
-NAME      READY   STATUS    RESTARTS   AGE   LABELS
-nginx     1/1     Running   0          9m   CostCenter=IT
-redis     1/1     Running   0          2m   CostCenter=IT,run=redis
+$ $ kubectl -n ui rollout restart deployment/ui
+deployment.apps/ui restarted
 ```
 
 It's also possible to mutate existing resources in your Amazon EKS Clusters with Kyverno Policies using `patchStrategicMerge` and `patchesJson6902` parameters in your Kyverno Policy.
