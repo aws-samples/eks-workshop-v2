@@ -1,6 +1,6 @@
 ---
 title: "Reverse Shell"
-sidebar_position: 142
+sidebar_position: 432
 ---
 
 In this last lab exercise for Amazon GuardDuty findings, you'll simulate a reverse shell attack in your EKS Cluster environment.

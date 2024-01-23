@@ -1,6 +1,6 @@
 ---
 title: "Unsafe execution in kube-system Namespace"
-sidebar_position: 131
+sidebar_position: 421
 ---
 
 This finding indicates that a command was executed inside a Pod in the `kube-system` Namespace on EKS Cluster.

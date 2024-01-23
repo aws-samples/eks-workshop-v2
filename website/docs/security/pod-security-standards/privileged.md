@@ -1,6 +1,6 @@
 ---
 title: "Privileged PSS profile"
-sidebar_position: 10
+sidebar_position: 51
 ---
 
 We'll start looking at PSS by exploring the Privileged profile, which is the most permissive and allows for known privilege escalations.
