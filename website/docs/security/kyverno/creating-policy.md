@@ -141,11 +141,12 @@ $ kubectl -n ui rollout restart deployment/ui
 deployment.apps/ui restarted
 ```
 
-Validate the automatically added label `CostCenter=IT` to the Pod, to meet the policy requirements, resulting a successful Pod creation, even with the Deployment not having the Label.
+Validate the automatically added label `CostCenter=IT` to the Pod, to meet the policy requirements, resulting a successful Pod creation, even with the Deployment not having the Label specified.
 
 ```bash
-$ $ kubectl -n ui rollout restart deployment/ui
-deployment.apps/ui restarted
+$ kubectl -n ui get pods --show-labels 
+NAME                  READY   STATUS    RESTARTS   AGE   LABELS
+ui-5678d584f4-bdrwv   1/1     Running   0          9s    CostCenter=IT,app.kubernetes.io/component=service,app.kubernetes.io/created-by=eks-workshop,app.kubernetes.io/instance=ui,app.kubernetes.io/name=ui,pod-template-hash=5678d584f4
 ```
 
 It's also possible to mutate existing resources in your Amazon EKS Clusters with Kyverno Policies using `patchStrategicMerge` and `patchesJson6902` parameters in your Kyverno Policy.
