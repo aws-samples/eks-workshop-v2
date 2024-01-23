@@ -1,6 +1,6 @@
 ---
 title: "AWS Secrets and Configuration Provider (ASCP)"
-sidebar_position: 62
+sidebar_position: 322
 ---
 
 When we ran the `prepare-environment` script detailed in a [previous step](./index.md), it has already installed the AWS Secrets and Configuration Provider (ASCP) for the Kubernetes Secrets Store CSI Driver that's required for this lab.

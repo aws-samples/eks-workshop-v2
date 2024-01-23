@@ -1,6 +1,6 @@
 ---
 title: "Storing secrets in AWS Secrets Manager"
-sidebar_position: 61
+sidebar_position: 321
 ---
 
 First, we need to store a secret in AWS Secrets Manager, lets do that using the AWS CLI:
