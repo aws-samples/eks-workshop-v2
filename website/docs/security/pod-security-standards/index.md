@@ -1,6 +1,6 @@
 ---
 title: "Pod Security Standards"
-sidebar_position: 49
+sidebar_position: 50
 sidebar_custom_props: {"module": true}
 ---
 

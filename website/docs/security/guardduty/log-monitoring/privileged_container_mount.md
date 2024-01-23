@@ -24,9 +24,9 @@ pod/ubuntu-privileged created
 
 Within a few minutes we'll see the two finding `PrivilegeEscalation:Kubernetes/PrivilegedContainer` and `Persistence:Kubernetes/ContainerWithSensitiveMount` in the [GuardDuty Findings console](https://console.aws.amazon.com/guardduty/home#/findings).
 
-![](assets/privileged-container.png)
+![privileged-container](assets/privileged-container.png)
 
-![](assets/sensitive-mount.png)
+![sensitive-mount](assets/sensitive-mount.png)
 
 Once again take sometime to analyze the Finding details, Action, and Detective Investigation.
 
