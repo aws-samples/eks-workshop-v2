@@ -1,12 +1,11 @@
 ---
 title: "Amazon GuardDuty for EKS"
-sidebar_position: 120
+sidebar_position: 40
 sidebar_custom_props: {"module": true}
 ---
 
-{{% required-time estimatedLabExecutionTimeMinutes="20" %}}
-
 :::tip Before you start
+
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30

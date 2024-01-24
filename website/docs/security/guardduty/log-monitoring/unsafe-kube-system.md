@@ -1,6 +1,6 @@
 ---
 title: "Unsafe execution in kube-system Namespace"
-sidebar_position: 131
+sidebar_position: 421
 ---
 
 This finding indicates that a command was executed inside a Pod in the `kube-system` Namespace on EKS Cluster.
@@ -9,7 +9,6 @@ First lets run a Pod in the `kube-system` Namespace that provides access to its 
 
 ```bash
 $ kubectl -n kube-system run nginx --image=nginx
-$ kubectl wait --for=condition=ready pod nginx -n kube-system
 $ kubectl -n kube-system get pod nginx
 NAME    READY   STATUS    RESTARTS   AGE
 nginx   1/1     Running   0          28s

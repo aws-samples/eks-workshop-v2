@@ -1,6 +1,6 @@
 ---
 title: "Restricted PSS Profile"
-sidebar_position: 30
+sidebar_position: 53
 ---
 
 Finally we can take a look at the Restricted profile, which is the most heavily restricted policy following current Pod hardening best practices. Add labels to the `assets` namespace to enable all PSA modes for the Restricted PSS profile:

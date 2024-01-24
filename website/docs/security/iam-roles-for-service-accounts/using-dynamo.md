@@ -32,8 +32,7 @@ Let's check the value of `CARTS_DYNAMODB_TABLENAME` then run Kustomize to use th
 ```bash
 $ echo $CARTS_DYNAMODB_TABLENAME
 eks-workshop-carts
-$ kubectl kustomize ~/environment/eks-workshop/modules/security/irsa/dynamo \
-  | envsubst | kubectl apply -f-
+$ kubectl apply -k ~/environment/eks-workshop/modules/security/irsa/dynamo
 ```
 
 This will overwrite our ConfigMap with new values:

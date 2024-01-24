@@ -2,17 +2,15 @@
 
 set -e
 
-delete-all-if-crd-exists opentelemetrycollectors.opentelemetry.io
+kubectl delete clustersecretstore cluster-secret-store --ignore-not-found > /dev/null
 
-delete-all-if-crd-exists clustersecretstores.external-secrets.io
+kubectl delete SecretProviderClass catalog-spc -n catalog --ignore-not-found > /dev/null
 
-delete-all-if-crd-exists secretproviderclasses.secrets-store.csi.x-k8s.io
-
-delete-all-if-crd-exists externalsecrets.external-secrets.io
+kubectl delete ExternalSecret catalog-external-secret -n catalog --ignore-not-found > /dev/null
 
 check=$(aws secretsmanager list-secrets --filters Key="name",Values="${SECRET_NAME}" --output text)
 
 if [ ! -z "$check" ]; then
-  logmessage "Deleting Secrets Manager data..."
+  echo "Deleting Secrets Manager data..."
   aws secretsmanager delete-secret --secret-id ${SECRET_NAME}
 fi

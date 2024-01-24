@@ -1,6 +1,6 @@
 ---
 title: "EKS Runtime Monitoring"
-sidebar_position: 140
+sidebar_position: 430
 ---
 
 EKS Runtime Monitoring provides runtime threat detection coverage for Amazon EKS nodes and containers. It uses the GuardDuty security agent (EKS add-on) that adds runtime visibility into individual EKS workloads, for example, file access, process execution, privilege escalation, and network connections identifying specific containers that may be potentially compromised. 
