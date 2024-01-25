@@ -10,7 +10,7 @@ This exercise will generate two different findings, `PrivilegeEscalation:Kuberne
 To simulate the finding you'll be using a pre-configure manifest with some specific parameters already set, `SecurityContext: privileged: true` and also the `volume` and `volumeMount` options, mapping the `/etc` host directory to `/host-etc` Pod volume mount.
 
 ```file
-manifests/modules/security/Guardduty/mount/privileged-pod-example.yaml
+manifests/modules/security/guardduty/mount/privileged-pod-example.yaml
 ```
 
 Apply the manifest shown above with the following command:
