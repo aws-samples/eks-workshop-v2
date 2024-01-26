@@ -30,7 +30,6 @@ Within a few minutes we'll see the two finding `PrivilegeEscalation:Kubernetes/P
 
 Once again take sometime to analyze the Finding details, Action, and Detective Investigation.
 
-
 Cleanup the Pod by running the command below:
 
 ```bash
