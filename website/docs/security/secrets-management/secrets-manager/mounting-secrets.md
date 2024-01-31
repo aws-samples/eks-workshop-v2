@@ -1,6 +1,6 @@
 ---
 title: "Mounting AWS Secrets Manager secret on Kubernetes Pod"
-sidebar_position: 63
+sidebar_position: 323
 ---
 
 Now that we have a secret stored in AWS Secrets Manager and synchronized with a Kubernetes Secret let's mount it inside the Pod. First we should take a look at the `catalog` Deployment and the existing Secrets in the `catalog` namespace.
