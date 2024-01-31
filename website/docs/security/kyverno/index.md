@@ -13,7 +13,7 @@ $ prepare-environment security/kyverno
 
 This will make the following changes to your lab environment:
 
-Install the following Kuberentes Addons in your EKS Cluter:
+Install the following Kubernetes addons in the EKS cluster:
 
 * Kyverno Policy Manager
 * Kyverno Policies
@@ -22,7 +22,7 @@ Install the following Kuberentes Addons in your EKS Cluter:
 You can view the Terraform that applies these changes [here](https://github.com/aws-samples/eks-workshop-v2/tree/main/manifests/modules/security/kyverno/.workshop/terraform).
 :::
 
-As containers are largely adopted in production environments, DevOps, Security, and Platform teams need a solution to effectively collaborate and manage Governance and [Policy-as-Code (PaC)](https://aws.github.io/aws-eks-best-practices/security/docs/pods/#policy-as-code-pac). This ensures that all different teams are able to have the same source of truth in what regards to Security, as well as use the same baseline "language" when describing their individual needs.
+As containers are largely adopted in production environments, DevOps, Security, and Platform teams need a solution to effectively collaborate and manage Governance and [Policy-as-Code (PaC)](https://aws.github.io/aws-eks-best-practices/security/docs/pods/#policy-as-code-pac). This ensures that all different teams are able to have the same source of truth in what regards to security, as well as use the same baseline "language" when describing their individual needs.
 
 Kubernetes by its nature is meant to be a tool to build on and orchestrate, this means that out of the box it lacks pre-defined guardrails. In order to give builders a way to control security Kubernetes provides (starting on version 1.23) [Pod Security Admission (PSA)](https://kubernetes.io/docs/concepts/security/pod-security-admission/), a built-in admission controller that implements the security controls outlined in the [Pod Security Standards (PSS)](https://kubernetes.io/docs/concepts/security/pod-security-standards/), enabled by default in Amazon Elastic Kubernetes Service (EKS).
 

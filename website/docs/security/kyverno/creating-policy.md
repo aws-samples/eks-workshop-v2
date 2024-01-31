@@ -33,7 +33,7 @@ clusterpolicy.kyverno.io/require-labels created
 Next, take a look on the Pods running in the `ui` Namespace, notice the applied labels.
 
 ```bash
-$ $ kubectl -n ui get pods --show-labels
+$ kubectl -n ui get pods --show-labels
 NAME                  READY   STATUS    RESTARTS   AGE   LABELS
 ui-67d8cf77cf-d4j47   1/1     Running   0          9m    app.kubernetes.io/component=service,app.kubernetes.io/created-by=eks-workshop,app.kubernetes.io/instance=ui,app.kubernetes.io/name=ui,pod-template-hash=67d8cf77cf
 ```
@@ -43,17 +43,16 @@ Check the running Pod doesn't have the required Label and Kyverno didn't termina
 However if you delete the running Pod, it won't be able to be recreated since it doesn't have the required Label. Go ahead and delete de Pod running in the `ui` Namespace.
 
 ```bash
-$ kubectl -n ui delete pod ui-67d8cf77cf-hvqcd 
+$ kubectl -n ui delete pod --all
 pod "ui-67d8cf77cf-d4j47" deleted
-
-$ kubectl -n ui get pods                                                                                                                                                                                                                                                                                                                                                                                     
+$ kubectl -n ui get pods
 No resources found in ui namespace.
 ```
 
 As mentioned, the Pod was not recreated, try to force a rollout of the `ui` deployment.
 
 ```bash
-$ kubectl -n ui rollout restart deployment/ui                                                                                                                                                                                                                                                                                                                                                                       
+$ kubectl -n ui rollout restart deployment/ui
 error: failed to patch: admission webhook "validate.kyverno.svc-fail" denied the request: 
 
 resource Deployment/ui/ui was blocked due to the following policies 
@@ -68,7 +67,7 @@ The rollout failed with the admission webhook denying the request due to the  `r
 You can also check this `error` message describing the `ui` deployment, or visualizing the `events` in the `ui` Namespace.
 
 ```bash
-$ kubectl -n ui describe deploy ui 
+$ kubectl -n ui describe deployment ui
 ...
 Events:
   Type     Reason             Age                From                   Message
@@ -89,13 +88,14 @@ Deployment/ui
 ```
 
 ```bash
-$ kubectl apply -k  ~/environment/eks-workshop/modules/security/kyverno/simple-policy/ui-labeled/
+$ kubectl apply -k ~/environment/eks-workshop/modules/security/kyverno/simple-policy/ui-labeled
 namespace/ui unchanged
 serviceaccount/ui unchanged
 configmap/ui unchanged
 service/ui unchanged
 deployment.apps/ui configured
-$ kubectl -n ui get pods --show-labels                                                                                                                                                                                                                                                                                                                                                                              
+$ kubectl -n ui rollout status deployment/ui
+$ kubectl -n ui get pods --show-labels
 NAME                  READY   STATUS    RESTARTS   AGE   LABELS
 ui-5498685db8-k57nk   1/1     Running   0          60s   CostCenter=IT,app.kubernetes.io/component=service,app.kubernetes.io/created-by=eks-workshop,app.kubernetes.io/instance=ui,app.kubernetes.io/name=ui,pod-template-hash=5498685db8
 ```
@@ -122,36 +122,23 @@ $ kubectl apply -f  ~/environment/eks-workshop/modules/security/kyverno/simple-p
 clusterpolicy.kyverno.io/add-labels created
 ```
 
-In order to validate the Mutation Webhook, rollback the `ui` Deployment configuration, removing the `CostCenter=IT`, and rollout the Deployment to the latest version.
+In order to validate the Mutation Webhook, lets this time rollout the `assets` Deployment without explicitly adding a label:
 
 ```bash
-$ kubectl apply -k  ~/environment/eks-workshop/base-application/ui/
-namespace/ui unchanged
-serviceaccount/ui unchanged
-configmap/ui unchanged
-service/ui unchanged
-deployment.apps/ui configured
-
-$ kubectl -n ui rollout restart deployment/ui 
-deployment.apps/ui restarted
+$ kubectl -n assets rollout restart deployment/assets
+deployment.apps/assets restarted
+$ kubectl -n assets rollout status deployment/assets
+deployment "assets" successfully rolled out
 ```
 
-Validate the automatically added label `CostCenter=IT` to the Pod, to meet the policy requirements, resulting a successful Pod creation, even with the Deployment not having the Label specified.
+Validate the automatically added label `CostCenter=IT` to the Pod to meet the policy requirements, resulting a successful Pod creation even with the Deployment not having the label specified:
 
 ```bash
-$ kubectl -n ui get pods --show-labels 
-NAME                  READY   STATUS    RESTARTS   AGE   LABELS
-ui-5678d584f4-bdrwv   1/1     Running   0          9s    CostCenter=IT,app.kubernetes.io/component=service,app.kubernetes.io/created-by=eks-workshop,app.kubernetes.io/instance=ui,app.kubernetes.io/name=ui,pod-template-hash=5678d584f4
+$ kubectl -n assets get pods --show-labels 
+NAME                     READY   STATUS    RESTARTS   AGE   LABELS
+assets-bb88b4789-kmk62   1/1     Running   0          25s   CostCenter=IT,app.kubernetes.io/component=service,app.kubernetes.io/created-by=eks-workshop,app.kubernetes.io/instance=assets,app.kubernetes.io/name=assets,pod-template-hash=bb88b4789
 ```
 
 It's also possible to mutate existing resources in your Amazon EKS Clusters with Kyverno Policies using `patchStrategicMerge` and `patchesJson6902` parameters in your Kyverno Policy.
 
-This was just a simple example of Labels for our Pods with Validating and Mutating rules. This can be applied to various scenarios such as restricting Images from unknown registries, adding Data to Config Maps, Tolerations and much more. In the next upcoming labs, you will go through some more advanced use-cases.
-
-Run the following command to cleanup the Pod resources created on this lab.
-
-```bash
-$ kubectl delete pod nginx redis
-pod "nginx" deleted
-pod "redis" deleted
-```
+This was just a simple example of labels for our Pods with Validating and Mutating rules. This can be applied to various scenarios such as restricting Images from unknown registries, adding Data to Config Maps, Tolerations and much more. In the next upcoming labs, you will go through some more advanced use-cases.
