@@ -124,11 +124,6 @@ clusterpolicy.kyverno.io/add-labels created
 
 In order to validate the Mutation Webhook, rollback the `ui` Deployment configuration, removing the `CostCenter=IT`, and rollout the Deployment to the latest version.
 
-```kustomization
-base-application/ui/deployment.yaml
-Deployment/ui
-```
-
 ```bash
 $ kubectl apply -k  ~/environment/eks-workshop/base-application/ui/
 namespace/ui unchanged
