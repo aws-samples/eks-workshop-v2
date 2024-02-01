@@ -11,7 +11,7 @@ As seen earlier, Kyverno has two types of `validationFailureAction`, `Audit` mod
 
 Now, we will check on our cluster's status on compliance with the policies we have created so far in this workshop with an overview of the Policy Reports generated.
 
-```bash
+```bash hook=reports
 $ kubectl get policyreports -A
 
 NAMESPACE     NAME                             PASS   FAIL   WARN   ERROR   SKIP   AGE

@@ -2,6 +2,8 @@
 
 set -e
 
+logmessage "Cleaning up Kyverno resources..."
+
 delete-all-if-crd-exists admissionreports.kyverno.io
 delete-all-if-crd-exists backgroundscanreports.kyverno.io
 delete-all-if-crd-exists cleanuppolicies.kyverno.io

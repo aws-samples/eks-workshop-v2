@@ -38,7 +38,7 @@ clusterpolicy.kyverno.io/baseline-policy created
 
 Now, try to run the privileged Pod again.
 
-```bash
+```bash expectError=true
 $ kubectl run privileged-pod --image=nginx --restart=Never --privileged
 Error from server: admission webhook "validate.kyverno.svc-fail" denied the request: 
 

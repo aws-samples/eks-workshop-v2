@@ -51,7 +51,7 @@ No resources found in ui namespace.
 
 As mentioned, the Pod was not recreated, try to force a rollout of the `ui` deployment.
 
-```bash
+```bash expectError=true
 $ kubectl -n ui rollout restart deployment/ui
 error: failed to patch: admission webhook "validate.kyverno.svc-fail" denied the request: 
 

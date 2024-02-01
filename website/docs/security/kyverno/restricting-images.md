@@ -42,7 +42,7 @@ clusterpolicy.kyverno.io/restrict-image-registries created
 
 Try to run another sample Pod using the default image from the public Registry.
 
-```bash
+```bash expectError=true
 $ kubectl run nginx-public --image=nginx
 
 Error from server: admission webhook "validate.kyverno.svc-fail" denied the request: 
