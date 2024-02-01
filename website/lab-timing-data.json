@@ -220,5 +220,11 @@
         "directory": "security/kyverno",
         "file": "security/kyverno/index.md",
         "executionTimeSeconds": 381
+    },
+    "aiml/inferentia/index.md": {
+        "title": "Inference with AWS Inferentia",
+        "directory": "aiml/inferentia",
+        "file": "aiml/inferentia/index.md",
+        "executionTimeSeconds": 780
     }
 }
