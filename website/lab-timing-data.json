@@ -63,31 +63,31 @@
         "title": "Amazon GuardDuty for EKS",
         "directory": "security/guardduty",
         "file": "security/guardduty/index.md",
-        "executionTimeSeconds": 116
+        "executionTimeSeconds": 120
     },
     "security/iam-roles-for-service-accounts/index.md": {
         "title": "IAM Roles for Service Accounts",
         "directory": "security/iam-roles-for-service-accounts",
         "file": "security/iam-roles-for-service-accounts/index.md",
-        "executionTimeSeconds": 265
+        "executionTimeSeconds": 245
     },
     "security/pod-security-standards/index.md": {
         "title": "Pod Security Standards",
         "directory": "security/pod-security-standards",
         "file": "security/pod-security-standards/index.md",
-        "executionTimeSeconds": 159
+        "executionTimeSeconds": 155
     },
     "security/secrets-management/sealed-secrets/index.md": {
         "title": "Securing Secrets Using Sealed Secrets",
         "directory": "security/secrets-management/sealed-secrets",
         "file": "security/secrets-management/sealed-secrets/index.md",
-        "executionTimeSeconds": 172
+        "executionTimeSeconds": 162
     },
     "security/secrets-management/secrets-manager/index.md": {
         "title": "Managing Secrets with AWS Secrets Manager",
         "directory": "security/secrets-management/secrets-manager",
         "file": "security/secrets-management/secrets-manager/index.md",
-        "executionTimeSeconds": 375
+        "executionTimeSeconds": 359
     },
     "autoscaling/compute/cluster-autoscaler/index.md": {
         "title": "Cluster Autoscaler (CA)",
@@ -214,5 +214,11 @@
         "directory": "observability/opensearch",
         "file": "observability/opensearch/index.md",
         "executionTimeSeconds": 261
+    },
+    "security/kyverno/index.md": {
+        "title": "Policy management with Kyverno",
+        "directory": "security/kyverno",
+        "file": "security/kyverno/index.md",
+        "executionTimeSeconds": 381
     }
 }
