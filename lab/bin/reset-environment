@@ -67,6 +67,11 @@ fi
 ln -s $manifests_path /home/ec2-user/environment/eks-workshop
 
 if [ ! -z "$module" ]; then
+  if [ ! -z "$ANALYTICS_ENDPOINT" ]; then
+    AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
+    curl --get --data-urlencode "lab=$module" --data-urlencode "account_id=$AWS_ACCOUNT_ID" $ANALYTICS_ENDPOINT || true
+  fi
+
   if [ $module = "introduction/getting-started" ]; then
     exit
   fi
