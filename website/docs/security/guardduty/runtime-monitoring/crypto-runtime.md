@@ -34,6 +34,6 @@ The first one is `Execution:Runtime/NewBinaryExecuted` which is related to the `
 
 Take a closer look to the details of this finding, which because they are related to the GuardDuty runtime monitoring show specific information regarding the runtime, context, and processes.
 
-The second and thrid one are related to `CryptoCurrency:Runtime/BitcoinTool.B!DNS` findings. Notice again that the finding details brings different information, this time showing the `DNS_REQUEST` action, and the **Threat intelligence Evidences**.
+The second and third ones are related to `CryptoCurrency:Runtime/BitcoinTool.B!DNS` findings. Notice again that the finding details brings different information, this time showing the `DNS_REQUEST` action, and the **Threat intelligence Evidences**.
 
 ![](assets/crypto-runtime.png)
