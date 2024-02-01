@@ -59,6 +59,10 @@ Parameters:
     Type: String
     Description: Triggers the Cloud9 to update itself
     Default: "0"
+  AnalyticsEndpoint:
+    Type: String
+    Description: Analytics endpoint used for AWS events
+    Default: ""
 
 Conditions: 
   Create3rdPartyResources: !Equals [ !Ref EksWorkshopC9EnvType, 3rdParty ]
@@ -362,6 +366,7 @@ Resources:
                 export REPOSITORY_REF="${RepositoryRef}"
                 export CLOUD9_ENVIRONMENT_ID="${EksWorkshopC9Instance}"
                 export RESOURCES_PRECREATED="${ResourcesPrecreated}"
+                export ANALYTICS_ENDPOINT="${AnalyticsEndpoint}"
 
                 curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/installer.sh | bash
 
