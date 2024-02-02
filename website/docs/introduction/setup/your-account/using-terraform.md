@@ -36,7 +36,7 @@ Finally, the `eks.tf` file specifies our EKS cluster configuration, including a 
 ```file hidePath=true
 manifests/../cluster/terraform/eks.tf
 ```
-## Create workshop environment with Terraform
+## Creating the workshop environment with Terraform
 
 For the given configuration, `terraform` will create the Workshop environment with the following:
 - Create a VPC across three availability zones
