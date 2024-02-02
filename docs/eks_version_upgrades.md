@@ -39,4 +39,4 @@ There are various places that reference the Kubernetes versions (Kubernetes, kub
 1. IDE installer: `lab/scripts/installer.sh`
 1. eksctl: `cluster/eksctl/cluster.yaml`
 1. Terraform: `cluster/terraform/variables.tf`
-1. Common kubectl: `/hack/lib/kubectl-version.sh`
+1. Common kubectl: `hack/lib/kubectl-version.sh`

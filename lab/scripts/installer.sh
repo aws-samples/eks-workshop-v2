@@ -2,14 +2,14 @@
 
 set -e
 
-kubectl_version='1.27.7'
-kubectl_checksum='e5fe510ba6f421958358d3d43b3f0b04c2957d4bc3bb24cf541719af61a06d79'
+kubectl_version='1.29.0'
+kubectl_checksum='0e03ab096163f61ab610b33f37f55709d3af8e16e4dcc1eb682882ef80f96fd5'
 
 helm_version='3.10.1'
 helm_checksum='c12d2cd638f2d066fec123d0bd7f010f32c643afdf288d39a4610b1f9cb32af3'
 
-eksctl_version='0.164.0'
-eksctl_checksum='2ed5de811dd26a3ed041ca3e6f26717288dc02dfe87ac752ae549ed69576d03e'
+eksctl_version='0.169.0'
+eksctl_checksum='0491ed2ddbeeb73c226ca2b1f99fc1b401dc638f17343d955a4b9797c2e540d9'
 
 kubeseal_version='0.18.4'
 kubeseal_checksum='2e765b87889bfcf06a6249cde8e28507e3b7be29851e4fac651853f7638f12f3'
