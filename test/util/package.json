@@ -21,7 +21,7 @@
     "@types/mocha": "^10.0.6",
     "@types/mock-fs": "^4.13.4",
     "@types/node": "^20.11.14",
-    "@types/sinon": "^17.0.2",
+    "@types/sinon": "^17.0.3",
     "@types/unist": "^3.0.2",
     "@types/yargs": "^17.0.32",
     "mock-fs": "^5.1.4",
