@@ -6,19 +6,19 @@ release=$1
 namespace=$2
 
 if [ -z "$release" ]; then
-  echo "You must provide a release name"
+  >&2 echo "You must provide a release name"
   exit 1
 fi
 
 if [ -z "$namespace" ]; then
-  echo "You must provide a namespace"
+  >&2 echo "You must provide a namespace"
   exit 1
 fi
 
 check=$(helm ls --filter "$release" -n "$namespace" --no-headers)
 
 if [ ! -z "$check" ]; then
-  echo "Uninstalling helm chart $release..."
+  logmessage "Uninstalling helm chart $release..."
 
   helm uninstall $release -n $namespace --wait > /dev/null
 fi

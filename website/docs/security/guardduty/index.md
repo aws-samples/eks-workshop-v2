@@ -1,6 +1,6 @@
 ---
 title: "Amazon GuardDuty for EKS"
-sidebar_position: 120
+sidebar_position: 40
 sidebar_custom_props: {"module": true}
 ---
 

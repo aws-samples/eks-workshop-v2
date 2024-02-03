@@ -109,7 +109,7 @@ jobs:
       env:
         AWS_REGION: "${{ secrets.AWS_REGION }}"
       run: |
-        export CLEANUP_ENVIRONMENT_NAME="$CLUSTER_ID"
+        export CLEANUP_ENVIRONMENT_NAME="eks-workshop-$CLUSTER_ID"
         export AWS_DEFAULT_REGION="$AWS_REGION"
         
         envsubst < hack/lib/filter.yml > filter.yml

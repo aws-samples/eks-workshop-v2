@@ -30,7 +30,7 @@ $ cat ~/environment/eks-workshop/modules/fundamentals/fargate/profile/fargate.ya
 
 Now we can inspect the Fargate profile:
 
-```bash
+```bash wait=60
 $ aws eks describe-fargate-profile \
     --cluster-name $EKS_CLUSTER_NAME \
     --fargate-profile-name checkout-profile

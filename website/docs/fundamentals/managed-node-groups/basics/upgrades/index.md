@@ -47,7 +47,8 @@ Upgrading the node group will take at least 10 minutes, only execute this sectio
 The EKS cluster that has been provisioned for you intentionally has managed node groups that are not running the latest AMI. You can see what the latest AMI version is by querying SSM:
 
 ```bash
-$ aws ssm get-parameter --name /aws/service/eks/optimized-ami/1.27/amazon-linux-2/recommended/image_id --region $AWS_REGION --query "Parameter.Value" --output text
+$ EKS_VERSION=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --query "cluster.version" --output text)
+$ aws ssm get-parameter --name /aws/service/eks/optimized-ami/$EKS_VERSION/amazon-linux-2/recommended/image_id --region $AWS_REGION --query "Parameter.Value" --output text
 ami-0fcd72f3118e0dd88
 ```
 

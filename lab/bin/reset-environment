@@ -1,7 +1,26 @@
 #!/bin/bash
 
+mkdir -p /eks-workshop/logs
+log_file=/eks-workshop/logs/action-$(date +%s).log
+
+exec 7>&1
+
+logmessage() {
+  echo "$@" >&7
+  echo "$@" >&1
+}
+export -f logmessage
+
+if [ -z "${DEV_MODE}" ]; then
+  # Redirection for logging
+  exec >$log_file 2> >(tee >(cat >&7))
+else
+  # Log the commands in dev mode
+  set -o xtrace
+fi
+
 if [ -z "$EKS_CLUSTER_NAME" ]; then
-  echo "Error: The EKS_CLUSTER_NAME environment variable must be set. Please run 'use-cluster <your cluster name>'"
+  logmessage "Error: The EKS_CLUSTER_NAME environment variable must be set. Please run 'use-cluster <your cluster name>'"
   exit 1
 fi
 
@@ -12,6 +31,15 @@ manifests_path="/eks-workshop/manifests"
 base_path="$manifests_path/base-application"
 
 set -Eeuo pipefail
+trap 'catch $? $LINENO' EXIT
+
+catch() {
+  if [ "$1" != "0" ]; then
+    logmessage "An error occurred, please contact your workshop proctor or raise an issue at https://github.com/aws-samples/eks-workshop-v2/issues"
+    logmessage "The full log can be found here: $log_file"
+  fi
+  exec 3<&-
+}
 
 mkdir -p /eks-workshop
 
@@ -24,12 +52,12 @@ REPOSITORY_REF=${REPOSITORY_REF:-""}
 if [ ! -z "${REPOSITORY_REF}" ]; then
   rm -rf $repository_path
 
-  echo "Refreshing copy of workshop repository from GitHub..."
+  logmessage "Refreshing copy of workshop repository from GitHub..."
 
-  git clone --quiet https://github.com/$REPOSITORY_OWNER/$REPOSITORY_NAME.git $repository_path > /dev/null
-  (cd $repository_path && git checkout --quiet "${REPOSITORY_REF}" > /dev/null)
+  git clone --quiet https://github.com/$REPOSITORY_OWNER/$REPOSITORY_NAME.git $repository_path
+  (cd $repository_path && git checkout --quiet "${REPOSITORY_REF}")
 
-  echo ""
+  logmessage ""
 
   cp -R $repository_path/manifests $manifests_path
 elif [ -d "/manifests" ]; then
@@ -39,20 +67,28 @@ fi
 ln -s $manifests_path /home/ec2-user/environment/eks-workshop
 
 if [ ! -z "$module" ]; then
+  ANALYTICS_ENDPOINT=${ANALYTICS_ENDPOINT:-""}
+
+  if [ ! -z "$ANALYTICS_ENDPOINT" ]; then
+    AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
+    curl --get -s --data-urlencode "lab=$module" --data-urlencode "account_id=$AWS_ACCOUNT_ID" $ANALYTICS_ENDPOINT || true
+  fi
+
   if [ $module = "introduction/getting-started" ]; then
     exit
   fi
 fi
 
-echo "Resetting the environment, please wait"
+logmessage "Resetting the environment..."
+logmessage "Tip: Read the rest of the lab introduction while you wait!"
 
 if [ -f "/eks-workshop/hooks/cleanup.sh" ]; then
   bash /eks-workshop/hooks/cleanup.sh
 fi
 
-kubectl delete pod load-generator --ignore-not-found > /dev/null
+kubectl delete pod load-generator --ignore-not-found
 
-kubectl delete namespace other --ignore-not-found > /dev/null
+kubectl delete namespace other --ignore-not-found
 
 kubectl apply -k $base_path --prune --all \
   --prune-allowlist=autoscaling/v1/HorizontalPodAutoscaler \
@@ -64,14 +100,14 @@ kubectl apply -k $base_path --prune --all \
   --prune-allowlist=core/v1/Secret \
   --prune-allowlist=core/v1/PersistentVolumeClaim \
   --prune-allowlist=scheduling.k8s.io/v1/PriorityClass \
-  --prune-allowlist=networking.k8s.io/v1/Ingress > /dev/null
+  --prune-allowlist=networking.k8s.io/v1/Ingress
 
-echo "Waiting for application to become ready..."
+logmessage "Waiting for application to become ready..."
 
 sleep 10
 
-kubectl wait --for=condition=available --timeout=240s deployments -l app.kubernetes.io/created-by=eks-workshop -A > /dev/null
-kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A > /dev/null
+kubectl wait --for=condition=available --timeout=240s deployments -l app.kubernetes.io/created-by=eks-workshop -A
+kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
 
 # Addons
 mkdir -p /eks-workshop/terraform
@@ -81,12 +117,12 @@ export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
 
 RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-""}
 
-echo "Cleaning up previous lab infrastructure..."
+logmessage "Cleaning up previous lab infrastructure..."
 
 tf_dir=$(realpath --relative-to="$PWD" '/eks-workshop/terraform')
 
-terraform -chdir="$tf_dir" init -upgrade > /tmp/terraform-destroy-init.log
-terraform -chdir="$tf_dir" destroy --auto-approve > /tmp/terraform-destroy.log
+terraform -chdir="$tf_dir" init -upgrade
+terraform -chdir="$tf_dir" destroy --auto-approve
 
 rm -rf /eks-workshop/terraform/addon*.tf
 
@@ -101,7 +137,7 @@ if [ ! -z "$module" ]; then
   fi
 
   if [ -f "$module_path/.workshop/terraform/addon.tf" ]; then
-    echo "Creating infrastructure for next lab..."
+    logmessage "Creating infrastructure for next lab..."
 
     cp -R $module_path/.workshop/terraform/* /eks-workshop/terraform
 
@@ -109,12 +145,12 @@ if [ ! -z "$module" ]; then
       rm -f /eks-workshop/terraform/addon_infrastructure.tf
     fi
 
-    terraform -chdir="$tf_dir" init -upgrade > /tmp/terraform-apply-init.log
-    terraform -chdir="$tf_dir" apply -refresh=false --auto-approve > /tmp/terraform-apply.log
+    terraform -chdir="$tf_dir" init -upgrade
+    terraform -chdir="$tf_dir" apply -refresh=false --auto-approve
   fi
 
   if [ -d "$module_path/.workshop/manifests" ]; then
-    kubectl apply -k "$module_path/.workshop/manifests" > /dev/null
+    kubectl apply -k "$module_path/.workshop/manifests"
   fi
 fi
 
@@ -126,10 +162,10 @@ expected_size_config="$EKS_DEFAULT_MNG_MIN $EKS_DEFAULT_MNG_MAX $EKS_DEFAULT_MNG
 mng_size_config=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME | jq -r '.nodegroup.scalingConfig | "\(.minSize) \(.maxSize) \(.desiredSize)"')
 
 if [[ "$mng_size_config" != "$expected_size_config" ]]; then
-  echo "Setting EKS Node Group back to initial sizing..."
+  logmessage "Setting EKS Node Group back to initial sizing..."
 
   aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME \
-    --scaling-config desiredSize=$EKS_DEFAULT_MNG_DESIRED,minSize=$EKS_DEFAULT_MNG_MIN,maxSize=$EKS_DEFAULT_MNG_MAX > /dev/null
+    --scaling-config desiredSize=$EKS_DEFAULT_MNG_DESIRED,minSize=$EKS_DEFAULT_MNG_MIN,maxSize=$EKS_DEFAULT_MNG_MAX
   aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME
 
   sleep 10
@@ -138,7 +174,7 @@ fi
 asg_size_config=$(aws autoscaling describe-auto-scaling-groups --filters "Name=tag:eks:nodegroup-name,Values=$EKS_DEFAULT_MNG_NAME" "Name=tag:eks:cluster-name,Values=$EKS_CLUSTER_NAME" | jq -r '.AutoScalingGroups[0] | "\(.MinSize) \(.MaxSize) \(.DesiredCapacity)"')
 
 if [[ "$asg_size_config" != "$expected_size_config" ]]; then
-  echo "Setting ASG back to initial sizing..."
+  logmessage "Setting ASG back to initial sizing..."
 
   export ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --filters "Name=tag:eks:nodegroup-name,Values=$EKS_DEFAULT_MNG_NAME" "Name=tag:eks:cluster-name,Values=$EKS_CLUSTER_NAME" --query "AutoScalingGroups[0].AutoScalingGroupName" --output text)
   aws autoscaling update-auto-scaling-group \
@@ -161,9 +197,9 @@ if [ $EXIT_CODE -ne 0 ]; then
 fi
 
 # Recycle workload pods in case stateful pods got restarted
-kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernetes.io/component=service -A > /dev/null
+kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernetes.io/component=service -A
 
-kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A > /dev/null
+kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
 
 # Finished
-echo 'Environment is ready'
+logmessage 'Environment is ready'

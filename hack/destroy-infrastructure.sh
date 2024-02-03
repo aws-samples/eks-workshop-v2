@@ -10,4 +10,4 @@ source $SCRIPT_DIR/lib/common-env.sh
 
 root="$SCRIPT_DIR/.."
 
-cat $root/cluster/eksctl/cluster.yaml | envsubst | eksctl delete cluster --wait --force --disable-nodegroup-eviction -f -
+cat $root/cluster/eksctl/cluster.yaml | envsubst | eksctl delete cluster --wait --force --disable-nodegroup-eviction --timeout 45m -f -

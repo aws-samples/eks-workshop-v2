@@ -54,7 +54,7 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           remarkPlugins: [
             remarkCodeTerminal,
-            [remarkTime, {enabled: labTimesEnabled, factor: 1.25}]
+            [remarkTime, { enabled: labTimesEnabled, factor: 1.25 }]
           ],
           beforeDefaultRemarkPlugins: [
             [remarkParameters, {
@@ -65,7 +65,7 @@ const config = {
                 KUBERNETES_VERSION: '1.27',
                 KUBERNETES_NODE_VERSION: '1.27.3-eks-48e63af'
               }
-            }], 
+            }],
             [remarkIncludeCode, { manifestsDir }],
             [remarkIncludeKustomization, { manifestsDir: kustomizationsDir }]
           ],
@@ -84,13 +84,6 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      announcementBar: {
-        id: 'upgrade-1.27',
-        content:
-          '🚩 EKS Workshop upgraded to EKS 1.27 on 17th November. If you have an existing lab environment please see the <a target="_blank" rel="noopener noreferrer" href="/docs/misc/major-upgrade">major upgrade instructions</a>. 🚩',
-        backgroundColor: '#0972d3',
-        textColor: '#fff',
-      },
       colorMode: {
         defaultMode: 'light',
         disableSwitch: false,

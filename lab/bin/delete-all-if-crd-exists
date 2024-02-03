@@ -5,7 +5,7 @@ set -e
 crd=$1
 
 if [ -z "$crd" ]; then
-  echo "Error: You must provide a CRD"
+  >&2 echo "Error: You must provide a CRD"
   exit 1
 fi
 

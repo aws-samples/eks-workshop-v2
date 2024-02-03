@@ -13,6 +13,6 @@ delete-all-if-crd-exists externalsecrets.external-secrets.io
 check=$(aws secretsmanager list-secrets --filters Key="name",Values="${SECRET_NAME}" --output text)
 
 if [ ! -z "$check" ]; then
-  echo "Deleting Secrets Manager data..."
+  logmessage "Deleting Secrets Manager data..."
   aws secretsmanager delete-secret --secret-id ${SECRET_NAME}
 fi
