@@ -7,7 +7,7 @@ export default function HomepageVideo() {
     <section className={styles.features}>
       <div className="container">
         <div className={styles.video}>
-          <ReactPlayer controls url='https://www.youtube.com/watch?v=_TFk5jQr2lk' />
+          <ReactPlayer controls url='https://www.youtube.com/watch?v=E956xeOt050' />
         </div>
       </div>
     </section>
