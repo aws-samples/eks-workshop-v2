@@ -1,5 +1,5 @@
 module "eks_blueprints_addons" {
-  source = "aws-ia/eks-blueprints-addons/aws"
+  source  = "aws-ia/eks-blueprints-addons/aws"
   version = "~> 1.0"
 
   enable_aws_load_balancer_controller = true
@@ -19,16 +19,6 @@ resource "time_sleep" "wait" {
   create_duration = "10s"
 }
 
-# resource "aws_eks_addon" "pod_identity_agent" {
-#   cluster_name  = local.addon_context.eks_cluster_id
-#   addon_name    = "eks-pod-identity-agent"
-#   resolve_conflicts_on_create = "OVERWRITE"
-  
-#   tags = {
-#     "eks_addon" = "eks-pod-identity-agent"
-#   }
-# }
-
 resource "kubernetes_manifest" "ui_nlb" {
   manifest = {
     "apiVersion" = "v1"
@@ -37,21 +27,21 @@ resource "kubernetes_manifest" "ui_nlb" {
       "name"      = "ui-nlb"
       "namespace" = "ui"
       "annotations" = {
-        "service.beta.kubernetes.io/aws-load-balancer-type" = "external "
-        "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internet-facing"
+        "service.beta.kubernetes.io/aws-load-balancer-type"            = "external "
+        "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
         "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "instance"
       }
     }
     "spec" = {
       "type" = "LoadBalancer"
       "ports" = [{
-        "port" = 80
+        "port"       = 80
         "targetPort" = 8080
-        "name" = "http"
+        "name"       = "http"
       }]
       "selector" = {
-        "app.kubernetes.io/name" = "ui"
-        "app.kubernetes.io/instance" = "ui"
+        "app.kubernetes.io/name"      = "ui"
+        "app.kubernetes.io/instance"  = "ui"
         "app.kubernetes.io/component" = "service"
       }
     }
@@ -91,14 +81,14 @@ resource "aws_dynamodb_table" "carts" {
 }
 
 module "iam_assumable_role_carts" {
-  source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
-  version                       = "~> v5.5.5"
-  create_role                   = true
-  role_requires_mfa             = false
-  role_name                     = "${local.addon_context.eks_cluster_id}-carts-dynamo"
-  trusted_role_services         = ["pods.eks.amazonaws.com"]
-  custom_role_policy_arns       = [aws_iam_policy.carts_dynamo.arn]
-  trusted_role_actions          = ["sts:AssumeRole", "sts:TagSession"]
+  source                  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
+  version                 = "~> v5.5.5"
+  create_role             = true
+  role_requires_mfa       = false
+  role_name               = "${local.addon_context.eks_cluster_id}-carts-dynamo"
+  trusted_role_services   = ["pods.eks.amazonaws.com"]
+  custom_role_policy_arns = [aws_iam_policy.carts_dynamo.arn]
+  trusted_role_actions    = ["sts:AssumeRole", "sts:TagSession"]
 
   tags = local.tags
 }
