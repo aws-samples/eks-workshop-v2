@@ -14,7 +14,7 @@ $ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --addon-name eks-po
 Now we can take a look at what has been created in our EKS cluster by the addon. For example, a DaemonSet will be running a pod on each node in our cluster:
 
 ```bash
-$ kubectl get daemonset eks-pod-identity-agent -n kube-system
+$ kubectl -n kube-system get daemonset eks-pod-identity-agent 
 NAME                      DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
 eks-pod-identity-agent    3         3         3       3            3           <none>          3d21h
 ```
@@ -76,8 +76,8 @@ $ aws eks create-pod-identity-association --cluster-name ${EKS_CLUSTER_NAME} \
         "clusterName": "eks-workshop",
         "namespace": "carts",
         "serviceAccount": "carts",
-        "roleArn": "arn:aws:iam::111122223333:role/eks-workshop-carts-dynamo",
-        "associationArn": "arn:aws::111122223333:podidentityassociation/eks-workshop/a-abcdefghijklmnop1",
+        "roleArn": "arn:aws:iam::123456789000:role/eks-workshop-carts-dynamo",
+        "associationArn": "arn:aws::123456789000:podidentityassociation/eks-workshop/a-abcdefghijklmnop1",
         "associationId": "a-abcdefghijklmnop1",
         "tags": {},
         "createdAt": "2024-01-09T16:16:38.163000+00:00",
@@ -96,7 +96,9 @@ $ kubectl -n carts describe deployment carts | grep 'Service Account'
 With the ServiceAccount verified now we just need to recycle the `carts` pods:
 
 ```bash hook=enable-pod-identity hookTimeout=430
-$ kubectl rollout restart -n carts deployment/carts
+$ kubectl -n carts rollout restart deployment/carts
 deployment.apps/carts restarted
-$ kubectl rollout status -n carts deployment/carts
+$ kubectl -n carts rollout status deployment/carts
+Waiting for deployment "carts" rollout to finish: 1 old replicas are pending termination...
+deployment "carts" successfully rolled out
 ```

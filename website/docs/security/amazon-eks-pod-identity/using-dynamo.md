@@ -39,7 +39,7 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/security/eks-pod-identity
 This will overwrite our ConfigMap with new values:
 
 ```bash
-$ kubectl get -n carts cm carts -o yaml
+$ kubectl -n carts get cm carts -o yaml
 apiVersion: v1
 data:
   CARTS_DYNAMODB_TABLENAME: eks-workshop-carts
@@ -54,17 +54,18 @@ metadata:
 Now we need to recycle all the carts Pods to pick up our new ConfigMap contents:
 
 ```bash hook=enable-dynamo hookTimeout=430
-$ kubectl rollout restart -n carts deployment/carts
+$ kubectl -n carts rollout restart deployment/carts
 deployment.apps/carts restarted
-$ kubectl rollout status -n carts deployment/carts
+$ kubectl -n carts rollout status deployment/carts
 ```
 
 Let us try to access our application using the browser. A `LoadBalancer` type service named `ui-nlb` is provisioned in the `ui` namespace from which the application's UI can be accessed.
 
 ```bash
-$ kubectl get service -n ui ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}'
+$ kubectl -n ui get service ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}'
 k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 ```
+
 So now our application should be using DynamoDB right? Load it up in the browser using the output of the above command and navigate to the shopping cart:
 
 <browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/cart">
