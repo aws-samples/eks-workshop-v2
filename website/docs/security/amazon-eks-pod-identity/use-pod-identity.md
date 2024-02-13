@@ -8,18 +8,39 @@ To use EKS Pod Identity in your cluster, `EKS Pod Identity Agent` addon must be 
 
 ```bash timeout=300 wait=60
 $ aws eks create-addon --cluster-name $EKS_CLUSTER_NAME --addon-name eks-pod-identity-agent 
+{
+    "addon": {
+        "addonName": "eks-pod-identity-agent",
+        "clusterName": "eks-workshop",
+        "status": "CREATING",
+        "addonVersion": "v1.1.0-eksbuild.1",
+        "health": {
+            "issues": []
+        },
+        "addonArn": "arn:aws:eks:us-west-2:123456789000:addon/eks-workshop/eks-pod-identity-agent/9ec6cfbd-8c9f-7ff4-fd26-640dda75bcea",
+        "createdAt": "2024-01-12T22:41:01.414000+00:00",
+        "modifiedAt": "2024-01-12T22:41:01.434000+00:00",
+        "tags": {}
+    }
+}
+
 $ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --addon-name eks-pod-identity-agent
 ```
 
-Now we can take a look at what has been created in our EKS cluster by the addon. For example, a DaemonSet will be running a pod on each node in our cluster:
+Now take a look at what has been created in your EKS cluster by the addon. You can see a DaemonSet deployed on the `kube-system` Namespace, which will run a Pod on each Node in our Cluster:
 
 ```bash
 $ kubectl -n kube-system get daemonset eks-pod-identity-agent 
 NAME                      DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
 eks-pod-identity-agent    3         3         3       3            3           <none>          3d21h
+$ kubectl -n kube-system get pods -l app.kubernetes.io/name=eks-pod-identity-agent
+NAME                           READY   STATUS    RESTARTS   AGE
+eks-pod-identity-agent-4tn28   1/1     Running   0          3d21h
+eks-pod-identity-agent-hslc5   1/1     Running   0          3d21h
+eks-pod-identity-agent-thvf5   1/1     Running   0          3d21h
 ```
 
-An IAM role which provides the required permissions for the `carts` service to read and write to DynamoDB table has been created for you in the `prepare-environment` step. You can view the policy as shown below:
+An IAM Role which provides the required permissions for the `carts` service to read and write to DynamoDB table has been created when you ran the `prepare-environment` script in the first step of this module. You can view the policy as shown below.
 
 ```bash
 $ aws iam get-policy-version \
@@ -65,7 +86,7 @@ $ aws iam get-role \
 }
 ```
 
-Next, we will use Amazon EKS Pod Identity feature to associate an AWS IAM role to the Kubernetes service account that will be used by our deployment. To create the association, run the following command:
+Next, we will use Amazon EKS Pod Identity feature to associate an AWS IAM role to the Kubernetes service account that will be used by our deployment. To create the association, run the following command.
 
 ```bash wait=30
 $ aws eks create-pod-identity-association --cluster-name ${EKS_CLUSTER_NAME} \
@@ -86,14 +107,14 @@ $ aws eks create-pod-identity-association --cluster-name ${EKS_CLUSTER_NAME} \
 }
 ```
 
-All thats left is to verify that `carts` k8s deployment is using `cart`` service account.
+All thats left is to verify that the `carts` Deployment is using the `carts` Service Account.
 
 ```bash
 $ kubectl -n carts describe deployment carts | grep 'Service Account'
   Service Account:  carts
 ```
 
-With the ServiceAccount verified now we just need to recycle the `carts` pods:
+With the Service Account verified recycle the `carts` Pods.
 
 ```bash hook=enable-pod-identity hookTimeout=430
 $ kubectl -n carts rollout restart deployment/carts

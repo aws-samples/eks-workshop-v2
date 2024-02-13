@@ -14,6 +14,7 @@ $ prepare-environment security/eks-pod-identity
 ```
 
 This will make the following changes to your lab environment:
+
 - Create an Amazon DynamoDB table
 - Create an IAM role for AmazonEKS workloads to access the DynamoDB table
 - Install the EKS Managed Addon for EKS Pod Identity Agent 
