@@ -1,6 +1,6 @@
 ---
 title: "External Secrets Operator"
-sidebar_position: 324
+sidebar_position: 424
 ---
 
 Now we can explore integrating with Secrets Managed using the External Secrets operator. This has already been installed in our EKS cluster:

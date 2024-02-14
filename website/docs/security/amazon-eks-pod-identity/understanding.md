@@ -1,6 +1,6 @@
 ---
 title: "Understanding Pod IAM"
-sidebar_position: 30
+sidebar_position: 33
 ---
 
 The first place to look for the issue is the logs of the `carts` service:

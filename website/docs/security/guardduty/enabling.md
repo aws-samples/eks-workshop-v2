@@ -1,6 +1,6 @@
 ---
 title: "Enable GuardDuty Protection on EKS"
-sidebar_position: 41
+sidebar_position: 51
 ---
 
 In this lab, we'll enable Amazon GuardDuty EKS Protection. This will provide threat detection coverage for EKS Audit Log Monitoring and EKS Runtime Monitoring to help you protect your clusters.

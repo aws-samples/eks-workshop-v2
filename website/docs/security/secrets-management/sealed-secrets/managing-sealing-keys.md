@@ -1,6 +1,6 @@
 ---
 title: "Managing the Sealing Key"
-sidebar_position: 74
+sidebar_position: 434
 ---
 
 The only way to decrypt the encrypted data within a SealedSecret is with the sealing key that is managed by the controller. There could be situations where you are trying to restore the original state of a cluster after a disaster or you want to leverage GitOps workflow to deploy the Kubernetes resources, including SealedSecrets, from a Git repository and create a new EKS cluster. The controller deployed in the new EKS cluster must use the same sealing key to be able to unseal the SealedSecrets.

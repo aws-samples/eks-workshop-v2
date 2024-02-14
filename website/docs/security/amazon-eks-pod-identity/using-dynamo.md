@@ -1,6 +1,6 @@
 ---
 title: "Using Amazon DynamoDB"
-sidebar_position: 20
+sidebar_position: 32
 ---
 
 The first step in this process is to re-configure the carts service to use a DynamoDB table that has already been created for us. The application loads most of its confirmation from a ConfigMap, lets take look at it:

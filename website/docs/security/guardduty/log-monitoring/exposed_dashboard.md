@@ -1,6 +1,6 @@
 ---
 title: "Exposed Kubernetes dashboard"
-sidebar_position: 423
+sidebar_position: 523
 ---
 
 This finding informs you that your EKS Cluster dashboard was exposed to the internet by a Load Balancer service. An exposed dashboard makes the management interface of your cluster publicly accessible from the internet and allows bad actors to exploit any authentication and access control gaps that may be present.

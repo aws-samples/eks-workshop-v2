@@ -1,6 +1,6 @@
 ---
 title: "Using EKS Pod Identity"
-sidebar_position: 40
+sidebar_position: 34
 hide_table_of_contents: true
 ---
  

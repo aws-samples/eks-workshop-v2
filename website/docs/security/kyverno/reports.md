@@ -1,6 +1,6 @@
 ---
 title: "Reports & Auditing"
-sidebar_position: 64
+sidebar_position: 74
 ---
 
 Kyverno also includes a [Policy Reporting](https://kyverno.io/docs/policy-reports/) tool, using the open format defined by the Kubernetes Policy Working Group and deployed as custom resources in the cluster. Kyverno emits these reports when admission actions like *CREATE*, *UPDATE*, and *DELETE* are performed in the cluster, they are also generated as a result of background scans that validate policies on already existing resources.
