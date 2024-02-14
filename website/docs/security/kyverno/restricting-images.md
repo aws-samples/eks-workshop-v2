@@ -1,6 +1,6 @@
 ---
 title: "Restricting Image Registries"
-sidebar_position: 63
+sidebar_position: 73
 ---
 
 Using container images form unknown sources on your EKS Clusters, that may not be a scanned for Common Vulnerabilities and Exposure (CVE), represent a risk factor for the overall security of your environment. When chossing container images sources, you need to ensure that they are originated from Trusted Registries, in order to reduce the threat exposure and exploits of vulnerabilities. Some larger organizations also have Security Guidelines that limit containers to use images from their own hosted private image registry.

@@ -1,6 +1,6 @@
 ---
 title: "Managing Secrets with AWS Secrets Manager"
-sidebar_position: 320
+sidebar_position: 420
 sidebar_custom_props: {"module": true}
 ---
 

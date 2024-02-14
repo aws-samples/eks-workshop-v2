@@ -1,6 +1,6 @@
 ---
 title: "Sealing your Secrets"
-sidebar_position: 73
+sidebar_position: 433
 ---
 
 ### Exploring the catalog Pod

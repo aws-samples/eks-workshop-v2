@@ -1,6 +1,6 @@
 ---
 title: "Baseline PSS Profile"
-sidebar_position: 52
+sidebar_position: 62
 ---
 
 What if we want to restrict the permissions that a Pod can request? For example the `privileged` permissions we provided to the assets Pod in the previous section can be dangerous, allowing an attacker access to the hosts resources outside of the container. 

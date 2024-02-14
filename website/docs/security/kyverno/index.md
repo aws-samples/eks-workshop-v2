@@ -1,6 +1,6 @@
 ---
 title: "Policy management with Kyverno"
-sidebar_position: 60
+sidebar_position: 70
 sidebar_custom_props: {"module": true}
 ---
 
