@@ -4,7 +4,7 @@ sidebar_position: 40
 hide_table_of_contents: true
 ---
  
-To use EKS Pod Identity in your cluster, `EKS Pod Identity Agent` addon must be installed on your EKS cluster. Lets install it using below command:
+To use EKS Pod Identity in your cluster, the `EKS Pod Identity Agent` addon must be installed on your EKS cluster. Lets install it using below command.
 
 ```bash timeout=300 wait=60
 $ aws eks create-addon --cluster-name $EKS_CLUSTER_NAME --addon-name eks-pod-identity-agent 
@@ -27,7 +27,7 @@ $ aws eks create-addon --cluster-name $EKS_CLUSTER_NAME --addon-name eks-pod-ide
 $ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --addon-name eks-pod-identity-agent
 ```
 
-Now take a look at what has been created in your EKS cluster by the addon. You can see a DaemonSet deployed on the `kube-system` Namespace, which will run a Pod on each Node in our Cluster:
+Now take a look at what has been created in your EKS cluster by the new addon. You can see a DaemonSet deployed on the `kube-system` Namespace, which will run a Pod on each Node in our Cluster.
 
 ```bash
 $ kubectl -n kube-system get daemonset eks-pod-identity-agent 
@@ -63,7 +63,7 @@ $ aws iam get-policy-version \
 }
 ```
 
-The role has also been configured with the appropriate trust relationship which allows the EKS Service Principal to assume this role for Pod Identity. You can view it like so:
+The role has also been configured with the appropriate trust relationship which allows the EKS Service Principal to assume this role for Pod Identity. You can view it like with the command below.
 
 ```bash
 $ aws iam get-role \

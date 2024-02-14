@@ -3,7 +3,7 @@ title: "Using Amazon DynamoDB"
 sidebar_position: 20
 ---
 
-The first step in this process is to re-configure the `carts` service to use a Amazon DynamoDB table that has already been created for us. The application loads most of its confirmation from a ConfigMap, lets take look at it:
+The first step in this process is to re-configure the carts service to use a DynamoDB table that has already been created for us. The application loads most of its confirmation from a ConfigMap, lets take look at it:
 
 ```bash
 $ kubectl -n carts get -o yaml cm carts
@@ -62,7 +62,7 @@ metadata:
   namespace: carts
 ```
 
-Now we need to recycle all the carts Pods to pick up our new ConfigMap contents.
+We'll need to recycle all the Pods of the `carts` application to pick up our new ConfigMap contents.
 
 ```bash hook=enable-dynamo hookTimeout=430
 $ kubectl -n carts rollout restart deployment/carts
