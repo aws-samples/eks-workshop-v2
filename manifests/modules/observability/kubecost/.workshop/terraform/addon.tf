@@ -1,3 +1,12 @@
+provider "aws" {
+  region = "us-east-1"
+  alias  = "virginia"
+}
+
+data "aws_ecrpublic_authorization_token" "token" {
+  provider = aws.virginia
+}
+
 module "ebs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.20"
@@ -17,7 +26,7 @@ module "ebs_csi_driver_irsa" {
 }
 
 module "eks_blueprints_addons" {
-  source = "aws-ia/eks-blueprints-addons/aws"
+  source  = "aws-ia/eks-blueprints-addons/aws"
   version = "1.9.2"
 
   cluster_name      = local.eks_cluster_id
@@ -48,7 +57,7 @@ resource "time_sleep" "wait" {
 }
 
 data "http" "kubecost_values" {
-  url    = "https://raw.githubusercontent.com/kubecost/cost-analyzer-helm-chart/v1.106.3/cost-analyzer/values-eks-cost-monitoring.yaml"
+  url = "https://raw.githubusercontent.com/kubecost/cost-analyzer-helm-chart/v1.106.3/cost-analyzer/values-eks-cost-monitoring.yaml"
 }
 
 module "kubecost" {
@@ -68,4 +77,7 @@ module "kubecost" {
   repository       = "oci://public.ecr.aws/kubecost"
   values           = [data.http.kubecost_values.body, templatefile("${path.module}/values.yaml", {})]
   wait             = true
+
+  repository_username = data.aws_ecrpublic_authorization_token.token.user_name
+  repository_password = data.aws_ecrpublic_authorization_token.token.password
 }

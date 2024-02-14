@@ -7,6 +7,7 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CodeBlock from '@theme/CodeBlock';
 import Kustomization from '@site/src/components/Kustomization';
+import LaunchButton from '@site/src/components/LaunchButton';
 
 export default {
   // Re-use the default mapping
@@ -15,4 +16,5 @@ export default {
   terminal: Terminal,
   browser: BrowserWindow,
   kustomization: Kustomization,
+  launchButton: LaunchButton
 };

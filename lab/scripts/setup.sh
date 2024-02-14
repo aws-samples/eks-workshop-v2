@@ -47,4 +47,8 @@ RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-"false"}
 
 echo "export RESOURCES_PRECREATED='${RESOURCES_PRECREATED}'" > ~/.bashrc.d/infra.bash
 
+echo "export ANALYTICS_ENDPOINT='${ANALYTICS_ENDPOINT}'" > ~/.bashrc.d/analytics.bash
+
 /usr/local/bin/kubectl completion bash >>  ~/.bashrc.d/kubectl_completion.bash
+echo "alias k=kubectl" >> ~/.bashrc.d/kubectl_completion.bash
+echo "complete -F __start_kubectl k" >> ~/.bashrc.d/kubectl_completion.bash

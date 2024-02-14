@@ -31,7 +31,7 @@ jobs:
         tar zxf awsweeper_0.12.0_linux_amd64.tar.gz
         mv awsweeper_0.12.0_linux_amd64/awsweeper ${HOME}/.local/bin
 
-        wget -q https://github.com/eksctl-io/eksctl/releases/download/v0.164.0/eksctl_Linux_amd64.tar.gz
+        wget -q https://github.com/eksctl-io/eksctl/releases/download/v0.169.0/eksctl_Linux_amd64.tar.gz
         tar zxf eksctl_Linux_amd64.tar.gz
         mv eksctl ${HOME}/.local/bin
 
@@ -109,7 +109,7 @@ jobs:
       env:
         AWS_REGION: "${{ secrets.AWS_REGION }}"
       run: |
-        export CLEANUP_ENVIRONMENT_NAME="$CLUSTER_ID"
+        export CLEANUP_ENVIRONMENT_NAME="eks-workshop-$CLUSTER_ID"
         export AWS_DEFAULT_REGION="$AWS_REGION"
         
         envsubst < hack/lib/filter.yml > filter.yml

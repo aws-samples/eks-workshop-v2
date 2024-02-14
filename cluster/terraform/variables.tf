@@ -6,13 +6,13 @@ variable "cluster_name" {
 variable "cluster_version" {
   description = "EKS cluster version."
   type        = string
-  default     = "1.27"
+  default     = "1.29"
 }
 
 variable "ami_release_version" {
   description = "Default EKS AMI release version for node groups"
   type        = string
-  default     = "1.27.3-20230816"
+  default     = "1.29.0-20240129"
 }
 
 variable "vpc_cidr" {

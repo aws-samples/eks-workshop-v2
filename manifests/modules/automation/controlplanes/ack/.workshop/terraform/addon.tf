@@ -2,35 +2,34 @@ locals {
   ddb_name = "ack-ddb"
 }
 
+provider "aws" {
+  region = "us-east-1"
+  alias  = "virginia"
+}
+
+data "aws_ecrpublic_authorization_token" "token" {
+  provider = aws.virginia
+}
+
 #This module installs the ACK controller for DynamoDB through the AWS EKS Addons for ACK
 module "dynamodb_ack_addon" {
 
-  source = "aws-ia/eks-ack-addons/aws"
+  source  = "aws-ia/eks-ack-addons/aws"
   version = "2.1.0"
-  
+
   # Cluster Info
   cluster_name      = local.addon_context.eks_cluster_id
   cluster_endpoint  = local.addon_context.aws_eks_cluster_endpoint
   oidc_provider_arn = local.addon_context.eks_oidc_provider_arn
 
-  # Controllers to enable
-  enable_dynamodb          = true
+  ecrpublic_username = data.aws_ecrpublic_authorization_token.token.user_name
+  ecrpublic_token    = data.aws_ecrpublic_authorization_token.token.password
 
-  
+  # Controllers to enable
+  enable_dynamodb = true
+
   tags = local.tags
 }
-
-#module "iam_assumable_role_carts" {
-#  source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-#  version                       = "~> v5.5.5"
-#  create_role                   = true
-#  role_name                     = "${local.addon_context.eks_cluster_id}-carts-dynamo"
-#  provider_url                  = local.addon_context.eks_oidc_issuer_url
-#  role_policy_arns              = [aws_iam_policy.carts_dynamo.arn]
-#  oidc_subjects_with_wildcards  = ["system:serviceaccount:carts:*"]
-#
-# tags = local.tags
-#}
 
 resource "aws_iam_policy" "carts_dynamo" {
   name        = "${local.addon_context.eks_cluster_id}-carts-dynamo"
@@ -56,7 +55,7 @@ EOF
 }
 
 module "eks_blueprints_addons" {
-  source = "aws-ia/eks-blueprints-addons/aws"
+  source  = "aws-ia/eks-blueprints-addons/aws"
   version = "1.9.2"
 
   enable_aws_load_balancer_controller = true
