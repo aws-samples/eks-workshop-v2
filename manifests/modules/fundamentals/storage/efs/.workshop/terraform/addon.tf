@@ -7,5 +7,5 @@ module "eks_blueprints_addons" {
   cluster_version   = local.eks_cluster_version
   oidc_provider_arn = local.eks_oidc_provider_arn
 
-  enable_aws_efs_csi_driver = true
+  enable_aws_efs_csi_driver = false
 }
