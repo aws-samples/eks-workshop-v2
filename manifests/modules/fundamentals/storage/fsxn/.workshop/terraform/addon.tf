@@ -1,5 +1,8 @@
-module "fsxn_driver" {
-  source = "github.com/NetApp/terraform-aws-netapp-fsxn-eks-addon.git?ref=v1.0"
+resource "aws_eks_addon" "fsxn_csi_addon" {
+  cluster_name = local.addon_context.eks_cluster_id
+  addon_name   = "netapp_trident-operator"
+  addon_version = "v23.10.0-eksbuild.1"
+  
 }
 
 data "aws_vpc" "selected_vpc_fsx" {
