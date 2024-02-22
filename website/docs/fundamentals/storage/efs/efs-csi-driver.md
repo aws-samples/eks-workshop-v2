@@ -14,7 +14,7 @@ To improve security and reduce the amount of work, you can manage the Amazon EFS
 ```bash timeout=300 wait=60
 $ aws eks create-addon --cluster-name $EKS_CLUSTER_NAME --addon-name aws-efs-csi-driver \
   --service-account-role-arn $EFS_CSI_ADDON_ROLE
-$ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --addon-name aws-ebs-csi-driver
+$ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --addon-name aws-efs-csi-driver
 
 Now we can take a look at what has been created in our EKS cluster by the addon. For example, a DaemonSet will be running a pod on each node in our cluster:
 
