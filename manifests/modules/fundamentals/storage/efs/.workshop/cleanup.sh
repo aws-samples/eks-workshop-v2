@@ -2,11 +2,11 @@
 
 set -e
 
+check=$(aws eks list-addons --cluster-name $EKS_CLUSTER_NAME --query "addons[? @ == 'aws-efs-csi-driver']" --output text)
+
 logmessage "Deleting EFS storage class..."
 
 kubectl delete storageclass efs-sc --ignore-not-found
-
-check=$(aws eks list-addons --cluster-name $EKS_CLUSTER_NAME --query "addons[? @ == 'aws-efs-csi-driver']" --output text)
 
 if [ ! -z "$check" ]; then
   logmessage "Deleting EFS CSI driver addon..."
