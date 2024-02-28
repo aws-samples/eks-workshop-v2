@@ -1,6 +1,6 @@
 ---
 title: "Enforcing Pod Security Standards"
-sidebar_position: 62
+sidebar_position: 72
 ---
 
 As discussed in the introduction for [Pod Security Standards (PSS)](../pod-security-standards/) section, there are 3 pre-defined Policy levels, **Privileged**, **Baseline**, and **Restricted**. While it is recommended to setup a Restricted PSS, it can cause unintended behavior on the application level unless properly set. To get started it is recommended to setup a Baseline Policy that will prevent known Privileged escalations such as Containers accessing HostProcess, HostPath, HostPorts or allow traffic snooping for example, being possible to setup individual policies to restrict or disallow those privileged access to containers.

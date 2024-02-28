@@ -1,6 +1,6 @@
 ---
 title: "Privileged Container with sensitive mount"
-sidebar_position: 424
+sidebar_position: 524
 ---
 
 In this lab you will be creating a container with `privileged` Security Context, with root level access in the `default` Namespace of your EKS Cluster. This privileged container will also have a sensitive directory from the host, mounted and accessible as a volume within your container.

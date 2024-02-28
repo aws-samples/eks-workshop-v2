@@ -1,6 +1,6 @@
 ---
 title: "Sealed Secrets for Kubernetes"
-sidebar_position: 71
+sidebar_position: 431
 ---
 
 Sealed Secrets is composed of two parts:

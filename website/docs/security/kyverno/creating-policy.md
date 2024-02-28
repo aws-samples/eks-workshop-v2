@@ -1,6 +1,6 @@
 ---
 title: "Creating a Simple Policy"
-sidebar_position: 61
+sidebar_position: 71
 ---
 
 To get an understanding of Kyverno Policies, we will start our lab with a simple Pod Label requirement. As you may know, Labels in Kubernetes can be used to tag objects and resources in the Cluster.

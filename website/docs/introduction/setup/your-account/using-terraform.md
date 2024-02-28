@@ -7,11 +7,13 @@ sidebar_position: 30
 Creating the workshop cluster with Terraform is currently in preview. Please raise any issues encountered in the [GitHub repository](https://github.com/aws-samples/eks-workshop-v2/issues).
 :::
 
-This section outlines how to build a cluster for the lab exercises using the [Hashicorp Terraform](https://developer.hashicorp.com/terraform). This is intent to be for learners that are used work with Terraform infrastructure-as-code.
+This section outlines how to build a cluster for the lab exercises using the [Hashicorp Terraform](https://developer.hashicorp.com/terraform). This is intended to be for learners that are used to working with Terraform infrastructure-as-code.
 
-The `terraform` CLI has been pre-installed in your Amazon Cloud9 Environment, so we can immediately create the cluster. Lets take a look at the main Terraform configuration files that will be used to build the cluster and its supporting infrastructure.
+The `terraform` CLI has been pre-installed in your Amazon Cloud9 Environment, so we can immediately create the cluster. Let's take a look at the main Terraform configuration files that will be used to build the cluster and its supporting infrastructure.
 
-The `providers.tf` file configures the Terraform providers that will be needed to build the infrastructure. In our case we use the `aws`, `kubernetes` and `helm` providers:
+## Understanding Terraform config files
+
+The `providers.tf` file configures the Terraform providers that will be needed to build the infrastructure. In our case, we use the `aws`, `kubernetes` and `helm` providers:
 
 ```file hidePath=true
 manifests/../cluster/terraform/providers.tf
@@ -29,11 +31,12 @@ The `vpc.tf` configuration will make sure our VPC infrastructure is created:
 manifests/../cluster/terraform/vpc.tf
 ```
 
-Finally the `eks.tf` file specifies our EKS cluster configuration, including a Managed Node Group:
+Finally, the `eks.tf` file specifies our EKS cluster configuration, including a Managed Node Group:
 
 ```file hidePath=true
 manifests/../cluster/terraform/eks.tf
 ```
+## Creating the workshop environment with Terraform
 
 For the given configuration, `terraform` will create the Workshop environment with the following:
 - Create a VPC across three availability zones
