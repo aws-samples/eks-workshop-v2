@@ -4,6 +4,8 @@ set -e
 
 check=$(aws eks list-addons --cluster-name $EKS_CLUSTER_NAME --query "addons[? @ == 'aws-efs-csi-driver']" --output text)
 
+kubectl scale -n assets --replicas=0 deployment/assets
+
 logmessage "Deleting EFS storage class..."
 
 kubectl delete storageclass efs-sc --ignore-not-found
