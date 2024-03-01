@@ -44,6 +44,6 @@
     "remark-gfm": "^4.0.0",
     "remark-parse": "^11.0.0",
     "unified": "^11.0.4",
-    "yaml": "^2.3.4"
+    "yaml": "^2.4.0"
   }
 }
