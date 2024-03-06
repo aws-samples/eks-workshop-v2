@@ -3,6 +3,7 @@ title: Using eksctl
 sidebar_position: 20
 ---
 ::: Note when using Cloud9
+
 Cloud9 normally manages IAM credentials dynamically. This isn’t currently compatible with the EKS IAM authentication. Make sure to disable it and rely on the IAM role instead of the Cloud9 instance.
 :::
 
