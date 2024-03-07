@@ -4,7 +4,7 @@
 
 The Steering Committee is a 6 member body, overseeing the governance of the EKS Workshop.
 
-### Terms end in February 2024
+### Terms end in February 2025
 
 | Name          | Profile                                          | Role                                        |
 | :------------ | :----------------------------------------------- | :------------------------------------------ |
