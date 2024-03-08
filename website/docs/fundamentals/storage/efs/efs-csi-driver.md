@@ -22,7 +22,7 @@ Now we can take a look at what has been created in our EKS cluster by the addon.
 ```bash
 $ kubectl get daemonset efs-csi-node -n kube-system
 NAME           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                 AGE
-efs-csi-node   3         3         3       3            3           beta.kubernetes.io/os=linux   2d1h
+efs-csi-node   3         3         3       3            3           kubernetes.io/os=linux        47s
 ```
 
 The EFS CSI driver supports dynamic and static provisioning. Currently dynamic provisioning creates an access point for each PersistentVolume. This mean an AWS EFS file system has to be created manually on AWS first and should be provided as an input to the StorageClass parameter. For static provisioning, AWS EFS file system needs to be created manually on AWS first. After that it can be mounted inside a container as a volume using the driver.
@@ -31,6 +31,8 @@ We have provisioned an EFS file system, mount targets and the required security 
 
 ```bash
 $ export EFS_ID=$(aws efs describe-file-systems --query "FileSystems[?Name=='$EKS_CLUSTER_NAME-efs-assets'] | [0].FileSystemId" --output text)
+$ echo $EFS_ID
+fs-061cb5c5ed841a6b0
 ```
 
 Now, we'll need to create a StorageClass(https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured to use the pre-provisioned EFS file system as part of this workshop infrastructure and use [EFS Access points](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html) in provisioning mode.
