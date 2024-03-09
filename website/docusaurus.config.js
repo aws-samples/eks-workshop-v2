@@ -63,7 +63,7 @@ const config = {
                 MANIFESTS_OWNER: manifestsOwner,
                 MANIFESTS_REPOSITORY: manifestsRepository,
                 KUBERNETES_VERSION: '1.29',
-                KUBERNETES_NODE_VERSION: '1.29-eks-tbdl'
+                KUBERNETES_NODE_VERSION: '1.29-eks-48e63af'
               }
             }],
             [remarkIncludeCode, { manifestsDir }],
