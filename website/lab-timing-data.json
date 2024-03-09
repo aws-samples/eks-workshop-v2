@@ -71,6 +71,12 @@
         "file": "security/iam-roles-for-service-accounts/index.md",
         "executionTimeSeconds": 245
     },
+    "security/amazon-eks-pod-identity/index.md": {
+        "title": "Amazon EKS Pod Identity",
+        "directory": "security/amazon-eks-pod-identity",
+        "file": "security/amazon-eks-pod-identity/index.md",
+        "executionTimeSeconds": 245
+    },
     "security/pod-security-standards/index.md": {
         "title": "Pod Security Standards",
         "directory": "security/pod-security-standards",
