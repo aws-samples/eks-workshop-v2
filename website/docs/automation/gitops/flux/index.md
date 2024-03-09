@@ -18,7 +18,7 @@ This will make the following changes to your lab environment:
 - Create an IAM user with access to the CodeCommit repository
 - Create a Continuous Integration pipeline for the [sample application UI component](https://github.com/aws-containers/retail-store-sample-app)
 
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/networking/custom-networking/.workshop/terraform).
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/automation/gitops/flux/.workshop/terraform).
 
 :::
 

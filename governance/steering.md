@@ -4,7 +4,7 @@
 
 The Steering Committee is a 6 member body, overseeing the governance of the EKS Workshop.
 
-### Terms end in February 2024
+### Terms end in February 2025
 
 | Name          | Profile                                          | Role                                        |
 | :------------ | :----------------------------------------------- | :------------------------------------------ |
@@ -24,7 +24,7 @@ The working groups are led by chairs (6 month terms) and maintainers (6 month te
 | Automation       | [Carlos Santana](https://github.com/csantanapr)    | [Tsahi Duek](https://github.com/tsahiduek), [Sébastien Allamand](https://github.com/allamand), [Yuriy Bezsonov](https://github.com/ybezsonov)   |
 | Machine Learning | [Benjamin Gardiner](https://github.com/bkgardiner) | [Masatoshi Hayashi](https://github.com/literalice)                                                                                              |
 | Networking       | [Sheetal Joshi](https://github.com/sheetaljoshi)   |                                                                                                    |
-| Observability    | [Nirmal Mehta](https://github.com/normalfaults)    | [Steven David](https://github.com/StevenDavid)                                                                                                  |
+| Observability    | [Steven David](https://github.com/StevenDavid)     |                                                                                            |
 | Security         | [Rodrigo Bersa](https://github.com/rodrigobersa)   |                                                                                                                                                 |
 | Storage          | [Eric Heinrichs](https://github.com/heinrichse)    | [Andrew Peng](https://github.com/pengc99)                                                                                                       |
 
