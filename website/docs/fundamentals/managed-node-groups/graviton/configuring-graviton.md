@@ -17,24 +17,35 @@ ip-192-168-19-31.us-west-2.compute.internal    Ready    <none>   6h56m   vVAR::K
 
 The output shows our existing nodes with columns that show the CPU architecture of each node. All of these are currently using `amd64` nodes.
 
-We'll use this `eksctl` configuration file to add our new Graviton node group:
-
-```file
-manifests/modules/fundamentals/mng/graviton/nodegroup.yaml
-```
-
 :::note
-This configuration file does not yet configure the taints, which we'll configure below.
+We will not yet configure the taints, this is done later.
 :::
 
-The following command creates this node group:
+The following command creates the Graviton node group:
 
 ```bash timeout=600 hook=configure-taints
-$ cat ~/environment/eks-workshop/modules/fundamentals/mng/graviton/nodegroup.yaml \
-  | envsubst | eksctl create nodegroup -f -
+$ aws eks create-nodegroup \
+  --cluster-name $EKS_CLUSTER_NAME \
+  --nodegroup-name graviton \
+  --node-role $GRAVITON_NODE_ROLE \
+  --subnets $PRIMARY_SUBNET_1 $PRIMARY_SUBNET_2 $PRIMARY_SUBNET_3 \
+  --instance-types t4g.medium \
+  --ami-type AL2_ARM_64 \
+  --scaling-config minSize=1,maxSize=3,desiredSize=1 \
+  --disk-size 20
 ```
 
-It will take *2-3* minutes for the node to join the EKS cluster. Once the above `eksctl` command is complete, run the following command:
+:::tip
+The aws `eks wait nodegroup-active` command can be used to wait until a specific EKS node group is active and ready for use. This command is part of the AWS CLI and can be used to ensure that the specified node group has been successfully created and all the associated instances are running and ready.
+
+```bash wait=30 timeout=300
+$ aws eks wait nodegroup-active \
+  --cluster-name $EKS_CLUSTER_NAME \
+  --nodegroup-name graviton
+```
+:::
+
+Once our new managed node group is **Active**, run the following command:
 
 ```bash
 $ kubectl get nodes \
