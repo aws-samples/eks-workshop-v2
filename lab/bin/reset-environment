@@ -19,8 +19,10 @@ else
   set -o xtrace
 fi
 
-if [ -z "$EKS_CLUSTER_NAME" ]; then
-  logmessage "Error: The EKS_CLUSTER_NAME environment variable must be set. Please run 'use-cluster <your cluster name>'"
+if [ -z "$EKS_DEFAULT_MNG_MIN" ]; then
+  EKS_CLUSTER_NAME=${EKS_CLUSTER_NAME:-"eks-workshop"}
+
+  logmessage "Error: Please run 'use-cluster $EKS_CLUSTER_NAME'"
   exit 1
 fi
 
