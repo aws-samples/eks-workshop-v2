@@ -49,3 +49,4 @@ jobs:
         AWS_REGION: "${{ secrets.AWS_REGION }}"
       run: |
         aws cloudformation delete-stack --stack-name cfn-test-${CLUSTER_ID}-${TEST_BRANCH}
+        aws cloudformation wait stack-delete-complete --stack-name cfn-test-${CLUSTER_ID}-${TEST_BRANCH}
