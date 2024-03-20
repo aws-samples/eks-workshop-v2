@@ -15,13 +15,10 @@ kubeseal_checksum='2e765b87889bfcf06a6249cde8e28507e3b7be29851e4fac651853f7638f1
 yq_version='4.30.4'
 
 flux_version='2.1.0'
-flux_checksum='fe6d32da40d5f876434e964c46bc07d00af138c560e063fdcfa8f73e37224087'
 
 argocd_version='2.7.4'
-argocd_checksum='1b9a5f7c47b3c1326a622533f073cef46511e391d296d9b075f583b474780356'
 
-terraform_version='1.4.1'
-terraform_checksum='9e9f3e6752168dea8ecb3643ea9c18c65d5a52acc06c22453ebc4e3fc2d34421'
+terraform_version='1.7.5'
 
 ec2_instance_selector_version='2.4.1'
 ec2_instance_selector_checksum='dfd6560a39c98b97ab99a34fc261b6209fc4eec87b0bc981d052f3b13705e9ff'
@@ -90,18 +87,21 @@ chmod +x ./yq
 mv ./yq /usr/local/bin
 
 # flux
-download_and_verify "https://github.com/fluxcd/flux2/releases/download/v${flux_version}/flux_${flux_version}_linux_amd64.tar.gz" "$flux_checksum" "flux.tar.gz"
+download "https://github.com/fluxcd/flux2/releases/download/v${flux_version}/flux_${flux_version}_linux_amd64.tar.gz" "flux.tar.gz"
 tar zxf flux.tar.gz
 chmod +x flux
 mv ./flux /usr/local/bin
 rm -rf flux.tar.gz
 
-# terraform using Yum
-yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo && yum makecache fast
-yum -y install terraform-1.5.5-1.x86_64
+# terraform
+download "https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_amd64.zip" "terraform.zip"
+unzip -o -q terraform.zip -d /tmp
+chmod +x /tmp/terraform
+mv /tmp/terraform /usr/local/bin
+rm -f terraform.zip
 
 # argocd
-download_and_verify "https://github.com/argoproj/argo-cd/releases/download/v${argocd_version}/argocd-linux-amd64" "$argocd_checksum" "argocd-linux-amd64"
+download "https://github.com/argoproj/argo-cd/releases/download/v${argocd_version}/argocd-linux-amd64" "argocd-linux-amd64"
 chmod +x ./argocd-linux-amd64
 mv ./argocd-linux-amd64 /usr/local/bin/argocd
 
