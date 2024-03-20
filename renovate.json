@@ -3,6 +3,7 @@
   "extends": [
     "config:recommended"
   ],
+  "schedule": ["on the first day of the month"],
   "enabledManagers": ["custom.regex"],
   "customManagers": [
     {
