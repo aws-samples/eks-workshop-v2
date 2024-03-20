@@ -2,5 +2,15 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "enabledManagers": ["custom.regex"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["lab/scripts/installer.sh"],
+      "matchStrings": ["helm_version='(?<currentValue>.*?)'\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "helm/helm"
+    }
   ]
 }
