@@ -11,6 +11,13 @@
       "matchStrings": ["helm_version='(?<currentValue>.*?)'\\n"],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "helm/helm"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["lab/scripts/installer.sh"],
+      "matchStrings": ["eksctl_version='(?<currentValue>.*?)'\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "eksctl-io/eksctl"
     }
   ]
 }
