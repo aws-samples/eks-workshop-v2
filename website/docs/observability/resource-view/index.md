@@ -13,6 +13,8 @@ Prepare your environment for this section:
 $ prepare-environment
 ```
 
+If you encounter an error when running the `prepare-environment` command, run this command first `kubectl config use-context eks-workshop`. Then rerun the `prepare-environment` command.
+
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/base/.workshop/terraform).
 
 :::
