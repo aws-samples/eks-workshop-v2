@@ -8,8 +8,8 @@
     {
       "customType": "regex",
       "fileMatch": ["lab/scripts/installer.sh"],
-      "matchStrings": ["helm_version='(?<currentValue>.*?)'\\n"],
-      "datasourceTemplate": "github-releases",
+      "matchStrings": ["helm_version='(?<currentValue>.*?)'\\nhelm_checksum='(?<currentDigest>.*?)'\\n"],
+      "datasourceTemplate": "github-release-attachments",
       "depNameTemplate": "helm/helm"
     }
   ]
