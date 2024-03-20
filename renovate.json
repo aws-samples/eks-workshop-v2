@@ -18,6 +18,13 @@
       "matchStrings": ["eksctl_version='(?<currentValue>.*?)'\\n"],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "eksctl-io/eksctl"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["lab/scripts/installer.sh"],
+      "matchStrings": ["yq_version='(?<currentValue>.*?)'\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "mikefarah/yq"
     }
   ]
 }
