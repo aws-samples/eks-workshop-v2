@@ -25,6 +25,27 @@
       "matchStrings": ["yq_version='(?<currentValue>.*?)'\\n"],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "mikefarah/yq"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["lab/scripts/installer.sh"],
+      "matchStrings": ["argocd_version='(?<currentValue>.*?)'\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "argoproj/argo-cd"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["lab/scripts/installer.sh"],
+      "matchStrings": ["flux_version='(?<currentValue>.*?)'\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "fluxcd/flux2"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["lab/scripts/installer.sh"],
+      "matchStrings": ["terraform_version='(?<currentValue>.*?)'\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "hashicorp/terraform"
     }
   ]
 }
