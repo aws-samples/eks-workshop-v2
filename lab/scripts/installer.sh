@@ -5,7 +5,7 @@ set -e
 kubectl_version='1.29.0'
 kubectl_checksum='0e03ab096163f61ab610b33f37f55709d3af8e16e4dcc1eb682882ef80f96fd5'
 
-helm_version='3.10.1'
+helm_version='3.14.3'
 
 eksctl_version='0.174.0'
 
