@@ -1,0 +1,36 @@
+# EKS Workshop - Reviewer Checklist
+
+This is the reviewer checklist for pull requests, over time as many of these checks as possible will be automated.
+
+## Pull Request hygiene
+
+- [ ] Pull request has an appropriate title (see [releases](./releases.md))
+- [ ] Pull request has an appropriate `content` label
+- [ ] Pull request has been assigned to the correct GitHub Milestone
+
+## Style
+
+See style guide for expanded explanations.
+
+- [ ] `prepare-environment` command has been used correctly, changes outlined are accurate
+- [ ] Verified `bash` blocks are formatted correctly, for example using `$`
+- [ ] All `kubectl` commands use `~/environment` paths
+- [ ] `kubectl wait` or alternatives have been used where appropriate
+- [ ] There are no explicit references to pods with generated names like `kubectl get pod-abnasd`
+- [ ] Any references to external manifests are pinned to a version
+- [ ] `$EKS_CLUSTER_NAME` is used instead of hard-coded cluster names, including referencing other infrastructure that may use the cluster name
+- [ ] Avoided use of interactive `kubectl exec` or multiple terminal windows (or tests skipped)
+
+## Tests
+
+- [ ] `bash` blocks that run commands that are intended to error use `expectError=true`
+- [ ] The suite hook is present to run `prepare-environment` after the lab
+
+## Lab cleanup
+
+- [ ] Resources created in the content are conditionally cleaned up
+
+## Misc
+
+- [ ] Generated lab timing has been created (new lab) or updated (updated lab) if needed
+- [ ] All Terraform resources created have dynamic names
