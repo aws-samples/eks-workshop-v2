@@ -12,7 +12,7 @@ eksctl_version='0.169.0'
 kubeseal_version='0.18.4'
 kubeseal_checksum='2e765b87889bfcf06a6249cde8e28507e3b7be29851e4fac651853f7638f12f3'
 
-yq_version='4.30.4'
+yq_version='4.42.1'
 
 flux_version='2.1.0'
 flux_checksum='fe6d32da40d5f876434e964c46bc07d00af138c560e063fdcfa8f73e37224087'
