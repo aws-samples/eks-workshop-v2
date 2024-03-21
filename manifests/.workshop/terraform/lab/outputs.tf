@@ -1,3 +1,0 @@
-output "environment" {
-  value = ""
-}

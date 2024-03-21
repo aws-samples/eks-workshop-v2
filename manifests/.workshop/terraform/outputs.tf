@@ -1,3 +1,3 @@
 output "environment" {
-  value = module.lab.environment
+  value = try(module.lab.environment, "")
 }
