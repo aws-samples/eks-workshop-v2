@@ -9,7 +9,7 @@ In this example, we'll expose the `catalog` API out through the same ALB as the 
 
 ```bash expectError=true
 $ ADDRESS=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
-$ curl $ADDRESS/catalogue
+$ curl $ADDRESS/catalog
 ```
 
 The first thing we'll do is re-create the Ingress for `ui` component adding the annotation `alb.ingress.kubernetes.io/group.name`:
