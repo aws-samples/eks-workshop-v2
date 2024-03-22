@@ -2,6 +2,7 @@ terraform_context='terraform'
 module='-'
 environment=''
 shell_command=''
+shell_simple_command=''
 glob='-'
 
 
@@ -23,7 +24,7 @@ test:
 
 .PHONY: shell
 shell:
-	bash hack/shell.sh $(environment) $(shell_command)
+	bash hack/shell.sh $(environment) $(shell_command) $(shell_simple_command)
 
 .PHONY: reset-environment
 reset-environment:
