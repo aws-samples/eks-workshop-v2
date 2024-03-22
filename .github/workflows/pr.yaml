@@ -42,4 +42,4 @@ jobs:
       uses: actions/checkout@v4
     - name: Make shell
       run: |
-        make shell shell_command='ls'
+        make shell shell_simple_command='ls'
