@@ -1,4 +1,4 @@
-name: Test Utility CI
+name: Pull Request (Test Utility)
 
 on:
   workflow_dispatch:
@@ -10,6 +10,7 @@ on:
 
 jobs:
   test:
+    name: Test Utility CI
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
