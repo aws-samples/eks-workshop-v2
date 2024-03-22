@@ -9,13 +9,14 @@ As an administrator, you can use a Fargate profile to declare which Pods run on 
 
 If a Pod matches multiple Fargate profiles, you can specify which profile a Pod uses by adding the following Kubernetes label to the Pod specification: `eks.amazonaws.com/fargate-profile: my-fargate-profile`. The Pod must match a selector in that profile to be scheduled onto Fargate. Kubernetes affinity/anti-affinity rules do not apply and aren't necessary with Amazon EKS Fargate Pods.
 
-Lets start by adding a Fargate profile to our EKS cluster. This is the `eksctl` configuration we'll use: 
+Lets start by adding a Fargate profile to our EKS cluster. This is the `eksctl` configuration we'll use:
 
 ```file
 manifests/modules/fundamentals/fargate/profile/fargate.yaml
 ```
 
 This configuration creates a Fargate profile called `checkout-profile` with the following characteristics:
+
 1. Target Pods in the `checkout` namespace that have the label `fargate: yes`
 2. Place pod in the private subnets of the VPC
 3. Apply an IAM role to the Fargate infrastructure so that it can pull images from ECR, write logs to CloudWatch and so on

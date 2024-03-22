@@ -17,7 +17,7 @@ deployment "ui" successfully rolled out
 Now we can check that our `ui` component is creating logs by directly using `kubectl logs`:
 
 ```bash
-$ kubectl logs -n ui deployment/ui 
+$ kubectl logs -n ui deployment/ui
 Picked up JAVA_TOOL_OPTIONS: -javaagent:/opt/aws-opentelemetry-agent.jar
 OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
 [otel.javaagent 2023-07-03 23:39:18:499 +0000] [main] INFO io.opentelemetry.javaagent.tooling.VersionLogger - opentelemetry-javaagent - version: 1.24.0-aws

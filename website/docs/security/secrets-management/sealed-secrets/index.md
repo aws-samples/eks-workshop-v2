@@ -1,7 +1,7 @@
 ---
 title: "Securing Secrets Using Sealed Secrets"
 sidebar_position: 430
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
 ---
 
 {{% required-time %}}
@@ -10,13 +10,13 @@ sidebar_custom_props: {"module": true}
 The [Sealed Secrets](https://docs.bitnami.com/tutorials/sealed-secrets) project is not related to AWS Services but a third party open-source tool from [Bitnami Labs](https://bitnami.com/)
 :::
 
-
 :::tip Before you start
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30
 $ prepare-environment security/sealed-secrets
 ```
+
 :::
 
 [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) provides a mechanism to encrypt a Secret object so that it is safe to store - even to a public repository. A SealedSecret can be decrypted only by the controller running in the Kubernetes cluster and nobody else is able to obtain the original Secret from a SealedSecret.

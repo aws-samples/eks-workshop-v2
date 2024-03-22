@@ -2,6 +2,7 @@
 title: "Implementing Ingress Controls"
 sidebar_position: 80
 ---
+
 <img src={require('@site/static/img/sample-app-screens/architecture.png').default}/>
 
 As shown in the architecture diagram, the 'catalog' namespace receives traffic only from the 'ui' namespace and from no other namespace. Also, the 'catalog' database component can only receive traffic from the 'catalog' service component.
@@ -18,7 +19,7 @@ $ kubectl exec deployment/ui -n ui -- curl -v catalog.catalog/health --connect-t
 > Host: catalog.catalog
 > User-Agent: curl/7.88.1
 > Accept: */*
-> 
+>
 < HTTP/1.1 200 OK
 ...
 ```
@@ -33,7 +34,7 @@ $ kubectl exec deployment/orders -n orders -- curl -v catalog.catalog/health --c
 > Host: catalog.catalog
 > User-Agent: curl/7.88.1
 > Accept: */*
-> 
+>
 < HTTP/1.1 200 OK
 ...
 ```
@@ -60,7 +61,7 @@ $ kubectl exec deployment/ui -n ui -- curl -v catalog.catalog/health --connect-t
 > Host: catalog.catalog
 > User-Agent: curl/7.88.1
 > Accept: */*
-> 
+>
 < HTTP/1.1 200 OK
 ...
 ```
@@ -76,6 +77,7 @@ $ kubectl exec deployment/orders -n orders -- curl -v catalog.catalog/health --c
 curl: (28) Failed to connect to catalog.catalog port 80 after 5001 ms: Timeout was reached
 ...
 ```
+
 As you could see from the above outputs, only the 'ui' component is able to communicate with the 'catalog' service component, and the 'orders' service component is not able to.
 
 But this still leaves the 'catalog' database component open, so let us implement a network policy to ensure only the 'catalog' service component alone can communicate with the 'catalog' database component.

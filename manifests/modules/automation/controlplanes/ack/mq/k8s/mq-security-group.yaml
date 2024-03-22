@@ -8,8 +8,8 @@ spec:
   name: mq-eks-workshop
   vpcID: ${VPC_ID}
   ingressRules:
-  - ipProtocol: tcp
-    ipRanges:
-    - cidrIP: "0.0.0.0/0"
-    fromPort: 5671
-    toPort: 5671
+    - ipProtocol: tcp
+      ipRanges:
+        - cidrIP: "0.0.0.0/0"
+      fromPort: 5671
+      toPort: 5671

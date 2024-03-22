@@ -7,8 +7,8 @@ sidebar_position: 433
 
 The `catalog` deployment in the `catalog` Namespace accesses the following database values from the catalog-db secret via environment variables:
 
-* `DB_USER`
-* `DB_PASSWORD`
+- `DB_USER`
+- `DB_PASSWORD`
 
 ```bash
 $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.containers[] | .env'
@@ -48,9 +48,9 @@ manifests/base-application/catalog/secrets.yaml
 
 ```bash
 $ kubectl -n catalog get secrets catalog-db --template {{.data.username}} | base64 -d
-catalog_user%                                                                                                                                                                                                   
+catalog_user%
 $ kubectl -n catalog get secrets catalog-db --template {{.data.password}} | base64 -d
-default_password% 
+default_password%
 ```
 
 Let's create a new secret `catalog-sealed-db`. We'll create a new file `new-catalog-db.yaml` with the same keys and values as the `catalog-db` Secret.
@@ -114,7 +114,7 @@ $ kubectl logs deployments/sealed-secrets-controller -n kube-system
 Verify that the `catalog-sealed-db` Secret unsealed from the SealedSecret was deployed by the controller to the secure-secrets namespace.
 
 ```bash
-$ kubectl get secret -n catalog catalog-sealed-db 
+$ kubectl get secret -n catalog catalog-sealed-db
 
 NAME                       TYPE     DATA   AGE
 catalog-sealed-db          Opaque   4      7m51s

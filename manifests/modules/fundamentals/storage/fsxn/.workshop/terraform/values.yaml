@@ -28,10 +28,8 @@ affinity: {}
 # tridentNodePluginNodeSelector additional nodeSelectors for Pods running the Trident Node CSI Plugin.
 # tridentNodePluginNodeSelector : {}
 
-# tridentNodePluginTolerations overrides tolerations for Pods running the Trident Node CSI Plugin. 
+# tridentNodePluginTolerations overrides tolerations for Pods running the Trident Node CSI Plugin.
 # tridentNodePluginTolerations: []
-
-
 
 # imageRegistry identifies the registry for the trident-operator, trident, and other images.  Leave empty to accept the default.
 imageRegistry: ""
@@ -45,8 +43,7 @@ imagePullSecrets: []
 # kubeletDir allows overriding the host location of kubelet's internal state. (default "/var/lib/kubelet").
 kubeletDir: ""
 
-
-# operatorLogLevel allows the log level of the Trident operator to be set to one of these: 
+# operatorLogLevel allows the log level of the Trident operator to be set to one of these:
 # trace, debug, info, warn, error, fatal.
 # operatorLogLevel: "info"
 
@@ -58,7 +55,6 @@ operatorImage: ""
 
 # operatorImageTag allows overriding the tag of the trident-operator image.
 operatorImageTag: ""
-
 
 # tridentIPv6 allows enabling Trident to work in IPv6 clusters.
 tridentIPv6: false

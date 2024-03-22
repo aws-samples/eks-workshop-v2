@@ -3,7 +3,7 @@ title: "Provisioning ACK Resources"
 sidebar_position: 5
 ---
 
-By default the **Carts** component in the sample application uses a DynamoDB local instance running as a pod in the EKS cluster called ```carts-dynamodb```. In this section of the lab, we'll provision an Amazon DynamoDB cloud based table for our application using Kubernetes custom resources and point the **Carts** deployment to use the newly provisioned DynamoDB table instead of the local copy.
+By default the **Carts** component in the sample application uses a DynamoDB local instance running as a pod in the EKS cluster called `carts-dynamodb`. In this section of the lab, we'll provision an Amazon DynamoDB cloud based table for our application using Kubernetes custom resources and point the **Carts** deployment to use the newly provisioned DynamoDB table instead of the local copy.
 
 ![ACK reconciler concept](./assets/ack-desired-current-ddb.png)
 
@@ -32,7 +32,8 @@ $ eksctl create iamserviceaccount --name carts-ack \
 2023-10-31 16:21:17 [i]  waiting for CloudFormation stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-ack"
 2023-10-31 16:21:17 [i]  created serviceaccount "carts/carts-ack"
 ```
-```eksctl``` provisions a CloudFormation stack to help manage these resources which can be seen in the  output above.
+
+`eksctl` provisions a CloudFormation stack to help manage these resources which can be seen in the output above.
 
 To learn more about how IRSA works, go [here](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html).
 
@@ -46,7 +47,7 @@ manifests/modules/automation/controlplanes/ack/dynamodb/dynamodb-create.yaml
 
 :::info
 
-Astute readers will notice the YAML Spec to be similar to the API endpoints and calls for DynamoDB such as ```tableName``` and ```attributeDefinitions```.
+Astute readers will notice the YAML Spec to be similar to the API endpoints and calls for DynamoDB such as `tableName` and `attributeDefinitions`.
 
 :::
 
@@ -56,7 +57,7 @@ Next, we will need to update the regional endpoint for DynamoDB within the Confi
 manifests/modules/automation/controlplanes/ack/dynamodb/dynamodb-ack-configmap.yaml
 ```
 
-Using the ```envsubst``` utility, we will rewrite the environment variable AWS_REGION into the manifest and apply all the updates to the cluster. Run the below
+Using the `envsubst` utility, we will rewrite the environment variable AWS_REGION into the manifest and apply all the updates to the cluster. Run the below
 
 ```bash wait=10
 $ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/ack/dynamodb \
@@ -74,7 +75,7 @@ $ kubectl rollout status -n carts deployment/carts --timeout=120s
 ```
 
 :::info
-This command 'builds' the manifests using the kubectl kustomize command, pipes it to ```envsubst``` and then to kubectl apply. This makes it easy to template manifests and populate them at run-time.
+This command 'builds' the manifests using the kubectl kustomize command, pipes it to `envsubst` and then to kubectl apply. This makes it easy to template manifests and populate them at run-time.
 :::
 
 The ACK controllers in the cluster will react to these new resources and provision the AWS infrastructure we have expressed with the manifests earlier. Lets check if ACK created the table by running

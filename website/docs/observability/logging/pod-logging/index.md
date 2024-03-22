@@ -1,7 +1,7 @@
 ---
 title: "Pod logging"
 sidebar_position: 10
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
 ---
 
 {{% required-time %}}
@@ -14,6 +14,7 @@ $ prepare-environment observability/logging/pods
 ```
 
 This will make the following changes to your lab environment:
+
 - Install AWS for Fluent Bit in the Amazon EKS cluster
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/logging/pods/.workshop/terraform).
@@ -23,9 +24,9 @@ According to the [Twelve-Factor App manifesto](https://12factor.net/), which pro
 
 The Kubernetes logging architecture defines three distinct levels:
 
-* Basic level logging: the ability to grab pods log using kubectl (e.g. `kubectl logs myapp` – where `myapp` is a pod running in my cluster)
-* Node level logging: The container engine captures logs from the application’s `stdout` and `stderr`, and writes them to a log file.
-* Cluster level logging: Building upon node level logging; a log capturing agent runs on each node. The agent collects logs on the local filesystem and sends them to a centralized logging destination like Elasticsearch or CloudWatch. The agent collects two types of logs:
+- Basic level logging: the ability to grab pods log using kubectl (e.g. `kubectl logs myapp` – where `myapp` is a pod running in my cluster)
+- Node level logging: The container engine captures logs from the application’s `stdout` and `stderr`, and writes them to a log file.
+- Cluster level logging: Building upon node level logging; a log capturing agent runs on each node. The agent collects logs on the local filesystem and sends them to a centralized logging destination like Elasticsearch or CloudWatch. The agent collects two types of logs:
   - Container logs captured by the container engine on the node.
   - System logs.
 

@@ -1,7 +1,7 @@
 ---
 title: "Policy management with Kyverno"
 sidebar_position: 70
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
 ---
 
 {{% required-time %}}
@@ -17,9 +17,9 @@ This will make the following changes to your lab environment:
 
 Install the following Kubernetes addons in the EKS cluster:
 
-* Kyverno Policy Manager
-* Kyverno Policies
-* Policy Reporter
+- Kyverno Policy Manager
+- Kyverno Policies
+- Policy Reporter
 
 You can view the Terraform that applies these changes [here](https://github.com/aws-samples/eks-workshop-v2/tree/main/manifests/modules/security/kyverno/.workshop/terraform).
 :::
@@ -40,7 +40,7 @@ Kyverno policies can be used to **validate**, **mutate**, and **generate** resou
 
 ### How Kyverno Works
 
-As mentioned above, Kyverno runs as a Dynamic Admission Controller in an Kubernetes Cluster. Kyverno receives validating and mutating admission webhook HTTP callbacks from the Kubernetes API server and applies matching policies to return results that enforce admission policies or reject requests. It can also be used to Audit the requests and to monitor the Security posture of the environment before enforcing. 
+As mentioned above, Kyverno runs as a Dynamic Admission Controller in an Kubernetes Cluster. Kyverno receives validating and mutating admission webhook HTTP callbacks from the Kubernetes API server and applies matching policies to return results that enforce admission policies or reject requests. It can also be used to Audit the requests and to monitor the Security posture of the environment before enforcing.
 
 The diagram below shows the high-level logical architecture of Kyverno.
 

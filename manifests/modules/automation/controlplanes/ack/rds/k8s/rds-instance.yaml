@@ -10,11 +10,11 @@ spec:
   engine: mysql
   engineVersion: "8.0"
   masterUsername: "admin"
-  dbSubnetGroupRef: 
-    from: 
+  dbSubnetGroupRef:
+    from:
       name: ${EKS_CLUSTER_NAME}-catalog-ack
   vpcSecurityGroupRefs:
-    - from: 
+    - from:
         name: ${EKS_CLUSTER_NAME}-catalog-ack
   masterUserPassword:
     namespace: catalog

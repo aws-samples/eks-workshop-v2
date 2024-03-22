@@ -1,7 +1,7 @@
 ---
 title: Amazon EBS
 sidebar_position: 30
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
 ---
 
 {{% required-time %}}
@@ -14,6 +14,7 @@ $ prepare-environment fundamentals/storage/ebs
 ```
 
 This will make the following changes to your lab environment:
+
 - Create the IAM role needed for the EBS CSI driver addon
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/fundamentals/storage/ebs/.workshop/terraform).
@@ -23,6 +24,7 @@ You can view the Terraform that applies these changes [here](https://github.com/
 [Amazon Elastic Block Store](https://aws.amazon.com/ebs/) is an easy-to-use, scalable, high-performance block-storage service. It provides persistent volume (non-volatile storage) to users. Persistent storage enables users to store their data until they decide to delete the data.
 
 In this lab, we'll learn about the following concepts:
-* Kubernetes StatefulSets
-* EBS CSI Driver
-* StatefulSet with EBS Volume
+
+- Kubernetes StatefulSets
+- EBS CSI Driver
+- StatefulSet with EBS Volume

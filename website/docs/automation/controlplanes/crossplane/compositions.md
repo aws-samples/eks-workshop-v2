@@ -72,7 +72,7 @@ On querying the claim `DynamoDBTable` deployed in the carts namespace, we can ob
 
 ```bash
 $ kubectl get DynamoDBTable -n carts -o yaml | grep "resourceRef:" -A 3
-    
+
     resourceRef:
       apiVersion: awsblueprints.io/v1alpha1
       kind: XDynamoDBTable
@@ -90,7 +90,7 @@ table.dynamodb.awsblueprints.io   XDynamoDBTable   awsblueprints.io/v1alpha1   1
 On querying the `XDynamoDBTable` XR which is not confined to any namespace, we can observe that it creates DynamoDB Managed Resource `Table`.
 
 ```bash
-$ kubectl get XDynamoDBTable -o yaml | grep "resourceRefs:" -A 3  
+$ kubectl get XDynamoDBTable -o yaml | grep "resourceRefs:" -A 3
 
     resourceRefs:
     - apiVersion: dynamodb.aws.upbound.io/v1beta1

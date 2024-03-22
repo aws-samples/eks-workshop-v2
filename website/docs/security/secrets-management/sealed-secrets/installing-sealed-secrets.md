@@ -27,7 +27,7 @@ controller version: 0.18.0
 2022/10/18 09:17:01 Starting sealed-secrets controller version: 0.18.0
 2022/10/18 09:17:01 Searching for existing private keys
 2022/10/18 09:17:02 New key written to kube-system/sealed-secrets-keyvkl9w
-2022/10/18 09:17:02 Certificate is 
+2022/10/18 09:17:02 Certificate is
 -----BEGIN CERTIFICATE-----
 MIIEzTCCArWgAwIBAgIRAPsk+UrW9GlPu4gXN1qKqGswDQYJKoZIhvcNAQELBQAw
 ADAeFw0yMjEwMTgwOTE3MDJaFw0zMjEwMTUwOTE3MDJaMAAwggIiMA0GCSqGSIb3

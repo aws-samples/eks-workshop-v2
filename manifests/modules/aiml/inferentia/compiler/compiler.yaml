@@ -7,10 +7,10 @@ metadata:
   namespace: aiml
 spec:
   containers:
-  - command:
-    - sh
-    - -c
-    - sleep infinity
-    image: ${AIML_DL_IMAGE}
-    name: compiler
+    - command:
+        - sh
+        - -c
+        - sleep infinity
+      image: ${AIML_DL_IMAGE}
+      name: compiler
   serviceAccountName: inference

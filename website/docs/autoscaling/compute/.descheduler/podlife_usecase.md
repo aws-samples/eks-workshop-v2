@@ -27,7 +27,7 @@ KUSTOMIZE HERE
 Watch the pod status by running the below command, notice the pods being evicted every time it runs for more than 120 seconds:
 
 ```bash test=false
-$ kubectl get pods -l podlifetime=enabled --watch 
+$ kubectl get pods -l podlifetime=enabled --watch
 NAME                              READY   STATUS              RESTARTS   AGE
 nginx-lifetime-68db49fb68-4x6l5   1/1     Running             0          2m24s
 nginx-lifetime-68db49fb68-4x6l5   1/1     Terminating         0          3m

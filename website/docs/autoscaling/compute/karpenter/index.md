@@ -1,7 +1,7 @@
 ---
 title: "Karpenter"
 sidebar_position: 30
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
 ---
 
 {{% required-time %}}
@@ -14,6 +14,7 @@ $ prepare-environment autoscaling/compute/karpenter
 ```
 
 This will make the following changes to your lab environment:
+
 - Install Karpenter in the Amazon EKS cluster
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/autoscaling/compute/karpenter/.workshop/terraform).
@@ -26,8 +27,8 @@ In this lab, we'll look at [Karpenter](https://github.com/aws/karpenter), an ope
 
 Karpenter's goal is to improve the efficiency and cost of running workloads on Kubernetes clusters. Karpenter works by:
 
-* Watching for pods that the Kubernetes scheduler has marked as unschedulable
-* Evaluating scheduling constraints (resource requests, nodeselectors, affinities, tolerations, and topology spread constraints) requested by the pods
-* Provisioning nodes that meet the requirements of the pods
-* Scheduling the pods to run on the new nodes
-* Removing the nodes when the nodes are no longer needed
+- Watching for pods that the Kubernetes scheduler has marked as unschedulable
+- Evaluating scheduling constraints (resource requests, nodeselectors, affinities, tolerations, and topology spread constraints) requested by the pods
+- Provisioning nodes that meet the requirements of the pods
+- Scheduling the pods to run on the new nodes
+- Removing the nodes when the nodes are no longer needed

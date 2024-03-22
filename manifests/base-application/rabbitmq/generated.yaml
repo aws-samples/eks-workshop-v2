@@ -44,7 +44,7 @@ metadata:
 type: Opaque
 data:
   rabbitmq-password: "d282NkZHRjV0RWFJNDU0RA=="
-  
+
   rabbitmq-erlang-cookie: "WnFkT1lqR0cyZ29NVWdiaUFwbHRDendabkRrZ0ZqVjU="
 ---
 # Source: rabbitmq/templates/role.yaml
@@ -111,7 +111,7 @@ spec:
     - name: http-stats
       port: 15672
       targetPort: stats
-  selector: 
+  selector:
     app.kubernetes.io/name: rabbitmq
     app.kubernetes.io/instance: rabbitmq
   publishNotReadyAddresses: true
@@ -148,7 +148,7 @@ spec:
       port: 15672
       targetPort: stats
       nodePort: null
-  selector: 
+  selector:
     app.kubernetes.io/name: rabbitmq
     app.kubernetes.io/instance: rabbitmq
 ---
@@ -184,11 +184,10 @@ spec:
         checksum/config: 2fa2279885865096b88ff79633d02eb6a6e68056a9a64c1b01495731a39d9bec
         checksum/secret: 65d9a269c4e154b96c8fdc577f211b071f303fb47edf8a0f4c5b0cfe0f2594c7
     spec:
-      
       serviceAccountName: rabbitmq
       affinity:
         podAffinity:
-          
+
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - podAffinityTerm:
@@ -201,7 +200,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
               weight: 1
         nodeAffinity:
-          
+
       securityContext:
         fsGroup: 1001
       terminationGracePeriodSeconds: 120

@@ -5,6 +5,7 @@ This guide outlines how to author content for the workshop, whether adding new c
 ## Pre-requisites
 
 The following pre-requisites are necessary to work on the content:
+
 - Access to an AWS account
 - Installed locally:
   - Docker
@@ -17,6 +18,7 @@ The following pre-requisites are necessary to work on the content:
 ## Create a work branch
 
 The first step is to create a working branch to create the content. There are two ways to do this depending on your access level:
+
 1. If you have `write` access to this repository you can clone it locally create a new branch directly
 2. Otherwise fork the repository, clone it and create a new branch
 
@@ -59,10 +61,12 @@ If the component you require is not already supported by EKS Blueprints you can 
 In order to keep up with new versions of Helm charts being published there is an automated mechanism used to monitor all Helm charts used in the workshop content that will raise PRs when new versions are published.
 
 In addition to adding a component to Terraform as outlined in the previous section you must also do the following:
+
 - Edit the file `helm/charts.yaml` and specify the Helm repository, chart name etc.
 - Edit the file `terraform/modules/cluster/helm_versions.tf.json` and specify the initial version, note the map name must match the `name` field from `charts.yaml` for your chart.
 
 By default the automated system will look for the latest version of any charts added, but you can control this by using the `constraint` field, which uses the [NPM semantic versioning](https://docs.npmjs.com/about-semantic-versioning) constraint syntax. Please use this sparingly, as any constraints used will require additional maintenance overhead to keep updated. This should mainly be used for charts where:
+
 - The latest chart versions are incompatible with the version of EKS in the content
 - The content requires significant changes to bring it inline with a new version
 
@@ -82,6 +86,7 @@ Example constraint in `helm/charts.yaml`:
 Any content changes are expected to be accompanied by the any corresponding infrastructure changes in the same Pull Request.
 
 All Terraform configuration resides in the `terraform` directory, and is structured as follows:
+
 - `modules/cluster` contains resources related to VPC, EKS and those used by workloads in EKS (IAM roles)
 - `modules/ide` contains resources related to the Cloud9 IDE and its bootstrapping
 - `cluster-only` is a small wrapper around `modules/cluster`
@@ -122,17 +127,20 @@ make destroy-infrastructure
 When in the process of creating the content its likely you'll need to be fairly interactive in testing commands etc. For this theres a mechanism to easily create an interactive shell with access to the EKS cluster created by the Terraform, as well as including all the necessary tools and utilities without installing them locally.
 
 To use this utility you must:
+
 - Already have created the workshop infrastructure as outlined in the section above
 - Have some AWS credentials available in your current shell session (ie. you `aws` CLI must work)
 
 The shell session created will have AWS credentials injected, so you will immediately be able to use the `aws` CLI and `kubectl` commands with no further configuration:
 
 If using [finch CLI](https://github.com/runfinch/finch) instead of `docker` CLI you need to set two environment variable `CONTAINER_CLI` or run `make` with the variable set like `CONTAINER_CLI=finch make shell` here how to set the variable in the terminal session for every command.
+
 ```bash
 export CONTAINER_CLI=finch
 ```
 
 Run the `make shell`
+
 ```bash
 ➜  eks-workshop-v2 git:(main) ✗ make shell
 bash hack/shell.sh

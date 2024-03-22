@@ -9,11 +9,11 @@ Now that we're familiar with the overall architecture of the sample application,
 
 There are a number of things to consider in this diagram:
 
-* The application that provides the catalog API runs as a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/), which is the smallest deployable unit in Kubernetes. Application Pods will run the container images we outlined in the previous section.
-* The Pods that run for the catalog component are created by a [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) which may manage one or more "replicas" of the catalog Pod, allowing it to scale horizontally.
-* A [Service](https://kubernetes.io/docs/concepts/services-networking/service/) is an abstract way to expose an application running as a set of Pods, and this allows our catalog API to be called by other components inside the Kubernetes cluster. Each Service is given its own DNS entry.
-* We're starting this workshop with a MySQL database that runs inside our Kubernetes cluster as a [StatefulSet](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/), which is designed to manage stateful workloads.
-* All of these Kubernetes constructs are grouped in their own dedicated catalog Namespace. Each of the application components has its own Namespace.
+- The application that provides the catalog API runs as a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/), which is the smallest deployable unit in Kubernetes. Application Pods will run the container images we outlined in the previous section.
+- The Pods that run for the catalog component are created by a [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) which may manage one or more "replicas" of the catalog Pod, allowing it to scale horizontally.
+- A [Service](https://kubernetes.io/docs/concepts/services-networking/service/) is an abstract way to expose an application running as a set of Pods, and this allows our catalog API to be called by other components inside the Kubernetes cluster. Each Service is given its own DNS entry.
+- We're starting this workshop with a MySQL database that runs inside our Kubernetes cluster as a [StatefulSet](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/), which is designed to manage stateful workloads.
+- All of these Kubernetes constructs are grouped in their own dedicated catalog Namespace. Each of the application components has its own Namespace.
 
 Each of the components in the microservices architecture is conceptually similar to the catalog, using Deployments to manage application workload Pods and Services to route traffic to those Pods. If we expand out our view of the architecture we can consider how traffic is routed throughout the broader system:
 

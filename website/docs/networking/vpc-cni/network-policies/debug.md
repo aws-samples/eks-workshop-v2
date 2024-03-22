@@ -64,8 +64,8 @@ $ kubectl exec deployment/ui -n ui -- curl -v orders.orders/orders --connect-tim
 > Host: orders.orders
 > User-Agent: curl/7.88.1
 > Accept: */*
-> 
-< HTTP/1.1 200 
+>
+< HTTP/1.1 200
 ...
 ```
 

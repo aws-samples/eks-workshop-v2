@@ -2,9 +2,10 @@
 title: Pod Affinity and Anti-Affinity
 sidebar_position: 30
 ---
+
 Pods can be constrained to run on specific nodes or under specific circumstances. This can include cases where you want only one application pod running per node or want pods to be paired together on a node. Additionally, when using node affinity pods can have preferred or mandatory restrictions.
 
-For this lesson, we'll focus on inter-pod affinity and anti-affinity by scheduling the `checkout-redis` pods to run only one instance per node and by scheduling the `checkout` pods to only run one instance of it on nodes where a `checkout-redis` pod exists. This will ensure that our caching pods (`checkout-redis`) run locally with a `checkout` pod instance for best performance. 
+For this lesson, we'll focus on inter-pod affinity and anti-affinity by scheduling the `checkout-redis` pods to run only one instance per node and by scheduling the `checkout` pods to only run one instance of it on nodes where a `checkout-redis` pod exists. This will ensure that our caching pods (`checkout-redis`) run locally with a `checkout` pod instance for best performance.
 
 The first thing we want to do is see that the `checkout` and `checkout-redis` pods are running:
 
@@ -105,7 +106,7 @@ $ kubectl scale -n checkout deployment/checkout-redis --replicas 2
 Check the running pods to verify that there are now two of each running:
 
 ```bash
-$ kubectl get pods -n checkout                                       
+$ kubectl get pods -n checkout
 NAME                             READY   STATUS    RESTARTS   AGE
 checkout-5b68c8cddf-6ddwn        1/1     Running   0          4m14s
 checkout-5b68c8cddf-rd7xf        1/1     Running   0          4m12s

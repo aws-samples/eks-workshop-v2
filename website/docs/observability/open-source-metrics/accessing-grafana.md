@@ -10,7 +10,7 @@ $ kubectl get ingress -n grafana grafana -o=jsonpath='{.status.loadBalancer.ingr
 k8s-grafana-grafana-123497e39be-2107151316.us-west-2.elb.amazonaws.com
 ```
 
-Opening this URL in a browser will bring up a login screen. 
+Opening this URL in a browser will bring up a login screen.
 
 ![Grafana dashboard](./assets/grafana-login.png)
 

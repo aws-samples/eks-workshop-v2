@@ -4,14 +4,14 @@ metadata:
   name: add-labels
 spec:
   rules:
-  - name: add-labels
-    match:
-      any:
-      - resources:
-          kinds:
-          - Pod
-    mutate:
-      patchStrategicMerge:
-        metadata:
-          labels:
-            CostCenter: IT
+    - name: add-labels
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            labels:
+              CostCenter: IT

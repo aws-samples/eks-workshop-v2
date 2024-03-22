@@ -37,7 +37,7 @@ fs-061cb5c5ed841a6b0
 
 Now, we'll need to create a StorageClass(https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured to use the pre-provisioned EFS file system as part of this workshop infrastructure and use [EFS Access points](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html) in provisioning mode.
 
-We'll be using Kustomize to create for us the storage class and to ingest the environment variable `EFS_ID` in the parameter `filesystemid` value in the configuration of the storage class object: 
+We'll be using Kustomize to create for us the storage class and to ingest the environment variable `EFS_ID` in the parameter `filesystemid` value in the configuration of the storage class object:
 
 ```file
 manifests/modules/fundamentals/storage/efs/storageclass/efsstorageclass.yaml
@@ -71,4 +71,4 @@ VolumeBindingMode:     Immediate
 Events:                <none>
 ```
 
-Now that we have a better understanding of EKS StorageClass and EFS CSI driver. On the next page, we'll focus on modifying the asset microservice to leverage the EFS `StorageClass` using Kubernetes dynamic volume provisioning and a PersistentVolume to store the product images. 
+Now that we have a better understanding of EKS StorageClass and EFS CSI driver. On the next page, we'll focus on modifying the asset microservice to leverage the EFS `StorageClass` using Kubernetes dynamic volume provisioning and a PersistentVolume to store the product images.

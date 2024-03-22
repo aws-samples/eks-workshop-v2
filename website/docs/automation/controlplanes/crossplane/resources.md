@@ -3,7 +3,7 @@ title: "Managed Resources"
 sidebar_position: 20
 ---
 
-By default the **Carts** component in the sample application uses a DynamoDB local instance running as a pod in the EKS cluster called ```carts-dynamodb```. In this section of the lab, we'll provision an Amazon DynamoDB cloud based table for our application using Crossplane managed resources and point the **Carts** deployment to use the newly provisioned DynamoDB table instead of the local copy.
+By default the **Carts** component in the sample application uses a DynamoDB local instance running as a pod in the EKS cluster called `carts-dynamodb`. In this section of the lab, we'll provision an Amazon DynamoDB cloud based table for our application using Crossplane managed resources and point the **Carts** deployment to use the newly provisioned DynamoDB table instead of the local copy.
 
 ![Crossplane reconciler concept](./assets/Crossplane-desired-current-ddb.png)
 
@@ -21,11 +21,11 @@ $ eksctl create iamserviceaccount --name carts-crossplane \
   --namespace carts --cluster $EKS_CLUSTER_NAME \
   --role-name ${EKS_CLUSTER_NAME}-carts-crossplane \
   --attach-policy-arn $DYNAMODB_POLICY_ARN --approve
-  
+
 2023-10-30 12:45:17 [i]  1 iamserviceaccount (carts/carts-crossplane) was included (based on the include/exclude rules)
 2023-10-30 12:45:17 [!]  serviceaccounts that exist in Kubernetes will be excluded, use --override-existing-serviceaccounts to override
-2023-10-30 12:45:17 [i]  1 task: { 
-    2 sequential sub-tasks: { 
+2023-10-30 12:45:17 [i]  1 task: {
+    2 sequential sub-tasks: {
         create IAM role for serviceaccount "carts/carts-crossplan",
         create serviceaccount "carts/carts-crossplane",
     } }2023-10-30 12:45:17 [i]  building iamserviceaccount stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-crossplane"
@@ -33,7 +33,7 @@ $ eksctl create iamserviceaccount --name carts-crossplane \
 2023-10-30 12:45:18 [i]  waiting for CloudFormation stack "eksctl-eks-workshop-addon-iamserviceaccount-carts-carts-crossplane"
 ```
 
-```eksctl``` provisions a CloudFormation stack to help manage these resources which can be seen in the  output above.
+`eksctl` provisions a CloudFormation stack to help manage these resources which can be seen in the output above.
 
 To learn more about how IRSA works, go [here](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html).
 

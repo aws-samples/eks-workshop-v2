@@ -3,11 +3,11 @@ title: "Using EKS Pod Identity"
 sidebar_position: 34
 hide_table_of_contents: true
 ---
- 
+
 To use EKS Pod Identity in your cluster, the `EKS Pod Identity Agent` addon must be installed on your EKS cluster. Lets install it using below command.
 
 ```bash timeout=300 wait=60
-$ aws eks create-addon --cluster-name $EKS_CLUSTER_NAME --addon-name eks-pod-identity-agent 
+$ aws eks create-addon --cluster-name $EKS_CLUSTER_NAME --addon-name eks-pod-identity-agent
 {
     "addon": {
         "addonName": "eks-pod-identity-agent",
@@ -30,7 +30,7 @@ $ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --addon-name eks-po
 Now take a look at what has been created in your EKS cluster by the new addon. You can see a DaemonSet deployed on the `kube-system` Namespace, which will run a Pod on each Node in our Cluster.
 
 ```bash
-$ kubectl -n kube-system get daemonset eks-pod-identity-agent 
+$ kubectl -n kube-system get daemonset eks-pod-identity-agent
 NAME                      DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
 eks-pod-identity-agent    3         3         3       3            3           <none>          3d21h
 $ kubectl -n kube-system get pods -l app.kubernetes.io/name=eks-pod-identity-agent

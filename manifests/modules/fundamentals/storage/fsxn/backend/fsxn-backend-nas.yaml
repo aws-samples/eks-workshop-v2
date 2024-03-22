@@ -10,6 +10,6 @@ spec:
   managementLIF: ${FSXN_IP}
   svm: fsxnsvm
   autoExportPolicy: true
-  autoExportCIDRs: ["10.42.0.0/16","100.64.0.0/16"]
+  autoExportCIDRs: ["10.42.0.0/16", "100.64.0.0/16"]
   credentials:
     name: backend-fsxn-ontap-nas-secret

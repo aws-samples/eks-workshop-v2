@@ -6,8 +6,8 @@ weight: 7
 
 In this section we'll look at gaining insight into metrics exposed by our workloads and visualizing those metrics using Amazon CloudWatch Insights Prometheus. Some examples of these metrics could be:
 
-* System metrics such as Java heap metrics or database connection pool status
-* Application metrics related to business KPIs
+- System metrics such as Java heap metrics or database connection pool status
+- Application metrics related to business KPIs
 
 Let's look at how to ingest application metrics using AWS Distro for OpenTelemetry and visualize the metrics using Amazon CloudWatch.
 
@@ -29,8 +29,9 @@ watch_orders_total{productId="*",} 3.0
 watch_orders_total{productId="6d62d909-f957-430e-8689-b5129c0bb75e",} 1.0
 ```
 
-The output from this command is verbose, for the sake of this lab let us focus on the metric - watch_orders_total: 
-* watch_orders_total - Application metric - How many orders have been placed through the retail store
+The output from this command is verbose, for the sake of this lab let us focus on the metric - watch_orders_total:
+
+- watch_orders_total - Application metric - How many orders have been placed through the retail store
 
 You can execute similar requests to other components, for example the checkout service:
 
@@ -43,7 +44,7 @@ nodejs_heap_size_total_bytes 48668672
 [...]
 ```
 
-In this lab we'll leverage CloudWatch Container Insights Prometheus Support with AWS Distro for OpenTelemetry to ingest the metrics from all the components and build Amazon CloudWatch Dashboard to show the number of orders that have been placed. There are two parts to solve for integrating Prometheus with CloudWatch Container Insights Prometheus. The first is getting the metrics from Prometheus from application pods. The second problem is exposing them in CloudWatch-specific format with the right sets of metadata. 
+In this lab we'll leverage CloudWatch Container Insights Prometheus Support with AWS Distro for OpenTelemetry to ingest the metrics from all the components and build Amazon CloudWatch Dashboard to show the number of orders that have been placed. There are two parts to solve for integrating Prometheus with CloudWatch Container Insights Prometheus. The first is getting the metrics from Prometheus from application pods. The second problem is exposing them in CloudWatch-specific format with the right sets of metadata.
 
 First, we have to scrape the metrics from the application pods. The OpenTelemetry configuration to do this is detailed below:
 
@@ -104,6 +105,7 @@ metric_declarations:
     metric_name_selectors:
       - "^watch_orders_total$"
 ```
+
 Pipelines are defined in the configuration file- opentelemetrycollector.yaml. A pipeline defines the data flow in OpenTelemetry collector and includes receiving, processing, and exporting metrics. In each stage, there can be multiple components and they may run in serial (processor) or in parallel (receiver, exporter). Internally, all the components communicate using OpenTelemetry’s unified data models so components from different vendors can work together. Receivers collect data from source systems and translate them into internal models. Processors can filter and modify metrics. Exporters convert the data to other schema and send to target systems. From this configuration, your metrics from orders will be made available under the CloudWatch Metrics namespace ContainerInsights/Prometheus with the dimensions pod and productId per the exporter configuration settings.
 
 ```bash
@@ -179,9 +181,9 @@ SELECT COUNT(watch_orders_total) FROM "ContainerInsights/Prometheus" WHERE produ
 
 Which is doing the following:
 
-* Query for the metric `watch_orders_total`
-* Ignore metrics with a `productId` value of `*`
-* Sum these metrics and group them by `productId`
+- Query for the metric `watch_orders_total`
+- Ignore metrics with a `productId` value of `*`
+- Sum these metrics and group them by `productId`
 
 Once you're satisfied with observing the metrics, you can stop the load generator using the below command.
 

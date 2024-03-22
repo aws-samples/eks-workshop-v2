@@ -7,7 +7,7 @@ availabilityZones:
 metadata:
   name: ${EKS_CLUSTER_NAME}
   region: ${AWS_REGION}
-  version: '1.29'
+  version: "1.29"
   tags:
     karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
     created-by: eks-workshop-v2
@@ -22,7 +22,7 @@ vpc:
 addons:
   - name: vpc-cni
     version: 1.14.1
-    configurationValues: "{\"env\":{\"ENABLE_PREFIX_DELEGATION\":\"true\", \"ENABLE_POD_ENI\":\"true\", \"POD_SECURITY_GROUP_ENFORCING_MODE\":\"standard\"},\"enableNetworkPolicy\": \"true\"}"
+    configurationValues: '{"env":{"ENABLE_PREFIX_DELEGATION":"true", "ENABLE_POD_ENI":"true", "POD_SECURITY_GROUP_ENFORCING_MODE":"standard"},"enableNetworkPolicy": "true"}'
     resolveConflicts: overwrite
 managedNodeGroups:
   - name: default
@@ -35,4 +35,4 @@ managedNodeGroups:
     updateConfig:
       maxUnavailablePercentage: 50
     labels:
-      workshop-default: 'yes'
+      workshop-default: "yes"

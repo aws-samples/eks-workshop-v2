@@ -40,9 +40,9 @@ Now, try to run the privileged Pod again.
 
 ```bash expectError=true
 $ kubectl run privileged-pod --image=nginx --restart=Never --privileged
-Error from server: admission webhook "validate.kyverno.svc-fail" denied the request: 
+Error from server: admission webhook "validate.kyverno.svc-fail" denied the request:
 
-resource Pod/default/privileged-pod was blocked due to the following policies 
+resource Pod/default/privileged-pod was blocked due to the following policies
 
 baseline-policy:
   baseline: |

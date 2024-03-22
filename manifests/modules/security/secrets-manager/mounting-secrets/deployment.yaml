@@ -24,9 +24,9 @@ spec:
               mountPath: "/etc/catalog-secret"
               readOnly: true
       volumes:
-      - name: catalog-secret
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: catalog-spc
+        - name: catalog-secret
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: catalog-spc

@@ -7,6 +7,6 @@ A [ServiceAccount](https://kubernetes.io/docs/tasks/configure-pod-container/conf
 
 ![Insights](/img/resource-view/auth-resources.jpg)
 
-To view additional details for a specific  <i>service account</i>, drill down to the namespace and click on the service account you want to view to see additional information such as <i>labels</i>, <i>annotations</i>, <i>events</i>. Below is the detail view for the <i>catalog</i> service account. 
+To view additional details for a specific <i>service account</i>, drill down to the namespace and click on the service account you want to view to see additional information such as <i>labels</i>, <i>annotations</i>, <i>events</i>. Below is the detail view for the <i>catalog</i> service account.
 
 ![Insights](/img/resource-view/auth-sa-detail.jpg)

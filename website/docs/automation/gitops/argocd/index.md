@@ -14,6 +14,7 @@ $ prepare-environment automation/gitops/argocd
 ```
 
 This will make the following changes to your lab environment:
+
 - Create an AWS CodeCommit repository
 - Install ArgoCD in the Amazon EKS cluster
 

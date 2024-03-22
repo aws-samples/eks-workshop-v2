@@ -4,9 +4,10 @@ sidebar_position: 50
 ---
 
 Karpenter automatically discovers disruptable nodes and spins up replacements when needed. This can happen for three different reasons:
-* **Expiration**: By default, Karpenter automatically expires instances after 720h (30 days), forcing a recycle allowing nodes to be kept up to date.
-* **Drift**: Karpenter detects changes in configuration (such as the `NodePool` or `EC2NodeClass`) to apply necessary changes
-* **Consolidation**: A critical feature for operating compute in a cost-effective manner, Karpenter will optimize our cluster's compute on an on-going basis. For example, if workloads are running on under-utilized compute instances, it will consolidate them to fewer instances.
+
+- **Expiration**: By default, Karpenter automatically expires instances after 720h (30 days), forcing a recycle allowing nodes to be kept up to date.
+- **Drift**: Karpenter detects changes in configuration (such as the `NodePool` or `EC2NodeClass`) to apply necessary changes
+- **Consolidation**: A critical feature for operating compute in a cost-effective manner, Karpenter will optimize our cluster's compute on an on-going basis. For example, if workloads are running on under-utilized compute instances, it will consolidate them to fewer instances.
 
 Disruption is configured through the `disruption` block in a `NodePool`. The following policy is already configured on our `NodePool` which we defined in an earlier part of this lab.
 
@@ -25,7 +26,6 @@ Let's explore how to trigger automatic consolidation when `disruption` is set to
 1. Scale the `inflate` workload from 5 to 12 replicas, triggering Karpenter to provision additional capacity
 2. Scale down the workload back down to 5 replicas
 3. Observe Karpenter consolidating the compute
-
 
 Scale our `inflate` workload again to consume more resources:
 
@@ -80,7 +80,7 @@ Karpenter can also further consolidate if a node can be replaced with a cheaper 
 $ kubectl scale -n other deployment/inflate --replicas 1
 ```
 
-We can check the Karpenter logs and see what actions the controller took in response: 
+We can check the Karpenter logs and see what actions the controller took in response:
 
 ```bash test=false
 $ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter -f | jq '.'
@@ -102,7 +102,7 @@ The output will show Karpenter consolidating via replace, replacing the m5.large
 }
 ```
 
-Since the total memory request with 1 replica is much lower around 1Gi, it would be more efficient to run it on the cheaper c5.large instance type with 4GB of memory. Once the node is replaced, we can check the metadata on the new node and confirm the instance type is the c5.large: 
+Since the total memory request with 1 replica is much lower around 1Gi, it would be more efficient to run it on the cheaper c5.large instance type with 4GB of memory. Once the node is replaced, we can check the metadata on the new node and confirm the instance type is the c5.large:
 
 ```bash
 $ kubectl get nodes -l type=karpenter -o jsonpath="{range .items[*]}{.metadata.labels.node\.kubernetes\.io/instance-type}{'\n'}{end}"

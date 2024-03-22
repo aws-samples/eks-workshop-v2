@@ -11,30 +11,29 @@ The Amazon EKS managed worker node upgrade has 4 phases:
 
 **Setup**:
 
-* Create a new Amazon EC2 Launch Template version associated with Auto Scaling group with the latest AMI
-* Point your Auto Scaling group to use the latest version of the launch template
-* Determine the maximum number of nodes to upgrade in parallel using the `updateconfig` property for the node group.
+- Create a new Amazon EC2 Launch Template version associated with Auto Scaling group with the latest AMI
+- Point your Auto Scaling group to use the latest version of the launch template
+- Determine the maximum number of nodes to upgrade in parallel using the `updateconfig` property for the node group.
 
 **Scale Up**:
 
-* During the upgrade process, the upgraded nodes are launched in the same availability zone as those that are being upgraded
-* Increments the Auto Scaling Group’s maximum size and desired size to support the additional nodes
-* After scaling the Auto Scaling Group, it checks if the nodes using the latest configuration are present in the node group. 
-* Applies a `eks.amazonaws.com/nodegroup=unschedulable:NoSchedule` taint on every node in the node group without the latest labels. This prevents nodes that have already been updated from a previous failed update from being tainted.
+- During the upgrade process, the upgraded nodes are launched in the same availability zone as those that are being upgraded
+- Increments the Auto Scaling Group’s maximum size and desired size to support the additional nodes
+- After scaling the Auto Scaling Group, it checks if the nodes using the latest configuration are present in the node group.
+- Applies a `eks.amazonaws.com/nodegroup=unschedulable:NoSchedule` taint on every node in the node group without the latest labels. This prevents nodes that have already been updated from a previous failed update from being tainted.
 
 **Upgrade**:
 
-* Randomly selects a node and drains the Pods from the node.
-* Cordons the node after every Pod is evicted and waits for 60 seconds
-* Sends a termination request to the Auto Scaling Group for the cordoned node.
-* Applies same accross all nodes which are part of Managed Node group making sure there are no nodes with older version
+- Randomly selects a node and drains the Pods from the node.
+- Cordons the node after every Pod is evicted and waits for 60 seconds
+- Sends a termination request to the Auto Scaling Group for the cordoned node.
+- Applies same accross all nodes which are part of Managed Node group making sure there are no nodes with older version
 
 **Scale Down**:
 
-* The scale down phase decrements the Auto Scaling group maximum size and desired size by one until the the values are the same as before the update started.
+- The scale down phase decrements the Auto Scaling group maximum size and desired size by one until the the values are the same as before the update started.
 
 To learn more about managed node group update behavior, see [managed node group update phases](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-update-behavior.html).
-
 
 ### Upgrading a Managed Node Group
 
@@ -52,7 +51,7 @@ $ aws ssm get-parameter --name /aws/service/eks/optimized-ami/$EKS_VERSION/amazo
 ami-0fcd72f3118e0dd88
 ```
 
-When you initiate a managed node group update, Amazon EKS automatically updates your nodes for you, completing the steps listed above. If you're using an Amazon EKS optimized AMI, Amazon EKS automatically applies the latest security patches and operating system updates to your nodes as part of the latest AMI release version. 
+When you initiate a managed node group update, Amazon EKS automatically updates your nodes for you, completing the steps listed above. If you're using an Amazon EKS optimized AMI, Amazon EKS automatically applies the latest security patches and operating system updates to your nodes as part of the latest AMI release version.
 
 You can initiate an update of the managed node group used to host our sample application like so:
 

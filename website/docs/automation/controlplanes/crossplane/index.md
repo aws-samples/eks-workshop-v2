@@ -1,7 +1,7 @@
 ---
 title: "Crossplane"
 sidebar_position: 1
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
 ---
 
 {{% required-time %}}

@@ -1,7 +1,7 @@
 ---
 title: "IAM Roles for Service Accounts"
 sidebar_position: 20
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
 ---
 
 {{% required-time %}}
@@ -14,6 +14,7 @@ $ prepare-environment security/irsa
 ```
 
 This will make the following changes to your lab environment:
+
 - Create an Amazon DynamoDB table
 - Create an IAM role for AmazonEKS workloads to access the DynamoDB table
 - Install the AWS Load Balancer Controller in the Amazon EKS cluster

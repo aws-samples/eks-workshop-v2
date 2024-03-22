@@ -30,7 +30,6 @@ If you click on the finding, it will open a tab in the right side of the screen,
 
 ![](assets/finding-details.png)
 
-
 It also gives you the option to investigate the finding using Amazon Detective.
 
 ![](assets/investigate.png)

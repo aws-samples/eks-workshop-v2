@@ -36,7 +36,7 @@ Finally, let's verify that the catalog pods are running on Spot instances. Run t
 ```bash
 $ kubectl get pods -l app.kubernetes.io/component=service -n catalog -o wide
 
-NAME                       READY   STATUS    RESTARTS   AGE     IP              NODE  
+NAME                       READY   STATUS    RESTARTS   AGE     IP              NODE
 catalog-6bf46b9654-9klmd   1/1     Running   0          7m13s   10.42.118.208   ip-10-42-99-254.us-east-2.compute.internal
 $ kubectl get nodes -l eks.amazonaws.com/capacityType=SPOT
 

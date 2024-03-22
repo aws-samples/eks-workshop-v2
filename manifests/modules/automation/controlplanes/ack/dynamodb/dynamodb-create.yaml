@@ -9,17 +9,17 @@ spec:
       keyType: HASH
   attributeDefinitions:
     - attributeName: id
-      attributeType: 'S'
+      attributeType: "S"
     - attributeName: customerId
-      attributeType: 'S'
+      attributeType: "S"
   billingMode: PAY_PER_REQUEST
   tableName: "${EKS_CLUSTER_NAME}-carts-ack"
   globalSecondaryIndexes:
     - indexName: idx_global_customerId
       keySchema:
-      - attributeName: customerId
-        keyType: HASH
-      - attributeName: id
-        keyType: RANGE
+        - attributeName: customerId
+          keyType: HASH
+        - attributeName: id
+          keyType: RANGE
       projection:
-        projectionType: 'ALL'
+        projectionType: "ALL"

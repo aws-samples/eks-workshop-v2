@@ -66,8 +66,8 @@ $ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalance
 
 What does this tell us?
 
-* The NLB is accessible over the public internet
-* It uses the public subnets in our VPC
+- The NLB is accessible over the public internet
+- It uses the public subnets in our VPC
 
 We can also inspect the targets in the target group that was created by the controller:
 

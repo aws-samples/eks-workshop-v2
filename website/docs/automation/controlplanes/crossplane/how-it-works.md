@@ -8,7 +8,7 @@ Running Crossplane in a cluster consists of two main parts:
 1. The Crossplane controller which provides the core components
 2. One or more Crossplane providers which each provide a controller and Custom Resource Definitions to integrate with a particular provider, such as AWS
 
-The Crossplane controller, Upbound AWS provider and  have been pre-installed in our EKS cluster, each running as a deployment in the `crossplane-system` namespace along with the `crossplane-rbac-manager`:
+The Crossplane controller, Upbound AWS provider and have been pre-installed in our EKS cluster, each running as a deployment in the `crossplane-system` namespace along with the `crossplane-rbac-manager`:
 
 ```bash
 $ kubectl get deployment -n crossplane-system

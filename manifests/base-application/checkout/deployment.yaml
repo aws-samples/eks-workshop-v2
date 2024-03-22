@@ -35,7 +35,7 @@ spec:
           securityContext:
             capabilities:
               drop:
-              - ALL
+                - ALL
             readOnlyRootFilesystem: true
           image: "public.ecr.aws/aws-containers/retail-store-sample-checkout:0.4.0"
           imagePullPolicy: IfNotPresent

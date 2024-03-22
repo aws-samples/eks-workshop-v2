@@ -28,6 +28,7 @@ The name of the release expected by the EKS API for this AMI would be:
 ```
 
 This is a combination of:
+
 - the `k8s` value (`1.25.6`)
 - the date string without the `v` (`20230304`)
 

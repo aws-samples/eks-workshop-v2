@@ -45,9 +45,9 @@ Try to run another sample Pod using the default image from the public Registry.
 ```bash expectError=true
 $ kubectl run nginx-public --image=nginx
 
-Error from server: admission webhook "validate.kyverno.svc-fail" denied the request: 
+Error from server: admission webhook "validate.kyverno.svc-fail" denied the request:
 
-resource Pod/default/nginx-public was blocked due to the following policies 
+resource Pod/default/nginx-public was blocked due to the following policies
 
 restrict-image-registries:
   validate-registries: 'validation error: Unknown Image registry. rule validate-registries

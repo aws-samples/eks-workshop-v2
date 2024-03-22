@@ -18,7 +18,8 @@ Apply the manifest shown above with the following command:
 ```bash
 $ kubectl apply -f ~/environment/eks-workshop/modules/security/Guardduty/mount/privileged-pod-example.yaml
 ```
-*This Pod will just run once, until it reaches the State `Completed`*
+
+_This Pod will just run once, until it reaches the State `Completed`_
 
 Within a few minutes we'll see the two finding `PrivilegeEscalation:Kubernetes/PrivilegedContainer` and `Persistence:Kubernetes/ContainerWithSensitiveMount` in the [GuardDuty Findings console](https://console.aws.amazon.com/guardduty/home#/findings).
 
@@ -27,7 +28,6 @@ Within a few minutes we'll see the two finding `PrivilegeEscalation:Kubernetes/P
 ![](assets/sensitive-mount.png)
 
 Once again take sometime to analyze the Finding details, Action, and Detective Investigation.
-
 
 Cleanup the Pod by running the command below:
 

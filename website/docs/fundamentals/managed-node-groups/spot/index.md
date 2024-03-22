@@ -1,7 +1,7 @@
 ---
 title: Spot instances
 sidebar_position: 50
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
 ---
 
 {{% required-time %}}

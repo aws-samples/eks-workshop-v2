@@ -9,6 +9,7 @@ Docusaurus provides the framework for building the front-end of the workshop con
 The terminal window component is designed to display commands that participants should run, as well as optionally it associated output.
 
 It provides the following features:
+
 - Supports multi-line commands using `\`
 - Scrolls for content too large to display
 - 'Click to copy' function which copies the command to the clipboard when clicking anywhere on the component (ignoring output)

@@ -10,7 +10,7 @@ From Kubernetes version 1.23, by default, all PSA modes (i.e. enforce, audit and
 You can check that there are no PSA labels explicitly added to the `assets` namespace, by default:
 
 ```bash
-$ kubectl describe ns assets 
+$ kubectl describe ns assets
 Name:         assets
 Labels:       app.kubernetes.io/created-by=eks-workshop
               kubernetes.io/metadata.name=assets
@@ -120,5 +120,5 @@ root
 ```
 
 This shows that the default PSA mode enabled for Privileged PSS profile is permissive and allows Pods to request elevated security permissions if necessary.
- 
+
 Note that the above security permissions are not the comprehensive list of controls allowed under Privileged PSS profile. For detailed security controls allowed/disallowed under each PSS profile, refer to the [documentation](https://kubernetes.io/docs/concepts/security/pod-security-standards/).

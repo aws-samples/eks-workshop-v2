@@ -65,6 +65,7 @@ Let us try to access our application using the browser. A `LoadBalancer` type se
 $ kubectl get service -n ui ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}'
 k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 ```
+
 So now our application should be using DynamoDB right? Load it up in the browser using the output of the above command and navigate to the shopping cart:
 
 <browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/cart">

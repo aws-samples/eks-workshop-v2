@@ -3,7 +3,7 @@ title: "Reports & Auditing"
 sidebar_position: 74
 ---
 
-Kyverno also includes a [Policy Reporting](https://kyverno.io/docs/policy-reports/) tool, using the open format defined by the Kubernetes Policy Working Group and deployed as custom resources in the cluster. Kyverno emits these reports when admission actions like *CREATE*, *UPDATE*, and *DELETE* are performed in the cluster, they are also generated as a result of background scans that validate policies on already existing resources.
+Kyverno also includes a [Policy Reporting](https://kyverno.io/docs/policy-reports/) tool, using the open format defined by the Kubernetes Policy Working Group and deployed as custom resources in the cluster. Kyverno emits these reports when admission actions like _CREATE_, _UPDATE_, and _DELETE_ are performed in the cluster, they are also generated as a result of background scans that validate policies on already existing resources.
 
 So far in the workshop we have created a few Policies for specific rules. When a resource is matched by one or more rules according to the policy definition and violate any of them, an entry will be created in the report for each violation, resulting in multiple entries if the same resouce matches and violate multiple rules. When resources are deleted their entry will be removed from the reports, meaning that Kyverno Reports will always represent the current state of the cluster and do not record historical information.
 
@@ -49,7 +49,7 @@ ui            cpol-restrict-image-registries   3      0      0      0       0   
 
 > The output may vary.
 
-Because we worked with just ClusterPolicies, you can see in the above output a number of Reports that were generated across all Namespaces, such as `cpol-verify-image`, `cpol-baseline-policy`, and `cpol-restrict-image-registries` and not just in the `default` Namespace, where we created the resources to be validated. You can also see the status of objects such as `PASS`, `FAIL`, `WARN`, `ERROR`, and `SKIP`. 
+Because we worked with just ClusterPolicies, you can see in the above output a number of Reports that were generated across all Namespaces, such as `cpol-verify-image`, `cpol-baseline-policy`, and `cpol-restrict-image-registries` and not just in the `default` Namespace, where we created the resources to be validated. You can also see the status of objects such as `PASS`, `FAIL`, `WARN`, `ERROR`, and `SKIP`.
 
 As mentioned earlier, the blocked actions will reside in the Namespace events, take a look on those using the command below.
 

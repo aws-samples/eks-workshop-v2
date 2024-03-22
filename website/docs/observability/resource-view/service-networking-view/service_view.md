@@ -7,7 +7,7 @@ sidebar_position: 30
 
 ![Insights](/img/resource-view/service-view.jpg)
 
-If you select the service <i>cart</i> the view displayed will have details about the service in Info section including selector(The set of pods targeted by a service is usually determined by a selector), the protocol and port it is running on and any labels and annotations. 
+If you select the service <i>cart</i> the view displayed will have details about the service in Info section including selector(The set of pods targeted by a service is usually determined by a selector), the protocol and port it is running on and any labels and annotations.
 
 ![Insights](/img/resource-view/service-detail.jpg)
 
@@ -15,7 +15,7 @@ Pods expose themselves through endpoints to a service. An endpoint is an resourc
 
 ![Insights](/img/resource-view/service-endpoint.png)
 
-For this sample application, click on <i> Endpoints</i> and it will list all the endpoints for your cluster. 
+For this sample application, click on <i> Endpoints</i> and it will list all the endpoints for your cluster.
 
 ![Insights](/img/resource-view/service-endpoint.jpg)
 

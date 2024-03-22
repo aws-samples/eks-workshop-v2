@@ -11,17 +11,17 @@ According to the [Twelve-Factor App manifesto](https://12factor.net/), which pro
 
 The Kubernetes logging architecture defines three distinct levels:
 
-* Basic level logging: the ability to grab pods log using kubectl (e.g. `kubectl logs myapp` – where `myapp` is a pod running in my cluster)
-* Node level logging: The container engine captures logs from the application’s `stdout` and `stderr`, and writes them to a log file.
-* Cluster level logging: Building upon node level logging; a log capturing agent runs on each node. The agent collects logs on the local filesystem and sends them to a centralized logging destination like OpenSearch. The agent collects two types of logs:
-  * Container logs captured by the container engine on the node
-  * System logs
+- Basic level logging: the ability to grab pods log using kubectl (e.g. `kubectl logs myapp` – where `myapp` is a pod running in my cluster)
+- Node level logging: The container engine captures logs from the application’s `stdout` and `stderr`, and writes them to a log file.
+- Cluster level logging: Building upon node level logging; a log capturing agent runs on each node. The agent collects logs on the local filesystem and sends them to a centralized logging destination like OpenSearch. The agent collects two types of logs:
+  - Container logs captured by the container engine on the node
+  - System logs
 
 Kubernetes, by itself, doesn’t provide a native solution to collect and store logs. It configures the container runtime to save logs in JSON format on the local filesystem. Container runtime – like Docker – redirects container’s stdout and stderr streams to a logging driver. In Kubernetes, container logs are written to `/var/log/pods/*.log` on the node. Kubelet and container runtime write their own logs to `/var/logs` or to journald, in operating systems with systemd. Then cluster-wide log collector systems like Fluentd can tail these log files on the node and ship logs for retention. These log collector systems usually run as DaemonSets on worker nodes.
 
 [Fluent Bit](https://fluentbit.io/) is a lightweight log processor and forwarder that allows you to collect data and logs from different sources, enrich them with filters and send them to multiple destinations like CloudWatch, Kinesis Data Firehose, Kinesis Data Streams and Amazon OpenSearch Service.
 
-The following diagram provides an overview of the setup for this section. Fluent Bit will be deployed in the `opensearch-exporter` namespace and it will be configured to forward pod logs to the OpenSearch domain. Pod logs are stored in the `eks-pod-logs` index in OpenSearch.  An OpenSearch dashboard that we loaded earlier is used to inspect the pod logs.
+The following diagram provides an overview of the setup for this section. Fluent Bit will be deployed in the `opensearch-exporter` namespace and it will be configured to forward pod logs to the OpenSearch domain. Pod logs are stored in the `eks-pod-logs` index in OpenSearch. An OpenSearch dashboard that we loaded earlier is used to inspect the pod logs.
 
 ![Pod logs to OpenSearch](./assets/eks-pod-logs-overview.svg)
 
@@ -30,7 +30,7 @@ Deploy Fluent Bit as a [Daemon Set](https://kubernetes.io/docs/concepts/workload
 ```bash wait=60
 $ helm repo add eks https://aws.github.io/eks-charts
 "eks" has been added to your repositories
- 
+
 $ helm upgrade fluentbit eks/aws-for-fluent-bit --install \
     --namespace opensearch-exporter --create-namespace \
     -f ~/environment/eks-workshop/modules/observability/opensearch/config/fluentbit-values.yaml \
@@ -39,12 +39,12 @@ $ helm upgrade fluentbit eks/aws-for-fluent-bit --install \
     --set="opensearch.httpUser"="$OPENSEARCH_USER" \
     --set="opensearch.httpPasswd"="$OPENSEARCH_PASSWORD" \
     --wait
- 
+
 $ kubectl get daemonset -n opensearch-exporter
 
 NAME                           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
 fluentbit-aws-for-fluent-bit   3         3         3       3            3           <none>          60s
- 
+
 ```
 
 First, we will recycle the pods for the ui component to make sure fresh logs are written since we enabled Fluent Bit:
@@ -55,10 +55,10 @@ $ kubectl rollout status deployment/ui -n ui --timeout 30s
 deployment "ui" successfully rolled out
 ```
 
-Now we can check that our `ui` component is creating logs by directly using `kubectl logs`. The timestamps in the logs should match your current time (shown in UTC format).  
+Now we can check that our `ui` component is creating logs by directly using `kubectl logs`. The timestamps in the logs should match your current time (shown in UTC format).
 
 ```bash
-$ kubectl logs -n ui deployment/ui 
+$ kubectl logs -n ui deployment/ui
 Picked up JAVA_TOOL_OPTIONS: -javaagent:/opt/aws-opentelemetry-agent.jar
 OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
 [otel.javaagent 2023-11-07 02:05:03:383 +0000] [main] INFO io.opentelemetry.javaagent.tooling.VersionLogger - opentelemetry-javaagent - version: 1.24.0-aws
@@ -77,18 +77,18 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
 2023-11-07T02:05:10.060Z  INFO 1 --- [           main] o.s.b.a.e.w.EndpointLinksResolver        : Exposing 15 endpoint(s) beneath base path '/actuator'
 2023-11-07T02:05:10.590Z  INFO 1 --- [           main] o.s.b.w.e.n.NettyWebServer               : Netty started on port 8080
 2023-11-07T02:05:10.616Z  INFO 1 --- [           main] c.a.s.u.UiApplication                    : Started UiApplication in 5.917 seconds (process running for 7.541)
- 
+
 ```
 
-We can confirm that the same log entries are also visible in OpenSearch.  Access the pod logs dashboard from the dashboard landing page we saw earlier or use the command below to obtain its coordinates:
+We can confirm that the same log entries are also visible in OpenSearch. Access the pod logs dashboard from the dashboard landing page we saw earlier or use the command below to obtain its coordinates:
 
 ```bash
 $ printf "\nPod logs dashboard: https://%s/_dashboards/app/dashboards#/view/31a8bd40-790a-11ee-8b75-b9bb31eee1c2 \
         \nUserName: %q \nPassword: %q \n\n" \
         "$OPENSEARCH_HOST" "$OPENSEARCH_USER" "$OPENSEARCH_PASSWORD"
- 
-Pod logs dashboard: <OpenSearch Dashboard URL>       
-Username: <user name>       
+
+Pod logs dashboard: <OpenSearch Dashboard URL>
+Username: <user name>
 Password: <password>
 ```
 
@@ -97,7 +97,7 @@ An explanation of the dashboards sections and fields follows.
 1. [Header] Shows date / time range. We can customize the time range that we are exploring with this dashboard (Last 15 minutes in this example)
 2. [Top section] Date histogram of log messages showing split between the `stdout` and `stderr` streams (including all namsepaces)
 3. [Middle section] Date histogram of log messages showing the split across all cluster namespaces
-4. [Bottom section] Data table with most recent messages shown first. The stream name (`stdout` and `stderr`) are shown along with details such as the pod name.  For demonstration purposes, this section has been filtered to only show logs from the `ui` namespace
+4. [Bottom section] Data table with most recent messages shown first. The stream name (`stdout` and `stderr`) are shown along with details such as the pod name. For demonstration purposes, this section has been filtered to only show logs from the `ui` namespace
 5. [Bottom section] Log messages gathered from the individual pods. In this example, the most recent log message shown is `2023-11-07T02:05:10.616Z  INFO 1 --- [           main] c.a.s.u.UiApplication                    : Started UiApplication in 5.917 seconds (process running for 7.541)`, which matches the last line of output from running `kubectl logs -n ui deployment/ui` in an earlier step
 
 ![Pod logging dashboard](./assets/pod-logging-dashboard.png)

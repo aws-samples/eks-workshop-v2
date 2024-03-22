@@ -31,8 +31,8 @@ These environment variables have not been passed in using something like a Confi
 
 Things that are worth noting are:
 
-* The region is set automatically to the same as our EKS cluster
-* STS regional endpoints are configured to avoid putting too much pressure on the global endpoint in `us-east-1`
-* The role ARN matches the role that we used to annotate our Kubernetes ServiceAccount earlier
+- The region is set automatically to the same as our EKS cluster
+- STS regional endpoints are configured to avoid putting too much pressure on the global endpoint in `us-east-1`
+- The role ARN matches the role that we used to annotate our Kubernetes ServiceAccount earlier
 
 Finally, the `AWS_WEB_IDENTITY_TOKEN_FILE` variable tells AWS SDKs how to obtains credentials using web identity federation. This means that IRSA does not need to inject credentials via something like an `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` pair, and instead the SDKs can have temporary credentials vending to them via an OIDC mechanism. You can read more about how this functions in the [AWS documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_oidc.html).

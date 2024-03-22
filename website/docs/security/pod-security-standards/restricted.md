@@ -12,7 +12,7 @@ Namespace/assets
 
 Run Kustomize to apply this change to add labels to the `assets` namespace:
 
-```bash  timeout=180 hook=restricted-namespace
+```bash timeout=180 hook=restricted-namespace
 $ kubectl apply -k ~/environment/eks-workshop/modules/security/pss-psa/restricted-namespace
 Warning: existing pods in namespace "assets" violate the new PodSecurity enforce level "restricted:latest"
 Warning: assets-d59d88b99-flkgp: allowPrivilegeEscalation != false, runAsNonRoot != true, seccompProfile
@@ -33,7 +33,7 @@ pod "assets-d59d88b99-flkgp" deleted
 The Pods aren't re-created:
 
 ```bash test=false
-$ kubectl -n assets get pod   
+$ kubectl -n assets get pod
 No resources found in assets namespace.
 ```
 
@@ -57,10 +57,10 @@ service/assets unchanged
 deployment.apps/assets configured
 ```
 
-Now, Run the below commands to check PSA allows the creation of Deployment and Pod with the above changes in the  the `assets` namespace:
+Now, Run the below commands to check PSA allows the creation of Deployment and Pod with the above changes in the the `assets` namespace:
 
 ```bash
-$ kubectl -n assets  get pod   
+$ kubectl -n assets  get pod
 NAME                     READY   STATUS    RESTARTS   AGE
 assets-8dd6fc8c6-9kptf   1/1     Running   0          3m6s
 ```

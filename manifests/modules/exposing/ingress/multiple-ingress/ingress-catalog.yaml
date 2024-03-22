@@ -13,12 +13,12 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-  - http:
-      paths:
-      - path: /catalogue
-        pathType: Prefix
-        backend:
-          service:
-            name: catalog
-            port:
-              number: 80
+    - http:
+        paths:
+          - path: /catalogue
+            pathType: Prefix
+            backend:
+              service:
+                name: catalog
+                port:
+                  number: 80
