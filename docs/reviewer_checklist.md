@@ -7,14 +7,15 @@ This is the reviewer checklist for pull requests, over time as many of these che
 - [ ] Pull request has an appropriate title (see [releases](./releases.md))
 - [ ] Pull request has an appropriate `content` label
 - [ ] Pull request has been assigned to the correct GitHub Milestone
+- [ ] All review checks are passing
 
 ## Style
 
 See style guide for expanded explanations.
 
-- [ ] `prepare-environment` command has been used correctly, changes outlined are accurate
+- [ ] `prepare-environment` command has been used correctly, changes to the cluster outlined are accurate
 - [ ] Verified `bash` blocks are formatted correctly, for example using `$`
-- [ ] All `kubectl` commands use `~/environment` paths
+- [ ] All `kubectl` commands use `~/environment` paths where appropriate
 - [ ] `kubectl wait` or alternatives have been used where appropriate
 - [ ] There are no explicit references to pods with generated names like `kubectl get pod-abnasd`
 - [ ] Any references to external manifests are pinned to a version
