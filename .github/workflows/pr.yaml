@@ -50,6 +50,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-      - uses: terraform-linters/setup-tflint@v4
-        name: Setup TFLint
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+      - name: Setup terraform-docs
+        uses: jaxxstorm/action-install-gh-release@v1.10.0
+        with:
+          repo: terraform-docs/terraform-docs
       - uses: pre-commit/action@v3.0.1
