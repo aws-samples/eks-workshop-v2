@@ -1,27 +1,6 @@
 version: 2
 
 updates:
-  - package-ecosystem: "terraform"
-    directory: "/terraform/modules/cluster"
-    schedule:
-      interval: "weekly"
-    ignore:
-      # EKS blueprints upgrades will be handled separately
-      - dependency-name: "*terraform-aws-eks-blueprints*"
-  - package-ecosystem: "terraform"
-    directory: "/terraform/modules/ide"
-    schedule:
-      interval: "weekly"
-    ignore:
-      # EKS blueprints upgrades will be handled separately
-      - dependency-name: "*terraform-aws-eks-blueprints*"
-  - package-ecosystem: "terraform"
-    directory: "/terraform/modules/addons/descheduler"
-    schedule:
-      interval: "weekly"
-    ignore:
-      # EKS blueprints upgrades will be handled separately
-      - dependency-name: "*terraform-aws-eks-blueprints*"
   - package-ecosystem: npm
     directory: "/website"
     schedule:
