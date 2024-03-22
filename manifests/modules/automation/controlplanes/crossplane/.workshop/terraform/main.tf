@@ -1,8 +1,9 @@
-resource "terraform_data" "cluster" {
-  provisioner "local-exec" {
-    command = <<EOF
-echo "ASDASD"
-EOF
+terraform {
+  required_providers {
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.14"
+    }
   }
 }
 
@@ -10,10 +11,6 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 module "crossplane" {
-  depends_on = [
-    terraform_data.cluster
-  ]
-
   source  = "aws-ia/eks-blueprints-addon/aws"
   version = "1.1.0"
 
