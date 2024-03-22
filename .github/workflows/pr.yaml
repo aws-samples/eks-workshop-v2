@@ -46,9 +46,10 @@ jobs:
 
   pre-commit:
     name: "Pre-commit hooks"
-
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
+      - uses: terraform-linters/setup-tflint@v4
+        name: Setup TFLint
       - uses: pre-commit/action@v3.0.1
