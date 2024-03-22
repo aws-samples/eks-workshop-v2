@@ -66,7 +66,7 @@ resource "aws_opensearch_domain" "opensearch" {
             "AWS" : "*"
           },
           "Action" : "es:*",
-          "Resource" : "arn:aws:es:${local.addon_context.aws_region_name}:${local.addon_context.aws_caller_identity_account_id}:domain/${var.eks_cluster_id}/*"
+          "Resource" : "arn:aws:es:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:domain/${var.eks_cluster_id}/*"
         }
       ]
   })
