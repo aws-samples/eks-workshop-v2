@@ -38,7 +38,8 @@ resource "aws_iam_role" "spot_node" {
 }
 
 output "environment" {
-  value = <<EOF
+  description = "Evaluated by the IDE shell"
+  value       = <<EOF
 export SPOT_NODE_ROLE="${aws_iam_role.spot_node.arn}"
 %{for index, id in data.aws_subnets.private.ids}
 export PRIMARY_SUBNET_${index + 1}=${id}

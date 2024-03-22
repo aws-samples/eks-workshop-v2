@@ -10,7 +10,7 @@ module "kyverno" {
   repository       = "https://kyverno.github.io/kyverno/"
 }
 
-module "kyverno-policies" {
+module "kyverno_policies" {
   source  = "aws-ia/eks-blueprints-addon/aws"
   version = "~> 1.1"
 
@@ -28,7 +28,7 @@ module "kyverno-policies" {
   depends_on = [module.kyverno]
 }
 
-module "policy-reporter" {
+module "policy_reporter" {
   source  = "aws-ia/eks-blueprints-addon/aws"
   version = "~> 1.1"
 

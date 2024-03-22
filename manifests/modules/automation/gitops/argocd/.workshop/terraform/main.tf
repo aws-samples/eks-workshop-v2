@@ -98,7 +98,8 @@ resource "aws_iam_user_policy_attachment" "gitops_access" {
 }
 
 output "environment" {
-  value = <<EOF
+  description = "Evaluated by the IDE shell"
+  value       = <<EOF
 export GITOPS_IAM_SSH_KEY_ID=${aws_iam_user_ssh_key.gitops.id}
 export GITOPS_IAM_SSH_USER=${aws_iam_user.gitops.unique_id}
 export GITOPS_REPO_URL_ARGOCD="ssh://${aws_iam_user_ssh_key.gitops.id}@git-codecommit.${data.aws_region.current.id}.amazonaws.com/v1/repos/${var.addon_context.eks_cluster_id}-argocd"

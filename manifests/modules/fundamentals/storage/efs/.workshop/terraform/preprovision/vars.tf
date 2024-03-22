@@ -1,7 +1,11 @@
+# tflint-ignore: terraform_unused_declarations
 variable "eks_cluster_id" {
-  type = string
+  description = "EKS cluster name"
+  type        = string
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "tags" {
-  type = any
+  description = "Tags to apply to AWS resources"
+  type        = any
 }

@@ -1,6 +1,6 @@
 data "aws_partition" "current" {}
 
-module "adot-operator" {
+module "adot_operator" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/opentelemetry-operator"
 
   addon_config = {
@@ -27,12 +27,13 @@ module "iam_assumable_role_adot_ci" {
 }
 
 output "environment" {
-  value = <<EOF
+  description = "Evaluated by the IDE shell"
+  value       = <<EOF
 export ADOT_IAM_ROLE_CI="${module.iam_assumable_role_adot_ci.iam_role_arn}"
 EOF
 }
 
-resource "aws_cloudwatch_dashboard" "order-metrics-ci" {
+resource "aws_cloudwatch_dashboard" "order_metrics_ci" {
   dashboard_name = "Order-Service-Metrics-1"
 
   dashboard_body = jsonencode(

@@ -2,7 +2,7 @@ data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 data "aws_region" "current" {}
 
-module "secrets-store-csi-driver" {
+module "secrets_store_csi_driver" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1//modules/kubernetes-addons/secrets-store-csi-driver"
 
   helm_config = {
@@ -87,7 +87,8 @@ POLICY
 }
 
 output "environment" {
-  value = <<EOF
+  description = "Evaluated by the IDE shell"
+  value       = <<EOF
 export CATALOG_IAM_ROLE="${module.secrets_manager_role.iam_role_arn}"
 EOF
 }

@@ -25,7 +25,8 @@ module "preprovision" {
 }
 
 output "environment" {
-  value = <<EOF
+  description = "Evaluated by the IDE shell"
+  value       = <<EOF
 export EFS_CSI_ADDON_ROLE="${module.efs_csi_driver_irsa.iam_role_arn}"
 EOF
 }

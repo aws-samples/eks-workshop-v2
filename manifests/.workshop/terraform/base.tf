@@ -28,13 +28,17 @@ terraform {
   }
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "eks_cluster_id" {
-  type = string
+  description = "EKS cluster name"
+  type        = string
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "resources_precreated" {
-  type    = bool
-  default = false
+  description = "Have expensive resources been created already"
+  type        = bool
+  default     = false
 }
 
 data "aws_partition" "current" {}

@@ -59,7 +59,8 @@ EOF
 }
 
 output "environment" {
-  value = <<EOF
+  description = "Evaluated by the IDE shell"
+  value       = <<EOF
 export GITOPS_IAM_SSH_KEY_ID=${aws_iam_user_ssh_key.gitops.id}
 export GITOPS_IAM_SSH_USER=${aws_iam_user.gitops.unique_id}
 export IMAGE_URI_UI=${aws_ecr_repository.ecr_ui.repository_url}
@@ -260,7 +261,7 @@ resource "aws_iam_role" "codebuild_role" {
         {
           Effect   = "Allow"
           Action   = ["ecr:*"]
-          Resource = ["${aws_ecr_repository.ecr_ui.arn}"]
+          Resource = [aws_ecr_repository.ecr_ui.arn]
         },
         {
           Effect   = "Allow"
@@ -282,7 +283,7 @@ resource "aws_iam_role" "codebuild_role" {
             "s3:PutObject"
           ]
           Resource = [
-            "${aws_s3_bucket.build_artifact_bucket.arn}",
+            aws_s3_bucket.build_artifact_bucket.arn,
             "${aws_s3_bucket.build_artifact_bucket.arn}/*"
           ]
         },
