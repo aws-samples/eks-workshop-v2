@@ -138,7 +138,8 @@ module "eks_blueprints_addons" {
 }
 
 output "environment" {
-  value = <<EOF
+  description = "Evaluated by the IDE shell"
+  value       = <<EOF
 export DYNAMODB_POLICY_ARN=${aws_iam_policy.carts_dynamo.arn}
 EOF
 }

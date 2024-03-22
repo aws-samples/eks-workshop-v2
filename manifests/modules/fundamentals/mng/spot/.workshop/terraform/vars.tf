@@ -1,23 +1,35 @@
+# tflint-ignore: terraform_unused_declarations
 variable "eks_cluster_id" {
-  type = string
+  description = "EKS cluster name"
+  type        = string
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "eks_cluster_version" {
-  type = string
+  description = "EKS cluster version"
+  type        = string
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "cluster_security_group_id" {
-  type = any
+  description = "EKS cluster security group ID"
+  type        = any
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "addon_context" {
-  type = any
+  description = "Addon context that can be passed directly to blueprints addon modules"
+  type        = any
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "tags" {
-  type = any
+  description = "Tags to apply to AWS resources"
+  type        = any
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "resources_precreated" {
-  type = bool
+  description = "Have expensive resources been created already"
+  type        = bool
 }

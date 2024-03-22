@@ -3,43 +3,57 @@ name: Pull Request
 on:
   pull_request:
     branches:
-    - main
+      - main
 
 permissions:
   contents: read
-    
+
 jobs:
   build-website:
-    name: 'Build website'
+    name: "Build website"
     runs-on: ubuntu-latest
     steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 18
-    - name: Get kubectl version
-      run: |
-        source hack/lib/kubectl-version.sh
-        echo "Using kubectl ${KUBECTL_VERSION}"
-        echo "KUBECTL_VERSION=$KUBECTL_VERSION" >> $GITHUB_ENV
-    - uses: azure/setup-kubectl@v3
-      with:
-        version: '${{ env.KUBECTL_VERSION }}'
-      id: install
-    - name: Run website build
-      working-directory: website
-      run: |
-        npm install
-        npm run build
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Get kubectl version
+        run: |
+          source hack/lib/kubectl-version.sh
+          echo "Using kubectl ${KUBECTL_VERSION}"
+          echo "KUBECTL_VERSION=$KUBECTL_VERSION" >> $GITHUB_ENV
+      - uses: azure/setup-kubectl@v3
+        with:
+          version: "${{ env.KUBECTL_VERSION }}"
+        id: install
+      - name: Run website build
+        working-directory: website
+        run: |
+          npm install
+          npm run build
 
   build-lab:
-    name: 'Build lab'
+    name: "Build lab"
     runs-on: ubuntu-latest
     steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-    - name: Make shell
-      run: |
-        make shell shell_simple_command='ls'
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Make shell
+        run: |
+          make shell shell_simple_command='ls'
+
+  pre-commit:
+    name: "Pre-commit hooks"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+      - name: Setup terraform-docs
+        uses: jaxxstorm/action-install-gh-release@v1.10.0
+        with:
+          repo: terraform-docs/terraform-docs
+      - uses: pre-commit/action@v3.0.1

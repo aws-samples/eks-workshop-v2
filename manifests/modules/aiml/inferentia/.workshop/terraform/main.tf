@@ -118,7 +118,8 @@ resource "kubectl_manifest" "neuron_device_plugin" {
 }
 
 output "environment" {
-  value = <<EOF
+  description = "Evaluated by the IDE shell"
+  value       = <<EOF
 export AIML_NEURON_ROLE_ARN=${module.iam_assumable_role_inference.iam_role_arn}
 export AIML_NEURON_BUCKET_NAME=${resource.aws_s3_bucket.inference.id}
 export AIML_DL_IMAGE=763104351884.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/pytorch-inference-neuron:1.13.1-neuron-py310-sdk2.12.0-ubuntu20.04

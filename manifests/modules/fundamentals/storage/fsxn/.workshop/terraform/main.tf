@@ -44,7 +44,7 @@ resource "aws_fsx_ontap_file_system" "fsxnassets" {
   preferred_subnet_id = data.aws_subnets.private_subnets_fsx.ids[0]
   security_group_ids  = [aws_security_group.fsxn.id]
   fsx_admin_password  = random_string.fsx_password.result
-  route_table_ids     = data.aws_route_table.private.*.id
+  route_table_ids     = [for rt in data.aws_route_table.private : rt.id]
 
   tags = merge(
     var.tags,
@@ -91,7 +91,8 @@ resource "aws_security_group_rule" "fsxn_outbound" {
 }
 
 output "environment" {
-  value = <<EOF
+  description = "Evaluated by the IDE shell"
+  value       = <<EOF
 export FSXN_ID=${aws_fsx_ontap_file_system.fsxnassets.id}
 export FSXN_ADMIN_PASSWORD=${random_string.fsx_password.result}
 export FSXN_IP="${tolist(aws_fsx_ontap_file_system.fsxnassets.endpoints[0].management[0].ip_addresses)[0]}"

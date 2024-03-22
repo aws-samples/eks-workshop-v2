@@ -32,7 +32,8 @@ module "preprovision" {
 }
 
 output "environment" {
-  value = <<EOF
+  description = "Evaluated by the IDE shell"
+  value       = <<EOF
 export VPC_ID=${data.aws_vpc.this.id}
 EOF
 }

@@ -1,10 +1,3 @@
-data "aws_vpc" "selected" {
-  tags = {
-    created-by = "eks-workshop-v2"
-    env        = var.addon_context.eks_cluster_id
-  }
-}
-
 data "aws_subnets" "private" {
   tags = {
     created-by = "eks-workshop-v2"
@@ -72,7 +65,8 @@ resource "aws_iam_role_policy_attachment" "cwlogs" {
 }
 
 output "environment" {
-  value = <<EOF
+  description = "Evaluated by the IDE shell"
+  value       = <<EOF
 export FARGATE_IAM_PROFILE_ARN=${aws_iam_role.fargate.arn}
 %{for index, id in data.aws_subnets.private.ids}
 export PRIVATE_SUBNET_${index + 1}=${id}

@@ -32,7 +32,8 @@ module "eks_blueprints_addons" {
 }
 
 output "environment" {
-  value = <<EOF
+  description = "Evaluated by the IDE shell"
+  value       = <<EOF
 export KARP_ROLE="${module.eks_blueprints_addons.karpenter.node_iam_role_name}"
 export KARP_ARN="${module.eks_blueprints_addons.karpenter.node_iam_role_arn}"
 EOF

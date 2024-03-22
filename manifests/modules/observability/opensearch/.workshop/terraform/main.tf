@@ -24,7 +24,7 @@ locals {
   cw_logs_arn_prefix   = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}"
   lambda_function_name = "${var.addon_context.eks_cluster_id}-control-plane-logs"
 
-  // ARNs for Lambda Extension Layer that provides caching of SSM parameter store values
+  # ARNs for Lambda Extension Layer that provides caching of SSM parameter store values
   parameter_lambda_extension_arns = {
     af-south-1     = "arn:aws:lambda:af-south-1:317013901791:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11",
     ap-east-1      = "arn:aws:lambda:ap-east-1:768336418462:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11",
@@ -61,17 +61,17 @@ locals {
   }
 }
 
-// Random suffix for IAM roles, policies
+# Random suffix for IAM roles, policies
 resource "random_string" "suffix" {
   length  = 6
   special = false
 }
 
-// Lambda execution role for OpenSearch exporter
+# Lambda execution role for OpenSearch exporter
 resource "aws_iam_role" "lambda_execution_role" {
   name = "${local.lambda_function_name}-Role-${random_string.suffix.result}"
 
-  // Trust relationship 
+  # Trust relationship 
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -86,10 +86,10 @@ resource "aws_iam_role" "lambda_execution_role" {
     ]
   })
 
-  // Attach inline policies for Lambda function to: 
-  //    Write to OpenSearch index
-  //    Get SSM parameter with OpenSearch host 
-  //    Write CloudWatch logs for this Lambda function
+  # Attach inline policies for Lambda function to: 
+  #    Write to OpenSearch index
+  #    Get SSM parameter with OpenSearch host 
+  #    Write CloudWatch logs for this Lambda function
   inline_policy {
     name = "policy-${random_string.suffix.result}"
     policy = jsonencode({
@@ -120,21 +120,21 @@ resource "aws_iam_role" "lambda_execution_role" {
   }
 }
 
-// Create ZIP file with Lambda code
+# Create ZIP file with Lambda code
 data "archive_file" "lambda" {
   type        = "zip"
   source_file = "${path.module}/lambda/logs-to-opensearch.js"
   output_path = "${path.module}/function.zip"
 }
 
-// Create Lambda function to export logs to OpenSearch
+# Create Lambda function to export logs to OpenSearch
 resource "aws_lambda_function" "eks_control_plane_logs_to_opensearch" {
   filename      = "${path.module}/function.zip"
   function_name = local.lambda_function_name
   role          = aws_iam_role.lambda_execution_role.arn
   handler       = "logs-to-opensearch.handler"
 
-  // Attach Lambda Layer for AWS Parameters and Secrets Lambda Extension ARNs
+  # Attach Lambda Layer for AWS Parameters and Secrets Lambda Extension ARNs
   layers = [local.parameter_lambda_extension_arns[data.aws_region.current.name]]
 
   source_code_hash = data.archive_file.lambda.output_base64sha256
@@ -150,11 +150,11 @@ resource "aws_lambda_function" "eks_control_plane_logs_to_opensearch" {
   }
 }
 
-// Enable CloudWatch Logs to invoke Lambda function that exports to OpenSearch. 
-// This sets up resource-based policy for Lambda.  Note that source ARN for the EKS 
-// control plane log group has not yet been created at the time of terraform apply.  
-// The logs group is created later when workshop participant (manually) run the 
-// step to enable EKS Control Plane Logs.  
+# Enable CloudWatch Logs to invoke Lambda function that exports to OpenSearch. 
+# This sets up resource-based policy for Lambda.  Note that source ARN for the EKS 
+# control plane log group has not yet been created at the time of terraform apply.  
+# The logs group is created later when workshop participant (manually) run the 
+# step to enable EKS Control Plane Logs.  
 resource "aws_lambda_permission" "allow_cloudwatch_to_invoke_lambda" {
   statement_id  = "AllowExecutionFromCloudWatch_${random_string.suffix.result}"
   action        = "lambda:InvokeFunction"
@@ -172,7 +172,8 @@ module "preprovision" {
 }
 
 output "environment" {
-  value = <<EOF
+  description = "Evaluated by the IDE shell"
+  value       = <<EOF
 export LAMBDA_ARN="${aws_lambda_function.eks_control_plane_logs_to_opensearch.arn}"
 export LAMBDA_ROLE_ARN="${aws_iam_role.lambda_execution_role.arn}"
 EOF

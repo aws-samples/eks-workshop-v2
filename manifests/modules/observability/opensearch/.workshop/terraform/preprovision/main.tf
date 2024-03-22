@@ -15,12 +15,12 @@ locals {
   opensearch_parameter_path = "/eksworkshop/${var.eks_cluster_id}/opensearch"
 }
 
-// Provision OpenSearch domain
+# Provision OpenSearch domain
 resource "aws_opensearch_domain" "opensearch" {
   domain_name    = var.eks_cluster_id
   engine_version = "OpenSearch_2.9"
 
-  // Specify a single instance cluster
+  # Specify a single instance cluster
   cluster_config {
     instance_count         = 1
     instance_type          = "r6g.large.search"
@@ -55,7 +55,7 @@ resource "aws_opensearch_domain" "opensearch" {
     }
   }
 
-  // Allow any IP address to access the OpenSearch domain
+  # Allow any IP address to access the OpenSearch domain
   access_policies = jsonencode(
     {
       "Version" : "2012-10-17",
@@ -71,7 +71,7 @@ resource "aws_opensearch_domain" "opensearch" {
       ]
   })
 
-  // Extend timeouts from 20m default
+  # Extend timeouts from 20m default
   timeouts {
     create = "1h"
     update = "1h"
@@ -81,7 +81,7 @@ resource "aws_opensearch_domain" "opensearch" {
   tags = var.tags
 }
 
-// Generate random master user password for OpenSearch
+# Generate random master user password for OpenSearch
 resource "random_password" "master_user" {
   length           = 16
   special          = true
@@ -92,7 +92,7 @@ resource "random_password" "master_user" {
   override_special = "@#"
 }
 
-// Store OpenSearch host in parameter store
+# Store OpenSearch host in parameter store
 resource "aws_ssm_parameter" "opensearch_host" {
   name        = "${local.opensearch_parameter_path}/host"
   description = "OpenSearch domain host endpoint"
@@ -102,7 +102,7 @@ resource "aws_ssm_parameter" "opensearch_host" {
   tags = var.tags
 }
 
-// Store OpenSearch user name in parameter store
+# Store OpenSearch user name in parameter store
 resource "aws_ssm_parameter" "opensearch_user" {
   name        = "${local.opensearch_parameter_path}/user"
   description = "OpenSearch domain user name"
@@ -112,7 +112,7 @@ resource "aws_ssm_parameter" "opensearch_user" {
   tags = var.tags
 }
 
-// Store OpenSearch password in parameter store
+# Store OpenSearch password in parameter store
 resource "aws_ssm_parameter" "opensearch_password" {
   name        = "${local.opensearch_parameter_path}/password"
   description = "OpenSearch domain password"

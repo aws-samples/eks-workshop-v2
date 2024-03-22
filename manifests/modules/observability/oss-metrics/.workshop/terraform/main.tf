@@ -1,6 +1,6 @@
 data "aws_partition" "current" {}
 
-module "aws-ebs-csi-driver" {
+module "aws_ebs_csi_driver" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/aws-ebs-csi-driver"
 
   enable_amazon_eks_aws_ebs_csi_driver = true
@@ -31,13 +31,13 @@ module "eks_blueprints_addons" {
 resource "time_sleep" "blueprints_addons_sleep" {
   depends_on = [
     module.eks_blueprints_addons,
-    module.aws-ebs-csi-driver
+    aws_ebs_csi_driver
   ]
 
   create_duration = "15s"
 }
 
-module "adot-operator" {
+module "adot_operator" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/opentelemetry-operator"
 
   depends_on = [
@@ -54,22 +54,6 @@ module "adot-operator" {
 
   addon_context = var.addon_context
 }
-
-#resource "aws_eks_addon" "example" {
-#  depends_on = [
-#    time_sleep.blueprints_addons_sleep
-#  ]
-#
-#  cluster_name                = var.addon_context.eks_cluster_id
-#  addon_name                  = "adot"
-#  addon_version               = "v0.88.0-eksbuild.1"
-#  resolve_conflicts_on_create = "OVERWRITE"
-#
-#  configuration_values = jsonencode({
-#    "collector": {
-#    }
-#  })
-#}
 
 resource "aws_prometheus_workspace" "this" {
   alias = var.addon_context.eks_cluster_id
@@ -101,9 +85,8 @@ module "eks_blueprints_kubernetes_grafana_addon" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/grafana"
 
   depends_on = [
-    module.aws-ebs-csi-driver,
     time_sleep.blueprints_addons_sleep,
-    kubernetes_config_map.order-service-metrics-dashboard
+    kubernetes_config_map.order_service_metrics_dashboard
   ]
 
   addon_context = var.addon_context
@@ -120,7 +103,7 @@ module "eks_blueprints_kubernetes_grafana_addon" {
   }
 }
 
-resource "kubernetes_config_map" "order-service-metrics-dashboard" {
+resource "kubernetes_config_map" "order_service_metrics_dashboard" {
   metadata {
     name      = "order-service-metrics-dashboard"
     namespace = kubernetes_namespace.grafana.metadata[0].name
@@ -417,7 +400,8 @@ resource "aws_iam_policy" "grafana" {
 }
 
 output "environment" {
-  value = <<EOF
+  description = "Evaluated by the IDE shell"
+  value       = <<EOF
 export AMP_ENDPOINT="${aws_prometheus_workspace.this.prometheus_endpoint}"
 export ADOT_IAM_ROLE="${module.iam_assumable_role_adot.iam_role_arn}"
 EOF
