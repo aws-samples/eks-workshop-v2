@@ -49,7 +49,3 @@ create-infrastructure:
 .PHONY: destroy-infrastructure
 destroy-infrastructure:
 	bash hack/destroy-infrastructure.sh $(environment)
-
-.PHONY: lint-markdown
-lint-markdown:
-	bash hack/markdownlint.sh
