@@ -40,9 +40,17 @@ fi
 
 command_args=""
 
-echo "Starting shell in container..."
+interactive_args=""
 
-$CONTAINER_CLI run --rm -it \
+if [ -z "$shell_command" ]; then
+  echo "Starting shell in container..."
+  interactive_args="-it"
+else
+  echo "Executing command in container..."
+fi
+  
+
+$CONTAINER_CLI run --rm $interactive_args \
   -v $SCRIPT_DIR/../manifests:/manifests \
   -v $SCRIPT_DIR/../cluster:/cluster \
   -e 'EKS_CLUSTER_NAME' -e 'AWS_REGION' \
