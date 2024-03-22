@@ -7,11 +7,11 @@ Welcome to the repository for the [Amazon Elastic Kubernetes Services workshop](
 The Amazon EKS Workshop is built to help users learn about Amazon EKS features and integrations with popular open-source projects. The workshop is abstracted into high-level learning modules, including Networking, Security, DevOps Automation, and more. These are further broken down into standalone labs focusing on a particular feature, tool, or use-case. To ensure a consistent and predictable learning experience, the Amazon EKS Workshop closely adheres to the following tenets:
 
 **Tenets**:
-* **Modular**: The workshop is made up of standalone modules that can be individually completed, allowing you to start at any module and easily switch between them.
-* **Consistent sample app**: The workshop uses the same sample retail store application across all modules: AWS Containers Retail Sample.
-* **Amazon EKS-focused**: Although the workshop covers some Kubernetes basics, it primarily focuses on familiarizing the user with concepts directly related to Amazon EKS.
-* **Continuously tested**: We automatically test the infrastructure provisioning and CLI steps in the workshop, allowing us to keep the workshop updated and tracking the latest versions of Amazon EKS.
 
+- **Modular**: The workshop is made up of standalone modules that can be individually completed, allowing you to start at any module and easily switch between them.
+- **Consistent sample app**: The workshop uses the same sample retail store application across all modules: AWS Containers Retail Sample.
+- **Amazon EKS-focused**: Although the workshop covers some Kubernetes basics, it primarily focuses on familiarizing the user with concepts directly related to Amazon EKS.
+- **Continuously tested**: We automatically test the infrastructure provisioning and CLI steps in the workshop, allowing us to keep the workshop updated and tracking the latest versions of Amazon EKS.
 
 ## Navigating the repository
 
@@ -36,15 +36,17 @@ There are several tools that are required to run the workshop such as `kubectl` 
 ## Community
 
 ### Governance
-* Steering Committee: [governance/steering.md](governance/steering.md)
-* Governance model: [governance/model.md](governance/model.md)
-* Tenets: [governance/tenets.md](governance/tenets.md)
+
+- Steering Committee: [governance/steering.md](governance/steering.md)
+- Governance model: [governance/model.md](governance/model.md)
+- Tenets: [governance/tenets.md](governance/tenets.md)
 
 ### Meetings
+
 2nd Thursday every month at 8am PT (3pm UTC)
 
-* Meeting link: [Chime Web Meeting Link](https://chime.aws/8607878433)
-* Agenda, Notes, and calendar invites: [Google Doc](https://docs.google.com/document/d/1hYjhBhPvLVMf7gunooM-kE0wptMjMIORCmI2BOedCWI/edit?usp=sharing)
+- Meeting link: [Chime Web Meeting Link](https://chime.aws/8607878433)
+- Agenda, Notes, and calendar invites: [Google Doc](https://docs.google.com/document/d/1hYjhBhPvLVMf7gunooM-kE0wptMjMIORCmI2BOedCWI/edit?usp=sharing)
 
 ## Security
 

@@ -8,28 +8,28 @@ body:
       label: Outline the high level topic of the lab
     validations:
       required: true
-      
+
   - type: textarea
     id: rationale
     attributes:
       label: Provide the flow of the lab exercise, including what sample application components will be used
     validations:
       required: true
-      
+
   - type: textarea
     id: infrastructure
     attributes:
       label: What additional AWS infrastructure or EKS addons/components will need to be created or installed to support this lab?
     validations:
       required: true
-      
+
   - type: textarea
     id: cloud9
     attributes:
       label: What additional software or configuration will be required in the Cloud9 IDE?
     validations:
       required: true
-      
+
   - type: textarea
     id: sample-enhancements
     attributes:
