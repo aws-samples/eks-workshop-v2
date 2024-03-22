@@ -1,18 +1,24 @@
-name: Website build
-on: pull_request
+name: Pull Request
 
+on:
+  pull_request:
+    branches:
+    - main
+
+permissions:
+  contents: read
+    
 jobs:
-  build:
+  build-website:
+    name: 'Build website'
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
-      uses: actions/checkout@v2
-      with:
-        submodules: recursive
+      uses: actions/checkout@v4
     - name: Use Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: 16
+        node-version: 18
     - name: Get kubectl version
       run: |
         source hack/lib/kubectl-version.sh
@@ -27,3 +33,13 @@ jobs:
       run: |
         npm install
         npm run build
+
+  build-lab:
+    name: 'Build lab'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+    - name: Make shell
+      run: |
+        make shell shell_command='ls'
