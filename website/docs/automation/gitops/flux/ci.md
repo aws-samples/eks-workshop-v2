@@ -1,5 +1,5 @@
 ---
-title: 'Continuous Integration and GitOps'
+title: "Continuous Integration and GitOps"
 sidebar_position: 50
 ---
 

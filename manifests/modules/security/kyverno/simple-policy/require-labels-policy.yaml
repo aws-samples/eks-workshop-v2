@@ -5,15 +5,15 @@ metadata:
 spec:
   validationFailureAction: Enforce
   rules:
-  - name: check-team
-    match:
-      any:
-      - resources:
-          kinds:
-          - Pod
-    validate:
-      message: "Label 'CostCenter' is required to deploy the Pod"
-      pattern:
-        metadata:
-          labels:
-            CostCenter: "?*"
+    - name: check-team
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "Label 'CostCenter' is required to deploy the Pod"
+        pattern:
+          metadata:
+            labels:
+              CostCenter: "?*"

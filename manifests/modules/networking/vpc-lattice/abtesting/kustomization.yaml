@@ -4,7 +4,7 @@ namespace: checkoutv2
 resources:
   - ../../../../base-application/checkout
 patches:
-- path: deploymentv2.yaml
-- path: servicev2.yaml
-- path: delete-deployment-redis.yaml
-- path: delete-service-redis.yaml
+  - path: deploymentv2.yaml
+  - path: servicev2.yaml
+  - path: delete-deployment-redis.yaml
+  - path: delete-service-redis.yaml

@@ -3,7 +3,7 @@ title: "Applying IRSA"
 sidebar_position: 40
 hide_table_of_contents: true
 ---
- 
+
 To use IAM roles for service accounts in your cluster, an `IAM OIDC Identity Provider` must be created and associated with a cluster. An OIDC has already been provisioned and associated with your EKS cluster:
 
 Go to the Identity Providers in IAM Console:
@@ -39,7 +39,6 @@ $ aws eks describe-cluster --name ${EKS_CLUSTER_NAME} --query 'cluster.identity'
     }
 }
 ```
-
 
 An IAM role which provides the required permissions for the `carts` service to read and write to DynamoDB table has been created for you. You can view the policy like so:
 
@@ -90,7 +89,7 @@ $ aws iam get-role \
 }
 ```
 
-All thats left is to re-configure the Service Account object associated with the `carts` application adding the required annotation to it, so IRSA can provide the correct authorization for Pods using the IAM Role above. 
+All thats left is to re-configure the Service Account object associated with the `carts` application adding the required annotation to it, so IRSA can provide the correct authorization for Pods using the IAM Role above.
 Let's validate the SA associated with the `carts` Deployment.
 
 ```bash

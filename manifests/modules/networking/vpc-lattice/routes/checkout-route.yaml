@@ -5,17 +5,17 @@ metadata:
   namespace: checkout
 spec:
   parentRefs:
-  - name: ${EKS_CLUSTER_NAME}
-    sectionName: http 
+    - name: ${EKS_CLUSTER_NAME}
+      sectionName: http
   rules:
-  - backendRefs:  
-    - name: checkout
-      namespace: checkout
-      kind: Service
-      port: 80
-      weight: 25
-    - name: checkout
-      namespace: checkoutv2
-      kind: Service
-      port: 80
-      weight: 75
+    - backendRefs:
+        - name: checkout
+          namespace: checkout
+          kind: Service
+          port: 80
+          weight: 25
+        - name: checkout
+          namespace: checkoutv2
+          kind: Service
+          port: 80
+          weight: 75

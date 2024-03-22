@@ -27,8 +27,8 @@ AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE=/var/run/secrets/pods.eks.amazonaws.com/s
 
 Things that are worth noting are:
 
-* `AWS_DEFAULT_REGION` The region is set automatically to the same as our EKS cluster
-* `AWS_STS_REGIONAL_ENDPOINTS` regional STS endpoints are configured to avoid putting too much pressure on the global endpoint in `us-east-1`
-* `AWS_CONTAINER_CREDENTIALS_FULL_URI` variable tells AWS SDKs how to obtains credentials using [HTTP credential provider](https://docs.aws.amazon.com/sdkref/latest/guide/feature-container-credentials.html). This means that EKS Pod Identity does not need to inject credentials via something like an `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` pair, and instead the SDKs can have temporary credentials vending to them via EKS Pod Identity mechanism. You can read more about how this functions in the [AWS documentation](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html).
+- `AWS_DEFAULT_REGION` The region is set automatically to the same as our EKS cluster
+- `AWS_STS_REGIONAL_ENDPOINTS` regional STS endpoints are configured to avoid putting too much pressure on the global endpoint in `us-east-1`
+- `AWS_CONTAINER_CREDENTIALS_FULL_URI` variable tells AWS SDKs how to obtains credentials using [HTTP credential provider](https://docs.aws.amazon.com/sdkref/latest/guide/feature-container-credentials.html). This means that EKS Pod Identity does not need to inject credentials via something like an `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` pair, and instead the SDKs can have temporary credentials vending to them via EKS Pod Identity mechanism. You can read more about how this functions in the [AWS documentation](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html).
 
 You have successfully configured Pod Identity in your Application!!!

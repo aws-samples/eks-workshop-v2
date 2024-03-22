@@ -1,5 +1,5 @@
 ---
-title: 'Cluster bootstrap'
+title: "Cluster bootstrap"
 sidebar_position: 15
 ---
 

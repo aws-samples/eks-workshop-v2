@@ -5,6 +5,7 @@ Its common for technical documentation to be authored using Markdown files, and 
 This framework can consume a set of Markdown documents, parse out the `code` blocks and execute these as a suite of unit tests.
 
 Its features include:
+
 - Intelligently parses `bash` code blocks to extract commands that start with `$`, taking in to account multi-line commands and `heredoc` segments
 - Recursively parse all Markdown documents in a directory structure
 - Order complex sets of content correctly with Frontmatter metadata (`weight`)
@@ -168,13 +169,13 @@ $ sleep 150
 
 Here is a complete list of the available annotations:
 
-| Annotation  | Description  | Default |
-|-------------|--------------|---------|
-| test        | This script block should be executed as a test                                                                                                                                        | true    |
-| timeout     | Time limit in seconds before the script block will be marked as failed                                                                                                                | 120     |
-| hook        | Name of the hook to execute for this script section                                                                                                                                   |         |
-| hookTimeout | Time limit in seconds for the hooks to complete before the script block will be marked as failed                                                                                      | 300     |
-| expectError | Ignore any errors that occur when the script block is executed                                                                                                                        | false   |
+| Annotation  | Description                                                                                                                                                                                                                                                  | Default |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------- |
+| test        | This script block should be executed as a test                                                                                                                                                                                                               | true    |
+| timeout     | Time limit in seconds before the script block will be marked as failed                                                                                                                                                                                       | 120     |
+| hook        | Name of the hook to execute for this script section                                                                                                                                                                                                          |         |
+| hookTimeout | Time limit in seconds for the hooks to complete before the script block will be marked as failed                                                                                                                                                             | 300     |
+| expectError | Ignore any errors that occur when the script block is executed                                                                                                                                                                                               | false   |
 | raw         | By default a script block will be smartly interpreted to extract commands and distinguish this from sample output. Enabling this flag will executed the entire script block, assuming there is no output, and will not look for `$` as a prefix for commands | false   |
 
 ## Hooks

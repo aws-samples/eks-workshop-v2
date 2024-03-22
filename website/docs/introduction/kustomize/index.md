@@ -15,9 +15,9 @@ This file has already been applied in the previous [Getting Started](../getting-
 
 To do so, we'll apply the following kustomization.
 
-* The first tab shows the kustomization we're applying
-* The second tab shows a preview of what the updated `Deployment/checkout` file looks like after the kustomization is applied
-* Finally, the third tab shows just the diff of what has changed
+- The first tab shows the kustomization we're applying
+- The second tab shows a preview of what the updated `Deployment/checkout` file looks like after the kustomization is applied
+- Finally, the third tab shows just the diff of what has changed
 
 ```kustomization
 modules/introduction/kustomize/deployment.yaml

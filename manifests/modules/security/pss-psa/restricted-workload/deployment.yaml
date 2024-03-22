@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
         - name: assets
-          securityContext:   
+          securityContext:
             runAsNonRoot: true
             runAsUser: 999
             allowPrivilegeEscalation: false

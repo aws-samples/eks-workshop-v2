@@ -2,7 +2,7 @@
 title: "Security Groups for Pods"
 sidebar_position: 20
 weight: 10
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
 ---
 
 {{% required-time %}}
@@ -15,6 +15,7 @@ $ prepare-environment networking/securitygroups-for-pods
 ```
 
 This will make the following changes to your lab environment:
+
 - Create an Amazon Relational Database Service instance
 - Create an Amazon EC2 security group to allow access to the RDS instance
 

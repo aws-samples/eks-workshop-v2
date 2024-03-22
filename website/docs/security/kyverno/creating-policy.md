@@ -13,12 +13,12 @@ manifests/modules/security/kyverno/simple-policy/require-labels-policy.yaml
 
 Kyverno has 2 kinds of Policy resources, **ClusterPolicy** used for Cluster-Wide Resources and **Policy** used for Namespaced Resources. The example above shows a ClusterPolicy. Take sometime to dive deep and check the below details in the configuration.
 
-* Under the spec section of the Policy, there is a an attribute `validationFailureAction` it tells Kyverno if the resource being validated should be allowed but reported `Audit` or blocked `Enforce`. Defaults to Audit, the exaple is set to Enforce.
-* The `rules` is one or more rules to be validated.
-* The `match` statement sets the scope of what will be checked. In this case, it is any `Pod` resource.
-* The `validate` statement tries to positively check what is defined. If the statement, when compared with the requested resource, is true, it is allowed. If false, it is blocked.
-* The `message` is what gets displayed to a user if this rule fails validation.
-* The `pattern` object defines what pattern will be checked in the resource. In this case, it is looking for `metadata.labels` with `CostCenter`.
+- Under the spec section of the Policy, there is a an attribute `validationFailureAction` it tells Kyverno if the resource being validated should be allowed but reported `Audit` or blocked `Enforce`. Defaults to Audit, the exaple is set to Enforce.
+- The `rules` is one or more rules to be validated.
+- The `match` statement sets the scope of what will be checked. In this case, it is any `Pod` resource.
+- The `validate` statement tries to positively check what is defined. If the statement, when compared with the requested resource, is true, it is allowed. If false, it is blocked.
+- The `message` is what gets displayed to a user if this rule fails validation.
+- The `pattern` object defines what pattern will be checked in the resource. In this case, it is looking for `metadata.labels` with `CostCenter`.
 
 The Above Example Policy, will block any Pod Creation which doesn't have the label `CostCenter`.
 
@@ -53,16 +53,16 @@ As mentioned, the Pod was not recreated, try to force a rollout of the `ui` depl
 
 ```bash expectError=true
 $ kubectl -n ui rollout restart deployment/ui
-error: failed to patch: admission webhook "validate.kyverno.svc-fail" denied the request: 
+error: failed to patch: admission webhook "validate.kyverno.svc-fail" denied the request:
 
-resource Deployment/ui/ui was blocked due to the following policies 
+resource Deployment/ui/ui was blocked due to the following policies
 
 require-labels:
   autogen-check-team: 'validation error: Label ''CostCenter'' is required to deploy
     the Pod. rule autogen-check-team failed at path /spec/template/metadata/labels/CostCenter/'
 ```
 
-The rollout failed with the admission webhook denying the request due to the  `require-labels` Kyverno Policy.
+The rollout failed with the admission webhook denying the request due to the `require-labels` Kyverno Policy.
 
 You can also check this `error` message describing the `ui` deployment, or visualizing the `events` in the `ui` Namespace.
 
@@ -134,7 +134,7 @@ deployment "assets" successfully rolled out
 Validate the automatically added label `CostCenter=IT` to the Pod to meet the policy requirements, resulting a successful Pod creation even with the Deployment not having the label specified:
 
 ```bash
-$ kubectl -n assets get pods --show-labels 
+$ kubectl -n assets get pods --show-labels
 NAME                     READY   STATUS    RESTARTS   AGE   LABELS
 assets-bb88b4789-kmk62   1/1     Running   0          25s   CostCenter=IT,app.kubernetes.io/component=service,app.kubernetes.io/created-by=eks-workshop,app.kubernetes.io/instance=assets,app.kubernetes.io/name=assets,pod-template-hash=bb88b4789
 ```

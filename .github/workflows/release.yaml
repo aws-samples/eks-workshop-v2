@@ -11,28 +11,28 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-      with:
-        submodules: recursive
-    - name: Use Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
-    - name: Release
-      working-directory: releaser
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        MILESTONE_NUMBER: "${{ github.event.milestone.number }}"
-      run: |
-        npm install
-        npm run exec
-    - name: Set Git config
-      run: |
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Release
+        working-directory: releaser
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MILESTONE_NUMBER: "${{ github.event.milestone.number }}"
+        run: |
+          npm install
+          npm run exec
+      - name: Set Git config
+        run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-    - name: Update stable branch
-      run: |
+      - name: Update stable branch
+        run: |
           git fetch --unshallow
           git checkout stable
           git pull

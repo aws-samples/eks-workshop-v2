@@ -3,7 +3,7 @@ title: Persistent network storage
 sidebar_position: 10
 ---
 
-On our ecommerce application, we have already created a deployment as part of our assets microservice. The assets microservice utilizes a webserver running on EKS. Web servers are a great example for the use of deployments because they **scale horizontally** and **declare the new state** of the Pods. 
+On our ecommerce application, we have already created a deployment as part of our assets microservice. The assets microservice utilizes a webserver running on EKS. Web servers are a great example for the use of deployments because they **scale horizontally** and **declare the new state** of the Pods.
 
 Assets component is a container which serves static images for products, these product images are added as part of the container image build. However with this setup everytime the team wants to update the product images they have to recreate and redeploy the container image. In this exercise we'll utilize [Amazon FSx for NetApp ONTAP File System](https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/what-is-fsx-ontap.html) and Kubernetes [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) to update old product images and add new product images without the need to rebuild the containers images.
 
@@ -38,7 +38,7 @@ Namespace:              assets
 [...]
 ```
 
-As you can see the [`Volumes`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section of our StatefulSet shows that we're only using an [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) which "shares the Pod's lifetime". 
+As you can see the [`Volumes`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section of our StatefulSet shows that we're only using an [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) which "shares the Pod's lifetime".
 
 ![Assets with emptyDir](./assets/assets-emptydir.png)
 
@@ -48,7 +48,7 @@ The container has some initial product images copied to it as part of the contai
 
 ```bash
 $ kubectl exec --stdin deployment/assets \
-  -n assets -- bash -c "ls /usr/share/nginx/html/assets/" 
+  -n assets -- bash -c "ls /usr/share/nginx/html/assets/"
 chrono_classic.jpg
 gentleman.jpg
 pocket_watch.jpg

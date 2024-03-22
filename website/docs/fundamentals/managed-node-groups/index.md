@@ -13,10 +13,10 @@ EKS nodes are standard Amazon EC2 instances. You're billed for them based on EC2
 
 Advantages of running Amazon EKS managed node groups include:
 
-* Create, automatically update, or terminate nodes with a single operation using the Amazon EKS console, `eksctl`, AWS CLI, AWS API, or infrastructure as code tools including AWS CloudFormation and Terraform
-* Provisioned nodes run using the latest Amazon EKS optimized AMIs
-* Nodes provisioned as part of a MNG are automatically tagged with metadata such as availability zones, CPU architecture and instance type
-* Node updates and terminations automatically and gracefully drain nodes to ensure that your applications stay available
-* No additional costs to use Amazon EKS managed node groups, pay only for the AWS resources provisioned
+- Create, automatically update, or terminate nodes with a single operation using the Amazon EKS console, `eksctl`, AWS CLI, AWS API, or infrastructure as code tools including AWS CloudFormation and Terraform
+- Provisioned nodes run using the latest Amazon EKS optimized AMIs
+- Nodes provisioned as part of a MNG are automatically tagged with metadata such as availability zones, CPU architecture and instance type
+- Node updates and terminations automatically and gracefully drain nodes to ensure that your applications stay available
+- No additional costs to use Amazon EKS managed node groups, pay only for the AWS resources provisioned
 
 Tha labs in this section deal with various ways that EKS managed node groups can be used to provide compute capacity to a cluster.

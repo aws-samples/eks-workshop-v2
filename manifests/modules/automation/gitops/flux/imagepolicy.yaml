@@ -10,7 +10,7 @@ spec:
     name: ui
   filterTags:
     # HIGHLIGHT
-    pattern: '^i[a-fA-F0-9]'
+    pattern: "^i[a-fA-F0-9]"
   policy:
     alphabetical:
       # HIGHLIGHT

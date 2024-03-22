@@ -7,14 +7,14 @@ metadata:
     role: inference
 spec:
   containers:
-  - command:
-    - sh
-    - -c
-    - sleep infinity
-    image: ${AIML_DL_IMAGE}
-    name: inference
-    resources:
-      limits:
-      # HIGHLIGHT
-        aws.amazon.com/neuron: 1
+    - command:
+        - sh
+        - -c
+        - sleep infinity
+      image: ${AIML_DL_IMAGE}
+      name: inference
+      resources:
+        limits:
+          # HIGHLIGHT
+          aws.amazon.com/neuron: 1
   serviceAccountName: inference

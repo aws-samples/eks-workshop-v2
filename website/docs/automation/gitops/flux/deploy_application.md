@@ -1,5 +1,5 @@
 ---
-title: 'Deploying an application'
+title: "Deploying an application"
 sidebar_position: 15
 ---
 

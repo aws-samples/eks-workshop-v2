@@ -1,5 +1,5 @@
 ---
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Description: Creates a Cloud9 IDE for the EKS workshop
 Parameters:
   EksWorkshopC9InstanceType:
@@ -12,35 +12,35 @@ Parameters:
       - t3.small
       - t3.medium
     ConstraintDescription: Must be a valid Cloud9 instance type
-  EksWorkshopC9EnvType: 
+  EksWorkshopC9EnvType:
     Description: Environment type.
     Default: self
     Type: String
-    AllowedValues: 
+    AllowedValues:
       - self
       - 3rdParty
     ConstraintDescription: must specify self or 3rdParty.
-  WorkshopOwnerArn: 
+  WorkshopOwnerArn:
     Type: String
     Description: The Arn of the Cloud9 Owner to be set if 3rdParty deployment.
     Default: ""
-  EksWorkshopC9InstanceVolumeSize: 
+  EksWorkshopC9InstanceVolumeSize:
     Type: Number
-    Description: The Size in GB of the Cloud9 Instance Volume. 
+    Description: The Size in GB of the Cloud9 Instance Volume.
     Default: 30
-  RepositoryOwner: 
+  RepositoryOwner:
     Type: String
     Description: The owner of the GitHub repository to be used to bootstrap Cloud9
     Default: "aws-samples"
-  RepositoryName: 
+  RepositoryName:
     Type: String
     Description: The name of the GitHub repository to be used to bootstrap Cloud9
     Default: "eks-workshop-v2"
-  RepositoryRef: 
+  RepositoryRef:
     Type: String
     Description: The Git reference to be used to bootstrap Cloud9
     Default: "main"
-  Cloud9Name: 
+  Cloud9Name:
     Type: String
     Description: Name of the Cloud9 instance
     Default: "none"
@@ -48,11 +48,11 @@ Parameters:
     Type: String
     Description: If you want Cloud9 in a specific subnet
     Default: "none"
-  ResourcesPrecreated: 
+  ResourcesPrecreated:
     Type: String
     Description: Whether lab infrastructure has been pre-provisioned
     Default: "false"
-    AllowedValues: 
+    AllowedValues:
       - "false"
       - "true"
   UpdateTrigger:
@@ -64,89 +64,89 @@ Parameters:
     Description: Analytics endpoint used for AWS events
     Default: ""
 
-Conditions: 
-  Create3rdPartyResources: !Equals [ !Ref EksWorkshopC9EnvType, 3rdParty ]
-  IsCloud9NotNamed: !Equals [ !Ref Cloud9Name, none ]
-  IsCloud9SubnetSpecified: !Not [ !Equals [ !Ref Cloud9Subnet, none ]]
+Conditions:
+  Create3rdPartyResources: !Equals [!Ref EksWorkshopC9EnvType, 3rdParty]
+  IsCloud9NotNamed: !Equals [!Ref Cloud9Name, none]
+  IsCloud9SubnetSpecified: !Not [!Equals [!Ref Cloud9Subnet, none]]
 
 Resources:
   EksWorkshopC9Role:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - ec2.amazonaws.com
-            - ssm.amazonaws.com
-          Action:
-          - sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+                - ssm.amazonaws.com
+            Action:
+              - sts:AssumeRole
       ManagedPolicyArns:
-      - arn:aws:iam::aws:policy/AdministratorAccess
-      - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+        - arn:aws:iam::aws:policy/AdministratorAccess
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
       Path: "/"
 
   EksWorkshopC9LambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - lambda.amazonaws.com
-          Action:
-          - sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
       Path: "/"
       Policies:
-      - PolicyName:
-          Fn::Join:
-          - ''
-          - - EksWorkshopC9LambdaPolicy-
-            - Ref: AWS::Region
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action:
-            - logs:CreateLogGroup
-            - logs:CreateLogStream
-            - logs:PutLogEvents
-            Resource: arn:aws:logs:*:*:*
-          - Effect: Allow
-            Action:
-            - cloudformation:DescribeStacks
-            - cloudformation:DescribeStackEvents
-            - cloudformation:DescribeStackResource
-            - cloudformation:DescribeStackResources
-            - ec2:DescribeInstances
-            - ec2:AssociateIamInstanceProfile
-            - ec2:ModifyInstanceAttribute
-            - ec2:ReplaceIamInstanceProfileAssociation
-            - ec2:DescribeIamInstanceProfileAssociations
-            - ec2:DescribeVolumes
-            - ec2:ModifyVolume
-            - ec2:DescribeVolumesModifications
-            - ec2:RebootInstances
-            - iam:ListInstanceProfiles
-            - iam:PassRole
-            - ssm:DescribeInstanceInformation
-            - ssm:SendCommand
-            - ssm:GetCommandInvocation
-            Resource: "*"
+        - PolicyName:
+            Fn::Join:
+              - ""
+              - - EksWorkshopC9LambdaPolicy-
+                - Ref: AWS::Region
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:*:*:*
+              - Effect: Allow
+                Action:
+                  - cloudformation:DescribeStacks
+                  - cloudformation:DescribeStackEvents
+                  - cloudformation:DescribeStackResource
+                  - cloudformation:DescribeStackResources
+                  - ec2:DescribeInstances
+                  - ec2:AssociateIamInstanceProfile
+                  - ec2:ModifyInstanceAttribute
+                  - ec2:ReplaceIamInstanceProfileAssociation
+                  - ec2:DescribeIamInstanceProfileAssociations
+                  - ec2:DescribeVolumes
+                  - ec2:ModifyVolume
+                  - ec2:DescribeVolumesModifications
+                  - ec2:RebootInstances
+                  - iam:ListInstanceProfiles
+                  - iam:PassRole
+                  - ssm:DescribeInstanceInformation
+                  - ssm:SendCommand
+                  - ssm:GetCommandInvocation
+                Resource: "*"
 
   EksWorkshopC9BootstrapInstanceLambda:
     Type: Custom::EksWorkshopC9BootstrapInstanceLambda
     DependsOn:
-    - EksWorkshopC9LambdaExecutionRole
+      - EksWorkshopC9LambdaExecutionRole
     Properties:
       ServiceToken:
         Fn::GetAtt:
-        - EksWorkshopC9BootstrapInstanceLambdaFunction
-        - Arn
+          - EksWorkshopC9BootstrapInstanceLambdaFunction
+          - Arn
       REGION:
         Ref: AWS::Region
       Cloud9Name: !GetAtt EksWorkshopC9Instance.Name
@@ -156,8 +156,8 @@ Resources:
         Ref: EksWorkshopC9InstanceProfile
       LabIdeInstanceProfileArn:
         Fn::GetAtt:
-        - EksWorkshopC9InstanceProfile
-        - Arn
+          - EksWorkshopC9InstanceProfile
+          - Arn
       SsmDocument:
         Ref: EksWorkshopC9SSMDocument
       UpdateTrigger:
@@ -169,15 +169,15 @@ Resources:
       Handler: index.lambda_handler
       Role:
         Fn::GetAtt:
-        - EksWorkshopC9LambdaExecutionRole
-        - Arn
+          - EksWorkshopC9LambdaExecutionRole
+          - Arn
       Runtime: python3.12
       Environment:
         Variables:
           DiskSize:
             Ref: EksWorkshopC9InstanceVolumeSize
       MemorySize: 256
-      Timeout: '900'
+      Timeout: "900"
       Code:
         ZipFile: |
           from __future__ import print_function
@@ -189,7 +189,7 @@ Resources:
           import cfnresponse
           import logging
           logger = logging.getLogger(__name__)
-          
+
           def lambda_handler(event, context):
               print(event.values())
               print('context: {}'.format(context))
@@ -205,12 +205,12 @@ Resources:
                       # Open AWS clients
                       ec2 = boto3.client('ec2')
                       ssm = boto3.client('ssm')
-          
+
                       # Get the InstanceId of the Cloud9 IDE
                       instance = ec2.describe_instances(Filters=[{'Name': 'tag:Name','Values': ['aws-cloud9-'+event['ResourceProperties']['Cloud9Name']+'-'+event['ResourceProperties']['EnvironmentId']]}])['Reservations'][0]['Instances'][0]
                       print('instance: {}'.format(instance))
                       instance_id = instance['InstanceId']
-          
+
                       # Create the IamInstanceProfile request object
                       iam_instance_profile = {
                           'Arn': event['ResourceProperties']['LabIdeInstanceProfileArn'],
@@ -221,7 +221,7 @@ Resources:
                       time.sleep(10)
 
                       print('Waiting for the instance to be ready...')
-          
+
                       # Wait for Instance to become ready before adding Role
                       instance_state = instance['State']['Name']
                       print('Instance is currently in state'.format(instance_state))
@@ -333,7 +333,7 @@ Resources:
                           'MaxAttempts': 30
                         }
                       )
-  
+
                       responseData = {'Success': 'Started bootstrapping for instance: '+instance_id}
                       cfnresponse.send(event, context, status, responseData, 'CustomResourcePhysicalID')
                       
@@ -344,40 +344,40 @@ Resources:
                   finally:
                       cfnresponse.send(event, context, status, responseData, 'CustomResourcePhysicalID')
 
-  EksWorkshopC9SSMDocument: 
+  EksWorkshopC9SSMDocument:
     Type: AWS::SSM::Document
-    Properties: 
+    Properties:
       DocumentType: Command
       DocumentFormat: YAML
-      Content: 
-        schemaVersion: '2.2'
+      Content:
+        schemaVersion: "2.2"
         description: Bootstrap Cloud9 Instance
         mainSteps:
-        - action: aws:runShellScript
-          name: EksWorkshopC9bootstrap
-          inputs:
-            runCommand:
-            - !Sub |
-                set -e
-      
-                export AWS_REGION="${AWS::Region}"
-                export REPOSITORY_OWNER="${RepositoryOwner}"
-                export REPOSITORY_NAME="${RepositoryName}"
-                export REPOSITORY_REF="${RepositoryRef}"
-                export CLOUD9_ENVIRONMENT_ID="${EksWorkshopC9Instance}"
-                export RESOURCES_PRECREATED="${ResourcesPrecreated}"
-                export ANALYTICS_ENDPOINT="${AnalyticsEndpoint}"
+          - action: aws:runShellScript
+            name: EksWorkshopC9bootstrap
+            inputs:
+              runCommand:
+                - !Sub |
+                  set -e
 
-                curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/installer.sh | bash
+                  export AWS_REGION="${AWS::Region}"
+                  export REPOSITORY_OWNER="${RepositoryOwner}"
+                  export REPOSITORY_NAME="${RepositoryName}"
+                  export REPOSITORY_REF="${RepositoryRef}"
+                  export CLOUD9_ENVIRONMENT_ID="${EksWorkshopC9Instance}"
+                  export RESOURCES_PRECREATED="${ResourcesPrecreated}"
+                  export ANALYTICS_ENDPOINT="${AnalyticsEndpoint}"
 
-                sudo -E -H -u ec2-user bash -c "curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/setup.sh | bash"
+                  curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/installer.sh | bash
+
+                  sudo -E -H -u ec2-user bash -c "curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/setup.sh | bash"
 
   EksWorkshopC9InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Path: "/"
       Roles:
-      - Ref: EksWorkshopC9Role
+        - Ref: EksWorkshopC9Role
 
   EksWorkshopC9Instance:
     Type: AWS::Cloud9::EnvironmentEC2
@@ -387,10 +387,16 @@ Resources:
       AutomaticStopTimeMinutes: 3600
       InstanceType:
         Ref: EksWorkshopC9InstanceType
-      SubnetId: !If [ IsCloud9SubnetSpecified, !Ref Cloud9Subnet, !Ref "AWS::NoValue" ]
-      Name: !If [ IsCloud9NotNamed, !Ref AWS::StackName, !Ref Cloud9Name ]
-      OwnerArn: !If [ Create3rdPartyResources, !Ref WorkshopOwnerArn, !Ref "AWS::NoValue" ]
-      Tags: 
+      SubnetId:
+        !If [IsCloud9SubnetSpecified, !Ref Cloud9Subnet, !Ref "AWS::NoValue"]
+      Name: !If [IsCloud9NotNamed, !Ref AWS::StackName, !Ref Cloud9Name]
+      OwnerArn:
+        !If [
+          Create3rdPartyResources,
+          !Ref WorkshopOwnerArn,
+          !Ref "AWS::NoValue",
+        ]
+      Tags:
         - Key: SSMBootstrap
           Value: Active
 
@@ -398,10 +404,10 @@ Outputs:
   Cloud9RoleArn:
     Description: The ARN of the IAM role assigned to the Cloud9 instance
     Value: !GetAtt EksWorkshopC9Role.Arn
-    
+
   Cloud9InstanceName:
     Description: Name of the Cloud9 EC2 instance
-    Value: !Sub 'aws-cloud9-${EksWorkshopC9Instance.Name}-${EksWorkshopC9Instance}'
+    Value: !Sub "aws-cloud9-${EksWorkshopC9Instance.Name}-${EksWorkshopC9Instance}"
 
   Cloud9Url:
-    Value: !Sub 'https://${AWS::Region}.console.aws.amazon.com/cloud9/ide/${EksWorkshopC9Instance}?region=${AWS::Region}'
+    Value: !Sub "https://${AWS::Region}.console.aws.amazon.com/cloud9/ide/${EksWorkshopC9Instance}?region=${AWS::Region}"

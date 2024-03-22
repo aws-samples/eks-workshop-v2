@@ -11,6 +11,7 @@ This section documents running the tests locally as well as via PRs.
 You should run the tests locally before raising a PR, this can be done with some convenience scripts.
 
 To use this utility you must:
+
 - Have some AWS credentials available in your current shell session (ie. you `aws` CLI must work)
 
 First, ensure you have the workshop infrastructure running in your AWS account:
@@ -105,6 +106,7 @@ make destroy-infrastructure
 **Note:** This section is for repository maintainers
 
 By default the end-to-end tests will not run against a PR because:
+
 - The PR should be reviewed first
 - Tests take time to execute so only selective modules should be run
 
@@ -226,14 +228,13 @@ $ sleep 150
 
 Here is a complete list of the available annotations:
 
-| Annotation  | Description  | Default |
-|-------------|--------------|---------|
-| test        | This script block should be executed as a test                                                                                                                                        | true    |
-| timeout     | Time limit in seconds before the script block will be marked as failed                                                                                                                | 120     |
-| hook        | Name of the hook to execute for this script section                                                                                                                                   |         |
-| hookTimeout | Time limit in seconds for the hooks to complete before the script block will be marked as failed                                                                                      | 300     |
-| expectError | Ignore any errors that occur when the script block is executed                                                                                                                        | false   |
-
+| Annotation  | Description                                                                                      | Default |
+| ----------- | ------------------------------------------------------------------------------------------------ | ------- |
+| test        | This script block should be executed as a test                                                   | true    |
+| timeout     | Time limit in seconds before the script block will be marked as failed                           | 120     |
+| hook        | Name of the hook to execute for this script section                                              |         |
+| hookTimeout | Time limit in seconds for the hooks to complete before the script block will be marked as failed | 300     |
+| expectError | Ignore any errors that occur when the script block is executed                                   | false   |
 
 ### What if my module can't be tested?
 

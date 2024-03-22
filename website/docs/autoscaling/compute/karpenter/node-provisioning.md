@@ -8,11 +8,11 @@ We'll start putting Karpenter to work by examining how it can dynamically provis
 The NodePool created in the previous section expressed specific instance types that Karpenter was allowed to use, lets take a look at those instance types:
 
 | Instance Type | vCPU | Memory | Price |
-|---------------|------|--------|-------|
-| c5.large | 2 | 4GB | + |
-| m5.large | 2 | 8GB | ++ |
-| r5.large | 2 | 16GB | +++ |
-| m5.xlarge | 4 | 16GB | ++++ |
+| ------------- | ---- | ------ | ----- |
+| c5.large      | 2    | 4GB    | +     |
+| m5.large      | 2    | 8GB    | ++    |
+| r5.large      | 2    | 16GB   | +++   |
+| m5.xlarge     | 4    | 16GB   | ++++  |
 
 Let's create some Pods and see how Karpenter adapts. Currently there are no nodes managed by Karpenter:
 

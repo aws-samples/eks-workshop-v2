@@ -33,7 +33,7 @@ $ echo "The secondary subnet in AZ $SUBNET_AZ_2 is $SECONDARY_SUBNET_2"
 $ echo "The secondary subnet in AZ $SUBNET_AZ_3 is $SECONDARY_SUBNET_3"
 ```
 
-To enable custom networking we have to set the `AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG` environment variable to *true* in the aws-node DaemonSet.
+To enable custom networking we have to set the `AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG` environment variable to _true_ in the aws-node DaemonSet.
 
 ```bash wait=30
 $ kubectl set env daemonset aws-node -n kube-system AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG=true

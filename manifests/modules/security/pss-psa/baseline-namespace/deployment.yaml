@@ -7,6 +7,6 @@ spec:
     spec:
       containers:
         - name: assets
-          securityContext:   
+          securityContext:
             privileged: true
             runAsUser: 0

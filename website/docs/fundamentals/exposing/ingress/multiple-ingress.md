@@ -53,9 +53,9 @@ $ aws elbv2 describe-rules --listener-arn $LISTENER_ARN
 
 The output of this command will illustrate that:
 
-* Requests with path prefix `/catalogue` will get sent to a target group for the catalog service
-* Everything else will get sent to a target group for the ui service
-* As a default backup there is a 404 for any requests that happen to fall through the cracks
+- Requests with path prefix `/catalogue` will get sent to a target group for the catalog service
+- Everything else will get sent to a target group for the ui service
+- As a default backup there is a 404 for any requests that happen to fall through the cracks
 
 You can also checkout out the new ALB configuration in the AWS console:
 

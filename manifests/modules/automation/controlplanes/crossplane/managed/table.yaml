@@ -4,7 +4,7 @@ metadata:
   name: "${EKS_CLUSTER_NAME}-carts-crossplane"
   labels:
     testing.upbound.io/example-name: dynamodb
-  annotations: 
+  annotations:
     crossplane.io/external-name: "${EKS_CLUSTER_NAME}-carts-crossplane"
 spec:
   forProvider:
@@ -19,7 +19,7 @@ spec:
       - hashKey: customerId
         name: idx_global_customerId
         projectionType: ALL
-    region: ''
+    region: ""
     tags:
       namespace: carts
   providerConfigRef:

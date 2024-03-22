@@ -122,7 +122,7 @@ $ kubectl exec -it deployment/example -- bash
 [root@b32a35acd6b6 /]$ curl localhost:8080
 Hello!
 [root@b32a35acd6b6 /]$ exit
-$ 
+$
 ```
 
 It is preferable to use this:
@@ -140,7 +140,6 @@ Sometimes it is tempting to execute a long-running command in one window and ins
 1. It can be confusing for the learner to switch between multiple windows
 2. Contextual information like environment variables can get lost in new windows
 3. It is more difficult to test
-
 
 ### Referencing external manifests or components
 
@@ -165,6 +164,7 @@ Notice we changed from referring to `master` to referring to the tag `v0.0.86`.
 ### Referencing existing AWS infrastructure in content
 
 It is common in workshop content to reference various AWS infrastructure that has been build by the Terraform configuration provided. Some examples of this include:
+
 - Getting the cluster name to reference in a Kubernetes manifest
 - Modifying EKS managed node group configuration by name
 
@@ -195,6 +195,7 @@ Note blocks are available
 ### Badges
 
 To mark your module as an independent module that users can begin with, place the following in the header of your markdown file:
+
 ```
 ---
 ...
@@ -203,6 +204,7 @@ sidebar_custom_props: {"module": true}
 ```
 
 To mark your module as informational, with no actionable steps, place the following in the header of your markdown file:
+
 ```
 ---
 ...

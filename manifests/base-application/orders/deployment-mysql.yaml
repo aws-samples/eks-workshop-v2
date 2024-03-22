@@ -22,19 +22,19 @@ spec:
         app.kubernetes.io/team: database
     spec:
       containers:
-      - name: mysql
-        image: "public.ecr.aws/docker/library/mysql:5.7"
-        imagePullPolicy: IfNotPresent
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          value: my-secret-pw
-        - name: MYSQL_DATABASE
-          value: orders
-        - name: MYSQL_USER
-          value: orders_user
-        - name: MYSQL_PASSWORD
-          value: default_password
-        ports:
         - name: mysql
-          containerPort: 3306
-          protocol: TCP
+          image: "public.ecr.aws/docker/library/mysql:5.7"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: my-secret-pw
+            - name: MYSQL_DATABASE
+              value: orders
+            - name: MYSQL_USER
+              value: orders_user
+            - name: MYSQL_PASSWORD
+              value: default_password
+          ports:
+            - name: mysql
+              containerPort: 3306
+              protocol: TCP

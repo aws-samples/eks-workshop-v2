@@ -60,12 +60,12 @@ manifests/base-application/catalog/deployment.yaml
 
 This Deployment expresses the desired state of the catalog API component:
 
-* Use the `public.ecr.aws/aws-containers/retail-store-sample-catalog` container image
-* Run a single replica
-* Expose the container on port 8080 named `http`
-* Run [probes/healthchecks](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) against the `/health` path
-* [Requests](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) a specific amount of CPU and memory so the Kubernetes scheduler can place it on a node with enough available resources
-* Apply labels to the Pods so other resources can refer to them
+- Use the `public.ecr.aws/aws-containers/retail-store-sample-catalog` container image
+- Run a single replica
+- Expose the container on port 8080 named `http`
+- Run [probes/healthchecks](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) against the `/health` path
+- [Requests](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) a specific amount of CPU and memory so the Kubernetes scheduler can place it on a node with enough available resources
+- Apply labels to the Pods so other resources can refer to them
 
 The manifests also include the Service used by other components to access the catalog API:
 
@@ -75,9 +75,9 @@ manifests/base-application/catalog/service.yaml
 
 This Service:
 
-* Selects catalog Pods using labels that match what we expressed in the Deployment above
-* Exposes itself on port 80
-* Targets the `http` port exposed by the Deployment, which translates to port 8080
+- Selects catalog Pods using labels that match what we expressed in the Deployment above
+- Exposes itself on port 80
+- Targets the `http` port exposed by the Deployment, which translates to port 8080
 
 Let's create the catalog component:
 
@@ -118,8 +118,8 @@ $ kubectl wait --for=condition=Ready pods --all -n catalog --timeout=180s
 
 Now that the Pods are running we can [check their logs](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#logs), for example the catalog API:
 
-:::tip 
-You can ["follow" the kubectl logs output](https://kubernetes.io/docs/reference/kubectl/cheatsheet/) by using the '-f' option with the command.  (Use CTRL-C to stop following the output)
+:::tip
+You can ["follow" the kubectl logs output](https://kubernetes.io/docs/reference/kubectl/cheatsheet/) by using the '-f' option with the command. (Use CTRL-C to stop following the output)
 :::
 
 ```bash

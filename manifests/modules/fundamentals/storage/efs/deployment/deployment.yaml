@@ -7,17 +7,18 @@ spec:
   template:
     spec:
       initContainers:
-       - name: copy
-         image: "public.ecr.aws/aws-containers/retail-store-sample-assets:0.4.0"
-         command: ["/bin/sh", "-c", "cp -R /usr/share/nginx/html/assets/* /efsvolume"]
-         volumeMounts:
-         - name: efsvolume
-           mountPath: /efsvolume
+        - name: copy
+          image: "public.ecr.aws/aws-containers/retail-store-sample-assets:0.4.0"
+          command:
+            ["/bin/sh", "-c", "cp -R /usr/share/nginx/html/assets/* /efsvolume"]
+          volumeMounts:
+            - name: efsvolume
+              mountPath: /efsvolume
       containers:
-      - name: assets
-        volumeMounts:
-        - name: efsvolume
-          mountPath: /usr/share/nginx/html/assets
+        - name: assets
+          volumeMounts:
+            - name: efsvolume
+              mountPath: /usr/share/nginx/html/assets
       volumes:
         - name: efsvolume
           persistentVolumeClaim:

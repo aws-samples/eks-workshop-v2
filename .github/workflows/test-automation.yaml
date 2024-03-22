@@ -3,7 +3,7 @@ name: Test - Automation
 on:
   workflow_dispatch:
   schedule:
-  - cron: '0 7 * * 5'
+    - cron: "0 7 * * 5"
 
 permissions:
   id-token: write
@@ -15,8 +15,8 @@ jobs:
       fail-fast: false
       matrix:
         module:
-        - automation/gitops
-        - automation/controlplanes
+          - automation/gitops
+          - automation/controlplanes
     uses: ./.github/workflows/module-test.yaml
     with:
       module: ${{ matrix.module }}

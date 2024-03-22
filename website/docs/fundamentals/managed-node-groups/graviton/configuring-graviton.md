@@ -43,6 +43,7 @@ $ aws eks wait nodegroup-active \
   --cluster-name $EKS_CLUSTER_NAME \
   --nodegroup-name graviton
 ```
+
 :::
 
 Once our new managed node group is **Active**, run the following command:
@@ -83,15 +84,15 @@ Taints:             <none>
 A few things to point out:
 
 1. EKS automatically adds certain labels to allow for easier filtering, including labels for the OS type, managed node group name, instance type and others. While certain labels are provided out-of-the-box with EKS, AWS allows operators to configure their own set of custom labels at the managed node group level. This ensures that every node within a node group will have consistent labels. The `kubernetes.io/arch` label shows we're running an EC2 instance with an ARM64 CPU architecture.
-2. Currently there are no taints configured for the explored node, as shown by the `Taints: <none>` stanza. 
+2. Currently there are no taints configured for the explored node, as shown by the `Taints: <none>` stanza.
 
 ## Configuring taints for Managed Node Groups
 
-While it's easy to taint nodes using the `kubectl` CLI as described [here](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#concepts), an administrator will have to make this change every time the underlying node group scales up or down. To overcome this challenge, AWS supports adding both `labels` and `taints` to managed node groups, ensuring every node within the MNG will have the associated labels and taints configured automatically. 
+While it's easy to taint nodes using the `kubectl` CLI as described [here](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#concepts), an administrator will have to make this change every time the underlying node group scales up or down. To overcome this challenge, AWS supports adding both `labels` and `taints` to managed node groups, ensuring every node within the MNG will have the associated labels and taints configured automatically.
 
 Now let's add a taint to our preconfigured managed node group `graviton`. This taint will have `key=frontend`, `value=true` and `effect=NO_EXECUTE`. This ensures that any pods that are already running on our tainted managed node group are evicted if they do not have a matching toleration. Also, no new pods will be scheduled on to this managed node group without an appropriate toleration.
 
-Let's start by adding a `taint` to our managed node group using the following `aws` cli command: 
+Let's start by adding a `taint` to our managed node group using the following `aws` cli command:
 
 ```bash wait=20
 $ aws eks update-nodegroup-config \
@@ -121,16 +122,17 @@ $ aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME \
   --nodegroup-name graviton
 ```
 
-The addition, removal, or replacement of taints can be done by using the [`aws eks update-nodegroup-config`](https://docs.aws.amazon.com/cli/latest/reference/eks/update-nodegroup-config.html) CLI command to update the configuration of the managed node group. This can be done by passing either `addOrUpdateTaints` or `removeTaints` and a list of taints to the `--taints` command flag. 
+The addition, removal, or replacement of taints can be done by using the [`aws eks update-nodegroup-config`](https://docs.aws.amazon.com/cli/latest/reference/eks/update-nodegroup-config.html) CLI command to update the configuration of the managed node group. This can be done by passing either `addOrUpdateTaints` or `removeTaints` and a list of taints to the `--taints` command flag.
 
 :::tip
 You can also configure taints on a managed node group using the `eksctl` CLI. See the [docs](https://eksctl.io/usage/nodegroup-taints/) for more info.
 :::
 
 We used `effect=NO_EXECUTE` in our taint configuration. Managed node groups currently support the folowing values for the taint `effect`:
-* `NO_SCHEDULE` - This corresponds to the Kubernetes `NoSchedule` taint effect. This configures the managed node group with a taint that repels all pods that don't have a matching toleration. All running pods are **not evicted from the manage node group's nodes**.
-* `NO_EXECUTE` - This corresponds to the Kubernetes `NoExecute` taint effect. Allows nodes configured with this taint to not only repel newly scheduled pods but also **evicts any running pods without a matching toleration**.
-* `PREFER_NO_SCHEDULE` - This corresponds to the Kubernetes `PreferNoSchedule` taint effect. If possible, EKS avoids scheduling Pods that do not tolerate this taint onto the node.
+
+- `NO_SCHEDULE` - This corresponds to the Kubernetes `NoSchedule` taint effect. This configures the managed node group with a taint that repels all pods that don't have a matching toleration. All running pods are **not evicted from the manage node group's nodes**.
+- `NO_EXECUTE` - This corresponds to the Kubernetes `NoExecute` taint effect. Allows nodes configured with this taint to not only repel newly scheduled pods but also **evicts any running pods without a matching toleration**.
+- `PREFER_NO_SCHEDULE` - This corresponds to the Kubernetes `PreferNoSchedule` taint effect. If possible, EKS avoids scheduling Pods that do not tolerate this taint onto the node.
 
 We can use the following command to check the taints have been correctly configured for the managed node group:
 
@@ -149,7 +151,7 @@ $ aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME \
 
 :::info
 
-Updating the managed node group and propagating the labels and taints usually takes a few minutes. If you're not seeing any taints configured or getting a `null` value, please do wait a few minutes before trying the above command again. 
+Updating the managed node group and propagating the labels and taints usually takes a few minutes. If you're not seeing any taints configured or getting a `null` value, please do wait a few minutes before trying the above command again.
 
 :::
 

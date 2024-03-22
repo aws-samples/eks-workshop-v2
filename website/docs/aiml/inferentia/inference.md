@@ -67,6 +67,7 @@ Karpenter detects the pending pod which needs Neuron cores and launches an inf1 
 ```bash test=false
 $ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter -f | jq
 ```
+
 ```json
 {
   "level": "INFO",

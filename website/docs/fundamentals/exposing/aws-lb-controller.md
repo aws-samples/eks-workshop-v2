@@ -7,8 +7,8 @@ sidebar_position: 20
 
 The controller can provision the following resources:
 
-* An AWS Application Load Balancer when you create a Kubernetes `Ingress`.
-* An AWS Network Load Balancer when you create a Kubernetes `Service` of type `LoadBalancer`.
+- An AWS Application Load Balancer when you create a Kubernetes `Ingress`.
+- An AWS Network Load Balancer when you create a Kubernetes `Service` of type `LoadBalancer`.
 
 Application Load Balancers work at `L7` of the OSI model, allowing you to expose Kubernetes service using ingress rules, and supports external-facing traffic. Network load balancers work at `L4` of the OSI model, allowing you to leverage Kubernetes `Services` to expose a set of pods as an application network service.
 

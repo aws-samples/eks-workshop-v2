@@ -1,7 +1,7 @@
 ---
 title: "Pod Security Standards"
 sidebar_position: 60
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
 ---
 
 {{% required-time %}}
@@ -25,43 +25,43 @@ According to the Kubernetes documentation, the PSS "define three different polic
 
 The policy levels are defined as:
 
-* **Privileged:** Unrestricted (unsecure) policy, providing the widest possible level of permissions. This policy allows for known privilege escalations. It's the absence of a policy. This is good for applications such as logging agents, CNIs, storage drivers, and other system wide applications that need privileged access.
-* **Baseline:** Minimally restrictive policy which prevents known privilege escalations. Allows the default (minimally specified) Pod configuration. The baseline policy prohibits use of hostNetwork, hostPID, hostIPC, hostPath, hostPort, the inability to add Linux capabilities, along with several other restrictions. 
-* **Restricted:** Heavily restricted policy, following current Pod hardening best practices. This policy inherits from the baseline and adds further restrictions such as the inability to run as root or a root-group. Restricted policies may impact an application's ability to function. They are primarily targeted at running security critical applications.
+- **Privileged:** Unrestricted (unsecure) policy, providing the widest possible level of permissions. This policy allows for known privilege escalations. It's the absence of a policy. This is good for applications such as logging agents, CNIs, storage drivers, and other system wide applications that need privileged access.
+- **Baseline:** Minimally restrictive policy which prevents known privilege escalations. Allows the default (minimally specified) Pod configuration. The baseline policy prohibits use of hostNetwork, hostPID, hostIPC, hostPath, hostPort, the inability to add Linux capabilities, along with several other restrictions.
+- **Restricted:** Heavily restricted policy, following current Pod hardening best practices. This policy inherits from the baseline and adds further restrictions such as the inability to run as root or a root-group. Restricted policies may impact an application's ability to function. They are primarily targeted at running security critical applications.
 
 The PSA admission controller implements the controls, outlined by the PSS policies, via three modes of operation, listed below.
 
-* **enforce:** Policy violations will cause the Pod to be rejected.
-* **audit:** Policy violations will trigger the addition of an audit annotation to the event recorded in the [audit log](https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/), but are otherwise allowed.
-* **warn:** Policy violations will trigger a user-facing warning, but are otherwise allowed.
+- **enforce:** Policy violations will cause the Pod to be rejected.
+- **audit:** Policy violations will trigger the addition of an audit annotation to the event recorded in the [audit log](https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/), but are otherwise allowed.
+- **warn:** Policy violations will trigger a user-facing warning, but are otherwise allowed.
 
 ### Built-in Pod Security admission enforcement
 
 From Kubernetes version 1.23, the PodSecurity [feature gate](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/) is enabled by default in Amazon EKS. The default [PSS and PSA settings](https://kubernetes.io/docs/tasks/configure-pod-container/enforce-standards-admission-controller/#configure-the-admission-controller) for upstream Kubernetes version 1.23 are also used for Amazon EKS, as listed below.
 
-> *PodSecurity feature gate is in Beta version (apiVersion: v1beta1) on Kubernetes v1.23 and v1.24, and became Generally Available (GA,  apiVersion: v1) in Kubernetes v1.25.*
+> _PodSecurity feature gate is in Beta version (apiVersion: v1beta1) on Kubernetes v1.23 and v1.24, and became Generally Available (GA, apiVersion: v1) in Kubernetes v1.25._
 
 ```yaml
-    defaults:
-      enforce: "privileged"
-      enforce-version: "latest"
-      audit: "privileged"
-      audit-version: "latest"
-      warn: "privileged"
-      warn-version: "latest"
-    exemptions:
-      # Array of authenticated usernames to exempt.
-      usernames: []
-      # Array of runtime class names to exempt.
-      runtimeClasses: []
-      # Array of namespaces to exempt.
-      namespaces: []
+defaults:
+  enforce: "privileged"
+  enforce-version: "latest"
+  audit: "privileged"
+  audit-version: "latest"
+  warn: "privileged"
+  warn-version: "latest"
+exemptions:
+  # Array of authenticated usernames to exempt.
+  usernames: []
+  # Array of runtime class names to exempt.
+  runtimeClasses: []
+  # Array of namespaces to exempt.
+  namespaces: []
 ```
 
 The above settings configure the following cluster-wide scenario:
 
-* No PSA exemptions are configured at Kubernetes API server startup.
-* The Privileged PSS profile is configured by default for all PSA modes, and set to latest versions.
+- No PSA exemptions are configured at Kubernetes API server startup.
+- The Privileged PSS profile is configured by default for all PSA modes, and set to latest versions.
 
 ### Pod Security Admission labels for Namespaces
 
@@ -101,12 +101,11 @@ metadata:
     # pod-security.kubernetes.io/enforce: restricted
     # pod-security.kubernetes.io/audit: restricted
     # pod-security.kubernetes.io/warn: restricted
-
 ```
 
 ### Validating Admission Controllers
 
-In Kubernetes, an Admission Controller is a piece of code that intercepts requests to the Kubernetes API server before they are persisted into etcd, and used to make cluster changes. Admission controllers can be of  type mutating, validating, or both. The implementation of PSA is a validating admission controller, and it checks inbound Pod specification requests for conformance to the specified PSS.
+In Kubernetes, an Admission Controller is a piece of code that intercepts requests to the Kubernetes API server before they are persisted into etcd, and used to make cluster changes. Admission controllers can be of type mutating, validating, or both. The implementation of PSA is a validating admission controller, and it checks inbound Pod specification requests for conformance to the specified PSS.
 
 In the flow below, [mutating and validating dynamic admission controllers](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/), a.k.a. admission webhooks, are integrated to the Kubernetes API server request flow, via webhooks. These webhooks call out to services, configured to respond to certain types of API server requests. For example, you can use webhooks to configure dynamic admission controllers to validate that containers in a Pod are running as non-root users, or containers are sourced from trusted registries.
 

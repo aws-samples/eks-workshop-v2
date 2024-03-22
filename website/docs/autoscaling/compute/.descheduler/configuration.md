@@ -6,7 +6,7 @@ sidebar_position: 2
 Before we begin let's reset our environment:
 
 ```bash timeout=300 wait=30
-$ prepare-environment 
+$ prepare-environment
 ```
 
 The descheduler component can be installed as a `Job`, `CronJob`, `Deployment` in a cluster. In this workshop, descheduler is installed as a `Deployment` object with 1 minute interval.

@@ -6,15 +6,15 @@ spec:
   validationFailureAction: Enforce
   background: true
   rules:
-  - name: validate-registries
-    match:
-      any:
-      - resources:
-          kinds:
-          - Pod
-    validate:
-      message: "Unknown Image registry."
-      pattern:
-        spec:
-          containers:
-          - image: "public.ecr.aws/*"
+    - name: validate-registries
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "Unknown Image registry."
+        pattern:
+          spec:
+            containers:
+              - image: "public.ecr.aws/*"

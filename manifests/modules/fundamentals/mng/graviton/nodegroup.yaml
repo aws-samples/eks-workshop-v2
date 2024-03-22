@@ -8,13 +8,13 @@ metadata:
 managedNodeGroups:
   - name: graviton
     instanceTypes:
-    # HIGHLIGHT
-    - t4g.medium
+      # HIGHLIGHT
+      - t4g.medium
     minSize: 1
     maxSize: 3
     desiredCapacity: 1
     privateNetworking: true
     subnets:
-    - $PRIMARY_SUBNET_1
-    - $PRIMARY_SUBNET_2
-    - $PRIMARY_SUBNET_3
+      - $PRIMARY_SUBNET_1
+      - $PRIMARY_SUBNET_2
+      - $PRIMARY_SUBNET_3

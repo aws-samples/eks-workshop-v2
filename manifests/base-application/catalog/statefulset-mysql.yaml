@@ -15,7 +15,7 @@ spec:
   serviceName: mysql
   template:
     metadata:
-      labels: 
+      labels:
         app.kubernetes.io/name: catalog
         app.kubernetes.io/instance: catalog
         app.kubernetes.io/component: mysql
@@ -25,7 +25,7 @@ spec:
       containers:
         - name: mysql
           image: "public.ecr.aws/docker/library/mysql:5.7"
-          args: 
+          args:
             - "--ignore-db-dir=lost+found"
           imagePullPolicy: IfNotPresent
           env:

@@ -12,6 +12,7 @@ manifests/../cluster/eksctl/cluster.yaml
 ```
 
 Based on this configuration `eksctl` will:
+
 - Create a VPC across three availability zones
 - Create an EKS cluster
 - Create an IAM OIDC provider

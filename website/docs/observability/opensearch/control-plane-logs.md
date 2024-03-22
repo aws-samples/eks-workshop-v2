@@ -50,7 +50,7 @@ $ sleep 30
 $ aws eks wait cluster-active --name $EKS_CLUSTER_NAME
 ```
 
-We can optionally inspect the EKS control plane logging setting using the AWS console: https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab.  The **Logging** tab shows the current configuration for control plane logs for the EKS cluster.
+We can optionally inspect the EKS control plane logging setting using the AWS console: https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab. The **Logging** tab shows the current configuration for control plane logs for the EKS cluster.
 
 Access the CloudWatch log group named [/aws/eks/eks-workshop/cluster](https://console.aws.amazon.com/cloudwatch/home#logsV2:log-groups/log-group/$252Faws$252Feks$252Feks-workshop$252Fcluster) within the AWS console. You will find at least one log stream associated with each of the control plane log types:
 
@@ -84,8 +84,8 @@ $ curl -s -XPUT "https://${OPENSEARCH_HOST}/_plugins/_security/api/roles/lambda_
 {
   "status": "CREATED",
   "message": "'lambda_role' created."
-}    
- 
+}
+
 $ curl -s -XPUT "https://${OPENSEARCH_HOST}/_plugins/_security/api/rolesmapping/lambda_role" \
     -u $OPENSEARCH_USER:$OPENSEARCH_PASSWORD -H 'Content-Type: application/json' \
     --data-raw '{"backend_roles": ["'"$LAMBDA_ROLE_ARN"'"]}' | jq .
@@ -103,7 +103,7 @@ $ aws logs put-subscription-filter \
     --filter-name "${EKS_CLUSTER_NAME}-Control-Plane-Logs-To-OpenSearch" \
     --filter-pattern "" \
     --destination-arn $LAMBDA_ARN
-  
+
 $ aws logs describe-subscription-filters \
     --log-group-name /aws/eks/$EKS_CLUSTER_NAME/cluster | jq .
 {
@@ -122,7 +122,7 @@ $ aws logs describe-subscription-filters \
 
 Return to the Lambda function [eks-workshop-control-plane-logs](https://console.aws.amazon.com/lambda/home#/functions/eks-workshop-control-plane-logs). CloudWatch Logs is now shown as a trigger for the Lambda function after the subscription filter was added.
 
-This completes the steps necessary to feed control plane logs from EKS to OpenSearch.  
+This completes the steps necessary to feed control plane logs from EKS to OpenSearch.
 
 Access the control plane logs dashboard from the dashboard landing page we saw earlier or use the command below to obtain its coordinates:
 
@@ -130,9 +130,9 @@ Access the control plane logs dashboard from the dashboard landing page we saw e
 $ printf "\nPod logs dashboard: https://%s/_dashboards/app/dashboards#/view/1a1c3a70-831a-11ee-8baf-a5d5c77ada98 \
         \nUserName: %q \nPassword: %q \n\n" \
         "$OPENSEARCH_HOST" "$OPENSEARCH_USER" "$OPENSEARCH_PASSWORD"
- 
-Pod logs dashboard: <OpenSearch Dashboard URL>       
-Username: <user name>       
+
+Pod logs dashboard: <OpenSearch Dashboard URL>
+Username: <user name>
 Password: <password>
 ```
 
@@ -152,7 +152,7 @@ Depending on the level of the EKS cluster activity, some of the control plane lo
 
 ![Control plane logs detail](./assets/eks-control-plane-logs-dashboard.png)
 
-The scheduler logs are shown at the end of the page. Notice that the scheduler log messages indicates `Unable to schedule pod; no fit; waiting` for `scenario-c`.  This schedule log message from the control plane logs is similar to the Kubernetes event we saw for `scenario-c` on the previous page.
+The scheduler logs are shown at the end of the page. Notice that the scheduler log messages indicates `Unable to schedule pod; no fit; waiting` for `scenario-c`. This schedule log message from the control plane logs is similar to the Kubernetes event we saw for `scenario-c` on the previous page.
 
 ![Control plane logs detail](./assets/eks-control-plane-logs-scheduler.png)
 
