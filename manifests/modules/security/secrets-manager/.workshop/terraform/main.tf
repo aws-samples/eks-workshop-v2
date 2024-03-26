@@ -85,10 +85,3 @@ resource "aws_iam_policy" "secrets_manager" {
 }
 POLICY
 }
-
-output "environment" {
-  description = "Evaluated by the IDE shell"
-  value       = <<EOF
-export CATALOG_IAM_ROLE="${module.secrets_manager_role.iam_role_arn}"
-EOF
-}

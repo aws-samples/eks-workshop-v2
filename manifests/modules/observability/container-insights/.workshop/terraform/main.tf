@@ -26,13 +26,6 @@ module "iam_assumable_role_adot_ci" {
   tags = var.tags
 }
 
-output "environment" {
-  description = "Evaluated by the IDE shell"
-  value       = <<EOF
-export ADOT_IAM_ROLE_CI="${module.iam_assumable_role_adot_ci.iam_role_arn}"
-EOF
-}
-
 resource "aws_cloudwatch_dashboard" "order_metrics_ci" {
   dashboard_name = "Order-Service-Metrics-1"
 

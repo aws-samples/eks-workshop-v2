@@ -23,10 +23,3 @@ module "preprovision" {
   eks_cluster_id = var.eks_cluster_id
   tags           = var.tags
 }
-
-output "environment" {
-  description = "Evaluated by the IDE shell"
-  value       = <<EOF
-export EFS_CSI_ADDON_ROLE="${module.efs_csi_driver_irsa.iam_role_arn}"
-EOF
-}

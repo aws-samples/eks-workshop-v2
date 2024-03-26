@@ -64,11 +64,3 @@ data "aws_vpc" "this" {
     env        = var.addon_context.eks_cluster_id
   }
 }
-
-output "environment" {
-  description = "Evaluated by the IDE shell"
-  value       = <<EOF
-export VPC_ID=${data.aws_vpc.this.id}
-export LATTICE_IAM_ROLE="${module.iam_assumable_role_lattice.iam_role_arn}"
-EOF
-}

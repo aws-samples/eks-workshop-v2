@@ -30,10 +30,3 @@ module "preprovision" {
   eks_cluster_id = var.eks_cluster_id
   tags           = var.tags
 }
-
-output "environment" {
-  description = "Evaluated by the IDE shell"
-  value       = <<EOF
-export VPC_ID=${data.aws_vpc.this.id}
-EOF
-}

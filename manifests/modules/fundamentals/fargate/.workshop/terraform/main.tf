@@ -63,13 +63,3 @@ resource "aws_iam_role_policy_attachment" "cwlogs" {
   policy_arn = aws_iam_policy.cwlogs.arn
   role       = aws_iam_role.fargate.name
 }
-
-output "environment" {
-  description = "Evaluated by the IDE shell"
-  value       = <<EOF
-export FARGATE_IAM_PROFILE_ARN=${aws_iam_role.fargate.arn}
-%{for index, id in data.aws_subnets.private.ids}
-export PRIVATE_SUBNET_${index + 1}=${id}
-%{endfor}
-EOF
-}

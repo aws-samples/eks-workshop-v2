@@ -116,15 +116,3 @@ resource "kubectl_manifest" "neuron_device_plugin" {
   for_each  = data.kubectl_file_documents.neuron_device_plugin_doc.manifests
   yaml_body = each.value
 }
-
-output "environment" {
-  description = "Evaluated by the IDE shell"
-  value       = <<EOF
-export AIML_NEURON_ROLE_ARN=${module.iam_assumable_role_inference.iam_role_arn}
-export AIML_NEURON_BUCKET_NAME=${resource.aws_s3_bucket.inference.id}
-export AIML_DL_IMAGE=763104351884.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/pytorch-inference-neuron:1.13.1-neuron-py310-sdk2.12.0-ubuntu20.04
-export AIML_SUBNETS=${data.aws_subnets.private.ids[0]},${data.aws_subnets.private.ids[1]},${data.aws_subnets.private.ids[2]}
-export KARPENTER_NODE_ROLE="${module.eks_blueprints_addons.karpenter.node_iam_role_name}"
-export KARPENTER_ARN="${module.eks_blueprints_addons.karpenter.node_iam_role_arn}"
-EOF
-}

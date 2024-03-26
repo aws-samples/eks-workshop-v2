@@ -136,10 +136,3 @@ module "eks_blueprints_addons" {
   cluster_version   = var.eks_cluster_version
   oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
 }
-
-output "environment" {
-  description = "Evaluated by the IDE shell"
-  value       = <<EOF
-export DYNAMODB_POLICY_ARN=${aws_iam_policy.carts_dynamo.arn}
-EOF
-}

@@ -217,11 +217,3 @@ data "aws_iam_policy_document" "cmk_dynamodb" {
     }
   }
 }
-
-output "environment" {
-  description = "Evaluated by the IDE shell"
-  value       = <<EOF
-export CARTS_DYNAMODB_TABLENAME="${aws_dynamodb_table.carts.name}"
-export CARTS_IAM_ROLE="${module.iam_assumable_role_carts.iam_role_arn}"
-EOF
-}

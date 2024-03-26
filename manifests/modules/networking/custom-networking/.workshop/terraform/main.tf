@@ -82,19 +82,3 @@ resource "aws_iam_role" "custom_networking_node" {
 
   tags = var.tags
 }
-
-output "environment" {
-  description = "Evaluated by the IDE shell"
-  value       = <<EOF
-export VPC_ID=${data.aws_vpc.selected.id}
-export EKS_CLUSTER_SECURITY_GROUP_ID=${var.cluster_security_group_id}
-export CUSTOM_NETWORKING_NODE_ROLE="${aws_iam_role.custom_networking_node.arn}"
-%{for index, id in data.aws_subnets.private.ids}
-export PRIMARY_SUBNET_${index + 1}=${id}
-%{endfor}
-%{for index, cidr in aws_subnet.in_secondary_cidr}
-export SECONDARY_SUBNET_${index + 1}=${cidr.id}
-export SUBNET_AZ_${index + 1}=${cidr.az}
-%{endfor}
-EOF
-}

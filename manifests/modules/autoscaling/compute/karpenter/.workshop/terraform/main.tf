@@ -30,11 +30,3 @@ module "eks_blueprints_addons" {
   cluster_version   = var.eks_cluster_version
   oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
 }
-
-output "environment" {
-  description = "Evaluated by the IDE shell"
-  value       = <<EOF
-export KARP_ROLE="${module.eks_blueprints_addons.karpenter.node_iam_role_name}"
-export KARP_ARN="${module.eks_blueprints_addons.karpenter.node_iam_role_arn}"
-EOF
-}

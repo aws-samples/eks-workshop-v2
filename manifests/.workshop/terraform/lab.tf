@@ -8,3 +8,7 @@ module "lab" {
   tags                      = local.tags
   resources_precreated      = var.resources_precreated
 }
+
+locals {
+  environment_variables = try(module.lab.environment_variables, [])
+}

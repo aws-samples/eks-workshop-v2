@@ -14,10 +14,3 @@ module "aws_for_fluentbit" {
 
   addon_context = var.addon_context
 }
-
-output "environment" {
-  description = "Evaluated by the IDE shell"
-  value       = <<EOF
-export CLOUDWATCH_LOG_GROUP_NAME="${local.cw_log_group_name}"
-EOF
-}

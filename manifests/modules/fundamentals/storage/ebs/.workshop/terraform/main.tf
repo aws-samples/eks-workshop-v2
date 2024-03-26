@@ -15,10 +15,3 @@ module "ebs_csi_driver_irsa" {
 
   tags = var.tags
 }
-
-output "environment" {
-  description = "Evaluated by the IDE shell"
-  value       = <<EOF
-export EBS_CSI_ADDON_ROLE="${module.ebs_csi_driver_irsa.iam_role_arn}"
-EOF
-}

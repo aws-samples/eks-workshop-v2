@@ -399,14 +399,6 @@ resource "aws_iam_policy" "grafana" {
   })
 }
 
-output "environment" {
-  description = "Evaluated by the IDE shell"
-  value       = <<EOF
-export AMP_ENDPOINT="${aws_prometheus_workspace.this.prometheus_endpoint}"
-export ADOT_IAM_ROLE="${module.iam_assumable_role_adot.iam_role_arn}"
-EOF
-}
-
 locals {
   grafana_values = <<EOF
 serviceAccount:

@@ -58,15 +58,6 @@ EOF
   file_permission = "0600"
 }
 
-output "environment" {
-  description = "Evaluated by the IDE shell"
-  value       = <<EOF
-export GITOPS_IAM_SSH_KEY_ID=${aws_iam_user_ssh_key.gitops.id}
-export GITOPS_IAM_SSH_USER=${aws_iam_user.gitops.unique_id}
-export IMAGE_URI_UI=${aws_ecr_repository.ecr_ui.repository_url}
-EOF
-}
-
 ## CI to Flux
 
 data "aws_vpc" "selected" {

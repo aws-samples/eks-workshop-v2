@@ -170,11 +170,3 @@ module "preprovision" {
   eks_cluster_id = var.eks_cluster_id
   tags           = var.tags
 }
-
-output "environment" {
-  description = "Evaluated by the IDE shell"
-  value       = <<EOF
-export LAMBDA_ARN="${aws_lambda_function.eks_control_plane_logs_to_opensearch.arn}"
-export LAMBDA_ROLE_ARN="${aws_iam_role.lambda_execution_role.arn}"
-EOF
-}
