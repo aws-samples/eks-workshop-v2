@@ -1,1 +1,2 @@
-{ { - include "application" . - } }
+# prettier-ignore
+{{- include "application" . -}}
