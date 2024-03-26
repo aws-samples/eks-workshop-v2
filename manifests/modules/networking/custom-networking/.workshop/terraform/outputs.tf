@@ -5,10 +5,10 @@ output "environment_variables" {
     EKS_CLUSTER_SECURITY_GROUP_ID = var.cluster_security_group_id
     CUSTOM_NETWORKING_NODE_ROLE   = aws_iam_role.custom_networking_node.arn
     }, {
-    for index, id in data.aws_subnets.private.ids : "PRIVATE_SUBNET_${index + 1}" => id
+    for index, id in data.aws_subnets.private.ids : "PRIMARY_SUBNET_${index + 1}" => id
     }, {
     for index, cidr in aws_subnet.in_secondary_cidr : "SECONDARY_SUBNET_${index + 1}" => cidr.id
     }, {
-    for index, cidr in aws_subnet.in_secondary_cidr : "SUBNET_AZ_${index + 1}" => cidr.az
+    for index, cidr in aws_subnet.in_secondary_cidr : "SUBNET_AZ_${index + 1}" => cidr.availability_zone
   })
 }

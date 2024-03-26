@@ -5,7 +5,7 @@ sidebar_position: 5
 
 We can start by inspecting the VPC that has been set up. For example describe the VPC:
 
-```bash wait=30
+```bash
 $ aws ec2 describe-vpcs --vpc-ids $VPC_ID
 {
     "Vpcs": [
@@ -63,7 +63,7 @@ https://console.aws.amazon.com/vpc/home#vpcs:tag:created-by=eks-workshop-v2
 
 Describing the subnets associated with the VPC will show 9 subnets:
 
-```bash wait=30
+```bash
 $ aws ec2 describe-subnets --filters "Name=tag:created-by,Values=eks-workshop-v2" \
   --query "Subnets[*].CidrBlock"
 [
