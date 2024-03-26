@@ -23,7 +23,7 @@ The workshop content itself is a `docusaurus` site. All workshop content is writ
 
 ### Contributing content
 
-To learn how to author content on this repository, read [CONTRIBUTING.md](CONTRIBUTING.md) and docs/[authoring_content.md](docs/authoring_content.md).
+To learn how to author content on this repository, read [CONTRIBUTING.md](CONTRIBUTING.md) and the [authoring content guide](docs/authoring_content.md).
 
 ### Workshop infrastructure
 
