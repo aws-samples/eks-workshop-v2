@@ -3,6 +3,6 @@ output "environment_variables" {
   value = merge({
     GRAVITON_NODE_ROLE = aws_iam_role.graviton_node.arn
     }, {
-    for index, id in data.aws_subnets.private.ids : "PRIVATE_SUBNET_${index + 1}" => id
+    for index, id in data.aws_subnets.private.ids : "PRIMARY_SUBNET_${index + 1}" => id
   })
 }
