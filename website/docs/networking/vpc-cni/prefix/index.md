@@ -2,6 +2,7 @@
 title: "Prefix Delegation"
 sidebar_position: 40
 sidebar_custom_props: { "module": true }
+description: "Increase pod density on Amazon Elastic Kubernetes Service with prefix delegation."
 ---
 
 {{% required-time %}}

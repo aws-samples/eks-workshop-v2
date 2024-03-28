@@ -2,6 +2,7 @@
 title: "AWS Controllers for Kubernetes (ACK)"
 sidebar_position: 1
 sidebar_custom_props: { "module": true }
+description: "Directly managed AWS services from Amazon Elastic Kubernetes Service with Amazon Controllers for Kubernetes."
 ---
 
 {{% required-time %}}

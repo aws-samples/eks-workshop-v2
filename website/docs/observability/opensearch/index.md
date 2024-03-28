@@ -2,6 +2,7 @@
 title: "Observability with OpenSearch"
 sidebar_position: 35
 sidebar_custom_props: { "module": true }
+description: "Build observability capabilities for Amazon Elastic Kubernetes Service around OpenSearch."
 ---
 
 {{% required-time %}}

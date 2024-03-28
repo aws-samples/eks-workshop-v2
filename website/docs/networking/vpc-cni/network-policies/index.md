@@ -2,6 +2,7 @@
 title: "Network Policies"
 sidebar_position: 10
 sidebar_custom_props: { "module": true }
+description: "Restrict network traffic to and from pods in Amazon Elastic Kubernetes Service with network policies."
 ---
 
 {{% required-time %}}

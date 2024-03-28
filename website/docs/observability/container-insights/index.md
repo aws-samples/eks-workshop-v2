@@ -2,6 +2,7 @@
 title: "Container Insights on EKS"
 sidebar_position: 50
 sidebar_custom_props: { "module": true }
+description: "Collect, aggregate and summarize metrics and logs from workloads on Amazon Elastic Kubernetes Service with Container Insights."
 ---
 
 {{% required-time %}}

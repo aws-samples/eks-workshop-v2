@@ -3,6 +3,7 @@ title: "Ingress"
 chapter: true
 sidebar_position: 40
 sidebar_custom_props: { "module": true }
+description: "Expose HTTP and HTTPS routes to the outside world using Ingress API on Amazon Elastic Kubernetes Service."
 ---
 
 {{% required-time %}}

@@ -2,6 +2,7 @@
 title: "IAM Roles for Service Accounts"
 sidebar_position: 20
 sidebar_custom_props: { "module": true }
+description: "Manage AWS credentials for your applications running on Amazon Elastic Kubernetes Service with IAM Roles for Service Accounts."
 ---
 
 {{% required-time %}}

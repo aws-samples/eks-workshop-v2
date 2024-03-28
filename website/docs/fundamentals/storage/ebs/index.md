@@ -2,6 +2,7 @@
 title: Amazon EBS
 sidebar_position: 30
 sidebar_custom_props: { "module": true }
+description: "High performance block storage for workloads on Amazon Elastic Kubernetes Service with Amazon Elastic Block Store."
 ---
 
 {{% required-time %}}

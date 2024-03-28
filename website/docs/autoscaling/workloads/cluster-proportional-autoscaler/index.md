@@ -2,6 +2,7 @@
 title: "Cluster Proportional Autoscaler"
 sidebar_position: 15
 sidebar_custom_props: { "module": true }
+description: "Scale workloads proportional to the size of your Amazon Elastic Kubernetes Service cluster with Cluster Proportional Autoscaler."
 ---
 
 {{% required-time %}}

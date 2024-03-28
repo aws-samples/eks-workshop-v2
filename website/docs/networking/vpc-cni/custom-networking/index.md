@@ -2,6 +2,7 @@
 title: "Custom Networking"
 sidebar_position: 30
 sidebar_custom_props: { "module": true }
+description: "Flexible networking for pods with custom networking for Amazon Elastic Kubernetes Service."
 ---
 
 {{% required-time estimatedLabExecutionTimeMinutes="10" %}}

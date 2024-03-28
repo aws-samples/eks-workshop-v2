@@ -2,6 +2,7 @@
 title: "Control plane logs"
 sidebar_position: 10
 sidebar_custom_props: { "module": true }
+description: "Capture and analyze Amazon Elastic Kubernetes Service control plane logs for auditing and diagnostics."
 ---
 
 {{% required-time %}}

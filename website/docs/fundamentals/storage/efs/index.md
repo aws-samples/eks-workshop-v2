@@ -2,6 +2,7 @@
 title: Amazon EFS
 sidebar_position: 30
 sidebar_custom_props: { "module": true }
+description: "Serverless, fully elastic file storage for workloads on Amazon Elastic Kubernetes Service with Amazon Elastic File System."
 ---
 
 {{% required-time %}}

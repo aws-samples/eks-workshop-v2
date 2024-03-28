@@ -2,6 +2,7 @@
 title: "Pod logging"
 sidebar_position: 10
 sidebar_custom_props: { "module": true }
+description: "Capture workload logs from pods running on Amazon Elastic Kubernetes Service."
 ---
 
 {{% required-time %}}

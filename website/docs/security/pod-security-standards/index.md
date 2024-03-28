@@ -2,6 +2,7 @@
 title: "Pod Security Standards"
 sidebar_position: 60
 sidebar_custom_props: { "module": true }
+description: "Define security restrictions for pods running on Amazon Elastic Kubernetes Service with Pod Security Standards."
 ---
 
 {{% required-time %}}

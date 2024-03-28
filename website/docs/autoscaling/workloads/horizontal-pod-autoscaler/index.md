@@ -2,6 +2,7 @@
 title: "Horizontal Pod Autoscaler"
 sidebar_position: 10
 sidebar_custom_props: { "module": true }
+description: "Automatically scale workloads on Amazon Elastic Kubernetes Service with Horizontal Pod Autoscaler."
 ---
 
 {{% required-time %}}

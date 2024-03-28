@@ -2,6 +2,7 @@
 title: "Amazon EKS Pod Identity"
 sidebar_position: 30
 sidebar_custom_props: { "module": true }
+description: "Manage AWS credentials for your applications running on Amazon Elastic Kubernetes Service with EKS Pod Identity."
 ---
 
 {{% required-time %}}

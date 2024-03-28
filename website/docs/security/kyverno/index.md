@@ -2,6 +2,7 @@
 title: "Policy management with Kyverno"
 sidebar_position: 70
 sidebar_custom_props: { "module": true }
+description: "Apply policy-as-code with Kyverno on Amazon Elastic Kubernetes Service."
 ---
 
 {{% required-time %}}

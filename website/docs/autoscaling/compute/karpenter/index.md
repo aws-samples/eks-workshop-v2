@@ -2,6 +2,7 @@
 title: "Karpenter"
 sidebar_position: 30
 sidebar_custom_props: { "module": true }
+description: "Automatically manage compute for Amazon Elastic Kubernetes Service with Karpenter."
 ---
 
 {{% required-time %}}

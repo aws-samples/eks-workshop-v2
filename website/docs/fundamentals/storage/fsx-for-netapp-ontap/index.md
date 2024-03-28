@@ -2,6 +2,7 @@
 title: FSx For NetApp ONTAP
 sidebar_position: 30
 sidebar_custom_props: { "module": true }
+description: "Fully managed shared storage for workloads on Amazon Elastic Kubernetes Service with Amazon FSx for NetApp ONTAP."
 ---
 
 {{% required-time estimatedLabExecutionTimeMinutes="60" %}}

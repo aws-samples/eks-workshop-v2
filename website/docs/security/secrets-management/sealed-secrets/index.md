@@ -2,6 +2,7 @@
 title: "Securing Secrets Using Sealed Secrets"
 sidebar_position: 430
 sidebar_custom_props: { "module": true }
+description: "Provide sensitive configuration like credentials to applications running on Amazon Elastic Kubernetes Service with Sealed Secrets."
 ---
 
 {{% required-time %}}

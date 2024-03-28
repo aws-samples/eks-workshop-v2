@@ -3,6 +3,7 @@ title: "Load Balancers"
 chapter: true
 sidebar_position: 30
 sidebar_custom_props: { "module": true }
+description: "Manage AWS load balancers to route traffic to workloads on Amazon Elastic Kubernetes Service."
 ---
 
 {{% required-time %}}
