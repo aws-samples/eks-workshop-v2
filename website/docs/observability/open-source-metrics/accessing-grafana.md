@@ -17,8 +17,8 @@ Opening this URL in a browser will bring up a login screen.
 To retrieve the credentials for the user query the secret created by the Grafana helm chart:
 
 ```bash
-$ kubectl get -n grafana secrets/grafana -o=jsonpath='{.data.admin-user}' | base64 -d
-$ kubectl get -n grafana secrets/grafana -o=jsonpath='{.data.admin-password}' | base64 -d
+$ kubectl get -n grafana secrets/grafana -o=jsonpath='{.data.admin-user}' | base64 -d; printf "\n"
+$ kubectl get -n grafana secrets/grafana -o=jsonpath='{.data.admin-password}' | base64 -d; printf "\n"
 ```
 
 After logging into the Grafana console, let's take a look at the datasources section. You should see the Amazon Managed Service for Prometheus workspace configured as a datasource already.
