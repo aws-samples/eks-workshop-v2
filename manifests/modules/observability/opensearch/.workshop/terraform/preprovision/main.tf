@@ -8,6 +8,9 @@
 * since the OpenSearch cluster takes ~20 minutes to provision. 
 */
 
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
 locals {
   opensearch_host           = aws_opensearch_domain.opensearch.endpoint
   opensearch_user           = "admin"
@@ -66,7 +69,7 @@ resource "aws_opensearch_domain" "opensearch" {
             "AWS" : "*"
           },
           "Action" : "es:*",
-          "Resource" : "arn:aws:es:${var.addon_context.aws_region_name}:${var.addon_context.aws_caller_identity_account_id}:domain/${var.eks_cluster_id}/*"
+          "Resource" : "arn:aws:es:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:domain/${var.eks_cluster_id}/*"
         }
       ]
   })
