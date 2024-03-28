@@ -91,7 +91,7 @@ const config = {
         defaultMode: "light",
         disableSwitch: false,
       },
-      image: "img/meta.png",
+      image: "img/meta.jpg",
       navbar: {
         title: "EKS Workshop",
         logo: {
