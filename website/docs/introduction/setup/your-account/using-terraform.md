@@ -57,6 +57,7 @@ $ curl --remote-name-all https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/
 Run the following Terraform commands to deploy your workshop environment.
 
 ```bash
+$ export EKS_CLUSTER_NAME=eks-workshop
 $ terraform init
 $ terraform apply -var="cluster_name=$EKS_CLUSTER_NAME" -auto-approve
 ```
