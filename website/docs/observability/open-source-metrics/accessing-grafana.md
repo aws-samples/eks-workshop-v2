@@ -6,7 +6,7 @@ sidebar_position: 30
 An instance of Grafana has been pre-installed in your EKS cluster. To access it you first need to retrieve the URL:
 
 ```bash hook=check-grafana
-$ kubectl get ingress -n grafana grafana -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+$ kubectl get ingress -n grafana grafana -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}{"\n"}'
 k8s-grafana-grafana-123497e39be-2107151316.us-west-2.elb.amazonaws.com
 ```
 
