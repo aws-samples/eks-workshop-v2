@@ -7,6 +7,6 @@ weight: 99
 ```bash timeout=900
 $ prepare-environment
 $ sleep 60
-$ kubectl delete -k /eks-workshop/manifests/base-application --all
+$ kubectl delete -k /eks-workshop/manifests/base-application --all || kubectl get all -A
 $ sleep 60
 ```
