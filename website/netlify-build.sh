@@ -19,4 +19,5 @@ if [[ $BRANCH = build-* ]]; then
 fi
 
 npm install
+npm run clear
 npm run build
