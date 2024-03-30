@@ -3,7 +3,7 @@ title: "Policy"
 sidebar_position: 120
 ---
 
-[Policies](https://kubernetes.io/docs/concepts/policy/) defines the cluster resource usages and restricts the deployment of _Kubernetes Objects_ to meet recommended best practices. Following are different types of policies that can be viewed at the cluster level in the  **_Resource Types_** - **_Policy_** section
+[Policies](https://kubernetes.io/docs/concepts/policy/) defines the cluster resource usages and restricts the deployment of _Kubernetes Objects_ to meet recommended best practices. Following are different types of policies that can be viewed at the cluster level in the **_Resource Types_** - **_Policy_** section
 
 - Limit Ranges
 - Resource Quotas
@@ -17,9 +17,9 @@ A [LimitRange](https://kubernetes.io/docs/concepts/policy/limit-range/) is a pol
 
 A [NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/) establish the communication between source and the destinations, for example `ingress` and `egress` of the pod is controlled using network policies.
 
-[Pod Disruption Budget](https://kubernetes.io/docs/tasks/run-application/configure-pdb/) is a way to mitigate disruptions that can happen to a pod such as deletion, updates to deployments, removal of pod etc. More information on the types of _[disruptions](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/)_ that can happen to pods. 
+[Pod Disruption Budget](https://kubernetes.io/docs/tasks/run-application/configure-pdb/) is a way to mitigate disruptions that can happen to a pod such as deletion, updates to deployments, removal of pod etc. More information on the types of _[disruptions](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/)_ that can happen to pods.
 
-The following screenshot displays a list of the _PodDistributionBudgets_ by namespace. 
+The following screenshot displays a list of the _PodDistributionBudgets_ by namespace.
 
 ![Insights](/img/resource-view/policy-poddisruption.jpg)
 

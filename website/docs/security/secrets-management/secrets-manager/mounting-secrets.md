@@ -7,8 +7,8 @@ Now that we have a secret stored in AWS Secrets Manager and synchronized with a 
 
 The `catalog` Deployment accesses the following database credentials from the `catalog-db` secret via environment variables:
 
-* `DB_USER`
-* `DB_PASSWORD`
+- `DB_USER`
+- `DB_PASSWORD`
 
 ```bash
 $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.containers[] | .env'
@@ -67,7 +67,7 @@ $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.vo
 - emptyDir:
     medium: Memory
   name: tmp-volume
-$ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.containers[] | .volumeMounts'                                                                                                                                                                             
+$ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.containers[] | .volumeMounts'
 - mountPath: /etc/catalog-secret
   name: catalog-secret
   readOnly: true
@@ -80,7 +80,7 @@ Mounted Secrets are a good way to have sensitive information available as a file
 You can take a look on the contents of the mounted Secret inside your Pod.
 
 ```bash
-$ kubectl -n catalog exec deployment/catalog -- ls /etc/catalog-secret/ 
+$ kubectl -n catalog exec deployment/catalog -- ls /etc/catalog-secret/
 eks-workshop-catalog-secret  password  username
 $ kubectl -n catalog exec deployment/catalog -- cat /etc/catalog-secret/${SECRET_NAME}
 {"username":"catalog_user", "password":"default_password"}
@@ -91,6 +91,7 @@ default_password
 ```
 
 There are 3 files in the mountPath `/etc/catalog-secret`. `
+
 1. `eks-workshop-catalog-secret`: The value of the secret in JSON format.
 2. `password`: password jmesPath filtered and formatted value.
 3. `username`: username jmesPath filtered and formatted value.

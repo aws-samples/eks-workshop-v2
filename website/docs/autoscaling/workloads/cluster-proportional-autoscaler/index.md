@@ -1,7 +1,8 @@
 ---
 title: "Cluster Proportional Autoscaler"
 sidebar_position: 15
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
+description: "Scale workloads proportional to the size of your Amazon Elastic Kubernetes Service cluster with Cluster Proportional Autoscaler."
 ---
 
 {{% required-time %}}
@@ -23,20 +24,20 @@ Cluster Proportional Autoscaler (CPA) is a horizontal pod autoscaler that scales
 
 Some of the main use cases for CPA include:
 
-* Over-provisioning
-* Scale out core platform services
-* Simple and easy mechanism to scale out workloads as it does not require metrics server or prometheus adapter
+- Over-provisioning
+- Scale out core platform services
+- Simple and easy mechanism to scale out workloads as it does not require metrics server or prometheus adapter
 
 #### Scaling Methods used by Cluster Proportional Autoscaler
 
 **Linear**
 
-* This scaling method will scale the application in direct proportion to how many nodes or cores are available in a cluster
-* Either one of the `coresPerReplica` or `nodesPerReplica` could be omitted
-* When `preventSinglePointFailure` is set to `true`, the controller ensures at least 2 replicas if there are more than one node
-* When `includeUnschedulableNodes` is set to `true`, the replicas will be scaled based on the total number of nodes. Otherwise, the replicas will only scale based on the number of schedulable nodes (i.e., cordoned and draining nodes are excluded)
-* All of `min`,`max`,`preventSinglePointFailure`,`includeUnschedulableNodes` are optional. If not set, `min` will be defaulted to 1, `preventSinglePointFailure` will be defaulted to `false` and `includeUnschedulableNodes` will be defaulted to `false`
-* Both `coresPerReplica` and `nodesPerReplica` are float
+- This scaling method will scale the application in direct proportion to how many nodes or cores are available in a cluster
+- Either one of the `coresPerReplica` or `nodesPerReplica` could be omitted
+- When `preventSinglePointFailure` is set to `true`, the controller ensures at least 2 replicas if there are more than one node
+- When `includeUnschedulableNodes` is set to `true`, the replicas will be scaled based on the total number of nodes. Otherwise, the replicas will only scale based on the number of schedulable nodes (i.e., cordoned and draining nodes are excluded)
+- All of `min`,`max`,`preventSinglePointFailure`,`includeUnschedulableNodes` are optional. If not set, `min` will be defaulted to 1, `preventSinglePointFailure` will be defaulted to `false` and `includeUnschedulableNodes` will be defaulted to `false`
+- Both `coresPerReplica` and `nodesPerReplica` are float
 
 **ConfigMap for Linear**
 
@@ -63,11 +64,11 @@ replicas = max(replicas, min)
 
 **Ladder**
 
-* This scaling method uses a step function to determine the ratio of nodes:replicas and/or cores:replicas
-* The step ladder function uses the datapoint for core and node scaling from the ConfigMap. The lookup which yields the higher number of replicas will be used as the target scaling number.
-* Either one of the `coresPerReplica` or `nodesPerReplica` could be omitted
-* Replicas can be set to 0 (unlike in linear mode)
-* Scaling to 0 replicas could be used to enable optional features as a cluster grows
+- This scaling method uses a step function to determine the ratio of nodes:replicas and/or cores:replicas
+- The step ladder function uses the datapoint for core and node scaling from the ConfigMap. The lookup which yields the higher number of replicas will be used as the target scaling number.
+- Either one of the `coresPerReplica` or `nodesPerReplica` could be omitted
+- Replicas can be set to 0 (unlike in linear mode)
+- Scaling to 0 replicas could be used to enable optional features as a cluster grows
 
 **ConfigMap for Linear**
 

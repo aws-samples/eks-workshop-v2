@@ -1,7 +1,8 @@
 ---
 title: "Prefix Delegation"
 sidebar_position: 40
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
+description: "Increase pod density on Amazon Elastic Kubernetes Service with prefix delegation."
 ---
 
 {{% required-time %}}
@@ -27,4 +28,4 @@ As more Pods scheduled additional prefixes will be requested for the existing EN
 
 ![prefix-flow](prefix_flow.jpeg)
 
-Please visit [EKS best practices guide](https://aws.github.io/aws-eks-best-practices/networking/prefix-mode/) for the list of recommendations for using VPC CNI in prefix mode.
+Please visit [EKS best practices guide](https://aws.github.io/aws-eks-best-practices/networking/prefix-mode/index_linux/) for the list of recommendations for using VPC CNI in prefix mode.

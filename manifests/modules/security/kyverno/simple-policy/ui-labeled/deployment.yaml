@@ -4,6 +4,6 @@ metadata:
   name: ui
 spec:
   template:
-    metadata: 
+    metadata:
       labels:
         CostCenter: IT

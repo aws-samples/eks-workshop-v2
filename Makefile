@@ -2,6 +2,7 @@ terraform_context='terraform'
 module='-'
 environment=''
 shell_command=''
+shell_simple_command=''
 glob='-'
 
 
@@ -23,7 +24,7 @@ test:
 
 .PHONY: shell
 shell:
-	bash hack/shell.sh $(environment) $(shell_command)
+	bash hack/shell.sh $(environment) $(shell_command) $(shell_simple_command)
 
 .PHONY: reset-environment
 reset-environment:
@@ -48,7 +49,3 @@ create-infrastructure:
 .PHONY: destroy-infrastructure
 destroy-infrastructure:
 	bash hack/destroy-infrastructure.sh $(environment)
-
-.PHONY: lint-markdown
-lint-markdown:
-	bash hack/markdownlint.sh

@@ -3,7 +3,7 @@ title: "Baseline PSS Profile"
 sidebar_position: 62
 ---
 
-What if we want to restrict the permissions that a Pod can request? For example the `privileged` permissions we provided to the assets Pod in the previous section can be dangerous, allowing an attacker access to the hosts resources outside of the container. 
+What if we want to restrict the permissions that a Pod can request? For example the `privileged` permissions we provided to the assets Pod in the previous section can be dangerous, allowing an attacker access to the hosts resources outside of the container.
 
 The Baseline PSS is a minimally restrictive policy which prevents known privilege escalations. Let's add labels to the `assets` Namespace to enable it:
 
@@ -34,7 +34,7 @@ $ kubectl -n assets delete pod --all
 Let us check if the Pods are running:
 
 ```bash
-$ kubectl -n assets get pod   
+$ kubectl -n assets get pod
 No resources found in assets namespace.
 ```
 
@@ -82,7 +82,7 @@ deployment.apps/assets configured
 This time we didn't receive a warning so check if the Pods are running, and we can validate it's not running with the `root` user anymore:
 
 ```bash
-$ kubectl -n assets get pod   
+$ kubectl -n assets get pod
 NAME                      READY   STATUS    RESTARTS   AGE
 assets-864479dc44-d9p79   1/1     Running   0          15s
 

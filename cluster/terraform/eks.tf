@@ -16,7 +16,9 @@ module "eks" {
           ENABLE_PREFIX_DELEGATION          = "true"
           POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
         }
-
+        nodeAgent = {
+          enablePolicyEventLogs = "true"
+        }
         enableNetworkPolicy = "true"
       })
     }
@@ -37,7 +39,7 @@ module "eks" {
       min_size     = 3
       max_size     = 6
       desired_size = 3
-      
+
       update_config = {
         max_unavailable_percentage = 50
       }

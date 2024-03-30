@@ -7,7 +7,7 @@ In Kubernetes the first aspect we want to ensure we're autoscaling is the EC2 co
 
 There are a number of ways to implement compute autoscaling in Kubernetes, and at AWS there are two primary mechanisms available:
 
-* Kubernetes Cluster Autoscaler tool
-* Karpenter
+- Kubernetes Cluster Autoscaler tool
+- Karpenter
 
 In this chapter, we'll explore the different ways to achieve compute autoscaling in Kubernetes at AWS using the Kubernetes Cluster Autoscaler tool and Karpenter mechanisms.

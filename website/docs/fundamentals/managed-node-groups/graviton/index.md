@@ -1,7 +1,8 @@
 ---
 title: Graviton (ARM) instances
 sidebar_position: 40
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
+description: "Leverage AWS Graviton processors with Amazon Elastic Kubernetes Service."
 ---
 
 {{% required-time %}}
@@ -12,6 +13,7 @@ Prepare your environment for this section:
 ```bash timeout=600 wait=30
 $ prepare-environment fundamentals/mng/graviton
 ```
+
 :::
 
 Whether you're using On-demand or Spot instances, AWS offers 3 processor types for EC2 as well as EC2-backed EKS managed node groups. Customers have the choice of Intel, AMD, and ARM (AWS Graviton) processors. [AWS Graviton processors](https://aws.amazon.com/ec2/graviton/) are designed by AWS to deliver the best price performance for your cloud workloads running in Amazon EC2.

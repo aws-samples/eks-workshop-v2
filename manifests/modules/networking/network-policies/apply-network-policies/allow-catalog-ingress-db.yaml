@@ -5,7 +5,7 @@ metadata:
   name: allow-catalog-ingress-db
 spec:
   podSelector:
-    matchLabels: 
+    matchLabels:
       app.kubernetes.io/name: catalog
       app.kubernetes.io/component: mysql
   ingress:

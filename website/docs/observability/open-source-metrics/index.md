@@ -1,7 +1,8 @@
 ---
 title: "EKS open source observability"
 sidebar_position: 40
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
+description: "Leverage open source observability solutions like Prometheus and Grafana with Amazon Elastic Kubernetes Service."
 ---
 
 {{% required-time %}}
@@ -14,6 +15,7 @@ $ prepare-environment observability/oss-metrics
 ```
 
 This will make the following changes to your lab environment:
+
 - Install the EKS managed addon for AWS Distro for OpenTelemetry
 - Create an IAM role for the ADOT collector to access Amazon Managed Prometheus
 

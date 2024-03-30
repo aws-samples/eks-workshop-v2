@@ -13,8 +13,8 @@ manifests/modules/fundamentals/storage/efs/deployment/efspvclaim.yaml
 
 We'll also modify the assets service is two ways:
 
-* Mount the PVC to the location where the assets images are stored
-* Add an [init container](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) to copy the initial images to the EFS volume
+- Mount the PVC to the location where the assets images are stored
+- Add an [init container](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) to copy the initial images to the EFS volume
 
 ```kustomization
 modules/fundamentals/storage/efs/deployment/deployment.yaml
@@ -38,7 +38,7 @@ Now look at the `volumeMounts` in the deployment, notice that we have our new `V
 
 ```bash
 $ kubectl get deployment -n assets \
-  -o yaml | yq '.items[].spec.template.spec.containers[].volumeMounts' 
+  -o yaml | yq '.items[].spec.template.spec.containers[].volumeMounts'
 - mountPath: /usr/share/nginx/html/assets
   name: efsvolume
 - mountPath: /tmp

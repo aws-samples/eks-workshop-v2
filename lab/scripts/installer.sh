@@ -5,29 +5,30 @@ set -e
 kubectl_version='1.29.0'
 kubectl_checksum='0e03ab096163f61ab610b33f37f55709d3af8e16e4dcc1eb682882ef80f96fd5'
 
-helm_version='3.10.1'
-helm_checksum='c12d2cd638f2d066fec123d0bd7f010f32c643afdf288d39a4610b1f9cb32af3'
+helm_version='3.14.3'
 
-eksctl_version='0.169.0'
-eksctl_checksum='0491ed2ddbeeb73c226ca2b1f99fc1b401dc638f17343d955a4b9797c2e540d9'
+eksctl_version='0.174.0'
 
 kubeseal_version='0.18.4'
 kubeseal_checksum='2e765b87889bfcf06a6249cde8e28507e3b7be29851e4fac651853f7638f12f3'
 
-yq_version='4.30.4'
-yq_checksum='30459aa144a26125a1b22c62760f9b3872123233a5658934f7bd9fe714d7864d'
+yq_version='4.42.1'
 
 flux_version='2.1.0'
-flux_checksum='fe6d32da40d5f876434e964c46bc07d00af138c560e063fdcfa8f73e37224087'
 
 argocd_version='2.7.4'
-argocd_checksum='1b9a5f7c47b3c1326a622533f073cef46511e391d296d9b075f583b474780356'
 
-terraform_version='1.4.1'
-terraform_checksum='9e9f3e6752168dea8ecb3643ea9c18c65d5a52acc06c22453ebc4e3fc2d34421'
+terraform_version='1.7.5'
 
 ec2_instance_selector_version='2.4.1'
 ec2_instance_selector_checksum='dfd6560a39c98b97ab99a34fc261b6209fc4eec87b0bc981d052f3b13705e9ff'
+
+download () {
+  url=$1
+  out_file=$2
+
+  curl --location --show-error --silent --output $out_file $url
+}
 
 download_and_verify () {
   url=$1
@@ -54,14 +55,14 @@ chmod +x ./kubectl
 mv ./kubectl /usr/local/bin
 
 # helm
-download_and_verify "https://get.helm.sh/helm-v$helm_version-linux-amd64.tar.gz" "$helm_checksum" "helm.tar.gz"
+download "https://get.helm.sh/helm-v$helm_version-linux-amd64.tar.gz" "helm.tar.gz"
 tar zxf helm.tar.gz
 chmod +x linux-amd64/helm
 mv ./linux-amd64/helm /usr/local/bin
 rm -rf linux-amd64/ helm.tar.gz
 
 # eksctl
-download_and_verify "https://github.com/weaveworks/eksctl/releases/download/v$eksctl_version/eksctl_Linux_amd64.tar.gz" "$eksctl_checksum" "eksctl_Linux_amd64.tar.gz"
+download "https://github.com/weaveworks/eksctl/releases/download/v$eksctl_version/eksctl_Linux_amd64.tar.gz" "eksctl_Linux_amd64.tar.gz"
 tar zxf eksctl_Linux_amd64.tar.gz
 chmod +x eksctl
 mv ./eksctl /usr/local/bin
@@ -81,23 +82,26 @@ mv ./kubeseal /usr/local/bin
 rm -rf kubeseal.tar.gz
 
 # yq
-download_and_verify "https://github.com/mikefarah/yq/releases/download/v${yq_version}/yq_linux_amd64" "$yq_checksum" "yq"
+download "https://github.com/mikefarah/yq/releases/download/v${yq_version}/yq_linux_amd64" "yq"
 chmod +x ./yq
 mv ./yq /usr/local/bin
 
 # flux
-download_and_verify "https://github.com/fluxcd/flux2/releases/download/v${flux_version}/flux_${flux_version}_linux_amd64.tar.gz" "$flux_checksum" "flux.tar.gz"
+download "https://github.com/fluxcd/flux2/releases/download/v${flux_version}/flux_${flux_version}_linux_amd64.tar.gz" "flux.tar.gz"
 tar zxf flux.tar.gz
 chmod +x flux
 mv ./flux /usr/local/bin
 rm -rf flux.tar.gz
 
-# terraform using Yum
-yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo && yum makecache fast
-yum -y install terraform-1.5.5-1.x86_64
+# terraform
+download "https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_amd64.zip" "terraform.zip"
+unzip -o -q terraform.zip -d /tmp
+chmod +x /tmp/terraform
+mv /tmp/terraform /usr/local/bin
+rm -f terraform.zip
 
 # argocd
-download_and_verify "https://github.com/argoproj/argo-cd/releases/download/v${argocd_version}/argocd-linux-amd64" "$argocd_checksum" "argocd-linux-amd64"
+download "https://github.com/argoproj/argo-cd/releases/download/v${argocd_version}/argocd-linux-amd64" "argocd-linux-amd64"
 chmod +x ./argocd-linux-amd64
 mv ./argocd-linux-amd64 /usr/local/bin/argocd
 

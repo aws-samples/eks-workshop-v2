@@ -2,7 +2,7 @@ name: Publish Prod
 
 on:
   workflow_dispatch:
-  
+
 permissions:
   contents: write
 
@@ -11,14 +11,14 @@ jobs:
     name: deploy
     runs-on: ubuntu-latest
     steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-    - name: Set Git config
-      run: |
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Set Git config
+        run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-    - name: Update stable branch
-      run: |
+      - name: Update stable branch
+        run: |
           git fetch --unshallow
           git checkout stable
           git pull

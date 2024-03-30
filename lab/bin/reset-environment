@@ -19,8 +19,10 @@ else
   set -o xtrace
 fi
 
-if [ -z "$EKS_CLUSTER_NAME" ]; then
-  logmessage "Error: The EKS_CLUSTER_NAME environment variable must be set. Please run 'use-cluster <your cluster name>'"
+if [ -z "$EKS_DEFAULT_MNG_MIN" ]; then
+  EKS_CLUSTER_NAME=${EKS_CLUSTER_NAME:-"eks-workshop"}
+
+  logmessage "Error: Please run 'use-cluster $EKS_CLUSTER_NAME'"
   exit 1
 fi
 
@@ -111,7 +113,7 @@ kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/crea
 
 # Addons
 mkdir -p /eks-workshop/terraform
-cp $manifests_path/.workshop/terraform/base.tf /eks-workshop/terraform
+cp -R $manifests_path/.workshop/terraform/* /eks-workshop/terraform
 
 export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
 
@@ -124,7 +126,7 @@ tf_dir=$(realpath --relative-to="$PWD" '/eks-workshop/terraform')
 terraform -chdir="$tf_dir" init -upgrade
 terraform -chdir="$tf_dir" destroy --auto-approve
 
-rm -rf /eks-workshop/terraform/addon*.tf
+rm -rf /eks-workshop/terraform/lab
 
 rm -rf /eks-workshop/hooks
 
@@ -136,7 +138,17 @@ if [ ! -z "$module" ]; then
     cp "$module_path/.workshop/cleanup.sh" /eks-workshop/hooks
   fi
 
-  if [ -f "$module_path/.workshop/terraform/addon.tf" ]; then
+  if [ -f "$module_path/.workshop/terraform/main.tf" ]; then
+    logmessage "Creating infrastructure for next lab..."
+
+    rm -rf /eks-workshop/terraform/lab
+
+    cp -R $module_path/.workshop/terraform /eks-workshop/terraform/lab
+
+    terraform -chdir="$tf_dir" init -upgrade
+    terraform -chdir="$tf_dir" apply -refresh=false --auto-approve
+  elif [ -f "$module_path/.workshop/terraform/addon.tf" ]; then
+    # This is the deprecated legacy code path that will be removed
     logmessage "Creating infrastructure for next lab..."
 
     cp -R $module_path/.workshop/terraform/* /eks-workshop/terraform

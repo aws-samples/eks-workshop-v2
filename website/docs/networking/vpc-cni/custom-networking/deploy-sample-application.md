@@ -7,7 +7,7 @@ In order to test the custom networking updates we have made so far, lets update 
 
 To make the change, run the following command to modify the `checkout` deployment in your cluster
 
-```bash wait=30 timeout=240
+```bash timeout=240
 $ kubectl apply -k ~/environment/eks-workshop/modules/networking/custom-networking/sampleapp
 $ kubectl rollout status deployment/checkout -n checkout --timeout 180s
 ```
@@ -21,7 +21,7 @@ Deployment/checkout
 
 Let's review the microservices deployed in the “checkout” namespace.
 
-```bash wait=30
+```bash
 $ kubectl get pods -n checkout -o wide
 NAME                              READY   STATUS    RESTARTS   AGE   IP             NODE                                         NOMINATED NODE   READINESS GATES
 checkout-5fbbc99bb7-brn2m         1/1     Running   0          98s   100.64.10.16   ip-10-42-10-14.us-west-2.compute.internal    <none>           <none>

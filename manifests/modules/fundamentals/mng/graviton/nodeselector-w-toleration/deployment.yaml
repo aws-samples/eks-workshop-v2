@@ -6,8 +6,8 @@ spec:
   template:
     spec:
       tolerations:
-      - key: "frontend"
-        operator: "Exists"
-        effect: "NoExecute"
+        - key: "frontend"
+          operator: "Exists"
+          effect: "NoExecute"
       nodeSelector:
         kubernetes.io/arch: arm64

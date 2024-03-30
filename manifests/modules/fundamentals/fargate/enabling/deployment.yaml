@@ -6,4 +6,4 @@ spec:
   template:
     metadata:
       labels:
-        fargate: 'yes'
+        fargate: "yes"

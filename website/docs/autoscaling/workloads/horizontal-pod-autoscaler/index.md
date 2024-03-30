@@ -1,7 +1,8 @@
 ---
 title: "Horizontal Pod Autoscaler"
 sidebar_position: 10
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
+description: "Automatically scale workloads on Amazon Elastic Kubernetes Service with Horizontal Pod Autoscaler."
 ---
 
 {{% required-time %}}
@@ -14,6 +15,7 @@ $ prepare-environment autoscaling/workloads/hpa
 ```
 
 This will make the following changes to your lab environment:
+
 - Install the Kubernetes Metrics Server in the Amazon EKS cluster
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/autoscaling/workloads/horizontal-pod-autoscaler/.workshop/terraform).

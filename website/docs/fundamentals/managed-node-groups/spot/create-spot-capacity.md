@@ -29,6 +29,7 @@ ip-10-42-10-200.us-east-2.compute.internal   Ready    <none>   3d10h   vVAR::KUB
 ip-10-42-11-94.us-east-2.compute.internal    Ready    <none>   3d10h   vVAR::KUBERNETES_NODE_VERSION
 ip-10-42-12-235.us-east-2.compute.internal   Ready    <none>   4h34m   vVAR::KUBERNETES_NODE_VERSION
 ```
+
 :::
 
 In the below diagram, there are two separate "node groups" representing the managed node groups within the cluster. The first Node Group box represents the node group containing On-Demand instances while the second represents the node group containing Spot instances. Both are associated with the specified EKS cluster.
@@ -59,9 +60,10 @@ $ aws eks wait nodegroup-active \
   --cluster-name $EKS_CLUSTER_NAME \
   --nodegroup-name managed-spot
 ```
+
 :::
 
-Once our new managed node group is **Active**, run the following command. 
+Once our new managed node group is **Active**, run the following command.
 
 ```bash
 $ kubectl get nodes -L eks.amazonaws.com/capacityType,eks.amazonaws.com/nodegroup

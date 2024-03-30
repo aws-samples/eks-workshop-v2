@@ -45,7 +45,7 @@ $ aws cloudformation describe-stacks --stack-name eks-workshop-ide \
 https://us-west-2.console.aws.amazon.com/cloud9/ide/7b05513358534d11afeb7119845c5461?region=us-west-2
 ```
 
-Open this URL in a web browser to access the IDE. 
+Open this URL in a web browser to access the IDE.
 
 ![cloud9-splash](./assets/cloud9-splash.png)
 
@@ -56,6 +56,7 @@ $ aws sts get-caller-identity
 ```
 
 The next step is to create an EKS cluster to perform the lab exercises in. Please follow one of the guides below to provision a cluster that meets the requirements for these labs:
+
 - **(Recommended)** [eksctl](./using-eksctl.md)
 - Terraform
 - (Coming soon!) CDK

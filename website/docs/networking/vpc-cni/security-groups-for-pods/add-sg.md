@@ -3,7 +3,7 @@ title: "Applying a Security Group"
 sidebar_position: 40
 hide_table_of_contents: true
 ---
- 
+
 In order for our catalog Pod to successfully connect to the RDS instance we'll need to use the correct security group. Although this security group could be applied to the EKS worker nodes themselves, this would result in any workload in our cluster having network access to the RDS instance. Instead we'll apply Security Groups for Pods to specifically allow our catalog Pods access to the RDS instance.
 
 A security group which allows access to the RDS database has already been set up for you, and we can view it like so:

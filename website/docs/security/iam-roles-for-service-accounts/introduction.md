@@ -8,7 +8,7 @@ The `carts` component of our architecture uses Amazon DynamoDB as its storage ba
 You can see this by running the following command:
 
 ```bash
-$ kubectl -n carts get pod 
+$ kubectl -n carts get pod
 NAME                              READY   STATUS    RESTARTS        AGE
 carts-5d7fc9d8f-xm4hs             1/1     Running   0               14m
 carts-dynamodb-698674dcc6-hw2bg   1/1     Running   0               14m

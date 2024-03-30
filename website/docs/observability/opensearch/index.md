@@ -1,7 +1,8 @@
 ---
 title: "Observability with OpenSearch"
 sidebar_position: 35
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
+description: "Build observability capabilities for Amazon Elastic Kubernetes Service around OpenSearch."
 ---
 
 {{% required-time %}}
@@ -19,7 +20,7 @@ This will make the following changes to your lab environment:
 - Provision an Amazon OpenSearch Service domain (see **note** below)
 - Setup Lambda function that is used to export EKS control plane logs from CloudWatch Logs to OpenSearch
 
-**Note**: If you are participating in an AWS event, the OpenSearch domain has been pre-provisioned for you to save time. On the other hand, if you are following these instructions within your own account, the ```prepare-environment``` step above provisions an OpenSearch domain, which can take up to 30 minutes to complete.
+**Note**: If you are participating in an AWS event, the OpenSearch domain has been pre-provisioned for you to save time. On the other hand, if you are following these instructions within your own account, the `prepare-environment` step above provisions an OpenSearch domain, which can take up to 30 minutes to complete.
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/.workshop/terraform).
 

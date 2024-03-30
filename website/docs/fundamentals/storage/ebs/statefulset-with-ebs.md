@@ -9,8 +9,8 @@ Now that we understand [StatefulSets](https://kubernetes.io/docs/concepts/worklo
 
 Utilizing Kustomize, we'll do two things:
 
-* Create a new StatefulSet for the MySQL database used by the catalog component which uses an EBS volume
-* Update the `catalog` component to use this new version of the database
+- Create a new StatefulSet for the MySQL database used by the catalog component which uses an EBS volume
+- Update the `catalog` component to use this new version of the database
 
 :::info
 Why are we not updating the existing StatefulSet? The fields we need to update are immutable and cannot be changed.
@@ -46,7 +46,7 @@ NAME                READY   AGE
 catalog-mysql-ebs   1/1     79s
 ```
 
-Inspecting our `catalog-mysql-ebs` StatefulSet, we can see that now we have a PersistentVolumeClaim attached to it with 30GiB and with `storageClassName` of gp2. 
+Inspecting our `catalog-mysql-ebs` StatefulSet, we can see that now we have a PersistentVolumeClaim attached to it with 30GiB and with `storageClassName` of gp2.
 
 ```bash
 $ kubectl get statefulset -n catalog catalog-mysql-ebs \
@@ -86,6 +86,7 @@ pvc-1df77afa-10c8-4296-aa3e-cf2aabd93365   30Gi       RWO            Delete     
 ```
 
 Utilizing the [AWS CLI](https://aws.amazon.com/cli/), we can check the Amazon EBS volume that got created automatically for us:
+
 ```bash
 $ aws ec2 describe-volumes \
     --filters Name=tag:kubernetes.io/created-for/pvc/name,Values=data-catalog-mysql-ebs-0 \
@@ -93,7 +94,7 @@ $ aws ec2 describe-volumes \
     --no-cli-pager
 ```
 
-If you prefer you can also check it via the [AWS console](https://console.aws.amazon.com/ec2/home#Volumes), just look for the EBS volumes with the tag of key  `kubernetes.io/created-for/pvc/name` and value of `data-catalog-mysql-ebs-0`:
+If you prefer you can also check it via the [AWS console](https://console.aws.amazon.com/ec2/home#Volumes), just look for the EBS volumes with the tag of key `kubernetes.io/created-for/pvc/name` and value of `data-catalog-mysql-ebs-0`:
 
 ![EBS Volume AWS Console Screenshot](./assets/ebsVolumeScrenshot.png)
 

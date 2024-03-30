@@ -1,7 +1,8 @@
 ---
 title: "Container Insights on EKS"
 sidebar_position: 50
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
+description: "Collect, aggregate and summarize metrics and logs from workloads on Amazon Elastic Kubernetes Service with Container Insights."
 ---
 
 {{% required-time %}}
@@ -14,6 +15,7 @@ $ prepare-environment observability/container-insights
 ```
 
 This will make the following changes to your lab environment:
+
 - Install the EKS managed addon for AWS Distro for OpenTelemetry
 - Create an IAM role for the ADOT collector to access CloudWatch
 

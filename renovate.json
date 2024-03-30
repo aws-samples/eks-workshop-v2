@@ -1,0 +1,50 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "schedule": ["on the first day of the month"],
+  "enabledManagers": ["custom.regex"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["lab/scripts/installer.sh"],
+      "matchStrings": ["helm_version='(?<currentValue>.*?)'\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "helm/helm"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["lab/scripts/installer.sh"],
+      "matchStrings": ["eksctl_version='(?<currentValue>.*?)'\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "eksctl-io/eksctl"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["lab/scripts/installer.sh"],
+      "matchStrings": ["yq_version='(?<currentValue>.*?)'\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "mikefarah/yq"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["lab/scripts/installer.sh"],
+      "matchStrings": ["argocd_version='(?<currentValue>.*?)'\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "argoproj/argo-cd"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["lab/scripts/installer.sh"],
+      "matchStrings": ["flux_version='(?<currentValue>.*?)'\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "fluxcd/flux2"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["lab/scripts/installer.sh"],
+      "matchStrings": ["terraform_version='(?<currentValue>.*?)'\\n"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "hashicorp/terraform"
+    }
+  ]
+}

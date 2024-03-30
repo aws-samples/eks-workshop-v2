@@ -31,7 +31,7 @@ $ aws fsx describe-file-systems --file-system-id $FSXN_ID
 
 Now, we'll need to create a TridentBackendConfig object configured to use the pre-provisioned FSx for NetApp ONTAP file system as part of this workshop infrastructure.
 
-We'll be using Kustomize to create the backend and to ingest the environment variable `FSXN_IP` in the parameter`managementLIF` value in the configuration of the storage class object: 
+We'll be using Kustomize to create the backend and to ingest the environment variable `FSXN_IP` in the parameter`managementLIF` value in the configuration of the storage class object:
 
 ```file
 manifests/modules/fundamentals/storage/fsxn/backend/fsxn-backend-nas.yaml
@@ -47,8 +47,9 @@ tridentbackendconfig.trident.netapp.io/backend-fsxn-ontap-nas created
 ```
 
 Now we'll get check that the TridentBackendConfig was create using the below command:
+
 ```bash
-$ kubectl get tbc -n trident 
+$ kubectl get tbc -n trident
 NAME                     BACKEND NAME          BACKEND UUID                           PHASE   STATUS
 backend-fsxn-ontap-nas   backend-fsxn-ontap-   61a731e0-2f3c-4df9-9e49-5fc120e8247c   Bound   Success
 ```
@@ -89,4 +90,4 @@ VolumeBindingMode:     Immediate
 Events:                <none>
 ```
 
-Now that we have a better understanding of EKS StorageClass and FSxN CSI driver. On the next page, we'll focus on modifying the asset microservice to leverage the FSxN `StorageClass` using Kubernetes dynamic volume provisioning and a PersistentVolume to store the product images. 
+Now that we have a better understanding of EKS StorageClass and FSxN CSI driver. On the next page, we'll focus on modifying the asset microservice to leverage the FSxN `StorageClass` using Kubernetes dynamic volume provisioning and a PersistentVolume to store the product images.

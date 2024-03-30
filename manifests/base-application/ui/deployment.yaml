@@ -38,9 +38,9 @@ spec:
           securityContext:
             capabilities:
               add:
-              - NET_BIND_SERVICE
+                - NET_BIND_SERVICE
               drop:
-              - ALL
+                - ALL
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 1000

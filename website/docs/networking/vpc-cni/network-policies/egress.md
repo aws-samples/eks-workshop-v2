@@ -2,6 +2,7 @@
 title: "Implementing Egress Controls"
 sidebar_position: 70
 ---
+
 <img src={require('@site/static/img/sample-app-screens/architecture.png').default}/>
 
 As shown in the above architecture diagram, the 'ui' component is the front-facing app. So we can start implementing our network controls for the 'ui' component by defining a network policy that will block all egress traffic from the 'ui' namespace.
@@ -10,10 +11,10 @@ As shown in the above architecture diagram, the 'ui' component is the front-faci
 manifests/modules/networking/network-policies/apply-network-policies/default-deny.yaml
 ```
 
->**Note**   : There is no namespace specified in the network policy, as it is a generic policy that can potentially be applied to any namespace in our cluster.
+> **Note** : There is no namespace specified in the network policy, as it is a generic policy that can potentially be applied to any namespace in our cluster.
 
 ```bash wait=30
-$ kubectl apply -n ui -f ~/environment/eks-workshop/modules/networking/network-policies/apply-network-policies/default-deny.yaml 
+$ kubectl apply -n ui -f ~/environment/eks-workshop/modules/networking/network-policies/apply-network-policies/default-deny.yaml
 ```
 
 Now let us try accessing the 'catalog' component from tbe 'ui' component,
@@ -39,8 +40,8 @@ In the case of the 'ui' component, it needs to communicate with all the other se
 
 The below network policy was designed considering the above requirements. It has two key sections:
 
-* The first section focuses on allowing egress traffic to all service components such as 'catalog', 'orders' etc. without providing access to the database components through a combination of namespaceSelector, which allows for egress traffic to any namespace as long as the pod labels match "app.kubernetes.io/component: service".
-* The second section focuses on allowing egress traffic to all components in the kube-system namespace, which enables DNS lookups and other key communications with the components in the system namespace.
+- The first section focuses on allowing egress traffic to all service components such as 'catalog', 'orders' etc. without providing access to the database components through a combination of namespaceSelector, which allows for egress traffic to any namespace as long as the pod labels match "app.kubernetes.io/component: service".
+- The second section focuses on allowing egress traffic to all components in the kube-system namespace, which enables DNS lookups and other key communications with the components in the system namespace.
 
 ```file
 manifests/modules/networking/network-policies/apply-network-policies/allow-ui-egress.yaml

@@ -10,6 +10,7 @@ Node taints can be excluded from consideration by specifying a list of excludedT
 # Taint a node
 
 In order to demonstrate this scenario we need to apply a taint to a node. The commands below are going to:
+
 - Identify an arbitrary node
 - Taint the node
 

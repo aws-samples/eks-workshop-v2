@@ -5,8 +5,8 @@ sidebar_position: 50
 
 In this section we'll look at gaining insight in to metrics exposed by our workloads. Some examples of these could be:
 
-* System metrics such as Java heap metrics or database connection pool status
-* Application metrics related to business KPIs
+- System metrics such as Java heap metrics or database connection pool status
+- Application metrics related to business KPIs
 
 Let's look at how to ingest application metrics using AWS Distro for OpenTelemetry and visualize the metrics using Grafana.
 
@@ -30,8 +30,8 @@ watch_orders_total{productId="6d62d909-f957-430e-8689-b5129c0bb75e",} 1.0
 
 The output from this command is verbose so the example above has been pruned to show:
 
-* System metric - How many JDBC connections are idle
-* Application metric - How many orders have been placed through the retail store
+- System metric - How many JDBC connections are idle
+- Application metric - How many orders have been placed through the retail store
 
 You can execute similar requests to other components, for example the checkout service:
 
@@ -159,9 +159,9 @@ sum by(productId) (watch_orders_total{productId!="*"})
 
 Which is doing the following:
 
-* Query for the metric `watch_orders_total`
-* Ignore metrics with a `productId` value of `*`
-* Sum these metrics and group them by `productId`
+- Query for the metric `watch_orders_total`
+- Ignore metrics with a `productId` value of `*`
+- Sum these metrics and group them by `productId`
 
 You can similarly explore the other panels to understand how they have been created.
 

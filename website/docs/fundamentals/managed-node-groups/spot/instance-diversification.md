@@ -19,13 +19,13 @@ When applying Spot diversification best practices to EKS and K8s clusters while 
 
 We can diversify Spot Instance pools using two strategies:
 
- - By creating multiple node groups, each of different sizes. For example, a node group of size 4 vCPUs and 16GB RAM, and another node group of 8 vCPUs and 32GB RAM. 
- - By Implementing instance diversification within the node groups, by selecting a mix of instance types and families from different Spot Instance pools that meet the same vCPUs and memory criteria.
+- By creating multiple node groups, each of different sizes. For example, a node group of size 4 vCPUs and 16GB RAM, and another node group of 8 vCPUs and 32GB RAM.
+- By Implementing instance diversification within the node groups, by selecting a mix of instance types and families from different Spot Instance pools that meet the same vCPUs and memory criteria.
 
 In this workshop we will assume that our cluster node groups should be provisioned with instance types that have 2 vCPU and 4GiB of memory.
 
 We will use **[amazon-ec2-instance-selector](https://github.com/aws/amazon-ec2-instance-selector)** to help us select the relevant instance
-types and families with sufficient number of vCPUs and RAM. 
+types and families with sufficient number of vCPUs and RAM.
 
 There are over 350 different instance types available on EC2 which can make the process of selecting appropriate instance types difficult `amazon-ec2-instance-selector` helps you select compatible instance types for your application to run on. The command line interface can be passed resource criteria like vcpus, memory, network performance, and much more and then return the available, matching instance types.
 
@@ -44,14 +44,14 @@ $ ec2-instance-selector --vcpus 2 --memory 4 --gpus 0 --current-generation \
   -a x86_64 --deny-list 't.*' --output table-wide
 Instance Type  VCPUs   Mem (GiB)  Hypervisor  Current Gen  Hibernation Support  CPU Arch  Network Performance
 -------------  -----   ---------  ----------  -----------  -------------------  --------  -------------------
-c5.large       2       4          nitro       true         true                 x86_64    Up to 10 Gigabit  
-c5a.large      2       4          nitro       true         false                x86_64    Up to 10 Gigabit  
-c5ad.large     2       4          nitro       true         false                x86_64    Up to 10 Gigabit  
-c5d.large      2       4          nitro       true         true                 x86_64    Up to 10 Gigabit  
+c5.large       2       4          nitro       true         true                 x86_64    Up to 10 Gigabit
+c5a.large      2       4          nitro       true         false                x86_64    Up to 10 Gigabit
+c5ad.large     2       4          nitro       true         false                x86_64    Up to 10 Gigabit
+c5d.large      2       4          nitro       true         true                 x86_64    Up to 10 Gigabit
 c6a.large      2       4          nitro       true         false                x86_64    Up to 12.5 Gigabit
 c6i.large      2       4          nitro       true         true                 x86_64    Up to 12.5 Gigabit
 c6id.large     2       4          nitro       true         true                 x86_64    Up to 12.5 Gigabit
-c6in.large     2       4          nitro       true         false                x86_64    Up to 25 Gigabit  
+c6in.large     2       4          nitro       true         false                x86_64    Up to 25 Gigabit
 c7a.large      2       4          nitro       true         false                x86_64    Up to 12.5 Gigabit
 c7i.large      2       4          nitro       true         false                x86_64    Up to 12.5 Gigabit
 ```
@@ -59,12 +59,12 @@ c7i.large      2       4          nitro       true         false                
 We'll use these instances when we define our node group in the next section.
 
 Internally `ec2-instance-selector` is making calls to the [DescribeInstanceTypes](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeInstanceTypes.html) for the specific region and filtering the instances based on the criteria selected in the command line, in our case we filtered for instances that meet the following criteria:
- 
- * Instances with no GPUs
- * of x86_64 Architecture (no ARM instances like A1 or m6g instances for example)
- * Instances that have 2 vCPUs and 4 GB of RAM
- * Instances of current generation (4th gen onwards)
- * Instances that don’t meet the regular expression `t.*` to filter out burstable instance types
+
+- Instances with no GPUs
+- of x86_64 Architecture (no ARM instances like A1 or m6g instances for example)
+- Instances that have 2 vCPUs and 4 GB of RAM
+- Instances of current generation (4th gen onwards)
+- Instances that don’t meet the regular expression `t.*` to filter out burstable instance types
 
 :::tip
 Your workload may have other constraints that you should consider when selecting instance types. For example. **t2** and **t3** instance types are [burstable instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances.html) and might not be appropriate for CPU bound workloads that require CPU execution determinism. Instances such as m5**a** are [AMD Instances](https://aws.amazon.com/ec2/amd/), if your workload is sensitive to numerical differences (i.e: financial risk calculations, industrial simulations) mixing these instance types might not be appropriate.

@@ -8,7 +8,7 @@ The `catalog` component of our architecture uses a MySQL database as its storage
 You can see this by running the following command:
 
 ```bash
-$ kubectl -n catalog get pod 
+$ kubectl -n catalog get pod
 NAME                              READY   STATUS    RESTARTS        AGE
 catalog-5d7fc9d8f-xm4hs             1/1     Running   0               14m
 catalog-mysql-0                     1/1     Running   0               14m

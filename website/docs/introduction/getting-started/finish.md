@@ -10,7 +10,7 @@ manifests/base-application/kustomization.yaml
 ```
 
 :::tip
-Notice that the catalog API is in this kustomization, didn't we already deploy it? 
+Notice that the catalog API is in this kustomization, didn't we already deploy it?
 
 Because Kubernetes uses a declarative mechanism we can apply the manifests for the catalog API again and expect that because all of the resources are already created Kubernetes will take no action.
 :::

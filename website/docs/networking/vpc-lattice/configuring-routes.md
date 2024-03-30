@@ -5,7 +5,7 @@ sidebar_position: 30
 
 In this section we will show how to use Amazon VPC Lattice for advanced traffic management with weighted routing for blue/green and canary-style deployments.
 
-Let's deploy a modified version of the `checkout` microservice with an added prefix *"Lattice"* in the shipping options. Let's deploy this new version in a new namespace (`checkoutv2`) using Kustomize.
+Let's deploy a modified version of the `checkout` microservice with an added prefix _"Lattice"_ in the shipping options. Let's deploy this new version in a new namespace (`checkoutv2`) using Kustomize.
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/networking/vpc-lattice/abtesting/
@@ -75,7 +75,7 @@ Status:
 ...
 ```
 
- Now you can see the associated Service created in the [VPC Lattice console](https://console.aws.amazon.com/vpc/home#Services) under the Lattice resources.
+Now you can see the associated Service created in the [VPC Lattice console](https://console.aws.amazon.com/vpc/home#Services) under the Lattice resources.
 ![CheckoutRoute Service](assets/checkoutroute.png)
 
 :::tip Traffic is now handled by Amazon VPC Lattice

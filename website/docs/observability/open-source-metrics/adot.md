@@ -63,11 +63,11 @@ $ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.config}' 
 
 This is configuring an OpenTelemetry pipeline with the following structure:
 
-* Receivers
+- Receivers
   - [Prometheus receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.md) designed to scrape metrics from targets that expose a Prometheus endpoint
-* Processors
+- Processors
   - None in this pipeline
-* Exporters
+- Exporters
   - [Prometheus remote write exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusremotewriteexporter) which sends metrics to a Prometheus remote write endpoint like AMP
 
 This collector is also configured to run as a Deployment with one collector agent running:
@@ -78,7 +78,7 @@ $ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.mode}{"\n
 
 We can confirm that by inspecting the ADOT collector Pods that are running:
 
-```bash 
+```bash
 $ kubectl get pods -n other
 NAME                              READY   STATUS    RESTARTS   AGE
 adot-collector-6f6b8867f6-lpjb7   1/1     Running   2          11d

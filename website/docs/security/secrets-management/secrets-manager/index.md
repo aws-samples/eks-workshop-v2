@@ -1,7 +1,8 @@
 ---
 title: "Managing Secrets with AWS Secrets Manager"
 sidebar_position: 420
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
+description: "Provide sensitive configuration like credentials to applications running on Amazon Elastic Kubernetes Service with AWS Secrets Manager."
 ---
 
 {{% required-time %}}
@@ -16,9 +17,10 @@ $ prepare-environment security/secrets-manager
 This will make the following changes to your lab environment:
 
 Install the following Kubernetes addons in your EKS Cluster:
-* Kubernetes Secrets Store CSI Driver
-* AWS Secrets and Configuration Provider
-* External Secrets Operator
+
+- Kubernetes Secrets Store CSI Driver
+- AWS Secrets and Configuration Provider
+- External Secrets Operator
 
 You can view the Terraform that applies these changes [here](https://github.com/aws-samples/eks-workshop-v2/tree/main/manifests/modules/security/secrets/secrets-manager/.workshop/terraform).
 

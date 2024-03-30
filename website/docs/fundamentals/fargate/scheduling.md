@@ -65,6 +65,7 @@ Labels:             beta.kubernetes.io/arch=amd64
 ```
 
 This provides us with a number of insights in to the nature of the underlying compute instance:
+
 - The label `eks.amazonaws.com/compute-type` confirms that a Fargate instance was provisioned
 - Another label `topology.kubernetes.io/zone` specified the availability zone that the pod is running in
 - In the `System Info` section (not shown above) we can see that the instance is running Amazon Linux 2, as well as the version information for system components like `container`, `kubelet` and `kube-proxy`

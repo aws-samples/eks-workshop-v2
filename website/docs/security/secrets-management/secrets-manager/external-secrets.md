@@ -11,7 +11,7 @@ NAME                                                READY   STATUS    RESTARTS  
 external-secrets-6d95d66dc8-5trlv                   1/1     Running   0          7m
 external-secrets-cert-controller-774dff987b-krnp7   1/1     Running   0          7m
 external-secrets-webhook-6565844f8f-jxst8           1/1     Running   0          7m
-$ kubectl -n external-secrets get sa 
+$ kubectl -n external-secrets get sa
 NAME                  SECRETS   AGE
 default               0         7m
 external-secrets-sa   0         7m
@@ -38,7 +38,7 @@ $ cat ~/environment/eks-workshop/modules/security/secrets-manager/cluster-secret
 Take a deeper look at this newly created resources specifications.
 
 ```bash
-$ kubectl get clustersecretstores.external-secrets.io 
+$ kubectl get clustersecretstores.external-secrets.io
 NAME                   AGE   STATUS   CAPABILITIES   READY
 cluster-secret-store   81s   Valid    ReadWrite      True
 $ kubectl get clustersecretstores.external-secrets.io cluster-secret-store  -o yaml | yq '.spec'
@@ -144,6 +144,6 @@ $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.co
 
 ### Conclusion
 
-In conclusion there is no best option on choosing between **AWS Secrets and Configuration Provider (ASCP)** vs. **External Secrets Operator (ESO)** in order to manage your secrets stored on **AWS Secrets Manager**. 
+In conclusion there is no best option on choosing between **AWS Secrets and Configuration Provider (ASCP)** vs. **External Secrets Operator (ESO)** in order to manage your secrets stored on **AWS Secrets Manager**.
 
 Both tools have their specific advantages, for example, ASCP can help you avoid exposing secrets as environment variables, mounting them as volumes directly from AWS Secrets Manager into a Pod, the drawback is the need to manage those volumes. In the other hand ESO makes easier the Kubernetes Secrets lifecycle management, having also a cluster wide SecretStore, however it doesn't allow you to use Secrets as volumes. It all depends on your use case, and having both can bring you a lot more flexibility and security with Secrets Management.

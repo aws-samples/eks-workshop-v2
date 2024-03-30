@@ -5,14 +5,14 @@ metadata:
   name: allow-catalog-ingress-webservice
 spec:
   podSelector:
-    matchLabels: 
+    matchLabels:
       app.kubernetes.io/name: catalog
       app.kubernetes.io/component: service
   ingress:
     - from:
         - namespaceSelector:
             matchLabels:
-              kubernetes.io/metadata.name: ui            
+              kubernetes.io/metadata.name: ui
           podSelector:
             matchLabels:
               app.kubernetes.io/name: ui

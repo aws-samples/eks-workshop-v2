@@ -1,42 +1,53 @@
-import { rejects } from 'assert';
-import * as child from 'child_process';
-import * as os from 'os';
+import { rejects } from "assert";
+import * as child from "child_process";
+import * as os from "os";
 
 export interface Shell {
-  exec:(command: string, timeout: number, expect: boolean, additionalEnv: { [key: string]: string | undefined }) => Promise<ExecutionResult>
+  exec: (
+    command: string,
+    timeout: number,
+    expect: boolean,
+    additionalEnv: { [key: string]: string | undefined },
+  ) => Promise<ExecutionResult>;
 }
 
 export class ExecutionResult {
-  constructor(public output: string) { 
-  }
+  constructor(public output: string) {}
 }
 
 export class DefaultShell implements Shell {
+  private environment: { [key: string]: string | undefined } = process.env;
 
-  private environment : { [key: string]: string | undefined } = process.env
-
-  static ENV_MARKER: string = '%%% ENV %%%';
+  static ENV_MARKER: string = "%%% ENV %%%";
 
   constructor(private beforeEach: string) {}
 
-  exec(command: string, timeout: number = 300, expect: boolean = false, additionalEnv: { [key: string]: string | undefined }) : Promise<ExecutionResult> {
-    if(!command) {
-      throw new Error("Command should not be empty")
+  exec(
+    command: string,
+    timeout: number = 300,
+    expect: boolean = false,
+    additionalEnv: { [key: string]: string | undefined },
+  ): Promise<ExecutionResult> {
+    if (!command) {
+      throw new Error("Command should not be empty");
     }
 
-    const prefix = this.beforeEach === '' ? '' : `${this.beforeEach} &&`
+    const prefix = this.beforeEach === "" ? "" : `${this.beforeEach} &&`;
 
     try {
-      const buffer: Buffer = child.execSync(`${prefix} set -e && ${command} && echo '${DefaultShell.ENV_MARKER}' && env`, {
-        timeout: timeout * 1000,
-        killSignal: 'SIGKILL',
-        stdio: ['inherit', 'pipe', 'pipe'],
-        shell: '/bin/bash',
-        env: {
-          ...this.environment,
-          ...additionalEnv
-        }
-      });
+      const buffer: Buffer = child.execSync(
+        `${prefix} set -e && ${command} && echo '${DefaultShell.ENV_MARKER}' && env`,
+        {
+          timeout: timeout * 1000,
+          killSignal: "SIGKILL",
+          stdio: ["inherit", "pipe", "pipe"],
+          shell: "/bin/bash",
+          env: {
+            ...this.environment,
+            ...additionalEnv,
+          },
+        },
+      );
 
       const output = String(buffer);
 
@@ -44,58 +55,57 @@ export class DefaultShell implements Shell {
 
       let processingEnv = false;
       let processingFunction = false;
-      let env : { [key: string]: string } = {};
+      let env: { [key: string]: string } = {};
 
       let processedOutput = "";
 
       for (let step = 0; step < parts.length; step++) {
         const line = parts[step];
 
-        if(processingEnv) {
-          if(processingFunction) {
-            if(line.startsWith("{")) {
+        if (processingEnv) {
+          if (processingFunction) {
+            if (line.startsWith("{")) {
               processingFunction = false;
             }
-          }
-          else {
+          } else {
             let key = `${line.substr(0, line.indexOf("="))}`;
             let val = `${line.substr(line.indexOf("=") + 1)}`;
-  
-            if(key.startsWith("BASH_FUNC")) {
+
+            if (key.startsWith("BASH_FUNC")) {
               processingFunction = true;
-            }
-            else if(!(key in additionalEnv)) {
+            } else if (!(key in additionalEnv)) {
               env[key] = val;
             }
           }
-          
-        }
-        else {
-          if(line === DefaultShell.ENV_MARKER) {
+        } else {
+          if (line === DefaultShell.ENV_MARKER) {
             processingEnv = true;
-          }
-          else {
-            processedOutput += `${line}\n`
+          } else {
+            processedOutput += `${line}\n`;
           }
         }
       }
 
-      if(processingEnv) {
+      if (processingEnv) {
         this.environment = {
           ...this.environment,
-          ...env
+          ...env,
         };
       }
 
       return Promise.resolve(new ExecutionResult(processedOutput));
-    }
-    catch(e: any) {
-      if(e.code) {
-        throw new ShellTimeout(`Timed out after ${timeout} seconds`, e.stdout, e.stderr, timeout)
+    } catch (e: any) {
+      if (e.code) {
+        throw new ShellTimeout(
+          `Timed out after ${timeout} seconds`,
+          e.stdout,
+          e.stderr,
+          timeout,
+        );
       }
 
-      if(!expect) {
-        throw new ShellError(e.status, e.message, e.stdout, e.stderr)
+      if (!expect) {
+        throw new ShellError(e.status, e.message, e.stdout, e.stderr);
       }
 
       return Promise.resolve(new ExecutionResult(e.stderr));
@@ -104,7 +114,12 @@ export class DefaultShell implements Shell {
 }
 
 export class ShellError extends Error {
-  constructor(public code: number, message: string, public stdout: string, public stderr: string) {
+  constructor(
+    public code: number,
+    message: string,
+    public stdout: string,
+    public stderr: string,
+  ) {
     super(message);
 
     Object.setPrototypeOf(this, ShellError.prototype);
@@ -112,7 +127,12 @@ export class ShellError extends Error {
 }
 
 export class ShellTimeout extends Error {
-  constructor(message: string, public stdout: string, public stderr: string, public timeout: number) {
+  constructor(
+    message: string,
+    public stdout: string,
+    public stderr: string,
+    public timeout: number,
+  ) {
     super(message);
 
     Object.setPrototypeOf(this, ShellTimeout.prototype);

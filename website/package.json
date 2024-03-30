@@ -34,7 +34,7 @@
     "react-tooltip": "^4.2.21",
     "reading-time": "^1.5.0",
     "sass": "^1.60.0",
-    "yaml": "^2.3.4",
+    "yaml": "^2.4.1",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
