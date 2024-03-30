@@ -67,3 +67,20 @@ module "eks_blueprints_addons" {
   cluster_version   = var.eks_cluster_version
   oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
 }
+
+resource "time_sleep" "blueprints_addons_sleep" {
+  depends_on = [
+    module.eks_blueprints_addons
+  ]
+
+  create_duration  = "15s"
+  destroy_duration = "15s"
+}
+
+resource "kubectl_manifest" "nlb" {
+  yaml_body = templatefile("${path.module}/templates/nlb.yaml", {
+
+  })
+
+  depends_on = [time_sleep.blueprints_addons_sleep]
+}
