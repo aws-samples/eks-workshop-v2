@@ -112,6 +112,7 @@ kubectl wait --for=condition=available --timeout=240s deployments -l app.kuberne
 kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
 
 # Addons
+rm -rf /eks-workshop/terraform
 mkdir -p /eks-workshop/terraform
 cp -R $manifests_path/.workshop/terraform/* /eks-workshop/terraform
 
@@ -126,8 +127,6 @@ tf_dir=$(realpath --relative-to="$PWD" '/eks-workshop/terraform')
 terraform -chdir="$tf_dir" init -upgrade
 terraform -chdir="$tf_dir" destroy --auto-approve
 
-rm -rf /eks-workshop/terraform/lab
-
 rm -rf /eks-workshop/hooks
 
 if [ ! -z "$module" ]; then
@@ -141,9 +140,7 @@ if [ ! -z "$module" ]; then
   if [ -f "$module_path/.workshop/terraform/main.tf" ]; then
     logmessage "Creating infrastructure for next lab..."
 
-    rm -rf /eks-workshop/terraform/lab
-
-    cp -R $module_path/.workshop/terraform /eks-workshop/terraform/lab
+    cp -R $module_path/.workshop/terraform/* /eks-workshop/terraform/lab
 
     terraform -chdir="$tf_dir" init -upgrade
     terraform -chdir="$tf_dir" apply -refresh=false --auto-approve
