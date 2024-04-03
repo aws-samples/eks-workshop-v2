@@ -18,7 +18,7 @@ module "eks_blueprints_addons" {
   karpenter = {
     repository_username = data.aws_ecrpublic_authorization_token.token.user_name
     repository_password = data.aws_ecrpublic_authorization_token.token.password
-    chart_version = "v0.35.0"
+    chart_version = "0.35.4"
 
     set = [{
       name  = "replicas"
