@@ -9,7 +9,7 @@ data "aws_ecrpublic_authorization_token" "token" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.12.0"
+  version = "1.16.0"
 
   enable_karpenter = true
 
@@ -18,6 +18,7 @@ module "eks_blueprints_addons" {
   karpenter = {
     repository_username = data.aws_ecrpublic_authorization_token.token.user_name
     repository_password = data.aws_ecrpublic_authorization_token.token.password
+    chart_version = "v0.35.0"
 
     set = [{
       name  = "replicas"
