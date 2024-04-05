@@ -14,7 +14,7 @@ kubeseal_checksum='2e765b87889bfcf06a6249cde8e28507e3b7be29851e4fac651853f7638f1
 
 yq_version='4.42.1'
 
-flux_version='2.1.0'
+flux_version='2.2.3'
 
 argocd_version='2.7.4'
 
