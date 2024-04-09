@@ -11,7 +11,7 @@ First inspect the `efspvclaim.yaml` file to see the parameters in the file and t
 manifests/modules/fundamentals/storage/efs/deployment/efspvclaim.yaml
 ```
 
-We'll also modify the assets service is two ways:
+We'll also modify the assets service in two ways:
 
 - Mount the PVC to the location where the assets images are stored
 - Add an [init container](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) to copy the initial images to the EFS volume
