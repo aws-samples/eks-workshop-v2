@@ -7,7 +7,7 @@ kubectl_checksum='0e03ab096163f61ab610b33f37f55709d3af8e16e4dcc1eb682882ef80f96f
 
 helm_version='3.14.3'
 
-eksctl_version='0.174.0'
+eksctl_version='0.175.0'
 
 kubeseal_version='0.18.4'
 kubeseal_checksum='2e765b87889bfcf06a6249cde8e28507e3b7be29851e4fac651853f7638f12f3'
