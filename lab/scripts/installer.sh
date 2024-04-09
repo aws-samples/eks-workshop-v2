@@ -16,7 +16,7 @@ yq_version='4.43.1'
 
 flux_version='2.2.3'
 
-argocd_version='2.7.4'
+argocd_version='2.10.6'
 
 terraform_version='1.7.5'
 
