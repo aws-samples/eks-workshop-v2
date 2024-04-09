@@ -19,4 +19,4 @@ Advantages of running Amazon EKS managed node groups include:
 - Node updates and terminations automatically and gracefully drain nodes to ensure that your applications stay available
 - No additional costs to use Amazon EKS managed node groups, pay only for the AWS resources provisioned
 
-Tha labs in this section deal with various ways that EKS managed node groups can be used to provide compute capacity to a cluster.
+The labs in this section deal with various ways that EKS managed node groups can be used to provide compute capacity to a cluster.
