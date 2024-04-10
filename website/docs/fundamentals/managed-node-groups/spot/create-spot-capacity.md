@@ -27,7 +27,6 @@ NAME                                         STATUS   ROLES    AGE     VERSION
 ip-10-42-10-119.us-east-2.compute.internal   Ready    <none>   3d10h   vVAR::KUBERNETES_NODE_VERSION
 ip-10-42-10-200.us-east-2.compute.internal   Ready    <none>   3d10h   vVAR::KUBERNETES_NODE_VERSION
 ip-10-42-11-94.us-east-2.compute.internal    Ready    <none>   3d10h   vVAR::KUBERNETES_NODE_VERSION
-ip-10-42-12-235.us-east-2.compute.internal   Ready    <none>   4h34m   vVAR::KUBERNETES_NODE_VERSION
 ```
 
 :::
@@ -53,7 +52,7 @@ $ aws eks create-nodegroup \
 The `--capacity-type SPOT` argument indicates that all capacity in this managed node group should be Spot.
 
 :::tip
-The aws `eks wait nodegroup-active` command can be used to wait until a specific EKS node group is active and ready for use. This command is part of the AWS CLI and can be used to ensure that the specified node group has been successfully created and all the associated instances are running and ready.
+The aws `eks wait nodegroup-active` command can be used to wait until a specific EKS node group is active and ready for use. This command is a part of the AWS CLI and can be used to ensure that the specified node group has been successfully created and all the associated instances are running and ready.
 
 ```bash wait=30 timeout=300
 $ aws eks wait nodegroup-active \
