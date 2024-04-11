@@ -21,7 +21,7 @@ Pause pods make sure there are enough nodes that are available based on how much
 manifests/modules/autoscaling/compute/overprovisioning/setup/deployment-pause.yaml
 ```
 
-In this case we're going to schedule a single pause pod requesting `7Gi` of memory, which means it will consume almost an entire `m5.large` instance. This will result in us always having 2 "spare" worker nodes available.
+In this case we're going to schedule a single pause pod requesting `6.5Gi` of memory, which means it will consume almost an entire `m5.large` instance. This will result in us always having 2 "spare" worker nodes available.
 
 Apply the updates to your cluster:
 
@@ -55,4 +55,4 @@ ip-10-42-11-81.us-west-2.compute.internal    Ready    <none>   3d      vVAR::KUB
 ip-10-42-12-152.us-west-2.compute.internal   Ready    <none>   3m11s   vVAR::KUBERNETES_NODE_VERSION
 ```
 
-These two nodes are not running any workloads except for our pause pods, which will be evicted when "real" workloads are scheduled.
+These two nodes are not running any workloads except for our pause pods, which will be evicted when "real" workloads are scheduled. 
