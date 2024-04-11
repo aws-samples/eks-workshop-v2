@@ -24,7 +24,7 @@ $ kubectl apply -k ~/environment/eks-workshop/modules/autoscaling/compute/cluste
 Some pods will be in the `Pending` state, which triggers the cluster-autoscaler to scale out the EC2 fleet.
 
 ```bash test=false
-$ kubectl get pods -n orders -o wide --watch
+$ kubectl get pods -A -o wide --watch
 ```
 
 View the cluster-autoscaler logs
