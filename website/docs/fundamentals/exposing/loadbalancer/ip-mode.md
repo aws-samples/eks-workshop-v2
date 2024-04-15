@@ -9,9 +9,9 @@ The AWS Load Balancer Controller also supports creating NLBs operating in "IP mo
 
 ![IP mode](./assets/ip-mode.png)
 
-The previous diagram explains how application traffic flows differently when the target group mode is instance and IP. 
+The previous diagram explains how application traffic flows differently when the target group mode is instance and IP.
 
-When the target group mode is instance, the traffic flows via a node port created for a service on each node. In this mode, `kube-proxy` routes the traffic to the pod running this service. The service pod could be running in a different node than the node that received the traffic from the load balancer. ServiceA (green) and ServiceB (pink) are configured to operate in "instance mode". 
+When the target group mode is instance, the traffic flows via a node port created for a service on each node. In this mode, `kube-proxy` routes the traffic to the pod running this service. The service pod could be running in a different node than the node that received the traffic from the load balancer. ServiceA (green) and ServiceB (pink) are configured to operate in "instance mode".
 
 Alternatively, when the target group mode is IP, the traffic flows directly to the service pods from the load balancer. In this mode, we bypass a network hop of `kube-proxy`. ServiceC (blue) is configured to operate in "IP mode".
 
