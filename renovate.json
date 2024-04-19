@@ -1,12 +1,20 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": ["config:recommended", ":rebaseStalePrs"],
   "schedule": ["on the first day of the month"],
-  "enabledManagers": ["custom.regex", "github-actions"],
+  "enabledManagers": ["custom.regex", "github-actions", "terraform"],
   "packageRules": [
     {
       "matchManagers": ["github-actions"],
       "groupName": "GitHub Actions"
+    },
+    {
+      "matchManagers": ["terraform"],
+      "groupName": "Terraform"
+    },
+    {
+      "matchDepTypes": ["required_version"],
+      "enabled": false
     }
   ],
   "customManagers": [
