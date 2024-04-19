@@ -24,7 +24,7 @@ jobs:
           source hack/lib/kubectl-version.sh
           echo "Using kubectl ${KUBECTL_VERSION}"
           echo "KUBECTL_VERSION=$KUBECTL_VERSION" >> $GITHUB_ENV
-      - uses: azure/setup-kubectl@v3
+      - uses: azure/setup-kubectl@v4
         with:
           version: "${{ env.KUBECTL_VERSION }}"
         id: install

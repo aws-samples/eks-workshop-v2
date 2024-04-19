@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Install utilities
         run: |
           sudo apt install -y gettext
@@ -47,7 +47,7 @@ jobs:
 
           echo "${HOME}/.local/bin" >> $GITHUB_PATH
       - name: Get AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1.6.1
+        uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-duration-seconds: 3600
@@ -68,7 +68,7 @@ jobs:
           make create-infrastructure environment="$CLUSTER_ID"
       - name: Refresh AWS credentials
         if: always()
-        uses: aws-actions/configure-aws-credentials@v1.6.1
+        uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-duration-seconds: 3600
@@ -86,7 +86,7 @@ jobs:
           make test environment="$CLUSTER_ID" module="$MODULE"
       - name: Refresh AWS credentials
         if: always()
-        uses: aws-actions/configure-aws-credentials@v1.6.1
+        uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-duration-seconds: 3600
@@ -104,7 +104,7 @@ jobs:
           make test environment="$CLUSTER_ID" module="cleanup"
       - name: Refresh AWS credentials
         if: always()
-        uses: aws-actions/configure-aws-credentials@v1.6.1
+        uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-duration-seconds: 3600
