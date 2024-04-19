@@ -5,23 +5,29 @@ set -e
 kubectl_version='1.29.0'
 kubectl_checksum='0e03ab096163f61ab610b33f37f55709d3af8e16e4dcc1eb682882ef80f96fd5'
 
+# renovate: depName=helm/helm
 helm_version='3.14.3'
 
+# renovate: depName=eksctl-io/eksctl
 eksctl_version='0.175.0'
 
 kubeseal_version='0.18.4'
 kubeseal_checksum='2e765b87889bfcf06a6249cde8e28507e3b7be29851e4fac651853f7638f12f3'
 
+# renovate: depName=mikefarah/yq
 yq_version='4.43.1'
 
+# renovate: depName=fluxcd/flux2
 flux_version='2.2.3'
 
+# renovate: depName=argoproj/argo-cd
 argocd_version='2.10.6'
 
+# renovate: depName=hashicorp/terraform
 terraform_version='1.7.5'
 
+# renovate: depName=aws/amazon-ec2-instance-selector
 ec2_instance_selector_version='2.4.1'
-ec2_instance_selector_checksum='dfd6560a39c98b97ab99a34fc261b6209fc4eec87b0bc981d052f3b13705e9ff'
 
 download () {
   url=$1
@@ -106,7 +112,7 @@ chmod +x ./argocd-linux-amd64
 mv ./argocd-linux-amd64 /usr/local/bin/argocd
 
 # ec2 instance selector
-download_and_verify "https://github.com/aws/amazon-ec2-instance-selector/releases/download/v${ec2_instance_selector_version}/ec2-instance-selector-linux-amd64" "$ec2_instance_selector_checksum" "ec2-instance-selector-linux-amd64"
+download "https://github.com/aws/amazon-ec2-instance-selector/releases/download/v${ec2_instance_selector_version}/ec2-instance-selector-linux-amd64" "ec2-instance-selector-linux-amd64"
 chmod +x ./ec2-instance-selector-linux-amd64
 mv ./ec2-instance-selector-linux-amd64 /usr/local/bin/ec2-instance-selector
 

@@ -13,44 +13,11 @@
     {
       "customType": "regex",
       "fileMatch": ["lab/scripts/installer.sh"],
-      "matchStrings": ["helm_version='(?<currentValue>.*?)'\\n"],
+      "matchStrings": [
+        "depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?_version='(?<currentValue>.*)'\\s"
+      ],
       "datasourceTemplate": "github-releases",
-      "depNameTemplate": "helm/helm"
-    },
-    {
-      "customType": "regex",
-      "fileMatch": ["lab/scripts/installer.sh"],
-      "matchStrings": ["eksctl_version='(?<currentValue>.*?)'\\n"],
-      "datasourceTemplate": "github-releases",
-      "depNameTemplate": "eksctl-io/eksctl"
-    },
-    {
-      "customType": "regex",
-      "fileMatch": ["lab/scripts/installer.sh"],
-      "matchStrings": ["yq_version='(?<currentValue>.*?)'\\n"],
-      "datasourceTemplate": "github-releases",
-      "depNameTemplate": "mikefarah/yq"
-    },
-    {
-      "customType": "regex",
-      "fileMatch": ["lab/scripts/installer.sh"],
-      "matchStrings": ["argocd_version='(?<currentValue>.*?)'\\n"],
-      "datasourceTemplate": "github-releases",
-      "depNameTemplate": "argoproj/argo-cd"
-    },
-    {
-      "customType": "regex",
-      "fileMatch": ["lab/scripts/installer.sh"],
-      "matchStrings": ["flux_version='(?<currentValue>.*?)'\\n"],
-      "datasourceTemplate": "github-releases",
-      "depNameTemplate": "fluxcd/flux2"
-    },
-    {
-      "customType": "regex",
-      "fileMatch": ["lab/scripts/installer.sh"],
-      "matchStrings": ["terraform_version='(?<currentValue>.*?)'\\n"],
-      "datasourceTemplate": "github-releases",
-      "depNameTemplate": "hashicorp/terraform"
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
   ]
 }
