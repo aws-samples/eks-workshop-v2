@@ -1,6 +1,6 @@
 module "kyverno" {
   source  = "aws-ia/eks-blueprints-addon/aws"
-  version = "~> 1.1"
+  version = "1.1.1"
 
   description      = "Kyverno Kubernetes Native Policy Management"
   chart            = "kyverno"
@@ -12,7 +12,7 @@ module "kyverno" {
 
 module "kyverno_policies" {
   source  = "aws-ia/eks-blueprints-addon/aws"
-  version = "~> 1.1"
+  version = "1.1.1"
 
   description   = "Kyverno policy library"
   chart         = "kyverno-policies"
@@ -30,7 +30,7 @@ module "kyverno_policies" {
 
 module "policy_reporter" {
   source  = "aws-ia/eks-blueprints-addon/aws"
-  version = "~> 1.1"
+  version = "1.1.1"
 
   description   = "Kyverno Policy Reporter which shows policy reports in a graphical web-based front end."
   chart         = "policy-reporter"
