@@ -42,7 +42,7 @@ module "external_secrets" {
 
 module "secrets_manager_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.30"
+  version = "5.39.0"
 
   role_name_prefix = "${var.eks_cluster_id}-secrets-"
 

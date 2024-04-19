@@ -42,7 +42,7 @@ locals {
 
 module "upbound_irsa_aws" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.30"
+  version = "5.39.0"
 
   role_name_prefix           = "ddb-upbound-aws-"
   assume_role_condition_test = "StringLike"

@@ -15,7 +15,7 @@ module "eks_blueprints_addons" {
 
 module "iam_assumable_role_lattice" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "~> v5.5.5"
+  version                       = "5.5.5"
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-lattice"
   provider_url                  = var.addon_context.eks_oidc_issuer_url

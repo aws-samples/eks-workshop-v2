@@ -60,7 +60,7 @@ resource "random_string" "catalog_db_master" {
 
 module "catalog_rds_ingress" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 4.0"
+  version = "5.1.2"
 
   name        = "${var.eks_cluster_id}-catalog-rds"
   description = "Catalog RDS security group"

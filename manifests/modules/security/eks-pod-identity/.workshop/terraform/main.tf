@@ -86,7 +86,7 @@ resource "aws_dynamodb_table" "carts" {
 
 module "iam_assumable_role_carts" {
   source                  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
-  version                 = "~> v5.5.5"
+  version                 = "5.5.5"
   create_role             = true
   role_requires_mfa       = false
   role_name               = "${var.addon_context.eks_cluster_id}-carts-dynamo"
