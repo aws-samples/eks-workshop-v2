@@ -23,7 +23,7 @@ data "aws_ecrpublic_authorization_token" "token" {
 module "dynamodb_ack_addon" {
 
   source  = "aws-ia/eks-ack-addons/aws"
-  version = "2.1.0"
+  version = "2.2.0"
 
   # Cluster Info
   cluster_name      = var.addon_context.eks_cluster_id
@@ -64,7 +64,7 @@ EOF
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.9.2"
+  version = "1.16.2"
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {

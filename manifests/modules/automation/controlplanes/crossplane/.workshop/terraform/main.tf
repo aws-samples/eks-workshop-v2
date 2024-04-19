@@ -12,7 +12,7 @@ data "aws_region" "current" {}
 
 module "crossplane" {
   source  = "aws-ia/eks-blueprints-addon/aws"
-  version = "1.1.0"
+  version = "1.1.1"
 
   create = true
 
@@ -124,7 +124,7 @@ EOF
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.9.2"
+  version = "1.16.2"
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
