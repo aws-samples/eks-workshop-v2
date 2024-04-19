@@ -72,14 +72,7 @@ The suffix `z7llv2` in the name `retail-store-sample-ui-z7llv2` is random and wi
 
 ![ci-start](assets/ecr.png)
 
-While we are waiting for pipeline to create new images (5-10 minutes), let's [automate image updates to Git](https://fluxcd.io/flux/guides/image-update/) using Flux Image Automation Controller.
-
-First, we need to install Flux components.
-
-```bash
-$ flux install --components-extra=image-reflector-controller,image-automation-controller \
-  --network-policy=false
-```
+While we are waiting for pipeline to create new images (5-10 minutes), let's [automate image updates to Git](https://fluxcd.io/flux/guides/image-update/) using Flux Image Automation Controller which we installed during the initial Flux bootstrap process.
 
 Next, edit file `deployment.yaml` and add placeholder for new container image URL:
 
