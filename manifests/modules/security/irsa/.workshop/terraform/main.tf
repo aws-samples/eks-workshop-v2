@@ -4,7 +4,7 @@ data "aws_region" "current" {}
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.9.2"
+  version = "1.16.2"
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
@@ -86,7 +86,7 @@ resource "aws_dynamodb_table" "carts" {
 
 module "iam_assumable_role_carts" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "5.5.5"
+  version                       = "5.39.0"
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-carts-dynamo"
   provider_url                  = var.addon_context.eks_oidc_issuer_url
