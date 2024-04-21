@@ -173,6 +173,17 @@ mng_size_config=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --
 if [[ "$mng_size_config" != "$expected_size_config" ]]; then
   logmessage "Setting EKS Node Group back to initial sizing..."
 
+  WAIT_EXIT_CODE=0
+
+  # Wait for the node group to be active in case previous module cleanup didn't complete for some reason
+  aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME || WAIT_EXIT_CODE=$?
+
+  if [ $WAIT_EXIT_CODE -ne 0 ]; then
+    logmessage "Default node group is still being modified unexpectedly, please try again."
+    logmessage "If this error persists please contact your workshop proctor or raise an issue at https://github.com/aws-samples/eks-workshop-v2/issues"
+    exit 1
+  fi
+
   aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME \
     --scaling-config desiredSize=$EKS_DEFAULT_MNG_DESIRED,minSize=$EKS_DEFAULT_MNG_MIN,maxSize=$EKS_DEFAULT_MNG_MAX
   aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME
