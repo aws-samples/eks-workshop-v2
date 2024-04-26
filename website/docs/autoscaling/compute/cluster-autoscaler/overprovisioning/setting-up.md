@@ -21,7 +21,7 @@ Pause pods make sure there are enough nodes that are available based on how much
 manifests/modules/autoscaling/compute/overprovisioning/setup/deployment-pause.yaml
 ```
 
-In this case we're going to schedule a single pause pod requesting `7Gi` of memory, which means it will consume almost an entire `m5.large` instance. This will result in us always having 2 "spare" worker nodes available.
+In this case we're going to schedule a single pause pod requesting `6.5Gi` of memory, which means it will consume almost an entire `m5.large` instance. This will result in us always having 2 "spare" worker nodes available.
 
 Apply the updates to your cluster:
 
