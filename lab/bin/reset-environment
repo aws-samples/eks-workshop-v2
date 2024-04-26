@@ -118,7 +118,7 @@ cp -R $manifests_path/.workshop/terraform/* /eks-workshop/terraform
 
 export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
 
-RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-""}
+RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-"false"}
 
 logmessage "Cleaning up previous lab infrastructure..."
 
@@ -141,6 +141,8 @@ if [ ! -z "$module" ]; then
     logmessage "Creating infrastructure for next lab..."
 
     cp -R $module_path/.workshop/terraform/* /eks-workshop/terraform/lab
+
+    export TF_VAR_resources_precreated="$RESOURCES_PRECREATED"
 
     terraform -chdir="$tf_dir" init -upgrade
     terraform -chdir="$tf_dir" apply -refresh=false --auto-approve
