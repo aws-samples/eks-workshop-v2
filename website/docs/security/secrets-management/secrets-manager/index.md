@@ -22,7 +22,7 @@ Install the following Kubernetes addons in your EKS Cluster:
 - AWS Secrets and Configuration Provider
 - External Secrets Operator
 
-You can view the Terraform that applies these changes [here](https://github.com/aws-samples/eks-workshop-v2/tree/main/manifests/modules/security/secrets/secrets-manager/.workshop/terraform).
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/security/secrets-manager/.workshop/terraform).
 
 :::
 

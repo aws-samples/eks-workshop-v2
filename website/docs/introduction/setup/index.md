@@ -7,5 +7,5 @@ This section outlines how to set up the environment to run the labs in the works
 
 You have two options:
 
-1. [At an AWS event](aws-event)
-2. [In your own account](your-account)
+1. [At an AWS event](./aws-event.md)
+2. [In your own account](./your-account/index.md)

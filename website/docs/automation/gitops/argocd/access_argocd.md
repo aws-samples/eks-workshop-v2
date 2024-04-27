@@ -43,7 +43,7 @@ You will be presented with a screen that looks like this:
 Argo CD also provides a powerful CLI tool called `argocd` that can be used to manage applications.
 
 :::info
-For the purpose of this lab, `argocd` CLI has been installed for you. You can learn more about installing the CLI tool by following the [instructions](https://argoproj.github.io/argo-cd/cli_installation/).
+For the purpose of this lab, `argocd` CLI has been installed for you. You can learn more about installing the CLI tool by following the [instructions](https://argo-cd.readthedocs.io/en/stable/cli_installation/).
 :::
 
 In order to interact with Argo CD objects using CLI, we need to login to the Argo CD server by running the following commands:

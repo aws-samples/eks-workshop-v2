@@ -21,7 +21,7 @@ This will make the following changes to your lab environment:
 - Install the EKS Managed Addon for EKS Pod Identity Agent
 - Install the AWS Load Balancer Controller in the Amazon EKS cluster
 
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/security/pod-identity/.workshop/terraform).
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/security/eks-pod-identity/.workshop/terraform).
 
 :::
 

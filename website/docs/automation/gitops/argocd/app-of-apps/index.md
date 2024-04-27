@@ -10,7 +10,7 @@ We can leverage [Argo CD App of Apps pattern](https://argo-cd.readthedocs.io/en/
 
 ![argo-cd-app-of-apps](assets/argocd-app-of-apps.png)
 
-We reference [EKS Workshop Git repository](https://github.com/aws-samples/eks-workshop-v2/tree/main/environment/eks-workshop/manifests/base) as a Git repository with `base` manifests for your Kubernetes resources. This repository will contain an initial resource state for each application.
+We reference [EKS Workshop Git repository](https://github.com/aws-samples/eks-workshop-v2/tree/main/manifests/base-application) as a Git repository with `base` manifests for your Kubernetes resources. This repository will contain an initial resource state for each application.
 
 ```
 .
