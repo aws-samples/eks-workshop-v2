@@ -30,7 +30,7 @@ Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists fo
                              node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
 ```
 
-As anticipated, the application is running succesfully on a non-tainted node. The associated pod is in a `Running` status and we can confirm that no custom tolerations have been configured. Note that Kubernetes automatically adds tolerations for `node.kubernetes.io/not-ready` and `node.kubernetes.io/unreachable` with `tolerationSeconds=300`, unless you or a controller set those tolerations explicitly. These automatically-added tolerations mean that Pods remain bound to Nodes for 5 minutes after one of these problems is detected.
+As anticipated, the application is running successfully on a non-tainted node. The associated pod is in a `Running` status and we can confirm that no custom tolerations have been configured. Note that Kubernetes automatically adds tolerations for `node.kubernetes.io/not-ready` and `node.kubernetes.io/unreachable` with `tolerationSeconds=300`, unless you or a controller set those tolerations explicitly. These automatically-added tolerations mean that Pods remain bound to Nodes for 5 minutes after one of these problems is detected.
 
 Let's update our `ui` deployment to bind its pods to our tainted managed node group. We have pre-configured our tainted managed node group with a label of `tainted=yes` that we can use with a `nodeSelector`. The following `Kustomize` patch describes the changes needed to our deployment configuration in order to enable this setup:
 
@@ -107,7 +107,7 @@ deployment.apps/ui configured
 $ kubectl --namespace ui rollout status deployment/ui --timeout=120s
 ```
 
-Checking the UI pod, we can see that the configuration now includes the specified toleration (`frontend=true:NoExecute`) and it is succesfully scheduled on the node with corresponding taint. The following commands can be used for validation:
+Checking the UI pod, we can see that the configuration now includes the specified toleration (`frontend=true:NoExecute`) and it is successfully scheduled on the node with corresponding taint. The following commands can be used for validation:
 
 ```bash
 $ kubectl get pod --namespace ui -l app.kubernetes.io/name=ui

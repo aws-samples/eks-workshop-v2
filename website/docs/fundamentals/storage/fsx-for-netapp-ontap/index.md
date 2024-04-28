@@ -28,4 +28,4 @@ In this lab, we'll learn about the following concepts:
 
 - Assets microservice deployment
 - FSx for NetApp ONTAP CSI Driver
-- Dynamic provisioning using FSx for NetApp ONTAP and Kuberneties deployment
+- Dynamic provisioning using FSx for NetApp ONTAP and Kubernetes deployment

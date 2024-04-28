@@ -5,7 +5,7 @@ sidebar_position: 10
 
 On our ecommerce application, we have already created a deployment as part of our assets microservice. The assets microservice utilizes a webserver running on EKS. Web servers are a great example for the use of deployments because they **scale horizontally** and **declare the new state** of the Pods.
 
-Assets component is a container which serves static images for products, these product images are added as part of the container image build. However with this setup everytime the team wants to update the product images they have to recreate and redeploy the container image. In this exercise we'll utilize [Amazon FSx for NetApp ONTAP File System](https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/what-is-fsx-ontap.html) and Kubernetes [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) to update old product images and add new product images without the need to rebuild the containers images.
+Assets component is a container which serves static images for products, these product images are added as part of the container image build. However with this setup every time the team wants to update the product images they have to recreate and redeploy the container image. In this exercise we'll utilize [Amazon FSx for NetApp ONTAP File System](https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/what-is-fsx-ontap.html) and Kubernetes [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) to update old product images and add new product images without the need to rebuild the containers images.
 
 We can start by describing the Deployment to take a look at its initial volume configuration:
 

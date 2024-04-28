@@ -10,7 +10,7 @@ $ kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*]
 k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 ```
 
-The `carts` Pod is able to reach the DynamodDB service and the shopping cart is now accessible!
+The `carts` Pod is able to reach the DynamoDB service and the shopping cart is now accessible!
 
 <browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/cart">
 <img src={require('@site/static/img/sample-app-screens/shopping-cart.png').default}/>

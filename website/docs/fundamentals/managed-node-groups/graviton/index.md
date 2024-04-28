@@ -30,7 +30,7 @@ AWS Graviton processors are built on the [AWS Nitro System](https://aws.amazon.c
 AWS Graviton requires ARM compatible container images, ideally multi-architecture (ARM64 and AMD64) allowing cross-compatibility with both Graviton and x86 instance types.
 :::
 
-Graviton processors enhance the EKS experience for managed nodegroups with instances delivering up to 20% lower cost, up to 40% better price-performance, and up to 60% less energy consumption than comparable fifth generation x86-based instances. Graviton-based EKS managed node groups launch an EC2 Auto Scaling group with Graviton processors.
+Graviton processors enhance the EKS experience for managed node groups with instances delivering up to 20% lower cost, up to 40% better price-performance, and up to 60% less energy consumption than comparable fifth generation x86-based instances. Graviton-based EKS managed node groups launch an EC2 Auto Scaling group with Graviton processors.
 
 Adding Graviton-based instances to your EKS managed node group introduces a multi-architecture infrastructure and the need for your application to run on different CPUs. This means your application code needs to be available in different Instruction Set Architecture (ISA) implementations. There are various resources to help teams plan and port applications to Graviton-based instances. Check out [Graviton adoption plan](https://pages.awscloud.com/rs/112-TZM-766/images/Graviton%20Challenge%20Plan.pdf) and [Porting Advisor for Graviton](https://github.com/aws/porting-advisor-for-graviton) for useful resources.
 

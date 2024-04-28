@@ -3,7 +3,7 @@ title: "Testing traffic routing"
 sidebar_position: 40
 ---
 
-In the real world, canary deployments are regularly used to release a feature to a subset of users. In this scenario, we are artifically routing 75% of traffic to the new version of the checkout service. Completing the checkout procedure multiple times with different objects in the cart should present the users with the 2 version of the application.
+In the real world, canary deployments are regularly used to release a feature to a subset of users. In this scenario, we are artificially routing 75% of traffic to the new version of the checkout service. Completing the checkout procedure multiple times with different objects in the cart should present the users with the 2 version of the application.
 
 First lets use Kubernetes `exec` to check that the Lattice service URL works from the UI pod. We'll obtain this from an annotation on the `HTTPRoute` resource:
 

@@ -95,7 +95,7 @@ Password: <password>
 An explanation of the dashboards sections and fields follows.
 
 1. [Header] Shows date / time range. We can customize the time range that we are exploring with this dashboard (Last 15 minutes in this example)
-2. [Top section] Date histogram of log messages showing split between the `stdout` and `stderr` streams (including all namsepaces)
+2. [Top section] Date histogram of log messages showing split between the `stdout` and `stderr` streams (including all namespaces)
 3. [Middle section] Date histogram of log messages showing the split across all cluster namespaces
 4. [Bottom section] Data table with most recent messages shown first. The stream name (`stdout` and `stderr`) are shown along with details such as the pod name. For demonstration purposes, this section has been filtered to only show logs from the `ui` namespace
 5. [Bottom section] Log messages gathered from the individual pods. In this example, the most recent log message shown is `2023-11-07T02:05:10.616Z  INFO 1 --- [           main] c.a.s.u.UiApplication                    : Started UiApplication in 5.917 seconds (process running for 7.541)`, which matches the last line of output from running `kubectl logs -n ui deployment/ui` in an earlier step

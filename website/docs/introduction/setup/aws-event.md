@@ -25,7 +25,7 @@ You will be presented with your personal dashboard. Select the **Open AWS Consol
 
 ![Open Console](./assets/openconsole.png)
 
-Next return to the personal dashboard page and scroll down to the **Event Outputs** section to get a quickstart link to your Cloud9 IDE. Open this in a new browser tab:
+Next return to the personal dashboard page and scroll down to the **Event Outputs** section to get a quick-start link to your Cloud9 IDE. Open this in a new browser tab:
 
 ![Cloud9 Link](./assets/cloud9.png)
 

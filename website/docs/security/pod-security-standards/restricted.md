@@ -37,7 +37,7 @@ $ kubectl -n assets get pod
 No resources found in assets namespace.
 ```
 
-The above output indicates that PSA did not allow creation of Pods in the `assets` Namespace, because the Pod security configuration violates Restricted PSS profile. This behaviour is same as what we saw earlier in the previous section.
+The above output indicates that PSA did not allow creation of Pods in the `assets` Namespace, because the Pod security configuration violates Restricted PSS profile. This behavior is same as what we saw earlier in the previous section.
 
 In the case of the Restricted profile we actually need to proactively lock down some of the security configuration to meet the profile. Let's add some security controls to the Pod configuration to make it compliant with the Privileged PSS profile configured for the `assets` namespace:
 

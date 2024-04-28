@@ -51,7 +51,7 @@ The two major components are the Webhook Server & the Webhook Controller. The **
 
 ---
 
-Before proceding with the labs, validate the Kyverno resources provisioned by the `prepare-environment` script.
+Before proceeding with the labs, validate the Kyverno resources provisioned by the `prepare-environment` script.
 
 ```bash
 $ kubectl -n kyverno get all

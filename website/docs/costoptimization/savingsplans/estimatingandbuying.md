@@ -9,7 +9,7 @@ As a prerequisite to getting started with Savings Plans, you'll need to enable C
 
 ## Calculating the benefits of Savings Plans
 
-AWS provides customized Savings Plans recommendations based on your past usage so you can save costs. Based on the usage, AWS calculates what your bill could have been if you purchased an additional Savings Plan commitment for that time period. AWS identifies and recommends the commitment value that is estimated to result in the largest monthly savings. Recommendations for Compute Savings Plans and EC2 Instance Savings Plans are generated independently, based on the same historical On-Demand usage in the selected lookback period.
+AWS provides customized Savings Plans recommendations based on your past usage so you can save costs. Based on the usage, AWS calculates what your bill could have been if you purchased an additional Savings Plan commitment for that time period. AWS identifies and recommends the commitment value that is estimated to result in the largest monthly savings. Recommendations for Compute Savings Plans and EC2 Instance Savings Plans are generated independently, based on the same historical On-Demand usage in the selected loopback period.
 
 To use the tools in the AWS Cost Management console to recommend potential savings and model the different discount pricing:
 

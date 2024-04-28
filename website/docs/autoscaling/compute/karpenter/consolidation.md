@@ -3,7 +3,7 @@ title: "Disruption (Consolidation)"
 sidebar_position: 50
 ---
 
-Karpenter automatically discovers disruptable nodes and spins up replacements when needed. This can happen for three different reasons:
+Karpenter automatically discovers nodes that are eligible for disruption and spins up replacements when needed. This can happen for three different reasons:
 
 - **Expiration**: By default, Karpenter automatically expires instances after 720h (30 days), forcing a recycle allowing nodes to be kept up to date.
 - **Drift**: Karpenter detects changes in configuration (such as the `NodePool` or `EC2NodeClass`) to apply necessary changes

@@ -70,7 +70,7 @@ deployment.apps/carts restarted
 $ kubectl -n carts rollout status deployment/carts
 ```
 
-So now our application should be using DynamoDB right? Try to load it up in the browser using the URL outputed in the previous command, and navigate to the shopping cart.
+So now our application should be using DynamoDB right? Try to load it up in the browser using the URL from the previous command, and navigate to the shopping cart.
 
 ```bash
 $ kubectl -n ui get service ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}'

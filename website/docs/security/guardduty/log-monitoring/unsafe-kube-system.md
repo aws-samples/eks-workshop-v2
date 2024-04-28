@@ -34,11 +34,11 @@ It also gives you the option to investigate the finding using Amazon Detective.
 
 ![](assets/investigate.png)
 
-One importand information that is worth to take a look is the **Action** of the finding, on this on (Log monitoring type) we can see that is related to a `KUBERNETES_API_CALL`.
+Check the **Action** of the finding, where we can see that is related to a `KUBERNETES_API_CALL`.
 
 ![](assets/finding-action.png)
 
-Clean up the offensor Pod we used to generate the finding:
+Clean up the offending Pod we used to generate the finding:
 
 ```bash
 $ kubectl -n kube-system delete pod nginx

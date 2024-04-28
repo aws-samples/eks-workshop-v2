@@ -6,9 +6,9 @@ sidebar_position: 523
 This finding informs you that your EKS Cluster dashboard was exposed to the internet by a Load Balancer service. An exposed dashboard makes the management interface of your cluster publicly accessible from the internet and allows bad actors to exploit any authentication and access control gaps that may be present.
 
 To simulate this we will need install the Kubernetes dashboard component. We'll be using the version v2.7.0 of the dashboard, which is latest compatible with EKS Cluster vVAR::KUBERNETES_VERSION based on the [release notes](https://github.com/kubernetes/dashboard/releases/tag/v2.7.0).
-After that we can expose the dashboard to the Internet with Service type `LoadBalancer`, which will create a Network Load Banacer(NLB) in your AWS Account.
+After that we can expose the dashboard to the Internet with Service type `LoadBalancer`, which will create a Network Load Balancer (NLB) in your AWS Account.
 
-Run the follwoing commands, to install the Kubernetes dashboard component. This will create a new Namespace called `kubernetes-dashboard`, and all the resources will be deployed there.
+Run the following commands, to install the Kubernetes dashboard component. This will create a new Namespace called `kubernetes-dashboard`, and all the resources will be deployed there.
 
 ```bash
 $ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml

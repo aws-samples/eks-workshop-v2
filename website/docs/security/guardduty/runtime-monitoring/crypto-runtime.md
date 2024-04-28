@@ -3,7 +3,7 @@ title: "Crypto Currency Runtime"
 sidebar_position: 531
 ---
 
-This finding indicates that a container tried to do a cryto mining inside a Pod.
+This finding indicates that a container tried to do a crypto mining inside a Pod.
 
 To simulate the finding we'll be running a `ubuntu` image Pod in the `default` namespace and from there run a couple of commands to simulate downloading a crypto mining process.
 
@@ -28,7 +28,7 @@ $ kubectl exec crypto -n other -- bash -c 'curl -s -o /dev/null http://us-east.e
 
 These commands will trigger three different findings in the [GuardDuty Findings console](https://console.aws.amazon.com/guardduty/home#/findings).
 
-The first one is `Execution:Runtime/NewBinaryExecuted` which is related to the `curl` package installating via the APT tool.
+The first one is `Execution:Runtime/NewBinaryExecuted` which is related to the `curl` package installed via the APT tool.
 
 ![](assets/binary-execution.png)
 

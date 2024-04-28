@@ -29,7 +29,7 @@ In this lab, we'll look at [Karpenter](https://github.com/aws/karpenter), an ope
 Karpenter's goal is to improve the efficiency and cost of running workloads on Kubernetes clusters. Karpenter works by:
 
 - Watching for pods that the Kubernetes scheduler has marked as unschedulable
-- Evaluating scheduling constraints (resource requests, nodeselectors, affinities, tolerations, and topology spread constraints) requested by the pods
+- Evaluating scheduling constraints (resource requests, node selectors, affinities, tolerations, and topology spread constraints) requested by the pods
 - Provisioning nodes that meet the requirements of the pods
 - Scheduling the pods to run on the new nodes
 - Removing the nodes when the nodes are no longer needed

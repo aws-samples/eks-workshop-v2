@@ -39,7 +39,7 @@ Your Git directory should now look something like this which you can validate by
 
 Open the Argo CD UI and navigate to the `apps` application.
 
-![argocd-ui-insync-apps.png](assets/argocd-ui-insync-apps.png)
+![Application in the ArgoCD UI](assets/argocd-ui-insync-apps.png)
 
 Finally we can push our configuration to the Git repository:
 
