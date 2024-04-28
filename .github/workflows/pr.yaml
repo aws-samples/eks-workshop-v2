@@ -57,3 +57,15 @@ jobs:
         with:
           repo: terraform-docs/terraform-docs
       - uses: pre-commit/action@v3.0.1
+
+  spell-check:
+    name: "Spell checker"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: |
+          npx cspell lint "website/docs/**/*.md"

@@ -88,7 +88,7 @@ relabel_configs:
 
 This configuration leverages the Prometheus [Kubernetes service discovery](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config) mechanism to automatically discover all pods with specific annotations. This particular configuration will discover any pods with the annotation `prometheus.io/scrape`, and will enrich metrics it scrapes with Kubernetes metadata such as the namespace and pod name.
 
-For supporting CloudWatch Container Insights Prometheus, we export metrics with specific dimnesions in [Embedded Metric Format - EMF](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Specification.html). The CloudWatch EMF Exporter converts the metrics data into performance log events with EMF and then sends it directly to a CloudWatch log group using the PutLogEvents API.
+For supporting CloudWatch Container Insights Prometheus, we export metrics with specific dimensions in [Embedded Metric Format - EMF](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Specification.html). The CloudWatch EMF Exporter converts the metrics data into performance log events with EMF and then sends it directly to a CloudWatch log group using the PutLogEvents API.
 
 ```bash
 $ kubectl -n other get opentelemetrycollector adot-container-ci -o jsonpath='{.spec.config}' \

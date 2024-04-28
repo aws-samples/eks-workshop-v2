@@ -90,7 +90,7 @@ A few things to point out:
 
 While it's easy to taint nodes using the `kubectl` CLI as described [here](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#concepts), an administrator will have to make this change every time the underlying node group scales up or down. To overcome this challenge, AWS supports adding both `labels` and `taints` to managed node groups, ensuring every node within the MNG will have the associated labels and taints configured automatically.
 
-Now let's add a taint to our preconfigured managed node group `graviton`. This taint will have `key=frontend`, `value=true` and `effect=NO_EXECUTE`. This ensures that any pods that are already running on our tainted managed node group are evicted if they do not have a matching toleration. Also, no new pods will be scheduled on to this managed node group without an appropriate toleration.
+Now let's add a taint to our pre-configured managed node group `graviton`. This taint will have `key=frontend`, `value=true` and `effect=NO_EXECUTE`. This ensures that any pods that are already running on our tainted managed node group are evicted if they do not have a matching toleration. Also, no new pods will be scheduled on to this managed node group without an appropriate toleration.
 
 Let's start by adding a `taint` to our managed node group using the following `aws` cli command:
 

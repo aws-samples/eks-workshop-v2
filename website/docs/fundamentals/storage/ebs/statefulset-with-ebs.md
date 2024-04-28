@@ -98,7 +98,7 @@ If you prefer you can also check it via the [AWS console](https://console.aws.am
 
 ![EBS Volume AWS Console Screenshot](./assets/ebsVolumeScrenshot.png)
 
-If you'd like to inspect the container shell and check out the newly EBS volume attached to the Linux OS, run this instructions to run a shell command into the `catalog-mysql-ebs` container. It'll inspect the filesystems that you have mounted:
+If you'd like to inspect the container shell and check out the newly EBS volume attached to the Linux OS, run this instructions to run a shell command into the `catalog-mysql-ebs` container. It'll inspect the file-systems that you have mounted:
 
 ```bash
 $ kubectl exec --stdin catalog-mysql-ebs-0  -n catalog -- bash -c "df -h"

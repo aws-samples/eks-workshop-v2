@@ -3,7 +3,7 @@ title: "ConfigMaps"
 sidebar_position: 30
 ---
 
-[ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/) is a Kubernetes resource object to save configuration data in key-value format. The ConfigMaps are useful to store enviornmental variables, command-line arguments,application config that can be accessed by the applications deployed in the pods. ConfigMaps can also be stored as configuration files in a volume. These help the configuration data to be separated from the application code.
+[ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/) is a Kubernetes resource object to save configuration data in key-value format. The ConfigMaps are useful to store environment variables, command-line arguments, application config that can be accessed by the applications deployed in the pods. ConfigMaps can also be stored as configuration files in a volume. These help the configuration data to be separated from the application code.
 
 Click on the ConfigMap drill down and you can see all the configs for the cluster.
 

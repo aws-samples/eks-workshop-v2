@@ -3,7 +3,7 @@ title: "Restricting Image Registries"
 sidebar_position: 73
 ---
 
-Using container images form unknown sources on your EKS Clusters, that may not be a scanned for Common Vulnerabilities and Exposure (CVE), represent a risk factor for the overall security of your environment. When chossing container images sources, you need to ensure that they are originated from Trusted Registries, in order to reduce the threat exposure and exploits of vulnerabilities. Some larger organizations also have Security Guidelines that limit containers to use images from their own hosted private image registry.
+Using container images form unknown sources on your EKS Clusters, that may not be a scanned for Common Vulnerabilities and Exposure (CVE), represent a risk factor for the overall security of your environment. When choosing container images sources, you need to ensure that they are originated from Trusted Registries, in order to reduce the threat exposure and exploits of vulnerabilities. Some larger organizations also have Security Guidelines that limit containers to use images from their own hosted private image registry.
 
 In this section, you will see how Kyverno can help you run secure container workloads by restricting the Image Registries that can be used in your cluster.
 
@@ -24,7 +24,7 @@ In this case, it was just an `nginx` base image being pulled from the Public Reg
 
 Next, as a best practice you'll define a policy that will restrict the use of any unauthorized Image Registry, and rely only on specified Trusted Registries.
 
-In this lab, you will be using [Amazon ECR Public Gallery](https://public.ecr.aws/) as the Trusted Registry, blocking any containers that use Images hosted in other tegistries to run. Below is a sample Kyverno Policy to restrict the image pull for this use-case.
+In this lab, you will be using [Amazon ECR Public Gallery](https://public.ecr.aws/) as the Trusted Registry, blocking any containers that use Images hosted in other registries to run. Below is a sample Kyverno Policy to restrict the image pull for this use-case.
 
 ```file
 manifests/modules/security/kyverno/images/restrict-registries.yaml
@@ -63,7 +63,7 @@ $ kubectl run nginx-ecr --image=public.ecr.aws/nginx/nginx
 pod/nginx-public created
 ```
 
-The Pod was successfuly created!
+The Pod was successfully created!
 
 You have seen how you can block Images from public registries to run on your EKS Clusters, and restrict only allowed Image Repositories. One can further go ahead, and allow only private repositories as a Security Best Practice.
 

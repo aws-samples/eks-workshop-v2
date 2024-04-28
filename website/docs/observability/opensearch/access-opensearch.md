@@ -20,7 +20,7 @@ $ export OPENSEARCH_PASSWORD=$(aws ssm get-parameter \
 $ export OPENSEARCH_DASHBOARD_FILE=~/environment/eks-workshop/modules/observability/opensearch/opensearch-dashboards.ndjson
 ```
 
-Load pre-created OpenSearch dashboards to display Kubernetes events and pods logs. The dashboards are available in [opensearch-dashboards.ndjson](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/opensearch-dashboards.ndjson). This NDJSON file includes the OpenSearch index patterns, visualizations and dashboards for Kubernetes events and pod logs.
+Load pre-created OpenSearch dashboards to display Kubernetes events and pods logs. The dashboards are available in [the file](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/opensearch-dashboards.ndjson) which includes the OpenSearch index patterns, visualizations and dashboards for Kubernetes events and pod logs.
 
 ```bash
 $ curl -s https://$OPENSEARCH_HOST/_dashboards/auth/login \

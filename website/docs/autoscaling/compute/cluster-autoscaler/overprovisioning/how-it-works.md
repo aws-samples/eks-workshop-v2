@@ -3,7 +3,7 @@ title: "How it works"
 sidebar_position: 30
 ---
 
-Pods can be assigned priorities relative to other Pods. The Kubernetes scheduler will use this to pre-empt other Pods with lower priority to accommodate higher priority Pods. `PriorityClass` resources with priority values are created and assigned to Pods, and a default `PriorityClass` can be assigned to a namespace.
+Pods can be assigned priorities relative to other Pods. The Kubernetes scheduler will use this to preempt other Pods with lower priority to accommodate higher priority Pods. `PriorityClass` resources with priority values are created and assigned to Pods, and a default `PriorityClass` can be assigned to a namespace.
 
 Below is an example of a priority class that would allow a Pod to take relatively high priority over other Pods:
 
@@ -34,7 +34,7 @@ spec:
   priorityClassName: high-priority # Priority Class specified
 ```
 
-The documentation for [Pod Priority and Pre-emption](https://kubernetes.io/docs/concepts/scheduling-eviction/Pod-priority-preemption/) explains how this works in detail.
+The documentation for [Pod Priority and Preemption](https://kubernetes.io/docs/concepts/scheduling-eviction/Pod-priority-preemption/) explains how this works in detail.
 
 How can we apply this to accomplish over-provisioning the compute in our EKS cluster?
 

@@ -13,7 +13,7 @@ eks-workshop-catalog.cluster-cjkatqd1cnrz.us-west-2.rds.amazonaws.com:3306
 $ export CATALOG_RDS_PASSWORD=$(aws ssm get-parameter --name $EKS_CLUSTER_NAME-catalog-db --region $AWS_REGION --query "Parameter.Value" --output text --with-decryption)
 ```
 
-The first step in this process is to re-configure the catalog service to use an Amazon RDS dabase that has already been created. The application loads most of its configuration from a ConfigMap, let's take look at it:
+The first step in this process is to re-configure the catalog service to use an Amazon RDS database that has already been created. The application loads most of its configuration from a ConfigMap, let's take look at it:
 
 ```bash
 $ kubectl -n catalog get -o yaml cm catalog

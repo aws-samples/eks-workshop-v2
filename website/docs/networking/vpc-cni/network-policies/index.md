@@ -61,14 +61,14 @@ The network policy specification contains the following key segments:
 
 - **metadata**: similar to other Kubernetes objects, it allows you to specify the name and namespace for the given network policy.
 - **spec.podSelector**: allows for the selection of specific pods based on their labels within the namespace to which the given network policy will be applied. If an empty pod selector or matchLabels is specified in the specification, then the policy will be applied to all the pods within the namespace.
-- **spec.policyTypes**: specifies whether the policy will be applied to ingress traffic, egress traffic, or both for the selected pods. If you do not specify this field, then the default behaviour is to apply the network policy to ingress traffic only, unless the network policy has an egress section, in which case the network policy will be applied to both ingress and egress traffic.
+- **spec.policyTypes**: specifies whether the policy will be applied to ingress traffic, egress traffic, or both for the selected pods. If you do not specify this field, then the default behavior is to apply the network policy to ingress traffic only, unless the network policy has an egress section, in which case the network policy will be applied to both ingress and egress traffic.
 - **ingress**: allows for ingress rules to be configured that specify from which pods (podSelector), namespace (namespaceSelector), or CIDR range (ipBlock) traffic is allowed to the selected pods and which port or port range can be used. If a port or port range is not specified, any port can be used for communication.
 
-For more information about what capabilities are allowed or restricted for Kurbernetes network policies, refer to the [Kubernetes docs](https://kubernetes.io/docs/concepts/services-networking/network-policies/).
+For more information about what capabilities are allowed or restricted for Kubernetes network policies, refer to the [Kubernetes docs](https://kubernetes.io/docs/concepts/services-networking/network-policies/).
 
 In addition to network policies, Amazon VPC CNI in IPv4 mode offers a powerful feature known as "Security Groups for Pods." This feature enables you to use Amazon EC2 security groups to define comprehensive rules governing inbound and outbound network traffic to and from the pods deployed on your nodes. While there is overlap in capabilities between security groups for pods and network policies, there are some key differences.
 
 - Security groups allow control of ingress and egress traffic to CIDR ranges, whereas network policies allow control of ingress and egress traffic to pods, namespaces as well as CIDR ranges.
 - Security groups allow control of ingress and egress traffic from other security groups, which is not available for network policies.
 
-Amazon EKS strongly recommends employing network policies in conjunction with security groups to restrict network communication between pods, thus reducing the attack surface and minimising potential vulnerabilities.
+Amazon EKS strongly recommends employing network policies in conjunction with security groups to restrict network communication between pods, thus reducing the attack surface and minimizing potential vulnerabilities.

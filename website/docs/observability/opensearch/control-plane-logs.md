@@ -3,7 +3,7 @@ title: "Control plane logs"
 sidebar_position: 30
 ---
 
-As seen in the earlier section on [Logging in EKS](https://www.eksworkshop.com/docs/observability/logging/cluster-logging/), Amazon EKS control plane logging provides audit and diagnotic logs directly from the Amazon EKS control plane to CloudWatch Logs in your account. We build upon that earlier setup by forwarding these control plane logs from CloudWatch Logs to OpenSearch. A Lambda function to export CloudWatch Logs was setup as part of the `prepare-environment` step for this module. In this section, we will enable all EKS control plane logging, add a CloudWatch Logs subscription filter that will trigger the Lamdbda function and explore the OpenSearch control plane logs dashboard.
+As seen in the earlier section on [Logging in EKS](https://www.eksworkshop.com/docs/observability/logging/cluster-logging/), Amazon EKS control plane logging provides audit and diagnostic logs directly from the Amazon EKS control plane to CloudWatch Logs in your account. We build upon that earlier setup by forwarding these control plane logs from CloudWatch Logs to OpenSearch. A Lambda function to export CloudWatch Logs was setup as part of the `prepare-environment` step for this module. In this section, we will enable all EKS control plane logging, add a CloudWatch Logs subscription filter that will trigger the Lambda function and explore the OpenSearch control plane logs dashboard.
 
 The next two paragraphs provide an overview of control plane logging in EKS. Feel free to skip this overview if you already followed the earlier section on Logging in EKS.
 
@@ -18,7 +18,7 @@ There are five types of control plane logs available. Each log type, which can b
 The following diagram provides an overview of the setup for this section. From left to right, the flow is as follows:
 
 1. Control plane logs are enabled in Amazon EKS, which sends logs to CloudWatch Logs
-2. A CloudWatch Logs subscription filter triggers a Lamdda function and sends it the log messages
+2. A CloudWatch Logs subscription filter triggers a Lambda function and sends it the log messages
 3. The Lambda function writes the control plane logs to an OpenSearch index
 4. A single OpenSearch index named `eks-control-plane-logs` stores all the control plane logs. Later in the lab we will see how we can filter the different log types within the OpenSearch dashboard
 

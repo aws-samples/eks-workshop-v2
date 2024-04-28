@@ -13,7 +13,7 @@ manifests/modules/security/kyverno/simple-policy/require-labels-policy.yaml
 
 Kyverno has 2 kinds of Policy resources, **ClusterPolicy** used for Cluster-Wide Resources and **Policy** used for Namespaced Resources. The example above shows a ClusterPolicy. Take sometime to dive deep and check the below details in the configuration.
 
-- Under the spec section of the Policy, there is a an attribute `validationFailureAction` it tells Kyverno if the resource being validated should be allowed but reported `Audit` or blocked `Enforce`. Defaults to Audit, the exaple is set to Enforce.
+- Under the spec section of the Policy, there is a an attribute `validationFailureAction` it tells Kyverno if the resource being validated should be allowed but reported `Audit` or blocked `Enforce`. Defaults to Audit, the example is set to Enforce.
 - The `rules` is one or more rules to be validated.
 - The `match` statement sets the scope of what will be checked. In this case, it is any `Pod` resource.
 - The `validate` statement tries to positively check what is defined. If the statement, when compared with the requested resource, is true, it is allowed. If false, it is blocked.
@@ -100,7 +100,7 @@ NAME                  READY   STATUS    RESTARTS   AGE   LABELS
 ui-5498685db8-k57nk   1/1     Running   0          60s   CostCenter=IT,app.kubernetes.io/component=service,app.kubernetes.io/created-by=eks-workshop,app.kubernetes.io/instance=ui,app.kubernetes.io/name=ui,pod-template-hash=5498685db8
 ```
 
-As you can see the admission webhook successfuly validated the Policy and the Pod was created with the correct Label `CostCenter=IT`!
+As you can see the admission webhook successfully validated the Policy and the Pod was created with the correct Label `CostCenter=IT`!
 
 ### Mutating Rules
 

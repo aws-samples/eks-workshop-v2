@@ -27,7 +27,7 @@ The Amazon EKS managed worker node upgrade has 4 phases:
 - Randomly selects a node and drains the Pods from the node.
 - Cordons the node after every Pod is evicted and waits for 60 seconds
 - Sends a termination request to the Auto Scaling Group for the cordoned node.
-- Applies same accross all nodes which are part of Managed Node group making sure there are no nodes with older version
+- Applies same across all nodes which are part of Managed Node group making sure there are no nodes with older version
 
 **Scale Down**:
 

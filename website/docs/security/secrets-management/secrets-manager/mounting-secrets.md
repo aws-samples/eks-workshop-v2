@@ -122,4 +122,4 @@ We can verify this by checking the environment variables in the running pod:
 $ kubectl -n catalog exec -ti deployment/catalog -- env | grep DB_
 ```
 
-Now we have a Kubernetes Secret fully integrated with AWS Secrets Manager that can leverage secret rotation, which is a best practice for Secrets Management. Everytime a secret is rotated or updated on AWS Secrets Manager, we can roll out a new version of your Deployment so the CSI Secret Store driver can sync the Kubernetes Secrets contents with the rotated value.
+Now we have a Kubernetes Secret fully integrated with AWS Secrets Manager that can leverage secret rotation, which is a best practice for Secrets Management. Every time a secret is rotated or updated on AWS Secrets Manager, we can roll out a new version of your Deployment so the CSI Secret Store driver can sync the Kubernetes Secrets contents with the rotated value.

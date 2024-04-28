@@ -27,7 +27,7 @@ In this workshop we will assume that our cluster node groups should be provision
 We will use **[amazon-ec2-instance-selector](https://github.com/aws/amazon-ec2-instance-selector)** to help us select the relevant instance
 types and families with sufficient number of vCPUs and RAM.
 
-There are over 350 different instance types available on EC2 which can make the process of selecting appropriate instance types difficult. To make it easier, `amazon-ec2-instance-selector`, a CLI tool, helps you select compatible instance types for your application to run on. The command line interface can be passed resource criteria like vcpus, memory, network performance, and much more and then return the available, matching instance types.
+There are over 350 different instance types available on EC2 which can make the process of selecting appropriate instance types difficult. To make it easier, `amazon-ec2-instance-selector`, a CLI tool, helps you select compatible instance types for your application to run on. The command line interface can be passed resource criteria like cpus, memory, network performance, and much more and then return the available, matching instance types.
 
 The CLI tool has been pre-installed in your IDE:
 

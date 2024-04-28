@@ -65,7 +65,7 @@ replicas = max(replicas, min)
 **Ladder**
 
 - This scaling method uses a step function to determine the ratio of nodes:replicas and/or cores:replicas
-- The step ladder function uses the datapoint for core and node scaling from the ConfigMap. The lookup which yields the higher number of replicas will be used as the target scaling number.
+- The step ladder function uses the data point for core and node scaling from the ConfigMap. The lookup which yields the higher number of replicas will be used as the target scaling number.
 - Either one of the `coresPerReplica` or `nodesPerReplica` could be omitted
 - Replicas can be set to 0 (unlike in linear mode)
 - Scaling to 0 replicas could be used to enable optional features as a cluster grows
