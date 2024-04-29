@@ -91,6 +91,9 @@ const config = {
         defaultMode: "light",
         disableSwitch: false,
       },
+      metadata: [
+        { name: 'google-site-verification', content: 'aRMa1ddI7Lc-CtAWPgifuH7AhmyC1CVAEpg2d9jyTpQ' },
+      ],
       image: "img/meta.jpg",
       navbar: {
         title: "EKS Workshop",
