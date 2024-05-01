@@ -91,7 +91,7 @@ Here, the `group` developers is basically a Kubernetes group defined in ClusterR
 arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers                                                    developer                               view
 ```
 
-In the next example, the groups are `system:bootstrappers` and `system:nodes`, which is mapped to the IAM Role assigned to the Managed Node Group Instance Profile.
+In the next example, the groups are `system:bootstrappers` and `system:nodes`git , which is mapped to the IAM Role assigned to the Managed Node Group Instance Profile.
 
 ```yaml
     - "groups":
