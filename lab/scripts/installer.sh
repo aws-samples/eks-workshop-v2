@@ -6,7 +6,7 @@ kubectl_version='1.29.0'
 kubectl_checksum='0e03ab096163f61ab610b33f37f55709d3af8e16e4dcc1eb682882ef80f96fd5'
 
 # renovate: depName=helm/helm
-helm_version='3.14.3'
+helm_version='3.14.4'
 
 # renovate: depName=eksctl-io/eksctl
 eksctl_version='0.175.0'
