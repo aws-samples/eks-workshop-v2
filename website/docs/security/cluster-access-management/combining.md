@@ -5,13 +5,13 @@ sidebar_position: 13
 
 ## Granting granular access level with EKS Access Policies and RBAC
 
-Even with the successful migration of the identity, it still relies on managing Kubernetes resources, so access to the cluster is required for that. You may noticed that you created the access entry for the EKSDevelopers without interacting with the Kubernetes API, just issuing an awscli command. With that said, maybe there are a few questions:
+Even with the successful migration of the identity, it still relies on managing Kubernetes resources, so access to the cluster is required for that. You may noticed that you created the access entry for the EKSDevelopers without interacting with the Kubernetes API, just issuing an `awscli` command. With that said, maybe there are a few questions:
 How can you simplify the access management?
 How to provide a more granular access to the EKSDevelopers entity?
 
 Let's dive deep on that. As we validated, there were no Access Policies linked to the EKSDevelopers Access Entry, and as yu saw in the first part of this module, there is already an Access Policy with view permissions.
 
-Without changing back to the cluster-admin permissions on Kubeconfig, update the EKSDevelopers Access Entry, to use the AmazonEKSViewPolicy Access Policy, and remove the Kubernetes Group associated earlier.
+Without changing back to the cluster-admin permissions on `kubeconfig`, update the EKSDevelopers Access Entry, to use the AmazonEKSViewPolicy Access Policy, and remove the Kubernetes Group associated earlier.
 
 ```bash
 $ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy --access-scope type=cluster

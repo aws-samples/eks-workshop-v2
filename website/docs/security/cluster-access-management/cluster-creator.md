@@ -60,7 +60,7 @@ error: You must be logged in to the server (Unauthorized)
 
 Not authorized, right? Now you have removed the cluster-admin access to the cluster! If this happened in a cluster set with the CONFIG_MAP only authentication mode, and there are none other cluster-admins set to the cluster, you would have completely lost that access to the cluster, because you can't even list or read the aws-auth configMap.
 
-Now with the Cluster Access Management API, it's possible to regain that access with simple awscli commands. First get the Arn of your IAM Role.
+Now with the Cluster Access Management API, it's possible to regain that access with simple `awscli` commands. First get the Arn of your IAM Role.
 
 ```bash
 $ ROLE_NAME=$(aws sts get-caller-identity --query 'Arn' | cut -d/ -f2)

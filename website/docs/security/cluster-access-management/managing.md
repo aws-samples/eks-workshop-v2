@@ -11,7 +11,7 @@ Now that you have a basic understanding of Cluster Access Management API, let's 
 2. API_AND_CONFIG_MAP Source authenticated IAM principals from both EKS Access Entry APIs and the aws-auth configMap, prioritizing the Access Entries. Ideal to migrate existing aws-auth permissions to Access Entries.
 3. API Exclusively rely on EKS Access Entry APIs.This is recommended method.
 
-Check which method your cluster is configured with awscli.
+Check which method your cluster is configured with `awscli`.
 
 ```bash
 $ aws eks describe-cluster —name $EKS_CLUSTER_NAME --query 'cluster.accessConfig'
@@ -78,7 +78,7 @@ admin                    2024-04-29T17:37:43Z
 view                     2024-04-29T17:37:43Z
 ```
 
-Here, the groups platform_team and developer_team, are basically the Kubernetes groups defined in ClusterRoleBindings for powerusers and viewonly respectivelly, and the Role after rolearn. is the IAM Role that's mapped to those groups.
+Here, the `group` developers is basically a Kubernetes group defined in ClusterRoleBindings, and the Role after `rolearn`. is the IAM Role that's mapped to those groups.
 
 ```yaml
     - "groups":
@@ -91,7 +91,7 @@ Here, the groups platform_team and developer_team, are basically the Kubernetes 
 arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers                                                    developer                               view
 ```
 
-In the next example, the groups are system:bootstrappers and system:nodes, which is mapped to the IAM Role assigned to the Managed Node Group Instance Profile.
+In the next example, the groups are `system:bootstrappers` and `system:nodes`, which is mapped to the IAM Role assigned to the Managed Node Group Instance Profile.
 
 ```yaml
     - "groups":
@@ -144,7 +144,7 @@ $ aws eks list-access-entries --cluster $EKS_CLUSTER_NAME
 
 These Access Entries, are automatically created at the moment the authenticationMode is set to API_AND_CONFIG_MAP or API, to grant access for the Cluster Creator entity and the Managed Node Groups that belongs to the cluster.
 
-The Cluster Creator, belongs to the entity that actually created the cluster, either via AWS Console, awscli, eksctl or any Infrastructure-as-Code (IaC) such as AWS Cloud Formation or Terraform. The identity is automatically mapped to the cluster at the creation time, and it was not visible in the past, when the authentication method was restricted to  CONFIG_MAP. Now, with the Cluster Access Management API, it is possible to opt-out to create this identity mapping or even remove it after the cluster is deployed.
+The Cluster Creator, belongs to the entity that actually created the cluster, either via AWS Console, `awscli`, eksctl or any Infrastructure-as-Code (IaC) such as AWS Cloud Formation or Terraform. The identity is automatically mapped to the cluster at the creation time, and it was not visible in the past, when the authentication method was restricted to  CONFIG_MAP. Now, with the Cluster Access Management API, it is possible to opt-out to create this identity mapping or even remove it after the cluster is deployed.
 
 If you describe these Access Entries, you'll be able to see a similar mapping shown on the previous examples using the aws-auth configMap. Let's see the one mapped to the Managed Node Group.
 
