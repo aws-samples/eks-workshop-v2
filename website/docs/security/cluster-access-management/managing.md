@@ -73,7 +73,7 @@ As you could see there are a few identities allowed to access the cluster, each 
 Notice that on the aws-auth configMap, each array under the mapRoles section, starts with groups, which translates to a list of Kubernetes groups or the Kubernetes Roles and ClusterRoles. Each group, is mapped to an AWS IAM Role, and an abstract username. Let's see a couple of examples.
 
 ```bash
-$ kubectl get clusterrolebindings | grep -e ^admin -e ^view 
+$ kubectl get clusterrolebindings | grep -e ^admin -e ^view
 admin                    2024-04-29T17:37:43Z
 view                     2024-04-29T17:37:43Z
 ```
@@ -81,10 +81,10 @@ view                     2024-04-29T17:37:43Z
 Here, the `group` developers is basically a Kubernetes group defined in ClusterRoleBindings, and the Role after `rolearn`. is the IAM Role that's mapped to those groups.
 
 ```yaml
-    - "groups":
-      - "view"
-      "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers"
-      "username": "developer"
+- "groups":
+    - "view"
+  "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers"
+  "username": "developer"
 ```
 
 ```
@@ -94,11 +94,11 @@ arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers                                 
 In the next example, the groups are `system:bootstrappers` and `system:nodes`git , which is mapped to the IAM Role assigned to the Managed Node Group Instance Profile.
 
 ```yaml
-    - "groups":
-      - "system:bootstrappers"
-      - "system:nodes"
-      "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr"
-      "username": "system:node:{{EC2PrivateDNSName}}"
+- "groups":
+    - "system:bootstrappers"
+    - "system:nodes"
+  "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr"
+  "username": "system:node:{{EC2PrivateDNSName}}"
 ```
 
 ```
@@ -108,14 +108,14 @@ arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanc
 The last example has the map to the system:masters group, which is basically the cluster-admin.
 
 ```yaml
-    - "groups":
-      - "system:masters"
-      "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/WSParticipantRole"
-      "username": "admin"
-    - "groups":
-      - "system:masters"
-      "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1"
-      "username": "admin"
+- "groups":
+    - "system:masters"
+  "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/WSParticipantRole"
+  "username": "admin"
+- "groups":
+    - "system:masters"
+  "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1"
+  "username": "admin"
 ```
 
 ```
@@ -130,10 +130,10 @@ $ kubectl get clusterrolebindings cluster-admin -o yaml | yq .subjects
   name: system:masters
 ```
 
-Since the cluster is already using the API as one of the authentication options, EKS already mapped a couple of  default Access Entries to the cluster. Let's check them.
+Since the cluster is already using the API as one of the authentication options, EKS already mapped a couple of default Access Entries to the cluster. Let's check them.
 
 ```bash
-$ aws eks list-access-entries --cluster $EKS_CLUSTER_NAME 
+$ aws eks list-access-entries --cluster $EKS_CLUSTER_NAME
 {
     "accessEntries": [
         "arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr",
@@ -144,7 +144,7 @@ $ aws eks list-access-entries --cluster $EKS_CLUSTER_NAME
 
 These Access Entries, are automatically created at the moment the authenticationMode is set to API_AND_CONFIG_MAP or API, to grant access for the Cluster Creator entity and the Managed Node Groups that belongs to the cluster.
 
-The Cluster Creator, belongs to the entity that actually created the cluster, either via AWS Console, `awscli`, eksctl or any Infrastructure-as-Code (IaC) such as AWS Cloud Formation or Terraform. The identity is automatically mapped to the cluster at the creation time, and it was not visible in the past, when the authentication method was restricted to  CONFIG_MAP. Now, with the Cluster Access Management API, it is possible to opt-out to create this identity mapping or even remove it after the cluster is deployed.
+The Cluster Creator, belongs to the entity that actually created the cluster, either via AWS Console, `awscli`, eksctl or any Infrastructure-as-Code (IaC) such as AWS Cloud Formation or Terraform. The identity is automatically mapped to the cluster at the creation time, and it was not visible in the past, when the authentication method was restricted to CONFIG_MAP. Now, with the Cluster Access Management API, it is possible to opt-out to create this identity mapping or even remove it after the cluster is deployed.
 
 If you describe these Access Entries, you'll be able to see a similar mapping shown on the previous examples using the aws-auth configMap. Let's see the one mapped to the Managed Node Group.
 

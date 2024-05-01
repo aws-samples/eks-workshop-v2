@@ -166,7 +166,7 @@ subjects:
   name: developers
 ```
 
-Now, since this is a simple edit  policy, it is basically the same as the AmazonEKSEditPolicy, Access Policy. Let's try then to achieve the same permissions level using just those.
+Now, since this is a simple edit policy, it is basically the same as the AmazonEKSEditPolicy, Access Policy. Let's try then to achieve the same permissions level using just those.
 
 Remove the Kubernetes Group associated with the EKSDevelopers Access Entry.
 

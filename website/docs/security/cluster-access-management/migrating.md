@@ -7,20 +7,20 @@ sidebar_position: 13
 
 As the last step for this module, you'll go through the migration process from the aws-auth configMap identity mappings to the Cluster Access Management API format. In the last section, you did create a new Access Entry and associated an Access Policy with a cluster wide scope. Now you'll explore how to associate policies scoped by Namespace and how to associate Kubernetes Groups using RBAC permissions to Access Entries.
 
-If you remember, in the existing configuration there is an identity for  EKSDevelopers mapped to a view group in the aws-auth configMap.
+If you remember, in the existing configuration there is an identity for EKSDevelopers mapped to a view group in the aws-auth configMap.
 
 ```yaml
-    - "groups":
-      - "view"
-      "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers"
-      "username": "developer"
+- "groups":
+    - "view"
+  "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers"
+  "username": "developer"
 ```
 
 ```
 arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers                                                    developer                               view
 ```
 
-First let's check which kind of access this  view group provides to the EKSDevelopers. Validate the ClusterRoleBinding with that name.
+First let's check which kind of access this view group provides to the EKSDevelopers. Validate the ClusterRoleBinding with that name.
 
 ```bash
 $ kubectl  get clusterrolebindings view -o yaml

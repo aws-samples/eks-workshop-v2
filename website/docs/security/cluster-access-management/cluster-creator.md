@@ -27,16 +27,16 @@ cluster-admin   2024-04-29T17:37:43Z
 You still have cluster-admin access, right? That's because in the aws-auth configMap, there is a mapping to your AWS STS Identity, with the system:masters group.
 
 ```yaml
-    - "groups":
-      - "system:masters"
-      "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1"
-      "username": "admin"
+- "groups":
+    - "system:masters"
+  "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1"
+  "username": "admin"
 ```
 
 Double check your identity.
 
 ```bash
-$ aws sts get-caller-identity --query 'Arn' 
+$ aws sts get-caller-identity --query 'Arn'
 "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1/i-06b2ef4cc8104bd8a"
 ```
 
@@ -104,7 +104,7 @@ Still not getting access? That's because the Access Entry was not associated to 
 Validate that with the command below.
 
 ```bash
-$ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --principal-arn $ROLE_ARN 
+$ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --principal-arn $ROLE_ARN
 {
     "associatedAccessPolicies": []
 }
@@ -132,7 +132,7 @@ $ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME --principal-a
 Notice the policyArn and accessScope values. Validate the policy association again.
 
 ```bash
-$ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --principal-arn $ROLE_ARN 
+$ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --principal-arn $ROLE_ARN
 {
     "associatedAccessPolicies": [
         {
