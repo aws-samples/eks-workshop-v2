@@ -7,9 +7,9 @@ sidebar_position: 12
 
 Now that you have a basic understanding of Cluster Access Management API, let's start some hands on activities. But first it's important to know that before the Cluster Access Management API was available, Amazon EKS relied on the aws-auth configMap to authenticate and provide access to the clusters. With that said, Amazon EKS provide three different modes of authentication
 
-1. CONFIG_MAP: Uses aws-auth configMap exclusively. (this will be deprecated at some point)
-2. API_AND_CONFIG_MAP Source authenticated IAM principals from both EKS Access Entry APIs and the aws-auth configMap, prioritizing the Access Entries. Ideal to migrate existing aws-auth permissions to Access Entries.
-3. API Exclusively rely on EKS Access Entry APIs.This is recommended method.
+1. `CONFIG_MAP`: Uses aws-auth configMap exclusively. (this will be deprecated at some point)
+2. `API_AND_CONFIG_MAP`: Source authenticated IAM principals from both EKS Access Entry APIs and the aws-auth configMap, prioritizing the Access Entries. Ideal to migrate existing aws-auth permissions to Access Entries.
+3. `API`: Exclusively rely on EKS Access Entry APIs. **This is recommended method.**
 
 Check which method your cluster is configured with `awscli`.
 
