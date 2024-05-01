@@ -14,10 +14,10 @@ Let's dive deep on that. As we validated, there were no Access Policies linked t
 Without changing back to the cluster-admin permissions on Kubeconfig, update the EKSDevelopers Access Entry, to use the AmazonEKSViewPolicy Access Policy, and remove the Kubernetes Group associated earlier.
 
 ```bash
-$ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::012345654321:role/EKSViewOnly --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy --access-scope type=cluster
+$ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy --access-scope type=cluster
 {
     "clusterName": "eks-workshop",
-    "principalArn": "arn:aws:iam::012345654321:role/EKSViewOnly",
+    "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly",
     "associatedAccessPolicy": {
         "policyArn": "arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy",
         "accessScope": {
@@ -28,17 +28,17 @@ $ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME --principal-a
         "modifiedAt": "2024-04-30T22:51:05.514000+00:00"
     }
 }
-$ aws eks update-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::012345654321:role/EKSViewOnly
+$ aws eks update-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly
 {
     "accessEntry": {
         "clusterName": "eks-workshop",
-        "principalArn": "arn:aws:iam::012345654321:role/EKSViewOnly",
+        "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly",
         "kubernetesGroups": [],
-        "accessEntryArn": "arn:aws:eks:us-west-2:012345654321:access-entry/eks-workshop/role/012345654321/EKSViewOnly/aec7982d-425b-3e2d-7c4e-92e091865fbc",
+        "accessEntryArn": "arn:aws:eks:us-west-2:$AWS_ACCOUNT_ID:access-entry/eks-workshop/role/$AWS_ACCOUNT_ID/EKSViewOnly/aec7982d-425b-3e2d-7c4e-92e091865fbc",
         "createdAt": "2024-04-30T18:53:09.753000+00:00",
         "modifiedAt": "2024-04-30T22:52:50.639000+00:00",
         "tags": {},
-        "username": "arn:aws:sts::012345654321:assumed-role/EKSViewOnly/{{SessionName}}",
+        "username": "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSViewOnly/{{SessionName}}",
         "type": "STANDARD"
     }
 }
@@ -71,9 +71,9 @@ orders        orders-mysql-5dcdcccbf9-hst2n     1/1     Running   0          25h
 rabbitmq      rabbitmq-0                        1/1     Running   0          25h
 ui            ui-68495c748c-bzn92               1/1     Running   0          25h
 $ kubectl get clusterrole view -o yaml
-Error from server (Forbidden): clusterroles.rbac.authorization.k8s.io "view" is forbidden: User "arn:aws:sts::012345654321:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot get resource "clusterroles" in API group "rbac.authorization.k8s.io" at the cluster scope
+Error from server (Forbidden): clusterroles.rbac.authorization.k8s.io "view" is forbidden: User "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot get resource "clusterroles" in API group "rbac.authorization.k8s.io" at the cluster scope
 $ kubectl run pause --image public.ecr.aws/eks-distro/kubernetes/pause:3.9
-Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::012345654321:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot create resource "pods" in API group "" in the namespace "default"
+Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot create resource "pods" in API group "" in the namespace "default"
 ```
 
 Exactly the same permissions, right?
@@ -82,19 +82,19 @@ What about granting a more granular access, and provide an edit permission to th
 Run the command below to update the EKSDevelopers Access Entry and associate it with the developers group.
 
 ```bash
-$ aws eks update-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::012345654321:role/EKSViewOnly --kubernetes-groups developers
+$ aws eks update-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly --kubernetes-groups developers
 {
     "accessEntry": {
         "clusterName": "eks-workshop",
-        "principalArn": "arn:aws:iam::012345654321:role/EKSViewOnly",
+        "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly",
         "kubernetesGroups": [
             "developers"
         ],
-        "accessEntryArn": "arn:aws:eks:us-west-2:012345654321:access-entry/eks-workshop/role/012345654321/EKSViewOnly/aec7982d-425b-3e2d-7c4e-92e091865fbc",
+        "accessEntryArn": "arn:aws:eks:us-west-2:$AWS_ACCOUNT_ID:access-entry/eks-workshop/role/$AWS_ACCOUNT_ID/EKSViewOnly/aec7982d-425b-3e2d-7c4e-92e091865fbc",
         "createdAt": "2024-04-30T18:53:09.753000+00:00",
         "modifiedAt": "2024-04-30T23:01:15.486000+00:00",
         "tags": {},
-        "username": "arn:aws:sts::012345654321:assumed-role/EKSViewOnly/{{SessionName}}",
+        "username": "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSViewOnly/{{SessionName}}",
         "type": "STANDARD"
     }
 }
@@ -128,7 +128,7 @@ orders        orders-mysql-5dcdcccbf9-hst2n     1/1     Running   0          25h
 rabbitmq      rabbitmq-0                        1/1     Running   0          25h
 ui            ui-68495c748c-bzn92               1/1     Running   0          25h
 $ kubectl get clusterrole view -o yaml
-Error from server (Forbidden): clusterroles.rbac.authorization.k8s.io "view" is forbidden: User "arn:aws:sts::012345654321:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot get resource "clusterroles" in API group "rbac.authorization.k8s.io" at the cluster scope
+Error from server (Forbidden): clusterroles.rbac.authorization.k8s.io "view" is forbidden: User "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot get resource "clusterroles" in API group "rbac.authorization.k8s.io" at the cluster scope
 $ kubectl run pause --image public.ecr.aws/eks-distro/kubernetes/pause:3.9
 pod/pause created
 ```
@@ -139,14 +139,14 @@ You can see that you can now create resources on the default Namespace. Try to d
 $ kubectl delete pod pause
 pod "pause" deleted
 WSParticipantRole:/eks-workshop $ kubectl -n ui run pause --image public.ecr.aws/eks-distro/kubernetes/pause:3.9
-Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::012345654321:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot create resource "pods" in API group "" in the namespace "ui"
+Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot create resource "pods" in API group "" in the namespace "ui"
 ```
 
 The creation was forbidden because the RoleBinding is restricted to the default Namespace. Go back to the cluster-admin permissions to check that, since edit access level, don't allow you to view authentication and authorization related resources.
 
 ```bash
 $ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
-Updated context arn:aws:eks:us-west-2:012345654321:cluster/eks-workshop in /home/ec2-user/.kube/config
+Updated context arn:aws:eks:us-west-2:$AWS_ACCOUNT_ID:cluster/eks-workshop in /home/ec2-user/.kube/config
 $ kubectl get rolebinding developers -o yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -171,17 +171,17 @@ Now, since this is a simple edit  policy, it is basically the same as the Amazon
 Remove the Kubernetes Group associated with the EKSDevelopers Access Entry.
 
 ```bash
-$ aws eks update-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::012345654321:role/EKSViewOnly
+$ aws eks update-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly
 {
     "accessEntry": {
         "clusterName": "eks-workshop",
-        "principalArn": "arn:aws:iam::012345654321:role/EKSViewOnly",
+        "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly",
         "kubernetesGroups": [],
-        "accessEntryArn": "arn:aws:eks:us-west-2:012345654321:access-entry/eks-workshop/role/012345654321/EKSViewOnly/aec7982d-425b-3e2d-7c4e-92e091865fbc",
+        "accessEntryArn": "arn:aws:eks:us-west-2:$AWS_ACCOUNT_ID:access-entry/eks-workshop/role/$AWS_ACCOUNT_ID/EKSViewOnly/aec7982d-425b-3e2d-7c4e-92e091865fbc",
         "createdAt": "2024-04-30T18:53:09.753000+00:00",
         "modifiedAt": "2024-04-30T23:12:45.118000+00:00",
         "tags": {},
-        "username": "arn:aws:sts::012345654321:assumed-role/EKSViewOnly/{{SessionName}}",
+        "username": "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSViewOnly/{{SessionName}}",
         "type": "STANDARD"
     }
 }
@@ -190,10 +190,10 @@ $ aws eks update-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn a
 Create another association with this Access Entry, now using the AmazonEKSEditPolicy, scoped to the default Namespace.
 
 ```bash
-$ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::012345654321:role/EKSViewOnly --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy --access-scope type=namespace,namespaces=default
+$ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy --access-scope type=namespace,namespaces=default
 {
     "clusterName": "eks-workshop",
-    "principalArn": "arn:aws:iam::012345654321:role/EKSViewOnly",
+    "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly",
     "associatedAccessPolicy": {
         "policyArn": "arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy",
         "accessScope": {
@@ -206,7 +206,7 @@ $ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME --principal-a
         "modifiedAt": "2024-04-30T23:17:03.194000+00:00"
     }
 }
-$ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::012345654321:role/EKSViewOnly
+$ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly
 {
     "associatedAccessPolicies": [
         {
@@ -231,15 +231,15 @@ $ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --pri
         }
     ],
     "clusterName": "eks-workshop",
-    "principalArn": "arn:aws:iam::012345654321:role/EKSViewOnly"
+    "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly"
 }
 ```
 
 Impersonated the EKSDevelopers Role one last time, and test your access.
 
 ```bash
-$ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn arn:aws:iam::012345654321:role/EKSViewOnly
-Updated context arn:aws:eks:us-west-2:012345654321:cluster/eks-workshop in /home/ec2-user/.kube/config
+$ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly
+Updated context arn:aws:eks:us-west-2:$AWS_ACCOUNT_ID:cluster/eks-workshop in /home/ec2-user/.kube/config
 $ kubectl get pods
 No resources found in default namespace.
 $ kubectl get pods -A
@@ -264,13 +264,13 @@ orders        orders-mysql-5dcdcccbf9-hst2n     1/1     Running   0          26h
 rabbitmq      rabbitmq-0                        1/1     Running   0          26h
 ui            ui-68495c748c-bzn92               1/1     Running   0          26h
 $ kubectl get clusterroles
-Error from server (Forbidden): clusterroles.rbac.authorization.k8s.io is forbidden: User "arn:aws:sts::012345654321:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot list resource "clusterroles" in API group "rbac.authorization.k8s.io" at the cluster scope
+Error from server (Forbidden): clusterroles.rbac.authorization.k8s.io is forbidden: User "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot list resource "clusterroles" in API group "rbac.authorization.k8s.io" at the cluster scope
 $ kubectl run pause --image public.ecr.aws/eks-distro/kubernetes/pause:3.9
 pod/pause created
 $ kubectl delete pod pause
 pod "pause" deleted
 $ kubectl -n ui run pause --image public.ecr.aws/eks-distro/kubernetes/pause:3.9
-Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::012345654321:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot create resource "pods" in API group "" in the namespace "ui"
+Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot create resource "pods" in API group "" in the namespace "ui"
 ```
 
 You have achieved the same granular permissions using just the Cluster Access Management API!

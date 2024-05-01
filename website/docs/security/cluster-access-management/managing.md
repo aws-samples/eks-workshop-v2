@@ -31,20 +31,20 @@ data:
   mapRoles: |
     - "groups":
       - "view"
-      "rolearn": "arn:aws:iam::012345654321:role/EKSDevelopers"
+      "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers"
       "username": "developer"
     - "groups":
       - "system:bootstrappers"
       - "system:nodes"
-      "rolearn": "arn:aws:iam::012345654321:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr"
+      "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr"
       "username": "system:node:{{EC2PrivateDNSName}}"
     - "groups":
       - "system:masters"
-      "rolearn": "arn:aws:iam::012345654321:role/WSParticipantRole"
+      "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/WSParticipantRole"
       "username": "admin"
     - "groups":
       - "system:masters"
-      "rolearn": "arn:aws:iam::012345654321:role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1"
+      "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1"
       "username": "admin"
   mapUsers: |
     []
@@ -62,10 +62,10 @@ Another way to check the identities authorized to access the cluster is to use t
 ```bash
  $ eksctl get iamidentitymapping --cluster $EKS_CLUSTER_NAME
 ARN                                                                                             USERNAME                                GROUPS                                  ACCOUNT
-arn:aws:iam::012345654321:role/EKSDevelopers                                                    developer                               view
-arn:aws:iam::012345654321:role/WSParticipantRole                                                admin                                   system:masters
-arn:aws:iam::012345654321:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr system:node:{{EC2PrivateDNSName}}       system:bootstrappers,system:nodes
-arn:aws:iam::012345654321:role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1 admin                                   system:masters
+arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers                                                    developer                               view
+arn:aws:iam::$AWS_ACCOUNT_ID:role/WSParticipantRole                                                admin                                   system:masters
+arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr system:node:{{EC2PrivateDNSName}}       system:bootstrappers,system:nodes
+arn:aws:iam::$AWS_ACCOUNT_ID:role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1 admin                                   system:masters
 ```
 
 As you could see there are a few identities allowed to access the cluster, each one with a specific access scope, let's dive deep on each one of those, since we'll use this information to translated the existing setup using the aws-auth configMap, to EKS Access Entries.
@@ -83,12 +83,12 @@ Here, the groups platform_team and developer_team, are basically the Kubernetes 
 ```yaml
     - "groups":
       - "view"
-      "rolearn": "arn:aws:iam::012345654321:role/EKSDevelopers"
+      "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers"
       "username": "developer"
 ```
 
 ```bash
-arn:aws:iam::012345654321:role/EKSDevelopers                                                    developer                               view
+arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers                                                    developer                               view
 ```
 
 In the next example, the groups are system:bootstrappers and system:nodes, which is mapped to the IAM Role assigned to the Managed Node Group Instance Profile.
@@ -97,12 +97,12 @@ In the next example, the groups are system:bootstrappers and system:nodes, which
     - "groups":
       - "system:bootstrappers"
       - "system:nodes"
-      "rolearn": "arn:aws:iam::012345654321:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr"
+      "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr"
       "username": "system:node:{{EC2PrivateDNSName}}"
 ```
 
 ```bash
-arn:aws:iam::012345654321:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr system:node:{{EC2PrivateDNSName}}       system:bootstrappers,system:nodes
+arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr system:node:{{EC2PrivateDNSName}}       system:bootstrappers,system:nodes
 ```
 
 The last example has the map to the system:masters group, which is basically the cluster-admin.
@@ -110,17 +110,17 @@ The last example has the map to the system:masters group, which is basically the
 ```yaml
     - "groups":
       - "system:masters"
-      "rolearn": "arn:aws:iam::012345654321:role/WSParticipantRole"
+      "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/WSParticipantRole"
       "username": "admin"
     - "groups":
       - "system:masters"
-      "rolearn": "arn:aws:iam::012345654321:role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1"
+      "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1"
       "username": "admin"
 ```
 
 ```bash
-arn:aws:iam::012345654321:role/WSParticipantRole                                                admin                                   system:masters
-arn:aws:iam::012345654321:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr system:node:{{EC2PrivateDNSName}}       system:bootstrappers,system:nodes
+arn:aws:iam::$AWS_ACCOUNT_ID:role/WSParticipantRole                                                admin                                   system:masters
+arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr system:node:{{EC2PrivateDNSName}}       system:bootstrappers,system:nodes
 ```
 
 ```bash
@@ -136,8 +136,8 @@ Since the cluster is already using the API as one of the authentication options,
 $ aws eks list-access-entries --cluster $EKS_CLUSTER_NAME 
 {
     "accessEntries": [
-        "arn:aws:iam::012345654321:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr",
-        "arn:aws:iam::012345654321:role/workshop-stack-TesterCodeBuildRoleC9232875-RyhCKIXckZri"
+        "arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr",
+        "arn:aws:iam::$AWS_ACCOUNT_ID:role/workshop-stack-TesterCodeBuildRoleC9232875-RyhCKIXckZri"
     ]
 }
 ```
@@ -151,15 +151,15 @@ If you describe these Access Entries, you'll be able to see a similar mapping sh
 > Remember to replace the principalArn, with the one existing in your cluster.
 
 ```bash
-$ aws eks describe-access-entry --cluster $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::012345654321:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr
+$ aws eks describe-access-entry --cluster $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr
 {
     "accessEntry": {
         "clusterName": "eks-workshop",
-        "principalArn": "arn:aws:iam::012345654321:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr",
+        "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr",
         "kubernetesGroups": [
             "system:nodes"
         ],
-        "accessEntryArn": "arn:aws:eks:us-west-2:012345654321:access-entry/eks-workshop/role/012345654321/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr/dcc7957b-b333-5c6b-f487-f7538085d799",
+        "accessEntryArn": "arn:aws:eks:us-west-2:$AWS_ACCOUNT_ID:access-entry/eks-workshop/role/$AWS_ACCOUNT_ID/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr/dcc7957b-b333-5c6b-f487-f7538085d799",
         "createdAt": "2024-04-29T17:46:47.836000+00:00",
         "modifiedAt": "2024-04-29T17:46:47.836000+00:00",
         "tags": {},

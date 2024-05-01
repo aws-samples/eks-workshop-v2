@@ -12,12 +12,12 @@ If you remember, in the existing configuration there is an identity for  EKSDeve
 ```yaml
     - "groups":
       - "view"
-      "rolearn": "arn:aws:iam::012345654321:role/EKSDevelopers"
+      "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers"
       "username": "developer"
 ```
 
 ```bash
-arn:aws:iam::012345654321:role/EKSDevelopers                                                    developer                               view
+arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers                                                    developer                               view
 ```
 
 First let's check which kind of access this  view group provides to the EKSDevelopers. Validate the ClusterRoleBinding with that name.
@@ -68,8 +68,8 @@ rules:
 This ClusterRole has a long list of apiGroups that can be read by the identity mapped to the view ClusterRoleBinding. You can validate that by impersonating that IAM Role.
 
 ```bash
-$ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn arn:aws:iam::012345654321:role/EKSDevelopers
-Updated context arn:aws:eks:us-west-2:012345654321:cluster/eks-workshop in /home/ec2-user/.kube/config
+$ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers
+Updated context arn:aws:eks:us-west-2:$AWS_ACCOUNT_ID:cluster/eks-workshop in /home/ec2-user/.kube/config
 ```
 
 Test a few commands like the examples below.
@@ -99,9 +99,9 @@ orders        orders-mysql-5dcdcccbf9-hst2n     1/1     Running   0          25h
 rabbitmq      rabbitmq-0                        1/1     Running   0          25h
 ui            ui-68495c748c-bzn92               1/1     Running   0          25h
 $ kubectl get clusterrole view -o yaml
-Error from server (Forbidden): clusterroles.rbac.authorization.k8s.io "view" is forbidden: User "arn:aws:sts::012345654321:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot get resource "clusterroles" in API group "rbac.authorization.k8s.io" at the cluster scope
+Error from server (Forbidden): clusterroles.rbac.authorization.k8s.io "view" is forbidden: User "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot get resource "clusterroles" in API group "rbac.authorization.k8s.io" at the cluster scope
 $ kubectl run pause --image public.ecr.aws/eks-distro/kubernetes/pause:3.9
-Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::012345654321:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot create resource "pods" in API group "" in the namespace "default"
+Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot create resource "pods" in API group "" in the namespace "default"
 ```
 
 As you can see, you are able to view Namespaced resources even for all Namespaces, but you're not allowed to view cluster-wide resources, nor create resources.
@@ -109,19 +109,19 @@ As you can see, you are able to view Namespaced resources even for all Namespace
 Create the access entry using the rolearn of the EKSDevelopers identity as the principal-arn in the awscli command, and associate with the existing Kubernetes Group view.
 
 ```bash
-$ aws eks create-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::012345654321:role/EKSDevelopers --kubernetes-groups view
+$ aws eks create-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers --kubernetes-groups view
 {
     "accessEntry": {
         "clusterName": "eks-workshop",
-        "principalArn": "arn:aws:iam::012345654321:role/EKSDevelopers",
+        "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers",
         "kubernetesGroups": [
             "view"
         ],
-        "accessEntryArn": "arn:aws:eks:us-west-2:012345654321:access-entry/eks-workshop/role/012345654321/EKSDevelopers/d6c7984b-a9e0-60f8-c69f-38e63f8846d6",
+        "accessEntryArn": "arn:aws:eks:us-west-2:$AWS_ACCOUNT_ID:access-entry/eks-workshop/role/$AWS_ACCOUNT_ID/EKSDevelopers/d6c7984b-a9e0-60f8-c69f-38e63f8846d6",
         "createdAt": "2024-04-30T19:59:34.955000+00:00",
         "modifiedAt": "2024-04-30T19:59:34.955000+00:00",
         "tags": {},
-        "username": "arn:aws:sts::012345654321:assumed-role/EKSDevelopers/{{SessionName}}",
+        "username": "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSDevelopers/{{SessionName}}",
         "type": "STANDARD"
     }
 }
@@ -130,11 +130,11 @@ $ aws eks create-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn a
 Check if this Access Entry is associated with any Access Policies.
 
 ```bash
-$ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::012345654321:role/EKSDevelopers
+$ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers
 {
     "associatedAccessPolicies": [],
     "clusterName": "eks-workshop",
-    "principalArn": "arn:aws:iam::012345654321:role/EKSDevelopers"
+    "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers"
 }
 ```
 
@@ -142,9 +142,9 @@ No Access Policies are mapped so far. Go back to the cluster-admin permissions (
 
 ```bash
 $ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
-Updated context arn:aws:eks:us-west-2:012345654321:cluster/eks-workshop in /home/ec2-user/.kube/config
-$ eksctl delete iamidentitymapping --cluster $EKS_CLUSTER_NAME  --arn arn:aws:iam::012345654321:role/EKSPowerUser
-2024-04-30 20:02:22 [ℹ]  removing identity "arn:aws:iam::012345654321:role/EKSPowerUser" from auth ConfigMap (username = "poweruser", groups = ["poweruser"])
+Updated context arn:aws:eks:us-west-2:$AWS_ACCOUNT_ID:cluster/eks-workshop in /home/ec2-user/.kube/config
+$ eksctl delete iamidentitymapping --cluster $EKS_CLUSTER_NAME  --arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSPowerUser
+2024-04-30 20:02:22 [ℹ]  removing identity "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSPowerUser" from auth ConfigMap (username = "poweruser", groups = ["poweruser"])
 $ kubectl -n kube-system get configmap aws-auth -o yaml
 apiVersion: v1
 data:
@@ -153,12 +153,12 @@ data:
   mapRoles: |
     - groups:
       - system:masters
-      rolearn: arn:aws:iam::012345654321:role/WSParticipantRole
+      rolearn: arn:aws:iam::$AWS_ACCOUNT_ID:role/WSParticipantRole
       username: admin
     - groups:
       - system:bootstrappers
       - system:nodes
-      rolearn: arn:aws:iam::012345654321:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr
+      rolearn: arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr
   mapUsers: |
     []
 kind: ConfigMap
@@ -173,8 +173,8 @@ metadata:
 The entry was removed from the aws-auth configMap. Now, impersonate the EKSDevelopers identity again, and revalidate the access.
 
 ```bash
-$ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn arn:aws:iam::012345654321:role/EKSDevelopers
-Updated context arn:aws:eks:us-west-2:012345654321:cluster/eks-workshop in /home/ec2-user/.kube/config
+$ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers
+Updated context arn:aws:eks:us-west-2:$AWS_ACCOUNT_ID:cluster/eks-workshop in /home/ec2-user/.kube/config
 $ kubectl get pods
 No resources found in default namespace.
 $ kubectl get pods -A
@@ -199,9 +199,9 @@ orders        orders-mysql-5dcdcccbf9-hst2n     1/1     Running   0          25h
 rabbitmq      rabbitmq-0                        1/1     Running   0          25h
 ui            ui-68495c748c-bzn92               1/1     Running   0          25h
 $ kubectl get clusterrole view -o yaml
-Error from server (Forbidden): clusterroles.rbac.authorization.k8s.io "view" is forbidden: User "arn:aws:sts::012345654321:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot get resource "clusterroles" in API group "rbac.authorization.k8s.io" at the cluster scope
+Error from server (Forbidden): clusterroles.rbac.authorization.k8s.io "view" is forbidden: User "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot get resource "clusterroles" in API group "rbac.authorization.k8s.io" at the cluster scope
 $ kubectl run pause --image public.ecr.aws/eks-distro/kubernetes/pause:3.9
-Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::012345654321:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot create resource "pods" in API group "" in the namespace "default"
+Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot create resource "pods" in API group "" in the namespace "default"
 ```
 
 The permissions were mapped exactly as they were before. With this you successfully migrated an identity "as-is" from the `aws-auth` configMap to EKS Access Entries!
