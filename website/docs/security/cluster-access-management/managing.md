@@ -16,7 +16,7 @@ Check which method your cluster is configured with `awscli`.
 ```bash
 $ aws eks describe-cluster —name $EKS_CLUSTER_NAME --query 'cluster.accessConfig'
 {
-"authenticationMode": "API_AND_CONFIG_MAP"
+  "authenticationMode": "API_AND_CONFIG_MAP"
 }
 ```
 
@@ -60,7 +60,7 @@ metadata:
 Another way to check the identities authorized to access the cluster is to use the eksctl tool, using the below command.
 
 ```bash
- $ eksctl get iamidentitymapping --cluster $EKS_CLUSTER_NAME
+$ eksctl get iamidentitymapping --cluster $EKS_CLUSTER_NAME
 ARN                                                                                             USERNAME                                GROUPS                                  ACCOUNT
 arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers                                                    developer                               view
 arn:aws:iam::$AWS_ACCOUNT_ID:role/WSParticipantRole                                                admin                                   system:masters
@@ -87,7 +87,7 @@ Here, the `group` developers is basically a Kubernetes group defined in ClusterR
       "username": "developer"
 ```
 
-```bash
+```
 arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers                                                    developer                               view
 ```
 
@@ -101,7 +101,7 @@ In the next example, the groups are `system:bootstrappers` and `system:nodes`git
       "username": "system:node:{{EC2PrivateDNSName}}"
 ```
 
-```bash
+```
 arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr system:node:{{EC2PrivateDNSName}}       system:bootstrappers,system:nodes
 ```
 
@@ -118,7 +118,7 @@ The last example has the map to the system:masters group, which is basically the
       "username": "admin"
 ```
 
-```bash
+```
 arn:aws:iam::$AWS_ACCOUNT_ID:role/WSParticipantRole                                                admin                                   system:masters
 arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr system:node:{{EC2PrivateDNSName}}       system:bootstrappers,system:nodes
 ```

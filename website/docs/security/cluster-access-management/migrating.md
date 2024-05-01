@@ -16,7 +16,7 @@ If you remember, in the existing configuration there is an identity for  EKSDeve
       "username": "developer"
 ```
 
-```bash
+```
 arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers                                                    developer                               view
 ```
 
