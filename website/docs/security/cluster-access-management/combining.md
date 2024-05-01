@@ -1,6 +1,6 @@
 ---
 title: "Combining Access Policies with Kubernetes Groups"
-sidebar_position: 13
+sidebar_position: 14
 ---
 
 ## Granting granular access level with EKS Access Policies and RBAC
