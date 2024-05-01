@@ -106,7 +106,7 @@ Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::$AWS_ACCOUN
 
 As you can see, you are able to view Namespaced resources even for all Namespaces, but you're not allowed to view cluster-wide resources, nor create resources.
 
-Create the access entry using the rolearn of the EKSDevelopers identity as the principal-arn in the `awscli` command, and associate with the existing Kubernetes Group view.
+Create the access entry using the `rolearn` of the EKSDevelopers identity as the principal-arn in the `awscli` command, and associate with the existing Kubernetes Group view.
 
 ```bash
 $ aws eks create-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers --kubernetes-groups view

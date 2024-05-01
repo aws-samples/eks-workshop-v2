@@ -58,7 +58,7 @@ $ aws eks list-access-policies
 }
 ```
 
-As explained earlier, Cluster Access Management API allows the combination of upstream RBAC with Access Policies supporting allow and pass (but not deny) on Kubernetes AuthZ decisions regarding API server requests. A deny descision will happen when both, the upstream RBAC and Amazon EKS authorizers can't determine the outcome of a request evaluation.
+As explained earlier, Cluster Access Management API allows the combination of upstream RBAC with Access Policies supporting allow and pass (but not deny) on Kubernetes AuthZ decision regarding API server requests. A deny decision will happen when both, the upstream RBAC and Amazon EKS authorizers can't determine the outcome of a request evaluation.
 The below diagram illustrates the workflow followed by Cluster Access Management API to provide Authentication and Authorization for AWS IAM Principals to Amazon EKS Clusters.
 
 ![CAM Auth Workflow](./assets/cam-workflow.png)
