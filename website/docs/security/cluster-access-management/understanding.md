@@ -11,17 +11,18 @@ The Cluster Access Management API, is a feature of the AWS API available for Ama
 
 The Cluster Access Management API relies on two basic concepts:
 
-- Access Entries (Authentication): A cluster identity directly linked to an AWS IAM principal (user or role) allowed to authenticate to an Amazon EKS cluster. Access entries are bound to clusters, so unless the cluster is created and set to use the Cluster Access Management API as authentication method, no Access Entries will exist for that cluster.
-- Access Policies (Authorization): Are Amazon EKS specific policies that provides the authorization for an Access Entry to perform actions in the Amazon EKS cluster. Access Policies are Account based resources, this means that they will exist in your AWS Account, even if no cluster is deployed.
+- **Access Entries (Authentication)**: A cluster identity directly linked to an AWS IAM principal (user or role) allowed to authenticate to an Amazon EKS cluster. Access entries are bound to clusters, so unless the cluster is created and set to use the Cluster Access Management API as authentication method, no Access Entries will exist for that cluster.
+- **Access Policies (Authorization)**: Are Amazon EKS specific policies that provides the authorization for an Access Entry to perform actions in the Amazon EKS cluster. Access Policies are Account based resources, this means that they will exist in your AWS Account, even if no cluster is deployed.
   As of today, Amazon EKS supports only a few predefined and AWS managed policies. Access policies are not IAM entities and are defined and managed by Amazon EKS based on default Kubernetes default Cluster Roles, and are mapped like this.
 
-|-|-|
 |Access Policy|RBAC|Description|
+|-|-|-|
 |AmazonEKSClusterAdminPolicy|`cluster-admin`|Grants administrator access to a cluster|
 |AmazonEKSAdminPolicy|`admin`|Grants most permissions to resources, usually scoped to a Namespace|
 |AmazonEKSAdminViewPolicy|`view`|Grants access to list/view all resources in a cluster, including Secrets. Basically a view policy cluster-wide scoped|
 |AmazonEKSEditPolicy|`edit`|Grants access to edit most Kubernetes resources, usually scoped to a Namespace|
 |AmazonEKSViewPolicy|`view`|Grants access to list/view view most Kubernetes resources, usually scoped to a Namespace|
+|AmazonEMRJobPolicy|N/A|Custom access to run Amazon EMR Jobs on Amazon EKS Clusters|
 
 Access Policies are being often updated by Amazon EKS, to check the list of available Access Policies in your account, run the following command.
 
