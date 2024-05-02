@@ -24,7 +24,9 @@ NAME            CREATED AT
 cluster-admin   2024-04-29T17:37:43Z
 ```
 
-You still have cluster-admin access, right? That's because in the aws-auth configMap, there is a mapping to your AWS STS Identity, with the system:masters group.
+You still have cluster-admin access, right? That's because the IAM Role you are using is not the one that created the cluster, this was done by a infrastructure pipeline. 
+
+Now, in the `aws-auth` configMap, there is a mapping to your AWS STS Identity, with the `system:masters` group.
 
 ```yaml
 - "groups":
@@ -42,7 +44,7 @@ $ aws sts get-caller-identity --query 'Arn'
 
 That matches the entry! The only difference is that the entry is mapped to the source AWS IAM Role, other than the AWS STS Identity, so the Arn prefix is a bit different.
 
-So let's go ahead and remove that entry as well.
+So let's go ahead and remove that entry as well. 
 
 ```bash
 $ eksctl delete iamidentitymapping --cluster $EKS_CLUSTER_NAME  --arn arn:aws:iam::$AWS_ACCOUNT_ID:role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1
@@ -58,7 +60,8 @@ $ kubectl get clusterrole cluster-admin
 error: You must be logged in to the server (Unauthorized)
 ```
 
-Not authorized, right? Now you have removed the cluster-admin access to the cluster! If this happened in a cluster set with the CONFIG_MAP only authentication mode, and there are none other cluster-admins set to the cluster, you would have completely lost that access to the cluster, because you can't even list or read the aws-auth configMap.
+Not authorized, right? Now you have removed the cluster-admin access to the cluster, and you have no access at all! 
+If this happened in a cluster set with the `CONFIG_MAP` only authentication mode, and there are none other cluster-admins set to the cluster, you would have completely lost that access to the cluster, because you can't even list or read the `aws-auth` configMap to add your identity again.
 
 Now with the Cluster Access Management API, it's possible to regain that access with simple `awscli` commands. First get the Arn of your IAM Role.
 

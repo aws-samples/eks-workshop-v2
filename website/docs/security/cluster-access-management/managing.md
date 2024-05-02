@@ -22,7 +22,7 @@ $ aws eks describe-cluster —name $EKS_CLUSTER_NAME --query 'cluster.accessConf
 }
 ```
 
-As you can see the cluster is set to use both API_AND_CONFIG_MAP for authentication. Let's then take a look on the existing identities that are authorized to access the cluster checking the aws-auth configMap.
+As you can see the cluster is set to use both `API_AND_CONFIG_MAP` for authentication. Let's then take a look on the existing identities that are authorized to access the cluster checking the aws-auth configMap.
 
 ```bash
 $ kubectl -n kube-system get configmap aws-auth -o yaml
