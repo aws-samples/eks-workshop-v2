@@ -77,7 +77,7 @@ Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::$AWS_ACCOUN
 ```
 
 Exactly the same permissions, right?
-What about granting a more granular access, and provide an edit permission to the EKSDevelopers using a Kubernetes Group. There is a RoleBinding called developers previously created in the default Namespace.
+What about granting a more granular access, and provide an edit permission to the EKSDevelopers using a Kubernetes Group. There is a RoleBinding called developers previously created in the `default` Namespace.
 
 Run the command below to update the EKSDevelopers Access Entry and associate it with the developers group.
 
@@ -133,7 +133,7 @@ $ kubectl run pause --image public.ecr.aws/eks-distro/kubernetes/pause:3.9
 pod/pause created
 ```
 
-You can see that you can now create resources on the default Namespace. Try to delete the newly created Pod, and create that in the ui Namespace.
+You can see that you can now create resources on the `default` Namespace. Try to delete the newly created Pod, and create that in the `ui` Namespace.
 
 ```bash
 $ kubectl delete pod pause
@@ -142,7 +142,7 @@ WSParticipantRole:/eks-workshop $ kubectl -n ui run pause --image public.ecr.aws
 Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot create resource "pods" in API group "" in the namespace "ui"
 ```
 
-The creation was forbidden because the RoleBinding is restricted to the default Namespace. Go back to the cluster-admin permissions to check that, since edit access level, don't allow you to view authentication and authorization related resources.
+The creation was forbidden because the RoleBinding is restricted to the `default` Namespace. Go back to the cluster-admin permissions to check that, since edit access level, don't allow you to view authentication and authorization related resources.
 
 ```bash
 $ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
@@ -187,7 +187,7 @@ $ aws eks update-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn a
 }
 ```
 
-Create another association with this Access Entry, now using the AmazonEKSEditPolicy, scoped to the default Namespace.
+Create another association with this Access Entry, now using the AmazonEKSEditPolicy, scoped to the `default` Namespace.
 
 ```bash
 $ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy --access-scope type=namespace,namespaces=default
@@ -275,4 +275,4 @@ Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::$AWS_ACCOUN
 
 You have achieved the same granular permissions using just the Cluster Access Management API!
 
-In conclusion, the Cluster Access Management API, facilitates the Authentication and Authorization management with Amazon EKS Cluster without the need to interact with the Kubernetes API. You can also mix and match Access Policies with RBAC and Kubernetes Groups to achieve a more granular level of permissions if you need custom policies and scopes that are not covered so far in the EKS Access Policies.
+In conclusion, the Cluster Access Management API, facilitates the Authentication and Authorization management with Amazon EKS Cluster without the need to interact with the Kubernetes API. You can also mix and match Access Policies with RBAC and Kubernetes Groups to achieve a more granular level of permissions if you need custom RBACs and scopes that are not covered so far in the EKS Access Policies.

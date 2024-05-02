@@ -1,13 +1,13 @@
 ---
-title: "Migrating an existing aws-auth Identity Mapping to CAM"
+title: "Migrating an existing `aws-auth` Identity Mapping to CAM"
 sidebar_position: 13
 ---
 
 ## Migrating identities "as-is"
 
-As the last step for this module, you'll go through the migration process from the aws-auth configMap identity mappings to the Cluster Access Management API format. In the last section, you did create a new Access Entry and associated an Access Policy with a cluster wide scope. Now you'll explore how to associate policies scoped by Namespace and how to associate Kubernetes Groups using RBAC permissions to Access Entries.
+As the last step for this module, you'll go through the migration process from the `aws-auth` configMap identity mappings to the Cluster Access Management API format. In the last section, you did create a new Access Entry and associated an Access Policy with a cluster wide scope. Now you'll explore how to associate policies scoped by Namespace and how to associate Kubernetes Groups using RBAC permissions to Access Entries.
 
-If you remember, in the existing configuration there is an identity for EKSDevelopers mapped to a view group in the aws-auth configMap.
+If you remember, in the existing configuration there is an identity for EKSDevelopers mapped to a view group in the `aws-auth` configMap.
 
 ```yaml
 - "groups":
@@ -138,7 +138,7 @@ $ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --pri
 }
 ```
 
-No Access Policies are mapped so far. Go back to the cluster-admin permissions (default IAM Role), and delete the respective identity mapping on the aws-auth configMap using the eksctl cli tool.
+No Access Policies are mapped so far. Go back to the cluster-admin permissions (default IAM Role), and delete the respective identity mapping on the `aws-auth` configMap using the eksctl cli tool.
 
 ```bash
 $ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
@@ -170,7 +170,7 @@ metadata:
   uid: 29fc3275-6e5a-4acc-93bc-c31ed4869b7e
 ```
 
-The entry was removed from the aws-auth configMap. Now, impersonate the EKSDevelopers identity again, and revalidate the access.
+The entry was removed from the `aws-auth` configMap. Now, impersonate the EKSDevelopers identity again, and revalidate the access.
 
 ```bash
 $ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers
