@@ -4,7 +4,7 @@ locals {
   map_users    = try(yamldecode(data.kubernetes_config_map_v1.aws_auth.data.mapUsers), "")
   map_roles    = yamldecode(data.kubernetes_config_map_v1.aws_auth.data.mapRoles)
   add_roles = concat([{
-    rolearn  = aws_iam_role.power_user.arn
+    rolearn  = aws_iam_role.eks_developers.arn
     username = "developer"
     groups = [
       "developers"
@@ -83,20 +83,20 @@ data "aws_iam_policy_document" "view_only" {
 }
 
 
-resource "aws_iam_role" "developers" {
+resource "aws_iam_role" "eks_developers" {
   name               = "EKSDevelopers"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
-resource "aws_iam_policy" "developers" {
+resource "aws_iam_policy" "eks_developers" {
   name   = "EKSDevelopers"
   policy = data.aws_iam_policy_document.view_only.json
 }
 
-resource "aws_iam_role_policy_attachment" "developers" {
-  policy_arn = aws_iam_policy.view_only.arn
-  role       = aws_iam_role.view_only.name
+resource "aws_iam_role_policy_attachment" "eks_developers" {
+  policy_arn = aws_iam_policy.eks_developers.arn
+  role       = aws_iam_role.eks_developers.name
 }
 
 data "kubernetes_config_map_v1" "aws_auth" {
