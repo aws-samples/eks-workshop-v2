@@ -1,5 +1,5 @@
 ---
-title: "Migrating an existing `aws-auth` Identity Mapping to CAM"
+title: "Migrating an existing aws-auth Identity Mapping to Cluster Access Management API"
 sidebar_position: 13
 ---
 

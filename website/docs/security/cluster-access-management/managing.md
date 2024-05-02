@@ -11,7 +11,7 @@ Now that you have a basic understanding of Cluster Access Management API, let's 
 2. `API_AND_CONFIG_MAP`: Source authenticated IAM principals from both EKS Access Entry APIs and the aws-auth configMap, prioritizing the Access Entries. Ideal to migrate existing aws-auth permissions to Access Entries.
 3. `API`: Exclusively rely on EKS Access Entry APIs. **This is recommended method.**
 
-One thing to take in consideration is that you can update your cluster configuration from `CONFIG_MAP` to `API_AND_CONFIG_MAP` and from `API_AND_CONFIG_MAP` to `API`, but not the other way, which means that this is a one way operation, as soon as you move towards using the Cluster Management API, you won't be able to revert that change to rely on the `aws-auth` configMap authentication.
+One thing to take in consideration is that you can update your cluster configuration from `CONFIG_MAP` to `API_AND_CONFIG_MAP` and from `API_AND_CONFIG_MAP` to `API`, but not the other way, which means that this is a one way operation, as soon as you move towards using the Cluster Access Management API, you won't be able to revert that change to rely on the `aws-auth` configMap authentication.
 
 Check which method your cluster is configured with `awscli`.
 
