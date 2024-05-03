@@ -16,7 +16,7 @@ One thing to take in consideration is that you can update your cluster configura
 Check which method your cluster is configured with `awscli`.
 
 ```bash
-$ aws eks describe-cluster —name $EKS_CLUSTER_NAME --query 'cluster.accessConfig'
+$ aws eks describe-cluster --name $EKS_CLUSTER_NAME --query 'cluster.accessConfig'
 {
   "authenticationMode": "API_AND_CONFIG_MAP"
 }
@@ -32,7 +32,7 @@ data:
     []
   mapRoles: |
     - "groups":
-      - "view"
+      - "developers"
       "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers"
       "username": "developer"
     - "groups":
@@ -59,11 +59,11 @@ metadata:
   uid: 29fc3275-6e5a-4acc-93bc-c31ed4869b7e
 ```
 
-Another way to check the identities authorized to access the cluster is to use the eksctl tool, using the below command.
+Another way to check the identities authorized to access the cluster is to use the `eksctl` tool, using the below command.
 
 ```bash
 $ eksctl get iamidentitymapping --cluster $EKS_CLUSTER_NAME
-ARN                                                                                             USERNAME                                GROUPS                                  ACCOUNT
+ARN                                                                                                USERNAME                                GROUPS                                  ACCOUNT
 arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers                                                    developer                               view
 arn:aws:iam::$AWS_ACCOUNT_ID:role/WSParticipantRole                                                admin                                   system:masters
 arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr system:node:{{EC2PrivateDNSName}}       system:bootstrappers,system:nodes
@@ -72,19 +72,14 @@ arn:aws:iam::$AWS_ACCOUNT_ID:role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC
 
 As you could see there are a few identities allowed to access the cluster, each one with a specific access scope, let's dive deep on each one of those, since we'll use this information to translated the existing setup using the aws-auth configMap, to EKS Access Entries.
 
-Notice that on the aws-auth configMap, each array under the mapRoles section, starts with groups, which translates to a list of Kubernetes groups or the Kubernetes Roles and ClusterRoles. Each group, is mapped to an AWS IAM Role, and an abstract username. Let's see a couple of examples.
+Notice that on the `aws-auth` configMap, each array under the `mapRoles` section, starts with `groups`, which translates to a list of Kubernetes groups or defined on the Kubernetes RoleBindings and ClusterRoleBindings. Each group, is mapped to an AWS IAM Role, and an abstract username. 
+Same can be seen in the columns of the `iamidentitymapping` list.
 
-```bash
-$ kubectl get clusterrolebindings | grep -e ^admin -e ^view
-admin                    2024-04-29T17:37:43Z
-view                     2024-04-29T17:37:43Z
-```
-
-Here, the `group` developers is basically a Kubernetes group defined in ClusterRoleBindings, and the Role after `rolearn`. is the IAM Role that's mapped to those groups.
+Let's see a couple of examples.
 
 ```yaml
 - "groups":
-    - "view"
+    - "developers"
   "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers"
   "username": "developer"
 ```
@@ -93,7 +88,15 @@ Here, the `group` developers is basically a Kubernetes group defined in ClusterR
 arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers                                                    developer                               view
 ```
 
-In the next example, the groups are `system:bootstrappers` and `system:nodes`git , which is mapped to the IAM Role assigned to the Managed Node Group Instance Profile.
+```bash
+$ kubectl get clusterrolebindings -o custom-columns=NAME:.metadata.name,GROUP:.subjects[].name | grep -e GROUP -e developers
+NAME                                                     GROUP
+view                                                     developers
+```
+
+The above shows that the group `developers` is basically a Kubernetes group defined in the `view` ClusterRoleBinding. The Role after `rolearn` is the IAM Role that's mapped to those groups.
+
+In the next example, the groups are `system:bootstrappers` and `system:nodes` git , which is mapped to the IAM Role assigned to the Managed Node Group Instance Profile.
 
 ```yaml
 - "groups":
@@ -107,7 +110,7 @@ In the next example, the groups are `system:bootstrappers` and `system:nodes`git
 arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr system:node:{{EC2PrivateDNSName}}       system:bootstrappers,system:nodes
 ```
 
-The last example has the map to the system:masters group, which is basically the cluster-admin.
+The last example has the map to the `system:masters` group, which is the cluster-admin ClusterRoleBinding.
 
 ```yaml
 - "groups":
@@ -126,10 +129,9 @@ arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanc
 ```
 
 ```bash
-$ kubectl get clusterrolebindings cluster-admin -o yaml | yq .subjects
-- apiGroup: rbac.authorization.k8s.io
-  kind: Group
-  name: system:masters
+$ kubectl get clusterrolebindings -o custom-columns=NAME:.metadata.name,GROUP:.subjects[].name | grep -e GROUP -e system:masters
+NAME                                                     GROUP
+cluster-admin                                            system:masters
 ```
 
 Since the cluster is already using the API as one of the authentication options, EKS already mapped a couple of default Access Entries to the cluster. Let's check them.
@@ -150,10 +152,9 @@ The Cluster Creator, belongs to the entity that actually created the cluster, ei
 
 If you describe these Access Entries, you'll be able to see a similar mapping shown on the previous examples using the aws-auth configMap. Let's see the one mapped to the Managed Node Group.
 
-> Remember to replace the principalArn, with the one existing in your cluster.
-
 ```bash
-$ aws eks describe-access-entry --cluster $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-647HpxD4e9mr
+$ NODE_ROLE=$(aws eks list-access-entries --cluster $EKS_CLUSTER_NAME --output text | awk '/Node/ {print $2}')
+$ aws eks describe-access-entry --cluster $EKS_CLUSTER_NAME --principal-arn $NODE_ROLE
 {
     "accessEntry": {
         "clusterName": "eks-workshop",
@@ -173,4 +174,4 @@ $ aws eks describe-access-entry --cluster $EKS_CLUSTER_NAME --principal-arn arn:
 
 Notice the kubernetesGroups, principalArn, and username that are the same values you saw on the configMap example.
 
-Go ahead and try to describe the other Access Entry, that belongs to the Cluster Creator, and doesn't exist on the configMap.
+Go ahead and try to describe the other Access Entry listed earlier that belongs to the Cluster Creator and doesn't exist on the configMap.
