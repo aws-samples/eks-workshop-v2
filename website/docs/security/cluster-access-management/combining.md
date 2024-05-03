@@ -14,7 +14,7 @@ Let's dive deep on that. As we validated, there were no Access Policies linked t
 Without changing back to the cluster-admin permissions on `kubeconfig`, update the EKSDevelopers Access Entry, to use the AmazonEKSViewPolicy Access Policy, and remove the Kubernetes Group associated earlier.
 
 ```bash
-$ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy --access-scope type=cluster
+$ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy --access-scope type=cluster
 {
     "clusterName": "eks-workshop",
     "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly",
@@ -28,7 +28,7 @@ $ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME --principal-a
         "modifiedAt": "2024-04-30T22:51:05.514000+00:00"
     }
 }
-$ aws eks update-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly
+$ aws eks update-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers
 {
     "accessEntry": {
         "clusterName": "eks-workshop",
@@ -76,25 +76,25 @@ $ kubectl run pause --image public.ecr.aws/eks-distro/kubernetes/pause:3.9
 Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot create resource "pods" in API group "" in the namespace "default"
 ```
 
-Exactly the same permissions, right?
-What about granting a more granular access, and provide an edit permission to the EKSDevelopers using a Kubernetes Group. There is a RoleBinding called developers previously created in the `default` Namespace.
+Exactly the same permissions, right?  
+What about granting a more granular access, and provide an `edit` permission to the EKSDevelopers using a Kubernetes Group. There is a RoleBinding called `app1_dev` previously created in the `default` Namespace. This could be for a specific application development restricted to a Namespace, for example.
 
-Run the command below to update the EKSDevelopers Access Entry and associate it with the developers group.
+Run the command below to update the EKSDevelopers Access Entry and associate it with the `developers` group.
 
 ```bash
-$ aws eks update-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly --kubernetes-groups developers
+$ aws eks update-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers --kubernetes-groups app1_dev
 {
     "accessEntry": {
         "clusterName": "eks-workshop",
-        "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly",
+        "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers",
         "kubernetesGroups": [
             "developers"
         ],
-        "accessEntryArn": "arn:aws:eks:us-west-2:$AWS_ACCOUNT_ID:access-entry/eks-workshop/role/$AWS_ACCOUNT_ID/EKSViewOnly/aec7982d-425b-3e2d-7c4e-92e091865fbc",
+        "accessEntryArn": "arn:aws:eks:us-west-2:$AWS_ACCOUNT_ID:access-entry/eks-workshop/role/$AWS_ACCOUNT_ID/EKSDevelopers/aec7982d-425b-3e2d-7c4e-92e091865fbc",
         "createdAt": "2024-04-30T18:53:09.753000+00:00",
         "modifiedAt": "2024-04-30T23:01:15.486000+00:00",
         "tags": {},
-        "username": "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSViewOnly/{{SessionName}}",
+        "username": "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSDevelopers/{{SessionName}}",
         "type": "STANDARD"
     }
 }
@@ -138,7 +138,7 @@ You can see that you can now create resources on the `default` Namespace. Try to
 ```bash
 $ kubectl delete pod pause
 pod "pause" deleted
-WSParticipantRole:/eks-workshop $ kubectl -n ui run pause --image public.ecr.aws/eks-distro/kubernetes/pause:3.9
+$ kubectl -n ui run pause --image public.ecr.aws/eks-distro/kubernetes/pause:3.9
 Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/EKSViewOnly/EKSGetTokenAuth" cannot create resource "pods" in API group "" in the namespace "ui"
 ```
 
@@ -147,15 +147,15 @@ The creation was forbidden because the RoleBinding is restricted to the `default
 ```bash
 $ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
 Updated context arn:aws:eks:us-west-2:$AWS_ACCOUNT_ID:cluster/eks-workshop in /home/ec2-user/.kube/config
-$ kubectl get rolebinding developers -o yaml
+$ kubectl get rolebinding app1_dev -o yaml 
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  creationTimestamp: "2024-04-30T22:57:53Z"
-  name: developers
+  creationTimestamp: "2024-05-03T01:14:29Z"
+  name: app1_dev
   namespace: default
-  resourceVersion: "326860"
-  uid: 2ecd8502-0d5c-482b-ba54-8621fab36b70
+  resourceVersion: "359181"
+  uid: 08b9238b-5b0c-447e-8a94-8085fc633f72
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -163,15 +163,15 @@ roleRef:
 subjects:
 - apiGroup: rbac.authorization.k8s.io
   kind: Group
-  name: developers
+  name: app1_dev
 ```
 
-Now, since this is a simple edit policy, it is basically the same as the AmazonEKSEditPolicy, Access Policy. Let's try then to achieve the same permissions level using just those.
+Now, since this is a simple `edit` policy, it is the same as the `AmazonEKSEditPolicy`, Access Policy. Let's try then to achieve the same permissions level using just those.
 
 Remove the Kubernetes Group associated with the EKSDevelopers Access Entry.
 
 ```bash
-$ aws eks update-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly
+$ aws eks update-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers
 {
     "accessEntry": {
         "clusterName": "eks-workshop",
@@ -190,10 +190,10 @@ $ aws eks update-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn a
 Create another association with this Access Entry, now using the AmazonEKSEditPolicy, scoped to the `default` Namespace.
 
 ```bash
-$ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy --access-scope type=namespace,namespaces=default
+$ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy --access-scope type=namespace,namespaces=default
 {
     "clusterName": "eks-workshop",
-    "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly",
+    "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers",
     "associatedAccessPolicy": {
         "policyArn": "arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy",
         "accessScope": {
@@ -206,7 +206,7 @@ $ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME --principal-a
         "modifiedAt": "2024-04-30T23:17:03.194000+00:00"
     }
 }
-$ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly
+$ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers
 {
     "associatedAccessPolicies": [
         {
@@ -231,14 +231,15 @@ $ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --pri
         }
     ],
     "clusterName": "eks-workshop",
-    "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly"
+    "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers"
 }
 ```
 
+You see that's possible to map more than one Access Policy to the same Access Entry, even with different scopes. You have a cluster wide `view` policy and an `edit` policy restricted to the `default` Namespace.  
 Impersonated the EKSDevelopers Role one last time, and test your access.
 
 ```bash
-$ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSViewOnly
+$ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers
 Updated context arn:aws:eks:us-west-2:$AWS_ACCOUNT_ID:cluster/eks-workshop in /home/ec2-user/.kube/config
 $ kubectl get pods
 No resources found in default namespace.
