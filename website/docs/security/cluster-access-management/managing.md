@@ -72,7 +72,7 @@ arn:aws:iam::$AWS_ACCOUNT_ID:role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC
 
 As you could see there are a few identities allowed to access the cluster, each one with a specific access scope, let's dive deep on each one of those, since we'll use this information to translated the existing setup using the aws-auth configMap, to EKS Access Entries.
 
-Notice that on the `aws-auth` configMap, each array under the `mapRoles` section, starts with `groups`, which translates to a list of Kubernetes groups or defined on the Kubernetes RoleBindings and ClusterRoleBindings. Each group, is mapped to an AWS IAM Role, and an abstract username. 
+Notice that on the `aws-auth` configMap, each array under the `mapRoles` section, starts with `groups`, which translates to a list of Kubernetes groups or defined on the Kubernetes RoleBindings and ClusterRoleBindings. Each group, is mapped to an AWS IAM Role, and an abstract username.
 Same can be seen in the columns of the `iamidentitymapping` list.
 
 Let's see a couple of examples.

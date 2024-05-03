@@ -10,9 +10,9 @@ As explained earlier with the Cluster Access Management API, it is possible to r
 > Remember to replace the principalArn, with the one existing in your cluster.
 
 ```bash
-$ CLUSTER_CREATOR=$(aws eks list-access-entries --cluster $EKS_CLUSTER_NAME --output text | awk '/CodeBuild/ {print $2}')       
+$ CLUSTER_CREATOR=$(aws eks list-access-entries --cluster $EKS_CLUSTER_NAME --output text | awk '/CodeBuild/ {print $2}')
 $ aws eks delete-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn $CLUSTER_CREATOR
-$ aws eks list-access-entries --cluster $EKS_CLUSTER_NAME 
+$ aws eks list-access-entries --cluster $EKS_CLUSTER_NAME
 {
     "accessEntries": [
         "arn:aws:iam::143095623777:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-wtZ9gonWSMRn"

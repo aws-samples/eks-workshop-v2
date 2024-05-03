@@ -147,7 +147,7 @@ The creation was forbidden because the RoleBinding is restricted to the `default
 ```bash
 $ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
 Updated context arn:aws:eks:us-west-2:$AWS_ACCOUNT_ID:cluster/eks-workshop in /home/ec2-user/.kube/config
-$ kubectl get rolebinding app1_dev -o yaml 
+$ kubectl get rolebinding app1_dev -o yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
