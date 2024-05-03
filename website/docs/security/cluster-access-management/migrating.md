@@ -5,13 +5,13 @@ sidebar_position: 13
 
 ## Migrating identities "as-is"
 
-As the last step for this module, you'll go through the migration process from the `aws-auth` configMap identity mappings to the Cluster Access Management API format. In the last section, you did create a new Access Entry and associated an Access Policy with a cluster wide scope. Now you'll explore how to associate policies scoped by Namespace and how to associate Kubernetes Groups using RBAC permissions to Access Entries.
+As the next step for this module, you'll go through the migration process from the `aws-auth` configMap identity mappings to the Cluster Access Management API format. In the last section, you did create a new Access Entry and associated an Access Policy with a cluster wide scope. Now you'll explore how to associate associate Kubernetes Groups using RBAC permissions to Access Entries.
 
 If you remember, in the existing configuration there is an identity for EKSDevelopers mapped to a view group in the `aws-auth` configMap.
 
 ```yaml
 - "groups":
-    - "view"
+    - "developers"
   "rolearn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers"
   "username": "developer"
 ```
@@ -41,7 +41,7 @@ subjects:
   name: view
 ```
 
-You can see in the roleRef section that it's linked with the view ClusterRole. Take a look on that to see the specific authorization access.
+You can see in the roleRef section that it's linked with the `view` ClusterRole. Take a look on that to see the specific authorization access.
 
 ```bash
 $ kubectl get clusterrole view -o yaml
@@ -65,7 +65,7 @@ rules:
 ... truncated output
 ```
 
-This ClusterRole has a long list of apiGroups that can be read by the identity mapped to the view ClusterRoleBinding. You can validate that by impersonating that IAM Role.
+This ClusterRole has a long list of apiGroups that can be read by the identity mapped to the `view` ClusterRoleBinding. You can validate that by impersonating that IAM Role.
 
 ```bash
 $ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers
@@ -106,16 +106,16 @@ Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::$AWS_ACCOUN
 
 As you can see, you are able to view Namespaced resources even for all Namespaces, but you're not allowed to view cluster-wide resources, nor create resources.
 
-Create the access entry using the `rolearn` of the EKSDevelopers identity as the principal-arn in the `awscli` command, and associate with the existing Kubernetes Group view.
+Create the access entry using the `rolearn` of the EKSDevelopers identity as the principal-arn in the `awscli` command, and associate with the existing **Kubernetes Group `developers`**.
 
 ```bash
-$ aws eks create-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers --kubernetes-groups view
+$ aws eks create-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers --kubernetes-groups developers
 {
     "accessEntry": {
         "clusterName": "eks-workshop",
         "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers",
         "kubernetesGroups": [
-            "view"
+            "developers"
         ],
         "accessEntryArn": "arn:aws:eks:us-west-2:$AWS_ACCOUNT_ID:access-entry/eks-workshop/role/$AWS_ACCOUNT_ID/EKSDevelopers/d6c7984b-a9e0-60f8-c69f-38e63f8846d6",
         "createdAt": "2024-04-30T19:59:34.955000+00:00",
@@ -143,8 +143,8 @@ No Access Policies are mapped so far. Go back to the cluster-admin permissions (
 ```bash
 $ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
 Updated context arn:aws:eks:us-west-2:$AWS_ACCOUNT_ID:cluster/eks-workshop in /home/ec2-user/.kube/config
-$ eksctl delete iamidentitymapping --cluster $EKS_CLUSTER_NAME  --arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSPowerUser
-2024-04-30 20:02:22 [ℹ]  removing identity "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSPowerUser" from auth ConfigMap (username = "poweruser", groups = ["poweruser"])
+$ eksctl delete iamidentitymapping --cluster $EKS_CLUSTER_NAME  --arn arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers
+2024-04-30 20:02:22 [ℹ]  removing identity "arn:aws:iam::$AWS_ACCOUNT_ID:role/EKSDevelopers" from auth ConfigMap (username = "developer", groups = ["developers"])
 $ kubectl -n kube-system get configmap aws-auth -o yaml
 apiVersion: v1
 data:

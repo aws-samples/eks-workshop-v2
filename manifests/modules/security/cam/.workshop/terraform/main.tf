@@ -135,19 +135,19 @@ resource "kubernetes_cluster_role_binding_v1" "view" {
   }
 }
 
-resource "kubernetes_role_binding_v1" "developers" {
-  metadata {
-    name      = "developers"
-    namespace = "default"
-  }
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = "edit"
-  }
-  subject {
-    kind      = "Group"
-    name      = "developers"
-    api_group = "rbac.authorization.k8s.io"
-  }
-}
+# resource "kubernetes_role_binding_v1" "developers" {
+#   metadata {
+#     name      = "developers"
+#     namespace = "default"
+#   }
+#   role_ref {
+#     api_group = "rbac.authorization.k8s.io"
+#     kind      = "ClusterRole"
+#     name      = "edit"
+#   }
+#   subject {
+#     kind      = "Group"
+#     name      = "developers"
+#     api_group = "rbac.authorization.k8s.io"
+#   }
+# }
