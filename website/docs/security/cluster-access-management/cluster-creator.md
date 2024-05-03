@@ -10,7 +10,14 @@ As explained earlier with the Cluster Access Management API, it is possible to r
 > Remember to replace the principalArn, with the one existing in your cluster.
 
 ```bash
-$ aws eks delete-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/workshop-stack-TesterCodeBuildRoleC9232875-RyhCKIXckZri
+$ CLUSTER_CREATOR=$(aws eks list-access-entries --cluster $EKS_CLUSTER_NAME --output text | awk '/CodeBuild/ {print $2}')       
+$ aws eks delete-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn $CLUSTER_CREATOR
+$ aws eks list-access-entries --cluster $EKS_CLUSTER_NAME 
+{
+    "accessEntries": [
+        "arn:aws:iam::143095623777:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-wtZ9gonWSMRn"
+    ]
+}
 ```
 
 Test your access to the cluster.
@@ -24,9 +31,9 @@ NAME            CREATED AT
 cluster-admin   2024-04-29T17:37:43Z
 ```
 
-You still have cluster-admin access, right? That's because the IAM Role you are using is not the one that created the cluster, this was done by a infrastructure pipeline. 
+You still have cluster-admin access, right? That's because the IAM Role you are using is not the one that created the cluster, this was done by a infrastructure pipeline.
 
-Now, in the `aws-auth` configMap, there is a mapping to your AWS STS Identity, with the `system:masters` group.
+Now, in the `aws-auth` configMap, there is a mapping to your AWS STS Identity, with the `system:masters` group, similar to the one below.
 
 ```yaml
 - "groups":
@@ -35,19 +42,20 @@ Now, in the `aws-auth` configMap, there is a mapping to your AWS STS Identity, w
   "username": "admin"
 ```
 
-Double check your identity.
+Check the AWS STS Identity you are using.
 
 ```bash
 $ aws sts get-caller-identity --query 'Arn'
 "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1/i-06b2ef4cc8104bd8a"
 ```
 
-That matches the entry! The only difference is that the entry is mapped to the source AWS IAM Role, other than the AWS STS Identity, so the Arn prefix is a bit different.
+That name matches the entry! The only difference is that the entry is mapped to the source AWS IAM Role, other than the AWS STS Identity, so the Arn prefix is a bit different.
 
-So let's go ahead and remove that entry as well. 
+So let's go ahead and remove that entry as well.
 
 ```bash
-$ eksctl delete iamidentitymapping --cluster $EKS_CLUSTER_NAME  --arn arn:aws:iam::$AWS_ACCOUNT_ID:role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1
+$ ROLE_NAME=$(aws sts get-caller-identity --query 'Arn' | cut -d/ -f2)
+$ eksctl delete iamidentitymapping --cluster $EKS_CLUSTER_NAME  --arn arn:aws:iam::$AWS_ACCOUNT_ID:role/$ROLE_NAME
 2024-04-29 21:50:20 [ℹ]  removing identity "arn:aws:iam::$AWS_ACCOUNT_ID:role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1" from auth ConfigMap (username = "admin", groups = ["system:masters"])
 ```
 
@@ -60,8 +68,8 @@ $ kubectl get clusterrole cluster-admin
 error: You must be logged in to the server (Unauthorized)
 ```
 
-Not authorized, right? Now you have removed the cluster-admin access to the cluster, and you have no access at all! 
-If this happened in a cluster set with the `CONFIG_MAP` only authentication mode, and there are none other cluster-admins set to the cluster, you would have completely lost that access to the cluster, because you can't even list or read the `aws-auth` configMap to add your identity again.
+Not authorized, right? This error shows that you're not logged into the cluster. So now you have removed your cluster-admin access to the cluster, and you have no access at all!
+If this happened in a cluster set with the `CONFIG_MAP` only authentication mode, and there are none other cluster-admins set, you would have completely lost that access to the cluster, because you can't even list or read the `aws-auth` configMap to add your identity again.
 
 Now with the Cluster Access Management API, it's possible to regain that access with simple `awscli` commands. First get the Arn of your IAM Role.
 
@@ -69,12 +77,12 @@ Now with the Cluster Access Management API, it's possible to regain that access 
 $ ROLE_NAME=$(aws sts get-caller-identity --query 'Arn' | cut -d/ -f2)
 $ echo $ROLE_NAME
 workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1
-$ ROLE_ARN=$(aws iam list-roles --query "Roles[?RoleName=='"$ROLE_SUFFIX"'].Arn" --output text)
+$ ROLE_ARN=$(aws iam list-roles --query "Roles[?RoleName=='"$ROLE_NAME"'].Arn" --output text)
 $ echo $ROLE_ARN
 arn:aws:iam::$AWS_ACCOUNT_ID:role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1
 ```
 
-Now create the Access Entry.
+Create the Access Entry.
 
 ```bash
 $ aws eks create-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn $ROLE_ARN
@@ -102,18 +110,20 @@ $ kubectl get clusterrole cluster-admin
 Error from server (Forbidden): clusterroles.rbac.authorization.k8s.io is forbidden: User "arn:aws:sts::$AWS_ACCOUNT_ID:assumed-role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1/i-06b2ef4cc8104bd8a" cannot list resource "clusterroles" in API group "rbac.authorization.k8s.io" at the cluster scope
 ```
 
-Still not getting access? That's because the Access Entry was not associated to any Access Policies that was covered in the previous section, so it just exists to authenticate, but no authorization scope was defined.
+Still not getting access, but with a different error. That's because the Access Entry was not associated to any Access Policies that was covered in the previous section, so you're just authenticated, but no authorization scope was defined.
 
 Validate that with the command below.
 
 ```bash
 $ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --principal-arn $ROLE_ARN
 {
-    "associatedAccessPolicies": []
+    "associatedAccessPolicies": [],
+    "clusterName": "eks-workshop",
+    "principalArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/workshop-stack-Cloud9Stack-1UEGQA-EksWorkshopC9Role-0GSFxRAwfFG1"
 }
 ```
 
-Now, run the following command to map the newly created Access Entry, to the ClusterAdmin Access Policy.
+Now, run the following command to map the newly created Access Entry, to the `AmazonEKSClusterAdminPolicy` Access Policy.
 
 ```bash
 $ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME --principal-arn $ROLE_ARN --policy-arn "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy" --access-scope type=cluster
