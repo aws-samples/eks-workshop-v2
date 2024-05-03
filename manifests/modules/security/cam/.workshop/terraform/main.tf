@@ -1,7 +1,7 @@
 locals {
   arn_base     = join(":", slice(split(":", data.aws_eks_cluster.eks_cluster.arn), 0, 5))
-  map_accounts = try(yamldecode(data.kubernetes_config_map_v1.aws_auth.data.mapAccounts), "")
-  map_users    = try(yamldecode(data.kubernetes_config_map_v1.aws_auth.data.mapUsers), "")
+  map_accounts = try(yamldecode(data.kubernetes_config_map_v1.aws_auth.data.mapAccounts), [])
+  map_users    = try(yamldecode(data.kubernetes_config_map_v1.aws_auth.data.mapUsers), [])
   map_roles    = yamldecode(data.kubernetes_config_map_v1.aws_auth.data.mapRoles)
   add_roles = concat([{
     rolearn  = aws_iam_role.eks_developers.arn
