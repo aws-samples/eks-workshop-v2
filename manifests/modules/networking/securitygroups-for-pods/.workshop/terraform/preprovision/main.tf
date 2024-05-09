@@ -34,11 +34,11 @@ module "catalog_mysql" {
 
   allocated_storage = 20
 
-  db_name                = "catalog"
-  username               = "catalog_user"
-  create_random_password = false
-  password               = random_string.catalog_db_master.result
-  port                   = 3306
+  db_name                     = "catalog"
+  username                    = "catalog_user"
+  manage_master_user_password = false
+  password                    = random_string.catalog_db_master.result
+  port                        = 3306
 
   create_db_subnet_group = true
   db_subnet_group_name   = "${var.eks_cluster_id}-catalog"
