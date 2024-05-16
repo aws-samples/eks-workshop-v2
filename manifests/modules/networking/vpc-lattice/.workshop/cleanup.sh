@@ -2,9 +2,12 @@
 
 set -e
 
+logmessage "WARNING: Cleaning up the VPC Lattice module may take up to 10 minutes..."
+
 logmessage "Deleting VPC Lattice routes and gateway..."
 
 kubectl delete namespace checkoutv2 --ignore-not-found
+kubectl delete namespace checkout --ignore-not-found
 
 kubectl delete -f ~/environment/eks-workshop/modules/networking/vpc-lattice/routes --ignore-not-found
 cat ~/environment/eks-workshop/modules/networking/vpc-lattice/controller/eks-workshop-gw.yaml | envsubst | kubectl delete --ignore-not-found -f -
@@ -14,7 +17,7 @@ delete-all-if-crd-exists targetgrouppolicies.application-networking.k8s.aws
 
 logmessage "Waiting for VPC Lattice target groups to be deleted..."
 
-timeout -s TERM 300 bash -c \
+timeout -s TERM 600 bash -c \
     'while [[ ! -z "$(aws vpc-lattice list-target-groups --output text | grep 'checkout' || true)" ]];\
     do sleep 10;\
     done'
@@ -44,13 +47,16 @@ if [ ! -z "$ipv6_sg_check" ]; then
   aws ec2 revoke-security-group-ingress --group-id $CLUSTER_SG --ip-permissions "PrefixListIds=[{PrefixListId=${PREFIX_LIST_ID_IPV6}}],IpProtocol=-1"
 fi
 
-service_network=$(aws vpc-lattice list-service-networks --query "items[?name=="\'$EKS_CLUSTER_NAME\'"].id" | jq -r '.[]')
+export service_network=$(aws vpc-lattice list-service-networks --query "items[?name=="\'$EKS_CLUSTER_NAME\'"].id" | jq -r '.[]')
 if [ ! -z "$service_network" ]; then
   association_id=$(aws vpc-lattice list-service-network-vpc-associations --service-network-identifier $service_network --vpc-identifier $VPC_ID --query 'items[].id' | jq -r '.[]')
   if [ ! -z "$association_id" ]; then
     logmessage "Deleting Lattice VPC association..."
     aws vpc-lattice delete-service-network-vpc-association --service-network-vpc-association-identifier $association_id
-    sleep 30 # Todo replace with wait
+    timeout -s TERM 300 bash -c \
+      'while [[ ! -z "$(aws vpc-lattice list-service-network-vpc-associations --service-network-identifier $service_network --vpc-identifier $VPC_ID --query 'items[].id' --output text || true)" ]];\
+      do sleep 10;\
+      done'
   fi
 
   logmessage "Deleting Lattice service network..."
