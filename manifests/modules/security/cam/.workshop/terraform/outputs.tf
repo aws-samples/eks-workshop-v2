@@ -1,9 +1,8 @@
-output "developers_role" {
-  description = "AWS IAM Role created for EKS Developers access"
-  value       = aws_iam_role.developers
-}
-
-output "aws_auth" {
-  description = "Merged content for `aws-auth` configMap"
-  value       = kubernetes_config_map_v1_data.aws_auth
+output "environment_variables" {
+  description = "Environment variables to be added to the IDE shell"
+  value = {
+    READ_ONLY_IAM_ROLE  = aws_iam_role.eks_read_only.arn
+    CARTS_TEAM_IAM_ROLE = aws_iam_role.eks_carts_team.arn
+    DEVELOPERS_IAM_ROLE = aws_iam_role.eks_developers.arn
+  }
 }

@@ -2,15 +2,18 @@
 
 set -e
 
-# Redefining Cluster Creator Cluster Admin Access
-# Getting Cluster Creator Role from CloudFormation Stack
-RESOURCE_ID=$(aws cloudformation list-stack-resources --stack-name workshop-stack --query 'StackResourceSummaries[?ResourceType==`AWS::IAM::Role`].LogicalResourceId' | awk -F '"' '/CodeBuildRole/{print$2}')
+logmessage "Cleaning up cluster access entries..."
 
-ROLE_NAME=$(aws cloudformation describe-stack-resource --stack-name workshop-stack --logical-resource-id $RESOURCE_ID --query 'StackResourceDetail.PhysicalResourceId' --output text)
+kubectl delete -k ~/environment/eks-workshop/modules/security/cam/rbac --ignore-not-found
 
-# Getting Role ARN
-ROLE_ARN=$(aws iam get-role --role-name $ROLE_NAME --query 'Role.Arn' --output text)
+read_only_check=$(aws eks list-access-entries --output text | grep $READ_ONLY_IAM_ROLE)
 
-# Granting Cluster Admin Access
-aws eks create-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn $ROLE_ARN
-aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME --principal-arn $ROLE_ARN --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy --access-scope type=cluster
+if [ ! -z "$read_only_check" ]; then
+  aws eks delete-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn $READ_ONLY_IAM_ROLE
+fi
+
+carts_check=$(aws eks list-access-entries --output text | grep $CARTS_TEAM_IAM_ROLE)
+
+if [ ! -z "$carts_check" ]; then
+  aws eks delete-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn $CARTS_TEAM_IAM_ROLE
+fi

@@ -1,9 +1,7 @@
 ---
-title: "Migrating an existing aws-auth Identity Mapping to Cluster Access Management API"
-sidebar_position: 13
+title: "Migrating from aws-auth identity mapping"
+sidebar_position: 20
 ---
-
-## Migrating identities "as-is"
 
 As the next step for this module, you'll go through the migration process from the `aws-auth` configMap identity mappings to the Cluster Access Management API format. In the last section, you did create a new Access Entry and associated an Access Policy with a cluster wide scope. Now you'll explore how to associate associate Kubernetes Groups using RBAC permissions to Access Entries.
 

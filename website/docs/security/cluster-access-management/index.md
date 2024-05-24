@@ -16,9 +16,7 @@ $ prepare-environment security/cam
 
 This will make the following changes to your lab environment:
 
-- Create an AWS IAM Role for Developer access with respective IAM Policies.
-- Create Kubernetes ClusterRoleBindings and RoleBindings for Developers.
-- Update the `aws-auth` configMap to grant access for the newly created AWS IAM Role access to Kubernetes API.
+- Create AWS IAM roles that will be assumed for the various scenarios
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/security/cam/.workshop/terraform).
 
