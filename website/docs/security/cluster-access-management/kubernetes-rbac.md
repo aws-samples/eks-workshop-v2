@@ -5,7 +5,7 @@ sidebar_position: 14
 
 As previously mentioned, the cluster access management controls and associated APIs don’t replace the existing RBAC authorizer in Amazon EKS. Rather, Amazon EKS access entries can be combined with the RBAC authorizer to grant cluster access to an AWS IAM principal while relying on Kubernetes RBAC to apply desired permissions.
 
-In this section of the lab we'll show how to configure access entries with granular permissions using Kubernetes groups. This is useful where the pre-defined access policies are too permissive. In this scenario we'll demonstrate how to provide a team that only works on the **carts** service with permissions that allow them to view all resources in the `carts` namespace, but also delete pods.
+In this section of the lab we'll show how to configure access entries with granular permissions using Kubernetes groups. This is useful where the pre-defined access policies are too permissive. As part of the lab setup we created an IAM role named `eks-workshop-carts-team`. In this scenario we'll demonstrate how to use that role to provide a team that only works on the **carts** service with permissions that allow them to view all resources in the `carts` namespace, but also delete pods.
 
 First lets create the Kubernetes objects that model our required permissions. This `Role` provides the permissions we outlined above:
 
@@ -25,7 +25,7 @@ Apply these manifests:
 $ kubectl apply -k ~/environment/eks-workshop/modules/security/cam/rbac
 ```
 
-And finally create the access entry which maps the IAM role to the `carts-team` group:
+And finally create the access entry which maps the carts team's IAM role to the `carts-team` Kubernetes RBAC group:
 
 ```bash
 $ aws eks create-access-entry --cluster-name $EKS_CLUSTER_NAME \
