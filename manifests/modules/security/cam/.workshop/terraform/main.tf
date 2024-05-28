@@ -30,3 +30,15 @@ resource "aws_iam_role" "eks_carts_team" {
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
+
+resource "aws_iam_role" "eks_admins" {
+  name               = "${var.eks_cluster_id}-admins"
+  path               = "/"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
+
+resource "terraform_data" "identity_mapping" {
+  provisioner "local-exec" {
+    command = "eksctl create iamidentitymapping --cluster ${var.eks_cluster_id} --arn ${aws_iam_role.eks_admins.arn} --group system:masters --username cluster-admin"
+  }
+}
