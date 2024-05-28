@@ -5,16 +5,10 @@ sidebar_position: 20
 
 Customer who already use EKS may already be using the `aws-auth` ConfigMap mechanism to manage IAM principal access to cluster, which [is now deprecated](https://docs.aws.amazon.com/eks/latest/userguide/auth-configmap.html). This section demonstrates how you can migrate entries from this older mechanism to using cluster access entries.
 
-First lets make sure to reset our `kubectl` context:
-
-```bash
-$ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
-```
-
 An IAM role `eks-workshop-admins` has been pre-configured in the EKS cluster that is used for a group with EKS administrative permissions. Lets check the `aws-auth` ConfigMap:
 
 ```bash
-$ kubectl get -o yaml -n kube-system cm aws-auth
+$ kubectl --context default get -o yaml -n kube-system cm aws-auth
 apiVersion: v1
 data:
   mapRoles: |
@@ -62,7 +56,7 @@ $ eksctl delete iamidentitymapping --cluster $EKS_CLUSTER_NAME --arn $ADMINS_IAM
 
 Now if we try the same command as before we will be denied access:
 
-```bash
+```bash expectError=true
 $ kubectl --context admins get pod -n carts
 error: You must be logged in to the server (Unauthorized)
 ```

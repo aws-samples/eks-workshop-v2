@@ -26,7 +26,7 @@ if [ -z "$EKS_DEFAULT_MNG_MIN" ]; then
   exit 1
 fi
 
-aws eks update-kubeconfig --name $EKS_CLUSTER_NAME 
+aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --alias default --user-alias default
 
 module=$1
 

@@ -22,7 +22,7 @@ manifests/modules/security/cam/rbac/rolebinding.yaml
 Apply these manifests:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/security/cam/rbac
+$ kubectl --context default apply -k ~/environment/eks-workshop/modules/security/cam/rbac
 ```
 
 And finally create the access entry which maps the carts team's IAM role to the `carts-team` Kubernetes RBAC group:
@@ -59,14 +59,14 @@ pod "carts-dynamodb-d9f9f48b-k5v99" deleted
 
 However if we try to delete another resource like a `Deployment` we will be forbidden:
 
-```bash
+```bash expectError=true
 $ kubectl --context carts-team delete deployment --all -n carts
 Error from server (Forbidden): deployments.apps is forbidden: User "arn:aws:sts::123456789012:assumed-role/eks-workshop-carts-team/EKSGetTokenAuth" cannot list resource "deployments" in API group "apps" in the namespace "carts"
 ```
 
 And if we try to access pods in a different namespace it will also be forbidden:
 
-```bash
+```bash expectError=true
 $ kubectl --context carts-team get pod -n catalog
 Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::123456789012:assumed-role/eks-workshop-carts-team/EKSGetTokenAuth" cannot list resource "pods" in API group "" in the namespace "catalog"
 ```

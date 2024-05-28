@@ -36,7 +36,7 @@ These access entries are automatically created at the moment the authentication 
 
 The cluster creator is the entity that actually created the cluster, either via AWS Console, `awscli`, eksctl or any Infrastructure-as-Code (IaC) such as AWS CloudFormation or Terraform. The identity is automatically mapped to the cluster at the creation time and it was not visible in the past when the authentication method was restricted to `CONFIG_MAP`. Now, with the Cluster Access Management API it is possible to opt-out to create this identity mapping or even remove it after the cluster is deployed.
 
-If you describe these access entries you'll be able to see a similar mapping shown on the previous examples using the aws-auth configMap. Let's see the one mapped to the Managed Node Group:
+If you describe these access entries you'll be able to see more information:
 
 ```bash
 $ NODE_ROLE=$(aws eks list-access-entries --cluster $EKS_CLUSTER_NAME --output text | awk '/Node/ {print $2}')
@@ -57,7 +57,3 @@ $ aws eks describe-access-entry --cluster $EKS_CLUSTER_NAME --principal-arn $NOD
     }
 }
 ```
-
-Notice the `kubernetesGroups`, `principalArn`, and `username` that are the same values you saw on the configMap example.
-
-Go ahead and try to describe the other access entry listed earlier that belongs to the cluster creator.

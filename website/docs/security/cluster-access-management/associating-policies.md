@@ -55,7 +55,7 @@ $ kubectl --context readonly get pod -A
 
 This should return all pods in the cluster. However if we try to perform an action other than reading we should get an error:
 
-```bash
+```bash expectError=true
 $ kubectl --context readonly delete pod -n assets --all
 Error from server (Forbidden): pods "assets-7c7948bfc8-wbsbr" is forbidden: User "arn:aws:sts::123456789012:assumed-role/eks-workshop-read-only/EKSGetTokenAuth" cannot delete resource "pods" in API group "" in the namespace "assets"
 ```
@@ -80,7 +80,7 @@ carts-dynamodb-d9f9f48b-k5v99   1/1     Running   0          15d
 
 But if we try to get pods from all namespaces we will be forbidden:
 
-```bash
+```bash expectError=true
 $ kubectl --context readonly get pod -A
 Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::123456789012:assumed-role/eks-workshop-read-only/EKSGetTokenAuth" cannot list resource "pods" in API group "" at the cluster scope
 ```
