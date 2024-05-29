@@ -1,6 +1,6 @@
 ---
 title: "Applying IRSA"
-sidebar_position: 40
+sidebar_position: 24
 hide_table_of_contents: true
 ---
 
