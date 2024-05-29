@@ -69,7 +69,7 @@ $ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME \
   --access-scope type=namespace,namespaces=carts
 ```
 
-This association explicitly allows access to the `carts` namespace. Lets test this:
+This association explicitly allows access to the `carts` namespace only, replacing the previous cluster-wide association. Lets test this:
 
 ```bash
 $ kubectl --context readonly get pod -n carts
@@ -84,5 +84,89 @@ But if we try to get pods from all namespaces we will be forbidden:
 $ kubectl --context readonly get pod -A
 Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::123456789012:assumed-role/eks-workshop-read-only/EKSGetTokenAuth" cannot list resource "pods" in API group "" at the cluster scope
 ```
+
+List the associations of the `readonly` role.
+
+```bash
+$ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --principal-arn $READ_ONLY_IAM_ROLE
+{
+    "associatedAccessPolicies": [
+        {
+            "policyArn": "arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy",
+            "accessScope": {
+                "type": "namespace",
+                "namespaces": [
+                    "carts"
+                ]
+            },
+            "associatedAt": "2024-05-29T17:01:55.233000+00:00",
+            "modifiedAt": "2024-05-29T17:02:22.566000+00:00"
+        }
+    ],
+    "clusterName": "eks-workshop",
+    "principalArn": "arn:aws:iam::753691238417:role/eks-workshop-read-only"
+}
+```
+
+As mentioned, since you used the same `AmazonEKSViewPolicy` policy ARN, it just replaced the previous cluster scoped access configuration to a namespaced scope. Now associate a different policy ARN, scoped to the `assets` namespace.
+
+```bash
+$ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME \
+  --principal-arn $READ_ONLY_IAM_ROLE \
+  --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy \
+  --access-scope type=namespace,namespaces=assets
+```
+
+Try to run the previous access denied command to delete Pods the `assets` namespace.
+
+```bash
+$ kubectl --context readonly delete pod -n assets --all
+pod "assets-7c7948bfc8-xdmnv" deleted
+```
+
+Now you have access to both namespaces. List the associated access policies.
+
+```bash
+$ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --principal-arn $READ_ONLY_IAM_ROLE
+{
+    "associatedAccessPolicies": [
+        {
+            "policyArn": "arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy",
+            "accessScope": {
+                "type": "namespace",
+                "namespaces": [
+                    "assets"
+                ]
+            },
+            "associatedAt": "2024-05-29T17:23:55.299000+00:00",
+            "modifiedAt": "2024-05-29T17:23:55.299000+00:00"
+        },
+        {
+            "policyArn": "arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy",
+            "accessScope": {
+                "type": "namespace",
+                "namespaces": [
+                    "carts"
+                ]
+            },
+            "associatedAt": "2024-05-29T17:01:55.233000+00:00",
+            "modifiedAt": "2024-05-29T17:23:28.168000+00:00"
+        }
+    ],
+    "clusterName": "eks-workshop",
+    "principalArn": "arn:aws:iam::753691238417:role/eks-workshop-read-only"
+}
+```
+
+As you can see it's possible to associate more than one access policy to provide different levels of access.
+
+Check what happens if you list all the Pods in the cluster.
+
+```bash expectError=true
+$ kubectl --context readonly get pod -A
+Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::123456789012:assumed-role/eks-workshop-read-only/EKSGetTokenAuth" cannot list resource "pods" in API group "" at the cluster scope
+```
+
+Still not have access to the whole cluster, which is expected since the access scope is mapped to the `assets` and `carts` namespaces.
 
 This has demonstrated how we can use associate the pre-defined EKS access policies to access entries in order to easily provide access to an EKS cluster to an IAM role.
