@@ -104,7 +104,7 @@ $ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --pri
         }
     ],
     "clusterName": "eks-workshop",
-    "principalArn": "arn:aws:iam::753691238417:role/eks-workshop-read-only"
+    "principalArn": "arn:aws:iam::123456789012:role/eks-workshop-read-only"
 }
 ```
 
@@ -154,7 +154,7 @@ $ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --pri
         }
     ],
     "clusterName": "eks-workshop",
-    "principalArn": "arn:aws:iam::753691238417:role/eks-workshop-read-only"
+    "principalArn": "arn:aws:iam::123456789012:role/eks-workshop-read-only"
 }
 ```
 
