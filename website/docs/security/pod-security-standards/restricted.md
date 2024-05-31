@@ -60,7 +60,7 @@ deployment.apps/assets configured
 Now, Run the below commands to check PSA allows the creation of Deployment and Pod with the above changes in the the `assets` namespace:
 
 ```bash
-$ kubectl -n assets  get pod
+$ kubectl -n assets get pod
 NAME                     READY   STATUS    RESTARTS   AGE
 assets-8dd6fc8c6-9kptf   1/1     Running   0          3m6s
 ```
