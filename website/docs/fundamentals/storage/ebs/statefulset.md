@@ -23,11 +23,9 @@ Namespace:          catalog
 [...]
   Containers:
    mysql:
-    Image:      public.ecr.aws/docker/library/mysql:5.7
+    Image:      public.ecr.aws/docker/library/mysql:8.0
     Port:       3306/TCP
     Host Port:  0/TCP
-    Args:
-      --ignore-db-dir=lost+found
     Environment:
       MYSQL_ROOT_PASSWORD:  my-secret-pw
       MYSQL_USER:           <set to the key 'username' in secret 'catalog-db'>  Optional: false
