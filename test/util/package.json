@@ -17,7 +17,7 @@
   "devDependencies": {
     "@types/chai": "^4.3.14",
     "@types/glob-to-regexp": "^0.4.4",
-    "@types/mdast": "^4.0.3",
+    "@types/mdast": "^4.0.4",
     "@types/mocha": "^10.0.6",
     "@types/mock-fs": "^4.13.4",
     "@types/node": "^20.12.7",
