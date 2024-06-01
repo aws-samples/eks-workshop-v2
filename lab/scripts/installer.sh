@@ -15,7 +15,7 @@ kubeseal_version='0.18.4'
 kubeseal_checksum='2e765b87889bfcf06a6249cde8e28507e3b7be29851e4fac651853f7638f12f3'
 
 # renovate: depName=mikefarah/yq
-yq_version='4.43.1'
+yq_version='4.44.1'
 
 # renovate: depName=fluxcd/flux2
 flux_version='2.3.0'
