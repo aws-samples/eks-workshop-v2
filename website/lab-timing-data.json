@@ -232,5 +232,11 @@
         "directory": "aiml/inferentia",
         "file": "aiml/inferentia/index.md",
         "executionTimeSeconds": 780
+    },
+    "security/cluster-access-management/index.md": {
+        "title": "Cluster Access Management API",
+        "directory": "security/cluster-access-management",
+        "file": "security/cluster-access-management/index.md",
+        "executionTimeSeconds": 207
     }
 }
