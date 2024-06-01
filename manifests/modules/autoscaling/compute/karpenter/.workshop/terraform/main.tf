@@ -9,7 +9,7 @@ data "aws_ecrpublic_authorization_token" "token" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.16.2"
+  version = "1.16.3"
 
   enable_karpenter = true
 
