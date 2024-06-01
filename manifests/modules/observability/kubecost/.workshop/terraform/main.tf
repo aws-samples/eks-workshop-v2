@@ -9,7 +9,7 @@ data "aws_ecrpublic_authorization_token" "token" {
 
 module "ebs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.39.0"
+  version = "5.39.1"
 
   role_name_prefix = "${var.addon_context.eks_cluster_id}-ebs-csi-"
 
@@ -27,7 +27,7 @@ module "ebs_csi_driver_irsa" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.16.2"
+  version = "1.16.3"
 
   cluster_name      = var.addon_context.eks_cluster_id
   cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint
