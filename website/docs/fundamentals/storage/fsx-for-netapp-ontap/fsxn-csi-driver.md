@@ -9,7 +9,14 @@ The [Amazon FSx for NetApp ONTAP Container Storage Interface (CSI) Driver](https
 
 In order to utilize Amazon FSx for NetApp ONTAP file system with dynamic provisioning on our EKS cluster, we need to confirm that we have the Amazon FSx for NetApp ONTAP CSI Driver installed. The [Amazon FSx for NetApp ONTAP Container Storage Interface (CSI) Driver](https://github.com/NetApp/trident) implements the CSI specification for container orchestrators to manage the lifecycle of Amazon FSx for NetApp ONTAP file systems.
 
-As part of our workshop environment the EKS cluster has the Amazon FSx for NetApp ONTAP Container Storage Interface (CSI) Driver pre-installed. We can confirm the installation like so:
+To improve security and reduce the amount of work, you can manage the Amazon FSx for NetApp ONTAP CSI driver as an Amazon EKS add-on. The IAM role needed by the add-on was created for us so we can go ahead and install the add-on:
+```bash timeout=300 wait=60
+$ aws eks create-addon --cluster-name $EKS_CLUSTER_NAME --addon-name netapp_trident-operator \
+  --configuration-values $'"cloudIdentity": "'eks.amazonaws.com/role-arn:$FSXN_CSI_ADDON_ROLE'"'
+$ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --addon-name netapp_trident-operator
+```
+
+Now we can take a look at what has been created in our EKS cluster by the addon. For example, a DaemonSet will be running a pod on each node in our cluster:
 
 ```bash
 $ kubectl get pods -n trident
