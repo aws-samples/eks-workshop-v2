@@ -1,12 +1,10 @@
 ---
-title: "Autoscaling CoreDNS"
+title: "Triggering autoscaling"
 date: 2022-07-21T00:00:00-03:00
 sidebar_position: 3
 ---
 
-`CoreDNS` is the default DNS service for Kubernetes that runs in Pods with the label `k8s-app=kube-dns`. In this lab exercise, we'll autoscale CoreDNS based on the number of schedulable nodes and cores of our cluster. Cluster Proportional Autoscaler will resize the number of `CoreDNS` replicas.
-
-Currently we're running a 3 node cluster:
+Lets test the CPA that we installed in the previous section. Currently we're running a 3 node cluster:
 
 ```bash
 $ kubectl get nodes
@@ -16,7 +14,7 @@ ip-10-42-142-113.us-east-2.compute.internal   Ready    <none>   76m   vVAR::KUBE
 ip-10-42-80-39.us-east-2.compute.internal     Ready    <none>   76m   vVAR::KUBERNETES_NODE_VERSION
 ```
 
-Based on autoscaling parameters defined in the `ConfigMap`, we see cluster proportional autoscaler scale `CoreDNS` to 2 replicas:
+Based on autoscaling parameters defined in the `ConfigMap`, we see cluster proportional autoscaler scale CoreDNS to 2 replicas:
 
 ```bash
 $ kubectl get po -n kube-system -l k8s-app=kube-dns
@@ -25,7 +23,7 @@ coredns-5db97b446d-5zwws   1/1     Running   0          66s
 coredns-5db97b446d-n5mp4   1/1     Running   0          89m
 ```
 
-If we increased the size of the EKS cluster to 5 nodes, Cluster Proportional Autoscaler will scale up the number of replicas of `CoreDNS` to accommodate for it:
+If we increased the size of the EKS cluster to 5 nodes, Cluster Proportional Autoscaler will scale up the number of replicas of CoreDNS to accommodate for it:
 
 ```bash hook=cpa-pod-scaleout timeout=300
 $ aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME \
@@ -47,7 +45,7 @@ ip-10-42-11-152.us-west-2.compute.internal    Ready    <none>   61s   vVAR::KUBE
 ip-10-42-12-139.us-west-2.compute.internal    Ready    <none>   6m20s vVAR::KUBERNETES_NODE_VERSION
 ```
 
-And we can see that the number of `CoreDNS` Pods has increased:
+And we can see that the number of CoreDNS Pods has increased:
 
 ```bash
 $ kubectl get po -n kube-system -l k8s-app=kube-dns
