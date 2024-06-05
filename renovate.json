@@ -18,7 +18,7 @@
     },
     {
       "matchDepNames": ["kubernetes/kubernetes"],
-      "allowedVersions": "/^1.29.[0-9]+$/"
+      "allowedVersions": "/^v1.29.[0-9]+$/"
     },
     {
       "matchDatasources": ["helm"],
