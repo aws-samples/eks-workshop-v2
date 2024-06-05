@@ -22,7 +22,10 @@
     },
     {
       "matchDatasources": ["helm"],
-      "registryUrls": ["https://kubernetes.github.io/autoscaler"]
+      "registryUrls": [
+        "https://kubernetes.github.io/autoscaler",
+        "https://kubernetes-sigs.github.io/cluster-proportional-autoscaler"
+      ]
     }
   ],
   "customManagers": [

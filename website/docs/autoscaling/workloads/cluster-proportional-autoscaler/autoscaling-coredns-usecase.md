@@ -60,7 +60,7 @@ coredns-657694c6f4-wmnnc   1/1     Running   0          14h
 You can take a look at the CPA logs to see how it responded to the change in the number of nodes in our cluster:
 
 ```bash
-$ kubectl logs deploy/dns-autoscaler -n other
+$ kubectl logs deployment/cluster-proportional-autoscaler -n kube-system
 {"includeUnschedulableNodes":true,"max":6,"min":2,"nodesPerReplica":2,"preventSinglePointFailure":true}
 I0801 15:02:45.330307       1 k8sclient.go:272] Cluster status: SchedulableNodes[1], SchedulableCores[2]
 I0801 15:02:45.330328       1 k8sclient.go:273] Replicas are not as expected : updating replicas from 2 to 3
