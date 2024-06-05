@@ -31,9 +31,10 @@
       "customType": "regex",
       "fileMatch": ["vars\\.tf$"],
       "matchStrings": [
-        "#\\s*renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?(?: extractVersion=(?<extractVersion>.*?))?\\s*default\\s*=\\s*\"(?<currentValue>.*)\""
+        "#\\s*renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( registryUrl=(?<registryUrl>.*?))?( versioning=(?<versioning>.*?))?(?: extractVersion=(?<extractVersion>.*?))?\\s*default\\s*=\\s*\"(?<currentValue>.*)\""
       ],
-      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{/if}}"
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{/if}}",
+      "registryUrlTemplate": "{{#if registryUrl}}{{{registryUrl}}}{{/if}}"
     }
   ],
   "ignoreDeps": ["github.com/aws-ia/terraform-aws-eks-blueprints"]
