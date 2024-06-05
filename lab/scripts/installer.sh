@@ -3,7 +3,7 @@
 set -e
 
 # renovate: depName=kubernetes/kubernetes
-kubectl_version='1.29.0'
+kubectl_version='1.29.5'
 
 # renovate: depName=helm/helm
 helm_version='3.15.1'
