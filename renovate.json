@@ -26,6 +26,14 @@
       ],
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["manifests/modules/**/vars.tf"],
+      "matchStrings": [
+        "#\\s*renovate: datasource=(.*?) depName=(.*?)( versioning=(.*?))?(?: extractVersion=(.*?))?\\s*default\\s*=\\s*\"(.*)\""
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{/if}}"
     }
   ],
   "ignoreDeps": ["github.com/aws-ia/terraform-aws-eks-blueprints"]

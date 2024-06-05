@@ -19,3 +19,5 @@ timeout --foreground -s TERM 30 bash -c \
 if [ $EXIT_CODE -ne 0 ]; then
   logmessage "Warning: Karpenter nodes did not clean up"
 fi
+
+uninstall-helm-chart karpenter karpenter

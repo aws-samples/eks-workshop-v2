@@ -1,33 +1,20 @@
-provider "aws" {
-  region = "us-east-1"
-  alias  = "virginia"
+resource "aws_eks_addon" "pod_identity" {
+  cluster_name                = var.addon_context.eks_cluster_id
+  addon_name                  = "eks-pod-identity-agent"
+  resolve_conflicts_on_create = "OVERWRITE"
+  preserve                    = false
 }
 
-data "aws_ecrpublic_authorization_token" "token" {
-  provider = aws.virginia
-}
+module "karpenter" {
+  source  = "terraform-aws-modules/eks/aws//modules/karpenter"
+  version = "20.13.1"
 
-module "eks_blueprints_addons" {
-  source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.16.3"
+  cluster_name                    = var.addon_context.eks_cluster_id
+  enable_pod_identity             = true
+  create_pod_identity_association = true
+  namespace                       = "karpenter"
 
-  enable_karpenter = true
-
-  karpenter_enable_spot_termination          = true
-  karpenter_enable_instance_profile_creation = true
-  karpenter = {
-    repository_username = data.aws_ecrpublic_authorization_token.token.user_name
-    repository_password = data.aws_ecrpublic_authorization_token.token.password
-    chart_version       = "0.35.4"
-
-    set = [{
-      name  = "replicas"
-      value = "1"
-    }]
+  node_iam_role_additional_policies = {
+    AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   }
-
-  cluster_name      = var.addon_context.eks_cluster_id
-  cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint
-  cluster_version   = var.eks_cluster_version
-  oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
 }
