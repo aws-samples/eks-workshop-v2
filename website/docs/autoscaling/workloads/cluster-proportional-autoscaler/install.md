@@ -18,7 +18,7 @@ We summarized how linear scaling works with CPA in the previous section. We can 
 - Add a replica for every 2 worker nodes in the cluster
 - Run at least 2 replicas and to most 6
 
-:::warning
+:::caution
 
 The configuration above should not be considered best practice for automatically scaling CoreDNS, it is an example that is easy to demonstrate for the purposes of the workshop.
 
