@@ -1,7 +1,9 @@
 output "environment_variables" {
   description = "Environment variables to be added to the IDE shell"
   value = {
-    KARP_ROLE = module.eks_blueprints_addons.karpenter.node_iam_role_name
-    KARP_ARN  = module.eks_blueprints_addons.karpenter.node_iam_role_arn
+    KARPENTER_VERSION   = var.karpenter_version
+    KARPENTER_SQS_QUEUE = module.karpenter.queue_name
+    KARPENTER_ROLE      = module.karpenter.node_iam_role_name
+    KARPENTER_ROLE_ARN  = module.karpenter.node_iam_role_arn
   }
 }
