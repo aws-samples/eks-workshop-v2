@@ -23,6 +23,7 @@ $ helm upgrade --install karpenter oci://public.ecr.aws/karpenter/karpenter --ve
   --set controller.resources.requests.memory=1Gi \
   --set controller.resources.limits.cpu=1 \
   --set controller.resources.limits.memory=1Gi \
+  --set replicas=1 \
   --wait
 NAME: karpenter
 LAST DEPLOYED: [...]
@@ -37,7 +38,7 @@ Karpenter will be running as a deployment in the `karpenter` namespace:
 ```bash
 $ kubectl get deployment -n karpenter
 NAME        READY   UP-TO-DATE   AVAILABLE   AGE
-karpenter   2/2     2            2           105s
+karpenter   1/1     1            1           105s
 ```
 
 Now we can move on to configuring Karpenter so that it will provision infrastructure for our pods.
