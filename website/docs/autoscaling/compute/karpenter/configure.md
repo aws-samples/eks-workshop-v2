@@ -10,7 +10,7 @@ The first thing we'll do is install Karpenter in our cluster. Various pre-requis
 3. An EKS cluster access entry for the node IAM role so the nodes can join the EKS cluster
 4. An SQS queue for Karpenter to receive Spot interruption, instance re-balance and other events
 
-You can find the full installation documentation for Karpenter here.
+You can find the full installation documentation for Karpenter [here](https://karpenter.sh/docs/getting-started/getting-started-with-karpenter/).
 
 All that we have left to do is install Karpenter as a helm chart:
 
