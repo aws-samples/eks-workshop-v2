@@ -33,3 +33,10 @@ variable "resources_precreated" {
   description = "Have expensive resources been created already"
   type        = bool
 }
+
+variable "cluster_autoscaler_chart_version" {
+  description = "The version of cluster-autoscaler to use"
+  type        = string
+  # renovate: datasource=helm registryUrl=https://kubernetes.github.io/autoscaler depName=cluster-autoscaler
+  default = "9.37.0"
+}

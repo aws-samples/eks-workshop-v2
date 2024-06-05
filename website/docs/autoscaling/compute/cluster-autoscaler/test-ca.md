@@ -3,13 +3,7 @@ title: "Scale with CA"
 sidebar_position: 40
 ---
 
-The Cluster Autoscaler component has been installed in our EKS cluster as part of the preparation for this lab. It runs as a deployment in the `kube-system` namespace:
-
-```bash
-$ kubectl get deployment -n kube-system cluster-autoscaler-aws-cluster-autoscaler
-```
-
-In this lab exercise, we'll update all of the application components to increase their replica count to 4. This will cause more resources to be consumed than are available in a cluster, triggering more compute to be provisioned.
+In this section we'll update all of the application components to increase their replica count to 4. This will cause more resources to be consumed than are available in a cluster, triggering more compute to be provisioned.
 
 ```file
 manifests/modules/autoscaling/compute/cluster-autoscaler/deployment.yaml
