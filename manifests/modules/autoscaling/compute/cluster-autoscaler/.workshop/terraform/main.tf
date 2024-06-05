@@ -7,8 +7,6 @@ module "eks_blueprints_addons" {
   cluster_version   = var.eks_cluster_version
   oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
 
-  enable_cluster_autoscaler = true
-  cluster_autoscaler = {
-    wait = true
-  }
+  enable_cluster_autoscaler   = true
+  create_kubernetes_resources = false
 }
