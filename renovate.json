@@ -29,7 +29,7 @@
     },
     {
       "customType": "regex",
-      "fileMatch": ["manifests/modules/**/vars.tf"],
+      "fileMatch": ["vars\\.tfvars$"],
       "matchStrings": [
         "#\\s*renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?(?: extractVersion=(?<extractVersion>.*?))?\\s*default\\s*=\\s*\"(?<currentValue>.*)\""
       ],
