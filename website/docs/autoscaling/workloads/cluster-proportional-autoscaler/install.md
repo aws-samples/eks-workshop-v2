@@ -4,7 +4,7 @@ date: 2022-07-21T00:00:00-03:00
 sidebar_position: 2
 ---
 
-CoreDNS is the default DNS service for Kubernetes that runs in Pods with the label `k8s-app=kube-dns`. In this lab exercise we'll autoscale CoreDNS based on the number of schedulable nodes and cores of our cluster. Cluster Proportional Autoscaler will resize the number of CoreDNS replicas.
+CoreDNS is the default DNS service for Kubernetes that runs in Pods with the label `k8s-app=kube-dns`. In this lab exercise we'll scale CoreDNS based on the number of schedulable nodes and cores of our cluster. Cluster Proportional Autoscaler will resize the number of CoreDNS replicas.
 
 First lets install CPA using its Helm chart. We'll use the following `values.yaml` file to configure CPA:
 
