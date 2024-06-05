@@ -17,6 +17,10 @@
       "enabled": false
     },
     {
+      "matchDepNames": ["kubernetes/kubernetes"],
+      "allowedVersions": "/^1.29.[0-9]+$/"
+    },
+    {
       "matchDatasources": ["helm"],
       "registryUrls": ["https://kubernetes.github.io/autoscaler"]
     }

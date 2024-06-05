@@ -2,8 +2,8 @@
 
 set -e
 
+# renovate: depName=kubernetes/kubernetes
 kubectl_version='1.29.0'
-kubectl_checksum='0e03ab096163f61ab610b33f37f55709d3af8e16e4dcc1eb682882ef80f96fd5'
 
 # renovate: depName=helm/helm
 helm_version='3.15.1'
@@ -56,7 +56,7 @@ yum install --quiet -y findutils jq tar gzip zsh git diffutils wget \
 pip3 install -q awscurl==0.28 urllib3==1.26.6
 
 # kubectl
-download_and_verify "https://dl.k8s.io/release/v$kubectl_version/bin/linux/amd64/kubectl" "$kubectl_checksum" "kubectl"
+download "https://dl.k8s.io/release/v$kubectl_version/bin/linux/amd64/kubectl" "kubectl"
 chmod +x ./kubectl
 mv ./kubectl /usr/local/bin
 
