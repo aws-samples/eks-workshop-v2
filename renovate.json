@@ -31,7 +31,7 @@
       "customType": "regex",
       "fileMatch": ["manifests/modules/**/vars.tf"],
       "matchStrings": [
-        "#\\s*renovate: datasource=(.*?) depName=(.*?)( versioning=(.*?))?(?: extractVersion=(.*?))?\\s*default\\s*=\\s*\"(.*)\""
+        "#\\s*renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?(?: extractVersion=(?<extractVersion>.*?))?\\s*default\\s*=\\s*\"(?<currentValue>.*)\""
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{/if}}"
     }
