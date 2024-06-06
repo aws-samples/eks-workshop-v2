@@ -55,7 +55,7 @@ $ aws ec2 describe-vpcs --vpc-ids $VPC_ID
 Here we see there are two CIDR ranges associated with the VPC:
 
 1. The `10.42.0.0/16` range which is the "primary" CIDR
-2. The `100.64.0.0/16` range which is the "secondary" CIDR
+2. The `100.64.0.0/16` range which is the "secondary" CIDR _(Please note, that this lab assumes that you have already secondary CIDR added in your Cluster's VPC, follow to associate at [VPC Documentation](https://docs.aws.amazon.com/vpc/latest/userguide/modify-vpcs.html#add-ipv4-cidr)_
 
 You can also view this in the AWS console:
 
