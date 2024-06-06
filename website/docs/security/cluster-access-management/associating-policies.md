@@ -16,7 +16,7 @@ $ aws eks create-access-entry --cluster-name $EKS_CLUSTER_NAME \
 
 Now we can associate an access policy for this principal that uses the `AmazonEKSViewPolicy` policy:
 
-```bash
+```bash wait=10
 $ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME \
   --principal-arn $READ_ONLY_IAM_ROLE \
   --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy \
@@ -62,7 +62,7 @@ Error from server (Forbidden): pods "assets-7c7948bfc8-wbsbr" is forbidden: User
 
 Next we can explore restricting a policy to one or more namespaces. Update the access policy associating for our read-only IAM role using `--access-scope type=namespace`:
 
-```bash
+```bash wait=10
 $ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME \
   --principal-arn $READ_ONLY_IAM_ROLE \
   --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy \
@@ -110,7 +110,7 @@ $ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --pri
 
 As mentioned, since you used the same `AmazonEKSViewPolicy` policy ARN, it just replaced the previous cluster scoped access configuration to a namespaced scope. Now associate a different policy ARN, scoped to the `assets` namespace.
 
-```bash
+```bash wait=10
 $ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME \
   --principal-arn $READ_ONLY_IAM_ROLE \
   --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy \

@@ -50,7 +50,7 @@ carts-dynamodb-d9f9f48b-k5v99   1/1     Running   0          15d
 
 Delete the `aws-auth` ConfigMap entry for this IAM role, we'll use `eksctl` for convenience:
 
-```bash
+```bash wait=10
 $ eksctl delete iamidentitymapping --cluster $EKS_CLUSTER_NAME --arn $ADMINS_IAM_ROLE
 ```
 
@@ -70,7 +70,7 @@ $ aws eks create-access-entry --cluster-name $EKS_CLUSTER_NAME \
 
 Now we can associate an access policy for this principal that uses the `AmazonEKSClusterAdminPolicy` policy:
 
-```bash
+```bash wait=10
 $ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME \
   --principal-arn $ADMINS_IAM_ROLE \
   --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy \
