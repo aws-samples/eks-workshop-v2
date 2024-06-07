@@ -19,6 +19,11 @@
     {
       "matchDepNames": ["kubernetes/kubernetes"],
       "allowedVersions": "/^v1.29.[0-9]+$/"
+    },
+    {
+      "matchDepNames": ["kubernetes/autoscaler"],
+      "extractVersion": "^cluster-autoscaler-(?<version>.*)$",
+      "allowedVersions": "/^1.29.[0-9]+$/"
     }
   ],
   "customManagers": [
