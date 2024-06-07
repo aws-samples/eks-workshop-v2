@@ -1,0 +1,16 @@
+server:
+  replicas: 1
+  service:
+    type: LoadBalancer
+
+controller:
+  replicas: 1
+
+repoServer:
+  replicas: 1
+
+applicationSet:
+  replicaCount: 1
+
+redis-ha:
+  enabled: false
