@@ -37,6 +37,6 @@ variable "resources_precreated" {
 variable "argocd_chart_version" {
   description = "The chart version of argocd to use"
   type        = string
-  # renovate: datasource=helm depName=argo-cd
+  # renovate-helm: depName=argo-cd registryUrl=https://argoproj.github.io/argo-helm
   default = "5.36.0"
 }

@@ -44,6 +44,6 @@ variable "cluster_proportional_autoscaler_version" {
 variable "cluster_proportional_autoscaler_chart_version" {
   description = "The chart version of cluster-proportional-autoscaler to use"
   type        = string
-  # renovate: datasource=helm depName=cluster-proportional-autoscaler
+  # renovate-helm: depName=cluster-proportional-autoscaler registryUrl=https://kubernetes-sigs.github.io/cluster-proportional-autoscaler
   default = "1.1.0"
 }

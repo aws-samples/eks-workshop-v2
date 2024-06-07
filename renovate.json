@@ -19,14 +19,6 @@
     {
       "matchDepNames": ["kubernetes/kubernetes"],
       "allowedVersions": "/^v1.29.[0-9]+$/"
-    },
-    {
-      "matchDatasources": ["helm"],
-      "registryUrls": [
-        "https://kubernetes.github.io/autoscaler",
-        "https://kubernetes-sigs.github.io/cluster-proportional-autoscaler",
-        "https://argoproj.github.io/argo-helm"
-      ]
     }
   ],
   "customManagers": [
@@ -46,6 +38,16 @@
         "#\\s*renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?(?: extractVersion=(?<extractVersion>.*?))?\\s*default\\s*=\\s*\"(?<currentValue>.*)\""
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{/if}}"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["vars\\.tf$"],
+      "matchStrings": [
+        "#\\s*renovate-helm: depName=(?<depName>.*?)( registryUrl=(?<registryUrl>.*?))?( versioning=(?<versioning>.*?))?(?: extractVersion=(?<extractVersion>.*?))?\\s*default\\s*=\\s*\"(?<currentValue>.*)\""
+      ],
+      "datasourceTemplate": "helm",
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{/if}}",
+      "registryUrlTemplate": "{{#if registryUrl}}{{{registryUrl}}}{{else}}https://aws.github.io/eks-charts{{/if}}"
     }
   ],
   "ignoreDeps": ["github.com/aws-ia/terraform-aws-eks-blueprints"]
