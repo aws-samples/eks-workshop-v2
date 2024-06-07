@@ -1,40 +1,5 @@
 data "aws_region" "current" {}
 
-module "argocd" {
-  source        = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/argocd"
-  addon_context = var.addon_context
-
-  helm_config = {
-    name             = "argocd"
-    chart            = "argo-cd"
-    repository       = "https://argoproj.github.io/argo-helm"
-    version          = "5.36.0"
-    namespace        = "argocd"
-    timeout          = 1200
-    create_namespace = true
-
-    set = [{
-      name  = "server.replicas"
-      value = "1"
-      }, {
-      name  = "controller.replicas"
-      value = "1"
-      }, {
-      name  = "repoServer.replicas"
-      value = "1"
-      }, {
-      name  = "applicationSet.replicaCount"
-      value = "1"
-      }, {
-      name  = "redis-ha.enabled"
-      value = "false"
-      }, {
-      name  = "server.service.type"
-      value = "LoadBalancer"
-    }]
-  }
-}
-
 resource "aws_codecommit_repository" "argocd" {
   repository_name = "${var.addon_context.eks_cluster_id}-argocd"
   description     = "CodeCommit repository for ArgoCD"

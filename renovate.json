@@ -24,7 +24,8 @@
       "matchDatasources": ["helm"],
       "registryUrls": [
         "https://kubernetes.github.io/autoscaler",
-        "https://kubernetes-sigs.github.io/cluster-proportional-autoscaler"
+        "https://kubernetes-sigs.github.io/cluster-proportional-autoscaler",
+        "https://argoproj.github.io/argo-helm"
       ]
     }
   ],
