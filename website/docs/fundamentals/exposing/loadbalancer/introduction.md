@@ -3,7 +3,29 @@ title: "Introduction"
 sidebar_position: 10
 ---
 
-We can confirm our microservices are only accessible internally by taking a look at the current Service resources in the cluster:
+First lets install the AWS Load Balancer controller using helm:
+
+```bash wait=10
+$ helm repo add eks-charts https://aws.github.io/eks-charts
+$ helm upgrade --install aws-load-balancer-controller eks-charts/aws-load-balancer-controller \
+  --version "${LBC_CHART_VERSION}" \
+  --namespace "kube-system" \
+  --set "clusterName=${EKS_CLUSTER_NAME}" \
+  --set "serviceAccount.name=aws-load-balancer-controller-sa" \
+  --set "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"="$LBC_ROLE_ARN" \
+  --wait
+Release "aws-load-balancer-controller" does not exist. Installing it now.
+NAME: aws-load-balancer-controller
+LAST DEPLOYED: [...]
+NAMESPACE: kube-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+AWS Load Balancer controller installed!
+```
+
+We can confirm our microservices are only accessible internally by taking a look at the current `Service` resources in the cluster:
 
 ```bash
 $ kubectl get svc -l app.kubernetes.io/created-by=eks-workshop -A
@@ -21,9 +43,9 @@ rabbitmq    rabbitmq         ClusterIP   172.20.107.54    <none>        5672/TCP
 ui          ui               ClusterIP   172.20.62.119    <none>        80/TCP                                  1h
 ```
 
-All of our application components are currently using `ClusterIP` services, which only allows access to other workloads in the same Kubernetes cluster. In order for users to access our application we need to expose the `ui` application, and in this example we'll do so using a Kubernetes Service of type `LoadBalancer`.
+All of our application components are currently using `ClusterIP` services, which only allows access to other workloads in the same Kubernetes cluster. In order for users to access our application we need to expose the `ui` application, and in this example we'll do so using a Kubernetes service of type `LoadBalancer`.
 
-First, lets take a closer look at the current specification of the Service for the `ui` component:
+Lets take a closer look at the current specification of the service for the `ui` component:
 
 ```bash
 $ kubectl -n ui describe service ui
