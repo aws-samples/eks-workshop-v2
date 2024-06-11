@@ -124,7 +124,7 @@ NAME 	 NAMESPACE  REVISION  UPDATED                                  STATUS    C
 nginx	 nginx      2         2024-06-11 04:13:53.862100855 +0000 UTC  deployed  nginx-X.X.X   X.X.X
 ```
 
-You'll notice that the **revision** column has updated to **2** as Helm has applied our updated configuration as a distinct revision. This would allow us to rollback to our previous configurion if necessary.
+You'll notice that the **revision** column has updated to **2** as Helm has applied our updated configuration as a distinct revision. This would allow us to rollback to our previous configuration if necessary.
 
 You can view the revision history of a given release like this:
 
