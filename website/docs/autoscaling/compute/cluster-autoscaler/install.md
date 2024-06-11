@@ -13,7 +13,7 @@ $ helm upgrade --install cluster-autoscaler autoscaler/cluster-autoscaler --vers
   --namespace "kube-system" \
   --set "autoDiscovery.clusterName=${EKS_CLUSTER_NAME}" \
   --set "awsRegion=${AWS_REGION}" \
-  --set "image.tag=${CLUSTER_AUTOSCALER_IMAGE_TAG}" \
+  --set "image.tag=v${CLUSTER_AUTOSCALER_IMAGE_TAG}" \
   --set "rbac.serviceAccount.name=cluster-autoscaler-sa" \
   --set "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"="$CLUSTER_AUTOSCALER_ROLE" \
   --wait
