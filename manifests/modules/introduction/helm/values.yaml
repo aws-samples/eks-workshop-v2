@@ -1,0 +1,8 @@
+podLabels:
+  team: team1
+  costCenter: org1
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
