@@ -156,3 +156,5 @@ $ helm uninstall nginx --namespace nginx --wait
 ```
 
 This will delete all the resources created by the chart for that release from our EKS cluster.
+
+Now that you understand how Helm works, proceed to the [Fundamentals module](/docs/fundamentals).
