@@ -38,7 +38,7 @@ $ helm version
 
 A Helm repository is a centralized location where Helm charts are stored and managed, and allow users to easily discover, share, and install charts. They facilitate easy access to a wide range of pre-packaged applications and services for deployment on Kubernetes clusters.
 
-Lets add the `bitnami` repository to our Helm CLI:
+The [Bitnami](https://github.com/bitnami/charts) Helm repository is a collection of Helm charts for deploying popular applications and tools on Kubernetes. Let's add the `bitnami` repository to our Helm CLI:
 
 ```bash
 $ helm repo add bitnami https://charts.bitnami.com/bitnami
