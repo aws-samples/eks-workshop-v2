@@ -93,7 +93,7 @@ nginx-55fbd7f494-zplwx   1/1     Running   0          119s
 
 In the example above we installed the NGINX chart in its default configuration. Sometimes you'll need to provide configuration **values** to charts during installation to modify the way the component behaves.
 
-You can provide values to charts during installation using various methods, with two common ways being:
+There are two common ways to provide values to charts during installation:
 
 1. Create YAML files and pass them to Helm using the `-f` or `--values` flag
 1. Pass values using the `--set` flag followed by `key=value` pairs
