@@ -56,7 +56,7 @@ bitnami/postgresql      X.X.X           X.X.X           PostgreSQL (Postgres) is
 
 ## Installing a Helm chart
 
-Lets install an NGINX server in our EKS cluster using the Helm chart we found above. When you install a chart using the Helm package manager, it creates a new **release** for that chart. Each release is tracked by Helm and can be upgraded, rolled back, or uninstalled independently from other releases.
+Let's install an NGINX server in our EKS cluster using the Helm chart we found above. When you install a chart using the Helm package manager, it creates a new **release** for that chart. Each release is tracked by Helm and can be upgraded, rolled back, or uninstalled independently from other releases.
 
 ```bash
 $ echo $NGINX_CHART_VERSION
