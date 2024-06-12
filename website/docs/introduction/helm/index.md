@@ -1,5 +1,5 @@
 ---
-title: Helm
+title: Helm (optional)
 sidebar_position: 50
 ---
 
