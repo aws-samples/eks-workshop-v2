@@ -98,7 +98,7 @@ You can provide values to charts during installation using various methods, with
 1. Create YAML files and pass them to Helm using the `-f` or `--values` flag
 1. Pass values using the `--set` flag followed by `key=value` pairs
 
-Lets combine these methods to update our NGINX release. We'll use this `values.yaml` file:
+Let's combine these methods to update our NGINX release. We'll use this `values.yaml` file:
 
 ```file
 manifests/modules/introduction/helm/values.yaml
