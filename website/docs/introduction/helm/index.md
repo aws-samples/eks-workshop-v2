@@ -116,7 +116,7 @@ $ helm upgrade --install nginx bitnami/nginx \
   --values ~/environment/eks-workshop/modules/introduction/helm/values.yaml
 ```
 
-As before lets list the releases:
+List the releases:
 
 ```bash
 $ helm list -A
