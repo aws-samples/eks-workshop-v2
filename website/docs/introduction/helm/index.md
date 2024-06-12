@@ -91,7 +91,7 @@ nginx-55fbd7f494-zplwx   1/1     Running   0          119s
 
 ## Configuring chart options
 
-In the example above we installed the NGINX chart in its default configuration. However its common to need to provide **values** to charts during installation to change different aspects of behavior of the installed component.
+In the example above we installed the NGINX chart in its default configuration. Sometimes you'll need to provide configuration **values** to charts during installation to modify the way the component behaves.
 
 You can provide values to charts during installation using various methods, with two common ways being:
 
