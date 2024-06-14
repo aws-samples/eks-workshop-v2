@@ -34,7 +34,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          role-duration-seconds: 300
+          role-duration-seconds: 900
           aws-region: ${{ secrets.AWS_REGION }}
           role-session-name: GithubActionsSession-publish
       - name: Run publish
