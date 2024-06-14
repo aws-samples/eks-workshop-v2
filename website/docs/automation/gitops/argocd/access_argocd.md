@@ -32,7 +32,7 @@ ArgoCD URL: http://acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amaz
 
 The load balancer will take some time to provision so use this command to wait until ArgoCD responds:
 
-```bash
+```bash timeout=600
 $ curl --head -X GET --retry 20 --retry-connrefused --retry-delay 15 http://$ARGOCD_SERVER
 curl: (6) Could not resolve host: acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com
 Warning: Problem : timeout. Will retry in 15 seconds. 20 retries left.

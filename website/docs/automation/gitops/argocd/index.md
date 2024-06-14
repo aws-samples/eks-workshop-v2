@@ -10,7 +10,7 @@ description: "Declarative, GitOps continuous delivery with ArgoCD on Amazon Elas
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=300 wait=120 hook=install
+```bash timeout=300 wait=120
 $ prepare-environment automation/gitops/argocd
 ```
 
