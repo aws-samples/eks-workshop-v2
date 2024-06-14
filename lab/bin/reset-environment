@@ -58,9 +58,8 @@ if [ ! -z "${REPOSITORY_REF}" ]; then
 
   logmessage "Refreshing copy of workshop repository from GitHub..."
 
-  git clone --quiet https://github.com/$REPOSITORY_OWNER/$REPOSITORY_NAME.git $repository_path
-  (cd $repository_path && git checkout --quiet "${REPOSITORY_REF}")
-
+  git clone --depth=1 --single-branch --branch=${REPOSITORY_REF} --quiet https://github.com/$REPOSITORY_OWNER/$REPOSITORY_NAME.git $repository_path
+  
   logmessage ""
 
   cp -R $repository_path/manifests $manifests_path
