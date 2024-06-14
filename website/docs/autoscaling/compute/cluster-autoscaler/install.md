@@ -9,7 +9,8 @@ All that we have left to do is install cluster-autoscaler as a helm chart:
 
 ```bash
 $ helm repo add autoscaler https://kubernetes.github.io/autoscaler
-$ helm upgrade --install cluster-autoscaler autoscaler/cluster-autoscaler --version "${CLUSTER_AUTOSCALER_CHART_VERSION}" \
+$ helm upgrade --install cluster-autoscaler autoscaler/cluster-autoscaler \
+  --version "${CLUSTER_AUTOSCALER_CHART_VERSION}" \
   --namespace "kube-system" \
   --set "autoDiscovery.clusterName=${EKS_CLUSTER_NAME}" \
   --set "awsRegion=${AWS_REGION}" \

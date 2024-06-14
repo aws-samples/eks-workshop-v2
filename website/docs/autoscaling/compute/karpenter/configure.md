@@ -15,7 +15,8 @@ You can find the full installation documentation for Karpenter [here](https://ka
 All that we have left to do is install Karpenter as a helm chart:
 
 ```bash
-$ helm upgrade --install karpenter oci://public.ecr.aws/karpenter/karpenter --version "${KARPENTER_VERSION}" \
+$ helm upgrade --install karpenter oci://public.ecr.aws/karpenter/karpenter \
+  --version "${KARPENTER_VERSION}" \
   --namespace "karpenter" --create-namespace \
   --set "settings.clusterName=${EKS_CLUSTER_NAME}" \
   --set "settings.interruptionQueue=${KARPENTER_SQS_QUEUE}" \
