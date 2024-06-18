@@ -23,7 +23,6 @@ The following pre-requisites are necessary to work on the content:
 - Installed locally:
   - Docker
   - `make`
-  - `terraform`
   - `jq`
   - `npm`
   - `kubectl`
@@ -65,9 +64,16 @@ There are some additional things to set up which are not required but will make 
 
 ### Creating the infrastructure
 
-When creating your content you will want to test the commands you specify against infrastructure that mirrors what will be used in the actual workshop by learners. This can easily by done locally and will use the cluster configuration in `./cluster/eksctl/cluster.yaml`.
+When creating your content you will want to test the commands you specify against infrastructure that mirrors what will be used in the actual workshop by learners. This can easily by done locally and with some convenience scripts that have been included.
 
-Ensure that your AWS credentials are set so eksctl is able to authenticate against your IAM account. It will source credentials following the standard mechanism used by the likes of the AWS CLI, which you can find documented [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-authentication.html).
+> [!TIP]
+> Why should you use the `make` commands and the associated convenience scripts instead of "doing it yourself"? The various scripts provided are intended to provide an environment consistent with what the end-user of the workshop will use. This is important because the workshop has a number of 3rd party dependencies that are carefully managed with regards to versioning.
+
+Many of the convenience scripts we'll use will make calls to AWS APIs so will need to be able to authenticate. Getting AWS credentials in to a container in a portable way can be a challenge, and there are several options available:
+
+1. Set `ASSUME_ROLE` environment variable in the terminal where you run the `make` commands to the ARN of an IAM role that you can assume with your current credentials. This will use the STS service to generate temporary credentials that will be injected in to the container. Example: `export ASSUME_ROLE='arn:aws:iam::123456789012:role/my-role'`
+1. Set `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables in the terminal where you run the `make` commands. It is recommended that these credentials be temporary. These variables will be injected in to the container.
+1. If you are developing on an EC2 instance which has an instance profile that provides the necessary IAM permissions then no action is needed as the container will automatically assume the role of the EC2 on which you're authoring your content.
 
 You can then use the following convenience command to create the infrastructure:
 
@@ -85,20 +91,16 @@ make destroy-infrastructure
 
 When in the process of creating the content its likely you'll need to be fairly interactive in testing commands etc. During a real workshop users would do this on the Cloud9 IDE, but for our purposes for developing content quickly this is a poor experience because it is designed to refresh content automatically from GitHub. As a result it is recommended to _NOT use the Cloud9 IDE_ created by the Cloud Formation in this repository and instead use the flow below.
 
-The repository provides a mechanism to easily create an interactive shell with access to the EKS cluster created by `make create-infrastructure`. This shell will automatically pick up changes to the content on your local machine and mirrors the Cloud9 used in a real workshop in terms of tools and setup.
+The repository provides a mechanism to easily create an interactive shell with access to the EKS cluster created by `make create-infrastructure`. This shell will automatically pick up changes to the content on your local machine and mirrors the Cloud9 used in a real workshop in terms of tools and setup. As such to use this utility you must have already run `make create-infrastructure`.
 
-To use this utility you must:
+The shell session created will have AWS credentials injected, so you will immediately be able to use the `aws` CLI and `kubectl` commands with no further configuration.
 
-- Already run `make create-infrastructure`
-- Have some AWS credentials available in your current shell session (ie. you `aws` CLI must work)
-
-The shell session created will have AWS credentials injected, so you will immediately be able to use the `aws` CLI and `kubectl` commands with no further configuration:
-
-If using [finch CLI](https://github.com/runfinch/finch) instead of `docker` CLI you need to set two environment variable `CONTAINER_CLI` or run `make` with the variable set like `CONTAINER_CLI=finch make shell` here how to set the variable in the terminal session for every command.
-
-```bash
-export CONTAINER_CLI=finch
-```
+> [!NOTE]
+> If using [finch CLI](https://github.com/runfinch/finch) instead of `docker` CLI you need to set two environment variable `CONTAINER_CLI` or run `make` with the variable set like `CONTAINER_CLI=finch make shell` here how to set the variable in the terminal session for every command.
+>
+> ```bash
+> export CONTAINER_CLI=finch
+> ```
 
 Run `make shell`:
 

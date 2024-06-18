@@ -1,7 +1,8 @@
 #!/bin/bash
 
 environment=$1
-shell_command=$2
+shift 1
+shell_command=$@
 
 set -Eeuo pipefail
 
@@ -20,17 +21,11 @@ container_image='eks-workshop-environment'
 
 source $SCRIPT_DIR/lib/generate-aws-creds.sh
 
-interactive_args=""
+echo "Executing command in container..."
 
-if [ -z "$shell_command" ]; then
-  echo "Starting shell in container..."
-  interactive_args="-it"
-else
-  echo "Executing command in container..."
-fi
-
-$CONTAINER_CLI run --rm $interactive_args \
+$CONTAINER_CLI run --rm \
   -v $SCRIPT_DIR/../manifests:/manifests \
   -v $SCRIPT_DIR/../cluster:/cluster \
+  --entrypoint /bin/bash \
   -e 'EKS_CLUSTER_NAME' -e 'AWS_REGION' \
-  $aws_credential_args $container_image $shell_command
+  $aws_credential_args $container_image -c "$shell_command"

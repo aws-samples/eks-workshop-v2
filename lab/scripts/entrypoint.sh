@@ -12,5 +12,6 @@ if [ $# -eq 0 ]
   then
     bash -l
 else
+  source /home/ec2-user/.bashrc.d/env.bash
   bash -c "$@"
 fi

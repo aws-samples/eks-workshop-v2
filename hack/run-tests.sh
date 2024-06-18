@@ -10,9 +10,6 @@ set -u
 # You can run script with finch like CONTAINER_CLI=finch ./run-tests.sh <terraform_context> <module>
 CONTAINER_CLI=${CONTAINER_CLI:-docker}
 
-# Right now the container images are only designed for amd64
-export DOCKER_DEFAULT_PLATFORM=linux/amd64
-
 AWS_EKS_WORKSHOP_TEST_FLAGS=${AWS_EKS_WORKSHOP_TEST_FLAGS:-""}
 
 if [[ "$module" == '-' && "$glob" == '-' ]]; then
@@ -40,15 +37,7 @@ container_image='eks-workshop-test'
 
 (cd $SCRIPT_DIR/../test && $CONTAINER_CLI build -q -t $container_image .)
 
-aws_credential_args=""
-
-ASSUME_ROLE=${ASSUME_ROLE:-""}
-
-if [ ! -z "$ASSUME_ROLE" ]; then
-  source $SCRIPT_DIR/lib/generate-aws-creds.sh
-
-  aws_credential_args="-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN"
-fi
+source $SCRIPT_DIR/lib/generate-aws-creds.sh
 
 BACKGROUND=${BACKGROUND:-""}
 
