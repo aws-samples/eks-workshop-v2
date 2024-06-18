@@ -42,7 +42,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Make shell
         run: |
-          make shell shell_simple_command='ls'
+          bash hack/exec.sh '' 'ls -la'
 
   pre-commit:
     name: "Pre-commit hooks"
