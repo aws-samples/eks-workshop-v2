@@ -13,5 +13,10 @@ jobs:
   test-module:
     uses: ./.github/workflows/module-test.yaml
     with:
-      module: networking
+      glob: networking/vpc-cni**
+    secrets: inherit
+  test-lattice:
+    uses: ./.github/workflows/module-test.yaml
+    with:
+      module: networking/vpc-lattice
     secrets: inherit
