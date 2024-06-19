@@ -15,7 +15,10 @@ import fs from "fs";
 export class MarkdownSh {
   private gatherer = new Gatherer();
 
-  constructor(private glob: string, private debug: boolean) {}
+  constructor(
+    private glob: string,
+    private debug: boolean,
+  ) {}
 
   async plan(directory: string) {
     let root = await this.gatherer.gather(directory);
@@ -35,7 +38,7 @@ export class MarkdownSh {
     bail: boolean,
     output: string,
     outputPath: string,
-    beforeEach: string
+    beforeEach: string,
   ) {
     const mochaOpts: Mocha.MochaOptions = {
       timeout: timeout * 1000,
@@ -75,7 +78,7 @@ export class MarkdownSh {
         mocha.suite,
         hookTimeout,
         dryRun,
-        shell
+        shell,
       );
 
       try {
@@ -91,7 +94,7 @@ export class MarkdownSh {
       mocha.run((failures) => {
         if (failures)
           reject(
-            "at least one test is failed, check detailed execution report"
+            "at least one test is failed, check detailed execution report",
           );
         resolve();
       });
@@ -104,7 +107,7 @@ export class MarkdownSh {
     parentSuite: Suite,
     hookTimeout: number,
     dryRun: boolean,
-    shell: DefaultShell
+    shell: DefaultShell,
   ) {
     const suite = Mocha.Suite.create(parentSuite, category.title);
 
@@ -131,8 +134,8 @@ export class MarkdownSh {
             category,
             hookTimeout,
             dryRun,
-            shell
-          )
+            shell,
+          ),
         );
       }
 
@@ -148,7 +151,7 @@ export class MarkdownSh {
         suite,
         hookTimeout,
         dryRun,
-        shell
+        shell,
       );
     }
 
@@ -160,7 +163,7 @@ export class MarkdownSh {
     category: Category,
     hookTimeout: number,
     dryRun: boolean,
-    shell: DefaultShell
+    shell: DefaultShell,
   ): Test {
     let skip = false;
 
@@ -174,7 +177,7 @@ export class MarkdownSh {
       hookTimeout,
       this.debug,
       dryRun,
-      shell
+      shell,
     );
   }
 
@@ -183,7 +186,7 @@ export class MarkdownSh {
     suite: Suite,
     hookTimeout: number,
     dryRun: boolean,
-    shell: DefaultShell
+    shell: DefaultShell,
   ) {
     const suiteDir = path.dirname(record.path);
 
@@ -194,7 +197,7 @@ export class MarkdownSh {
         hookPath: string,
         hook: string,
         hookTimeout: number,
-        dryRun: boolean
+        dryRun: boolean,
       ) => {
         this.debugMessage(`Calling suite ${hook} hook at ${hookPath}`);
 
@@ -204,7 +207,7 @@ export class MarkdownSh {
               `bash ${hookPath} ${hook}`,
               hookTimeout,
               false,
-              {}
+              {},
             );
           } catch (e: any) {
             if (e instanceof ShellTimeout) {
@@ -213,7 +216,7 @@ export class MarkdownSh {
               console.log(`stdout: \n${e.stdout}`);
               console.log(`stderr: \n${e.stderr}`);
               assert.fail(
-                `Script failed to complete within ${e.timeout} seconds`
+                `Script failed to complete within ${e.timeout} seconds`,
               );
             } else if (e instanceof ShellError) {
               console.log(e.message);
@@ -255,7 +258,7 @@ class CustomTest extends Test {
     globalHookTimeout: number,
     private debug: boolean,
     private dryRun: boolean,
-    private shell: Shell
+    private shell: Shell,
   ) {
     super(page.title, async () => {
       let failed = false;
@@ -287,7 +290,7 @@ class CustomTest extends Test {
                 testCase.command,
                 testCase.timeout,
                 testCase.expectError,
-                {}
+                {},
               );
             } catch (e: any) {
               e.message = `Error running test case command at line ${testCase.lineNumber} - ${e.message}`;
@@ -309,7 +312,7 @@ class CustomTest extends Test {
               console.log(`stdout: \n${e.stdout}`);
               console.log(`stderr: \n${e.stderr}`);
               assert.fail(
-                `Script failed to complete within ${e.timeout} seconds`
+                `Script failed to complete within ${e.timeout} seconds`,
               );
             } else if (e instanceof ShellError) {
               if (!testCase.expectError) {
@@ -335,7 +338,7 @@ class CustomTest extends Test {
     category: Category,
     hook: string,
     timeout: number,
-    env: { [key: string]: string | undefined }
+    env: { [key: string]: string | undefined },
   ) {
     if (testCase.hook) {
       this.debugMessage(`Calling ${hook} hook ${testCase.hook}`);
@@ -347,7 +350,7 @@ class CustomTest extends Test {
           `bash ${hookPath} ${hook}`,
           timeout,
           false,
-          env
+          env,
         );
 
         this.debugMessage(`Completed ${hook} hook ${testCase.hook}`);
@@ -363,7 +366,7 @@ class CustomTest extends Test {
     command: string,
     timeout: number,
     expectError: boolean,
-    env: { [key: string]: string | undefined }
+    env: { [key: string]: string | undefined },
   ): Promise<ExecutionResult | undefined> {
     this.debugMessage(`Executing shell:
   Command ${command}
