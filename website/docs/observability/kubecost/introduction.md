@@ -44,8 +44,10 @@ Kubecost URL: http://k8s-kubecost-kubecost-e83ecf8fc1-fc26f5c92767520f.elb.us-we
 
 The load balancer will take some time to provision so use this command to wait until Kubecost responds:
 
-```bash
-$ curl --head -X GET --retry 20 --retry-connrefused --retry-delay 15 http://$KUBECOST_SERVER
+```bash timeout=300
+$ curl --head -X GET --retry 20 --retry-all-errors --retry-delay 15 \
+  --connect-timeout 5 --max-time 10 \
+  http://$KUBECOST_SERVER
 curl: (6) Could not resolve host: k8s-kubecost-kubecost-e83ecf8fc1-fc26f5c92767520f.elb.us-west-2.amazonaws.com
 Warning: Problem : timeout. Will retry in 15 seconds. 20 retries left.
 [...]
