@@ -27,7 +27,7 @@ module "catalog_mysql" {
   create_db_parameter_group = false
 
   engine               = "mysql"
-  engine_version       = "8.0.37"
+  engine_version       = var.rds_engine_version
   family               = "mysql8.0"
   major_engine_version = "8.0"
   instance_class       = "db.t4g.micro"

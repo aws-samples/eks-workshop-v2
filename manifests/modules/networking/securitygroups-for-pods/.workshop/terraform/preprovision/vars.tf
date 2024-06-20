@@ -9,3 +9,10 @@ variable "tags" {
   description = "Tags to apply to AWS resources"
   type        = any
 }
+
+variable "rds_engine_version" {
+  description = "The MySQL engine version of RDS to use"
+  type        = string
+  # renovate: datasource=endoflife-date depName=amazon-rds-mysql
+  default = "8.0.35"
+}
