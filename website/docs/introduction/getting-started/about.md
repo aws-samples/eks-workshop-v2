@@ -5,9 +5,9 @@ sidebar_position: 10
 
 Most of the labs in this workshop use a common sample application to provide actual container components that we can work on during the exercises. The sample application models a simple web store application, where customers can browse a catalog, add items to their cart and complete an order through the checkout process.
 
-<browser url="-">
+<Browser url="-">
 <img src={require('@site/static/img/sample-app-screens/home.png').default}/>
-</browser>
+</Browser>
 
 The application has several components and dependencies:
 

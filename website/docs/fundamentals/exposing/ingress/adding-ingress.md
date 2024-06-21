@@ -115,6 +115,6 @@ $ wait-for-lb $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.
 
 And access it in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
 
-<browser url="http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com">
+<Browser url="http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com">
 <img src={require('@site/static/img/sample-app-screens/home.png').default}/>
-</browser>
+</Browser>

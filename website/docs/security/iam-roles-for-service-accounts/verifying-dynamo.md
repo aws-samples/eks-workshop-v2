@@ -12,9 +12,9 @@ k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 
 The `carts` Pod is able to reach the DynamoDB service and the shopping cart is now accessible!
 
-<browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/cart">
+<Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/cart">
 <img src={require('@site/static/img/sample-app-screens/shopping-cart.png').default}/>
-</browser>
+</Browser>
 
 Let's take a closer look at the new `carts` Pod to see whats happening.
 

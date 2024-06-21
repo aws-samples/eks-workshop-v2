@@ -66,6 +66,6 @@ Accept-Ranges: bytes
 
 Open the URL in your browser to access Kubecost:
 
-<browser url='http://k8s-kubecost-kubecost-e83ecf8fc1-fc26f5c92767520f.elb.us-west-2.amazonaws.com:9090'>
+<Browser url='http://k8s-kubecost-kubecost-e83ecf8fc1-fc26f5c92767520f.elb.us-west-2.amazonaws.com:9090'>
 <img src={require('./assets/overview.png').default}/>
-</browser>
+</Browser>

@@ -7,4 +7,4 @@ This lab has introduced the basics of managing EKS compute with Karpenter, but h
 
 For a more thorough set of hands-on exercises please see the Karpenter Workshop linked below.
 
-<launchButton url="https://catalog.workshops.aws/karpenter" label="Karpenter Workshop" />
+<LaunchButton url="https://catalog.workshops.aws/karpenter" label="Karpenter Workshop" />
