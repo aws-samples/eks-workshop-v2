@@ -1,6 +1,6 @@
-const visit = require("unist-util-visit");
-const fs = require("fs/promises");
-var path = require("path");
+import { visit } from "unist-util-visit";
+import { promises as fs } from "fs";
+import * as path from "path";
 
 const regex = /(\w+)=([^\s]+)/g;
 
@@ -11,14 +11,15 @@ const plugin = (options) => {
     const promises = [];
     visit(ast, "code", (node) => {
       if (node.lang === "file") {
-        value = node.value;
+        const value = node.value;
 
-        hidePath = false;
+        let hidePath = false;
+        var m;
 
         if (node.meta) {
           while ((m = regex.exec(node.meta)) !== null) {
-            key = m[1];
-            metaValue = m[2];
+            const key = m[1];
+            const metaValue = m[2];
 
             switch (key) {
               case "hidePath":
@@ -28,9 +29,9 @@ const plugin = (options) => {
           }
         }
 
-        normalizedPath = `${path.normalize(`${value}`)}`;
+        const normalizedPath = `${path.normalize(`${value}`)}`;
 
-        title = `/eks-workshop/${normalizedPath}`;
+        let title = `/eks-workshop/${normalizedPath}`;
 
         if (normalizedPath.startsWith("manifests/")) {
           title = `${normalizedPath}`.replace(
@@ -59,4 +60,4 @@ const plugin = (options) => {
   return transformer;
 };
 
-module.exports = plugin;
+export default plugin;

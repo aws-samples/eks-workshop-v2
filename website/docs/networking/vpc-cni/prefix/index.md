@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Increase pod density on Amazon Elastic Kubernetes Service with prefix delegation."
 ---
 
-{{% required-time %}}
+\::required-time
 
 :::tip Before you start
 Prepare your environment for this section:

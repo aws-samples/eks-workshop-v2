@@ -3,7 +3,7 @@ title: Helm (optional)
 sidebar_position: 50
 ---
 
-{{% required-time %}}
+\::required-time
 
 :::tip Before you start
 Prepare your environment for this section:

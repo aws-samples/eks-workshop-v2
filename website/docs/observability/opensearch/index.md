@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Build observability capabilities for Amazon Elastic Kubernetes Service around OpenSearch."
 ---
 
-{{% required-time %}}
+\::required-time
 
 :::tip Before you start
 Prepare your environment for this section:

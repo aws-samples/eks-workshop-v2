@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Scale workloads proportional to the size of your Amazon Elastic Kubernetes Service cluster with Cluster Proportional Autoscaler."
 ---
 
-{{% required-time %}}
+\::required-time
 
 :::tip Before you start
 Prepare your environment for this section:

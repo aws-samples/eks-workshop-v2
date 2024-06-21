@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Automatically scale workloads on Amazon Elastic Kubernetes Service with Horizontal Pod Autoscaler."
 ---
 
-{{% required-time %}}
+\::required-time
 
 :::tip Before you start
 Prepare your environment for this section:

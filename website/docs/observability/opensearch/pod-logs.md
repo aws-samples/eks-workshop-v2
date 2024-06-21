@@ -23,7 +23,7 @@ Kubernetes, by itself, doesn’t provide a native solution to collect and store 
 
 The following diagram provides an overview of the setup for this section. Fluent Bit will be deployed in the `opensearch-exporter` namespace and it will be configured to forward pod logs to the OpenSearch domain. Pod logs are stored in the `eks-pod-logs` index in OpenSearch. An OpenSearch dashboard that we loaded earlier is used to inspect the pod logs.
 
-![Pod logs to OpenSearch](./assets/eks-pod-logs-overview.svg)
+![Pod logs to OpenSearch](./assets/eks-pod-logs-overview.png)
 
 Deploy Fluent Bit as a [Daemon Set](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) and configure it to send pod logs to the OpenSearch domain. The base configuration is available [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/config/fluentbit-values.yaml). The OpenSearch credentials we retrieved earlier are used to configure Fluent Bit. The last command verifies that Fluent Bit is running with one pod on each of the three cluster nodes.
 

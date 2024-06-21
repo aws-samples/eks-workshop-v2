@@ -1,17 +1,16 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-var path = require("path");
+import * as path from "path";
+import { themes as prismThemes } from "prism-react-renderer";
 
-const lightCodeTheme = require("prism-react-renderer/themes/github");
-const darkCodeTheme = require("prism-react-renderer/themes/dracula");
-const remarkCodeTerminal = require("./src/remark/code-terminal");
-const remarkTime = require("./src/remark/time");
-const remarkIncludeCode = require("./src/remark/include-code");
-const remarkIncludeKustomization = require("./src/remark/include-kustomization");
-const remarkParameters = require("./src/remark/parameters");
+import remarkCodeTerminal from "./src/remark/code-terminal.js";
+import remarkTime from "./src/remark/time.js";
+import remarkIncludeCode from "./src/remark/include-code.js";
+import remarkIncludeKustomization from "./src/remark/include-kustomization.js";
+import remarkParameters from "./src/remark/parameters.js";
 
-require("dotenv").config({ path: ".kustomize-env" });
+//require("dotenv").config({ path: ".kustomize-env" });
 
 const rootDir = path.dirname(require.resolve("./package.json"));
 const manifestsDir = `${rootDir}/..`;
@@ -24,13 +23,15 @@ const manifestsRepository =
 
 const labTimesEnabled = process.env.LAB_TIMES_ENABLED || false;
 
+const baseUrl = process.env.BASE_URL || "";
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "EKS Workshop",
   tagline:
     "Practical exercises to learn about Amazon Elastic Kubernetes Service",
   url: "https://www.eksworkshop.com",
-  baseUrl: "/",
+  baseUrl: `/${baseUrl}`,
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.png",
@@ -53,11 +54,9 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
-          remarkPlugins: [
-            remarkCodeTerminal,
-            [remarkTime, { enabled: labTimesEnabled, factor: 1.25 }],
-          ],
+          remarkPlugins: [remarkCodeTerminal],
           beforeDefaultRemarkPlugins: [
+            [remarkTime, { enabled: labTimesEnabled, factor: 1.25 }],
             [
               remarkParameters,
               {
@@ -198,8 +197,9 @@ const config = {
         copyright: `© ${new Date().getFullYear()}, Amazon Web Services, Inc. or its affiliates. All rights reserved.`,
       },
       prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
+        theme: prismThemes.github,
+        darkTheme: prismThemes.dracula,
+        additionalLanguages: ["diff", "diff-yaml"],
         magicComments: [
           // Remember to extend the default highlight class name as well!
           {
@@ -216,4 +216,4 @@ const config = {
     }),
 };
 
-module.exports = config;
+export default config;

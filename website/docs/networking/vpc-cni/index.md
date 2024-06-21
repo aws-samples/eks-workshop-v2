@@ -5,8 +5,6 @@ chapter: true
 weight: 20
 ---
 
-import ReactPlayer from "react-player";
-
 Pod networking, also called cluster networking, is the center of Kubernetes networking. Kubernetes supports Container Network Interface (CNI) plugins for cluster networking.
 
 Watch a video walk-through of the networking module by one of the module maintainers, Sheetal Joshi (AWS) here:

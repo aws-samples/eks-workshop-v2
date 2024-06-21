@@ -1,5 +1,5 @@
 import React, { Component, type ReactNode } from "react";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard } from "@fortawesome/free-solid-svg-icons";
 
@@ -56,9 +56,9 @@ export default function Terminal({ output }: Props): JSX.Element {
             <FontAwesomeIcon
               icon={faClipboard}
               onClick={handler}
-              data-tip="Copy all commands"
+              data-tooltip-id={`copy-all`}
             />
-            <ReactTooltip place="top" effect="float" border={true} />
+            <ReactTooltip id="copy-all" content="Copy all commands" />
           </div>
         </div>
       </div>
@@ -68,6 +68,7 @@ export default function Terminal({ output }: Props): JSX.Element {
           return element.render();
         })}
       </div>
+      <ReactTooltip id="copy-command" content="Copy command" />
     </div>
   );
 }
@@ -132,7 +133,8 @@ class TerminalSection {
     return (
       <section
         className={styles.terminalBody}
-        data-tip="Copy command"
+        data-tooltip-id="copy-command"
+        data-tooltip-float={true}
         onClick={handler}
       >
         {this.contexts.map((element) => {

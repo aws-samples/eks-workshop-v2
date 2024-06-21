@@ -3,18 +3,17 @@ import React from "react";
 import MDXComponents from "@theme-original/MDXComponents";
 import Terminal from "@site/src/components/Terminal";
 import BrowserWindow from "@site/src/components/BrowserWindow";
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-import CodeBlock from "@theme/CodeBlock";
 import Kustomization from "@site/src/components/Kustomization";
 import LaunchButton from "@site/src/components/LaunchButton";
+import ReactPlayer from "react-player";
 
 export default {
   // Re-use the default mapping
   ...MDXComponents,
 
-  terminal: Terminal,
-  browser: BrowserWindow,
-  kustomization: Kustomization,
-  launchButton: LaunchButton,
+  Terminal: Terminal,
+  Browser: BrowserWindow,
+  Kustomization: Kustomization,
+  LaunchButton: LaunchButton,
+  ReactPlayer: ReactPlayer,
 };

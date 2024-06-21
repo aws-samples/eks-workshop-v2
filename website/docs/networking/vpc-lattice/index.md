@@ -6,7 +6,7 @@ sidebar_custom_props: { "module": true }
 description: "Simplify service-to-service connectivity, security and monitoring on Amazon Elastic Kubernetes Service with Amazon VPC Lattice."
 ---
 
-{{% required-time %}}
+\::required-time
 
 :::caution Preview
 

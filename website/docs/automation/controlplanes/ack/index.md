@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Directly managed AWS services from Amazon Elastic Kubernetes Service with Amazon Controllers for Kubernetes."
 ---
 
-{{% required-time %}}
+\::required-time
 
 :::tip Before you start
 Prepare your environment for this section:

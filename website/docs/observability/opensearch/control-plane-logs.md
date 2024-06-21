@@ -22,7 +22,7 @@ The following diagram provides an overview of the setup for this section. From l
 3. The Lambda function writes the control plane logs to an OpenSearch index
 4. A single OpenSearch index named `eks-control-plane-logs` stores all the control plane logs. Later in the lab we will see how we can filter the different log types within the OpenSearch dashboard
 
-![EKS Control Plane Logs to OpenSearch](./assets/eks-control-plane-logs-overview.svg)
+![EKS Control Plane Logs to OpenSearch](./assets/eks-control-plane-logs-overview.png)
 
 EKS control plane logs are enabled on a per-cluster basis through the EKS API. This will often be configured using Terraform or CloudFormation, but in this lab we'll use the AWS CLI to enable the functionality. As you can see we can enable each of the cluster log types individually, and in this lab we're enabling everything.
 
