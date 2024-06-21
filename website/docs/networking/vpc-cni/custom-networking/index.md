@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Flexible networking for pods with custom networking for Amazon Elastic Kubernetes Service."
 ---
 
-{{% required-time estimatedLabExecutionTimeMinutes="10" %}}
+::required-time{estimatedLabExecutionTimeMinutes="10"}
 
 :::tip Before you start
 Prepare your environment for this section:

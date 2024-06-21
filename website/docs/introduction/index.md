@@ -4,8 +4,6 @@ sidebar_position: 10
 weight: 5
 ---
 
-import ReactPlayer from "react-player";
-
 Welcome to the **AWS Elastic Kubernetes Service (EKS) workshop**!
 
 This workshop guides you through a set of hands-on lab exercises to learn and explore the various features provided by EKS and how it integrates with the broader set of services offered by AWS. The labs are grouped across a number of areas:

@@ -1,10 +1,9 @@
-const visit = require("unist-util-visit");
-const fs = require("fs/promises");
-const path = require("path");
-const yamljs = require("yamljs");
-const YAML = require("yaml");
-const { parse } = require("path");
-const Diff = require("diff");
+import { visit } from "unist-util-visit";
+import { promises as fs } from "fs";
+import * as path from "path";
+import * as yamljs from "yamljs";
+import * as YAML from "yaml";
+import * as Diff from "diff";
 
 const plugin = (options) => {
   const manifestsDir = options.manifestsDir;
@@ -86,7 +85,41 @@ const plugin = (options) => {
             Buffer.from(mutatedManifest).toString("base64");
           const diffEncoded = Buffer.from(diff).toString("base64");
 
-          node.value = `<kustomization resource="${resource}" path="${nicePath}" kustomize="${kustomizeEncoded}" complete="${completeEncoded}" diff="${diffEncoded}"></kustomization>`;
+          //node.value = `<kustomization resource="${resource}" path="${nicePath}" kustomize="${kustomizeEncoded}" complete="${completeEncoded}" diff="${diffEncoded}"></kustomization>`;
+
+          const jsxNode = {
+            type: "mdxJsxFlowElement",
+            name: "Kustomization",
+            attributes: [
+              {
+                type: "mdxJsxAttribute",
+                name: "resource",
+                value: resource,
+              },
+              {
+                type: "mdxJsxAttribute",
+                name: "path",
+                value: nicePath,
+              },
+              {
+                type: "mdxJsxAttribute",
+                name: "kustomize",
+                value: kustomizeEncoded,
+              },
+              {
+                type: "mdxJsxAttribute",
+                name: "complete",
+                value: completeEncoded,
+              },
+              {
+                type: "mdxJsxAttribute",
+                name: "diff",
+                value: diffEncoded,
+              },
+            ],
+          };
+
+          parent.children.splice(index, 1, jsxNode);
         });
         promises.push(p);
       }
@@ -145,4 +178,4 @@ function execShellCommand(cmd) {
   });
 }
 
-module.exports = plugin;
+export default plugin;

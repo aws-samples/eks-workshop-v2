@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Take advantage of discounts with Amazon EC2 Spot instances on Amazon Elastic Kubernetes Service."
 ---
 
-{{% required-time %}}
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section.

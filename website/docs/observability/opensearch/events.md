@@ -26,7 +26,7 @@ Kubernetes events are continuously generated but retained within the cluster for
 
 The following diagram provides an overview of the setup for this section. `kubernetes-events-exporter` will be deployed in the `opensearch-exporter` namespace to forward events to the OpenSearch domain. Events are stored in the `eks-kubernetes-events` index in OpenSearch. An OpenSearch dashboard that we loaded earlier is used to visualize the events.
 
-![Kubernetes events to OpenSearch](./assets/eks-events-overview.svg)
+![Kubernetes events to OpenSearch](./assets/eks-events-overview.png)
 
 Deploy Kubernetes events exporter and configure it to send events to our OpenSearch domain. The base configuration is available [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/config/events-exporter-values.yaml). The OpenSearch credentials we retrieved earlier are being used to configure the exporter. The second command verifies that the Kubernetes events pod is running.
 

@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Define security restrictions for pods running on Amazon Elastic Kubernetes Service with Pod Security Standards."
 ---
 
-{{% required-time %}}
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:

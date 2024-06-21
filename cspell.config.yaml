@@ -4,7 +4,7 @@ patterns:
   - name: markdown_code_snippet
     pattern: "/`(.*)`/g"
   - name: browser_block
-    pattern: "/<browser.*>[\\s\\S]*?^\\s*<\\/browser>/gm"
+    pattern: "/<Browser.*>[\\s\\S]*?^\\s*<\\/Browser>/gm"
 languageSettings:
   - languageId: markdown
     ignoreRegExpList:

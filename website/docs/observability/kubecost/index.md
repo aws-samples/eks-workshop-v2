@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Gain cost visibility and insights for teams using Amazon Elastic Kubernetes Service with Kubecost."
 ---
 
-{{% required-time %}}
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:

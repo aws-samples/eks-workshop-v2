@@ -1,74 +1,79 @@
-const visit = require("unist-util-visit");
+import { visit } from "unist-util-visit";
 const fs = require("fs");
-const yamljs = require("yamljs");
-const path = require("path");
-const { globSync } = require("glob");
-const readingTime = require("reading-time");
-const { parsePairs } = require("parse-pairs");
+import * as yamljs from "yamljs";
+import * as path from "path";
+import { globSync } from "glob";
+import getReadingTime from "reading-time";
 
 const timingDataString = fs.readFileSync(`./lab-timing-data.json`, {
   encoding: "utf8",
   flag: "r",
 });
 
-timingData = JSON.parse(timingDataString);
+const timingData = JSON.parse(timingDataString);
 
 const plugin = (options) => {
   const enabled = options.enabled;
   const factor = options.factor;
 
   const transformer = async (ast, vfile) => {
-    visit(ast, "text", (node) => {
-      const regex = /{{% required-time(.*?) %}}/;
+    visit(ast, "leafDirective", (node, index, parent) => {
+      if (node.name !== "required-time") return;
 
-      if ((m = regex.exec(node.value)) !== null) {
-        if (!enabled) {
-          node.value = "";
-          return;
-        }
-
-        let attributes = { estimatedLabExecutionTimeMinutes: 0 };
-
-        if (m.length > 1) {
-          let attributeString = m[1];
-
-          if (attributeString) {
-            let parsed = parsePairs(m[1]);
-
-            Object.keys(parsed).forEach((key) => {
-              switch (key) {
-                case "estimatedLabExecutionTimeMinutes":
-                  attributes.estimatedLabExecutionTimeMinutes = parseInt(
-                    parsed[key],
-                  );
-                  break;
-              }
-            });
-          }
-        }
-
-        const filePath = vfile.history[0];
-        const relativePath = path.relative(`${vfile.cwd}/docs`, filePath);
-
-        if (attributes.estimatedLabExecutionTimeMinutes == 0) {
-          attributes.estimatedLabExecutionTimeMinutes =
-            calculateLabExecutionTime(relativePath, timingData);
-        }
-
-        let totalTime =
-          Math.ceil(
-            ((calculateReadingTime(filePath) +
-              attributes.estimatedLabExecutionTimeMinutes) *
-              factor) /
-              5,
-          ) * 5;
-
-        node.type = "jsx";
-
-        node.value = `<p><b>Estimated time required:</b> ${totalTime} minutes</p>`;
-
-        delete node.lang;
+      if (!enabled) {
+        parent.children.splice(index, 1);
+        return;
       }
+
+      let defaultAttributes = { estimatedLabExecutionTimeMinutes: "0" };
+
+      let attributes = { ...defaultAttributes, ...node.attributes };
+
+      const filePath = vfile.history[0];
+      const relativePath = path.relative(`${vfile.cwd}/docs`, filePath);
+
+      if (attributes.estimatedLabExecutionTimeMinutes === "0") {
+        attributes.estimatedLabExecutionTimeMinutes = calculateLabExecutionTime(
+          relativePath,
+          timingData,
+        );
+      }
+
+      let totalTime =
+        Math.ceil(
+          ((calculateReadingTime(filePath) +
+            parseInt(attributes.estimatedLabExecutionTimeMinutes)) *
+            factor) /
+            5,
+        ) * 5;
+
+      const jsxNode = {
+        type: "mdxJsxFlowElement",
+        name: "p",
+        attributes: [],
+        children: [
+          {
+            type: "mdxJsxTextElement",
+            name: "b",
+            attributes: [],
+            children: [
+              {
+                type: "text",
+                value: "Estimated time required:",
+              },
+            ],
+            data: {
+              _mdxExplicitJsx: true,
+            },
+          },
+          {
+            type: "text",
+            value: ` ${totalTime} minutes`,
+          },
+        ],
+      };
+
+      parent.children.splice(index, 1, jsxNode);
     });
   };
   return transformer;
@@ -88,7 +93,7 @@ function calculateReadingTime(filePath) {
       encoding: "utf8",
       flag: "r",
     });
-    const stats = readingTime(fileData);
+    const stats = getReadingTime(fileData);
 
     totalReadingTime += stats.minutes;
   }
@@ -99,7 +104,7 @@ function calculateReadingTime(filePath) {
 function calculateLabExecutionTime(relativePath, timingData) {
   let labExecutionTime = 0;
 
-  timingDataEntry = timingData[relativePath];
+  const timingDataEntry = timingData[relativePath];
 
   if (timingDataEntry) {
     labExecutionTime = timingDataEntry.executionTimeSeconds / 60;
@@ -114,4 +119,4 @@ function calculateLabExecutionTime(relativePath, timingData) {
   return labExecutionTime;
 }
 
-module.exports = plugin;
+export default plugin;

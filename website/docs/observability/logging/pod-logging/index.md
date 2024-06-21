@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Capture workload logs from pods running on Amazon Elastic Kubernetes Service."
 ---
 
-{{% required-time %}}
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:
