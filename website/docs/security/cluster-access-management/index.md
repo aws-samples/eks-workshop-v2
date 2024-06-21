@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Manage AWS credentials using IAM Entities to provide access to Amazon Elastic Kubernetes Service for users and groups."
 ---
 
-\::required-time
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:

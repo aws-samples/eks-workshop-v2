@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Collect, aggregate and summarize metrics and logs from workloads on Amazon Elastic Kubernetes Service with Container Insights."
 ---
 
-\::required-time
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:

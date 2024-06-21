@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Gain visibility of Kubernetes resources in the Amazon Elastic Kubernetes Service console."
 ---
 
-\::required-time
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:

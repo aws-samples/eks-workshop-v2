@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Build a cloud native control plane with Crossplane on Amazon Elastic Kubernetes Service."
 ---
 
-\::required-time
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:

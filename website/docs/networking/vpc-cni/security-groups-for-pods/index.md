@@ -6,7 +6,7 @@ sidebar_custom_props: { "module": true }
 description: "Control inbound and outbound traffic to and from pods on Amazon Elastic Kubernetes Service with Amazon EC2 security groups."
 ---
 
-\::required-time
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:

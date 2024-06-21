@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Learn the basics of running workloads on Amazon Elastic Kubernetes Service."
 ---
 
-\::required-time
+::required-time
 
 Welcome to the first hands-on lab in the EKS workshop. The goal of this exercise is to familiarize ourselves with the sample application we'll use for many of the coming lab exercises and in doing so touch on some basic concepts related to deploying workloads to EKS. We'll explore the architecture of the application and deploy out the components to our EKS cluster.
 

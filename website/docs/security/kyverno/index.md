@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Apply policy-as-code with Kyverno on Amazon Elastic Kubernetes Service."
 ---
 
-\::required-time
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:

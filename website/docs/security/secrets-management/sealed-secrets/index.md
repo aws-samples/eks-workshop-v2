@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Provide sensitive configuration like credentials to applications running on Amazon Elastic Kubernetes Service with Sealed Secrets."
 ---
 
-\::required-time
+::required-time
 
 :::caution
 The [Sealed Secrets](https://docs.bitnami.com/tutorials/sealed-secrets) project is not related to AWS Services but a third party open-source tool from [Bitnami Labs](https://bitnami.com/)

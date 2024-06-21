@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Restrict network traffic to and from pods in Amazon Elastic Kubernetes Service with network policies."
 ---
 
-\::required-time
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:
