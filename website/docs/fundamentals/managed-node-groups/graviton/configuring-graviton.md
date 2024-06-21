@@ -10,9 +10,9 @@ To start with lets confirm the current state of nodes available in our cluster:
 ```bash
 $ kubectl get nodes -L kubernetes.io/arch
 NAME                                           STATUS   ROLES    AGE     VERSION                ARCH
-ip-192-168-102-2.us-west-2.compute.internal    Ready    <none>   6h56m   vVAR::KUBERNETES_NODE_VERSION    amd64
-ip-192-168-137-20.us-west-2.compute.internal   Ready    <none>   6h56m   vVAR::KUBERNETES_NODE_VERSION    amd64
-ip-192-168-19-31.us-west-2.compute.internal    Ready    <none>   6h56m   vVAR::KUBERNETES_NODE_VERSION    amd64
+ip-192-168-102-2.us-west-2.compute.internal    Ready    <none>   6h56m   vVAR::KUBERNETES_NODE_VERSION      amd64
+ip-192-168-137-20.us-west-2.compute.internal   Ready    <none>   6h56m   vVAR::KUBERNETES_NODE_VERSION      amd64
+ip-192-168-19-31.us-west-2.compute.internal    Ready    <none>   6h56m   vVAR::KUBERNETES_NODE_VERSION      amd64
 ```
 
 The output shows our existing nodes with columns that show the CPU architecture of each node. All of these are currently using `amd64` nodes.
@@ -53,10 +53,10 @@ $ kubectl get nodes \
     --label-columns eks.amazonaws.com/nodegroup,kubernetes.io/arch
 
 NAME                                          STATUS   ROLES    AGE    VERSION               NODEGROUP   ARCH
-ip-192-168-102-2.us-west-2.compute.internal   Ready    <none>   6h56m  vVAR::KUBERNETES_NODE_VERSION   default     amd64
-ip-192-168-137-20.us-west-2.compute.internal  Ready    <none>   6h56m  vVAR::KUBERNETES_NODE_VERSION   default     amd64
-ip-192-168-19-31.us-west-2.compute.internal   Ready    <none>   6h56m  vVAR::KUBERNETES_NODE_VERSION   default     amd64
-ip-10-42-172-231.us-west-2.compute.internal   Ready    <none>   2m5s   vVAR::KUBERNETES_NODE_VERSION   graviton    arm64
+ip-192-168-102-2.us-west-2.compute.internal   Ready    <none>   6h56m  vVAR::KUBERNETES_NODE_VERSION     default     amd64
+ip-192-168-137-20.us-west-2.compute.internal  Ready    <none>   6h56m  vVAR::KUBERNETES_NODE_VERSION     default     amd64
+ip-192-168-19-31.us-west-2.compute.internal   Ready    <none>   6h56m  vVAR::KUBERNETES_NODE_VERSION     default     amd64
+ip-10-42-172-231.us-west-2.compute.internal   Ready    <none>   2m5s   vVAR::KUBERNETES_NODE_VERSION     graviton    arm64
 ```
 
 The above command makes use of the `--selector` flag to query for all nodes that have a label of `eks.amazonaws.com/nodegroup` that matches the name of our managed node group `graviton`. The `--label-columns` flag also allows us to display the value of the `eks.amazonaws.com/nodegroup` label as well as the processor architecture in the output. Note that the `ARCH` column shows our tainted node group running Graviton `arm64` processors.

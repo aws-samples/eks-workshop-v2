@@ -39,8 +39,8 @@ This changes the total memory request for this deployment to around 12Gi, which 
 ```bash
 $ kubectl get nodes -l type=karpenter --label-columns node.kubernetes.io/instance-type
 NAME                                         STATUS   ROLES    AGE     VERSION               INSTANCE-TYPE
-ip-10-42-44-164.us-west-2.compute.internal   Ready    <none>   3m30s   vVAR::KUBERNETES_NODE_VERSION   m5.large
-ip-10-42-9-102.us-west-2.compute.internal    Ready    <none>   14m     vVAR::KUBERNETES_NODE_VERSION   m5.large
+ip-10-42-44-164.us-west-2.compute.internal   Ready    <none>   3m30s   vVAR::KUBERNETES_NODE_VERSION     m5.large
+ip-10-42-9-102.us-west-2.compute.internal    Ready    <none>   14m     vVAR::KUBERNETES_NODE_VERSION     m5.large
 ```
 
 Next, scale the number of replicas back down to 5:
