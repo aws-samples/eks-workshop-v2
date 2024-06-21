@@ -199,7 +199,7 @@ const config = {
       prism: {
         theme: prismThemes.github,
         darkTheme: prismThemes.dracula,
-        additionalLanguages: ["diff", "diff-yaml"],
+        additionalLanguages: ["diff"],
         magicComments: [
           // Remember to extend the default highlight class name as well!
           {
