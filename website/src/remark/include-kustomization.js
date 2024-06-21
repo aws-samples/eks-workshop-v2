@@ -1,11 +1,8 @@
 import { visit } from "unist-util-visit";
 import { promises as fs } from "fs";
 import * as path from "path";
-//const yamljs = require("yamljs");
 import * as yamljs from "yamljs";
-//const YAML = require("yaml");
 import * as YAML from "yaml";
-//const Diff = require("diff");
 import * as Diff from "diff";
 
 const plugin = (options) => {

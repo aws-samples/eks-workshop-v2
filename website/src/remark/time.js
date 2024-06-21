@@ -1,10 +1,9 @@
 import { visit } from "unist-util-visit";
 const fs = require("fs");
-const yamljs = require("yamljs");
-const path = require("path");
-const { globSync } = require("glob");
-const readingTime = require("reading-time");
-const { parsePairs } = require("parse-pairs");
+import * as yamljs from "yamljs";
+import * as path from "path";
+import { globSync } from "glob";
+import getReadingTime from "reading-time";
 
 const timingDataString = fs.readFileSync(`./lab-timing-data.json`, {
   encoding: "utf8",
@@ -94,7 +93,7 @@ function calculateReadingTime(filePath) {
       encoding: "utf8",
       flag: "r",
     });
-    const stats = readingTime(fileData);
+    const stats = getReadingTime(fileData);
 
     totalReadingTime += stats.minutes;
   }
