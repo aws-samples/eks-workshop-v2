@@ -21,11 +21,14 @@ $ kubectl get node -l type=karpenter
 No resources found
 ```
 
-The following `Deployment` uses a simple `pause` container image which has a resource request of `memory: 1Gi`, which we'll use to predictably scale the cluster. Note that the `nodeSelector` is set to `type: karpenter`, which requires the pods to only be scheduled on nodes with that label provisioned by our Karpenter `NodePool`. We'll start with `0` replicas:
+We'll use the following Deployment to trigger Karpenter to scale out:
 
-```file
-manifests/modules/autoscaling/compute/karpenter/scale/deployment.yaml
-```
+::yaml{file="manifests/modules/autoscaling/compute/karpenter/scale/deployment.yaml" paths="spec.replicas,spec.template.spec.nodeSelector,spec.template.spec.containers.0.image,spec.template.spec.containers.0.resources"}
+
+1. Initially specifies 0 replicas to run, we'll scale it up later
+2. Requires the pods to be scheduled to capacity provisioned by Karpenter by using a node selector that matches our NodePool
+3. Uses a simple `pause` container image
+4. Requests `1Gi` of memory
 
 :::info What's a pause container?
 You'll notice in this example we're using the image:

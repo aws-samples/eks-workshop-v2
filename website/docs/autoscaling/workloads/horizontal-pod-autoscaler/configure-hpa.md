@@ -19,9 +19,12 @@ Deployment/ui
 
 Next, we need to create a `HorizontalPodAutoscaler` resource which defines the parameters HPA will use to determine how to scale our workload.
 
-```file
-manifests/modules/autoscaling/workloads/hpa/hpa.yaml
-```
+::yaml{file="manifests/modules/autoscaling/workloads/hpa/hpa.yaml" paths="spec.minReplicas,spec.maxReplicas,spec.scaleTargetRef,spec.targetCPUUtilizationPercentage"}
+
+1. Always run at least 1 replica
+2. Do not scale higher than 4 replicas
+3. Instruct HPA to change the replica count on the `ui` Deployment
+4. Set a target CPU utilization of 80%
 
 Let's apply this configuration:
 

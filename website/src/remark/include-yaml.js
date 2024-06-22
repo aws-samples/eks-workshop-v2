@@ -1,0 +1,226 @@
+import { visit } from "unist-util-visit";
+import { promises as fs } from "fs";
+import * as path from "path";
+import * as YAML from "yaml";
+import { findPair } from "yaml/util";
+
+const plugin = (options) => {
+  const manifestsDir = options.manifestsDir;
+
+  const transformer = async (ast, vfile) => {
+    const promises = [];
+    visit(ast, "leafDirective", (node, index, parent) => {
+      if (node.name !== "yaml") return;
+
+      const attributes = node.attributes;
+
+      const normalizedPath = `${path.normalize(`${attributes.file}`)}`;
+
+      let title = `/eks-workshop/${normalizedPath}`;
+
+      if (normalizedPath.startsWith("manifests/")) {
+        title = `${normalizedPath}`.replace(
+          "manifests",
+          "~/environment/eks-workshop",
+        );
+      }
+
+      const filePath = `${manifestsDir}/${attributes.file}`;
+      const extension = path.extname(filePath).slice(1);
+
+      var highlightPathsString = attributes.paths;
+
+      const p = fs.readFile(filePath, { encoding: "utf8" }).then((res) => {
+        let finalString = res.replace("$", "\\$");
+
+        let annotations = [];
+
+        if (highlightPathsString) {
+          let highlightPaths = highlightPathsString.split(",");
+
+          if (parent.children.length > index + 1) {
+            const annotationListNode = parent.children[index + 1];
+
+            if (annotationListNode?.type === "list") {
+              annotations = annotationListNode.children.map((e) => {
+                return e.children;
+              });
+
+              parent.children.splice(index + 1, 1, {
+                type: "mdxJsxFlowElement",
+                name: "div",
+                attributes: [],
+              });
+            }
+          }
+
+          for (let i = 0; i < highlightPaths.length; i++) {
+            const lookup = highlightPaths[i];
+
+            const lineCounter = new YAML.LineCounter();
+            const parser = new YAML.Parser(lineCounter.addNewLine);
+            const tokens = parser.parse(finalString);
+
+            //console.log(`Token ${JSON.stringify(Array.from(tokens))}`);
+
+            const docs = new YAML.Composer().compose(tokens);
+
+            const doc = Array.from(docs)[0];
+
+            //let range = doc.get(lookup.split("."), true).range;
+
+            const target = findByPath(
+              doc.contents,
+              lookup.split(".").map((e) => e.trim()),
+            );
+
+            const lines = finalString.split(/\r\n|\r|\n/);
+
+            /*const startLine = lineCounter.linePos(range[0]).line;
+            const endLine = lineCounter.linePos(range[2]).line;*/
+
+            const startLine = lineCounter.linePos(target.start).line;
+            const endLine = lineCounter.linePos(target.end).line;
+
+            //console.log(`Lines ${startLine} - ${endLine}`);
+
+            const startSection = lines.slice(0, startLine - 1).join("\n");
+            const middleSection = lines
+              .slice(startLine - 1, endLine - 1)
+              .join("\n");
+            const endSection = lines.slice(endLine - 1).join("\n");
+
+            /*console.log(`Start is ${startSection}`);
+            console.log(`Middle is ${middleSection}`);
+            console.log(`End is ${endSection}`);*/
+
+            const classSuffix = i % 2 == 0 ? "even" : "odd";
+
+            finalString =
+              startSection +
+              `\n# annotated-highlight-start-${classSuffix}\n` +
+              (annotations.length > 0 ? "# highlight-annotation\n" : "") +
+              middleSection +
+              `\n# annotated-highlight-end-${classSuffix}\n` +
+              endSection;
+
+            //console.log(`Spliced to ${finalString}`);
+          }
+        }
+
+        const jsxNode = {
+          type: "mdxJsxFlowElement",
+          name: "div",
+          attributes: [],
+          children: [
+            {
+              type: "mdxJsxFlowElement",
+              name: "YamlFile",
+              attributes: [
+                {
+                  type: "mdxJsxAttribute",
+                  name: "title",
+                  value: title,
+                },
+              ],
+              children: [
+                {
+                  type: "mdxFlowExpression",
+                  data: {
+                    estree: {
+                      type: "Program",
+                      body: [
+                        {
+                          type: "ExpressionStatement",
+                          expression: {
+                            type: "TemplateLiteral",
+                            expressions: [],
+                            quasis: [
+                              {
+                                type: "TemplateElement",
+                                value: {
+                                  raw: finalString,
+                                  cooked: finalString,
+                                },
+                                tail: true,
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                      sourceType: "module",
+                      comments: [],
+                    },
+                  },
+                },
+              ],
+            },
+          ].concat(
+            annotations.map((e, index) => {
+              return {
+                type: "mdxJsxFlowElement",
+                name: "YamlAnnotation",
+                attributes: [
+                  {
+                    type: "mdxJsxAttribute",
+                    name: "sequence",
+                    value: `${index + 1}`,
+                  },
+                ],
+                children: e,
+              };
+            }),
+          ),
+        };
+
+        parent.children.splice(index, 1, jsxNode);
+      });
+      promises.push(p);
+    });
+    await Promise.all(promises);
+  };
+  return transformer;
+};
+
+function findByPath(pathNode, pathElements) {
+  let key = pathElements.shift();
+
+  if (isInt(key)) {
+    key = parseInt(key);
+  }
+
+  if (YAML.isMap(pathNode)) {
+    const pair = findPair(pathNode.items, key);
+
+    if (!pair) {
+      throw new Error(`Unable to find ${key}`);
+    }
+
+    if (pathElements.length === 0) {
+      return {
+        start: pair.key.range[0],
+        end: pair.value.range[2],
+      };
+    }
+
+    return findByPath(pair.value, pathElements);
+  } else if (YAML.isCollection(pathNode)) {
+    const item = pathNode.items[key];
+
+    if (pathElements.length === 0) {
+      return {
+        start: item.range[0],
+        end: item.range[2],
+      };
+    }
+
+    return findByPath(item, pathElements);
+  }
+}
+
+function isInt(value) {
+  var x;
+  return isNaN(value) ? !1 : ((x = parseFloat(value)), (0 | x) === x);
+}
+
+export default plugin;

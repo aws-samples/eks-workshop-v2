@@ -9,13 +9,9 @@ Karpenter automatically discovers nodes that are eligible for disruption and spi
 - **Drift**: Karpenter detects changes in configuration (such as the `NodePool` or `EC2NodeClass`) to apply necessary changes
 - **Consolidation**: A critical feature for operating compute in a cost-effective manner, Karpenter will optimize our cluster's compute on an on-going basis. For example, if workloads are running on under-utilized compute instances, it will consolidate them to fewer instances.
 
-Disruption is configured through the `disruption` block in a `NodePool`. The following policy is already configured on our `NodePool` which we defined in an earlier part of this lab.
+Disruption is configured through the `disruption` block in a `NodePool`. You can see highlighted below the policy thats already configured in our `NodePool`.
 
-```yaml
-disruption:
-  consolidationPolicy: WhenUnderutilized
-  expireAfter: 720h # 30 * 24h = 720h
-```
+::yaml{file="manifests/modules/autoscaling/compute/karpenter/nodepool/nodepool.yaml" paths="spec.disruption"}
 
 The `consolidationPolicy` can also be set to `WhenEmpty`, which restricts disruption only to nodes that contain no workload pods. Learn more about Disruption on the [Karpenter docs](https://karpenter.sh/docs/concepts/disruption/).
 
