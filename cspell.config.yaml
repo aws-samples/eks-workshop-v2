@@ -5,6 +5,8 @@ patterns:
     pattern: "/`(.*)`/g"
   - name: browser_block
     pattern: "/<Browser.*>[\\s\\S]*?^\\s*<\\/Browser>/gm"
+  - name: yaml_block
+    pattern: "/::yaml.*\\n/gm"
 languageSettings:
   - languageId: markdown
     ignoreRegExpList:

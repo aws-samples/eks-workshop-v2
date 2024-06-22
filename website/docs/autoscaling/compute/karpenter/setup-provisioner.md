@@ -12,19 +12,19 @@ We'll start by applying some custom resources used by Karpenter. First we'll cre
 ::yaml{file="manifests/modules/autoscaling/compute/karpenter/nodepool/nodepool.yaml" paths="spec.template.spec.requirements, spec.limits"}
 
 1. The [NodePool CRD](https://karpenter.sh/docs/concepts/nodepools/) supports defining node properties like instance type and zone. In this example, we're setting the `karpenter.sh/capacity-type` to initially limit Karpenter to provisioning On-Demand instances, as well as `node.kubernetes.io/instance-type` to limit to a subset of specific instance types. You can learn which other properties are [available here](https://karpenter.sh/docs/concepts/scheduling/#selecting-nodes). We'll work on a few more during the workshop.
-2. A NodePool can define a limit on the amount of CPU and memory managed by it. Once this limit is reached Karpenter will not provision additional capacity associated with that particular NodePool, providing a cap on the total compute.
+2. A `NodePool` can define a limit on the amount of CPU and memory managed by it. Once this limit is reached Karpenter will not provision additional capacity associated with that particular `NodePool`, providing a cap on the total compute.
 
 And we'll also need an `EC2NodeClass` which provides the specific configuration that applies to AWS:
 
 ::yaml{file="manifests/modules/autoscaling/compute/karpenter/nodepool/nodeclass.yaml" paths="spec.subnetSelectorTerms,spec.tags"}
 
 1.  The `securityGroupSelectorTerms` and `subnetSelectorTerms` can be used to discover resources used to launch nodes. These tags were automatically set on the associated AWS infrastructure provided for the workshop.
-2.  We define a set of tags that will be appled to EC2 instances created. This helps to enable accounting and governance at the EC2 level.
+2.  We define a set of tags that will be applied to EC2 instances created. This helps to enable accounting and governance at the EC2 level.
 
 We've now provided Karpenter with the basic requirements in needs to start provisioning capacity for our cluster.
 
 :::info
-We're asking the NodePool to start all new nodes with a label `type: karpenter`, which will allow us to specifically target Karpenter nodes with Pods for demonstration purposes
+We're asking the `NodePool` to start all new nodes with a label `type: karpenter`, which will allow us to specifically target Karpenter nodes with Pods for demonstration purposes
 :::
 
 Apply the `NodePool` and `EC2NodeClass` with the following command:
