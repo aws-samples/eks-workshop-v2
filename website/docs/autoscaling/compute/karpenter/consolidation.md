@@ -63,7 +63,7 @@ The output will show Karpenter identifying specific nodes to cordon, drain and t
 }
 ```
 
-This will result in the Kubernetes scheduler placing any Pods on those nodes on the remaining capacity, and now we can see that Karpenter is managing a total of 1 node:
+This will result in the Kubernetes scheduler placing any pods on those nodes on the remaining capacity, and now we can see that Karpenter is managing a total of 1 node:
 
 ```bash
 $ kubectl get nodes -l type=karpenter
