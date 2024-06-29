@@ -27,23 +27,25 @@ For the purpose of this lab the Argo CD server UI has been exposed outside of th
 ```bash
 $ export ARGOCD_SERVER=$(kubectl get svc argocd-server -n argocd -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname')
 $ echo "ArgoCD URL: http://$ARGOCD_SERVER"
-ArgoCD URL: http://acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com
+ArgoCD URL: https://acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com
 ```
 
 The load balancer will take some time to provision so use this command to wait until ArgoCD responds:
 
 ```bash timeout=600
 $ curl --head -X GET --retry 20 --retry-all-errors --retry-delay 15 \
-  --connect-timeout 5 --max-time 10 \
-  http://$ARGOCD_SERVER
+  --connect-timeout 5 --max-time 10 -k \
+  https://$ARGOCD_SERVER
 curl: (6) Could not resolve host: acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com
 Warning: Problem : timeout. Will retry in 15 seconds. 20 retries left.
 [...]
-HTTP/1.1 307 Temporary Redirect
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Length: 788
+Content-Security-Policy: frame-ancestors 'self';
 Content-Type: text/html; charset=utf-8
-Location: https://acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com/
-Date: Thu, 06 Jun 2024 23:07:42 GMT
-Content-Length: 116
+X-Frame-Options: sameorigin
+X-Xss-Protection: 1
 ```
 
 The initial username is `admin` and the password is auto-generated. You can get it by running the following command:
