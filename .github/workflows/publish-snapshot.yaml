@@ -2,7 +2,12 @@ name: Publish Snapshot
 
 on:
   workflow_call: {}
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      snapshot:
+        description: "The snapshot to publish"
+        required: true
+        type: string
 
 permissions:
   id-token: write
@@ -16,7 +21,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
         with:
-          ref: stable
+          ref: snapshot-${{ inputs.snapshot }}
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -41,6 +46,6 @@ jobs:
         env:
           SNAPSHOT_BUCKET: "${{ secrets.SNAPSHOT_BUCKET }}"
           SNAPSHOT_CLOUDFRONT: "${{ secrets.SNAPSHOT_CLOUDFRONT }}"
-          BRANCH: ${{ github.head_ref || github.ref_name }}
+          SNAPSHOT: snapshot-${{ inputs.snapshot }}
         run: |
           bash hack/publish-snapshot.sh
