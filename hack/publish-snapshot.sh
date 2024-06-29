@@ -6,7 +6,8 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 cd $SCRIPT_DIR/../website
 
-export MANIFESTS_REF="snapshot-$SNAPSHOT"
+export MANIFESTS_REF="$BRANCH"
+export SNAPSHOT="${BRANCH#snapshot-}"
 export BASE_URL="$SNAPSHOT"
 
 npm install

@@ -2,12 +2,7 @@ name: Publish Snapshot
 
 on:
   workflow_call: {}
-  workflow_dispatch:
-    inputs:
-      snapshot:
-        description: "The snapshot to publish"
-        required: true
-        type: string
+  workflow_dispatch: {}
 
 permissions:
   id-token: write
@@ -44,8 +39,8 @@ jobs:
           role-session-name: GithubActionsSession-publish
       - name: Run publish
         env:
-          CONTENT_BUCKET: "${{ secrets.SNAPSHOT_BUCKET }}"
-          CONTENT_CLOUDFRONT: "${{ secrets.SNAPSHOT_CLOUDFRONT }}"
-          SNAPSHOT: stable
+          SNAPSHOT_BUCKET: "${{ secrets.SNAPSHOT_BUCKET }}"
+          SNAPSHOT_CLOUDFRONT: "${{ secrets.SNAPSHOT_CLOUDFRONT }}"
+          BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           bash hack/publish-snapshot.sh
