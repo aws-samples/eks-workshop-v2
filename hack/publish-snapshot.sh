@@ -14,6 +14,6 @@ npm install
 npm run clear
 npm run build
 
-aws s3 cp --recursive build/ s3://${SNAPSHOT_BUCKET}/${SHAPSHOT}
+aws s3 cp --recursive build/ s3://${SNAPSHOT_BUCKET}/${SNAPSHOT}
 
 aws cloudfront create-invalidation --distribution-id ${SNAPSHOT_CLOUDFRONT} --paths /${SNAPSHOT}\*
