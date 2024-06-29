@@ -46,6 +46,6 @@ jobs:
         env:
           SNAPSHOT_BUCKET: "${{ secrets.SNAPSHOT_BUCKET }}"
           SNAPSHOT_CLOUDFRONT: "${{ secrets.SNAPSHOT_CLOUDFRONT }}"
-          SNAPSHOT: snapshot-${{ inputs.snapshot }}
+          BRANCH: snapshot-${{ inputs.snapshot }}
         run: |
           bash hack/publish-snapshot.sh
