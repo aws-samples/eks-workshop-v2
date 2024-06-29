@@ -26,7 +26,7 @@ For the purpose of this lab the Argo CD server UI has been exposed outside of th
 
 ```bash
 $ export ARGOCD_SERVER=$(kubectl get svc argocd-server -n argocd -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname')
-$ echo "ArgoCD URL: http://$ARGOCD_SERVER"
+$ echo "ArgoCD URL: https://$ARGOCD_SERVER"
 ArgoCD URL: https://acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com
 ```
 
