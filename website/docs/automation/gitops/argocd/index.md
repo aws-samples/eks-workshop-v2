@@ -31,4 +31,4 @@ Argo CD offers 3 ways to manage your application state:
 - User Interface - A web-based UI that lets you do the same things that you can do with the CLI. It also lets you visualize the Kubernetes resources belongs to the Argo CD applications that you create.
 - Kubernetes manifests and Helm charts applied to the cluster.
 
-![argo-cd-architecture](assets/argo-cd-architecture.png)
+![argo-cd-architecture](assets/argo-cd-architecture.webp)

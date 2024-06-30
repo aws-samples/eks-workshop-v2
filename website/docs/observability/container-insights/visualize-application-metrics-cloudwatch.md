@@ -163,15 +163,15 @@ EOF
 
 Open the CloudWatch console and navigate to the Dashboards section:
 
-![CloudWatch Dashboard](./assets/cw-dashboard.jpg)
+![CloudWatch Dashboard](./assets/cw-dashboard.webp)
 
 Choose the dashboard **Order-Service-Metrics** to review the panels within the dashboard:
 
-![Application Metrics](./assets/dashboard-metrics.jpg)
+![Application Metrics](./assets/dashboard-metrics.webp)
 
 We can see how the dashboard was configured to query CloudWatch by hovering over the title of the "Orders by Product" panel and clicking the "Edit" button:
 
-![Edit Panel](./assets/dashboard-edit-metrics.jpg)
+![Edit Panel](./assets/dashboard-edit-metrics.webp)
 
 The query used to create this panel is displayed at the bottom of the page:
 

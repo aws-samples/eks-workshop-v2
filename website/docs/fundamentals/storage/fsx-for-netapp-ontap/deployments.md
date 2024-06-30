@@ -40,7 +40,7 @@ Namespace:              assets
 
 As you can see the [`Volumes`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section of our StatefulSet shows that we're only using an [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) which "shares the Pod's lifetime".
 
-![Assets with emptyDir](./assets/assets-emptydir.png)
+![Assets with emptyDir](./assets/assets-emptydir.webp)
 
 An `emptyDir` volume is first created when a Pod is assigned to a node, and exists as long as that Pod is running on that node. As the name says, the emptyDir volume is initially empty. All containers in the Pod can read and write the same files in the emptyDir volume, though that volume can be mounted at the same or different paths in each container. **When a Pod is removed from a node for any reason, the data in the emptyDir is deleted permanently.** This means that if we want to share data between multiple Pods in the same Deployment and make changes to that data then EmptyDir is not a good fit.
 
@@ -82,4 +82,4 @@ $ kubectl exec $POD_NAME \
 
 As you see the newly created image `newproduct.png` does not exist on the second Pod. In order to help solve this issue we need a file system that can be shared across multiple Pods if the service needs to scale horizontally while still making updates to the files without re-deploying.
 
-![Assets with FSxN](./assets/assets-fsxn.png)
+![Assets with FSxN](./assets/assets-fsxn.webp)

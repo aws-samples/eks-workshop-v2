@@ -22,7 +22,7 @@ If using the link above make sure the AWS console has opened in the region that 
 
 :::
 
-![cloud9-arn](./assets/cloudshell.png)
+![cloud9-arn](./assets/cloudshell.webp)
 
 Once CloudShell has loaded run the following commands:
 
@@ -47,7 +47,7 @@ https://us-west-2.console.aws.amazon.com/cloud9/ide/7b05513358534d11afeb7119845c
 
 Open this URL in a web browser to access the IDE.
 
-![cloud9-splash](./assets/cloud9-splash.png)
+![cloud9-splash](./assets/cloud9-splash.webp)
 
 You can now close CloudShell, all further commands will be run in the terminal section at the bottom of the Cloud9 IDE. The AWS CLI is already installed and will assume the credentials attached to the Cloud9 IDE:
 
