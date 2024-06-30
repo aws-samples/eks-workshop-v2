@@ -55,4 +55,4 @@ $ kubectl wait --for=condition=Programmed gateway/${EKS_CLUSTER_NAME} -n checkou
 
 Now you can see the associated **Service Network** created in the VPC console under the Lattice resources in the [AWS console](https://console.aws.amazon.com/vpc/home#ServiceNetworks).
 
-![Checkout Service Network](assets/servicenetwork.png)
+![Checkout Service Network](assets/servicenetwork.webp)

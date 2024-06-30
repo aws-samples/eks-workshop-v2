@@ -57,7 +57,7 @@ $ echo "ArgoCD admin password: $ARGOCD_PWD"
 
 Log in to the Argo CD UI using the URL and credentials you just obtained. You will be presented with a screen that looks like this:
 
-![argocd-ui](assets/argocd-ui.png)
+![argocd-ui](assets/argocd-ui.webp)
 
 Argo CD also provides a powerful CLI tool called `argocd` that can be used to manage applications.
 

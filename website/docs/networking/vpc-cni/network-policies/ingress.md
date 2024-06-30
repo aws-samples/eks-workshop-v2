@@ -3,7 +3,7 @@ title: "Implementing Ingress Controls"
 sidebar_position: 80
 ---
 
-<img src={require('@site/static/img/sample-app-screens/architecture.png').default}/>
+<img src={require('@site/static/img/sample-app-screens/architecture.webp').default}/>
 
 As shown in the architecture diagram, the 'catalog' namespace receives traffic only from the 'ui' namespace and from no other namespace. Also, the 'catalog' database component can only receive traffic from the 'catalog' service component.
 

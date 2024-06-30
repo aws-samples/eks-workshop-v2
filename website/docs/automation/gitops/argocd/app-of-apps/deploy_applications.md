@@ -116,7 +116,7 @@ We've now successfully migrated the all the applications to deploy using Argo CD
 
 When Argo CD finish the sync, all our applications will be in `Synced` state.
 
-![argocd-ui-apps.png](assets/argocd-ui-apps-synced.png)
+![argocd-ui-apps.png](assets/argocd-ui-apps-synced.webp)
 
 You should also have all the resources related to the `ui` application deployed. To verify, run the following commands:
 
@@ -129,4 +129,4 @@ NAME                 READY   STATUS   RESTARTS   AGE
 ui-6d5bb7b95-rjfxd   1/1     Running  0          62s
 ```
 
-![argocd-deploy-application](../assets/argocd-deploy-application.png)
+![argocd-deploy-application](../assets/argocd-deploy-application.webp)

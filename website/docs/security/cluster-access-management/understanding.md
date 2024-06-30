@@ -63,4 +63,4 @@ As explained earlier the Cluster Access Management API allows a combination of u
 
 The below diagram illustrates the workflow followed by Cluster Access Management API to provide authentication and authorization for AWS IAM principals to Amazon EKS Clusters.
 
-![CAM Auth Workflow](./assets/cam-workflow.png)
+![CAM Auth Workflow](./assets/cam-workflow.webp)

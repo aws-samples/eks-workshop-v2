@@ -37,8 +37,8 @@ https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=clust
 
 The **Logging** tab shows the current configuration for control plane logs for the cluster:
 
-![EKS Console Logging Tab](./assets/logging-cluster-logging-tab.png)
+![EKS Console Logging Tab](./assets/logging-cluster-logging-tab.webp)
 
 You can alter the logging configuration by clicking the **Manage** button:
 
-![Enable Logging](./assets/logging-cluster-enable-logging.png)
+![Enable Logging](./assets/logging-cluster-enable-logging.webp)
