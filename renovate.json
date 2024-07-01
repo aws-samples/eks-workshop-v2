@@ -2,7 +2,12 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended", ":rebaseStalePrs"],
   "schedule": ["on the first day of the month"],
-  "enabledManagers": ["custom.regex", "github-actions", "terraform"],
+  "enabledManagers": [
+    "custom.regex",
+    "github-actions",
+    "terraform",
+    ":automergeStableNonMajor"
+  ],
   "packageRules": [
     {
       "matchManagers": ["github-actions"],
@@ -24,12 +29,6 @@
       "matchDepNames": ["kubernetes/autoscaler"],
       "extractVersion": "^cluster-autoscaler-(?<version>.*)$",
       "allowedVersions": "/^1.29.[0-9]+$/"
-    },
-    {
-      "matchFileNames": ["**/vars.tf", "lab/scripts/installer.sh"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "matchCurrentVersion": "!/^0/",
-      "automerge": true
     }
   ],
   "customManagers": [
