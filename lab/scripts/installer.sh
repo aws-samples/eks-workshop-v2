@@ -23,7 +23,7 @@ flux_version='2.3.0'
 argocd_version='2.11.2'
 
 # renovate: depName=hashicorp/terraform
-terraform_version='1.8.4'
+terraform_version='1.9.0'
 
 # renovate: depName=aws/amazon-ec2-instance-selector
 ec2_instance_selector_version='2.4.1'
