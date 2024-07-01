@@ -49,28 +49,28 @@ data "aws_subnets" "private" {
   }
 }
 
-resource "aws_s3_bucket" "inference" {
-  bucket_prefix = "eksworkshop-inference"
+resource "aws_s3_bucket" "chatbot" {
+  bucket_prefix = "eksworkshop-chatbot"
   force_destroy = true
 
   tags = var.tags
 }
 
 
-module "iam_assumable_role_inference" {
+module "iam_assumable_role_chatbot" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version                       = "5.39.1"
   create_role                   = true
-  role_name                     = "${var.addon_context.eks_cluster_id}-inference"
+  role_name                     = "${var.addon_context.eks_cluster_id}-chatbot"
   provider_url                  = var.addon_context.eks_oidc_issuer_url
-  role_policy_arns              = [aws_iam_policy.inference.arn]
-  oidc_fully_qualified_subjects = ["system:serviceaccount:aiml:inference"]
+  role_policy_arns              = [aws_iam_policy.chatbot.arn]
+  oidc_fully_qualified_subjects = ["system:serviceaccount:aiml:chatbot"]
 
   tags = var.tags
 }
 
-resource "aws_iam_policy" "inference" {
-  name        = "${var.addon_context.eks_cluster_id}-inference"
+resource "aws_iam_policy" "chatbot" {
+  name        = "${var.addon_context.eks_cluster_id}-chatbot"
   path        = "/"
   description = "IAM policy for the inferenct workload"
 
@@ -82,8 +82,8 @@ resource "aws_iam_policy" "inference" {
       "Effect": "Allow",
       "Action": "s3:*",
       "Resource": [
-        "arn:aws:s3:::${aws_s3_bucket.inference.id}",
-        "arn:aws:s3:::${aws_s3_bucket.inference.id}/*"
+        "arn:aws:s3:::${aws_s3_bucket.chatbot.id}",
+        "arn:aws:s3:::${aws_s3_bucket.chatbot.id}/*"
       ]
     }
   ]
