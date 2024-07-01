@@ -24,6 +24,12 @@
       "matchDepNames": ["kubernetes/autoscaler"],
       "extractVersion": "^cluster-autoscaler-(?<version>.*)$",
       "allowedVersions": "/^1.29.[0-9]+$/"
+    },
+    {
+      "matchFileNames": ["**/vars.tf", "lab/scripts/installer.sh"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
     }
   ],
   "customManagers": [
