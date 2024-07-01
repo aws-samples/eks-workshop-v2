@@ -149,6 +149,18 @@
         "file": "introduction/getting-started/index.md",
         "executionTimeSeconds": 40
     },
+    "introduction/helm/index.md": {
+        "title": "Helm",
+        "directory": "introduction/helm",
+        "file": "introduction/helm/index.md",
+        "executionTimeSeconds": 195
+    },
+    "introduction/kustomize/index.md": {
+        "title": "Kustomize",
+        "directory": "introduction/kustomize",
+        "file": "introduction/kustomize/index.md",
+        "executionTimeSeconds": 50
+    },
     "automation/controlplanes/ack/index.md": {
         "title": "AWS Controllers for Kubernetes (ACK)",
         "directory": "automation/controlplanes/ack",
