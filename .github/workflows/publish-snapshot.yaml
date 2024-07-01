@@ -4,12 +4,7 @@ on:
   push:
     branches:
       - "snapshot-*"
-  workflow_dispatch:
-    inputs:
-      snapshot:
-        description: "The snapshot to publish"
-        required: true
-        type: string
+  workflow_dispatch: {}
 
 permissions:
   id-token: write
