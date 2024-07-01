@@ -3,7 +3,7 @@ title: "Automatic Node Provisioning"
 sidebar_position: 40
 ---
 
-We'll start putting Karpenter to work by examining how it can dynamically provision appropriately sized EC2 instances depending on the needs of Pods that cannot be scheduled at any given time. This can reduce the amount of unused compute resources in an EKS cluster.
+We'll start putting Karpenter to work by examining how it can dynamically provision appropriately sized EC2 instances depending on the needs of pods that cannot be scheduled at any given time. This can reduce the amount of unused compute resources in an EKS cluster.
 
 The NodePool created in the previous section expressed specific instance types that Karpenter was allowed to use, lets take a look at those instance types:
 
@@ -21,11 +21,14 @@ $ kubectl get node -l type=karpenter
 No resources found
 ```
 
-The following `Deployment` uses a simple `pause` container image which has a resource request of `memory: 1Gi`, which we'll use to predictably scale the cluster. Note that the `nodeSelector` is set to `type: karpenter`, which requires the pods to only be scheduled on nodes with that label provisioned by our Karpenter `NodePool`. We'll start with `0` replicas:
+We'll use the following Deployment to trigger Karpenter to scale out:
 
-```file
-manifests/modules/autoscaling/compute/karpenter/scale/deployment.yaml
-```
+::yaml{file="manifests/modules/autoscaling/compute/karpenter/scale/deployment.yaml" paths="spec.replicas,spec.template.spec.nodeSelector,spec.template.spec.containers.0.image,spec.template.spec.containers.0.resources"}
+
+1. Initially specifies 0 replicas to run, we'll scale it up later
+2. Requires the pods to be scheduled to capacity provisioned by Karpenter by using a node selector that matches our NodePool
+3. Uses a simple `pause` container image
+4. Requests `1Gi` of memory for each pod
 
 :::info What's a pause container?
 You'll notice in this example we're using the image:
@@ -91,7 +94,7 @@ You should see output that indicates the instance type and the purchase option:
 }
 ```
 
-The Pods that we scheduled will fit nicely in to an EC2 instance with 8GB of memory, and since Karpenter will always prioritize the lowest price instance type for on-demand instances, it will select `m5.large`.
+The pods that we scheduled will fit nicely in to an EC2 instance with 8GB of memory, and since Karpenter will always prioritize the lowest price instance type for on-demand instances, it will select `m5.large`.
 
 :::info
 There are certain cases where a different instance type might be selected other than the lowest price, for example if that cheapest instance type has no remaining capacity available in the region you're working in

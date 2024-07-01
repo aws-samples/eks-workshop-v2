@@ -1,0 +1,25 @@
+.yamlBlock {
+  counter-reset: annotation-count;
+}
+
+.annotationContainer {
+  display: grid;
+  grid-template-columns: 0fr 1fr;
+  grid-gap: 20px;
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
+.annotationSequence {
+  background-color: var(--code-annotation-background-color);
+  color: white;
+  padding: 2px 8px;
+  text-align: center;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.annotationChildren > p:last-child {
+  margin: 0px;
+}

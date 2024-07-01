@@ -8,15 +8,12 @@ CoreDNS is the default DNS service for Kubernetes that runs in Pods with the lab
 
 First lets install CPA using its Helm chart. We'll use the following `values.yaml` file to configure CPA:
 
-```file
-manifests/modules/autoscaling/workloads/cpa/values.yaml
-```
+::yaml{file="manifests/modules/autoscaling/workloads/cpa/values.yaml" paths="options.target,config.linear.nodesPerReplica,config.linear.min,config.linear.max"}
 
-We summarized how linear scaling works with CPA in the previous section. We can see that we're configuring it to:
-
-- Target the deployment `coredns`
-- Add a replica for every 2 worker nodes in the cluster
-- Run at least 2 replicas and to most 6
+1. Target the deployment `coredns`
+2. Add a replica for every 2 worker nodes in the cluster
+3. Always run at least 2 replicas
+4. Do not scale to more than 6 replicas
 
 :::caution
 
