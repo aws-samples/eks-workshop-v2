@@ -32,7 +32,7 @@ Click `Refresh` and `Sync` in ArgoCD UI, use `argocd` CLI to `Sync` the applicat
 $ argocd app sync ui
 ```
 
-![argocd-update-application](../assets/argocd-update-application.png)
+![argocd-update-application](../assets/argocd-update-application.webp)
 
 To verify, run the following commands:
 

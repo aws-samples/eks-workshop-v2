@@ -12,19 +12,7 @@ Argo CD applies the `GitOps` methodology to Kubernetes. It uses Git as a source 
 
 In this lab exercise, we will deploy an applications specified in Kustomize using Argo CD. We will use the `ui` application from [EKS Workshop](https://github.com/aws-samples/eks-workshop-v2/tree/main/manifests/base-application/ui) repository.
 
-The Git repository in AWS CodeCommit has already been created for you.
-
-:::info
-If you want to use your own GitHub private repository you could re define
-
-```
-export GITOPS_REPO_URL_ARGOCD=https://github.com/username/reponame
-```
-
-and use [those instructions](https://argo-cd.readthedocs.io/en/stable/user-guide/private-repositories/) to create an Argo CD secret to give access to the Git repository from Argo CD
-:::
-
-Let's clone the Git repository.
+A Git repository in AWS CodeCommit has already been created for you, let's clone it and do some initial set-up:
 
 ```bash
 $ git clone $GITOPS_REPO_URL_ARGOCD ~/environment/argocd
@@ -63,7 +51,7 @@ argocd/apps  https://kubernetes.default.svc             default  Synced  Healthy
 
 We can also see this Application in the ArgoCD UI now:
 
-![Application in the ArgoCD UI](assets/argocd-ui-insync.png)
+![Application in the ArgoCD UI](assets/argocd-ui-insync.webp)
 
 Alternatively, you can also interact with Argo CD objects in the cluster using the `kubectl` command:
 

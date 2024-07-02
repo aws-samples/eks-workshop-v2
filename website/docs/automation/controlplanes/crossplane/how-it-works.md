@@ -23,4 +23,4 @@ Here, `upbound-provider-family-aws` represents Crossplane provider for Amazon We
 
 Crossplane provides a simplified interface for developers to request infrastructure resources via Kubernetes manifests called claims. As shown in this diagram, claims are the only namespace-scoped Crossplane resources, serving as the developer interface and abstracting away implementation details. When a claim is deployed to the cluster, it creates a Composite Resource (XR), a Kubernetes custom resource representing one or more cloud resources defined through templates called Compositions. The Composite Resource creates one or more Managed Resources which interact with the AWS API to request the creation of the desired infrastructure resources.
 
-![Crossplane claim](./assets/claim-architecture-drawing.png)
+![Crossplane claim](./assets/claim-architecture-drawing.webp)

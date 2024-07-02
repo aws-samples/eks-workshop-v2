@@ -18,7 +18,7 @@
     "@types/chai": "^4.3.14",
     "@types/glob-to-regexp": "^0.4.4",
     "@types/mdast": "^4.0.4",
-    "@types/mocha": "^10.0.6",
+    "@types/mocha": "^10.0.7",
     "@types/mock-fs": "^4.13.4",
     "@types/node": "^20.14.1",
     "@types/sinon": "^17.0.3",
@@ -26,10 +26,10 @@
     "@types/yargs": "^17.0.32",
     "mock-fs": "^5.1.4",
     "shx": "^0.3.4",
-    "sinon": "^17.0.1",
+    "sinon": "^18.0.0",
     "ts-mocha": "^10.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.2"
   },
   "dependencies": {
     "chai": "^5.1.1",
@@ -43,7 +43,7 @@
     "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.0",
     "remark-parse": "^11.0.0",
-    "unified": "^11.0.4",
-    "yaml": "^2.4.2"
+    "unified": "^11.0.5",
+    "yaml": "^2.4.5"
   }
 }

@@ -14,7 +14,7 @@ The content of this workshop is made up of:
 
 The lab exercises are designed in a way that you can run any modules as a self-container exercise. Lab exercises will be displayed in the sidebar to the left and are designated by the icon shown here:
 
-![Lab icon example](./assets/lab-icon.png)
+![Lab icon example](./assets/lab-icon.webp)
 
 This module contains a single lab named **Getting started** which will be visible on the left side of your screen.
 
@@ -26,11 +26,11 @@ You should start each lab from the page indicated by this badge. Starting in the
 
 Once you have accessed the Cloud9 IDE, we recommend you use the **+** button and select **New Terminal** to open a new full screen terminal window.
 
-![Open new Cloud9 terminal](./assets/terminal-open.png)
+![Open new Cloud9 terminal](./assets/terminal-open.webp)
 
 This will open a new tab with a fresh terminal.
 
-![Shows new Cloud9 terminal](./assets/terminal.png)
+![Shows new Cloud9 terminal](./assets/terminal.webp)
 
 You may also close the small terminal at the bottom if you wish.
 

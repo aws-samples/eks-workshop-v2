@@ -69,7 +69,7 @@ k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 So now our application should be using DynamoDB right? Load it up in the browser using the output of the above command and navigate to the shopping cart:
 
 <Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/cart">
-<img src={require('@site/static/img/sample-app-screens/error-500.png').default}/>
+<img src={require('@site/static/img/sample-app-screens/error-500.webp').default}/>
 </Browser>
 
 The shopping cart page is not accessible! What's gone wrong?

@@ -3,7 +3,7 @@ title: "Implementing Egress Controls"
 sidebar_position: 70
 ---
 
-<img src={require('@site/static/img/sample-app-screens/architecture.png').default}/>
+<img src={require('@site/static/img/sample-app-screens/architecture.webp').default}/>
 
 As shown in the above architecture diagram, the 'ui' component is the front-facing app. So we can start implementing our network controls for the 'ui' component by defining a network policy that will block all egress traffic from the 'ui' namespace.
 
