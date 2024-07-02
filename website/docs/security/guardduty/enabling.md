@@ -24,19 +24,19 @@ Navigate to [Amazon GuardDuty Console](https://console.aws.amazon.com/guardduty/
 
 Click on **Get Started** button.
 
-![](assets/gd_getstart.png)
+![](assets/gd_getstart.webp)
 
 Click on **Enable GuardDuty**
 
-![](assets/gd_enable.png)
+![](assets/gd_enable.webp)
 
 Navigate to **EKS Protection** on the left hand side menu, and double check that EKS Protection is enabled for both Audit Logs, and Runtime Monitoring.
 
-![](assets/eksprotection.png)
+![](assets/eksprotection.webp)
 
 Also check the tab **EKS clusters runtime coverage**.
 
-![](assets/runtime-coverage.png)
+![](assets/runtime-coverage.webp)
 
 _If your cluster is not showing in the Cluster list or the coverage statistics is not showing 1/1(100%), wait a few more minutes to Amazon GuardDuty finish the monitoring stack deployment._
 
@@ -52,4 +52,4 @@ aws-guardduty-agent-k7x2b   1/1     Running   0          58s
 
 Then navigate to **Findings** on the left hand side menu. You should find that there are no findings available yet.
 
-![](assets/findings.png)
+![](assets/findings.webp)

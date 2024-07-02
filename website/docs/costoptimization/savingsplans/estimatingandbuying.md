@@ -16,7 +16,7 @@ To use the tools in the AWS Cost Management console to recommend potential savin
 1. Log in to the AWS Cost Management console.
 2. Navigate to Savings Plans on the left-hand side.
 3. Click on Recommendations. Here you can view recommendations for both Compute Savings Plans and EC2 Instance Savings Plans.
-   <img src={require('./assets/figure1.png').default}/>
+   <img src={require('./assets/figure1.webp').default}/>
 4. There are several options that will help further customize recommendations:
 
    a. Recommendation level
@@ -45,7 +45,7 @@ To use the tools in the AWS Cost Management console to recommend potential savin
 To purchase the recommended Savings Plans, you first add the recommendation to your cart and then submit your order:
 
 1. Once you're satisfied with the recommendations and have chosen the Savings Plans that work best for your requirements, click the “Add Savings Plan to Cart” button at the bottom of the page.
-   <img src={require('./assets/figure2.png').default}/>
+   <img src={require('./assets/figure2.webp').default}/>
 2. After adding the Savings Plans to your cart, click “Cart” on the left-hand navigation menu to review your order.
 3. Click the Submit order button to place your order.
-   <img src={require('./assets/figure3.png').default}/>
+   <img src={require('./assets/figure3.webp').default}/>

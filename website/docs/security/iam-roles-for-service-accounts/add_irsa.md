@@ -12,7 +12,7 @@ https://console.aws.amazon.com/iamv2/home#/identity_providers
 
 You will see an OIDC provider has created for your EKS cluster:
 
-![IAM OIDC Provider](./assets/oidc.png)
+![IAM OIDC Provider](./assets/oidc.webp)
 
 Another option is to use AWS CLI to verify the `IAM OIDC Identity Provider`.
 

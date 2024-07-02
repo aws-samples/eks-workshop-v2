@@ -35,3 +35,4 @@ See style guide for expanded explanations.
 
 - [ ] Generated lab timing has been created (new lab) or updated (updated lab) if needed
 - [ ] All Terraform resources created have dynamic names
+- [ ] Images should be in `webp` format

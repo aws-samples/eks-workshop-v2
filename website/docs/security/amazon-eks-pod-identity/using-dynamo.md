@@ -29,7 +29,7 @@ k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 
 Use the generated URL from the command above to open the UI in your browser. It should open the the Retail Store like shown below.
 
-![Home](../../../static/img/sample-app-screens/home.png)
+![Home](/img/sample-app-screens/home.webp)
 
 Now, the following kustomization overwrites the ConfigMap, removing the DynamoDB endpoint configuration which tells the SDK to default to the real DynamoDB service instead of our test Pod. We've also provided it with the name of the DynamoDB table thats been created already for us which is being pulled from the environment variable `CARTS_DYNAMODB_TABLENAME`.
 
@@ -77,6 +77,6 @@ $ kubectl -n ui get service ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*]
 k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 ```
 
-![Error500](../../../static/img/sample-app-screens/error-500.png)
+![Error500](/img/sample-app-screens/error-500.webp)
 
 The shopping cart page is not accessible! What's gone wrong?

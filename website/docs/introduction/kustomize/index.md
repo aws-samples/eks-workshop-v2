@@ -1,7 +1,19 @@
 ---
-title: Kustomize (optional)
+title: Kustomize
+sidebar_custom_props: { "module": true }
 sidebar_position: 40
 ---
+
+::required-time
+
+:::tip Before you start
+Prepare your environment for this section:
+
+```bash timeout=300 wait=10
+$ prepare-environment
+```
+
+:::
 
 [Kustomize](https://kustomize.io/) allows you to manage Kubernetes manifest files using declarative "kustomization" files. It provides the ability to express "base" manifests for your Kubernetes resources and then apply changes using composition, customization and easily making cross-cutting changes across many resources.
 

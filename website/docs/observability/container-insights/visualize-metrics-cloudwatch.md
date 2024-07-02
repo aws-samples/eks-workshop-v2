@@ -16,6 +16,6 @@ https://console.aws.amazon.com/cloudwatch/home#container-insights:infrastructure
 
 Select **Performance Monitoring** from the dropdown menu at the top of the page, and now select the type of resources you wish to view. For example, select **EKS Pods** to get basic metrics such as CPU, memory and utilization for the Pods running in our EKS cluster:
 
-![ContainerInsightsConsole](./assets/container-inisghts-metrics-console.jpg)
+![ContainerInsightsConsole](./assets/container-inisghts-metrics-console.webp)
 
 You can set a CloudWatch alarm on any metric that Container Insights collects. For more information, see [Using Amazon CloudWatch alarms](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html)
