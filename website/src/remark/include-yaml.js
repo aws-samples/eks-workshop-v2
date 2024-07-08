@@ -61,13 +61,9 @@ const plugin = (options) => {
             const parser = new YAML.Parser(lineCounter.addNewLine);
             const tokens = parser.parse(finalString);
 
-            //console.log(`Token ${JSON.stringify(Array.from(tokens))}`);
-
             const docs = new YAML.Composer().compose(tokens);
 
             const doc = Array.from(docs)[0];
-
-            //let range = doc.get(lookup.split("."), true).range;
 
             const target = findByPath(
               doc.contents,
@@ -76,23 +72,14 @@ const plugin = (options) => {
 
             const lines = finalString.split(/\r\n|\r|\n/);
 
-            /*const startLine = lineCounter.linePos(range[0]).line;
-            const endLine = lineCounter.linePos(range[2]).line;*/
-
             const startLine = lineCounter.linePos(target.start).line;
             const endLine = lineCounter.linePos(target.end).line;
-
-            //console.log(`Lines ${startLine} - ${endLine}`);
 
             const startSection = lines.slice(0, startLine - 1).join("\n");
             const middleSection = lines
               .slice(startLine - 1, endLine - 1)
               .join("\n");
             const endSection = lines.slice(endLine - 1).join("\n");
-
-            /*console.log(`Start is ${startSection}`);
-            console.log(`Middle is ${middleSection}`);
-            console.log(`End is ${endSection}`);*/
 
             const classSuffix = i % 2 == 0 ? "even" : "odd";
 
@@ -103,8 +90,6 @@ const plugin = (options) => {
               middleSection +
               `\n# annotated-highlight-end-${classSuffix}\n` +
               endSection;
-
-            //console.log(`Spliced to ${finalString}`);
           }
         }
 

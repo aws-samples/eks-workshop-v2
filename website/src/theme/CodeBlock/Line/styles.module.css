@@ -57,7 +57,7 @@ the background in custom CSS file due bug https://github.com/facebook/docusaurus
 }
 
 .codeAnnotation::before {
-  content: counter(annotation-count);
+  content: counter(annotation-count, upper-alpha);
   background-color: var(--code-annotation-background-color);
   color: white;
   padding: 2px 8px;
