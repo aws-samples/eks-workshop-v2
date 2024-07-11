@@ -23,3 +23,20 @@ spec:
   disruption:
     consolidationPolicy: WhenUnderutilized
     expireAfter: 720h # 30 * 24h = 720h
+---
+apiVersion: karpenter.k8s.aws/v1beta1
+# HIGHLIGHT
+kind: EC2NodeClass
+metadata:
+  name: default
+spec:
+  amiFamily: AL2023 # Amazon Linux 2023
+  role: "${KARPENTER_ROLE}"
+  subnetSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
+  securityGroupSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
+  tags:
+    app.kubernetes.io/created-by: eks-workshop
