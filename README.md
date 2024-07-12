@@ -1,8 +1,7 @@
 <div align="center">
   <a href="https://eksworkshop.com" target="_blank" rel="noopener noreferrer">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="docs/images/eks.png">
-      <img width="160" src="docs/images/eks.png" alt="Amazon Elastic Kubernetes Service logo">
+      <img height="360" src="https://img.youtube.com/vi/E956xeOt050/0.jpg" alt="Amazon Elastic Kubernetes Service logo">
     </picture>
   </a>
   
