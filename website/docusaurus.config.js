@@ -9,6 +9,7 @@ import remarkTime from "./src/remark/time.js";
 import remarkIncludeCode from "./src/remark/include-code.js";
 import remarkIncludeKustomization from "./src/remark/include-kustomization.js";
 import remarkParameters from "./src/remark/parameters.js";
+import remarkIncludeYaml from "./src/remark/include-yaml.js";
 
 //require("dotenv").config({ path: ".kustomize-env" });
 
@@ -69,6 +70,7 @@ const config = {
                 },
               },
             ],
+            [remarkIncludeYaml, { manifestsDir }],
             [remarkIncludeCode, { manifestsDir }],
             [remarkIncludeKustomization, { manifestsDir: kustomizationsDir }],
           ],
@@ -208,8 +210,26 @@ const config = {
             block: { start: "highlight-start", end: "highlight-end" },
           },
           {
+            className: "code-block-highlighted-line-even",
+            block: {
+              start: "annotated-highlight-start-even",
+              end: "annotated-highlight-end-even",
+            },
+          },
+          {
+            className: "code-block-highlighted-line-odd",
+            block: {
+              start: "annotated-highlight-start-odd",
+              end: "annotated-highlight-end-odd",
+            },
+          },
+          {
             className: "code-block-highlight",
             line: "HIGHLIGHT",
+          },
+          {
+            className: "code-block-annotation",
+            line: "highlight-annotation",
           },
         ],
       },

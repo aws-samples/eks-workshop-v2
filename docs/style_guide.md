@@ -2,6 +2,50 @@
 
 This document provides a style guide that should be used when creating or modifying content for the workshop in order to maintain a consistent experience throughout the content.
 
+## General content
+
+### Use admonitions
+
+Use appropriate [Docusaurus admonitions](https://docusaurus.io/docs/markdown-features/admonitions) to call out relevant information.
+
+```markdown
+:::info
+Use info blocks for additional information
+:::
+
+:::caution
+Caution blocks also available
+:::
+
+:::note
+Note blocks are available
+:::
+```
+
+### Badges
+
+To mark your module as an independent module that users can begin with, place the following in the header of your markdown file:
+
+```
+---
+...
+sidebar_custom_props: {"module": true}
+---
+```
+
+To mark your module as informational, with no actionable steps, place the following in the header of your markdown file:
+
+```
+---
+...
+sidebar_custom_props: {"info": true}
+---
+```
+
+### Screenshots
+
+Use of screenshots should be limited to only wherever necessary. Where possible command-line output should be used as it is more maintainable and testable. When screenshots are necessary only the relevant section of the screen should be included as it reduces image size and makes the images more legible, especially for users with limited screen resolution. Screenshots should be cropped to display only the necessary details.
+
 ## Scripts/Commands
 
 This section provides guidelines related to the commands and scripts learners are instructed to use during the workshop content.
@@ -176,38 +220,4 @@ An example of using this would look like so:
 
 ```
 $ aws eks describe-cluster --name $EKS_CLUSTER_NAME
-```
-
-### Info and Caution Blocks
-
-:::Info
-Use info blocks for additional information
-:::
-
-:::Caution
-Caution blocks also available
-:::
-
-:::Note
-Note blocks are available
-:::
-
-### Badges
-
-To mark your module as an independent module that users can begin with, place the following in the header of your markdown file:
-
-```
----
-...
-sidebar_custom_props: {"module": true}
----
-```
-
-To mark your module as informational, with no actionable steps, place the following in the header of your markdown file:
-
-```
----
-...
-sidebar_custom_props: {"info": true}
----
 ```
