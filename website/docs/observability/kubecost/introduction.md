@@ -8,7 +8,10 @@ The first thing we'll do is install Kubecost in our cluster. As part of the lab 
 All that we have left to do is install Kubecost as a Helm chart:
 
 ```bash timeout=300
-$ helm registry logout public.ecr.aws || true
+$ aws ecr-public get-login-password \
+  --region us-east-1 | helm registry login \
+  --username AWS \
+  --password-stdin public.ecr.aws
 $ helm upgrade --install kubecost oci://public.ecr.aws/kubecost/cost-analyzer \
   --version "${KUBECOST_CHART_VERSION}" \
   --namespace "kubecost" --create-namespace \

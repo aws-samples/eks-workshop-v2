@@ -5,7 +5,7 @@ import * as path from "path";
 import { globSync } from "glob";
 import getReadingTime from "reading-time";
 
-const timingDataString = fs.readFileSync(`./lab-timing-data.json`, {
+const timingDataString = fs.readFileSync(`./test-durations.json`, {
   encoding: "utf8",
   flag: "r",
 });
@@ -34,7 +34,7 @@ const plugin = (options) => {
 
       if (attributes.estimatedLabExecutionTimeMinutes === "0") {
         attributes.estimatedLabExecutionTimeMinutes = calculateLabExecutionTime(
-          relativePath,
+          path.dirname(relativePath),
           timingData,
         );
       }
@@ -102,21 +102,27 @@ function calculateReadingTime(filePath) {
 }
 
 function calculateLabExecutionTime(relativePath, timingData) {
-  let labExecutionTime = 0;
+  const testDuration = sumFieldsWithPrefix(timingData, `/${relativePath}`);
 
-  const timingDataEntry = timingData[relativePath];
-
-  if (timingDataEntry) {
-    labExecutionTime = timingDataEntry.executionTimeSeconds / 60;
-  } else {
-    console.log(`Failed to find ${relativePath}`);
+  if (testDuration > 0) {
+    return Math.round(testDuration / 1000 / 60);
   }
 
-  if (labExecutionTime === 0) {
-    throw new Error(`Got 0 lab execution time for ${relativePath}`);
-  }
+  throw new Error(`No test duration found for ${relativePath}`);
+}
 
-  return labExecutionTime;
+function sumFieldsWithPrefix(obj, prefix) {
+  return Object.keys(obj)
+    .filter((key) => key.startsWith(prefix))
+    .reduce((sum, key) => {
+      const value = obj[key];
+      if (typeof value === "number") {
+        return sum + value;
+      } else if (typeof value === "object" && value !== null) {
+        return sum + sumFieldsWithPrefix(value, prefix);
+      }
+      return sum;
+    }, 0);
 }
 
 export default plugin;
