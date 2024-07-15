@@ -1,5 +1,5 @@
 import { Category, Gatherer, Page, Script } from "./gatherer/gatherer.js";
-import Mocha, { Runner, Suite, Test } from "mocha";
+import Mocha, { Suite, Test } from "mocha";
 import path from "path";
 import GlobToRegExp from "glob-to-regexp";
 import { assert } from "chai";
@@ -58,7 +58,7 @@ export class MarkdownSh {
 
     const mocha = new Mocha(mochaOpts);
 
-    let root;
+    let root: Category | null;
 
     let shell = new DefaultShell(beforeEach);
 
@@ -84,6 +84,7 @@ export class MarkdownSh {
       try {
         await this.runMochaTests(mocha);
       } catch (e: any) {
+        console.log(`Error running tests: ${e.message}`);
         process.exit(1);
       }
     }
@@ -331,6 +332,8 @@ class CustomTest extends Test {
         }
       }
     });
+
+    this.file = page.file;
   }
 
   async hook(
