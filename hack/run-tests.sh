@@ -59,11 +59,19 @@ if [ ! -z "$TEST_REPORT" ]; then
   output_args="--output xunit --output-path /test-output/test-report.xml"
 fi
 
+dns_args=""
+
+DOCKER_DNS_OVERRIDE=${DOCKER_DNS_OVERRIDE:-""}
+
+if [ ! -z "$DOCKER_DNS_OVERRIDE" ]; then
+  dns_args="--dns=$DOCKER_DNS_OVERRIDE"
+fi
+
 RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-""}
 
 echo "Running test suite..."
 
-$CONTAINER_CLI run $background_args $output_volume_args \
+$CONTAINER_CLI run $background_args $output_volume_args $dns_args \
   -v $SCRIPT_DIR/../website/docs:/content \
   -v $SCRIPT_DIR/../manifests:/manifests \
   -e 'EKS_CLUSTER_NAME' -e 'AWS_REGION' -e 'RESOURCES_PRECREATED' \
