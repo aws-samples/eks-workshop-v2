@@ -46,7 +46,7 @@ NAME                READY   AGE
 catalog-mysql-ebs   1/1     79s
 ```
 
-Inspecting our `catalog-mysql-ebs` StatefulSet, we can see that now we have a PersistentVolumeClaim attached to it with 30GiB and with `storageClassName` of gp2.
+Inspecting our `catalog-mysql-ebs` StatefulSet, we can see that now we have a PersistentVolumeClaim attached to it with 30GiB and with `storageClassName` of ebs-csi-driver.
 
 ```bash
 $ kubectl get statefulset -n catalog catalog-mysql-ebs \
@@ -68,7 +68,7 @@ $ kubectl get statefulset -n catalog catalog-mysql-ebs \
           "storage": "30Gi"
         }
       },
-      "storageClassName": "gp2",
+      "storageClassName": "ebs-csi-default-sc",
       "volumeMode": "Filesystem"
     },
     "status": {
