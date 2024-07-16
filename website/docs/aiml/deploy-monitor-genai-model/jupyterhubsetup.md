@@ -11,7 +11,7 @@ Add the Helm chart repo
 First we'll add the official JupyterHub Helm chart repository. This contains the pre-packaged JupyterHub that we can install on our Kubernetes cluster:
 
 
-```bash timeout=300 wait=60
+```bash timeout=600 wait=60
 $ helm repo add jupyterhub https://hub.jupyter.org/helm-chart/
 $ helm repo update
 ```
@@ -32,7 +32,7 @@ Now we can install JupyterHub by running Helm, pointing it at the chart and our 
 ```bash timeout=1800 wait=60
 $ kubectl create namespace jupyterhub
 $ kubectl create -f ~/environment/eks-workshop/modules/aiml/deploy-monitor-genai-model/jupyterhub/jupyterhub-configmap.yaml
-$ helm upgrade --cleanup-on-fail --install jupyterhub jupyterhub/jupyterhub --namespace jupyterhub--version=3.1.0 --values ~/environment/eks-workshop/modules/aiml/deploy-monitor-genai-model/jupyterhub/jupyterhub-values.yaml
+$ helm upgrade --cleanup-on-fail --install jupyterhub jupyterhub/jupyterhub --namespace jupyterhub --version=3.1.0 --values ~/environment/eks-workshop/modules/aiml/deploy-monitor-genai-model/jupyterhub/jupyterhub-values.yaml
 ```
 
 

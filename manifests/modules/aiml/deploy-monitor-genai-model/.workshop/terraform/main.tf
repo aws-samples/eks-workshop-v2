@@ -306,17 +306,17 @@ dashboardProviders:
       editable: false
       options:
         path: /var/lib/grafana/dashboards/default
-    - name: nvidia-dcgm-exporter-dashboard
+    - name: gpu-metrics
       orgId: 1
-      folder: "nvidia-dcgm-exporter-dashboard"
+      folder: gpu-metrics
       type: file
       disableDeletion: false
       editable: false
       options:
-        path: /var/lib/grafana/dashboards/nvidia-dcgm-exporter-dashboard  
+        path: /var/lib/grafana/dashboards/gpu-metrics
 
 dashboardsConfigMaps:
-  nvidia-dcgm-exporter-dashboard: "nvidia-dcgm-exporter-dashboard"
+  gpu-metrics: "nvidia-dcgm-exporter-dashboard"
 
 dashboards:
   default:
