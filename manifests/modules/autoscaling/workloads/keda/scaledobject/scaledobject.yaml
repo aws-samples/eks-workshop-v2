@@ -1,0 +1,29 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: ui-hpa
+  namespace: ui
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ui                # Name of deployment you want to autoscale; Must be in same namespace as scaled object
+  pollingInterval:  30      # Optional. Default: 30; the interval to check each trigger on
+  cooldownPeriod:   300     # Optional. Default: 300; the period to wait after the last trigger reported active before scaling the deployment back to minReplicaCount
+  fallback:
+    failureThreshold: 3
+    replicas: 2
+  minReplicaCount: 1        # Optional. Default: 0; minimum number of replicas that KEDA will scale the deployment down to
+  maxReplicaCount: 10       # Optional. Default: 100; the maximum number of replicas that KEDA will scale the deployment out to
+  triggers:                 # Trigger activate the deployment
+    - type: aws-cloudwatch
+      metadata:
+        namespace: AWS/ApplicationELB
+        expression: SELECT COUNT(RequestCountPerTarget) FROM SCHEMA("AWS/ApplicationELB", LoadBalancer, TargetGroup) WHERE TargetGroup = '${TARGETGROUP_ID}' AND LoadBalancer = '${ALB_ID}'
+        metricStat: Sum
+        metricStatPeriod: "60"
+        metricUnit: Count
+        targetMetricValue: '100'
+        minMetricValue: '0'
+        awsRegion: "${AWS_REGION}"
+        identityOwner: operator
