@@ -4,7 +4,7 @@ metadata:
   name: llama2
 
 ---
-apiVersion: ray.io/v1
+apiVersion: ray.io/v1 #originally ray.io/v1
 kind: RayService
 metadata:
   name: llama2
@@ -72,15 +72,17 @@ spec:
                   name: ray-logs
               resources:
                 limits:
-                  cpu: 4
-                  memory: 20Gi
+                  cpu: 1
+                  memory: 2Gi
                 requests:
-                  cpu: 4
-                  memory: 20Gi
+                  cpu: 1
+                  memory: 2Gi
               env:
                 - name: LD_LIBRARY_PATH
                   value: "/home/ray/anaconda3/lib:$LD_LIBRARY_PATH"
           nodeSelector: # This is using Karpenter Nodes with the provisioner label
+            # NodeGroupType: x86-cpu-karpenter
+            # NodePool: x86-cpu-karpenter
             instanceType: mixed-x86
             provisionerType: Karpenter
             workload: rayhead
@@ -116,6 +118,9 @@ spec:
                   - name: LD_LIBRARY_PATH
                     value: "/home/ray/anaconda3/lib:$LD_LIBRARY_PATH"
             nodeSelector:
+              #NodeGroupType: inferentia-inf2
+              #NodePool: inferentia-inf2
+              #hub.jupyter.org/node-purpose: user
               instanceType: inferentia-inf2
               provisionerType: Karpenter
             tolerations:
