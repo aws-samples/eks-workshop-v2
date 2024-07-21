@@ -56,6 +56,32 @@ resource "aws_s3_bucket" "chatbot" {
   tags = var.tags
 }
 
+#resource "aws_iam_role" "graviton_node" {
+#  name = "${var.addon_context.eks_cluster_id}-graviton-node"
+
+#  assume_role_policy = jsonencode({
+#Version = "2012-10-17"
+#Statement = [
+#{
+#Action = "sts:AssumeRole"
+#Effect = "Allow"
+#Sid    = ""
+#Principal = {
+#Service = "ec2.amazonaws.com"
+#}
+#},
+#]
+# })
+
+#managed_policy_arns = [
+# "arn:${var.addon_context.aws_partition_id}:iam::aws:policy/AmazonEKS_CNI_Policy",
+# "arn:${var.addon_context.aws_partition_id}:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+# "arn:${var.addon_context.aws_partition_id}:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+# "arn:${var.addon_context.aws_partition_id}:iam::aws:policy/AmazonSSMManagedInstanceCore"
+#]
+
+#tags = var.tags
+#}
 
 module "iam_assumable_role_chatbot" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"

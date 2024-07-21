@@ -1,0 +1,113 @@
+# apiVersion: karpenter.sh/v1beta1
+# kind: NodePool
+# metadata:
+#   annotations:
+#     meta.helm.sh/release-name: x86-cpu-karpenter
+#     meta.helm.sh/release-namespace: karpenter-resources
+#   name: x86-cpu-karpenter
+#   labels:
+#     app.kubernetes.io/managed-by: Helm
+# spec:
+#   disruption:
+#     # budgets:
+#     # - nodes: 10%
+#     consolidateAfter: 300s
+#     consolidationPolicy: WhenEmpty
+#     expireAfter: 720h
+#   limits:
+#     cpu: 1000
+#     #memory: 1000Gi
+#   template:
+#     metadata:
+#       labels:
+#         # NodeGroupType: x86-cpu-karpenter
+#         # NodePool: x86-cpu-karpenter
+#         instanceType: mixed-x86
+#         #type: karpenter
+#         provisionerType: Karpenter
+#         workload: rayhead
+#     spec:
+#       nodeClassRef:
+#         name: x86-cpu-karpenter
+#     requirements:
+#       - key: "karpenter.k8s.aws/instance-family"
+#         operator: In
+#         values: ["c5", "m5", "r5"]
+#       - key: "karpenter.k8s.aws/instance-size"
+#         operator: In
+#         values: ["xlarge", "2xlarge", "4xlarge", "8xlarge", "16xlarge", "24xlarge"]
+#       - key: "kubernetes.io/arch"
+#         operator: In
+#         values: ["amd64"]
+#       - key: "karpenter.sh/capacity-type"
+#         operator: In
+#         values: ["spot", "on-demand"]
+#   weight: 100
+
+# status:
+#   resources:
+#     cpu: "16"
+#     ephemeral-storage: 104845292Ki
+#     memory: 234
+
+apiVersion: karpenter.sh/v1beta1
+kind: NodePool
+metadata:
+  name: x86-cpu-karpenter
+spec:
+  template:
+    metadata:
+      labels:
+        type: karpenter
+        instanceType: mixed-x86
+        provisionerType: Karpenter
+        workload: rayhead
+    spec:
+      requirements:
+        - key: "karpenter.k8s.aws/instance-family"
+          operator: In
+          values: ["c5", "m5", "r5"]
+        - key: "karpenter.k8s.aws/instance-size"
+          operator: In
+          values:
+            ["xlarge", "2xlarge", "4xlarge", "8xlarge", "16xlarge", "24xlarge"]
+        - key: "kubernetes.io/arch"
+          operator: In
+          values: ["amd64"]
+        - key: "karpenter.sh/capacity-type"
+          operator: In
+          values: ["on-demand"]
+      nodeClassRef:
+        name: x86-cpu-karpenter
+  limits:
+    cpu: "10000"
+  disruption:
+    consolidationPolicy: WhenUnderutilized
+    consolidateAfter: 300s
+    #consolidationPolicy: WhenEmpty
+    expireAfter: 720h # 30 * 24h = 720h
+
+---
+apiVersion: karpenter.k8s.aws/v1beta1
+kind: EC2NodeClass
+metadata:
+  name: x86-cpu-karpenter
+spec:
+  amiFamily: AL2
+  blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        deleteOnTermination: true
+        encrypted: true
+        volumeSize: 200Gi #originally 100Gi
+        volumeType: gp3
+  detailedMonitoring: true
+  role: karpenter-eks-workshop-20240719154052842800000003
+  securityGroupSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: eks-workshop
+  subnetSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: eks-workshop
+  tags:
+    app.kubernetes.io/created-by: eks-workshop

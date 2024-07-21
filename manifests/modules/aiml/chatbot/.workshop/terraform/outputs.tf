@@ -9,3 +9,11 @@ output "environment_variables" {
     KARPENTER_ARN           = module.eks_blueprints_addons.karpenter.node_iam_role_arn
   }
 }
+
+#output "subnet_details" {
+#value = merge({
+#GRAVITON_NODE_ROLE = aws_iam_role.graviton_node.arn
+#}, {
+#for index, id in data.aws_subnets.private.ids : "PRIMARY_SUBNET_${index + 1}" => id
+#})
+#}

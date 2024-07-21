@@ -1,0 +1,142 @@
+# apiVersion: karpenter.sh/v1beta1
+# kind: NodePool
+# metadata:
+#   annotations:
+#     meta.helm.sh/release-name: inferentia-inf2
+#     meta.helm.sh/release-namespace: karpenter-resources
+#   name: inferentia-inf2
+#   labels:
+#     app.kubernetes.io/managed-by: Helm
+# spec:
+#   disruption:
+#     budgets:
+#     - nodes: 10%
+#     consolidateAfter: 300s
+#     consolidationPolicy: WhenEmpty
+#     expireAfter: 720h
+#   limits:
+#     cpu: 1000
+#     memory: 1000Gi
+#   template:
+#     metadata:
+#       labels:
+#         NodeGroupType: inferentia-inf2
+#         NodePool: inferentia-inf2
+#         hub.jupyter.org/node-purpose: user
+#         instanceType: inferentia-inf2
+#         provisionerType: Karpenter
+#     spec:
+#       nodeClassRef:
+#         name: inferentia-inf2
+#       requirements:
+#         - key: karpenter.k8s.aws/instance-family
+#           operator: In
+#           values:
+#             - inf2
+#         # - key: karpenter.k8s.aws/instance-size
+#         #   operator: In
+#         #   values:
+#         #     - 24xlarge
+#             #- 48xlarge
+#         - key: "kubernetes.io/arch"
+#           operator: In
+#           values: ["arm64"]
+#         - key: karpenter.sh/capacity-type
+#           operator: In
+#           values:
+#             - spot
+#             - on-demand
+#       taints:
+#         - key: aws.amazon.com/neuron
+#           value: "true"
+#           effect: "NoSchedule"
+#         - key: hub.jupyter.org/dedicated # According to optimization docs https://z2jh.jupyter.org/en/latest/administrator/optimization.html
+#           operator: "Equal"
+#           value: "user"
+#           effect: "NoSchedule"
+#       # taints:
+#       #   - effect: NoSchedule
+#       #     key: aws.amazon.com/neuron
+#       #     value: "true"
+#       #   - effect: NoSchedule
+#       #     key: hub.jupyter.org/dedicated
+#       #     value: user
+#       # tolerations:
+#       #   - key: "aws.amazon.com/neuron"
+#       #     operator: "Exists"
+#       #     effect: "NoSchedule"
+#       #   - key: "hub.jupyter.org/dedicated"
+#       #     operator: "Equal"
+#       #     value: "user"
+#       #     effect: "NoSchedule"
+#   weight: 100
+
+apiVersion: karpenter.sh/v1beta1
+kind: NodePool
+metadata:
+  name: inferentia-inf2
+spec:
+  template:
+    metadata:
+      labels:
+        instanceType: inferentia-inf2
+        provisionerType: Karpenter
+    spec:
+      requirements:
+        - key: "karpenter.k8s.aws/instance-family"
+          operator: In
+          values: ["inf2"]
+        - key: "node.kubernetes.io/instance-type"
+          operator: In
+          values: ["inf2.24xlarge", "inf2.48xlarge"]
+        - key: "kubernetes.io/arch"
+          operator: In
+          values: ["amd64"]
+        - key: "karpenter.sh/capacity-type"
+          operator: In
+          values: ["on-demand"]
+      nodeClassRef:
+        name: inferentia-inf2
+      taints:
+        - key: aws.amazon.com/neuron
+          value: "true"
+          effect: "NoSchedule"
+  # limits:
+  #   cpu: "10000"
+  disruption:
+    consolidationPolicy: WhenUnderutilized
+    consolidateAfter: 300s
+    #consolidationPolicy: WhenEmpty
+    expireAfter: 720h # 30 * 24h = 720h
+
+---
+apiVersion: karpenter.k8s.aws/v1beta1
+kind: EC2NodeClass
+metadata:
+  name: inferentia-inf2
+spec:
+  amiFamily: AL2
+  blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        deleteOnTermination: true
+        encrypted: true
+        volumeSize: 500Gi #originally 100Gi
+        volumeType: gp3
+  role: karpenter-eks-workshop-20240719154052842800000003
+  securityGroupSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: eks-workshop
+  subnetSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: eks-workshop
+  tags:
+    app.kubernetes.io/created-by: eks-workshop
+
+    # taints:
+    #     - key: aws.amazon.com/neuron
+    #       value: "true"
+    #       effect: "NoSchedule"
+    #   labels:
+    #       - type: karpenter
+    #       - NodeGroupType: inf2-karpenter

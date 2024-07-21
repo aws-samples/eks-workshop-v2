@@ -2,6 +2,9 @@
 
 set -e
 
+#we want to delete the graviton cluster
+delete-nodegroup graviton
+
 logmessage "Deleting AIML resources..."
 
 kubectl delete namespace aiml --ignore-not-found
