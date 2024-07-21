@@ -3,7 +3,7 @@ title: "Generate load"
 sidebar_position: 20
 ---
 
-To observe KEDA scale the deployment in response to the KEDA `ScaledObject` we have configured we need to generate some load on our application. We'll do that by calling the home page of the workload with [hey](https://github.com/rakyll/hey).
+To observe KEDA scale the deployment in response to the KEDA `ScaledObject` we have configured, we need to generate some load on our application. We'll do that by calling the home page of the workload with [hey](https://github.com/rakyll/hey).
 
 The command below will run the load generator with:
 
@@ -18,7 +18,7 @@ $ kubectl run load-generator \
   --restart=Never -- -c 3 -q 5 -z 10m http://$ALB_HOSTNAME/home
 ```
 
-Now that we have requests hitting our application we can watch the HPA resource to follow its progress:
+Based on the `ScaledObject`, KEDA creates an HPA resource and provides the required metrics to allow the HPA to scale the workload. Now that we have requests hitting our application we can watch the HPA resource to follow its progress:
 
 ```bash test=false
 $ kubectl get hpa keda-hpa-ui-hpa -n ui --watch
@@ -43,7 +43,7 @@ Once you're satisfied with the autoscaling behavior, you can end the watch with 
 $ kubectl delete pod load-generator
 ```
 
-As the load generator terminates, notice that HPA will slowly bring the replica count to min number based on its configuration.
+As the load generator terminates, notice that the HPA will slowly bring the replica count to min number based on its configuration.
 
 You can also view the load test results in the CloudWatch console. Navigate to the metrics section and find the `RequestCount` and `RequestCountPerTarget` metrics for the load balancer and target group that was created. From the results you can see that initially all of the load was handled by a single pod, but as KEDA begins to scale the workload the requests are distributed across the additional pods added to the workload. If you let the load-generator pod run for the full 10 minutes, you'll see results similar to this.
 
