@@ -12,8 +12,6 @@ provider "aws" {
   alias  = "virginia"
 }
 
-data "aws_region" "current" {}
-
 data "aws_ecrpublic_authorization_token" "token" {
   provider = aws.virginia
 }
@@ -27,6 +25,7 @@ module "eks_blueprints_addons" {
   karpenter_enable_spot_termination          = true
   karpenter_enable_instance_profile_creation = true
   karpenter = {
+    chart_version       = var.karpenter_version
     repository_username = data.aws_ecrpublic_authorization_token.token.user_name
     repository_password = data.aws_ecrpublic_authorization_token.token.password
   }

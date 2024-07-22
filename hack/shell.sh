@@ -29,7 +29,15 @@ else
   echo "Executing command in container..."
 fi
 
-$CONTAINER_CLI run --rm $interactive_args \
+dns_args=""
+
+DOCKER_DNS_OVERRIDE=${DOCKER_DNS_OVERRIDE:-""}
+
+if [ ! -z "$DOCKER_DNS_OVERRIDE" ]; then
+  dns_args="--dns=$DOCKER_DNS_OVERRIDE"
+fi
+
+$CONTAINER_CLI run --rm $interactive_args $dns_args \
   -v $SCRIPT_DIR/../manifests:/manifests \
   -v $SCRIPT_DIR/../cluster:/cluster \
   -e 'EKS_CLUSTER_NAME' -e 'AWS_REGION' \

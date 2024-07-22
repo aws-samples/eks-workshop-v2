@@ -80,7 +80,7 @@ This command 'builds' the manifests using the kubectl kustomize command, pipes i
 
 The ACK controllers in the cluster will react to these new resources and provision the AWS infrastructure we have expressed with the manifests earlier. Lets check if ACK created the table by running
 
-```bash
+```bash timeout=300
 $ kubectl wait table.dynamodb.services.k8s.aws items -n carts --for=condition=ACK.ResourceSynced --timeout=15m
 table.dynamodb.services.k8s.aws/items condition met
 $ kubectl get table.dynamodb.services.k8s.aws items -n carts -ojson | yq '.status."tableStatus"'
