@@ -104,9 +104,9 @@ spec:
   # limits:
   #   cpu: "10000"
   disruption:
-    consolidationPolicy: WhenUnderutilized
+    #consolidationPolicy: WhenUnderutilized
     consolidateAfter: 300s
-    #consolidationPolicy: WhenEmpty
+    consolidationPolicy: WhenEmpty
     expireAfter: 720h # 30 * 24h = 720h
 
 ---
@@ -123,13 +123,13 @@ spec:
         encrypted: true
         volumeSize: 500Gi #originally 100Gi
         volumeType: gp3
-  role: karpenter-eks-workshop-20240719154052842800000003
+  role: ${KARPENTER_NODE_ROLE}
   securityGroupSelectorTerms:
     - tags:
-        karpenter.sh/discovery: eks-workshop
+        karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
   subnetSelectorTerms:
     - tags:
-        karpenter.sh/discovery: eks-workshop
+        karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
   tags:
     app.kubernetes.io/created-by: eks-workshop
 

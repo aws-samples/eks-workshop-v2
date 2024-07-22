@@ -138,9 +138,12 @@ metadata:
   name: llama2
   namespace: llama2
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: "/$1"
+    #nginx.ingress.kubernetes.io/rewrite-target: "/$1"
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/liveness
 spec:
-  ingressClassName: nginx
+  ingressClassName: alb
   rules:
     - http:
         paths:
