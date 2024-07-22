@@ -2,12 +2,15 @@
 
 set -e
 
-#we want to delete the graviton cluster
-delete-nodegroup graviton
-
 logmessage "Deleting AIML resources..."
 
 kubectl delete namespace aiml --ignore-not-found
+
+#add this for deleting the llama2 namespace
+kubectl delete namespace llama2 --ignore-not-found
+
+#add this for deleting the ingress
+kubectl delete ingress -n llama2 llama2 --ignore-not-found
 
 logmessage "Deleting Karpenter NodePool and EC2NodeClass..."
 
