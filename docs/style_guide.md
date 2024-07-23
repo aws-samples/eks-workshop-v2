@@ -42,6 +42,20 @@ sidebar_custom_props: {"info": true}
 ---
 ```
 
+### Navigating the AWS console
+
+There are instances where the user needs to navigate to specific screens in the AWS console. It is preferable to provide a link to the exact screen if possible, or a close as can be done.
+
+For example to link to the EKS console you can use a link like this:
+
+```
+https://console.aws.amazon.com/eks/home#/clusters
+```
+
+> Note that this has had the region information removed, the link as shown in the browser would be: `https://us-west-2.console.aws.amazon.com/eks/home?region=us-west-2#/clusters`. The region must be removed to allow the content to be portable.
+
+These links should be displayed to the user with the [Console button component](./ui_components.md) for consistency.
+
 ### Screenshots
 
 Use of screenshots should be limited to only wherever necessary. Where possible command-line output should be used as it is more maintainable and testable. When screenshots are necessary only the relevant section of the screen should be included as it reduces image size and makes the images more legible, especially for users with limited screen resolution. Screenshots should be cropped to display only the necessary details.
