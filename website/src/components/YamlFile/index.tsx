@@ -18,10 +18,18 @@ export function YamlAnnotation({ children, sequence }) {
   );
 }
 
-export default function YamlFile({ children, title }) {
+interface Props {
+  children: ReactNode;
+  title: string;
+  zoomed: string;
+}
+
+export default function YamlFile({ children, title, zoomed }: Props) {
+  const zoomedVal = zoomed === "true";
+  const realTitle = zoomedVal ? undefined : title;
   return (
     <div className={styles.yamlBlock}>
-      <CodeBlock language="yaml" title={title} showLineNumbers>
+      <CodeBlock language="yaml" title={realTitle} showLineNumbers={!zoomedVal}>
         {children}
       </CodeBlock>
     </div>
