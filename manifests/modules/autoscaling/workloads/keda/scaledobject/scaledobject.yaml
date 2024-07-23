@@ -16,11 +16,11 @@ spec:
     - type: aws-cloudwatch
       metadata:
         namespace: AWS/ApplicationELB
-        expression: SELECT COUNT(RequestCountPerTarget) FROM SCHEMA("AWS/ApplicationELB", LoadBalancer, TargetGroup) WHERE TargetGroup = '${TARGETGROUP_ID}' AND LoadBalancer = '${ALB_ID}'
+        expression: SELECT COUNT(RequestCountPerTarget) FROM SCHEMA("AWS/ApplicationELB", LoadBalancer, TargetGroup) WHERE TargetGroup = '$\{TARGETGROUP_ID}' AND LoadBalancer = '$\{ALB_ID}'
         metricStat: Sum
         metricStatPeriod: "60"
         metricUnit: Count
         targetMetricValue: '100'
         minMetricValue: '0'
-        awsRegion: "${AWS_REGION}"
+        awsRegion: "$\{AWS_REGION}"
         identityOwner: operator
