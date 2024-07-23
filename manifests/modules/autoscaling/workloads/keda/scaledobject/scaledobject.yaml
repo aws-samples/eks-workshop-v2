@@ -4,15 +4,15 @@ metadata:
   name: ui-hpa
   namespace: ui
 spec:
-  scaleTargetRef:           # This is the resource KEDA will scale up/down
+  scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: ui                # Name of deployment you want to autoscale; Must be in same namespace as scaled object
-  pollingInterval:  30      # Optional. Default: 30 seconds
-  cooldownPeriod:   300     # Optional. Default: 300 seconds
-  minReplicaCount: 1        # Optional. Default: 0; minimum number of replicas that KEDA will scale the deployment down to
-  maxReplicaCount: 10       # Optional. Default: 100; the maximum number of replicas that KEDA will scale the deployment out to
-  triggers:                 # Defines the type of trigger and metric to scale the workload
+    name: ui
+  pollingInterval: 30
+  cooldownPeriod: 300
+  minReplicaCount: 1
+  maxReplicaCount: 10
+  triggers:
     - type: aws-cloudwatch
       metadata:
         namespace: AWS/ApplicationELB
