@@ -1,14 +1,10 @@
 ---
-title: "Container Insights Data with CloudWatch Logs Insights"
+title: "Using CloudWatch Logs Insights"
 sidebar_position: 30
 weight: 5
 ---
 
 Container Insights collects metrics by using performance log events with using [Embedded Metric Format](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format.html) stored in CloudWatch Logs. CloudWatch generates several metrics automatically from the logs which you can view in the CloudWatch console. You can also do a deeper analysis of the performance data that is collected by using CloudWatch Logs Insights queries.
-
-:::tip
-It may take a few minutes for data to start appearing in CloudWatch
-:::
 
 First open the CloudWatch Log Insights console:
 
