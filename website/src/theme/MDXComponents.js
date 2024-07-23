@@ -8,6 +8,7 @@ import Kustomization from "@site/src/components/Kustomization";
 import LaunchButton from "@site/src/components/LaunchButton";
 import YamlFile, { YamlAnnotation } from "@site/src/components/YamlFile";
 import ReactPlayer from "react-player";
+import ConsoleButton from "@site/src/components/ConsoleButton";
 
 export default {
   // Re-use the default mapping
@@ -21,4 +22,5 @@ export default {
   ReactPlayer: ReactPlayer,
   YamlFile: YamlFile,
   YamlAnnotation: YamlAnnotation,
+  ConsoleButton: ConsoleButton,
 };
