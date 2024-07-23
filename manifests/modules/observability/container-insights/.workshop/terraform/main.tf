@@ -1,17 +1,77 @@
 data "aws_partition" "current" {}
+data "aws_region" "current" {}
 
-module "adot_operator" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/opentelemetry-operator"
+module "eks_blueprints_addons" {
+  source  = "aws-ia/eks-blueprints-addons/aws"
+  version = "1.16.3"
 
-  addon_config = {
-    kubernetes_version = var.eks_cluster_version
-    addon_version      = "v0.92.1-eksbuild.1"
-    most_recent        = false
+  cluster_name      = var.addon_context.eks_cluster_id
+  cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint
+  cluster_version   = var.eks_cluster_version
+  oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
 
-    preserve = false
+  enable_aws_load_balancer_controller = true
+  aws_load_balancer_controller = {
+    wait = true
   }
+}
 
-  addon_context = var.addon_context
+resource "time_sleep" "blueprints_addons_sleep" {
+  depends_on = [
+    module.eks_blueprints_addons
+  ]
+
+  create_duration = "15s"
+}
+
+module "cert_manager" {
+  source  = "aws-ia/eks-blueprints-addon/aws"
+  version = "1.1.1"
+
+  depends_on = [
+    time_sleep.blueprints_addons_sleep
+  ]
+
+  name             = "cert-manager"
+  namespace        = "cert-manager"
+  create_namespace = true
+  chart            = "cert-manager"
+  chart_version    = "v1.15.1"
+  repository       = "https://charts.jetstack.io"
+
+  set = [
+    {
+      name  = "crds.enabled"
+      value = true
+    }
+  ]
+}
+
+resource "kubernetes_namespace" "opentelemetry_operator" {
+  metadata {
+    name = "opentelemetry-operator-system"
+  }
+}
+
+module "opentelemetry_operator" {
+  source  = "aws-ia/eks-blueprints-addon/aws"
+  version = "1.1.1"
+
+  depends_on = [
+    module.cert_manager
+  ]
+
+  name             = "opentelemetry"
+  namespace        = kubernetes_namespace.opentelemetry_operator.metadata[0].name
+  create_namespace = false
+  chart            = "opentelemetry-operator"
+  chart_version    = var.operator_chart_version
+  repository       = "https://open-telemetry.github.io/opentelemetry-helm-charts"
+
+  set = [{
+    name  = "manager.collectorImage.repository"
+    value = "otel/opentelemetry-collector-k8s"
+  }]
 }
 
 module "iam_assumable_role_adot_ci" {
@@ -40,10 +100,10 @@ resource "aws_cloudwatch_dashboard" "order_metrics_ci" {
           "type" : "metric",
           "properties" : {
             "metrics" : [
-              [{ "expression" : "SELECT COUNT(watch_orders_total) FROM \"ContainerInsights/Prometheus\" WHERE productId != '*' GROUP BY productId", "label" : "Query1", "id" : "q1", "region" : "us-west-2" }]
+              [{ "expression" : "SELECT COUNT(watch_orders_total) FROM \"ContainerInsights/Prometheus\" WHERE productId != '*' GROUP BY productId", "id" : "q1", "region" : data.aws_region.current.name }]
             ],
             "view" : "pie",
-            "region" : "us-west-2",
+            "region" : data.aws_region.current.name,
             "title" : "Orders by ProductId",
             "period" : 300,
             "stat" : "Average"
@@ -59,9 +119,9 @@ resource "aws_cloudwatch_dashboard" "order_metrics_ci" {
             "sparkline" : true,
             "view" : "singleValue",
             "metrics" : [
-              [{ "expression" : "SELECT SUM(watch_orders_total) FROM \"ContainerInsights/Prometheus\" WHERE productId = '*'", "label" : "Query1", "id" : "q1" }]
+              [{ "expression" : "SELECT SUM(watch_orders_total) FROM \"ContainerInsights/Prometheus\" WHERE productId = '*'", "label" : "Total", "id" : "q1" }]
             ],
-            "region" : "us-west-2",
+            "region" : data.aws_region.current.name,
             "stat" : "Average",
             "period" : 300,
             "title" : "Order Count"
