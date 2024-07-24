@@ -20,7 +20,7 @@ spec:
         metricStat: Sum
         metricStatPeriod: "60"
         metricUnit: Count
-        targetMetricValue: '100'
-        minMetricValue: '0'
+        targetMetricValue: "100"
+        minMetricValue: "0"
         awsRegion: "${AWS_REGION}"
         identityOwner: operator
