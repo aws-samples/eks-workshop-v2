@@ -4,7 +4,6 @@ import CodeBlock from "@theme/CodeBlock";
 import styles from "./styles.module.css";
 
 export function YamlAnnotation({ children, sequence }) {
-  console.log(sequence);
   return (
     <div className={styles.annotationContainer}>
       <div>
