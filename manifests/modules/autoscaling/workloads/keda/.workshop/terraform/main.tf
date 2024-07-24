@@ -42,7 +42,7 @@ resource "kubernetes_manifest" "ui_alb" {
       "rules" = [{
         "http" = {
           paths = [{
-            path  = "/"
+            path     = "/"
             pathType = "Prefix"
             "backend" = {
               service = {
