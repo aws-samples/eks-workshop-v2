@@ -9,6 +9,7 @@ import remarkTime from "./src/remark/time.js";
 import remarkIncludeCode from "./src/remark/include-code.js";
 import remarkIncludeKustomization from "./src/remark/include-kustomization.js";
 import remarkParameters from "./src/remark/parameters.js";
+import remarkIncludeYaml from "./src/remark/include-yaml.js";
 
 //require("dotenv").config({ path: ".kustomize-env" });
 
@@ -64,17 +65,21 @@ const config = {
                   MANIFESTS_REF: manifestsRef,
                   MANIFESTS_OWNER: manifestsOwner,
                   MANIFESTS_REPOSITORY: manifestsRepository,
-                  KUBERNETES_VERSION: "1.29",
-                  KUBERNETES_NODE_VERSION: "1.29-eks-48e63af",
+                  KUBERNETES_VERSION: "1.30",
+                  KUBERNETES_NODE_VERSION: "1.30-eks-036c24b",
                 },
               },
             ],
+            [remarkIncludeYaml, { manifestsDir }],
             [remarkIncludeCode, { manifestsDir }],
             [remarkIncludeKustomization, { manifestsDir: kustomizationsDir }],
           ],
           editUrl:
             "https://github.com/aws-samples/eks-workshop-v2/tree/main/website",
-          exclude: ["security/guardduty/runtime-monitoring/reverse-shell.md"],
+          exclude: [
+            "security/guardduty/runtime-monitoring/reverse-shell.md",
+            "fundamentals/storage/fsx-for-netapp-ontap",
+          ],
         },
         theme: {
           customCss: require.resolve("./src/css/custom.scss"),
@@ -208,8 +213,26 @@ const config = {
             block: { start: "highlight-start", end: "highlight-end" },
           },
           {
+            className: "code-block-highlighted-line-even",
+            block: {
+              start: "annotated-highlight-start-even",
+              end: "annotated-highlight-end-even",
+            },
+          },
+          {
+            className: "code-block-highlighted-line-odd",
+            block: {
+              start: "annotated-highlight-start-odd",
+              end: "annotated-highlight-end-odd",
+            },
+          },
+          {
             className: "code-block-highlight",
             line: "HIGHLIGHT",
+          },
+          {
+            className: "code-block-annotation",
+            line: "highlight-annotation",
           },
         ],
       },

@@ -44,12 +44,12 @@ https://console.aws.amazon.com/cloudwatch/home?#logsV2:log-groups
 
 Filter for **fluentbit-cloudwatch** to find the log groups created by Fluent Bit:
 
-![CloudWatch Log Group](./assets/log-group.png)
+![CloudWatch Log Group](./assets/log-group.webp)
 
 Select `/aws/eks/fluentbit-cloudwatch/workload/ui` to view the log streams, each one corresponds to an individual pod:
 
-![CloudWatch Log Stream](./assets/log-streams.png)
+![CloudWatch Log Stream](./assets/log-streams.webp)
 
 You can expand one of the log entries to see the full JSON payload:
 
-![Pod logs](./assets/logs.png)
+![Pod logs](./assets/logs.webp)

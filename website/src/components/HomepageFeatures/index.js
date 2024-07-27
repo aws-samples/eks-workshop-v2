@@ -6,7 +6,7 @@ import useBaseUrl from "@docusaurus/useBaseUrl";
 const FeatureList = [
   {
     title: "Accelerated path",
-    image: "/img/workshop.png",
+    image: "/img/workshop.webp",
     description: (
       <>
         Navigate through the features of Amazon Elastic Kubernetes Services
@@ -16,12 +16,12 @@ const FeatureList = [
   },
   {
     title: "Self-Paced",
-    image: "/img/self_paced.png",
+    image: "/img/self_paced.webp",
     description: <>Learn at your own pace using practical examples.</>,
   },
   {
     title: "Modular",
-    image: "/img/path.png",
+    image: "/img/path.webp",
     description: (
       <>
         Customize your learning path by focusing on the features that matter

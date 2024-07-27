@@ -5,7 +5,7 @@ sidebar_position: 30
 
 Now that we understand [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) and [Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/), let's change our MySQL DB on the Catalog microservice to provision a new EBS volume to store database files persistent.
 
-![MySQL with EBS](./assets/mysql-ebs.png)
+![MySQL with EBS](./assets/mysql-ebs.webp)
 
 Utilizing Kustomize, we'll do two things:
 
@@ -46,7 +46,7 @@ NAME                READY   AGE
 catalog-mysql-ebs   1/1     79s
 ```
 
-Inspecting our `catalog-mysql-ebs` StatefulSet, we can see that now we have a PersistentVolumeClaim attached to it with 30GiB and with `storageClassName` of gp2.
+Inspecting our `catalog-mysql-ebs` StatefulSet, we can see that now we have a PersistentVolumeClaim attached to it with 30GiB and with `storageClassName` of ebs-csi-driver.
 
 ```bash
 $ kubectl get statefulset -n catalog catalog-mysql-ebs \
@@ -68,7 +68,7 @@ $ kubectl get statefulset -n catalog catalog-mysql-ebs \
           "storage": "30Gi"
         }
       },
-      "storageClassName": "gp2",
+      "storageClassName": "ebs-csi-default-sc",
       "volumeMode": "Filesystem"
     },
     "status": {
@@ -96,7 +96,7 @@ $ aws ec2 describe-volumes \
 
 If you prefer you can also check it via the [AWS console](https://console.aws.amazon.com/ec2/home#Volumes), just look for the EBS volumes with the tag of key `kubernetes.io/created-for/pvc/name` and value of `data-catalog-mysql-ebs-0`:
 
-![EBS Volume AWS Console Screenshot](./assets/ebsVolumeScrenshot.png)
+![EBS Volume AWS Console Screenshot](./assets/ebsVolumeScrenshot.webp)
 
 If you'd like to inspect the container shell and check out the newly EBS volume attached to the Linux OS, run this instructions to run a shell command into the `catalog-mysql-ebs` container. It'll inspect the file-systems that you have mounted:
 

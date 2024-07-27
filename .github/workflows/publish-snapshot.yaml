@@ -1,13 +1,10 @@
 name: Publish Snapshot
 
 on:
-  workflow_call: {}
-  workflow_dispatch:
-    inputs:
-      snapshot:
-        description: "The snapshot to publish"
-        required: true
-        type: string
+  push:
+    branches:
+      - "snapshot-*"
+  workflow_dispatch: {}
 
 permissions:
   id-token: write
@@ -20,8 +17,6 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-        with:
-          ref: snapshot-${{ inputs.snapshot }}
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -42,10 +37,14 @@ jobs:
           role-duration-seconds: 900
           aws-region: ${{ secrets.AWS_REGION }}
           role-session-name: GithubActionsSession-publish
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
       - name: Run publish
         env:
           SNAPSHOT_BUCKET: "${{ secrets.SNAPSHOT_BUCKET }}"
           SNAPSHOT_CLOUDFRONT: "${{ secrets.SNAPSHOT_CLOUDFRONT }}"
-          BRANCH: snapshot-${{ inputs.snapshot }}
+          BRANCH: ${{ steps.extract_branch.outputs.branch }}
         run: |
           bash hack/publish-snapshot.sh

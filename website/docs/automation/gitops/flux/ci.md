@@ -7,7 +7,7 @@ We have successfully bootstrapped Flux on EKS cluster and deployed the applicati
 
 We created Continuous Integration Pipeline during the prepare environment step and now we need to make it up and running.
 
-![CI](assets/ci-multi-arch.png)
+![CI](assets/ci-multi-arch.webp)
 
 First, clone CodeCommit repository for the application sources:
 
@@ -21,7 +21,6 @@ Next, populate the CodeCommit repository with the sources from the public reposi
 $ git clone https://github.com/aws-containers/retail-store-sample-app ~/environment/retail-store-sample-app
 $ git -C ~/environment/retail-store-sample-codecommit checkout -b main
 $ cp -R ~/environment/retail-store-sample-app/src ~/environment/retail-store-sample-codecommit
-$ cp -R ~/environment/retail-store-sample-app/images ~/environment/retail-store-sample-codecommit
 ```
 
 We use AWS CodeBuild and define `buildspec.yml` to build new `x86_64` and `arm64` images in parallel.
@@ -60,7 +59,7 @@ https://console.aws.amazon.com/codesuite/codepipeline/pipelines/eks-workshop-ret
 
 It should look something like this:
 
-![ci-start](assets/ci-start.png)
+![ci-start](assets/ci-start.webp)
 
 As a result of a CodePipeline run with CodeBuild you will have a new image in ECR
 
@@ -70,7 +69,7 @@ $ echo IMAGE_URI_UI=$IMAGE_URI_UI
 
 The suffix `z7llv2` in the name `retail-store-sample-ui-z7llv2` is random and will be different in your case.
 
-![ci-start](assets/ecr.png)
+![ci-start](assets/ecr.webp)
 
 While we are waiting for pipeline to create new images (5-10 minutes), let's [automate image updates to Git](https://fluxcd.io/flux/guides/image-update/) using Flux Image Automation Controller which we installed during the initial Flux bootstrap process.
 
@@ -133,7 +132,7 @@ $ kubectl apply -f ~/environment/retail-store-sample-codecommit/imageupdateautom
 
 We created the following architecture:
 
-![ci-eks-gitops](assets/ci-eks-gitops.png)
+![ci-eks-gitops](assets/ci-eks-gitops.webp)
 
 Now, lets reconcile the changes.
 
@@ -178,7 +177,7 @@ $ export UI_URL=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalance
 $ wait-for-lb $UI_URL
 ```
 
-![ui-before](assets/ui-before.png)
+![ui-before](assets/ui-before.webp)
 
 Let's introduce changes to the source code of the Sample Application.
 
@@ -246,4 +245,4 @@ $ kubectl -n ui describe deployment ui | grep Image
 
 After successful build and deployment (5-10 minutes) we will have the new version of UI application up and running.
 
-![ui-after](assets/ui-after.png)
+![ui-after](assets/ui-after.webp)

@@ -9,6 +9,7 @@ cd $SCRIPT_DIR/../website
 export MANIFESTS_REF="$BRANCH"
 export SNAPSHOT="${BRANCH#snapshot-}"
 export BASE_URL="$SNAPSHOT"
+export LAB_TIMES_ENABLED='true'
 
 npm install
 npm run clear

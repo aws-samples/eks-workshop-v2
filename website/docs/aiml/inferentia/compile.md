@@ -13,6 +13,13 @@ manifests/modules/aiml/inferentia/compiler/trace.py
 
 This code loads the pre-trained ResNet-50 model and sets it to evaluation mode. Note that we are not adding any additional training data to the model. We then save the model using the AWS Neuron SDK.
 
+Check the image that we'll run:
+
+```bash
+$ export AIML_DL_IMAGE="763104351884.dkr.ecr.${AWS_REGION}.amazonaws.com/pytorch-inference-neuron:1.13.1-neuron-py310-sdk2.12.0-ubuntu20.04"
+$ echo $AIML_DL_IMAGE
+```
+
 We will run this code in a Pod on EKS. This is the manifest file for running the Pod:
 
 ```file
@@ -53,7 +60,6 @@ INFO:Neuron: => aten::flatten: 1
 INFO:Neuron: => aten::linear: 1
 INFO:Neuron: => aten::max_pool2d: 1
 INFO:Neuron: => aten::relu_: 49
-
 ```
 
 Finally, upload the model to the S3 bucket that has been created for you. This will ensure we can use the model later in the lab.

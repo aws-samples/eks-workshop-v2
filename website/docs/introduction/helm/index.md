@@ -1,5 +1,6 @@
 ---
-title: Helm (optional)
+title: Helm
+sidebar_custom_props: { "module": true }
 sidebar_position: 50
 ---
 

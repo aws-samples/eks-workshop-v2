@@ -8,7 +8,10 @@ The first thing we'll do is install Kubecost in our cluster. As part of the lab 
 All that we have left to do is install Kubecost as a Helm chart:
 
 ```bash timeout=300
-$ helm registry logout public.ecr.aws || true
+$ aws ecr-public get-login-password \
+  --region us-east-1 | helm registry login \
+  --username AWS \
+  --password-stdin public.ecr.aws
 $ helm upgrade --install kubecost oci://public.ecr.aws/kubecost/cost-analyzer \
   --version "${KUBECOST_CHART_VERSION}" \
   --namespace "kubecost" --create-namespace \
@@ -67,5 +70,5 @@ Accept-Ranges: bytes
 Open the URL in your browser to access Kubecost:
 
 <Browser url='http://k8s-kubecost-kubecost-e83ecf8fc1-fc26f5c92767520f.elb.us-west-2.amazonaws.com:9090'>
-<img src={require('./assets/overview.png').default}/>
+<img src={require('./assets/overview.webp').default}/>
 </Browser>

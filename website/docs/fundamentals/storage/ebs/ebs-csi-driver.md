@@ -15,7 +15,8 @@ To improve security and reduce the amount of work, you can manage the Amazon EBS
 
 ```bash timeout=300 wait=60
 $ aws eks create-addon --cluster-name $EKS_CLUSTER_NAME --addon-name aws-ebs-csi-driver \
-  --service-account-role-arn $EBS_CSI_ADDON_ROLE
+  --service-account-role-arn $EBS_CSI_ADDON_ROLE \
+  --configuration-values '{"defaultStorageClass":{"enabled":true}}'
 $ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --addon-name aws-ebs-csi-driver
 ```
 
@@ -27,12 +28,13 @@ NAME           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTO
 ebs-csi-node   3         3         3       3            3           kubernetes.io/os=linux   3d21h
 ```
 
-We also already have our [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured using [Amazon EBS GP2 volume type](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/general-purpose.html#EBSVolumeTypes_gp2). Run the following command to confirm:
+Starting with EKS 1.30, the EBS CSI Driver use a default [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured using [Amazon EBS GP3 volume type](https://docs.aws.amazon.com/ebs/latest/userguide/general-purpose.html#gp3-ebs-volume-type). Run the following command to confirm:
 
 ```bash
 $ kubectl get storageclass
-NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
-gp2 (default)   kubernetes.io/aws-ebs   Delete          WaitForFirstConsumer   false                  3d22h
+NAME                           PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+ebs-csi-default-sc (default)   ebs.csi.aws.com         Delete          WaitForFirstConsumer   true                   96s
+gp2                            kubernetes.io/aws-ebs   Delete          WaitForFirstConsumer   false                  9d
 ```
 
 Now that we have a better understanding of EKS Storage and Kubernetes objects. On the next page, we'll focus on modifying the MySQL DB StatefulSet of the catalog microservice to utilize a EBS block store volume as the persistent storage for the database files using Kubernetes dynamic volume provisioning.

@@ -51,7 +51,7 @@ argocd/apps  https://kubernetes.default.svc             default  Synced  Healthy
 
 We can also see this Application in the ArgoCD UI now:
 
-![Application in the ArgoCD UI](assets/argocd-ui-insync.png)
+![Application in the ArgoCD UI](assets/argocd-ui-insync.webp)
 
 Alternatively, you can also interact with Argo CD objects in the cluster using the `kubectl` command:
 

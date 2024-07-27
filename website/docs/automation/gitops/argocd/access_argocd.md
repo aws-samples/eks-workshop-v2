@@ -32,7 +32,7 @@ ArgoCD URL: https://acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.ama
 
 The load balancer will take some time to provision so use this command to wait until ArgoCD responds:
 
-```bash timeout=600
+```bash timeout=600 wait=60
 $ curl --head -X GET --retry 20 --retry-all-errors --retry-delay 15 \
   --connect-timeout 5 --max-time 10 -k \
   https://$ARGOCD_SERVER
@@ -57,7 +57,7 @@ $ echo "ArgoCD admin password: $ARGOCD_PWD"
 
 Log in to the Argo CD UI using the URL and credentials you just obtained. You will be presented with a screen that looks like this:
 
-![argocd-ui](assets/argocd-ui.png)
+![argocd-ui](assets/argocd-ui.webp)
 
 Argo CD also provides a powerful CLI tool called `argocd` that can be used to manage applications.
 
