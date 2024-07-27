@@ -10,7 +10,7 @@ description: "Collect, aggregate and summarize metrics and logs from workloads o
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=300 wait=30
+```bash timeout=300 wait=60 hook=install
 $ prepare-environment observability/container-insights
 ```
 
