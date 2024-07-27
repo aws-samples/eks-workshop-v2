@@ -42,6 +42,7 @@ metadata:
 spec:
   amiFamily: AL2 # Amazon Linux 2
   role: ${KARPENTER_ROLE}
+#  role: Karpenter-eks-workshop-20240724023441649900000009
   subnetSelectorTerms:
     - tags:
         karpenter.sh/discovery: "eks-workshop" 
@@ -53,3 +54,6 @@ spec:
     ebs:
       volumeSize: 100Gi
       volumeType: gp3        
+  # userData: |
+  #   #!/bin/bash
+  #   docker pull public.ecr.aws/h3o5n2r0/dogbooth:0.0.1-gpu

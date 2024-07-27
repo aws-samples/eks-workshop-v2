@@ -29,10 +29,10 @@ spec:
               resources:
                 limits:
                   cpu: 2
-                  memory: 8Gi
+                  memory: 16Gi
                 requests:
                   cpu: 2
-                  memory: 8Gi
+                  memory: 16Gi
               ports:
                 - containerPort: 6379
                   name: gcs-server
@@ -60,11 +60,11 @@ spec:
                 resources:
                   limits:
                     cpu: "2"
-                    memory: "12Gi"
+                    memory: "16Gi"
                     nvidia.com/gpu: 1
                   requests:
                     cpu: "2"
-                    memory: "12Gi"
+                    memory: "16Gi"
                     nvidia.com/gpu: 1
 ---
 

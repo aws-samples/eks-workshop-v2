@@ -21,8 +21,11 @@ proxy:
 singleuser:
   image:
     name: public.ecr.aws/h3o5n2r0/gpu-jupyter
+    # name: 981056732380.dkr.ecr.us-west-2.amazonaws.com/ptc/h3o5n2r0/gpu-jupyter
     tag: v1.5_cuda-11.6_ubuntu-20.04_python-only
     pullPolicy: Always
+  # imagePullSecrets:
+  #   - name: ecr-credentials
   cmd: null
   startTimeout: 600
   memory:

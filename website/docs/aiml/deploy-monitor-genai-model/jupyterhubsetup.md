@@ -6,7 +6,6 @@ sidebar_position: 30
 ### Set Up JupyterHub for Model Training
 
 Let's go through the steps to get a JupyterHub instance running for model training and inference.
-Add the Helm chart repo
 
 First we'll add the official JupyterHub Helm chart repository. This contains the pre-packaged JupyterHub that we can install on our Kubernetes cluster:
 
@@ -26,10 +25,10 @@ manifests/modules/aiml/deploy-monitor-genai-model/jupyterhub/jupyterhub-values.y
 
 ### Install JupyterHub
 
-Now we can install JupyterHub by running Helm, pointing it at the chart and our config:
+Now, lets install JupyterHub, pointing it at the chart and our config:
 
 
-```bash timeout=1800 wait=60
+```bash timeout=1800 wait=60 hook=check-jupyterhub-install
 $ kubectl create namespace jupyterhub
 $ kubectl create -f ~/environment/eks-workshop/modules/aiml/deploy-monitor-genai-model/jupyterhub/jupyterhub-configmap.yaml
 $ helm upgrade --cleanup-on-fail --install jupyterhub jupyterhub/jupyterhub --namespace jupyterhub --version=3.1.0 --values ~/environment/eks-workshop/modules/aiml/deploy-monitor-genai-model/jupyterhub/jupyterhub-values.yaml

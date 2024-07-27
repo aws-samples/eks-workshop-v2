@@ -19,10 +19,9 @@ Create a huggingface token with `write` permission which would allow to upload t
 
 ### Accessing the notebook
 
-We will be using the Jupyterhub's notebook created in the earlier step to train the model. Please use the below commands under section "Jupyter Notebook commands"
+We will be using the Jupyterhub's notebook created in the previous section to train the model. 
 
-We will be uploading the notebook to the jupyterhub console. The UI is exposed using proxy and can be retrieved using the below command:
-
+The Jupyterhub UI is exposed using proxy and can be retrieved using the below command:
 
 
 ```bash timeout=300 wait=60
@@ -36,12 +35,16 @@ proxy-public   LoadBalancer   10.100.4.40   k8s-jupyterh-proxypub-f09eec1e26-620
 
 Use your browser and paste the loadbalancer url obtained in the previous step to access the notebook
 
-Login using the username user1 and the password as specified in the jupyterhub-values.yaml.
+Login using the username user1 and the password as specified in the jupyterhub-values.yaml. 
  
 ![jupyterhub login page](./assets/jupyterhub-login.png)
 
+Upon successful login, you would see a jupyterhub-user1 pod would have instantiated on a GPU node. If it the launch timesout after, please relaunch the server
 
-A jupyterhub-notebook.ipynb file is already created through a configmap and mounted as a volume inside the jupyterhub-user1 pod
+![upload nb](./assets/user1-session-launch.png)
+
+
+After a successful jupyterhub-user1 server launch, you should see a jupyterhub-notebook.ipynb file is already created through a configmap and mounted as a volume inside the jupyterhub-user1 pod
 
 ![upload nb](./assets/upload-nb.png)
 

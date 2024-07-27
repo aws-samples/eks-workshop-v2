@@ -13,12 +13,12 @@ Monitoring GPUs is critical for infrastructure or site reliability engineering (
 
 ### NVIDIA GPU Operator with DCGM exporter
 
-The NVIDIA GPU Operator includes the [Data Center GPU Manager(DCGM)](https://developer.nvidia.com/dcgm) exporter that allows users to gather GPU metrics and understand workload behavior or monitor GPUs in clusters. DCGM Exporter is written in Go and exposes GPU metrics at an HTTP endpoint (/metrics) for monitoring solutions such as Prometheus.
+The NVIDIA GPU Operator includes the [Data Center GPU Manager(DCGM)](https://developer.nvidia.com/dcgm) exporter that allows users to gather and monitor the GPU metrics in a clusters. DCGM Exporter is written in Go and exposes GPU metrics at an HTTP endpoint (/metrics) for monitoring solutions such as Prometheus.
 
 List the DCGM exporter which was installed with the NVIDIA GPU Operator
 
-```bash timeout=300 wait=60
-$  k get po -l app=nvidia-dcgm-exporter -n gpu-operator
+```bash
+$  kubectl get po -l app=nvidia-dcgm-exporter -n gpu-operator
 NAME                         READY   STATUS    RESTARTS   AGE
 nvidia-dcgm-exporter-7kv5m   1/1     Running   0          7m17s
 nvidia-dcgm-exporter-dzz7f   1/1     Running   0          7m15s
@@ -32,7 +32,7 @@ Amazon Managed Service for Prometheus provides a fully managed, agentless scrape
 Amazon Managed Service for Prometheus and Scraper config is installed as a part of `prepare-environment` 
 
 
-```bash timeout=300 wait=60
+```bash
 $ aws amp list-workspaces
 {
     "workspaces": [
@@ -53,7 +53,7 @@ $ aws amp list-workspaces
 ```
 
 
-```bash timeout=300 wait=60
+```bash
 $ aws amp list-scrapers
 {
     "scrapers": [
@@ -97,10 +97,8 @@ $ kubectl get -n grafana secrets/grafana -o=jsonpath='{.data.admin-user}' | base
 $ kubectl get -n grafana secrets/grafana -o=jsonpath='{.data.admin-password}' | base64 -d; printf "\n"
 ```
 
-After logging into the Grafana console, let's take a look at the datasources section. You should see the Amazon Managed Service for Prometheus workspace configured as a datasource already.
+NVIDIA-DCGM-exporter-dashboard is already setup as a part of prerequisite, so after logging into the Grafana console, access the Grafana NVIDIA-DCGM-exporter-dashboard dashboard for GPU metrics, this is the dashboard 12239 imported from the the public grafana dashboard, alternatively you can also create a custom dashboard based on your requirement.
 
-NVIDIA
-
-To now start a Grafana dashboard for GPU metrics, import the reference NVIDIA dashboard 12239
+![Browse dashboard](./assets/browse-grafana-dashboard.png)
 
 ![Grafana dashboard](./assets/gpu-metrics-grafana.png)

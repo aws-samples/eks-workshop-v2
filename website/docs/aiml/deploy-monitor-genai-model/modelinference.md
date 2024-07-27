@@ -6,7 +6,7 @@ sidebar_position: 50
 
 In this section we will create an inference service for Dogbooth using [Kuberay operator](https://ray-project.github.io/kuberay/components/operator/), [RayService](https://ray-project.github.io/kuberay/guidance/rayservice/) CRD
 
-### Deploy the Nginx Ingress Controller to expose the Inference service
+### Deploy the Nginx Controller to facilitate external access to the Inference service.
 
 In this module, we will deploy the nginx ingress controller which can help create the Network Load balancer for the Inference service
 
@@ -31,7 +31,7 @@ $ helm install nginx-ingress ingress-nginx/ingress-nginx --set controller.admiss
 
 ### Deploy the Ray Service
 
-We have provided a ray-service.yaml to create the inference service, in this example we have used an existing model "askulkarni2/dogbooth" foro this inference, alternatively you can also use the model id uploaded to your hugging face from the previous training step.
+We have provided a ray-service.yaml to create the inference service, in this example we have used an existing model "askulkarni2/dogbooth" for this inference, alternatively you can also use the model id uploaded to your hugging face from the previous training step.
 
 ```text
 apiVersion: ray.io/v1alpha1
@@ -52,11 +52,11 @@ spec:
 
 Deploy the Ray services and the Ingress service to access it
 
-```bash timeout=1800 wait=60
+```bash timeout=1800 wait=60 hook=rayservice-install
 $ kubectl apply -f ~/environment/eks-workshop/modules/aiml/deploy-monitor-genai-model/rayservice/rayservice.yaml
 ```
 
-The above deployment will take roughly 10 mins to complete. Let's verify the deployments:
+The above deployment will take roughly 12s mins to complete. Let's verify the deployments:
 
 ```bash timeout=300 wait=60
 $ kubectl  get all -n dogbooth
@@ -71,14 +71,14 @@ service/dogbooth-serve-svc                   ClusterIP   10.100.125.143   <none>
 ```
 
 
-Let's run the below command to get the NLB Endpoint 
+Run the below command to find the NLB Endpoint to access the service
 
 ```bash timeout=300 wait=60
 $ kubectl get ingress -n dogbooth
 NAME       CLASS   HOSTS   ADDRESS                                                                   PORTS   AGE
 dogbooth   alb     *       k8s-dogbooth-dogbooth-2757fb0219-1791700772.us-west-2.elb.amazonaws.com   80      7h14m
 
-$ kubectl get ingress -n dogbooth -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}'
+$ kubectl get ingress -n dogbooth -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}{"\n"}'
 k8s-dogbooth-dogbooth-2757fb0219-1791700772.us-west-2.elb.amazonaws.com
 
 ```
