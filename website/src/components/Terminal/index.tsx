@@ -1,4 +1,4 @@
-import React, { Component, type ReactNode } from "react";
+import React from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard } from "@fortawesome/free-solid-svg-icons";
@@ -128,6 +128,7 @@ class TerminalSection {
     const commandString = this.commandContext.getCommand();
     const handler = () => {
       navigator.clipboard.writeText(commandString);
+      console.log(window.parent);
     };
 
     return (
