@@ -47,7 +47,7 @@ Can you verify if there’s a call in your CloudTrail events with the IAM role l
 
 You can check the logs from controller pods to find additional details which could be preventing the load balancer to create. Let's check the logs using the command below.
 
-```bash 
+```bash
 $ kubectl logs -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller
 ```
 
