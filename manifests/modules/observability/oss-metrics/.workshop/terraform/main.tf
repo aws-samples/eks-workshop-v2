@@ -61,6 +61,7 @@ module "cert_manager" {
   name             = "cert-manager"
   namespace        = "cert-manager"
   create_namespace = true
+  wait             = true
   chart            = "cert-manager"
   chart_version    = "v1.15.1"
   repository       = "https://charts.jetstack.io"
@@ -73,6 +74,12 @@ module "cert_manager" {
   ]
 }
 
+resource "kubernetes_namespace" "opentelemetry_operator" {
+  metadata {
+    name = "opentelemetry-operator-system"
+  }
+}
+
 module "opentelemetry_operator" {
   source  = "aws-ia/eks-blueprints-addon/aws"
   version = "1.1.1"
@@ -82,8 +89,9 @@ module "opentelemetry_operator" {
   ]
 
   name             = "opentelemetry"
-  namespace        = "opentelemetry-operator-system"
-  create_namespace = true
+  namespace        = kubernetes_namespace.opentelemetry_operator.metadata[0].name
+  create_namespace = false
+  wait             = true
   chart            = "opentelemetry-operator"
   chart_version    = var.operator_chart_version
   repository       = "https://open-telemetry.github.io/opentelemetry-helm-charts"

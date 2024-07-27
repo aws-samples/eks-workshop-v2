@@ -10,7 +10,7 @@ description: "Leverage open source observability solutions like Prometheus and G
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=600 wait=30 hook=install
+```bash timeout=600 wait=60 hook=install
 $ prepare-environment observability/oss-metrics
 ```
 
