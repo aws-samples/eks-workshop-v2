@@ -47,7 +47,7 @@ Can you verify if there’s a call in your CloudTrail events with the IAM role l
 
 You can check the logs from controller pods to find additional details which could be preventing the load balancer to create. Let's check the logs using the command below.
 
-```bash
+```bash 
 $ kubectl logs -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller
 ```
 
@@ -79,7 +79,7 @@ $ aws iam detach-role-policy --role-name ${LOAD_BALANCER_CONTROLLER_ROLE_NAME} -
 
 Try accessing the new Ingress URL in the browser as before to check if you can access the UI app:
 
-```bash
+```bash timeout=180 hook=fix-5 hookTimeout=600
 $ kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
 k8s-ui-ui-5ddc3ba496-1208241872.us-west-2.elb.amazonaws.com
 ```

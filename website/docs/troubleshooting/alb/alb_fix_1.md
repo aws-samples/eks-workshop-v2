@@ -152,7 +152,7 @@ deployment.apps/aws-load-balancer-controller restarted
 
 7. Now, check again the ingress deployment:
 
-```bash expectError=true
+```bash expectError=true timeout=180 hook=fix-1 hookTimeout=600
 $ kubectl describe ingress/ui -n ui
   Warning  FailedDeployModel  68s  ingress  Failed deploy model due to AccessDenied: User: arn:aws:sts::xxxxxxxxxxxx:assumed-role/alb-controller-20240611131524228000000002/1718115201989397805 is not authorized to perform: elasticloadbalancing:CreateLoadBalancer on resource: arn:aws:elasticloadbalancing:us-west-2:xxxxxxxxxxxx:loadbalancer/app/k8s-ui-ui-5ddc3ba496/* because no identity-based policy allows the elasticloadbalancing:CreateLoadBalancer action
   status code: 403, request id: b862fb9c-480b-44b5-ba6f-426a3884b6b6

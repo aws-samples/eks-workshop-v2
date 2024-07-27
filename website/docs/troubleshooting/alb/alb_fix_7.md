@@ -225,7 +225,7 @@ You can either update the service selector with:
 
 for your convenience, we have added a kustomize script that update the selector, just execute the following command:
 
-```bash
+```bash timeout=180 hook=fix-7 hookTimeout=600
 $ kubectl apply -k ~/environment/eks-workshop/modules/troubleshooting/alb/creating-alb/fix_ui
 ```
 

@@ -5,7 +5,7 @@ before() {
 }
 
 after() {
-  sleep 20
+  sleep 120
 
   export ui_endpoint=$(kubectl -n kube-system get ingress -n ui ui -o json | jq -r '.status.loadBalancer.ingress[0].hostname')
 
