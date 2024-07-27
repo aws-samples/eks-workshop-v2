@@ -94,7 +94,7 @@ const config = {
       announcementBar: {
         id: "upgrade-1.30",
         content:
-          '🚩 EKS Workshop upgraded to EKS 1.30 on 26th July. If you have an existing lab environment please see the <a href="https://snapshots.eksworkshop.com/1-29">snapshot of the previous version</a>. 🚩',
+          '🚩 EKS Workshop upgraded to EKS 1.30 on 26th July. If you have an existing lab environment please see the <a target="_blank" rel="noopener noreferrer" href="/docs/misc/major-upgrade">major upgrade instructions</a>. 🚩',
         backgroundColor: "#0972d3",
         textColor: "#fff",
       },
