@@ -3,6 +3,8 @@ title: "Section 3 - Fixing Manifest Configs"
 sidebar_position: 32
 ---
 
+We are almost done, now let's troubleshoot a scenario where the ALB is not properly registering the Kubernetes service endpoints. Again, it offers detailed guidance and configuration samples to assist in identifying and fixing this type of issue.
+
 ### Step 7
 
 Even though the ingress creation succeeded, when you try accessing the app in browser there is an error stating, "Backend service does not exist".

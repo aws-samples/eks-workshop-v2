@@ -3,6 +3,8 @@ title: "Section 2 - Fixing Policy Issue"
 sidebar_position: 31
 ---
 
+In this section we will cover a specific troubleshooting step to address issues where the ALB is not properly forwarding traffic to the target groups. It provides step-by-step instructions and relevant configuration examples to help resolve this problem.
+
 ### Step 5
 
 With this setup, we’re leveraging IAM Roles for Service Accounts, which essentially allows pods to assume IAM roles using service accounts in Kubernetes and OIDC provider associated with your EKS cluster. Locate the service account that load balancer controller is using and find out the IAM role associated with it, to identify the IAM entity that would make API calls to provision your load balancer.
