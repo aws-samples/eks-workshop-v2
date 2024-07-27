@@ -128,7 +128,6 @@ class TerminalSection {
     const commandString = this.commandContext.getCommand();
     const handler = () => {
       navigator.clipboard.writeText(commandString);
-      console.log(window.parent);
     };
 
     return (
