@@ -7,43 +7,31 @@ sidebar_position: 30
 Provisioning this workshop environment in your AWS account will create resources and **there will be cost associated with them**. The cleanup section provides a guide to remove them, preventing further charges.
 :::
 
-This section outlines how to set up the environment to run the labs in your own AWS account. These instructions have been tested in the following AWS regions and are not guaranteed to work in others without modification:
+This section outlines how to set up the environment to run the labs in your own AWS account.
 
-- `us-west-2`
-- `eu-west-1`
+The first step is to create an IDE with the provided CloudFormation template. The easiest way to do this is using the quick launch links below:
 
-The first step is to create an IDE with the provided CloudFormation template. The easiest way to do this is using AWS CloudShell in the account you will be running the lab exercises. Open CloudShell with the link below or following [this documentation](https://docs.aws.amazon.com/cloudshell/latest/userguide/getting-started.html#launch-region-shell):
-
-https://console.aws.amazon.com/cloudshell/home
+| Region           | Link                                                                                                                                                                                                                                                                                                                            |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `us-west2`       | [Launch](https://us-west-2.console.aws.amazon.com/cloudformation/home#/stacks/quickcreate?templateUrl=https://ws-assets-prod-iad-r-pdx-f3b3f9f1a7d6a3d0.s3.us-west-2.amazonaws.com/39146514-f6d5-41cb-86ef-359f9d2f7265/eks-workshop-ide-cfn.yaml&stackName=eks-workshop-ide&param_RepositoryRef=VAR::MANIFESTS_REF)            |
+| `eu-west-1`      | [Launch](https://eu-west-1.console.aws.amazon.com/cloudformation/home#/stacks/quickcreate?templateUrl=https://ws-assets-prod-iad-r-dub-85e3be25bd827406.s3.eu-west-1.amazonaws.com/39146514-f6d5-41cb-86ef-359f9d2f7265/eks-workshop-ide-cfn.yaml&stackName=eks-workshop-ide&param_RepositoryRef=VAR::MANIFESTS_REF)            |
+| `ap-southeast-1` | [Launch](https://ap-southeast-1.console.aws.amazon.com/cloudformation/home#/stacks/quickcreate?templateUrl=https://ws-assets-prod-iad-r-sin-694a125e41645312.s3.ap-southeast-1.amazonaws.com/39146514-f6d5-41cb-86ef-359f9d2f7265/eks-workshop-ide-cfn.yaml&stackName=eks-workshop-ide&param_RepositoryRef=VAR::MANIFESTS_REF") |
 
 :::tip
-
-If using the link above make sure the AWS console has opened in the region that you wish to run the labs in.
-
+These instructions have been tested in the AWS regions listed above and are not guaranteed to work in others without modification.
 :::
 
-![cloud9-arn](./assets/cloudshell.webp)
+Scroll to the bottom of the screen and acknowledge the IAM notice:
 
-Once CloudShell has loaded run the following commands:
+![acknowledge IAM](./assets/acknowledge-iam.webp)
 
-```bash test=false
-$ wget -q https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/lab/cfn/eks-workshop-ide-cfn.yaml -O eks-workshop-ide-cfn.yaml
-$ aws cloudformation deploy --stack-name eks-workshop-ide \
-    --template-file ./eks-workshop-ide-cfn.yaml \
-    --parameter-overrides RepositoryRef=VAR::MANIFESTS_REF \
-    --capabilities CAPABILITY_NAMED_IAM
-Waiting for changeset to be created..
-Waiting for stack create/update to complete
-Successfully created/updated stack - eks-workshop-ide
-```
+Then click the **Create stack** button:
 
-The CloudFormation stack will take roughly 5 minutes to deploy, and once completed you can retrieve the URL for the Cloud9 IDE like so:
+![Create Stack](./assets/create-stack.webp)
 
-```bash test=false
-$ aws cloudformation describe-stacks --stack-name eks-workshop-ide \
-    --query 'Stacks[0].Outputs[?OutputKey==`Cloud9Url`].OutputValue' --output text
-https://us-west-2.console.aws.amazon.com/cloud9/ide/7b05513358534d11afeb7119845c5461?region=us-west-2
-```
+The CloudFormation stack will take roughly 5 minutes to deploy, and once completed you can retrieve the URL for the Cloud9 IDE from the **Outputs** tab:
+
+![cloudformation outputs](./assets/outputs.webp)
 
 Open this URL in a web browser to access the IDE.
 
