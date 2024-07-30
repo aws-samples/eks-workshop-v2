@@ -4,7 +4,7 @@ metadata:
   name: llama2
 
 ---
-apiVersion: ray.io/v1 #originally ray.io/v1
+apiVersion: ray.io/v1
 kind: RayService
 metadata:
   name: llama2
@@ -80,9 +80,7 @@ spec:
               env:
                 - name: LD_LIBRARY_PATH
                   value: "/home/ray/anaconda3/lib:$LD_LIBRARY_PATH"
-          nodeSelector: # This is using Karpenter Nodes with the provisioner label
-            # NodeGroupType: x86-cpu-karpenter
-            # NodePool: x86-cpu-karpenter
+          nodeSelector:
             instanceType: mixed-x86
             provisionerType: Karpenter
             workload: rayhead
@@ -118,9 +116,6 @@ spec:
                   - name: LD_LIBRARY_PATH
                     value: "/home/ray/anaconda3/lib:$LD_LIBRARY_PATH"
             nodeSelector:
-              #NodeGroupType: inferentia-inf2
-              #NodePool: inferentia-inf2
-              #hub.jupyter.org/node-purpose: user
               instanceType: inferentia-inf2
               provisionerType: Karpenter
             tolerations:
@@ -131,35 +126,3 @@ spec:
                 operator: "Equal"
                 value: "user"
                 effect: "NoSchedule"
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: llama2
-  namespace: llama2
-  annotations:
-    #nginx.ingress.kubernetes.io/rewrite-target: "/$1"
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/liveness
-spec:
-  ingressClassName: alb
-  rules:
-    - http:
-        paths:
-          # Ray Dashboard
-          - path: /dashboard/(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: llama2
-                port:
-                  number: 8265
-          # Ray Serve
-          - path: /serve/(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: llama2
-                port:
-                  number: 8000

@@ -4,13 +4,13 @@ set -e
 
 logmessage "Deleting AIML resources..."
 
-kubectl delete namespace aiml --ignore-not-found
-
-#add this for deleting the llama2 namespace
 kubectl delete namespace llama2 --ignore-not-found
 
-#add this for deleting the ingress
-kubectl delete ingress -n llama2 llama2 --ignore-not-found
+kubectl delete svc -n gradio-llama2-inf2 gradio-nlb --ignore-not-found
+
+kubectl delete namespace gradio-llama2-inf2 --ignore-not-found
+
+uninstall-helm-chart aws-load-balancer-controller kube-system
 
 logmessage "Deleting Karpenter NodePool and EC2NodeClass..."
 

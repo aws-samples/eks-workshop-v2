@@ -19,13 +19,9 @@ data "aws_ecrpublic_authorization_token" "token" {
 }
 
 module "eks_blueprints_addons" {
-  source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.16.3"
-
-  enable_karpenter                    = true
-  enable_aws_load_balancer_controller = true
-  create_kubernetes_resources         = false
-
+  source                                     = "aws-ia/eks-blueprints-addons/aws"
+  version                                    = "1.16.3"
+  enable_karpenter                           = true
   karpenter_enable_spot_termination          = true
   karpenter_enable_instance_profile_creation = true
   karpenter = {
@@ -38,6 +34,8 @@ module "eks_blueprints_addons" {
   cluster_version   = var.eks_cluster_version
   oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
 
+  enable_aws_load_balancer_controller = true
+  create_kubernetes_resources         = false
 }
 
 data "aws_subnets" "private" {
@@ -50,13 +48,6 @@ data "aws_subnets" "private" {
     name   = "tag:Name"
     values = ["*Private*"]
   }
-}
-
-resource "aws_s3_bucket" "chatbot" {
-  bucket_prefix = "eksworkshop-chatbot"
-  force_destroy = true
-
-  tags = var.tags
 }
 
 module "iam_assumable_role_chatbot" {
@@ -82,39 +73,10 @@ resource "aws_iam_policy" "chatbot" {
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": "s3:*",
-      "Resource": [
-        "arn:aws:s3:::${aws_s3_bucket.chatbot.id}",
-        "arn:aws:s3:::${aws_s3_bucket.chatbot.id}/*"
-      ]
+      "Action": "eks:*",
+      "Resource": "*"
     }
   ]
 }
 EOF
-}
-
-data "http" "neuron_device_plugin_rbac_manifest" {
-  url = "https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.6.0/src/k8/k8s-neuron-device-plugin-rbac.yml"
-}
-
-data "http" "neuron_device_plugin_manifest" {
-  url = "https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.6.0/src/k8/k8s-neuron-device-plugin.yml"
-}
-
-data "kubectl_file_documents" "neuron_device_plugin_rbac_doc" {
-  content = data.http.neuron_device_plugin_rbac_manifest.response_body
-}
-
-data "kubectl_file_documents" "neuron_device_plugin_doc" {
-  content = data.http.neuron_device_plugin_manifest.response_body
-}
-
-resource "kubectl_manifest" "neuron_device_plugin_rbac" {
-  for_each  = data.kubectl_file_documents.neuron_device_plugin_rbac_doc.manifests
-  yaml_body = each.value
-}
-
-resource "kubectl_manifest" "neuron_device_plugin" {
-  for_each  = data.kubectl_file_documents.neuron_device_plugin_doc.manifests
-  yaml_body = each.value
 }
