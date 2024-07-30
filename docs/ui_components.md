@@ -89,6 +89,24 @@ This is done by adding an ordered markdown list immediately after the `::yaml` d
 
 If using annotations then all paths should have a corresponding list entry, and the code lines will always be annotated in the order of the paths as listed in the attribute.
 
+## Console button
+
+![Console button](images/console-button.png)
+
+The console button component is designed to provide a consistent way to link to the AWS console.
+
+The component is used like so:
+
+```jsx
+<ConsoleButton
+  url="https://console.aws.amazon.com/cloudwatch/home#dashboards"
+  service="cloudwatch"
+  label="Open CloudWatch console"
+/>
+```
+
+The `service` parameter dictates the icon that is shown, and the corresponding image must exist in `website/static/img/services`.
+
 ## Browser Window
 
 ![Browser Window](images/browser-window.png)

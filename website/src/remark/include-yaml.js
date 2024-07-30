@@ -28,12 +28,18 @@ const plugin = (options) => {
       const filePath = `${manifestsDir}/${attributes.file}`;
       const extension = path.extname(filePath).slice(1);
 
+      // TODO check extension is yaml
+
       var highlightPathsString = attributes.paths;
+      var zoomPathString = attributes.zoomPath;
+      var zoomPathBefore = parseInt(attributes.zoomBefore) || 0;
+      var zoomPathAfter = parseInt(attributes.zoomAfter) || 0;
 
       const p = fs.readFile(filePath, { encoding: "utf8" }).then((res) => {
-        let finalString = res.replace("$", "\\$");
+        let finalString = res.replaceAll("$", "\\$");
 
         let annotations = [];
+        let zoomed = false;
 
         if (highlightPathsString) {
           let highlightPaths = highlightPathsString.split(",");
@@ -57,23 +63,9 @@ const plugin = (options) => {
           for (let i = 0; i < highlightPaths.length; i++) {
             const lookup = highlightPaths[i];
 
-            const lineCounter = new YAML.LineCounter();
-            const parser = new YAML.Parser(lineCounter.addNewLine);
-            const tokens = parser.parse(finalString);
-
-            const docs = new YAML.Composer().compose(tokens);
-
-            const doc = Array.from(docs)[0];
-
-            const target = findByPath(
-              doc.contents,
-              lookup.split(".").map((e) => e.trim()),
-            );
+            const { startLine, endLine } = getLinesForPath(finalString, lookup);
 
             const lines = finalString.split(/\r\n|\r|\n/);
-
-            const startLine = lineCounter.linePos(target.start).line;
-            const endLine = lineCounter.linePos(target.end).line;
 
             const startSection = lines.slice(0, startLine - 1).join("\n");
             const middleSection = lines
@@ -93,6 +85,27 @@ const plugin = (options) => {
           }
         }
 
+        if (zoomPathString) {
+          zoomed = true;
+
+          const { startLine, endLine } = getLinesForPath(
+            finalString,
+            zoomPathString,
+          );
+
+          const lines = finalString.split(/\r\n|\r|\n/);
+
+          let targetEndLine = endLine - 1 + zoomPathAfter;
+
+          if (lines[targetEndLine].startsWith("#")) {
+            targetEndLine = targetEndLine + 2;
+          }
+
+          finalString = lines
+            .slice(startLine - 1 - zoomPathBefore, targetEndLine)
+            .join("\n");
+        }
+
         const jsxNode = {
           type: "mdxJsxFlowElement",
           name: "div",
@@ -106,6 +119,11 @@ const plugin = (options) => {
                   type: "mdxJsxAttribute",
                   name: "title",
                   value: title,
+                },
+                {
+                  type: "mdxJsxAttribute",
+                  name: "zoomed",
+                  value: zoomed,
                 },
               ],
               children: [
@@ -166,6 +184,29 @@ const plugin = (options) => {
   };
   return transformer;
 };
+
+function getLinesForPath(inputString, lookup) {
+  const lineCounter = new YAML.LineCounter();
+  const parser = new YAML.Parser(lineCounter.addNewLine);
+  const tokens = parser.parse(inputString);
+
+  const docs = new YAML.Composer().compose(tokens);
+
+  const doc = Array.from(docs)[0];
+
+  const target = findByPath(
+    doc.contents,
+    lookup.split(".").map((e) => e.trim()),
+  );
+
+  const startLine = lineCounter.linePos(target.start).line;
+  const endLine = lineCounter.linePos(target.end).line;
+
+  return {
+    startLine,
+    endLine,
+  };
+}
 
 function findByPath(pathNode, pathElements) {
   let key = pathElements.shift();

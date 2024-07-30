@@ -1,16 +1,21 @@
 data "aws_partition" "current" {}
 
-module "aws_ebs_csi_driver" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/aws-ebs-csi-driver"
+module "ebs_csi_driver_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "5.39.1"
 
-  enable_amazon_eks_aws_ebs_csi_driver = true
+  role_name_prefix = "${var.addon_context.eks_cluster_id}-ebs-csi-"
 
-  addon_config = {
-    kubernetes_version = var.eks_cluster_version
-    preserve           = false
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = var.addon_context.eks_oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
   }
 
-  addon_context = var.addon_context
+  tags = var.tags
 }
 
 module "eks_blueprints_addons" {
@@ -22,6 +27,15 @@ module "eks_blueprints_addons" {
   cluster_version   = var.eks_cluster_version
   oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
 
+  eks_addons = {
+    aws-ebs-csi-driver = {
+      most_recent              = true
+      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
+      preserve                 = false
+      configuration_values     = jsonencode({ defaultStorageClass = { enabled = true } })
+    }
+  }
+
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
     wait = true
@@ -30,29 +44,62 @@ module "eks_blueprints_addons" {
 
 resource "time_sleep" "blueprints_addons_sleep" {
   depends_on = [
-    module.eks_blueprints_addons,
-    module.aws_ebs_csi_driver
+    module.eks_blueprints_addons
   ]
 
   create_duration = "15s"
 }
 
-module "adot_operator" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/opentelemetry-operator"
+module "cert_manager" {
+  source  = "aws-ia/eks-blueprints-addon/aws"
+  version = "1.1.1"
 
   depends_on = [
     time_sleep.blueprints_addons_sleep
   ]
 
-  addon_config = {
-    kubernetes_version = var.eks_cluster_version
-    addon_version      = "v0.92.1-eksbuild.1"
-    most_recent        = false
+  name             = "cert-manager"
+  namespace        = "cert-manager"
+  create_namespace = true
+  wait             = true
+  chart            = "cert-manager"
+  chart_version    = "v1.15.1"
+  repository       = "https://charts.jetstack.io"
 
-    preserve = false
+  set = [
+    {
+      name  = "crds.enabled"
+      value = true
+    }
+  ]
+}
+
+resource "kubernetes_namespace" "opentelemetry_operator" {
+  metadata {
+    name = "opentelemetry-operator-system"
   }
+}
 
-  addon_context = var.addon_context
+module "opentelemetry_operator" {
+  source  = "aws-ia/eks-blueprints-addon/aws"
+  version = "1.1.1"
+
+  depends_on = [
+    module.cert_manager
+  ]
+
+  name             = "opentelemetry"
+  namespace        = kubernetes_namespace.opentelemetry_operator.metadata[0].name
+  create_namespace = false
+  wait             = true
+  chart            = "opentelemetry-operator"
+  chart_version    = var.operator_chart_version
+  repository       = "https://open-telemetry.github.io/opentelemetry-helm-charts"
+
+  set = [{
+    name  = "manager.collectorImage.repository"
+    value = "otel/opentelemetry-collector-k8s"
+  }]
 }
 
 resource "aws_prometheus_workspace" "this" {
@@ -62,8 +109,9 @@ resource "aws_prometheus_workspace" "this" {
 }
 
 module "iam_assumable_role_adot" {
-  source       = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version      = "5.39.1"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+  version = "5.39.1"
+
   create_role  = true
   role_name    = "${var.addon_context.eks_cluster_id}-adot-collector"
   provider_url = var.addon_context.eks_oidc_issuer_url
