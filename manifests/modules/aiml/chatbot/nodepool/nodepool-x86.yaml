@@ -1,55 +1,3 @@
-# apiVersion: karpenter.sh/v1beta1
-# kind: NodePool
-# metadata:
-#   annotations:
-#     meta.helm.sh/release-name: x86-cpu-karpenter
-#     meta.helm.sh/release-namespace: karpenter-resources
-#   name: x86-cpu-karpenter
-#   labels:
-#     app.kubernetes.io/managed-by: Helm
-# spec:
-#   disruption:
-#     # budgets:
-#     # - nodes: 10%
-#     consolidateAfter: 300s
-#     consolidationPolicy: WhenEmpty
-#     expireAfter: 720h
-#   limits:
-#     cpu: 1000
-#     #memory: 1000Gi
-#   template:
-#     metadata:
-#       labels:
-#         # NodeGroupType: x86-cpu-karpenter
-#         # NodePool: x86-cpu-karpenter
-#         instanceType: mixed-x86
-#         #type: karpenter
-#         provisionerType: Karpenter
-#         workload: rayhead
-#     spec:
-#       nodeClassRef:
-#         name: x86-cpu-karpenter
-#     requirements:
-#       - key: "karpenter.k8s.aws/instance-family"
-#         operator: In
-#         values: ["c5", "m5", "r5"]
-#       - key: "karpenter.k8s.aws/instance-size"
-#         operator: In
-#         values: ["xlarge", "2xlarge", "4xlarge", "8xlarge", "16xlarge", "24xlarge"]
-#       - key: "kubernetes.io/arch"
-#         operator: In
-#         values: ["amd64"]
-#       - key: "karpenter.sh/capacity-type"
-#         operator: In
-#         values: ["spot", "on-demand"]
-#   weight: 100
-
-# status:
-#   resources:
-#     cpu: "16"
-#     ephemeral-storage: 104845292Ki
-#     memory: 234
-
 apiVersion: karpenter.sh/v1beta1
 kind: NodePool
 metadata:
@@ -82,10 +30,9 @@ spec:
   limits:
     cpu: "10000"
   disruption:
-    #consolidationPolicy: WhenUnderutilized
     consolidateAfter: 300s
     consolidationPolicy: WhenEmpty
-    expireAfter: 720h # 30 * 24h = 720h
+    expireAfter: 720h
 
 ---
 apiVersion: karpenter.k8s.aws/v1beta1
@@ -99,7 +46,7 @@ spec:
       ebs:
         deleteOnTermination: true
         encrypted: true
-        volumeSize: 200Gi #originally 100Gi
+        volumeSize: 200Gi
         volumeType: gp3
   detailedMonitoring: true
   role: ${KARPENTER_NODE_ROLE}
