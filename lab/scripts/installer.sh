@@ -66,8 +66,8 @@ case "$arch" in
 esac
 
 yum install --quiet -y findutils jq tar gzip zsh git diffutils wget \
-  tree unzip openssl gettext bash-completion python3 pip3 python3-pip \
-  amazon-linux-extras nc yum-utils
+  tree unzip openssl gettext bash-completion python3 python3-pip \
+  nc yum-utils
 
 pip3 install -q awscurl==0.28 urllib3==1.26.6
 
