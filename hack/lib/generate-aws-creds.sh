@@ -10,7 +10,9 @@ if [ ! -z "$AWS_ACCESS_KEY_ID" ]; then
 elif [ ! -z "$ASSUME_ROLE" ]; then
   echo "Generating temporary AWS credentials..."
 
-  ACCESS_VARS=$(aws sts assume-role --role-arn $ASSUME_ROLE --role-session-name ${EKS_CLUSTER_NAME}-shell --output json | jq -r '.Credentials | "export AWS_ACCESS_KEY_ID=\(.AccessKeyId) AWS_SECRET_ACCESS_KEY=\(.SecretAccessKey) AWS_SESSION_TOKEN=\(.SessionToken)"')
+  session_suffix=$(openssl rand -hex 4)
+
+  ACCESS_VARS=$(aws sts assume-role --role-arn $ASSUME_ROLE --role-session-name ${EKS_CLUSTER_NAME}-shell-${session_suffix} --output json | jq -r '.Credentials | "export AWS_ACCESS_KEY_ID=\(.AccessKeyId) AWS_SECRET_ACCESS_KEY=\(.SecretAccessKey) AWS_SESSION_TOKEN=\(.SessionToken)"')
 
   # TODO: This should probably not use eval
   eval "$ACCESS_VARS"
