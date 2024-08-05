@@ -34,6 +34,16 @@ pod/llama2-raycluster-fcmtr-head-bf58d          1/1     Running   0          67m
 pod/llama2-raycluster-fcmtr-worker-inf2-lgnb2   1/1     Running   0          5m30s
 ```
 
+```bash
+$ kubectl wait pod \
+--all \
+--for=condition=Ready \
+--namespace=llama2 \
+--timeout=10m
+pod/llama2-raycluster-fcmtr-head-bf58d met
+pod/llama2-raycluster-fcmtr-worker-inf2-lgnb2 met
+```
+
 :::note
 This command can take up to 10 min.
 :::
