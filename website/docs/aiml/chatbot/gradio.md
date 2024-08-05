@@ -78,6 +78,17 @@ NAME             TYPE          ClUSTER-IP    EXTERNAL-IP                        
 gradio-service   LoadBalancer  172.20.84.26  k8s-gradioll-gradiose-a6d0b586ce-06885d584b38b400.elb.us-west-2.amazonaws.com    80:30802/TCP    8m42s
 ```
 
+To wait until the Network Load Balancer has finished provisioning, run the following command:
+
+```bash
+$ wait-for-lb $(kubectl get service -n gradio-llama2-inf2 gradio-service -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+```
+
+:::caution
+In the case that the network load balancer fails to become available, make sure to delete the deployment pod.
+Then run the wait-for-nlb command to access the website
+:::
+
 Now that our application is exposed to the outside world, lets try to access it by pasting that URL in your web browser. You will see the Llama2-chatbot and will be able to interact with it via asking questions.
 
 <Browser url="http://k8s-gradioll-gradiose-a6d0b586ce-06885d584b38b400.elb.us-west-2.amazonaws.com">
