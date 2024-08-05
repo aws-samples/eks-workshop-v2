@@ -39,6 +39,8 @@ container_image='eks-workshop-test'
 
 (cd $SCRIPT_DIR/../test && $CONTAINER_CLI build -q -t $container_image .)
 
+export ASSUME_ROLE="${IDE_ROLE_ARN}"
+
 source $SCRIPT_DIR/lib/generate-aws-creds.sh
 
 BACKGROUND=${BACKGROUND:-""}
