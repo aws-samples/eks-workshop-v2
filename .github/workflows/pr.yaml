@@ -70,3 +70,14 @@ jobs:
           node-version: 18
       - run: |
           npx cspell lint "website/docs/**/*.md"
+
+  terraform-validate:
+    name: "Validate Terraform"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~1.9.0"
+      - run: |
+          bash hack/validate-terraform.sh
