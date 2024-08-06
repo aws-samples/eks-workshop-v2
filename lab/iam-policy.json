@@ -306,7 +306,8 @@
         "sqs:DeleteQueue",
         "sqs:GetQueueAttributes",
         "sqs:SetQueueAttributes",
-        "sqs:TagQueue"
+        "sqs:TagQueue",
+        "sqs:ListQueueTags"
       ],
       "Resource": "arn:aws:sqs:${Region}:${Account}:${Environment}*"
     },
@@ -460,9 +461,10 @@
         "events:ListTargetsByRule",
         "events:PutRule",
         "events:PutTargets",
-        "events:RemoveTargets"
+        "events:RemoveTargets",
+        "events:TagResource"
       ],
-      "Resource": "*"
+      "Resource": "arn:aws:events:${Region}:${Account}:rule/${Environment}*"
     },
     {
       "Effect": "Allow",
