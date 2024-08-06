@@ -21,8 +21,9 @@ container_image='eks-workshop-environment'
 
 SKIP_CREDENTIALS=${SKIP_CREDENTIALS:-""}
 
-if [ ! -z "$SKIP_CREDENTIALS" ]; then
+if [ -z "$SKIP_CREDENTIALS" ]; then
   source $SCRIPT_DIR/lib/generate-aws-creds.sh
+else
   aws_credential_args=""
 fi
 
