@@ -42,6 +42,8 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
       - name: Make shell
+        env:
+          SKIP_CREDENTIALS: 1
         run: |
           bash hack/exec.sh '' 'ls -la'
 

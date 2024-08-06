@@ -19,7 +19,12 @@ container_image='eks-workshop-environment'
 
 (cd $SCRIPT_DIR/../lab && $CONTAINER_CLI build -q -t $container_image .)
 
-source $SCRIPT_DIR/lib/generate-aws-creds.sh
+SKIP_CREDENTIALS=${SKIP_CREDENTIALS:-""}
+
+if [ ! -z "$SKIP_CREDENTIALS" ]; then
+  source $SCRIPT_DIR/lib/generate-aws-creds.sh
+  aws_credential_args=""
+fi
 
 echo "Executing command in container..."
 
