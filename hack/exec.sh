@@ -19,8 +19,6 @@ container_image='eks-workshop-environment'
 
 (cd $SCRIPT_DIR/../lab && $CONTAINER_CLI build -q -t $container_image .)
 
-SKIP_CREDENTIALS=${SKIP_CREDENTIALS:-""}
-
 if [ -z "$SKIP_CREDENTIALS" ]; then
   source $SCRIPT_DIR/lib/generate-aws-creds.sh
 else
