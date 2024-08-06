@@ -3,12 +3,142 @@
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": ["eks:*"],
+      "Action": [
+        "eks:*",
+        "ec2:CreateLaunchTemplate",
+        "ec2:DeleteLaunchTemplate",
+        "iam:CreateOpenIDConnectProvider",
+        "iam:DeleteOpenIDConnectProvider",
+        "iam:TagOpenIDConnectProvider",
+        "iam:GetOpenIDConnectProvider"
+      ],
       "Resource": "*"
     },
     {
       "Effect": "Allow",
-      "Action": ["ec2:Get*", "ec2:Describe*", "ec2:List*"],
+      "Action": ["cloudformation:CreateStack"],
+      "Resource": "arn:aws:cloudformation:${Region}:${Account}:stack/eksctl-${Environment}*",
+      "Condition": {
+        "Null": {
+          "cloudformation:RoleARN": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["cloudformation:DeleteStack"],
+      "Resource": "arn:aws:cloudformation:${Region}:${Account}:stack/eksctl-${Environment}*",
+      "Condition": {
+        "Null": {
+          "cloudformation:RoleARN": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:Get*",
+        "cloudformation:Describe*",
+        "cloudformation:List*",
+        "cloudformation:TagResource"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ec2:Get*", "ec2:Describe*", "ec2:List*", "ec2:RunInstances"],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:ec2:*:*:instance/*",
+      "Condition": {
+        "ForAnyValue:StringNotLike": {
+          "ec2:InstanceType": ["m5.large", "t4g.medium", "c*.large"]
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateVpc",
+        "ec2:CreateSubnet",
+        "ec2:CreateRouteTable",
+        "ec2:CreateRoute",
+        "ec2:CreateInternetGateway",
+        "ec2:AttachInternetGateway",
+        "ec2:AssociateRouteTable",
+        "ec2:ModifyVpcAttribute",
+        "ec2:CreateSecurityGroup",
+        "ec2:AllocateAddress",
+        "ec2:ReleaseAddress",
+        "ec2:DisassociateAddress",
+        "ec2:CreateNetworkAclEntry",
+        "ec2:DeleteNetworkAclEntry",
+        "ec2:CreateNatGateway",
+        "ec2:DeleteNatGateway"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DeleteVpc",
+        "ec2:DeleteSubnet",
+        "ec2:DeleteRouteTable",
+        "ec2:DeleteRoute",
+        "ec2:DeleteInternetGateway",
+        "ec2:DetachInternetGateway",
+        "ec2:DisassociateRouteTable",
+        "ec2:ModifyVpcAttribute",
+        "ec2:ModifySubnetAttribute",
+        "ec2:RevokeSecurityGroupIngress",
+        "ec2:AuthorizeSecurityGroupEgress",
+        "ec2:AuthorizeSecurityGroupIngress",
+        "ec2:UpdateSecurityGroupRuleDescriptionsEgress",
+        "ec2:RevokeSecurityGroupEgress",
+        "ec2:DeleteSecurityGroup",
+        "ec2:ModifySecurityGroupRules",
+        "ec2:UpdateSecurityGroupRuleDescriptionsIngress"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:ResourceTag/env": ["${Environment}*"]
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:AuthorizeSecurityGroupEgress",
+        "ec2:AuthorizeSecurityGroupIngress"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:ResourceTag/aws:eks:cluster-name": ["${Environment}*"]
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:RevokeSecurityGroupIngress",
+        "ec2:RevokeSecurityGroupEgress"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:ResourceTag/aws:eks:cluster-name": ["${Environment}*"]
+        }
+      }
+    },
+    {
+      "Sid": "Ec2Tags",
+      "Effect": "Allow",
+      "Action": ["ec2:CreateTags", "ec2:DeleteTags"],
       "Resource": "*"
     },
     {
@@ -56,8 +186,11 @@
       "Effect": "Allow",
       "Action": [
         "iam:CreateRole",
+        "iam:GetRolePolicy",
         "iam:DetachRolePolicy",
         "iam:AttachRolePolicy",
+        "iam:PutRolePolicy",
+        "iam:DeleteRolePolicy",
         "iam:DeleteRole",
         "iam:ListInstanceProfilesForRole",
         "iam:ListAttachedRolePolicies",
@@ -241,18 +374,7 @@
       ],
       "Resource": "*"
     },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "elasticfilesystem:CreateMountTarget",
-        "elasticfilesystem:DeleteFileSystem",
-        "elasticfilesystem:DeleteMountTarget",
-        "elasticfilesystem:DescribeLifecycleConfiguration",
-        "elasticfilesystem:DescribeMountTargetSecurityGroups",
-        "elasticfilesystem:DescribeMountTargets"
-      ],
-      "Resource": "arn:aws:elasticfilesystem:${Region}:${Account}:file-system/*"
-    },
+
     {
       "Effect": "Allow",
       "Action": [
@@ -324,7 +446,10 @@
         "logs:Describe*",
         "logs:List*"
       ],
-      "Resource": "arn:aws:logs:${Region}:${Account}:log-group:${Environment}*"
+      "Resource": [
+        "arn:aws:logs:${Region}:${Account}:log-group:${Environment}*",
+        "arn:aws:logs:${Region}:${Account}:log-group:/aws/eks/${Environment}*"
+      ]
     },
     {
       "Effect": "Allow",
