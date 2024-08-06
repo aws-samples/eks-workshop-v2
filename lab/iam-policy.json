@@ -478,6 +478,18 @@
     {
       "Effect": "Allow",
       "Action": [
+        "elasticfilesystem:CreateMountTarget",
+        "elasticfilesystem:DeleteFileSystem",
+        "elasticfilesystem:DeleteMountTarget",
+        "elasticfilesystem:DescribeLifecycleConfiguration",
+        "elasticfilesystem:DescribeMountTargetSecurityGroups",
+        "elasticfilesystem:DescribeMountTargets"
+      ],
+      "Resource": "arn:aws:elasticfilesystem:${Region}:${Account}:file-system/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
         "s3:CreateBucket",
         "s3:DeleteBucket",
         "s3:GetAccelerateConfiguration",
