@@ -37,9 +37,6 @@ aws iam put-role-policy \
   --policy-name default \
   --policy-document "${IAM_POLICY}" > /dev/null
 
+sleep 5
+
 bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster.yaml | envsubst | eksctl create cluster -f -'
-
-aws eks create-access-entry --cluster-name ${EKS_CLUSTER_NAME} --principal-arn ${IDE_ROLE_ARN}
-
-aws eks associate-access-policy --cluster-name ${EKS_CLUSTER_NAME} --principal-arn ${IDE_ROLE_ARN} \
-    --access-scope type=cluster --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy

@@ -1,21 +1,10 @@
-aws_credential_args=""
+echo "Generating temporary AWS credentials..."
 
-ASSUME_ROLE=${ASSUME_ROLE:-""}
-AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-""}
+session_suffix=$(openssl rand -hex 4)
 
-if [ ! -z "$ASSUME_ROLE" ]; then
-  echo "Using role ${ASSUME_ROLE}"
+ACCESS_VARS=$(aws sts assume-role --role-arn ${IDE_ROLE_ARN} --role-session-name ${EKS_CLUSTER_NAME}-shell-${session_suffix} --output json | jq -r '.Credentials | "export AWS_ACCESS_KEY_ID=\(.AccessKeyId) AWS_SECRET_ACCESS_KEY=\(.SecretAccessKey) AWS_SESSION_TOKEN=\(.SessionToken)"')
 
-  ACCESS_VARS=$(aws sts assume-role --role-arn $ASSUME_ROLE --role-session-name ${EKS_CLUSTER_NAME}-shell --output json | jq -r '.Credentials | "export AWS_ACCESS_KEY_ID=\(.AccessKeyId) AWS_SECRET_ACCESS_KEY=\(.SecretAccessKey) AWS_SESSION_TOKEN=\(.SessionToken)"')
+# TODO: This should probably not use eval
+eval "$ACCESS_VARS"
 
-  # TODO: This should probably not use eval
-  eval "$ACCESS_VARS"
-
-  aws_credential_args="-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN"
-elif [ ! -z "$AWS_ACCESS_KEY_ID" ]; then
-  echo "Using environment AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY"
-
-  aws_credential_args="-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN"
-else
-  echo "Inheriting credentials from instance profile"
-fi
+aws_credential_args="-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN"
