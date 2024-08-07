@@ -26,9 +26,17 @@ cat <<HEREDOC
 HEREDOC
 )
 
-aws iam create-role \
-  --role-name ${IDE_ROLE_NAME} \
-  --assume-role-policy-document "${TRUST_POLICY}" > /dev/null
+role_exists=0
+
+aws iam get-role --role-name "${IDE_ROLE_NAME}" &> /dev/null || role_exists=$?
+if [ $role_exists -eq 0 ]; then
+  echo "Role ${IDE_ROLE_NAME} already exists"
+else
+  echo "Creating role ${IDE_ROLE_NAME}"
+  aws iam create-role \
+    --role-name ${IDE_ROLE_NAME} \
+    --assume-role-policy-document "${TRUST_POLICY}" > /dev/null
+fi
 
 BASE_IAM_POLICY=$(cat $SCRIPT_DIR/../lab/iam-policy-base.json | Region=${AWS_REGION} Account=${ACCOUNT_ID} Environment=${EKS_CLUSTER_NAME} envsubst)
 
