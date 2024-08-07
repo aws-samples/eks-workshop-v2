@@ -38,5 +38,5 @@ See style guide for expanded explanations.
 ## Misc
 
 - [ ] Generated lab timing has been created (new lab) or updated (updated lab) if needed
-- [ ] Relevant updates have been made to the [lab IAM policy](../lab/iam-policy.json)
+- [ ] Relevant updates have been made to the [lab IAM policy](../lab/iam-policy-labs.json)
 - [ ] Images should be in `webp` format

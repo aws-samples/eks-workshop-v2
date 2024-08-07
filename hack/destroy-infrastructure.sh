@@ -13,7 +13,11 @@ bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster.yaml | en
 
 aws iam delete-role-policy \
   --role-name ${EKS_CLUSTER_NAME}-ide-role \
-  --policy-name default > /dev/null || true
+  --policy-name labs > /dev/null || true
+
+aws iam delete-role-policy \
+  --role-name ${EKS_CLUSTER_NAME}-ide-role \
+  --policy-name base > /dev/null || true
 
 aws iam delete-role \
   --role-name ${EKS_CLUSTER_NAME}-ide-role > /dev/null || true
