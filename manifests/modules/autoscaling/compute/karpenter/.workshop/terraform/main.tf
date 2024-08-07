@@ -20,7 +20,7 @@ module "karpenter" {
   node_iam_role_name              = "${var.addon_context.eks_cluster_id}-karpenter-node"
   node_iam_role_use_name_prefix   = false
   queue_name                      = "${var.addon_context.eks_cluster_id}-karpenter"
-  rule_name_prefix                = "${var.addon_context.eks_cluster_id}-karpenter"
+  rule_name_prefix                = "${var.addon_context.eks_cluster_id}-"
 
   node_iam_role_additional_policies = {
     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
