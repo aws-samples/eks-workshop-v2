@@ -9,7 +9,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 source $SCRIPT_DIR/lib/common-env.sh
 
-bash $SCRIPT_DIR/update-iam-role.sh
+bash $SCRIPT_DIR/update-iam-role.sh $environment
 
 sleep 5
 
