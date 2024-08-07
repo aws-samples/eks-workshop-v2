@@ -464,7 +464,7 @@
         "events:RemoveTargets",
         "events:TagResource"
       ],
-      "Resource": "arn:aws:events:${Region}:${Account}:rule/${Environment}*"
+      "Resource": "arn:aws:events:${Region}:${Account}:rule/eks-workshop*"
     },
     {
       "Effect": "Allow",
@@ -480,12 +480,16 @@
     {
       "Effect": "Allow",
       "Action": [
+        "elasticfilesystem:CreateFileSystem",
         "elasticfilesystem:CreateMountTarget",
         "elasticfilesystem:DeleteFileSystem",
         "elasticfilesystem:DeleteMountTarget",
         "elasticfilesystem:DescribeLifecycleConfiguration",
         "elasticfilesystem:DescribeMountTargetSecurityGroups",
-        "elasticfilesystem:DescribeMountTargets"
+        "elasticfilesystem:DescribeMountTargets",
+        "elasticfilesystem:CreateTags",
+        "elasticfilesystem:TagResource",
+        "elasticfilesystem:DescribeFileSystems"
       ],
       "Resource": "arn:aws:elasticfilesystem:${Region}:${Account}:file-system/*"
     },
