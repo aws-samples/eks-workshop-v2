@@ -14,6 +14,8 @@ aws eks describe-cluster --name "${EKS_CLUSTER_NAME}" &> /dev/null || cluster_ex
 
 if [ $cluster_exists -eq 0 ]; then
   echo "Deleting cluster ${EKS_CLUSTER_NAME}"
+  bash $SCRIPT_DIR/shell.sh "${environment}" 'delete-environment || true'
+
   bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster.yaml | envsubst | eksctl delete cluster --wait --force --disable-nodegroup-eviction --timeout 45m -f -'
 else
   echo "Cluster ${EKS_CLUSTER_NAME} does not exist"
