@@ -22,7 +22,7 @@ module "eks_blueprints_addons" {
 
   enable_karpenter = true
 
-  karpenter_enable_spot_termination          = true
+  karpenter_enable_spot_termination          = false
   karpenter_enable_instance_profile_creation = true
   karpenter = {
     chart_version          = var.karpenter_version
@@ -36,6 +36,7 @@ module "eks_blueprints_addons" {
     karpenter_node = {
       iam_role_use_name_prefix = false
       iam_role_name            = "${var.addon_context.eks_cluster_id}-karpenter-node"
+      instance_profile_name    = "${var.addon_context.eks_cluster_id}-karpenter"
     }
 
     karpenter_sqs = {

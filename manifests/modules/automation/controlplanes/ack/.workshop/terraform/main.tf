@@ -35,6 +35,10 @@ module "dynamodb_ack_addon" {
 
   # Controllers to enable
   enable_dynamodb = true
+  dynamodb = {
+    role_name            = "${var.addon_context.eks_cluster_id}-ack-ddb"
+    role_name_use_prefix = false
+  }
 
   tags = var.tags
 }
