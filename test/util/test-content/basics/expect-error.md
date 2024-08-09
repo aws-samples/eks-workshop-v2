@@ -9,3 +9,9 @@ Scenario:
 $ eklasmd0ajs0dasipod
 # Under normal circumstances this would fail
 ```
+
+```bash expectError=true hook=expect-error
+$ ls -la
+$ eklasmd0ajs0dasipod
+# Under normal circumstances this would fail
+```

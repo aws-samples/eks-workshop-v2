@@ -57,8 +57,6 @@ export class DefaultShell implements Shell {
       let processingFunction = false;
       let env: { [key: string]: string } = {};
 
-      let processedOutput = "";
-
       for (let step = 0; step < parts.length; step++) {
         const line = parts[step];
 
@@ -80,10 +78,16 @@ export class DefaultShell implements Shell {
         } else {
           if (line === DefaultShell.ENV_MARKER) {
             processingEnv = true;
-          } else {
-            processedOutput += `${line}\n`;
           }
         }
+      }
+
+      let finalOutput = "";
+
+      let outputParts = buffer.toString().split(DefaultShell.ENV_MARKER);
+
+      if (outputParts.length > 1) {
+        finalOutput = outputParts[0];
       }
 
       if (processingEnv) {
@@ -93,7 +97,7 @@ export class DefaultShell implements Shell {
         };
       }
 
-      return Promise.resolve(new ExecutionResult(processedOutput));
+      return Promise.resolve(new ExecutionResult(finalOutput));
     } catch (e: any) {
       if (e.code) {
         throw new ShellTimeout(
@@ -105,10 +109,16 @@ export class DefaultShell implements Shell {
       }
 
       if (!expect) {
-        throw new ShellError(e.status, e.message, e.stdout, e.stderr);
+        throw new ShellError(
+          e.status,
+          `Command failed: ${command}`,
+          e.stdout,
+          e.stderr,
+          e.output,
+        );
       }
 
-      return Promise.resolve(new ExecutionResult(e.stderr));
+      return Promise.resolve(new ExecutionResult(e.output));
     }
   }
 }
@@ -119,6 +129,7 @@ export class ShellError extends Error {
     message: string,
     public stdout: string,
     public stderr: string,
+    public output: string,
   ) {
     super(message);
 
