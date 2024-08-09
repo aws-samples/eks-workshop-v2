@@ -40,9 +40,10 @@
         "dynamodb:DescribeContinuousBackups",
         "dynamodb:ListTagsOfResource",
         "dynamodb:DescribeTimeToLive",
+        "dynamodb:Scan",
         "dynamodb:TagResource"
       ],
-      "Resource": "arn:aws:dynamodb:${Region}:${Account}:table/${Environment}-carts"
+      "Resource": "arn:aws:dynamodb:${Region}:${Account}:table/${Environment}*"
     },
     {
       "Effect": "Allow",

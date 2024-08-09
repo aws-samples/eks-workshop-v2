@@ -239,6 +239,14 @@
     },
     {
       "Effect": "Allow",
+      "Action": [
+        "ecr-public:GetAuthorizationToken",
+        "sts:GetServiceBearerToken"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
       "Action": ["iam:CreateServiceLinkedRole"],
       "Resource": "*",
       "Condition": {
