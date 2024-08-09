@@ -10,6 +10,10 @@ module "eks_blueprints_addons" {
   oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
 
   enable_aws_load_balancer_controller = true
+  aws_load_balancer_controller = {
+    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
+  }
 }
 
 module "iam_assumable_role_keda" {

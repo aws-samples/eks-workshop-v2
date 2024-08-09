@@ -32,9 +32,12 @@ module "eks" {
 
   eks_managed_node_groups = {
     default = {
-      instance_types       = ["m5.large"]
-      force_update_version = true
-      release_version      = var.ami_release_version
+      instance_types           = ["m5.large"]
+      force_update_version     = true
+      release_version          = var.ami_release_version
+      use_name_prefix          = false
+      iam_role_name            = "${var.cluster_name}-ng-default"
+      iam_role_use_name_prefix = false
 
       min_size     = 3
       max_size     = 6

@@ -35,6 +35,10 @@ module "dynamodb_ack_addon" {
 
   # Controllers to enable
   enable_dynamodb = true
+  dynamodb = {
+    role_name            = "${var.addon_context.eks_cluster_id}-ack-ddb"
+    role_name_use_prefix = false
+  }
 
   tags = var.tags
 }
@@ -68,7 +72,9 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    wait = true
+    wait        = true
+    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
 
   cluster_name      = var.addon_context.eks_cluster_id

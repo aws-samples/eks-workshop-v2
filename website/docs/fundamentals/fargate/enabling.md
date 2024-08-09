@@ -9,13 +9,7 @@ As an administrator, you can use a Fargate profile to declare which Pods run on 
 
 If a Pod matches multiple Fargate profiles, you can specify which profile a Pod uses by adding the following Kubernetes label to the Pod specification: `eks.amazonaws.com/fargate-profile: my-fargate-profile`. The Pod must match a selector in that profile to be scheduled onto Fargate. Kubernetes affinity/anti-affinity rules do not apply and aren't necessary with Amazon EKS Fargate Pods.
 
-Lets start by adding a Fargate profile to our EKS cluster. This is the `eksctl` configuration we'll use:
-
-```file
-manifests/modules/fundamentals/fargate/profile/fargate.yaml
-```
-
-This configuration creates a Fargate profile called `checkout-profile` with the following characteristics:
+Lets start by adding a Fargate profile to our EKS cluster. The command below creates a Fargate profile called `checkout-profile` with the following characteristics:
 
 1. Target Pods in the `checkout` namespace that have the label `fargate: yes`
 2. Place pod in the private subnets of the VPC
@@ -24,9 +18,15 @@ This configuration creates a Fargate profile called `checkout-profile` with the 
 The following command creates the profile, which will take several minutes:
 
 ```bash timeout=600
-$ cat ~/environment/eks-workshop/modules/fundamentals/fargate/profile/fargate.yaml \
-| envsubst \
-| eksctl create fargateprofile -f -
+$ aws eks create-fargate-profile \
+    --cluster-name ${EKS_CLUSTER_NAME} \
+    --pod-execution-role-arn $FARGATE_IAM_PROFILE_ARN \
+    --fargate-profile-name checkout-profile \
+    --selectors '[{"namespace": "checkout", "labels": {"fargate": "yes"}}]' \
+    --subnets "[\"$PRIVATE_SUBNET_1\", \"$PRIVATE_SUBNET_2\", \"$PRIVATE_SUBNET_3\"]"
+
+$ aws eks wait fargate-profile-active --cluster-name ${EKS_CLUSTER_NAME} \
+    --fargate-profile-name checkout-profile
 ```
 
 Now we can inspect the Fargate profile:

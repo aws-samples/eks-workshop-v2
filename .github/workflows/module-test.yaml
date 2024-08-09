@@ -78,7 +78,6 @@ jobs:
           MODULE: ${{ inputs.module }}
           GLOB: ${{ inputs.glob }}
           AWS_REGION: "${{ secrets.AWS_REGION }}"
-          ASSUME_ROLE: "${{ secrets.AWS_ROLE_ARN }}"
           DOCKER_DNS_OVERRIDE: "8.8.8.8"
         run: |
           export AWS_DEFAULT_REGION="$AWS_REGION"
@@ -102,7 +101,6 @@ jobs:
           DOCKER_BUILDKIT: 1
           DEV_MODE: 1
           AWS_REGION: "${{ secrets.AWS_REGION }}"
-          ASSUME_ROLE: "${{ secrets.AWS_ROLE_ARN }}"
         run: |
           export AWS_DEFAULT_REGION="$AWS_REGION"
           make test environment="$CLUSTER_ID" module="cleanup"
@@ -119,13 +117,4 @@ jobs:
         env:
           AWS_REGION: "${{ secrets.AWS_REGION }}"
         run: |
-          export CLEANUP_ENVIRONMENT_NAME="eks-workshop-$CLUSTER_ID"
-          export AWS_DEFAULT_REGION="$AWS_REGION"
-
-          envsubst < hack/lib/filter.yml > filter.yml
-
-          cat filter.yml
-
-          awsweeper --force filter.yml
-
           make destroy-infrastructure environment="$CLUSTER_ID"

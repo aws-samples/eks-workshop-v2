@@ -42,6 +42,8 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
       - name: Make shell
+        env:
+          SKIP_CREDENTIALS: 1
         run: |
           bash hack/exec.sh '' 'ls -la'
 
@@ -70,3 +72,14 @@ jobs:
           node-version: 18
       - run: |
           npx cspell lint "website/docs/**/*.md"
+
+  terraform-validate:
+    name: "Validate Terraform"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~1.9.0"
+      - run: |
+          bash hack/validate-terraform.sh
