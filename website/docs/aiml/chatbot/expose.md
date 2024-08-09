@@ -1,0 +1,61 @@
+---
+title: "Exposing Inferentia Instances with Kuberay and Neuron Devices"
+sidebar_position: 20
+---
+
+Before properly deploying the nodepools and Ray Serve Cluster on EKS, it is
+important to have the necessary tools applied in order for the workloads to
+be properly configured.
+
+### Applying Kuberay Operator for Ray Service Cluster
+
+Deploying Ray Cluster on Amazon EKS is supported via the [KubeRay Operator](https://ray-project.github.io/kuberay/),
+a Kubernetes-native method for managing Ray Clusters. As a module, KubeRay simplifies the deployment of Ray applications
+through providing three unique custom resource definitions: `RayService`, `RayCluster` and `RayJob`.
+
+To properly install KubeRay Operator, apply the following commands:
+
+```bash
+$ helm repo add kuberay https://ray-project.github.io/kuberay-helm/
+"kuberay" has been added to your repositories
+```
+
+```bash
+$ helm install kuberay-operator kuberay/kuberay-operator --version 1.1.0
+NAME: kuberay-operator
+LAST DEPLOYED: Wed Jul 24 14:46:13 2024
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST-SUITE: None
+```
+
+Once KubeRay has been properly installed, we can now check that it exists
+under the default namespace:
+
+```bash
+$ kubectl get pods
+NAME                                READY   STATUS   RESTARTS   AGE
+kuberay-operator-6fcbb94f64-mbfnr   1/1     Running  0          17s
+```
+
+### Install Neuron Devices
+
+The [Neuron device plugin Kubernetes manifest files](https://github.com/aws-neuron/aws-neuron-sdk/tree/master/src/k8)
+need to be installed into the EKS Cluster, as a way for Karpenter to properly provision Inferentia-2 instances.
+
+This allows for pods to have the resource requirement of `aws.amazon.com/neuron`, allowing for the Kubernetes Scheduler
+to provision a node demanding accelerated machine learning workloads.
+
+:::tip
+You can learn more about Neuron Device Plugins in the [AIML Inference module](../../aiml/inferentia/index.md) that's provided in this workshop.
+:::
+
+We can deploy the role using the following command:
+
+```bash
+$ kubectl apply -k ~/environment/eks-workshop/modules/aiml/chatbot/neuron-device-plugin
+```
+
+This properly exposes the Neuron cores and grants Karpenter the appropriate permissions
+to provision pods demanding accelerated workloads.

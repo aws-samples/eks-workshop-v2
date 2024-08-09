@@ -9,7 +9,8 @@ managedNodeGroups:
   - name: graviton
     instanceTypes:
       # HIGHLIGHT
-      - t4g.medium
+      #- t4g.medium
+      - inf2.24xlarge
     minSize: 1
     maxSize: 3
     desiredCapacity: 1
