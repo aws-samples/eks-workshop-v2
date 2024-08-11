@@ -60,7 +60,7 @@ $ kubectl rollout status -n carts deployment/carts
 ```
 
 So now our application should be using DynamoDB.
-But if we run  the following command we will see that the `carts` pods are failing:
+But if we run the following command we will see that the `carts` pods are failing:
 
 ```bash
 $ kubectl -n carts get pod

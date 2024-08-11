@@ -81,4 +81,4 @@ carts-df76875ff-7jkhr             0/1     CrashLoopBackOff   3 (36s ago)     2m2
 carts-dynamodb-698674dcc6-hw2bg   1/1     Running            0               20m
 ```
 
- What's gone wrong?
+What's gone wrong?
