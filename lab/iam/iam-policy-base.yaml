@@ -1,0 +1,211 @@
+Version: "2012-10-17"
+Statement:
+  - Effect: Allow
+    Action:
+      - eks:*
+      - ec2:CreateLaunchTemplate
+      - ec2:DeleteLaunchTemplate
+      - iam:CreateOpenIDConnectProvider
+      - iam:DeleteOpenIDConnectProvider
+      - iam:TagOpenIDConnectProvider
+      - iam:GetOpenIDConnectProvider
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - cloudformation:CreateStack
+    Resource:
+      - arn:aws:cloudformation:${Region}:${Account}:stack/eksctl-${Environment}*
+    Condition:
+      "Null":
+        cloudformation:RoleARN: "true"
+  - Effect: Allow
+    Action:
+      - cloudformation:DeleteStack
+    Resource:
+      - arn:aws:cloudformation:${Region}:${Account}:stack/eksctl-${Environment}*
+    Condition:
+      "Null":
+        cloudformation:RoleARN: "true"
+  - Effect: Allow
+    Action:
+      - cloudformation:Get*
+      - cloudformation:Describe*
+      - cloudformation:List*
+      - cloudformation:TagResource
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - ec2:Get*
+      - ec2:Describe*
+      - ec2:List*
+      - ec2:RunInstances
+    Resource: ["*"]
+  - Effect: Deny
+    Action: ec2:RunInstances
+    Resource:
+      - arn:aws:ec2:*:*:instance/*
+    Condition:
+      ForAnyValue:StringNotLike:
+        ec2:InstanceType:
+          - m5.large
+          - t4g.medium
+          - c*.large
+  - Effect: Allow
+    Action:
+      - ec2:CreateVpc
+      - ec2:CreateSubnet
+      - ec2:CreateRouteTable
+      - ec2:CreateRoute
+      - ec2:CreateInternetGateway
+      - ec2:AttachInternetGateway
+      - ec2:AssociateRouteTable
+      - ec2:ModifyVpcAttribute
+      - ec2:CreateSecurityGroup
+      - ec2:AllocateAddress
+      - ec2:ReleaseAddress
+      - ec2:DisassociateAddress
+      - ec2:CreateNetworkAclEntry
+      - ec2:DeleteNetworkAclEntry
+      - ec2:CreateNatGateway
+      - ec2:DeleteNatGateway
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - ec2:DeleteVpc
+      - ec2:DeleteSubnet
+      - ec2:DeleteRouteTable
+      - ec2:DeleteRoute
+      - ec2:DeleteInternetGateway
+      - ec2:DetachInternetGateway
+      - ec2:DisassociateRouteTable
+      - ec2:ModifyVpcAttribute
+      - ec2:ModifySubnetAttribute
+      - ec2:RevokeSecurityGroupIngress
+      - ec2:AuthorizeSecurityGroupEgress
+      - ec2:AuthorizeSecurityGroupIngress
+      - ec2:UpdateSecurityGroupRuleDescriptionsEgress
+      - ec2:RevokeSecurityGroupEgress
+      - ec2:DeleteSecurityGroup
+      - ec2:ModifySecurityGroupRules
+      - ec2:UpdateSecurityGroupRuleDescriptionsIngress
+    Resource: ["*"]
+    Condition:
+      StringLike:
+        aws:ResourceTag/env:
+          - ${Environment}*
+  - Effect: Allow
+    Action:
+      - ec2:AuthorizeSecurityGroupEgress
+      - ec2:AuthorizeSecurityGroupIngress
+    Resource: ["*"]
+    Condition:
+      StringLike:
+        aws:ResourceTag/aws:eks:cluster-name:
+          - ${Environment}*
+  - Effect: Allow
+    Action:
+      - ec2:RevokeSecurityGroupIngress
+      - ec2:RevokeSecurityGroupEgress
+    Resource: ["*"]
+    Condition:
+      StringLike:
+        aws:ResourceTag/aws:eks:cluster-name:
+          - ${Environment}*
+  - Sid: Ec2Tags
+    Effect: Allow
+    Action:
+      - ec2:CreateTags
+      - ec2:DeleteTags
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - autoscaling:Get*
+      - autoscaling:Describe*
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - sts:GetCallerIdentity
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - kms:CreateKey
+      - kms:ScheduleKeyDeletion
+      - kms:CreateGrant
+      - kms:TagResource
+      - kms:Decrypt
+      - kms:DescribeKey
+      - kms:EnableKeyRotation
+      - kms:Encrypt
+      - kms:GenerateDataKey
+      - kms:GenerateDataKeyWithoutPlaintext
+      - kms:GetKeyPolicy
+      - kms:GetKeyRotationStatus
+      - kms:ListResourceTags
+      - kms:PutKeyPolicy
+      - kms:CreateAlias
+      - kms:DeleteAlias
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - kms:List*
+      - kms:Get*
+      - kms:Describe*
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - iam:CreateRole
+      - iam:GetRolePolicy
+      - iam:DetachRolePolicy
+      - iam:AttachRolePolicy
+      - iam:PutRolePolicy
+      - iam:DeleteRolePolicy
+      - iam:DeleteRole
+      - iam:ListInstanceProfilesForRole
+      - iam:ListAttachedRolePolicies
+      - iam:ListRolePolicies
+      - iam:TagRole
+      - iam:PassRole
+      - sts:AssumeRole
+    Resource:
+      - arn:aws:iam::${Account}:role/${Environment}*
+      - arn:aws:iam::${Account}:role/eksctl-${Environment}*
+  - Effect: Allow
+    Action:
+      - iam:CreatePolicy
+      - iam:DeletePolicy
+      - iam:GetPolicyVersion
+      - iam:ListPolicyVersions
+      - iam:TagPolicy
+      - iam:GetPolicy
+    Resource:
+      - arn:aws:iam::${Account}:policy/${Environment}*
+      - arn:aws:iam::${Account}:policy/eksctl-${Environment}*
+  - Effect: Allow
+    Action:
+      - iam:CreateInstanceProfile
+      - iam:DeleteInstanceProfile
+      - iam:TagInstanceProfile
+      - iam:RemoveRoleFromInstanceProfile
+    Resource:
+      - arn:aws:iam::${Account}:instance-profile/${Environment}*
+      - arn:aws:iam::${Account}:instance-profile/eksctl-${Environment}*
+  - Effect: Allow
+    Action:
+      - iam:ListOpenIDConnectProviders
+      - iam:GetRole
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - ecr-public:GetAuthorizationToken
+      - sts:GetServiceBearerToken
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - iam:CreateServiceLinkedRole
+    Resource: ["*"]
+    Condition:
+      StringEquals:
+        iam:AWSServiceName:
+          - eks.amazonaws.com
+          - eks-nodegroup.amazonaws.com
+          - eks-fargate.amazonaws.com
