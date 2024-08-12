@@ -44,7 +44,7 @@ How can we apply this to accomplish over-provisioning the compute in our EKS clu
 
 - When a genuine workload is scheduled the empty placeholder containers get evicted and the application Pods get provisioned immediately.
 
-- Since there are **Pending** (Pause Container) Pods in our cluster, the Cluster Autoscaler will kick in and provision additional Kubernetes worker nodes based on **ASG configuration (`--max-size`)** that is associated with the EKS node group.
+- Since there are **Pending** (Pause Container) Pods in our cluster, the cluster-autoscaler will kick in and provision additional Kubernetes worker nodes based on **ASG configuration (`--max-size`)** that is associated with the EKS node group.
 
 How much over provisioning is needed can be controlled by:
 
