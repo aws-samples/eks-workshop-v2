@@ -37,12 +37,12 @@ We can now use `kubectl` commands with the argument `--context readonly` to auth
 ```bash
 $ kubectl --context readonly auth whoami
 ATTRIBUTE             VALUE
-Username              arn:aws:sts::123456789012:assumed-role/eks-workshop-read-only/EKSGetTokenAuth
-UID                   aws-iam-authenticator:123456789012:AKIAIOSFODNN7EXAMPLE
+Username              arn:aws:sts::1234567890:assumed-role/eks-workshop-read-only/EKSGetTokenAuth
+UID                   aws-iam-authenticator:1234567890:AKIAIOSFODNN7EXAMPLE
 Groups                [system:authenticated]
 Extra: accessKeyId    [AKIAIOSFODNN7EXAMPLE]
-Extra: arn            [arn:aws:sts::123456789012:assumed-role/eks-workshop-read-only/EKSGetTokenAuth]
-Extra: canonicalArn   [arn:aws:iam::123456789012:role/eks-workshop-read-only]
+Extra: arn            [arn:aws:sts::1234567890:assumed-role/eks-workshop-read-only/EKSGetTokenAuth]
+Extra: canonicalArn   [arn:aws:iam::1234567890:role/eks-workshop-read-only]
 Extra: principalId    [AKIAIOSFODNN7EXAMPLE]
 Extra: sessionName    [EKSGetTokenAuth]
 ```
@@ -57,7 +57,7 @@ This should return all pods in the cluster. However if we try to perform an acti
 
 ```bash expectError=true
 $ kubectl --context readonly delete pod -n assets --all
-Error from server (Forbidden): pods "assets-7c7948bfc8-wbsbr" is forbidden: User "arn:aws:sts::123456789012:assumed-role/eks-workshop-read-only/EKSGetTokenAuth" cannot delete resource "pods" in API group "" in the namespace "assets"
+Error from server (Forbidden): pods "assets-7c7948bfc8-wbsbr" is forbidden: User "arn:aws:sts::1234567890:assumed-role/eks-workshop-read-only/EKSGetTokenAuth" cannot delete resource "pods" in API group "" in the namespace "assets"
 ```
 
 Next we can explore restricting a policy to one or more namespaces. Update the access policy associating for our read-only IAM role using `--access-scope type=namespace`:
@@ -82,7 +82,7 @@ But if we try to get pods from all namespaces we will be forbidden:
 
 ```bash expectError=true
 $ kubectl --context readonly get pod -A
-Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::123456789012:assumed-role/eks-workshop-read-only/EKSGetTokenAuth" cannot list resource "pods" in API group "" at the cluster scope
+Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::1234567890:assumed-role/eks-workshop-read-only/EKSGetTokenAuth" cannot list resource "pods" in API group "" at the cluster scope
 ```
 
 List the associations of the `readonly` role.
@@ -104,7 +104,7 @@ $ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --pri
         }
     ],
     "clusterName": "eks-workshop",
-    "principalArn": "arn:aws:iam::123456789012:role/eks-workshop-read-only"
+    "principalArn": "arn:aws:iam::1234567890:role/eks-workshop-read-only"
 }
 ```
 
@@ -154,7 +154,7 @@ $ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --pri
         }
     ],
     "clusterName": "eks-workshop",
-    "principalArn": "arn:aws:iam::123456789012:role/eks-workshop-read-only"
+    "principalArn": "arn:aws:iam::1234567890:role/eks-workshop-read-only"
 }
 ```
 
@@ -164,7 +164,7 @@ Check what happens if you list all the Pods in the cluster.
 
 ```bash expectError=true
 $ kubectl --context readonly get pod -A
-Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::123456789012:assumed-role/eks-workshop-read-only/EKSGetTokenAuth" cannot list resource "pods" in API group "" at the cluster scope
+Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::1234567890:assumed-role/eks-workshop-read-only/EKSGetTokenAuth" cannot list resource "pods" in API group "" at the cluster scope
 ```
 
 Still not have access to the whole cluster, which is expected since the access scope is mapped to the `assets` and `carts` namespaces.

@@ -35,4 +35,5 @@ repos:
     rev: v0.41.0
     hooks:
       - id: markdownlint
+        files: ^website/docs
         args: [-r, mdlint/aws-arn-rule.js]
