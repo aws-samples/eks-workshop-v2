@@ -22,7 +22,7 @@ namespace "ui" deleted
 
 We will then need to create a customization for each application:
 
-```
+```text
 .
 |-- app-of-apps
 |   |-- ...
@@ -66,7 +66,7 @@ $ cp -R ~/environment/eks-workshop/modules/automation/gitops/argocd/apps-kustomi
 
 Your final Git directory should now look like this. You can validate it by running `tree ~/environment/argocd`:
 
-```
+```text
 |-- app-of-apps
 |   |-- Chart.yaml
 |   |-- templates

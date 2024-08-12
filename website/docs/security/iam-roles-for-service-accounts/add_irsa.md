@@ -6,29 +6,19 @@ hide_table_of_contents: true
 
 To use IAM roles for service accounts in your cluster, an `IAM OIDC Identity Provider` must be created and associated with a cluster. An OIDC has already been provisioned and associated with your EKS cluster:
 
-Go to the Identity Providers in IAM Console:
-
-https://console.aws.amazon.com/iamv2/home#/identity_providers
-
-You will see an OIDC provider has created for your EKS cluster:
-
-![IAM OIDC Provider](./assets/oidc.webp)
-
-Another option is to use AWS CLI to verify the `IAM OIDC Identity Provider`.
-
 ```bash
 $ aws iam list-open-id-connect-providers
 
 {
     "OpenIDConnectProviderList": [
         {
-            "Arn": "arn:aws:iam::012345678901:oidc-provider/oidc.eks.us-east-2.amazonaws.com/id/7185F12D2B62B8DA97B0ECA713F66C86"
+            "Arn": "arn:aws:iam::1234567890:oidc-provider/oidc.eks.us-east-2.amazonaws.com/id/7185F12D2B62B8DA97B0ECA713F66C86"
         }
     ]
 }
 ```
 
-And validate its association with our Amazon EKS cluster.
+Validate its association with our Amazon EKS cluster.
 
 ```bash
 $ aws eks describe-cluster --name ${EKS_CLUSTER_NAME} --query 'cluster.identity'

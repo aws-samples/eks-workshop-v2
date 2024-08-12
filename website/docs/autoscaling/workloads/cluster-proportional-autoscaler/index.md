@@ -28,9 +28,9 @@ Some of the main use cases for CPA include:
 - Scale out core platform services
 - Simple and easy mechanism to scale out workloads as it does not require metrics server or prometheus adapter
 
-#### Scaling Methods used by Cluster Proportional Autoscaler
+## Scaling Methods used by Cluster Proportional Autoscaler
 
-**Linear**
+### Linear
 
 - This scaling method will scale the application in direct proportion to how many nodes or cores are available in a cluster
 - Either one of the `coresPerReplica` or `nodesPerReplica` could be omitted
@@ -39,9 +39,9 @@ Some of the main use cases for CPA include:
 - All of `min`,`max`,`preventSinglePointFailure`,`includeUnschedulableNodes` are optional. If not set, `min` will be defaulted to 1, `preventSinglePointFailure` will be defaulted to `false` and `includeUnschedulableNodes` will be defaulted to `false`
 - Both `coresPerReplica` and `nodesPerReplica` are float
 
-**ConfigMap for Linear**
+### ConfigMap for Linear
 
-```
+```text
 data:
   linear: |-
     {
@@ -56,13 +56,13 @@ data:
 
 **The Equation of Linear Control Mode:**
 
-```
+```text
 replicas = max( ceil( cores * 1/coresPerReplica ) , ceil( nodes * 1/nodesPerReplica ) )
 replicas = min(replicas, max)
 replicas = max(replicas, min)
 ```
 
-**Ladder**
+### Ladder
 
 - This scaling method uses a step function to determine the ratio of nodes:replicas and/or cores:replicas
 - The step ladder function uses the data point for core and node scaling from the ConfigMap. The lookup which yields the higher number of replicas will be used as the target scaling number.
@@ -70,9 +70,9 @@ replicas = max(replicas, min)
 - Replicas can be set to 0 (unlike in linear mode)
 - Scaling to 0 replicas could be used to enable optional features as a cluster grows
 
-**ConfigMap for Linear**
+### ConfigMap for Ladder
 
-```
+```text
 data:
   ladder: |-
     {
