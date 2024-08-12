@@ -120,6 +120,6 @@ $ aws ec2 describe-security-groups \
 
 You can also view the security group of the RDS instance through the AWS console:
 
-https://console.aws.amazon.com/rds/home#database:id=eks-workshop-catalog;is-cluster=false
+<ConsoleButton url="https://console.aws.amazon.com/rds/home#database:id=eks-workshop-catalog;is-cluster=false" service="rds" label="Open RDS console"/>
 
 This security group only allows traffic to access the RDS database on port `3306` if it comes from a source which has a specific security group, in the example above `sg-037ec36e968f1f5e7`.

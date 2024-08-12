@@ -7,7 +7,7 @@ CloudWatch Logs Insights enables you to interactively search and analyze your lo
 
 In this lab exercise, we'll take a look at an example of using CloudWatch Log Insights to query the EKS control plane logs. First navigate to CloudWatch Log Insights in the console:
 
-https://console.aws.amazon.com/cloudwatch/home#logsV2:logs-insights
+<ConsoleButton url="https://console.aws.amazon.com/cloudwatch/home#logsV2:logs-insights" service="cloudwatch" label="Open CloudWatch console"/>
 
 You will be presented with a screen that looks like this:
 

@@ -153,7 +153,7 @@ The PromQL query used to create this panel is displayed at the bottom of the pag
 
 In this case we are using the query:
 
-```
+```text
 sum by(productId) (watch_orders_total{productId!="*"})
 ```
 

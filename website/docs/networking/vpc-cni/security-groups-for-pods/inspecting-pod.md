@@ -28,6 +28,6 @@ $ kubectl get events -n catalog | grep SecurityGroupRequested
 
 Finally, you can view the ENIs managed by the VPC resource controller in the console:
 
-https://console.aws.amazon.com/ec2/home#NIC:v=3;tag:eks:eni:owner=eks-vpc-resource-controller;tag:vpcresources.k8s.aws/trunk-eni-id=:eni
+<ConsoleButton url="https://console.aws.amazon.com/ec2/home#NIC:v=3;tag:eks:eni:owner=eks-vpc-resource-controller;tag:vpcresources.k8s.aws/trunk-eni-id=:eni" service="ec2" label="Open EC2 console"/>
 
 This will allow you to see information about the branch ENI such as the security group assigned.

@@ -61,14 +61,14 @@ However if we try to delete another resource like a `Deployment` we will be forb
 
 ```bash expectError=true
 $ kubectl --context carts-team delete deployment --all -n carts
-Error from server (Forbidden): deployments.apps is forbidden: User "arn:aws:sts::123456789012:assumed-role/eks-workshop-carts-team/EKSGetTokenAuth" cannot list resource "deployments" in API group "apps" in the namespace "carts"
+Error from server (Forbidden): deployments.apps is forbidden: User "arn:aws:sts::1234567890:assumed-role/eks-workshop-carts-team/EKSGetTokenAuth" cannot list resource "deployments" in API group "apps" in the namespace "carts"
 ```
 
 And if we try to access pods in a different namespace it will also be forbidden:
 
 ```bash expectError=true
 $ kubectl --context carts-team get pod -n catalog
-Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::123456789012:assumed-role/eks-workshop-carts-team/EKSGetTokenAuth" cannot list resource "pods" in API group "" in the namespace "catalog"
+Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::1234567890:assumed-role/eks-workshop-carts-team/EKSGetTokenAuth" cannot list resource "pods" in API group "" in the namespace "catalog"
 ```
 
 This has demonstrated how we can use associate Kubernetes RBAC groups to access entries in order to easily provide fine-grained permissions to an EKS cluster to an IAM role.

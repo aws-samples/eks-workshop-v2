@@ -16,7 +16,7 @@ This section outlines how to clean up the Cloud9 IDE we've used to run the labs.
 
 Start by opening CloudShell in the region where you deployed the CloudFormation stack:
 
-https://console.aws.amazon.com/cloudshell/home
+<ConsoleButton url="https://console.aws.amazon.com/cloudshell/home" service="console" label="Open CloudShell"/>
 
 Then run the following command to delete the CloudFormation stack:
 
