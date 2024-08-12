@@ -24,7 +24,7 @@ $ cp -R ~/environment/eks-workshop/base-application/ui/* ~/environment/argocd/ap
 
 Your Git directory should now look something like this which you can validate by running `tree ~/environment/argocd`:
 
-```
+```text
 .
 └── apps
     ├── configMap.yaml

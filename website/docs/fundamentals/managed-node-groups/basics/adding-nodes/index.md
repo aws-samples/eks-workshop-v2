@@ -3,7 +3,7 @@ title: Add nodes
 sidebar_position: 10
 ---
 
-While working with your cluster, you may need to update your managed node group configuration to add additional nodes to support the needs of your workloads. There are many ways to scale a node group, in our case we will be using `eksctl scale nodegroup` command.
+While working with your cluster, you may need to update your managed node group configuration to add additional nodes to support the needs of your workloads. There are many ways to scale a node group, in our case we will be using the `aws eks update-nodegroup-config` command.
 
 First let's retrieve the current nodegroup scaling configuration and look at **minimum size**, **maximum size** and **desired capacity** of nodes using `eksctl` command below:
 
@@ -14,19 +14,9 @@ $ eksctl get nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME
 We'll scale the nodegroup in `eks-workshop` by changing the node count from `3` to `4` for **desired capacity** using below command:
 
 ```bash
-$ eksctl scale nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME \
-    --nodes 4 --nodes-min 3 --nodes-max 6
-```
-
-:::tip
-A node group can also be updated using the `aws` CLI with the following command. See the [docs](https://docs.aws.amazon.com/cli/latest/reference/eks/update-nodegroup-config.html) for more info.
-
-```
 aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME \
   --nodegroup-name $EKS_DEFAULT_MNG_NAME --scaling-config minSize=4,maxSize=6,desiredSize=4
 ```
-
-:::
 
 After making changes to the node group it may take up to **2-3 minutes** for node provisioning and configuration changes to take effect. Let's retrieve the nodegroup configuration again and look at **minimum size**, **maximum size** and **desired capacity** of nodes using `eksctl` command below:
 

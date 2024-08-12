@@ -146,7 +146,7 @@ We can see how the dashboard was configured to query CloudWatch by hovering over
 
 The query used to create this panel is displayed at the bottom of the page:
 
-```
+```text
 SELECT COUNT(watch_orders_total) FROM "ContainerInsights/Prometheus" WHERE productId != '*' GROUP BY productId
 ```
 

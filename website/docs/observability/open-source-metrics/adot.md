@@ -5,7 +5,7 @@ sidebar_position: 10
 
 In this lab we'll be storing metrics in an Amazon Managed Service for Prometheus workspace which is already created for you. You should be able to see it in the console:
 
-https://console.aws.amazon.com/prometheus/home#/workspaces
+<ConsoleButton url="https://console.aws.amazon.com/prometheus/home#/workspaces" service="aps" label="Open APS console"/>
 
 To view the workspace, click on the **All Workspaces** tab on the left control panel. Select the workspace that starts with **eks-workshop** and you can view several tabs under the workspace such as rules management, alert manager etc.
 

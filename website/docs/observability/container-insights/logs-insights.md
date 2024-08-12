@@ -8,7 +8,7 @@ Container Insights collects metrics by using performance log events with using [
 
 First open the CloudWatch Log Insights console:
 
-https://console.aws.amazon.com/cloudwatch/home#logsV2:logs-insights
+<ConsoleButton url="https://console.aws.amazon.com/cloudwatch/home#logsV2:logs-insights" service="cloudwatch" label="Open CloudWatch console"/>
 
 Near the top of the screen is the query editor. When you first open CloudWatch Logs Insights this box contains a default query that returns the 20 most recent log events.
 

@@ -59,7 +59,7 @@ The output of this command will illustrate that:
 
 You can also checkout out the new ALB configuration in the AWS console:
 
-https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=retail-app-group;sort=loadBalancerName
+<ConsoleButton url="https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=retail-app-group;sort=loadBalancerName" service="ec2" label="Open EC2 console"/>
 
 To wait until the load balancer has finished provisioning you can run this command:
 
