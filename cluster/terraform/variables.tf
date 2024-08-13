@@ -1,7 +1,7 @@
 variable "cluster_name" {
   description = "Name of the EKS cluster"
   type        = string
-  default     = "nat-eks-workshop"
+  default     = "eks-workshop"
 }
 
 variable "cluster_version" {
