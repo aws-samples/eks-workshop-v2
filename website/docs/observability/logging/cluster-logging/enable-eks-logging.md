@@ -33,7 +33,7 @@ As you can see we can enable each of the cluster log types individually, and in 
 
 Let's take a look this configuration in the EKS console:
 
-https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab
+<ConsoleButton url="https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab" service="eks" label="Open EKS console"/>
 
 The **Logging** tab shows the current configuration for control plane logs for the cluster:
 

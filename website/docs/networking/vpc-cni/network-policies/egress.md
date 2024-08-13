@@ -30,7 +30,7 @@ command terminated with exit code 28
 
 On execution of the curl command, the output displayed should have the below statement, which shows that the 'ui' component now cannot directly communicate with the 'catalog' component.
 
-```
+```text
 curl: (28) Resolving timed out after 3000 milliseconds
 ```
 

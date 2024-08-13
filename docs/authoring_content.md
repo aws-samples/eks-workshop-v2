@@ -71,7 +71,7 @@ When creating your content you will want to test the commands you specify agains
 
 Many of the convenience scripts we'll use will make calls to AWS APIs so will need to be able to authenticate. Getting AWS credentials in to a container in a portable way can be a challenge, and there are several options available:
 
-1. Set `ASSUME_ROLE` environment variable in the terminal where you run the `make` commands to the ARN of an IAM role that you can assume with your current credentials. This will use the STS service to generate temporary credentials that will be injected in to the container. Example: `export ASSUME_ROLE='arn:aws:iam::123456789012:role/my-role'`
+1. Set `ASSUME_ROLE` environment variable in the terminal where you run the `make` commands to the ARN of an IAM role that you can assume with your current credentials. This will use the STS service to generate temporary credentials that will be injected in to the container. Example: `export ASSUME_ROLE='arn:aws:iam::1234567890:role/my-role'`
 1. Set `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables in the terminal where you run the `make` commands. It is recommended that these credentials be temporary. These variables will be injected in to the container.
 1. If you are developing on an EC2 instance which has an instance profile that provides the necessary IAM permissions then no action is needed as the container will automatically assume the role of the EC2 on which you're authoring your content.
 

@@ -68,7 +68,7 @@ The above settings configure the following cluster-wide scenario:
 
 Given the above default configuration, you must configure specific PSS profiles and PSA modes at the Kubernetes Namespace level, to opt Namespaces into Pod security provided by the PSA and PSS. You can configure Namespaces to define the admission control mode you want to use for Pod security. With [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels), you can choose which of the predefined PSS levels you want to use for Pods in a given Namespace. The label you select defines what action the PSA takes if a potential violation is detected. As seen below, you can configure any or all modes, or even set a different level for different modes. For each mode, there are two possible labels that determine the policy used.
 
-```
+```text
 # The per-mode level label indicates which policy level to apply for the mode.
 #
 # MODE must be one of `enforce`, `audit`, or `warn`.
@@ -110,10 +110,10 @@ In Kubernetes, an Admission Controller is a piece of code that intercepts reques
 
 In the flow below, [mutating and validating dynamic admission controllers](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/), a.k.a. admission webhooks, are integrated to the Kubernetes API server request flow, via webhooks. These webhooks call out to services, configured to respond to certain types of API server requests. For example, you can use webhooks to configure dynamic admission controllers to validate that containers in a Pod are running as non-root users, or containers are sourced from trusted registries.
 
-![](assets/k8s-admission-controllers.webp)
+![Kubernetes admission controllers](assets/k8s-admission-controllers.webp)
 
 ### Using PSA and PSS
 
 PSA enforces the policies outlined in PSS, and the PSS policies define a set of Pod security profiles. In the diagram below, we outline how PSA and PSS work together, with Pods and Namespaces, to define Pod security profiles and apply admission control based on those profiles. As seen in the diagram below, the PSA enforcement modes and PSS policies are defined as labels in the target Namespaces.
 
-![](assets/using-pss-psa.webp)
+![PSS and PSA](assets/using-pss-psa.webp)

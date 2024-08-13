@@ -11,7 +11,7 @@ $ argocd app delete apps --cascade -y
 
 We create templates for set of ArgoCD applications using DRY approach in Helm charts:
 
-```
+```text
 .
 |-- app-of-apps
 |   |-- Chart.yaml
