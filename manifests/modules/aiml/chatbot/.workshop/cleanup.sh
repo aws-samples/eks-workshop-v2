@@ -4,13 +4,25 @@ set -e
 
 logmessage "Deleting AIML resources..."
 
+logmessage "Deleting Gradio-UI Components..."
+
+kubectl delete -k /eks-workshop/manifests/modules/aiml/chatbot/gradio --ignore-not-found=true
+
+logmessage "Deleting Llama2 pods..."
+
+kubectl delete -k /eks-workshop/manifests/modules/aiml/chatbot/ray-service-llama2-chatbot --ignore-not-found=true
+
+logmessage "Deleting Neuron Device Plugin..."
+
+kubectl delete -k /eks-workshop/manifests/modules/aiml/chatbot/neuron-device-plugin --ignore-not-found=true
+
+logmessage "Un-installing kuberay operator..."
+
+helm uninstall kuberay-operator
+
 kubectl delete namespace llama2 --ignore-not-found
 
-kubectl delete svc -n gradio-llama2-inf2 gradio-nlb --ignore-not-found
-
 kubectl delete namespace gradio-llama2-inf2 --ignore-not-found
-
-uninstall-helm-chart aws-load-balancer-controller kube-system
 
 logmessage "Deleting Karpenter NodePool and EC2NodeClass..."
 
