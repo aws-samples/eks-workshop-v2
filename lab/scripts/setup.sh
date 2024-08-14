@@ -17,8 +17,6 @@ fi
 cat << EOT > ~/.bashrc.d/aws.bash
 export AWS_PAGER=""
 export AWS_REGION="${AWS_REGION}"
-export AWS_ACCOUNT_ID="${AWS_ACCOUNT_ID}"
-export EKS_CLUSTER_NAME="${EKS_CLUSTER_NAME}"
 EOT
 
 touch ~/.bashrc.d/workshop-env.bash

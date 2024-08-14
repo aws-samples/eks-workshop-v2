@@ -19,6 +19,13 @@ else
   set -o xtrace
 fi
 
+if [ -z "$EKS_DEFAULT_MNG_MIN" ]; then
+  EKS_CLUSTER_NAME=${EKS_CLUSTER_NAME:-"eks-workshop"}
+
+  logmessage "Error: Please run 'use-cluster $EKS_CLUSTER_NAME'"
+  exit 1
+fi
+
 rm -f /home/ec2-user/.kube/config
 
 aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --alias default --user-alias default
@@ -162,6 +169,57 @@ if [ ! -z "$module" ]; then
 fi
 
 terraform -chdir="$tf_dir" output -json | jq -r '.environment.value | select(. != null)' > ~/.bashrc.d/workshop-env.bash
+
+# Node groups
+expected_size_config="$EKS_DEFAULT_MNG_MIN $EKS_DEFAULT_MNG_MAX $EKS_DEFAULT_MNG_DESIRED"
+
+mng_size_config=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME | jq -r '.nodegroup.scalingConfig | "\(.minSize) \(.maxSize) \(.desiredSize)"')
+
+if [[ "$mng_size_config" != "$expected_size_config" ]]; then
+  logmessage "Setting EKS Node Group back to initial sizing..."
+
+  WAIT_EXIT_CODE=0
+
+  # Wait for the node group to be active in case previous module cleanup didn't complete for some reason
+  aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME || WAIT_EXIT_CODE=$?
+
+  if [ $WAIT_EXIT_CODE -ne 0 ]; then
+    logmessage "Default node group is still being modified unexpectedly, please try again."
+    logmessage "If this error persists please contact your workshop proctor or raise an issue at https://github.com/aws-samples/eks-workshop-v2/issues"
+    exit 1
+  fi
+
+  aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME \
+    --scaling-config desiredSize=$EKS_DEFAULT_MNG_DESIRED,minSize=$EKS_DEFAULT_MNG_MIN,maxSize=$EKS_DEFAULT_MNG_MAX
+  aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME
+
+  sleep 10
+fi
+
+asg_size_config=$(aws autoscaling describe-auto-scaling-groups --filters "Name=tag:eks:nodegroup-name,Values=$EKS_DEFAULT_MNG_NAME" "Name=tag:eks:cluster-name,Values=$EKS_CLUSTER_NAME" | jq -r '.AutoScalingGroups[0] | "\(.MinSize) \(.MaxSize) \(.DesiredCapacity)"')
+
+if [[ "$asg_size_config" != "$expected_size_config" ]]; then
+  logmessage "Setting ASG back to initial sizing..."
+
+  export ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --filters "Name=tag:eks:nodegroup-name,Values=$EKS_DEFAULT_MNG_NAME" "Name=tag:eks:cluster-name,Values=$EKS_CLUSTER_NAME" --query "AutoScalingGroups[0].AutoScalingGroupName" --output text)
+  aws autoscaling update-auto-scaling-group \
+      --auto-scaling-group-name $ASG_NAME \
+      --min-size $EKS_DEFAULT_MNG_MIN \
+      --max-size $EKS_DEFAULT_MNG_MAX \
+      --desired-capacity $EKS_DEFAULT_MNG_DESIRED
+fi
+
+EXIT_CODE=0
+
+timeout -s TERM 300 bash -c \
+    'while [[ $(kubectl get nodes -l workshop-default=yes -o json | jq -r ".items | length") -gt 3 ]];\
+    do sleep 30;\
+    done' || EXIT_CODE=$?
+
+if [ $EXIT_CODE -ne 0 ]; then
+  >&2 echo "Error: Nodes did not scale back to 3"
+  exit 1
+fi
 
 # Recycle workload pods in case stateful pods got restarted
 kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernetes.io/component=service -A

@@ -5,12 +5,13 @@ set -e
 bash /tmp/setup.sh
 
 if [ ! -z "$EKS_CLUSTER_NAME" ]; then
-  aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
+  use-cluster $EKS_CLUSTER_NAME
 fi
 
 if [ $# -eq 0 ]
   then
     bash -l
 else
+  source /home/ec2-user/.bashrc.d/env.bash
   bash -c "$@"
 fi
