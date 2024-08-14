@@ -34,13 +34,6 @@ variable "resources_precreated" {
   type        = bool
 }
 
-variable "load_balancer_controller_chart_version" {
-  description = "The chart version of aws-load-balancer-controller to use"
-  type        = string
-  # renovate-helm: depName=aws-load-balancer-controller
-  default = "1.8.1"
-}
-
 variable "karpenter_version" {
   description = "The version of Karpenter chart to use"
   type        = string
