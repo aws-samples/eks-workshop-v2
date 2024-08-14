@@ -7,36 +7,10 @@ After all the resources have been configured within the Ray Serve Cluster, it is
 important to directly access the Llama2 chatbot. The web interface is directly backed
 through the Gradio UI.
 
-### Creating the load balancer
-
-For Gradio UI to properly grant access for using the chatbot interface, a load balancer must
-be created to establish secure entry to the website.
 
 :::tip
 You can learn more about Load Balancers in the [Load Balancer module](../../fundamentals/exposing/loadbalancer/index.md) that's provided in this workshop.
 :::
-
-First let's install the AWS Load Balancer controller using helm:
-
-```bash wait=10
-$ helm repo add eks-charts https://aws.github.io/eks-charts
-$ helm upgrade --install aws-load-balancer-controller eks-charts/aws-load-balancer-controller \
-  --version "${LBC_CHART_VERSION}" \
-  --namespace "kube-system" \
-  --set "clusterName=${EKS_CLUSTER_NAME}" \
-  --set "serviceAccount.name=aws-load-balancer-controller-sa" \
-  --set "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"="$LBC_ROLE_ARN" \
-  --wait
-Release "aws-load-balancer-controller" does not exist. Installing it now.
-NAME: aws-load-balancer-controller
-LAST DEPLOYED: [...]
-NAMESPACE: kube-system
-STATUS: deployed
-REVISION: 1
-TEST SUITE: None
-NOTES:
-AWS Load Balancer controller installed!
-```
 
 ### Deploying Gradio Web User Interface
 
@@ -50,6 +24,10 @@ The components consist of a `Deployment`, `Service`, and `ConfigMap` to launch t
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/aiml/chatbot/gradio
+namespace/gradio-llama2-inf2 created
+configmap/gradio-app-script created
+service/gradio-service created
+deployment.apps/gradio-deployment created
 ```
 
 To check the status of each component, run the following commands:
@@ -81,12 +59,12 @@ gradio-service   LoadBalancer  172.20.84.26  k8s-gradioll-gradiose-a6d0b586ce-06
 To wait until the Network Load Balancer has finished provisioning, run the following command:
 
 ```bash
-$ wait-for-lb $(kubectl get service -n gradio-llama2-inf2 gradio-service -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' service/gradio-service -n gradio-llama2-inf2 --timeout=5m
 ```
 
 :::caution
 In the case that the network load balancer fails to become available, make sure to delete the deployment pod.
-Then run the wait-for-nlb command to access the website
+Then run the wait command to access the website
 :::
 
 Now that our application is exposed to the outside world, lets try to access it by pasting that URL in your web browser. You will see the Llama2-chatbot and will be able to interact with it via asking questions.
