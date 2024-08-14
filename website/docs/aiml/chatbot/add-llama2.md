@@ -2,8 +2,15 @@
 title: "Deploying the Llama-2-Chat Model on Ray Serve"
 sidebar_position: 30
 ---
-
 Once both the nodepools have been provisioned, it becomes easier to deploy the Llama2 chatbot infrastructure.
+
+Using the following command, we can deploy `ray-service-llama2.yaml`:
+
+```bash
+$ kubectl apply -k ~/environment/eks-workshop/modules/aiml/chatbot/ray-service-llama2-chatbot
+namespace/llama2 created
+rayservice.ray.io/llama2 created
+```
 
 ### Creating the Ray Service Pods for Inference
 
@@ -19,11 +26,6 @@ The configuration accomplishes the following tasks:
 2. Deploys a RayService named `Llama-2-service` that leverages the python script to create the Ray Serve component
 3. Provisions a Head Pod and Worker Pods to pull Docker Images from Amazon Elastic Container Registry (ECR)
 
-Using the following command, we can deploy `ray-service-llama2.yaml`:
-
-```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/aiml/chatbot/ray-service-llama2-chatbot
-```
 
 After all the configurations are applied, we now want to monitor the progress of the head and worker pods:
 
@@ -34,6 +36,10 @@ pod/llama2-raycluster-fcmtr-head-bf58d          1/1     Running   0          67m
 pod/llama2-raycluster-fcmtr-worker-inf2-lgnb2   1/1     Running   0          5m30s
 ```
 
+:::caution 
+Waiting for both of the pods to be ready takes at most 10 minutes
+:::
+
 ```bash
 $ kubectl wait pod \
 --all \
@@ -43,10 +49,6 @@ $ kubectl wait pod \
 pod/llama2-raycluster-fcmtr-head-bf58d met
 pod/llama2-raycluster-fcmtr-worker-inf2-lgnb2 met
 ```
-
-:::note
-This command can take up to 10 min.
-:::
 
 Once the pods are fully deployed, we then want to check if everything is deployed:
 
@@ -68,8 +70,13 @@ NAME                       SERVICE STATUS   NUM SERVE ENDPOINTS
 rayservice.ray.io/llama2   Running          2
 ```
 
-:::note
+:::caution
 Configuring RayService can take up to 10 min.
 :::
+
+```bash
+$ kubectl wait --for=jsonpath='{.status.serviceStatus}'=Running rayservice/llama2 -n llama2 --timeout=10m
+rayservice.ray.io/llama2 condition met
+```
 
 Once everything has been properly deployed, we can finally create the web interface to run the chatbot.
