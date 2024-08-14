@@ -1,6 +1,6 @@
 ---
-title: "Exposing Inferentia Instances with Kuberay and Neuron Devices"
-sidebar_position: 20
+title: "Install Kuberay and Neuron Devices"
+sidebar_position: 10
 ---
 
 Before properly deploying the nodepools and Ray Serve Cluster on EKS, it is
@@ -55,6 +55,10 @@ We can deploy the role using the following command:
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/aiml/chatbot/neuron-device-plugin
+serviceaccount/neuron-device-plugin created
+clusterrole.rbac.authorization.k8s.io/neuron-device-plugin created
+clusterrolebinding.rbac.authorization.k8s.io/neuron-device-plugin created
+daemonset.apps/neuron-device-plugin-daemonset created
 ```
 
 This properly exposes the Neuron cores and grants Karpenter the appropriate permissions
