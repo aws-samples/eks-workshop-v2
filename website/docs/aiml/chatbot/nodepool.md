@@ -55,6 +55,10 @@ Apply the `NodePool` and `EC2NodeClass` manifests for both pools respectively:
 ```bash
 $ kubectl kustomize ~/environment/eks-workshop/modules/aiml/chatbot/nodepool \
   | envsubst | kubectl apply -f-
+ec2nodeclass.karpenter.k8s.aws/inferentia-inf2 created
+ec2nodeclass.karpenter.k8s.aws/x86-cpu-karpenter created
+nodepool.karpenter.sh/inferentia-inf2 created
+nodepool.karpenter.sh/x86-cpu-karpenter created
 ```
 
 Once properly deployed, check for the nodepools:
