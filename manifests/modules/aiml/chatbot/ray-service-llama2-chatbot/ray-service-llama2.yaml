@@ -4,6 +4,8 @@ metadata:
   name: llama2
 
 ---
+# target_num_ongoing_requests_per_replica will be deprecated soon
+# and will be updated when Data on EKS updates
 apiVersion: ray.io/v1
 kind: RayService
 metadata:
