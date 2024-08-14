@@ -1,6 +1,6 @@
 ---
 title: "Understanding the Llama2 Chatbot Model"
-sidebar_position: 10
+sidebar_position: 20
 ---
 
 Llama2 is presented as a training model that uses FastAPI, Ray Serve, and PyTorch-based Hugging Face Transformers to create seamless API for text generation.
