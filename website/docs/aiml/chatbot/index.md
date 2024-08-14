@@ -19,7 +19,6 @@ This will make the following changes to your lab environment:
 
 - Installs Karpenter in the Amazon EKS cluster
 - Creates an IAM Role for the Pods to use
-- Creates an IAM role required by the AWS Load Balancer Controller
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/aiml/chatbot/.workshop/terraform).
 
