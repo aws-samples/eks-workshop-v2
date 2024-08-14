@@ -22,12 +22,13 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller = true
   # turn off the mutating webhook for services because we are using
-  # service.beta.kubernetes.io/aws-load-balancer-type: external
+  # retrieved from Data on EKS
   aws_load_balancer_controller = {
     set = [{
       name  = "enableServiceMutatorWebhook"
       value = "false"
     }]
+    wait = true
   }
 
   enable_karpenter = true
@@ -56,35 +57,4 @@ data "aws_subnets" "private" {
     name   = "tag:Name"
     values = ["*Private*"]
   }
-}
-
-module "iam_assumable_role_chatbot" {
-  source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "5.39.1"
-  create_role                   = true
-  role_name                     = "${var.addon_context.eks_cluster_id}-chatbot"
-  provider_url                  = var.addon_context.eks_oidc_issuer_url
-  role_policy_arns              = [aws_iam_policy.chatbot.arn]
-  oidc_fully_qualified_subjects = ["system:serviceaccount:aiml:chatbot"]
-
-  tags = var.tags
-}
-
-resource "aws_iam_policy" "chatbot" {
-  name        = "${var.addon_context.eks_cluster_id}-chatbot"
-  path        = "/"
-  description = "IAM policy for the chatbot workload"
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": "eks:*",
-      "Resource": "*"
-    }
-  ]
-}
-EOF
 }
