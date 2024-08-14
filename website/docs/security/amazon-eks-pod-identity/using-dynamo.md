@@ -70,13 +70,15 @@ deployment.apps/carts restarted
 $ kubectl -n carts rollout status deployment/carts
 ```
 
-So now our application should be using DynamoDB right? Try to load it up in the browser using the URL from the previous command, and navigate to the shopping cart.
+So now our application should be using DynamoDB.
+
+But we run the following command we will see that the `carts` pods are failing:
 
 ```bash
-$ kubectl -n ui get service ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}'
-k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
+$ kubectl -n carts get pod
+NAME                              READY   STATUS             RESTARTS        AGE
+carts-df76875ff-7jkhr             0/1     CrashLoopBackOff   3 (36s ago)     2m2s
+carts-dynamodb-698674dcc6-hw2bg   1/1     Running            0               20m
 ```
 
-![Error500](/img/sample-app-screens/error-500.webp)
-
-The shopping cart page is not accessible! What's gone wrong?
+What's gone wrong?
