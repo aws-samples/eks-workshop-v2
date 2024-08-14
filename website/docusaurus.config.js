@@ -135,6 +135,12 @@ const config = {
           },
           {
             type: "doc",
+            docId: "resiliency/index",
+            position: "left",
+            label: "Resiliency",
+          },
+          {
+            type: "doc",
             docId: "security/index",
             position: "left",
             label: "Security",
