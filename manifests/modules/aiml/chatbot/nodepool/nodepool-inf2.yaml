@@ -13,21 +13,20 @@ spec:
         - key: "karpenter.k8s.aws/instance-family"
           operator: In
           values: ["inf2"]
-        - key: "node.kubernetes.io/instance-type"
-          operator: In
-          values: ["inf2.24xlarge", "inf2.48xlarge"]
         - key: "kubernetes.io/arch"
           operator: In
           values: ["amd64"]
         - key: "karpenter.sh/capacity-type"
           operator: In
-          values: ["on-demand"]
+          values: ["on-demand", "spot"]
       nodeClassRef:
         name: inferentia-inf2
       taints:
         - key: aws.amazon.com/neuron
           value: "true"
           effect: "NoSchedule"
+  limits:
+    cpu: "512"
   disruption:
     consolidateAfter: 300s
     consolidationPolicy: WhenEmpty
