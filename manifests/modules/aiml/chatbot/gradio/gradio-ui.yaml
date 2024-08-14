@@ -55,14 +55,14 @@ metadata:
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip #try ip or instance
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip 
 spec:
   selector:
     app: gradio
   ports:
     - name: http
       protocol: TCP
-      port: 80 #maybe change to 7860 or 80
+      port: 80 
       targetPort: 7860
   type: LoadBalancer
 ---
