@@ -31,19 +31,21 @@ Since the Ray Cluster creates head and worker pods with different specifications
 
 Here's the first Karpenter `NodePool` that will provision one `Head Pod` on `x86 CPU` instances:
 
-```file
-manifests/modules/aiml/chatbot/nodepool/nodepool-x86.yaml
-```
+::yaml{file="manifests/modules/aiml/chatbot/nodepool/nodepool-x86.yaml" paths="spec.template.metadata.labels,spec.template.spec.requirements,spec.limits"}
 
-Compared to the previous lab, there are more specifications defining the unique constraints of the `Head Pod`, such as specifying an instance family of `r5`, `m5`, and `c5` nodes.
+1. We're asking the `NodePool` to start all new nodes with a Kubernetes label `type: karpenter`, which will allow us to specifically target Karpenter nodes with pods for demonstration purposes. Since there are multiple
+nodes being autoscaled by Karpenter, there are additional labels added such as `instanceType: mixed-x86` to indicate that this Karpenter node should be assigned to `x86-cpu-karpenter` pool.
+2. The [NodePool CRD](https://karpenter.sh/docs/concepts/nodepools/) supports defining node properties like instance type and zone. In this example, we're setting the `karpenter.sh/capacity-type` to initially limit Karpenter to provisioning On-Demand and Spot instances, as well as `karpenter.k8s.aws/instance-family` to limit to a subset of specific instance types. You can learn which other properties are [available here](https://karpenter.sh/docs/concepts/scheduling/#selecting-nodes). Compared to the previous lab, there are more specifications defining the unique constraints of the `Head Pod`, such as defining an instance family of `r5`, `m5`, and `c5` nodes.
+3. A `NodePool` can define a limit on the amount of CPU and memory managed by it. Once this limit is reached Karpenter will not provision additional capacity associated with that particular `NodePool`, providing a cap on the total compute. 
 
 This secondary `NodePool` will provision `Ray Workers` on `Inf2.48xlarge` instances:
 
-```file
-manifests/modules/aiml/chatbot/nodepool/nodepool-inf2.yaml
-```
+::yaml{file="manifests/modules/aiml/chatbot/nodepool/nodepool-inf2.yaml" paths="spec.template.metadata.labels,spec.template.spec.requirements,spec.template.spec.taints,spec.limits"}
 
-Similarly, there are specifications matching the requirements of the `Ray Workers` that will run on instances from the `Inf2` family.
+1. We're asking the `NodePool` to start all new nodes with a Kubernetes label `provisionerType: Karpenter`, which will allow us to specifically target Karpenter nodes with pods for demonstration purposes. Since there are multiple nodes being autoscaled by Karpenter, there are additional labels added such as `instanceType: inferentia-inf2` to indicate that this Karpenter node should be assigned to `inferentia-inf2` pool.
+2. The [NodePool CRD](https://karpenter.sh/docs/concepts/nodepools/) supports defining node properties like instance type and zone. In this example, we're setting the `karpenter.sh/capacity-type` to initially limit Karpenter to provisioning On-Demand and Spot instances, as well as `karpenter.k8s.aws/instance-family` to limit to a subset of specific instance types. You can learn which other properties are [available here](https://karpenter.sh/docs/concepts/scheduling/#selecting-nodes). In this case, there are specifications matching the requirements of the `Ray Workers` that will run on instances from the `Inf2` family.
+3. A `Taint` defines a specific set of properties that allow a node to repel a set of pods. This property works with its matching label, a `Toleration`. Both tolerations and taints work together to ensure that pods are properly scheduled onto the appropriate pods. You can learn more about the other properties in [this resource](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)
+4. A `NodePool` can define a limit on the amount of CPU and memory managed by it. Once this limit is reached Karpenter will not provision additional capacity associated with that particular `NodePool`, providing a cap on the total compute. 
 
 Both of these defined node pools will allow Karpenter to properly schedule nodes and handle the workload demands of the Ray Cluster.
 
