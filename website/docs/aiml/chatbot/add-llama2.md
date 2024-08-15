@@ -22,8 +22,8 @@ manifests/modules/aiml/chatbot/ray-service-llama2-chatbot/ray-service-llama2.yam
 
 The configuration accomplishes the following tasks:
 
-1. Creates a Kubernetes namespace named `Llama2` for isolating resources
-2. Deploys a RayService named `Llama-2-service` that leverages the python script to create the Ray Serve component
+1. Creates a Kubernetes namespace named `llama2` for isolating resources
+2. Deploys a RayService named `llama-2` that leverages the python script to create the Ray Serve component
 3. Provisions a Head Pod and Worker Pods to pull Docker Images from Amazon Elastic Container Registry (ECR)
 
 
