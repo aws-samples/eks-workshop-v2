@@ -56,12 +56,8 @@ gradio-service   LoadBalancer  172.20.84.26  k8s-gradioll-gradiose-a6d0b586ce-06
 To wait until the Network Load Balancer has finished provisioning, run the following command:
 
 ```bash
-$ kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' service/gradio-service -n gradio-llama2-inf2 --timeout=5m
+$ wait-for-lb $(kubectl get service -n gradio-llama2-inf2 gradio-service -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
 ```
-
-:::caution
-If the network load balancer fails to become available, make sure to delete the deployment pod. Then run the wait command to access the website.
-:::
 
 Now that our application is exposed to the outside world, let's access it by pasting the URL in your web browser. You will see the Llama2 chatbot and will be able to interact with it by asking questions.
 
