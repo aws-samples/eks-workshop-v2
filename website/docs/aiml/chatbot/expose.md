@@ -17,7 +17,7 @@ $ helm repo add kuberay https://ray-project.github.io/kuberay-helm/
 "kuberay" has been added to your repositories
 ```
 
-```bash
+```bash wait=10
 $ helm install kuberay-operator kuberay/kuberay-operator --version 1.1.0
 NAME: kuberay-operator
 LAST DEPLOYED: Wed Jul 24 14:46:13 2024
