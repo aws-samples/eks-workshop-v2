@@ -1,10 +1,12 @@
+
 ---
 title: "Deploying the Llama-2-Chat Model on Ray Serve"
 sidebar_position: 30
 ---
-Once both the nodepools have been provisioned, it becomes easier to deploy the Llama2 chatbot infrastructure.
 
-Using the following command, we can deploy `ray-service-llama2.yaml`:
+With both node pools provisioned, we can now proceed to deploy the Llama2 chatbot infrastructure.
+
+Let's begin by deploying the `ray-service-llama2.yaml` file:
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/aiml/chatbot/ray-service-llama2-chatbot
@@ -14,20 +16,19 @@ rayservice.ray.io/llama2 created
 
 ### Creating the Ray Service Pods for Inference
 
-This file defines the Kubernetes configuration for deploying the Ray Serve service for the Llama2 chatbot:
+The `ray-service-llama2.yaml` file defines the Kubernetes configuration for deploying the Ray Serve service for the Llama2 chatbot:
 
 ```file
 manifests/modules/aiml/chatbot/ray-service-llama2-chatbot/ray-service-llama2.yaml
 ```
 
-The configuration accomplishes the following tasks:
+This configuration accomplishes the following:
 
-1. Creates a Kubernetes namespace named `llama2` for isolating resources
-2. Deploys a RayService named `llama-2` that leverages the python script to create the Ray Serve component
-3. Provisions a Head Pod and Worker Pods to pull Docker Images from Amazon Elastic Container Registry (ECR)
+1. Creates a Kubernetes namespace named `llama2` for resource isolation
+2. Deploys a RayService named `llama-2-service` that utilizes a Python script to create the Ray Serve component
+3. Provisions a Head Pod and Worker Pods to pull Docker images from Amazon Elastic Container Registry (ECR)
 
-
-After all the configurations are applied, we now want to monitor the progress of the head and worker pods:
+After applying the configurations, we'll monitor the progress of the head and worker pods:
 
 ```bash
 $ kubectl get pod -n llama2
@@ -37,8 +38,10 @@ pod/llama2-raycluster-fcmtr-worker-inf2-lgnb2   1/1     Running   0          5m3
 ```
 
 :::caution 
-Waiting for both of the pods to be ready takes at most 10 minutes
+It may take up to 10 minutes for both pods to be ready.
 :::
+
+We can wait for the pods to be ready using the following command:
 
 ```bash
 $ kubectl wait pod \
@@ -50,7 +53,7 @@ pod/llama2-raycluster-fcmtr-head-bf58d met
 pod/llama2-raycluster-fcmtr-worker-inf2-lgnb2 met
 ```
 
-Once the pods are fully deployed, we then want to check if everything is deployed:
+Once the pods are fully deployed, we'll verify that everything is in place:
 
 ```bash
 $ kubectl get all -n llama2
@@ -71,12 +74,14 @@ rayservice.ray.io/llama2   Running          2
 ```
 
 :::caution
-Configuring RayService can take up to 10 min.
+Configuring RayService may take up to 10 minutes.
 :::
+
+We can wait for the RayService to be running with this command:
 
 ```bash
 $ kubectl wait --for=jsonpath='{.status.serviceStatus}'=Running rayservice/llama2 -n llama2 --timeout=10m
 rayservice.ray.io/llama2 condition met
 ```
 
-Once everything has been properly deployed, we can finally create the web interface to run the chatbot.
+With everything properly deployed, we can now proceed to create the web interface for the chatbot.
