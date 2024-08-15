@@ -12,5 +12,5 @@ if [ $# -eq 0 ]
   then
     bash -l
 else
-  bash -c "$@"
+  bash -l -c "$@"
 fi
