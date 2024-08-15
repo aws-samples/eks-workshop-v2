@@ -21,13 +21,4 @@ else
   echo "Cluster ${EKS_CLUSTER_NAME} does not exist"
 fi
 
-aws iam delete-role-policy \
-  --role-name ${EKS_CLUSTER_NAME}-ide-role \
-  --policy-name labs > /dev/null || true
-
-aws iam delete-role-policy \
-  --role-name ${EKS_CLUSTER_NAME}-ide-role \
-  --policy-name base > /dev/null || true
-
-aws iam delete-role \
-  --role-name ${EKS_CLUSTER_NAME}-ide-role > /dev/null || true
+aws cloudformation delete-stack --stack-name ${EKS_CLUSTER_NAME}-ide-role || true
