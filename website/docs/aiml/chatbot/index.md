@@ -6,11 +6,11 @@ sidebar_custom_props: { "beta": true }
 description: "Use Inferentia to accelerate deep learning inference workloads on Amazon Elastic Kubernetes Service."
 ---
 
+::required-time
+
 :::danger
 This module is not supported at AWS events or in AWS-vended accounts through Workshop Studio. This module is only supported for clusters created through the "[In your AWS account](http://localhost:3000/docs/introduction/setup/your-account/)" steps.
 :::
-
-::required-time
 
 :::tip Before you start
 Prepare your environment for this section:
