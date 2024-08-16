@@ -8,7 +8,7 @@ Even with careful planning and preparation, unexpected issues can sometimes aris
 
 Keep in mind that we will use previous concepts from the other chapters while going through each scenario.
 
-### These are the scenarios covered in this module:
+### These are the scenarios covered in this module
 
 - **AWS Load Balancer Controller**
 - **Node not ready (Coming soon)**

@@ -133,7 +133,7 @@ ui     <none>      13d
 
 The endpoints in command above should be pointing to IPs of the app pods running in _ui_ namespace. Can you identify if the selectors are setup correctly in service?
 
-### Step 9:
+### Step 9
 
 Taking a look at the deployment spec using command below, verify the selector value being used versus the one used in your service.
 
@@ -223,7 +223,8 @@ You can either update the service selector with:
 
 - `kubectl edit service <service-name> -n <namespace>` or
 - `kubectl patch service <service-name> -n <namespace> --type='json' -p='[{"op": "replace", "path": "/spec/selector", "value": {"key1": "value1", "key2": "value2"}}]'`
-  :::
+
+:::
 
 for your convenience, we have added a kustomize script that update the selector, just execute the following command:
 
@@ -235,4 +236,4 @@ Now refresh the browsers and you should see the ui application:
 
 ![ALB-UI-APP](./assets/alb-working.webp)
 
-### Go ahead and enjoy a break, you’ve earned it!!
+### Go ahead and enjoy a break, you’ve earned it

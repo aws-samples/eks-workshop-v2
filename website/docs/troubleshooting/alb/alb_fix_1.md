@@ -9,7 +9,7 @@ The task for you in this troubleshooting scenario is to investigate the deployme
 
 ## Let's start the troubleshooting
 
-### Step 1:
+### Step 1
 
 First, we need to verify the status of our pods and get ingress for ingress object creation. To do so, we will use `kubectl` tool.
 
@@ -19,7 +19,7 @@ NAME                  READY   STATUS    RESTARTS   AGE
 ui-68495c748c-jkh2z   1/1     Running   0          85s
 ```
 
-### Step 2:
+### Step 2
 
 In _Step 1_, we checked the pods status for our application and aws-load-balancer-controller. The _aws-load-balancer-controller_ deployment is responsible for ALB creation for any ingress objects applied to the cluster.
 
@@ -35,7 +35,7 @@ NAME           CLASS    HOSTS   ADDRESS                                         
 ingress-2048   <none>   *       k8s-ui-ingress2-xxxxxxxxxx-yyyyyyyyyy.region-code.elb.amazonaws.com   80      2m32s
 ```
 
-### Step 3:
+### Step 3
 
 Check further into the ingress for any events indicating why we do not see the ALB DNS. You can retrieve those logs by running the following command. The event logs should point you towards what the issue might be with ingress creation.
 
@@ -62,9 +62,9 @@ Events:
 
 ```
 
-Refer the documentation on prerequisites for setting up ALB with EKS: https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/deploy/subnet_discovery/
+Refer the documentation on prerequisites for setting up [ALB with EKS](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/deploy/subnet_discovery/)
 
-### Step 4:
+### Step 4
 
 _Step 3_ points to issues with the subnet auto-discovery for load balancer controller deployment. Ensure that all the public subnets have correct tags `tag:kubernetes.io/role/elb,Values=1'`
 
@@ -72,7 +72,7 @@ _Step 3_ points to issues with the subnet auto-discovery for load balancer contr
 Keep in mind that public subnet means the route table for the subnet has an Internet Gateway allowing traffic to and from the internet.  
 :::
 
-1. To find the all subnets through the command line, filter through existing ones with the following tag "Key: `alpha.eksctl.io/cluster-name` Value: `${EKS_CLUSTER_NAME}`". There should be four subnets. **Note:** _For your convenience we have added the cluster name as env variable with the variable `$EKS_CLUSTER_NAME`._
+**1** To find the all subnets through the command line, filter through existing ones with the following tag "Key: `alpha.eksctl.io/cluster-name` Value: `${EKS_CLUSTER_NAME}`". There should be four subnets. **Note:** _For your convenience we have added the cluster name as env variable with the variable `$EKS_CLUSTER_NAME`._
 
 ```bash
 $ aws ec2 describe-subnets --filters "Name=tag:alpha.eksctl.io/cluster-name,Values=${EKS_CLUSTER_NAME}" --query 'Subnets[].SubnetId[]'
@@ -86,9 +86,9 @@ $ aws ec2 describe-subnets --filters "Name=tag:alpha.eksctl.io/cluster-name,Valu
 ]
 ```
 
-2. Then by adding in the subnet ID into the route tables CLI filter one at a time, `--filters 'Name=association.subnet-id,Values=subnet-xxxxxxxxxxxxxxxxx'`, identify which subnets are public.
+**2** Then by adding in the subnet ID into the route tables CLI filter one at a time, `--filters 'Name=association.subnet-id,Values=subnet-xxxxxxxxxxxxxxxxx'`, identify which subnets are public.
 
-```
+```bash
 aws ec2 describe-route-tables --filters 'Name=association.subnet-id,Values=<ENTER_SUBNET_ID_HERE>' --query 'RouteTables[].Routes[].[DestinationCidrBlock,GatewayId]'
 ```
 
@@ -101,7 +101,7 @@ $ for subnet_id in $(aws ec2 describe-subnets --filters "Name=tag:alpha.eksctl.i
 
 If the output shows `0.0.0.0/0` route to an Internet gateway ID, this is a public subnet. See below example.
 
-```
+```bash
 WSParticipantRole:~/environment $ aws ec2 describe-route-tables --filters "Name=association.subnet-id,Values=subnet-xxxxxxxxxxxxx0470" --query 'RouteTables[].Routes[].[DestinationCidrBlock,GatewayId]'
 [
     [
@@ -115,16 +115,16 @@ WSParticipantRole:~/environment $ aws ec2 describe-route-tables --filters "Name=
 ]
 ```
 
-3. Once you have all the public subnet ID's, describe subnets with the appropriate tag and confirm that the public subnet ID's that you identified are missing. In our case, none of our subnets have the correct tags.
+**3** Once you have all the public subnet ID's, describe subnets with the appropriate tag and confirm that the public subnet ID's that you identified are missing. In our case, none of our subnets have the correct tags.
 
 ```bash
 $ aws ec2 describe-subnets --filters 'Name=tag:kubernetes.io/role/elb,Values=1' --query 'Subnets[].SubnetId'
 []
 ```
 
-4. Then add the correct tags. To help you a little bit, we have added the 3 public subnets to the `env` variables with the names `PUBLIC_SUBNET_1, PUBLIC_SUBNET_2 and PUBLIC_SUBNET_3`
+**4** Then add the correct tags. To help you a little bit, we have added the 3 public subnets to the `env` variables with the names `PUBLIC_SUBNET_1, PUBLIC_SUBNET_2 and PUBLIC_SUBNET_3`
 
-```
+```bash
 aws ec2 create-tags --resources subnet-xxxxxxxxxxxxxxxxx subnet-xxxxxxxxxxxxxxxxx subnet-xxxxxxxxxxxxxxxxx --tags 'Key="kubernetes.io/role/elb",Value=1'
 ```
 
@@ -132,7 +132,7 @@ aws ec2 create-tags --resources subnet-xxxxxxxxxxxxxxxxx subnet-xxxxxxxxxxxxxxxx
 $ aws ec2 create-tags --resources $PUBLIC_SUBNET_1 $PUBLIC_SUBNET_2 $PUBLIC_SUBNET_3 --tags 'Key="kubernetes.io/role/elb",Value=1'
 ```
 
-5. Confirm the tags are created. You should see the public subnet ID's populated following the command below.
+**5** Confirm the tags are created. You should see the public subnet ID's populated following the command below.
 
 ```bash
 $ aws ec2 describe-subnets --filters 'Name=tag:kubernetes.io/role/elb,Values=1' --query 'Subnets[].SubnetId'
@@ -143,14 +143,14 @@ $ aws ec2 describe-subnets --filters 'Name=tag:kubernetes.io/role/elb,Values=1' 
 ]
 ```
 
-6. Now restart the controller deployment using the kubectl rollout restart command:
+**6** Now restart the controller deployment using the kubectl rollout restart command:
 
 ```bash timeout=180
 $ kubectl -n kube-system rollout restart deploy aws-load-balancer-controller
 deployment.apps/aws-load-balancer-controller restarted
 ```
 
-7. Now, check again the ingress deployment:
+**7** Now, check again the ingress deployment:
 
 ```bash expectError=true timeout=180 hook=fix-1 hookTimeout=600
 $ kubectl describe ingress/ui -n ui
