@@ -1,5 +1,5 @@
 ---
-title: "⚠️ Large Language Models with Ray Serve"
+title: "Large Language Models with Ray Serve"
 sidebar_position: 30
 chapter: true
 sidebar_custom_props: { "module": true }
