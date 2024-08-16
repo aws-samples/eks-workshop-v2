@@ -1,10 +1,14 @@
 ---
-title: "Large Language Models with Ray Serve"
+title: "⚠️ Large Language Models with Ray Serve"
 sidebar_position: 30
 chapter: true
 sidebar_custom_props: { "module": true }
 description: "Use Inferentia to accelerate deep learning inference workloads on Amazon Elastic Kubernetes Service."
 ---
+
+:::danger
+This module is not supported at AWS events or in AWS-vended accounts. This module is only supported for clusters created through the "[In your AWS account](http://localhost:3000/docs/introduction/setup/your-account/)" steps.
+:::
 
 ::required-time
 
