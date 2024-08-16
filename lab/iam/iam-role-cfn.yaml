@@ -283,14 +283,14 @@ Resources:
                 aws:ResourceTag/env:
                   - ${Env}*
 
-  EksWorkshopLabsPolicy:
+  EksWorkshopLabsPolicy1:
     Type: AWS::IAM::ManagedPolicy
     DependsOn:
       - EksWorkshopIdeRole
     Properties:
       Roles:
         - !Ref EksWorkshopIdeRole
-      ManagedPolicyName: ${Env}-ide-labs
+      ManagedPolicyName: ${Env}-ide-labs1
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -432,6 +432,17 @@ Resources:
               - guardduty:DeleteDetector
               - guardduty:ListDetectors
             Resource: ["*"]
+  EksWorkshopLabsPolicy2:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${Env}-ide-labs2
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
           - Effect: Allow
             Action:
               - logs:DescribeLogGroups
