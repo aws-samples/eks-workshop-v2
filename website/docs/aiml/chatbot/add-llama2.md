@@ -36,7 +36,7 @@ pod/llama2-raycluster-fcmtr-head-bf58d          1/1     Running   0          67m
 pod/llama2-raycluster-fcmtr-worker-inf2-lgnb2   1/1     Running   0          5m30s
 ```
 
-:::caution 
+:::caution
 It may take up to 10 minutes for both pods to be ready.
 :::
 

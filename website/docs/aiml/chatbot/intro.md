@@ -20,6 +20,6 @@ This Python code performs the following tasks:
 3. Loads and compiles the model based on existing parameters
 4. Creates an entry point for the FastAPI application
 
-Through these steps, the Llama-2-13b chat model allows the endpoint to accept input sentences and generate text outputs. The high performance efficiency in processing tasks enables the model to handle a wide variety of natural language processing applications, such as chatbots and text generation tasks.
+Through these steps, the Llama-2-13b chat model allows the endpoint to accept input sentences and generate text outputs. The high performance efficiency in processing tasks enables the model to handle a wide variety of natural language processing applications, such as chat bots and text generation tasks.
 
 In this lab, we'll see how the Llama2 Model is configured with Ray Service as a Kubernetes configuration, allowing users to understand how to incorporate fine-tuning and deploy their own natural language processing applications.
