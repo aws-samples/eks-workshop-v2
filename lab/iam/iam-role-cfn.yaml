@@ -63,6 +63,17 @@ Resources:
             Resource:
               - arn:aws:iam::${Account}:instance-profile/${Env}*
               - arn:aws:iam::${Account}:instance-profile/eksctl-${Env}*
+              - arn:aws:iam::${Account}:instance-profile/eks-*
+          - Effect: Allow
+            Action:
+              - iam:CreateUser
+              - iam:DeleteUser
+              - iam:TagUser
+              - iam:GetUser
+              - iam:ListGroupsForUser
+              - iam:*SSHPublicKey
+            Resource:
+              - arn:aws:iam::${Account}:user/${Env}*
           - Effect: Allow
             Action:
               - iam:ListOpenIDConnectProviders
@@ -160,7 +171,9 @@ Resources:
             Action:
               - kms:CreateAlias
               - kms:DeleteAlias
-            Resource: ["arn:aws:kms:${Region}:${Account}:alias/${Env}*"]
+            Resource:
+              - "arn:aws:kms:${Region}:${Account}:alias/${Env}*"
+              - "arn:aws:kms:${Region}:${Account}:key/*"
           - Effect: Allow
             Action:
               - kms:List*
@@ -496,6 +509,10 @@ Resources:
               - arn:aws:ssm:${Region}:${Account}:parameter/${Env}*
           - Effect: Allow
             Action:
+              - ssm:GetParameter
+            Resource: arn:aws:ssm:${Region}::parameter/aws/service/eks/optimized-ami/*
+          - Effect: Allow
+            Action:
               - s3:CreateBucket
               - s3:DeleteBucket
               - s3:List*
@@ -507,3 +524,11 @@ Resources:
             Resource:
               - arn:aws:s3:::${Env}*
               - arn:aws:s3:::${Env}*/*
+          - Effect: Allow
+            Action:
+              - codecommit:CreateRepository
+              - codecommit:GetRepository
+              - codecommit:DeleteRepository
+              - codecommit:TagResource
+              - codecommit:ListTagsForResource
+            Resource: arn:aws:codecommit:${Region}:${Account}:${Env}*
