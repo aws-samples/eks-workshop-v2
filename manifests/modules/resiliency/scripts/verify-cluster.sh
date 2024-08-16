@@ -5,6 +5,7 @@ DESIRED_REPLICAS=5
 MAX_WAIT_TIME=300  # 5 minutes
 POLL_INTERVAL=10   # 10 seconds
 NAMESPACE="ui"
+EXPECTED_READY_NODES=3
 
 print_header() {
     echo -e "\n==== $1 ====\n"
@@ -22,6 +23,20 @@ wait_for_condition() {
     echo " Timeout!"
     return 1
 }
+
+print_header "Checking Current Pod Distribution"
+$SCRIPT_DIR/get-pods-by-az.sh
+
+print_header "Waiting for nodes to be Ready"
+total_nodes=$(kubectl get nodes --no-headers | wc -l)
+echo "Total nodes in the cluster: $total_nodes"
+echo "Waiting for $EXPECTED_READY_NODES nodes to be in Ready state"
+if wait_for_condition "[ \$(kubectl get nodes --no-headers | grep ' Ready ' | wc -l) -eq $EXPECTED_READY_NODES ]"; then
+    echo -e "\n✅ $EXPECTED_READY_NODES nodes are in Ready state."
+else
+    echo -e "\n⚠️  Warning: $EXPECTED_READY_NODES nodes did not reach Ready state within the timeout period."
+    exit 1
+fi
 
 print_header "Checking Current Pod Distribution"
 $SCRIPT_DIR/get-pods-by-az.sh

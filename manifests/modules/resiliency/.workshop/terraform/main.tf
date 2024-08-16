@@ -13,7 +13,7 @@ module "eks_blueprints_addons" {
 }
 
 
-// ALB creation
+# ALB creation
 resource "kubernetes_manifest" "ui_alb" {
   manifest = {
     "apiVersion" = "networking.k8s.io/v1"
@@ -49,7 +49,7 @@ resource "kubernetes_manifest" "ui_alb" {
   }
 }
 
-// Create RBAC and Rolebinding
+# Create RBAC and Rolebinding
 resource "kubernetes_role" "chaos_mesh_role" {
   metadata {
     name      = "chaos-mesh-role"
@@ -90,10 +90,10 @@ resource "kubernetes_role_binding" "chaos_mesh_rolebinding" {
   }
 }
 
-// Add AWS Load Balancer controller
+# Add AWS Load Balancer controller
 resource "helm_release" "aws_load_balancer_controller" {
   name       = "aws-load-balancer-controller"
-  repository = "https://aws.github.io/eks-charts"
+  repository = "https:#aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
   namespace  = "kube-system"
   version    = var.load_balancer_controller_chart_version
@@ -115,10 +115,10 @@ resource "helm_release" "aws_load_balancer_controller" {
 }
 
 
-// Chaos Mesh Helm Release
+# Chaos Mesh Helm Release
 resource "helm_release" "chaos_mesh" {
   name       = "chaos-mesh"
-  repository = "https://charts.chaos-mesh.org"
+  repository = "https:#charts.chaos-mesh.org"
   chart      = "chaos-mesh"
   namespace  = "chaos-mesh"
   version    = "2.5.1"
@@ -126,7 +126,7 @@ resource "helm_release" "chaos_mesh" {
   create_namespace = true
 }
 
-// FIS IAM role
+# FIS IAM role
 resource "random_id" "suffix" {
   byte_length = 8
 }
@@ -140,7 +140,12 @@ resource "aws_iam_role" "fis_role" {
       {
         Effect = "Allow"
         Principal = {
-          Service = "fis.amazonaws.com"
+          Service = [
+            "fis.amazonaws.com",
+            # for second region
+            "ec2.amazonaws.com",
+            "eks.amazonaws.com"
+          ]
         }
         Action = "sts:AssumeRole"
       },
@@ -175,7 +180,7 @@ resource "aws_iam_role" "fis_role" {
   depends_on = [kubernetes_role_binding.chaos_mesh_rolebinding]
 }
 
-// Attach FIS Access Policy
+# Attach FIS Access Policy
 resource "aws_iam_role_policy_attachment" "fis_eks_access" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSFaultInjectionSimulatorEKSAccess"
   role       = aws_iam_role.fis_role.name
@@ -186,7 +191,23 @@ resource "aws_iam_role_policy_attachment" "fis_network_access" {
   role       = aws_iam_role.fis_role.name
 }
 
-// Policy for creating FIS experiment templates
+# Attach to FIS for EKS node group
+resource "aws_iam_role_policy_attachment" "fis_node_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  role       = aws_iam_role.fis_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "fis_ecr_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = aws_iam_role.fis_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "fis_cni_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  role       = aws_iam_role.fis_role.name
+}
+
+# Policy for creating FIS experiment templates
 resource "aws_iam_policy" "eks_resiliency_fis_policy" {
   name        = "eks-resiliency-fis-policy-${random_id.suffix.hex}"
   path        = "/"
@@ -198,7 +219,7 @@ resource "aws_iam_policy" "eks_resiliency_fis_policy" {
       {
         Effect = "Allow"
         Action = [
-          // FIS
+          # FIS
           "fis:CreateExperimentTemplate",
           "fis:GetExperimentTemplate",
           "fis:ListExperimentTemplates",
@@ -212,6 +233,8 @@ resource "aws_iam_policy" "eks_resiliency_fis_policy" {
           "ec2:DescribeInstances",
           "ec2:DescribeInstanceStatus",
           "ec2:TerminateInstances",
+          "ec2:StartInstances",
+          "ec2:StopInstances",
           "eks:DescribeCluster",
           "eks:ListNodegroups",
           "eks:DescribeNodegroup",
@@ -223,7 +246,72 @@ resource "aws_iam_policy" "eks_resiliency_fis_policy" {
           "logs:UpdateLogDelivery",
           "logs:DeleteLogDelivery",
           "logs:ListLogDeliveries",
-          // Synthetic Canary
+          "ssm:StartAutomationExecution",
+          "ssm:GetAutomationExecution",
+          "cloudwatch:DescribeAlarms",
+          "cloudwatch:GetMetricData"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = "iam:PassRole"
+        Resource = aws_iam_role.fis_role.arn
+      }
+    ]
+  })
+}
+
+# Attach custom policy to the role
+resource "aws_iam_role_policy_attachment" "eks_resiliency_fis_policy_attachment" {
+  policy_arn = aws_iam_policy.eks_resiliency_fis_policy.arn
+  role       = aws_iam_role.fis_role.name
+}
+
+
+# Canary IAM role
+resource "aws_iam_role" "canary_role" {
+  name = "canary-execution-role-${var.addon_context.eks_cluster_id}-${random_id.suffix.hex}"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = [
+            "lambda.amazonaws.com",
+            "synthetics.amazonaws.com"
+          ]
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# Attach Lambda Basic Execution Role to Canary role
+resource "aws_iam_role_policy_attachment" "canary_lambda_basic_execution" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  role       = aws_iam_role.canary_role.name
+}
+
+# Policy for Canary
+resource "aws_iam_policy" "eks_resiliency_canary_policy" {
+  name        = "eks-resiliency-canary-policy-${random_id.suffix.hex}"
+  path        = "/"
+  description = "Custom policy for EKS resiliency Canary"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
           "synthetics:CreateCanary",
           "synthetics:DeleteCanary",
           "synthetics:DescribeCanaries",
@@ -233,24 +321,59 @@ resource "aws_iam_policy" "eks_resiliency_fis_policy" {
           "s3:PutObject",
           "s3:GetBucketLocation",
           "s3:ListAllMyBuckets",
+          "s3:GetObject",
+          "s3:ListBucket",
           "cloudwatch:PutMetricData",
+          "cloudwatch:GetMetricStatistics",
+          "cloudwatch:ListMetrics",
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
-          "logs:PutLogEvents"
+          "logs:PutLogEvents",
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams",
+          "lambda:InvokeFunction"
         ]
         Resource = "*"
-      },
-      {
-        Effect = "Allow"
-        Action = "iam:PassRole"
-        Resource = aws_iam_role.fis_role.arn
       }
     ]
   })
 }
 
-// Attach custom policy to the role
-resource "aws_iam_role_policy_attachment" "eks_resiliency_fis_policy_attachment" {
-  policy_arn = aws_iam_policy.eks_resiliency_fis_policy.arn
-  role       = aws_iam_role.fis_role.name
+# Attach custom policy to the Canary role
+resource "aws_iam_role_policy_attachment" "eks_resiliency_canary_policy_attachment" {
+  policy_arn = aws_iam_policy.eks_resiliency_canary_policy.arn
+  role       = aws_iam_role.canary_role.name
+}
+
+# EKS Cluster IAM Role
+resource "aws_iam_role" "eks_cluster_role" {
+  name = "eks-cluster-role-${var.addon_context.eks_cluster_id}-${random_id.suffix.hex}"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "eks.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# Attach required policies to EKS Cluster role
+resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  role       = aws_iam_role.eks_cluster_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "eks_vpc_resource_controller" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+  role       = aws_iam_role.eks_cluster_role.name
 }
