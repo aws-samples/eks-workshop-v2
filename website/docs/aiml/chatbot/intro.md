@@ -1,4 +1,3 @@
-
 ---
 title: "Understanding the Llama2 Chatbot Model"
 sidebar_position: 20

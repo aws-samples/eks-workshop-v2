@@ -1,4 +1,3 @@
-
 ---
 title: "Deploying the Llama-2-Chat Model on Ray Serve"
 sidebar_position: 30

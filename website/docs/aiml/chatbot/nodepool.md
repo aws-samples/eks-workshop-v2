@@ -1,4 +1,3 @@
-
 ---
 title: "Provisioning Node Pools for LLM Workloads"
 sidebar_position: 20

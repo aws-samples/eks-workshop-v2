@@ -1,4 +1,3 @@
-
 ---
 title: "Install KubeRay and Neuron Devices"
 sidebar_position: 10
