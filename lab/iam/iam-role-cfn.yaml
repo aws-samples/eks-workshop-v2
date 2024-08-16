@@ -71,6 +71,9 @@ Resources:
               - iam:TagUser
               - iam:GetUser
               - iam:ListGroupsForUser
+              - iam:AttachUserPolicy
+              - iam:DetachUserPolicy
+              - iam:ListAttachedUserPolicies
               - iam:*SSHPublicKey
             Resource:
               - arn:aws:iam::${Account}:user/${Env}*
@@ -287,7 +290,7 @@ Resources:
     Properties:
       Roles:
         - !Ref EksWorkshopIdeRole
-      ManagedPolicyName: ${Env}-labs-ec2
+      ManagedPolicyName: ${Env}-ide-labs
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -425,17 +428,6 @@ Resources:
               - arn:aws:ecr:${Region}:${Account}:repository/${Env}*
           - Effect: Allow
             Action:
-              - codepipeline:ListTagsForResource
-            Resource: ["*"]
-          - Effect: Allow
-            Action:
-              - codepipeline:CreatePipeline
-              - codepipeline:DeletePipeline
-              - codepipeline:Get*
-            Resource:
-              - arn:aws:codepipeline:${Region}:${Account}:${Env}*
-          - Effect: Allow
-            Action:
               - guardduty:CreateDetector
               - guardduty:DeleteDetector
               - guardduty:ListDetectors
@@ -532,3 +524,18 @@ Resources:
               - codecommit:TagResource
               - codecommit:ListTagsForResource
             Resource: arn:aws:codecommit:${Region}:${Account}:${Env}*
+          - Effect: Allow
+            Action:
+              - codebuild:CreateProject
+              - codebuild:DeleteProject
+              - codebuild:BatchGetProjects
+            Resource: arn:aws:codebuild:${Region}:${Account}:project/${Env}*
+          - Effect: Allow
+            Action:
+              - codepipeline:CreatePipeline
+              - codepipeline:DeletePipeline
+              - codepipeline:GetPipeline
+              - codepipeline:GetPipelineState
+              - codepipeline:ListTagsForResource
+              - codepipeline:TagResource
+            Resource: arn:aws:codepipeline:${Region}:${Account}:${Env}*
