@@ -7,7 +7,7 @@ With both node pools provisioned, we can now proceed to deploy the Llama2 chatbo
 
 Let's begin by deploying the `ray-service-llama2.yaml` file:
 
-```bash
+```bash wait=5
 $ kubectl apply -k ~/environment/eks-workshop/modules/aiml/chatbot/ray-service-llama2-chatbot
 namespace/llama2 created
 rayservice.ray.io/llama2 created
@@ -29,7 +29,7 @@ This configuration accomplishes the following:
 
 After applying the configurations, we'll monitor the progress of the head and worker pods:
 
-```bash
+```bash wait=5
 $ kubectl get pod -n llama2
 NAME                                            READY   STATUS    RESTARTS   AGE
 pod/llama2-raycluster-fcmtr-head-bf58d          1/1     Running   0          67m
@@ -42,12 +42,12 @@ It may take up to 10 minutes for both pods to be ready.
 
 We can wait for the pods to be ready using the following command:
 
-```bash
+```bash timeout=600
 $ kubectl wait pod \
 --all \
 --for=condition=Ready \
 --namespace=llama2 \
---timeout=10m
+--timeout=15m
 pod/llama2-raycluster-fcmtr-head-bf58d met
 pod/llama2-raycluster-fcmtr-worker-inf2-lgnb2 met
 ```
@@ -78,7 +78,7 @@ Configuring RayService may take up to 10 minutes.
 
 We can wait for the RayService to be running with this command:
 
-```bash
+```bash wait=5 timeout=600
 $ kubectl wait --for=jsonpath='{.status.serviceStatus}'=Running rayservice/llama2 -n llama2 --timeout=10m
 rayservice.ray.io/llama2 condition met
 ```
