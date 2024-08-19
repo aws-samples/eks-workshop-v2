@@ -463,6 +463,7 @@ Resources:
               - logs:List*
             Resource:
               - arn:aws:logs:${Region}:${Account}:log-group:${Env}*
+              - arn:aws:logs:${Region}:${Account}:log-group:/${Env}*
               - arn:aws:logs:${Region}:${Account}:log-group:/aws/eks/${Env}*
           - Effect: Allow
             Action:
