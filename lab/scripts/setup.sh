@@ -14,6 +14,8 @@ if [ ! -z "$CLOUD9_ENVIRONMENT_ID" ]; then
   echo "aws cloud9 update-environment --environment-id $CLOUD9_ENVIRONMENT_ID --managed-credentials-action DISABLE &> /dev/null || true" > ~/.bashrc.d/c9.bash
 fi
 
+AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
+
 cat << EOT > ~/.bashrc.d/aws.bash
 export AWS_PAGER=""
 export AWS_REGION="${AWS_REGION}"
