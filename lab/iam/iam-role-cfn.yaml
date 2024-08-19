@@ -391,6 +391,7 @@ Resources:
               - lambda:GetRuntimeManagementConfig
               - lambda:ListVersionsByFunction
               - lambda:RemovePermission
+              - lambda:TagResource
             Resource:
               - arn:aws:lambda:${Region}:${Account}:function:${Env}*
           - Effect: Allow
@@ -510,6 +511,7 @@ Resources:
               - ssm:AddTagsToResource
             Resource:
               - arn:aws:ssm:${Region}:${Account}:parameter/${Env}*
+              - arn:aws:ssm:${Region}:${Account}:parameter/eksworkshop/${Env}*
           - Effect: Allow
             Action:
               - ssm:GetParameter
