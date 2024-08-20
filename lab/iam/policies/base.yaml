@@ -32,6 +32,14 @@ Statement:
     Resource: ["*"]
   - Effect: Allow
     Action:
+      - autoscaling:UpdateAutoScalingGroup
+    Resource: ["*"]
+    Condition:
+      StringLike:
+        aws:ResourceTag/eks:cluster-name:
+          - ${Env}
+  - Effect: Allow
+    Action:
       - autoscaling:Get*
       - autoscaling:Describe*
     Resource: ["*"]
