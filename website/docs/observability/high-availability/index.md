@@ -1,6 +1,7 @@
 ---
 title: "Resiliency"
-sidebar_position: 11
+sidebar_position: 70
+sidebar_custom_props: { "module": true }
 weight: 10
 ---
 

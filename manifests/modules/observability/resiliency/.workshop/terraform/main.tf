@@ -93,7 +93,7 @@ resource "kubernetes_role_binding" "chaos_mesh_rolebinding" {
 # Add AWS Load Balancer controller
 resource "helm_release" "aws_load_balancer_controller" {
   name       = "aws-load-balancer-controller"
-  repository = "https:#aws.github.io/eks-charts"
+  repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
   namespace  = "kube-system"
   version    = var.load_balancer_controller_chart_version
@@ -116,15 +116,15 @@ resource "helm_release" "aws_load_balancer_controller" {
 
 
 # Chaos Mesh Helm Release
-resource "helm_release" "chaos_mesh" {
-  name       = "chaos-mesh"
-  repository = "https:#charts.chaos-mesh.org"
-  chart      = "chaos-mesh"
-  namespace  = "chaos-mesh"
-  version    = "2.5.1"
-
-  create_namespace = true
-}
+#resource "helm_release" "chaos_mesh" {
+#  name       = "chaos-mesh"
+#  repository = "https://charts.chaos-mesh.org"
+#  chart      = "chaos-mesh"
+#  namespace  = "chaos-mesh"
+#  version    = "2.5.1"
+#
+#  create_namespace = true
+#}
 
 # FIS IAM role
 resource "random_id" "suffix" {
@@ -141,10 +141,7 @@ resource "aws_iam_role" "fis_role" {
         Effect = "Allow"
         Principal = {
           Service = [
-            "fis.amazonaws.com",
-            # for second region
-            "ec2.amazonaws.com",
-            "eks.amazonaws.com"
+            "fis.amazonaws.com"
           ]
         }
         Action = "sts:AssumeRole"
@@ -241,6 +238,8 @@ resource "aws_iam_policy" "eks_resiliency_fis_policy" {
           "autoscaling:DescribeAutoScalingGroups",
           "autoscaling:DescribeAutoScalingInstances",
           "autoscaling:SetDesiredCapacity",
+          "autoscaling:SuspendProcesses",
+          "autoscaling:ResumeProcesses",
           "logs:CreateLogDelivery",
           "logs:GetLogDelivery",
           "logs:UpdateLogDelivery",
@@ -249,7 +248,8 @@ resource "aws_iam_policy" "eks_resiliency_fis_policy" {
           "ssm:StartAutomationExecution",
           "ssm:GetAutomationExecution",
           "cloudwatch:DescribeAlarms",
-          "cloudwatch:GetMetricData"
+          "cloudwatch:GetMetricData",
+          "iam:PassRole"
         ]
         Resource = "*"
       },
@@ -331,7 +331,15 @@ resource "aws_iam_policy" "eks_resiliency_canary_policy" {
           "logs:PutLogEvents",
           "logs:DescribeLogGroups",
           "logs:DescribeLogStreams",
-          "lambda:InvokeFunction"
+          "lambda:CreateFunction",
+          "lambda:UpdateFunctionCode",
+          "lambda:UpdateFunctionConfiguration",
+          "lambda:GetFunction",
+          "lambda:DeleteFunction",
+          "lambda:InvokeFunction",
+          "lambda:AddPermission",
+          "lambda:RemovePermission",
+          "iam:PassRole"
         ]
         Resource = "*"
       }
@@ -377,3 +385,17 @@ resource "aws_iam_role_policy_attachment" "eks_vpc_resource_controller" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
   role       = aws_iam_role.eks_cluster_role.name
 }
+
+# Executable Scripts
+resource "null_resource" "chmod_all_scripts_bash" {
+  provisioner "local-exec" {
+    command = "find ${var.script_dir} -type f -exec chmod +x {} + || true"
+  }
+}
+
+# Add Region terraform
+data "aws_region" "current" {}
+
+
+
+

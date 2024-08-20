@@ -1,6 +1,6 @@
 ---
 title: "Simulating Pod Failure"
-sidebar_position: 2
+sidebar_position: 3
 description: "Simulate pod failure in your environment using ChaosMesh to test the resiliency of your application."
 ---
 
@@ -17,15 +17,28 @@ The `pod-failure.sh` script utilizes Chaos Mesh, a powerful chaos engineering pl
 This experiment is repeatable, allowing you to run it multiple times to ensure consistent behavior and to test various scenarios or configurations. This is the script we will be using:
 
 ```file
-manifests/modules/resiliency/scripts/pod-failure.sh
+manifests/modules/observability/resiliency/scripts/pod-failure.sh
 ```
 
 ## Running the Experiment
 
 To simulate the pod failure and monitor its effects, run the following command:
 
-```bash
+```bash timeout=90 wait=30
 $ $SCRIPT_DIR/pod-failure.sh && SECONDS=0; while [ $SECONDS -lt 30 ]; do clear; $SCRIPT_DIR/get-pods-by-az.sh; sleep 1; done
+------us-west-2a------
+  ip-10-42-127-82.us-west-2.compute.internal:
+       ui-6dfb84cf67-dsp55   1/1   Running   0     2m10s
+       ui-6dfb84cf67-gzd9s   1/1   Running   0     8s
+
+------us-west-2b------
+  ip-10-42-153-179.us-west-2.compute.internal:
+       ui-6dfb84cf67-2pxnp   1/1   Running   0     2m13s
+
+------us-west-2c------
+  ip-10-42-186-246.us-west-2.compute.internal:
+       ui-6dfb84cf67-n8x4f   1/1   Running   0     2m17s
+       ui-6dfb84cf67-wljth   1/1   Running   0     2m17s
 ```
 
 This command does the following:
@@ -38,8 +51,14 @@ During the experiment, you should observe one pod disappearing and then reappear
 
 To get a more detailed view of the pods in the `ui` namespace, use the following command:
 
-```bash
+```bash wait=15
 $ kubectl get pods -n ui -o wide
+NAME                  READY   STATUS    RESTARTS   AGE     IP              NODE                                          NOMINATED NODE   READINESS GATES
+ui-6dfb84cf67-2pxnp   1/1     Running   0          2m56s   10.42.154.151   ip-10-42-153-179.us-west-2.compute.internal   <none>           <none>
+ui-6dfb84cf67-dsp55   1/1     Running   0          2m56s   10.42.126.161   ip-10-42-127-82.us-west-2.compute.internal    <none>           <none>
+ui-6dfb84cf67-gzd9s   1/1     Running   0          71s     10.42.126.246   ip-10-42-127-82.us-west-2.compute.internal    <none>           <none>
+ui-6dfb84cf67-n8x4f   1/1     Running   0          2m56s   10.42.190.250   ip-10-42-186-246.us-west-2.compute.internal   <none>           <none>
+ui-6dfb84cf67-wljth   1/1     Running   0          2m56s   10.42.190.249   ip-10-42-186-246.us-west-2.compute.internal   <none>           <none>
 ```
 
 This will show you the status, IP addresses, and nodes for each pod in the `ui` namespace.
@@ -48,11 +67,13 @@ This will show you the status, IP addresses, and nodes for each pod in the `ui` 
 
 An essential aspect of this experiment is to ensure that your retail store application remains operational throughout the pod failure and recovery process. To verify the availability of the retail store, use the following command to fetch and access the store's URL:
 
-```bash
+```bash timeout=600 wait=30
 $ wait-for-lb $(kubectl get ingress -n ui -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
+Waiting for k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com...
+You can now access http://k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com
 ```
 
-This command retrieves the load balancer hostname for the ingress and waits for it to become available. Once ready, you can access the retail store through this URL to confirm that it's still functioning correctly despite the simulated pod failure.
+Once ready, you can access the retail store through this URL to confirm that it's still functioning correctly despite the simulated pod failure.
 
 ## Conclusion
 

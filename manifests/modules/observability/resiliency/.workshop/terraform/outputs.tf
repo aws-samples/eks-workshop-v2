@@ -5,10 +5,10 @@ output "environment_variables" {
     LBC_ROLE_ARN         = module.eks_blueprints_addons.aws_load_balancer_controller.iam_role_arn
     FIS_ROLE_ARN         = aws_iam_role.fis_role.arn
     RANDOM_SUFFIX        = random_id.suffix.hex
-    SCRIPT_DIR           = "/manifests/modules/resiliency/scripts"
+    SCRIPT_DIR           = var.script_dir
     CANARY_ROLE_ARN      = aws_iam_role.canary_role.arn
     EKS_CLUSTER_ROLE_ARN = aws_iam_role.eks_cluster_role.arn
-    PRIMARY_REGION       = "us-west-2"
-    SECONDARY_REGION     = "us-east-2"
+    AWS_REGION           = data.aws_region.current.name
   }
 }
+

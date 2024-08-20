@@ -41,3 +41,9 @@ variable "load_balancer_controller_chart_version" {
   default = "1.8.1"
 }
 
+# Executable Scripts
+variable "script_dir" {
+  description = "Directory where scripts are located"
+  type        = string
+  default     = "/manifests/modules/observability/resiliency/scripts"
+}

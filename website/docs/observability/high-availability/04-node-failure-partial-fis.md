@@ -1,6 +1,6 @@
 ---
 title: "Simulating Partial Node Failure with FIS"
-sidebar_position: 4
+sidebar_position: 5
 description: "Simulate a partial node failures in your Kubernetes environment using AWS Fault Injection Simulator to test application resiliency."
 ---
 
@@ -29,18 +29,20 @@ For more information on AWS FIS, check out:
 
 - [What is AWS Fault Injection Service?](https://docs.aws.amazon.com/fis/latest/userguide/what-is.html)
 - [AWS Fault Injection Simulator Console](https://console.aws.amazon.com/fis/home)
+- [AWS Systems Manager, Automation](https://console.aws.amazon.com/systems-manager/automation/executions)
   :::
 
 ## Experiment Details
 
 This experiment differs from the previous manual node failure simulation in several ways:
 
-1. Automated execution: FIS manages the experiment, allowing for more controlled and repeatable tests.
-2. Partial failure: Instead of simulating a complete node failure, we're testing a scenario where a portion of the nodes fail.
-3. Scale: FIS allows us to target multiple nodes simultaneously, providing a more realistic large-scale failure scenario.
-4. Precision: We can specify exact percentages of instances to terminate, giving us fine-grained control over the experiment.
+1. **Automated execution**: FIS manages the experiment, allowing for more controlled and repeatable tests compared to the manual script execution in the previous experiment.
+2. **Partial failure**: Instead of simulating a complete failure of a single node, FIS allows us to simulate a partial failure across multiple nodes. This provides a more nuanced and realistic failure scenario.
+3. **Scale**: FIS allows us to target multiple nodes simultaneously. This allows us to test the resilience of our application at a larger scale compared to the single-node failure in the manual experiment.
+4. **Precision**: We can specify exact percentages of instances to terminate, giving us fine-grained control over the experiment. This level of control wasn't possible in the manual experiment, where we were limited to terminating entire nodes.
+5. **Minimal disruption**: The FIS experiment is designed to maintain service availability throughout the test, whereas the manual node failure might have caused temporary disruptions to the retail store's accessibility.
 
-In this experiment, FIS will terminate 66% of the instances in two node groups, simulating a significant partial failure of our cluster.
+These differences allows for a more comprehensive and realistic test of our application's resilience to failures, while maintaining better control over the experiment parameters. In this experiment, FIS will terminate 66% of the instances in two node groups, simulating a significant partial failure of our cluster. Similar to previous experiments, this experiment is also repeatable
 
 ## Creating the Node Failure Experiment
 
@@ -54,8 +56,20 @@ $ NODE_EXP_ID=$(aws fis create-experiment-template --cli-input-json '{"descripti
 
 Execute the FIS experiment to simulate the node failure and monitor the response:
 
-```bash
+```bash timeout=240 wait=30
 $ aws fis start-experiment --experiment-template-id $NODE_EXP_ID --output json && SECONDS=0; while [ $SECONDS -lt 180 ]; do clear; $SCRIPT_DIR/get-pods-by-az.sh; sleep 1; done
+------us-west-2a------
+  ip-10-42-127-82.us-west-2.compute.internal:
+       ui-6dfb84cf67-s6kw4   1/1   Running   0     2m16s
+       ui-6dfb84cf67-vwk4x   1/1   Running   0     4m54s
+
+------us-west-2b------
+
+------us-west-2c------
+  ip-10-42-180-16.us-west-2.compute.internal:
+       ui-6dfb84cf67-29xtf   1/1   Running   0     79s
+       ui-6dfb84cf67-68hbw   1/1   Running   0     79s
+       ui-6dfb84cf67-plv9f   1/1   Running   0     79s
 ```
 
 This command triggers the node failure and monitors the pods for 3 minutes, allowing you to observe how the cluster responds to losing a significant portion of its capacity.
@@ -69,10 +83,25 @@ During the experiment, you should observe the following:
 Your retail url should stay operational unlike the node failure without FIS.
 
 :::note
-To verify clusters and rebalance pods, you can run:
+To verify nodes and rebalance pods, you can run:
 
-```bash
+```bash timeout=240 wait=30
 $ $SCRIPT_DIR/verify-cluster.sh
+==== Final Pod Distribution ====
+
+------us-west-2a------
+  ip-10-42-127-82.us-west-2.compute.internal:
+       ui-6dfb84cf67-v2xj6   1/1   Running   0     14s
+
+------us-west-2b------
+  ip-10-42-148-187.us-west-2.compute.internal:
+       ui-6dfb84cf67-4xq4n   1/1   Running   0     16s
+       ui-6dfb84cf67-56d6d   1/1   Running   0     16s
+
+------us-west-2c------
+  ip-10-42-180-16.us-west-2.compute.internal:
+       ui-6dfb84cf67-86mpz   1/1   Running   0     18s
+       ui-6dfb84cf67-nhx4j   1/1   Running   0     18s
 ```
 
 :::
@@ -81,8 +110,10 @@ $ $SCRIPT_DIR/verify-cluster.sh
 
 Ensure that your retail store application remains operational throughout the partial node failure. Use the following command to check its availability:
 
-```bash
+```bash timeout=600 wait=30
 $ wait-for-lb $(kubectl get ingress -n ui -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
+Waiting for k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com...
+You can now access http://k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com
 ```
 
 :::tip
@@ -90,10 +121,6 @@ The retail url may take 10 minutes to become operational.
 :::
 
 Despite the partial node failure, the retail store should continue to serve traffic, demonstrating the resilience of your deployment setup.
-
-:::caution
-Partial node failures test the limits of your application's failover capabilities. Monitor and determine how well your applications and services recover from such events.
-:::
 
 ## Conclusion
 
@@ -113,9 +140,9 @@ Key takeaways from this experiment:
 
 By leveraging AWS FIS for such experiments, you gain several advantages:
 
-1. Repeatability: You can run this experiment multiple times to ensure consistent behavior.
-2. Automation: FIS allows you to schedule regular resilience tests, ensuring your system maintains its fault-tolerant capabilities over time.
-3. Comprehensive testing: You can create more complex scenarios involving multiple AWS services to test your entire application stack.
-4. Controlled chaos: FIS provides a safe, managed environment for conducting chaos engineering experiments without risking unintended damage to your production systems.
+1. **Repeatability**: You can run this experiment multiple times to ensure consistent behavior.
+2. **Automation**: FIS allows you to schedule regular resilience tests, ensuring your system maintains its fault-tolerant capabilities over time.
+3. **Comprehensive testing**: You can create more complex scenarios involving multiple AWS services to test your entire application stack.
+4. **Controlled chaos**: FIS provides a safe, managed environment for conducting chaos engineering experiments without risking unintended damage to your production systems.
 
 Regular execution of such experiments helps build confidence in your system's resilience and provides valuable insights for continuous improvement of your architecture and operational procedures.
