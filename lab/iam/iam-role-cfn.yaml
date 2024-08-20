@@ -396,6 +396,10 @@ Resources:
               - arn:aws:lambda:${Region}:${Account}:function:${Env}*
           - Effect: Allow
             Action:
+              - lambda:GetLayerVersion
+            Resource: ["*"]
+          - Effect: Allow
+            Action:
               - es:CreateDomain
               - es:DeleteDomain
               - es:DescribeDomain
