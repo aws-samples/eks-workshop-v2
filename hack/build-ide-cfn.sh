@@ -8,12 +8,8 @@ outfile=$(mktemp)
 
 cd lab
 
-export Account='${AWS::AccountId}'
-export Region='${AWS::Region}'
-export Environment='eks-workshop'
+export Env="${EKS_CLUSTER_NAME}"
 
-cat cfn/eks-workshop-vscode-cfn.yaml | yq '(.. | select(has("file"))) |= (load(.file) | (.Statement[].Resource[] |= {"Fn::Sub": [., {}]})  )' | envsubst '$Account $Region $Environment' > $outfile
-
-# 
+cat cfn/eks-workshop-vscode-cfn.yaml | yq '(.. | select(has("file"))) |= (load(.file))' | envsubst '$Env' > $outfile
 
 echo "Output file: $outfile"

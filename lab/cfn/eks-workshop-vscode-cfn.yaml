@@ -387,16 +387,59 @@ Resources:
               - Effect: Allow
                 Action: secretsmanager:ListSecrets
                 Resource: "*"
-        - PolicyName: base
-          PolicyDocument:
-            file: ./iam/iam-policy-base.yaml
-        - PolicyName: labs
-          PolicyDocument:
-            file: ./iam/iam-policy-labs.yaml
 
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
       Path: "/"
+
+  EksWorkshopIamPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${AWS::StackName}-iam
+      PolicyDocument:
+        file: ./iam/policies/iam.yaml
+
+  EksWorkshopBasePolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${AWS::StackName}-base
+      PolicyDocument:
+        file: ./iam/policies/base.yaml
+
+  EksWorkshopEc2Policy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${AWS::StackName}-ec2
+      PolicyDocument:
+        file: ./iam/policies/ec2.yaml
+
+  EksWorkshopLabsPolicy1:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${AWS::StackName}-labs1
+      PolicyDocument:
+        file: ./iam/policies/labs1.yaml
+
+  EksWorkshopLabsPolicy2:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${AWS::StackName}-labs2
+      PolicyDocument:
+        file: ./iam/policies/labs2.yaml
 
   EksWorkshopIdeInstanceProfile:
     Type: AWS::IAM::InstanceProfile
