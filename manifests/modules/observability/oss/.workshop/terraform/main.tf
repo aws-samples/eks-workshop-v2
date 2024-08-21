@@ -143,6 +143,8 @@ module "loki" {
       deploymentMode: SingleBinary
       loki:
         auth_enabled: false
+        limits_config:
+          allow_structured_metadata: true
         commonConfig:
           replication_factor: 1
         storage:
