@@ -89,20 +89,22 @@ $ aws ec2 describe-subnets --filters "Name=tag:alpha.eksctl.io/cluster-name,Valu
 **2** Then by adding in the subnet ID into the route tables CLI filter one at a time, `--filters 'Name=association.subnet-id,Values=subnet-xxxxxxxxxxxxxxxxx'`, identify which subnets are public.
 
 ```bash
+$
 aws ec2 describe-route-tables --filters 'Name=association.subnet-id,Values=<ENTER_SUBNET_ID_HERE>' --query 'RouteTables[].Routes[].[DestinationCidrBlock,GatewayId]'
+
 ```
 
 Here a script that will help to iterate over the list of subnets
 
 ```bash
-
 $ for subnet_id in $(aws ec2 describe-subnets --filters "Name=tag:alpha.eksctl.io/cluster-name,Values=${EKS_CLUSTER_NAME}" --query 'Subnets[].SubnetId[]' --output text); do echo "Subnect: ${subnet_id}"; aws ec2 describe-route-tables --filters "Name=association.subnet-id,Values=${subnet_id}" --query 'RouteTables[].Routes[].[DestinationCidrBlock,GatewayId]'; done
 ```
 
 If the output shows `0.0.0.0/0` route to an Internet gateway ID, this is a public subnet. See below example.
 
 ```bash
-WSParticipantRole:~/environment $ aws ec2 describe-route-tables --filters "Name=association.subnet-id,Values=subnet-xxxxxxxxxxxxx0470" --query 'RouteTables[].Routes[].[DestinationCidrBlock,GatewayId]'
+$
+aws ec2 describe-route-tables --filters "Name=association.subnet-id,Values=subnet-xxxxxxxxxxxxx0470" --query 'RouteTables[].Routes[].[DestinationCidrBlock,GatewayId]'
 [
     [
         "10.42.0.0/16",
@@ -125,7 +127,9 @@ $ aws ec2 describe-subnets --filters 'Name=tag:kubernetes.io/role/elb,Values=1' 
 **4** Then add the correct tags. To help you a little bit, we have added the 3 public subnets to the `env` variables with the names `PUBLIC_SUBNET_1, PUBLIC_SUBNET_2 and PUBLIC_SUBNET_3`
 
 ```bash
+$
 aws ec2 create-tags --resources subnet-xxxxxxxxxxxxxxxxx subnet-xxxxxxxxxxxxxxxxx subnet-xxxxxxxxxxxxxxxxx --tags 'Key="kubernetes.io/role/elb",Value=1'
+
 ```
 
 ```bash
