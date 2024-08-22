@@ -1,6 +1,6 @@
 ---
 title: "EKS open source observability"
-sidebar_position: 40
+sidebar_position: 41
 sidebar_custom_props: { "module": true }
 description: "Leverage open source observability solutions like Prometheus and Grafana with Amazon Elastic Kubernetes Service."
 ---
