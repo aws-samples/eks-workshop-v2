@@ -1,10 +1,8 @@
 ---
 title: "Simulating Complete Node Failure with FIS"
-sidebar_position: 6
+sidebar_position: 5
 description: "Demonstrates the impact of a complete node failure on a Kubernetes environment using AWS Fault Injection Simulator."
 ---
-
-# Simulating Complete Node Failure with FIS
 
 ## Overview
 
@@ -31,7 +29,8 @@ $ FULL_NODE_EXP_ID=$(aws fis create-experiment-template --cli-input-json '{"desc
 Execute the FIS experiment and monitor the cluster's response:
 
 ```bash timeout=420 wait=30
-$ aws fis start-experiment --experiment-template-id $FULL_NODE_EXP_ID --output json && SECONDS=0; while [ $SECONDS -lt 360 ]; do clear; $SCRIPT_DIR/get-pods-by-az.sh; sleep 1; done
+$ aws fis start-experiment --experiment-template-id $FULL_NODE_EXP_ID --output json && $SCRIPT_DIR/node-failure.sh && timeout 360s $SCRIPT_DIR/get-pods-by-az.sh
+
 ------us-west-2a------
   ip-10-42-106-250.us-west-2.compute.internal:
        No resources found in ui namespace.
@@ -60,23 +59,12 @@ Due to the severity of the experiment, the retail store url will not stay operat
 :::note
 To verify nodes and rebalance pods, you can run:
 
-```bash timeout=240 wait=30
-$ $SCRIPT_DIR/verify-cluster.sh
-==== Final Pod Distribution ====
-
-------us-west-2a------
-  ip-10-42-106-250.us-west-2.compute.internal:
-       ui-6dfb84cf67-4fjhh   1/1   Running   0     15s
-       ui-6dfb84cf67-gkrtn   1/1   Running   0     14s
-
-------us-west-2b------
-  ip-10-42-141-133.us-west-2.compute.internal:
-       ui-6dfb84cf67-7qnkz   1/1   Running   0     16s
-       ui-6dfb84cf67-n58b9   1/1   Running   0     16s
-
-------us-west-2c------
-  ip-10-42-179-59.us-west-2.compute.internal:
-       ui-6dfb84cf67-lvdc2   1/1   Running   0     18s
+```bash timeout=300 wait=30
+$ EXPECTED_NODES=3 && while true; do ready_nodes=$(kubectl get nodes --no-headers | grep " Ready" | wc -l); if [ "$ready_nodes" -eq "$EXPECTED_NODES" ]; then echo "All $EXPECTED_NODES expected nodes are ready."; echo "Listing the ready nodes:"; kubectl get nodes | grep " Ready"; break; else echo "Waiting for all $EXPECTED_NODES nodes to be ready... (Currently $ready_nodes are ready)"; sleep 10; fi; done
+$ kubectl delete deployment ui -n ui
+$ kubectl apply -k /manifests/modules/observability/resiliency/high-availability/config/
+$ sleep 30
+$ timeout 5s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 ```
 
 :::
@@ -85,8 +73,9 @@ $ $SCRIPT_DIR/verify-cluster.sh
 
 Check the retail store application's recovery:
 
-```bash timeout=600 wait=30
+```bash timeout=900 wait=30
 $ wait-for-lb $(kubectl get ingress -n ui -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
+
 Waiting for k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com...
 You can now access http://k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com
 ```

@@ -25,7 +25,7 @@ wait_for_condition() {
 }
 
 print_header "Checking Current Pod Distribution"
-$SCRIPT_DIR/get-pods-by-az.sh
+timeout 5s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 
 print_header "Waiting for nodes to be Ready"
 total_nodes=$(kubectl get nodes --no-headers | wc -l)
@@ -39,7 +39,7 @@ else
 fi
 
 print_header "Checking Current Pod Distribution"
-$SCRIPT_DIR/get-pods-by-az.sh
+timeout 5s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 
 print_header "Node Information"
 kubectl get nodes -o wide
@@ -100,7 +100,7 @@ else
 fi
 
 print_header "Final Pod Distribution"
-$SCRIPT_DIR/get-pods-by-az.sh
+timeout 5s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 
 echo
 if [ $node_count -gt 0 ] && [ $current_pod_count -eq $DESIRED_REPLICAS ]; then

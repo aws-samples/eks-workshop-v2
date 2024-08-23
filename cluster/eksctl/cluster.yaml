@@ -32,7 +32,7 @@ managedNodeGroups:
     instanceType: m5.large
     privateNetworking: true
     # had to remove use make create
-    releaseVersion: "1.30.0-20240625"
+    #releaseVersion: "1.30.0-20240625"
     updateConfig:
       maxUnavailablePercentage: 50
     labels:

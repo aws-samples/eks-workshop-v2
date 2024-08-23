@@ -5,7 +5,7 @@
 unique_id=$(date +%s)
 
 # Create a YAML configuration for the PodChaos resource
-cat <<EOF > pod-failure.yaml
+kubectl apply -f - <<EOF
 apiVersion: chaos-mesh.org/v1alpha1
 kind: PodChaos
 metadata:
@@ -23,4 +23,4 @@ spec:
 EOF
 
 # Apply the PodChaos configuration to simulate the failure
-kubectl apply -f pod-failure.yaml
+#kubectl apply -f pod-failure.yaml

@@ -1,9 +1,27 @@
 ---
-title: "Resiliency"
+title: "Chaos Engineering with EKS"
 sidebar_position: 70
 sidebar_custom_props: { "module": true }
 weight: 10
 ---
+
+:::tip Before you start
+Prepare your environment for this section:
+
+```bash timeout=900 wait=30
+$ kubectl delete deployment ui -n ui
+$ prepare-environment observability/resiliency
+```
+
+This will make the following changes to your lab environment:
+
+- Create the ingress load balancer
+- Create RBAC and Rolebindings
+- Install AWS Load Balancer controller
+- Create an IAM role for AWS Fault Injection Simulator (FIS)
+
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/resiliency/.workshop/terraform).
+:::
 
 ## What is Resiliency?
 
@@ -24,13 +42,17 @@ Amazon EKS provides a managed Kubernetes platform, but it's still crucial to des
 4. **Cost Efficiency**: Avoid overprovisioning by building systems that can handle variable loads and partial failures.
 5. **Compliance**: Meet regulatory requirements for uptime and data protection in various industries.
 
-## Resiliency Scenarios Covered in this Chapter
+## Lab Overview and Resiliency Scenarios
 
-We'll explore several scenarios to show resiliency by by simulating and responding to:
+In this lab, we'll explore various high availability scenarios and test the resilience of your EKS environment. Through a series of experiments, you'll gain hands-on experience in handling different types of failures and understanding how your Kubernetes cluster responds to these challenges.
 
-1. Pod Failures
-2. Node Failures
-3. Availability Zone Failures
+The simulate and respond to:
+
+1. **Pod Failures**: Using ChaosMesh to test your application's resilience to individual pod failures.
+2. **Node Failures**: Manually simulating a node failure to observe Kubernetes' self-healing capabilities.
+   - Without AWS Fault Injection Simulator: Manually simulating a node failure to observe Kubernetes' self-healing capabilities.
+   - With AWS Fault Injection Simulator: Leveraging AWS Fault Injection Simulator for partial and complete node failure scenarios.
+3. **Availability Zone Failure**: Simulating the loss of an entire AZ to validate your multi-AZ deployment strategy.
 
 ## What You'll Learn
 
@@ -40,6 +62,13 @@ By the end of this chapter, you'll be able to:
 - Understand how Kubernetes handles different types of failures (pod, node, and availability zone)
 - Observe the self-healing capabilities of Kubernetes in action
 - Gain practical experience in chaos engineering for EKS environments
+
+These experiments will help you understand:
+
+- How Kubernetes handles different types of failures
+- The importance of proper resource allocation and pod distribution
+- The effectiveness of your monitoring and alerting systems
+- How to improve your application's fault tolerance and recovery strategies
 
 ## Tools and Technologies
 
@@ -59,6 +88,13 @@ Chaos engineering is the practice of intentionally introducing controlled failur
 3. Improve your incident response procedures
 4. Foster a culture of resilience within your organization
 
+By the end of this lab, you'll have a comprehensive understanding of your EKS environment's high availability capabilities and areas for potential improvement.
+
 :::info
-For more information on AWS Resiliency features in greater depth, we recommend checking out [Operating resilient workloads on Amazon EKS](https://aws.amazon.com/blogs/containers/operating-resilient-workloads-on-amazon-eks/)
-:::
+For more information on AWS Resiliency features in greater depth, we recommend checking out:
+
+- [Ingress Load Balancer](/docs/fundamentals/exposing/ingress/)
+- [Integrating with Kubernetes RBAC](/docs/security/cluster-access-management/kubernetes-rbac)
+- [AWS Fault Injection Simulator](https://aws.amazon.com/fis/)
+- [Operating resilient workloads on Amazon EKS](https://aws.amazon.com/blogs/containers/operating-resilient-workloads-on-amazon-eks/)
+  :::

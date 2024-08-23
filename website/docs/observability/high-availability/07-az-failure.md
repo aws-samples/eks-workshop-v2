@@ -1,10 +1,8 @@
 ---
 title: "Simulating AZ Failure"
-sidebar_position: 8
+sidebar_position: 7
 description: "This experiment simulates an Availability Zone failure to test the resilience of your Kubernetes environment hosted on AWS EKS."
 ---
-
-# Simulating AZ Failure
 
 ## Overview
 
@@ -23,7 +21,8 @@ $ ZONE_EXP_ID=$(aws fis create-experiment-template --cli-input-json '{"descripti
 Execute the FIS experiment to simulate the AZ failure:
 
 ```bash timeout=560 wait=30
-$ aws fis start-experiment --experiment-template-id $ZONE_EXP_ID --output json && SECONDS=0; while [ $SECONDS -lt 480 ]; do clear; $SCRIPT_DIR/get-pods-by-az.sh; sleep 1; done
+$ aws fis start-experiment --experiment-template-id $ZONE_EXP_ID --output json && $SCRIPT_DIR/node-failure.sh && timeout 480s $SCRIPT_DIR/get-pods-by-az.sh
+
 ------us-west-2a------
   ip-10-42-100-4.us-west-2.compute.internal:
        ui-6dfb84cf67-h57sp   1/1   Running   0     12m
@@ -60,32 +59,14 @@ During the experiment, you should observe the following sequence of events:
 During this time, the retail url will stay available showimg how resilient EKS is to AZ failures.
 
 :::note
-To verify clusters and rebalance pods, you can run:
+To verify nodes and rebalance pods, you can run:
 
-```bash timeout=240 wait=30
-$ $SCRIPT_DIR/AZ-verify-clusters.sh
-==== Final Pod Distribution ====
-
-------us-west-2a------
-  ip-10-42-100-4.us-west-2.compute.internal:
-       ui-6dfb84cf67-lwd86   1/1   Running   0     16s
-  ip-10-42-111-144.us-west-2.compute.internal:
-       ui-6dfb84cf67-hfrcf   1/1   Running   0     17s
-       ui-6dfb84cf67-qdr4s   1/1   Running   0     17s
-
-------us-west-2b------
-  ip-10-42-141-243.us-west-2.compute.internal:
-       ui-6dfb84cf67-dxtg4   1/1   Running   0     19s
-  ip-10-42-150-255.us-west-2.compute.internal:
-       ui-6dfb84cf67-jvvg6   1/1   Running   0     20s
-       ui-6dfb84cf67-tmbzc   1/1   Running   0     20s
-
-------us-west-2c------
-  ip-10-42-164-250.us-west-2.compute.internal:
-       ui-6dfb84cf67-k5mn8   1/1   Running   0     23s
-       ui-6dfb84cf67-zbm8j   1/1   Running   0     23s
-  ip-10-42-178-108.us-west-2.compute.internal:
-       ui-6dfb84cf67-svwqp   1/1   Running   0     24s
+```bash timeout=300 wait=30
+$ EXPECTED_NODES=6 && while true; do ready_nodes=$(kubectl get nodes --no-headers | grep " Ready" | wc -l); if [ "$ready_nodes" -eq "$EXPECTED_NODES" ]; then echo "All $EXPECTED_NODES expected nodes are ready."; echo "Listing the ready nodes:"; kubectl get nodes | grep " Ready"; break; else echo "Waiting for all $EXPECTED_NODES nodes to be ready... (Currently $ready_nodes are ready)"; sleep 10; fi; done
+$ kubectl delete deployment ui -n ui
+$ kubectl apply -k /manifests/modules/observability/resiliency/high-availability/config/
+$ sleep 30
+$ timeout 5s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 ```
 
 :::
@@ -94,8 +75,9 @@ $ $SCRIPT_DIR/AZ-verify-clusters.sh
 
 After the experiment, verify that your application remains operational despite the simulated AZ failure:
 
-```bash timeout=600 wait=30
+```bash timeout=900 wait=30
 $ wait-for-lb $(kubectl get ingress -n ui -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
+
 Waiting for k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com...
 You can now access http://k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com
 ```
