@@ -18,6 +18,7 @@ spec:
         prometheus.io/path: /metrics
         prometheus.io/port: "8080"
         prometheus.io/scrape: "true"
+        instrumentation.opentelemetry.io/inject-sdk: other/retail-store-go
       labels:
         app.kubernetes.io/name: catalog
         app.kubernetes.io/instance: catalog
@@ -40,6 +41,8 @@ spec:
                 secretKeyRef:
                   name: catalog-db
                   key: password
+            - name: OTEL_SERVICE_NAME
+              value: catalog-service
           envFrom:
             - configMapRef:
                 name: catalog

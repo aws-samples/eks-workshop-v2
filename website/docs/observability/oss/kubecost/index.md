@@ -1,8 +1,6 @@
 ---
 title: "Cost visibility with Kubecost"
-sidebar_position: 60
-sidebar_custom_props: { "module": true }
-description: "Gain cost visibility and insights for teams using Amazon Elastic Kubernetes Service with Kubecost."
+sidebar_position: 20
 ---
 
 Kubecost provides real-time cost visibility and insights for teams using Kubernetes, helping you continuously reduce your cloud costs.

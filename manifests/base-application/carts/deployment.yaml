@@ -18,6 +18,7 @@ spec:
         prometheus.io/path: /actuator/prometheus
         prometheus.io/port: "8080"
         prometheus.io/scrape: "true"
+        instrumentation.opentelemetry.io/inject-sdk: other/retail-store-java
       labels:
         app.kubernetes.io/name: carts
         app.kubernetes.io/instance: carts
@@ -34,6 +35,8 @@ spec:
               value: -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
             - name: SPRING_PROFILES_ACTIVE
               value: dynamodb
+            - name: OTEL_SERVICE_NAME
+              value: carts-service
           envFrom:
             - configMapRef:
                 name: carts

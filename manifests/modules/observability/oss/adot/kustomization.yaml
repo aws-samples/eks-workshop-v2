@@ -4,5 +4,8 @@ namespace: other
 resources:
   - clusterrole.yaml
   - clusterrolebinding.yaml
+  - instrumentation-go.yaml
+  - instrumentation-java.yaml
+  - instrumentation-nodejs.yaml
   - serviceaccount.yaml
   - opentelemetrycollector.yaml
