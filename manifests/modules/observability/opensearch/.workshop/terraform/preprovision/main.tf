@@ -21,7 +21,7 @@ locals {
 # Provision OpenSearch domain
 resource "aws_opensearch_domain" "opensearch" {
   domain_name    = var.eks_cluster_id
-  engine_version = "OpenSearch_2.9"
+  engine_version = "OpenSearch_2.13"
 
   # Specify a single instance cluster
   cluster_config {
