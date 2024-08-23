@@ -38,7 +38,11 @@ spec:
     - name: app
       image: centos
       command: ["/bin/sh"]
-      args: ["-c", "echo 'Hello from the container!' >> /data/$(date -u).txt; tail -f /dev/null"]
+      args:
+        [
+          "-c",
+          "echo 'Hello from the container!' >> /data/$(date -u).txt; tail -f /dev/null",
+        ]
       volumeMounts:
         - name: persistent-storage
           mountPath: /data

@@ -9,7 +9,7 @@ spec:
         claimName: s3-pvc
   containers:
     - name: app
-      image: nginx:latest  # NGINX image to use!!!
+      image: nginx:latest # NGINX image to use!!!
       volumeMounts:
         - name: persistent-storage
           mountPath: /usr/share/nginx/html
