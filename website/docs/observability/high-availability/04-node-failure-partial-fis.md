@@ -1,10 +1,8 @@
 ---
 title: "Simulating Partial Node Failure with FIS"
-sidebar_position: 5
+sidebar_position: 4
 description: "Simulate a partial node failures in your Kubernetes environment using AWS Fault Injection Simulator to test application resiliency."
 ---
-
-# Simulating Partial Node Failure with FIS
 
 ## AWS Fault Injection Simulator (FIS) Overview
 
@@ -30,7 +28,8 @@ For more information on AWS FIS, check out:
 - [What is AWS Fault Injection Service?](https://docs.aws.amazon.com/fis/latest/userguide/what-is.html)
 - [AWS Fault Injection Simulator Console](https://console.aws.amazon.com/fis/home)
 - [AWS Systems Manager, Automation](https://console.aws.amazon.com/systems-manager/automation/executions)
-  :::
+
+:::
 
 ## Experiment Details
 
@@ -57,7 +56,8 @@ $ NODE_EXP_ID=$(aws fis create-experiment-template --cli-input-json '{"descripti
 Execute the FIS experiment to simulate the node failure and monitor the response:
 
 ```bash timeout=240 wait=30
-$ aws fis start-experiment --experiment-template-id $NODE_EXP_ID --output json && SECONDS=0; while [ $SECONDS -lt 180 ]; do clear; $SCRIPT_DIR/get-pods-by-az.sh; sleep 1; done
+$ aws fis start-experiment --experiment-template-id $NODE_EXP_ID --output json && $SCRIPT_DIR/node-failure.sh && timeout 180s $SCRIPT_DIR/get-pods-by-az.sh
+
 ------us-west-2a------
   ip-10-42-127-82.us-west-2.compute.internal:
        ui-6dfb84cf67-s6kw4   1/1   Running   0     2m16s
@@ -70,6 +70,7 @@ $ aws fis start-experiment --experiment-template-id $NODE_EXP_ID --output json &
        ui-6dfb84cf67-29xtf   1/1   Running   0     79s
        ui-6dfb84cf67-68hbw   1/1   Running   0     79s
        ui-6dfb84cf67-plv9f   1/1   Running   0     79s
+
 ```
 
 This command triggers the node failure and monitors the pods for 3 minutes, allowing you to observe how the cluster responds to losing a significant portion of its capacity.
@@ -85,23 +86,12 @@ Your retail url should stay operational unlike the node failure without FIS.
 :::note
 To verify nodes and rebalance pods, you can run:
 
-```bash timeout=240 wait=30
-$ $SCRIPT_DIR/verify-cluster.sh
-==== Final Pod Distribution ====
-
-------us-west-2a------
-  ip-10-42-127-82.us-west-2.compute.internal:
-       ui-6dfb84cf67-v2xj6   1/1   Running   0     14s
-
-------us-west-2b------
-  ip-10-42-148-187.us-west-2.compute.internal:
-       ui-6dfb84cf67-4xq4n   1/1   Running   0     16s
-       ui-6dfb84cf67-56d6d   1/1   Running   0     16s
-
-------us-west-2c------
-  ip-10-42-180-16.us-west-2.compute.internal:
-       ui-6dfb84cf67-86mpz   1/1   Running   0     18s
-       ui-6dfb84cf67-nhx4j   1/1   Running   0     18s
+```bash timeout=300 wait=30
+$ EXPECTED_NODES=3 && while true; do ready_nodes=$(kubectl get nodes --no-headers | grep " Ready" | wc -l); if [ "$ready_nodes" -eq "$EXPECTED_NODES" ]; then echo "All $EXPECTED_NODES expected nodes are ready."; echo "Listing the ready nodes:"; kubectl get nodes | grep " Ready"; break; else echo "Waiting for all $EXPECTED_NODES nodes to be ready... (Currently $ready_nodes are ready)"; sleep 10; fi; done
+$ kubectl delete deployment ui -n ui
+$ kubectl apply -k /manifests/modules/observability/resiliency/high-availability/config/
+$ sleep 30
+$ timeout 5s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 ```
 
 :::
@@ -110,8 +100,9 @@ $ $SCRIPT_DIR/verify-cluster.sh
 
 Ensure that your retail store application remains operational throughout the partial node failure. Use the following command to check its availability:
 
-```bash timeout=600 wait=30
+```bash timeout=900 wait=30
 $ wait-for-lb $(kubectl get ingress -n ui -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
+
 Waiting for k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com...
 You can now access http://k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com
 ```

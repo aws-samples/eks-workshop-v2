@@ -1,10 +1,8 @@
 ---
 title: "Simulating Node Failure without FIS"
-sidebar_position: 4
+sidebar_position: 3
 description: "Manually simulate a node failure in your Kubernetes environment to test the resilience of your applications without using AWS FIS."
 ---
-
-# Simulating Node Failure without FIS
 
 ## Overview
 
@@ -22,8 +20,9 @@ It's important to note that this experiment is repeatable, allowing you to run i
 
 To simulate the node failure and monitor its effects, run the following command:
 
-```bash timeout=180 wait=30
-$ $SCRIPT_DIR/node-failure.sh && SECONDS=0; while [ $SECONDS -lt 120 ]; do clear; $SCRIPT_DIR/get-pods-by-az.sh; sleep 1; done
+```bash timeout=240 wait=30
+$ $SCRIPT_DIR/node-failure.sh && timeout 180s $SCRIPT_DIR/get-pods-by-az.sh
+
 ------us-west-2a------
   ip-10-42-127-82.us-west-2.compute.internal:
        ui-6dfb84cf67-dsp55   1/1   Running   0     10m
@@ -54,42 +53,36 @@ Throughout this process, the total number of running pods should remain constant
 
 While waiting for the node to finish coming back online, we will verify the cluster's self-healing capabilities and potentially rebalance the pod distribution if necessary. Since the cluster often recovers on its own, we'll focus on checking the current state and ensuring an optimal distribution of pods.
 
-Use the following [script](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/resiliency/scripts/verify-cluster.sh) to verify the cluster state and rebalance pods:
+First let's ensure all nodes are in the `Ready` state:
 
 ```bash timeout=300 wait=30
-$ $SCRIPT_DIR/verify-cluster.sh
-
-==== Final Pod Distribution ====
-
-------us-west-2a------
-  ip-10-42-127-82.us-west-2.compute.internal:
-       ui-6dfb84cf67-vwk4x   1/1   Running   0     25s
-
-------us-west-2b------
-  ip-10-42-133-195.us-west-2.compute.internal:
-       ui-6dfb84cf67-2rb6s   1/1   Running   0     27s
-       ui-6dfb84cf67-dk495   1/1   Running   0     27s
-
-------us-west-2c------
-  ip-10-42-186-246.us-west-2.compute.internal:
-       ui-6dfb84cf67-7bftc   1/1   Running   0     29s
-       ui-6dfb84cf67-nqgdn   1/1   Running   0     29s
-
-
+$ EXPECTED_NODES=3 && while true; do ready_nodes=$(kubectl get nodes --no-headers | grep " Ready" | wc -l); if [ "$ready_nodes" -eq "$EXPECTED_NODES" ]; then echo "All $EXPECTED_NODES expected nodes are ready."; echo "Listing the ready nodes:"; kubectl get nodes | grep " Ready"; break; else echo "Waiting for all $EXPECTED_NODES nodes to be ready... (Currently $ready_nodes are ready)"; sleep 10; fi; done
 ```
 
-This script will:
+This command counts the total number of nodes in the `Ready` state and continuously checks until all 3 active nodes are ready.
 
-- Wait for nodes to come back online
-- Count the number of nodes and ui pods
-- Check if the pods are evenly distributed across the nodes
+Once all nodes are ready, we'll redeploy the pods to ensure they are balanced across the nodes:
+
+```bash timeout=60 wait=30
+$ kubectl delete deployment ui -n ui
+$ kubectl apply -k /manifests/modules/observability/resiliency/high-availability/config/
+$ sleep 30
+$ timeout 5s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
+```
+
+These commands perform the following actions:
+
+1. Delete the existing ui deployment.
+2. Reapply the configuration to create a new deployment.
+3. Use the `get-pods-by-az.sh` script to check the distribution of pods across availability zones.
 
 ## Verify Retail Store Availability
 
 After simulating the node failure, we can verify that the retail store application remains accessible. Use the following command to check its availability:
 
-```bash timeout=600 wait=30
+```bash timeout=900 wait=30
 $ wait-for-lb $(kubectl get ingress -n ui -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
+
 Waiting for k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com...
 You can now access http://k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com
 ```

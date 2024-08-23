@@ -1,6 +1,6 @@
 ---
 title: "Lab Setup: Chaos Mesh, Scaling, and Pod affinity"
-sidebar_position: 2
+sidebar_position: 1
 description: "Learn how to scale your pods, add Pod Anti-Affinity configurations, and use a helper script to visualize pod distribution."
 ---
 
@@ -12,13 +12,14 @@ To enhance our cluster's resilience testing capabilities, we'll install Chaos Me
 
 Let's install Chaos Mesh in our cluster using Helm:
 
-```bash timeout= 180 wait=30
+```bash timeout= 240 wait=30
 $ helm repo add chaos-mesh https://charts.chaos-mesh.org
 $ helm upgrade --install chaos-mesh chaos-mesh/chaos-mesh \
   --namespace chaos-mesh \
   --create-namespace \
   --version 2.5.1 \
   --set dashboard.create=true \
+
 Release "chaos-mesh" does not exist. Installing it now.
 NAME: chaos-mesh
 LAST DEPLOYED: Tue Aug 20 04:44:31 2024
@@ -26,6 +27,7 @@ NAMESPACE: chaos-mesh
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
+
 ```
 
 ## Scaling and Pod Anti-Affinity
@@ -42,7 +44,7 @@ Deployment/ui
 Apply the changes using Kustomize patch and
 [Kustomization file](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/resiliency/high-availability/config/kustomization.yaml):
 
-```bash wait=30
+```bash timeout=120 wait=30
 $ kubectl delete deployment ui -n ui
 $ kubectl apply -k /manifests/modules/observability/resiliency/high-availability/config/
 ```
@@ -51,8 +53,9 @@ $ kubectl apply -k /manifests/modules/observability/resiliency/high-availability
 
 After applying these changes, it's important to verify that your retail store is accessible:
 
-```bash timeout=600 wait=30
+```bash timeout=900 wait=30
 $ wait-for-lb $(kubectl get ingress -n ui -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
+
 Waiting for k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com...
 You can now access http://k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com
 ```
@@ -72,7 +75,8 @@ The `get-pods-by-az.sh` script helps visualize the distribution of Kubernetes po
 To run the script and see the distribution of pods across availability zones, execute:
 
 ```bash
-$ $SCRIPT_DIR/get-pods-by-az.sh
+$ timeout 5s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
+
 ------us-west-2a------
   ip-10-42-127-82.us-west-2.compute.internal:
        ui-6dfb84cf67-6fzrk   1/1   Running   0     56s
@@ -86,6 +90,7 @@ $ $SCRIPT_DIR/get-pods-by-az.sh
   ip-10-42-186-246.us-west-2.compute.internal:
        ui-6dfb84cf67-n8x4f   1/1   Running   0     61s
        ui-6dfb84cf67-wljth   1/1   Running   0     61s
+
 ```
 
 :::info
@@ -93,4 +98,5 @@ For more information on these changes, check out these sections:
 
 - [Chaos Mesh](https://chaos-mesh.org/)
 - [Pod Affinity and Anti-Affinity](/docs/fundamentals/managed-node-groups/basics/affinity/)
-  :::
+
+:::
