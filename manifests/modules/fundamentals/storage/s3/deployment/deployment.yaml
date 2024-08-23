@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: s3-app
+spec:
+  volumes:
+    - name: nginx-storage
+      persistentVolumeClaim:
+        claimName: s3-pvc
+  containers:
+    - name: app
+      image: nginx:latest  # NGINX image to use!!!
+      volumeMounts:
+        - name: persistent-storage
+          mountPath: /usr/share/nginx/html

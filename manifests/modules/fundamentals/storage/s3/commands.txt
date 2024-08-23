@@ -1,0 +1,28 @@
+# Step 0: Prepare the environment (GOOD)
+prepare-environment fundamentals/storage/s3
+
+# Step 1: Attach addon to EKS cluster (GOOD)
+eksctl create addon --name aws-mountpoint-s3-csi-driver --cluster $EKS_CLUSTER_NAME --service-account-role-arn $S3_CSI_ADDON_ROLE --force
+
+# Step 2: Run this to create storage class
+kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/s3/storageclass
+
+# Step 3: Run this to create PV and PVC 
+kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment
+
+# Step 4: Nginx deployment (test)
+
+
+# Step 5: Interact with deployment ??
+
+
+
+
+### EXTRA INFORMATION ###
+
+# Run this to view persistent volumes/storage class
+kubectl get pv
+kubectl get pvc
+kubectl get storageclass
+
+
