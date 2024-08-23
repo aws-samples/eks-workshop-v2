@@ -14,6 +14,7 @@ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/s3/depl
 
 
 # Step 5: Interact with deployment ??
+How??
 
 
 
