@@ -2,9 +2,17 @@
 
 set -e
 
+output_path=$1
+
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-outfile=$(mktemp)
+source $SCRIPT_DIR/lib/common-env.sh
+
+if [ -z "$output_path" ]; then
+  outfile=$(mktemp)
+else
+  outfile=$output_path
+fi
 
 cd lab
 

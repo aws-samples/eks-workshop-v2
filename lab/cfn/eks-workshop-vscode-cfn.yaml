@@ -16,7 +16,7 @@ Parameters:
   RepositoryRef:
     Type: String
     Description: The Git reference to be used to bootstrap Cloud9
-    Default: "main"
+    Default: "vscode-ide"
   ResourcesPrecreated:
     Type: String
     Description: Whether lab infrastructure has been pre-provisioned
@@ -39,12 +39,6 @@ Parameters:
     Type: String
     Description: For testing purposes only
     Default: ""
-
-Conditions:
-  IsEnvironmentEmpty:
-    Fn::Equals:
-      - Ref: Environment
-      - ""
 
 Mappings:
   PrefixListID:
@@ -289,6 +283,10 @@ Resources:
 
                   yum install -y git tar gzip vim nodejs npm make gcc g++
 
+                  export environment="${Environment}"
+
+                  source <(curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/hack/lib/common-env.sh)
+
                   dnf copr enable -y @caddy/caddy epel-9-x86_64
                   dnf install -y caddy
                   systemctl enable --now caddy
@@ -300,6 +298,12 @@ Resources:
                   EOF
 
                   systemctl restart caddy
+
+                  tee /etc/profile.d/custom_prompt.sh <<EOF
+                  #!/bin/sh
+
+                  export PROMPT_COMMAND='export PS1="\u:\w:$ "'
+                  EOF
 
                   export AWS_REGION="${AWS::Region}"
                   export REPOSITORY_OWNER="${RepositoryOwner}"
@@ -318,7 +322,6 @@ Resources:
 
                   codeServer=$(dnf list installed code-server | wc -l)
                   if [ "$codeServer" -eq "0" ]; then
-                    #curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${CodeServerVersion}
                     curl -Ls -o /tmp/coder.rpm https://github.com/coder/code-server/releases/download/v${CodeServerVersion}/code-server-${CodeServerVersion}-amd64.rpm
                     sudo rpm -U "/tmp/coder.rpm"
 
@@ -331,7 +334,7 @@ Resources:
 
                   mkdir -p ~/.config/code-server
                   touch ~/.config/code-server/config.yaml
-                  tee /home/ec2-user/.config/code-server/config.yaml <<EOF
+                  tee ~/.config/code-server/config.yaml <<EOF
                   cert: false
                   auth: password
                   hashed-password: "$HASHED_PASSWORD"
@@ -347,13 +350,26 @@ Resources:
                     "security.workspace.trust.enabled": false,
                     "task.allowAutomaticTasks": "on",
                     "telemetry.telemetryLevel": "off",
-                    "workbench.startupEditor": "none"
+                    "workbench.startupEditor": "terminal"
+                  }
+                  EOF
+
+                  mkdir -p ~/environment/.vscode
+                  tee ~/environment/.vscode/settings.json <<EOF
+                  {
+                    "files.exclude": {
+                      "**/.*": true
+                    }
                   }
                   EOF
 
                   echo '{ "query": { "folder": "/home/ec2-user/environment" } }' > ~/.local/share/code-server/coder.json
 
                   curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/setup.sh | bash
+
+                  code-server --install-extension ms-kubernetes-tools.vscode-kubernetes-tools --force
+                  code-server --install-extension redhat.vscode-yaml --force
+
                   EOT
 
                   systemctl restart code-server@ec2-user
@@ -397,7 +413,7 @@ Resources:
     Properties:
       Roles:
         - !Ref EksWorkshopIdeRole
-      ManagedPolicyName: ${AWS::StackName}-iam
+      ManagedPolicyName: !Sub ${AWS::StackName}-iam
       PolicyDocument:
         file: ./iam/policies/iam.yaml
 
@@ -406,7 +422,7 @@ Resources:
     Properties:
       Roles:
         - !Ref EksWorkshopIdeRole
-      ManagedPolicyName: ${AWS::StackName}-base
+      ManagedPolicyName: !Sub ${AWS::StackName}-base
       PolicyDocument:
         file: ./iam/policies/base.yaml
 
@@ -415,7 +431,7 @@ Resources:
     Properties:
       Roles:
         - !Ref EksWorkshopIdeRole
-      ManagedPolicyName: ${AWS::StackName}-ec2
+      ManagedPolicyName: !Sub ${AWS::StackName}-ec2
       PolicyDocument:
         file: ./iam/policies/ec2.yaml
 
@@ -426,7 +442,7 @@ Resources:
     Properties:
       Roles:
         - !Ref EksWorkshopIdeRole
-      ManagedPolicyName: ${AWS::StackName}-labs1
+      ManagedPolicyName: !Sub ${AWS::StackName}-labs1
       PolicyDocument:
         file: ./iam/policies/labs1.yaml
 
@@ -437,7 +453,7 @@ Resources:
     Properties:
       Roles:
         - !Ref EksWorkshopIdeRole
-      ManagedPolicyName: ${AWS::StackName}-labs2
+      ManagedPolicyName: !Sub ${AWS::StackName}-labs2
       PolicyDocument:
         file: ./iam/policies/labs2.yaml
 
@@ -464,10 +480,14 @@ Resources:
       SecurityGroupIds:
         - !Ref SecurityGroup
       IamInstanceProfile: !Ref EksWorkshopIdeInstanceProfile
+      Tags:
+        - Key: type
+          Value: eksworkshop-ide
 
   EksWorkshopIdePassword:
     Type: AWS::SecretsManager::Secret
     Properties:
+      Name: !Sub ${AWS::StackName}-password
       GenerateSecretString:
         ExcludeCharacters: "\"@/\\"
         ExcludePunctuation: true
@@ -548,3 +568,11 @@ Resources:
 Outputs:
   IdeUrl:
     Value: !Sub https://${EksWorkshopIdeCloudFrontDistribution.DomainName}
+
+  IdePasswordSecret:
+    Value: !Sub
+      - https://console.aws.amazon.com/secretsmanager/secret?name=${SecretName}
+      - SecretName: !Sub ${AWS::StackName}-password
+
+  IdeRole:
+    Value: !Sub ${EksWorkshopIdeRole.Arn}
