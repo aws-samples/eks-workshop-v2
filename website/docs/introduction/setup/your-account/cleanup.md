@@ -12,7 +12,7 @@ Make sure you have run the respective clean up instructions for the mechanism yo
 
 :::
 
-This section outlines how to clean up the Cloud9 IDE we've used to run the labs.
+This section outlines how to clean up the IDE we've used to run the labs.
 
 Start by opening CloudShell in the region where you deployed the CloudFormation stack:
 

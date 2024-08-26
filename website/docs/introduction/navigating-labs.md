@@ -3,6 +3,9 @@ title: Navigating the labs
 sidebar_position: 25
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 Let’s review how to navigate this web site and the content provided.
 
 ## Structure
@@ -22,7 +25,8 @@ This module contains a single lab named **Getting started** which will be visibl
 You should start each lab from the page indicated by this badge. Starting in the middle of a lab will cause unpredictable behavior.
 :::
 
-## Cloud9 IDE
+<Tabs groupId="ide">
+<TabItem value="cloud9" label="AWS Cloud9">
 
 Once you have accessed the Cloud9 IDE, we recommend you use the **+** button and select **New Terminal** to open a new full screen terminal window.
 
@@ -33,6 +37,15 @@ This will open a new tab with a fresh terminal.
 ![Shows new Cloud9 terminal](./assets/terminal.webp)
 
 You may also close the small terminal at the bottom if you wish.
+</TabItem>
+<TabItem value="vscode" label="VSCode">
+
+Depending on your browser the first time you copy/paste content in to the VSCode terminal you may be presented with a prompt that looks like this:
+
+![VSCode copy/paste](./assets/vscode-copy-paste.webp)
+
+</TabItem>
+</Tabs>
 
 ## Terminal commands
 
