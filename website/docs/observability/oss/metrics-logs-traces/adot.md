@@ -90,4 +90,4 @@ adot-collector-czjg4      1/1        Running      0             3d21h
 adot-collector-sjj8h      1/1        Running      0             3d21h
 ```
 
-TODO - restart applicaitons
+TODO - restart applications
