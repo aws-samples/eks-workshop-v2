@@ -1,3 +1,9 @@
+data "aws_caller_identity" "current" {}
+
+data "aws_iam_role" "current_role" {
+  name = element(split("/", data.aws_caller_identity.current.arn), 1)
+}
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
@@ -56,4 +62,20 @@ module "eks" {
   tags = merge(local.tags, {
     "karpenter.sh/discovery" = var.cluster_name
   })
+}
+
+resource "aws_eks_access_entry" "cloud9_role" {
+  cluster_name      = var.cluster_name
+  principal_arn     = data.aws_iam_role.current_role.arn
+  type              = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "cloud9_role_policy" {
+  cluster_name      = var.cluster_name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = data.aws_iam_role.current_role.arn
+
+  access_scope {
+    type       = "cluster"
+  }
 }
