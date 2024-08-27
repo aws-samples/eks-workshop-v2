@@ -47,8 +47,8 @@ nodejs_heap_size_total_bytes 48668672
 In this lab we'll leverage ADOT to ingest the metrics for all the components and explore a dashboard to show the number of orders that have been placed. Let's take a look at the OpenTelemetry configuration used to scrape metrics from the application pods, specifically this section:
 
 ```bash
-$ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.config}' \
-  | yq '.receivers.prometheus.config.scrape_configs[2]'
+$ kubectl -n other get opentelemetrycollector adot -o yaml \
+  | yq '.spec.config.receivers.prometheus.config.scrape_configs[2]'
 job_name: 'kubernetes-pods'
 honor_labels: true
 kubernetes_sd_configs:
