@@ -255,9 +255,6 @@ spec:
     auth:
       disable_login_form: "false"
       sigv4_auth_enabled: "true"
-    security:
-      admin_user: root
-      admin_password: secret
   deployment:
     spec:
       template:

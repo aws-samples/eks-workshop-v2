@@ -135,21 +135,17 @@ spec:
 EOF
 ```
 
-Open the Grafana as we did in the previous section:
+Open the Grafana dashboard page as we did in the previous section and click on the dashboard **Order Service Metrics** to review the panels within the dashboard:
 
-![Grafana dashboard](./assets/order-service-metrics-dashboard.webp)
-
-Go to the dashboard page and click on the dashboard **Order Service Metrics** to review the panels within the dashboard:
-
-![Business Metrics](./assets/retailMetrics.webp)
+![Business Metrics](./assets/metrics-dashboard.webp)
 
 We can see how the dashboard was configured to query AMP by hovering over the title of the "Orders by Product" panel and clicking the "Edit" button:
 
-![Edit Panel](./assets/editPanel.webp)
+![Edit Panel](./assets/metrics-edit.webp)
 
 The PromQL query used to create this panel is displayed at the bottom of the page:
 
-![PromQL query](./assets/promqlQuery.webp)
+![PromQL query](./assets/metrics-query.webp)
 
 In this case we are using the query:
 
@@ -164,9 +160,3 @@ Which is doing the following:
 - Sum these metrics and group them by `productId`
 
 You can similarly explore the other panels to understand how they have been created.
-
-Once you're satisfied with observing the metrics, you can stop the load generator using the below command.
-
-```bash timeout=180 test=false
-$ kubectl delete pod load-generator -n other
-```

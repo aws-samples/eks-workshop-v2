@@ -37,7 +37,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -85,7 +85,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "uid": "prometheus"
               },
               "editorMode": "builder",
               "expr": "sum by(productId) (watch_orders_total{productId!=\"*\"})",
@@ -100,7 +100,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -146,7 +146,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(watch_orders_total{productId=\"*\"}) by (productId)",
@@ -161,7 +161,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -238,7 +238,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "PBFA97CFB590B2093"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum by (productId)(rate(watch_orders_total{productId=\"*\"}[2m]))",

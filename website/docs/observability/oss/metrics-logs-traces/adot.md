@@ -9,7 +9,16 @@ In this lab we'll be storing metrics in an Amazon Managed Service for Prometheus
 
 To view the workspace, click on the **All Workspaces** tab on the left control panel. Select the workspace that starts with **eks-workshop** and you can view several tabs under the workspace such as rules management, alert manager etc.
 
-TODO - Loki Tempo
+Loki and Tempo were also deployed on the EKS cluster, we can check and confirm that they are running:
+
+```bash
+$ kubectl -n loki-system get pod
+NAME         READY       STATUS       RESTARTS      AGE
+loki-0       1/1         Running      0             5d21h
+$ kubectl -n tempo-system get pod
+NAME         READY       STATUS       RESTARTS      AGE
+tempo-0      1/1         Running      0             6d2h
+```
 
 To gather the metrics, logs and traces from the Amazon EKS Cluster, we'll deploy a `OpenTelemetryCollector` custom resource. The ADOT operator running on the EKS cluster detects the presence of or changes of the this resource and for any such changes, the operator performs the following actions:
 
@@ -66,13 +75,14 @@ $ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.config}' 
 This is configuring an OpenTelemetry pipeline with the following structure:
 
 - Receivers
-  - [Prometheus receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.md) designed to scrape metrics from targets that expose a Prometheus endpoint
+  - [Prometheus receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver) designed to scrape metrics from targets that expose a Prometheus endpoint
+  - [Filelog receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/filelogreceiver) which tails and parses container logs from files on worker nodes
+  - [OTLP Receiver](https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver/otlpreceiver) which receives data via HTTP or gRPC using OTLP format
 - Processors
-  - None in this pipeline
+  - [Batch processor](https://github.com/open-telemetry/opentelemetry-collector/blob/main/processor/batchprocessor) which helps better compress the data and reduce the number of outgoing connections required to transmit the data
 - Exporters
   - [Prometheus remote write exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusremotewriteexporter) which sends metrics to a Prometheus remote write endpoint like AMP
-
-TODO - Loki Tempo
+  - [OTLP HTTP exporter](https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter) and [OTLP gRPC exporter](https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlpexporter) which exports logs and traces via HTTP and gRPC using OTLP format
 
 This collector is also configured to run as a DaemonSet with one collector agent running on each worker node:
 
@@ -90,4 +100,19 @@ adot-collector-czjg4      1/1        Running      0             3d21h
 adot-collector-sjj8h      1/1        Running      0             3d21h
 ```
 
-TODO - restart applications
+Since we want to use the `Instrumentation` custom resources (which were deployed after the applications) to [inject OpenTelemetry SDK environment variables](https://github.com/open-telemetry/opentelemetry-operator?tab=readme-ov-file#inject-opentelemetry-sdk-environment-variables-only), we will need redeploy the applications:
+
+```bash
+$ kubectl -n assets rollout restart deployment assets && \
+  kubectl -n carts rollout restart deployment carts && \
+  kubectl -n catalog rollout restart deployment catalog && \
+  kubectl -n checkout rollout restart deployment checkout && \
+  kubectl -n orders rollout restart deployment orders && \
+  kubectl -n ui rollout restart deployment ui
+deployment.apps/assets restarted
+deployment.apps/carts restarted
+deployment.apps/catalog restarted
+deployment.apps/checkout restarted
+deployment.apps/orders restarted
+deployment.apps/ui restarted
+```
