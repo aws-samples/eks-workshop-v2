@@ -1,8 +1,8 @@
 terraform {
   required_providers {
     kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = ">= 1.14"
+      source  = "alekc/kubectl"
+      version = "2.0.4"
     }
   }
 }
@@ -234,10 +234,8 @@ module "grafana_irsa" {
 
 resource "kubectl_manifest" "grafana" {
   depends_on = [
-    aws_prometheus_workspace.this,
-    module.loki,
-    module.tempo,
-    module.grafana_operator
+    module.grafana_operator,
+    kubernetes_namespace.grafana
   ]
 
   yaml_body = <<-YAML

@@ -5,7 +5,7 @@ before() {
 }
 
 after() {
-  grafana_endpoint=$(kubectl get ingress -n grafana grafana -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+  grafana_endpoint=$(kubectl get ingress -n grafana grafana-ingress -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}')
   export grafana_url="${grafana_endpoint}/healthz"
 
   EXIT_CODE=0
