@@ -130,6 +130,15 @@
   "/observability/opensearch/pod-logs.md": 64764,
   "/observability/oss/kubecost/index.md": 294258,
   "/observability/oss/kubecost/installation.md": 318238,
+  "/observability/oss/kubecost/cost-allocation.md": 1,
+  "/observability/oss/metrics-logs-traces/index.md": 0,
+  "/observability/oss/metrics-logs-traces/adot.md": 0,
+  "/observability/oss/metrics-logs-traces/amp-ws.md": 1,
+  "/observability/oss/metrics-logs-traces/accessing-grafana.md": 0,
+  "/observability/oss/metrics-logs-traces/kubernetes-dashboards.md": 1,
+  "/observability/oss/metrics-logs-traces/application-metrics.md": 1,
+  "/observability/oss/metrics-logs-traces/application-logs.md": 1,
+  "/observability/oss/metrics-logs-traces/application-traces.md": 1,
   "/observability/resource-view/authentication/index.md": 0,
   "/observability/resource-view/authorization/index.md": 1,
   "/observability/resource-view/cluster-view/index.md": 0,
@@ -187,3 +196,4 @@
   "/security/secrets-management/secrets-manager/index.md": 281009,
   "/security/secrets-management/secrets-manager/mounting-secrets.md": 16049
 }
+

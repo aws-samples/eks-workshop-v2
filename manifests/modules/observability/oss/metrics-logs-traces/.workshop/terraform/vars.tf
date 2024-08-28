@@ -61,10 +61,3 @@ variable "grafana_operator_chart_version" {
   # renovate-helm: depName=grafana-operator registryUrl=oci://ghcr.io/grafana/helm-charts
   default = "v5.12.0"
 }
-
-variable "kubecost_chart_version" {
-  description = "The chart version of kubecost to use"
-  type        = string
-  # renovate-helm: depName=cost-analyzer registryUrl=https://kubecost.github.io/cost-analyzer
-  default = "1.108.1"
-}

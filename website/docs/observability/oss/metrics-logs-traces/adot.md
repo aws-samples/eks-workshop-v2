@@ -28,7 +28,7 @@ To gather the metrics, logs and traces from the Amazon EKS Cluster, we'll deploy
 Now, let's create resources to allow the ADOT collector the permissions it needed. We'll start with the ClusterRole that gives the collector permissions to access the Kubernetes API:
 
 ```file
-manifests/modules/observability/oss/adot/clusterrole.yaml
+manifests/modules/observability/oss/metrics-logs-traces/adot/clusterrole.yaml
 ```
 
 We'll use the managed IAM policy `AmazonPrometheusRemoteWriteAccess` to provide the collector with the IAM permissions it needs via IAM Roles for Service Accounts:
@@ -49,13 +49,13 @@ $ aws iam list-attached-role-policies \
 This IAM role will be added to the ServiceAccount for the collector:
 
 ```file
-manifests/modules/observability/oss/adot/serviceaccount.yaml
+manifests/modules/observability/oss/metrics-logs-traces/adot/serviceaccount.yaml
 ```
 
 Create the resources:
 
 ```bash hook=deploy-adot
-$ kubectl kustomize ~/environment/eks-workshop/modules/observability/oss/adot \
+$ kubectl kustomize ~/environment/eks-workshop/modules/observability/oss/metrics-logs-traces/adot \
   | envsubst | kubectl apply -f-
 $ kubectl rollout status -n other daemonset/adot-collector --timeout=120s
 ```
