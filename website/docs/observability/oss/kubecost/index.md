@@ -1,6 +1,8 @@
 ---
 title: "Cost visibility with Kubecost"
 sidebar_position: 20
+sidebar_custom_props: { "module": true }
+description: "Gain cost visibility and insights for teams using Amazon Elastic Kubernetes Service with Kubecost."
 ---
 
 ::required-time
@@ -27,9 +29,9 @@ While you can track Kubernetes control plane and EC2 costs using AWS Cost and Us
 
 This is the exact challenge that Kubecost is dedicated to tackling. Founded in 2019, Kubecost launched to provide customers with visibility into spend and resource efficiency in Kubernetes environments, and today helps thousands of teams address this challenge. Kubecost is built on OpenCost, which was recently accepted as a Cloud Native Computing Foundation (CNCF) Sandbox project, and is actively supported by AWS.
 
-In this part of the module, we'll take a look at how to use Kubecost to measure the cost allocation of various components at namespace level, deployment level and pod level. We'll also see the resource efficiency to check whether the deployments are over provisioned or under provisioned, health of the system, etc.
+In this lab, we'll take a look at how to use Kubecost to measure the cost allocation of various components at namespace level, deployment level and pod level. We'll also see the resource efficiency to check whether the deployments are over provisioned or under provisioned, health of the system, etc.
 
 :::tip
-After completing this part, checkout how to use Kubecost and [Amazon Managed Service for Prometheus](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html) to extend cost visibility beyond a single EKS cluster with [Multi-Cluster Cost Monitoring](https://aws.amazon.com/blogs/containers/multi-cluster-cost-monitoring-using-kubecost-with-amazon-eks-and-amazon-managed-service-for-prometheus/).
+After completing this lab, checkout how to use Kubecost and [Amazon Managed Service for Prometheus](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html) to extend cost visibility beyond a single EKS cluster with [Multi-Cluster Cost Monitoring](https://aws.amazon.com/blogs/containers/multi-cluster-cost-monitoring-using-kubecost-with-amazon-eks-and-amazon-managed-service-for-prometheus/).
 
 :::

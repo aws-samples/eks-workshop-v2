@@ -1,6 +1,8 @@
 ---
 title: "Metrics, logs and traces"
 sidebar_position: 10
+sidebar_custom_props: { "module": true }
+description: "Leverage open source observability solutions like Prometheus, Loki, Tempo, OpenTelemetry and Grafana with Amazon Elastic Kubernetes Service."
 # cSpell:ignore Zipkin
 ---
 
