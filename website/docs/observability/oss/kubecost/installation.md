@@ -7,7 +7,7 @@ AMP is a Prometheus-compatible monitoring and alerting service that makes it eas
 
 Below is an image of how Kubecost integrates with AMP. Kubecost uses a Signature Version 4 (SigV4) proxy to query AMP. SigV4 is the process to add authentication information to AWS API requests sent by HTTP. For security, most requests to AWS must be signed with an access key. The access key consists of an access key ID and secret access key, which are commonly referred to as your security credentials. When an AWS service receives the request, it performs the same steps that you did to calculate the signature you sent in your request. AWS then compares its calculated signature to the one you sent with the request. If the signatures match, the request is processed. If the signatures don't match, the request is denied.
 
-![Architecture Diagram of Kubecost AMP Integration](./assets/AWS-AMP-integ-architecture.webp)
+![Architecture Diagram of Kubecost AMP Integration](./assets/amp-architecture.webp)
 
 The first thing we'll do is install Kubecost in our cluster. As part of the lab preparation an the AWS Load Balancer Controller and EBS CSI driver were pre-installed to provide ingress and storage to Kubecost. AMP workspace was also provision.
 
@@ -77,6 +77,4 @@ Accept-Ranges: bytes
 
 Open the URL in your browser to access Kubecost:
 
-<Browser url='http://k8s-kubecost-kubecost-e83ecf8fc1-fc26f5c92767520f.elb.us-west-2.amazonaws.com:9090'>
-<img src={require('./assets/overview.webp').default}/>
-</Browser>
+![Kubecost overview](./assets/overview.webp)
