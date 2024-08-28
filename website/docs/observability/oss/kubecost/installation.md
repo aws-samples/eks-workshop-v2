@@ -13,7 +13,7 @@ The first thing we'll do is install Kubecost in our cluster. As part of the lab 
 
 All that we have left to do is install Kubecost as a Helm chart:
 
-```bash timeout=300
+```bash timeout=300 wait=30 hook=install
 $ aws ecr-public get-login-password \
   --region us-east-1 | helm registry login \
   --username AWS \
