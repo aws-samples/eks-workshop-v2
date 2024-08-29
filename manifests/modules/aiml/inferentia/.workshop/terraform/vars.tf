@@ -4,6 +4,7 @@ variable "eks_cluster_id" {
   type        = string
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "eks_cluster_version" {
   description = "EKS cluster version"
   type        = string
@@ -21,6 +22,7 @@ variable "addon_context" {
   type        = any
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "tags" {
   description = "Tags to apply to AWS resources"
   type        = any
