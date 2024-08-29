@@ -1,0 +1,20 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: $EKS_CLUSTER_NAME
+  region: $AWS_REGION
+
+managedNodeGroups:
+  - name: graviton
+    instanceTypes:
+      # HIGHLIGHT
+      - t4g.medium
+    minSize: 1
+    maxSize: 3
+    desiredCapacity: 1
+    privateNetworking: true
+    subnets:
+      - $PRIMARY_SUBNET_1
+      - $PRIMARY_SUBNET_2
+      - $PRIMARY_SUBNET_3
