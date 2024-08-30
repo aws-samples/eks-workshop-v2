@@ -162,7 +162,7 @@ const config = {
             type: "doc",
             docId: "aiml/index",
             position: "left",
-            label: "AIML",
+            label: "AI/ML",
           },
           {
             href: "https://github.com/aws-samples/eks-workshop-v2",

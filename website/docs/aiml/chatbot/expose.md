@@ -47,7 +47,9 @@ You can learn more about Neuron Device Plugins in the [AIML Inference module](..
 We can deploy the role using the following command:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/aiml/chatbot/neuron-device-plugin
+$ kubectl apply -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/master/src/k8/k8s-neuron-device-plugin-rbac.yml
+$ kubectl apply -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/master/src/k8/k8s-neuron-device-plugin.yml
+
 serviceaccount/neuron-device-plugin created
 clusterrole.rbac.authorization.k8s.io/neuron-device-plugin created
 clusterrolebinding.rbac.authorization.k8s.io/neuron-device-plugin created
