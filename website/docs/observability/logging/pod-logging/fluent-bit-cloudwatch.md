@@ -40,7 +40,7 @@ OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader clas
 
 Open the CloudWatch Logs console to check these logs are appearing:
 
-https://console.aws.amazon.com/cloudwatch/home?#logsV2:log-groups
+<ConsoleButton url="https://console.aws.amazon.com/cloudwatch/home?#logsV2:log-groups" service="cloudwatch" label="Open CloudWatch console"/>
 
 Filter for **fluentbit-cloudwatch** to find the log groups created by Fluent Bit:
 

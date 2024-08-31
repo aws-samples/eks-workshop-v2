@@ -11,4 +11,4 @@ Below is an image of how Kubecost integrates with AMP. Kubecost uses a Signature
 
 ![Architecture Diagram of Kubecost AMP Integration](./assets/AWS-AMP-integ-architecture.webp)
 
-To get started integrating Kubecost with AMP, check out the following blog: https://aws.amazon.com/blogs/mt/integrating-kubecost-with-amazon-managed-service-for-prometheus/.
+To get started integrating Kubecost with AMP, check out [this following blog post](https://aws.amazon.com/blogs/mt/integrating-kubecost-with-amazon-managed-service-for-prometheus/).

@@ -55,7 +55,7 @@ $ git -C ~/environment/retail-store-sample-codecommit push --set-upstream origin
 
 You can navigate to `CodePipeline` in AWS Console and explore `eks-workshop-retail-store-sample` pipeline:
 
-https://console.aws.amazon.com/codesuite/codepipeline/pipelines/eks-workshop-retail-store-sample/view
+<ConsoleButton url="https://console.aws.amazon.com/codesuite/codepipeline/pipelines/eks-workshop-retail-store-sample/view" service="codepipeline" label="Open CodePipeline console"/>
 
 It should look something like this:
 
@@ -99,19 +99,19 @@ $ flux reconcile kustomization apps --with-source
 
 We need to deploy custom resource definitions (ImageRepository, ImagePolicy, ImageUpdateAutomation) for Flux to enable monitoring of new container images in ECR and automated deployment using GitOps.
 
-1. ImageRepository:
+An `ImageRepository`:
 
 ```file
 manifests/modules/automation/gitops/flux/imagerepository.yaml
 ```
 
-2. ImagePolicy:
+An `ImagePolicy`:
 
 ```file
 manifests/modules/automation/gitops/flux/imagepolicy.yaml
 ```
 
-3. ImageUpdateAutomation:
+An `ImageUpdateAutomation`:
 
 ```file
 manifests/modules/automation/gitops/flux/imageupdateautomation.yaml
@@ -234,7 +234,7 @@ Date:   Fri Nov 3 17:18:08 2023 +0000
 
 Similarly the CodeCommit commits view will show activity:
 
-https://console.aws.amazon.com/codesuite/codecommit/repositories/eks-workshop-gitops/commits
+<ConsoleButton url="https://console.aws.amazon.com/codesuite/codecommit/repositories/eks-workshop-gitops/commits" service="codecommit" label="Open CodeCommit console"/>
 
 We can also check the pods to see the image has been update:
 

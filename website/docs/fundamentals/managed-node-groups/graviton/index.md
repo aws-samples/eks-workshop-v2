@@ -24,7 +24,7 @@ Graviton-based instances can be identified by the letter `g` in the Processor fa
 
 AWS Graviton processors are built on the [AWS Nitro System](https://aws.amazon.com/ec2/nitro/?p=pm&pd=graviton&z=3). AWS built the AWS Nitro System to deliver practically all of the compute and memory resources of the host hardware to your instances. This is achieved by breaking apart the hypervisor functions and management capabilities from the hosts and offloading them to dedicated hardware and software. This results in better overall performance, unlike traditional virtualization platforms that run the hypervisor software on the same physical host as the virtual machines which means the virtual machines cannot utilize 100% of the host’s resources. AWS Nitro System are supported by popular Linux operating systems along with many popular applications and services from AWS and Independent Software Vendors.
 
-# Multi-Architecture with Graviton Processors
+## Multi-Architecture with Graviton Processors
 
 :::info
 AWS Graviton requires ARM compatible container images, ideally multi-architecture (ARM64 and AMD64) allowing cross-compatibility with both Graviton and x86 instance types.

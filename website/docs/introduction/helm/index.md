@@ -78,8 +78,8 @@ Once the chart has installed we can list the releases in our EKS cluster:
 
 ```bash
 $ helm list -A
-NAME 	 NAMESPACE  REVISION  UPDATED                                  STATUS    CHART         APP VERSION
-nginx	 nginx      1         2024-06-11 03:58:39.862100855 +0000 UTC  deployed  nginx-X.X.X   X.X.X
+NAME   NAMESPACE  REVISION  UPDATED                                  STATUS    CHART         APP VERSION
+nginx  nginx      1         2024-06-11 03:58:39.862100855 +0000 UTC  deployed  nginx-X.X.X   X.X.X
 ```
 
 We can also see NGINX running in the namespace we specified:
@@ -121,8 +121,8 @@ List the releases:
 
 ```bash
 $ helm list -A
-NAME 	 NAMESPACE  REVISION  UPDATED                                  STATUS    CHART         APP VERSION
-nginx	 nginx      2         2024-06-11 04:13:53.862100855 +0000 UTC  deployed  nginx-X.X.X   X.X.X
+NAME   NAMESPACE  REVISION  UPDATED                                  STATUS    CHART         APP VERSION
+nginx  nginx      2         2024-06-11 04:13:53.862100855 +0000 UTC  deployed  nginx-X.X.X   X.X.X
 ```
 
 You'll notice that the **revision** column has updated to **2** as Helm has applied our updated configuration as a distinct revision. This would allow us to rollback to our previous configuration if necessary.

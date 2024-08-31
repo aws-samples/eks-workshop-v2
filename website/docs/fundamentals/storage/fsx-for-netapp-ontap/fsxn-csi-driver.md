@@ -54,7 +54,7 @@ NAME                     BACKEND NAME          BACKEND UUID                     
 backend-fsxn-ontap-nas   backend-fsxn-ontap-   61a731e0-2f3c-4df9-9e49-5fc120e8247c   Bound   Success
 ```
 
-Now, we'll need to create a StorageClass(https://kubernetes.io/docs/concepts/storage/storage-classes/) object
+Now, we'll need to create a [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object
 
 We'll be using Kustomize to create for the storage class:
 

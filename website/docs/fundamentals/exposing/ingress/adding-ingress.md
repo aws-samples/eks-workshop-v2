@@ -98,7 +98,7 @@ Since we specified using IP mode in our Ingress object, the target is registered
 
 You can also inspect the ALB and its target groups in the console by clicking this link:
 
-https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=ui/ui;sort=loadBalancerName
+<ConsoleButton url="https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=ui/ui;sort=loadBalancerName" service="ec2" label="Open EC2 console"/>
 
 Get the URL from the Ingress resource:
 

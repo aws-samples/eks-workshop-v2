@@ -89,6 +89,8 @@ logmessage "Tip: Read the rest of the lab introduction while you wait!"
 
 if [ -f "/eks-workshop/hooks/cleanup.sh" ]; then
   bash /eks-workshop/hooks/cleanup.sh
+
+  rm /eks-workshop/hooks/cleanup.sh
 fi
 
 kubectl delete pod load-generator --ignore-not-found

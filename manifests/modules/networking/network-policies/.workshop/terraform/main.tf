@@ -3,6 +3,10 @@ module "eks_blueprints_addons" {
   version = "1.16.3"
 
   enable_aws_load_balancer_controller = true
+  aws_load_balancer_controller = {
+    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
+  }
 
   cluster_name      = var.addon_context.eks_cluster_id
   cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint

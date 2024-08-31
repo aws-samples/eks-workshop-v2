@@ -7,6 +7,6 @@ A [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deploym
 
 ![Insights](/img/resource-view/deploymentSet.jpg)
 
-Click on the deployment <i>orders</i> and explore the configuration. You will see deployment strategy under Info, pod details under Pods, labels and deployment revision.
+Click on the deployment <i>carts</i> and explore the configuration. You will see deployment strategy under Info, pod details under Pods, labels and deployment revision.
 
 ![Insights](/img/resource-view/deployment-detail.jpg)

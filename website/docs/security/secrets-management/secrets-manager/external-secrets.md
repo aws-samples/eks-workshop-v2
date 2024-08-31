@@ -21,7 +21,7 @@ As we can see theres a ServiceAccount named `external-secrets-sa` which is tied 
 
 ```bash
 $ kubectl -n external-secrets describe sa external-secrets-sa | grep Annotations
-Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::068535243777:role/eks-workshop-external-secrets-sa-irsa
+Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::1234567890:role/eks-workshop-external-secrets-sa-irsa
 ```
 
 In addition to that, we'll need to create a new cluster resource called `ClusterSecretStore` which is a cluster-wide SecretStore that can be referenced by all ExternalSecrets from all namespaces.
