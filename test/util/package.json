@@ -23,7 +23,7 @@
     "@types/node": "^20.14.1",
     "@types/sinon": "^17.0.3",
     "@types/unist": "^3.0.2",
-    "@types/yargs": "^17.0.32",
+    "@types/yargs": "^17.0.33",
     "mock-fs": "^5.1.4",
     "shx": "^0.3.4",
     "sinon": "^18.0.0",
