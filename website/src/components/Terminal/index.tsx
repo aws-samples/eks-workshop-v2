@@ -150,13 +150,7 @@ class TerminalSection {
 }
 
 function triggerCopy(text: string) {
-  navigator.permissions
-    .query({ name: "clipboard-write" as PermissionName })
-    .then((e) => {
-      if (e.state === "granted") {
-        navigator.clipboard.writeText(text);
-      }
-    });
+  navigator.clipboard.writeText(text);
 
   window.parent.postMessage(`eks-workshop-terminal:${text}`, "*");
 }
