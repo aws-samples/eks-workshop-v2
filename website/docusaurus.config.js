@@ -47,8 +47,8 @@ const config = {
       'docusaurus-lunr-search',
       {
         disableVersioning: true
-      }
-    ]
+      },
+    ],
   ],
 
   i18n: {
