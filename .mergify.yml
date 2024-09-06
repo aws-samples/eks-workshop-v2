@@ -8,9 +8,7 @@ pull_request_rules:
       - check-success=Build lab
       - check-success=Validate Terraform
       - check-success=Pre-commit hooks
-      - "#check-pending=0"
-      - "#check-stale=0"
-      - "#check-failure=0"
+      - check-success=Build website
     actions:
       review:
         type: APPROVE
