@@ -6,7 +6,7 @@
     ":automergeStableNonMajor"
   ],
   "schedule": ["on the first day of the month"],
-  "enabledManagers": ["custom.regex", "github-actions", "terraform"],
+  "enabledManagers": ["custom.regex", "github-actions", "terraform", "npm"],
   "packageRules": [
     {
       "matchManagers": ["github-actions"],
