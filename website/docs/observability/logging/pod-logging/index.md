@@ -34,3 +34,7 @@ The Kubernetes logging architecture defines three distinct levels:
 Kubernetes, by itself, doesn’t provide a native solution to collect and store logs. It configures the container runtime to save logs in JSON format on the local filesystem. Container runtime – like Docker – redirects container’s stdout and stderr streams to a logging driver. In Kubernetes, container logs are written to `/var/log/pods/*.log` on the node. Kubelet and container runtime write their own logs to `/var/logs` or to journald, in operating systems with systemd. Then cluster-wide log collector systems like Fluentd can tail these log files on the node and ship logs for retention. These log collector systems usually run as DaemonSets on worker nodes.
 
 In this lab, we'll show how a log agent can be set up to collect logs from nodes in EKS and send them to CloudWatch Logs.
+
+:::info
+If you are using CDK Observability Accelerator, checkout the [AWS for Fluent Bit Addon](https://aws-quickstart.github.io/cdk-eks-blueprints/addons/aws-for-fluent-bit/). AWS for FluentBit addon can be configured to forward logs to multiple AWS destinations including CloudWatch, Amazon Kinesis, and AWS OpenSearch.
+:::
