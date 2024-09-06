@@ -1,7 +1,19 @@
+queue_rules:
+  - name: default
+
 pull_request_rules:
   - name: Automatically approve Renovate PRs
     conditions:
       - author = renovate[bot]
+      - check-success=Build lab
+      - check-success=Validate Terraform
+      - check-success=Pre-commit hooks
+      - "#check-pending=0"
+      - "#check-stale=0"
+      - "#check-failure=0"
     actions:
       review:
         type: APPROVE
+      queue:
+        method: squash
+        name: default
