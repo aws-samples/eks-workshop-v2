@@ -34,6 +34,10 @@
       "matchCurrentVersion": ">= 1.0.0",
       "matchUpdateTypes": ["minor", "patch"],
       "matchManagers": ["custom.regex"]
+    },
+    {
+      "matchPackagePatterns": ["^@docusaurus"],
+      "enabled": false
     }
   ],
   "customManagers": [
