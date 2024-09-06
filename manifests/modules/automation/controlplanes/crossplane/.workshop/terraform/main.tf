@@ -44,7 +44,8 @@ module "upbound_irsa_aws" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "5.39.1"
 
-  role_name_prefix           = "ddb-upbound-aws-"
+  role_name_prefix           = "${var.addon_context.eks_cluster_id}-ddb-upbound-"
+  policy_name_prefix         = "${var.addon_context.eks_cluster_id}-ddb-upbound-"
   assume_role_condition_test = "StringLike"
 
   role_policy_arns = {
@@ -128,7 +129,9 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    wait = true
+    wait        = true
+    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
 
   cluster_name      = var.addon_context.eks_cluster_id

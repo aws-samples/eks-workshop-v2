@@ -16,7 +16,7 @@ This workshop guides you through a set of hands-on lab exercises to learn and ex
 - **Networking** - Dive deep in to how EKS networking integrates to Amazon Virtual Private Cloud and more
 - **Automation** - Apply principles such as GitOps and provisioning infrastructure through EKS
 
-These labs are designed in a way that you can pick any combination of modules that reflect your experience and skills to learn efficiently. The workshop environment provides pre-configured AWS infrastructure including an EKS cluster and AWS Cloud9 Integrated Development Environment (IDE) with all the tools you need to complete the lab exercises.
+These labs are designed in a way that you can pick any combination of modules that reflect your experience and skills to learn efficiently. The workshop environment provides pre-configured AWS infrastructure including an EKS cluster an Integrated Development Environment (IDE) with all the tools you need to complete the lab exercises.
 
 To learn about the basics of Amazon EKS, watch this short ~10 minute video:
 

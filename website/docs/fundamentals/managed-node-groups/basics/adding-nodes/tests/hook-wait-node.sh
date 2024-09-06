@@ -14,6 +14,7 @@ after() {
 
   if [ $EXIT_CODE -ne 0 ]; then
     >&2 echo "Node count did not increase to 4 as expected"
+    kubectl get node
     exit 1
   fi
 }

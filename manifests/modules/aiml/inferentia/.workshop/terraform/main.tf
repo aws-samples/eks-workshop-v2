@@ -22,12 +22,26 @@ module "eks_blueprints_addons" {
 
   enable_karpenter = true
 
-  karpenter_enable_spot_termination          = true
+  karpenter_enable_spot_termination          = false
   karpenter_enable_instance_profile_creation = true
   karpenter = {
-    chart_version       = var.karpenter_version
-    repository_username = data.aws_ecrpublic_authorization_token.token.user_name
-    repository_password = data.aws_ecrpublic_authorization_token.token.password
+    chart_version          = var.karpenter_version
+    repository_username    = data.aws_ecrpublic_authorization_token.token.user_name
+    repository_password    = data.aws_ecrpublic_authorization_token.token.password
+    role_name              = "${var.addon_context.eks_cluster_id}-karpenter-controller"
+    role_name_use_prefix   = false
+    policy_name            = "${var.addon_context.eks_cluster_id}-karpenter-controller"
+    policy_name_use_prefix = false
+  }
+
+  karpenter_node = {
+    iam_role_use_name_prefix = false
+    iam_role_name            = "${var.addon_context.eks_cluster_id}-karpenter-node"
+    instance_profile_name    = "${var.addon_context.eks_cluster_id}-karpenter"
+  }
+
+  karpenter_sqs = {
+    queue_name = "${var.addon_context.eks_cluster_id}-karpenter"
   }
 
   cluster_name      = var.addon_context.eks_cluster_id
@@ -49,12 +63,11 @@ data "aws_subnets" "private" {
 }
 
 resource "aws_s3_bucket" "inference" {
-  bucket_prefix = "eksworkshop-inference"
+  bucket_prefix = "${var.addon_context.eks_cluster_id}-inference"
   force_destroy = true
 
   tags = var.tags
 }
-
 
 module "iam_assumable_role_inference" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
