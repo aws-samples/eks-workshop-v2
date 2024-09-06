@@ -41,8 +41,15 @@ const config = {
   organizationName: "aws-samples",
   projectName: "eks-workshop-v2",
 
-  plugins: ["docusaurus-plugin-sass"],
-
+  plugins: [
+    "docusaurus-plugin-sass",
+    [
+      'docusaurus-lunr-search',  {
+        disableVersioning: true
+      }
+    ]
+  ],
+ 
   i18n: {
     defaultLocale: "en",
     locales: ["en"],
@@ -113,7 +120,7 @@ const config = {
             type: "doc",
             docId: "introduction/index",
             position: "left",
-            label: "Introduction",
+            label: "Intro",
           },
           {
             type: "doc",

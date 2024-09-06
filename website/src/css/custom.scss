@@ -55,7 +55,7 @@
 
 .navbar__title {
   margin-left: 1rem;
-  margin-right: 2rem;
+  margin-right: 1rem;
 }
 
 .footer {
@@ -224,4 +224,37 @@
 
 [class^="lightToggleIcon"] {
   color: white;
+}
+
+.navbar__items {
+  display: flex;
+  flex-wrap: nowrap;
+  /* adjust this when adding new nav bar items */
+  max-width: 1050px;
+}
+
+/* Navbar items that dynamically shrink */
+.navbar__item {
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0 0px;
+  font-size: clamp(.8em, 1.2vw, 1em);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* docusaurus switches to mobile view at 996px */
+@media (min-width:997px) and (max-width: 1250px) {
+  .navbar__brand .navbar__title {
+    display: none; /* Hide the navbar title */
+  }
+
+  .navbar__items {
+    max-width: 80%;
+  }
+}
+
+.navbar__search-input {
+  max-width: 150px; /* Set a maximum width for the search input */;
 }
