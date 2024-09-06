@@ -28,6 +28,12 @@
       "matchDepNames": ["kubernetes/autoscaler"],
       "extractVersion": "^cluster-autoscaler-(?<version>.*)$",
       "allowedVersions": "/^1.30.[0-9]+$/"
+    },
+    {
+      "automerge": true,
+      "matchCurrentVersion": ">= 1.0.0",
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchManagers": ["custom.regex"]
     }
   ],
   "customManagers": [
