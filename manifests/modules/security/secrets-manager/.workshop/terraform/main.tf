@@ -44,7 +44,8 @@ module "secrets_manager_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "5.39.1"
 
-  role_name_prefix = "${var.eks_cluster_id}-secrets-"
+  role_name_prefix   = "${var.eks_cluster_id}-secrets-"
+  policy_name_prefix = "${var.eks_cluster_id}-secrets-"
 
   role_policy_arns = {
     policy = aws_iam_policy.secrets_manager.arn

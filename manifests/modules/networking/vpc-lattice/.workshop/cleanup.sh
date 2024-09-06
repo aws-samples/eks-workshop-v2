@@ -9,9 +9,11 @@ logmessage "Deleting VPC Lattice routes and gateway..."
 kubectl delete namespace checkoutv2 --ignore-not-found
 kubectl delete namespace checkout --ignore-not-found
 
-kubectl delete -f ~/environment/eks-workshop/modules/networking/vpc-lattice/routes --ignore-not-found
-cat ~/environment/eks-workshop/modules/networking/vpc-lattice/controller/eks-workshop-gw.yaml | envsubst | kubectl delete --ignore-not-found -f -
-kubectl delete -f ~/environment/eks-workshop/modules/networking/vpc-lattice/controller/gatewayclass.yaml --ignore-not-found
+delete-all-if-crd-exists httproutes.gateway.networking.k8s.io
+
+delete-all-if-crd-exists gateways.gateway.networking.k8s.io
+
+delete-all-if-crd-exists gatewayclasses.gateway.networking.k8s.io
 
 delete-all-if-crd-exists targetgrouppolicies.application-networking.k8s.aws
 
