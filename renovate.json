@@ -5,7 +5,7 @@
     ":rebaseStalePrs",
     ":automergeStableNonMajor"
   ],
-  "schedule": ["on the first day of the month"],
+  "schedule": ["first week of the month"],
   "enabledManagers": ["custom.regex", "github-actions", "terraform"],
   "packageRules": [
     {
