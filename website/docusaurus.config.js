@@ -44,9 +44,9 @@ const config = {
   plugins: [
     "docusaurus-plugin-sass",
     [
-      'docusaurus-lunr-search',
+      "docusaurus-lunr-search",
       {
-        disableVersioning: true
+        disableVersioning: true,
       },
     ],
   ],

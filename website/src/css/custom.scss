@@ -238,14 +238,14 @@
   flex-grow: 1;
   flex-shrink: 1;
   padding: 0 0px;
-  font-size: clamp(.8em, 1.2vw, 1em);
+  font-size: clamp(0.8em, 1.2vw, 1em);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 /* docusaurus switches to mobile view at 996px */
-@media (min-width:997px) and (max-width: 1250px) {
+@media (min-width: 997px) and (max-width: 1250px) {
   .navbar__brand .navbar__title {
     display: none; /* Hide the navbar title */
   }
@@ -256,5 +256,5 @@
 }
 
 .navbar__search-input {
-  max-width: 150px; /* Set a maximum width for the search input */;
+  max-width: 150px; /* Set a maximum width for the search input */
 }
