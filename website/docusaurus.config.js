@@ -44,12 +44,13 @@ const config = {
   plugins: [
     "docusaurus-plugin-sass",
     [
-      'docusaurus-lunr-search',  {
+      'docusaurus-lunr-search',
+      {
         disableVersioning: true
       }
     ]
   ],
- 
+
   i18n: {
     defaultLocale: "en",
     locales: ["en"],
