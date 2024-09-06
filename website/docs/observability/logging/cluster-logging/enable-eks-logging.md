@@ -44,5 +44,5 @@ You can alter the logging configuration by clicking the **Manage** button:
 ![Enable Logging](./assets/logging-cluster-enable-logging.webp)
 
 :::info
-If you are using CDK Observability Accelerator, checkout the [CDK Observability Builder](https://aws-quickstart.github.io/cdk-eks-blueprints/builders/observability-builder/#supported-methods) which supports enabling all control plane logging features for EKS clusters and storing them in CloudWatch. 
+If you are using CDK Observability Accelerator, checkout the [CDK Observability Builder](https://aws-quickstart.github.io/cdk-eks-blueprints/builders/observability-builder/#supported-methods) which supports enabling all control plane logging features for EKS clusters and storing them in CloudWatch.
 :::
