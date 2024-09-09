@@ -28,6 +28,7 @@ jobs:
           MILESTONE_NUMBER: "${{ github.event.milestone.number }}"
         run: |
           npm install
+          npm run build
           npm run exec
       - name: Set Git config
         run: |
