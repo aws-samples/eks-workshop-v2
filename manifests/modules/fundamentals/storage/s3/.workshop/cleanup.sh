@@ -1,6 +1,8 @@
 #!/bin/bash
 
 
+# Ensure cleanup is all good before deploying!
+
 # Delete addon
 eksctl delete addon --cluster $EKS_CLUSTER_NAME --name aws-mountpoint-s3-csi-driver --preserve
 

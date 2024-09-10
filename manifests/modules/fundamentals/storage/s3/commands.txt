@@ -1,20 +1,57 @@
-# Step 0: Prepare the environment (GOOD)
+# Step : Prepare the environment (GOOD)
 prepare-environment fundamentals/storage/s3
 
-# Step 1: Attach addon to EKS cluster (GOOD)
+# Step : Shows container image
+kubectl describe deployment -n assets
+
+# Step : Show container build images (cat.jpg, dog.jpg, hamster.jpg, bird.jpg)
+kubectl exec --stdin deployment/assets \
+  -n assets -- bash -c "ls /usr/share/nginx/html/assets/"
+
+
+# Step: Scale up deployment for multiple replicas
+kubectl scale -n assets --replicas=2 deployment/assets
+kubectl rollout status -n assets deployment/assets --timeout=60s
+
+# Step : Put image in first pod
+POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[0].metadata.name}')
+kubectl exec --stdin $POD_NAME \
+  -n assets -- bash -c 'touch /usr/share/nginx/html/assets/horse.jpg'
+
+# Step : Confirm image not in second pod
+POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
+kubectl exec --stdin $POD_NAME \
+  -n assets -- bash -c 'ls /usr/share/nginx/html/assets'
+
+
+
+
+# Step : Attach addon to EKS cluster (GOOD)
 eksctl create addon --name aws-mountpoint-s3-csi-driver --cluster $EKS_CLUSTER_NAME --service-account-role-arn $S3_CSI_ADDON_ROLE --force
 
-# Step 2: Run this to create storage class
+# Step : Show mountpoint exists
+kubectl get daemonset s3-csi-node -n kube-system
+
+
+
+
+---- Test until here first and then proceed -----
+
+# Step : Run this to create storage class
 kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/s3/storageclass
 
-# Step 3: Run this to create PV and PVC 
+# Step : Run this to create PV and PVC 
+envsubst < ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment/s3pvclaim.yaml | kubectl apply -f -
+
 kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment
 
-# Step 4: Nginx deployment (test)
+# Step : Nginx deployment (test)
 
 
-# Step 5: Interact with deployment ??
+# Step : Interact with deployment ??
 How??
+
+# Step : Navigate to S3 bucket and see file
 
 
 

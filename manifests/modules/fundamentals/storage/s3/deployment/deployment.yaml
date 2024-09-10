@@ -1,15 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: s3-app
+  name: assets
+  namespace: assets
 spec:
-  volumes:
-    - name: nginx-storage
-      persistentVolumeClaim:
-        claimName: s3-pvc
-  containers:
-    - name: app
-      image: nginx:latest # NGINX image to use!!!
-      volumeMounts:
-        - name: persistent-storage
-          mountPath: /usr/share/nginx/html
+  replicas: 1
+  template:
+    spec:
+      initContainers:
+        - name: copy
+          image: public.ecr.aws/aws-containers/retail-store-sample-assets:0.4.0
+          command:
+            - /bin/sh
+            - "-c"
+            - cp -R /usr/share/nginx/html/assets/* /mountpoint-s3
+          volumeMounts:
+            - name: mountpoint-s3
+              mountPath: /mountpoint-s3
+      containers:
+        - name: assets
+          volumeMounts:
+            - name: mountpoint-s3
+              mountPath: /usr/share/nginx/html/assets
+      volumes:
+        - name: mountpoint-s3
+          persistentVolumeClaim:
+            claimName: s3-claim

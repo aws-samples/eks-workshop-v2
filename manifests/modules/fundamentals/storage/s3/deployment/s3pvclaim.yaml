@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: s3-pv
+  name: s3volume
 spec:
   capacity:
-    storage: 10Gi
+    storage: 5Gi
   accessModes:
     - ReadWriteMany
   mountOptions:
@@ -13,19 +13,22 @@ spec:
     - region us-west-2
   csi:
     driver: s3.csi.aws.com
-    volumeHandle: s3-csi-driver-volume
+    volumeHandle: s3volume
     volumeAttributes:
-      bucketName: ${BUCKET_NAME}
+      bucketName: $BUCKET_NAME
+      # region: us-west-2
+      # serviceAccount: s3-csi-driver-sa
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: s3-claim
+  # namespace: s3-demo
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: s3-sc
+  storageClassName: ""
   resources:
     requests:
-      storage: 10Gi
-  # volumeName: s3-pv
+      storage: 5Gi
+  volumeName: s3volume
