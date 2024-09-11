@@ -35,11 +35,11 @@ proxy-public   LoadBalancer   10.100.4.40   k8s-jupyterh-proxypub-f09eec1e26-620
 
 Use your browser and paste the loadbalancer url obtained in the previous step to access the notebook
 
-Login using the username user1 and the password as specified in the jupyterhub-values.yaml. 
+Login using the username "user1" and the password as specified in the jupyterhub-values.yaml. 
  
 ![jupyterhub login page](./assets/jupyterhub-login.png)
 
-Upon successful login, you would see a jupyterhub-user1 pod would have instantiated on a GPU node. If it the launch timesout after, please relaunch the server
+Upon successful login, a jupyterhub-user1 pod will have to launch on a GPU instance-type, so karpenter would launch a new GPU instance-type. If the request timesout after, please relaunch the server. Note: This step could take about 10 mins to download the image and to launch the pod. 
 
 ![upload nb](./assets/user1-session-launch.png)
 
@@ -49,9 +49,11 @@ After a successful jupyterhub-user1 server launch, you should see a jupyterhub-n
 ![upload nb](./assets/upload-nb.png)
 
 
-Follow the commands and run each commands in the notebook from the top
-
 ### Jupyter Notebook commands
+
+This code is a set of instructions for setting up and running a Dreambooth training script using the Hugging Face Diffusers library. Dreambooth is a technique for fine-tuning a pre-trained text-to-image model, like Stable Diffusion, to generate images of a specific subject or object. Here's a breakdown of what the code is doing:
+
+Follow the commands and run each commands in the notebook from the top
 
 
 ```file

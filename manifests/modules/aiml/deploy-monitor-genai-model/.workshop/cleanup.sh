@@ -7,28 +7,9 @@ kubectl delete ns dogbooth --ignore-not-found
 helm uninstall jupyterhub -n jupyterhub
 helm uninstall nginx-ingress
 helm uninstall kuberay-operator
-kubectl delete ns karpenter 
 kubectl delete ns jupyterhub
-
 
 # Uninstall gpu-operator
 GPU_OPERATOR_RELEASE_NAME=$(helm list -n gpu-operator -q)
 helm uninstall $GPU_OPERATOR_RELEASE_NAME -n gpu-operator
 kubectl delete ns gpu-operator
-
-
-delete-all-if-crd-exists nodepools.karpenter.sh
-delete-all-if-crd-exists ec2nodeclasses.karpenter.k8s.aws
-
-EXIT_CODE=0
-
-timeout --foreground -s TERM 30 bash -c \
-    'while [[ $(kubectl get nodes --selector=type=karpenter -o json | jq -r ".items | length") -gt 0 ]];\
-    do sleep 5;\
-    done' || EXIT_CODE=$?
-
-if [ $EXIT_CODE -ne 0 ]; then
-  logmessage "Warning: Karpenter nodes did not clean up"
-fi
-
-helm uninstall karpenter -n karpenter

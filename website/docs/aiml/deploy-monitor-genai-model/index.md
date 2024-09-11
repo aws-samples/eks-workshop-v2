@@ -18,10 +18,8 @@ $ prepare-environment aiml/deploy-monitor-genai-model
 Its takes around 25 mins to complete the initial preparation, this will make the following changes to your lab environment:
 
  - Creates EKS cluster 
- - Install EBS CSI Driver and AWS Load Balancer controller
+ - Install EBS CSI Driver, AWS Load Balancer controller and Karpenter controller
  - Installs Amazon Managed Prometheus, Grafana and AWS managed collector
- - Prerequisite IAM roles for Karpenter 
-
 :::
 
 
@@ -34,8 +32,8 @@ Welcome to the "GenAI on Amazon EKS" workshop! In this workshop, we'll cover asp
 
 ## High level overview 
 
- 1. Create an EKS cluster, install EBS CSI driver & AWS Load Balancer controller, Amazon Managed Prometheus, Granfana and an AWS managed collector
- 2. Install Karpenter, Nvidia GPU Operator and Ray cluster 
+ 1. Create an EKS cluster, install EBS CSI driver, AWS Load Balancer controller, Karpenter, Amazon Managed Prometheus, Granfana and AWS managed collector
+ 2. Install Nvidia GPU Operator and Ray cluster 
  2. Install Jupyterhub notebook and train the model
  4. Create an Inference service using KubeRay service
  5. Monitor the GPU metrics using the Amazon Managed Prometheus and Grafana 

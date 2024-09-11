@@ -56,7 +56,7 @@ Deploy the Ray services and the Ingress service to access it
 $ kubectl apply -f ~/environment/eks-workshop/modules/aiml/deploy-monitor-genai-model/rayservice/rayservice.yaml
 ```
 
-The above deployment will take roughly 12s mins to complete. Let's verify the deployments:
+The above deployment will take roughly 12 mins to complete. Let's verify the deployments:
 
 ```bash timeout=300 wait=60
 $ kubectl  get all -n dogbooth

@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    kubectl = {
+      source  = "alekc/kubectl"
+    }
+  }
+}
+
 provider "aws" {
   region = "us-east-1"
   alias  = "virginia"
@@ -48,27 +56,6 @@ module "eks_blueprints_addons" {
   }
 }
 
-resource "aws_eks_addon" "pod_identity" {
-  cluster_name                = var.addon_context.eks_cluster_id
-  addon_name                  = "eks-pod-identity-agent"
-  resolve_conflicts_on_create = "OVERWRITE"
-  preserve                    = false
-}
-
-module "karpenter" {
-  source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "20.13.1"
-
-  cluster_name                    = var.addon_context.eks_cluster_id
-  enable_pod_identity             = true
-  create_pod_identity_association = true
-  namespace                       = "karpenter"
-
-  node_iam_role_additional_policies = {
-    AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-  }
-}
-
 resource "kubernetes_annotations" "disable_gp2" {
   annotations = {
     "storageclass.kubernetes.io/is-default-class" : "false"
@@ -79,7 +66,6 @@ resource "kubernetes_annotations" "disable_gp2" {
     name = "gp2"
   }
   force = true
-
 }
 
 resource "kubernetes_storage_class" "default_gp3" {
@@ -89,7 +75,6 @@ resource "kubernetes_storage_class" "default_gp3" {
       "storageclass.kubernetes.io/is-default-class" : "true"
     }
   }
-
   storage_provisioner    = "ebs.csi.aws.com"
   reclaim_policy         = "Delete"
   allow_volume_expansion = true
@@ -99,14 +84,204 @@ resource "kubernetes_storage_class" "default_gp3" {
     encrypted = true
     type      = "gp3"
   }
-
   depends_on = [kubernetes_annotations.disable_gp2]
 }
+
+
+module "eks_blueprints_addons_karpenter" {
+  source  = "aws-ia/eks-blueprints-addons/aws"
+  version = "1.16.3"
+
+  enable_karpenter = true
+
+  karpenter_enable_spot_termination          = true
+  karpenter_enable_instance_profile_creation = true
+  karpenter = {
+    repository_username = data.aws_ecrpublic_authorization_token.token.user_name
+    repository_password = data.aws_ecrpublic_authorization_token.token.password
+  }
+
+  cluster_name      = var.addon_context.eks_cluster_id
+  cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint
+  cluster_version   = var.eks_cluster_version
+  oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
+
+  depends_on = [
+    module.eks_blueprints_addons
+  ]  
+}
+
+
+resource "aws_eks_access_entry" "node" {
+
+  cluster_name  = var.addon_context.eks_cluster_id
+  principal_arn = module.eks_blueprints_addons_karpenter.karpenter.node_iam_role_arn
+  type          = "EC2_LINUX"
+
+  depends_on = [
+    module.eks_blueprints_addons_karpenter
+  ]
+}
+
+resource "kubectl_manifest" "g5-gpu-karpenter-nodepool" {
+    yaml_body = <<YAML
+apiVersion: karpenter.sh/v1beta1
+kind: NodePool
+metadata:
+  name: g5-gpu-karpenter
+  labels:
+    type: karpenter
+    NodeGroupType: g5-gpu-karpenter
+spec:
+  template:
+    spec:
+      nodeClassRef:
+        apiVersion: karpenter.k8s.aws/v1beta1
+        kind: EC2NodeClass
+        name: g5-gpu-karpenter    
+      taints:
+      - key: "nvidia.com/gpu"
+        value: "true"
+        effect: "NoSchedule"
+      requirements:
+        - key: "karpenter.k8s.aws/instance-family"
+          operator: In
+          values: ["g5"]
+        - key: "karpenter.k8s.aws/instance-size"
+          operator: In
+          values: [ "2xlarge", "4xlarge", "8xlarge" ]
+        - key: "kubernetes.io/arch"
+          operator: In
+          values: ["amd64"]
+        - key: "karpenter.sh/capacity-type"
+          operator: In
+          values: ["on-demand"]
+  limits:
+    cpu: 1000
+  disruption:
+    consolidationPolicy: WhenEmpty
+    consolidateAfter: 300s
+    expireAfter: 720h
+  weight: 100
+
+YAML
+
+  depends_on = [
+    module.eks_blueprints_addons_karpenter
+  ] 
+}
+
+
+resource "kubectl_manifest" "g5-gpu-karpenter-ec2nodeclass" {
+    yaml_body = <<YAML
+apiVersion: karpenter.k8s.aws/v1beta1
+kind: EC2NodeClass
+metadata:
+  name: g5-gpu-karpenter
+spec:
+  amiFamily: Ubuntu
+  role: ${module.eks_blueprints_addons_karpenter.karpenter.node_iam_role_name}
+  subnetSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: "eks-workshop"
+  securityGroupSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: "eks-workshop" 
+  blockDeviceMappings:
+  - deviceName: /dev/sda1
+    ebs:
+      volumeSize: 100Gi
+      volumeType: gp3
+    # userData: |
+    #   #!/bin/bash
+    #   docker pull public.ecr.aws/h3o5n2r0/dogbooth:0.0.1-gpu
+
+YAML
+
+  depends_on = [
+    module.eks_blueprints_addons_karpenter
+  ] 
+}
+
+
+resource "kubectl_manifest" "x86-cpu-karpenter-nodepool" {
+    yaml_body = <<YAML
+apiVersion: karpenter.sh/v1beta1
+kind: NodePool
+metadata:
+  name: x86-cpu-karpenter
+  labels:
+    type: karpenter
+    NodeGroupType: x86-cpu-karpenter
+spec:
+  template:
+    spec:
+      nodeClassRef:
+        apiVersion: karpenter.k8s.aws/v1beta1
+        kind: EC2NodeClass
+        name: x86-cpu-karpenter
+      requirements:
+        - key: "karpenter.k8s.aws/instance-family"
+          operator: In
+          values: ["m5"]
+        - key: "karpenter.k8s.aws/instance-size"
+          operator: In
+          values: [ "xlarge", "2xlarge", "4xlarge", "8xlarge"]
+        - key: "kubernetes.io/arch"
+          operator: In
+          values: ["amd64"]
+        - key: "karpenter.sh/capacity-type"
+          operator: In
+          values: ["on-demand"]
+  limits:
+    cpu: 1000
+  disruption:
+    consolidationPolicy: WhenEmpty
+    consolidateAfter: 300s
+    expireAfter: 720h
+  weight: 100
+
+YAML
+
+  depends_on = [
+    module.eks_blueprints_addons_karpenter
+  ] 
+}
+
+resource "kubectl_manifest" "x86-cpu-karpenter-ec2nodeclass" {
+    yaml_body = <<YAML
+apiVersion: karpenter.k8s.aws/v1beta1
+kind: EC2NodeClass
+metadata:
+  name: x86-cpu-karpenter
+spec:
+  amiFamily: AL2 # Amazon Linux 2
+  role: ${module.eks_blueprints_addons_karpenter.karpenter.node_iam_role_name}
+  subnetSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: "eks-workshop" 
+  securityGroupSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: "eks-workshop"
+  blockDeviceMappings:
+  - deviceName: /dev/xvda
+    ebs:
+      volumeSize: 100Gi
+      volumeType: gp3  
+
+YAML
+
+  depends_on = [
+    module.eks_blueprints_addons_karpenter
+  ] 
+}
+
 
 
 resource "aws_prometheus_workspace" "eks_workshop_v2_amp" {
   alias = var.addon_context.eks_cluster_id
 }
+
 
 resource "time_sleep" "blueprints_addons_sleep" {
   depends_on = [
@@ -114,9 +289,6 @@ resource "time_sleep" "blueprints_addons_sleep" {
   ]
   create_duration = "10s"
 }
-
-
-
 
 
 data "aws_subnets" "private" {
@@ -129,6 +301,7 @@ data "aws_subnets" "private" {
     values = ["*Private*"]
   }
 }
+
 
 resource "aws_prometheus_scraper" "agentless_scraper" {
   source {

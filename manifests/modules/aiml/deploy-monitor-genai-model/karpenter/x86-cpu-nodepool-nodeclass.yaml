@@ -42,7 +42,6 @@ metadata:
 spec:
   amiFamily: AL2 # Amazon Linux 2
   role: ${KARPENTER_ROLE}
-#  role: Karpenter-eks-workshop-20240724023441649900000009
   subnetSelectorTerms:
     - tags:
         karpenter.sh/discovery: "eks-workshop" 

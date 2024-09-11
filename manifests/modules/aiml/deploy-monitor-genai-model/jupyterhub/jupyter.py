@@ -1,5 +1,5 @@
 # Verify NVIDIA GPU is visible
-!nvidia-smi
+! nvidia-smi
 
 
 import os
@@ -7,22 +7,16 @@ os.chdir("/home/jovyan")
 
 
 # Clone the diffusers repo
-!git clone https://github.com/huggingface/diffusers
+! git clone https://github.com/huggingface/diffusers
 
 # Change the directory
 os.chdir("diffusers")
 
-# Install requirements
+# Installs the necessary Python packages, including the Diffusers library, xformers, and bitsandbytes (for memory-efficient attention optimization).
 ! pip install -e .
 ! pip install xformers==0.0.16 diffusers[torch]
-
-
-# Fix for bitsandbytes https://github.com/TimDettmers/bitsandbytes/blob/main/how_to_use_nonpytorch_cuda.md
 ! wget https://raw.githubusercontent.com/TimDettmers/bitsandbytes/main/cuda_install.sh
 ! bash cuda_install.sh 117 ~/local 1
-
-
-# Install bitsandbytes for optimizations
 ! pip install bitsandbytes==0.41.0
 
 # Use the newly installed CUDA version for bitsandbytes
@@ -35,8 +29,6 @@ os.environ["LD_LIBRARY_PATH"] = os.getenv("LD_LIBRARY_PATH") + ":/home/jovyan/lo
 # Install requirements for dreambooth
 os.chdir("examples/dreambooth")
 ! pip install -r requirements.txt
-
-
 
 # Setup default configuration for accelerate
 ! accelerate config default

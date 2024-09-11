@@ -1,66 +1,8 @@
 ---
-title: "Install Karpenter, Nvidia GPU and Ray Operators"
+title: "Install Nvidia GPU and Ray Operators"
 sidebar_position: 20
-description: "Install Karpenter, Nvidia GPU and Ray Operators"
+description: "Install Nvidia GPU and Ray Operators"
 ---
-
-
-# Install Karpenter
-
-The first thing we'll do is install Karpenter in our cluster. Various pre-requisites were created during the lab preparation stage, including:
-
-1. An IAM role for Karpenter to call AWS APIs
-2. An IAM role and instance profile for the EC2 instances that Karpenter creates
-3. An EKS cluster access entry for the node IAM role so the nodes can join the EKS cluster
-4. An SQS queue for Karpenter to receive Spot interruption, instance re-balance and other events
-
-You can find the full installation documentation for Karpenter [here](https://karpenter.sh/docs/getting-started/getting-started-with-karpenter/).
-
-All that we have left to do is install Karpenter:
-
-```bash timeout=1800 wait=30
-$ helm upgrade --install karpenter oci://public.ecr.aws/karpenter/karpenter \
-  --version "${KARPENTER_VERSION}" \
-  --namespace "karpenter" --create-namespace \
-  --set "settings.clusterName=${EKS_CLUSTER_NAME}" \
-  --set "settings.interruptionQueue=${KARPENTER_SQS_QUEUE}" \
-  --set controller.resources.requests.cpu=1 \
-  --set controller.resources.requests.memory=1Gi \
-  --set controller.resources.limits.cpu=1 \
-  --set controller.resources.limits.memory=1Gi \
-  --set replicas=1 \
-  --wait 
-```
-
-Karpenter will be running as a deployment in the `karpenter` namespace:
-
-```bash hook=check-karpenter-deployment-status timeout=150
-$ kubectl get deployment -n karpenter
-NAME        READY   UP-TO-DATE   AVAILABLE   AGE
-karpenter   1/1     1            1           105s
-```
-
-For this lab, we will create two `NodePool` and `EC2NodeClass` with the following command, one to scale g5.2xlarge GPU EC2 instance and the second one to scale non-GPU instance-type.
-
-```bash timeout=180 hook=karpenter-nodepool-ec2nodeclass-status 
-$ kubectl kustomize ~/environment/eks-workshop/modules/aiml/deploy-monitor-genai-model/karpenter \
-  | envsubst | kubectl apply -f-
-$ kubectl get nodepool,ec2nodeclass
-NAME                                      NODECLASS
-nodepool.karpenter.sh/g5-gpu-karpenter    g5-gpu-karpenter
-nodepool.karpenter.sh/x86-cpu-karpenter   x86-cpu-karpenter
-
-NAME                                               AGE
-ec2nodeclass.karpenter.k8s.aws/g5-gpu-karpenter    32m
-ec2nodeclass.karpenter.k8s.aws/x86-cpu-karpenter   32ms
-```
-
-Throughout the workshop you can inspect the Karpenter logs with the following command to understand its behavior:
-
-```bash
-$ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter 
-```
-
 
 ### Deploy NVIDIA GPU Operator 
 
