@@ -60,13 +60,6 @@ There are several tools that are required to run the workshop such as `kubectl` 
 - Governance model: [governance/model.md](governance/model.md)
 - Tenets: [governance/tenets.md](governance/tenets.md)
 
-### Meetings
-
-2nd Thursday every month at 8am PT (3pm UTC)
-
-- Meeting link: [Chime Web Meeting Link](https://chime.aws/8607878433)
-- Agenda, Notes, and calendar invites: [Google Doc](https://docs.google.com/document/d/1hYjhBhPvLVMf7gunooM-kE0wptMjMIORCmI2BOedCWI/edit?usp=sharing)
-
 ## Security
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
