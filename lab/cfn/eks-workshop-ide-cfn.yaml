@@ -360,6 +360,8 @@ Resources:
                 - !Sub |
                   set -e
 
+                  export EKS_CLUSTER_NAME="eks-workshop"
+
                   export AWS_REGION="${AWS::Region}"
                   export REPOSITORY_OWNER="${RepositoryOwner}"
                   export REPOSITORY_NAME="${RepositoryName}"

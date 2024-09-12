@@ -3,7 +3,7 @@ title: "Installing Sealed Secrets"
 sidebar_position: 432
 ---
 
-The `kubeseal` CLI is used to interact with the sealed secrets controller, and has already been installed in Cloud9.
+The `kubeseal` CLI is used to interact with the sealed secrets controller, and has already been installed in your IDE.
 
 The first thing we'll do is install the sealed secrets controller in the EKS cluster:
 
