@@ -70,14 +70,15 @@ Statement:
       - kms:GenerateDataKeyWithoutPlaintext
     Resource: ["*"]
     Condition:
-      StringLike:
-        kms:RequestAlias: "alias/${Env}*"
+      ForAnyValue:StringLike:
+        kms:RequestAlias: ["alias/${Env}*", "alias/eks/${Env}*"]
   - Effect: Allow
     Action:
       - kms:CreateAlias
       - kms:DeleteAlias
     Resource:
       - !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:alias/${Env}*
+      - !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:alias/eks/${Env}*
       - !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*
   - Effect: Allow
     Action:
