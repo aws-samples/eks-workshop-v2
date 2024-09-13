@@ -70,7 +70,7 @@ Statement:
       - kms:GenerateDataKeyWithoutPlaintext
     Resource: ["*"]
     Condition:
-      ForAnyValue:StringLike:
+      StringLike:
         kms:RequestAlias: ["alias/${Env}*", "alias/eks/${Env}*"]
   - Effect: Allow
     Action:
