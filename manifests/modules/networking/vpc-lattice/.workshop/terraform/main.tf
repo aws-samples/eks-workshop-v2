@@ -4,7 +4,9 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    wait = true
+    wait        = true
+    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
 
   cluster_name      = var.addon_context.eks_cluster_id
@@ -15,7 +17,7 @@ module "eks_blueprints_addons" {
 
 module "iam_assumable_role_lattice" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "5.39.1"
+  version                       = "5.44.0"
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-lattice"
   provider_url                  = var.addon_context.eks_oidc_issuer_url
