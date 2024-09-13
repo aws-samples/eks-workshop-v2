@@ -53,18 +53,20 @@ metadata:
 
 Now we need to recycle all the carts Pods to pick up our new ConfigMap contents:
 
-```bash hook=enable-dynamo hookTimeout=430
+```bash expectError=true hook=enable-dynamo
 $ kubectl rollout restart -n carts deployment/carts
 deployment.apps/carts restarted
-$ kubectl rollout status -n carts deployment/carts
+$ kubectl rollout status -n carts deployment/carts --timeout=20s
+Waiting for deployment "carts" rollout to finish: 1 old replicas are pending termination...
+error: timed out waiting for the condition
 ```
 
-So now our application should be using DynamoDB.
-But if we run the following command we will see that the `carts` pods are failing:
+It looks like our change failed to deploy properly, we can confirm this by looking at the Pods:
 
 ```bash
 $ kubectl -n carts get pod
 NAME                              READY   STATUS             RESTARTS        AGE
+carts-5d486d7cf7-8qxf9            1/1     Running            0               5m49s
 carts-df76875ff-7jkhr             0/1     CrashLoopBackOff   3 (36s ago)     2m2s
 carts-dynamodb-698674dcc6-hw2bg   1/1     Running            0               20m
 ```
