@@ -3,7 +3,7 @@ title: "Verifying DynamoDB Access"
 sidebar_position: 35
 ---
 
-Now, with the `carts` Service Account associated with the authorized IAM Role, the `carts` Pod has permission to access the DynamoDB table. Access the web store again and navigate to the shopping cart.
+Now, with the `carts` Service Account associated with the authorized IAM role, the `carts` Pod has permission to access the DynamoDB table. Access the web store again and navigate to the shopping cart.
 
 ```bash
 $ kubectl -n ui get service ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}'
