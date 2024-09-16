@@ -30,9 +30,5 @@ AWS Distro for OpenTelemetry is a secure, production-ready, AWS-supported distri
 Amazon Managed Service for Prometheus is a monitoring service for metrics compatible with the open source Prometheus project, making it easier for you to securely monitor container environments. Amazon Managed Service for Prometheus is a solution for monitoring containers based on the popular Cloud Native Computing Foundation (CNCF) Prometheus project. Amazon Managed Service for Prometheus reduces the heavy lifting required to get started with monitoring applications across Amazon Elastic Kubernetes Service and Amazon Elastic Container Service, as well as self-managed Kubernetes clusters.
 
 :::info
-If you are using CDK Observability Accelerator, checkout the collection of Open Source Observability Patterns covering a wide range of use cases including [ADOT collector](https://aws-observability.github.io/cdk-aws-observability-accelerator/patterns/existing-eks-observability-accelerators/existing-eks-adotmetrics-collection-observability/), [GPU Monitoring with Nvidia DCGM](https://aws-observability.github.io/cdk-aws-observability-accelerator/patterns/single-new-eks-observability-accelerators/single-new-eks-gpu-opensource-observability/) and many more.
-:::
-
-:::tip
-After completing this module checkout how to integrate [ADOT collector and Amazon Managed Prometheus EKS on AWS Fargate Clusters](https://aws.amazon.com/blogs/mt/observability-on-eks-fargate-cluster-with-amazon-managed-service-for-prometheus-and-amazon-managed-grafana/).
+If you are using the CDK Observability Accelerator then check out the collection of Open Source Observability Patterns covering a wide range of use cases including [ADOT collector](https://aws-observability.github.io/cdk-aws-observability-accelerator/patterns/existing-eks-observability-accelerators/existing-eks-adotmetrics-collection-observability/), [GPU Monitoring with Nvidia DCGM](https://aws-observability.github.io/cdk-aws-observability-accelerator/patterns/single-new-eks-observability-accelerators/single-new-eks-gpu-opensource-observability/) and many more.
 :::

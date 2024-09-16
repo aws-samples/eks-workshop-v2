@@ -33,5 +33,5 @@ Copy the query to the console and press **Run query**, which will return results
 This information can be invaluable to understand what components are sending requests to the API server.
 
 :::info
-If you are using CDK Observability Accelerator, checkout the [CloudWatch Insights Add-on](https://aws-quickstart.github.io/cdk-eks-blueprints/addons/aws-cloudwatch-insights/) which collects, aggregates, and summarizes metrics and logs from your containerized applications and microservices in EKS.
+If you are using the CDK Observability Accelerator then check out the [CloudWatch Insights Add-on](https://aws-quickstart.github.io/cdk-eks-blueprints/addons/aws-cloudwatch-insights/) which collects, aggregates, and summarizes metrics and logs from your containerized applications and microservices in EKS.
 :::

@@ -36,5 +36,5 @@ Kubernetes, by itself, doesn’t provide a native solution to collect and store 
 In this lab, we'll show how a log agent can be set up to collect logs from nodes in EKS and send them to CloudWatch Logs.
 
 :::info
-If you are using CDK Observability Accelerator, checkout the [AWS for Fluent Bit Addon](https://aws-quickstart.github.io/cdk-eks-blueprints/addons/aws-for-fluent-bit/). AWS for FluentBit addon can be configured to forward logs to multiple AWS destinations including CloudWatch, Amazon Kinesis, and AWS OpenSearch.
+If you are using the CDK Observability Accelerator then check out the [AWS for Fluent Bit Addon](https://aws-quickstart.github.io/cdk-eks-blueprints/addons/aws-for-fluent-bit/). AWS for FluentBit addon can be configured to forward logs to multiple AWS destinations including CloudWatch, Amazon Kinesis, and AWS OpenSearch.
 :::

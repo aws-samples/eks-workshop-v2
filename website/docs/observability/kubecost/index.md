@@ -37,5 +37,5 @@ After completing this module checkout how to use Kubecost and [Amazon Managed Se
 :::
 
 :::info
-If you are using CDK Observability Accelerator, checkout the [Kubecost Addon](https://aws-quickstart.github.io/cdk-eks-blueprints/addons/kubecost/). The addon greatly simplifies the process of setting up Kubecost and AMP for your EKS clusters.
+If you are using the CDK Observability Accelerator then check out the [Kubecost Addon](https://aws-quickstart.github.io/cdk-eks-blueprints/addons/kubecost/). The addon greatly simplifies the process of setting up Kubecost and AMP for your EKS clusters.
 :::
