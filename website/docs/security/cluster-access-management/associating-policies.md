@@ -16,7 +16,7 @@ $ aws eks create-access-entry --cluster-name $EKS_CLUSTER_NAME \
 
 Now we can associate an access policy for this principal that uses the `AmazonEKSViewPolicy` policy:
 
-```bash wait=10
+```bash wait=30
 $ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME \
   --principal-arn $READ_ONLY_IAM_ROLE \
   --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy \
