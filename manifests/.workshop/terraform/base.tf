@@ -2,13 +2,17 @@ terraform {
   required_version = ">= 1.3"
 
   required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "5.66.0"
+    }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.31.0"
+      version = "2.32.0"
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "2.14.0"
+      version = "2.15.0"
     }
     kubectl = {
       source  = "gavinbunney/kubectl"
@@ -51,6 +55,12 @@ data "aws_eks_cluster" "eks_cluster" {
 
 data "aws_eks_cluster_auth" "this" {
   name = var.eks_cluster_id
+}
+
+provider "aws" {
+  default_tags {
+    tags = local.tags
+  }
 }
 
 provider "kubernetes" {

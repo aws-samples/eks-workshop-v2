@@ -5,7 +5,7 @@ sidebar_position: 40
 
 The sample application is composed of a set of Kubernetes manifests organized in a way that can be easily applied with Kustomize. Kustomize is an open-source tool also provided as a native feature of the `kubectl` CLI. This workshop uses Kustomize to apply changes to Kubernetes manifests, making it easier to understand changes to manifest files without needing to manually edit YAML. As we work through the various modules of this workshop, we'll incrementally apply overlays and patches with Kustomize.
 
-The easiest way to browse the YAML manifests for the sample application and the modules in this workshop is using the file browser in Cloud9:
+The easiest way to browse the YAML manifests for the sample application and the modules in this workshop is using the file browser in the IDE:
 
 ![Cloud9 files](./assets/cloud9-files-initial.webp)
 

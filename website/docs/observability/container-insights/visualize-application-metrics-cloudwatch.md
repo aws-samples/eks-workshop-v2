@@ -54,7 +54,7 @@ You'll recall the collector we've already deployed was a DaemonSet, meaning that
 
 </details>
 
-We can review this is several parts to make better sense of it.
+We can review this in several parts to make better sense of it.
 
 ::yaml{file="manifests/modules/observability/container-insights/adot-deployment/opentelemetrycollector.yaml" zoomPath="spec.image" zoomAfter="1"}
 
