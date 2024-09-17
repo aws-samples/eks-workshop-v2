@@ -12,10 +12,9 @@ By default, all Kubernetes API resource types are shown, but you can filter by n
 
 ![Insights](/img/resource-view/filter-pod.jpg)
 
-The resources view for all Kubernetes API resource types, offers two views - structured view and raw view. The structured view provides a visual representation of the resource to help access the data for the resource. Raw view shows the complete JSON output from the Kubernetes API, which is useful for understanding the configuration and state of resource types that do not have structured view support in the Amazon EKS console. 
+The resources view for all Kubernetes API resource types, offers two views - structured view and raw view. The structured view provides a visual representation of the resource to help access the data for the resource. Raw view shows the complete JSON output from the Kubernetes API, which is useful for understanding the configuration and state of resource types that do not have structured view support in the Amazon EKS console.
 
 ![Insights](/img/resource-view/pod-detail-structured.jpg)
-
 
 A <strong>[ReplicaSet](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/)</strong> is a Kubernetes object that ensures a stable set of replica pods are running at all times. As such, it is often used to guarantee the availability of a specified number of identical pods. In this example (below), you can see 2 replicasets for namespace <i>orders</i>. The replicaset for orders-d6b4566fc defines the configuration for desired and current number of pods.
 

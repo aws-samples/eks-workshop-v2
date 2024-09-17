@@ -9,7 +9,7 @@ Click on the **<i>Authentication</i>** tab to drill down to the <i>ServiceAccoun
 Check out the [Security](../../../security/) module for additional examples.
 :::
 
-A [ServiceAccount](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/) provides an identity for processes that run in a Pod. When you create a pod, if you do not specify a service account, it is automatically assigned the default service account in the same namespace. For example you can see the <i>spec.serviceAccountName</i> field has been automatically set in the [pod view](../workloads-view/pods_view)
+A [ServiceAccount](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/) provides an identity for processes that run in a Pod. When you create a pod, if you do not specify a service account, it is automatically assigned the default service account in the same namespace. 
 
 ![Insights](/img/resource-view/auth-resources.jpg)
 
