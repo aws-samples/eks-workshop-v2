@@ -37,19 +37,22 @@ kubectl get daemonset s3-csi-node -n kube-system
 
 ---- Test until here first and then proceed -----
 
-# Step : Run this to create storage class
-kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/s3/storageclass
-
-# Step : Run this to create PV and PVC 
+# Step : Run this to create PV and PVC separately
 envsubst < ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment/s3pvclaim.yaml | kubectl apply -f -
 
+# Run to deploy separately
+kubectl apply -f ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment/deployment.yaml
+
+# RUN THIS TO DO TOGETHER!!
 kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment
+kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment -f <(envsubst < s3pvclaim.yaml)
+
 
 # Step : Nginx deployment (test)
 
 
-# Step : Interact with deployment ??
-How??
+# Step : Interact with deployment
+
 
 # Step : Navigate to S3 bucket and see file
 

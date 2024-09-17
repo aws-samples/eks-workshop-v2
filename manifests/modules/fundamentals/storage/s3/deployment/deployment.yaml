@@ -2,9 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: assets
-  namespace: assets
 spec:
-  replicas: 1
+  replicas: 2
   template:
     spec:
       initContainers:
