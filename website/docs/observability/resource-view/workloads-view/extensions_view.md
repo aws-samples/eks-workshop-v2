@@ -15,7 +15,7 @@ Under **_Resources_** - **_Extensions_** you can view a list of the **_Custom Re
 
 [Mutating admission webhooks](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#mutatingadmissionwebhook) modify objects sent to the API server to enforce custom defaults.
 
-Under **_Resourcs_** - **_Extensions_** you can view a list of the **_Mutating Webhook Configurations_** on the cluster
+Under **_Resources_** - **_Extensions_** you can view a list of the **_Mutating Webhook Configurations_** on the cluster
 
 The below screenshot shows the details of the _aws-load-balancer-webhook_. You can see in this webhook configuration that `Match policy = Equivalent` which means
 request will be sent to webhook by modifying the object as per the webhook version `Admission review version = v1beta1`.
