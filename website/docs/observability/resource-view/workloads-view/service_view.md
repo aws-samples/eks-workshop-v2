@@ -14,4 +14,3 @@ Pods expose themselves through endpoints to a service. An endpoint is an resourc
 ![Insights](/img/resource-view/service-endpoint.png)
 
 For this sample application, click on <i> Endpoints</i> and explore the details of the IP address and port associated with the endpoint along with Info, Labels and Annotations sections.
-

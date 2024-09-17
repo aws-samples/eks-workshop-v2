@@ -18,4 +18,3 @@ Click on the Secrets drill down and you can see all the secrets for the cluster.
 ![Insights](/img/resource-view/config-secrets.jpg)
 
 If you click on the Secrets <i>checkout-config</i> you can see the secrets associated with it. In this case, notice the encoded <i>token</i>. You should see the decoded value as well with the <i>decode</i> toggle button.
-

@@ -26,3 +26,4 @@ When the configuration `Match policy = Equivalent` then when a new request is pr
 
 **[Validating admission webhooks](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#validatingadmissionwebhook)** validate requests to the API server. Their configuration includes settings to validate requests. Configurations of **_ValidatingAdmissionWebhooks_** are similar to **_MutatingAdmissionWebhook_**, however the final status of **_ValidatingAdmissionWebhooks_** request objects are stored in etcd.
 
+

@@ -1,11 +1,9 @@
 ---
 title: "Resources"
 sidebar_position: 10
-
 ---
 
 To view the Kubernetes resources, click on the <i>Resources</i> tab. Drill down to the <i>Workload</i> section and you can view several of the Kubernetes API resource types that are part of workloads. Workloads encompass the running containers in your cluster, and include Pods, ReplicaSets, Deployments, and DaemonSets. These are fundamental building blocks for running containers with a cluster.
-
 
 <strong>[Pods](https://kubernetes.io/docs/concepts/workloads/pods/)</strong> resource view displays all the pods which represent the smallest and simplest Kubernetes object.
 By default, all Kubernetes API resource types are shown, but you can filter by namespace or search for specific values to find what you’re looking for quickly. Below you will see the pods filtered by the namespace=<i>catalog</i>
@@ -33,4 +31,3 @@ A <strong>[DaemonSet](https://kubernetes.io/docs/concepts/workloads/controllers/
 ![Insights](/img/resource-view/daemonset.jpg)
 
 Click on the daemonset <i>kube-proxy</i> and explore the configuration. You will see configurations under Info, pods running on each node, labels, and annotations.
-

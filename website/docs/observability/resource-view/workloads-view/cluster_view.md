@@ -12,7 +12,6 @@ Kubernetes runs your workload by placing containers into pods to run on <strong>
 If you click on any of the node names, you will find the Info section that has a lot of details of the node - OS, container runtime, instance type, EC2 instance and [Managed node group](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) (that make it easy to provision compute capacity for the cluster). The next section, Capacity allocation shows usage and reservation of various resources on EC2 worker nodes connected to the cluster.
 
 ![Insights](/img/resource-view/cluster-node-detail1.jpg)
- 
 The console also details all the pods provisioned on the node and any applicable [Taints](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/), labels, and annotations.
 
 <strong>[Namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces)</strong> are a mechanism to organize clusters which can be very helpful when different teams or projects share a Kubernetes cluster. In our sample application we have microservices - carts, checkout, catalog, assets which all share the same cluster using the namespace construct.

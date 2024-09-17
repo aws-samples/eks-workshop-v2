@@ -25,7 +25,6 @@ Check out the [Security](../../../security/) module for additional examples.
 
 ![Insights](/img/resource-view/autz-index.jpg)
 
-
 A **[Role](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)** defines a set of permissions to be applied to a user. Role-based access control (RBAC) is a method of regulating access to computer or network resources based on the roles of individual users within your organization. A Role always sets permissions within a particular namespace, when you create a Role, you have to specify the namespace it belongs in.
 
 Under **_Resource Type_** - **_Authorization_** section you can view **_ClusterRoles_** and **_Roles_** resources on your cluster listed by namespace.
