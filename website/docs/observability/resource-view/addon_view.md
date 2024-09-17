@@ -2,6 +2,7 @@
 title: "Add-ons"
 sidebar_position: 20
 ---
+
 EKS add-ons allows you to configure, deploy, and update the operational software, or add-ons, that provide key functionality to support your Kubernetes applications. These add-ons include critical tools for cluster networking like the Amazon VPC CNI, as well as operational software for observability, management, scaling, and security. An add-on is basically a software that provides supporting operational capabilities to Kubernetes applications, but is not specific to the application.
 
 **[Amazon EKS add-ons](https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html)** provide installation and management of a curated set of add-ons for Amazon EKS clusters. All Amazon EKS add-ons include the latest security patches, bug fixes, and are validated by AWS to work with Amazon EKS. Amazon EKS add-ons allow you to consistently ensure that your Amazon EKS clusters are secure and stable and reduce the amount of work that you need to do in order to install, configure, and update add-ons.
