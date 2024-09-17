@@ -38,7 +38,7 @@ kubectl get daemonset s3-csi-node -n kube-system
 ---- Test until here first and then proceed -----
 
 # Step : Run this to create PV and PVC separately
-envsubst < ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment/s3pvclaim.yaml | kubectl apply -f -
+envsubst < ~environment/eks-workshop/modules/fundamentals/storage/s3/deployment/s3pvclaim.yaml | kubectl apply -f -
 
 # Run to deploy separately
 kubectl apply -f ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment/deployment.yaml
