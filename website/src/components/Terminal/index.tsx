@@ -159,6 +159,10 @@ class TerminalContext {
   protected lines: Array<string> = [];
 
   addLine(line: string) {
+    if (line.length === 0) {
+      line = " ";
+    }
+
     this.lines.push(line);
   }
 
