@@ -52,22 +52,22 @@ resource "time_sleep" "blueprints_addons_sleep" {
 
 resource "null_resource" "break_public_subnet" {
   triggers = {
-    #cluster_id     = var.addon_context.eks_cluster_id
     public_subnets = join(" ", data.aws_subnets.public.ids)
-    timestamp      = timestamp()
+    always_run     = timestamp()
   }
   count = length(data.aws_subnets.public)
 
-  provisioner "local-exec" {
-    when    = destroy
-    command = "aws ec2 create-tags --resources ${self.triggers.public_subnets} --tags Key=kubernetes.io/role/elb,Value='1'"
+  lifecycle {
+    create_before_destroy = false
   }
 
+
   provisioner "local-exec" {
+    when    = create
     command = "aws ec2 delete-tags --resources ${self.triggers.public_subnets} --tags Key=kubernetes.io/role/elb,Value='1'"
   }
-}
 
+}
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
@@ -109,8 +109,8 @@ resource "aws_iam_role_policy_attachment" "issue_policy_attachment" {
 
 resource "null_resource" "detach_existing_policy" {
   triggers = {
-    role_name = module.eks_blueprints_addons.aws_load_balancer_controller.iam_role_name,
-    timestamp = timestamp()
+    role_name  = module.eks_blueprints_addons.aws_load_balancer_controller.iam_role_name,
+    always_run = timestamp()
   }
 
   provisioner "local-exec" {
