@@ -38,7 +38,7 @@ kubectl get daemonset s3-csi-node -n kube-system
 ---- Test until here first and then proceed -----
 
 # Step : Run this to create PV and PVC separately
-envsubst < ~environment/eks-workshop/modules/fundamentals/storage/s3/deployment/s3pvclaim.yaml | kubectl apply -f -
+envsubst < ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment/s3pvclaim.yaml | kubectl apply -f -
 
 # Run to deploy separately
 kubectl apply -f ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment/deployment.yaml
@@ -65,5 +65,19 @@ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/s3/depl
 kubectl get pv
 kubectl get pvc
 kubectl get storageclass
+
+
+# Reset environment steps:
+Scale down deployment properly
+kubectl scale -n assets --replicas=0 deployment/assets
+
+Delete pvc
+k delete pvc s3-claim -n assets
+
+Delete pv
+k delete pv s3-pv
+
+cleanup environment in a snap!
+sh ~/environment/eks-workshop/modules/fundamentals/storage/s3/.workshop/cleanup.sh
 
 

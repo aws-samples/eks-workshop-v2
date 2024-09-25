@@ -15,7 +15,8 @@ spec:
     volumeHandle: s3-csi-driver-volume
     volumeAttributes:
       # bucketName: $BUCKET_NAME ## replace with your bucket name
-      bucketName: mountpoint-s3-010526255481
+      bucketName: mountpoint-s3-559050210585
+      permission: "777"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
