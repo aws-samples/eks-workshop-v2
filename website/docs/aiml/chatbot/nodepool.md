@@ -60,7 +60,7 @@ nodepool.karpenter.sh/x86-cpu-karpenter created
 
 Once properly deployed, check for the node pools:
 
-```bash
+```bash wait=10
 $ kubectl get nodepool
 NAME                NODECLASS
 inferentia-inf2     inferentia-inf2
