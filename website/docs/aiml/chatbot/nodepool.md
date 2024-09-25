@@ -49,7 +49,7 @@ Both of these defined node pools will allow Karpenter to properly schedule nodes
 
 Apply the `NodePool` and `EC2NodeClass` manifests for both pools:
 
-```bash
+```bash wait=60
 $ kubectl kustomize ~/environment/eks-workshop/modules/aiml/chatbot/nodepool \
   | envsubst | kubectl apply -f-
 ec2nodeclass.karpenter.k8s.aws/inferentia-inf2 created
@@ -60,7 +60,7 @@ nodepool.karpenter.sh/x86-cpu-karpenter created
 
 Once properly deployed, check for the node pools:
 
-```bash wait=10
+```bash wait=60
 $ kubectl get nodepool
 NAME                NODECLASS
 inferentia-inf2     inferentia-inf2
