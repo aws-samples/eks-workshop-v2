@@ -1,12 +1,13 @@
 ---
 title: "Deploy and Monitor GenAI Model on EKS"
 sidebar_position: 10
-sidebar_custom_props: { "module": true }
+sidebar_custom_props: { "beta": true }
 description: "Deploy and Monitor GenAI Model on EKS"
 ---
 
-
-{{% required-time %}}
+:::danger
+This module is not supported at AWS events or in AWS-vended accounts through Workshop Studio. This module is only supported for clusters created through the "[In your AWS account](/docs/introduction/setup/your-account)" steps.
+:::
 
 :::tip Before you start
 Prepare your environment for this section:
@@ -22,19 +23,6 @@ Its takes around 25 mins to complete the initial preparation, this will make the
  - Installs Amazon Managed Prometheus, Grafana and AWS managed collector
 :::
 
-
-# GenAI on EKS 
-
-Welcome to the "GenAI on Amazon EKS" workshop! In this workshop, we'll cover aspects, from creating an EKS cluster with GPU nodes to model training, inference with Ray, and real-time monitoring using Amazon Managed Prometheus and Grafana.
+This lab will cover we'll cover various aspects from provisioning GPU nodes, model training, inference with Ray, and real-time monitoring using Amazon Managed Prometheus and Grafana.
 
 ![Build Model](./assets/GenAI-on-EKS.png)
-
-
-## High level overview 
-
- 1. Create an EKS cluster, install EBS CSI driver, AWS Load Balancer controller, Karpenter, Amazon Managed Prometheus, Granfana and AWS managed collector
- 2. Install Nvidia GPU Operator and Ray cluster 
- 2. Install Jupyterhub notebook and train the model
- 4. Create an Inference service using KubeRay service
- 5. Monitor the GPU metrics using the Amazon Managed Prometheus and Grafana 
-
