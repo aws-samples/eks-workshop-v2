@@ -35,9 +35,8 @@ You can easily use the accelerator on EKS. The Neuron device plugin exposes Neur
 This lab provides a tutorial on how to use Inferentia to accelerate deep learning inference workloads on EKS.
 In this lab we will:
 
-1. Compile a ResNet-50 pre-trained model for use with AWS Inferentia
-2. Upload this model to an S3 Bucket for later use
-3. Create a Karpenter NodePool to provision Inferentia EC2 instances
-4. Launch an inference Pod that uses our previous model to run our inference against
-
-Let's get started.
+1.  Create a Karpenter NodePool to provision Inferentia and Trainium EC2 instances
+2.  Compile a ResNet-50 pre-trained model for use with AWS Inferentia using a Trainium instance
+3.  Upload this model to an S3 Bucket for later use
+4.  Launch an inference Pod that uses our previous model to run our inference against
+    Let's get started.

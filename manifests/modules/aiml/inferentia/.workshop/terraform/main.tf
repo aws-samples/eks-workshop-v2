@@ -140,11 +140,11 @@ EOF
 }
 
 data "http" "neuron_device_plugin_rbac_manifest" {
-  url = "https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.6.0/src/k8/k8s-neuron-device-plugin-rbac.yml"
+  url = "https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.20.0/src/k8/k8s-neuron-device-plugin-rbac.yml"
 }
 
 data "http" "neuron_device_plugin_manifest" {
-  url = "https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.6.0/src/k8/k8s-neuron-device-plugin.yml"
+  url = "https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.20.0/src/k8/k8s-neuron-device-plugin.yml"
 }
 
 data "kubectl_file_documents" "neuron_device_plugin_rbac_doc" {
