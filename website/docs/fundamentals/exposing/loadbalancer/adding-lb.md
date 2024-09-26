@@ -115,7 +115,7 @@ The output above shows that we have 3 targets registered to the load balancer us
 
 You can also inspect the NLB in the console by clicking this link:
 
-https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:service.k8s.aws/stack=ui/ui-nlb;sort=loadBalancerName
+<ConsoleButton url="https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:service.k8s.aws/stack=ui/ui-nlb;sort=loadBalancerName" service="ec2" label="Open EC2 console"/>
 
 Get the URL from the Service resource:
 
@@ -132,6 +132,6 @@ $ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalan
 
 Now that our application is exposed to the outside world, lets try to access it by pasting that URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
 
-<browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
-<img src={require('@site/static/img/sample-app-screens/home.png').default}/>
-</browser>
+<Browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
+<img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
+</Browser>

@@ -5,7 +5,7 @@ sidebar_position: 20
 
 By default the **Carts** component in the sample application uses a DynamoDB local instance running as a pod in the EKS cluster called `carts-dynamodb`. In this section of the lab, we'll provision an Amazon DynamoDB cloud based table for our application using Crossplane managed resources and point the **Carts** deployment to use the newly provisioned DynamoDB table instead of the local copy.
 
-![Crossplane reconciler concept](./assets/Crossplane-desired-current-ddb.png)
+![Crossplane reconciler concept](./assets/Crossplane-desired-current-ddb.webp)
 
 The AWS Java SDK in the **Carts** component is able to use IAM Roles to interact with AWS services which means that we do not need to pass credentials, thus reducing the attack surface. In the EKS context, IRSA allows us to define per pod IAM Roles for applications to consume. To leverage IRSA, we first need to:
 
@@ -103,13 +103,13 @@ $ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalan
 
 Once the load balancer is provisioned you can access it by pasting the URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
 
-<browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
-<img src={require('@site/static/img/sample-app-screens/home.png').default}/>
-</browser>
+<Browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
+<img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
+</Browser>
 
 To verify that the **Carts** module is in fact using the DynamoDB table we just provisioned, try adding a few items to the cart.
 
-![Cart screenshot](./assets/cart-items-present.png)
+![Cart screenshot](./assets/cart-items-present.webp)
 
 And to check if items are in the DynamoDB table as well, run
 

@@ -11,7 +11,7 @@ $ argocd app delete apps --cascade -y
 
 We create templates for set of ArgoCD applications using DRY approach in Helm charts:
 
-```
+```text
 .
 |-- app-of-apps
 |   |-- Chart.yaml
@@ -76,7 +76,7 @@ $ kubectl -n argocd rollout status statefulset argocd-application-controller
 
 Open the Argo CD UI and navigate to the `apps` application.
 
-![argocd-ui-app-of-apps.png](assets/argocd-ui-app-of-apps.png)
+![argocd-ui-app-of-apps.png](assets/argocd-ui-app-of-apps.webp)
 
 Click `Refresh` and `Sync` in ArgoCD UI, use `argocd` CLI to `Sync` the application or wait until automatic `Sync` will be finished:
 
@@ -88,6 +88,6 @@ We have Argo CD `App of Apps Application` deployed and synced.
 
 Our applications, except Argo CD `App of Apps Application`, are in `Unknown` state because we didn't deploy their configuration yet.
 
-![argocd-ui-apps.png](assets/argocd-ui-apps-unknown.png)
+![argocd-ui-apps.png](assets/argocd-ui-apps-unknown.webp)
 
 We will deploy application configurations for the applications in the next step.

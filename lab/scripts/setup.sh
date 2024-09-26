@@ -14,9 +14,17 @@ if [ ! -z "$CLOUD9_ENVIRONMENT_ID" ]; then
   echo "aws cloud9 update-environment --environment-id $CLOUD9_ENVIRONMENT_ID --managed-credentials-action DISABLE &> /dev/null || true" > ~/.bashrc.d/c9.bash
 fi
 
+AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
+
 cat << EOT > ~/.bashrc.d/aws.bash
 export AWS_PAGER=""
 export AWS_REGION="${AWS_REGION}"
+export AWS_ACCOUNT_ID="${AWS_ACCOUNT_ID}"
+export EKS_CLUSTER_NAME="${EKS_CLUSTER_NAME}"
+export EKS_DEFAULT_MNG_NAME="default"
+export EKS_DEFAULT_MNG_MIN=3
+export EKS_DEFAULT_MNG_MAX=6
+export EKS_DEFAULT_MNG_DESIRED=3
 EOT
 
 touch ~/.bashrc.d/workshop-env.bash
@@ -49,6 +57,6 @@ echo "export RESOURCES_PRECREATED='${RESOURCES_PRECREATED}'" > ~/.bashrc.d/infra
 
 echo "export ANALYTICS_ENDPOINT='${ANALYTICS_ENDPOINT}'" > ~/.bashrc.d/analytics.bash
 
-/usr/local/bin/kubectl completion bash >>  ~/.bashrc.d/kubectl_completion.bash
+/usr/local/bin/kubectl completion bash >  ~/.bashrc.d/kubectl_completion.bash
 echo "alias k=kubectl" >> ~/.bashrc.d/kubectl_completion.bash
 echo "complete -F __start_kubectl k" >> ~/.bashrc.d/kubectl_completion.bash

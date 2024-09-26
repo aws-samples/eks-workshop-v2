@@ -1,6 +1,6 @@
 // https://github.com/facebook/docusaurus/issues/395#issuecomment-1406242394
 
-const visit = require("unist-util-visit");
+import { visit } from "unist-util-visit";
 
 const plugin = (options) => {
   const transformer = async (ast) => {
@@ -19,4 +19,4 @@ const plugin = (options) => {
   return transformer;
 };
 
-module.exports = plugin;
+export default plugin;

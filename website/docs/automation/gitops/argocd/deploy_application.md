@@ -24,7 +24,7 @@ $ cp -R ~/environment/eks-workshop/base-application/ui/* ~/environment/argocd/ap
 
 Your Git directory should now look something like this which you can validate by running `tree ~/environment/argocd`:
 
-```
+```text
 .
 └── apps
     ├── configMap.yaml
@@ -39,7 +39,7 @@ Your Git directory should now look something like this which you can validate by
 
 Open the Argo CD UI and navigate to the `apps` application.
 
-![Application in the ArgoCD UI](assets/argocd-ui-insync-apps.png)
+![Application in the ArgoCD UI](assets/argocd-ui-insync-apps.webp)
 
 Finally we can push our configuration to the Git repository:
 
@@ -57,7 +57,7 @@ $ argocd app sync apps
 
 After a short period of time, the application should be in `Synced` state and the resources should be deployed, the UI should look like this:
 
-![argocd-deploy-application](assets/argocd-deploy-application.png)
+![argocd-deploy-application](assets/argocd-deploy-application.webp)
 
 That shows that Argo CD created the basic kustomization, and that it's in sync with the cluster.
 

@@ -6,7 +6,7 @@ sidebar_custom_props: { "module": true }
 description: "Simplify service-to-service connectivity, security and monitoring on Amazon Elastic Kubernetes Service with Amazon VPC Lattice."
 ---
 
-{{% required-time %}}
+::required-time
 
 :::caution Preview
 
@@ -37,7 +37,7 @@ Amazon VPC Lattice takes care of common networking tasks such as discovering com
 The primary benefits of using Lattice are:
 
 - **Increased developer productivity**: Lattice boosts developer productivity by letting them focus on building features that matters to their business, while it handles networking, security and observability challenges in a uniform way across all compute platforms
-- **Improved Security Posture**: Lattice enables developers to easily authenticate and secure communication across applications, without the operational overhead of current mechanisms (e.g. certificate management). With Lattice access policies, developers and cloud admins can enforce granular access control. Lattice can also enforce encryption for traffic in-transit, further increasing security posture
+- **Improved security posture**: Lattice enables developers to easily authenticate and secure communication across applications, without the operational overhead of current mechanisms (e.g. certificate management). With Lattice access policies, developers and cloud admins can enforce granular access control. Lattice can also enforce encryption for traffic in-transit, further increasing security posture
 - **Improved application scalability and resilience**: Lattice makes it easy to create a network of deployed applications with rich routing, authentication, authorization, monitoring, and more. Lattice provides all of these benefits with no resource overhead on workloads and can support large scale deployments and many requests per second without adding significant latency.
 - **Deployment flexibility with heterogeneous infrastructure**: Lattice provides consistent features across all compute services – EC2, ECS, EKS, Lambda, and can include services living on-premises, allowing organizations the flexibility to choose the optimal compute infrastructure for their use-case.
 
@@ -55,4 +55,4 @@ The [components](https://docs.aws.amazon.com/vpc-lattice/latest/ug/what-is-vpc-s
 - **Security policies**:
   A declarative policy that determines how Services are permitted to communicate. These can be defined at the Service level or the Service Network level.
 
-![Amazon VPC Lattice Components](assets/vpc_lattice_building_blocks.png)
+![Amazon VPC Lattice Components](assets/vpc_lattice_building_blocks.webp)

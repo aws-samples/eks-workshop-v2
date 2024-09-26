@@ -5,7 +5,7 @@ sidebar_position: 5
 
 By default the **Carts** component in the sample application uses a DynamoDB local instance running as a pod in the EKS cluster called `carts-dynamodb`. In this section of the lab, we'll provision an Amazon DynamoDB cloud based table for our application using Kubernetes custom resources and point the **Carts** deployment to use the newly provisioned DynamoDB table instead of the local copy.
 
-![ACK reconciler concept](./assets/ack-desired-current-ddb.png)
+![ACK reconciler concept](./assets/ack-desired-current-ddb.webp)
 
 The AWS Java SDK in the **Carts** component is able to use IAM Roles to interact with AWS services which means that we do not need to pass credentials, thus reducing the attack surface. In the EKS context, IRSA allows us to define per pod IAM Roles for applications to consume. To leverage IRSA, we first need to:
 
@@ -80,7 +80,7 @@ This command 'builds' the manifests using the kubectl kustomize command, pipes i
 
 The ACK controllers in the cluster will react to these new resources and provision the AWS infrastructure we have expressed with the manifests earlier. Lets check if ACK created the table by running
 
-```bash
+```bash timeout=300
 $ kubectl wait table.dynamodb.services.k8s.aws items -n carts --for=condition=ACK.ResourceSynced --timeout=15m
 table.dynamodb.services.k8s.aws/items condition met
 $ kubectl get table.dynamodb.services.k8s.aws items -n carts -ojson | yq '.status."tableStatus"'

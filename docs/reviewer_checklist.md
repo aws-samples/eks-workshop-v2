@@ -22,6 +22,10 @@ See style guide for expanded explanations.
 - [ ] `$EKS_CLUSTER_NAME` is used instead of hard-coded cluster names, including referencing other infrastructure that may use the cluster name
 - [ ] Avoided use of interactive `kubectl exec` or multiple terminal windows (or tests skipped)
 
+## AWS infrastructure
+
+- [ ] All Terraform resources created have names that prefixed with the EKS cluster name (`var.addon_context.eks_cluster_id`)
+
 ## Tests
 
 - [ ] `bash` blocks that run commands that are intended to error use `expectError=true`
@@ -34,4 +38,5 @@ See style guide for expanded explanations.
 ## Misc
 
 - [ ] Generated lab timing has been created (new lab) or updated (updated lab) if needed
-- [ ] All Terraform resources created have dynamic names
+- [ ] Relevant updates have been made to the [lab IAM policy](../lab/iam-policy-labs.json)
+- [ ] Images should be in `webp` format

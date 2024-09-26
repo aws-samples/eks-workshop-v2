@@ -24,7 +24,7 @@ Validate the new stored secret in the [AWS Secrets Manager Console](https://cons
 ```bash
 $ aws secretsmanager describe-secret --secret-id "$SECRET_NAME"
 {
-    "ARN": "arn:aws:secretsmanager:us-west-2:068535243777:secret:eks-workshop/catalog-secret-WDD8yS",
+    "ARN": "arn:aws:secretsmanager:us-west-2:1234567890:secret:eks-workshop/catalog-secret-WDD8yS",
     "Name": "eks-workshop/catalog-secret",
     "LastChangedDate": "2023-10-10T20:44:51.882000+00:00",
     "VersionIdsToStages": {

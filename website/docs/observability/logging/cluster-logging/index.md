@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Capture and analyze Amazon Elastic Kubernetes Service control plane logs for auditing and diagnostics."
 ---
 
-{{% required-time %}}
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:

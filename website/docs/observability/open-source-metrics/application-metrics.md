@@ -137,23 +137,23 @@ EOF
 
 Open the Grafana as we did in the previous section:
 
-![Grafana dashboard](./assets/order-service-metrics-dashboard.png)
+![Grafana dashboard](./assets/order-service-metrics-dashboard.webp)
 
 Go to the dashboard page and click on the dashboard **Order Service Metrics** to review the panels within the dashboard:
 
-![Business Metrics](./assets/retailMetrics.png)
+![Business Metrics](./assets/retailMetrics.webp)
 
 We can see how the dashboard was configured to query AMP by hovering over the title of the "Orders by Product" panel and clicking the "Edit" button:
 
-![Edit Panel](./assets/editPanel.png)
+![Edit Panel](./assets/editPanel.webp)
 
 The PromQL query used to create this panel is displayed at the bottom of the page:
 
-![PromQL query](./assets/promqlQuery.png)
+![PromQL query](./assets/promqlQuery.webp)
 
 In this case we are using the query:
 
-```
+```text
 sum by(productId) (watch_orders_total{productId!="*"})
 ```
 

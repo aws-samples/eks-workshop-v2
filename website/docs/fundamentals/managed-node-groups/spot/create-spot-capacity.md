@@ -12,9 +12,9 @@ The following command shows that our nodes are currently **on-demand** instances
 ```bash
 $ kubectl get nodes -L eks.amazonaws.com/capacityType
 NAME                                          STATUS   ROLES    AGE    VERSION                CAPACITYTYPE
-ip-10-42-103-103.us-east-2.compute.internal   Ready    <none>   133m   vVAR::KUBERNETES_NODE_VERSION    ON_DEMAND
-ip-10-42-142-197.us-east-2.compute.internal   Ready    <none>   133m   vVAR::KUBERNETES_NODE_VERSION    ON_DEMAND
-ip-10-42-161-44.us-east-2.compute.internal    Ready    <none>   133m   vVAR::KUBERNETES_NODE_VERSION    ON_DEMAND
+ip-10-42-103-103.us-east-2.compute.internal   Ready    <none>   133m   vVAR::KUBERNETES_NODE_VERSION      ON_DEMAND
+ip-10-42-142-197.us-east-2.compute.internal   Ready    <none>   133m   vVAR::KUBERNETES_NODE_VERSION      ON_DEMAND
+ip-10-42-161-44.us-east-2.compute.internal    Ready    <none>   133m   vVAR::KUBERNETES_NODE_VERSION      ON_DEMAND
 ```
 
 :::tip
@@ -34,7 +34,7 @@ ip-10-42-12-235.us-east-2.compute.internal   Ready    <none>   4h34m   vVAR::KUB
 
 In the below diagram, there are two separate "node groups" representing the managed node groups within the cluster. The first Node Group box represents the node group containing On-Demand instances while the second represents the node group containing Spot instances. Both are associated with the specified EKS cluster.
 
-![spot arch](./assets/managed-spot-arch.png)
+![spot arch](./assets/managed-spot-arch.webp)
 
 Let's create a node group with Spot instances. The following command creates a new node group `managed-spot`.
 
@@ -69,11 +69,11 @@ Once our new managed node group is **Active**, run the following command.
 $ kubectl get nodes -L eks.amazonaws.com/capacityType,eks.amazonaws.com/nodegroup
 
 NAME                                          STATUS   ROLES    AGE     VERSION                CAPACITYTYPE   NODEGROUP
-ip-10-42-103-103.us-east-2.compute.internal   Ready    <none>   3h38m   vVAR::KUBERNETES_NODE_VERSION    ON_DEMAND      default
-ip-10-42-142-197.us-east-2.compute.internal   Ready    <none>   3h38m   vVAR::KUBERNETES_NODE_VERSION    ON_DEMAND      default
-ip-10-42-161-44.us-east-2.compute.internal    Ready    <none>   3h38m   vVAR::KUBERNETES_NODE_VERSION    ON_DEMAND      default
-ip-10-42-178-46.us-east-2.compute.internal    Ready    <none>   103s    vVAR::KUBERNETES_NODE_VERSION    SPOT           managed-spot
-ip-10-42-97-19.us-east-2.compute.internal     Ready    <none>   104s    vVAR::KUBERNETES_NODE_VERSION    SPOT           managed-spot
+ip-10-42-103-103.us-east-2.compute.internal   Ready    <none>   3h38m   vVAR::KUBERNETES_NODE_VERSION      ON_DEMAND      default
+ip-10-42-142-197.us-east-2.compute.internal   Ready    <none>   3h38m   vVAR::KUBERNETES_NODE_VERSION      ON_DEMAND      default
+ip-10-42-161-44.us-east-2.compute.internal    Ready    <none>   3h38m   vVAR::KUBERNETES_NODE_VERSION      ON_DEMAND      default
+ip-10-42-178-46.us-east-2.compute.internal    Ready    <none>   103s    vVAR::KUBERNETES_NODE_VERSION      SPOT           managed-spot
+ip-10-42-97-19.us-east-2.compute.internal     Ready    <none>   104s    vVAR::KUBERNETES_NODE_VERSION      SPOT           managed-spot
 ```
 
 The output shows that two additional nodes got provisioned under the node group `managed-spot` with capacity type as `SPOT`.

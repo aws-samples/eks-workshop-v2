@@ -8,11 +8,11 @@ sidebar_position: 100
 
 We can leverage [Argo CD App of Apps pattern](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) to implement this use case. This pattern allows us to specify one Argo CD Application that consists of other applications.
 
-![argo-cd-app-of-apps](assets/argocd-app-of-apps.png)
+![argo-cd-app-of-apps](assets/argocd-app-of-apps.webp)
 
 We reference [EKS Workshop Git repository](https://github.com/aws-samples/eks-workshop-v2/tree/main/manifests/base-application) as a Git repository with `base` manifests for your Kubernetes resources. This repository will contain an initial resource state for each application.
 
-```
+```text
 .
 |-- manifests
 | |-- assets
@@ -28,7 +28,7 @@ We reference [EKS Workshop Git repository](https://github.com/aws-samples/eks-wo
 This example shows how to use Helm to create a configuration for a particular, for example DEV, environment.
 A typical layout of a Git repository could be:
 
-```
+```text
 .
 |-- app-of-apps
 |   |-- ...

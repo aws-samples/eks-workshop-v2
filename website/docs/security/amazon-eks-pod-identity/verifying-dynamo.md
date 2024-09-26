@@ -3,7 +3,7 @@ title: "Verifying DynamoDB Access"
 sidebar_position: 35
 ---
 
-Now, with the `carts` Service Account associated with the authorized IAM Role, the `carts` Pod has permission to access the DynamoDB table. Access the web store again and navigate to the shopping cart.
+Now, with the `carts` Service Account associated with the authorized IAM role, the `carts` Pod has permission to access the DynamoDB table. Access the web store again and navigate to the shopping cart.
 
 ```bash
 $ kubectl -n ui get service ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}'
@@ -12,7 +12,7 @@ k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 
 The `carts` Pod is able to reach the DynamoDB service and the shopping cart is now accessible!
 
-![Cart](../../../static/img/sample-app-screens/shopping-cart.png)
+![Cart](/img/sample-app-screens/shopping-cart.webp)
 
 After the AWS IAM role is associated with the Service Account, any newly created Pods using that Service Account will be intercepted by the [EKS Pod Identity webhook](https://github.com/aws/amazon-eks-pod-identity-webhook). This webhook runs on the Amazon EKS cluster’s control plane, and is fully managed by AWS. Take a closer look at the new `carts` Pod to see the new environment variables.
 

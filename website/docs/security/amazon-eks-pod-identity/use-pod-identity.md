@@ -17,7 +17,7 @@ $ aws eks create-addon --cluster-name $EKS_CLUSTER_NAME --addon-name eks-pod-ide
         "health": {
             "issues": []
         },
-        "addonArn": "arn:aws:eks:us-west-2:123456789000:addon/eks-workshop/eks-pod-identity-agent/9ec6cfbd-8c9f-7ff4-fd26-640dda75bcea",
+        "addonArn": "arn:aws:eks:us-west-2:1234567890:addon/eks-workshop/eks-pod-identity-agent/9ec6cfbd-8c9f-7ff4-fd26-640dda75bcea",
         "createdAt": "2024-01-12T22:41:01.414000+00:00",
         "modifiedAt": "2024-01-12T22:41:01.434000+00:00",
         "tags": {}
@@ -40,7 +40,7 @@ eks-pod-identity-agent-hslc5   1/1     Running   0          3d21h
 eks-pod-identity-agent-thvf5   1/1     Running   0          3d21h
 ```
 
-An IAM Role which provides the required permissions for the `carts` service to read and write to DynamoDB table has been created when you ran the `prepare-environment` script in the first step of this module. You can view the policy as shown below.
+An IAM role which provides the required permissions for the `carts` service to read and write to DynamoDB table has been created when you ran the `prepare-environment` script in the first step of this module. You can view the policy as shown below.
 
 ```bash
 $ aws iam get-policy-version \
@@ -97,8 +97,8 @@ $ aws eks create-pod-identity-association --cluster-name ${EKS_CLUSTER_NAME} \
         "clusterName": "eks-workshop",
         "namespace": "carts",
         "serviceAccount": "carts",
-        "roleArn": "arn:aws:iam::123456789000:role/eks-workshop-carts-dynamo",
-        "associationArn": "arn:aws::123456789000:podidentityassociation/eks-workshop/a-abcdefghijklmnop1",
+        "roleArn": "arn:aws:iam::1234567890:role/eks-workshop-carts-dynamo",
+        "associationArn": "arn:aws::1234567890:podidentityassociation/eks-workshop/a-abcdefghijklmnop1",
         "associationId": "a-abcdefghijklmnop1",
         "tags": {},
         "createdAt": "2024-01-09T16:16:38.163000+00:00",

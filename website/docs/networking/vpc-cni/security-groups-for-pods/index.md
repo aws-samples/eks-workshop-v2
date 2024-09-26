@@ -6,7 +6,7 @@ sidebar_custom_props: { "module": true }
 description: "Control inbound and outbound traffic to and from pods on Amazon Elastic Kubernetes Service with Amazon EC2 security groups."
 ---
 
-{{% required-time %}}
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:
@@ -32,6 +32,6 @@ You can enable security groups for Pods by setting `ENABLE_POD_ENI=true` for VPC
 
 The controller also creates branch interfaces named "aws-k8s-branch-eni" and associates them with the trunk interface. Pods are assigned a security group using the [SecurityGroupPolicy](https://github.com/aws/amazon-vpc-resource-controller-k8s/blob/master/config/crd/bases/vpcresources.k8s.aws_securitygrouppolicies.yaml) custom resource and are associated with a branch interface. Since security groups are specified with network interfaces, we're now able to schedule Pods requiring specific security groups on these additional network interfaces. Review [EKS best practices guide](https://aws.github.io/aws-eks-best-practices/networking/sgpp/) for recommendations and [EKS User Guide](https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html), for deployment prerequisites.
 
-![Insights](/img/networking/securitygroupsperpod/overview.png)
+![Insights](./assets/overview.webp)
 
 In this chapter we'll re-configure one of the sample application components to leverage security groups for Pods to access an external network resource.

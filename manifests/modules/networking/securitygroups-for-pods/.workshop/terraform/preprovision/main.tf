@@ -19,7 +19,7 @@ data "aws_subnets" "private_sg_rds" {
 
 module "catalog_mysql" {
   source  = "terraform-aws-modules/rds/aws"
-  version = "6.6.0"
+  version = "6.9.0"
 
   identifier = "${var.eks_cluster_id}-catalog"
 
@@ -60,7 +60,7 @@ resource "random_string" "catalog_db_master" {
 
 module "catalog_rds_ingress" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "5.1.2"
+  version = "5.2.0"
 
   name        = "${var.eks_cluster_id}-catalog-rds"
   description = "Catalog RDS security group"

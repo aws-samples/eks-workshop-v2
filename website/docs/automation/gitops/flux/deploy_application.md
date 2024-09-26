@@ -52,7 +52,7 @@ $ cp ~/environment/eks-workshop/modules/automation/gitops/flux/flux-kustomizatio
 
 You Git directory should now look something like this which you can validate by running `tree ~/environment/flux`:
 
-```
+```text
 .
 ├── apps
 │   ├── kustomization.yaml

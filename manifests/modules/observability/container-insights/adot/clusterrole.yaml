@@ -4,7 +4,7 @@ metadata:
   name: otel-ci-role
 rules:
   - apiGroups: [""]
-    resources: ["pods", "nodes", "endpoints"]
+    resources: ["pods", "nodes", "endpoints", "services"]
     verbs: ["list", "watch", "get"]
   - apiGroups: ["apps"]
     resources: ["replicasets"]
@@ -32,3 +32,5 @@ rules:
     resources: ["leases"]
     resourceNames: ["otel-container-insight-clusterleader"]
     verbs: ["get", "update", "create"]
+  - nonResourceURLs: ["/metrics", "/metrics/cadvisor"]
+    verbs: ["get"]

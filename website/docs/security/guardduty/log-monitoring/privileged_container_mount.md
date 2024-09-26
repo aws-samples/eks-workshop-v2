@@ -23,9 +23,9 @@ _This Pod will just run once, until it reaches the State `Completed`_
 
 Within a few minutes we'll see the two finding `PrivilegeEscalation:Kubernetes/PrivilegedContainer` and `Persistence:Kubernetes/ContainerWithSensitiveMount` in the [GuardDuty Findings console](https://console.aws.amazon.com/guardduty/home#/findings).
 
-![](assets/privileged-container.png)
+![Privileged container finding](assets/privileged-container.webp)
 
-![](assets/sensitive-mount.png)
+![Sensitive mount finding](assets/sensitive-mount.webp)
 
 Once again take sometime to analyze the Finding details, Action, and Detective Investigation.
 

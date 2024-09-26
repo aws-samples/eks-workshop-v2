@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Directly managed AWS services from Amazon Elastic Kubernetes Service with Amazon Controllers for Kubernetes."
 ---
 
-{{% required-time %}}
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:
@@ -33,4 +33,4 @@ In this lab, we'll leverage ACK to provision these services and create secrets a
 
 An important point to note here is that during the provisioning process above, we're using the new ACK Terraform module which allows you to rapidly deploy AWS Service Controllers to your cluster. See [here](https://registry.terraform.io/modules/aws-ia/eks-ack-addons/aws/latest#module_dynamodb) for more information.
 
-![EKS with DynamoDB](./assets/eks-workshop-ddb.png)
+![EKS with DynamoDB](./assets/eks-workshop-ddb.webp)

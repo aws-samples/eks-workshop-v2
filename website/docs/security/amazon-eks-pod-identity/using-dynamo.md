@@ -29,7 +29,7 @@ k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 
 Use the generated URL from the command above to open the UI in your browser. It should open the the Retail Store like shown below.
 
-![Home](../../../static/img/sample-app-screens/home.png)
+![Home](/img/sample-app-screens/home.webp)
 
 Now, the following kustomization overwrites the ConfigMap, removing the DynamoDB endpoint configuration which tells the SDK to default to the real DynamoDB service instead of our test Pod. We've also provided it with the name of the DynamoDB table thats been created already for us which is being pulled from the environment variable `CARTS_DYNAMODB_TABLENAME`.
 
@@ -62,21 +62,24 @@ metadata:
   namespace: carts
 ```
 
-We'll need to recycle all the Pods of the `carts` application to pick up our new ConfigMap contents.
+Now we need to recycle all the carts Pods to pick up our new ConfigMap contents:
 
-```bash hook=enable-dynamo hookTimeout=430
-$ kubectl -n carts rollout restart deployment/carts
+```bash expectError=true hook=enable-dynamo
+$ kubectl rollout restart -n carts deployment/carts
 deployment.apps/carts restarted
-$ kubectl -n carts rollout status deployment/carts
+$ kubectl rollout status -n carts deployment/carts --timeout=20s
+Waiting for deployment "carts" rollout to finish: 1 old replicas are pending termination...
+error: timed out waiting for the condition
 ```
 
-So now our application should be using DynamoDB right? Try to load it up in the browser using the URL from the previous command, and navigate to the shopping cart.
+It looks like our change failed to deploy properly, we can confirm this by looking at the Pods:
 
 ```bash
-$ kubectl -n ui get service ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}'
-k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
+$ kubectl -n carts get pod
+NAME                              READY   STATUS             RESTARTS        AGE
+carts-5d486d7cf7-8qxf9            1/1     Running            0               5m49s
+carts-df76875ff-7jkhr             0/1     CrashLoopBackOff   3 (36s ago)     2m2s
+carts-dynamodb-698674dcc6-hw2bg   1/1     Running            0               20m
 ```
 
-![Error500](../../../static/img/sample-app-screens/error-500.png)
-
-The shopping cart page is not accessible! What's gone wrong?
+What's gone wrong?

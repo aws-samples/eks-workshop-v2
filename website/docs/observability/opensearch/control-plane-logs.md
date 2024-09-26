@@ -22,7 +22,7 @@ The following diagram provides an overview of the setup for this section. From l
 3. The Lambda function writes the control plane logs to an OpenSearch index
 4. A single OpenSearch index named `eks-control-plane-logs` stores all the control plane logs. Later in the lab we will see how we can filter the different log types within the OpenSearch dashboard
 
-![EKS Control Plane Logs to OpenSearch](./assets/eks-control-plane-logs-overview.svg)
+![EKS Control Plane Logs to OpenSearch](./assets/eks-control-plane-logs-overview.webp)
 
 EKS control plane logs are enabled on a per-cluster basis through the EKS API. This will often be configured using Terraform or CloudFormation, but in this lab we'll use the AWS CLI to enable the functionality. As you can see we can enable each of the cluster log types individually, and in this lab we're enabling everything.
 
@@ -50,9 +50,17 @@ $ sleep 30
 $ aws eks wait cluster-active --name $EKS_CLUSTER_NAME
 ```
 
-We can optionally inspect the EKS control plane logging setting using the AWS console: https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab. The **Logging** tab shows the current configuration for control plane logs for the EKS cluster.
+We can optionally inspect the EKS control plane logging setting using the AWS console:
 
-Access the CloudWatch log group named [/aws/eks/eks-workshop/cluster](https://console.aws.amazon.com/cloudwatch/home#logsV2:log-groups/log-group/$252Faws$252Feks$252Feks-workshop$252Fcluster) within the AWS console. You will find at least one log stream associated with each of the control plane log types:
+<ConsoleButton url="https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab" service="cloudwatch" label="Open CloudWatch console"/>
+
+The **Logging** tab shows the current configuration for control plane logs for the EKS cluster within the AWS console:
+
+Access the CloudWatch log group named `/aws/eks/eks-workshop/cluster`
+
+<ConsoleButton url="https://console.aws.amazon.com/cloudwatch/home#logsV2:log-groups/log-group/$252Faws$252Feks$252Feks-workshop$252Fcluster" service="cloudwatch" label="Open CloudWatch console"/>
+
+You will find at least one log stream associated with each of the control plane log types:
 
 - `kube-apiserver-*` for Kubernetes API server logs
 - `*-audit-*` for audit logs
@@ -112,7 +120,7 @@ $ aws logs describe-subscription-filters \
       "filterName": "${EKS_CLUSTER_NAME} EKS Control Plane Logs to OpenSearch",
       "logGroupName": "/aws/eks/eks-workshop/cluster",
       "filterPattern": "",
-      "destinationArn": "arn:aws:lambda:us-west-2:012345678901:function:control-plane-logs",
+      "destinationArn": "arn:aws:lambda:us-west-2:1234567890:function:control-plane-logs",
       "distribution": "ByLogStream",
       "creationTime": 1699659802922
     }
@@ -150,12 +158,12 @@ Depending on the level of the EKS cluster activity, some of the control plane lo
 
 :::
 
-![Control plane logs detail](./assets/eks-control-plane-logs-dashboard.png)
+![Control plane logs detail](./assets/eks-control-plane-logs-dashboard.webp)
 
 The scheduler logs are shown at the end of the page. Notice that the scheduler log messages indicates `Unable to schedule pod; no fit; waiting` for `scenario-c`. This schedule log message from the control plane logs is similar to the Kubernetes event we saw for `scenario-c` on the previous page.
 
-![Control plane logs detail](./assets/eks-control-plane-logs-scheduler.png)
+![Control plane logs detail](./assets/eks-control-plane-logs-scheduler.webp)
 
 Expanding the row allows us to drill down and view details as a table or in JSON format.
 
-![Control plane logs detail](./assets/eks-control-plane-logs-detail.png)
+![Control plane logs detail](./assets/eks-control-plane-logs-detail.webp)

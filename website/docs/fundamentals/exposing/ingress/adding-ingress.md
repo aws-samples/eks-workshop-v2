@@ -98,7 +98,7 @@ Since we specified using IP mode in our Ingress object, the target is registered
 
 You can also inspect the ALB and its target groups in the console by clicking this link:
 
-https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=ui/ui;sort=loadBalancerName
+<ConsoleButton url="https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=ui/ui;sort=loadBalancerName" service="ec2" label="Open EC2 console"/>
 
 Get the URL from the Ingress resource:
 
@@ -115,6 +115,6 @@ $ wait-for-lb $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.
 
 And access it in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
 
-<browser url="http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com">
-<img src={require('@site/static/img/sample-app-screens/home.png').default}/>
-</browser>
+<Browser url="http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com">
+<img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
+</Browser>

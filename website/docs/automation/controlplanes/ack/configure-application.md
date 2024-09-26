@@ -49,13 +49,13 @@ $ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalan
 
 Once the load balancer is provisioned you can access it by pasting the URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
 
-<browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
-<img src={require('@site/static/img/sample-app-screens/home.png').default}/>
-</browser>
+<Browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
+<img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
+</Browser>
 
 To verify that the **Carts** module is in fact using the DynamoDB table we just provisioned, try adding a few items to the cart.
 
-![Cart screenshot](./assets/cart-items-present.png)
+![Cart screenshot](./assets/cart-items-present.webp)
 
 And to check if items are in the cart as well, run
 

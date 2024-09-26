@@ -1,17 +1,17 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-var path = require("path");
+import * as path from "path";
+import { themes as prismThemes } from "prism-react-renderer";
 
-const lightCodeTheme = require("prism-react-renderer/themes/github");
-const darkCodeTheme = require("prism-react-renderer/themes/dracula");
-const remarkCodeTerminal = require("./src/remark/code-terminal");
-const remarkTime = require("./src/remark/time");
-const remarkIncludeCode = require("./src/remark/include-code");
-const remarkIncludeKustomization = require("./src/remark/include-kustomization");
-const remarkParameters = require("./src/remark/parameters");
+import remarkCodeTerminal from "./src/remark/code-terminal.js";
+import remarkTime from "./src/remark/time.js";
+import remarkIncludeCode from "./src/remark/include-code.js";
+import remarkIncludeKustomization from "./src/remark/include-kustomization.js";
+import remarkParameters from "./src/remark/parameters.js";
+import remarkIncludeYaml from "./src/remark/include-yaml.js";
 
-require("dotenv").config({ path: ".kustomize-env" });
+//require("dotenv").config({ path: ".kustomize-env" });
 
 const rootDir = path.dirname(require.resolve("./package.json"));
 const manifestsDir = `${rootDir}/..`;
@@ -24,13 +24,15 @@ const manifestsRepository =
 
 const labTimesEnabled = process.env.LAB_TIMES_ENABLED || false;
 
+const baseUrl = process.env.BASE_URL || "";
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "EKS Workshop",
   tagline:
     "Practical exercises to learn about Amazon Elastic Kubernetes Service",
   url: "https://www.eksworkshop.com",
-  baseUrl: "/",
+  baseUrl: `/${baseUrl}`,
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.png",
@@ -39,7 +41,15 @@ const config = {
   organizationName: "aws-samples",
   projectName: "eks-workshop-v2",
 
-  plugins: ["docusaurus-plugin-sass"],
+  plugins: [
+    "docusaurus-plugin-sass",
+    [
+      "docusaurus-lunr-search",
+      {
+        disableVersioning: true,
+      },
+    ],
+  ],
 
   i18n: {
     defaultLocale: "en",
@@ -53,11 +63,9 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
-          remarkPlugins: [
-            remarkCodeTerminal,
-            [remarkTime, { enabled: labTimesEnabled, factor: 1.25 }],
-          ],
+          remarkPlugins: [remarkCodeTerminal],
           beforeDefaultRemarkPlugins: [
+            [remarkTime, { enabled: labTimesEnabled, factor: 1.25 }],
             [
               remarkParameters,
               {
@@ -65,17 +73,21 @@ const config = {
                   MANIFESTS_REF: manifestsRef,
                   MANIFESTS_OWNER: manifestsOwner,
                   MANIFESTS_REPOSITORY: manifestsRepository,
-                  KUBERNETES_VERSION: "1.29",
-                  KUBERNETES_NODE_VERSION: "1.29-eks-48e63af",
+                  KUBERNETES_VERSION: "1.30",
+                  KUBERNETES_NODE_VERSION: "1.30-eks-036c24b",
                 },
               },
             ],
+            [remarkIncludeYaml, { manifestsDir }],
             [remarkIncludeCode, { manifestsDir }],
             [remarkIncludeKustomization, { manifestsDir: kustomizationsDir }],
           ],
           editUrl:
             "https://github.com/aws-samples/eks-workshop-v2/tree/main/website",
-          exclude: ["security/guardduty/runtime-monitoring/reverse-shell.md"],
+          exclude: [
+            "security/guardduty/runtime-monitoring/reverse-shell.md",
+            "fundamentals/storage/fsx-for-netapp-ontap",
+          ],
         },
         theme: {
           customCss: require.resolve("./src/css/custom.scss"),
@@ -109,7 +121,7 @@ const config = {
             type: "doc",
             docId: "introduction/index",
             position: "left",
-            label: "Introduction",
+            label: "Intro",
           },
           {
             type: "doc",
@@ -151,7 +163,7 @@ const config = {
             type: "doc",
             docId: "aiml/index",
             position: "left",
-            label: "AIML",
+            label: "AI/ML",
           },
           {
             href: "https://github.com/aws-samples/eks-workshop-v2",
@@ -198,8 +210,9 @@ const config = {
         copyright: `© ${new Date().getFullYear()}, Amazon Web Services, Inc. or its affiliates. All rights reserved.`,
       },
       prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
+        theme: prismThemes.github,
+        darkTheme: prismThemes.dracula,
+        additionalLanguages: ["diff"],
         magicComments: [
           // Remember to extend the default highlight class name as well!
           {
@@ -208,12 +221,30 @@ const config = {
             block: { start: "highlight-start", end: "highlight-end" },
           },
           {
+            className: "code-block-highlighted-line-even",
+            block: {
+              start: "annotated-highlight-start-even",
+              end: "annotated-highlight-end-even",
+            },
+          },
+          {
+            className: "code-block-highlighted-line-odd",
+            block: {
+              start: "annotated-highlight-start-odd",
+              end: "annotated-highlight-end-odd",
+            },
+          },
+          {
             className: "code-block-highlight",
             line: "HIGHLIGHT",
+          },
+          {
+            className: "code-block-annotation",
+            line: "highlight-annotation",
           },
         ],
       },
     }),
 };
 
-module.exports = config;
+export default config;

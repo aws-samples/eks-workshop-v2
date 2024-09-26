@@ -1,4 +1,23 @@
-# Amazon Elastic Kubernetes Service Workshop
+<div align="center">
+  <a href="https://eksworkshop.com" target="_blank" rel="noopener noreferrer">
+    <picture>
+      <img width="160" src="docs/images/eks.png" alt="Amazon Elastic Kubernetes Service logo">
+    </picture>
+  </a>
+  
+  <br/>
+
+  <div align="center">
+
+[![Stars](https://img.shields.io/github/stars/aws-samples/eks-workshop-v2)](LICENSE)
+[![License](https://img.shields.io/github/license/aws-samples/eks-workshop-v2)](LICENSE)
+
+  </div>
+
+  <strong>
+  <h2>Amazon Elastic Kubernetes Service Workshop</h2>
+  </strong>
+</div>
 
 Welcome to the repository for the [Amazon Elastic Kubernetes Services workshop](https://eksworkshop.com). This contains the source for the website content as well as the accompanying infrastructure-as-code to set up a workshop lab environment in your AWS account. Please review the [Introduction](https://www.eksworkshop.com/docs/introduction/) chapter of the workshop for more details.
 
@@ -40,13 +59,6 @@ There are several tools that are required to run the workshop such as `kubectl` 
 - Steering Committee: [governance/steering.md](governance/steering.md)
 - Governance model: [governance/model.md](governance/model.md)
 - Tenets: [governance/tenets.md](governance/tenets.md)
-
-### Meetings
-
-2nd Thursday every month at 8am PT (3pm UTC)
-
-- Meeting link: [Chime Web Meeting Link](https://chime.aws/8607878433)
-- Agenda, Notes, and calendar invites: [Google Doc](https://docs.google.com/document/d/1hYjhBhPvLVMf7gunooM-kE0wptMjMIORCmI2BOedCWI/edit?usp=sharing)
 
 ## Security
 

@@ -9,6 +9,10 @@ on:
       glob:
         type: string
         default: "-"
+    outputs:
+      durations-artifact:
+        description: "The artifact ID of the test durations file"
+        value: ${{ jobs.run-tests.outputs.durations-artifact }}
 
 permissions:
   id-token: write
@@ -19,6 +23,8 @@ jobs:
     if: github.repository == 'aws-samples/eks-workshop-v2'
     name: run-tests
     runs-on: ubuntu-latest
+    outputs:
+      durations-artifact: ${{ steps.upload-durations.outputs.artifact-id }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -67,13 +73,20 @@ jobs:
         env:
           DOCKER_BUILDKIT: 1
           DEV_MODE: 1
+          GENERATE_TIMINGS: 1
+          TEST_REPORT: /tmp/test-output.json
           MODULE: ${{ inputs.module }}
           GLOB: ${{ inputs.glob }}
           AWS_REGION: "${{ secrets.AWS_REGION }}"
-          ASSUME_ROLE: "${{ secrets.AWS_ROLE_ARN }}"
+          DOCKER_DNS_OVERRIDE: "8.8.8.8"
         run: |
           export AWS_DEFAULT_REGION="$AWS_REGION"
           make test environment="$CLUSTER_ID" module="$MODULE" glob="$GLOB"
+      - uses: actions/upload-artifact@v4
+        id: upload-durations
+        with:
+          name: test-durations-${{ env.CLUSTER_ID }}
+          path: website/test-durations.json
       - name: Refresh AWS credentials
         if: always()
         uses: aws-actions/configure-aws-credentials@v4.0.2
@@ -88,7 +101,6 @@ jobs:
           DOCKER_BUILDKIT: 1
           DEV_MODE: 1
           AWS_REGION: "${{ secrets.AWS_REGION }}"
-          ASSUME_ROLE: "${{ secrets.AWS_ROLE_ARN }}"
         run: |
           export AWS_DEFAULT_REGION="$AWS_REGION"
           make test environment="$CLUSTER_ID" module="cleanup"
@@ -105,13 +117,4 @@ jobs:
         env:
           AWS_REGION: "${{ secrets.AWS_REGION }}"
         run: |
-          export CLEANUP_ENVIRONMENT_NAME="eks-workshop-$CLUSTER_ID"
-          export AWS_DEFAULT_REGION="$AWS_REGION"
-
-          envsubst < hack/lib/filter.yml > filter.yml
-
-          cat filter.yml
-
-          awsweeper --force filter.yml
-
           make destroy-infrastructure environment="$CLUSTER_ID"

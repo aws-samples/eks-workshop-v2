@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Scale workloads proportional to the size of your Amazon Elastic Kubernetes Service cluster with Cluster Proportional Autoscaler."
 ---
 
-{{% required-time %}}
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:
@@ -20,7 +20,7 @@ In this lab, we'll learn about [Cluster Proportional Autoscaler](https://github.
 
 Cluster Proportional Autoscaler (CPA) is a horizontal pod autoscaler that scales replicas based on the number of nodes in a cluster. The proportional autoscaler container watches over the number of schedulable nodes and cores of a cluster and resizes the number of replicas. This functionality is desirable for applications that need to be autoscaled with the size of the cluster such as CoreDNS and other services that scale with the number of nodes/pods in a cluster. CPA has Golang API clients running inside pods that connect to the API Server and polls the number of nodes and cores in the cluster. The scaling parameters and data points are provided via a ConfigMap to the autoscaler and it refreshes its parameters table every poll interval to be up to date with the latest desired scaling parameters. Unlike other autoscalers CPA does not rely on the Metrics API and does not require the Metrics Server.
 
-![CPA](cpa.png)
+![CPA](./assets/cpa.webp)
 
 Some of the main use cases for CPA include:
 
@@ -28,9 +28,9 @@ Some of the main use cases for CPA include:
 - Scale out core platform services
 - Simple and easy mechanism to scale out workloads as it does not require metrics server or prometheus adapter
 
-#### Scaling Methods used by Cluster Proportional Autoscaler
+## Scaling Methods used by Cluster Proportional Autoscaler
 
-**Linear**
+### Linear
 
 - This scaling method will scale the application in direct proportion to how many nodes or cores are available in a cluster
 - Either one of the `coresPerReplica` or `nodesPerReplica` could be omitted
@@ -39,9 +39,9 @@ Some of the main use cases for CPA include:
 - All of `min`,`max`,`preventSinglePointFailure`,`includeUnschedulableNodes` are optional. If not set, `min` will be defaulted to 1, `preventSinglePointFailure` will be defaulted to `false` and `includeUnschedulableNodes` will be defaulted to `false`
 - Both `coresPerReplica` and `nodesPerReplica` are float
 
-**ConfigMap for Linear**
+### ConfigMap for Linear
 
-```
+```text
 data:
   linear: |-
     {
@@ -56,13 +56,13 @@ data:
 
 **The Equation of Linear Control Mode:**
 
-```
+```text
 replicas = max( ceil( cores * 1/coresPerReplica ) , ceil( nodes * 1/nodesPerReplica ) )
 replicas = min(replicas, max)
 replicas = max(replicas, min)
 ```
 
-**Ladder**
+### Ladder
 
 - This scaling method uses a step function to determine the ratio of nodes:replicas and/or cores:replicas
 - The step ladder function uses the data point for core and node scaling from the ConfigMap. The lookup which yields the higher number of replicas will be used as the target scaling number.
@@ -70,9 +70,9 @@ replicas = max(replicas, min)
 - Replicas can be set to 0 (unlike in linear mode)
 - Scaling to 0 replicas could be used to enable optional features as a cluster grows
 
-**ConfigMap for Linear**
+### ConfigMap for Ladder
 
-```
+```text
 data:
   ladder: |-
     {

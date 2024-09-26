@@ -56,7 +56,7 @@ $ argocd app sync apps
 
 We should have now 3 pods in `ui` deployment
 
-![argocd-update-application](assets/argocd-update-application.png)
+![argocd-update-application](assets/argocd-update-application.webp)
 
 To verify, run the following commands:
 

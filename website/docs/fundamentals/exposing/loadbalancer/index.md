@@ -6,7 +6,7 @@ sidebar_custom_props: { "module": true }
 description: "Manage AWS load balancers to route traffic to workloads on Amazon Elastic Kubernetes Service."
 ---
 
-{{% required-time %}}
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:
@@ -40,6 +40,6 @@ spec:
 
 This is great because of how simple it is to put a load balancer in front of your application. The service spec has been extended over the years with annotations and additional configuration. A second option is to use an ingress rule and an ingress controller to route external traffic into Kubernetes pods.
 
-![IP mode](./assets/ui-nlb-instance.png)
+![IP mode](./assets/ui-nlb-instance.webp)
 
 In this chapter we'll demonstrate how to expose an application running in the EKS cluster to the Internet using a layer 4 Network Load Balancer.

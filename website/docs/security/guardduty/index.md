@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Detect potentially suspicious activity in Amazon Elastic Kubernetes Service clusters with Amazon GuardDuty."
 ---
 
-{{% required-time estimatedLabExecutionTimeMinutes="20" %}}
+::required-time{estimatedLabExecutionTimeMinutes="20"}
 
 :::tip Before you start
 Prepare your environment for this section:

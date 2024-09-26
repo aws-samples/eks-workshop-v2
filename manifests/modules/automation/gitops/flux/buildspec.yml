@@ -18,9 +18,8 @@ phases:
       - echo Building a container image ...
       - component=ui
       - component_dir="./src/$component"
-      - source "$component_dir/scripts/build.source"
       - cd $component_dir
-      - docker build -f $dockerfile $docker_build_args -t $ECR_URI:$IMAGE_TAG .
+      - docker build -t $ECR_URI:$IMAGE_TAG .
       - docker tag $ECR_URI:$IMAGE_TAG $ECR_URI:$IMAGE_TAG_I
       - docker images
   post_build:

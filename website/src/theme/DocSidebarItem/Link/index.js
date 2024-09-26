@@ -47,12 +47,12 @@ export default function DocSidebarItemLink({
           <div style={{ flex: "1" }}>{label}</div>
           <div>
             {item.customProps?.module ? (
-              <span class="badge lab">LAB</span>
+              <span className="badge lab">LAB</span>
             ) : (
               <span></span>
             )}
             {item.customProps?.info ? (
-              <span class="badge info">INFO</span>
+              <span className="badge info">INFO</span>
             ) : (
               <span></span>
             )}
