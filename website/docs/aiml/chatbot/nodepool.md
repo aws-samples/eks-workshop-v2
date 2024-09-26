@@ -12,18 +12,10 @@ To learn more about Karpenter, check out the [Karpenter module](../../autoscalin
 Karpenter has already been installed in our EKS Cluster and runs as a deployment:
 
 ```bash
-$ kubectl get deployment -n karpenter
+$ kubectl get deployment -n kube-system
 NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+...
 karpenter   2/2     2            2           11m
-```
-
-As we did in a previous lab, we need to update our EKS IAM mappings to allow Karpenter nodes to join the cluster:
-
-```bash
-$ eksctl create iamidentitymapping --cluster $EKS_CLUSTER_NAME \
-    --region $AWS_REGION --arn $KARPENTER_ARN \
-    --group system:bootstrappers --group system:nodes \
-    --username system:node:{{EC2PrivateDNSName}}
 ```
 
 Since the Ray Cluster creates head and worker pods with different specifications for handling various EC2 families, we'll create two separate node pools to handle the workload demands.
@@ -49,7 +41,7 @@ Both of these defined node pools will allow Karpenter to properly schedule nodes
 
 Apply the `NodePool` and `EC2NodeClass` manifests for both pools:
 
-```bash wait=60
+```bash
 $ kubectl kustomize ~/environment/eks-workshop/modules/aiml/chatbot/nodepool \
   | envsubst | kubectl apply -f-
 ec2nodeclass.karpenter.k8s.aws/inferentia-inf2 created
@@ -60,7 +52,7 @@ nodepool.karpenter.sh/x86-cpu-karpenter created
 
 Once properly deployed, check for the node pools:
 
-```bash wait=60
+```bash
 $ kubectl get nodepool
 NAME                NODECLASS
 inferentia-inf2     inferentia-inf2

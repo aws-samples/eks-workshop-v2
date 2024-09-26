@@ -12,5 +12,5 @@ fi
 crd_result=$(kubectl get crds | grep $crd || [[ $? == 1 ]])
 
 if [ ! -z "$crd_result" ]; then
-  kubectl delete $crd -A --all > /dev/null
+  kubectl delete crd $crd > /dev/null
 fi

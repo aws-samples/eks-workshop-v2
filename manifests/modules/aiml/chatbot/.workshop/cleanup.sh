@@ -2,8 +2,6 @@
 
 set -e
 
-logmessage "Deleting AIML resources..."
-
 logmessage "Deleting Gradio-UI Components..."
 
 kubectl delete -k /eks-workshop/manifests/modules/aiml/chatbot/gradio --ignore-not-found
@@ -20,6 +18,17 @@ kubectl delete -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2
 logmessage "Un-installing kuberay operator..."
 
 helm uninstall kuberay-operator --ignore-not-found
+
+logmessage "Deleting Karpenter resources and CRDs..."
+
+kubectl kustomize ~/environment/eks-workshop/modules/aiml/chatbot/nodepool \
+  | envsubst | kubectl delete -f-
+
+delete-all-if-crd-exists nodepools.karpenter.sh
+delete-all-if-crd-exists ec2nodeclasses.karpenter.k8s.aws
+delete-all-if-crd-exists nodeclaims.karpenter.sh
+
+logmessage "Deleting llama2 and gradio-llama2-inf2 namespaces..."
 
 kubectl delete namespace llama2 --ignore-not-found
 
