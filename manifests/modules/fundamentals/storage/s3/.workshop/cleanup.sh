@@ -56,6 +56,8 @@ fi
 kubectl kustomize ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment \
   | envsubst | kubectl delete -f-
 
+echo "Deleting PV, PVC, and Deployment"
+
 # Scale down assets
 # kubectl scale -n assets --replicas=0 deployment/assets
 

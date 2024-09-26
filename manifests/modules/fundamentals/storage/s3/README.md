@@ -1,8 +1,6 @@
 Below are instructions to go through the S3 Module Lab
 
-Goal: Show that container can access images within S3 bucket
-
-
+Goal: Show that container can access images within S3 bucket and write to it
 
 # Step 1: Prepare the environment
 
@@ -34,6 +32,31 @@ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
 kubectl exec --stdin $POD_NAME \
  -n assets -- bash -c 'ls /usr/share/nginx/html/assets'
 
+----------- Setup S3 Bucket ------------------
+
+# Step: Create directory for images
+
+mkdir assets-images
+
+# Step: Bring retail store files to environment
+
+cd assets-images
+
+curl --remote-name-all https://raw.githubusercontent.com/aws-containers/retail-store-sample-app/main/src/assets/public/assets/{chrono_classic.jpg,gentleman.jpg,pocket_watch.jpg,smart_2.jpg,wood_watch.jpg}
+
+ls -l
+
+# Step: Copy local files into S3 bucket (Permission Error!)
+
+aws s3 cp . s3://$BUCKET_NAME/
+
+# Step : Navigate to S3 bucket and see files
+
+aws s3 ls $BUCKET_NAME
+
+
+----- Configure Kub --------
+
 # Step 7: Attach addon to EKS cluster
 
 eksctl create addon --name aws-mountpoint-s3-csi-driver --cluster $EKS_CLUSTER_NAME --service-account-role-arn $S3_CSI_ADDON_ROLE --force
@@ -42,23 +65,60 @@ eksctl create addon --name aws-mountpoint-s3-csi-driver --cluster $EKS_CLUSTER_N
 
 kubectl get daemonset s3-csi-node -n kube-system
 
-# Step 9: Create PV and PVC separately
+# Step 9: Show and explain  PV and PVC file
 
-envsubst < ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment/s3pvclaim.yaml | kubectl apply -f -
+Add explanatory comments for mountOptions in PV
 
-# Step 10: Deploy patch to assets deployment to mount S3 bucket and copy files
+# Step : Run kustomize to create PV, PVC, and patch deployment
 
-# Run this to execute deployment.yaml
+kubectl kustomize ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment \
+  | envsubst | kubectl apply -f-
 
-kubectl patch deployment assets -n assets --patch "$(cat ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment/deployment.yaml)"
+# Step : Wait for rollout to occur
 
-# Run this to execute kustomization.yaml
+kubectl rollout status --timeout=130s deployment/assets -n assets
 
-kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment
+# Step : See volume mounts on deployment
 
-# Step : Interact with deployment
+kubectl get deployment -n assets \
+  -o yaml | yq '.items[].spec.template.spec.containers[].volumeMounts'
 
-# Step : Navigate to S3 bucket and see file
+# Step : Show PV and PVC
+
+kubectl get pv
+
+kubectl describe pvc -n assets
+
+# Step: Go into assets container within first pod and list files at mountpoint-s3
+
+POD_1=$(kubectl -n assets get pods -o jsonpath='{.items[0].metadata.name}')
+kubectl exec -it $POD_1 -n assets -c assets -- /bin/sh
+id
+cd mountpoint-s3
+ls -l
+
+# Step: Add file to the mountpoint-s3 folder from Pod 1
+
+touch 'hi_from_pod_1.jpg'
+exit
+
+# Step: Go into assets container within second pod and list files at mountpoint-s3, notice extra
+
+POD_2=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
+kubectl exec -it $POD_2 -n assets -c assets -- /bin/sh
+id
+cd mountpoint-s3
+ls -l
+
+# Step: Add file to the mountpoint-s3 folder from Pod 2
+
+touch 'hi_from_pod_2.jpg'
+exit
+
+# Step: Go to S3 bucket and list contents, notice 2 extra files
+
+aws s3 ls $BUCKET_NAME
+
 
 ### EXTRA INFORMATION
 
@@ -67,3 +127,4 @@ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/s3/depl
 kubectl get pv
 kubectl get pvc -n assets
 kubectl get pods -n assets
+kubectl get deployment -n assets

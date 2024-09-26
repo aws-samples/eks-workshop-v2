@@ -6,18 +6,18 @@ spec:
   replicas: 2
   template:
     spec:
-      securityContext:
-        fsGroup: 999
-      initContainers:
-        - name: copy
-          image: public.ecr.aws/aws-containers/retail-store-sample-assets:0.4.0
-          command: ["/bin/sh"]
-          args:
-            - "-c"
-            - "echo 'Hello from the container!'"
-          volumeMounts:
-            - name: mountpoint-s3
-              mountPath: /mountpoint-s3
+      # securityContext:
+      #   fsGroup: 999
+      # initContainers:
+      #   - name: copy
+      #     image: public.ecr.aws/aws-containers/retail-store-sample-assets:0.4.0
+      #     command: ["/bin/sh"]
+      #     args:
+      #       - "-c"
+      #       - "echo 'Hello from the container!'"
+      #     volumeMounts:
+      #       - name: mountpoint-s3
+      #         mountPath: /mountpoint-s3
       containers:
         - name: assets
           volumeMounts:

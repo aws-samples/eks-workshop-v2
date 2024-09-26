@@ -7,7 +7,7 @@ spec:
     storage: 1Gi # ignored, required
   accessModes:
     - ReadWriteMany # supported options: ReadWriteMany / ReadOnlyMany
-  mountOptions:
+  mountOptions: # Explain the need for these options in the lab!
     - allow-delete
     - allow-other
     - uid=999
@@ -17,9 +17,7 @@ spec:
     driver: s3.csi.aws.com # required
     volumeHandle: s3-csi-driver-volume
     volumeAttributes:
-      bucketName: $BUCKET_NAME ## replace with your bucket name
-      # bucketName: mountpoint-s3-559050210585
-      # permission: "777"
+      bucketName: $BUCKET_NAME #fill in bucket name
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
