@@ -3,7 +3,12 @@ data "aws_caller_identity" "current" {}
 
 # Create a unique S3 bucket
 resource "aws_s3_bucket" "mountpoint-s3" {
-   bucket = "mountpoint-s3-${data.aws_caller_identity.current.account_id}"
+
+   bucket_prefix = "${var.addon_context.eks_cluster_id}-mountpoint-s3"
+
+   force_destroy = true
+   # Start with eks cluster id
+  #  bucket = "mountpoint-s3-${data.aws_caller_identity.current.account_id}"
 }
 
 # S3 CSI Driver IAM Role
@@ -14,6 +19,8 @@ module "mountpoint_s3_csi_driver_irsa" {
   role_name_prefix = "${var.addon_context.eks_cluster_id}-s3-csi-"
   
   # IAM policy to attach to driver
+  policy_name_prefix = "${var.addon_context.eks_cluster_id}-s3-csi-"
+
   attach_mountpoint_s3_csi_policy = true
 
   mountpoint_s3_csi_bucket_arns   = [aws_s3_bucket.mountpoint-s3.arn]

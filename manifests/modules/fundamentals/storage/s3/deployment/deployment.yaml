@@ -6,6 +6,8 @@ spec:
   replicas: 2
   template:
     spec:
+      securityContext:
+        fsGroup: 999
       initContainers:
         - name: copy
           image: public.ecr.aws/aws-containers/retail-store-sample-assets:0.4.0
@@ -13,19 +15,14 @@ spec:
           args:
             - "-c"
             - "echo 'Hello from the container!'"
-            # ["/bin/sh", "-c", "cp -R /usr/share/nginx/html/assets/* /efsvolume"]
           volumeMounts:
             - name: mountpoint-s3
               mountPath: /mountpoint-s3
       containers:
         - name: assets
-          # securityContext:
-          #   runAsUser: 0  # desired user ID
-          #   runAsGroup: 0 # desired group ID
           volumeMounts:
             - name: mountpoint-s3
               mountPath: /mountpoint-s3
-              # mountPath: /usr/share/nginx/html/assets
       volumes:
         - name: mountpoint-s3
           persistentVolumeClaim:

@@ -1,5 +1,9 @@
 Below are instructions to go through the S3 Module Lab
 
+Goal: Show that container can access images within S3 bucket
+
+
+
 # Step 1: Prepare the environment
 
 prepare-environment fundamentals/storage/s3

@@ -40,6 +40,12 @@ kubectl get daemonset s3-csi-node -n kube-system
 # Step : Run this to create PV and PVC separately
 envsubst < ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment/s3pvclaim.yaml | kubectl apply -f -
 
+# Run this as once and load environment variables
+kubectl kustomize ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment \
+  | envsubst | kubectl apply -f-
+
+  kubectl debug -n assets -it <podname> --image=<debug image> --target=<podname>
+
 # Run to deploy separately
 kubectl apply -f ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment/deployment.yaml
 
@@ -79,5 +85,11 @@ k delete pv s3-pv
 
 cleanup environment in a snap!
 sh ~/environment/eks-workshop/modules/fundamentals/storage/s3/.workshop/cleanup.sh
+
+# Useful container commands:
+k logs [pod-name] -c [container-name] -n assets
+kubectl exec -it [pod-name] -c [container-name] -- /bin/sh
+id
+ls -l /[mountpoint-dir]
 
 

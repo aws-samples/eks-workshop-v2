@@ -9,14 +9,17 @@ spec:
     - ReadWriteMany # supported options: ReadWriteMany / ReadOnlyMany
   mountOptions:
     - allow-delete
+    - allow-other
+    - uid=999
+    - gid=999
     - region us-west-2 ## change this to your desired region where your bucket is lying
   csi:
     driver: s3.csi.aws.com # required
     volumeHandle: s3-csi-driver-volume
     volumeAttributes:
-      # bucketName: $BUCKET_NAME ## replace with your bucket name
-      bucketName: mountpoint-s3-559050210585
-      permission: "777"
+      bucketName: $BUCKET_NAME ## replace with your bucket name
+      # bucketName: mountpoint-s3-559050210585
+      # permission: "777"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
