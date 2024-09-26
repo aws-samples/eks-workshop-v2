@@ -34,6 +34,7 @@ Statement:
     Resource:
       - !Sub arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/${Env}*
       - !Sub arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/eks-workshop*
+      - !Sub arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/Karpenter*
   - Effect: Allow
     Action:
       - vpc-lattice:List*
