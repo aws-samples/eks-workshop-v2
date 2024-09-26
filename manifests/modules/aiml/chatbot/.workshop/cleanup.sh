@@ -19,14 +19,10 @@ logmessage "Un-installing kuberay operator..."
 
 helm uninstall kuberay-operator --ignore-not-found
 
-logmessage "Deleting Karpenter resources and CRDs..."
+logmessage "Deleting Karpenter resources..."
 
 kubectl kustomize ~/environment/eks-workshop/modules/aiml/chatbot/nodepool \
   | envsubst | kubectl delete -f-
-
-delete-all-if-crd-exists nodepools.karpenter.sh
-delete-all-if-crd-exists ec2nodeclasses.karpenter.k8s.aws
-delete-all-if-crd-exists nodeclaims.karpenter.sh
 
 logmessage "Deleting llama2 and gradio-llama2-inf2 namespaces..."
 
