@@ -2,6 +2,7 @@
 title: "Configuring control plane logs"
 sidebar_position: 30
 ---
+
 You can enable each of the cluster log types individually, and in this lab we're enabling everything.
 
 Let's take a look this configuration in the EKS console:
@@ -17,7 +18,7 @@ You can alter the logging configuration by clicking the **Manage** button:
 
 ![Enable Logging](./assets/logging-cluster-enable-control-plane-logging.webp)
 
-Youn can also enable EKS control plane logs on a per-cluster basis through the EKS API. This will often be configured using Terraform or CloudFormation, but in this lab we can use the AWS CLI to enable the functionality:
+You can also enable EKS control plane logs on a per-cluster basis through the EKS API. This will often be configured using Terraform or CloudFormation, but in this lab we can use the AWS CLI to enable the functionality:
 
 ```bash hook=cluster-logging
 $ aws eks update-cluster-config \
@@ -42,5 +43,3 @@ $ aws eks update-cluster-config \
 $ sleep 30
 $ aws eks wait cluster-active --name $EKS_CLUSTER_NAME
 ```
-
-
