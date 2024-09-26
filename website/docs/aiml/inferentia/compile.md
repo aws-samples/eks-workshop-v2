@@ -33,6 +33,49 @@ This lab uses DLC to compile the model on EKS. Create the Pod by running the fol
 ```bash timeout=600
 $ kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/compiler \
   | envsubst | kubectl apply -f-
+```
+
+Karpenter detects the pending Pod which needs a trn2 instance and Neuron cores and launches an trn2 instance which meets the requirements. Monitor the instance provisioning with the following command:
+
+```bash test=false
+$ kubectl logs -l app.kubernetes.io/instance=karpenter -n kube-system -f | jq
+```
+
+```json
+{
+  "level": "INFO",
+  "time": "2024-09-19T18:44:08.919Z",
+  "logger": "controller",
+  "message": "launched nodeclaim",
+  "commit": "6e9d95f",
+  "controller": "nodeclaim.lifecycle",
+  "controllerGroup": "karpenter.sh",
+  "controllerKind": "NodeClaim",
+  "NodeClaim": {
+    "name": "aiml-hp9wm"
+  },
+  "namespace": "",
+  "name": "aiml-hp9wm",
+  "reconcileID": "b38f0b3c-f146-4544-8ddc-ca73574c97f0",
+  "provider-id": "aws:///us-west-2b/i-06bc9a7cb6f92887c",
+  "instance-type": "trn1.2xlarge",
+  "zone": "us-west-2b",
+  "capacity-type": "on-demand",
+  "allocatable": {
+    "aws.amazon.com/neuron": "1",
+    "cpu": "7910m",
+    "ephemeral-storage": "89Gi",
+    "memory": "29317Mi",
+    "pods": "58",
+    "vpc.amazonaws.com/pod-eni": "17"
+  }
+}
+...
+```
+
+The Pod should be scheduled on the node provisioned by Karpenter. Check if the Pod is in it's ready state:
+
+```bash timeout=600
 $ kubectl -n aiml wait --for=condition=Ready --timeout=10m pod/compiler
 ```
 
