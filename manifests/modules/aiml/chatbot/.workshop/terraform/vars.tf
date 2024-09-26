@@ -33,10 +33,3 @@ variable "resources_precreated" {
   description = "Have expensive resources been created already"
   type        = bool
 }
-
-variable "karpenter_version" {
-  description = "The version of Karpenter chart to use"
-  type        = string
-  # renovate: datasource=github-releases depName=aws/karpenter-provider-aws
-  default = "0.37.2"
-}

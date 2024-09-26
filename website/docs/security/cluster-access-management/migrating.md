@@ -3,7 +3,7 @@ title: "Migrating from aws-auth identity mapping"
 sidebar_position: 20
 ---
 
-Customer who already use EKS may already be using the `aws-auth` ConfigMap mechanism to manage IAM principal access to cluster, which [is now deprecated](https://docs.aws.amazon.com/eks/latest/userguide/auth-configmap.html). This section demonstrates how you can migrate entries from this older mechanism to using cluster access entries.
+Customer who already use EKS may already be using the `aws-auth` ConfigMap mechanism to manage IAM principal access to cluster. This section demonstrates how you can migrate entries from this older mechanism to using cluster access entries.
 
 An IAM role `eks-workshop-admins` has been pre-configured in the EKS cluster that is used for a group with EKS administrative permissions. Lets check the `aws-auth` ConfigMap:
 

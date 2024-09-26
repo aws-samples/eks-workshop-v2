@@ -40,7 +40,7 @@ eks-pod-identity-agent-hslc5   1/1     Running   0          3d21h
 eks-pod-identity-agent-thvf5   1/1     Running   0          3d21h
 ```
 
-An IAM Role which provides the required permissions for the `carts` service to read and write to DynamoDB table has been created when you ran the `prepare-environment` script in the first step of this module. You can view the policy as shown below.
+An IAM role which provides the required permissions for the `carts` service to read and write to DynamoDB table has been created when you ran the `prepare-environment` script in the first step of this module. You can view the policy as shown below.
 
 ```bash
 $ aws iam get-policy-version \

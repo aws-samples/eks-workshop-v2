@@ -1,6 +1,6 @@
 ---
 title: "Policy"
-sidebar_position: 120
+sidebar_position: 60
 ---
 
 [Policies](https://kubernetes.io/docs/concepts/policy/) defines the cluster resource usages and restricts the deployment of _Kubernetes Objects_ to meet recommended best practices. Following are different types of policies that can be viewed at the cluster level in the **_Resource Types_** - **_Policy_** section
