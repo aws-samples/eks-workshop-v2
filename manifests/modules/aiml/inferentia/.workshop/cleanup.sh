@@ -15,8 +15,7 @@ kubectl delete -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2
 
 logmessage "Deleting Karpenter resources..."
 
-kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/nodepool \
-  | envsubst | kubectl delete -f-
+kubectl delete -k ~/environment/eks-workshop/modules/aiml/inferentia/nodepool --ignore-not-found
 
 logmessage "Deleting inferentia namespaces..."
 
