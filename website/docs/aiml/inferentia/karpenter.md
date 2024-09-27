@@ -18,15 +18,6 @@ NAME        READY   UP-TO-DATE   AVAILABLE   AGE
 karpenter   2/2     2            2           11m
 ```
 
-The only setup that we will need to do is to update our EKS IAM mappings to allow Karpenter nodes to join the cluster:
-
-```bash
-$ eksctl create iamidentitymapping --cluster $EKS_CLUSTER_NAME \
-    --region $AWS_REGION --arn $KARPENTER_ARN \
-    --group system:bootstrappers --group system:nodes \
-    --username system:node:{{EC2PrivateDNSName}}
-```
-
 Karpenter requires a `NodePool` to provision nodes. This is the Karpenter `NodePool` that we will create:
 
 ::yaml{file="manifests/modules/aiml/inferentia/nodepool/nodepool.yaml" paths="spec.template.spec.requirements.1,spec.template.spec.requirements.1.values"}
