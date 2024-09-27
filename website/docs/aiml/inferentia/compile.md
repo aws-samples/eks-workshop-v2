@@ -43,7 +43,7 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/compiler 
   | envsubst | kubectl apply -f-
 ```
 
-Karpenter detects the pending Pod which needs a trn2 instance and Neuron cores and launches an trn2 instance which meets the requirements. Monitor the instance provisioning with the following command:
+Karpenter detects the pending Pod which needs a trn1 instance and Neuron cores and launches an trn1 instance which meets the requirements. Monitor the instance provisioning with the following command:
 
 ```bash test=false
 $ kubectl logs -l app.kubernetes.io/instance=karpenter -n kube-system -f | jq
