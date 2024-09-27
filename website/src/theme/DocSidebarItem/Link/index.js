@@ -73,7 +73,7 @@ export default function DocSidebarItemLink({
             className="clean-btn menu__link"
             onClick={(e) => {
               e.stopPropagation();
-              window.open(item.customProps.explore, "_blank", "noopener,noreferrer");
+              window.open(item.customProps.explore, "_blank", "noopener");
             }}
           >
             <IconExternalLink />
