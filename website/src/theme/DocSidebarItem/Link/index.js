@@ -56,9 +56,27 @@ export default function DocSidebarItemLink({
             ) : (
               <span></span>
             )}
+            {item.customProps?.explore ? (
+              <span className="badge explore">EXPLORE</span>
+            ) : (
+              <span></span>
+            )}
           </div>
         </div>
         {!isInternalLink && <IconExternalLink />}
+        {item.customProps?.explore && (
+          <button
+            aria-label={`Open external link for ${label}`}
+            type="button"
+            className="clean-btn menu__link"
+            onClick={(e) => {
+              e.stopPropagation();
+              window.open(item.customProps.explore, "_blank", "noopener");
+            }}
+          >
+            <IconExternalLink />
+          </button>
+        )}
       </Link>
     </li>
   );

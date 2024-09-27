@@ -42,6 +42,18 @@ sidebar_custom_props: {"info": true}
 ---
 ```
 
+To mark your module as external content, which at the moment is only used for other AWS workshops, place the following in the header of your markdown file:
+
+```
+---
+...
+sidebar_custom_props:
+  {
+    "explore": "https://<external link here>"
+  }
+---
+```
+
 ### Navigating the AWS console
 
 There are instances where the user needs to navigate to specific screens in the AWS console. It is preferable to provide a link to the exact screen if possible, or a close as can be done.
