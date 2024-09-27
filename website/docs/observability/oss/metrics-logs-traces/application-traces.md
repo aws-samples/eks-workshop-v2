@@ -5,7 +5,7 @@ sidebar_position: 70
 
 In this section we'll look at collecting and exploring the traces from our workloads. The applications were already instrumented by using OpenTelemetry SDKs and OpenTelemetry collector was configured with the OTLP receiver and exporter to ingest, batch and ship the trace data to Tempo.
 
-To visualize them on Grafana, go to the Explore page and then select Loki as the datasource and then,
+To visualize them on Grafana, go to the Explore page and then select Tempo as the datasource and then,
 
 - Select `Search` for the Query type
 - Filter `Service Name = ui-service`
