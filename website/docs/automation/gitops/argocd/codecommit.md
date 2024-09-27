@@ -3,7 +3,7 @@ title: "Accessing AWS CodeCommit"
 sidebar_position: 5
 ---
 
-As AWS CodeCommit repository has been created in our lab environment, but we'll need to complete some steps before Cloud9 can connect to it.
+As AWS CodeCommit repository has been created in our lab environment, but we'll need to complete some steps before our IDE can connect to it.
 
 We can add the SSH keys for CodeCommit to the known hosts file to prevent warnings later on:
 

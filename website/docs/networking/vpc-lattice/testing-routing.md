@@ -29,14 +29,14 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/networking/vpc-lattice/ui
   | envsubst | kubectl apply -f -
 ```
 
-Let's ensure that the UI pods are restarted and then port-forward to the preview of your application with Cloud9.
+Now restart the UI component pods:
 
 ```bash
 $ kubectl rollout restart deployment/ui -n ui
 $ kubectl rollout status deployment/ui -n ui
 ```
 
-Let us try to access our application using the browser. A `LoadBalancer` type service named `ui-nlb` is provisioned in the `ui` namespace from which the application's UI can be accessed.
+Lets try to access our application using the browser. A `LoadBalancer` type service named `ui-nlb` is provisioned in the `ui` namespace from which the application's UI can be accessed.
 
 ```bash
 $ kubectl get service -n ui ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}'

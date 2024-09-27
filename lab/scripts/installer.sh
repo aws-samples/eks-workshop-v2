@@ -3,27 +3,27 @@
 set -e
 
 # renovate: depName=kubernetes/kubernetes
-kubectl_version='1.30.2'
+kubectl_version='1.30.4'
 
 # renovate: depName=helm/helm
-helm_version='3.15.2'
+helm_version='3.15.4'
 
 # renovate: depName=eksctl-io/eksctl
-eksctl_version='0.183.0'
+eksctl_version='0.190.0'
 
 kubeseal_version='0.18.4'
 
 # renovate: depName=mikefarah/yq
-yq_version='4.44.2'
+yq_version='4.44.3'
 
 # renovate: depName=fluxcd/flux2
 flux_version='2.3.0'
 
 # renovate: depName=argoproj/argo-cd
-argocd_version='2.11.3'
+argocd_version='2.12.3'
 
 # renovate: depName=hashicorp/terraform
-terraform_version='1.9.0'
+terraform_version='1.9.5'
 
 # renovate: depName=aws/amazon-ec2-instance-selector
 ec2_instance_selector_version='2.4.1'
@@ -66,8 +66,8 @@ case "$arch" in
 esac
 
 yum install --quiet -y findutils jq tar gzip zsh git diffutils wget \
-  tree unzip openssl gettext bash-completion python3 pip3 python3-pip \
-  amazon-linux-extras nc yum-utils
+  tree unzip openssl gettext bash-completion python3 python3-pip \
+  nc yum-utils
 
 pip3 install -q awscurl==0.28 urllib3==1.26.6
 

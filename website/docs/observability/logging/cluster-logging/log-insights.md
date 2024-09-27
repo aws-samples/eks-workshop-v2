@@ -7,7 +7,7 @@ CloudWatch Logs Insights enables you to interactively search and analyze your lo
 
 In this lab exercise, we'll take a look at an example of using CloudWatch Log Insights to query the EKS control plane logs. First navigate to CloudWatch Log Insights in the console:
 
-https://console.aws.amazon.com/cloudwatch/home#logsV2:logs-insights
+<ConsoleButton url="https://console.aws.amazon.com/cloudwatch/home#logsV2:logs-insights" service="cloudwatch" label="Open CloudWatch console"/>
 
 You will be presented with a screen that looks like this:
 
@@ -31,3 +31,7 @@ Copy the query to the console and press **Run query**, which will return results
 ![log insights query](./assets/log-insights-query.webp)
 
 This information can be invaluable to understand what components are sending requests to the API server.
+
+:::info
+If you are using the CDK Observability Accelerator then check out the [CloudWatch Insights Add-on](https://aws-quickstart.github.io/cdk-eks-blueprints/addons/aws-cloudwatch-insights/) which collects, aggregates, and summarizes metrics and logs from your containerized applications and microservices in EKS.
+:::

@@ -35,8 +35,8 @@ delete-environment:
 
 .PHONY: create-infrastructure
 create-infrastructure:
-	bash hack/exec.sh $(environment) 'cat /cluster/eksctl/cluster.yaml | envsubst | eksctl create cluster -f -'
+	bash hack/create-infrastructure.sh $(environment)
 
 .PHONY: destroy-infrastructure
 destroy-infrastructure:
-	bash hack/exec.sh $(environment) 'cat /cluster/eksctl/cluster.yaml | envsubst | eksctl delete cluster --wait --force --disable-nodegroup-eviction --timeout 45m -f -'
+	bash hack/destroy-infrastructure.sh $(environment)

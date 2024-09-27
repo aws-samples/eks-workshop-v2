@@ -41,7 +41,15 @@ const config = {
   organizationName: "aws-samples",
   projectName: "eks-workshop-v2",
 
-  plugins: ["docusaurus-plugin-sass"],
+  plugins: [
+    "docusaurus-plugin-sass",
+    [
+      "docusaurus-lunr-search",
+      {
+        disableVersioning: true,
+      },
+    ],
+  ],
 
   i18n: {
     defaultLocale: "en",
@@ -113,7 +121,7 @@ const config = {
             type: "doc",
             docId: "introduction/index",
             position: "left",
-            label: "Introduction",
+            label: "Intro",
           },
           {
             type: "doc",
@@ -155,7 +163,7 @@ const config = {
             type: "doc",
             docId: "aiml/index",
             position: "left",
-            label: "AIML",
+            label: "AI/ML",
           },
           {
             href: "https://github.com/aws-samples/eks-workshop-v2",

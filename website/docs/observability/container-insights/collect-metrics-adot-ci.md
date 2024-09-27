@@ -14,7 +14,7 @@ You can view the full collector manifest below, then we'll break it down.
 
 </details>
 
-We can review this is several parts to make better sense of it.
+We can review this in several parts to make better sense of it.
 
 ::yaml{file="manifests/modules/observability/container-insights/adot/opentelemetrycollector.yaml" zoomPath="spec.image" zoomAfter="1"}
 
@@ -84,7 +84,8 @@ Please note that:
 
 1. It may take a few minutes for data to start appearing in CloudWatch
 2. It is expected that some metrics are missing since they are provided by the [CloudWatch agent with enhanced observability](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-EKS-agent.html)
-   :::
+
+:::
 
 <ConsoleButton url="https://console.aws.amazon.com/cloudwatch/home#container-insights:performance/EKS:Cluster?~(query~(controls~(CW*3a*3aEKS.cluster~(~'eks-workshop)))~context~())" service="cloudwatch" label="Open CloudWatch console"/>
 

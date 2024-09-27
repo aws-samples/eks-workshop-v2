@@ -2,9 +2,10 @@ data "aws_partition" "current" {}
 
 module "ebs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.39.1"
+  version = "5.44.0"
 
-  role_name_prefix = "${var.addon_context.eks_cluster_id}-ebs-csi-"
+  role_name_prefix   = "${var.addon_context.eks_cluster_id}-ebs-csi-"
+  policy_name_prefix = "${var.addon_context.eks_cluster_id}-ebs-csi-"
 
   attach_ebs_csi_policy = true
 
@@ -38,7 +39,9 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    wait = true
+    wait        = true
+    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
 }
 
@@ -61,6 +64,7 @@ module "cert_manager" {
   name             = "cert-manager"
   namespace        = "cert-manager"
   create_namespace = true
+  wait             = true
   chart            = "cert-manager"
   chart_version    = "v1.15.1"
   repository       = "https://charts.jetstack.io"
@@ -73,6 +77,12 @@ module "cert_manager" {
   ]
 }
 
+resource "kubernetes_namespace" "opentelemetry_operator" {
+  metadata {
+    name = "opentelemetry-operator-system"
+  }
+}
+
 module "opentelemetry_operator" {
   source  = "aws-ia/eks-blueprints-addon/aws"
   version = "1.1.1"
@@ -82,8 +92,9 @@ module "opentelemetry_operator" {
   ]
 
   name             = "opentelemetry"
-  namespace        = "opentelemetry-operator-system"
-  create_namespace = true
+  namespace        = kubernetes_namespace.opentelemetry_operator.metadata[0].name
+  create_namespace = false
+  wait             = true
   chart            = "opentelemetry-operator"
   chart_version    = var.operator_chart_version
   repository       = "https://open-telemetry.github.io/opentelemetry-helm-charts"
@@ -102,7 +113,7 @@ resource "aws_prometheus_workspace" "this" {
 
 module "iam_assumable_role_adot" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version = "5.39.1"
+  version = "5.44.0"
 
   create_role  = true
   role_name    = "${var.addon_context.eks_cluster_id}-adot-collector"

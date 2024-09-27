@@ -1,4 +1,4 @@
-import React, { Component, type ReactNode } from "react";
+import React from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard } from "@fortawesome/free-solid-svg-icons";
@@ -16,7 +16,7 @@ export default function Terminal({ output }: Props): JSX.Element {
 
   let sections: Array<TerminalSection> = [];
 
-  let section = new TerminalSection();
+  let section = new TerminalSection(0);
 
   let appendNext = false;
 
@@ -27,7 +27,7 @@ export default function Terminal({ output }: Props): JSX.Element {
 
     if (!appendNext) {
       if (currentLine.startsWith("$ ")) {
-        section = new TerminalSection();
+        section = new TerminalSection(i);
         sections.push(section);
 
         currentLine = currentLine.substring(2);
@@ -40,7 +40,7 @@ export default function Terminal({ output }: Props): JSX.Element {
   }
 
   const handler = () => {
-    navigator.clipboard.writeText(`${allCommands}\n`);
+    triggerCopy(`${allCommands}\n`);
   };
 
   return (
@@ -80,8 +80,11 @@ class TerminalSection {
   private inHeredoc = false;
   private commandString: string = "";
   private inCommand = true;
+  private index: number;
 
-  constructor() {
+  constructor(index: number) {
+    this.index = index;
+
     this.context = this.commandContext = new TerminalCommand();
     this.contexts.push(this.context);
   }
@@ -127,32 +130,43 @@ class TerminalSection {
   render() {
     const commandString = this.commandContext.getCommand();
     const handler = () => {
-      navigator.clipboard.writeText(commandString);
+      triggerCopy(commandString);
     };
 
     return (
       <section
+        key={this.index}
         className={styles.terminalBody}
         data-tooltip-id="copy-command"
         data-tooltip-float={true}
         onClick={handler}
       >
-        {this.contexts.map((element) => {
-          return element.render();
+        {this.contexts.map((element, index) => {
+          return element.render(index);
         })}
       </section>
     );
   }
 }
 
+function triggerCopy(text: string) {
+  navigator.clipboard.writeText(text);
+
+  window.parent.postMessage(`eks-workshop-terminal:${text}`, "*");
+}
+
 class TerminalContext {
   protected lines: Array<string> = [];
 
   addLine(line: string) {
+    if (line.length === 0) {
+      line = " ";
+    }
+
     this.lines.push(line);
   }
 
-  render() {
+  render(index: number) {
     return <div></div>;
   }
 
@@ -172,17 +186,17 @@ class TerminalCommand extends TerminalContext {
     return this.lines.join("\n");
   }
 
-  render() {
+  render(index: number) {
     return (
-      <div>
+      <div key={index}>
         <div className={styles.terminalPrompt}>
           <span className={styles.terminalPromptLocation}>~</span>
           <span className={styles.terminalPromptBling}>$</span>
           {this.renderCommand(this.lines[0], false)}
         </div>
-        {this.lines.slice(1).map((element) => {
+        {this.lines.slice(1).map((element, lineIndex) => {
           return (
-            <div className={styles.terminalPrompt}>
+            <div key={lineIndex} className={styles.terminalPrompt}>
               {this.renderCommand(element, true)}
             </div>
           );
@@ -199,9 +213,9 @@ class TerminalCommand extends TerminalContext {
 }
 
 class TerminalOutput extends TerminalContext {
-  render() {
+  render(index: number) {
     return (
-      <div className={styles.terminalOutput}>
+      <div key={index} className={styles.terminalOutput}>
         <pre>{this.lines.join("\n")}</pre>
       </div>
     );

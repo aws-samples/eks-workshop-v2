@@ -175,6 +175,11 @@ export default function DocSidebarItemCategory({
               ) : (
                 <span></span>
               )}
+              {item.customProps?.beta ? (
+                <span className="badge beta">BETA</span>
+              ) : (
+                <span></span>
+              )}
             </div>
           </div>
         </Link>

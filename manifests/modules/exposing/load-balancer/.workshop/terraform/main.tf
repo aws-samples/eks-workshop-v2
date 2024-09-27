@@ -8,5 +8,10 @@ module "eks_blueprints_addons" {
   oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
 
   enable_aws_load_balancer_controller = true
-  create_kubernetes_resources         = false
+  aws_load_balancer_controller = {
+    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
+  }
+
+  create_kubernetes_resources = false
 }

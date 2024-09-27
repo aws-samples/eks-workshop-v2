@@ -12,7 +12,9 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    wait = true
+    wait        = true
+    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
 }
 
@@ -35,6 +37,7 @@ module "cert_manager" {
   name             = "cert-manager"
   namespace        = "cert-manager"
   create_namespace = true
+  wait             = true
   chart            = "cert-manager"
   chart_version    = "v1.15.1"
   repository       = "https://charts.jetstack.io"
@@ -64,6 +67,7 @@ module "opentelemetry_operator" {
   name             = "opentelemetry"
   namespace        = kubernetes_namespace.opentelemetry_operator.metadata[0].name
   create_namespace = false
+  wait             = true
   chart            = "opentelemetry-operator"
   chart_version    = var.operator_chart_version
   repository       = "https://open-telemetry.github.io/opentelemetry-helm-charts"
@@ -76,7 +80,7 @@ module "opentelemetry_operator" {
 
 module "iam_assumable_role_adot_ci" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "5.39.1"
+  version                       = "5.44.0"
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-adot-collector-ci"
   provider_url                  = var.addon_context.eks_oidc_issuer_url

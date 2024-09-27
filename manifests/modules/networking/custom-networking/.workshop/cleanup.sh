@@ -2,6 +2,8 @@
 
 set -e
 
+logmessage "WARNING! This lab takes additional time to clean up to ensure lab stability, please be patient"
+
 logmessage "Deleting ENI configs..."
 
 kubectl delete ENIConfig --all -A
@@ -22,6 +24,8 @@ for INSTANCE_ID in $INSTANCE_IDS
 do
   aws ec2 terminate-instances --instance-ids $INSTANCE_ID
 done
+
+sleep 30
 
 custom_nodegroup=$(aws eks list-nodegroups --cluster-name $EKS_CLUSTER_NAME --query "nodegroups[? @ == 'custom-networking']" --output text)
 
