@@ -74,6 +74,11 @@ $ kubectl -n aiml wait --for=condition=Ready --timeout=12m pod/inference
 ```
 
 We can use the following command to get more details on the node that was provisioned to schedule our pod onto:
+
+```bash
+$ kubectl get node -l karpenter.sh/nodepool=aiml -o jsonpath='{.items[0].status.capacity}' | jq .
+```
+
 This output shows the capacity this node has:
 
 ```json
@@ -94,6 +99,21 @@ This output shows the capacity this node has:
 We can see that this node as a `aws.amazon.com/neuron` of 1. Karpenter provisioned this node for us as that's how many neuron the Pod requested.
 
 ### Run an inference
+
+This is the code that we will be using to run inference using a Neuron core on Inferentia:
+
+```file
+manifests/modules/aiml/inferentia/inference/inference.py
+```
+
+This Python code does the following tasks:
+
+1. It downloads and stores an image of a small kitten.
+2. It fetches the labels for classifying the image.
+3. It then imports this image and normalizes it into a tensor.
+4. It loads our previously created model.
+5. It runs the prediction on our small kitten image.
+6. It gets the top 5 results from the prediction and prints these to the command-line.
 
 We copy this code to the Pod, download our previously uploaded model, and run the following commands:
 
