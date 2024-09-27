@@ -29,7 +29,7 @@ $ eksctl create iamidentitymapping --cluster $EKS_CLUSTER_NAME \
 
 Karpenter requires a `NodePool` to provision nodes. This is the Karpenter `NodePool` that we will create:
 
-::yaml{file="manifests/modules/aiml/inferentia/nodepool/nodepool.yaml" paths="spec.template.spec.requirements.2,spec.template.spec.requirements.2.values"}
+::yaml{file="manifests/modules/aiml/inferentia/nodepool/nodepool.yaml" paths="spec.template.spec.requirements.1,spec.template.spec.requirements.1.values"}
 
 1. In this section we assign what instances this NodePool is allowed to provision for us
 2. You can see here that we've configured this NodePool to only allow the creation of inf2 and trn1 instances
