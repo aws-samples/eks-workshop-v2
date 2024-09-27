@@ -1,6 +1,6 @@
 ---
 title: "Simulating Pod Failure"
-sidebar_position: 2
+sidebar_position: 110
 description: "Simulate pod failure in your environment using ChaosMesh to test the resiliency of your application."
 ---
 
@@ -81,7 +81,7 @@ This will show you the status, IP addresses, and nodes for each pod in the `ui` 
 
 An essential aspect of this experiment is to ensure that your retail store application remains operational throughout the pod failure and recovery process. To verify the availability of the retail store, use the following command to fetch and access the store's URL:
 
-```bash timeout=900 wait=30
+```bash timeout=900
 $ wait-for-lb $(kubectl get ingress -n ui -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
 
 Waiting for k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com...

@@ -2,14 +2,16 @@
 title: "Chaos Engineering with EKS"
 sidebar_position: 70
 sidebar_custom_props: { "module": true }
-weight: 10
+description: Stimulating various failure scenarios to check Amazon EKS cluster resiliency."
 ---
+
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=900 wait=30
-$ kubectl delete deployment ui -n ui
+```bash timeout=900
+$ kubectl delete deployment ui -n ui --ignore-not-found
 $ prepare-environment observability/resiliency
 ```
 
