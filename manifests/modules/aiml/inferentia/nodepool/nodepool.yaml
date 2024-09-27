@@ -14,9 +14,6 @@ spec:
           operator: In
           values:
             - on-demand
-        - key: "kubernetes.io/arch"
-          operator: In
-          values: ["amd64"]
         - key: karpenter.k8s.aws/instance-family
           operator: In
           values:
@@ -26,9 +23,6 @@ spec:
         group: karpenter.k8s.aws
         kind: EC2NodeClass
         name: aiml
-  disruption:
-    consolidationPolicy: WhenEmptyOrUnderutilized
-    consolidateAfter: 300s
 ---
 apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
@@ -47,8 +41,7 @@ spec:
   role: ${KARPENTER_NODE_ROLE}
   securityGroupSelectorTerms:
     - tags:
-        karpenter.sh/discovery: ${EKS_CLUSTER_NAME}kubectl get pods --all-namespaces | grep Pending
-        
+        karpenter.sh/discovery: ${EKS_CLUSTER_NAME}        
   subnetSelectorTerms:
     - tags:
         karpenter.sh/discovery: ${EKS_CLUSTER_NAME}

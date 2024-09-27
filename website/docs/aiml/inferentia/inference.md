@@ -30,10 +30,9 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/inference
 
 Again Karpenter detects the pending Pod which this time needs a inf2 instance with needs Neuron cores. So Karpenter launches an inf2 instance which has the Inferentia chip. You can again monitor the instance provisioning with the following command:
 
-````bash test=false
-$ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter -f | jq
-@@ -37,43 +71,36 @@ $ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter -f | jq
-```json
+```bash test=false
+$ kubectl logs -l app.kubernetes.io/instance=karpenter -n kube-system -f | jq
+...
 {
   "level": "INFO",
   "time": "2024-09-19T18:53:34.266Z",
@@ -63,7 +62,7 @@ $ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter -f | jq
   }
 }
 ...
-````
+```
 
 The inference Pod should be scheduled on the node provisioned by Karpenter. Check if the Pod is in it's ready state:
 
@@ -76,7 +75,7 @@ $ kubectl -n aiml wait --for=condition=Ready --timeout=12m pod/inference
 ```
 
 We can use the following command to get more details on the node that was provisioned to schedule our pod onto:
-@@ -86,20 +113,21 @@ This output shows the capacity this node has:
+This output shows the capacity this node has:
 
 ```json
 {
@@ -97,7 +96,7 @@ We can see that this node as a `aws.amazon.com/neuron` of 1. Karpenter provision
 
 ### Run an inference
 
-@@ -122,7 +150,6 @@ We copy this code to the Pod, download our previously uploaded model, and run th
+We copy this code to the Pod, download our previously uploaded model, and run the following commands:
 
 ```bash
 $ kubectl -n aiml cp ~/environment/eks-workshop/modules/aiml/inferentia/inference/inference.py inference:/

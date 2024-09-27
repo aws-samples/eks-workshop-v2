@@ -4,13 +4,9 @@ set -e
 
 logmessage "Delete Inferentia Pods..."
 
-kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/compiler \
-  | envsubst | kubectl delete -f-
+kubectl delete -k /eks-workshop/manifests/modules/aiml/inferentia/compiler --ignore-not-found
 
-
-kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/inference \
-  | envsubst | kubectl delete -f-
-
+kubectl delete -k /eks-workshop/manifests/modules/aiml/inferentia/inference --ignore-not-found
 
 logmessage "Deleting Neuron Device Plugin..."
 
@@ -19,8 +15,9 @@ kubectl delete -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2
 
 logmessage "Deleting Karpenter resources..."
 
-kubectl kustomize ~/environment/eks-workshop/moudles/aiml/inferentia/nodepool \
+kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/nodepool \
   | envsubst | kubectl delete -f-
 
+logmessage "Deleting inferentia namespaces..."
 
 kubectl delete namespace aiml --ignore-not-found

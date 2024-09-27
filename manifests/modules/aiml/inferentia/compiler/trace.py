@@ -11,7 +11,7 @@ model = models.resnet50(pretrained=True)
 
 ## Tell the model we are using it for evaluation (not training)
 model.eval()
-model_neuron = torch_neuronx.trace(model, example_inputs=[image])
+model_neuron = torch_neuronx.trace(model, image)
 
 ## Export to saved model
 model_neuron.save("resnet50_neuron.pt")

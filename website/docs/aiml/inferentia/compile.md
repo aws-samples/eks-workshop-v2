@@ -47,7 +47,7 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/compiler 
 Karpenter detects the pending Pod which needs a trn2 instance and Neuron cores and launches an trn2 instance which meets the requirements. Monitor the instance provisioning with the following command:
 
 ```bash test=false
-$ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter -f | jq
+$ kubectl logs -l app.kubernetes.io/instance=karpenter -n kube-system -f | jq
 ```
 
 ```json
@@ -103,4 +103,12 @@ Downloading: "https://download.pytorch.org/models/resnet50-0676ba61.pth" to /roo
 100%|-------| 97.8M/97.8M [00:00<00:00, 165MB/s]
 .
 Compiler status PASS
+```
+
+Finally, upload the model to the S3 bucket that has been created for you. This will ensure we can use the model later in the lab.
+
+```bash
+$ kubectl -n aiml exec compiler -- aws s3 cp ./resnet50_neuron.pt s3://$AIML_NEURON_BUCKET_NAME/
+
+upload: ./resnet50_neuron.pt to s3://eksworkshop-inference20230511204343601500000001/resnet50_neuron.pt
 ```
