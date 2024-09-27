@@ -1,6 +1,6 @@
 ---
 title: "AZ Failure Experiment Setup"
-sidebar_position: 6
+sidebar_position: 190
 description: "Scale your application to two instances and prepare for an AZ failure simulation experiment."
 ---
 
@@ -8,7 +8,7 @@ description: "Scale your application to two instances and prepare for an AZ fail
 
 To see the full impact of an Availability Zone (AZ) failure, let's first scale up to two instances per AZ as well as increase the number of pods up to 9:
 
-```bash timeout=120 wait=30
+```bash timeout=120
 $ ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='eks-workshop']].AutoScalingGroupName" --output text)
 $ aws autoscaling update-auto-scaling-group \
     --auto-scaling-group-name $ASG_NAME \
@@ -17,7 +17,7 @@ $ aws autoscaling update-auto-scaling-group \
     --max-size 6
 $ sleep 60
 $ kubectl scale deployment ui --replicas=9 -n ui
-$ timeout 5s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
+$ timeout 10s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 
 ------us-west-2a------
   ip-10-42-100-4.us-west-2.compute.internal:
@@ -47,7 +47,7 @@ Before starting the experiment, set up a synthetic canary for heartbeat monitori
 
 1. First, create an S3 bucket for the canary artifacts:
 
-```bash wait=15
+```bash wait=30
 $ export BUCKET_NAME="eks-workshop-canary-artifacts-$(date +%s)"
 $ aws s3 mb s3://$BUCKET_NAME --region $AWS_REGION
 
@@ -62,7 +62,7 @@ manifests/modules/observability/resiliency/scripts/create-blueprint.sh
 
 Place this canary blueprint into the bucket:
 
-```bash wait=15
+```bash
 $ $SCRIPT_DIR/create-blueprint.sh
 
 upload: ./canary.zip to s3://eks-workshop-canary-artifacts-1724131402/canary-scripts/canary.zip
@@ -72,7 +72,7 @@ The script is configured to check the URL: http://k8s-ui-ui-5ddc3ba496-721427594
 
 3. Create a synthetic canary with a Cloudwatch alarm:
 
-```bash timeout=120 wait=30
+```bash
 $ aws synthetics create-canary \
     --name eks-workshop-canary \
     --artifact-s3-location "s3://$BUCKET_NAME/canary-artifacts/" \
@@ -81,7 +81,8 @@ $ aws synthetics create-canary \
     --schedule "Expression=rate(1 minute)" \
     --code "Handler=canary.handler,S3Bucket=$BUCKET_NAME,S3Key=canary-scripts/canary.zip" \
     --region $AWS_REGION
-$ aws synthetics wait canary-ready --name eks-workshop-canary --region $AWS_REGION
+$ sleep 40
+$ aws synthetics describe-canaries --name eks-workshop-canary --region $AWS_REGION
 $ aws synthetics start-canary --name eks-workshop-canary --region $AWS_REGION
 $ aws cloudwatch put-metric-alarm \
     --alarm-name "eks-workshop-canary-alarm" \

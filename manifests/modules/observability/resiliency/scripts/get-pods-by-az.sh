@@ -17,6 +17,7 @@ clear_screen() {
 
 # Function to generate the output
 generate_output() {
+    echo -e '\n\n\n'
     for az in a b c
     do
         AZ=$REGION$az
@@ -30,10 +31,11 @@ generate_output() {
         done
         echo ""
     done
+    echo -e '\n\n\n'
 }
 
 # Initial clear screen
-clear_screen
+# clear_screen
 
 # Main loop
 while true; do
@@ -41,8 +43,9 @@ while true; do
     generate_output > temp_output.txt
 
     # Clear screen and display the new output
-    clear_screen
+    # clear_screen
     cat temp_output.txt
+    # clear_screen
 
     # Wait before next update
     sleep 1

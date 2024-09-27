@@ -24,7 +24,7 @@ spec:
                       operator: In
                       values:
                         - ui
-                topologyKey: "kubernetes.io/hostname"
+                topologyKey: "topology.kubernetes.io/zone"
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: topology.kubernetes.io/zone

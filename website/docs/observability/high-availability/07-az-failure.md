@@ -1,6 +1,6 @@
 ---
 title: "Simulating AZ Failure"
-sidebar_position: 7
+sidebar_position: 210
 description: "This experiment simulates an Availability Zone failure to test the resilience of your Kubernetes environment hosted on AWS EKS."
 ---
 
@@ -20,8 +20,8 @@ $ ZONE_EXP_ID=$(aws fis create-experiment-template --cli-input-json '{"descripti
 
 Execute the FIS experiment to simulate the AZ failure:
 
-```bash timeout=560 wait=30
-$ aws fis start-experiment --experiment-template-id $ZONE_EXP_ID --output json && $SCRIPT_DIR/node-failure.sh && timeout 480s $SCRIPT_DIR/get-pods-by-az.sh
+```bash timeout=560
+$ aws fis start-experiment --experiment-template-id $ZONE_EXP_ID --output json && timeout 480s $SCRIPT_DIR/get-pods-by-az.sh
 
 ------us-west-2a------
   ip-10-42-100-4.us-west-2.compute.internal:
@@ -61,12 +61,19 @@ During this time, the retail url will stay available showimg how resilient EKS i
 :::note
 To verify nodes and rebalance pods, you can run:
 
-```bash timeout=300 wait=30
+```bash timeout=900
 $ EXPECTED_NODES=6 && while true; do ready_nodes=$(kubectl get nodes --no-headers | grep " Ready" | wc -l); if [ "$ready_nodes" -eq "$EXPECTED_NODES" ]; then echo "All $EXPECTED_NODES expected nodes are ready."; echo "Listing the ready nodes:"; kubectl get nodes | grep " Ready"; break; else echo "Waiting for all $EXPECTED_NODES nodes to be ready... (Currently $ready_nodes are ready)"; sleep 10; fi; done
-$ kubectl delete deployment ui -n ui
-$ kubectl apply -k /manifests/modules/observability/resiliency/high-availability/config/
-$ sleep 30
-$ timeout 5s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
+$ kubectl delete pod --grace-period=0 -n ui -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 -n orders -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 -n carts -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 -n checkout -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 -n catalog -l app.kubernetes.io/component=service
+$ kubectl rollout status -n ui deployment/ui --timeout 30s
+$ kubectl rollout status -n orders deployment/orders --timeout 60s
+$ kubectl rollout status -n catalog deployment/catalog --timeout 30s
+$ kubectl rollout status -n checkout deployment/checkout --timeout 30s
+$ kubectl rollout status -n carts deployment/carts --timeout 30s
+$ timeout 10s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 ```
 
 :::
@@ -75,7 +82,7 @@ $ timeout 5s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 
 After the experiment, verify that your application remains operational despite the simulated AZ failure:
 
-```bash timeout=900 wait=30
+```bash timeout=900
 $ wait-for-lb $(kubectl get ingress -n ui -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
 
 Waiting for k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com...

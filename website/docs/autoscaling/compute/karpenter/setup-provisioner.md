@@ -17,10 +17,11 @@ We'll start by applying some custom resources used by Karpenter. First we'll cre
 
 And we'll also need an `EC2NodeClass` which provides the specific configuration that applies to AWS:
 
-::yaml{file="manifests/modules/autoscaling/compute/karpenter/nodepool/nodeclass.yaml" paths="spec.subnetSelectorTerms,spec.tags"}
+::yaml{file="manifests/modules/autoscaling/compute/karpenter/nodepool/nodeclass.yaml" paths="spec.role,spec.subnetSelectorTerms,spec.tags"}
 
-1. The `subnetSelectorTerms` can be used to look up the subnets where Karpenter should launch the EC2 instances. These tags were automatically set on the associated AWS infrastructure provided for the workshop. `securityGroupSelectorTerms` accomplishes the same function for the security group that will be attached to the EC2 instances.
-2. We define a set of tags that will be applied to EC2 instances created which enables accounting and governance.
+1. Assign the IAM role that will be applied to the EC2 instance provisioned by Karpenter
+2. The `subnetSelectorTerms` can be used to look up the subnets where Karpenter should launch the EC2 instances. These tags were automatically set on the associated AWS infrastructure provided for the workshop. `securityGroupSelectorTerms` accomplishes the same function for the security group that will be attached to the EC2 instances.
+3. We define a set of tags that will be applied to EC2 instances created which enables accounting and governance.
 
 We've now provided Karpenter with the basic requirements in needs to start provisioning capacity for our cluster.
 
