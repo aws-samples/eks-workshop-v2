@@ -16,7 +16,7 @@ Parameters:
   RepositoryRef:
     Type: String
     Description: The Git reference to be used to bootstrap Cloud9
-    Default: "vscode-ide"
+    Default: "main"
   ResourcesPrecreated:
     Type: String
     Description: Whether lab infrastructure has been pre-provisioned

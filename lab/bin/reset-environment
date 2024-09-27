@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Make sure we run from a consistent directory
+cd ~
+
 mkdir -p /eks-workshop/logs
 log_file=/eks-workshop/logs/action-$(date +%s).log
 
@@ -121,6 +124,11 @@ rm -rf /eks-workshop/terraform
 mkdir -p /eks-workshop/terraform
 cp -R $manifests_path/.workshop/terraform/* /eks-workshop/terraform
 
+# Use a separate directory for .terraform directory
+# Allows us to wipe the TF configuration every time but retain providers installed
+mkdir -p /eks-workshop/terraform-data
+export TF_DATA_DIR="/eks-workshop/terraform-data"
+
 export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
 
 RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-"false"}
@@ -226,6 +234,7 @@ fi
 # Recycle workload pods in case stateful pods got restarted
 kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernetes.io/component=service -A
 
+# Wait for the workload pods previously recycled
 kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
 
 # Finished

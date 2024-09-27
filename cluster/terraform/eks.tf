@@ -2,9 +2,10 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
 
-  cluster_name                   = var.cluster_name
-  cluster_version                = var.cluster_version
-  cluster_endpoint_public_access = true
+  cluster_name                             = var.cluster_name
+  cluster_version                          = var.cluster_version
+  cluster_endpoint_public_access           = true
+  enable_cluster_creator_admin_permissions = true
 
   cluster_addons = {
     vpc-cni = {

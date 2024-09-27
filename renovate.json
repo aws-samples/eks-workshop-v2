@@ -6,7 +6,7 @@
     ":automergeStableNonMajor"
   ],
   "schedule": ["on the first day of the month"],
-  "enabledManagers": ["custom.regex", "github-actions", "terraform"],
+  "enabledManagers": ["custom.regex", "github-actions", "terraform", "npm"],
   "packageRules": [
     {
       "matchManagers": ["github-actions"],
@@ -28,6 +28,16 @@
       "matchDepNames": ["kubernetes/autoscaler"],
       "extractVersion": "^cluster-autoscaler-(?<version>.*)$",
       "allowedVersions": "/^1.30.[0-9]+$/"
+    },
+    {
+      "automerge": true,
+      "matchCurrentVersion": ">= 1.0.0",
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchManagers": ["custom.regex"]
+    },
+    {
+      "matchPackagePatterns": ["^@docusaurus"],
+      "enabled": false
     }
   ],
   "customManagers": [

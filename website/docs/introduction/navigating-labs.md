@@ -60,11 +60,8 @@ Hover your mouse over `echo "This is an example command"` and click to copy that
 You will also come across commands with sample output like this:
 
 ```bash test=false
-$ kubectl get nodes
-NAME                                         STATUS   ROLES    AGE     VERSION
-ip-10-42-10-104.us-west-2.compute.internal   Ready    <none>   6h      vVAR::KUBERNETES_NODE_VERSION
-ip-10-42-10-210.us-west-2.compute.internal   Ready    <none>   6h      vVAR::KUBERNETES_NODE_VERSION
-ip-10-42-11-198.us-west-2.compute.internal   Ready    <none>   6h      vVAR::KUBERNETES_NODE_VERSION
+$ date
+Fri Aug 30 12:25:58 MDT 2024
 ```
 
 Using the 'click to copy' function will only copy the command and ignore the sample output.
@@ -72,13 +69,10 @@ Using the 'click to copy' function will only copy the command and ignore the sam
 Another pattern used in the content is presenting several commands in a single terminal:
 
 ```bash test=false
-$ kubectl get pods
-No resources found in default namespace.
-$ kubectl get nodes
-NAME                                         STATUS   ROLES    AGE     VERSION
-ip-10-42-10-104.us-west-2.compute.internal   Ready    <none>   6h2m    vVAR::KUBERNETES_NODE_VERSION
-ip-10-42-10-210.us-west-2.compute.internal   Ready    <none>   22h     vVAR::KUBERNETES_NODE_VERSION
-ip-10-42-11-198.us-west-2.compute.internal   Ready    <none>   6h19m   vVAR::KUBERNETES_NODE_VERSION
+$ echo "This is an example command"
+This is an example command
+$ date
+Fri Aug 30 12:26:58 MDT 2024
 ```
 
 In this case you can either copy each command individually or copy all of the commands using the clipboard icon in the top right of the terminal window. Give it a shot!
@@ -86,3 +80,7 @@ In this case you can either copy each command individually or copy all of the co
 ## Resetting your EKS cluster
 
 In the event that you accidentally configure your cluster in a way that is not functioning you have been provided with a mechanism to reset your EKS cluster as best we can which can be run at any time. Simply run the command `prepare-environment` and wait until it completes. This may take several minutes depending on the state of your cluster when it is run.
+
+## Next Steps
+
+Now that you're familiar with the format of this workshop, head to the [Getting started](/docs/introduction/getting-started) lab or skip ahead to any module in the workshop with the top navigation bar.

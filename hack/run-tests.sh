@@ -37,7 +37,7 @@ container_image='eks-workshop-test'
 
 (cd $SCRIPT_DIR/../lab && $CONTAINER_CLI build -q -t eks-workshop-environment .)
 
-(cd $SCRIPT_DIR/../test && $CONTAINER_CLI build -q -t $container_image .)
+(cd $SCRIPT_DIR/../testing && $CONTAINER_CLI build -q -t $container_image .)
 
 source $SCRIPT_DIR/lib/generate-aws-creds.sh
 
