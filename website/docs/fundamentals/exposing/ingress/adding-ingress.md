@@ -3,13 +3,15 @@ title: "Creating the Ingress"
 sidebar_position: 20
 ---
 
-Let's create an Ingress resource with the following manifest:
+Let's create an Ingress resource with the following configuration:
 
-```file
-manifests/modules/exposing/ingress/creating-ingress/ingress.yaml
-```
+::yaml{file="manifests/modules/exposing/ingress/creating-ingress/ingress.yaml" paths="kind,metadata.annotations,spec.rules.0"}
 
-This will cause the AWS Load Balancer Controller to provision an Application Load Balancer and configure it to route traffic to the Pods for the `ui` application.
+1. Use an `Ingress` kind
+2. We can use annotations to configure various behavior of the ALB thats created such as the health checks it performs on the target pods
+3. The rules section is used to express how the ALB should route traffic. In this example we route all HTTP requests where the path starts with `/` to the Kubernetes service called `ui` on port 80
+
+Apply this configuration:
 
 ```bash timeout=180 hook=add-ingress hookTimeout=430
 $ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/creating-ingress
