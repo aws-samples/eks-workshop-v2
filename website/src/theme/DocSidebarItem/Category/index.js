@@ -180,6 +180,11 @@ export default function DocSidebarItemCategory({
               ) : (
                 <span></span>
               )}
+              {item.customProps?.explore ? (
+                <span className="badge explore">EXPLORE</span>
+              ) : (
+                <span></span>
+              )}
             </div>
           </div>
         </Link>
