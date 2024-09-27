@@ -41,7 +41,7 @@ spec:
   role: ${KARPENTER_NODE_ROLE}
   securityGroupSelectorTerms:
     - tags:
-        karpenter.sh/discovery: ${EKS_CLUSTER_NAME}        
+        karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
   subnetSelectorTerms:
     - tags:
         karpenter.sh/discovery: ${EKS_CLUSTER_NAME}

@@ -19,4 +19,3 @@ spec:
         limits:
           aws.amazon.com/neuron: 1
   serviceAccountName: inference
-  
