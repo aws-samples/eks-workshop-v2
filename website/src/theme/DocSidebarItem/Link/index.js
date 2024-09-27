@@ -57,9 +57,7 @@ export default function DocSidebarItemLink({
               <span></span>
             )}
             {item.customProps?.explore ? (
-              <span className="badge explore">
-                EXPLORE
-                </span>
+              <span className="badge explore">EXPLORE</span>
             ) : (
               <span></span>
             )}
