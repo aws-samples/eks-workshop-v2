@@ -10,7 +10,6 @@ Now we can use the compiled model to run an inference workload on an AWS Inferen
 Check the image that we'll run the inference on:
 
 ```bash
-$ export AIML_DL_INF_IMAGE="public.ecr.aws/neuron/pytorch-inference-neuronx:2.1.2-neuronx-py310-sdk2.20.0-ubuntu20.04"
 $ echo $AIML_DL_INF_IMAGE
 ```
 

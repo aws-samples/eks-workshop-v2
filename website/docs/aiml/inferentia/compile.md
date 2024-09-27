@@ -24,7 +24,6 @@ When a Pod requires the exposed Neuron cores, the Kubernetes scheduler can provi
 Check the image that we'll run:
 
 ```bash
-$ export AIML_DL_TRN_IMAGE="public.ecr.aws/neuron/pytorch-training-neuronx:2.1.2-neuronx-py310-sdk2.20.0-ubuntu20.04"
 $ echo $AIML_DL_TRN_IMAGE
 ```
 
