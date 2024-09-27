@@ -167,7 +167,7 @@ See `lab/Dockerfile` and `lab/scripts/installer.sh` to configure the installed u
 
 If Terraform is needed it should be created at `./manifests/modules/<yourpath>/.workshop/terraform`. This Terraform will be automatically applied when the user runs `prepare-environment` and destroyed when they move to the next lab.
 
-You can use the directory `manifests/template/.workshop/terraform` as a starter example. The Terraform is treated as a module and the variables in that directory must match exactly in order to meet the "contract" with the rest of the framework. See `vars.tf` and `outputs.tf`.
+You can use the directory `templates/lab-manifests/.workshop/terraform` as a starter example. The Terraform is treated as a module and the variables in that directory must match exactly in order to meet the "contract" with the rest of the framework. See `vars.tf` and `outputs.tf`.
 
 ### Variables
 

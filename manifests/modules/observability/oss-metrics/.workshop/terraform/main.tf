@@ -2,9 +2,10 @@ data "aws_partition" "current" {}
 
 module "ebs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.39.1"
+  version = "5.44.0"
 
-  role_name_prefix = "${var.addon_context.eks_cluster_id}-ebs-csi-"
+  role_name_prefix   = "${var.addon_context.eks_cluster_id}-ebs-csi-"
+  policy_name_prefix = "${var.addon_context.eks_cluster_id}-ebs-csi-"
 
   attach_ebs_csi_policy = true
 
@@ -38,7 +39,9 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    wait = true
+    wait        = true
+    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
 }
 
@@ -110,7 +113,7 @@ resource "aws_prometheus_workspace" "this" {
 
 module "iam_assumable_role_adot" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version = "5.39.1"
+  version = "5.44.0"
 
   create_role  = true
   role_name    = "${var.addon_context.eks_cluster_id}-adot-collector"
