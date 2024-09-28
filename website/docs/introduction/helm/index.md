@@ -19,7 +19,7 @@ Although we will primarily be interacting with kustomize in this workshop, there
 
 :::info
 
-This lab doesn't not cover the authoring of Helm charts for your own workloads. For more information on this topic see this [guide](https://helm.sh/docs/chart_template_guide/).
+This lab does not cover the authoring of Helm charts for your own workloads. For more information on this topic see this [guide](https://helm.sh/docs/chart_template_guide/).
 
 :::
 
