@@ -20,7 +20,7 @@ $ aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME \
 
 After making changes to the node group it may take up to **2-3 minutes** for node provisioning and configuration changes to take effect. Let's retrieve the nodegroup configuration again and look at **minimum size**, **maximum size** and **desired capacity** of nodes using `eksctl` command below:
 
-```bash
+```bash hook=wait-node
 $ eksctl get nodegroup --name $EKS_DEFAULT_MNG_NAME --cluster $EKS_CLUSTER_NAME
 ```
 
@@ -30,7 +30,7 @@ Monitor the nodes in the cluster using the following command with the `--watch` 
 It can take a minute or so for the node to appear in the output below, if the list still shows 3 nodes be patient.
 :::
 
-```bash hook=wait-node
+```bash test=false
 $ kubectl get nodes --watch
 NAME                                          STATUS     ROLES    AGE  VERSION
 ip-10-42-104-151.us-west-2.compute.internal   Ready      <none>   3h   vVAR::KUBERNETES_NODE_VERSION

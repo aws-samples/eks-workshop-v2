@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths:
-      - test/util/**
+      - testing/util/**
 
 jobs:
   test:
@@ -22,16 +22,16 @@ jobs:
           node-version: ${{ env.node_version }}
           registry-url: "https://registry.npmjs.org"
       - name: Install NPM packages
-        working-directory: test/util
+        working-directory: testing/util
         run: npm ci
       - name: Build
-        working-directory: test/util
+        working-directory: testing/util
         run: npm run build
       - name: Run unit tests
-        working-directory: test/util
+        working-directory: testing/util
         run: |
           npm test
       - name: Run test content
-        working-directory: test/util
+        working-directory: testing/util
         run: |
           npm run exec -- test ./test-content
