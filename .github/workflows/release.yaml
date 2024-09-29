@@ -2,6 +2,7 @@ name: Release
 on:
   milestone:
     types: [closed]
+  workflow_dispatch: {}
 
 permissions:
   id-token: write

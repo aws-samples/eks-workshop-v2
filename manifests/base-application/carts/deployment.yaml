@@ -44,12 +44,18 @@ spec:
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 1000
-          image: "public.ecr.aws/aws-containers/retail-store-sample-cart:0.7.0"
+          image: "public.ecr.aws/aws-containers/retail-store-sample-cart:0.8.0"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 3
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
