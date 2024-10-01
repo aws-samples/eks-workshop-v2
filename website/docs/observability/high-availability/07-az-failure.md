@@ -12,7 +12,7 @@ This repeatable experiment simulates an Availability Zone (AZ) failure, demonstr
 
 Retrieve the Auto Scaling Group (ASG) name associated with your EKS cluster and creat the FIS experiment template to simulate the AZ failure:
 
-```bash
+```bash wait=30
 $ ZONE_EXP_ID=$(aws fis create-experiment-template --cli-input-json '{"description":"publicdocument-azfailure","targets":{},"actions":{"azfailure":{"actionId":"aws:ssm:start-automation-execution","parameters":{"documentArn":"arn:aws:ssm:us-west-2::document/AWSResilienceHub-SimulateAzOutageInAsgTest_2020-07-23","documentParameters":"{\"AutoScalingGroupName\":\"'$ASG_NAME'\",\"CanaryAlarmName\":\"eks-workshop-canary-alarm\",\"AutomationAssumeRole\":\"'$FIS_ROLE_ARN'\",\"IsRollback\":\"false\",\"TestDurationInMinutes\":\"2\"}","maxDuration":"PT6M"}}},"stopConditions":[{"source":"none"}],"roleArn":"'$FIS_ROLE_ARN'","tags":{"ExperimentSuffix":"'$RANDOM_SUFFIX'"}}' --output json | jq -r '.experimentTemplate.id')
 ```
 
@@ -63,16 +63,20 @@ To verify nodes and rebalance pods, you can run:
 
 ```bash timeout=900
 $ EXPECTED_NODES=6 && while true; do ready_nodes=$(kubectl get nodes --no-headers | grep " Ready" | wc -l); if [ "$ready_nodes" -eq "$EXPECTED_NODES" ]; then echo "All $EXPECTED_NODES expected nodes are ready."; echo "Listing the ready nodes:"; kubectl get nodes | grep " Ready"; break; else echo "Waiting for all $EXPECTED_NODES nodes to be ready... (Currently $ready_nodes are ready)"; sleep 10; fi; done
-$ kubectl delete pod --grace-period=0 -n ui -l app.kubernetes.io/component=service
-$ kubectl delete pod --grace-period=0 -n orders -l app.kubernetes.io/component=service
-$ kubectl delete pod --grace-period=0 -n carts -l app.kubernetes.io/component=service
-$ kubectl delete pod --grace-period=0 -n checkout -l app.kubernetes.io/component=service
-$ kubectl delete pod --grace-period=0 -n catalog -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n ui -l app.kubernetes.io/name=ui
+$ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/name=orders
+$ kubectl delete pod --grace-period=0 --force -n catalog -l app.kubernetes.io/name=catalog
+$ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/name=carts
+$ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/name=checkout
 $ kubectl rollout status -n ui deployment/ui --timeout 30s
-$ kubectl rollout status -n orders deployment/orders --timeout 60s
-$ kubectl rollout status -n catalog deployment/catalog --timeout 30s
-$ kubectl rollout status -n checkout deployment/checkout --timeout 30s
-$ kubectl rollout status -n carts deployment/carts --timeout 30s
+$ kubectl rollout status -n carts deployment/carts-dynamodb --timeout 180s
+$ kubectl rollout status -n carts deployment/carts --timeout 180s
+$ kubectl rollout status -n checkout deployment/checkout-redis --timeout 180s
+$ kubectl rollout status -n checkout deployment/checkout --timeout 180s
+$ kubectl rollout status -n catalog statefulset/catalog-mysql --timeout 180s
+$ kubectl rollout status -n catalog deployment/catalog --timeout 180s
+$ kubectl rollout status -n orders deployment/orders-mysql --timeout 180s
+$ kubectl rollout status -n orders deployment/orders --timeout 180s
 $ timeout 10s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 ```
 

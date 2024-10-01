@@ -64,16 +64,20 @@ This command counts the total number of nodes in the `Ready` state and continuou
 Once all nodes are ready, we'll redeploy the pods to ensure they are balanced across the nodes:
 
 ```bash timeout=900
-$ kubectl delete pod --grace-period=0 --force -n ui -l app.kubernetes.io/component=service
-$ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/component=service
-$ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/component=service
-$ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/component=service
-$ kubectl delete pod --grace-period=0 --force -n catalog -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n ui -l app.kubernetes.io/name=ui
+$ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/name=orders
+$ kubectl delete pod --grace-period=0 --force -n catalog -l app.kubernetes.io/name=catalog
+$ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/name=carts
+$ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/name=checkout
 $ kubectl rollout status -n ui deployment/ui --timeout 30s
-$ kubectl rollout status -n orders deployment/orders --timeout 60s
-$ kubectl rollout status -n catalog deployment/catalog --timeout 30s
-$ kubectl rollout status -n checkout deployment/checkout --timeout 30s
-$ kubectl rollout status -n carts deployment/carts --timeout 30s
+$ kubectl rollout status -n carts deployment/carts-dynamodb --timeout 180s
+$ kubectl rollout status -n carts deployment/carts --timeout 180s
+$ kubectl rollout status -n checkout deployment/checkout-redis --timeout 180s
+$ kubectl rollout status -n checkout deployment/checkout --timeout 180s
+$ kubectl rollout status -n catalog statefulset/catalog-mysql --timeout 180s
+$ kubectl rollout status -n catalog deployment/catalog --timeout 180s
+$ kubectl rollout status -n orders deployment/orders-mysql --timeout 180s
+$ kubectl rollout status -n orders deployment/orders --timeout 180s
 $ timeout 10s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 ```
 

@@ -8,6 +8,11 @@ module "eks_blueprints_addons" {
   oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
 
   enable_aws_load_balancer_controller = true
+   aws_load_balancer_controller = {
+    wait        = true
+    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
+  }
   create_kubernetes_resources         = false
 
 }
@@ -132,7 +137,7 @@ resource "random_id" "suffix" {
 }
 
 resource "aws_iam_role" "fis_role" {
-  name = "fis-execution-role-${var.addon_context.eks_cluster_id}-${random_id.suffix.hex}"
+  name = "${var.addon_context.eks_cluster_id}-fis_role-${random_id.suffix.hex}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -205,8 +210,8 @@ resource "aws_iam_role_policy_attachment" "fis_cni_policy" {
 }
 
 # Policy for creating FIS experiment templates
-resource "aws_iam_policy" "eks_resiliency_fis_policy" {
-  name        = "eks-resiliency-fis-policy-${random_id.suffix.hex}"
+resource "aws_iam_policy" "eks-resiliency_fis_policy" {
+  name        = "${var.addon_context.eks_cluster_id}-resiliency_fis_policy-${random_id.suffix.hex}"
   path        = "/"
   description = "Custom policy for EKS resiliency FIS experiments"
 
@@ -264,14 +269,14 @@ resource "aws_iam_policy" "eks_resiliency_fis_policy" {
 
 # Attach custom policy to the role
 resource "aws_iam_role_policy_attachment" "eks_resiliency_fis_policy_attachment" {
-  policy_arn = aws_iam_policy.eks_resiliency_fis_policy.arn
+  policy_arn = aws_iam_policy.eks-resiliency_fis_policy.arn
   role       = aws_iam_role.fis_role.name
 }
 
 
 # Canary IAM role
 resource "aws_iam_role" "canary_role" {
-  name = "canary-execution-role-${var.addon_context.eks_cluster_id}-${random_id.suffix.hex}"
+  name = "${var.addon_context.eks_cluster_id}-canary_role-${random_id.suffix.hex}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -302,7 +307,7 @@ resource "aws_iam_role_policy_attachment" "canary_lambda_basic_execution" {
 
 # Policy for Canary
 resource "aws_iam_policy" "eks_resiliency_canary_policy" {
-  name        = "eks-resiliency-canary-policy-${random_id.suffix.hex}"
+  name        = "${var.addon_context.eks_cluster_id}-resiliency_canary_policy-${random_id.suffix.hex}"
   path        = "/"
   description = "Custom policy for EKS resiliency Canary"
 
@@ -339,6 +344,8 @@ resource "aws_iam_policy" "eks_resiliency_canary_policy" {
           "lambda:InvokeFunction",
           "lambda:AddPermission",
           "lambda:RemovePermission",
+          "lambda:PublishLayerVersion",
+          "lambda:PublishVersion",
           "iam:PassRole"
         ]
         Resource = "*"
@@ -355,7 +362,7 @@ resource "aws_iam_role_policy_attachment" "eks_resiliency_canary_policy_attachme
 
 # EKS Cluster IAM Role
 resource "aws_iam_role" "eks_cluster_role" {
-  name = "eks-cluster-role-${var.addon_context.eks_cluster_id}-${random_id.suffix.hex}"
+  name = "eks-workshop-cluster-role-${var.addon_context.eks_cluster_id}-${random_id.suffix.hex}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -395,7 +402,3 @@ resource "null_resource" "chmod_all_scripts_bash" {
 
 # Add Region terraform
 data "aws_region" "current" {}
-
-
-
-

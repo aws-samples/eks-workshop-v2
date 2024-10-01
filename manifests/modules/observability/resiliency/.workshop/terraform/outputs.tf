@@ -11,4 +11,3 @@ output "environment_variables" {
     AWS_REGION           = data.aws_region.current.name
   }
 }
-
