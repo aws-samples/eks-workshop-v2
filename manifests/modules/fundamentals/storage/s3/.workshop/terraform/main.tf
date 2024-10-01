@@ -2,7 +2,6 @@
 resource "aws_s3_bucket" "mountpoint-s3" {
 
    bucket_prefix = "${var.addon_context.eks_cluster_id}-mountpoint-s3"
-
    force_destroy = true
 }
 
@@ -31,4 +30,22 @@ module "mountpoint_s3_csi_driver_irsa" {
   tags = var.tags
 
   force_detach_policies = true
+}
+
+resource "aws_iam_role_policy" "eks_workshop_ide_s3_put_access" {
+  name = "eks-workshop-ide-s3-put-access"
+  role = "eks-workshop-ide-role"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "${aws_s3_bucket.mountpoint-s3.arn}/*"
+    }
+  ]
+}
+EOF
 }

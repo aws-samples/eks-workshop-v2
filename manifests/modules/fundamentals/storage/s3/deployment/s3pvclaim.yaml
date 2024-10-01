@@ -4,20 +4,20 @@ metadata:
   name: s3-pv
 spec:
   capacity:
-    storage: 1Gi # ignored, required
+    storage: 1Gi # required
   accessModes:
     - ReadWriteMany # supported options: ReadWriteMany / ReadOnlyMany
-  mountOptions: # Explain the need for these options in the lab!
-    - allow-delete
-    - allow-other
-    - uid=999
-    - gid=999
-    - region us-west-2 ## change this to your desired region where your bucket is lying
+  mountOptions:
+    - allow-delete # Allows users to delete files or directories from the mounted bucket
+    - allow-other # Allows users other than owner to access the mounted filesystem
+    - uid=999 # Sets the user ID (UID) of the files and directories in the mounted bucket to 999
+    - gid=999 # Sets the group ID (GID) of the files and directories in the mounted bucket to 999
+    - region us-west-2 # Region of bucket
   csi:
     driver: s3.csi.aws.com # required
     volumeHandle: s3-csi-driver-volume
     volumeAttributes:
-      bucketName: $BUCKET_NAME #fill in bucket name
+      bucketName: $BUCKET_NAME # Fill in from environment variable
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -30,5 +30,5 @@ spec:
   storageClassName: "" # required for static provisioning
   resources:
     requests:
-      storage: 1Gi # ignored, required
+      storage: 1Gi # required
   volumeName: s3-pv
