@@ -26,7 +26,7 @@ You can view the Terraform that applies these changes [here](https://github.com/
 
 :::
 
-AWS Trainium and (Inferentia)[(https://aws.amazon.com/machine-learning/inferentia/?nc1=h_ls)] are custom-built machine learning accelerators designed by Amazon to accelerate and optimize AI model training and inference tasks, respectively, in cloud computing environments.
+AWS [Trainium](https://aws.amazon.com/machine-learning/trainium/) and [Inferentia](https://aws.amazon.com/machine-learning/inferentia/) are custom-built machine learning accelerators designed by Amazon to accelerate and optimize AI model training and inference tasks, respectively, in cloud computing environments.
 
 AWS Neuron is the software development kit (SDK) and runtime that enables developers to optimize and run machine learning models on both Trainium and Inferentia chips. Neuron provides a unified software interface for these custom AI accelerators, allowing developers to take advantage of their performance benefits without having to rewrite their code for each specific chip architecture.
 
