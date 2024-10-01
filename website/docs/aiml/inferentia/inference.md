@@ -1,5 +1,5 @@
 ---
-title: "Run inference on an AWS Inferentia Node using Amazon EKS"
+title: "Run inference on AWS Inferentia"
 sidebar_position: 40
 ---
 
@@ -19,7 +19,7 @@ Now we can deploy a Pod for inference. This is the the manifest file for running
 
 ::yaml{file="manifests/modules/aiml/inferentia/inference/inference.yaml" paths="spec.nodeSelector,spec.containers.0.resources.limits"}
 
-1. For the Inference we've set the `nodeSelector` section to specify a Inf2 instance type.
+1. For the Inference we've set the `nodeSelector` section to specify a inf2 instance type.
 2. In the `resources` `limits` section again we specify that we need a neuron core to run this Pod to expose the API.
 
 ```bash

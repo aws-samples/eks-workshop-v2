@@ -31,7 +31,7 @@ resource "aws_eks_addon" "pod_identity" {
 
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "~> 20.24"
+  version = "20.24.0"
 
   cluster_name          = var.addon_context.eks_cluster_id
   enable_v1_permissions = true
@@ -63,9 +63,8 @@ resource "helm_release" "karpenter" {
   repository_username = data.aws_ecrpublic_authorization_token.token.user_name
   repository_password = data.aws_ecrpublic_authorization_token.token.password
   chart               = "karpenter"
-  # renovate: datasource=github-releases depName=aws/karpenter-provider-aws
-  version = "1.0.2"
-  wait    = true
+  version             = var.karpenter_version
+  wait                = true
 
   values = [
     <<-EOT

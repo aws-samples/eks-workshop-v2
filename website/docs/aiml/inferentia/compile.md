@@ -1,5 +1,5 @@
 ---
-title: "Compile a pre-trained model for AWS Inferentia"
+title: "Compile a pre-trained model with AWS Trainium"
 sidebar_position: 30
 ---
 
@@ -15,7 +15,7 @@ This code loads the pre-trained ResNet-50 model and sets it to evaluation mode. 
 
 We will deploy the Pod on the EKS cluster and compile a sample model for use with AWS Inferentia. Compiling a model for AWS Inferentia requires the [AWS Neuron SDK](https://aws.amazon.com/machine-learning/neuron/). This SDK is included with the [Deep Learning Containers (DLCs)](https://github.com/aws/deep-learning-containers/blob/v8.12-tf-1.15.5-tr-gpu-py37/available_images.md#neuron-inference-containers) that are provided by AWS.
 
-### Install Device Plugin for AWS Inferentia
+### Install the Device Plugin
 
 In order for our DLC to use the Neuron cores they need to be exposed. The [Neuron device plugin Kubernetes manifest files](https://github.com/aws-neuron/aws-neuron-sdk/tree/master/src/k8) expose the Neuron cores to the DLC. These manifest files have been pre-installed into the EKS Cluster.
 
@@ -47,9 +47,6 @@ Karpenter detects the pending Pod which needs a trn1 instance and Neuron cores a
 
 ```bash test=false
 $ kubectl logs -l app.kubernetes.io/instance=karpenter -n kube-system -f | jq
-```
-
-```json
 {
   "level": "INFO",
   "time": "2024-09-19T18:44:08.919Z",
@@ -78,7 +75,6 @@ $ kubectl logs -l app.kubernetes.io/instance=karpenter -n kube-system -f | jq
     "vpc.amazonaws.com/pod-eni": "17"
   }
 }
-...
 ```
 
 The Pod should be scheduled on the node provisioned by Karpenter. Check if the Pod is in it's ready state:
@@ -87,7 +83,7 @@ The Pod should be scheduled on the node provisioned by Karpenter. Check if the P
 $ kubectl -n aiml wait --for=condition=Ready --timeout=10m pod/compiler
 ```
 
-:::note
+:::warning
 This command can take up to 10 min.
 :::
 
