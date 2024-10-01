@@ -28,6 +28,9 @@ terraform_version='1.9.6'
 # renovate: depName=aws/amazon-ec2-instance-selector
 ec2_instance_selector_version='2.4.1'
 
+# renovate: depName=hatoo/oha
+oha_version='1.4.6'
+
 download () {
   url=$1
   out_file=$2
@@ -131,6 +134,11 @@ mv ./argocd /usr/local/bin/argocd
 download "https://github.com/aws/amazon-ec2-instance-selector/releases/download/v${ec2_instance_selector_version}/ec2-instance-selector-linux-${arch_name}" "ec2-instance-selector"
 chmod +x ./ec2-instance-selector
 mv ./ec2-instance-selector /usr/local/bin/ec2-instance-selector
+
+# oha
+download "https://github.com/hatoo/oha/releases/download/v${oha_version}/oha-linux-${arch_name}" "oha"
+chmod +x ./oha
+mv ./oha /usr/local/bin
 
 REPOSITORY_OWNER=${REPOSITORY_OWNER:-"aws-samples"}
 REPOSITORY_NAME=${REPOSITORY_NAME:-"eks-workshop-v2"}
