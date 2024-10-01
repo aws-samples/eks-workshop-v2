@@ -309,7 +309,6 @@ Resources:
                   export REPOSITORY_OWNER="${RepositoryOwner}"
                   export REPOSITORY_NAME="${RepositoryName}"
                   export REPOSITORY_REF="${RepositoryRef}"
-                  export CLOUD9_ENVIRONMENT_ID="${EksWorkshopIdeInstance}"
                   export RESOURCES_PRECREATED="${ResourcesPrecreated}"
                   export ANALYTICS_ENDPOINT="${AnalyticsEndpoint}"
 
