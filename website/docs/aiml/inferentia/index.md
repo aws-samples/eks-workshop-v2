@@ -39,4 +39,5 @@ In this lab we will:
 2. Compile a ResNet-50 pre-trained model for use with AWS Inferentia using a Trainium instance
 3. Upload this model to an S3 Bucket for later use
 4. Launch an inference Pod that uses our previous model to run our inference against
-   Let's get started.
+
+Let's get started.
