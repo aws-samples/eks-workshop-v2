@@ -11,9 +11,12 @@ Karpenter automatically discovers nodes that are eligible for disruption and spi
 
 Disruption is configured through the `disruption` block in a `NodePool`. You can see highlighted below the policy thats already configured in our `NodePool`.
 
-::yaml{file="manifests/modules/autoscaling/compute/karpenter/nodepool/nodepool.yaml" paths="spec.disruption"}
+::yaml{file="manifests/modules/autoscaling/compute/karpenter/nodepool/nodepool.yaml" paths="spec.template.spec.expireAfter,spec.disruption"}
 
-The `consolidationPolicy` can also be set to `WhenEmpty`, which restricts disruption only to nodes that contain no workload pods. Learn more about Disruption on the [Karpenter docs](https://karpenter.sh/docs/concepts/disruption/).
+1. `expireAfter` is set to a custom value so that nodes are terminated automatically after 72 hours
+2. By using the `WhenEmptyOrUnderutilized` policy Karpenter will replace nodes when it seems them "under-utilized" or they have node workload pods running
+
+The `consolidationPolicy` can also be set to `WhenEmpty`, which restricts disruption only to nodes that contain no workload pods. Learn more about Disruption on the [Karpenter docs](https://karpenter.sh/docs/concepts/disruption/#consolidation).
 
 Scaling out infrastructure is only one side of the equation for operating compute infrastructure in a cost-effective manner. We also need to be able to optimize on an on-going basis such that, for example, workloads running on under-utilized compute instances are compacted to fewer instances. This improves the overall efficiency of how we run workloads on the compute, resulting in less overhead and lower costs.
 

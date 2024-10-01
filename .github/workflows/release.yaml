@@ -2,6 +2,7 @@ name: Release
 on:
   milestone:
     types: [closed]
+  workflow_dispatch: {}
 
 permissions:
   id-token: write
@@ -28,7 +29,6 @@ jobs:
           MILESTONE_NUMBER: "${{ github.event.milestone.number }}"
         run: |
           npm install
-          npm run build
           npm run exec
       - name: Set Git config
         run: |

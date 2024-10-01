@@ -1,5 +1,5 @@
 ---
-title: "View resources in EKS console"
+title: "View EKS console"
 sidebar_position: 20
 sidebar_custom_props: { "module": true }
 description: "Gain visibility of Kubernetes resources in the Amazon Elastic Kubernetes Service console."
