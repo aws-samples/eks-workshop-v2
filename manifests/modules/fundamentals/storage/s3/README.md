@@ -134,14 +134,3 @@ kubectl exec --stdin $POD_2 \
 # Step 22: Go to S3 bucket and list contents, notice 2 files from pods are now here
 
 aws s3 ls $BUCKET_NAME
-
-### Extra Information:
-
-Cleanup environment manually
-sh ~/environment/eks-workshop/modules/fundamentals/storage/s3/.workshop/cleanup.sh
-
-# Useful container commands:
-k logs [pod-name] -c [container-name] -n assets
-kubectl exec -it [pod-name] -c [container-name] -- /bin/sh
-id
-ls -l /[mountpoint-dir]
