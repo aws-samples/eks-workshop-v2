@@ -52,13 +52,11 @@ catch() {
 
 mkdir -p /eks-workshop
 
-rm -f /home/ec2-user/environment/eks-workshop
-
-rm -rf $manifests_path
-
 REPOSITORY_REF=${REPOSITORY_REF:-""}
 
 if [ ! -z "${REPOSITORY_REF}" ]; then
+  rm -f /home/ec2-user/environment/eks-workshop
+  rm -rf $manifests_path
   rm -rf $repository_path
 
   logmessage "Refreshing copy of workshop repository from GitHub..."
@@ -68,11 +66,9 @@ if [ ! -z "${REPOSITORY_REF}" ]; then
   logmessage ""
 
   cp -R $repository_path/manifests $manifests_path
-elif [ -d "/manifests" ]; then
-  cp -R /manifests $manifests_path
-fi
 
-ln -s $manifests_path /home/ec2-user/environment/eks-workshop
+  ln -s $manifests_path /home/ec2-user/environment/eks-workshop
+fi
 
 if [ ! -z "$module" ]; then
   ANALYTICS_ENDPOINT=${ANALYTICS_ENDPOINT:-""}
