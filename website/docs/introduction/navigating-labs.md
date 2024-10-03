@@ -25,9 +25,13 @@ This module contains a single lab named **Getting started** which will be visibl
 You should start each lab from the page indicated by this badge. Starting in the middle of a lab will cause unpredictable behavior.
 :::
 
+## Using the IDE
+
 Depending on your browser the first time you copy/paste content in to the VSCode terminal you may be presented with a prompt that looks like this:
 
 ![VSCode copy/paste](./assets/vscode-copy-paste.webp)
+
+There can also be compatibiity issues with Firefox due to its support for the browser Clipboard API. If you are using Firefox you should use Control+Shift+V to paste contents to the IDE terminal.
 
 ## Terminal commands
 
