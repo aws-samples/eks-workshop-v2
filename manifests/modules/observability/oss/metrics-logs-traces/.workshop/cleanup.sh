@@ -4,6 +4,12 @@ set -e
 
 logmessage "Deleting OpenTelemetry collectors..."
 
+kubectl delete -n other instrumentation retail-store --ignore-not-found
+kubectl delete -n other opentelemetrycollector adot --ignore-not-found
+kubectl delete clusterrolebinding otel-prometheus-role-binding --ignore-not-found
+kubectl delete clusterrole otel-prometheus-role --ignore-not-found
+kubectl delete -n other serviceaccount adot-collector --ignore-not-found
+
 delete-all-if-crd-exists certificaterequests.cert-manager.io
 delete-all-if-crd-exists certificates.cert-manager.io
 delete-all-if-crd-exists challenges.acme.cert-manager.io
