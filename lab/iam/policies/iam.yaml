@@ -23,12 +23,19 @@ Statement:
       - iam:CreatePolicy
       - iam:DeletePolicy
       - iam:GetPolicyVersion
+      - iam:DeletePolicyVersion
       - iam:ListPolicyVersions
       - iam:TagPolicy
       - iam:GetPolicy
     Resource:
       - !Sub arn:aws:iam::${AWS::AccountId}:policy/${Env}*
       - !Sub arn:aws:iam::${AWS::AccountId}:policy/eksctl-${Env}*
+  - Effect: Allow
+    Action:
+      - s3:ListAllMyBuckets
+      - iam:ListPolicies
+      - iam:ListRoles
+    Resource: ["*"]
   - Effect: Allow
     Action:
       - iam:CreateInstanceProfile
