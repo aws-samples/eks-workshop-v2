@@ -18,6 +18,7 @@ spec:
         prometheus.io/path: /metrics
         prometheus.io/port: "8080"
         prometheus.io/scrape: "true"
+        instrumentation.opentelemetry.io/inject-sdk: other/retail-store
       labels:
         app.kubernetes.io/name: checkout
         app.kubernetes.io/instance: checkout
@@ -29,6 +30,9 @@ spec:
         fsGroup: 1000
       containers:
         - name: checkout
+          env:
+            - name: OTEL_SERVICE_NAME
+              value: checkout-service
           envFrom:
             - configMapRef:
                 name: checkout

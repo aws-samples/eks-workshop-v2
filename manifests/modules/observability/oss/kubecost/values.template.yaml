@@ -1,0 +1,27 @@
+service:
+  type: LoadBalancer
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+global:
+  amp:
+    enabled: true
+    prometheusServerEndpoint: http://localhost:8005/workspaces/${AMP_WORKSPACE_ID}
+    remoteWriteService: https://aps-workspaces.${AWS_REGION}.amazonaws.com/workspaces/${AMP_WORKSPACE_ID}/api/v1/remote_write
+    sigv4:
+      region: ${AWS_REGION}
+sigV4Proxy:
+  region: ${AWS_REGION}
+  host: aps-workspaces.${AWS_REGION}.amazonaws.com
+serviceAccount:
+  annotations:
+    eks.amazonaws.com/role-arn: ${KUBECOST_IAM_ROLE}
+prometheus:
+  kubeStateMetrics:
+    enabled: true
+  kube-state-metrics:
+    disabled: false
+  serviceAccounts:
+    server:
+      annotations:
+        eks.amazonaws.com/role-arn: ${KUBECOST_PROMETHEUS_IAM_ROLE}
