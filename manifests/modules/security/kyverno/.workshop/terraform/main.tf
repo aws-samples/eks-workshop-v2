@@ -27,16 +27,3 @@ module "kyverno_policies" {
 
   depends_on = [module.kyverno]
 }
-
-module "policy_reporter" {
-  source  = "aws-ia/eks-blueprints-addon/aws"
-  version = "1.1.1"
-
-  description   = "Kyverno Policy Reporter which shows policy reports in a graphical web-based front end."
-  chart         = "policy-reporter"
-  chart_version = "1.3.0"
-  namespace     = "kyverno"
-  repository    = "https://kyverno.github.io/policy-reporter/"
-
-  depends_on = [module.kyverno]
-}
