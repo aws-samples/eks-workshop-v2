@@ -100,6 +100,18 @@ resource "kubectl_manifest" "upbound_aws_provider_config" {
   depends_on = [kubectl_manifest.upbound_aws_provider]
 }
 
+module "iam_assumable_role_carts" {
+  source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+  version                       = "5.44.0"
+  create_role                   = true
+  role_name                     = "${var.addon_context.eks_cluster_id}-carts-crossplane"
+  provider_url                  = var.addon_context.eks_oidc_issuer_url
+  role_policy_arns              = [aws_iam_policy.carts_dynamo.arn]
+  oidc_fully_qualified_subjects = ["system:serviceaccount:carts:carts"]
+
+  tags = var.tags
+}
+
 resource "aws_iam_policy" "carts_dynamo" {
   name        = "${var.addon_context.eks_cluster_id}-carts-dynamo"
   path        = "/"
