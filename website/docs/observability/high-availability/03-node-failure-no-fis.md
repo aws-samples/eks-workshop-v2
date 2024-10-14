@@ -63,14 +63,19 @@ This command counts the total number of nodes in the `Ready` state and continuou
 
 Once all nodes are ready, we'll redeploy the pods to ensure they are balanced across the nodes:
 
-```bash timeout=900
-$ kubectl delete pod --grace-period=0 --force -n ui -l app.kubernetes.io/name=ui
-$ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/name=orders
-$ kubectl delete pod --grace-period=0 --force -n catalog -l app.kubernetes.io/name=catalog
-$ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/name=carts
-$ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/name=checkout
-$ kubectl rollout status -n ui deployment/ui --timeout 30s
-$ kubectl rollout status -n carts deployment/carts-dynamodb --timeout 180s
+```bash timeout=900 wait=60
+$ kubectl delete pod --grace-period=0 --force -n ui -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/component=mysql
+$ kubectl delete pod --grace-period=0 --force -n catalog -l app.kubernetes.io/component=mysql
+$ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/component=dynamodb
+$ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/component=redis
+$ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n catalog -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/component=service
+$ sleep 60
+$ kubectl rollout status -n ui deployment/ui --timeout 180s
+$ kubectl rollout status -n carts deployment/carts-dynamodb --timeout 1800s
 $ kubectl rollout status -n carts deployment/carts --timeout 180s
 $ kubectl rollout status -n checkout deployment/checkout-redis --timeout 180s
 $ kubectl rollout status -n checkout deployment/checkout --timeout 180s
@@ -84,7 +89,7 @@ $ timeout 10s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 These commands perform the following actions:
 
 1. Delete the existing ui pods.
-2. Wait for ui pods to get provision automatically.
+2. Wait for ui pods to be provisioned automatically.
 3. Use the `get-pods-by-az.sh` script to check the distribution of pods across availability zones.
 
 ## Verify Retail Store Availability
@@ -121,7 +126,7 @@ This node failure simulation demonstrates the robustness and self-healing capabi
 
 1. Kubernetes' ability to quickly detect node failures and respond accordingly.
 2. The automatic rescheduling of pods from the failed node to healthy nodes, ensuring continuity of service.
-3. The cluster's self-healing process, bringing the failed node back online after a short period.
+3. The EKS cluster's self-healing process using EKS manged node group, brings the failed node back online after a short period.
 4. The importance of proper resource allocation and pod distribution to maintain application availability during node failures.
 
 By regularly performing such experiments, you can:

@@ -42,6 +42,7 @@ while true; do
     # Generate output to a temporary file
     generate_output > temp_output.txt
 
+    #generate_output
     # Clear screen and display the new output
     # clear_screen
     cat temp_output.txt

@@ -48,7 +48,7 @@ These differences allows for a more comprehensive and realistic test of our appl
 Create a new AWS FIS experiment template to simulate the partial node failure:
 
 ```bash wait=30
-$ NODE_EXP_ID=$(aws fis create-experiment-template --cli-input-json '{"description":"NodeDeletion","targets":{"Nodegroups-Target-1":{"resourceType":"aws:eks:nodegroup","resourceTags":{"eksctl.cluster.k8s.io/v1alpha1/cluster-name":"eks-workshop"},"selectionMode":"COUNT(2)"}},"actions":{"nodedeletion":{"actionId":"aws:eks:terminate-nodegroup-instances","parameters":{"instanceTerminationPercentage":"66"},"targets":{"Nodegroups":"Nodegroups-Target-1"}}},"stopConditions":[{"source":"none"}],"roleArn":"'$FIS_ROLE_ARN'","tags":{"ExperimentSuffix": "'$RANDOM_SUFFIX'"}}' --output json | jq -r '.experimentTemplate.id')
+$ export NODE_EXP_ID=$(aws fis create-experiment-template --cli-input-json '{"description":"NodeDeletion","targets":{"Nodegroups-Target-1":{"resourceType":"aws:eks:nodegroup","resourceTags":{"eksctl.cluster.k8s.io/v1alpha1/cluster-name":"eks-workshop"},"selectionMode":"COUNT(2)"}},"actions":{"nodedeletion":{"actionId":"aws:eks:terminate-nodegroup-instances","parameters":{"instanceTerminationPercentage":"66"},"targets":{"Nodegroups":"Nodegroups-Target-1"}}},"stopConditions":[{"source":"none"}],"roleArn":"'$FIS_ROLE_ARN'","tags":{"ExperimentSuffix": "'$RANDOM_SUFFIX'"}}' --output json | jq -r '.experimentTemplate.id')
 ```
 
 ## Running the Experiment
@@ -56,7 +56,7 @@ $ NODE_EXP_ID=$(aws fis create-experiment-template --cli-input-json '{"descripti
 Execute the FIS experiment to simulate the node failure and monitor the response:
 
 ```bash timeout=240
-$ aws fis start-experiment --experiment-template-id $NODE_EXP_ID --output json && timeout 320s $SCRIPT_DIR/get-pods-by-az.sh
+$ aws fis start-experiment --experiment-template-id $NODE_EXP_ID --output json && timeout 180s $SCRIPT_DIR/get-pods-by-az.sh
 
 ------us-west-2a------
   ip-10-42-127-82.us-west-2.compute.internal:
@@ -86,15 +86,20 @@ Your retail url should stay operational unlike the node failure without FIS.
 :::note
 To verify nodes and rebalance pods, you can run:
 
-```bash timeout=900
+```bash timeout=900 wait=60
 $ EXPECTED_NODES=3 && while true; do ready_nodes=$(kubectl get nodes --no-headers | grep " Ready" | wc -l); if [ "$ready_nodes" -eq "$EXPECTED_NODES" ]; then echo "All $EXPECTED_NODES expected nodes are ready."; echo "Listing the ready nodes:"; kubectl get nodes | grep " Ready"; break; else echo "Waiting for all $EXPECTED_NODES nodes to be ready... (Currently $ready_nodes are ready)"; sleep 10; fi; done
-$ kubectl delete pod --grace-period=0 --force -n ui -l app.kubernetes.io/name=ui
-$ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/name=orders
-$ kubectl delete pod --grace-period=0 --force -n catalog -l app.kubernetes.io/name=catalog
-$ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/name=carts
-$ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/name=checkout
-$ kubectl rollout status -n ui deployment/ui --timeout 30s
-$ kubectl rollout status -n carts deployment/carts-dynamodb --timeout 180s
+$ kubectl delete pod --grace-period=0 --force -n ui -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/component=mysql
+$ kubectl delete pod --grace-period=0 --force -n catalog -l app.kubernetes.io/component=mysql
+$ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/component=dynamodb
+$ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/component=redis
+$ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n catalog -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/component=service
+$ sleep 60
+$ kubectl rollout status -n ui deployment/ui --timeout 180s
+$ kubectl rollout status -n carts deployment/carts-dynamodb --timeout 1800s
 $ kubectl rollout status -n carts deployment/carts --timeout 180s
 $ kubectl rollout status -n checkout deployment/checkout-redis --timeout 180s
 $ kubectl rollout status -n checkout deployment/checkout --timeout 180s

@@ -31,9 +31,9 @@ TEST SUITE: None
 
 ```
 
-## Scaling and Pod Anti-Affinity
+## Scaling and Topology Spread Constraints
 
-We use a Kustomize patch to modify the UI deployment, scaling it to 5 replicas and adding pod anti-affinity rules. This ensures UI pods are distributed across different nodes, reducing the impact of node failures.
+We use a Kustomize patch to modify the UI deployment, scaling it to 5 replicas and adding topology spread constraints rules. This ensures UI pods are distributed across different nodes, reducing the impact of node failures.
 
 Here's the content of our patch file:
 

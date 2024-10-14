@@ -33,7 +33,7 @@ Statement:
       - !Sub arn:aws:fis:${AWS::Region}:${AWS::AccountId}:action/aws:ssm:*
       - !Sub arn:aws:fis:${AWS::Region}:${AWS::AccountId}:experiment-template/*
       - !Sub arn:aws:fis:${AWS::Region}:${AWS::AccountId}:experiment/*
-  
+
   - Effect: Allow
     Action:
       - synthetics:CreateCanary
