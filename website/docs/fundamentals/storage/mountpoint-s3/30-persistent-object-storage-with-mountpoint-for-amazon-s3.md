@@ -55,7 +55,7 @@ $ kubectl get deployment -n assets -o yaml | yq '.items[].spec.template.spec.con
   name: tmp-volume
 ```
 
-View PV, PVC, pods, deployment (note static provisioning limitation for S3 CSI Driver)
+We can view our PersistentVolume (PV) assets, PersistentVolumeClaim (PVC) assets, and pod assets with `kubectl`:
 
 ```bash
 $ kubectl get pv
@@ -70,7 +70,10 @@ $ kubectl get pods -n assets
 NAME                     READY   STATUS    RESTARTS   AGE
 assets-9fbbbcd6f-26jrq   1/1     Running   0          6m57s
 assets-9fbbbcd6f-lb46c   1/1     Running   0          6m55s
+```
 
+Finally, let's take a look at our final deployment with the Mountpoint for Amazon S3 CSI driver:
+```bash
 $ kubectl describe deployment -n assets
 Name:                   assets
 Namespace:              assets
