@@ -1,0 +1,139 @@
+---
+title: Ephemeral Container Storage
+sidebar_position: 10
+---
+
+We have a deployment already borrowed from the simple store example but we will modify it slightly to repurpose this scenario as an image host. The assets microservice utilizes a webserver running on EKS. Web servers are a great example for the use of deployments because they **scale horizontally** and **declare the new state** of the Pods.
+
+The assets component is a container which serves static images for products, these product images are added as part of the container image build. However with this setup, images submitted on one container do not propagate to another container. In this exercise we'll utilize [Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) and Kubernetes [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) to setup a common storage environment where assets like images can get served with multiple web server containers that scale with demand.
+
+We can start by describing the Deployment to take a look at its initial volume configuration:
+
+```bash
+$ kubectl describe deployment -n assets
+Name:                   assets
+Namespace:              assets
+[...]
+Name:                   assets
+Namespace:              assets
+CreationTimestamp:      Mon, 14 Oct 2024 19:19:47 +0000
+Labels:                 app.kubernetes.io/created-by=eks-workshop
+                        app.kubernetes.io/type=app
+Annotations:            deployment.kubernetes.io/revision: 1
+Selector:               app.kubernetes.io/component=service,app.kubernetes.io/instance=assets,app.kubernetes.io/name=assets
+Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:           app.kubernetes.io/component=service
+                    app.kubernetes.io/created-by=eks-workshop
+                    app.kubernetes.io/instance=assets
+                    app.kubernetes.io/name=assets
+  Annotations:      prometheus.io/path: /metrics
+                    prometheus.io/port: 8080
+                    prometheus.io/scrape: true
+  Service Account:  assets
+  Containers:
+   assets:
+    Image:      public.ecr.aws/aws-containers/retail-store-sample-assets:0.4.0
+    Port:       8080/TCP
+    Host Port:  0/TCP
+    Limits:
+      memory:  128Mi
+    Requests:
+      cpu:     128m
+      memory:  128Mi
+    Liveness:  http-get http://:8080/health.html delay=0s timeout=1s period=3s #success=1 #failure=3
+    Environment Variables from:
+      assets      ConfigMap  Optional: false
+    Environment:  <none>
+    Mounts:
+      /tmp from tmp-volume (rw)
+  Volumes:
+   tmp-volume:
+    Type:          EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:        Memory
+    SizeLimit:     <unset>
+  Node-Selectors:  <none>
+  Tolerations:     <none>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Progressing    True    NewReplicaSetAvailable
+  Available      True    MinimumReplicasAvailable
+OldReplicaSets:  <none>
+NewReplicaSet:   assets-784b5f5656 (1/1 replicas created)
+Events:
+  Type    Reason             Age    From                   Message
+  ----    ------             ----   ----                   -------
+  Normal  ScalingReplicaSet  3m16s  deployment-controller  Scaled up replica set assets-784b5f5656 to 1
+[...]
+```
+
+As you can see the [`Volumes`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section of our Deployment shows that we're only using an [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) which "shares the Pod's lifetime".
+
+![Assets with emptyDir](./assets/assets-emptydir.webp)
+
+An `emptyDir` volume is first created when a Pod is assigned to a node, and exists as long as that Pod is running on that node. As the name says, the emptyDir volume is initially empty. All containers in the Pod can read and write the same files in the emptyDir volume, though that volume can be mounted at the same or different paths in each container. **When a Pod is removed from a node for any reason, the data in the emptyDir is deleted permanently.** This means that if we want to share data between multiple Pods in the same Deployment and make changes to that data then EmptyDir is not a good fit.
+
+The container has some initial product images copied to it as part of the container build under the folder `/usr/share/nginx/html/assets`; we can check this by running the following command:
+
+```bash
+$ kubectl exec --stdin deployment/assets \
+  -n assets -- bash -c "ls /usr/share/nginx/html/assets/"
+chrono_classic.jpg
+gentleman.jpg
+pocket_watch.jpg
+smart_1.jpg
+smart_2.jpg
+wood_watch.jpg
+```
+
+First let's scale up the `assets` Deployment so it has multiple replicas:
+
+```bash
+$ kubectl scale -n assets --replicas=2 deployment/assets
+deployment.apps/assets scaled
+
+$ kubectl rollout status -n assets deployment/assets --timeout=60s
+deployment "assets" successfully rolled out
+```
+
+Now let's try to put a new product image named `divewatch.png` in the directory `/usr/share/nginx/html/assets` of the first Pod using the below command:
+
+```bash
+$ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[0].metadata.name}')
+$ kubectl exec --stdin $POD_NAME \
+  -n assets -- bash -c 'touch /usr/share/nginx/html/assets/divewatch.jpg'
+```
+
+Let's take a peek at this directory on the first Pod and make sure our new image `divewatch.jpg` exists on that pod:
+
+```bash
+$ kubectl exec --stdin $POD_NAME \
+  -n assets -- bash -c 'ls /usr/share/nginx/html/assets'
+chrono_classic.jpg
+divewatch.jpg <-----------
+gentleman.jpg
+pocket_watch.jpg
+smart_1.jpg
+smart_2.jpg
+wood_watch.jpg
+```
+
+Now confirm the new product image `divewatch.jpg` is not present on the file system of the second Pod:
+
+```bash
+$ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
+$ kubectl exec --stdin $POD_NAME \
+  -n assets -- bash -c 'ls /usr/share/nginx/html/assets'
+chrono_classic.jpg
+gentleman.jpg
+pocket_watch.jpg
+smart_1.jpg
+smart_2.jpg
+wood_watch.jpg
+```
+
+As you see, our newly created image `divewatch.jpg` does not exist on the second Pod. In order to help solve this issue we need a file system that can be shared across multiple Pods if the service needs to scale horizontally while still making updates to the files without re-deploying.
