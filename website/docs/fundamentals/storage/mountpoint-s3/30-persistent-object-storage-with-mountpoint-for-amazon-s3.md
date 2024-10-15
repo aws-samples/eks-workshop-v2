@@ -177,9 +177,9 @@ Since this is a persistent storage layer that is mounted by all of the pods in o
 $ kubectl exec --stdin $POD_2 -n assets -- bash -c 'touch /mountpoint-s3/luxurywatch.jpg'
 $ aws s3 ls $BUCKET_NAME
 2024-10-14 19:29:05      98157 chrono_classic.jpg
-2024-10-14 20:00:00          0 divewatch.jpg <----------- CREATED FROM POD 0
+2024-10-14 20:00:00          0 divewatch.jpg <----------- CREATED FROM POD 1
 2024-10-14 19:29:05      58439 gentleman.jpg
-2024-10-14 20:00:00          0 luxurywatch.jpg <----------- CREATED FROM POD 1
+2024-10-14 20:00:00          0 luxurywatch.jpg <----------- CREATED FROM POD 2
 2024-10-14 19:29:05      58655 pocket_watch.jpg
 2024-10-14 19:29:05      20795 smart_2.jpg
 2024-10-14 19:29:05      43122 wood_watch.jpg

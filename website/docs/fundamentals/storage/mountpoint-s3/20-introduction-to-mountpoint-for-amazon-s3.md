@@ -36,7 +36,7 @@ $ ls
 chrono_classic.jpg  gentleman.jpg  pocket_watch.jpg  smart_2.jpg  wood_watch.jpg
 ```
 
-Now we can copy our image host assets into the S3 bucket using `aws s3`:
+Now we can copy our image host assets into the S3 bucket using `aws s3 cp`:
 
 ```bash
 $ cd ..
