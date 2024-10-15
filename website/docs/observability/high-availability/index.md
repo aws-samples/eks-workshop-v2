@@ -52,8 +52,10 @@ The simulate and respond to:
 
 1. **Pod Failures**: Using ChaosMesh to test your application's resilience to individual pod failures.
 2. **Node Failures**: Manually simulating a node failure to observe Kubernetes' self-healing capabilities.
+
    - Without AWS Fault Injection Simulator: Manually simulating a node failure to observe Kubernetes' self-healing capabilities.
    - With AWS Fault Injection Simulator: Leveraging AWS Fault Injection Simulator for partial and complete node failure scenarios.
+
 3. **Availability Zone Failure**: Simulating the loss of an entire AZ to validate your multi-AZ deployment strategy.
 
 ## What You'll Learn

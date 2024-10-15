@@ -47,7 +47,7 @@ Apply the changes using Kustomize patch and
 
 ```bash timeout=120
 $ kubectl delete deployment ui -n ui
-$ kubectl apply -k /manifests/modules/observability/resiliency/high-availability/config/
+$ kubectl apply -k ~/environment/eks-workshop/modules/observability/resiliency/high-availability/config/
 ```
 
 ## Verify Retail Store Accessibility
@@ -76,7 +76,7 @@ The `get-pods-by-az.sh` script helps visualize the distribution of Kubernetes po
 To run the script and see the distribution of pods across availability zones, execute:
 
 ```bash
-$ timeout 10s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
+$ timeout 10s ~/$SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 
 ------us-west-2a------
   ip-10-42-127-82.us-west-2.compute.internal:

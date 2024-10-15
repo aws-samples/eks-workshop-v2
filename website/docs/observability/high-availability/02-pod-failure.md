@@ -48,7 +48,7 @@ Note that all pods have similar start times (shown in the AGE column).
 Now, let's simulate a pod failure:
 
 ```bash
-$ $SCRIPT_DIR/pod-failure.sh
+$ ~/$SCRIPT_DIR/pod-failure.sh
 ```
 
 This script will use Chaos Mesh to terminate one of the pods.

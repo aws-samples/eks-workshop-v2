@@ -17,7 +17,7 @@ $ aws autoscaling update-auto-scaling-group \
     --max-size 6
 $ sleep 60
 $ kubectl scale deployment ui --replicas=9 -n ui
-$ timeout 10s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
+$ timeout 10s ~/$SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 
 ------us-west-2a------
   ip-10-42-100-4.us-west-2.compute.internal:
@@ -63,7 +63,7 @@ Before starting the experiment, set up a synthetic canary for heartbeat monitori
    Place this canary blueprint into the bucket:
 
    ```bash wait=30
-   $ $SCRIPT_DIR/create-blueprint.sh
+   $ ~/$SCRIPT_DIR/create-blueprint.sh
 
    upload: ./canary.zip to s3://eks-workshop-canary-artifacts-1724131402/canary-scripts/canary.zip
    Canary script has been zipped and uploaded to s3://eks-workshop-canary-artifacts-1724131402/canary-scripts/canary.zip

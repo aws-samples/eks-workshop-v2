@@ -45,5 +45,5 @@ variable "load_balancer_controller_chart_version" {
 variable "script_dir" {
   description = "Directory where scripts are located"
   type        = string
-  default     = "/manifests/modules/observability/resiliency/scripts"
+  default     = "environment/eks-workshop/modules/observability/resiliency/scripts"
 }

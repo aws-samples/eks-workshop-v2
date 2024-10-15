@@ -210,7 +210,7 @@ resource "aws_iam_role_policy_attachment" "fis_cni_policy" {
 }
 
 # Policy for creating FIS experiment templates
-resource "aws_iam_policy" "eks-resiliency_fis_policy" {
+resource "aws_iam_policy" "eks_resiliency_fis_policy" {
   name        = "${var.addon_context.eks_cluster_id}-resiliency_fis_policy-${random_id.suffix.hex}"
   path        = "/"
   description = "Custom policy for EKS resiliency FIS experiments"
@@ -269,7 +269,7 @@ resource "aws_iam_policy" "eks-resiliency_fis_policy" {
 
 # Attach custom policy to the role
 resource "aws_iam_role_policy_attachment" "eks_resiliency_fis_policy_attachment" {
-  policy_arn = aws_iam_policy.eks-resiliency_fis_policy.arn
+  policy_arn = aws_iam_policy.eks_resiliency_fis_policy.arn
   role       = aws_iam_role.fis_role.name
 }
 

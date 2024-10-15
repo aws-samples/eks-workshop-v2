@@ -56,7 +56,7 @@ $ export NODE_EXP_ID=$(aws fis create-experiment-template --cli-input-json '{"de
 Execute the FIS experiment to simulate the node failure and monitor the response:
 
 ```bash timeout=240
-$ aws fis start-experiment --experiment-template-id $NODE_EXP_ID --output json && timeout 180s $SCRIPT_DIR/get-pods-by-az.sh
+$ aws fis start-experiment --experiment-template-id $NODE_EXP_ID --output json && timeout 240s ~/$SCRIPT_DIR/get-pods-by-az.sh
 
 ------us-west-2a------
   ip-10-42-127-82.us-west-2.compute.internal:
@@ -97,17 +97,10 @@ $ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/com
 $ kubectl delete pod --grace-period=0 --force -n catalog -l app.kubernetes.io/component=service
 $ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/component=service
 $ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/component=service
-$ sleep 60
+$ kubectl delete pod --grace-period=0 --force -n assets -l app.kubernetes.io/component=service
+$ sleep 180
 $ kubectl rollout status -n ui deployment/ui --timeout 180s
-$ kubectl rollout status -n carts deployment/carts-dynamodb --timeout 1800s
-$ kubectl rollout status -n carts deployment/carts --timeout 180s
-$ kubectl rollout status -n checkout deployment/checkout-redis --timeout 180s
-$ kubectl rollout status -n checkout deployment/checkout --timeout 180s
-$ kubectl rollout status -n catalog statefulset/catalog-mysql --timeout 180s
-$ kubectl rollout status -n catalog deployment/catalog --timeout 180s
-$ kubectl rollout status -n orders deployment/orders-mysql --timeout 180s
-$ kubectl rollout status -n orders deployment/orders --timeout 180s
-$ timeout 10s $SCRIPT_DIR/get-pods-by-az.sh | head -n 30
+$ timeout 10s ~/$SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 ```
 
 :::
