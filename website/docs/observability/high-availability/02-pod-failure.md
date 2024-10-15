@@ -95,7 +95,7 @@ Once ready, you can access the retail store through this URL to confirm that it'
 This pod failure simulation demonstrates the resilience of your Kubernetes-based application. By intentionally causing a pod to fail, you can observe:
 
 1. The system's ability to detect failures quickly
-2. Kubernetes' automatic rescheduling and recovery of deployments or statefulsets failed pods.
+2. Kubernetes' automatic rescheduling and recovery of Deployments or StatefulSets failed pods.
 3. The application's continued availability during pod failures
 
 Remember that the retail store should remain operational even when a pod fails, showcasing the high availability and fault tolerance of your Kubernetes setup. This experiment helps validate your application's resilience and can be repeated as needed to ensure consistent behavior across different scenarios or after making changes to your infrastructure.

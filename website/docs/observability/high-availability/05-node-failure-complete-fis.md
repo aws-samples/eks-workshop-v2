@@ -49,15 +49,15 @@ $ aws fis start-experiment --experiment-template-id $FULL_NODE_EXP_ID --output j
 
 This command will show the pods distribution over 6 minutes while we observe the experiment. We should see:
 
-1. Shortly after the experment is initiated, all nodes and pods dissapear.
+1. Shortly after the experiment is initiated, all nodes and pods disappear.
 2. After about 2 minutes, First node and some pods will come back online.
 3. Around 4 minutes, a second node appears and more pods start up.
 4. At 6 minutes, continued recovery as the last node come online.
 
-Due to the severity of the experiment, the retail store url will not stay operational during testing. The url should come back up after the final node is operational. If the node is not operational after this test, run `$SCRIPT_DIR/verify-clsuter.sh` to wait for the final node to change state to running before proceeding.
+Due to the severity of the experiment, the retail store url will not stay operational during testing. The url should come back up after the final node is operational. If the node is not operational after this test, run `~/$SCRIPT_DIR/verify-clsuter.sh` to wait for the final node to change state to running before proceeding.
 
 :::note
-To verify nodes and rebalance pods, you can run:
+To verify nodes and pods redistribution, you can run:
 
 ```bash timeout=900 wait=60
 $ EXPECTED_NODES=3 && while true; do ready_nodes=$(kubectl get nodes --no-headers | grep " Ready" | wc -l); if [ "$ready_nodes" -eq "$EXPECTED_NODES" ]; then echo "All $EXPECTED_NODES expected nodes are ready."; echo "Listing the ready nodes:"; kubectl get nodes | grep " Ready"; break; else echo "Waiting for all $EXPECTED_NODES nodes to be ready... (Currently $ready_nodes are ready)"; sleep 10; fi; done

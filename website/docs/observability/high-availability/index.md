@@ -10,7 +10,7 @@ description: Stimulating various failure scenarios to check Amazon EKS cluster r
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=900
+```bash timeout=900 wait=30
 $ kubectl delete deployment ui -n ui --ignore-not-found
 $ prepare-environment observability/resiliency
 ```
@@ -41,7 +41,7 @@ Amazon EKS provides a managed Kubernetes platform, but it's still crucial to des
 1. **High Availability**: Ensure your applications remain accessible even during partial system failures.
 2. **Data Integrity**: Prevent data loss and maintain consistency during unexpected events.
 3. **User Experience**: Minimize downtime and performance degradation to maintain user satisfaction.
-4. **Cost Efficiency**: Avoid overprovisioning by building systems that can handle variable loads and partial failures.
+4. **Cost Efficiency**: Avoid over-provisioning by building systems that can handle variable loads and partial failures.
 5. **Compliance**: Meet regulatory requirements for uptime and data protection in various industries.
 
 ## Lab Overview and Resiliency Scenarios

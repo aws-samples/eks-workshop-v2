@@ -10,7 +10,7 @@ This repeatable experiment simulates an Availability Zone (AZ) failure, demonstr
 
 ### Setting up the Experiment
 
-Retrieve the Auto Scaling Group (ASG) name associated with your EKS cluster and creat the FIS experiment template to simulate the AZ failure:
+Retrieve the Auto Scaling Group (ASG) name associated with your EKS cluster and create the FIS experiment template to simulate the AZ failure:
 
 ```bash wait=30
 $ export ZONE_EXP_ID=$(aws fis create-experiment-template --cli-input-json '{"description":"publicdocument-azfailure","targets":{},"actions":{"azfailure":{"actionId":"aws:ssm:start-automation-execution","parameters":{"documentArn":"arn:aws:ssm:us-west-2::document/AWSResilienceHub-SimulateAzOutageInAsgTest_2020-07-23","documentParameters":"{\"AutoScalingGroupName\":\"'$ASG_NAME'\",\"CanaryAlarmName\":\"eks-workshop-canary-alarm\",\"AutomationAssumeRole\":\"'$FIS_ROLE_ARN'\",\"IsRollback\":\"false\",\"TestDurationInMinutes\":\"2\"}","maxDuration":"PT6M"}}},"stopConditions":[{"source":"none"}],"roleArn":"'$FIS_ROLE_ARN'","tags":{"ExperimentSuffix":"'$RANDOM_SUFFIX'"}}' --output json | jq -r '.experimentTemplate.id')
@@ -56,10 +56,10 @@ During the experiment, you should observe the following sequence of events:
 3. Around 4 minutes after the experiment started, you will see pods reappearing in the other AZs
 4. After the experiment is complete, after about 7 minutes, it marks the AZ as healthy, and replacement EC2 instances will be launched as a result of an EC2 autoscaling action, bringing the number of instances in each AZ to 2 again.
 
-During this time, the retail url will stay available showimg how resilient EKS is to AZ failures.
+During this time, the retail url will stay available showing how resilient EKS is to AZ failures.
 
 :::note
-To verify nodes and rebalance pods, you can run:
+To verify nodes and pods redistribution, you can run:
 
 ```bash timeout=900 wait=60
 $ EXPECTED_NODES=6 && while true; do ready_nodes=$(kubectl get nodes --no-headers | grep " Ready" | wc -l); if [ "$ready_nodes" -eq "$EXPECTED_NODES" ]; then echo "All $EXPECTED_NODES expected nodes are ready."; echo "Listing the ready nodes:"; kubectl get nodes | grep " Ready"; break; else echo "Waiting for all $EXPECTED_NODES nodes to be ready... (Currently $ready_nodes are ready)"; sleep 10; fi; done

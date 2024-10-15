@@ -51,7 +51,7 @@ Throughout this process, the total number of running pods should remain constant
 
 ## Verifying Cluster Recovery
 
-While waiting for the node to finish coming back online, we will verify the cluster's self-healing capabilities and potentially rebalance the pod distribution if necessary. Since the cluster often recovers on its own, we'll focus on checking the current state and ensuring an optimal distribution of pods.
+While waiting for the node to finish coming back online, we will verify the cluster's self-healing capabilities and potentially recycle pods again if necessary. Since the cluster often recovers on its own, we'll focus on checking the current state and ensuring an optimal distribution of pods across AZs.
 
 First let's ensure all nodes are in the `Ready` state:
 
