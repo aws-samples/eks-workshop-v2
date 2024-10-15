@@ -5,9 +5,9 @@
 set -e
 
 # Delete local directory of image files
-rm -rf ~/environment/asset-images/
+rm -rf ~/environment/assets-images/
 
-logmessage "Deleting asset-images folder..."
+logmessage "Deleting assets-images folder..."
 
 addon_exists=$(aws eks list-addons --cluster-name $EKS_CLUSTER_NAME --query "addons[? @ == 'aws-mountpoint-s3-csi-driver']" --output text)
 
