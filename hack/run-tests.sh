@@ -76,6 +76,10 @@ RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-""}
 
 echo "Running test suite..."
 
+# get current IDs
+USER_ID=$(id -u)
+GROUP_ID=$(id -g)
+
 exit_code=0
 
 $CONTAINER_CLI run $background_args $dns_args \
