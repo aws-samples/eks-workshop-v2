@@ -11,7 +11,6 @@ description: Stimulating various failure scenarios to check Amazon EKS cluster r
 Prepare your environment for this section:
 
 ```bash timeout=900 wait=30
-$ kubectl delete deployment ui -n ui --ignore-not-found
 $ prepare-environment observability/resiliency
 ```
 
@@ -101,5 +100,4 @@ For more information on AWS Resiliency features in greater depth, we recommend c
 - [Integrating with Kubernetes RBAC](/docs/security/cluster-access-management/kubernetes-rbac)
 - [AWS Fault Injection Simulator](https://aws.amazon.com/fis/)
 - [Operating resilient workloads on Amazon EKS](https://aws.amazon.com/blogs/containers/operating-resilient-workloads-on-amazon-eks/)
-
-  :::
+:::
