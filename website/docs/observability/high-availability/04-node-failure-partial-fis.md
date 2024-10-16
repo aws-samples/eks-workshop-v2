@@ -84,7 +84,7 @@ During the experiment, you should observe the following:
 Your retail url should stay operational unlike the node failure without FIS.
 
 :::note
-To verify nodes and rebalance pods, you can run:
+To verify nodes and re-balance pods, you can run:
 
 ```bash timeout=900 wait=60
 $ EXPECTED_NODES=3 && while true; do ready_nodes=$(kubectl get nodes --no-headers | grep " Ready" | wc -l); if [ "$ready_nodes" -eq "$EXPECTED_NODES" ]; then echo "All $EXPECTED_NODES expected nodes are ready."; echo "Listing the ready nodes:"; kubectl get nodes | grep " Ready"; break; else echo "Waiting for all $EXPECTED_NODES nodes to be ready... (Currently $ready_nodes are ready)"; sleep 10; fi; done

@@ -64,7 +64,7 @@ You can now access http://k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws
 Once this command completes, it will output a URL. Open this URL in a new browser tab to verify that your retail store is accessible and functioning correctly.
 
 :::tip
-The retail url may take up to 10 minutes to become operational.
+The retail url may take 5-10 minutes to become operational.
 :::
 
 ## Helper Script: Get Pods by AZ
