@@ -7,7 +7,6 @@ output "environment_variables" {
     RANDOM_SUFFIX        = random_id.suffix.hex
     SCRIPT_DIR           = var.script_dir
     CANARY_ROLE_ARN      = aws_iam_role.canary_role.arn
-    EKS_CLUSTER_ROLE_ARN = aws_iam_role.eks_cluster_role.arn
     AWS_REGION           = data.aws_region.current.name
   }
 }
