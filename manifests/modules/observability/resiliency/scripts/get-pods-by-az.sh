@@ -37,15 +37,17 @@ generate_output() {
 # Initial clear screen
 # clear_screen
 
+trap 'rm -rf ~/environment/eks-workshop/temp_output.txt; exit 0' SIGTERM
 # Main loop
 while true; do
+
     # Generate output to a temporary file
-    generate_output > temp_output.txt
+    generate_output > ~/environment/eks-workshop/temp_output.txt
 
     #generate_output
     # Clear screen and display the new output
     # clear_screen
-    cat temp_output.txt
+    cat ~/environment/eks-workshop/temp_output.txt
     # clear_screen
 
     # Wait before next update

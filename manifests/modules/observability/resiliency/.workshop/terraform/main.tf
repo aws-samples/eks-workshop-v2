@@ -360,39 +360,6 @@ resource "aws_iam_role_policy_attachment" "eks_resiliency_canary_policy_attachme
   role       = aws_iam_role.canary_role.name
 }
 
-# EKS Cluster IAM Role
-resource "aws_iam_role" "eks_cluster_role" {
-  name = "eks-workshop-cluster-role-${var.addon_context.eks_cluster_id}-${random_id.suffix.hex}"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          Service = "eks.amazonaws.com"
-        }
-        Action = "sts:AssumeRole"
-      }
-    ]
-  })
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-# Attach required policies to EKS Cluster role
-resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.eks_cluster_role.name
-}
-
-resource "aws_iam_role_policy_attachment" "eks_vpc_resource_controller" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
-  role       = aws_iam_role.eks_cluster_role.name
-}
-
 # Executable Scripts
 resource "null_resource" "chmod_all_scripts_bash" {
   provisioner "local-exec" {

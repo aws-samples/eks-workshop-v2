@@ -21,7 +21,7 @@ It's important to note that this experiment is repeatable, allowing you to run i
 To simulate the node failure and monitor its effects, run the following command:
 
 ```bash timeout=240
-$ ~/$SCRIPT_DIR/node-failure.sh && timeout 180s ~/$SCRIPT_DIR/get-pods-by-az.sh
+$ ~/$SCRIPT_DIR/node-failure.sh && timeout --preserve-status 180s  ~/$SCRIPT_DIR/get-pods-by-az.sh
 
 ------us-west-2a------
   ip-10-42-127-82.us-west-2.compute.internal:
@@ -63,18 +63,18 @@ This command counts the total number of nodes in the `Ready` state and continuou
 
 Once all nodes are ready, we'll redeploy the pods to ensure they are balanced across the nodes:
 
-```bash timeout=900 wait=60
-$ kubectl delete pod --grace-period=0 --force -n ui -l app.kubernetes.io/component=service
-$ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/component=mysql
+```bash timeout=900 wait=30
 $ kubectl delete pod --grace-period=0 --force -n catalog -l app.kubernetes.io/component=mysql
-$ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/component=dynamodb
-$ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/component=redis
-$ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/component=service
-$ kubectl delete pod --grace-period=0 --force -n catalog -l app.kubernetes.io/component=service
 $ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/component=dynamodb
 $ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/component=redis
 $ kubectl delete pod --grace-period=0 --force -n assets -l app.kubernetes.io/component=service
-$ sleep 180
+$ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/component=mysql
+$ kubectl delete pod --grace-period=0 --force -n ui -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n catalog -l app.kubernetes.io/component=service
+$ sleep 90
 $ kubectl rollout status -n ui deployment/ui --timeout 180s
 $ timeout 10s ~/$SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 ```

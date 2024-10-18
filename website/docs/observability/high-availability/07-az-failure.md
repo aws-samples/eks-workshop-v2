@@ -20,8 +20,8 @@ $ export ZONE_EXP_ID=$(aws fis create-experiment-template --cli-input-json '{"de
 
 Execute the FIS experiment to simulate the AZ failure:
 
-```bash timeout=560
-$ aws fis start-experiment --experiment-template-id $ZONE_EXP_ID --output json && timeout 180s ~/$SCRIPT_DIR/get-pods-by-az.sh
+```bash timeout=540
+$ aws fis start-experiment --experiment-template-id $ZONE_EXP_ID --output json && timeout --preserve-status 480s ~/$SCRIPT_DIR/get-pods-by-az.sh
 
 ------us-west-2a------
   ip-10-42-100-4.us-west-2.compute.internal:
@@ -61,19 +61,19 @@ During this time, the retail url will stay available showing how resilient EKS i
 :::note
 To verify nodes and pods redistribution, you can run:
 
-```bash timeout=900 wait=60
+```bash timeout=900 wait=30
 $ EXPECTED_NODES=6 && while true; do ready_nodes=$(kubectl get nodes --no-headers | grep " Ready" | wc -l); if [ "$ready_nodes" -eq "$EXPECTED_NODES" ]; then echo "All $EXPECTED_NODES expected nodes are ready."; echo "Listing the ready nodes:"; kubectl get nodes | grep " Ready"; break; else echo "Waiting for all $EXPECTED_NODES nodes to be ready... (Currently $ready_nodes are ready)"; sleep 10; fi; done
-$ kubectl delete pod --grace-period=0 --force -n ui -l app.kubernetes.io/component=service
-$ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/component=mysql
 $ kubectl delete pod --grace-period=0 --force -n catalog -l app.kubernetes.io/component=mysql
-$ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/component=dynamodb
-$ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/component=redis
-$ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/component=service
-$ kubectl delete pod --grace-period=0 --force -n catalog -l app.kubernetes.io/component=service
 $ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/component=dynamodb
 $ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/component=redis
 $ kubectl delete pod --grace-period=0 --force -n assets -l app.kubernetes.io/component=service
-$ sleep 180
+$ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/component=mysql
+$ kubectl delete pod --grace-period=0 --force -n ui -l app.kubernetes.io/component=service
+$ kubectl delete pod --grace-period=0 --force -n catalog -l app.kubernetes.io/component=service
+$ sleep 90
 $ kubectl rollout status -n ui deployment/ui --timeout 180s
 $ timeout 10s ~/$SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 ```
