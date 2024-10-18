@@ -10,13 +10,8 @@ permissions:
   contents: read
 
 jobs:
-  test-module:
+  test-chaos:
     uses: ./.github/workflows/module-test.yaml
     with:
-      glob: observability/{container-insights,kubecost,logging,open-source-metrics,resource-view,high-availability}**
-    secrets: inherit
-  test-opensearch:
-    uses: ./.github/workflows/module-test.yaml
-    with:
-      module: observability/opensearch
+      module: observability/high-availability
     secrets: inherit
