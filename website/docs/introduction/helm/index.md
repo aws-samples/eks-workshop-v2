@@ -46,12 +46,12 @@ $ helm repo add bitnami https://charts.bitnami.com/bitnami
 $ helm repo update
 ```
 
-Now we can search the repository for charts, for example the `postgresql` chart:
+Now we can search the repository for charts, for example the `nginx` chart:
 
 ```bash
-$ helm search repo postgresql
+$ helm search repo nginx
 NAME                    CHART VERSION   APP VERSION     DESCRIPTION
-bitnami/postgresql      X.X.X           X.X.X           PostgreSQL (Postgres) is an open source object-...
+bitnami/nginx           X.X.X           X.X.X           NGINX Open Source is a web server that can be a...
 [...]
 ```
 

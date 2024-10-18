@@ -15,7 +15,7 @@ The content of this workshop is made up of:
 1. Individual lab exercises
 2. Supporting content that explains concepts related to the labs
 
-The lab exercises are designed in a way that you can run any modules as a self-container exercise. Lab exercises will be displayed in the sidebar to the left and are designated by the icon shown here:
+The lab exercises are designed in a way that you can run any modules as a self-contained exercise. Lab exercises will be displayed in the sidebar to the left and are designated by the icon shown here:
 
 ![Lab icon example](./assets/lab-icon.webp)
 
