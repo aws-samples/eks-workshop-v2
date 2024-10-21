@@ -20,7 +20,7 @@ It's important to note that this experiment is repeatable, allowing you to run i
 
 To simulate the node failure and monitor its effects, run the following command:
 
-```bash timeout=240
+```bash timeout=240 
 $ ~/$SCRIPT_DIR/node-failure.sh && timeout --preserve-status 180s  ~/$SCRIPT_DIR/get-pods-by-az.sh
 
 ------us-west-2a------
