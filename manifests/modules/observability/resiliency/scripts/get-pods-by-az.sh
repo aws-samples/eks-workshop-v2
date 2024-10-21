@@ -37,7 +37,7 @@ generate_output() {
 # Initial clear screen
 # clear_screen
 
-trap 'rm -rf ~/environment/eks-workshop/temp_output.txt; exit 0' SIGTERM
+trap 'rm -rf ~/environment/eks-workshop/temp_output.txt; exit 0' SIGTERM INT
 # Main loop
 while true; do
 

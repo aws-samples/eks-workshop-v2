@@ -137,7 +137,7 @@ resource "random_id" "suffix" {
 }
 
 resource "aws_iam_role" "fis_role" {
-  name = "${var.addon_context.eks_cluster_id}-fis_role-${random_id.suffix.hex}"
+  name = "${var.addon_context.eks_cluster_id}-fis-role-${random_id.suffix.hex}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -211,7 +211,7 @@ resource "aws_iam_role_policy_attachment" "fis_cni_policy" {
 
 # Policy for creating FIS experiment templates
 resource "aws_iam_policy" "eks_resiliency_fis_policy" {
-  name        = "${var.addon_context.eks_cluster_id}-resiliency_fis_policy-${random_id.suffix.hex}"
+  name        = "${var.addon_context.eks_cluster_id}-resiliency-fis-policy-${random_id.suffix.hex}"
   path        = "/"
   description = "Custom policy for EKS resiliency FIS experiments"
 
@@ -276,7 +276,7 @@ resource "aws_iam_role_policy_attachment" "eks_resiliency_fis_policy_attachment"
 
 # Canary IAM role
 resource "aws_iam_role" "canary_role" {
-  name = "${var.addon_context.eks_cluster_id}-canary_role-${random_id.suffix.hex}"
+  name = "${var.addon_context.eks_cluster_id}-canary-role-${random_id.suffix.hex}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -307,7 +307,7 @@ resource "aws_iam_role_policy_attachment" "canary_lambda_basic_execution" {
 
 # Policy for Canary
 resource "aws_iam_policy" "eks_resiliency_canary_policy" {
-  name        = "${var.addon_context.eks_cluster_id}-resiliency_canary_policy-${random_id.suffix.hex}"
+  name        = "${var.addon_context.eks_cluster_id}-resiliency-canary-policy-${random_id.suffix.hex}"
   path        = "/"
   description = "Custom policy for EKS resiliency Canary"
 
