@@ -8,8 +8,8 @@ description: "Scale your application to two instances and prepare for an AZ fail
 
 To see the full impact of an Availability Zone (AZ) failure, let's first scale up to two instances per AZ as well as increase the number of pods up to 9:
 
-```bash timeout=120
-$ ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='eks-workshop']].AutoScalingGroupName" --output text)
+```bash timeout=120 wait=30
+$ export ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='eks-workshop']].AutoScalingGroupName" --output text)
 $ aws autoscaling update-auto-scaling-group \
     --auto-scaling-group-name $ASG_NAME \
     --desired-capacity 6 \

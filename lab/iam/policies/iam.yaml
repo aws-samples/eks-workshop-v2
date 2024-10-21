@@ -15,9 +15,12 @@ Statement:
       - iam:TagRole
       - iam:PassRole
       - sts:AssumeRole
+      - iam:DeleteServiceLinkedRole
+      - iam:GetServiceLinkedRoleDeletionStatus
     Resource:
       - !Sub arn:aws:iam::${AWS::AccountId}:role/${Env}*
       - !Sub arn:aws:iam::${AWS::AccountId}:role/eksctl-${Env}*
+      - !Sub arn:aws:iam::${AWS::AccountId}:role/aws-service-role/fis*
   - Effect: Allow
     Action:
       - iam:CreatePolicy
@@ -82,3 +85,4 @@ Statement:
           - eks-fargate.amazonaws.com
           - guardduty.amazonaws.com
           - spot.amazonaws.com
+          - fis.amazonaws.com

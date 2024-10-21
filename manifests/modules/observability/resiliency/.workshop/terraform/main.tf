@@ -137,7 +137,7 @@ resource "random_id" "suffix" {
 }
 
 resource "aws_iam_role" "fis_role" {
-  name = "${var.addon_context.eks_cluster_id}-fis_role-${random_id.suffix.hex}"
+  name = "${var.addon_context.eks_cluster_id}-fis-role-${random_id.suffix.hex}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -211,7 +211,7 @@ resource "aws_iam_role_policy_attachment" "fis_cni_policy" {
 
 # Policy for creating FIS experiment templates
 resource "aws_iam_policy" "eks_resiliency_fis_policy" {
-  name        = "${var.addon_context.eks_cluster_id}-resiliency_fis_policy-${random_id.suffix.hex}"
+  name        = "${var.addon_context.eks_cluster_id}-resiliency-fis-policy-${random_id.suffix.hex}"
   path        = "/"
   description = "Custom policy for EKS resiliency FIS experiments"
 
@@ -276,7 +276,7 @@ resource "aws_iam_role_policy_attachment" "eks_resiliency_fis_policy_attachment"
 
 # Canary IAM role
 resource "aws_iam_role" "canary_role" {
-  name = "${var.addon_context.eks_cluster_id}-canary_role-${random_id.suffix.hex}"
+  name = "${var.addon_context.eks_cluster_id}-canary-role-${random_id.suffix.hex}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -307,7 +307,7 @@ resource "aws_iam_role_policy_attachment" "canary_lambda_basic_execution" {
 
 # Policy for Canary
 resource "aws_iam_policy" "eks_resiliency_canary_policy" {
-  name        = "${var.addon_context.eks_cluster_id}-resiliency_canary_policy-${random_id.suffix.hex}"
+  name        = "${var.addon_context.eks_cluster_id}-resiliency-canary-policy-${random_id.suffix.hex}"
   path        = "/"
   description = "Custom policy for EKS resiliency Canary"
 
@@ -358,39 +358,6 @@ resource "aws_iam_policy" "eks_resiliency_canary_policy" {
 resource "aws_iam_role_policy_attachment" "eks_resiliency_canary_policy_attachment" {
   policy_arn = aws_iam_policy.eks_resiliency_canary_policy.arn
   role       = aws_iam_role.canary_role.name
-}
-
-# EKS Cluster IAM Role
-resource "aws_iam_role" "eks_cluster_role" {
-  name = "eks-workshop-cluster-role-${var.addon_context.eks_cluster_id}-${random_id.suffix.hex}"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          Service = "eks.amazonaws.com"
-        }
-        Action = "sts:AssumeRole"
-      }
-    ]
-  })
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-# Attach required policies to EKS Cluster role
-resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.eks_cluster_role.name
-}
-
-resource "aws_iam_role_policy_attachment" "eks_vpc_resource_controller" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
-  role       = aws_iam_role.eks_cluster_role.name
 }
 
 # Executable Scripts

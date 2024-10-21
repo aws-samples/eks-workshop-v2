@@ -35,7 +35,7 @@ done
 
 # Delete IAM Roles and Policies
 echo "Cleaning up IAM roles and policies..."
-for role_prefix in "fis-execution-role-eks-workshop" "canary-execution-role-eks-workshop"; do
+for role_prefix in "eks-workshop-fis-role" "eks-workshop-canary-role"; do
     for role in $(aws iam list-roles --query "Roles[?starts_with(RoleName, '${role_prefix}')].RoleName" --output text); do
         echo "Processing role: $role"
         for policy in $(aws iam list-attached-role-policies --role-name $role --query "AttachedPolicies[*].PolicyArn" --output text); do
@@ -48,7 +48,11 @@ for role_prefix in "fis-execution-role-eks-workshop" "canary-execution-role-eks-
     done
 done
 
-for policy_prefix in "eks-resiliency-fis-policy" "eks-resiliency-canary-policy"; do
+# Delete fis service role
+
+safe_delete "aws iam delete-service-linked-role --role-name AWSServiceRoleForFIS" "IAM role AWSServiceRoleForFIS"
+
+for policy_prefix in "eks-workshop-resiliency-fis-policy" "eks-workshop-resiliency-canary-policy"; do
     for policy_arn in $(aws iam list-policies --scope Local --query "Policies[?starts_with(PolicyName, '${policy_prefix}')].Arn" --output text); do
         safe_delete "aws iam delete-policy --policy-arn $policy_arn" "IAM policy $policy_arn"
     done
