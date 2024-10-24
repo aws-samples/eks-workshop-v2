@@ -25,9 +25,7 @@ NAME           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTO
 efs-csi-node   3         3         3       3            3           kubernetes.io/os=linux        47s
 ```
 
-The EFS CSI driver supports dynamic and static provisioning. Currently dynamic provisioning creates an access point for each PersistentVolume. This mean an AWS EFS file system has to be created manually on AWS first and should be provided as an input to the StorageClass parameter. For static provisioning, AWS EFS file system needs to be created manually on AWS first. After that it can be mounted inside a container as a volume using the driver.
-
-We have provisioned an EFS file system, mount targets and the required security group pre-provisioned with an inbound rule that allows inbound NFS traffic for your Amazon EFS mount points. Let's retrieve some information about it that will be used later:
+The EFS CSI driver supports dynamic and static provisioning. With static provisioning, the storage administrator has to manually create an access point on the pre-provisioned EFS file system and the Kubernetes administrator has to manually create a PV using the EFS access point. However, the dynamic provisioning removes these manual steps. Here, the EFS CSI driver creates a PV and an access point for that PV in the EFS file system automatically once a PVC for that storage class is created. In both the cases, the required network connectivity, the EFS file system and the Kubernetes storage class for that should be pre-provisioned. That's why we have already provisioned an EFS file system, mount targets and the required security group with an inbound rule that allows inbound NFS traffic for your Amazon EFS mount points. Let's retrieve some information about it that will be used later:
 
 ```bash
 $ export EFS_ID=$(aws efs describe-file-systems --query "FileSystems[?Name=='$EKS_CLUSTER_NAME-efs-assets'] | [0].FileSystemId" --output text)
