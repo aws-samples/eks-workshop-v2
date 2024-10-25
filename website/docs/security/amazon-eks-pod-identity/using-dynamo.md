@@ -3,7 +3,7 @@ title: "Using Amazon DynamoDB"
 sidebar_position: 32
 ---
 
-The first step in this process is to re-configure the carts service to use a DynamoDB table that has already been created for us. The application loads most of its confirmation from a ConfigMap, lets take look at it:
+The first step in this process is to re-configure the carts service to use a DynamoDB table that has already been created for us. The application loads most of its configurations from a ConfigMap. Let's take look at it:
 
 ```bash
 $ kubectl -n carts get -o yaml cm carts
@@ -20,18 +20,18 @@ metadata:
   namespace: carts
 ```
 
-Also, check the current status of the application the using the browser. A `LoadBalancer` type service named `ui-nlb` is provisioned in the `ui` namespace from which the application's UI can be accessed.
+Also, check the current status of the application using the browser. A `LoadBalancer` type service named `ui-nlb` is provisioned in the `ui` namespace from which the application's UI can be accessed.
 
 ```bash
 $ kubectl -n ui get service ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}'
 k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 ```
 
-Use the generated URL from the command above to open the UI in your browser. It should open the the Retail Store like shown below.
+Use the generated URL from the command above to open the UI in your browser. It should open the Retail Store like shown below.
 
 ![Home](/img/sample-app-screens/home.webp)
 
-Now, the following kustomization overwrites the ConfigMap, removing the DynamoDB endpoint configuration which tells the SDK to default to the real DynamoDB service instead of our test Pod. We've also provided it with the name of the DynamoDB table thats been created already for us which is being pulled from the environment variable `CARTS_DYNAMODB_TABLENAME`.
+The following kustomization overwrites the ConfigMap removing the DynamoDB endpoint configuration. It tells the SDK to use the real DynamoDB service instead of our test Pod. We've also configured the DynamoDB table name that's already been created for us. The table name is being pulled from the environment variable `CARTS_DYNAMODB_TABLENAME`.
 
 ```kustomization
 modules/security/eks-pod-identity/dynamo/kustomization.yaml
@@ -62,7 +62,7 @@ metadata:
   namespace: carts
 ```
 
-Now we need to recycle all the carts Pods to pick up our new ConfigMap contents:
+Now, we need to recycle all the carts pods to pick up our new ConfigMap contents:
 
 ```bash expectError=true hook=enable-dynamo
 $ kubectl rollout restart -n carts deployment/carts
@@ -72,7 +72,7 @@ Waiting for deployment "carts" rollout to finish: 1 old replicas are pending ter
 error: timed out waiting for the condition
 ```
 
-It looks like our change failed to deploy properly, we can confirm this by looking at the Pods:
+It looks like our change failed to deploy properly. We can confirm this by looking at the Pods:
 
 ```bash
 $ kubectl -n carts get pod
