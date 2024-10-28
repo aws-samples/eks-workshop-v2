@@ -83,3 +83,19 @@ jobs:
           terraform_version: "~1.9.0"
       - run: |
           bash hack/validate-terraform.sh
+
+  semanticpr:
+    name: Semantic Pull Request
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            new
+            update
+            fix
+            chore
+            feat
+            docs
