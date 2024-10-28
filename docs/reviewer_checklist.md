@@ -5,7 +5,7 @@ This is the reviewer checklist for pull requests, over time as many of these che
 ## Pull Request hygiene
 
 - [ ] Pull request has an appropriate title (see [releases](./releases.md))
-- [ ] Pull request has an appropriate `content` label
+- [ ] Pull request has an appropriate `content` label, otherwise use `content/none`
 - [ ] Pull request has been assigned to the correct GitHub Milestone
 - [ ] All review checks are passing
 
