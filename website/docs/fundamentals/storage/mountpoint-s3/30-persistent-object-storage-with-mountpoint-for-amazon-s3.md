@@ -30,7 +30,6 @@ Let's apply this Kustomization and re-deploy. This step will take a few minutes:
 ```bash
 $ kubectl kustomize ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment \
   | envsubst | kubectl apply -f-
-Terminal Output:
 namespace/assets unchanged
 serviceaccount/assets unchanged
 configmap/assets unchanged
