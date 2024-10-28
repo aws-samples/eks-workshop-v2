@@ -39,8 +39,7 @@ chrono_classic.jpg  gentleman.jpg  pocket_watch.jpg  smart_2.jpg  wood_watch.jpg
 Now we can copy our image host assets into the S3 bucket using `aws s3 cp`:
 
 ```bash
-$ cd ..
-$ aws s3 cp assets-images/ s3://$BUCKET_NAME/ --recursive
+$ aws s3 cp ../assets-images/ s3://$BUCKET_NAME/ --recursive
 upload: assets-images/smart_2.jpg to s3://eks-workshop-mountpoint-s320241014192132282600000002/smart_2.jpg
 upload: assets-images/wood_watch.jpg to s3://eks-workshop-mountpoint-s320241014192132282600000002/wood_watch.jpg
 upload: assets-images/gentleman.jpg to s3://eks-workshop-mountpoint-s320241014192132282600000002/gentleman.jpg
