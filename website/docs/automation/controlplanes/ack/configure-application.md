@@ -41,7 +41,7 @@ Now we need to restart the carts Pods to pick up our new ConfigMap contents:
 ```bash
 $ kubectl rollout restart -n carts deployment/carts
 deployment.apps/carts restarted
-$ kubectl rollout status -n carts deployment/carts --timeout=20s
+$ kubectl rollout status -n carts deployment/carts --timeout=40s
 Waiting for deployment "carts" rollout to finish: 1 old replicas are pending termination...
 deployment "carts" successfully rolled out
 ```
