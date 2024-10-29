@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: carts-ack
-  namespace: carts
-data:
-  CARTS_DYNAMODB_TABLENAME: "${EKS_CLUSTER_NAME}-carts-ack"
-  CARTS_DYNAMODB_ENDPOINT: https://dynamodb.${AWS_REGION}.amazonaws.com

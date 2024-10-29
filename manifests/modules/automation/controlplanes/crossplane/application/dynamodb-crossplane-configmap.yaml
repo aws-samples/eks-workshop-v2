@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: carts-crossplane
-  namespace: carts
-data:
-  CARTS_DYNAMODB_TABLENAME: "${EKS_CLUSTER_NAME}-carts-crossplane"

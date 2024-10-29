@@ -1,0 +1,70 @@
+Version: "2012-10-17"
+Statement:
+  - Effect: Allow
+    Action:
+      - s3:CreateBucket
+      - s3:DeleteBucket
+      - s3:PutObject
+      - s3:List*
+      - s3:Get*
+      - s3:GetObjectVersion
+      - s3:PutBucketPublicAccessBlock
+      - s3:PutBucketTagging
+      - s3:DeleteObject
+      - s3:DeleteObjectVersion
+    Resource:
+      - arn:aws:s3:::eks-workshop-canary-artifacts*
+      - arn:aws:s3:::aws-synthetics-library*
+  - Effect: Allow
+    Action:
+      - fis:CreateExperimentTemplate
+      - fis:CreateExperimentTemplate
+      - fis:GetExperimentTemplate
+      - fis:ListExperimentTemplates
+      - fis:DeleteExperimentTemplate
+      - fis:UpdateExperimentTemplate
+      - fis:TagResource
+      - fis:UntagResource
+      - fis:StartExperiment
+      - fis:GetExperiment
+      - fis:ListExperiments
+    Resource:
+      - !Sub arn:aws:fis:${AWS::Region}:${AWS::AccountId}:action/aws:eks:*
+      - !Sub arn:aws:fis:${AWS::Region}:${AWS::AccountId}:action/aws:ssm:*
+      - !Sub arn:aws:fis:${AWS::Region}:${AWS::AccountId}:experiment-template/*
+      - !Sub arn:aws:fis:${AWS::Region}:${AWS::AccountId}:experiment/*
+
+  - Effect: Allow
+    Action:
+      - synthetics:CreateCanary
+      - synthetics:DeleteCanary
+      - synthetics:DescribeCanaries
+      - synthetics:StartCanary
+      - synthetics:StopCanary
+      - synthetics:UpdateCanary
+    Resource:
+      - !Sub arn:aws:synthetics:${AWS::Region}:${AWS::AccountId}:canary:${Env}*
+  - Effect: Allow
+    Action:
+      - cloudwatch:PutMetricAlarm
+      - cloudwatch:PutMetricData
+      - cloudwatch:GetMetricStatistics
+      - cloudwatch:ListMetrics
+    Resource:
+      - !Sub arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:${Env}*
+  - Effect: Allow
+    Action:
+      - lambda:CreateFunction
+      - lambda:UpdateFunctionCode
+      - lambda:GetFunctionConfiguration
+      - lambda:UpdateFunctionConfiguration
+      - lambda:GetFunction
+      - lambda:DeleteFunction
+      - lambda:InvokeFunction
+      - lambda:AddPermission
+      - lambda:RemovePermission
+      - lambda:PublishLayerVersion
+      - lambda:PublishVersion
+    Resource:
+      - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*${Env}*
+      - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:*${Env}*

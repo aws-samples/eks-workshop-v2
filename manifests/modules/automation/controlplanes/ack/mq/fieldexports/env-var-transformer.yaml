@@ -1,5 +1,0 @@
-varReference:
-  - apiVersion: v1
-    kind: ConfigMap
-    path: data/SPRING_RABBITMQ_PASSWORD
-    value: mq-ack-options
