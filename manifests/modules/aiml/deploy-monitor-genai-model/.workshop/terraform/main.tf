@@ -1,3 +1,8 @@
+provider "aws" {
+  region = "us-east-1"
+  alias  = "virginia"
+}
+
 terraform {
   required_providers {
     kubectl = {
@@ -6,9 +11,8 @@ terraform {
   }
 }
 
-provider "aws" {
-  region = "us-east-1"
-  alias  = "virginia"
+locals {
+  namespace = "kube-system"
 }
 
 data "aws_caller_identity" "current" {}
@@ -17,9 +21,10 @@ data "aws_ecrpublic_authorization_token" "token" { provider = aws.virginia }
 
 module "ebs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.20"
+  version = "5.44.0"
 
-  role_name_prefix = "${var.addon_context.eks_cluster_id}-ebs-csi-"
+  role_name_prefix   = "${var.addon_context.eks_cluster_id}-ebs-csi-"
+  policy_name_prefix = "${var.addon_context.eks_cluster_id}-ebs-csi-"
 
   attach_ebs_csi_policy = true
 
@@ -47,13 +52,24 @@ module "eks_blueprints_addons" {
       most_recent              = true
       service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
       preserve                 = false
+      configuration_values     = jsonencode({ defaultStorageClass = { enabled = true } })
     }
   }
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    wait = true
+    wait        = true
+    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
+}
+
+resource "time_sleep" "wait" {
+  depends_on = [
+    module.eks_blueprints_addons
+  ]
+
+  create_duration = "10s"
 }
 
 resource "kubernetes_annotations" "disable_gp2" {
@@ -75,68 +91,101 @@ resource "kubernetes_storage_class" "default_gp3" {
       "storageclass.kubernetes.io/is-default-class" : "true"
     }
   }
+
   storage_provisioner    = "ebs.csi.aws.com"
   reclaim_policy         = "Delete"
   allow_volume_expansion = true
   volume_binding_mode    = "WaitForFirstConsumer"
+
   parameters = {
     fsType    = "ext4"
     encrypted = true
     type      = "gp3"
   }
+
   depends_on = [kubernetes_annotations.disable_gp2]
 }
 
+resource "aws_eks_addon" "pod_identity" {
+  cluster_name                = var.addon_context.eks_cluster_id
+  addon_name                  = "eks-pod-identity-agent"
+  resolve_conflicts_on_create = "OVERWRITE"
+  preserve                    = false
+}
 
-module "eks_blueprints_addons_karpenter" {
-  source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.16.3"
+# Karpenter controller & Node IAM roles, SQS Queue, Eventbridge Rules
 
-  enable_karpenter = true
+module "karpenter" {
+  source  = "terraform-aws-modules/eks/aws//modules/karpenter"
+  version = "20.24.0"
 
-  karpenter_enable_spot_termination          = true
-  karpenter_enable_instance_profile_creation = true
-  karpenter = {
-    repository_username = data.aws_ecrpublic_authorization_token.token.user_name
-    repository_password = data.aws_ecrpublic_authorization_token.token.password
+  cluster_name          = var.addon_context.eks_cluster_id
+  enable_v1_permissions = true
+  namespace             = local.namespace
+
+  iam_role_name                   = "${var.addon_context.eks_cluster_id}-karpenter-controller"
+  iam_role_use_name_prefix        = false
+  iam_policy_name                 = "${var.addon_context.eks_cluster_id}-karpenter-controller"
+  iam_policy_use_name_prefix      = false
+  node_iam_role_name              = "${var.addon_context.eks_cluster_id}-karpenter-node"
+  node_iam_role_use_name_prefix   = false
+  queue_name                      = "${var.addon_context.eks_cluster_id}-karpenter"
+  rule_name_prefix                = "eks-workshop"
+  create_pod_identity_association = true
+
+  tags = {
+    created-by = "eks-workshop-v2"
+    env        = var.addon_context.eks_cluster_id
   }
-
-  cluster_name      = var.addon_context.eks_cluster_id
-  cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint
-  cluster_version   = var.eks_cluster_version
-  oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
-
-  depends_on = [
-    module.eks_blueprints_addons
-  ]  
 }
 
+# Helm chart
 
-resource "aws_eks_access_entry" "node" {
+resource "helm_release" "karpenter" {
+  name                = "karpenter"
+  namespace           = local.namespace
+  create_namespace    = true
+  repository          = "oci://public.ecr.aws/karpenter"
+  repository_username = data.aws_ecrpublic_authorization_token.token.user_name
+  repository_password = data.aws_ecrpublic_authorization_token.token.password
+  chart               = "karpenter"
+  version             = var.karpenter_version
+  wait                = true
 
-  cluster_name  = var.addon_context.eks_cluster_id
-  principal_arn = module.eks_blueprints_addons_karpenter.karpenter.node_iam_role_arn
-  type          = "EC2_LINUX"
-
-  depends_on = [
-    module.eks_blueprints_addons_karpenter
+  values = [
+    <<-EOT
+    settings:
+      clusterName: ${var.addon_context.eks_cluster_id}
+      clusterEndpoint: ${var.addon_context.aws_eks_cluster_endpoint}
+      interruptionQueue: ${module.karpenter.queue_name}
+    tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+    EOT
   ]
+
+  lifecycle {
+    ignore_changes = [
+      repository_password
+    ]
+  }
 }
 
-resource "kubectl_manifest" "g5-gpu-karpenter-nodepool" {
-    yaml_body = <<YAML
-apiVersion: karpenter.sh/v1beta1
+resource "kubectl_manifest" "g5_gpu_karpenter_nodepool" {
+  yaml_body = <<YAML
+apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
   name: g5-gpu-karpenter
-  labels:
-    type: karpenter
-    NodeGroupType: g5-gpu-karpenter
 spec:
   template:
+    metadata:
+      labels:
+        type: karpenter
+        NodeGroupType: g5-gpu-karpenter
     spec:
       nodeClassRef:
-        apiVersion: karpenter.k8s.aws/v1beta1
+        group: karpenter.k8s.aws
         kind: EC2NodeClass
         name: g5-gpu-karpenter    
       taints:
@@ -162,62 +211,59 @@ spec:
     consolidationPolicy: WhenEmpty
     consolidateAfter: 300s
     expireAfter: 720h
-  weight: 100
 
 YAML
 
   depends_on = [
-    module.eks_blueprints_addons_karpenter
-  ] 
+    helm_release.karpenter
+  ]
 }
 
-
-resource "kubectl_manifest" "g5-gpu-karpenter-ec2nodeclass" {
-    yaml_body = <<YAML
-apiVersion: karpenter.k8s.aws/v1beta1
+resource "kubectl_manifest" "g5_gpu_karpenter_ec2nodeclass" {
+  yaml_body = <<YAML
+apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
   name: g5-gpu-karpenter
 spec:
-  amiFamily: Ubuntu
-  role: ${module.eks_blueprints_addons_karpenter.karpenter.node_iam_role_name}
+  amiFamily: AL2023
+  amiSelectorTerms:
+    - alias: al2023@latest
+  role: ${module.karpenter.node_iam_role_arn}
   subnetSelectorTerms:
     - tags:
-        karpenter.sh/discovery: "eks-workshop"
+        karpenter.sh/discovery: $EKS_CLUSTER_NAME
   securityGroupSelectorTerms:
     - tags:
-        karpenter.sh/discovery: "eks-workshop" 
+        karpenter.sh/discovery: $EKS_CLUSTER_NAME
   blockDeviceMappings:
-  - deviceName: /dev/sda1
+  - deviceName: /dev/xvda
     ebs:
       volumeSize: 100Gi
       volumeType: gp3
-    # userData: |
-    #   #!/bin/bash
-    #   docker pull public.ecr.aws/h3o5n2r0/dogbooth:0.0.1-gpu
 
 YAML
 
   depends_on = [
-    module.eks_blueprints_addons_karpenter
-  ] 
+    helm_release.karpenter
+  ]
 }
 
-
-resource "kubectl_manifest" "x86-cpu-karpenter-nodepool" {
-    yaml_body = <<YAML
-apiVersion: karpenter.sh/v1beta1
+resource "kubectl_manifest" "x86_cpu_karpenter_nodepool" {
+  yaml_body = <<YAML
+apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
   name: x86-cpu-karpenter
-  labels:
-    type: karpenter
-    NodeGroupType: x86-cpu-karpenter
 spec:
   template:
+    metadata:
+      labels:
+        type: karpenter
+        NodeGroupType: x86-cpu-karpenter
     spec:
       nodeClassRef:
-        apiVersion: karpenter.k8s.aws/v1beta1
+        group: karpenter.k8s.aws
         kind: EC2NodeClass
         name: x86-cpu-karpenter
       requirements:
@@ -239,30 +285,31 @@ spec:
     consolidationPolicy: WhenEmpty
     consolidateAfter: 300s
     expireAfter: 720h
-  weight: 100
 
 YAML
 
   depends_on = [
-    module.eks_blueprints_addons_karpenter
-  ] 
+    helm_release.karpenter
+  ]
 }
 
-resource "kubectl_manifest" "x86-cpu-karpenter-ec2nodeclass" {
-    yaml_body = <<YAML
-apiVersion: karpenter.k8s.aws/v1beta1
+resource "kubectl_manifest" "x86_cpu_karpenter_ec2nodeclass" {
+  yaml_body = <<YAML
+apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
   name: x86-cpu-karpenter
 spec:
-  amiFamily: AL2 # Amazon Linux 2
-  role: ${module.eks_blueprints_addons_karpenter.karpenter.node_iam_role_name}
+  amiFamily: AL2023
+  amiSelectorTerms:
+    - alias: al2023@latest
+  role: ${module.karpenter.node_iam_role_arn}
   subnetSelectorTerms:
     - tags:
-        karpenter.sh/discovery: "eks-workshop" 
+        karpenter.sh/discovery: $EKS_CLUSTER_NAME
   securityGroupSelectorTerms:
     - tags:
-        karpenter.sh/discovery: "eks-workshop"
+        karpenter.sh/discovery: $EKS_CLUSTER_NAME
   blockDeviceMappings:
   - deviceName: /dev/xvda
     ebs:
@@ -272,16 +319,15 @@ spec:
 YAML
 
   depends_on = [
-    module.eks_blueprints_addons_karpenter
-  ] 
+    helm_release.karpenter
+  ]
 }
-
-
 
 resource "aws_prometheus_workspace" "eks_workshop_v2_amp" {
   alias = var.addon_context.eks_cluster_id
-}
 
+  tags = var.tags
+}
 
 resource "time_sleep" "blueprints_addons_sleep" {
   depends_on = [
@@ -289,7 +335,6 @@ resource "time_sleep" "blueprints_addons_sleep" {
   ]
   create_duration = "10s"
 }
-
 
 data "aws_subnets" "private" {
   tags = {
@@ -302,8 +347,9 @@ data "aws_subnets" "private" {
   }
 }
 
-
 resource "aws_prometheus_scraper" "agentless_scraper" {
+  tags = var.tags
+
   source {
     eks {
       cluster_arn = "arn:aws:eks:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster/${var.eks_cluster_id}"
@@ -373,7 +419,6 @@ scrape_configs:
 EOT
 }
 
-
 resource "kubernetes_namespace" "grafana" {
   metadata {
     name = "grafana"
@@ -385,7 +430,7 @@ module "eks_blueprints_kubernetes_grafana_addon" {
 
   depends_on = [
     time_sleep.blueprints_addons_sleep,
-    kubernetes_config_map.nvidia-dcgm-exporter-dashboard
+    kubernetes_config_map.nvidia_dcgm_exporter_dashboard
   ]
 
   addon_context = var.addon_context
@@ -402,7 +447,7 @@ module "eks_blueprints_kubernetes_grafana_addon" {
   }
 }
 
-resource "kubernetes_config_map" "nvidia-dcgm-exporter-dashboard" {
+resource "kubernetes_config_map" "nvidia_dcgm_exporter_dashboard" {
   metadata {
     name      = "nvidia-dcgm-exporter-dashboard"
     namespace = kubernetes_namespace.grafana.metadata[0].name
@@ -413,7 +458,7 @@ resource "kubernetes_config_map" "nvidia-dcgm-exporter-dashboard" {
   }
 
   data = {
-    "nvidia-dcgm-exporter-dashboard.json" =  file("~/environment/eks-workshop/modules/aiml/deploy-monitor-genai-model/grafana/nvidia-dcgm-exporter-dashboard.json")
+    "nvidia-dcgm-exporter-dashboard.json" =  file("${path.module}/nvidia-dcgm-exporter-dashboard.json")
   }
 }
 

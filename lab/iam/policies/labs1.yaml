@@ -12,9 +12,12 @@ Statement:
   - Effect: Allow
     Action:
       - aps:DeleteWorkspace
+      - aps:DeleteScraper
       - aps:Describe*
       - aps:List*
       - aps:QueryMetrics
+      - aps:CreateScraper
+      - aps:TagResource
     Resource: ["*"]
     Condition:
       StringLike:
