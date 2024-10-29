@@ -25,6 +25,10 @@ Statement:
           - ${Env}*
   - Effect: Allow
     Action:
+      - aps:DescribeScraper
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
       - dynamodb:ListTables
     Resource: ["*"]
   - Effect: Allow
