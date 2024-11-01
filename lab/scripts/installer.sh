@@ -20,7 +20,7 @@ yq_version='4.44.3'
 flux_version='2.4.0'
 
 # renovate: depName=argoproj/argo-cd
-argocd_version='2.12.4'
+argocd_version='2.12.6'
 
 # renovate: depName=hashicorp/terraform
 terraform_version='1.9.6'
