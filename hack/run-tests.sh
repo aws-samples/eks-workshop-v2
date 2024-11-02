@@ -76,12 +76,16 @@ RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-""}
 
 echo "Running test suite..."
 
+# get current IDs
+USER_ID=$(id -u)
+GROUP_ID=$(id -g)
+
 exit_code=0
 
 $CONTAINER_CLI run $background_args $dns_args \
   --name $container_name \
   -v $SCRIPT_DIR/../website/docs:/content \
-  -v $SCRIPT_DIR/../manifests:/manifests \
+  -v $SCRIPT_DIR/../manifests:/eks-workshop/manifests \
   -e 'EKS_CLUSTER_NAME' -e 'AWS_REGION' -e 'RESOURCES_PRECREATED' \
   $aws_credential_args $container_image -g "${actual_glob}" --hook-timeout 3600 --timeout 3600 $output_args ${AWS_EKS_WORKSHOP_TEST_FLAGS} || exit_code=$?
 

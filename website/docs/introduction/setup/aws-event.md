@@ -25,9 +25,17 @@ You will be presented with your personal dashboard. Select the **Open AWS Consol
 
 ![Open Console](./assets/openconsole.webp)
 
-Next return to the personal dashboard page and scroll down to the **Event Outputs** section to get a quick-start link to your Cloud9 IDE. Open this in a new browser tab:
+Next return to the personal dashboard page and scroll down to the **Event Outputs** section. Copy the URL from the **IdeUrl** field and open it in a new browser tab:
 
-![Cloud9 Link](./assets/cloud9.webp)
+![Cloud9 Link](./assets/workshop-studio-06.png)
+
+You will prompted for a password:
+
+![Cloud9 Link](./assets/visual-studio-01.png)
+
+Enter the value from the **IdePassword** from the outputs and the IDE will load.
+
+![Code-server login screen](./assets/vscode-splash.webp)
 
 Press **Get started** to access the workshop splash page:
 

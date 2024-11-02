@@ -3,7 +3,7 @@ title: "Storing secrets in AWS Secrets Manager"
 sidebar_position: 421
 ---
 
-First, we need to store a secret in AWS Secrets Manager, lets do that using the AWS CLI:
+Let's begin by creating a secret in AWS Secrets Manager using the AWS CLI. We'll create a secret that contains JSON-encoded credentials with username and password values:
 
 ```bash
 $ export SECRET_SUFFIX=$(openssl rand -hex 4)
@@ -17,9 +17,7 @@ $ aws secretsmanager create-secret --name "$SECRET_NAME" \
 }
 ```
 
-The command above is storing a secret with a JSON encoded key/value content, for `username` and `password` credentials.
-
-Validate the new stored secret in the [AWS Secrets Manager Console](https://console.aws.amazon.com/secretsmanager/listsecrets) or using this command:
+You can verify that the secret was created successfully by checking either the [AWS Secrets Manager Console](https://console.aws.amazon.com/secretsmanager/listsecrets) or using the AWS CLI. Let's use the CLI to examine the secret's metadata:
 
 ```bash
 $ aws secretsmanager describe-secret --secret-id "$SECRET_NAME"
