@@ -57,7 +57,7 @@ The output of this command will illustrate that:
 - Everything else will get sent to a target group for the ui service
 - As a default backup there is a 404 for any requests that happen to fall through the cracks
 
-You can also checkout out the new ALB configuration in the AWS console:
+You can also check out the new ALB configuration in the AWS console:
 
 <ConsoleButton url="https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=retail-app-group;sort=loadBalancerName" service="ec2" label="Open EC2 console"/>
 
