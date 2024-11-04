@@ -3,7 +3,7 @@ title: Persistent Object Storage with Mountpoint for Amazon S3
 sidebar_position: 30
 ---
 
-Remember that our end goal is to have a image host application that **scales horozontally** and has **persistent storage** backed by Amazon S3. In the previous steps we created a staging directory for our image objects, then we downloaded the image assets into the staging directory and uploaded them into our S3 bucket. Finally, we installed the Mountpoint for Amazon S3 CSI driver and added it to our environment. We now need to attach our pods to use this PV provided by the Mountpoint for Amazon S3 CSI driver.
+Remember that our end goal is to have an image host application that **scales horozontally** and has **persistent storage** backed by Amazon S3. In the previous steps we created a staging directory for our image objects, then we downloaded the image assets into the staging directory and uploaded them into our S3 bucket. Finally, we installed the Mountpoint for Amazon S3 CSI driver and added it to our environment. We now need to attach our pods to use this PV provided by the Mountpoint for Amazon S3 CSI driver.
 
 Let's create a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and change the `assets` container on the assets deployment to mount the Volume created.
 
@@ -15,16 +15,17 @@ manifests/modules/fundamentals/storage/s3/deployment/s3pvclaim.yaml
 
 In particular, notice the comments in the mountOptions section:
 
-* ```allow-delete```: Allows users to delete objects from the mounted bucket
-* ```allow-other```: Allows users other than the owner to access the mounted bucket
-* ```uid=999```: Sets the User ID (UID) of the files and directories in the mounted bucket to 999
-* ```gid=999```: Sets the Group ID (GID) of the files and directories in the mounted bucket to 999
-* ```region us-west-2```: Sets the region of the bucket to us-west-2
+- `allow-delete`: Allows users to delete objects from the mounted bucket
+- `allow-other`: Allows users other than the owner to access the mounted bucket
+- `uid=999`: Sets the User ID (UID) of the files and directories in the mounted bucket to 999
+- `gid=999`: Sets the Group ID (GID) of the files and directories in the mounted bucket to 999
+- `region us-west-2`: Sets the region of the bucket to us-west-2
 
 ```kustomization
 modules/fundamentals/storage/s3/deployment/deployment.yaml
 Deployment/assets
 ```
+
 Let's apply this Kustomization and re-deploy. This step will take a few minutes:
 
 ```bash
@@ -38,7 +39,9 @@ persistentvolume/s3-pv created
 persistentvolumeclaim/s3-claim created
 deployment.apps/assets configured
 ```
+
 We can monitor the progress of the roll-out and wait for it to finish:
+
 ```bash
 $ kubectl rollout status --timeout=130s deployment/assets -n assets
 deployment "assets" successfully rolled out
@@ -72,6 +75,7 @@ assets-9fbbbcd6f-lb46c   1/1     Running   0          6m55s
 ```
 
 Finally, let's take a look at our final deployment with the Mountpoint for Amazon S3 CSI driver:
+
 ```bash
 $ kubectl describe deployment -n assets
 Name:                   assets
@@ -140,7 +144,7 @@ Events:
   Normal  ScalingReplicaSet  7m17s  deployment-controller  Scaled down replica set assets-784b5f5656 to 0 from 1
 ```
 
-Let's go into first pod and list files at `/mountpoint-s3`
+Let's go into first pod and list files at `/mountpoint-s3`. Since we have our S3 bucket mounted with the Mountpoint for Amazon S3 CSI driver, we can create a new image inside of the mounted S3 bucket too:
 
 ```bash
 $ POD_1=$(kubectl -n assets get pods -o jsonpath='{.items[0].metadata.name}')
@@ -150,15 +154,11 @@ gentleman.jpg
 pocket_watch.jpg
 smart_2.jpg
 wood_watch.jpg
-```
-
-Now that we have our S3 bucket mounted with the Mountpoint for Amazon S3 CSI driver, we can create a new image inside of that mounted S3 bucket:
-
-```bash
 $ kubectl exec --stdin $POD_1 -n assets -- bash -c 'touch /mountpoint-s3/divewatch.jpg'
 ```
 
 We know that this is a persistent storage layer that is mounted by all of the pods, so let's go into the second pod and view the file that we created from the first pod:
+
 ```bash
 $ POD_2=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
 $ kubectl exec --stdin $POD_2 -n assets -- bash -c 'ls /mountpoint-s3/'
@@ -172,7 +172,9 @@ wood_watch.jpg
 ```
 
 Since this is a persistent storage layer that is mounted by all of the pods in our cluster, we also create another image file on this pod and view the object with `aws s3 ls`:
+
 ```bash
+$ POD_2=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
 $ kubectl exec --stdin $POD_2 -n assets -- bash -c 'touch /mountpoint-s3/luxurywatch.jpg'
 $ aws s3 ls $BUCKET_NAME
 2024-10-14 19:29:05      98157 chrono_classic.jpg

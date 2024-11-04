@@ -100,17 +100,12 @@ $ kubectl rollout status -n assets deployment/assets --timeout=60s
 deployment "assets" successfully rolled out
 ```
 
-Now let's try to put a new product image named `divewatch.png` in the directory `/usr/share/nginx/html/assets` of the first Pod using the below command:
+Now let's try to put a new product image named `divewatch.png` in the directory `/usr/share/nginx/html/assets` of the first Pod and take a peek at this directory to make sure our new image `divewatch.jpg` exists:
 
 ```bash
 $ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[0].metadata.name}')
 $ kubectl exec --stdin $POD_NAME \
   -n assets -- bash -c 'touch /usr/share/nginx/html/assets/divewatch.jpg'
-```
-
-Let's take a peek at this directory on the first Pod and make sure our new image `divewatch.jpg` exists on that pod:
-
-```bash
 $ kubectl exec --stdin $POD_NAME \
   -n assets -- bash -c 'ls /usr/share/nginx/html/assets'
 chrono_classic.jpg
