@@ -19,10 +19,10 @@ The lab exercises are designed in a way that you can run any modules as a self-c
 
 ![Lab icon example](./assets/lab-icon.webp)
 
-This module contains a single lab named **Getting started** which will be visible on the left side of your screen.
+This module contains a recommended lab named **Getting started** which will be visible on the left side of your screen.
 
 :::caution
-You should start each lab from the page indicated by this badge. Starting in the middle of a lab will cause unpredictable behavior.
+You should start each lab from the page indicated by the "LAB" badge. Starting in the middle of a lab will cause unpredictable behavior.
 :::
 
 Depending on your browser the first time you copy/paste content in to the VSCode terminal you may be presented with a prompt that looks like this:
