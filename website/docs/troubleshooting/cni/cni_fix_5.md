@@ -27,12 +27,12 @@ nginx-app-5cf4cbfd97-wm7xd   0/1     Pending   0          16m
 nginx-app-5cf4cbfd97-wn9lc   0/1     Pending   0          16m
 ```
 
-```bash 
+```bash
 $ kubectl get nodes -L app
 NAME                                          STATUS     ROLES    AGE    VERSION               APP
-ip-10-42-102-141.us-west-2.compute.internal   Ready      <none>   160m   v1.30.0-eks-036c24b   
-ip-10-42-145-11.us-west-2.compute.internal    Ready      <none>   160m   v1.30.0-eks-036c24b   
-ip-10-42-165-112.us-west-2.compute.internal   Ready      <none>   160m   v1.30.0-eks-036c24b   
+ip-10-42-102-141.us-west-2.compute.internal   Ready      <none>   160m   v1.30.0-eks-036c24b
+ip-10-42-145-11.us-west-2.compute.internal    Ready      <none>   160m   v1.30.0-eks-036c24b
+ip-10-42-165-112.us-west-2.compute.internal   Ready      <none>   160m   v1.30.0-eks-036c24b
 ip-100-64-3-8.us-west-2.compute.internal      NotReady   <none>   82m    v1.30.4-eks-a737599   cni_troubleshooting
 ```
 
@@ -48,13 +48,14 @@ Conditions:
   PIDPressure      False   Wed, 30 Oct 2024 20:43:45 +0000   Wed, 30 Oct 2024 19:21:08 +0000   KubeletHasSufficientPID      kubelet has sufficient PID available
   Ready            False   Wed, 30 Oct 2024 20:43:45 +0000   Wed, 30 Oct 2024 19:21:08 +0000   KubeletNotReady              container runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:Network plugin returns error: cni plugin not initialized
 ```
+
 :::info
 To ensure EKS worker nodes become Ready when using the default AWS VPC CNI, all containers in the aws-node pod must be ready
 :::
 Let's identify the aws-node pod on this node:
+
 1. Examine the Non-terminated Pods section in the output.
 2. Locate the pod name starting with 'aws-node'.
-
 
 This step is crucial for troubleshooting node readiness issues."
 
@@ -67,10 +68,13 @@ Non-terminated Pods:          (3 in total)
   kube-system                 aws-node-5jwzn               50m (2%)      0 (0%)      0 (0%)           0 (0%)         53m
   kube-system                 kube-proxy-69754             100m (5%)     0 (0%)      0 (0%)           0 (0%)         84m
 ```
+
 Let's capture the pod name
+
 ```bash test=false
 $ AWS_NODE_POD=$(kubectl get pods -n kube-system -l k8s-app=aws-node -o wide | grep $NODE_NAME| awk 'NR==1{print $1}')
 ```
+
 Having identified the pod name, our next step is to examine the pod's details. Let's use the describe command to focus on the readiness status of each container within the pod.
 
 ```bash test=false
@@ -96,7 +100,7 @@ Containers:
       cpu:      25m
     Liveness:   exec [/app/grpc-health-probe -addr=:50051 -connect-timeout=5s -rpc-timeout=5s] delay=60s timeout=10s period=10s #success=1 #failure=3
     Readiness:  exec [/app/grpc-health-probe -addr=:50051 -connect-timeout=5s -rpc-timeout=5s] delay=1s timeout=10s period=10s #success=1 #failure=3
-    
+
     <REDACTED>
 
   aws-eks-nodeagent:
@@ -118,7 +122,8 @@ Containers:
     Ready:          True
     Restart Count:  0
 ```
-The output reveals that the aws-node container within the aws-node pod is not transitioning to a ready state (Ready=False). This is likely due to a failed Readiness probe, which is configured for the container. To resolve this issue, investigate the aws-node container to identify and address the factors preventing the Readiness probe from passing. 
+
+The output reveals that the aws-node container within the aws-node pod is not transitioning to a ready state (Ready=False). This is likely due to a failed Readiness probe, which is configured for the container. To resolve this issue, investigate the aws-node container to identify and address the factors preventing the Readiness probe from passing.
 
 ### Step 6
 
@@ -135,7 +140,6 @@ Events:
 ```
 
 This error suggests that the aws-node/L-IPAMD component lacks the necessary permissions to access the EC2 API, specifically the ec2:DescribeNetworkInterfaces action.
-
 
 ### Step 7
 
@@ -197,6 +201,7 @@ ip-10-42-145-11.us-west-2.compute.internal    Ready    <none>   179m   v1.30.0-e
 ip-10-42-165-112.us-west-2.compute.internal   Ready    <none>   179m   v1.30.0-eks-036c24b
 ip-100-64-3-8.us-west-2.compute.internal      Ready    <none>   101m   v1.30.4-eks-a737599
 ```
+
 Verify that all app containers are scheduled to a node and display a 'ContainerCreating' status. This indicates proper initial deployment
 
 ```bash

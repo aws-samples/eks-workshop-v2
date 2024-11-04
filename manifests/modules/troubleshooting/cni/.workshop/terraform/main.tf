@@ -37,14 +37,14 @@ data "aws_subnet" "selected" {
 
 resource "aws_subnet" "large_subnet" {
   count = length(data.aws_subnets.private.ids)
-  
+
   vpc_id            = aws_vpc_ipv4_cidr_block_association.secondary_cidr.vpc_id
   cidr_block        = cidrsubnet(local.secondary_cidr, 2, count.index)
   availability_zone = data.aws_subnet.selected[count.index].availability_zone
 
   tags = merge(local.tags, var.tags, {
     AdditionalSubnet = "true"
-    Size = "large"
+    Size             = "large"
   })
 
   depends_on = [
@@ -54,14 +54,14 @@ resource "aws_subnet" "large_subnet" {
 
 resource "aws_subnet" "small_subnet" {
   count = length(data.aws_subnets.private.ids)
-  
+
   vpc_id            = aws_vpc_ipv4_cidr_block_association.secondary_cidr.vpc_id
   cidr_block        = cidrsubnet(local.secondary_cidr, 6, count.index + 48)
   availability_zone = data.aws_subnet.selected[count.index].availability_zone
 
-  tags = merge(local.tags,{
+  tags = merge(local.tags, {
     AdditionalSubnet = "true"
-    Size = "small"
+    Size             = "small"
   })
 
   depends_on = [
@@ -113,9 +113,9 @@ resource "aws_iam_role" "node_role" {
 }
 
 resource "aws_eks_access_entry" "cni_troubleshooting_nodes" {
-  cluster_name      = var.eks_cluster_id
-  principal_arn     = aws_iam_role.node_role.arn
-  type              = "EC2_LINUX"
+  cluster_name  = var.eks_cluster_id
+  principal_arn = aws_iam_role.node_role.arn
+  type          = "EC2_LINUX"
 }
 
 resource "aws_eks_node_group" "cni_troubleshooting_nodes" {
@@ -123,7 +123,7 @@ resource "aws_eks_node_group" "cni_troubleshooting_nodes" {
   cluster_name    = var.eks_cluster_id
   node_group_name = "cni_troubleshooting_nodes"
   node_role_arn   = aws_iam_role.node_role.arn
-  subnet_ids      = aws_subnet.small_subnet.*.id
+  subnet_ids      = aws_subnet.small_subnet[*].id
   instance_types  = ["m5.large"]
 
   scaling_config {
@@ -137,8 +137,8 @@ resource "aws_eks_node_group" "cni_troubleshooting_nodes" {
   }
 
   taint {
-    key = "purpose"
-    value = "cni_troubleshooting"
+    key    = "purpose"
+    value  = "cni_troubleshooting"
     effect = "NO_SCHEDULE"
   }
 
@@ -158,12 +158,12 @@ data "aws_eks_addon" "vpc_cni" {
 
 resource "null_resource" "change_config" {
   triggers = {
-    config = data.aws_eks_addon.vpc_cni.configuration_values,
-    cluster_name = var.addon_context.eks_cluster_id,
-    role_arn = data.aws_eks_addon.vpc_cni.service_account_role_arn,
+    config          = data.aws_eks_addon.vpc_cni.configuration_values,
+    cluster_name    = var.addon_context.eks_cluster_id,
+    role_arn        = data.aws_eks_addon.vpc_cni.service_account_role_arn,
     node_group_name = aws_eks_node_group.cni_troubleshooting_nodes.node_group_name,
-    role_name = split("/", data.aws_eks_addon.vpc_cni.service_account_role_arn)[1],
-    timestamp = timestamp()
+    role_name       = split("/", data.aws_eks_addon.vpc_cni.service_account_role_arn)[1],
+    timestamp       = timestamp()
   }
 
   provisioner "local-exec" {

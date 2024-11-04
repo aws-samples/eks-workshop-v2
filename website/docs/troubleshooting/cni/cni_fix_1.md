@@ -82,6 +82,7 @@ spec:
         effect: "NoSchedule"
       // highlight-end
 ```
+
 To troubleshoot pods that are stuck in a Pending state, we can use the 'describe' command to obtain detailed information about their current status and any potential issues preventing them from running.
 
 ```bash test=false
@@ -104,6 +105,7 @@ $ kubectl get nodes -l app=cni_troubleshooting -L app
 NAME                                         STATUS    ROLES    AGE   VERSION               APP
 ip-10-42-117-53.us-west-2.compute.internal   NotReady  <none>   91s   v1.30.0-eks-036c24b   cni_troubleshooting
 ```
+
 we'll select this node as our focus
 
 ```bash test=false
@@ -124,7 +126,7 @@ Conditions:
   Ready            False   Wed, 30 Oct 2024 19:37:02 +0000   Wed, 30 Oct 2024 19:21:08 +0000   KubeletNotReady              container runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:Network plugin returns error: cni plugin not initialized
 ```
 
-Let's analyze the situation: The node was in a NotReady state because the CNI (Container Network Interface) plugin wasn't initialized. 
+Let's analyze the situation: The node was in a NotReady state because the CNI (Container Network Interface) plugin wasn't initialized.
 
 :::Info
 On EKS Linux nodes, the CNI plugin is initialized by a healthy VPC CNI pod called 'aws-node'. These aws-node pods run as DaemonSets, meaning each Linux worker node should have one.
@@ -144,6 +146,7 @@ Non-terminated Pods:          (2 in total)
 Is the aws-node pod present and healthy? If not, what would be your next steps to troubleshoot or resolve this issue?
 
 ### Step 3
+
 Having identified that the aws-node is missing from the node, our next step is to investigate the aws-node daemonset. Let's use the kubectl describe command to gather more information about this daemonset and understand why it's not running on the affected node. This will help us pinpoint the root cause of the issue and determine the appropriate solution.
 
 ```bash test=false
@@ -176,11 +179,13 @@ aws-node-mkjkr   0/2     Pending   0          20m   <none>          <none>      
 aws-node-shw94   2/2     Running   0          72m   10.42.145.11    ip-10-42-145-11.us-west-2.compute.internal    <none>           <none>
 aws-node-v9dq6   2/2     Running   0          72m   10.42.102.141   ip-10-42-102-141.us-west-2.compute.internal   <none>           <none>
 ```
+
 Let's select the Pending aws-node pod
 
 ```bash test=false
 $ AWS_NODE_POD=$(kubectl get pods -l k8s-app=aws-node -n kube-system | grep Pending | awk 'NR==1{print $1}')
 ```
+
 An aws-node pod is currently in a Pending state, which is unusual for this critical system daemonset. Normally, aws-node should run even on NotReady nodes. Let's investigate further by describing the affected pod to identify the root cause of this issue.
 
 ```bash test=false
@@ -198,7 +203,7 @@ Labels:               app.kubernetes.io/instance=aws-vpc-cni
                       pod-template-generation=5
 Annotations:          <none>
 Status:               Pending
-IP:                   
+IP:
 IPs:                  <none>
 Controlled By:        DaemonSet/aws-node
 Init Containers:
@@ -215,7 +220,7 @@ Init Containers:
       AWS_STS_REGIONAL_ENDPOINTS:   regional
       AWS_DEFAULT_REGION:           us-west-2
       AWS_REGION:                   us-west-2
-      AWS_ROLE_ARN:                 arn:aws:iam::460449571267:role/eksctl-eks-workshop-addon-vpc-cni-Role1-rvDMIG8AaPGr
+      AWS_ROLE_ARN:                 arn:aws:iam::1234567890:role/eksctl-eks-workshop-addon-vpc-cni-Role1-rvDMIG8AaPGr
       AWS_WEB_IDENTITY_TOKEN_FILE:  /var/run/secrets/eks.amazonaws.com/serviceaccount/token
     Mounts:
       /host/opt/cni/bin from cni-bin-dir (rw)
@@ -262,7 +267,7 @@ Containers:
       AWS_STS_REGIONAL_ENDPOINTS:             regional
       AWS_DEFAULT_REGION:                     us-west-2
       AWS_REGION:                             us-west-2
-      AWS_ROLE_ARN:                           arn:aws:iam::460449571267:role/eksctl-eks-workshop-addon-vpc-cni-Role1-rvDMIG8AaPGr
+      AWS_ROLE_ARN:                           arn:aws:iam::1234567890:role/eksctl-eks-workshop-addon-vpc-cni-Role1-rvDMIG8AaPGr
       AWS_WEB_IDENTITY_TOKEN_FILE:            /var/run/secrets/eks.amazonaws.com/serviceaccount/token
     Mounts:
       /host/etc/cni/net.d from cni-net-dir (rw)
@@ -292,7 +297,7 @@ Containers:
       AWS_STS_REGIONAL_ENDPOINTS:   regional
       AWS_DEFAULT_REGION:           us-west-2
       AWS_REGION:                   us-west-2
-      AWS_ROLE_ARN:                 arn:aws:iam::460449571267:role/eksctl-eks-workshop-addon-vpc-cni-Role1-rvDMIG8AaPGr
+      AWS_ROLE_ARN:                 arn:aws:iam::1234567890:role/eksctl-eks-workshop-addon-vpc-cni-Role1-rvDMIG8AaPGr
       AWS_WEB_IDENTITY_TOKEN_FILE:  /var/run/secrets/eks.amazonaws.com/serviceaccount/token
     Mounts:
       /host/opt/cni/bin from cni-bin-dir (rw)
@@ -303,7 +308,7 @@ Containers:
       /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-2npz9 (ro)
 Conditions:
   Type           Status
-  PodScheduled   False 
+  PodScheduled   False
 Volumes:
   aws-iam-token:
     Type:                    Projected (a volume that contains injected data from multiple sources)
@@ -311,15 +316,15 @@ Volumes:
   bpf-pin-path:
     Type:          HostPath (bare host directory volume)
     Path:          /sys/fs/bpf
-    HostPathType:  
+    HostPathType:
   cni-bin-dir:
     Type:          HostPath (bare host directory volume)
     Path:          /opt/cni/bin
-    HostPathType:  
+    HostPathType:
   cni-net-dir:
     Type:          HostPath (bare host directory volume)
     Path:          /etc/cni/net.d
-    HostPathType:  
+    HostPathType:
   log-dir:
     Type:          HostPath (bare host directory volume)
     Path:          /var/log/aws-routed-eni
@@ -331,7 +336,7 @@ Volumes:
   xtables-lock:
     Type:          HostPath (bare host directory volume)
     Path:          /run/xtables.lock
-    HostPathType:  
+    HostPathType:
   kube-api-access-2npz9:
     Type:                    Projected (a volume that contains injected data from multiple sources)
     TokenExpirationSeconds:  3607
@@ -359,7 +364,6 @@ The issue stems from insufficient memory on one of the nodes to meet the aws-nod
 1. Create a new nodegroup with more resources
 2. Adjust the memory request for the aws-node daemonset
 
-
 We'll proceed with option 2. Since the aws-node daemonset is deployed via Amazon VPC CNI managed addons, let's examine the addon configuration.
 
 ```bash test=false
@@ -383,10 +387,12 @@ $ aws eks describe-addon --addon-name vpc-cni --cluster-name eks-workshop --outp
 ```
 
 ### Step 4
-Having identified the necessary VPC CNI configuration adjustments for aws-node compatibility, let's proceed to update our setup. 
+
+Having identified the necessary VPC CNI configuration adjustments for aws-node compatibility, let's proceed to update our setup.
+
 1. Remove the existing resource definitions and create a variable with the revised configuration
 2. Maintain IRSA Configuration for VPC CNI Add-ons: When updating the configuration of VPC CNI managed add-ons, it's crucial to preserve the existing IAM Role for Service Account (IRSA) setup. Before making any changes, identify the associated IAM role to ensure it remains intact throughout the update process.
-3. Apply the configuration changes using ```aws eks update-addon``` CLI command:
+3. Apply the configuration changes using `aws eks update-addon` CLI command:
 
 ```bash timeout=180 hook=fix-1 hookTimeout=600
 $ CURRENT_CONFIG=$(aws eks describe-addon --addon-name vpc-cni --cluster-name eks-workshop --output text --query addon.configurationValues) && \

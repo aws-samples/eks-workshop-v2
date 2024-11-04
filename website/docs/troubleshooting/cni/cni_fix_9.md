@@ -4,6 +4,7 @@ sidebar_position: 30
 ---
 
 ### Step 9
+
 Congratulations, The nginx-app pods have been scheduled on the new node. However, they are stuck in the ContainerCreating state. To troubleshoot this issue, describe one of the affected pods and examine the Events section of the output. This will help identify the root cause of the problem.
 
 ```bash test=false
@@ -24,6 +25,7 @@ Events:
   Warning  FailedCreatePodSandBox  21m                  kubelet            Failed to create pod sandbox: rpc error: code = Unknown desc = failed to setup network for sandbox "ba6330c1dc7d5bcf715a635569c54e1eb67f40ea26aa00db56d54e6ddb25ea7f": plugin type="aws-cni" name="aws-cni" failed (add): add cmd: failed to assign an IP address to container
   Warning  FailedCreatePodSandBox  3m7s (x84 over 21m)  kubelet            (combined from similar events): Failed to create pod sandbox: rpc error: code = Unknown desc = failed to setup network for sandbox "ee02fa03d490b4d0691df0f8db608a7c5c4c7983b498eee620a9494c31eb1628": plugin type="aws-cni" name="aws-cni" failed (add): add cmd: failed to assign an IP address to container
 ```
+
 :::info VPC CNI Overview and Troubleshooting:
 
 The VPC CNI (Container Network Interface) operates by placing the aws-cni binary in the /opt/cni/bin directory of each node. This binary plays a crucial role during pod creation:
@@ -32,11 +34,10 @@ The VPC CNI (Container Network Interface) operates by placing the aws-cni binary
 - It requests an available IP address from the L-IPAMD (IP Address Management Daemon), also known as aws-node.
 - This request is made via a gRPC call to a local socket on port 50051.
 
-
 When troubleshooting network issues, focus on two main components:
+
 - The aws-cni binary logs (/var/log/aws-routed-eni/plugin.log)
 - The L-IPAMD (aws-node) logs (/var/log/aws-routed-eni/ipamd.log)
-
 
 **Note**: These logs are typically only accessible from the node itself. To facilitate log collection, AWS provides a specialized tool called [the EKS Log Collector](https://github.com/awslabs/amazon-eks-ami/tree/main/log-collector-script/). You can find this script in the Amazon EKS AMI GitHub repository.
 :::
@@ -78,6 +79,7 @@ First, we'll select a representative pod name as our focus
 ```bash test=false
 $ POD_NAME=$(kubectl get pods -n cni-tshoot -o custom-columns=:metadata.name --no-headers | awk 'NR==1{print $1}')
 ```
+
 Next, we'll identify the specific node where our pod is currently running by retrieving its instance ID
 
 ```bash test=false
@@ -92,6 +94,7 @@ $ bash eks-workshop/modules/troubleshooting/cni/.workshop/ssm.sh $NODE_ID plugin
 {"level":"info","ts":"2024-10-30T21:31:30.508Z","caller":"routed-eni-cni-plugin/cni.go:125","msg":"Received CNI add request: ContainerID(493b063c06e901827b21737af8d543a77f724b2d8ce97d650a6d1703b724a549) Netns(/var/run/netns/cni-5b637183-286d-95ec-1c4a-de61ed54de26) IfName(eth0) Args(K8S_POD_INFRA_CONTAINER_ID=493b063c06e901827b21737af8d543a77f724b2d8ce97d650a6d1703b724a549;K8S_POD_UID=53b79f5f-dc74-454d-bdde-5a9282ac6ace;IgnoreUnknown=1;K8S_POD_NAMESPACE=cni-tshoot;K8S_POD_NAME=nginx-app-5cf4cbfd97-2v8tp) Path(/opt/cni/bin) argsStdinData({\"cniVersion\":\"1.0.0\",\"mtu\":\"9001\",\"name\":\"aws-cni\",\"pluginLogFile\":\"/var/log/aws-routed-eni/plugin.log\",\"pluginLogLevel\":\"DEBUG\",\"podSGEnforcingMode\":\"standard\",\"type\":\"aws-cni\",\"vethPrefix\":\"eni\"})"}
 {"level":"info","ts":"2024-10-30T21:31:30.545Z","caller":"routed-eni-cni-plugin/cni.go:282","msg":"Received CNI del request: ContainerID(493b063c06e901827b21737af8d543a77f724b2d8ce97d650a6d1703b724a549) Netns(/var/run/netns/cni-5b637183-286d-95ec-1c4a-de61ed54de26) IfName(eth0) Args(IgnoreUnknown=1;K8S_POD_NAMESPACE=cni-tshoot;K8S_POD_NAME=nginx-app-5cf4cbfd97-2v8tp;K8S_POD_INFRA_CONTAINER_ID=493b063c06e901827b21737af8d543a77f724b2d8ce97d650a6d1703b724a549;K8S_POD_UID=53b79f5f-dc74-454d-bdde-5a9282ac6ace) Path(/opt/cni/bin) argsStdinData({\"cniVersion\":\"1.0.0\",\"mtu\":\"9001\",\"name\":\"aws-cni\",\"pluginLogFile\":\"/var/log/aws-routed-eni/plugin.log\",\"pluginLogLevel\":\"DEBUG\",\"podSGEnforcingMode\":\"standard\",\"type\":\"aws-cni\",\"vethPrefix\":\"eni\"})"}
 ```
+
 Excellent! We've confirmed that the CNI plugin successfully received the request to set up the network namespace for pod $POD_NAME. Our next step is to check if the L-IPAMD received an IP address request from the CNI plugin for this specific pod.
 
 ```bash test=false
@@ -99,7 +102,8 @@ $ bash eks-workshop/modules/troubleshooting/cni/.workshop/ssm.sh $NODE_ID ipamd 
 {"level":"debug","ts":"2024-10-30T21:32:23.519Z","caller":"rpc/rpc.pb.go:713","msg":"AddNetworkRequest: K8S_POD_NAME:\"nginx-app-5cf4cbfd97-2v8tp\"  K8S_POD_NAMESPACE:\"cni-tshoot\"  K8S_POD_INFRA_CONTAINER_ID:\"1921d4fa98f25f481b0d5935eebd0e8e4b8c2b937b2d98277828ada327069393\"  ContainerID:\"1921d4fa98f25f481b0d5935eebd0e8e4b8c2b937b2d98277828ada327069393\"  IfName:\"eth0\"  NetworkName:\"aws-cni\"  Netns:\"/var/run/netns/cni-65045971-ebe5-d672-a6b5-f7690545d61e\""}
 {"level":"debug","ts":"2024-10-30T21:32:23.556Z","caller":"rpc/rpc.pb.go:731","msg":"DelNetworkRequest: K8S_POD_NAME:\"nginx-app-5cf4cbfd97-2v8tp\"  K8S_POD_NAMESPACE:\"cni-tshoot\"  K8S_POD_INFRA_CONTAINER_ID:\"1921d4fa98f25f481b0d5935eebd0e8e4b8c2b937b2d98277828ada327069393\"  Reason:\"PodDeleted\"  ContainerID:\"1921d4fa98f25f481b0d5935eebd0e8e4b8c2b937b2d98277828ada327069393\"  IfName:\"eth0\"  NetworkName:\"aws-cni\""}
 ```
-Great! We've confirmed that the L-IPAMD successfully received an IP address request for the pod named $POD_NAME from the CNI plugin. Our next step is to examine the IP address pool managed by the IPAMD at the time this request was processed. 
+
+Great! We've confirmed that the L-IPAMD successfully received an IP address request for the pod named $POD_NAME from the CNI plugin. Our next step is to examine the IP address pool managed by the IPAMD at the time this request was processed.
 
 ```bash test=false
 $ bash eks-workshop/modules/troubleshooting/cni/.workshop/ssm.sh $NODE_ID ipamd 200 datastore/data
@@ -114,10 +118,12 @@ $ bash eks-workshop/modules/troubleshooting/cni/.workshop/ssm.sh $NODE_ID ipamd 
 {"level":"error","ts":"2024-10-30T21:32:56.559Z","caller":"datastore/data_store.go:607","msg":"DataStore has no available IP/Prefix addresses"}
 {"level":"debug","ts":"2024-10-30T21:32:56.566Z","caller":"datastore/data_store.go:607","msg":"AssignPodIPv4Address: IP address pool stats: total 0, assigned 0"}
 ```
+
 Upon examination, we've discovered that the IP Address Management (IPAMD) warm pool is currently empty. This indicates that we should shift our focus to investigating the configuration of the Virtual Private Cloud (VPC) subnets.
 
 ### Step 11
-As we turn our attention to VPC subnet configuration, our first step is to locate the subnet where the worker node instances are deployed. Once identified, we'll examine the number of available IP addresses within that subnet. 
+
+As we turn our attention to VPC subnet configuration, our first step is to locate the subnet where the worker node instances are deployed. Once identified, we'll examine the number of available IP addresses within that subnet.
 
 ```bash
 $ NODE_SUBNET=$(aws ec2 describe-instances --instance-ids $NODE_ID --query 'Reservations[0].Instances[0].SubnetId' --output text) && \
@@ -136,13 +142,17 @@ $ NODE_GROUP_SUBNETS=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NA
 Having identified that our existing node subnets are running low on available IP addresses, we need to take action. The solution is to create a new nodegroup that utilizes subnets with a larger pool of available IPs. It's important to note that we cannot modify an existing nodegroup to use different subnets, which is why creating a new nodegroup is necessary.
 
 ### Step 12
-When expanding your EKS cluster, it's possible to create new subnets for additional nodegroups, even if these subnets weren't part of the original cluster configuration. 
+
+When expanding your EKS cluster, it's possible to create new subnets for additional nodegroups, even if these subnets weren't part of the original cluster configuration.
 :::info
 In our case, we've established new subnets on a secondary VPC CIDR to accommodate our new nodegroups, they are defined in these environment variables
+
 1. **ADDITIONAL_SUBNET_1**
 2. **ADDITIONAL_SUBNET_2**
 3. **ADDITIONAL_SUBNET_3**
+
 :::
+
 Before we move forward with creating a new managed nodegroup, it's essential to confirm that there are sufficient IP addresses available in these newly created subnets.
 
 ```bash
@@ -162,6 +172,7 @@ $ aws eks create-nodegroup --region $AWS_REGION \
   --taints key=purpose,value=cni_troubleshooting,effect=NO_SCHEDULE\
   --scaling-config minSize=1,maxSize=3,desiredSize=1
 ```
+
 During the creation of the new node group, we'll initiate a scale-in process for the existing node group. This action will encourage the automatic rescheduling of pods onto the newly created nodes, ensuring a smooth transition to the updated infrastructure.
 
 ```bash timeout=180 hook=fix-9 hookTimeout=600
@@ -170,7 +181,7 @@ $ aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-n
 
 After the new node group becomes fully operational and the old node group has scaled down completely, you should observe that all your nginx-app pods are in a **Running** state.
 
-```bash 
+```bash
 $ kubectl get pods -n cni-tshoot
 NAME                         READY   STATUS    RESTARTS   AGE
 nginx-app-5cf4cbfd97-28lv7   1/1     Running   0          6m22s
