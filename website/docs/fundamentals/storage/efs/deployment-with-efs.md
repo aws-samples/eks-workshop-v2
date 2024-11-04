@@ -3,25 +3,25 @@ title: Dynamic provisioning using EFS
 sidebar_position: 30
 ---
 
-Now that we understand the EFS storage class for Kubernetes let's create a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and change the `assets` container on the assets deployment to mount the Volume created.
+Now that we understand the EFS storage class for Kubernetes, let's create a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and modify the `assets` container deployment to mount this volume.
 
-First inspect the `efspvclaim.yaml` file to see the parameters in the file and the claim of the specific storage size of 5GB from the Storage class `efs-sc` we created in the earlier step:
+First, let's examine the `efspvclaim.yaml` file which defines a PersistentVolumeClaim requesting 5GB of storage from the `efs-sc` storage class we created earlier:
 
 ```file
 manifests/modules/fundamentals/storage/efs/deployment/efspvclaim.yaml
 ```
 
-We'll also modify the assets service in two ways:
+We'll update the assets service to:
 
-- Mount the PVC to the location where the assets images are stored
-- Add an [init container](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) to copy the initial images to the EFS volume
+- Mount the PVC at the location where assets images are stored
+- Include an [init container](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) that copies the initial images to the EFS volume
 
 ```kustomization
 modules/fundamentals/storage/efs/deployment/deployment.yaml
 Deployment/assets
 ```
 
-We can apply the changes by running the following command:
+Apply these changes with the following command:
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/efs/deployment
@@ -34,7 +34,7 @@ deployment.apps/assets configured
 $ kubectl rollout status --timeout=130s deployment/assets -n assets
 ```
 
-Now look at the `volumeMounts` in the deployment, notice that we have our new `Volume` named `efsvolume` mounted on`volumeMounts` named `/usr/share/nginx/html/assets`:
+Let's examine the `volumeMounts` in the deployment. Notice that our new volume named `efsvolume` is mounted at `/usr/share/nginx/html/assets`:
 
 ```bash
 $ kubectl get deployment -n assets \
@@ -45,7 +45,7 @@ $ kubectl get deployment -n assets \
   name: tmp-volume
 ```
 
-A PersistentVolume (PV) has been created automatically for the PersistentVolumeClaim (PVC) we had created in the previous step:
+A PersistentVolume (PV) has been automatically created to fulfill our PersistentVolumeClaim (PVC):
 
 ```bash
 $ kubectl get pv
@@ -53,7 +53,7 @@ NAME                                       CAPACITY   ACCESS MODES   RECLAIM POL
 pvc-342a674d-b426-4214-b8b6-7847975ae121   5Gi        RWX            Delete           Bound    assets/efs-claim                      efs-sc                  2m33s
 ```
 
-Also describe the PersistentVolumeClaim (PVC) created:
+Let's examine the details of our PersistentVolumeClaim (PVC):
 
 ```bash
 $ kubectl describe pvc -n assets
@@ -80,7 +80,7 @@ Events:
   Normal  ProvisioningSucceeded  33s   efs.csi.aws.com_efs-csi-controller-6b4ff45b65-fzqjb_7efe91cc-099a-45c7-8419-6f4b0a4f9e01  Successfully provisioned volume pvc-342a674d-b426-4214-b8b6-7847975ae121
 ```
 
-Now create a new file `newproduct.png` under the assets directory in the first Pod:
+To demonstrate the shared storage functionality, let's create a new file `newproduct.png` in the assets directory of the first Pod:
 
 ```bash
 $ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[0].metadata.name}')
@@ -88,7 +88,7 @@ $ kubectl exec --stdin $POD_NAME \
   -n assets -c assets -- bash -c 'touch /usr/share/nginx/html/assets/newproduct.png'
 ```
 
-And verify that the file now also exists in the second Pod:
+Now verify that this file exists in the second Pod:
 
 ```bash
 $ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
@@ -104,4 +104,4 @@ test.txt
 wood_watch.jpg
 ```
 
-Now as you can see even though we created a file through the first Pod the second Pod also has access to this file because of the shared EFS file system.
+As you can see, even though we created the file through the first Pod, the second Pod has immediate access to it because they're both using the same EFS file system.
