@@ -1,6 +1,8 @@
 ---
 title: "PodStuck - ContainerCreating"
 sidebar_position: 43
+chapter: true
+sidebar_custom_props: { "module": true }
 ---
 
 In this section we will learn how to troubleshoot the pod for one of the scenarios where it is stuck in ContainerCreating state.
@@ -51,8 +53,8 @@ efs-app-5c4df89785-m4qz4   0/1     ContainerCreating   0          19m
 
 You can see that the pod status is showing as ContainerCreating. Lets describe the pod to see the events.
 
-```bash
-$ POD=`kubectl get pods -o jsonpath='{.items[*].metadata.name}'`
+```bash expectError=true
+$ export POD=`kubectl get pods -o jsonpath='{.items[*].metadata.name}'`
 $ kubectl describe pod $POD | awk '/Events:/,/^$/'
 Events:
   Type     Reason            Age                From               Message
@@ -88,8 +90,9 @@ Connection to the mount target IP address x.x.x.x timeout.'. This gives us an id
 In the below commands, we are getting the instance id of the node where pod is scheduled and then fetching the security groups attached to that node and further checking the egress rules to see if there are limitations on destination.
 
 ```bash
-$ INSTANCE=`kubectl get node ($ kubectl get pod $POD -o jsonpath='{.spec.nodeName}') -o yaml`
-$ SG=`aws ec2 describe-instances --instance-ids $INSTANCE --query "Reservations[].Instances[].SecurityGroups[].GroupId" --output text`
+$ export NODE=`kubectl get pod $POD -o jsonpath='{.spec.nodeName}'`
+$ export INSTANCE=`kubectl get node $NODE -o jsonpath='{.spec.providerID}' | cut -d'/' -f5`
+$ export SG=`aws ec2 describe-instances --instance-ids $INSTANCE --query "Reservations[].Instances[].SecurityGroups[].GroupId" --output text`
 $ aws ec2 describe-security-groups --group-ids $SG --query "SecurityGroups[].IpPermissionsEgress[]"
 ```
 You can see that the egress rules have no limitations. IpProtocol -1 indicates all protocols and the CidrIp indicates the destination as 0.0.0.0/0. So the communication from the worker node is not restricted and should be able to reach the EFS mount target.
@@ -114,10 +117,10 @@ In the below commands, we are
 - Retrieving the security groups attached to the mount target ENI and checking the inbound rules of the security group
 
 ```bash
-$ AZ=`aws ec2 describe-instances --instance-ids $INSTANCE --query "Reservations[*].Instances[*].[Placement.AvailabilityZone]" --output text`
-$ EFS=`kubectl get pv $(kubectl get pvc efs-claim -o jsonpath='{.spec.volumeName}') -o jsonpath='{.spec.csi.volumeHandle}' | cut -d':' -f1`
-$ MT_ENI=`aws efs describe-mount-targets --file-system-id $EFS --query "MountTargets[?AvailabilityZoneName=='$AZ'].[NetworkInterfaceId]" --output text`
-$ MT_SG=`aws ec2 describe-network-interfaces --network-interface-ids $MT_ENI --query "NetworkInterfaces[*].[Groups[*].GroupId]" --output text`
+$ export AZ=`aws ec2 describe-instances --instance-ids $INSTANCE --query "Reservations[*].Instances[*].[Placement.AvailabilityZone]" --output text`
+$ export EFS=`kubectl get pv $(kubectl get pvc efs-claim -o jsonpath='{.spec.volumeName}') -o jsonpath='{.spec.csi.volumeHandle}' | cut -d':' -f1`
+$ export MT_ENI=`aws efs describe-mount-targets --file-system-id $EFS --query "MountTargets[?AvailabilityZoneName=='$AZ'].[NetworkInterfaceId]" --output text`
+$ export MT_SG=`aws ec2 describe-network-interfaces --network-interface-ids $MT_ENI --query "NetworkInterfaces[*].[Groups[*].GroupId]" --output text`
 $ aws ec2 describe-security-groups --group-ids $MT_SG --query "SecurityGroups[].IpPermissions[]"
 [
     {
@@ -159,13 +162,13 @@ In the below commands, we are
 - Adding inbound rule to mount target security group allowing traffic on port 2049 from VPC CIDR.
 
 ```bash
-$ VPC_ID=`aws eks describe-cluster --name eks-workshop --query "cluster.resourcesVpcConfig.vpcId" --output text`
-$ CIDR=`aws ec2 describe-vpcs --vpc-ids $VPC_ID --query "Vpcs[*].CidrBlock" --output text`
+$ export VPC_ID=`aws eks describe-cluster --name eks-workshop --query "cluster.resourcesVpcConfig.vpcId" --output text`
+$ export CIDR=`aws ec2 describe-vpcs --vpc-ids $VPC_ID --query "Vpcs[*].CidrBlock" --output text`
 $ aws ec2 authorize-security-group-ingress --group-id $MT_SG --protocol tcp --port 2049 --cidr $CIDR
 ```
 After 3-4 minutes, you should notice that the pod in default namespace is in running state 
 
-```bash
+```bash timeout=180 hook=fix-3 hookTimeout=600
 $ kubectl get pods $POD
 NAME                       READY   STATUS    RESTARTS   AGE
 efs-app-5c4df89785-m4qz4   1/1     Running   0          102m

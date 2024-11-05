@@ -1,6 +1,8 @@
 ---
 title: "ImagePullBackOff - Public Image"
 sidebar_position: 41
+chapter: true
+sidebar_custom_props: { "module": true }
 ---
 
 In this section we will learn how to troubleshoot the pod ImagePullBackOff error for a ECR public image.
@@ -49,7 +51,7 @@ ui-new-5654dd8969-7w98k   0/1     ImagePullBackOff   0          13s
 
 You can see that the pod status is showing as ImagePullBackOff. Lets describe the pod to see the events.
 
-```bash
+```bash expectError=true timeout=20
 $ POD=`kubectl get pods -o jsonpath='{.items[*].metadata.name}'`
 $ kubectl describe pod $POD | awk '/Events:/,/^$/'
 Events:
@@ -95,7 +97,7 @@ deployment.apps/ui-new patched
 
 Check if the new pod is created and running successfully.
 
-```bash
+```bash timeout=180 hook=fix-1 hookTimeout=600
 $ kubectl get pods
 NAME                     READY   STATUS    RESTARTS   AGE
 ui-new-77856467b-2z2s6   1/1     Running   0          13s
