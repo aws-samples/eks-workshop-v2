@@ -2,8 +2,12 @@
 
 set -e
 
+cd /tmp
+
 curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/${REPOSITORY_REF}/lab/scripts/installer.sh | sudo bash
 
 curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/${REPOSITORY_REF}/lab/scripts/setup.sh | bash
 
+echo ""
 echo "Your IDE has been updated, please close this terminal and open a new one to ensure the latest configuration is loaded."
+echo ""
