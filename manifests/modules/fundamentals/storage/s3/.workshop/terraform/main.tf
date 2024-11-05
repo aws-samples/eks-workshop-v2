@@ -17,8 +17,8 @@ module "mountpoint_s3_csi_driver_irsa" {
   # IAM policy to attach to driver
   attach_mountpoint_s3_csi_policy = true
 
-  mountpoint_s3_csi_bucket_arns = [aws_s3_bucket.mountpoint-s3.arn]
-  mountpoint_s3_csi_path_arns   = ["${aws_s3_bucket.mountpoint-s3.arn}/*"]
+  mountpoint_s3_csi_bucket_arns = [aws_s3_bucket.mountpoint_s3.arn]
+  mountpoint_s3_csi_path_arns   = ["${aws_s3_bucket.mountpoint_s3.arn}/*"]
 
   oidc_providers = {
     main = {
@@ -43,7 +43,7 @@ resource "aws_iam_role_policy" "eks_workshop_ide_s3_put_access" {
     {
       "Effect": "Allow",
       "Action": "s3:PutObject",
-      "Resource": "${aws_s3_bucket.mountpoint-s3.arn}/*"
+      "Resource": "${aws_s3_bucket.mountpoint_s3.arn}/*"
     }
   ]
 }

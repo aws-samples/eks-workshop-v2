@@ -3,7 +3,7 @@ title: Persistent Object Storage with Mountpoint for Amazon S3
 sidebar_position: 30
 ---
 
-Remember that our end goal is to have an image host application that **scales horozontally** and has **persistent storage** backed by Amazon S3. In the previous steps we created a staging directory for our image objects, then we downloaded the image assets into the staging directory and uploaded them into our S3 bucket. Finally, we installed the Mountpoint for Amazon S3 CSI driver and added it to our environment. We now need to attach our pods to use this PV provided by the Mountpoint for Amazon S3 CSI driver.
+Remember that our end goal is to have an image host application that **scales horizontally** and has **persistent storage** backed by Amazon S3. In the previous steps we created a staging directory for our image objects, then we downloaded the image assets into the staging directory and uploaded them into our S3 bucket. Finally, we installed the Mountpoint for Amazon S3 CSI driver and added it to our environment. We now need to attach our pods to use this PV provided by the Mountpoint for Amazon S3 CSI driver.
 
 Let's create a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and change the `assets` container on the assets deployment to mount the Volume created.
 
