@@ -193,6 +193,6 @@
   "/security/secrets-management/secrets-manager/mounting-secrets.md": 16049,
   "/troubleshooting/alb/index.md": 16049,
   "/troubleshooting/pod/image_pull_1.md": 16049,
-  "/troubleshooting/pod/image_pull_2.md":  16049,
-  "/troubleshooting/pod/pod_stuck.md":  16049
+  "/troubleshooting/pod/image_pull_2.md": 16049,
+  "/troubleshooting/pod/pod_stuck.md": 16049
 }

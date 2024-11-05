@@ -2,7 +2,7 @@
 variable "eks_cluster_id" {
   description = "EKS cluster name"
   type        = string
-  default = "eks-workshop"
+  default     = "eks-workshop"
 }
 
 # tflint-ignore: terraform_unused_declarations

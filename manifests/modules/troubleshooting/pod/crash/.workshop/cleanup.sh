@@ -1,7 +1,5 @@
 #!/bin/bash
 
-aws eks update-kubeconfig --name eks-workshop
-
 if kubectl get deployment efs-app -n default > /dev/null 2>&1; then
     kubectl delete deployment efs-app -n default
 else

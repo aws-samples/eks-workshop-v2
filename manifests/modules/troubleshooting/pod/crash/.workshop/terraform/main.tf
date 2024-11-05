@@ -15,7 +15,7 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 locals {
-    account_id = data.aws_caller_identity.current.account_id
+  account_id = data.aws_caller_identity.current.account_id
 }
 
 data "aws_vpc" "selected" {
@@ -37,11 +37,11 @@ data "aws_subnets" "public" {
   }
 }
 
-data "aws_region" "current" {}
-
+/*
 data "aws_eks_cluster" "cluster" {
   name = var.eks_cluster_id
 }
+*/
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
@@ -62,13 +62,13 @@ module "eks_blueprints_addons" {
 resource "aws_efs_file_system" "efs" {
   tags = {
     Name = "eks-workshop-efs"
-  }  
+  }
 }
 
 resource "aws_efs_mount_target" "mount_targets" {
-  for_each = toset(data.aws_subnets.public.ids)
-  file_system_id = resource.aws_efs_file_system.efs.id
-  subnet_id = each.value
+  for_each        = toset(data.aws_subnets.public.ids)
+  file_system_id  = resource.aws_efs_file_system.efs.id
+  subnet_id       = each.value
   security_groups = [resource.aws_security_group.efs_sg.id]
 }
 
@@ -101,13 +101,13 @@ data "template_file" "deployment_yaml" {
   template = file("/home/ec2-user/environment/eks-workshop/modules/troubleshooting/pod/crash/.workshop/terraform/deployment.yaml.tpl")
 
   vars = {
-    filesystemid = "${resource.aws_efs_file_system.efs.id}"
+    filesystemid = "resource.aws_efs_file_system.efs.id"
   }
 }
 
 resource "local_file" "deployment_yaml" {
   filename = "/home/ec2-user/environment/eks-workshop/modules/troubleshooting/pod/crash/deployment.yaml"
-  content = data.template_file.deployment_yaml.rendered
+  content  = data.template_file.deployment_yaml.rendered
 }
 
 resource "null_resource" "kustomize_app" {
