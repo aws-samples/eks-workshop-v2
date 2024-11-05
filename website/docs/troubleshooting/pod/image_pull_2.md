@@ -17,7 +17,7 @@ $ prepare-environment troubleshooting/pod/permissions
 The preparation of the lab might take a couple of minutes and it will make the following changes to your lab environment:
 
 - Create a ECR repo named retail-sample-app-ui.
-- Create a EC2 instance and push retail store sample app image in to the ECR repo from the instance using tag 0.4.0 
+- Create a EC2 instance and push retail store sample app image in to the ECR repo from the instance using tag 0.4.0
 - Create a new deployment named ui-private in default namespace
 - Introduce an issue to the deployment spec, so we can learn how to troubleshoot this type of issues
 
@@ -60,11 +60,11 @@ Events:
   Type     Reason     Age                    From               Message
   ----     ------     ----                   ----               -------
   Normal   Scheduled  5m15s                  default-scheduler  Successfully assigned default/ui-private-7655bf59b9-jprrj to ip-10-42-33-232.us-west-2.compute.internal
-  Normal   Pulling    3m53s (x4 over 5m15s)  kubelet            Pulling image "682844965773.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0"
-  Warning  Failed     3m53s (x4 over 5m14s)  kubelet            Failed to pull image "682844965773.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0": failed to pull and unpack image "682844965773.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0": failed to resolve reference "682844965773.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0": unexpected status from HEAD request to https://682844965773.dkr.ecr.us-west-2.amazonaws.com/v2/retail-sample-app-ui/manifests/0.4.0: 403 Forbidden
+  Normal   Pulling    3m53s (x4 over 5m15s)  kubelet            Pulling image "1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0"
+  Warning  Failed     3m53s (x4 over 5m14s)  kubelet            Failed to pull image "1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0": failed to pull and unpack image "1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0": failed to resolve reference "1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0": unexpected status from HEAD request to https:/"1234567890.dkr.ecr.us-west-2.amazonaws.com/v2/retail-sample-app-ui/manifests/0.4.0: 403 Forbidden
   Warning  Failed     3m53s (x4 over 5m14s)  kubelet            Error: ErrImagePull
   Warning  Failed     3m27s (x6 over 5m14s)  kubelet            Error: ImagePullBackOff
-  Normal   BackOff    4s (x21 over 5m14s)    kubelet            Back-off pulling image "682844965773.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0"
+  Normal   BackOff    4s (x21 over 5m14s)    kubelet            Back-off pulling image "1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0"
 ```
 
 ### Step 3
@@ -72,8 +72,7 @@ Events:
 From the events of the pod, we can see the 'Failed to pull image' warning, with cause as 403 Forbidden. This gives us an idea that the kubelet faced access denied while trying to pull the image used in the deployment. Lets get the URI of the image used in the deployment.
 
 ```bash
-$ kubectl get deploy ui-private -o jsonpath='{.spec.template.spec.containers[*].image}'
-682844965773.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0
+$ kubectl get deploy ui-private -o jsonpath='{.spec.template.spec.containers[*].image}'"1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0
 ```
 
 ### Step 4
@@ -81,11 +80,11 @@ $ kubectl get deploy ui-private -o jsonpath='{.spec.template.spec.containers[*].
 From the image URI, we can see that the image is referenced from the account where our EKS cluster is in. Lets check the ECR repository to see if any such image exists.
 
 ```bash
-$ aws ecr describe-images --repository-name retail-sample-app-ui --image-ids imageTag=0.4.0 
+$ aws ecr describe-images --repository-name retail-sample-app-ui --image-ids imageTag=0.4.0
 {
     "imageDetails": [
         {
-            "registryId": "682844965773",
+            "registryId": "1234567890",
             "repositoryName": "retail-sample-app-ui",
             "imageDigest": "sha256:b338785abbf5a5d7e0f6ebeb8b8fc66e2ef08c05b2b48e5dfe89d03710eec2c1",
             "imageTags": [
@@ -100,7 +99,7 @@ $ aws ecr describe-images --repository-name retail-sample-app-ui --image-ids ima
 }
 ```
 
-You should see that the image path we have in deployment i.e. account_id.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0 have a valid registryId i.e. account-number, valid repositoryName i.e. "retail-sample-app-ui" and valid imageTag i.e. "0.4.0". Which confirms the path of the image is correct and is not a wrong reference. 
+You should see that the image path we have in deployment i.e. account_id.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0 have a valid registryId i.e. account-number, valid repositoryName i.e. "retail-sample-app-ui" and valid imageTag i.e. "0.4.0". Which confirms the path of the image is correct and is not a wrong reference.
 
 :::info
 Alternatively, you can also check the console for the same. Click the button below to open the ECR Console. Then click on retail-sample-app-ui repository and the image tag 0.4.0, you should then see the complete URI of the image which should match with the URI in deployment spec i.e. account_id.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0
@@ -113,7 +112,7 @@ Alternatively, you can also check the console for the same. Click the button bel
 
 ### Step 5
 
-As we confirmed that the image URI is correct, lets check the permissions of the kubelet and confirm if the permissions required to pull images from ECR exists. 
+As we confirmed that the image URI is correct, lets check the permissions of the kubelet and confirm if the permissions required to pull images from ECR exists.
 
 Get the IAM role attached to worker nodes in the managed node group of the cluster and list the IAM policies attached to it.
 
@@ -151,9 +150,9 @@ The perimissions to the ECR repository can be managed at both Identity and Resou
 ```bash
 $ aws ecr get-repository-policy --repository-name retail-sample-app-ui
 {
-    "registryId": "682844965773",
+    "registryId": "1234567890",
     "repositoryName": "retail-sample-app-ui",
-    "policyText": "{\n  \"Version\" : \"2012-10-17\",\n  \"Statement\" : [ {\n    \"Sid\" : \"new policy\",\n    \"Effect\" : \"Deny\",\n    \"Principal\" : {\n      \"AWS\" : \"arn:aws:iam::682844965773:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-Fa4f8r6uT7UD\"\n    },\n    \"Action\" : [ \"ecr:UploadLayerPart\", \"ecr:SetRepositoryPolicy\", \"ecr:PutImage\", \"ecr:ListImages\", \"ecr:InitiateLayerUpload\", \"ecr:GetRepositoryPolicy\", \"ecr:GetDownloadUrlForLayer\", \"ecr:DescribeRepositories\", \"ecr:DeleteRepositoryPolicy\", \"ecr:DeleteRepository\", \"ecr:CompleteLayerUpload\", \"ecr:BatchGetImage\", \"ecr:BatchDeleteImage\", \"ecr:BatchCheckLayerAvailability\" ]\n  } ]\n}"
+    "policyText": "{\n  \"Version\" : \"2012-10-17\",\n  \"Statement\" : [ {\n    \"Sid\" : \"new policy\",\n    \"Effect\" : \"Deny\",\n    \"Principal\" : {\n      \"AWS\" : \"arn:aws:iam:"1234567890:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-Fa4f8r6uT7UD\"\n    },\n    \"Action\" : [ \"ecr:UploadLayerPart\", \"ecr:SetRepositoryPolicy\", \"ecr:PutImage\", \"ecr:ListImages\", \"ecr:InitiateLayerUpload\", \"ecr:GetRepositoryPolicy\", \"ecr:GetDownloadUrlForLayer\", \"ecr:DescribeRepositories\", \"ecr:DeleteRepositoryPolicy\", \"ecr:DeleteRepository\", \"ecr:CompleteLayerUpload\", \"ecr:BatchGetImage\", \"ecr:BatchDeleteImage\", \"ecr:BatchCheckLayerAvailability\" ]\n  } ]\n}"
 }
 ```
 
@@ -165,7 +164,7 @@ $ echo '{"Version":"2012-10-17","Statement":[{"Sid":"new policy","Effect":"Allow
 $ aws ecr set-repository-policy --repository-name retail-sample-app-ui --policy-text file://~/ecr-policy.json
 ```
 
-You can confirm if the ECR repo policy updated successfully, by using the above  get-repository-policy command.
+You can confirm if the ECR repo policy updated successfully, by using the above get-repository-policy command.
 
 ### Step 7
 
@@ -177,7 +176,7 @@ NAME                          READY   STATUS    RESTARTS   AGE
 ui-private-7655bf59b9-s9pvb   1/1     Running   0          65m
 ```
 
-That concludes the private ECR ImagePullBackOff troubleshooting section. 
+That concludes the private ECR ImagePullBackOff troubleshooting section.
 
 ## Wrapping it up
 
@@ -189,6 +188,7 @@ General troubleshooting workflow of the pod with ImagePullBackOff on private ima
 - For timeout on ECR, ensure that the worker node is configured to reach the ECR endpoint.
 
 References:
-- https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_on_EKS.html
-- https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policies.html
-- https://docs.aws.amazon.com/eks/latest/userguide/eks-networking.html
+
+- [ECR_on_EKS](https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_on_EKS.html)
+- [ECR_repo_policies](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policies.html)
+- [EKS_networking](https://docs.aws.amazon.com/eks/latest/userguide/eks-networking.html)

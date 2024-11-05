@@ -20,7 +20,6 @@ The preparation of the lab might take a couple of minutes and it will make the f
 - Create a EFS filesystem and mount targets.
 - Create a deployment named efs-app backed by a persistent volume claim named efs-claim to leverage EFS as persistent volume, in the default namespace.
 
-
 :::
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/troubleshooting/pod/crash/.workshop/terraform).
@@ -62,13 +61,13 @@ Events:
   Warning  FailedMount       26m (x3 over 26m)  kubelet            MountVolume.SetUp failed for volume "pvc-719c8ef2-5bdb-4638-b4db-7d59b53d21f0" : rpc error: code = Internal desc = Could not mount "fs-00a4069aec7924c8c:/" at "/var/lib/kubelet/pods/b2db07f9-0bae-4324-98e6-e4c978a0bef5/volumes/kubernetes.io~csi/pvc-719c8ef2-5bdb-4638-b4db-7d59b53d21f0/mount": mount failed: exit status 1
 Mounting command: mount
 Mounting arguments: -t efs -o accesspoint=fsap-0488d7b0bd9c26425,tls fs-00a4069aec7924c8c:/ /var/lib/kubelet/pods/b2db07f9-0bae-4324-98e6-e4c978a0bef5/volumes/kubernetes.io~csi/pvc-719c8ef2-5bdb-4638-b4db-7d59b53d21f0/mount
-Output: Failed to resolve "fs-00a4069aec7924c8c.efs.us-west-2.amazonaws.com". The file system mount target ip address cannot be found, please pass mount target ip address via mount options. 
+Output: Failed to resolve "fs-00a4069aec7924c8c.efs.us-west-2.amazonaws.com". The file system mount target ip address cannot be found, please pass mount target ip address via mount options.
 No mount target created for the file system fs-00a4069aec7924c8c is in available state yet, please retry in 5 minutes.
 Warning: config file does not have fips_mode_enabled item in section mount.. You should be able to find a new config file in the same folder as current config file /etc/amazon/efs/efs-utils.conf. Consider update the new config file to latest config file. Use the default value [fips_mode_enabled = False].Warning: config file does not have fips_mode_enabled item in section mount.. You should be able to find a new config file in the same folder as current config file /etc/amazon/efs/efs-utils.conf. Consider update the new config file to latest config file. Use the default value [fips_mode_enabled = False].
   Warning  FailedMount  26m (x3 over 26m)  kubelet  MountVolume.SetUp failed for volume "pvc-719c8ef2-5bdb-4638-b4db-7d59b53d21f0" : rpc error: code = Internal desc = Could not mount "fs-00a4069aec7924c8c:/" at "/var/lib/kubelet/pods/b2db07f9-0bae-4324-98e6-e4c978a0bef5/volumes/kubernetes.io~csi/pvc-719c8ef2-5bdb-4638-b4db-7d59b53d21f0/mount": mount failed: exit status 1
 Mounting command: mount
 Mounting arguments: -t efs -o accesspoint=fsap-0488d7b0bd9c26425,tls fs-00a4069aec7924c8c:/ /var/lib/kubelet/pods/b2db07f9-0bae-4324-98e6-e4c978a0bef5/volumes/kubernetes.io~csi/pvc-719c8ef2-5bdb-4638-b4db-7d59b53d21f0/mount
-Output: Failed to resolve "fs-00a4069aec7924c8c.efs.us-west-2.amazonaws.com". Cannot connect to file system mount target ip address 10.42.41.35. 
+Output: Failed to resolve "fs-00a4069aec7924c8c.efs.us-west-2.amazonaws.com". Cannot connect to file system mount target ip address 10.42.41.35.
 Connection to the mount target IP address 10.42.41.35 timeout. Please retry in 5 minutes if the mount target is newly created. Otherwise check your VPC and security group configuration to ensure your file system is reachable via TCP port 2049 from your instance.
 Warning: config file does not have fips_mode_enabled item in section mount.. You should be able to find a new config file in the same folder as current config file /etc/amazon/efs/efs-utils.conf. Consider update the new config file to latest config file. Use the default value [fips_mode_enabled = False].Warning: config file does not have fips_mode_enabled item in section mount.. You should be able to find a new config file in the same folder as current config file /etc/amazon/efs/efs-utils.conf. Consider update the new config file to latest config file. Use the default value [fips_mode_enabled = False].
   Warning  FailedMount  19m  kubelet  MountVolume.SetUp failed for volume "pvc-719c8ef2-5bdb-4638-b4db-7d59b53d21f0" : rpc error: code = Internal desc = Could not mount "fs-00a4069aec7924c8c:/" at "/var/lib/kubelet/pods/b2db07f9-0bae-4324-98e6-e4c978a0bef5/volumes/kubernetes.io~csi/pvc-719c8ef2-5bdb-4638-b4db-7d59b53d21f0/mount": mount failed: exit status 32
@@ -84,7 +83,7 @@ Warning: config file does not have fips_mode_enabled item in section mount.. You
 
 ### Step 3
 
-From the events of the pod, we can see the ' Cannot connect to file system mount target ip address x.x.x.x. 
+From the events of the pod, we can see the ' Cannot connect to file system mount target ip address x.x.x.x.
 Connection to the mount target IP address x.x.x.x timeout.'. This gives us an idea that the EFS file system is failed to mount for the pods to use as persistent volume. With out which the pod cannot move to running state. Lets check the networking configuration of the node on which the pod is scheduled to run.
 
 In the below commands, we are getting the instance id of the node where pod is scheduled and then fetching the security groups attached to that node and further checking the egress rules to see if there are limitations on destination.
@@ -95,6 +94,7 @@ $ export INSTANCE=`kubectl get node $NODE -o jsonpath='{.spec.providerID}' | cut
 $ export SG=`aws ec2 describe-instances --instance-ids $INSTANCE --query "Reservations[].Instances[].SecurityGroups[].GroupId" --output text`
 $ aws ec2 describe-security-groups --group-ids $SG --query "SecurityGroups[].IpPermissionsEgress[]"
 ```
+
 You can see that the egress rules have no limitations. IpProtocol -1 indicates all protocols and the CidrIp indicates the destination as 0.0.0.0/0. So the communication from the worker node is not restricted and should be able to reach the EFS mount target.
 
 :::info
@@ -110,8 +110,9 @@ Alternatively, click the button below to open the EKS Console. Then navigate to 
 
 Now, lets check the EFS file system networking configuration.
 
-In the below commands, we are 
-- Retrieving the Availability zone of the worker node using instance id. 
+In the below commands, we are
+
+- Retrieving the Availability zone of the worker node using instance id.
 - Retrieving the EFS id from the persistent volume claim.
 - Retrieving the mount target ENI for the availability zone corresponding to the instance Id.
 - Retrieving the security groups attached to the mount target ENI and checking the inbound rules of the security group
@@ -141,7 +142,6 @@ $ aws ec2 describe-security-groups --group-ids $MT_SG --query "SecurityGroups[].
 
 You should see that the security group attached to the mount target of EFS have inbound rules only on port 80 from the VPC CIDR. However, for the mount to be successful the security group of mount target should allow traffic on port 2049. Which is why the mount request is timing out from the EKS worker node.
 
-
 :::info
 Alternatively, you can also check the console for the same. Click the button below to open the EFS Console. Then click on EFS file system Id which has name as eks-workshop-efs. Then click on Network to view mount targets for all availability zones and the security groups attached to the each mount target.
 
@@ -166,7 +166,8 @@ $ export VPC_ID=`aws eks describe-cluster --name eks-workshop --query "cluster.r
 $ export CIDR=`aws ec2 describe-vpcs --vpc-ids $VPC_ID --query "Vpcs[*].CidrBlock" --output text`
 $ aws ec2 authorize-security-group-ingress --group-id $MT_SG --protocol tcp --port 2049 --cidr $CIDR
 ```
-After 3-4 minutes, you should notice that the pod in default namespace is in running state 
+
+After 3-4 minutes, you should notice that the pod in default namespace is in running state
 
 ```bash timeout=180 hook=fix-3 hookTimeout=600
 $ kubectl get pods $POD
@@ -183,7 +184,6 @@ This concludes the pod stuck in ContainerCreating troubleshooting section.
 General, troubleshooting workflow of pods stuck in ContainerCreating state is to check pod events and for volume mount issues:
 
 - Check the volume claim used by the pod and identify the type of volume used.
-- Then check the csi driver used for that volume and check the requiements to use that volume in EKS pods at https://docs.aws.amazon.com/eks/latest/userguide/storage.html
+- Then check the csi driver used for that volume and check the requirements to use that volume in EKS pods at [EKS Storage](https://docs.aws.amazon.com/eks/latest/userguide/storage.html)
 - Confirm that all the requiements mentioned in the corresponding storage type document are met.
-- Further check for troubleshooting guide of that CSI driver if exists. For example, to check mount issues of EFS with EKS there is a troubleshooting guide at https://repost.aws/knowledge-center/eks-troubleshoot-efs-volume-mount-issues
-
+- Further check for troubleshooting guide of that CSI driver if exists. For example, to check mount issues of EFS with EKS there is a troubleshooting guide at [EFS CSi Driver](https://repost.aws/knowledge-center/eks-troubleshoot-efs-volume-mount-issues)

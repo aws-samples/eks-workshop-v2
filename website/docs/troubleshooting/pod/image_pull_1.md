@@ -76,13 +76,13 @@ public.ecr.aws/aws-containers/retailing-store-sample-ui:0.4.0
 
 ### Step 4
 
-From the image URI, we can see that the image is referenced from public ECR repository of aws. Lets check if image named retailing-store-sample-ui with tag 0.4.0 exists at https://gallery.ecr.aws/aws-containers . Search for the "retailing-store-sample-ui" and you will notice that no such image repository shows up. You can also easily verify the image existence in public ecr by using the image URI on browser. In our case https://gallery.ecr.aws/aws-containers/retailing-store-sample-ui and since the image does not exist we will see Repository not found message as shown below.
+From the image URI, we can see that the image is referenced from public ECR repository of aws. Lets check if image named retailing-store-sample-ui with tag 0.4.0 exists at [aws-containers ECR](https://gallery.ecr.aws/aws-containers) . Search for the "retailing-store-sample-ui" and you will notice that no such image repository shows up. You can also easily verify the image existence in public ecr by using the image URI on browser. In our case [image-uri](https://gallery.ecr.aws/aws-containers/retailing-store-sample-ui) and since the image does not exist we will see Repository not found message as shown below.
 
 ![RepoDoesNotExist](./assets/rep-not-found.webp)
 
 ### Step 5
 
-To resolve the issue, we will have to update the deployment/pod spec with correct image reference. In our case it is public.ecr.aws/aws-containers/retail-store-sample-ui:0.4.0. Before we update the deployment, lets verify if this image exists using above mentioned method i.e. to hit the URL https://gallery.ecr.aws/aws-containers/retail-store-sample-ui. You should be able to see the retail-store-sample-ui image with multiple tags available. Out of which we are going to use 0.4.0.
+To resolve the issue, we will have to update the deployment/pod spec with correct image reference. In our case it is public.ecr.aws/aws-containers/retail-store-sample-ui:0.4.0. Before we update the deployment, lets verify if this image exists using above mentioned method i.e. to hit the [image-uri](https://gallery.ecr.aws/aws-containers/retail-store-sample-ui). You should be able to see the retail-store-sample-ui image with multiple tags available. Out of which we are going to use 0.4.0.
 
 ![RepoExist](./assets/repo-found.webp)
 
@@ -112,7 +112,8 @@ General troubleshooting workflow of the pod with ImagePullBackOff on public imag
 - Check the pod events for a clue on cause of the issue such as not found, access denied or timeout.
 - If not found, ensure that the image exists in the path referenced.
 - For access denied, check the permissions on worker node role.
-- For timeout on public images on ECR, ensure that the worker node is configured to reach the internet via IGW/TGW/NAT.
+- For timeout on public images on ECR, ensure that the worker node networking is configured to reach the internet via IGW/TGW/NAT.
 
 References:
-- https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_on_EKS.html
+
+- [ECR-with-EKS](https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_on_EKS.html)

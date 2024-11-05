@@ -15,7 +15,7 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 locals {
-    account_id = data.aws_caller_identity.current.account_id
+  account_id = data.aws_caller_identity.current.account_id
 }
 
 data "aws_region" "current" {}
@@ -24,12 +24,14 @@ data "aws_eks_cluster" "cluster" {
   name = var.eks_cluster_id
 }
 
+/*
 data "aws_vpc" "selected" {
   tags = {
     created-by = "eks-workshop-v2"
     env        = var.addon_context.eks_cluster_id
   }
 }
+*/
 
 data "aws_eks_node_group" "default" {
   cluster_name    = data.aws_eks_cluster.cluster.id
@@ -42,19 +44,19 @@ data "aws_ssm_parameter" "eks_ami" {
 
 data "aws_subnets" "selected" {
   tags = {
-    env        = var.addon_context.eks_cluster_id
+    env = var.addon_context.eks_cluster_id
   }
 }
 
 resource "aws_iam_role" "ecr_ec2_role" {
-  name                = "ecr_ec2_role"
+  name = "ecr_ec2_role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
         Effect = "Allow"
         Principal = {
-          Service = "ec2.amazonaws.com" 
+          Service = "ec2.amazonaws.com"
         }
         Action = "sts:AssumeRole"
       },
@@ -69,9 +71,9 @@ resource "aws_iam_instance_profile" "ecr_ec2" {
 }
 
 resource "aws_instance" "ui_to_ecr" {
-  ami           = data.aws_ssm_parameter.eks_ami.value
-  instance_type = "t3.medium"
-  user_data = <<-EOF
+  ami                  = data.aws_ssm_parameter.eks_ami.value
+  instance_type        = "t3.medium"
+  user_data            = <<-EOF
               #!/bin/bash
               sudo yum update -y
               sudo amazon-linux-extras install docker
@@ -82,19 +84,19 @@ resource "aws_instance" "ui_to_ecr" {
               aws ecr get-login-password | docker login --username AWS --password-stdin ${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.id}.amazonaws.com
               docker push ${resource.aws_ecr_repository.ui.repository_url}:0.4.0
               EOF
-  subnet_id = element(data.aws_subnets.selected.ids, 0)
+  subnet_id            = element(data.aws_subnets.selected.ids, 0)
   iam_instance_profile = resource.aws_iam_instance_profile.ecr_ec2.name
-  depends_on = [resource.aws_ecr_repository.ui]
+  depends_on           = [resource.aws_ecr_repository.ui]
 }
 
 resource "aws_ecr_repository" "ui" {
   name                 = "retail-sample-app-ui"
   image_tag_mutability = "MUTABLE"
-  force_delete = true
-  
+  force_delete         = true
+
 }
 
-data "aws_iam_policy_document" "private-registry" {
+data "aws_iam_policy_document" "private_registry" {
   statement {
     sid    = "new policy"
     effect = "Deny"
@@ -126,7 +128,7 @@ data "aws_iam_policy_document" "private-registry" {
 
 resource "aws_ecr_repository_policy" "example" {
   repository = aws_ecr_repository.ui.name
-  policy     = data.aws_iam_policy_document.private-registry.json
+  policy     = data.aws_iam_policy_document.private_registry.json
   depends_on = [resource.aws_instance.ui_to_ecr]
 }
 
@@ -141,7 +143,7 @@ data "template_file" "deployment_yaml" {
 
 resource "local_file" "deployment_yaml" {
   filename = "/home/ec2-user/environment/eks-workshop/modules/troubleshooting/pod/permissions/deployment.yaml"
-  content = data.template_file.deployment_yaml.rendered
+  content  = data.template_file.deployment_yaml.rendered
 }
 
 /*
