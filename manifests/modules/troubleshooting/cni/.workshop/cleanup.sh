@@ -20,25 +20,36 @@ if [ $is_policy_exist -eq 0 ]; then
 fi
 
 nodes=$(aws eks list-nodegroups --cluster-name $EKS_CLUSTER_NAME --query 'nodegroups' --output text)
+deleted_nodes=()
 
+logmessage "Reverting EKS managed nodegroup configuration"
 for node in ${nodes[@]}; do
-    logmessage "Reverting EKS managed nodegroup configuration"
     if [[ "$node" != "default" && "$node" != "cni_troubleshooting_nodes" ]]; then
         logmessage "Deleting nodegroup $node"
         aws eks delete-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $node
+        deleted_nodes+=$node
     fi
 done
 
-# logmessage "Reverting default managed node scaling configuration"
-# aws eks update-nodegroup-config --cluster-name $EKS_CLUSTER_NAME --nodegroup-name default --scaling-config minSize=3,maxSize=6,desiredSize=3
-
-logmessage "Reverting VPC CNI config to default"
-addons_status=$(aws eks describe-addon --addon-name vpc-cni --cluster-name $EKS_CLUSTER_NAME --query addon.status --output text)
-while [ $addons_status == "UPDATING" ]; do
-    logmessage "Waiting for VPC CNI addons status to not be in UPDATING"
-    sleep 60
-    addons_status=$(aws eks describe-addon --addon-name vpc-cni --cluster-name $EKS_CLUSTER_NAME --query addon.status --output text)
+logmessage "Waiting for EKS managed nodegroup to be deleted"
+for deleted_node in ${deleted_nodes[@]}; do
+    logmessage "waiting for deletion of $deleted_node"
+    aws eks wait nodegroup-deleted --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $deleted_node
 done
 
-DEFAULT_CONFIG='{"env":{"ENABLE_PREFIX_DELEGATION":"true","ENABLE_POD_ENI":"true","POD_SECURITY_GROUP_ENFORCING_MODE":"standard"},"enableNetworkPolicy":"true","nodeAgent":{"enablePolicyEventLogs":"true"}}'
-aws eks update-addon --addon-name vpc-cni --cluster-name $EKS_CLUSTER_NAME --service-account-role-arn $VPC_CNI_IAM_ROLE_ARN --configuration-values $DEFAULT_CONFIG
+DEFAULT_CONFIG='{"enableNetworkPolicy":"true","env":{"ENABLE_POD_ENI":"true","ENABLE_PREFIX_DELEGATION":"true","POD_SECURITY_GROUP_ENFORCING_MODE":"standard"},"nodeAgent":{"enablePolicyEventLogs":"true"}}'
+CURRENT_CONFIG=$(aws eks describe-addon --addon-name vpc-cni --cluster-name $EKS_CLUSTER_NAME --query addon.configurationValues --output text | jq --sort-keys -c .)
+
+if [ $DEFAULT_CONFIG != $CURRENT_CONFIG ]; then
+    logmessage "Reverting VPC CNI config to default"
+    addons_status=$(aws eks describe-addon --addon-name vpc-cni --cluster-name $EKS_CLUSTER_NAME --query addon.status --output text)
+    while [ $addons_status == "UPDATING" ]; do
+        logmessage "Waiting for VPC CNI addons status to not be in UPDATING"
+        sleep 60
+        addons_status=$(aws eks describe-addon --addon-name vpc-cni --cluster-name $EKS_CLUSTER_NAME --query addon.status --output text)
+    done
+
+    aws eks update-addon --addon-name vpc-cni --cluster-name $EKS_CLUSTER_NAME --service-account-role-arn $VPC_CNI_IAM_ROLE_ARN --configuration-values $DEFAULT_CONFIG
+fi
+
+

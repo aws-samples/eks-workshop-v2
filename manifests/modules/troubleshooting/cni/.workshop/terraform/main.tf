@@ -170,7 +170,7 @@ resource "null_resource" "change_config" {
     command = <<EOF
 mkdir -p /eks-workshop/temp
 CURRENT_CONFIG='${jsonencode(self.triggers.config)}'
-NEW_CONFIG=$(echo $CURENT_CONFIG | jq -c '. += {"resources":{"requests":{"memory":"2G"}}}')
+NEW_CONFIG=$(echo $CURRENT_CONFIG | jq -r . | jq -c '. += {"resources":{"requests":{"memory":"2G"}}}')
 aws eks update-addon --addon-name vpc-cni --cluster-name ${self.triggers.cluster_name} --service-account-role-arn ${self.triggers.role_arn} --configuration-values $NEW_CONFIG
 addons_status="UPDATING"
 while [ $addons_status == "UPDATING" ]; do
