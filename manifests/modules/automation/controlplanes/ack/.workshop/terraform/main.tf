@@ -19,29 +19,6 @@ data "aws_ecrpublic_authorization_token" "token" {
   provider = aws.virginia
 }
 
-#This module installs the ACK controller for DynamoDB through the AWS EKS Addons for ACK
-module "dynamodb_ack_addon" {
-
-  source  = "aws-ia/eks-ack-addons/aws"
-  version = "2.2.0"
-
-  # Cluster Info
-  cluster_name      = var.addon_context.eks_cluster_id
-  cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint
-  oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
-
-  ecrpublic_username = data.aws_ecrpublic_authorization_token.token.user_name
-  ecrpublic_token    = data.aws_ecrpublic_authorization_token.token.password
-
-  # Controllers to enable
-  enable_dynamodb = true
-  dynamodb = {
-    role_name            = "${var.addon_context.eks_cluster_id}-ack-ddb"
-    role_name_use_prefix = false
-  }
-
-  tags = var.tags
-}
 
 module "iam_assumable_role_carts" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
