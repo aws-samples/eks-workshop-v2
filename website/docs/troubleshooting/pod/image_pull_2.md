@@ -1,6 +1,8 @@
 ---
 title: "ImagePullBackOff - ECR Private Image"
 sidebar_position: 42
+chapter: true
+sidebar_custom_props: { "module": true }
 ---
 
 In this section we will learn how to troubleshoot the pod ImagePullBackOff error for a ECR private image.
@@ -51,7 +53,7 @@ ui-private-7655bf59b9-jprrj   0/1     ImagePullBackOff   0          4m42s
 
 You can see that the pod status is showing as ImagePullBackOff. Lets describe the pod to see the events.
 
-```bash
+```bash expectError=true
 $ POD=`kubectl get pods -o jsonpath='{.items[*].metadata.name}'`
 $ kubectl describe pod $POD | awk '/Events:/,/^$/'
 Events:
@@ -158,10 +160,9 @@ $ aws ecr get-repository-policy --repository-name retail-sample-app-ui
 You should see that the ECR repository policy has Effect as Deny and the Principal as the EKS managed node role. Which is restricting the kubelet from pulling images in this repository. Lets change the effect to allow and see if the kubelet is able to pull the image.
 
 ```bash
-$ aws ecr get-repository-policy --repository-name retail-sample-app-ui --query 'policyText' --output text > ecr-policy.json
-$ jq '(.Statement[] | select(.Effect == "Deny")).Effect = "Allow"' ecr-policy.json > updated-ecr-policy.json
-$ aws ecr set-repository-policy --repository-name retail-sample-app-ui --policy-text file://updated-ecr-policy.json
-$ rm ecr-policy.json updated-ecr-policy.json
+$ export ROLE_ARN=`aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name default --query 'nodegroup.nodeRole'`
+$ echo '{"Version":"2012-10-17","Statement":[{"Sid":"new policy","Effect":"Allow","Principal":{"AWS":'${ROLE_ARN}'},"Action":["ecr:BatchCheckLayerAvailability","ecr:BatchDeleteImage","ecr:BatchGetImage","ecr:CompleteLayerUpload","ecr:DeleteRepository","ecr:DeleteRepositoryPolicy","ecr:DescribeRepositories","ecr:GetDownloadUrlForLayer","ecr:GetRepositoryPolicy","ecr:InitiateLayerUpload","ecr:ListImages","ecr:PutImage","ecr:SetRepositoryPolicy","ecr:UploadLayerPart"]}]}' > ~/ecr-policy.json
+$ aws ecr set-repository-policy --repository-name retail-sample-app-ui --policy-text file://~/ecr-policy.json
 ```
 
 You can confirm if the ECR repo policy updated successfully, by using the above  get-repository-policy command.
@@ -170,7 +171,7 @@ You can confirm if the ECR repo policy updated successfully, by using the above 
 
 Now, check if the pods are running.
 
-```bash
+```bash timeout=180 hook=fix-2 hookTimeout=600
 $ kubectl get pods
 NAME                          READY   STATUS    RESTARTS   AGE
 ui-private-7655bf59b9-s9pvb   1/1     Running   0          65m
