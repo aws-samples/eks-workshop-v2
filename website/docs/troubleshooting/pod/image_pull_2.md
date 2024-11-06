@@ -149,15 +149,71 @@ You should see that the AWS managed policy "arn:aws:iam::aws:policy/AmazonEC2Con
 The perimissions to the ECR repository can be managed at both Identity and Resource level. The Identity level permissions are provided at IAM and the resource level permissions are provided at the repository level. As we confirmed that identity based permissions are good, the issue could be with resource level permissions. Lets the check the policy for ECR repo.
 
 ```bash
-$ aws ecr get-repository-policy --repository-name retail-sample-app-ui
+$ aws ecr get-repository-policy --repository-name retail-sample-app-ui --query policyText --output text | jq .
 {
-    "registryId": "1234567890",
-    "repositoryName": "retail-sample-app-ui",
-    "policyText": "{\n  \"Version\" : \"2012-10-17\",\n  \"Statement\" : [ {\n    \"Sid\" : \"new policy\",\n    \"Effect\" : \"Deny\",\n    \"Principal\" : {\n      \"AWS\" : \"arn:aws:iam:"1234567890:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-Fa4f8r6uT7UD\"\n    },\n    \"Action\" : [ \"ecr:UploadLayerPart\", \"ecr:SetRepositoryPolicy\", \"ecr:PutImage\", \"ecr:ListImages\", \"ecr:InitiateLayerUpload\", \"ecr:GetRepositoryPolicy\", \"ecr:GetDownloadUrlForLayer\", \"ecr:DescribeRepositories\", \"ecr:DeleteRepositoryPolicy\", \"ecr:DeleteRepository\", \"ecr:CompleteLayerUpload\", \"ecr:BatchGetImage\", \"ecr:BatchDeleteImage\", \"ecr:BatchCheckLayerAvailability\" ]\n  } ]\n}"
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "new policy",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::1234567890:role/EksNodeGroupRole"
+      },
+      "Action": [
+        "ecr:UploadLayerPart",
+        "ecr:SetRepositoryPolicy",
+        "ecr:PutImage",
+        "ecr:ListImages",
+        "ecr:InitiateLayerUpload",
+        "ecr:GetRepositoryPolicy",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:DescribeRepositories",
+        "ecr:DeleteRepositoryPolicy",
+        "ecr:DeleteRepository",
+        "ecr:CompleteLayerUpload",
+        "ecr:BatchGetImage",
+        "ecr:BatchDeleteImage",
+        "ecr:BatchCheckLayerAvailability"
+      ]
+    }
+  ]
 }
 ```
 
 You should see that the ECR repository policy has Effect as Deny and the Principal as the EKS managed node role. Which is restricting the kubelet from pulling images in this repository. Lets change the effect to allow and see if the kubelet is able to pull the image.
+
+We will be using below json file to modify the ecr repository permissions. You can notice that the Effect is set to Allow for the Node IAM role.
+
+```json {6}
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "new policy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::1234567890:role/EksNodeGroupRole"
+      },
+      "Action": [
+        "ecr:UploadLayerPart",
+        "ecr:SetRepositoryPolicy",
+        "ecr:PutImage",
+        "ecr:ListImages",
+        "ecr:InitiateLayerUpload",
+        "ecr:GetRepositoryPolicy",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:DescribeRepositories",
+        "ecr:DeleteRepositoryPolicy",
+        "ecr:DeleteRepository",
+        "ecr:CompleteLayerUpload",
+        "ecr:BatchGetImage",
+        "ecr:BatchDeleteImage",
+        "ecr:BatchCheckLayerAvailability"
+      ]
+    }
+  ]
+}
+```
 
 ```bash
 $ export ROLE_ARN=`aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name default --query 'nodegroup.nodeRole'`

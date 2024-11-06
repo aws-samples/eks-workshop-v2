@@ -93,6 +93,19 @@ $ export NODE=`kubectl get pod $POD -o jsonpath='{.spec.nodeName}'`
 $ export INSTANCE=`kubectl get node $NODE -o jsonpath='{.spec.providerID}' | cut -d'/' -f5`
 $ export SG=`aws ec2 describe-instances --instance-ids $INSTANCE --query "Reservations[].Instances[].SecurityGroups[].GroupId" --output text`
 $ aws ec2 describe-security-groups --group-ids $SG --query "SecurityGroups[].IpPermissionsEgress[]"
+[
+    {
+        "IpProtocol": "-1",
+        "UserIdGroupPairs": [],
+        "IpRanges": [
+            {
+                "CidrIp": "0.0.0.0/0"
+            }
+        ],
+        "Ipv6Ranges": [],
+        "PrefixListIds": []
+    }
+]
 ```
 
 You can see that the egress rules have no limitations. IpProtocol -1 indicates all protocols and the CidrIp indicates the destination as 0.0.0.0/0. So the communication from the worker node is not restricted and should be able to reach the EFS mount target.
@@ -165,6 +178,21 @@ In the below commands, we are
 $ export VPC_ID=`aws eks describe-cluster --name eks-workshop --query "cluster.resourcesVpcConfig.vpcId" --output text`
 $ export CIDR=`aws ec2 describe-vpcs --vpc-ids $VPC_ID --query "Vpcs[*].CidrBlock" --output text`
 $ aws ec2 authorize-security-group-ingress --group-id $MT_SG --protocol tcp --port 2049 --cidr $CIDR
+{
+    "Return": true,
+    "SecurityGroupRules": [
+        {
+            "SecurityGroupRuleId": "sgr-05ae66b3cfaf2b03c",
+            "GroupId": "sg-0d69452207db88cde",
+            "GroupOwnerId": "682844965773",
+            "IsEgress": false,
+            "IpProtocol": "tcp",
+            "FromPort": 2049,
+            "ToPort": 2049,
+            "CidrIpv4": "10.42.0.0/16"
+        }
+    ]
+}
 ```
 
 After 3-4 minutes, you should notice that the pod in default namespace is in running state
