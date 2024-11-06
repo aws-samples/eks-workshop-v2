@@ -101,7 +101,7 @@ data "template_file" "deployment_yaml" {
   template = file("/home/ec2-user/environment/eks-workshop/modules/troubleshooting/pod/crash/.workshop/terraform/deployment.yaml.tpl")
 
   vars = {
-    filesystemid = "resource.aws_efs_file_system.efs.id"
+    filesystemid = resource.aws_efs_file_system.efs.id
   }
 }
 
