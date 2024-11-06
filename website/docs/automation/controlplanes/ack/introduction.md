@@ -9,7 +9,7 @@ In this section, since we will be working with Amazon DynamoDB ACK, we first nee
 ```bash
 $ aws iam get-policy --policy-arn $DYNAMODB_POLICY_ARN
 ```
-Then we will create an IRSA for the ACK cntroller to use: 
+Then we will create an IRSA for the ACK controller to use: 
 ```bash
 $ eksctl create iamserviceaccount --name ack-ddb-sa \
   --namespace ack-dynamodb --cluster $EKS_CLUSTER_NAME \
