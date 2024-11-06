@@ -164,9 +164,6 @@ In the below commands, we are
 ```bash
 $ export VPC_ID=`aws eks describe-cluster --name eks-workshop --query "cluster.resourcesVpcConfig.vpcId" --output text`
 $ export CIDR=`aws ec2 describe-vpcs --vpc-ids $VPC_ID --query "Vpcs[*].CidrBlock" --output text`
-$ echo $VPC_ID
-$ echo $CIDR
-$ echo $MT_SG
 $ aws ec2 authorize-security-group-ingress --group-id $MT_SG --protocol tcp --port 2049 --cidr $CIDR
 ```
 
