@@ -31,6 +31,6 @@ While the sample application can run entirely within your cluster, including sta
 
 In this lab, we'll use ACK to provision these services and create secrets and configmaps containing the binding information to connect the application to these AWS managed services.
 
-For learning purpose, we're using helm to install the ACK controller. Another option is to use Terraform that allows for rapid deployment of AWS Service Controllers to your cluster. For more information, see the [ACK Terraform module documentation](https://registry.terraform.io/modules/aws-ia/eks-ack-addons/aws/latest#module_dynamodb).
+For learning purposes, we're using helm to install the ACK controller. Another option is to use Terraform that allows for rapid deployment of AWS Service Controllers to your cluster. For more information, see the [ACK Terraform module documentation](https://registry.terraform.io/modules/aws-ia/eks-ack-addons/aws/latest#module_dynamodb).
 
 ![EKS with DynamoDB](./assets/eks-workshop-ddb.webp)
