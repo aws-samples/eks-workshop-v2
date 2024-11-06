@@ -72,7 +72,8 @@ Events:
 From the events of the pod, we can see the 'Failed to pull image' warning, with cause as 403 Forbidden. This gives us an idea that the kubelet faced access denied while trying to pull the image used in the deployment. Lets get the URI of the image used in the deployment.
 
 ```bash
-$ kubectl get deploy ui-private -o jsonpath='{.spec.template.spec.containers[*].image}'"1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0
+$ kubectl get deploy ui-private -o jsonpath='{.spec.template.spec.containers[*].image}'
+"1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0"
 ```
 
 ### Step 4
@@ -168,9 +169,10 @@ You can confirm if the ECR repo policy updated successfully, by using the above 
 
 ### Step 7
 
-Now, check if the pods are running.
+Now, restart the deployment and check if the pods are running.
 
 ```bash timeout=180 hook=fix-2 hookTimeout=600
+$ kubectl rollout restart deploy ui-private
 $ kubectl get pods
 NAME                          READY   STATUS    RESTARTS   AGE
 ui-private-7655bf59b9-s9pvb   1/1     Running   0          65m
