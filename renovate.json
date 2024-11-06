@@ -7,6 +7,7 @@
   ],
   "schedule": ["on the first day of the month"],
   "enabledManagers": ["custom.regex", "github-actions", "terraform", "npm"],
+  "labels": ["content/other"],
   "packageRules": [
     {
       "matchManagers": ["github-actions"],

@@ -3,13 +3,15 @@ title: "Creating the load balancer"
 sidebar_position: 20
 ---
 
-Let's create an additional Service that provisions a load balancer with the following kustomization:
+Let's create an additional Service that provisions a load balancer with the following configuration:
 
-```file
-manifests/modules/exposing/load-balancer/nlb/nlb.yaml
-```
+::yaml{file="manifests/modules/exposing/load-balancer/nlb/nlb.yaml" paths="spec.type,spec.ports,spec.selector"}
 
-This `Service` will create a Network Load Balancer that listens on port 80 and forwards connections to the `ui` Pods on port 8080. An NLB is a layer 4 load balancer that on our case operates at the TCP layer.
+1. This `Service` will create a Network Load Balancer
+2. The NLB will listens on port 80 and forwards connections to the `ui` Pods on port 8080
+3. Here we express which pods should be added as target for this service using labels on the pods
+
+Apply this configuration:
 
 ```bash timeout=180 hook=add-lb hookTimeout=430
 $ kubectl apply -k ~/environment/eks-workshop/modules/exposing/load-balancer/nlb

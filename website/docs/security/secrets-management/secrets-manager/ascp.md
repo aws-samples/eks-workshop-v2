@@ -3,11 +3,11 @@ title: "AWS Secrets and Configuration Provider (ASCP)"
 sidebar_position: 422
 ---
 
-When we ran the `prepare-environment` script detailed in a [previous step](./index.md), it has already installed the AWS Secrets and Configuration Provider (ASCP) for the Kubernetes Secrets Store CSI Driver that's required for this lab.
+The `prepare-environment` script we ran in the [previous step](./index.md) has already installed the AWS Secrets and Configuration Provider (ASCP) for the Kubernetes Secrets Store CSI Driver required for this lab.
 
-Lets then, validate if the addons deployed.
+Let's validate that the addons were deployed correctly.
 
-Check the Secret Store CSI drive `DaemonSet` and respective `Pods`.
+First, check the Secret Store CSI driver `DaemonSet` and its `Pods`:
 
 ```bash
 $ kubectl -n secrets-store-csi-driver get pods,daemonsets -l app=secrets-store-csi-driver
@@ -20,7 +20,7 @@ pod/csi-secrets-store-secrets-store-csi-driver-k7m6c   3/3     Running   0      
 pod/csi-secrets-store-secrets-store-csi-driver-x2rs4   3/3     Running   0          3m57s
 ```
 
-Check the CSI Secrets Store Provider for AWS driver `DaemonSet` and respective `Pods`.
+Next, check the CSI Secrets Store Provider for AWS driver `DaemonSet` and its `Pods`:
 
 ```bash
 $ kubectl -n kube-system get pods,daemonset -l "app=secrets-store-csi-driver-provider-aws"
@@ -33,20 +33,20 @@ pod/secrets-store-csi-driver-provider-aws-djtf5   1/1     Running   0          2
 pod/secrets-store-csi-driver-provider-aws-dzg9r   1/1     Running   0          2m2s
 ```
 
-In order to provide access to your secrets stored in AWS Secrets Manager via CSI driver, you'll need a _SecretProviderClass_, which is a namespaced custom resource that's used provide driver configurations and specific parameters that match the information in AWS Secrets Manager.
+To provide access to secrets stored in AWS Secrets Manager via the CSI driver, you'll need a _SecretProviderClass_ - a namespaced custom resource that provides driver configurations and specific parameters matching the information in AWS Secrets Manager.
 
 ```file
 manifests/modules/security/secrets-manager/secret-provider-class.yaml
 ```
 
-In the above resource, we have two main configurations that we should be focusing. So go ahead and create the resource to explore those specifications.
+Let's create this resource and examine its two main configuration sections:
 
 ```bash
 $ cat ~/environment/eks-workshop/modules/security/secrets-manager/secret-provider-class.yaml \
   | envsubst | kubectl apply -f -
 ```
 
-The _objects_ parameter, which is pointing to a secret named as `eks-workshop/catalog-secret` that we will store in AWS Secrets Manager in the next step. Note that we are using [jmesPath](https://jmespath.org/), to extract a specific key-value from the secret that is JSON-formatted.
+First, the _objects_ parameter points to a secret named `eks-workshop/catalog-secret` that we'll store in AWS Secrets Manager in the next step. Note that we're using [jmesPath](https://jmespath.org/) to extract specific key-value pairs from the JSON-formatted secret:
 
 ```bash
 $ kubectl get secretproviderclass -n catalog catalog-spc -o yaml | yq '.spec.parameters.objects'
@@ -60,7 +60,7 @@ $ kubectl get secretproviderclass -n catalog catalog-spc -o yaml | yq '.spec.par
       objectAlias: password
 ```
 
-And the _secretObjects_, that will create and/or sync a Kubernetes secret with the data from the secret stored in AWS Secrets Manager. This means that when mounted to a Pod, the SecretProviderClass, will create a Kubernetes Secret, if it doesn't exist yet, and sync the values stored in AWS Secrets Manager with this Kubernetes Secret, in our case, it is named `catalog-secret`.
+Second, the _secretObjects_ section defines how to create and sync a Kubernetes secret with data from the AWS Secrets Manager secret. When mounted to a Pod, the SecretProviderClass will create a Kubernetes Secret (if it doesn't exist) named `catalog-secret` and sync the values from AWS Secrets Manager:
 
 ```bash
 $ kubectl get secretproviderclass -n catalog catalog-spc -o yaml | yq '.spec.secretObjects'

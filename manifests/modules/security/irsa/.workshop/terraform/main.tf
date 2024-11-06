@@ -26,6 +26,8 @@ resource "time_sleep" "wait" {
 }
 
 resource "kubernetes_manifest" "ui_nlb" {
+  depends_on = [module.eks_blueprints_addons]
+
   manifest = {
     "apiVersion" = "v1"
     "kind"       = "Service"
@@ -33,7 +35,7 @@ resource "kubernetes_manifest" "ui_nlb" {
       "name"      = "ui-nlb"
       "namespace" = "ui"
       "annotations" = {
-        "service.beta.kubernetes.io/aws-load-balancer-type"            = "external "
+        "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
         "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
         "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "instance"
       }
