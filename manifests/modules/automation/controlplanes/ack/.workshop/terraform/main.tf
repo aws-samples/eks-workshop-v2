@@ -56,6 +56,42 @@ EOF
   tags   = var.tags
 }
 
+resource "aws_iam_policy" "ack_dynamo" {
+  name        = "${var.addon_context.eks_cluster_id}-ack-dynamo"
+  path        = "/"
+  description = "Dynamo policy for carts application"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllAPIActionsOnCart",
+      "Effect": "Allow",
+      "Action": "dynamodb:*",
+      "Resource": [
+        "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${var.addon_context.eks_cluster_id}-carts-ack",
+        "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${var.addon_context.eks_cluster_id}-carts-ack/index/*"
+      ]
+    }
+  ]
+}
+EOF
+  tags   = var.tags
+}
+
+module "iam_assumable_role_ack" {
+  source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+  version                       = "5.44.0"
+  create_role                   = true
+  role_name                     = "${var.addon_context.eks_cluster_id}-ack-controller"
+  provider_url                  = var.addon_context.eks_oidc_issuer_url
+  role_policy_arns              = [aws_iam_policy.ack_dynamo.arn]
+  oidc_fully_qualified_subjects = ["system:serviceaccount:ack-dynamodb:ack-ddb-sa"]
+
+  tags = var.tags
+}
+
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "1.16.3"
