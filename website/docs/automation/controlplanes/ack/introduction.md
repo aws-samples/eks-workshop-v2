@@ -5,7 +5,7 @@ sidebar_position: 3
 
 Each ACK service controller is packaged into a separate container image that is published in a public repository corresponding to an individual ACK service controller. For each AWS service that we wish to provision, resources for the corresponding controller must be installed in the Amazon EKS cluster. Helm charts and official container images for ACK are available [here](https://gallery.ecr.aws/aws-controllers-k8s).
 
-In this section, since we will be working with Amazon DynamoDB ACK, we first need to install the ACK controller by using the Helm chart. As we ran the prepare-environment earlier, a rols with proper permision is created for the ACK controller. Now let's create a service account and associate it the role.
+In this section, since we will be working with Amazon DynamoDB ACK, we first need to install the ACK controller by using the Helm chart. As we ran the prepare-environment earlier, a role with proper permision is created for the ACK controller. Now let's create a service account and associate it with that role.
 ```bash
 $ kubectl create sa ack-ddb-sa --namespace ack-dynamodb
 $ kubectl annotate serviceaccount -n  ack-dynamodb ack-ddb-sa \
