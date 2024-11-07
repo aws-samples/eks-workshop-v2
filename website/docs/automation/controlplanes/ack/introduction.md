@@ -7,7 +7,7 @@ Each ACK service controller is packaged into a separate container image that is 
 
 In this section, since we will be working with Amazon DynamoDB ACK, we first need to install the ACK controller by using the Helm chart. As we ran the prepare-environment earlier, a rols with proper permision is created for the ACK controller. Now let's create a service account and associate it the role.
 ```bash
-$ kubectl create sa --name ack-ddb-sa --namespace ack-dynamodb
+$ kubectl create sa ack-ddb-sa --namespace ack-dynamodb
 $ kubectl annotate serviceaccount -n  ack-dynamodb ack-ddb-sa \
   eks.amazonaws.com/role-arn=$ACK_IAM_ROLE --overwrite
 ```
