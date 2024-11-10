@@ -6,7 +6,7 @@
 # To display a message to the user:
 # logmessage "Deleting some resource...."
 
-logmessage "Set kube-proxy addon to its default configuration"
+logmessage "Setting kube-proxy addon to its default configuration"
 
 aws eks update-addon --cluster-name $EKS_CLUSTER_NAME --addon-name kube-proxy --region $AWS_REGION \
   --configuration-values '{}' \
@@ -16,7 +16,7 @@ kubectl -n kube-system delete pod -l "k8s-app=kube-proxy"
 aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --region $AWS_REGION  --addon-name kube-proxy
 
 
-logmessage "Set coredns addon to its default configuration"
+logmessage "Setting coredns addon to its default configuration"
 
 aws eks update-addon \
     --cluster-name eks-workshop \
@@ -29,7 +29,7 @@ kubectl -n kube-system delete pod -l "k8s-app=coredns"
 aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --region $AWS_REGION  --addon-name coredns
 
 
-logmessage "Set cluster Security Group to its default configuration"
+logmessage "Setting cluster Security Group to its default configuration"
 
 CLUSTER_SG_ID=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --region $AWS_REGION --query "cluster.resourcesVpcConfig.clusterSecurityGroupId" --output text)
 # echo $CLUSTER_SG_ID

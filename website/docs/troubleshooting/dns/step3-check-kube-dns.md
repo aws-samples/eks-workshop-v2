@@ -8,8 +8,7 @@ Pods use their configured nameserver to resolve DNS names. In Linux systems, nam
 Let’s check pod nameserver configuration to ensure that kube-dns service ClusterIP is set as nameserver in file `/etc/resolv.conf`. You can check any application pod becasue this configuration is globally applied to all pods in the cluster.
 
 ```bash timeout=30
-$ POD_NAME=$(kubectl get pod -l app.kubernetes.io/name=catalog -l app.kubernetes.io/component=service -n catalog -o jsonpath='{.items[0].metadata.name}')
-$ kubectl exec -it -n catalog $POD_NAME -- cat /etc/resolv.conf
+$ kubectl exec -it -n catalog catalog-mysql-0 -- cat /etc/resolv.conf
 search catalog.svc.cluster.local svc.cluster.local cluster.local us-west-2.compute.internal
 nameserver 172.20.0.10
 options ndots:5

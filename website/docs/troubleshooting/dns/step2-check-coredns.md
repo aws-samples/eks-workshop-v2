@@ -84,7 +84,9 @@ In this case, corends addon was updated to use a node-selector that doesn't matc
 
 ### How to resolve this issue?
 
-To resolve this issue, update coredns node labels using eks addon custom configuration and wait for the addon update to complete:
+To resolve this issue, update coredns addon to use its default configuration, which removes nodeSelector requriements and allows coredns pods to run any of the worker nodes.
+
+Update coredns addon using empty custom configuration and wait for the addon update to complete:
 
 ```bash timeout=180
 $ aws eks update-addon \
@@ -92,7 +94,7 @@ $ aws eks update-addon \
     --region $AWS_REGION \
     --addon-name coredns \
     --resolve-conflicts OVERWRITE \
-    --configuration-values '{"nodeSelector":{"workshop-default":"yes"},"replicaCount":2}'
+    --configuration-values '{}'
 {
     "update": {
         "id": "b3e7d81c-112a-33ea-bb28-1b1052bc3969",
@@ -105,7 +107,7 @@ $ aws eks update-addon \
             },
             {
                 "type": "ConfigurationValues",
-                "value": "{\"nodeSelector\":{\"workshop-default\":\"yes\"},\"replicaCount\":2}"
+                "value": "{}"
             }
         ],
         "createdAt": "2024-11-09T16:25:15.885000-05:00",

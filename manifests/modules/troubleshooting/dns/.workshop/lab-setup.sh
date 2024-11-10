@@ -14,6 +14,8 @@ echo "`date -u` - Lab Setup Started" >> $SCRIPT_DIR/lab-setup.log
 exec &>> $SCRIPT_DIR/lab-setup.log
 set -x
 
+special_echo "Applying configuration."
+
 #############################################
 ### Break kube-proxy pods by using a wrong configuration
 #############################################
