@@ -6,6 +6,7 @@ sidebar_position: 30
 In EKS clusters, DNS resolution is performed by coredns pods. We need to ensure that coredns pods are running without errors.
 
 Check coredns pods in kube-system namespace:
+
 ```bash timeout=30
 $ kubectl get pod -l k8s-app=kube-dns -n kube-system
 NAME                       READY   STATUS    RESTARTS   AGE
@@ -20,6 +21,7 @@ Coredns pods show in Pending state, which indicates that pods has not been sched
 Check pod description to know what happneded during pod scheduling.
 
 Describe coredns pods and analyze the Events section:
+
 ```bash timeout=30
 $ kubectl describe po -l k8s-app=kube-dns -n kube-system
 ...
@@ -32,7 +34,8 @@ Events:
 The Warning message indicates that node label don't match coredns pod node selector or affinity.
 
 Check coredns pod node selector:
-``` bash timeout=30
+
+```bash timeout=30
 $ kubectl get deployment coredns -n kube-system -o jsonpath='{.spec.template.spec.nodeSelector}' | jq
 {
   "workshop-default": "no"
@@ -40,6 +43,7 @@ $ kubectl get deployment coredns -n kube-system -o jsonpath='{.spec.template.spe
 ```
 
 Now let's check whether worker node have this label:
+
 ```bash timeout=30
 $ kubectl get node -o jsonpath='{.items[0].metadata.labels}' | jq
 {
@@ -71,13 +75,17 @@ The last line of the output shows node label `"workshop-default": "yes"`. Howeve
 
 We found the problem: coredns node selector doesn't match existing node labels.
 
+### Root Casue
+
 In the real world, users may use node selectors with corends to ensure that coredns pods run on specific nodes, dedicated to cluster kube-system controllers.
-When using node selectors, keep in mind that if selector and node label don't match, pods can get stuck in Pending state and never run. 
+When using node selectors, keep in mind that if selector and node label don't match, pods can get stuck in Pending state and never run.
 
+In this case, corends addon was updated to use a node-selector that doesn't match any of the existing node. Then, coredns pods are stuck in Pending state.
 
-### Resolution
+### How to resolve this issue?
 
 To resolve this issue, update coredns node labels using eks addon custom configuration and wait for the addon update to complete:
+
 ```bash timeout=180
 $ aws eks update-addon \
     --cluster-name $EKS_CLUSTER_NAME \
@@ -107,7 +115,8 @@ $ aws eks update-addon \
 $ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --region $AWS_REGION  --addon-name coredns
 ```
 
-Now, coredns pod show up in Running state 
+Now, coredns pod show up in Running state
+
 ```bash timeout=30
 $ kubectl get pod -l k8s-app=kube-dns -n kube-system
 NAME                       READY   STATUS    RESTARTS   AGE
@@ -118,6 +127,7 @@ coredns-7f6dd6865f-kxw2x   1/1     Running   0          100s
 As addiotnal step, verify that coredns application is not showing any errors. For that, let's check coredns logs.
 
 Check coredns pod logs:
+
 ```bash timeout=30
 $ kubectl logs -l k8s-app=kube-dns -n kube-system
 .:53
@@ -129,8 +139,11 @@ linux/amd64, go1.21.5, e9c721d80
 CoreDNS-1.11.1
 linux/amd64, go1.21.5, e9c721d80
 ```
+
 Coredns logs don't show errors, which means that corends application should be processing DNS requests as expected.
 
-At this point, we have resolved the problem with coredns pods and ensured that coredns application is running without errors. 
+### Next Steps
+
+At this point, we have resolved the problem with coredns pods and ensured that coredns application is running without errors.
 
 Let's continue to the next lab to cover additional troubleshooting steps and ensure every aspect of DNS resolution is correct.
