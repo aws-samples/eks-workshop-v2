@@ -5,7 +5,7 @@ before() {
 }
 
 after() {
-  sleep 240
+  sleep 120
 
   if kubectl get pods --selector="app=efs-app" 2>&1 | grep -q "Running"; then
     echo "Success: The pod is now in running state"
