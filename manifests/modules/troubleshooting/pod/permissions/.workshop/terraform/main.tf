@@ -133,7 +133,7 @@ resource "aws_ecr_repository_policy" "example" {
 }
 
 data "template_file" "deployment_yaml" {
-  template = file("/home/ec2-user/environment/eks-workshop/modules/troubleshooting/pod/permissions/.workshop/terraform/deployment.yaml.tpl")
+  template = file("${path.module}/deployment.yaml.tpl")
 
   vars = {
     image = "${resource.aws_ecr_repository.ui.repository_url}:0.4.0"
@@ -142,7 +142,7 @@ data "template_file" "deployment_yaml" {
 
 
 resource "local_file" "deployment_yaml" {
-  filename = "/home/ec2-user/environment/eks-workshop/modules/troubleshooting/pod/permissions/deployment.yaml"
+  filename = "${path.module}/deployment.yaml"
   content  = data.template_file.deployment_yaml.rendered
 }
 
@@ -179,7 +179,7 @@ resource "null_resource" "kustomize_app" {
   }
 
   provisioner "local-exec" {
-    command = "kubectl apply -f ~/environment/eks-workshop/modules/troubleshooting/pod/permissions/"
+    command = "kubectl apply -f ${path.module}/deployment.yaml"
     when    = create
   }
 

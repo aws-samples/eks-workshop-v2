@@ -98,7 +98,7 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
 }
 
 data "template_file" "deployment_yaml" {
-  template = file("/home/ec2-user/environment/eks-workshop/modules/troubleshooting/pod/crash/.workshop/terraform/deployment.yaml.tpl")
+  template = file("${path.module}/deployment.yaml.tpl")
 
   vars = {
     filesystemid = resource.aws_efs_file_system.efs.id
@@ -106,7 +106,7 @@ data "template_file" "deployment_yaml" {
 }
 
 resource "local_file" "deployment_yaml" {
-  filename = "/home/ec2-user/environment/eks-workshop/modules/troubleshooting/pod/crash/deployment.yaml"
+  filename = "${path.module}/deployment.yaml"
   content  = data.template_file.deployment_yaml.rendered
 }
 
@@ -116,7 +116,7 @@ resource "null_resource" "kustomize_app" {
   }
 
   provisioner "local-exec" {
-    command = "kubectl apply -f ~/environment/eks-workshop/modules/troubleshooting/pod/crash/"
+    command = "kubectl apply -f ${path.module}/deployment.yaml"
     when    = create
   }
 
