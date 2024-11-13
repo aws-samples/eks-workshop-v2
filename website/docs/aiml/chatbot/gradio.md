@@ -46,7 +46,7 @@ kube-root-ca.crt    1      111s
 
 Once the load balancer has finished deploying, use the external IP address to directly access the website:
 
-```bash
+```bash wait=10
 $ kubectl get services -n gradio-llama2-inf2
 NAME             TYPE          ClUSTER-IP    EXTERNAL-IP                                                                      PORT(S)         AGE
 gradio-service   LoadBalancer  172.20.84.26  k8s-gradioll-gradiose-a6d0b586ce-06885d584b38b400.elb.us-west-2.amazonaws.com    80:30802/TCP    8m42s

@@ -309,7 +309,6 @@ Resources:
                   export REPOSITORY_OWNER="${RepositoryOwner}"
                   export REPOSITORY_NAME="${RepositoryName}"
                   export REPOSITORY_REF="${RepositoryRef}"
-                  export CLOUD9_ENVIRONMENT_ID="${EksWorkshopIdeInstance}"
                   export RESOURCES_PRECREATED="${ResourcesPrecreated}"
                   export ANALYTICS_ENDPOINT="${AnalyticsEndpoint}"
 
@@ -366,6 +365,8 @@ Resources:
                   echo '{ "query": { "folder": "/home/ec2-user/environment" } }' > ~/.local/share/code-server/coder.json
 
                   curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/setup.sh | bash
+
+                  curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/banner.sh | bash
 
                   code-server --install-extension ms-kubernetes-tools.vscode-kubernetes-tools --force
                   code-server --install-extension redhat.vscode-yaml --force

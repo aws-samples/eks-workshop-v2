@@ -43,10 +43,22 @@ module "dynamodb_ack_addon" {
   tags = var.tags
 }
 
+module "iam_assumable_role_carts" {
+  source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+  version                       = "5.44.0"
+  create_role                   = true
+  role_name                     = "${var.addon_context.eks_cluster_id}-carts-ack"
+  provider_url                  = var.addon_context.eks_oidc_issuer_url
+  role_policy_arns              = [aws_iam_policy.carts_dynamo.arn]
+  oidc_fully_qualified_subjects = ["system:serviceaccount:carts:carts"]
+
+  tags = var.tags
+}
+
 resource "aws_iam_policy" "carts_dynamo" {
   name        = "${var.addon_context.eks_cluster_id}-carts-dynamo"
   path        = "/"
-  description = "DynamoDB policy for AWS Sample Carts Application"
+  description = "Dynamo policy for carts application"
 
   policy = <<EOF
 {
@@ -57,7 +69,8 @@ resource "aws_iam_policy" "carts_dynamo" {
       "Effect": "Allow",
       "Action": "dynamodb:*",
       "Resource": [
-        "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*"        
+        "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${var.addon_context.eks_cluster_id}-carts-ack",
+        "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${var.addon_context.eks_cluster_id}-carts-ack/index/*"
       ]
     }
   ]

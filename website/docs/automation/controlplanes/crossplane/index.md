@@ -22,7 +22,17 @@ You can view the Terraform that applies these changes [here](https://github.com/
 
 :::
 
-[Crossplane](https://crossplane.io/) is an open source project in the CNCF that transforms your Kubernetes cluster into a universal control plane. Crossplane enables platform teams to assemble infrastructure from multiple vendors, and expose higher level self-service APIs for application teams to consume, without having to write any code.
-Crossplane extends your Kubernetes cluster to support orchestrating any infrastructure or managed service. Compose Crossplane’s granular resources into higher level abstractions that can be versioned, managed, deployed and consumed using your favorite tools and existing processes.
+[Crossplane](https://crossplane.io/) is an open-source project in the Cloud Native Computing Foundation (CNCF) that transforms your Kubernetes cluster into a universal control plane. It enables platform teams to assemble infrastructure from multiple vendors and expose higher-level self-service APIs for application teams to consume, without writing any code.
+
+Crossplane extends your Kubernetes cluster to support orchestrating any infrastructure or managed service. It allows you to compose Crossplane's granular resources into higher-level abstractions that can be versioned, managed, deployed, and consumed using your favorite tools and existing processes.
 
 ![EKS with Dynamodb](./assets/eks-workshop-crossplane.webp)
+
+With Crossplane, you can:
+
+1. Provision and manage cloud infrastructure directly from your Kubernetes cluster
+2. Define custom resources that represent complex infrastructure setups
+3. Create abstraction layers that simplify infrastructure management for application developers
+4. Implement consistent policies and governance across multiple cloud providers
+
+In this module, we'll explore how to use Crossplane to manage AWS resources, specifically focusing on provisioning and configuring a DynamoDB table for our sample application.

@@ -35,8 +35,8 @@ variable "resources_precreated" {
 }
 
 variable "karpenter_version" {
-  description = "The version of Karpenter chart to use"
+  description = "The version of Karpenter to use"
   type        = string
   # renovate: datasource=github-releases depName=aws/karpenter-provider-aws
-  default = "0.37.2"
+  default = "1.0.3"
 }
