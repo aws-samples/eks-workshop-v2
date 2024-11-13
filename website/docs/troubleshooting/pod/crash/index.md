@@ -198,6 +198,7 @@ $ aws ec2 authorize-security-group-ingress --group-id $MT_SG --protocol tcp --po
 After 3-4 minutes, you should notice that the pod in default namespace is in running state
 
 ```bash timeout=180 hook=fix-3 hookTimeout=600
+$ kubectl rollout restart deploy/efs-app
 $ kubectl get pods $POD
 NAME                       READY   STATUS    RESTARTS   AGE
 efs-app-5c4df89785-m4qz4   1/1     Running   0          102m
