@@ -64,7 +64,6 @@ $ kubectl describe node $NODE_NAME | grep Non-terminated -A 6
 Non-terminated Pods:          (3 in total)
   Namespace                   Name                         CPU Requests  CPU Limits  Memory Requests  Memory Limits  Age
   ---------                   ----                         ------------  ----------  ---------------  -------------  ---
-  amazon-guardduty            aws-guardduty-agent-6jb5x    200m (10%)    1 (51%)     256Mi (7%)       1Gi (31%)      84m
   kube-system                 aws-node-5jwzn               50m (2%)      0 (0%)      0 (0%)           0 (0%)         53m
   kube-system                 kube-proxy-69754             100m (5%)     0 (0%)      0 (0%)           0 (0%)         84m
 ```

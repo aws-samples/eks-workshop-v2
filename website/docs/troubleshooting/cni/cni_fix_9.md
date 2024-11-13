@@ -76,15 +76,15 @@ aws ssm list-command-invocations \
 
 First, we'll select a representative pod name as our focus
 
-```bash test=false
-$ POD_NAME=$(kubectl get pods -n cni-tshoot -o custom-columns=:metadata.name --no-headers | awk 'NR==1{print $1}')
+```bash
+$ export POD_NAME=$(kubectl get pods -n cni-tshoot -o custom-columns=:metadata.name --no-headers | awk 'NR==1{print $1}')
 ```
 
 Next, we'll identify the specific node where our pod is currently running by retrieving its instance ID
 
-```bash test=false
-$ NODE_NAME=$(kubectl get pod $POD_NAME -n cni-tshoot -o custom-columns=:spec.nodeName --no-headers) && \
-  NODE_ID=$(kubectl get node $NODE_NAME -o=jsonpath='{.spec.providerID}' | cut -d "/" -f 5)
+```bash
+$ export NODE_NAME=$(kubectl get pod $POD_NAME -n cni-tshoot -o custom-columns=:spec.nodeName --no-headers)
+$ export NODE_ID=$(kubectl get node $NODE_NAME -o=jsonpath='{.spec.providerID}' | cut -d "/" -f 5)
 ```
 
 Now that we have completed the setup, let's confirm that the CNI plugin received the request to provision a network namespace for the pod named $POD_NAME. This verification step is crucial to ensure proper communication between the container runtime and VPC CNI plugin.
@@ -126,16 +126,16 @@ Upon examination, we've discovered that the IP Address Management (IPAMD) warm p
 As we turn our attention to VPC subnet configuration, our first step is to locate the subnet where the worker node instances are deployed. Once identified, we'll examine the number of available IP addresses within that subnet.
 
 ```bash
-$ NODE_SUBNET=$(aws ec2 describe-instances --instance-ids $NODE_ID --query 'Reservations[0].Instances[0].SubnetId' --output text) && \
-  aws ec2 describe-subnets --subnet-ids $NODE_SUBNET --output text --query 'Subnets[0].AvailableIpAddressCount'
+$ export NODE_SUBNET=$(aws ec2 describe-instances --instance-ids $NODE_ID --query 'Reservations[0].Instances[0].SubnetId' --output text)
+$ aws ec2 describe-subnets --subnet-ids $NODE_SUBNET --output text --query 'Subnets[0].AvailableIpAddressCount'
 10
 ```
 
 We've identified that this particular node's subnet is running low on available IP addresses. To get a comprehensive view of the situation, it's important to assess the IP address availability across all subnets associated with this nodegroup. Let's proceed to examine the remaining subnets within this nodegroup to determine their current IP address capacity.
 
 ```bash
-$ NODE_GROUP_SUBNETS=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name cni_troubleshooting_nodes --query 'nodegroup.subnets' --output text) && \
-  aws ec2 describe-subnets --subnet-ids $NODE_GROUP_SUBNETS --output text --query 'Subnets[*].AvailableIpAddressCount'
+$ export NODE_GROUP_SUBNETS=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name cni_troubleshooting_nodes --query 'nodegroup.subnets' --output text)
+$ aws ec2 describe-subnets --subnet-ids $NODE_GROUP_SUBNETS --output text --query 'Subnets[*].AvailableIpAddressCount'
 11      11      10
 ```
 

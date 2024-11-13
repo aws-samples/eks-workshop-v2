@@ -53,6 +53,52 @@ Next, we'll confirm that our newly created Managed Nodegroup has been properly c
 
 ```bash
 $ aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name cni_troubleshooting_nodes
+{
+    "nodegroup": {
+        "nodegroupName": "cni_troubleshooting_nodes",
+        "nodegroupArn": "arn:aws:eks:us-west-2:1234567890:nodegroup/eks-workshop/cni_troubleshooting_nodes/acc9931f-58b2-77c2-7af8-a547204f05ed",
+        "clusterName": "eks-workshop",
+        "version": "1.30",
+        "releaseVersion": "1.30.4-20241109",
+        "createdAt": "2024-10-30T18:57:44.538000+00:00",
+        "modifiedAt": "2024-10-3018:57:44.538000+00:00",
+        "status": "ACTIVE",
+        "capacityType": "ON_DEMAND",
+        "scalingConfig": {
+            "minSize": 1,
+            "maxSize": 3,
+            "desiredSize": 1
+        },
+        "instanceTypes": [
+            "m5.large"
+        ],
+        "subnets": [
+            "subnet-0b055bfb40a357c1d",
+            "subnet-0b450c109787fc1a7",
+            "subnet-0de03cca5fade5784"
+        ],
+        "amiType": "AL2023_x86_64_STANDARD",
+        "nodeRole": "arn:aws:iam::1234567890:role/terraform-20241113154725667800000001",
+        "labels": {
+            "app": "cni_troubleshooting"
+        },
+        "taints": [
+            {
+                "key": "purpose",
+                "value": "cni_troubleshooting",
+                "effect": "NO_SCHEDULE"
+            }
+        ],
+        "diskSize": 20,
+        "health": {
+            "issues": []
+        },
+        "updateConfig": {
+            "maxUnavailable": 1
+        },
+        "tags": {}
+    }
+}
 ```
 
 and
