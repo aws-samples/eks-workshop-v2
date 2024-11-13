@@ -2,24 +2,21 @@
 
 set -e
 
-logmessage "Deleting AIML resources..."
+logmessage "Delete Inferentia Pods..."
+
+kubectl delete -k /eks-workshop/manifests/modules/aiml/inferentia/compiler --ignore-not-found
+
+kubectl delete -k /eks-workshop/manifests/modules/aiml/inferentia/inference --ignore-not-found
+
+logmessage "Deleting Neuron Device Plugin..."
+
+kubectl delete -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.20.0/src/k8/k8s-neuron-device-plugin-rbac.yml --ignore-not-found
+kubectl delete -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.20.0/src/k8/k8s-neuron-device-plugin.yml --ignore-not-found
+
+logmessage "Deleting Karpenter resources..."
+
+kubectl delete -k ~/environment/eks-workshop/modules/aiml/inferentia/nodepool --ignore-not-found
+
+logmessage "Deleting inferentia namespaces..."
 
 kubectl delete namespace aiml --ignore-not-found
-
-logmessage "Deleting Karpenter NodePool and EC2NodeClass..."
-
-delete-all-if-crd-exists nodepools.karpenter.sh
-delete-all-if-crd-exists ec2nodeclasses.karpenter.k8s.aws
-
-logmessage "Waiting for Karpenter nodes to be removed..."
-
-EXIT_CODE=0
-
-timeout --foreground -s TERM 30 bash -c \
-    'while [[ $(kubectl get nodes --selector=type=karpenter -o json | jq -r ".items | length") -gt 0 ]];\
-    do sleep 5;\
-    done' || EXIT_CODE=$?
-
-if [ $EXIT_CODE -ne 0 ]; then
-  logmessage "Warning: Karpenter nodes did not clean up"
-fi

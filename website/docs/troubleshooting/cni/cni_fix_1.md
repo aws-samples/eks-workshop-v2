@@ -33,8 +33,8 @@ nginx-app-5cf4cbfd97-wrr2c   0/1     Pending   0          11m
 
 When examining the pod status, we observe that they are in a Pending state. A Pod in Pending status indicates that it cannot be assigned to a node for execution. This situation typically arises due to a lack of necessary resources, preventing proper scheduling. we'll select a representative pod name as our focus
 
-```bash test=false
-$ POD_NAME=$(kubectl get pods -n cni-tshoot -o custom-columns=:metadata.name --no-headers | awk 'NR==1{print $1}')
+```bash
+$ export POD_NAME=$(kubectl get pods -n cni-tshoot -o custom-columns=:metadata.name --no-headers | awk 'NR==1{print $1}')
 ```
 
 :::info
@@ -109,7 +109,7 @@ ip-10-42-117-53.us-west-2.compute.internal   NotReady  <none>   91s   v1.30.0-ek
 we'll select this node as our focus
 
 ```bash test=false
-$ NODE_NAME=$(kubectl get nodes -l app=cni_troubleshooting -L app -o custom-columns=:metadata.name --no-headers)
+$ export NODE_NAME=$(kubectl get nodes -l app=cni_troubleshooting -L app -o custom-columns=:metadata.name --no-headers)
 ```
 
 Now, let's investigate the reason behind this node's NotReady state. We'll use the describe command to gather detailed information about the node, paying particular attention to the Conditions section in the output. This will help us identify the specific issues preventing the node from being ready. Take a moment to run the command and analyze the results
@@ -182,13 +182,13 @@ aws-node-v9dq6   2/2     Running   0          72m   10.42.102.141   ip-10-42-102
 
 Let's select the Pending aws-node pod
 
-```bash test=false
-$ AWS_NODE_POD=$(kubectl get pods -l k8s-app=aws-node -n kube-system | grep Pending | awk 'NR==1{print $1}')
+```bash
+$ export AWS_NODE_POD=$(kubectl get pods -l k8s-app=aws-node -n kube-system | grep Pending | awk 'NR==1{print $1}')
 ```
 
 An aws-node pod is currently in a Pending state, which is unusual for this critical system daemonset. Normally, aws-node should run even on NotReady nodes. Let's investigate further by describing the affected pod to identify the root cause of this issue.
 
-```bash test=false
+```bash
 $ kubectl describe pod -n kube-system $AWS_NODE_POD
 Name:                 aws-node-mkjkr
 Namespace:            kube-system
@@ -367,7 +367,7 @@ The issue stems from insufficient memory on one of the nodes to meet the aws-nod
 We'll proceed with option 2. Since the aws-node daemonset is deployed via Amazon VPC CNI managed addons, let's examine the addon configuration.
 
 ```bash test=false
-$ aws eks describe-addon --addon-name vpc-cni --cluster-name eks-workshop --output text --query addon.configurationValues | jq .
+$ aws eks describe-addon --addon-name vpc-cni --cluster-name $EKS_CLUSTER_NAME --output text --query addon.configurationValues | jq .
 {
   "env": {
     "ENABLE_PREFIX_DELEGATION": "true",
@@ -391,14 +391,18 @@ $ aws eks describe-addon --addon-name vpc-cni --cluster-name eks-workshop --outp
 Having identified the necessary VPC CNI configuration adjustments for aws-node compatibility, let's proceed to update our setup.
 
 1. Remove the existing resource definitions and create a variable with the revised configuration
+```bash
+$ export CURRENT_CONFIG=$(aws eks describe-addon --addon-name vpc-cni --cluster-name $EKS_CLUSTER_NAME --output text --query addon.configurationValues)
+$ export REVISED_CONFIG=$(echo $CURRENT_CONFIG | jq -c 'del(.resources)')
+```
 2. Maintain IRSA Configuration for VPC CNI Add-ons: When updating the configuration of VPC CNI managed add-ons, it's crucial to preserve the existing IAM Role for Service Account (IRSA) setup. Before making any changes, identify the associated IAM role to ensure it remains intact throughout the update process.
+```bash
+$ export CNI_ROLE_ARN=$(aws eks describe-addon --addon-name vpc-cni --cluster-name $EKS_CLUSTER_NAME --output text --query addon.serviceAccountRoleArn)
+```
 3. Apply the configuration changes using `aws eks update-addon` CLI command:
 
 ```bash timeout=180 hook=fix-1 hookTimeout=600
-$ CURRENT_CONFIG=$(aws eks describe-addon --addon-name vpc-cni --cluster-name eks-workshop --output text --query addon.configurationValues) && \
-  REVISED_CONFIG=$(echo $CURRENT_CONFIG | jq -c 'del(.resources)') && \
-  CNI_ROLE_ARN=$(aws eks describe-addon --addon-name vpc-cni --cluster-name eks-workshop --output text --query addon.serviceAccountRoleArn) && \
-  aws eks update-addon --addon-name vpc-cni --cluster-name $EKS_CLUSTER_NAME --service-account-role-arn $CNI_ROLE_ARN --configuration-values $REVISED_CONFIG
+$ aws eks update-addon --addon-name vpc-cni --cluster-name $EKS_CLUSTER_NAME --service-account-role-arn $CNI_ROLE_ARN --configuration-values $REVISED_CONFIG
 ```
 
 After completing the update process, verify that aws-node pods are now scheduled on all worker nodes. Check the pod distribution to ensure proper deployment across the cluster.

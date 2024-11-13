@@ -38,7 +38,7 @@ if [ ! -z "$DOCKER_DNS_OVERRIDE" ]; then
 fi
 
 $CONTAINER_CLI run --rm $interactive_args $dns_args \
-  -v $SCRIPT_DIR/../manifests:/manifests \
+  -v $SCRIPT_DIR/../manifests:/eks-workshop/manifests \
   -v $SCRIPT_DIR/../cluster:/cluster \
   -e 'EKS_CLUSTER_NAME' -e 'AWS_REGION' \
   $aws_credential_args $container_image $shell_command

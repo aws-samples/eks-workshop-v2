@@ -19,7 +19,7 @@ Although we will primarily be interacting with kustomize in this workshop, there
 
 :::info
 
-This lab doesn't not cover the authoring of Helm charts for your own workloads. For more information on this topic see this [guide](https://helm.sh/docs/chart_template_guide/).
+This lab does not cover the authoring of Helm charts for your own workloads. For more information on this topic see this [guide](https://helm.sh/docs/chart_template_guide/).
 
 :::
 
@@ -46,12 +46,12 @@ $ helm repo add bitnami https://charts.bitnami.com/bitnami
 $ helm repo update
 ```
 
-Now we can search the repository for charts, for example the `postgresql` chart:
+Now we can search the repository for charts, for example the `nginx` chart:
 
 ```bash
-$ helm search repo postgresql
+$ helm search repo nginx
 NAME                    CHART VERSION   APP VERSION     DESCRIPTION
-bitnami/postgresql      X.X.X           X.X.X           PostgreSQL (Postgres) is an open source object-...
+bitnami/nginx           X.X.X           X.X.X           NGINX Open Source is a web server that can be a...
 [...]
 ```
 

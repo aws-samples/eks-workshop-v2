@@ -37,12 +37,12 @@ pod/llama2-raycluster-fcmtr-worker-inf2-lgnb2   1/1     Running   0          5m3
 ```
 
 :::caution
-It may take up to 10 minutes for both pods to be ready.
+It may take up to 15 minutes for both pods to be ready.
 :::
 
 We can wait for the pods to be ready using the following command:
 
-```bash timeout=600
+```bash timeout=900
 $ kubectl wait pod \
 --all \
 --for=condition=Ready \
