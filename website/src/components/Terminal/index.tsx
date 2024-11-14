@@ -150,7 +150,7 @@ class TerminalSection {
 }
 
 function triggerCopy(text: string) {
-  navigator.clipboard.writeText(text);
+  navigator.clipboard.writeText(text.trim());
 
   window.parent.postMessage(`eks-workshop-terminal:${text}`, "*");
 }

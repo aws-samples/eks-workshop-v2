@@ -117,6 +117,7 @@
   "/observability/container-insights/index.md": 282125,
   "/observability/container-insights/visualize-application-metrics-cloudwatch.md": 3191,
   "/observability/index.md": 1,
+  "/observability/high-availability/index.md": 1,
   "/observability/logging/cluster-logging/enable-eks-logging.md": 62816,
   "/observability/logging/cluster-logging/index.md": 110867,
   "/observability/logging/index.md": 1,

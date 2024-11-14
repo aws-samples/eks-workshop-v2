@@ -14,7 +14,7 @@ Application Load Balancers work at `L7` of the OSI model, allowing you to expose
 
 The controller enables you to simplify operations and save costs by sharing an Application Load Balancer across multiple applications in your Kubernetes cluster.
 
-The AWS Load Balancer Controller has already been installed in our cluster, so we can get started creating resources.
+The steps to install the AWS Load Balancer Controller will be presented in the subsequent section, enabling you to get started with creating Load Balancer resources in AWS.
 
 :::info
 The AWS Load Balancer Controller was formerly named the AWS ALB Ingress Controller.

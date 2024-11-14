@@ -15,7 +15,7 @@ The content of this workshop is made up of:
 1. Individual lab exercises
 2. Supporting content that explains concepts related to the labs
 
-The lab exercises are designed in a way that you can run any modules as a self-container exercise. Lab exercises will be displayed in the sidebar to the left and are designated by the icon shown here:
+The lab exercises are designed in a way that you can run any modules as a self-contained exercise. Lab exercises will be displayed in the sidebar to the left and are designated by the icon shown here:
 
 ![Lab icon example](./assets/lab-icon.webp)
 
@@ -25,27 +25,9 @@ This module contains a single lab named **Getting started** which will be visibl
 You should start each lab from the page indicated by this badge. Starting in the middle of a lab will cause unpredictable behavior.
 :::
 
-<Tabs groupId="ide">
-<TabItem value="cloud9" label="AWS Cloud9">
-
-Once you have accessed the Cloud9 IDE, we recommend you use the **+** button and select **New Terminal** to open a new full screen terminal window.
-
-![Open new Cloud9 terminal](./assets/terminal-open.webp)
-
-This will open a new tab with a fresh terminal.
-
-![Shows new Cloud9 terminal](./assets/terminal.webp)
-
-You may also close the small terminal at the bottom if you wish.
-</TabItem>
-<TabItem value="vscode" label="VSCode">
-
 Depending on your browser the first time you copy/paste content in to the VSCode terminal you may be presented with a prompt that looks like this:
 
 ![VSCode copy/paste](./assets/vscode-copy-paste.webp)
-
-</TabItem>
-</Tabs>
 
 ## Terminal commands
 

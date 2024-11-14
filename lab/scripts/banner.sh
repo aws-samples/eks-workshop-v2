@@ -1,9 +1,10 @@
 #!/bin/bash
 
 cat << EOT > /home/ec2-user/.bashrc.d/banner.bash
-if [ ! -f ~/.banner ]; then
-    touch ~/.banner
-    cat << EOF
+if [ "\$TERM_PROGRAM" = "vscode" ]; then
+    if [ ! -f ~/.banner ]; then
+        touch ~/.banner
+        cat << EOF
 
                                           Welcome to
 
@@ -17,5 +18,6 @@ if [ ! -f ~/.banner ]; then
                       Hands-on labs for Amazon Elastic Kubernetes Service
 
 EOF
+    fi
 fi
 EOT

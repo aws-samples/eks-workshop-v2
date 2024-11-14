@@ -38,7 +38,7 @@ We will run this code in a Pod on EKS. This is the manifest file for running the
 
 Create the Pod by running the following command:
 
-```bash timeout=600
+```bash timeout=900
 $ kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/compiler \
   | envsubst | kubectl apply -f-
 ```

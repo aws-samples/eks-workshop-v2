@@ -3,10 +3,10 @@
 set -e
 
 # renovate: depName=kubernetes/kubernetes
-kubectl_version='1.30.5'
+kubectl_version='1.30.6'
 
 # renovate: depName=helm/helm
-helm_version='3.16.1'
+helm_version='3.16.2'
 
 # renovate: depName=eksctl-io/eksctl
 eksctl_version='0.190.0'
@@ -20,16 +20,16 @@ yq_version='4.44.3'
 flux_version='2.4.0'
 
 # renovate: depName=argoproj/argo-cd
-argocd_version='2.12.4'
+argocd_version='2.12.6'
 
 # renovate: depName=hashicorp/terraform
-terraform_version='1.9.6'
+terraform_version='1.9.8'
 
 # renovate: depName=aws/amazon-ec2-instance-selector
 ec2_instance_selector_version='2.4.1'
 
 # renovate: depName=hatoo/oha
-oha_version='1.4.6'
+oha_version='1.4.7'
 
 download () {
   url=$1
