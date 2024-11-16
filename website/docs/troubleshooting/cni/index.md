@@ -1,6 +1,6 @@
 ---
 title: "VPC CNI scenario"
-sidebar_position: 20
+sidebar_position: 40
 chapter: true
 sidebar_custom_props: { "module": true }
 description: "Troubleshooting issues related to EKS VPC CNI IAM policy, IP allocation and scheduling"

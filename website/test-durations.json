@@ -200,5 +200,6 @@
   "/troubleshooting/dns/step1-config.md": 16049,
   "/troubleshooting/dns/step2-check-coredns.md": 16049,
   "/troubleshooting/dns/step3-check-kube-dns.md": 16049,
-  "/troubleshooting/dns/step4-check-vpc.md": 16049
+  "/troubleshooting/dns/step4-check-vpc.md": 16049,
+  "/troubleshooting/cni/index.md": 16049
 }

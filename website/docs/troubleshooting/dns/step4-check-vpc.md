@@ -1,6 +1,6 @@
 ---
 title: "Step 4 - Check VPC configuration"
-sidebar_position: 30
+sidebar_position: 54
 ---
 
 When DNS traffic flows from application pods to kube-dns service and to Coredns pods, it likely traverses different nodes and different VPC subnets. We must ensure that that DNS traffic can flow between worker nodes and subnets at the VPC level.

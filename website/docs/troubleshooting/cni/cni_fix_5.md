@@ -1,6 +1,6 @@
 ---
 title: "Section 2 - Fixing Policy Issue"
-sidebar_position: 30
+sidebar_position: 42
 ---
 
 ### Step 5

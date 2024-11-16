@@ -1,6 +1,6 @@
 ---
 title: "Step 2 - Check coredns pods"
-sidebar_position: 30
+sidebar_position: 52
 ---
 
 In EKS clusters, DNS resolution is performed by coredns pods. We need to ensure that coredns pods are running without errors.

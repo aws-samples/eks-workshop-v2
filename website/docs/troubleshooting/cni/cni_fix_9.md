@@ -1,6 +1,6 @@
 ---
 title: "Section 3 - Expanding Worker Node Subnet"
-sidebar_position: 30
+sidebar_position: 43
 ---
 
 ### Step 9

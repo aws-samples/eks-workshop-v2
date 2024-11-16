@@ -1,6 +1,6 @@
 ---
 title: "Step 1 - Update cluster configuration"
-sidebar_position: 30
+sidebar_position: 51
 ---
 
 There are multiple configuration options that can affect DNS resolution in the cluster, and therefore halt service communications. For this scenario, we will apply common issues that we have seen on the field that affect DNS resolution in EKS clusters.

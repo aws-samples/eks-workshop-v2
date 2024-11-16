@@ -1,6 +1,6 @@
 ---
 title: "DNS resolution scenario"
-sidebar_position: 20
+sidebar_position: 50
 chapter: true
 sidebar_custom_props: { "module": true }
 description: "Service communication is disrupted due to DNS resolution issues."

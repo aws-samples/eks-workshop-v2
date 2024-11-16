@@ -1,6 +1,6 @@
 ---
 title: "Step 3 - Check kube-dns service"
-sidebar_position: 30
+sidebar_position: 53
 ---
 
 Pods use their configured nameserver to resolve DNS names. In Linux systems, nameserver configuration is written to file `/etc/resolv.conf`. By default, Kubernetes writes the kube-dns service ClusterIP as nameserver on every pod, inside file `/etc/resolv.conf`.
