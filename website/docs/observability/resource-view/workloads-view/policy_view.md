@@ -19,7 +19,7 @@ A [NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/networ
 
 [Pod Disruption Budget](https://kubernetes.io/docs/tasks/run-application/configure-pdb/) is a way to mitigate disruptions that can happen to a pod such as deletion, updates to deployments, removal of pod etc. More information on the types of _[disruptions](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/)_ that can happen to pods.
 
-The following screenshot displays a list of the _PodDistributionBudgets_ by namespace.
+The following screenshot displays a list of the _PodDisruptionBudgets_ by namespace.
 
 ![Insights](/img/resource-view/policy-poddisruption.jpg)
 
