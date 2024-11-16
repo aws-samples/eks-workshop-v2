@@ -1,6 +1,6 @@
 ---
 title: "ImagePullBackOff - ECR Private Image"
-sidebar_position: 42
+sidebar_position: 61
 chapter: true
 sidebar_custom_props: { "module": true }
 ---

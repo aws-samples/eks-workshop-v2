@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 logmessage "Restoring public subnet tags..."
 
 # Function to create ftags for subnets ids
@@ -17,3 +19,7 @@ remove_tags_from_subnets() {
 }
 
 remove_tags_from_subnets
+
+kubectl delete ingress -n ui ui --ignore-not-found
+
+uninstall-helm-chart aws-load-balancer-controller kube-system

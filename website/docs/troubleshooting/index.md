@@ -11,8 +11,9 @@ Keep in mind that we will use previous concepts from the other chapters while go
 ### These are the scenarios covered in this module
 
 - **AWS Load Balancer Controller**
-- **Node not ready (Coming soon)**
-- others..
+- **VPC CNI scenario**
+- **DNS resolution scenario**
+- **Pod Issue Scenarios**
 
 :::info Troubleshooting Methodologies
 As you progress through the scenarios, we will be introducing an overview of different troubleshooting methodologies. For example, all our scenarios are based in the **Reproductions method**.

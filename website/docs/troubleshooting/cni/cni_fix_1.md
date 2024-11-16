@@ -1,6 +1,6 @@
 ---
 title: "Section 1 - Fixing Addons Configuration Issue"
-sidebar_position: 30
+sidebar_position: 41
 ---
 
 In this hands-on troubleshooting exercise, you will explore the EKS Managed Addons for AWS VPC CNI and examine the cluster's nodes and pods. You'll follow a guided script that will lead you through the investigation process step by step. By the end of this session, your goal is to ensure that the nginx-app in your EKS cluster is successfully running. This practical scenario will help you develop essential skills for managing and troubleshooting Kubernetes deployments on Amazon EKS.
@@ -390,16 +390,20 @@ $ aws eks describe-addon --addon-name vpc-cni --cluster-name $EKS_CLUSTER_NAME -
 
 Having identified the necessary VPC CNI configuration adjustments for aws-node compatibility, let's proceed to update our setup.
 
-1. Remove the existing resource definitions and create a variable with the revised configuration
+First, remove the existing resource definitions and create a variable with the revised configuration
+
 ```bash
 $ export CURRENT_CONFIG=$(aws eks describe-addon --addon-name vpc-cni --cluster-name $EKS_CLUSTER_NAME --output text --query addon.configurationValues)
 $ export REVISED_CONFIG=$(echo $CURRENT_CONFIG | jq -c 'del(.resources)')
 ```
-2. Maintain IRSA Configuration for VPC CNI Add-ons: When updating the configuration of VPC CNI managed add-ons, it's crucial to preserve the existing IAM Role for Service Account (IRSA) setup. Before making any changes, identify the associated IAM role to ensure it remains intact throughout the update process.
+
+Then maintain IRSA Configuration for VPC CNI Add-ons: When updating the configuration of VPC CNI managed add-ons, it's crucial to preserve the existing IAM Role for Service Account (IRSA) setup. Before making any changes, identify the associated IAM role to ensure it remains intact throughout the update process
+
 ```bash
 $ export CNI_ROLE_ARN=$(aws eks describe-addon --addon-name vpc-cni --cluster-name $EKS_CLUSTER_NAME --output text --query addon.serviceAccountRoleArn)
 ```
-3. Apply the configuration changes using `aws eks update-addon` CLI command:
+
+Now, apply the configuration changes using `aws eks update-addon` CLI command
 
 ```bash timeout=180 hook=fix-1 hookTimeout=600
 $ aws eks update-addon --addon-name vpc-cni --cluster-name $EKS_CLUSTER_NAME --service-account-role-arn $CNI_ROLE_ARN --configuration-values $REVISED_CONFIG
