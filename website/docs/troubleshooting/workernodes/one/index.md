@@ -1,6 +1,6 @@
 ---
 title: "Missing Worker Nodes"
-sidebar_position: 30
+sidebar_position: 71
 chapter: true
 sidebar_custom_props: { "module": true }
 ---

@@ -14,6 +14,7 @@ Keep in mind that we will use previous concepts from the other chapters while go
 - **VPC CNI scenario**
 - **DNS resolution scenario**
 - **Pod Issue Scenarios**
+- **Worker Node Scenarios**
 
 :::info Troubleshooting Methodologies
 As you progress through the scenarios, we will be introducing an overview of different troubleshooting methodologies. For example, all our scenarios are based in the **Reproductions method**.

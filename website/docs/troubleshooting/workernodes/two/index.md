@@ -1,6 +1,6 @@
 ---
 title: "Node Join Failure"
-sidebar_position: 31
+sidebar_position: 73
 chapter: true
 sidebar_custom_props: { "module": true }
 ---

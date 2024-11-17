@@ -1,6 +1,6 @@
 ---
 title: "Node in Not-Ready state"
-sidebar_position: 33
+sidebar_position: 72
 chapter: true
 sidebar_custom_props: { "module": true }
 ---

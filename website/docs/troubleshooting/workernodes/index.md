@@ -1,6 +1,6 @@
 ---
 title: "Worker Node Scenarios"
-sidebar_position: 20
+sidebar_position: 70
 description: "Bring worker nodes in an Amazon EKS Managed Nodegroup back to healthy state."
 ---
 
