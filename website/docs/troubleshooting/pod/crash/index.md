@@ -157,7 +157,6 @@ You should see that the security group attached to the mount target of EFS have 
 
 :::info
 Alternatively, you can also check the console for the same. Click the button below to open the EFS Console. Then click on EFS file system Id which has name as eks-workshop-efs. Then click on Network to view mount targets for all availability zones and the security groups attached to the each mount target.
-
 <ConsoleButton
   url="https://us-west-2.console.aws.amazon.com/efs/home?region=us-west-2#/file-systems"
   service="efs"
