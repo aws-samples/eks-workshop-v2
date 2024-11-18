@@ -1,6 +1,6 @@
 ---
 title: "ImagePullBackOff - Public Image"
-sidebar_position: 41
+sidebar_position: 62
 chapter: true
 sidebar_custom_props: { "module": true }
 ---
