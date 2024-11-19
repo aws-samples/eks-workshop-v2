@@ -1,5 +1,5 @@
 ---
-title: "Section 1 - Fixing Tag Issue"
+title: "Fixing Tag Issue"
 sidebar_position: 30
 ---
 

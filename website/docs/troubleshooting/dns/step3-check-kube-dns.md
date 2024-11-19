@@ -1,5 +1,5 @@
 ---
-title: "Step 3 - Check kube-dns service"
+title: "Checking kube-dns service"
 sidebar_position: 53
 ---
 

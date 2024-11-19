@@ -1,9 +1,9 @@
 ---
-title: "Step 1 - Update cluster configuration"
+title: "Setting up the scenario"
 sidebar_position: 51
 ---
 
-There are multiple configuration options that can affect DNS resolution in the cluster, and therefore halt service communications. For this scenario, we will apply common issues that we have seen on the field that affect DNS resolution in EKS clusters.
+There are multiple configuration options that can affect DNS resolution in the cluster, and therefore halt service communications. For this scenario, we will create common issues that we have seen on the field that affect DNS resolution in EKS clusters.
 
 :::tip Don't open the lab setup script, just execute it
 When facing connectivity and DNS resolution issues in your cluster, you won't know what is causing the problem. I encourage you to **not** look into the script, and instead follow the steps in this lab to learn a troubleshooting approach that can help you root cause different DNS resolution issues in EKS clusters.

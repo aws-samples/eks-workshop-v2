@@ -1,5 +1,5 @@
 ---
-title: "Section 3 - Fixing Manifest Configs"
+title: "Fixing Manifest Configs"
 sidebar_position: 32
 ---
 

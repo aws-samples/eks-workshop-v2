@@ -1,5 +1,5 @@
 ---
-title: "Section 3 - Expanding Worker Node Subnet"
+title: "Expanding Worker Node Subnet"
 sidebar_position: 43
 ---
 

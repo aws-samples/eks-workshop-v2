@@ -1,5 +1,5 @@
 ---
-title: "Step 4 - Check VPC configuration"
+title: "Checking VPC configuration"
 sidebar_position: 54
 ---
 

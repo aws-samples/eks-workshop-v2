@@ -1,5 +1,5 @@
 ---
-title: "Section 1 - Fixing Addons Configuration Issue"
+title: "Fixing Addons Configuration Issue"
 sidebar_position: 41
 ---
 

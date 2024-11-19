@@ -1,5 +1,5 @@
 ---
-title: "Section 2 - Fixing Policy Issue"
+title: "Fixing Policy Issue"
 sidebar_position: 31
 ---
 

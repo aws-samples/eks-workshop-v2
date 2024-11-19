@@ -1,5 +1,5 @@
 ---
-title: "Step 2 - Check coredns pods"
+title: "Checking coredns pods"
 sidebar_position: 52
 ---
 
