@@ -301,7 +301,7 @@ There are several other scenarios when it comes to nodes in the _NotReady_ or _U
 
 Aside from this, other factors that can lead to unknown status include:
 
-- **Network reachability between control plane and worker nodes.** Our scenario brushed on this as communication was hindered due to permissions, however network related issues like SG, NACL or route table route-ability between the two endpoints can also contribute.
+- **Network reachability between control plane and worker nodes.** Our scenario brushed on this as communication was hindered due to permissions, however network related issues like SG, NACL or route table routability between the two endpoints can also contribute.
 - **Reachability to the EC2 API endpoint.** This is needed for the vpc cni to perform its needed operations to prepare ip addresses for pods.
 - **Kubelet issues.** If kubelet encountered an issue it can prevent communication to the control plane. An example of when a kubelet can encounter issue is when customizing the worker node AMI or Launch Template and modifies the kubelet or OS.
 
