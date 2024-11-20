@@ -114,7 +114,7 @@ $ aws autoscaling describe-scaling-activities --auto-scaling-group-name ${NEW_NO
 ```
 
 :::info
-Alternatively, you can also check the console for the same. Click the button below to open the EKS Console. You can find the Autoscaling group name under the Details tab of the node group. Then you can click the Autoscaling group name to redirect to the ASG console. Then click the Activity tab to view the ASG activty history.
+Alternatively, you can also check the console for the same. Click the button below to open the EKS Console. You can find the Autoscaling group name under the Details tab of the node group. Then you can click the Autoscaling group name to redirect to the ASG console. Then click the Activity tab to view the ASG activity history.
 <ConsoleButton
   url="https://us-west-2.console.aws.amazon.com/eks/home?region=us-west-2#/clusters/eks-workshop/nodegroups/new_nodegroup_2"
   service="eks"
@@ -355,7 +355,7 @@ In this section we covered an issues where network routing caused the worker nod
 
 This is one of various other networking configurations that can cause node join failures. Some other core components include:
 
-- Security group access. If security group needs stricter restrictions, it must maintain the minimum requirementes stated [here](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html#security-group-restricting-cluster-traffic) for the cluster.
+- Security group access. If security group needs stricter restrictions, it must maintain the minimum requirements stated [here](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html#security-group-restricting-cluster-traffic) for the cluster.
 - Access Control Lists (ACL) is another component that can prevent required access between the cluster and worker nodes.
 
 Sometimes, EKS clusters may need to follow strict security requirements where the cluster can not have any inbound or outbound access to the internet. In such case, you can utilize [VPC endpoints](https://docs.aws.amazon.com/whitepapers/latest/aws-privatelink/what-are-vpc-endpoints.html) to allow private access to the required services. See the below resources for more details.

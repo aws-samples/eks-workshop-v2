@@ -130,7 +130,7 @@ Events:
   Warning  Unsupported              29m (x9 over 30m)  vpc-resource-controller  The instance type t3.medium is not supported for trunk interface (Security Group for Pods)
 ```
 
-Some important considerations when investigating node in _NotReady_ or _Unknown_ status is that this could be caused due to MemoryPressure, DiskcPressure, PIDPressure or any problem with the kubelet which can prevent it from sending heartbeats to the cluster's Control Plane. See the kubernetes [node-status document](https://kubernetes.io/docs/reference/node/node-status/#condition) for more details.
+Some important considerations when investigating node in _NotReady_ or _Unknown_ status is that this could be caused due to MemoryPressure, DiskPressure, PIDPressure or any problem with the kubelet which can prevent it from sending heartbeats to the cluster's Control Plane. See the kubernetes [node-status document](https://kubernetes.io/docs/reference/node/node-status/#condition) for more details.
 
 ### Step 3
 
@@ -210,7 +210,7 @@ mapRoles:
 
 ```
 
-Looking closely at the node role arn, there appears to be a random string infront of new_nodegroup_3 (xnew_nodegroup_3). This does not look to belong there so let's confirm the node role name.
+Looking closely at the node role arn, there appears to be a random string in front of new_nodegroup_3 (xnew_nodegroup_3). This does not look to belong there so let's confirm the node role name.
 
 :::info
 **Note:** _For your convenience we have added the Cluster name as env variable with the variable `$EKS_CLUSTER_NAME`._
@@ -221,10 +221,10 @@ $ aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name n
 arn:aws:iam::1234567890:role/new_nodegroup_3
 ```
 
-As expected, we can see that the aws-auth configmap was modified. Please modify the aws-auth configmap properly without the 'x' string infront of the node name.
+As expected, we can see that the aws-auth configmap was modified. Please modify the aws-auth configmap properly without the 'x' string in front of the node name.
 
 :::info
-**Note:** The command below will modify the configmap by removing the 'x' infront of the role. Another way to modify is to run 'kubectl edit configmap aws-auth -n kube-system' command and make changes to the configmap resource directly.
+**Note:** The command below will modify the configmap by removing the 'x' in front of the role. Another way to modify is to run 'kubectl edit configmap aws-auth -n kube-system' command and make changes to the configmap resource directly.
 :::
 
 ```bash
@@ -301,8 +301,8 @@ There are several other scenarios when it comes to nodes in the _NotReady_ or _U
 
 Aside from this, other factors that can lead to unknown status include:
 
-- **Network reachability between control plane and worker nodes.** Our scenario brushed on this as communication was hindered due to permissions, however network related issues like SG, NACL or route table routeability between the two endpoints can also contribute.
+- **Network reachability between control plane and worker nodes.** Our scenario brushed on this as communication was hindered due to permissions, however network related issues like SG, NACL or route table route-ability between the two endpoints can also contribute.
 - **Reachability to the EC2 API endpoint.** This is needed for the vpc cni to perform its needed operations to prepare ip addresses for pods.
-- **Kubelet issues.** If kubelet encountered an issue it can prevent communication to the control plane. An example of when a kubelet can encounter issue is when customizing the worker node AMI/launchtemplate and modifies the kubelet or OS.
+- **Kubelet issues.** If kubelet encountered an issue it can prevent communication to the control plane. An example of when a kubelet can encounter issue is when customizing the worker node AMI or Launch Template and modifies the kubelet or OS.
 
 Please review the troubleshooting document [here](https://repost.aws/knowledge-center/eks-node-status-ready) to learn about troubleshooting nodes in the NotReady or Unknown status.
