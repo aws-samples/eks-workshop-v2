@@ -30,7 +30,7 @@ The security team has provided specific recommendations to Sam, the engineer in 
 
 - Enabling encryption for the node group volume.
 - Setting up best practice network configurations for the cluster.
-- Ensuring EKS Optmized AMIs are used.
+- Ensuring EKS Optimized AMIs are used.
 - Enabling Kubernetes auditing to capture and monitor all activities within the cluster.
 
 Sam, who has prior Kubernetes experience but is new to EKS, has been tasked with addressing these security concerns before the platform's launch next quarter. To start, Sam created a new managed node group named **_new_nodegroup_1_** in the us-west-2 region, but no new nodes have joined the cluster. During the troubleshooting process, Sam has checked the EKS cluster status and the node group configuration, but has not found any obvious errors or issues. The Kubernetes events and logs do not provide any clear indications of the problem either.
@@ -50,7 +50,7 @@ As you can see, there are no resources found for nodes launched from the new nod
 
 ### Step 2
 
-We know that Sam created a new managed nodegroup called new_node_group_1. Managed Nodegroups are responsible to creating nodes so can follow the chain of command from checking the node in the previous step to checking the nodegroup.
+We know that Sam created a new managed nodegroup called new_node_group_1. Managed Node Groups are responsible to creating nodes so can follow the chain of command from checking the node in the previous step to checking the nodegroup.
 
 1. First, we want to see if the Managed nodegroup was created and see it's details. Some important and basic details to keep an eye out for are:
 
@@ -163,7 +163,7 @@ $ aws autoscaling describe-scaling-activities --auto-scaling-group-name ${NEW_NO
 ```
 
 :::info
-Alternatively, you can also check the console for the same. Click the button below to open the EKS Console. You can find the Autoscaling group name under the Details tab of the node group. Then you can click the Autoscaling group name to redirect to the ASG console. Then click the Activity tab to view the ASG activty history.
+Alternatively, you can also check the console for the same. Click the button below to open the EKS Console. You can find the Autoscaling group name under the Details tab of the node group. Then you can click the Autoscaling group name to redirect to the ASG console. Then click the Activity tab to view the ASG activity history.
 <ConsoleButton
   url="https://us-west-2.console.aws.amazon.com/eks/home?region=us-west-2#/clusters/eks-workshop/nodegroups/new_nodegroup_1"
   service="eks"
@@ -400,7 +400,7 @@ ip-10-42-108-252.us-west-2.compute.internal   Ready    <none>   3m9s   v1.30.0-e
 
 ## Wrapping it up
 
-In this troubleshooting scenario, we covered one of many issues which can prevent a node from joining a cluster. We covered an issue of improper permissions for the KMS key when encryption is configured to a launch template. Other instances where encryption can be configured are through [ekstcl](https://github.com/eksctl-io/eksctl/blob/main/examples/10-encrypted-volumes.yaml) and when EBS encryption is [enabled by deafult](https://docs.aws.amazon.com/ebs/latest/userguide/encryption-by-default.html). In any case, [Customer Managed Keys](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk) will require proper permissions for encryption for the AutoScaling service when using EKS Nodegroups.
+In this troubleshooting scenario, we covered one of many issues which can prevent a node from joining a cluster. We covered an issue of improper permissions for the KMS key when encryption is configured to a launch template. Other instances where encryption can be configured are through [eksctl](https://github.com/eksctl-io/eksctl/blob/main/examples/10-encrypted-volumes.yaml) and when EBS encryption is [enabled by default](https://docs.aws.amazon.com/ebs/latest/userguide/encryption-by-default.html). In any case, [Customer Managed Keys](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk) will require proper permissions for encryption for the AutoScaling service when using EKS node groups.
 
 When customizing Manage Nodegroup bootstrap, it is important to ensure the launch template is configured properly. Further configurations can be made for the Kubelet when specifying an AMI ID to the Launch Template. More information about EKS Launch Templates and Specifying an AMI, see the document below:
 
