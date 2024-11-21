@@ -3,7 +3,7 @@ title: "Checking VPC configuration"
 sidebar_position: 54
 ---
 
-When DNS traffic flows from application pods to kube-dns service and to Coredns pods, it likely traverses different nodes and different VPC subnets. We must ensure that that DNS traffic can flow between worker nodes and subnets at the VPC level.
+When DNS traffic flows from application pods to kube-dns service and to CoreDNS pods, it likely traverses different nodes and different VPC subnets. We must ensure that that DNS traffic can flow between worker nodes and subnets at the VPC level.
 
 In the VPC, there are two main components that can filter network traffic: Security Groups and Network ACLs.
 We must ensure that Security Groups associated with worker nodes and Networks ACLs associated with worker node subnets allow DNS traffic to flow in and out.
@@ -72,9 +72,9 @@ There are 3 Ingress rules and 1 Egress rule with the following details:
 
 DNS traffic, which uses protocols UDP and TCP on port 53, is not allowed. Then, DNS requests from pods will be dropped and lookup request will time out, as we saw before in application logs.
 
-### Root Casue
+### Root Cause
 
-In an attempt to secure communications in the cluster VPC, users may restric traffic in the cluster security group, which is also applied to all worker nodes. It is important to ensure that DNS traffic is allowed in this Security Group. Alternatively, users may create a separate Security Group and associate it with all wroker nodes, to ensure that nodes and pods can connect with each other, inlcuding DNS traffic.
+In an attempt to secure communications in the cluster VPC, users may restrict traffic in the cluster security group, which is also applied to all worker nodes. It is important to ensure that DNS traffic is allowed in this Security Group. Alternatively, users may create a separate Security Group and associate it with all worker nodes, to ensure that nodes and pods can connect with each other, including DNS traffic.
 
 In this case, the cluster Security Group was restricted to allow only traffic on port 443 and 10250. DNS traffic is not allowed in the cluster Security Group nor in any other Security Group associated with worker nodes. Therefore, name resolution request from application time out and application connectivity fails.
 
@@ -111,7 +111,7 @@ orders      orders-mysql-6fbd688d4b-m7gpt     1/1     Running   0          19h
 ui          ui-5f4d85f85f-xnh8q               1/1     Running   0          50s
 ```
 
-For further details about Security Group requriemens in EKS, [View Amazon EKS security group requirements for clusters](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html).
+For further details about Security Group requirements in EKS, [View Amazon EKS security group requirements for clusters](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html).
 
 :::info
 In addition to Security Groups, Network Access Control Lists can also block traffic to and from EKS pods and nodes. Network ACLs is another important configuration to check when traffic is not flowing as expected. In this lab we are not covering Network ACLs. If you want to know more, check out [Control subnet traffic with network access control lists](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html).
