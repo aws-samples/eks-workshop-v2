@@ -82,4 +82,4 @@ Optionally, you can check application logs for other pods that are not ready. Th
 
 ### Next Steps
 
-In the following sections, we will cover some important troubleshooting steps that will help us identify why DNS resoultion is not working.
+In the following sections, we will cover some important troubleshooting steps that will help us identify why DNS resolution is not working.

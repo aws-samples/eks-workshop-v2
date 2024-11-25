@@ -3,18 +3,18 @@ title: "Checking kube-dns service"
 sidebar_position: 53
 ---
 
-Pods use their configured nameserver to resolve DNS names. In Linux systems, nameserver configuration is written to file `/etc/resolv.conf`. By default, Kubernetes writes the kube-dns service ClusterIP as nameserver on every pod, inside file `/etc/resolv.conf`.
+Pods use their configured name server to resolve DNS names. In Linux systems, name server configuration is written to file `/etc/resolv.conf`. By default, Kubernetes writes the kube-dns service ClusterIP as name server on every pod, inside file `/etc/resolv.conf`.
 
-Let’s check pod nameserver configuration to ensure that kube-dns service ClusterIP is set as nameserver in file `/etc/resolv.conf`. You can check any application pod becasue this configuration is globally applied to all pods in the cluster.
+Let’s check pod name server configuration to ensure that kube-dns service ClusterIP is set as name server in file `/etc/resolv.conf`. You can check any application pod because this configuration is globally applied to all pods in the cluster.
 
 ```bash timeout=30
 $ kubectl exec -it -n catalog catalog-mysql-0 -- cat /etc/resolv.conf
 search catalog.svc.cluster.local svc.cluster.local cluster.local us-west-2.compute.internal
-nameserver 172.20.0.10
+name server 172.20.0.10
 options ndots:5
 ```
 
-The nameserver is set to IP 172.20.0.10.
+The name server is set to IP 172.20.0.10.
 
 Confirm that this is the kube-dns service ClusterIP:
 
@@ -25,9 +25,9 @@ kube-dns   ClusterIP   172.20.0.10   <none>        53/UDP,53/TCP,9153/TCP   22d
 ```
 
 Perfect!
-The nameserver in file `/etc/resolv.conf` is pointing to kube-dns ClusterIP.
+The name server in file `/etc/resolv.conf` is pointing to kube-dns ClusterIP.
 
-Now, let’s ensure that kube-dns service points to Coredns pods.
+Now, let’s ensure that kube-dns service points to CoreDNS pods.
 For that, check the endpoints for service kube-dns:
 
 ```bash timeout=30
@@ -44,23 +44,23 @@ Endpoints:         10.42.122.16:53,10.42.153.96:53
 ...
 ```
 
-Then, ensure that kube-dns service endpoints are set to Coredns pod IP addresses:
+Then, ensure that kube-dns service endpoints are set to CoreDNS pod IP addresses:
 
 ```bash timeout=30
 $ kubectl get pod -l k8s-app=kube-dns -n kube-system -o wide
 NAME                       READY   STATUS    RESTARTS   AGE   IP             ...
-coredns-787cb67946-72sqg   1/1     Running   0          18h   10.42.122.16   ...
-coredns-787cb67946-gtddh   1/1     Running   0          22d   10.42.153.96   ...
+CoreDNS-787cb67946-72sqg   1/1     Running   0          18h   10.42.122.16   ...
+CoreDNS-787cb67946-gtddh   1/1     Running   0          22d   10.42.153.96   ...
 ```
 
-Excellent, we can see that kube-dns service endpoints align with Coredns pod IP addresses.
+Excellent, we can see that kube-dns service endpoints align with CoreDNS pod IP addresses.
 
-In your environment, coredns IPs will be different than the IPs in this output. The requirement is that the IPs shown in the service Endpoints section are the same as the IPs shown for coredns pods.
+In your environment, CoreDNS IPs will be different than the IPs in this output. The requirement is that the IPs shown in the service Endpoints section are the same as the IPs shown for CoreDNS pods.
 
 Last, we need to verify that kube-proxy is working without issues.
 
 :::info
-Kube-proxy is responsible for configuring service routing inside the cluster. When DNS resolution traffic goes to kube-dns service, kube-proxy configuration is used to routed this traffic to Coredns pods.
+Kube-proxy is responsible for configuring service routing inside the cluster. When DNS resolution traffic goes to kube-dns service, kube-proxy configuration is used to routed this traffic to CoreDNS pods.
 :::
 
 First, check that kube-proxy pods are up and running:
@@ -158,6 +158,6 @@ I1109 22:33:35.099387       1 proxier.go:799] "SyncProxyRules complete" elapsed=
 
 ### Next Steps
 
-At this point, we have resolved the issue with kube-proxy configuration and kube-proxy pods are running as expected now. This enures that our application pods can communicate with kubedns service and perform DNS resolution with coredns pods.
+At this point, we have resolved the issue with kube-proxy configuration and kube-proxy pods are running as expected now. This enures that our application pods can communicate with kube-dns service and perform DNS resolution with CoreDNS pods.
 
 Let's continue to the next lab to cover the last troubleshooting steps that will cover in this lab.

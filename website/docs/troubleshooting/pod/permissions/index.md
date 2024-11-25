@@ -142,11 +142,11 @@ $ aws iam list-attached-role-policies --role-name $ROLE_NAME
 }
 ```
 
-You should see that the AWS managed policy "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly" is attached to the worker node role and this policy should provide enough permissions to pull a Image from ECR preivate repository. What else could we check now?
+You should see that the AWS managed policy "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly" is attached to the worker node role and this policy should provide enough permissions to pull a Image from ECR private repository. What else could we check now?
 
 ### Step 6
 
-The perimissions to the ECR repository can be managed at both Identity and Resource level. The Identity level permissions are provided at IAM and the resource level permissions are provided at the repository level. As we confirmed that identity based permissions are good, the issue could be with resource level permissions. Lets the check the policy for ECR repo.
+The permissions to the ECR repository can be managed at both Identity and Resource level. The Identity level permissions are provided at IAM and the resource level permissions are provided at the repository level. As we confirmed that identity based permissions are good, the issue could be with resource level permissions. Lets the check the policy for ECR repo.
 
 ```bash
 $ aws ecr get-repository-policy --repository-name retail-sample-app-ui --query policyText --output text | jq .

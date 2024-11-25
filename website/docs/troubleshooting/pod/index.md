@@ -1,7 +1,7 @@
 ---
 title: "Pod Issue Scenarios"
 sidebar_position: 60
-description: "Run deployments with diferent image paths/sources and persistent volume configurations, introduce the issues related to running those deployments"
+description: "Run deployments with different image paths/sources and persistent volume configurations, introduce the issues related to running those deployments"
 ---
 
 ::required-time

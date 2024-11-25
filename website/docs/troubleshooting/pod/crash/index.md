@@ -166,7 +166,7 @@ Alternatively, you can also check the console for the same. Click the button bel
 
 ### Step 5
 
-Lets add the inboud rule to EFS mount target security group to allow NFS traffic on port 2049 from VPC CIDR of the EKS cluster.
+Lets add the inbound rule to EFS mount target security group to allow NFS traffic on port 2049 from VPC CIDR of the EKS cluster.
 
 In the below commands, we are
 
@@ -213,5 +213,5 @@ General, troubleshooting workflow of pods stuck in ContainerCreating state is to
 
 - Check the volume claim used by the pod and identify the type of volume used.
 - Then check the csi driver used for that volume and check the requirements to use that volume in EKS pods at [EKS Storage](https://docs.aws.amazon.com/eks/latest/userguide/storage.html)
-- Confirm that all the requiements mentioned in the corresponding storage type document are met.
+- Confirm that all the requirements mentioned in the corresponding storage type document are met.
 - Further check for troubleshooting guide of that CSI driver if exists. For example, to check mount issues of EFS with EKS there is a troubleshooting guide at [EFS CSi Driver](https://repost.aws/knowledge-center/eks-troubleshoot-efs-volume-mount-issues)
