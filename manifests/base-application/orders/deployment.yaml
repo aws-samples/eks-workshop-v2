@@ -18,6 +18,7 @@ spec:
         prometheus.io/path: /actuator/prometheus
         prometheus.io/port: "8080"
         prometheus.io/scrape: "true"
+        instrumentation.opentelemetry.io/inject-sdk: other/retail-store
       labels:
         app.kubernetes.io/name: orders
         app.kubernetes.io/instance: orders
@@ -62,6 +63,8 @@ spec:
                 secretKeyRef:
                   name: orders-db
                   key: password
+            - name: OTEL_SERVICE_NAME
+              value: orders-service
           envFrom:
             - configMapRef:
                 name: orders

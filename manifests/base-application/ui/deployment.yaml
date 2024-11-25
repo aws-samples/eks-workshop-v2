@@ -18,6 +18,7 @@ spec:
         prometheus.io/path: /actuator/prometheus
         prometheus.io/port: "8080"
         prometheus.io/scrape: "true"
+        instrumentation.opentelemetry.io/inject-sdk: other/retail-store
       labels:
         app.kubernetes.io/name: ui
         app.kubernetes.io/instance: ui
@@ -32,6 +33,8 @@ spec:
           env:
             - name: JAVA_OPTS
               value: -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
+            - name: OTEL_SERVICE_NAME
+              value: ui-service
           envFrom:
             - configMapRef:
                 name: ui

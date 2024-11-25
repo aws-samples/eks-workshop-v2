@@ -11,7 +11,7 @@ In this chapter, we'll cover how you can use AWS observability solutions integra
 - Kubernetes Resources in the EKS console view
 - Control Plane and Pod Logs utilizing Fluentbit
 - Monitoring Metrics with CloudWatch Container Insights
-- Monitoring EKS Metrics with AMP and ADOT.
+- Implementing observability with open source solutions like ADOT, AMP, Loki and Tempo
 
 Watch a video walk-through of the observability module with one of the module maintainers, Nirmal Mehta (AWS) here:
 
