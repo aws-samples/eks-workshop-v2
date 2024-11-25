@@ -1,0 +1,65 @@
+---
+title: "Install Nvidia GPU and Ray operators"
+sidebar_position: 20
+---
+
+### Deploy NVIDIA GPU Operator
+
+The NVIDIA GPU Operator within Kubernetes automate the management of all NVIDIA software components needed to provision GPU. These components include the NVIDIA drivers (to enable CUDA), Kubernetes device plugin for GPUs, the [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-container-toolkit), automatic node labelling using [GPU Feature Discovery(GFD)](https://github.com/NVIDIA/gpu-feature-discovery), [Data Center GPU Manager(DCGM)](https://developer.nvidia.com/dcgm) operator export the GPU metrics.
+
+Add the NVIDIA Helm repository and install the GPU operator:
+
+```bash timeout=300 wait=60 hook=gpu-operator-status-check
+$ helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
+$ helm repo update
+$ helm upgrade --install gpu-operator -n gpu-operator \
+  --create-namespace nvidia/gpu-operator --wait
+$ kubectl wait pod --all \
+  --for=condition=Ready -n gpu-operator
+```
+
+Once installed, we should see the node-feature-discovery running on each node, nvidia-container-toolkit, nvidia-cuda-validator, nvidia-dcgm-exporter, nvidia-device-plugin-daemonset, nvidia-driver-daemonset and nvidia-operator-validator running on a GPU enabled nodes.
+
+```bash
+$ kubectl get all -n gpu-operator
+NAME                                                                  READY   STATUS      RESTARTS   AGE
+pod/gpu-feature-discovery-5z88x                                       1/1     Running     0          23m
+pod/gpu-operator-node-feature-discovery-gc-5769c875hsszf   1/1     Running     0          5h59m
+pod/gpu-operator-node-feature-discovery-master-7999vflt4   1/1     Running     0          5h59m
+pod/gpu-operator-node-feature-discovery-worker-4lv2d       1/1     Running     0          5h59m
+pod/gpu-operator-node-feature-discovery-worker-52tfr       1/1     Running     0          27m
+pod/gpu-operator-node-feature-discovery-worker-jw97f       1/1     Running     0          5h59m
+pod/gpu-operator-node-feature-discovery-worker-mnhtx       1/1     Running     0          25m
+pod/gpu-operator-node-feature-discovery-worker-sxs2s       1/1     Running     0          5h59m
+pod/gpu-operator-7488b846b-z7vrb                                      1/1     Running     0          5h59m
+pod/nvidia-container-toolkit-daemonset-jjgjr                          1/1     Running     0          23m
+pod/nvidia-cuda-validator-rk62c                                       0/1     Completed   0          20m
+pod/nvidia-dcgm-exporter-cg7n5                                        1/1     Running     0          23m
+pod/nvidia-device-plugin-daemonset-9jzkj                              1/1     Running     0          23m
+pod/nvidia-driver-daemonset-wt5tn                                     1/1     Running     0          25m
+pod/nvidia-operator-validator-gmhjl                                   1/1     Running     0          23m
+
+```
+
+### Deploy the Kuberay Operator
+
+Ray is a popular open-source distributed computing framework that is widely used for building and running scalable AI/ML applications. The Kuberay Operator integrates seamlessly with Ray, providing a declarative, Kubernetes-native interface for deploying and managing Ray-powered services.
+
+Install the Kuberay operator, and later in the lab we will create an Inference service using RayService.
+
+```bash timeout=300
+$ helm repo add kuberay https://ray-project.github.io/kuberay-helm/
+$ helm repo update
+$ helm install kuberay-operator kuberay/kuberay-operator -n kuberay \
+  --create-namespace --version 1.0.0 --wait
+$ kubectl wait pod --all \
+  --for=condition=Ready -n kuberay
+```
+
+Check the Ray operator status
+
+```bash timeout=60
+$ kubectl get pods -n kuberay
+NAME                                READY   STATUS    RESTARTS   AGE
+kuberay-operator-6fcbb94f64-mbfnr   1/1     Running   0          17s
+```

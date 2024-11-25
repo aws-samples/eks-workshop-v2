@@ -83,6 +83,7 @@ Statement:
           - eks.amazonaws.com
           - eks-nodegroup.amazonaws.com
           - eks-fargate.amazonaws.com
+          - scraper.aps.amazonaws.com
           - guardduty.amazonaws.com
           - spot.amazonaws.com
           - fis.amazonaws.com

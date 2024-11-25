@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dogbooth
+  namespace: dogbooth
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: "/$1"
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+        # Ray Dashboard
+        - path: /dogbooth/(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: dogbooth-head-svc
+              port:
+                number: 8265
+        # Ray Serve
+        - path: /dogbooth/serve/(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: dogbooth-head-svc
+              port:
+                number: 8000

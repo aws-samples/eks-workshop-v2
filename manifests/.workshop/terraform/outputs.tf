@@ -5,4 +5,5 @@ output "environment" {
 export ${k}='${v}'
 %{endfor}
 EOF
+sensitive = true
 }

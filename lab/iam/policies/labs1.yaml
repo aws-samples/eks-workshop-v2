@@ -12,14 +12,21 @@ Statement:
   - Effect: Allow
     Action:
       - aps:DeleteWorkspace
+      - aps:DeleteScraper
       - aps:Describe*
       - aps:List*
       - aps:QueryMetrics
+      - aps:CreateScraper
+      - aps:TagResource
     Resource: ["*"]
     Condition:
       StringLike:
         aws:ResourceTag/env:
           - ${Env}*
+  - Effect: Allow
+    Action:
+      - aps:DescribeScraper
+    Resource: ["*"]
   - Effect: Allow
     Action:
       - dynamodb:ListTables
