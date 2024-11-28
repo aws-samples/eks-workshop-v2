@@ -111,7 +111,7 @@ const config = {
       ],
       image: "img/meta.jpg",
       navbar: {
-        title: "EKS Workshop",
+        title: "KUB307: EKS Workshop",
         logo: {
           alt: "Amazon Web Services",
           src: "img/logo.svg",
