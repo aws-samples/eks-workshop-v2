@@ -20,7 +20,7 @@ function HomepageHeader() {
             className="button button--secondary button--lg"
             to="/docs/introduction"
           >
-            Get Started!
+            Welcome to KUB307. Get Started!
           </Link>
         </div>
       </div>
