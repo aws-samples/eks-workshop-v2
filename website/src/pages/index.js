@@ -18,9 +18,9 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="https://catalog.us-east-1.prod.workshops.aws/join?access-code=ceac-0cdb4b-a9"
+            to="/docs/introduction"
           >
-            Launch Workshop Studio!
+            Click here to get into the workshop introduction
           </Link>
         </div>
       </div>
@@ -38,7 +38,6 @@ export default function Home() {
       <HomepageHeader />
       <main>
         <HomepageFeatures />
-        <HomepageVideo />
       </main>
     </Layout>
   );
