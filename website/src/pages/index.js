@@ -18,9 +18,9 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/introduction"
+            to="https://catalog.us-east-1.prod.workshops.aws/join?access-code=ceac-0cdb4b-a9"
           >
-            Get Started!
+            Launch Workshop Studio!
           </Link>
         </div>
       </div>

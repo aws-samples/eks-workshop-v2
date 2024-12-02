@@ -28,7 +28,7 @@ const baseUrl = process.env.BASE_URL || "";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "EKS Workshop",
+  title: "KUB307: Fundamentals to scale Kubernetes across your organization",
   tagline:
     "Practical exercises to learn about Amazon Elastic Kubernetes Service",
   url: "https://www.eksworkshop.com",
@@ -111,7 +111,7 @@ const config = {
       ],
       image: "img/meta.jpg",
       navbar: {
-        title: "EKS Workshop",
+        title: "KUB307: EKS Workshop",
         logo: {
           alt: "Amazon Web Services",
           src: "img/logo.svg",
