@@ -3,7 +3,7 @@ title: At an AWS event
 sidebar_position: 20
 ---
 
-By participating in this workshop you will be provided with an AWS account to use to complete the lab material. Connect to the portal by browsing to https://catalog.us-east-1.prod.workshops.aws/join?access-code=ceac-0cdb4b-a9.
+By participating in this workshop you will be provided with an AWS account to use to complete the lab material. Connect to the portal by browsing to https://catalog.us-east-1.prod.workshops.aws/join?access-code=eb68-0b4886-1d.
 
 You will be prompted to sign in. Select the option **Email One-Time Password(OTP)**.
 
@@ -11,7 +11,7 @@ You will be prompted to sign in. Select the option **Email One-Time Password(OTP
 
 Enter your email address and press **Send passcode**, which will send a one-time passcode to your inbox. When the email arrives you can enter the passcode and log-in.
 
-If you need the access code, you click reuse this link: https://catalog.us-east-1.prod.workshops.aws/join?access-code=ceac-0cdb4b-a9 or copy/paste it *ceac-0cdb4b-a9*. Enter the provided hash in the text box and hit **Next**.
+If you need the access code, you click reuse this link: https://catalog.us-east-1.prod.workshops.aws/join?access-code=eb68-0b4886-1d or copy/paste it *eb68-0b4886-1d*. Enter the provided hash in the text box and hit **Next**.
 
 ![Event Code](./assets/event-code.webp)
 
