@@ -1,5 +1,13 @@
 #!/bin/bash
 
+if [ ! -z "${AWS_ACCESS_KEY_ID}" ]; then
+  echo "Error: You have AWS credentials set in this terminal"
+  echo "This IDE is configured to use an IAM instance profile with the appropriate permissions"
+  echo ""
+  echo "Please close this terminal and open a new one, do not set AWS_ACCESS_KEY_ID or any related variables"
+  exit 1
+fi
+
 # Make sure we run from a consistent directory
 cd ~
 
