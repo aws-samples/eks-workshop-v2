@@ -166,6 +166,12 @@ const config = {
             label: "AI/ML",
           },
           {
+            type: "doc",
+            docId: "troubleshooting/index",
+            position: "left",
+            label: "Troubleshooting",
+          },
+          {
             href: "https://github.com/aws-samples/eks-workshop-v2",
             position: "right",
             className: "header-github-link",
