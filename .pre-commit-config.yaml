@@ -3,3 +3,11 @@ repos:
     rev: v1.77.0
     hooks:
       - id: terraform_fmt
+
+  - repo: local
+    hooks:
+      - id: lint
+        language: node
+        name: Run linting
+        entry: yarn lint:staged
+        stage: [commit]
