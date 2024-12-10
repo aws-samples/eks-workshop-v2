@@ -14,7 +14,7 @@
     "format:check": "prettier -c .",
     "format:fix": "prettier -w .",
     "markdown:check": "markdownlint-cli2 'website/docs/**/*.md'",
-    "lint": "yarn links:check && yarn format:check && yarn markdown:check",
+    "lint": "yarn links:check && yarn format:check && yarn markdown:check && yarn spelling:check",
     "lint:staged": "yarn lint-staged"
   },
   "author": "",
@@ -22,7 +22,7 @@
   "devDependencies": {
     "cspell": "^8.8.1",
     "lint-staged": "^15.2.7",
-    "markdown-link-check": "^3.12.1",
+    "markdown-link-check": "3.12.2",
     "markdownlint-cli2": "^0.16.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.2.5",
@@ -38,7 +38,8 @@
     "*.md": [
       "prettier --write",
       "cspell",
-      "markdown-link-check -q -c link-check-config.json"
+      "markdown-link-check -q -c link-check-config.json",
+      "markdownlint-cli2"
     ]
   },
   "packageManager": "yarn@4.5.3"
