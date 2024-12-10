@@ -2,7 +2,7 @@
 
 set -e
 
-source ../hack/lib/kubectl-version.sh
+source ./hack/lib/kubectl-version.sh
 
 wget -q https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl
 chmod +x ./kubectl
