@@ -18,6 +18,6 @@ if [[ $BRANCH = build-* ]]; then
   export LAB_TIMES_ENABLED='true'
 fi
 
-npm install
-npm run clear
-npm run build
+yarn install
+yarn workspace website clear
+yarn workspace website build
