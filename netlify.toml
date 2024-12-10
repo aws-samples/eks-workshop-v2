@@ -1,7 +1,7 @@
 [build]
   publish = "website/build"
 
-  command = "bash netlify-build.sh"
+  command = "bash website/netlify-build.sh"
 
   environment = { NODE_VERSION = "18.13.0" }
 
