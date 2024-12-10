@@ -40,3 +40,7 @@ create-infrastructure:
 .PHONY: destroy-infrastructure
 destroy-infrastructure:
 	bash hack/destroy-infrastructure.sh $(environment)
+
+.PHONY: lint
+lint:
+	yarn lint
