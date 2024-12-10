@@ -7,11 +7,11 @@ glob='-'
 
 .PHONY: install
 install:
-	cd website; npm install
+	yarn install
 
 .PHONY: serve
 serve: install
-	bash hack/serve.sh
+	yarn serve
 
 .PHONY: tf-fmt
 tf-fmt:
