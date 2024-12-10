@@ -38,8 +38,6 @@ test-output
 
 terraform-resources
 
-website/package-lock.json
-
 # Yarn files
 .pnp.*
 .yarn/*
