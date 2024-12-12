@@ -21,8 +21,11 @@ The following pre-requisites are necessary to work on the content:
   - Docker
   - `make`
   - `jq`
+  - `yq` 
   - Node.js + `yarn`
   - `kubectl`
+
+Double-check the version of `yq` installed in your environment. Many package managers will automatically install a version of yq that is incompatible with this workshop as a pre-requisote when installing `jq`. The latest version of `yq` can be downloaded here [https://github.com/mikefarah/yq](https://github.com/mikefarah/yq)
 
 ## Create a work branch
 
