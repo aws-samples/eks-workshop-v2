@@ -87,7 +87,7 @@ module "iam_assumable_role_ack" {
   role_name                     = "${var.addon_context.eks_cluster_id}-ack-controller"
   provider_url                  = var.addon_context.eks_oidc_issuer_url
   role_policy_arns              = [aws_iam_policy.ack_dynamo.arn]
-  oidc_fully_qualified_subjects = ["system:serviceaccount:ack-dynamodb:ack-ddb-sa"]
+  oidc_fully_qualified_subjects = ["system:serviceaccount:ack-system:ack-dynamodb-controller"]
 
   tags = var.tags
 }
