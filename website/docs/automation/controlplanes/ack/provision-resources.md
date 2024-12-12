@@ -14,7 +14,7 @@ manifests/modules/automation/controlplanes/ack/dynamodb/dynamodb-create.yaml
 ```
 
 :::info
-Keen observers will notice that the YAML Spec closely resembles the API endpoints and calls for DynamoDB, including familiar fields such as `tableName` and `attributeDefinitions`.
+Keen observers will notice that the YAML specification closely resembles the [API signature](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_CreateTable.html) for DynamoDB, including familiar fields such as `tableName` and `attributeDefinitions`.
 :::
 
 Now, let's apply these updates to the cluster:

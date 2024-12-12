@@ -17,7 +17,7 @@ manifests/modules/networking/network-policies/apply-network-policies/default-den
 $ kubectl apply -n ui -f ~/environment/eks-workshop/modules/networking/network-policies/apply-network-policies/default-deny.yaml
 ```
 
-Now let us try accessing the 'catalog' component from tbe 'ui' component,
+Now let us try accessing the 'catalog' component from the 'ui' component,
 
 ```bash expectError=true
 $ kubectl exec deployment/ui -n ui -- curl -s http://catalog.catalog/health --connect-timeout 5
@@ -36,9 +36,9 @@ curl: (28) Resolving timed out after 3000 milliseconds
 
 Implementing the above policy will also cause the sample application to no longer function properly as 'ui' component requires access to the 'catalog' service and other service components. To define an effective egress policy for 'ui' component requires understanding the network dependencies for the component.
 
-In the case of the 'ui' component, it needs to communicate with all the other service components, such as 'catalog', 'orders, etc. Apart from this, 'ui' will also need to be able to communicate with components in the cluster system namespaces. For example, for the 'ui' component to work, it needs to be able to perform DNS lookups, which requires it to communicate with the CoreDNS service in the `kube-system`` namespace.
+In the case of the 'ui' component, it needs to communicate with all the other service components, such as 'catalog', 'orders, etc. Apart from this, 'ui' will also need to be able to communicate with components in the cluster system namespaces. For example, for the 'ui' component to work, it needs to be able to perform DNS lookups, which requires it to communicate with the CoreDNS service in the `kube-system` namespace.
 
-The below network policy was designed considering the above requirements. It has two key sections:
+The network policy below was designed with the above requirements in mind. It has two key sections:
 
 - The first section focuses on allowing egress traffic to all service components such as 'catalog', 'orders' etc. without providing access to the database components through a combination of namespaceSelector, which allows for egress traffic to any namespace as long as the pod labels match "app.kubernetes.io/component: service".
 - The second section focuses on allowing egress traffic to all components in the kube-system namespace, which enables DNS lookups and other key communications with the components in the system namespace.
@@ -53,14 +53,14 @@ Lets apply this additional policy:
 $ kubectl apply -f ~/environment/eks-workshop/modules/networking/network-policies/apply-network-policies/allow-ui-egress.yaml
 ```
 
-Now, we can test to see if we are able to connect to 'catalog' service:
+Now, we can test to see if we can connect to 'catalog' service:
 
 ```bash
 $ kubectl exec deployment/ui -n ui -- curl http://catalog.catalog/health
 OK
 ```
 
-As you could see from the outputs, we can now connect to the 'catalog' service but not the database since it does not have the `app.kubernetes.io/component: service` label:
+As you can see from the outputs, we can now connect to the 'catalog' service but not the database since it does not have the `app.kubernetes.io/component: service` label:
 
 ```bash expectError=true
 $ kubectl exec deployment/ui -n ui -- curl -v telnet://catalog-mysql.catalog:3306 --connect-timeout 5
