@@ -10,13 +10,13 @@ Credentials for the OpenSearch domain have been saved in the AWS Systems Manager
 ```bash
 $ export OPENSEARCH_HOST=$(aws ssm get-parameter \
       --name /eksworkshop/$EKS_CLUSTER_NAME/opensearch/host \
-      --region $AWS_REGION | jq .Parameter.Value | tr -d '"')
+      --region $AWS_REGION | jq -r .Parameter.Value)
 $ export OPENSEARCH_USER=$(aws ssm get-parameter \
       --name /eksworkshop/$EKS_CLUSTER_NAME/opensearch/user  \
-      --region $AWS_REGION --with-decryption | jq .Parameter.Value | tr -d '"')
+      --region $AWS_REGION --with-decryption | jq -r .Parameter.Value)
 $ export OPENSEARCH_PASSWORD=$(aws ssm get-parameter \
       --name /eksworkshop/$EKS_CLUSTER_NAME/opensearch/password \
-      --region $AWS_REGION --with-decryption | jq .Parameter.Value | tr -d '"')
+      --region $AWS_REGION --with-decryption | jq -r .Parameter.Value)
 $ export OPENSEARCH_DASHBOARD_FILE=~/environment/eks-workshop/modules/observability/opensearch/opensearch-dashboards.ndjson
 ```
 
