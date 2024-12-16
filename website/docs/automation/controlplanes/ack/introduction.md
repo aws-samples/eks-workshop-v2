@@ -7,15 +7,14 @@ Each ACK service controller is packaged into a separate container image that is 
 
 In this section, since we'll be working with Amazon DynamoDB ACK, we first need to install that ACK controller by using the Helm chart:
 
-```bash
+```bash wait=60
 $ aws ecr-public get-login-password --region us-east-1 | \
   helm registry login --username AWS --password-stdin public.ecr.aws
-
 $ helm install ack-dynamodb  \
   oci://public.ecr.aws/aws-controllers-k8s/dynamodb-chart \
   --version=${DYNAMO_ACK_VERSION} \
   --namespace ack-system --create-namespace \
-  --set=aws.region=$AWS_REGION \
+  --set "aws.region=${AWS_REGION}" \
   --set "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"="$ACK_IAM_ROLE" \
   --wait
 ```
