@@ -9,17 +9,15 @@ Let's create a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/p
 
 First inspect the `s3pvclaim.yaml` file to see the parameters in the file and the claim:
 
-```file
-manifests/modules/fundamentals/storage/s3/deployment/s3pvclaim.yaml
-```
+::yaml{file="manifests/modules/fundamentals/storage/s3/deployment/s3pvclaim.yaml" paths="spec.accessModes,spec.mountOptions"}
 
-In particular, notice the comments in the mountOptions section:
+1. `ReadWriteMany`: Allows the same S3 bucket to be mounted to multiple pods for read/write
+2. `allow-delete`: Allows users to delete objects from the mounted bucket  
+`allow-other`: Allows users other than the owner to access the mounted bucket  
+`uid=999`: Sets User ID (UID) of files/directories in the mounted bucket to 999  
+`gid=999`: Sets Group ID (GID) of files/directories in the mounted bucket to 999  
+`region=us-west-2`: Sets the region of the S3 bucket to us-west-2
 
-- `allow-delete`: Allows users to delete objects from the mounted bucket
-- `allow-other`: Allows users other than the owner to access the mounted bucket
-- `uid=999`: Sets the User ID (UID) of the files and directories in the mounted bucket to 999
-- `gid=999`: Sets the Group ID (GID) of the files and directories in the mounted bucket to 999
-- `region us-west-2`: Sets the region of the bucket to us-west-2
 
 ```kustomization
 modules/fundamentals/storage/s3/deployment/deployment.yaml
@@ -57,21 +55,41 @@ $ kubectl get deployment -n assets -o yaml | yq '.items[].spec.template.spec.con
   name: tmp-volume
 ```
 
-We can view our PersistentVolume (PV) assets, PersistentVolumeClaim (PVC) assets, and pod assets with `kubectl`:
+We can view our PersistentVolume (PV):
 
 ```bash
 $ kubectl get pv
 NAME    CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM             STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
 s3-pv   1Gi        RWX            Retain           Bound    assets/s3-claim                  <unset>                          2m31s
+```
 
-$ kubectl get pvc -n assets
-AME       STATUS   VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
-s3-claim   Bound    s3-pv    1Gi        RWX                           <unset>                 6m41s
+Let's examine the details of our PersistentVolumeClaim (PVC):
 
+```bash
+$ kubectl describe pvc -n assets
+Name:          s3-claim
+Namespace:     assets
+StorageClass:  
+Status:        Bound
+Volume:        s3-pv
+Labels:        <none>
+Annotations:   pv.kubernetes.io/bind-completed: yes
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      1Gi
+Access Modes:  RWX
+VolumeMode:    Filesystem
+Used By:       assets-9fbbbcd6f-c74vv
+               assets-9fbbbcd6f-vb9jz
+Events:        <none>
+```
+
+We can also see the running pods in the deployment:
+
+```bash
 $ kubectl get pods -n assets
 NAME                     READY   STATUS    RESTARTS   AGE
-assets-9fbbbcd6f-26jrq   1/1     Running   0          6m57s
-assets-9fbbbcd6f-lb46c   1/1     Running   0          6m55s
+assets-9fbbbcd6f-c74vv   1/1     Running   0          2m36s
+assets-9fbbbcd6f-vb9jz   1/1     Running   0          2m38s
 ```
 
 Finally, let's take a look at our final deployment with the Mountpoint for Amazon S3 CSI driver:
@@ -80,24 +98,7 @@ Finally, let's take a look at our final deployment with the Mountpoint for Amazo
 $ kubectl describe deployment -n assets
 Name:                   assets
 Namespace:              assets
-CreationTimestamp:      Mon, 14 Oct 2024 19:19:47 +0000
-Labels:                 app.kubernetes.io/created-by=eks-workshop
-                        app.kubernetes.io/type=app
-Annotations:            deployment.kubernetes.io/revision: 2
-Selector:               app.kubernetes.io/component=service,app.kubernetes.io/instance=assets,app.kubernetes.io/name=assets
-Replicas:               2 desired | 2 updated | 2 total | 2 available | 0 unavailable
-StrategyType:           RollingUpdate
-MinReadySeconds:        0
-RollingUpdateStrategy:  25% max unavailable, 25% max surge
-Pod Template:
-  Labels:           app.kubernetes.io/component=service
-                    app.kubernetes.io/created-by=eks-workshop
-                    app.kubernetes.io/instance=assets
-                    app.kubernetes.io/name=assets
-  Annotations:      prometheus.io/path: /metrics
-                    prometheus.io/port: 8080
-                    prometheus.io/scrape: true
-  Service Account:  assets
+[...]
   Containers:
    assets:
     Image:      public.ecr.aws/aws-containers/retail-store-sample-assets:0.4.0
@@ -124,24 +125,7 @@ Pod Template:
     Type:          EmptyDir (a temporary directory that shares a pod's lifetime)
     Medium:        Memory
     SizeLimit:     <unset>
-  Node-Selectors:  <none>
-  Tolerations:     <none>
-Conditions:
-  Type           Status  Reason
-  ----           ------  ------
-  Available      True    MinimumReplicasAvailable
-  Progressing    True    NewReplicaSetAvailable
-OldReplicaSets:  assets-784b5f5656 (0/0 replicas created)
-NewReplicaSet:   assets-9fbbbcd6f (2/2 replicas created)
-Events:
-  Type    Reason             Age    From                   Message
-  ----    ------             ----   ----                   -------
-  Normal  ScalingReplicaSet  20m    deployment-controller  Scaled up replica set assets-784b5f5656 to 1
-  Normal  ScalingReplicaSet  15m    deployment-controller  Scaled up replica set assets-784b5f5656 to 2 from 1
-  Normal  ScalingReplicaSet  7m21s  deployment-controller  Scaled up replica set assets-9fbbbcd6f to 1
-  Normal  ScalingReplicaSet  7m19s  deployment-controller  Scaled down replica set assets-784b5f5656 to 1 from 2
-  Normal  ScalingReplicaSet  7m19s  deployment-controller  Scaled up replica set assets-9fbbbcd6f to 2 from 1
-  Normal  ScalingReplicaSet  7m17s  deployment-controller  Scaled down replica set assets-784b5f5656 to 0 from 1
+[...]
 ```
 
 Let's go into first pod and list files at `/mountpoint-s3`. Since we have our S3 bucket mounted with the Mountpoint for Amazon S3 CSI driver, we can create a new image inside of the mounted S3 bucket too:
