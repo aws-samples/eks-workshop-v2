@@ -14,26 +14,6 @@ $ kubectl describe deployment -n assets
 Name:                   assets
 Namespace:              assets
 [...]
-Name:                   assets
-Namespace:              assets
-CreationTimestamp:      Mon, 14 Oct 2024 19:19:47 +0000
-Labels:                 app.kubernetes.io/created-by=eks-workshop
-                        app.kubernetes.io/type=app
-Annotations:            deployment.kubernetes.io/revision: 1
-Selector:               app.kubernetes.io/component=service,app.kubernetes.io/instance=assets,app.kubernetes.io/name=assets
-Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
-StrategyType:           RollingUpdate
-MinReadySeconds:        0
-RollingUpdateStrategy:  25% max unavailable, 25% max surge
-Pod Template:
-  Labels:           app.kubernetes.io/component=service
-                    app.kubernetes.io/created-by=eks-workshop
-                    app.kubernetes.io/instance=assets
-                    app.kubernetes.io/name=assets
-  Annotations:      prometheus.io/path: /metrics
-                    prometheus.io/port: 8080
-                    prometheus.io/scrape: true
-  Service Account:  assets
   Containers:
    assets:
     Image:      public.ecr.aws/aws-containers/retail-store-sample-assets:0.4.0
@@ -55,19 +35,6 @@ Pod Template:
     Type:          EmptyDir (a temporary directory that shares a pod's lifetime)
     Medium:        Memory
     SizeLimit:     <unset>
-  Node-Selectors:  <none>
-  Tolerations:     <none>
-Conditions:
-  Type           Status  Reason
-  ----           ------  ------
-  Progressing    True    NewReplicaSetAvailable
-  Available      True    MinimumReplicasAvailable
-OldReplicaSets:  <none>
-NewReplicaSet:   assets-784b5f5656 (1/1 replicas created)
-Events:
-  Type    Reason             Age    From                   Message
-  ----    ------             ----   ----                   -------
-  Normal  ScalingReplicaSet  3m16s  deployment-controller  Scaled up replica set assets-784b5f5656 to 1
 [...]
 ```
 
