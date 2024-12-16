@@ -168,5 +168,7 @@ resource "kubectl_manifest" "nlb" {
 
   })
 
+  wait = true
+
   depends_on = [time_sleep.blueprints_addons_sleep]
 }
