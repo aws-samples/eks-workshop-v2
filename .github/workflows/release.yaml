@@ -32,6 +32,13 @@ jobs:
         with:
           version: "${{ env.KUBECTL_VERSION }}"
         id: install
+      - name: Get AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-duration-seconds: 900
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GithubActionsSession-publish
       - name: Release Notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -48,13 +55,6 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-      - name: Get AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4.0.2
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          role-duration-seconds: 900
-          aws-region: ${{ secrets.AWS_REGION }}
-          role-session-name: GithubActionsSession-publish
       - name: Update stable branch
         run: |
           git checkout stable
