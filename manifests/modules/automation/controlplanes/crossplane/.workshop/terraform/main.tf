@@ -137,7 +137,7 @@ EOF
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.16.3"
+  version = "1.19.0"
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
@@ -150,6 +150,8 @@ module "eks_blueprints_addons" {
   cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint
   cluster_version   = var.eks_cluster_version
   oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
+
+  observability_tag = null
 }
 
 resource "time_sleep" "blueprints_addons_sleep" {
@@ -165,6 +167,8 @@ resource "kubectl_manifest" "nlb" {
   yaml_body = templatefile("${path.module}/templates/nlb.yaml", {
 
   })
+
+  wait = true
 
   depends_on = [time_sleep.blueprints_addons_sleep]
 }

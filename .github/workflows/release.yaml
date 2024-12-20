@@ -7,6 +7,7 @@ on:
 permissions:
   id-token: write
   contents: write
+  issues: read
 
 jobs:
   build:
@@ -21,15 +22,35 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-      - name: Release
-        working-directory: releaser
+          node-version: 20
+      - name: Get kubectl version
+        run: |
+          source hack/lib/kubectl-version.sh
+          echo "Using kubectl ${KUBECTL_VERSION}"
+          echo "KUBECTL_VERSION=$KUBECTL_VERSION" >> $GITHUB_ENV
+      - uses: azure/setup-kubectl@v4
+        with:
+          version: "${{ env.KUBECTL_VERSION }}"
+        id: install
+      - name: Get AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-duration-seconds: 900
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GithubActionsSession-publish
+      - name: Release Notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MILESTONE_NUMBER: "${{ github.event.milestone.number }}"
         run: |
-          npm install
-          npm run exec
+          yarn install
+          yarn workspace releaser run exec
+
+          bash hack/build-ide-cfn.sh /tmp/ide-cfn.yaml
+
+          MILESTONE_TITLE=$(gh api "repos/$GITHUB_REPOSITORY/milestones/$MILESTONE_NUMBER" --jq '.title')
+          echo "MILESTONE_TITLE=$MILESTONE_TITLE" >> $GITHUB_ENV
       - name: Set Git config
         run: |
           git config user.name 'github-actions[bot]'
@@ -40,8 +61,32 @@ jobs:
           git pull
           git merge --no-ff main -m "Publish to stable"
           git push
+      - name: Run publish (stable)
+        env:
+          CONTENT_BUCKET: "${{ secrets.CONTENT_BUCKET }}"
+          CONTENT_CLOUDFRONT: "${{ secrets.CONTENT_CLOUDFRONT }}"
+          BRANCH: stable
+        run: |
+          bash hack/publish-content.sh
       - name: Create snapshot
         run: |
           suffix=$(git rev-parse --short HEAD)
-          git checkout -b snapshot-${suffix}
-          git push origin snapshot-${suffix}
+          snapshot_branch="snapshot-${suffix}"
+          git checkout -b "${snapshot_branch}"
+          git push origin "${snapshot_branch}"
+
+          echo "SNAPSHOT_BRANCH=$snapshot_branch" >> $GITHUB_ENV
+      - name: Run publish (snapshot)
+        env:
+          SNAPSHOT_BUCKET: "${{ secrets.SNAPSHOT_BUCKET }}"
+          SNAPSHOT_CLOUDFRONT: "${{ secrets.SNAPSHOT_CLOUDFRONT }}"
+          BRANCH: ${{ env.SNAPSHOT_BRANCH }}
+        run: |
+          bash hack/publish-snapshot.sh
+      - name: Create GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: release-${{ env.SNAPSHOT_BRANCH }}
+          name: ${{ env.MILESTONE_TITLE }}
+          bodyFile: /tmp/release-notes.md
+          artifacts: "/tmp/ide-cfn.yaml"

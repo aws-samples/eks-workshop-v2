@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: assets
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+        - name: assets
+          volumeMounts:
+            - name: mountpoint-s3
+              mountPath: /mountpoint-s3
+      volumes:
+        - name: mountpoint-s3
+          persistentVolumeClaim:
+            claimName: s3-claim
