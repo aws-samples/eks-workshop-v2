@@ -5,7 +5,8 @@
   "main": "index.js",
   "private": true,
   "workspaces": [
-    "website"
+    "website",
+    "releaser"
   ],
   "scripts": {
     "serve": "yarn workspace website serve",

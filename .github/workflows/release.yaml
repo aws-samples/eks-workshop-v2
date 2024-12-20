@@ -7,6 +7,7 @@ on:
 permissions:
   id-token: write
   contents: write
+  issues: read
 
 jobs:
   build:
@@ -22,14 +23,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Release
-        working-directory: releaser
+      - name: Release Notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MILESTONE_NUMBER: "${{ github.event.milestone.number }}"
         run: |
-          npm install
-          npm run exec
+          yarn install
+          yarn workspace releaser run exec
+
+          MILESTONE_TITLE=$(gh api "repos/$GITHUB_REPOSITORY/milestones/$MILESTONE_NUMBER" --jq '.title')
+          echo "MILESTONE_TITLE=$MILESTONE_TITLE" >> $GITHUB_ENV
       - name: Set Git config
         run: |
           git config user.name 'github-actions[bot]'
@@ -62,3 +65,9 @@ jobs:
           BRANCH: ${{ env.SNAPSHOT_BRANCH }}
         run: |
           bash hack/publish-snapshot.sh
+      - name: Create GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: release-${{ env.SNAPSHOT_BRANCH }}
+          name: ${{ env.MILESTONE_TITLE }}
+          bodyFile: /tmp/release-notes.md
