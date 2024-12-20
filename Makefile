@@ -41,6 +41,14 @@ create-infrastructure:
 destroy-infrastructure:
 	bash hack/destroy-infrastructure.sh $(environment)
 
+.PHONY: deploy-ide
+deploy-ide:
+	bash hack/deploy-ide-cfn.sh $(environment)
+
+.PHONY: destroy-ide
+destroy-ide:
+	bash hack/destroy-ide-cfn.sh $(environment)
+
 .PHONY: lint
 lint:
 	yarn lint

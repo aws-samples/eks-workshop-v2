@@ -186,8 +186,6 @@ Resources:
         Ref: EksWorkshopIdeInstance
       SsmDocument:
         Ref: EksWorkshopIdeSSMDocument
-      #UpdateTrigger:
-      #  Ref: UpdateTrigger
 
   EksWorkshopIdeBootstrapInstanceLambdaFunction:
     Type: AWS::Lambda::Function
