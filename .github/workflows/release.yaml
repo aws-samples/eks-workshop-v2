@@ -23,6 +23,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Get kubectl version
+        run: |
+          source hack/lib/kubectl-version.sh
+          echo "Using kubectl ${KUBECTL_VERSION}"
+          echo "KUBECTL_VERSION=$KUBECTL_VERSION" >> $GITHUB_ENV
+      - uses: azure/setup-kubectl@v4
+        with:
+          version: "${{ env.KUBECTL_VERSION }}"
+        id: install
       - name: Release Notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -31,12 +40,21 @@ jobs:
           yarn install
           yarn workspace releaser run exec
 
+          bash hack/build-ide-cfn.sh /tmp/ide-cfn.yaml
+
           MILESTONE_TITLE=$(gh api "repos/$GITHUB_REPOSITORY/milestones/$MILESTONE_NUMBER" --jq '.title')
           echo "MILESTONE_TITLE=$MILESTONE_TITLE" >> $GITHUB_ENV
       - name: Set Git config
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
+      - name: Get AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-duration-seconds: 900
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GithubActionsSession-publish
       - name: Update stable branch
         run: |
           git checkout stable
@@ -71,3 +89,4 @@ jobs:
           tag: release-${{ env.SNAPSHOT_BRANCH }}
           name: ${{ env.MILESTONE_TITLE }}
           bodyFile: /tmp/release-notes.md
+          artifacts: "/tmp/ide-cfn.yaml"
