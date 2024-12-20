@@ -3,11 +3,11 @@ title: Ephemeral Container Storage
 sidebar_position: 10
 ---
 
-We have a deployment already borrowed from the simple store example but we will modify it slightly to repurpose this scenario as an image host. The assets microservice utilizes a webserver running on EKS. Web servers are a great example for the use of deployments because they **scale horizontally** and **declare the new state** of the Pods.
+In this section, we'll explore how to handle storage in Kubernetes deployments using a simple image hosting example. We'll start with an existing deployment from our sample store application and modify it to serve as an image host. The assets microservice runs a webserver on EKS, which is an excellent example for demonstrating deployments since they enable **horizontal scaling** and **declarative state management** of Pods.
 
-The assets component is a container which serves static images for products, these product images are added as part of the container image build. However with this setup, images submitted on one container do not propagate to another container. In this exercise we'll utilize [Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) and Kubernetes [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) to setup a common storage environment where assets like images can get served with multiple web server containers that scale with demand.
+The assets component serves static product images from a container. These images are bundled into the container during the build process. However, this approach has a limitation - when new images are added to one container, they don't automatically appear in other containers. To address this, we'll implement a solution using [Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) and Kubernetes [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) to create a shared storage environment. This will allow multiple web server containers to serve assets while scaling to meet demand.
 
-We can start by describing the Deployment to take a look at its initial volume configuration:
+Let's examine the current Deployment's volume configuration:
 
 ```bash
 $ kubectl describe deployment -n assets
@@ -38,13 +38,13 @@ Namespace:              assets
 [...]
 ```
 
-As you can see the [`Volumes`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section of our Deployment shows that we're only using an [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) which "shares the Pod's lifetime".
+Looking at the [`Volumes`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section, we can see that the Deployment currently uses an [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) that exists only for the Pod's lifetime.
 
 ![Assets with emptyDir](./assets/assets-emptydir.webp)
 
-An `emptyDir` volume is first created when a Pod is assigned to a node, and exists as long as that Pod is running on that node. As the name says, the emptyDir volume is initially empty. All containers in the Pod can read and write the same files in the emptyDir volume, though that volume can be mounted at the same or different paths in each container. **When a Pod is removed from a node for any reason, the data in the emptyDir is deleted permanently.** This means that if we want to share data between multiple Pods in the same Deployment and make changes to that data then EmptyDir is not a good fit.
+An `emptyDir` volume is created when a Pod is assigned to a node and persists only while that Pod runs on that node. As its name suggests, the volume starts empty. While all containers within the Pod can read and write files in the emptyDir volume (even when mounted at different paths), **when a Pod is removed from a node for any reason, the data in the emptyDir is deleted permanently.** This makes EmptyDir unsuitable for sharing data between multiple Pods in the same Deployment when that data needs to persist.
 
-The container has some initial product images copied to it as part of the container build under the folder `/usr/share/nginx/html/assets`; we can check this by running the following command:
+The container comes with some initial product images, which are copied during the build process to `/usr/share/nginx/html/assets`. We can verify this by running:
 
 ```bash
 $ kubectl exec --stdin deployment/assets \
@@ -57,7 +57,7 @@ smart_2.jpg
 wood_watch.jpg
 ```
 
-First let's scale up the `assets` Deployment so it has multiple replicas:
+To demonstrate the limitations of EmptyDir storage, let's scale up the `assets` Deployment to multiple replicas:
 
 ```bash
 $ kubectl scale -n assets --replicas=2 deployment/assets
@@ -67,7 +67,7 @@ $ kubectl rollout status -n assets deployment/assets --timeout=60s
 deployment "assets" successfully rolled out
 ```
 
-Now let's try to put a new product image named `divewatch.png` in the directory `/usr/share/nginx/html/assets` of the first Pod and take a peek at this directory to make sure our new image `divewatch.jpg` exists:
+Now, let's add a new product image called `divewatch.png` to the `/usr/share/nginx/html/assets` directory of the first Pod and verify it exists:
 
 ```bash
 $ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[0].metadata.name}')
@@ -84,7 +84,7 @@ smart_2.jpg
 wood_watch.jpg
 ```
 
-Now confirm the new product image `divewatch.jpg` is not present on the file system of the second Pod:
+Let's check if the new product image `divewatch.jpg` appears in the second Pod:
 
 ```bash
 $ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
@@ -98,4 +98,4 @@ smart_2.jpg
 wood_watch.jpg
 ```
 
-As you see, our newly created image `divewatch.jpg` does not exist on the second Pod. In order to help solve this issue we need a file system that can be shared across multiple Pods if the service needs to scale horizontally while still making updates to the files without re-deploying.
+As we can see, `divewatch.jpg` doesn't exist in the second Pod. This demonstrates why we need a shared filesystem that persists across multiple Pods when scaling horizontally, allowing file updates without requiring redeployment.

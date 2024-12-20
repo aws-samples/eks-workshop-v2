@@ -3,15 +3,15 @@ title: Mountpoint for Amazon S3
 sidebar_position: 20
 ---
 
-Before we dive into this section, make sure to familiarize yourself with the Kubernetes storage objects (volumes, persistent volumes (PV), persistent volume claim (PVC), dynamic provisioning and ephemeral storage) that were introduced in the [Storage](../index.md) main section.
+Before proceeding with this section, it's important to understand the Kubernetes storage concepts (volumes, persistent volumes (PV), persistent volume claims (PVC), dynamic provisioning, and ephemeral storage) that were covered in the [Storage](../index.md) main section.
 
-The [Mountpoint for Amazon S3 Container Storage Interface (CSI) Driver](https://github.com/awslabs/mountpoint-s3-csi-driver) allows your Kubernetes applications to access Amazon S3 objects through a file system interface. Built on [Mountpoint for Amazon S3](https://github.com/awslabs/mountpoint-s3), the Mountpoint CSI driver presents an Amazon S3 bucket as a storage volume accessible by containers in your Kubernetes cluster. The Mountpoint CSI driver implements the [CSI](https://github.com/container-storage-interface/spec/blob/master/spec.md) specification for container orchestrators (CO) to manage storage volumes.
+The [Mountpoint for Amazon S3 Container Storage Interface (CSI) Driver](https://github.com/awslabs/mountpoint-s3-csi-driver) enables Kubernetes applications to access Amazon S3 objects using a standard file system interface. Built on [Mountpoint for Amazon S3](https://github.com/awslabs/mountpoint-s3), the Mountpoint CSI driver exposes an Amazon S3 bucket as a storage volume that containers in your Kubernetes cluster can access. The driver implements the [CSI](https://github.com/container-storage-interface/spec/blob/master/spec.md) specification, allowing container orchestrators (CO) to manage storage volumes effectively.
 
-Here is a basic architecture diagram that shows we will be using Mountpoint for Amazon S3 as the persistent storage for our EKS pods:
+The following architecture diagram illustrates how we will use Mountpoint for Amazon S3 as persistent storage for our EKS pods:
 
 ![Assets with S3](./assets/assets-s3.webp)
 
-We will start by creating a directory to stage the images that we need for our image hosting web application:
+Let's begin by creating a staging directory for the images needed by our image hosting web application:
 
 ```bash
 $ mkdir ~/environment/assets-images/
@@ -36,7 +36,7 @@ $ ls
 chrono_classic.jpg  gentleman.jpg  pocket_watch.jpg  smart_2.jpg  wood_watch.jpg
 ```
 
-Now we can copy our image host assets into the S3 bucket using `aws s3 cp`:
+Next, we'll copy these image assets to our S3 bucket using the `aws s3 cp` command:
 
 ```bash
 $ cd ~/environment/
@@ -48,7 +48,7 @@ upload: assets-images/pocket_watch.jpg to s3://eks-workshop-mountpoint-s32024101
 upload: assets-images/chrono_classic.jpg to s3://eks-workshop-mountpoint-s320241014192132282600000002/chrono_classic.jpg
 ```
 
-We can also use `aws s3 ls` to view the objects in the bucket we just uploaded:
+We can verify the uploaded objects in our bucket using the `aws s3 ls` command:
 
 ```bash
 $ aws s3 ls $BUCKET_NAME
@@ -59,20 +59,17 @@ $ aws s3 ls $BUCKET_NAME
 2024-10-14 19:29:05      43122 wood_watch.jpg
 ```
 
-Now that we have uploaded our initial objects to the Amazon S3 bucket, we will use the Mountpoint for Amazon S3 CSI driver to provide persistent, shared storage for our pods.
+With our initial objects now in the Amazon S3 bucket, we'll configure the Mountpoint for Amazon S3 CSI driver to provide persistent, shared storage for our pods.
 
-Let's attach the Mountpoint for Amazon S3 CSI addon to EKS cluster. This step will take a few minutes:
+Let's install the Mountpoint for Amazon S3 CSI addon to our EKS cluster. This operation will take a few minutes to complete:
 
 ```bash
-$ eksctl create addon --name aws-mountpoint-s3-csi-driver --cluster $EKS_CLUSTER_NAME --service-account-role-arn $S3_CSI_ADDON_ROLE --force
-2024-10-14 19:31:00 [ℹ]  Kubernetes version "1.30" in use by cluster "eks-workshop"
-2024-10-14 19:31:01 [ℹ]  IRSA is set for "aws-mountpoint-s3-csi-driver" addon; will use this to configure IAM permissions
-2024-10-14 19:31:01 [ℹ]  using provided ServiceAccountRoleARN "arn:aws:iam::1234567890:role/eks-workshop-s3-csi-20241014192132277700000001"
-2024-10-14 19:31:01 [ℹ]  creating addon
-2024-10-14 19:31:47 [ℹ]  addon "aws-mountpoint-s3-csi-driver" active
+$ aws eks create-addon --cluster-name $EKS_CLUSTER_NAME --addon-name aws-mountpoint-s3-csi-driver \
+  --service-account-role-arn $S3_CSI_ADDON_ROLE
+$ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --addon-name aws-mountpoint-s3-csi-driver
 ```
 
-After the command has completed, we can show what it created in the EKS cluster by the addon:
+Once completed, we can verify what the addon created in our EKS cluster:
 
 ```bash
 $ kubectl get daemonset s3-csi-node -n kube-system

@@ -3,28 +3,27 @@ title: Persistent Object Storage with Mountpoint for Amazon S3
 sidebar_position: 30
 ---
 
-Remember that our end goal is to have an image host application that **scales horizontally** and has **persistent storage** backed by Amazon S3. In the previous steps we created a staging directory for our image objects, then we downloaded the image assets into the staging directory and uploaded them into our S3 bucket. Finally, we installed the Mountpoint for Amazon S3 CSI driver and added it to our environment. We now need to attach our pods to use this PV provided by the Mountpoint for Amazon S3 CSI driver.
+In our previous steps, we prepared our environment by creating a staging directory for image objects, downloading image assets, and uploading them to our S3 bucket. We also installed and configured the Mountpoint for Amazon S3 CSI driver. Now we'll complete our objective of creating an image host application with **horizontal scaling** and **persistent storage** backed by Amazon S3 by attaching our pods to use the Persistent Volume (PV) provided by the Mountpoint for Amazon S3 CSI driver.
 
-Let's create a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and change the `assets` container on the assets deployment to mount the Volume created.
+Let's start by creating a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and modifying the `assets` container in our deployment to mount this volume.
 
-First inspect the `s3pvclaim.yaml` file to see the parameters in the file and the claim:
+First, let's examine the `s3pvclaim.yaml` file to understand its parameters and configuration:
 
 ::yaml{file="manifests/modules/fundamentals/storage/s3/deployment/s3pvclaim.yaml" paths="spec.accessModes,spec.mountOptions"}
 
 1. `ReadWriteMany`: Allows the same S3 bucket to be mounted to multiple pods for read/write
 2. `allow-delete`: Allows users to delete objects from the mounted bucket  
-`allow-other`: Allows users other than the owner to access the mounted bucket  
-`uid=999`: Sets User ID (UID) of files/directories in the mounted bucket to 999  
-`gid=999`: Sets Group ID (GID) of files/directories in the mounted bucket to 999  
-`region=us-west-2`: Sets the region of the S3 bucket to us-west-2
-
+   `allow-other`: Allows users other than the owner to access the mounted bucket  
+   `uid=999`: Sets User ID (UID) of files/directories in the mounted bucket to 999  
+   `gid=999`: Sets Group ID (GID) of files/directories in the mounted bucket to 999  
+   `region=us-west-2`: Sets the region of the S3 bucket to us-west-2
 
 ```kustomization
 modules/fundamentals/storage/s3/deployment/deployment.yaml
 Deployment/assets
 ```
 
-Let's apply this Kustomization and re-deploy. This step will take a few minutes:
+Now let's apply this configuration and redeploy our application:
 
 ```bash
 $ kubectl kustomize ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment \
@@ -38,14 +37,14 @@ persistentvolumeclaim/s3-claim created
 deployment.apps/assets configured
 ```
 
-We can monitor the progress of the roll-out and wait for it to finish:
+We'll monitor the deployment progress:
 
 ```bash
-$ kubectl rollout status --timeout=130s deployment/assets -n assets
+$ kubectl rollout status --timeout=180s deployment/assets -n assets
 deployment "assets" successfully rolled out
 ```
 
-View all volume mounts on deployment, note `/mountpoint-s3`
+Let's verify our volume mounts, noting the new `/mountpoint-s3` mount point:
 
 ```bash
 $ kubectl get deployment -n assets -o yaml | yq '.items[].spec.template.spec.containers[].volumeMounts'
@@ -55,7 +54,7 @@ $ kubectl get deployment -n assets -o yaml | yq '.items[].spec.template.spec.con
   name: tmp-volume
 ```
 
-We can view our PersistentVolume (PV):
+Examine our newly created PersistentVolume:
 
 ```bash
 $ kubectl get pv
@@ -63,13 +62,13 @@ NAME    CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM             ST
 s3-pv   1Gi        RWX            Retain           Bound    assets/s3-claim                  <unset>                          2m31s
 ```
 
-Let's examine the details of our PersistentVolumeClaim (PVC):
+Review the PersistentVolumeClaim details:
 
 ```bash
 $ kubectl describe pvc -n assets
 Name:          s3-claim
 Namespace:     assets
-StorageClass:  
+StorageClass:
 Status:        Bound
 Volume:        s3-pv
 Labels:        <none>
@@ -83,7 +82,7 @@ Used By:       assets-9fbbbcd6f-c74vv
 Events:        <none>
 ```
 
-We can also see the running pods in the deployment:
+Verify our running pods:
 
 ```bash
 $ kubectl get pods -n assets
@@ -92,7 +91,7 @@ assets-9fbbbcd6f-c74vv   1/1     Running   0          2m36s
 assets-9fbbbcd6f-vb9jz   1/1     Running   0          2m38s
 ```
 
-Finally, let's take a look at our final deployment with the Mountpoint for Amazon S3 CSI driver:
+Let's examine our final deployment configuration with the Mountpoint for Amazon S3 CSI driver:
 
 ```bash
 $ kubectl describe deployment -n assets
@@ -128,7 +127,7 @@ Namespace:              assets
 [...]
 ```
 
-Let's go into first pod and list files at `/mountpoint-s3`. Since we have our S3 bucket mounted with the Mountpoint for Amazon S3 CSI driver, we can create a new image inside of the mounted S3 bucket too:
+Now let's demonstrate the shared storage functionality. First, we'll list and create files in the first pod:
 
 ```bash
 $ POD_1=$(kubectl -n assets get pods -o jsonpath='{.items[0].metadata.name}')
@@ -141,7 +140,7 @@ wood_watch.jpg
 $ kubectl exec --stdin $POD_1 -n assets -- bash -c 'touch /mountpoint-s3/divewatch.jpg'
 ```
 
-We know that this is a persistent storage layer that is mounted by all of the pods, so let's go into the second pod and view the file that we created from the first pod:
+To verify the persistence and sharing of our storage layer, let's check the second pod for the file we just created:
 
 ```bash
 $ POD_2=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
@@ -155,7 +154,7 @@ smart_2.jpg
 wood_watch.jpg
 ```
 
-Since this is a persistent storage layer that is mounted by all of the pods in our cluster, we also create another image file on this pod and view the object with `aws s3 ls`:
+Finally, let's create another file from the second pod and verify its presence in the S3 bucket:
 
 ```bash
 $ POD_2=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
@@ -169,3 +168,5 @@ $ aws s3 ls $BUCKET_NAME
 2024-10-14 19:29:05      20795 smart_2.jpg
 2024-10-14 19:29:05      43122 wood_watch.jpg
 ```
+
+With that we've successfully demonstrated how we can use Mountpoint for Amazon S3 for persistent shared storage for workloads running on EKS.
