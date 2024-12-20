@@ -5,7 +5,7 @@ sidebar_custom_props: { "module": true }
 description: "Serverless object storage for workloads on Amazon Elastic Kubernetes Service with Amazon S3."
 ---
 
-::required-time{estimatedLabExecutionTimeMinutes="60"}
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:
