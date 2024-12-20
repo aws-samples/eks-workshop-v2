@@ -35,12 +35,6 @@ Statement:
       - !Sub arn:aws:iam::${AWS::AccountId}:policy/eksctl-${Env}*
   - Effect: Allow
     Action:
-      - s3:ListAllMyBuckets
-      - iam:ListPolicies
-      - iam:ListRoles
-    Resource: ["*"]
-  - Effect: Allow
-    Action:
       - iam:CreateInstanceProfile
       - iam:DeleteInstanceProfile
       - iam:GetInstanceProfile
@@ -72,6 +66,8 @@ Statement:
       - iam:TagOpenIDConnectProvider
       - iam:GetOpenIDConnectProvider
       - iam:GetRole
+      - iam:ListPolicies
+      - iam:ListRoles
     Resource: ["*"]
   - Effect: Allow
     Action:
