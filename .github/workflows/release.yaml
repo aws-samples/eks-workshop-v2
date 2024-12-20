@@ -40,8 +40,25 @@ jobs:
           git pull
           git merge --no-ff main -m "Publish to stable"
           git push
+      - name: Run publish (stable)
+        env:
+          CONTENT_BUCKET: "${{ secrets.CONTENT_BUCKET }}"
+          CONTENT_CLOUDFRONT: "${{ secrets.CONTENT_CLOUDFRONT }}"
+          BRANCH: stable
+        run: |
+          bash hack/publish-content.sh
       - name: Create snapshot
         run: |
           suffix=$(git rev-parse --short HEAD)
-          git checkout -b snapshot-${suffix}
-          git push origin snapshot-${suffix}
+          snapshot_branch="snapshot-${suffix}"
+          git checkout -b "${snapshot_branch}"
+          git push origin "${snapshot_branch}"
+
+          echo "SNAPSHOT_BRANCH=$snapshot_branch" >> $GITHUB_ENV
+      - name: Run publish (snapshot)
+        env:
+          SNAPSHOT_BUCKET: "${{ secrets.SNAPSHOT_BUCKET }}"
+          SNAPSHOT_CLOUDFRONT: "${{ secrets.SNAPSHOT_CLOUDFRONT }}"
+          BRANCH: ${{ env.SNAPSHOT_BRANCH }}
+        run: |
+          bash hack/publish-snapshot.sh
