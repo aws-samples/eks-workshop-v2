@@ -44,6 +44,8 @@ Statement:
       - ec2:DeleteNetworkAclEntry
       - ec2:CreateNatGateway
       - ec2:DeleteNatGateway
+      - ec2:CreateNetworkInterface
+      - ec2:DeleteNetworkInterface
     Resource: ["*"]
   - Effect: Allow
     Action:
