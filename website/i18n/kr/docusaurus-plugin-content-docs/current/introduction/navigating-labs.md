@@ -57,6 +57,16 @@ $ date
 Fri Aug 30 12:26:58 MDT 2024
 ```
 
+이 경우 각 명령어를 개별적으로 복사하거나 터미널 창 오른쪽 상단의 클립보드 아이콘을 사용하여 모든 명령어를 복사할 수 있습니다. 한번 시도해보세요!
+
+### EKS 클러스터 초기화하기
+
+실수로 클러스터를 제대로 작동하지 않는 방식으로 구성한 경우, 언제든지 실행할 수 있는 EKS 클러스터 초기화 메커니즘이 제공되어 있습니다. 단순히 `prepare-environment` 명령을 실행하고 완료될 때까지 기다리면 됩니다. 실행 시 클러스터의 상태에 따라 몇 분이 소요될 수 있습니다.
+
+### 다음 단계
+
+이제 이 워크샵의 형식에 익숙해졌으니, [시작하기](/o/ihOxGoj6RUixHGUrQEbm/s/DOGGWuHTz1iyK4Etj3es/~/changes/11/undefined/index-1) 실습으로 이동하거나 상단 네비게이션 바를 통해 워크샵의 어떤 모듈로든 건너뛸 수 있습니다.
+
 In this case you can either copy each command individually or copy all of the commands using the clipboard icon in the top right of the terminal window. Give it a shot!
 
 ## Resetting your EKS cluster
