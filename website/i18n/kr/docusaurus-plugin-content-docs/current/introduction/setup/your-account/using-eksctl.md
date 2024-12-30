@@ -11,21 +11,29 @@ sidebar_position: 20
 manifests/../cluster/eksctl/cluster.yaml
 ```
 
-Based on this configuration `eksctl` will:
+이 구성을 기반으로 `eksctl`은 다음을 수행합니다:
 
-- Create a VPC across three availability zones
-- Create an EKS cluster
-- Create an IAM OIDC provider
-- Add a managed node group named `default`
-- Configure the VPC CNI to use prefix delegation
+- 3개의 가용 영역에 걸쳐 VPC 생성
+- EKS 클러스터 생성
+- IAM OIDC 공급자 생성
+- `default`라는 이름의 관리형 노드 그룹 추가
+- `prefix delegation`을 사용하도록 `VPC CNI` 구성
 
-Apply the configuration file like so:
+다음과 같이 구성 파일을 적용하세요:
 
 ```bash
 $ export EKS_CLUSTER_NAME=eks-workshop
 $ curl -fsSL https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/cluster/eksctl/cluster.yaml | \
 envsubst | eksctl create cluster -f -
 ```
+
+이 과정은 20분 정도 소요됩니다.
+
+## Next Steps
+
+이제 클러스터가 준비되었으니, [실습 탐색](/docs/introduction/navigating-labs) 섹션으로 이동하거나 상단 네비게이션 바를 통해 워크샵의 어떤 모듈로든 건너뛸 수 있습니다. 워크샵을 완료한 후에는 아래 단계에 따라 환경을 정리하세요.
+
+## 정리하기 (워크샵을 마친 후의 단계들)
 
 This process will take around 20 minutes.
 
