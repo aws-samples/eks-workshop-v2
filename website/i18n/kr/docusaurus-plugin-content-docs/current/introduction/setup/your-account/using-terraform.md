@@ -51,18 +51,6 @@ manifests/../cluster/terraform/eks.tf
 
 Terraform 파일 다운로드
 
-## Creating the workshop environment with Terraform
-
-For the given configuration, `terraform` will create the Workshop environment with the following:
-
-- Create a VPC across three availability zones
-- Create an EKS cluster
-- Create an IAM OIDC provider
-- Add a managed node group named `default`
-- Configure the VPC CNI to use prefix delegation
-
-Download the Terraform files:
-
 ```bash
 $ mkdir -p ~/environment/terraform; cd ~/environment/terraform
 $ curl --remote-name-all https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/cluster/terraform/{main.tf,variables.tf,providers.tf,vpc.tf,eks.tf}
