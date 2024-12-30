@@ -3,9 +3,9 @@ title: Deploying our first component
 sidebar_position: 40
 ---
 
-The sample application is composed of a set of Kubernetes manifests organized in a way that can be easily applied with Kustomize. Kustomize is an open-source tool also provided as a native feature of the `kubectl` CLI. This workshop uses Kustomize to apply changes to Kubernetes manifests, making it easier to understand changes to manifest files without needing to manually edit YAML. As we work through the various modules of this workshop, we'll incrementally apply overlays and patches with Kustomize.
+샘플 애플리케이션은 Kustomize를 사용하여 쉽게 적용할 수 있도록 구성된 Kubernetes 매니페스트 세트로 구성되어 있습니다. Kustomize는 오픈 소스 도구이며 `kubectl` CLI의 기본 기능으로도 제공됩니다. 이 워크샵에서는 Kustomize를 사용하여 Kubernetes 매니페스트를 변경하므로, YAML을 수동으로 편집할 필요 없이 매니페스트 파일의 변경 사항을 쉽게 이해할 수 있습니다. 이 워크샵의 다양한 모듈을 진행하면서 Kustomize를 사용하여 오버레이와 패치를 점진적으로 적용할 것입니다.
 
-The easiest way to browse the YAML manifests for the sample application and the modules in this workshop is using the file browser in the IDE:
+IDE의 파일 브라우저를 사용하는 것이 이 워크샵의 샘플 애플리케이션과 모듈에 대한 YAML 매니페스트를 탐색하는 가장 쉬운 방법입니다:
 
 ![Cloud9 files](./assets/cloud9-files-initial.webp)
 
