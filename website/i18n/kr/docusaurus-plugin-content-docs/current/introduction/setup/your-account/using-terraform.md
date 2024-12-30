@@ -21,7 +21,7 @@ Terraform을 사용한 워크샵 클러스터 생성은 현재 미리보기 상�
 manifests/../cluster/terraform/providers.tf
 ```
 
-The `main.tf` file sets up some Terraform data sources so we can retrieve the current AWS account and region being used, as well as some default tags:
+`main.tf `파일은 현재 사용 중인 AWS 계정과 리전을 검색할 수 있도록 Terraform 데이터 소스를 설정하고, 일부 기본 태그도 설정합니다:
 
 ```file hidePath=true
 manifests/../cluster/terraform/main.tf
