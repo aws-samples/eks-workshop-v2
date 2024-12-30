@@ -10,18 +10,18 @@ manifests/base-application/kustomization.yaml
 ```
 
 :::tip
-Notice that the catalog API is in this kustomization, didn't we already deploy it?
 
-Because Kubernetes uses a declarative mechanism we can apply the manifests for the catalog API again and expect that because all of the resources are already created Kubernetes will take no action.
+`catalog` API가 이 `kustomization`에 있는 것을 보셨나요? 이미 배포하지 않았나요? Kubernetes는 선언적 메커니즘을 사용하기 때문에 `catalog` API의 매니페스트를 다시 적용해도 모든 리소스가 이미 생성되어 있어서 Kubernetes는 아무 작업도 수행하지 않을 것입니다.
+
 :::
 
-Apply this kustomization to our cluster to deploy the rest of the components:
+이 `kustomization`을 클러스터에 적용하여 나머지 컴포넌트들을 배포하세요:
 
 ```bash wait=10
 $ kubectl apply -k ~/environment/eks-workshop/base-application
 ```
 
-After this is complete we can use `kubectl wait` to make sure all the components have started before we proceed:
+완료되면 `kubectl wait`를 사용하여 진행하기 전에 모든 컴포넌트가 시작되었는지 확인할 수 있습니다:
 
 ```bash timeout=200
 $ kubectl wait --for=condition=Ready --timeout=180s pods \
