@@ -7,7 +7,7 @@ sidebar_position: 40
 ::required-time
 
 :::tip 환경 설정 준비
-Prepare your environment for this section:
+이 섹션을 시작하기 전에 환경 준비를 해주세요:
 
 ```bash timeout=300 wait=10
 $ prepare-environment
@@ -15,21 +15,21 @@ $ prepare-environment
 
 :::
 
-[Kustomize](https://kustomize.io/) allows you to manage Kubernetes manifest files using declarative "kustomization" files. It provides the ability to express "base" manifests for your Kubernetes resources and then apply changes using composition, customization and easily making cross-cutting changes across many resources.
+Kustomize를 사용하면 선언적 "kustomization" 파일을 사용하여 Kubernetes 매니페스트 파일을 관리할 수 있습니다. Kubernetes 리소스에 대한 "base" 매니페스트를 표현하고, 구성, 커스터마이징을 사용하여 변경사항을 적용하고, 많은 리소스에 걸쳐 교차 적용되는 변경사항을 쉽게 만들 수 있습니다.
 
-For example, take a look at the following manifest file for the `checkout` Deployment:
+예를 들어, `checkout` Deployment에 대한 다음 매니페스트 파일을 살펴보세요:
 
 ```file
 manifests/base-application/checkout/deployment.yaml
 ```
 
-This file has already been applied in the previous [Getting Started](../getting-started) lab, but let's say we wanted to scale this component horizontally by updating the `replicas` field using Kustomize. Rather than manually updating this YAML file, we'll use Kustomize to update the `spec/replicas` field from 1 to 3.
+이 파일은 이전 [시작하기](../getting-start/) 실습에서 이미 적용되었지만, Kustomize를 사용하여 `replicas` 필드를 업데이트하여 이 컴포넌트를 수평적으로 확장하고 싶다고 가정해보겠습니다. 이 YAML 파일을 수동으로 업데이트하는 대신, Kustomize를 사용하여 `spec/replicas` 필드를 1에서 3으로 업데이트할 것입니다.
 
-To do so, we'll apply the following kustomization.
+이를 위해 다음 kustomization을 적용하겠습니다.
 
-- The first tab shows the kustomization we're applying
-- The second tab shows a preview of what the updated `Deployment/checkout` file looks like after the kustomization is applied
-- Finally, the third tab shows just the diff of what has changed
+- 첫 번째 탭은 우리가 적용할 kustomization을 보여줍니다
+- 두 번째 탭은 kustomization이 적용된 후 업데이트된 `Deployment/checkout` 파일이 어떻게 보이는지 미리보기를 보여줍니다
+- 마지막으로, 세 번째 탭은 변경된 내용의 차이점만 보여줍니다
 
 ```kustomization
 modules/introduction/kustomize/deployment.yaml
