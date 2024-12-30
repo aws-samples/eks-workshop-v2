@@ -65,14 +65,4 @@ Fri Aug 30 12:26:58 MDT 2024
 
 ## 다음 단계
 
-이제 이 워크샵의 형식에 익숙해졌으니, [시작하기]() 실습으로 이동하거나 상단 네비게이션 바를 통해 워크샵의 어떤 모듈로든 건너뛸 수 있습니다.
-
-In this case you can either copy each command individually or copy all of the commands using the clipboard icon in the top right of the terminal window. Give it a shot!
-
-## Resetting your EKS cluster
-
-In the event that you accidentally configure your cluster in a way that is not functioning you have been provided with a mechanism to reset your EKS cluster as best we can which can be run at any time. Simply run the command `prepare-environment` and wait until it completes. This may take several minutes depending on the state of your cluster when it is run.
-
-## Next Steps
-
-Now that you're familiar with the format of this workshop, head to the [Getting started](/docs/introduction/getting-started) lab or skip ahead to any module in the workshop with the top navigation bar.
+이제 이 워크샵의 형식에 익숙해졌으니, [시작하기](getting-started/) 실습으로 이동하거나 상단 네비게이션 바를 통해 워크샵의 어떤 모듈로든 건너뛸 수 있습니다.
