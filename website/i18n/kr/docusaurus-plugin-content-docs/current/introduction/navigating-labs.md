@@ -1,5 +1,5 @@
 ---
-title: Navigating the labs
+title: 실습 탐색
 sidebar_position: 25
 ---
 
