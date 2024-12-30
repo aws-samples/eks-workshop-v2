@@ -48,19 +48,19 @@ CloudFormation 스택은 배포하는 데 약 5분이 소요되며, 배포가 �
 
 ![secretsmanager retrieve](./assets/vscode-password-retrieve.webp)
 
-The password will then be available for you to copy:
+그러면 복사할 수 있는 비밀번호가 표시됩니다:
 
 ![cloudformation outputs](./assets/vscode-password-visible.webp)
 
-Open the IDE URL provided and you will be prompted for the password:
+IDE URL을 열면 비밀번호를 입력하라는 메시지가 표시됩니다:
 
 ![cloudformation outputs](./assets/vscode-password.webp)
 
-After submitting your password you will be presented with the initial VSCode screen:
+비밀번호를 입력하면 초기 VSCode 화면이 나타납니다:
 
 ![cloudformation outputs](./assets/vscode-splash.webp)
 
-The next step is to create an EKS cluster to perform the lab exercises in. Please follow one of the guides below to provision a cluster that meets the requirements for these labs:
+다음 단계는 실습을 수행할 EKS 클러스터를 생성하는 것입니다. 아래 가이드 중 하나를 따라 이 실습에 필요한 요구사항을 충족하는 클러스터를 프로비저닝하세요:
 
 - **(Recommended)** [eksctl](./using-eksctl.md)
 - [Terraform](./using-terraform.md)
