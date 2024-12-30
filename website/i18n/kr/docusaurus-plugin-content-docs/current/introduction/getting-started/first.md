@@ -73,13 +73,13 @@ manifests/base-application/catalog/deployment.yaml
 manifests/base-application/catalog/service.yaml
 ```
 
-This Service:
+이 Service는:
 
-- Selects catalog Pods using labels that match what we expressed in the Deployment above
-- Exposes itself on port 80
-- Targets the `http` port exposed by the Deployment, which translates to port 8080
+- 위의 Deployment에서 표현한 것과 일치하는 레이블을 사용하여 `catalog` Pod 선택
+- 포트 `80`에서 자신을 노출
+- Deployment에서 노출한 `http` 포트(포트 `8080`로 변환)를 대상으로 함
 
-Let's create the catalog component:
+`catalog` 컴포넌트를 생성해보겠습니다
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/base-application/catalog
@@ -93,7 +93,7 @@ deployment.apps/catalog created
 statefulset.apps/catalog-mysql created
 ```
 
-Now we'll see a new Namespace:
+이제 새로운 Namespace가 보일 것입니다:
 
 ```bash
 $ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
@@ -101,7 +101,7 @@ NAME      STATUS   AGE
 catalog   Active   15s
 ```
 
-We can take a look at the Pods running in this namespace:
+이 Namespace에서 실행 중인 Pod들을 살펴보겠습니다:
 
 ```bash
 $ kubectl get pod -n catalog
@@ -110,7 +110,7 @@ catalog-846479dcdd-fznf5   1/1     Running   2 (43s ago)   46s
 catalog-mysql-0            1/1     Running   0             46s
 ```
 
-Notice we have a Pod for our catalog API and another for the MySQL database. If the `catalog` Pod is showing a status of `CrashLoopBackOff`, it needs to be able to connect to the `catalog-mysql` Pod before it will start. Kubernetes will keep restarting it until this is the case. In that case, we can use [kubectl wait](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#wait) to monitor specific Pods until they are in a Ready state:
+`catalog` API용 Pod와 MySQL 데이터베이스용 Pod가 있는 것을 확인할 수 있습니다. `catalog` Pod가 `CrashLoopBackOff` 상태를 보이는 경우, 시작하기 전에 `catalog-mysql` Pod에 연결할 수 있어야 합니다. Kubernetes는 이 조건이 충족될 때까지 계속해서 재시작할 것입니다. 이 경우, [kubectl wait](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#wait)를 사용하여 특정 Pod가 Ready 상태가 될 때까지 모니터링할 수 있습니다:
 
 ```bash
 $ kubectl wait --for=condition=Ready pods --all -n catalog --timeout=180s
