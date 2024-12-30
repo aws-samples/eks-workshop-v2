@@ -1,5 +1,5 @@
 ---
-title: "로드밸런서"
+title: "Load Balancers"
 chapter: true
 sidebar_position: 30
 sidebar_custom_props: { "module": true }
@@ -8,18 +8,19 @@ description: "Manage AWS load balancers to route traffic to workloads on Amazon 
 
 ::required-time
 
-:::tip Before you start
-Prepare your environment for this section:
+:::tip 시작하기 전에
+
+이 섹션을 위한 환경을 준비하세요:
 
 ```bash timeout=300 wait=30
 $ prepare-environment exposing/load-balancer
 ```
 
-This will make the following changes to your lab environment:
+이는 실습 환경에 다음과 같은 변경사항을 적용합니다:
 
 - Creates an IAM role required by the AWS Load Balancer Controller
 
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/exposing/load-balancer/.workshop/terraform).
+[**여기**](https://github.com/aws-samples/eks-workshop-v2/tree/stable/manifests/modules/exposing/load-balancer/.workshop/terraform)에서 이러한 변경사항을 적용하는 Terraform을 확인할 수 있습니다.You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/exposing/load-balancer/.workshop/terraform).
 
 :::
 
