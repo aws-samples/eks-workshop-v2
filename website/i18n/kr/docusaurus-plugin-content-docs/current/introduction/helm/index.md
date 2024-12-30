@@ -19,27 +19,29 @@ $ prepare-environment introduction/helm
 
 :::info
 
-This lab does not cover the authoring of Helm charts for your own workloads. For more information on this topic see this [guide](https://helm.sh/docs/chart_template_guide/).
+이 실습은 자체 워크로드를 위한 Helm 차트 작성은 다루지 않습니다. 이 주제에 대한 자세한 내용은 이 [가이드](https://helm.sh/docs/chart_template_guide/)를 참조하세요.
 
 :::
 
-[Helm](https://helm.sh) is a package manager for Kubernetes that helps you define, install, and upgrade Kubernetes applications. It uses a packaging format called charts, which contain all the necessary Kubernetes resource definitions to run an application. Helm simplifies the deployment and management of applications on Kubernetes clusters.
+[Helm](https://helm.sh/)은 Kubernetes 애플리케이션을 정의, 설치 및 업그레이드하는 데 도움이 되는 Kubernetes용 패키지 관리자입니다. 차트(Chart)라고 하는 패키징 형식을 사용하며, 이는 애플리케이션을 실행하는 데 필요한 모든 Kubernetes 리소스 정의를 포함합니다. Helm은 Kubernetes 클러스터에서 애플리케이션의 배포와 관리를 단순화합니다.
 
 ## Helm CLI
 
-The `helm` CLI tool is typically used in conjunction with a Kubernetes cluster to manage the deployment and lifecycle of applications. It provides a consistent and repeatable way to package, install, and manage applications on Kubernetes, making it easier to automate and standardize application deployments across different environments.
+`helm` CLI 도구는 일반적으로 Kubernetes 클러스터와 함께 사용되어 애플리케이션의 배포와 수명 주기를 관리합니다. 이는 Kubernetes에서 애플리케이션을 패키징, 설치 및 관리하는 일관되고 반복 가능한 방법을 제공하여 다양한 환경에서 애플리케이션 배포를 자동화 하고 표준화 하기 쉽게 만듭니다.
 
-The CLI is already installed in our IDE:
+`helm` CLI는 이미 IDE(Workshop IDE)에 설치되어 있습니다:
 
 ```bash
 $ helm version
 ```
 
-## Helm repositories
+## Helm 저장소
 
-A Helm repository is a centralized location where Helm charts are stored and managed, and allow users to easily discover, share, and install charts. They facilitate easy access to a wide range of pre-packaged applications and services for deployment on Kubernetes clusters.
+Helm 저장소는 Helm 차트가 저장되고 관리되는 곳이며, 사용자가 차트를 쉽게 검색, 공유 및 설치할 수 있게 해줍니다. Kubernetes 클러스터에 배포할 수 있는 다양한 미리 패키징된 애플리케이션과 서비스에 쉽게 접근할 수 있도록 합니다.
 
-The [Bitnami](https://github.com/bitnami/charts) Helm repository is a collection of Helm charts for deploying popular applications and tools on Kubernetes. Let's add the `bitnami` repository to our Helm CLI:
+Bitnami Helm 저장소는 Kubernetes에서 인기 있는 애플리케이션과 도구를 배포하기 위한 Helm 차트 모음입니다.
+
+Bitnami 저장소를 우리의 Helm CLI에 추가해보겠습니다:
 
 ```bash
 $ helm repo add bitnami https://charts.bitnami.com/bitnami
