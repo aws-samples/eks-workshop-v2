@@ -23,10 +23,3 @@ $ prepare-environment introduction/getting-started
 
 1. EKS 클러스터를 초기 상태로 재설정
 2. 다음 실습에 필요한 추가 컴포넌트들을 클러스터에 설치
-
-What is this command doing? For this lab it is cloning the EKS Workshop Git repository in to the IDE environment so the Kubernetes manifest files we need are present on the file system.
-
-You'll notice in subsequent labs we'll also run this command, where it will perform two important additional functions:
-
-1. Reset the EKS cluster back to its initial state
-2. Install any additional components needed in to the cluster for the upcoming lab exercise
