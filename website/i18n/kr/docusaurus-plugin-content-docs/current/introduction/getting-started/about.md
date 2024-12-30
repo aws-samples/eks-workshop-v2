@@ -18,10 +18,10 @@ sidebar_position: 10
 | Component     | Description                                                     |
 | ------------- | --------------------------------------------------------------- |
 | UI            | 프론트엔드 사용자 인터페이스를 제공하고 다양한 다른 서비스에 대한 API 호출을 집계합니다.             |
-| Catalog       | API for product listings and details                            |
-| Cart          | API for customer shopping carts                                 |
-| Checkout      | API to orchestrate the checkout process                         |
-| Orders        | API to receive and process customer orders                      |
+| Catalog       | 제품 목록 및 상세 정보를 위한 API                                           |
+| Cart          | 고객 장바구니를 위한 API                                                 |
+| Checkout      | 체크아웃 프로세스를 조율하기 위한 API                                          |
+| Orders        | 고객 주문을 수신하고 처리하기 위한 API                                         |
 | Static assets | Serves static assets like images related to the product catalog |
 
 Initially we'll deploy the application in a manner that is self-contained in the Amazon EKS cluster, without using any AWS services like load balancers or a managed database. Over the course of the labs we'll leverage different features of EKS to take advantage of broader AWS services and features for our retail store.
