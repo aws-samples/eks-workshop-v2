@@ -1,5 +1,5 @@
 ---
-title: Cleaning up
+title: 정리하기
 sidebar_position: 90
 ---
 
