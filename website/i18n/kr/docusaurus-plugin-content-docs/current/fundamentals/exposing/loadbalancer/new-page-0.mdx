@@ -121,7 +121,7 @@ Service 리소스에서 URL을 가져옵니다:
 
 <ConsoleButton url="https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:service.k8s.aws/stack=ui/ui-nlb;sort=loadBalancerName" service="ec2" label="Open EC2 console"/>
 
-Get the URL from the Service resource:
+로드 밸런서의 프로비저닝이 완료될 때까지 기다리려면 다음 명령을 실행할 수 있습니다:
 
 ```bash
 $ kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
