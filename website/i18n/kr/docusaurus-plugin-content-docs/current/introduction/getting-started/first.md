@@ -30,14 +30,14 @@ kube-public                     Active   1h
 kube-system                     Active   1h
 ```
 
-All of the entries listed are Namespaces for system components that were pre-installed for us. We'll ignore these by using [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) to filter the Namespaces down to only those we've created:
+나열된 모든 항목은 사전 설치된 시스템 컴포넌트의 Namespace입니다. [Kubernetes 레이블](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)을 사용하여 우리가 생성한 Namespace만 필터링하여 이들을 무시할 것입니다:
 
 ```bash
 $ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
 No resources found
 ```
 
-The first thing we'll do is deploy the catalog component by itself. The manifests for this component can be found in `~/environment/eks-workshop/base-application/catalog`.
+첫 번째로 catalog 컴포넌트를 단독으로 배포할 것입니다. 이 컴포넌트의 매니페스트는 `~/environment/eks-workshop/base-application/catalog`에서 찾을 수 있습니다.
 
 ```bash
 $ ls ~/environment/eks-workshop/base-application/catalog
