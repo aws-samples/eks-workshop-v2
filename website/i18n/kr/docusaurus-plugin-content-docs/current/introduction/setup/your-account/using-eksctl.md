@@ -35,27 +35,21 @@ envsubst | eksctl create cluster -f -
 
 ## 정리하기 (워크샵을 마친 후의 단계들)
 
-This process will take around 20 minutes.
-
-## Next Steps
-
-Now that the cluster is ready, head to the [Navigating the labs](/docs/introduction/navigating-labs) section or skip ahead to any module in the workshop with the top navigation bar. Once you're completed with the workshop, follow the steps below to clean-up your environment.
-
-## Cleaning Up (steps once you are done with the Workshop)
-
 :::tip
-The following demonstrates how you will later clean up resources once you are done using the EKS cluster you created in previous steps to complete the modules.\
+
+다음은 모듈을 완료하기 위해 이전 단계에서 생성한 EKS 클러스터 사용을 마친 후에 리소스를 정리하는 방법을 보여줍니다.
+
 :::
 
-Before deleting the Cloud9/VSCode IDE environment we need to clean up the cluster that we set up in previous steps.
+Cloud9/VSCode IDE 환경을 삭제하기 전에 이전 단계에서 설정한 클러스터를 정리해야 합니다.
 
-First use `delete-environment` to ensure that the sample application and any left-over lab infrastructure is removed:
+먼저 `delete-environment`를 사용하여 샘플 애플리케이션과 남아있는 실습 인프라가 제거되었는지 확인하세요:
 
 ```bash
 $ delete-environment
 ```
 
-Next delete the cluster with `eksctl`:
+다음으로 `eksctl`을 사용하여 클러스터를 삭제하세요:
 
 ```bash
 $ eksctl delete cluster $EKS_CLUSTER_NAME --wait
