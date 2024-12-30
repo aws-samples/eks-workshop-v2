@@ -1,5 +1,5 @@
 ---
-title: 실습 탐색
+title: 실습 탐색
 sidebar_position: 25
 ---
 
@@ -20,9 +20,7 @@ import TabItem from '@theme/TabItem';
 ![Lab icon example](./assets/lab-icon.webp)
 
 :::caution
-
 각 실습은 이 배지로 표시된 페이지에서 시작해야 합니다. 실습 중간에서 시작하면 예측할 수 없는 동작이 발생할 수 있습니다.
-
 :::
 
 브라우저에 따라 VSCode 터미널에 처음으로 내용을 복사/붙여넣기할 때 다음과 같은 프롬프트가 표시될 수 있습니다:
