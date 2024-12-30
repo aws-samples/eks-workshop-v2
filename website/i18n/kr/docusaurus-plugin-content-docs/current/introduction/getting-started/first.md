@@ -9,9 +9,13 @@ IDE의 파일 브라우저를 사용하는 것이 이 워크샵의 샘플 애플
 
 ![Cloud9 files](./assets/cloud9-files-initial.webp)
 
-Expanding the `eks-workshop` and then `base-application` items will allow you to browse the manifests that make up the initial state of the sample application:
+`eks-workshop`와 `base-application` 항목을 확장하면 샘플 애플리케이션의 초기 상태를 구성하는 매니페스트를 탐색할 수 있습니다:
 
 ![Cloud9 files base](./assets/cloud9-files-base.webp)
+
+구조는 [셈플 어플리케이션](/o/ihOxGoj6RUixHGUrQEbm/s/DOGGWuHTz1iyK4Etj3es/~/changes/11/undefined/index-1/about) 섹션에서 설명한 각 애플리케이션 컴포넌트의 디렉토리로 구성되어 있습니다.
+
+`modules` 디렉토리에는 이후 실습 과정에서 클러스터에 적용할 매니페스트 세트가 포함되어 있습니다:
 
 The structure consists of a directory for each application component that was outlined in the **Sample application** section.
 
