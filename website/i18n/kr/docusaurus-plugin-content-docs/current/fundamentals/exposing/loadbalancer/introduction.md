@@ -1,5 +1,5 @@
 ---
-title: "소개"
+title: "시작하기"
 sidebar_position: 10
 ---
 
