@@ -1,5 +1,5 @@
 ---
-title: Using eksctl
+title: eksctl 사용하기
 sidebar_position: 20
 ---
 
