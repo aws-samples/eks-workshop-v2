@@ -19,7 +19,7 @@ IDE의 파일 브라우저를 사용하는 것이 이 워크샵의 샘플 애플
 
 ![Cloud9 files modules](./assets/cloud9-files-modules.webp)
 
-Before we do anything lets inspect the current Namespaces in our EKS cluster:
+먼저 EKS 클러스터의 현재 Namespace를 검사해보겠습니다:
 
 ```bash
 $ kubectl get namespaces
