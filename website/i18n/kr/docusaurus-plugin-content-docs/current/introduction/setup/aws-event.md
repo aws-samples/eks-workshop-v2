@@ -45,4 +45,4 @@ sidebar_position: 20
 
 You can now proceed to the [Navigating the labs section](/docs/introduction/navigating-labs).
 
-이제 [실습 탐색 섹션](../navigating-labs)으로 진행하실 수 있습니다.
+이제 [실습 탐색 섹션](/docs/introduction/navigating-labs)으로 진행하실 수 있습니다.
