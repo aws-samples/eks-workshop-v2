@@ -8,16 +8,18 @@ import TabItem from '@theme/TabItem';
 
 이 웹사이트와 제공된 콘텐츠를 탐색하는 방법을 살펴보겠습니다.
 
-## Structure
+## 구조
 
-The content of this workshop is made up of:
+이 워크샵의 콘텐츠는 다음과 같이 구성되어 있습니다:
 
-1. Individual lab exercises
-2. Supporting content that explains concepts related to the labs
+1. 개별 실습 과정
+2. 실습과 관련된 개념을 설명하는 지원 콘텐츠
 
-The lab exercises are designed in a way that you can run any modules as a self-contained exercise. Lab exercises will be displayed in the sidebar to the left and are designated by the icon shown here:
+실습 과정은 모든 모듈을 독립적인 실습으로 실행할 수 있도록 설계되었습니다. 실습 과정은 왼쪽 사이드바에 표시되며 여기 보이는 아이콘으로 표시됩니다:
 
 ![Lab icon example](./assets/lab-icon.webp)
+
+이 모듈에는 화면 왼쪽에 표시되는 '[**시작하기**](/o/ihOxGoj6RUixHGUrQEbm/s/DOGGWuHTz1iyK4Etj3es/~/changes/11/undefined/index-1)' 라는 단일 실습이 포함되어 있습니다
 
 This module contains a single lab named **Getting started** which will be visible on the left side of your screen.
 
