@@ -3,9 +3,17 @@ title: "Load Balancer 생성"
 sidebar_position: 20
 ---
 
-Let's create an additional Service that provisions a load balancer with the following configuration:
+다음 구성으로 로드 밸런서를 프로비저닝하는 추가 Service를 생성해보겠습니다:
 
 ::yaml{file="manifests/modules/exposing/load-balancer/nlb/nlb.yaml" paths="spec.type,spec.ports,spec.selector"}
+
+1. (Line: Network Load Balancer로 생성합니다
+2. (Line: 13-14) NLB는 80번 포트에서 수신하고 8080 포트의 `ui` Pod로 연결을 전달합니다
+3. (Line: 16-20) 여기서는 pod의 레이블을 사용하여 이 서비스의 대상으로 추가될 pod를 지정합니다
+
+   이 구성을 적용합니다:
+
+이 구성을 적용합니다:
 
 1. This `Service` will create a Network Load Balancer
 2. The NLB will listens on port 80 and forwards connections to the `ui` Pods on port 8080
