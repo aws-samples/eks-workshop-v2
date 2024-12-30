@@ -96,12 +96,6 @@ $ kubectl kustomize ~/environment/eks-workshop/base-application \
 
 이는 `envsubst`를 사용하여 Kubernetes 매니페스트 파일의 환경 변수 초기값(placeholder)을 특정 환경에 기반한 실제 값으로 대체합니다. 예를 들어, 일부 매니페스트에서는 `$EKS_CLUSTER_NAME`으로 EKS 클러스터 이름을 참조하거나 `$AWS_REGION`으로 AWS 리전을 참조해야 합니다.
 
-이제 Kustomize가 어떻게 작동하는지 이해했으니, [Helm 모듈](/o/ihOxGoj6RUixHGUrQEbm/s/DOGGWuHTz1iyK4Etj3es/~/changes/11/undefined/index-3)로 진행하거나 직접 [기본 모듈](/o/ihOxGoj6RUixHGUrQEbm/s/DOGGWuHTz1iyK4Etj3es/~/changes/11/index)로 이동할 수 있습니다.
+이제 Kustomize가 어떻게 작동하는지 이해했으니, [Helm 모듈](/docs/introduction/helm)로 진행하거나 직접 [기본 모듈](/docs/fundamentals)로 이동할 수 있습니다.
 
 Kustomize에 대해 더 자세히 알아보려면 공식 [Kubernetes 문서](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/)를 참조하세요.
-
-This uses `envsubst` to substitute environment variable placeholders in the Kubernetes manifest files with the actual values based on your particular environment. For example in some manifests we need to reference the EKS cluster name with `$EKS_CLUSTER_NAME` or the AWS region with `$AWS_REGION`.
-
-Now that you understand how Kustomize works, you can proceed to the [Helm module](/docs/introduction/helm) or go directly to the [Fundamentals module](/docs/fundamentals).
-
-To learn more about Kustomize, you can refer to the official Kubernetes [documentation](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/).
