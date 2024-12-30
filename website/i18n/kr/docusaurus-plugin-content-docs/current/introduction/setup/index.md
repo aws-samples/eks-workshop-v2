@@ -1,5 +1,5 @@
 ---
-title: Setup
+title: 설정
 sidebar_position: 20
 ---
 
@@ -7,5 +7,5 @@ sidebar_position: 20
 
 두가지 선택사항이 있습니다:
 
-1. [AWS 이벤트 활용](aws-event)
+1. [AWS 워크샵 이벤트 활용](aws-event)
 2. [자신의 AWS 계정 활용](your-account/)
