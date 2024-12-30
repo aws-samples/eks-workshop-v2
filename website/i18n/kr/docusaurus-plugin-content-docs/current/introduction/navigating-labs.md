@@ -25,21 +25,21 @@ import TabItem from '@theme/TabItem';
 
 :::
 
-Depending on your browser the first time you copy/paste content in to the VSCode terminal you may be presented with a prompt that looks like this:
+브라우저에 따라 VSCode 터미널에 처음으로 내용을 복사/붙여넣기할 때 다음과 같은 프롬프트가 표시될 수 있습니다:
 
 ![VSCode copy/paste](./assets/vscode-copy-paste.webp)
 
-## Terminal commands
+## 터미널 명령어
 
-Most of the interaction you will do in this workshop will be done with terminal commands, which you can either manually type or copy/paste to the IDE terminal. You will see this terminal commands displayed like this:
+워크샵에서 대부분의 상호작용은 터미널 명령어를 통해 이루어지며, IDE 터미널에 직접 입력하거나 복사/붙여넣기할 수 있습니다. 터미널 명령어는 다음과 같이 표시됩니다:
 
 ```bash test=false
 $ echo "This is an example command"
 ```
 
-Hover your mouse over `echo "This is an example command"` and click to copy that command to your clipboard.
+`echo "This is an example command"` 위에 마우스를 올리고 클릭하면 해당 명령어가 클립보드에 복사됩니다.
 
-You will also come across commands with sample output like this:
+다음과 같이 샘플 출력이 포함된 명령어도 보게 될 것입니다:
 
 ```bash test=false
 $ date
