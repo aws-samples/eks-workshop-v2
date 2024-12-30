@@ -1,5 +1,5 @@
 ---
-title: "Load Balancers"
+title: "로드밸런서"
 chapter: true
 sidebar_position: 30
 sidebar_custom_props: { "module": true }
