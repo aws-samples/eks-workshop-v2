@@ -63,7 +63,7 @@ manifests/base-application/catalog/deployment.yaml
 - `public.ecr.aws/aws-containers/retail-store-sample-catalog` 컨테이너 이미지 사용 주석
 - 단일 복제본 실행
 - `http`라는 이름으로 포트 `8080` 노출
-- `/health` 경로에 대해 [탐색/헬스체크](/o/ihOxGoj6RUixHGUrQEbm/s/DOGGWuHTz1iyK4Etj3es/~/changes/11/)[probes/healthchecks](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) 실행
+- `/health` 경로에 대해 [탐색/헬스체크](/o/ihOxGoj6RUixHGUrQEbm/s/DOGGWuHTz1iyK4Etj3es/~/changes/11/)실행
 - Kubernetes 스케줄러가 충분한 가용 리소스가 있는 노드에 배치할 수 있도록 특정 CPU와 메모리 양을 [요청](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)
 - 다른 리소스가 참조할 수 있도록 Pod에 레이블 적용
 
