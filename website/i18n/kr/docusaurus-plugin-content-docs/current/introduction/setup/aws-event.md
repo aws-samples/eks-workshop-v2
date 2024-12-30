@@ -39,7 +39,7 @@ sidebar_position: 20
 
 ![Code-server login screen](./assets/vscode-splash.webp)
 
-Press **Get started** to access the workshop splash page:
+**Get started**를 눌러 워크샵 시작 페이지에 접속하세요:
 
 ![Get Started](./assets/workshop-event-page.webp)
 
