@@ -68,15 +68,15 @@ $ helm install nginx bitnami/nginx \
   --namespace nginx --create-namespace --wait
 ```
 
-We can break this command down as follows:
+이 명령을 다음과 같이 분석할 수 있습니다:
 
-- Use the `install` sub-command to instruct Helm to install a chart
-- Name the release `nginx`
-- Use the chart `bitnami/nginx` with the version $NGINX_CHART_VERSION
-- Install the chart in the `nginx` namespace and create that namespace first
-- Wait for pods in the release to get to a ready state
+- Helm에게 차트를 설치하도록 지시하는 `install` 하위 명령어 사용
+- 릴리즈 이름을 `nginx`로 지정
+- 버전 `$NGINX_CHART_VERSION`의 `bitnami/nginx` 차트 사용
+- `nginx` 네임스페이스에 차트를 설치하고 해당 네임스페이스를 먼저 생성
+- 릴리즈의 파드가 준비 상태가 될 때까지 대기
 
-Once the chart has installed we can list the releases in our EKS cluster:
+차트가 설치되면 EKS 클러스터의 릴리즈를 나열할 수 있습니다:
 
 ```bash
 $ helm list -A
@@ -84,7 +84,7 @@ NAME   NAMESPACE  REVISION  UPDATED                                  STATUS    C
 nginx  nginx      1         2024-06-11 03:58:39.862100855 +0000 UTC  deployed  nginx-X.X.X   X.X.X
 ```
 
-We can also see NGINX running in the namespace we specified:
+지정한 네임스페이스에서 NGINX가 실행되는 것도 확인할 수 있습니다:
 
 ```bash
 $ kubectl get pod -n nginx
@@ -92,24 +92,24 @@ NAME                     READY   STATUS    RESTARTS   AGE
 nginx-55fbd7f494-zplwx   1/1     Running   0          119s
 ```
 
-## Configuring chart options
+## 차트 옵션 구성하기
 
-In the example above we installed the NGINX chart in its default configuration. Sometimes you'll need to provide configuration **values** to charts during installation to modify the way the component behaves.
+위의 예시에서는 NGINX 차트를 기본 구성으로 설치했습니다. 때로는 컴포넌트의 동작 방식을 수정하기 위해 설치 중에 차트에 구성 값을 제공해야 할 수 있습니다.
 
-There are two common ways to provide values to charts during installation:
+설치 중에 차트에 값을 제공하는 두 가지 일반적인 방법이 있습니다:
 
-1. Create YAML files and pass them to Helm using the `-f` or `--values` flag
-2. Pass values using the `--set` flag followed by `key=value` pairs
+- `-f` 또는 `—values` 플래그를 사용하여 YAML 파일을 Helm에 전달
+- `—set` 플래그 다음에 `key=value` 쌍을 사용하여 값 전달
 
-Let's combine these methods to update our NGINX release. We'll use this `values.yaml` file:
+이러한 방법을 결합하여 NGINX 릴리즈를 업데이트해보겠습니다. 다음 `values.yaml` 파일을 사용하겠습니다:
 
 ```file
 manifests/modules/introduction/helm/values.yaml
 ```
 
-This adds several custom Kubernetes labels to the NGINX pods, as well as setting some resource requests.
+이는 NGINX pod에 여러 사용자 정의 Kubernetes 레이블을 추가하고 일부 리소스 요청을 설정합니다.
 
-We'll also add additional replicas using the `--set` flag:
+`—set` 플래그를 사용하여 추가 복제본도 추가하겠습니다:
 
 ```bash
 $ helm upgrade --install nginx bitnami/nginx \
@@ -119,7 +119,7 @@ $ helm upgrade --install nginx bitnami/nginx \
   --values ~/environment/eks-workshop/modules/introduction/helm/values.yaml
 ```
 
-List the releases:
+릴리즈 목록을 확인합니다:
 
 ```bash
 $ helm list -A
