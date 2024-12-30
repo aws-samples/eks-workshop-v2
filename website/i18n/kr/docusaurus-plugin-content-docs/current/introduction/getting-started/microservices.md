@@ -19,4 +19,4 @@ sidebar_position: 30
 
 ![Microservices in Kubernetes](./assets/microservices.webp)
 
-The **ui** component receives HTTP requests from, for example, a user's browser. It then makes HTTP requests to other API components in the architecture to fulfill that request and returns a response to the user. Each of the downstream components may have their own data stores or other infrastructure. The Namespaces are a logical grouping of the resources for each microservice and also act as a soft isolation boundary, which can be used to effectively implement controls using Kubernetes RBAC and Network Policies.
+**Ui** 컴포넌트는 사용자의 브라우저와 같은 곳에서 HTTP 요청을 받습니다. 그런 다음 해당 요청을 처리하기 위해 아키텍처의 다른 API 컴포넌트들에 HTTP 요청을 보내고 사용자에게 응답을 반환합니다. 각각의 하위 컴포넌트들은 자체 데이터 스토어나 다른 인프라를 가질 수 있습니다. Namespace는 각 마이크로서비스의 리소스를 논리적으로 그룹화하고 소프트 격리 경계로도 작용하며, 이는 Kubernetes RBAC와 네트워크 정책을 사용하여 효과적으로 제어를 구현하는 데 사용될 수 있습니다.
