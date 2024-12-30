@@ -37,8 +37,8 @@ spec:
     - port: 80
 ```
 
-This is great because of how simple it is to put a load balancer in front of your application. The service spec has been extended over the years with annotations and additional configuration. A second option is to use an ingress rule and an ingress controller to route external traffic into Kubernetes pods.
+애플리케이션 앞에 로드 밸런서를 배치하는 것이 매우 간단하기 때문에 이는 훌륭한 방법입니다. 서비스 스펙은 수년에 걸쳐 어노테이션과 추가 구성으로 확장되어 왔습니다. 두 번째 옵션은 ingress 규칙과 ingress 컨트롤러를 사용하여 외부 트래픽을 Kubernetes pod로 라우팅하는 것입니다.
 
 ![IP mode](./assets/ui-nlb-instance.webp)
 
-In this chapter we'll demonstrate how to expose an application running in the EKS cluster to the Internet using a layer 4 Network Load Balancer.
+이 장에서는 Network Load Balancer(layer 4)를 사용하여 EKS 클러스터에서 실행 중인 애플리케이션을 인터넷에 노출하는 방법을 시연할 것입니다.
