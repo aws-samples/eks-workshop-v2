@@ -3,13 +3,13 @@ title: 셈플 어플리케이션
 sidebar_position: 10
 ---
 
-Most of the labs in this workshop use a common sample application to provide actual container components that we can work on during the exercises. The sample application models a simple web store application, where customers can browse a catalog, add items to their cart and complete an order through the checkout process.
+이 워크샵의 대부분의 실습에서는 실제 실습 중에 작업할 수 있는 컨테이너 컴포넌트를 제공하는 공통 샘플 애플리케이션을 사용합니다. 이 샘플 애플리케이션은 고객이 카탈로그를 탐색하고, 장바구니에 항목을 추가하고, 체크아웃 프로세스를 통해 주문을 완료할 수 있는 간단한 웹 스토어 애플리케이션을 모델링합니다.
 
 <Browser url="-">
 <img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
 </Browser>
 
-The application has several components and dependencies:
+이 애플리케이션에는 다음과 같은 여러 컴포넌트와 종속성이 있습니다:
 
 &lt;img src={require('@site/static/img/sample-app-screens/architecture.webp').default}/&gt;
 
