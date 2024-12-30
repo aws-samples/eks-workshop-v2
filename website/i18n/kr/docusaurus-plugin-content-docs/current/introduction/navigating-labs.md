@@ -21,7 +21,7 @@ import TabItem from '@theme/TabItem';
 
 :::caution
 
-각 실습은 이 배지로 표시된 페이지에서 시작해야 합니다. 실습 중간에서 시작하면 예측할 수 없는 동작이 발생할 수 있습니다. 
+각 실습은 이 배지로 표시된 페이지에서 시작해야 합니다. 실습 중간에서 시작하면 예측할 수 없는 동작이 발생할 수 있습니다.
 
 :::
 
@@ -46,9 +46,9 @@ $ date
 Fri Aug 30 12:25:58 MDT 2024
 ```
 
-Using the 'click to copy' function will only copy the command and ignore the sample output.
+`'click to copy'` 기능을 사용하면 명령어만 복사되고 샘플 출력은 무시됩니다.
 
-Another pattern used in the content is presenting several commands in a single terminal:
+콘텐츠에서 사용되는 또 다른 패턴은, 단일 터미널에 여러 명령어를 표시하는 것입니다:
 
 ```bash test=false
 $ echo "This is an example command"
