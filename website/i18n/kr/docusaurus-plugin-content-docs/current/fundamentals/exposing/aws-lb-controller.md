@@ -1,21 +1,21 @@
 ---
-title: "AWS Load Balancer Controller"
+title: "AWS Load Balancer 컨트롤러"
 sidebar_position: 20
 ---
 
-**AWS Load Balancer Controller** is a [controller](https://kubernetes.io/docs/concepts/architecture/controller/) to help manage Elastic Load Balancers for a Kubernetes cluster.
+**AWS Load Balancer Controller**는 Kubernetes 클러스터의 Elastic Load Balancer를 관리하는 데 도움을 주는 [**컨트롤러**](https://kubernetes.io/docs/concepts/architecture/controller/)입니다.
 
-The controller can provision the following resources:
+컨트롤러는 다음과 같은 리소스를 프로비저닝할 수 있습니다:
 
-- An AWS Application Load Balancer when you create a Kubernetes `Ingress`.
-- An AWS Network Load Balancer when you create a Kubernetes `Service` of type `LoadBalancer`.
+- Kubernetes `Ingress`를 생성할 때 AWS Application Load Balancer
+- `LoadBalancer` 유형의 Kubernetes `Service`를 생성할 때 AWS Network Load Balancer
 
-Application Load Balancers work at `L7` of the OSI model, allowing you to expose Kubernetes service using ingress rules, and supports external-facing traffic. Network load balancers work at `L4` of the OSI model, allowing you to leverage Kubernetes `Services` to expose a set of pods as an application network service.
+**Application Load Balancer**는 OSI 모델의 `L7`에서 작동하여 ingress 규칙을 사용하여 Kubernetes 서비스를 노출할 수 있게 하며, 외부 트래픽을 지원합니다. **Network Load Balancer**는 OSI 모델의 `L4`에서 작동하여 Kubernetes Service를 사용해 pod 집합을 애플리케이션 네트워크 서비스로 노출할 수 있게 합니다.
 
-The controller enables you to simplify operations and save costs by sharing an Application Load Balancer across multiple applications in your Kubernetes cluster.
+컨트롤러를 사용하면 Kubernetes 클러스터의 여러 애플리케이션에서 Application Load Balancer를 공유하여 운영을 단순화하고 비용을 절감할 수 있습니다.
 
-The steps to install the AWS Load Balancer Controller will be presented in the subsequent section, enabling you to get started with creating Load Balancer resources in AWS.
+다음 섹션에서는 AWS Load Balancer Controller 설치 단계를 소개하여 AWS에서 Load Balancer 리소스 생성을 시작할 수 있도록 할 것입니다.
 
 :::info
-The AWS Load Balancer Controller was formerly named the AWS ALB Ingress Controller.
+AWS Load Balancer Controller는 이전에 AWS ALB Ingress Controller로 불렸습니다.
 :::
