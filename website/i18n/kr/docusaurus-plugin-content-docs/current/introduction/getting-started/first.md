@@ -1,5 +1,5 @@
 ---
-title: Deploying our first component
+title: 첫 컴포넌트 배포
 sidebar_position: 40
 ---
 
