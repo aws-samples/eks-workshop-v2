@@ -1,5 +1,5 @@
 ---
-title: In your AWS account
+title: 자신의 AWS 계정 활용
 sidebar_position: 30
 ---
 
