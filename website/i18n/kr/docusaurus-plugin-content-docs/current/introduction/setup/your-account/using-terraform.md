@@ -1,5 +1,5 @@
 ---
-title: Using Terraform
+title: Terraform 사용하기
 sidebar_position: 30
 ---
 
@@ -78,15 +78,15 @@ $ terraform apply -var="cluster_name=$EKS_CLUSTER_NAME" -auto-approve
 
 :::
 
-Before deleting the Cloud9/VSCode IDE environment we need to clean up the cluster that we set up above.
+Cloud9/VSCode IDE 환경을 삭제하기 전에 위에서 설정한 클러스터를 정리해야 합니다.
 
-First use `delete-environment` to ensure that the sample application and any left-over lab infrastructure is removed:
+먼저 `delete-environment`를 사용하여 샘플 애플리케이션과 남아있는 실습 인프라가 제거되었는지 확인하세요:
 
 ```bash
 $ delete-environment
 ```
 
-Next delete the cluster with `terraform`:
+다음으로 `terraform`을 사용하여 클러스터를 삭제하세요:
 
 ```bash
 $ cd ~/environment/terraform
