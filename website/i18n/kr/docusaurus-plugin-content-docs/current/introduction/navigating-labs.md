@@ -6,7 +6,7 @@ sidebar_position: 25
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-Let’s review how to navigate this web site and the content provided.
+이 웹사이트와 제공된 콘텐츠를 탐색하는 방법을 살펴보겠습니다.
 
 ## Structure
 
