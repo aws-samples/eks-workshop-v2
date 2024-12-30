@@ -19,11 +19,11 @@ import TabItem from '@theme/TabItem';
 
 ![Lab icon example](./assets/lab-icon.webp)
 
-이 모듈에는 화면 왼쪽에 표시되는 '[**시작하기**](/o/ihOxGoj6RUixHGUrQEbm/s/DOGGWuHTz1iyK4Etj3es/~/changes/11/undefined/index-1)' 라는 단일 실습이 포함되어 있습니다
+이 모듈에는 화면 왼쪽에 표시되는 **시작하기**라는 단일 실습이 포함되어 있습니다
 
 :::caution
-You should start each lab from the page indicated by this badge. Starting in the middle of a lab will cause unpredictable behavior.
-:::
+
+각 실습은 이 배지로 표시된 페이지에서 시작해야 합니다. 실습 중간에서 시작하면 예측할 수 없는 동작이 발생할 수 있습니다. :::
 
 Depending on your browser the first time you copy/paste content in to the VSCode terminal you may be presented with a prompt that looks like this:
 
