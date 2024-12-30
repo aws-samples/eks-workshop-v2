@@ -56,7 +56,7 @@ $ mkdir -p ~/environment/terraform; cd ~/environment/terraform
 $ curl --remote-name-all https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/cluster/terraform/{main.tf,variables.tf,providers.tf,vpc.tf,eks.tf}
 ```
 
-Run the following Terraform commands to deploy your workshop environment.
+다음 Terraform 명령을 실행하여 워크샵 환경을 배포하세요.
 
 ```bash
 $ export EKS_CLUSTER_NAME=eks-workshop
@@ -64,13 +64,13 @@ $ terraform init
 $ terraform apply -var="cluster_name=$EKS_CLUSTER_NAME" -auto-approve
 ```
 
-This generally takes 20-25 minutes to complete.
+일반적으로 완료하는 데 20-25분이 소요됩니다.
 
-## Next Steps
+## 다음 단계
 
-Now that the cluster is ready, head to the [Navigating the labs](/docs/introduction/navigating-labs) section or skip ahead to any module in the workshop with the top navigation bar. Once you're completed with the workshop, follow the steps below to clean-up your environment.
+이제 클러스터가 준비되었으니, [실습 탐색](/o/ihOxGoj6RUixHGUrQEbm/s/DOGGWuHTz1iyK4Etj3es/~/changes/11/undefined/navigating-labs) 섹션으로 이동하거나 상단 네비게이션 바를 통해 워크샵의 어떤 모듈로든 건너뛸 수 있습니다. 워크샵을 완료한 후에는 아래 단계에 따라 환경을 정리하세요.
 
-## Cleaning Up
+## 정리하기
 
 :::warning
 The following demonstrates how you will later clean up resources once you have completed your desired lab exercises. These steps will delete all provisioned infrastructure.
