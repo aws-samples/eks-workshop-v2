@@ -36,13 +36,13 @@ modules/introduction/kustomize/deployment.yaml
 Deployment/checkout
 ```
 
-You can generate the final Kubernetes YAML that applies this kustomization with the `kubectl kustomize` command, which invokes `kustomize` that is bundled with the `kubectl` CLI:
+`kubectl kustomize` 명령을 사용하여 이 kustomization을 적용하는 최종 Kubernetes YAML을 생성할 수 있습니다. 이 명령은 `kubectl` CLI에 번들로 포함된 `kustomize`를 호출합니다:
 
 ```bash
 $ kubectl kustomize ~/environment/eks-workshop/modules/introduction/kustomize
 ```
 
-This will generate a lot of YAML files, which represents the final manifests you can apply directly to Kubernetes. Let's demonstrate this by piping the output from `kustomize` directly to `kubectl apply`:
+이는 많은 YAML 파일을 생성할 것이며, 이는 Kubernetes에 직접 적용할 수 있는 최종 매니페스트를 나타냅니다. `kustomize`의 출력을 `kubectl apply`로 직접 파이핑하여 이를 시연해보겠습니다:
 
 ```bash
 $ kubectl kustomize ~/environment/eks-workshop/modules/introduction/kustomize | kubectl apply -f -
@@ -55,13 +55,15 @@ deployment.apps/checkout configured
 deployment.apps/checkout-redis unchanged
 ```
 
-You'll notice that a number of different `checkout`-related resources are "unchanged", with the `deployment.apps/checkout` being "configured". This is intentional — we only want to apply changes to the `checkout` deployment. This happens because running the previous command actually applied two files: the Kustomize `deployment.yaml` that we saw above, as well as the following `kustomization.yaml` file which matches all files in the `~/environment/eks-workshop/base-application/checkout` folder. The `patches` field specifies the specific file to be patched:
+여러 `checkout` 관련 리소스가 `"unchanged"`로 표시되고, `deployment.apps/checkout`이 `"configured"`로 표시된 것을 볼 수 있습니다. 이는 의도된 것입니다 — 우리는 `checkout` deployment에만 변경사항을 적용하기를 원합니다. 이전 명령을 실행하면 실제로 두 개의 파일이 적용되기 때문에 이렇게 됩니다: 위에서 본 Kustomize `deployment.yaml`과 `~/environment/eks-workshop/base-application/checkout` 폴더의 모든 파일과 일치하는 `kustomization.yaml` 파일.
+
+`patches` 필드는 패치할 특정 파일을 지정합니다.
 
 ```file
 manifests/modules/introduction/kustomize/kustomization.yaml
 ```
 
-To check that the number of replicas has been updated, run the following command:
+`replicas` 수가 업데이트되었는지 확인하려면 다음 명령을 실행하세요:
 
 ```bash
 $ kubectl get pod -n checkout -l app.kubernetes.io/component=service
