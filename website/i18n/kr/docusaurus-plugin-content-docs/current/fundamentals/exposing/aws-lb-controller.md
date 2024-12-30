@@ -1,5 +1,5 @@
 ---
-title: "AWS Load Balancer 컨트롤러"
+title: "AWS Load Balancer Controller"
 sidebar_position: 20
 ---
 
