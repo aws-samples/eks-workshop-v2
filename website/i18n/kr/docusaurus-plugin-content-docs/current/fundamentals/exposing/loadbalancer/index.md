@@ -20,7 +20,9 @@ $ prepare-environment exposing/load-balancer
 
 - Creates an IAM role required by the AWS Load Balancer Controller
 
-[**여기**](https://github.com/aws-samples/eks-workshop-v2/tree/stable/manifests/modules/exposing/load-balancer/.workshop/terraform)에서 이러한 변경사항을 적용하는 Terraform을 확인할 수 있습니다.You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/exposing/load-balancer/.workshop/terraform).
+[**여기**](https://github.com/aws-samples/eks-workshop-v2/tree/stable/manifests/modules/exposing/load-balancer/.workshop/terraform)에서 이러한 변경사항을 적용하는 Terraform을 확인할 수 있습니다.
+
+You can view the Terraform that applies these changes \[here\].
 
 :::
 
