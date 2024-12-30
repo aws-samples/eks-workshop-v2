@@ -73,26 +73,32 @@ checkout-585c9b45c7-b2rrz   1/1     Running   0          2m12s
 checkout-585c9b45c7-xmx2t   1/1     Running   0          40m
 ```
 
-Instead of using the combination of `kubectl kustomize` and `kubectl apply` we can instead accomplish the same thing with `kubectl apply -k <kustomization_directory>` (note the `-k` flag instead of `-f`). This approach is used through this workshop to make it easier to apply changes to manifest files, while clearly surfacing the changes to be applied.
+`kubectl kustomize`와 `kubectl apply`의 조합을 사용하는 대신, `kubectl apply -k <kustomization_directory>`를 사용하여 동일한 작업을 수행할 수 있습니다 (`-f` 대신 `-k` 플래그 사용). 이 방식은 워크샵 전체에서 매니페스트 파일의 변경사항을 쉽게 적용하면서 변경사항을 명확하게 표시하는 데 사용됩니다.
 
-Let's try that:
+시도해보겠습니다:
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/introduction/kustomize
 ```
 
-To reset the application manifests back to their initial state, you can simply apply the original set of manifests:
+애플리케이션 매니페스트를 초기 상태로 재설정하려면 원래 매니페스트 세트를 다시 적용하면 됩니다:
 
 ```bash timeout=300 wait=30
 $ kubectl apply -k ~/environment/eks-workshop/base-application
 ```
 
-Another pattern you will see used in some lab exercises looks like this:
+일부 실습 과정에서 볼 수 있는 또 다른 패턴은 다음과 같습니다:
 
 ```bash
 $ kubectl kustomize ~/environment/eks-workshop/base-application \
   | envsubst | kubectl apply -f-
 ```
+
+이는 `envsubst`를 사용하여 Kubernetes 매니페스트 파일의 환경 변수 초기값(placeholder)을 특정 환경에 기반한 실제 값으로 대체합니다. 예를 들어, 일부 매니페스트에서는 `$EKS_CLUSTER_NAME`으로 EKS 클러스터 이름을 참조하거나 `$AWS_REGION`으로 AWS 리전을 참조해야 합니다.
+
+이제 Kustomize가 어떻게 작동하는지 이해했으니, [Helm 모듈](/o/ihOxGoj6RUixHGUrQEbm/s/DOGGWuHTz1iyK4Etj3es/~/changes/11/undefined/index-3)로 진행하거나 직접 [기본 모듈](/o/ihOxGoj6RUixHGUrQEbm/s/DOGGWuHTz1iyK4Etj3es/~/changes/11/index)로 이동할 수 있습니다.
+
+Kustomize에 대해 더 자세히 알아보려면 공식 [Kubernetes 문서](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/)를 참조하세요.
 
 This uses `envsubst` to substitute environment variable placeholders in the Kubernetes manifest files with the actual values based on your particular environment. For example in some manifests we need to reference the EKS cluster name with `$EKS_CLUSTER_NAME` or the AWS region with `$AWS_REGION`.
 
