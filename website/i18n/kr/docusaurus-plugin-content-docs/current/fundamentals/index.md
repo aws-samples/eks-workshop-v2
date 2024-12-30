@@ -1,14 +1,14 @@
 ---
-title: Fundamentals
+title: 기본
 sidebar_position: 8
 weight: 8
 ---
 
-In this chapter, we'll learn the fundamentals of working with the EKS cluster by performing the following tasks:
+이 장에서는 다음과 같은 작업을 수행하여 EKS 클러스터 작업의 기본 사항을 학습할 것입니다:
 
-- Expose the sample application so we can access it over the public Internet
-- Configure the worker nodes within the managed node group that power the EKS cluster
-- Enable and re-deploy an application using Fargate
-- Configure EBS, EFS and FSxN for stateful applications
+- 공용 인터넷을 통해 접근할 수 있도록 샘플 애플리케이션 노출
+- EKS 클러스터를 구동하는 관리형 노드 그룹 내의 워커 노드 구성
+- Fargate를 사용하여 애플리케이션 활성화 및 재배포
+- 상태 저장 애플리케이션을 위한 EBS, EFS 및 FSxN 구성
 
-Continue to the next step with the button below.
+아래 버튼으로 다음 단계를 계속하세요.
