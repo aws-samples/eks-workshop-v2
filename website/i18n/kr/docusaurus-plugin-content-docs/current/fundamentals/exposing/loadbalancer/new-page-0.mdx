@@ -119,20 +119,20 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 
 <ConsoleButton url="https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:service.k8s.aws/stack=ui/ui-nlb;sort=loadBalancerName" service="ec2" label="Open EC2 console"/>
 
-로드 밸런서의 프로비저닝이 완료될 때까지 기다리려면 다음 명령을 실행할 수 있습니다:
+Service 리소스에서 URL을 가져옵니다:
 
 ```bash
 $ kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
 k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
 
-To wait until the load balancer has finished provisioning you can run this command:
+로드 밸런서의 프로비저닝이 완료될 때까지 기다리려면 다음 명령을 실행할 수 있습니다:
 
 ```bash
 $ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
 ```
 
-Now that our application is exposed to the outside world, lets try to access it by pasting that URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
+이제 우리 애플리케이션이 외부 세계에 노출되었으니, 웹 브라우저에 해당 URL을 붙여넣어 접근해보겠습니다. 웹 스토어의 UI가 표시되고 사용자로서 사이트를 둘러볼 수 있을 것입니다.
 
 <Browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
 <img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
