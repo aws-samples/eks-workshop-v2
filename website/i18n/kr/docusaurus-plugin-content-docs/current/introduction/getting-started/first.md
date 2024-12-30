@@ -63,22 +63,11 @@ manifests/base-application/catalog/deployment.yaml
 - `public.ecr.aws/aws-containers/retail-store-sample-catalog` 컨테이너 이미지 사용 주석
 - 단일 복제본 실행
 - `http`라는 이름으로 포트 `8080` 노출
-- `/health` 경로에 대해 [탐색/헬스체크](/o/ihOxGoj6RUixHGUrQEbm/s/DOGGWuHTz1iyK4Etj3es/~/changes/11/)실행
+- `/health` 경로에 대해 [탐색/헬스체크](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)실행
 - Kubernetes 스케줄러가 충분한 가용 리소스가 있는 노드에 배치할 수 있도록 특정 CPU와 메모리 양을 [요청](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)
 - 다른 리소스가 참조할 수 있도록 Pod에 레이블 적용
 
 매니페스트에는 다른 컴포넌트들이 catalog API에 접근하는 데 사용하는 Service도 포함됩니다:
-
-This Deployment expresses the desired state of the catalog API component:
-
-- Use the `public.ecr.aws/aws-containers/retail-store-sample-catalog` container image
-- Run a single replica
-- Expose the container on port 8080 named `http`
-- Run [probes/healthchecks](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) against the `/health` path
-- [Requests](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) a specific amount of CPU and memory so the Kubernetes scheduler can place it on a node with enough available resources
-- Apply labels to the Pods so other resources can refer to them
-
-The manifests also include the Service used by other components to access the catalog API:
 
 ```file
 manifests/base-application/catalog/service.yaml
