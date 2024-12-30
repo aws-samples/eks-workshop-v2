@@ -127,9 +127,9 @@ NAME   NAMESPACE  REVISION  UPDATED                                  STATUS    C
 nginx  nginx      2         2024-06-11 04:13:53.862100855 +0000 UTC  deployed  nginx-X.X.X   X.X.X
 ```
 
-You'll notice that the **revision** column has updated to **2** as Helm has applied our updated configuration as a distinct revision. This would allow us to rollback to our previous configuration if necessary.
+Helm이 업데이트된 구성을 별도의 리비전으로 적용했기 때문에 `REVISION` **열**이 `2`로 업데이트된 것을 볼 수 있습니다. 이를 통해 필요한 경우 이전 구성으로 롤백할 수 있습니다.
 
-You can view the revision history of a given release like this:
+다음과 같이 주어진 릴리즈의 리비전 기록을 볼 수 있습니다:
 
 ```bash
 $ helm history nginx -n nginx
@@ -138,7 +138,7 @@ REVISION  UPDATED                   STATUS      CHART        APP VERSION  DESCRI
 2         Tue Jun 11 04:13:53 2024  deployed    nginx-X.X.X  X.X.X       Upgrade complete
 ```
 
-To check that our changes have taken effect list the pods in the `nginx` namespace:
+변경 사항이 적용되었는지 확인하기 위해 `nginx` 네임스페이스의 파드를 나열해보세요:
 
 ```bash
 $ kubectl get pods -n nginx
@@ -148,15 +148,19 @@ nginx-55fbd7f494-gkr2j   1/1     Running   0          30s
 nginx-55fbd7f494-zplwx   1/1     Running   0          5m
 ```
 
-You can see we now have 3 replicas of the NGINX pod running.
+이제 NGINX 파드의 복제본 3개가 실행되고 있는 것을 볼 수 있습니다.
 
-## Removing releases
+## 릴리즈 제거하기
 
-We can similarly uninstall a release using the CLI:
+CLI를 사용하여 릴리즈를 제거할 수도 있습니다:You can see we now have 3 replicas of the NGINX pod running.
 
 ```bash
 $ helm uninstall nginx --namespace nginx --wait
 ```
+
+이렇게 하면 해당 릴리즈에 대해 차트가 생성한 모든 리소스가 EKS 클러스터에서 삭제됩니다.
+
+이제 Helm이 어떻게 작동하는지 이해했으니, [기본 모듈](/docs/fundamentals)로 진행하세요.
 
 This will delete all the resources created by the chart for that release from our EKS cluster.
 
