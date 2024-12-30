@@ -3,7 +3,7 @@ title: At an AWS event
 sidebar_position: 20
 ---
 
-이 워크샵에 참여하시면 실습 자료를 완료하는데 사용할 AWS 계정이 제공됩니다. <https://catalog.workshops.aws/>로 이동하여 포털에 접속하세요.
+이 워크샵에 참여하시면 실습 자료를 완료하는데 사용할 AWS 계정이 제공됩니다. https://catalog.workshops.aws/ 로 이동하여 포털에 접속하세요.
 
 **Get Started** 를 클릭하세요.
 
