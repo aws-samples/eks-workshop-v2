@@ -13,17 +13,17 @@ sidebar_position: 20
 
 ![Workshop Studio Sign in](./assets/ws-studio-login.webp)
 
-Enter your email address and press **Send passcode**, which will send a one-time passcode to your inbox. When the email arrives you can enter the passcode and log-in.
+이메일 주소를 입력하고 **Send passcode**를 누르면 일회용 패스코드가 귀하의 받은 편지함으로 전송됩니다. 이메일을 받으면 패스코드를 입력하고 로그인하실 수 있습니다.
 
-Your instructor should have provided you with an **Event access code** prior the starting these exercises. Enter the provided hash in the text box and hit **Next**.
+강사가 이 실습을 시작하기 전에 **Event access code**를 제공했을 것입니다. 제공받은 해시를 텍스트 상자에 입력하고 **Next**를 클릭하세요.
 
 ![Event Code](./assets/event-code.webp)
 
-Read and accept the Terms and Conditions and click **Join event** to continue.
+이용 약관을 읽고 동의한 후 **Join event**를 클릭하여 계속 진행하세요.
 
 ![Review and Join](./assets/review-and-join.webp)
 
-You will be presented with your personal dashboard. Select the **Open AWS Console** button to be taken to your AWS account console:
+개인 대시보드가 표시됩니다. **Open AWS Console** 버튼을 선택하여 AWS 계정 콘솔로 이동하세요:
 
 ![Open Console](./assets/openconsole.webp)
 
