@@ -13,7 +13,7 @@ Terraform을 사용한 워크샵 클러스터 생성은 현재 미리보기 상�
 
 `terraform CLI`가 IDE에 사전 설치되어 있으므로 바로 클러스터를 생성할 수 있습니다. 클러스터와 지원 인프라를 구축하는 데 사용될 주요 Terraform 구성 파일을 살펴보겠습니다.
 
-### Terraform 구성 파일 이해하기
+## Terraform 구성 파일 이해하기
 
 `providers.tf` 파일은 인프라를 구축하는 데 필요한 Terraform 공급자를 구성합니다. 우리의 경우 `aws`, `kubernetes` 및 `helm` 공급자를 사용합니다:
 
@@ -27,17 +27,29 @@ manifests/../cluster/terraform/providers.tf
 manifests/../cluster/terraform/main.tf
 ```
 
-The `vpc.tf` configuration will make sure our VPC infrastructure is created:
+`vpc.tf` 구성은 VPC 인프라가 생성되도록 보장합니다:
 
 ```file hidePath=true
 manifests/../cluster/terraform/vpc.tf
 ```
 
-Finally, the `eks.tf` file specifies our EKS cluster configuration, including a Managed Node Group:
+마지막으로, `eks.tf` 파일은 관리형 노드 그룹을 포함한 EKS 클러스터 구성을 지정합니다:
 
 ```file hidePath=true
 manifests/../cluster/terraform/eks.tf
 ```
+
+## Terraform으로 워크샵 환경 만들기
+
+주어진 구성에 대해 `terraform`은 다음과 같이 워크샵 환경을 생성합니다:
+
+- 3개의 가용 영역에 걸쳐 VPC 생성
+- EKS 클러스터 생성
+- IAM OIDC 공급자 생성
+- `default`라는 이름의 관리형 노드 그룹 추가
+- `prefix delegation`을 사용하도록 VPC CNI 구성
+
+Terraform 파일 다운로드
 
 ## Creating the workshop environment with Terraform
 
