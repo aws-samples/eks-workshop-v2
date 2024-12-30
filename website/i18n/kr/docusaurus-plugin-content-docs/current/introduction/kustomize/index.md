@@ -6,7 +6,7 @@ sidebar_position: 40
 
 ::required-time
 
-:::tip Before you start
+:::tip 환경 설정 준비
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=10
