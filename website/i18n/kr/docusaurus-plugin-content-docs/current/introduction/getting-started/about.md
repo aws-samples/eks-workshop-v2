@@ -15,15 +15,15 @@ sidebar_position: 10
 <img src={require('@site/static/img/sample-app-screens/architecture.webp').default}/>
 </Browser>
 
-| Component     | Description                                                     |
-| ------------- | --------------------------------------------------------------- |
-| UI            | 프론트엔드 사용자 인터페이스를 제공하고 다양한 다른 서비스에 대한 API 호출을 집계합니다.             |
-| Catalog       | 제품 목록 및 상세 정보를 위한 API                                           |
-| Cart          | 고객 장바구니를 위한 API                                                 |
-| Checkout      | 체크아웃 프로세스를 조율하기 위한 API                                          |
-| Orders        | 고객 주문을 수신하고 처리하기 위한 API                                         |
-| Static assets | Serves static assets like images related to the product catalog |
+| Component     | Description                                         |
+| ------------- | --------------------------------------------------- |
+| UI            | 프론트엔드 사용자 인터페이스를 제공하고 다양한 다른 서비스에 대한 API 호출을 집계합니다. |
+| Catalog       | 제품 목록 및 상세 정보를 위한 API                               |
+| Cart          | 고객 장바구니를 위한 API                                     |
+| Checkout      | 체크아웃 프로세스를 조율하기 위한 API                              |
+| Orders        | 고객 주문을 수신하고 처리하기 위한 API                             |
+| Static assets | 제품 카탈로그와 관련된 이미지와 같은 정적 자산을 제공합니다                   |
 
-Initially we'll deploy the application in a manner that is self-contained in the Amazon EKS cluster, without using any AWS services like load balancers or a managed database. Over the course of the labs we'll leverage different features of EKS to take advantage of broader AWS services and features for our retail store.
+처음에는 로드 밸런서나 관리형 데이터베이스와 같은 AWS 서비스를 사용하지 않고, Amazon EKS 클러스터 내에서 자체적으로 완결된 방식으로 애플리케이션을 배포할 것입니다. 실습을 진행하면서 EKS의 다양한 기능을 활용하여 우리의 리테일 스토어를 위한 더 광범위한 AWS 서비스와 기능을 활용하게 될 것입니다.
 
-You can find the full source code for the sample application on [GitHub](https://github.com/aws-containers/retail-store-sample-app).
+[GitHub](https://github.com/aws-containers/retail-store-sample-app)에서 샘플 애플리케이션의 전체 소스 코드를 확인할 수 있습니다.
