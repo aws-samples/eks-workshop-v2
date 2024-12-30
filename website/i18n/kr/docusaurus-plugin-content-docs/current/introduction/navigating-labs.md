@@ -21,8 +21,6 @@ import TabItem from '@theme/TabItem';
 
 이 모듈에는 화면 왼쪽에 표시되는 '[**시작하기**](/o/ihOxGoj6RUixHGUrQEbm/s/DOGGWuHTz1iyK4Etj3es/~/changes/11/undefined/index-1)' 라는 단일 실습이 포함되어 있습니다
 
-This module contains a single lab named **Getting started** which will be visible on the left side of your screen.
-
 :::caution
 You should start each lab from the page indicated by this badge. Starting in the middle of a lab will cause unpredictable behavior.
 :::
