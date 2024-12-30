@@ -1,5 +1,5 @@
 ---
-title: At an AWS event
+title: AWS 워크샵 이벤트 활용
 sidebar_position: 20
 ---
 
