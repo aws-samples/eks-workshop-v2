@@ -11,6 +11,10 @@ sidebar_position: 10
 
 이 애플리케이션에는 다음과 같은 여러 컴포넌트와 종속성이 있습니다:
 
+<Browser url="-">
+<img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
+</Browser>
+
 &lt;img src={require('@site/static/img/sample-app-screens/architecture.webp').default}/&gt;
 
 | Component     | Description                                                                                   |
