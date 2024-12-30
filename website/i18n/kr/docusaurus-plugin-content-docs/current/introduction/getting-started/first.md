@@ -13,13 +13,9 @@ IDE의 파일 브라우저를 사용하는 것이 이 워크샵의 샘플 애플
 
 ![Cloud9 files base](./assets/cloud9-files-base.webp)
 
-구조는 [셈플 어플리케이션](/o/ihOxGoj6RUixHGUrQEbm/s/DOGGWuHTz1iyK4Etj3es/~/changes/11/undefined/index-1/about) 섹션에서 설명한 각 애플리케이션 컴포넌트의 디렉토리로 구성되어 있습니다.
+구조는 [셈플 어플리케이션](./) 섹션에서 설명한 각 애플리케이션 컴포넌트의 디렉토리로 구성되어 있습니다.
 
 `modules` 디렉토리에는 이후 실습 과정에서 클러스터에 적용할 매니페스트 세트가 포함되어 있습니다:
-
-The structure consists of a directory for each application component that was outlined in the **Sample application** section.
-
-The `modules` directory contains sets of manifests that we will apply to the cluster throughout the subsequent lab exercises:
 
 ![Cloud9 files modules](./assets/cloud9-files-modules.webp)
 
