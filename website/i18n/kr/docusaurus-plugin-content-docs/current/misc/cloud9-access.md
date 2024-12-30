@@ -4,9 +4,11 @@ title: Cloud9 Access
 
 If after running the Terraform script you do not see the Cloud9 instance named **eks-workshop** do the following:
 
-Change the Environments dropdown to show **All account environments**.
-![Change the Environments dropdown to show **All account environments**](./assets/cloud9-environments.webp)
-Under **Cloud9 IDE** Click **Open**.
+Change the Environments dropdown to show**All account environments**.
+
+![Change the Environments dropdown to show All account environments](./assets/cloud9-environments.webp)
+
+Under**Cloud9 IDE**Click**Open**.
 
 If the Open link does not work, you will need to grant your user access to the Cloud9 instance.
 
