@@ -8,7 +8,7 @@ sidebar_position: 50
 
 :::tip 시작하기 전에
 
- Prepare your environment for this section:
+환경 준비를 해주세요: Prepare your environment for this section:
 
 ```bash timeout=600 wait=10
 $ prepare-environment introduction/helm
