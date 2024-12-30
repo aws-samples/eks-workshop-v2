@@ -1,5 +1,5 @@
 ---
-title: "Exposing applications"
+title: "어플리케이션 노출하기"
 sidebar_position: 10
 ---
 
