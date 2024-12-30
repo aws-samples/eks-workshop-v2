@@ -116,17 +116,19 @@ catalog-mysql-0            1/1     Running   0             46s
 $ kubectl wait --for=condition=Ready pods --all -n catalog --timeout=180s
 ```
 
-Now that the Pods are running we can [check their logs](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#logs), for example the catalog API:
+Pod가 실행 중이면 [로그를 확인](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#logs)할 수 있습니다. 예를 들어 `catalog` API의 경우:
 
 :::tip
-You can ["follow" the kubectl logs output](https://kubernetes.io/docs/reference/kubectl/cheatsheet/) by using the '-f' option with the command. (Use CTRL-C to stop following the output)
+
+명령어에 '-f' 옵션을 사용하여 [kubectl logs 출력을 "follow"](https://kubernetes.io/docs/reference/kubectl/quick-reference/)할 수 있습니다. (CTRL-C를 사용하여 팔로우를 중지할 수 있습니다)
+
 :::
 
 ```bash
 $ kubectl logs -n catalog deployment/catalog
 ```
 
-Kubernetes also allows us to easily scale the number of catalog Pods horizontally:
+Kubernetes는 또한 `catalog` Pod의 수를 수평적으로 쉽게 확장할 수 있게 해줍니다:
 
 ```bash
 $ kubectl scale -n catalog --replicas 3 deployment/catalog
@@ -134,7 +136,7 @@ deployment.apps/catalog scaled
 $ kubectl wait --for=condition=Ready pods --all -n catalog --timeout=180s
 ```
 
-The manifests we applied also create a Service for each of our application and MySQL Pods that can be used by other components in the cluster to connect:
+우리가 적용한 매니페스트는 클러스터의 다른 컴포넌트들이 연결하는 데 사용할 수 있는 애플리케이션과 MySQL Pod를 위한 Service도 각각 생성합니다:
 
 ```bash
 $ kubectl get svc -n catalog
@@ -143,11 +145,11 @@ catalog         ClusterIP   172.20.83.84     <none>        80/TCP     2m48s
 catalog-mysql   ClusterIP   172.20.181.252   <none>        3306/TCP   2m48s
 ```
 
-These Services are internal to the cluster, so we cannot access them from the Internet or even the VPC. However, we can use [exec](https://kubernetes.io/docs/tasks/debug/debug-application/get-shell-running-container/) to access an existing Pod in the EKS cluster to check the catalog API is working:
+이러한 Service들은 클러스터 내부용이므로, 인터넷이나 VPC에서도 접근할 수 없습니다. 하지만 [exec](https://kubernetes.io/docs/tasks/debug/debug-application/get-shell-running-container/)를 사용하여 EKS 클러스터의 기존 Pod에 접근하여 `catalog` API가 작동하는지 확인할 수 있습니다:
 
 ```bash
 $ kubectl -n catalog exec -it \
   deployment/catalog -- curl catalog.catalog.svc/catalogue | jq .
 ```
 
-You should receive back a JSON payload with product information. Congratulations, you've just deployed your first microservice to Kubernetes with EKS!
+제품 정보가 포함된 JSON 페이로드를 받아야 합니다. 축하합니다, EKS에서 Kubernetes로 첫 번째 마이크로서비스를 배포하셨습니다!
