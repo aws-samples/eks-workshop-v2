@@ -4,8 +4,6 @@ sidebar_position: 10
 weight: 5
 ---
 
-안녕하세요
-
 Welcome to the **AWS Elastic Kubernetes Service (EKS) workshop**!
 
 This workshop guides you through a set of hands-on lab exercises to learn and explore the various features provided by EKS and how it integrates with the broader set of services offered by AWS. The labs are grouped across a number of areas:
@@ -20,6 +18,6 @@ This workshop guides you through a set of hands-on lab exercises to learn and ex
 
 These labs are designed in a way that you can pick any combination of modules that reflect your experience and skills to learn efficiently. The workshop environment provides pre-configured AWS infrastructure including an EKS cluster an Integrated Development Environment (IDE) with all the tools you need to complete the lab exercises.
 
-To learn about the basics of Amazon EKS, watch this short ~10 minute video:
+To learn about the basics of Amazon EKS, watch this short \~10 minute video:
 
 <ReactPlayer controls url="https://www.youtube.com/watch?v=E956xeOt050" /> <br />
