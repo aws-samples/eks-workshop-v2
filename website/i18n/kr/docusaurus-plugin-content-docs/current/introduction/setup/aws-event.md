@@ -27,15 +27,15 @@ sidebar_position: 20
 
 ![Open Console](./assets/openconsole.webp)
 
-Next return to the personal dashboard page and scroll down to the **Event Outputs** section. Copy the URL from the **IdeUrl** field and open it in a new browser tab:
+다시 개인 대시보드 페이지로 돌아가서 **Event Outputs** 섹션으로 스크롤하세요. **IdeUrl** 필드의 URL을 복사하여 새 브라우저 탭에서 여세요:
 
 ![Cloud9 Link](./assets/workshop-studio-06.png)
 
-You will prompted for a password:
+비밀번호를 입력하라는 메시지가 표시됩니다:
 
 ![Cloud9 Link](./assets/visual-studio-01.png)
 
-Enter the value from the **IdePassword** from the outputs and the IDE will load.
+출력된 **IdePassword** 값을 입력하면 IDE가 로드됩니다.
 
 ![Code-server login screen](./assets/vscode-splash.webp)
 
