@@ -62,5 +62,6 @@ ui          ui               1/1     1            1           90s
 이제 샘플 애플리케이션이 배포되었고 이 워크샵의 나머지 실습에서 사용할 기반이 준비되었습니다!
 
 :::tip
+Kustomize에 대해 더 자세히 알고 싶다면 이 워크샵에서 제공하는 선택적 모듈을 살펴보세요
 If you want to understand more about Kustomize take a look at the [optional module](../kustomize/index.md) provided in this workshop.
 :::
