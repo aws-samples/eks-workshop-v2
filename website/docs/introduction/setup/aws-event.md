@@ -3,7 +3,7 @@ title: At an AWS event
 sidebar_position: 20
 ---
 
-By participating in this workshop you will be provided with an AWS account to use to complete the lab material. Connect to the portal by browsing to [https://catalog.workshops.aws/](https://catalog.workshops.aws/). Click on **Get Started**.
+By participating in this workshop you will be provided with an AWS account to use to complete the lab material. Connect to the portal by browsing to <https://catalog.workshops.aws/>. Click on **Get Started**.
 
 ![Workshop Studio Home](./assets/workshop-studio-home.webp)
 
