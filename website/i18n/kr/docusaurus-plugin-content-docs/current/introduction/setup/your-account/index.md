@@ -34,17 +34,17 @@ IAM 권한 최적화를 위해 지속적으로 노력하고 있습니다. 개선
 
 ![acknowledge IAM](./assets/acknowledge-iam.webp)
 
-그런 다음 **Create s** 버튼을 클릭합니다.
+그런 다음 **Create stack** 버튼을 클릭합니다.
 
 ![Create Stack](./assets/create-stack.webp)
 
-The CloudFormation stack will take roughly 5 minutes to deploy, and once completed you can retrieve information required to continue from the **Outputs** tab:
+CloudFormation 스택은 배포하는 데 약 5분이 소요되며, 배포가 완료되면 **Outputs** 탭에서 계속 진행하는데 필요한 정보를 확인할 수 있습니다:
 
 ![cloudformation outputs](./assets/vscode-outputs.webp)
 
-The `IdeUrl` output contains the URL to enter in your browser to access the IDE. The `IdePasswordSecret` contains a link to an AWS Secrets Manger secret that contains a generated password for the IDE.
+`IdeUrl` 출력에는 IDE에 접근하기 위해 브라우저에 입력할 URL이 포함되어 있습니다. `IdePasswordSecret`에는 IDE용으로 생성된 비밀번호가 포함된 AWS Secrets Manager 시크릿 링크가 들어있습니다.
 
-To retrieve the password open that URL and click the **Retrieve** button:
+비밀번호를 확인하려면 해당 URL을 열고 **Retrieve** 버튼을 클릭하세요:
 
 ![secretsmanager retrieve](./assets/vscode-password-retrieve.webp)
 
