@@ -11,8 +11,7 @@ manifests/base-application/kustomization.yaml
 
 :::tip
 
-`catalog` API가 이 `kustomization`에 있는 것을 보셨나요? 이미 배포하지 않았나요? Kubernetes는 선언적 메커니즘을 사용하기 때문에 `catalog` API의 매니페스트를 다시 적용해도 모든 리소스가 이미 생성되어 있어서 Kubernetes는 아무 작업도 수행하지 않을 것입니다.
-
+`catalog` API가 이 `kustomization`에 있는 것을 보셨나요? 이미 배포하지 않았나요? Kubernetes는 선언적 메커니즘을 사용하기 때문에 `catalog` API의 매니페스트를 다시 적용해도 모든 리소스가 이미 생성되어 있어서 Kubernetes는 아무 작업도 수행하지 않을 것입니다.\
 :::
 
 이 `kustomization`을 클러스터에 적용하여 나머지 컴포넌트들을 배포하세요:
@@ -62,6 +61,5 @@ ui          ui               1/1     1            1           90s
 이제 샘플 애플리케이션이 배포되었고 이 워크샵의 나머지 실습에서 사용할 기반이 준비되었습니다!
 
 :::tip
-Kustomize에 대해 더 자세히 알고 싶다면 이 워크샵에서 제공하는 선택적 모듈을 살펴보세요
-If you want to understand more about Kustomize take a look at the [optional module](../kustomize/index.md) provided in this workshop.
+Kustomize에 대해 더 자세히 알고 싶다면 이 워크샵에서 제공하는 [선택적 모듈](../kustomize/index.md)을 살펴보세요
 :::
