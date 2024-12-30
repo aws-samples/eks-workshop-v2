@@ -8,11 +8,4 @@ sidebar_position: 20
 두가지 선택사항이 있습니다:
 
 1. [AWS 이벤트 활용](aws-event)
-2. 자신의 AWS 계정 활용
-
-This section outlines how to set up the environment to run the labs in the workshop, including setting up your AWS account.
-
-You have two options:
-
-1. [At an AWS event](./aws-event.md)
-2. [In your own account](./your-account/index.md)
+2. [자신의 AWS 계정 활용](your-account/)
