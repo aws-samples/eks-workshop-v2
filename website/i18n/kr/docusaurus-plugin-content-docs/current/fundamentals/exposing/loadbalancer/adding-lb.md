@@ -3,8 +3,6 @@ title: "Load Balancer 생성"
 sidebar_position: 20
 ---
 
-test
-
 다음 구성으로 로드 밸런서를 프로비저닝하는 추가 Service를 생성해보겠습니다:
 
 ::yaml{file="manifests/modules/exposing/load-balancer/nlb/nlb.yaml" paths="spec.type,spec.ports,spec.selector"}
