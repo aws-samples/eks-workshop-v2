@@ -1,9 +1,9 @@
 ---
-title: Other components
+title: 기타 컴포넌트
 sidebar_position: 50
 ---
 
-In this lab exercise, we'll deploy the rest of the sample application efficiently using the power of Kustomize. The following kustomization file shows how you can reference other kustomizations and deploy multiple components together:
+이 실습에서는 Kustomize의 기능을 활용하여 나머지 샘플 애플리케이션을 효율적으로 배포할 것입니다. 다음 `kustomization` 파일은 다른 `kustomization`을 참조하고 여러 컴포넌트를 함께 배포하는 방법을 보여줍니다:
 
 ```file
 manifests/base-application/kustomization.yaml
