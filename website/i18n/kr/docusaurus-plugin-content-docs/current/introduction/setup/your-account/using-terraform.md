@@ -4,16 +4,18 @@ sidebar_position: 30
 ---
 
 :::warning
-Creating the workshop cluster with Terraform is currently in preview. Please raise any issues encountered in the [GitHub repository](https://github.com/aws-samples/eks-workshop-v2/issues).
+
+Terraform을 사용한 워크샵 클러스터 생성은 현재 미리보기 상태입니다. [GitHub 저장소](https://github.com/aws-samples/eks-workshop-v2/issues)에서 발견된 문제점을 제보해 주세요.
+
 :::
 
-This section outlines how to build a cluster for the lab exercises using the [Hashicorp Terraform](https://developer.hashicorp.com/terraform). This is intended to be for learners that are used to working with Terraform infrastructure-as-code.
+이 섹션에서는 [Hashicorp Terraform](https://developer.hashicorp.com/terraform)을 사용하여 실습용 클러스터를 구축하는 방법을 설명합니다. 이는 Terraform Iac(Infrastructure-As-Code) 작업에 익숙한 학습자를 위한 것입니다.
 
-The `terraform` CLI has been pre-installed in your IDE so we can immediately create the cluster. Let's take a look at the main Terraform configuration files that will be used to build the cluster and its supporting infrastructure.
+`terraform CLI`가 IDE에 사전 설치되어 있으므로 바로 클러스터를 생성할 수 있습니다. 클러스터와 지원 인프라를 구축하는 데 사용될 주요 Terraform 구성 파일을 살펴보겠습니다.
 
-## Understanding Terraform config files
+### Terraform 구성 파일 이해하기
 
-The `providers.tf` file configures the Terraform providers that will be needed to build the infrastructure. In our case, we use the `aws`, `kubernetes` and `helm` providers:
+`providers.tf` 파일은 인프라를 구축하는 데 필요한 Terraform 공급자를 구성합니다. 우리의 경우 `aws`, `kubernetes` 및 `helm` 공급자를 사용합니다:
 
 ```file hidePath=true
 manifests/../cluster/terraform/providers.tf
