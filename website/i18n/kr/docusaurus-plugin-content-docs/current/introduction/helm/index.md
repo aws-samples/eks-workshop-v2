@@ -161,7 +161,3 @@ $ helm uninstall nginx --namespace nginx --wait
 이렇게 하면 해당 릴리즈에 대해 차트가 생성한 모든 리소스가 EKS 클러스터에서 삭제됩니다.
 
 이제 Helm이 어떻게 작동하는지 이해했으니, [기본 모듈](/docs/fundamentals)로 진행하세요.
-
-This will delete all the resources created by the chart for that release from our EKS cluster.
-
-Now that you understand how Helm works, proceed to the [Fundamentals module](/docs/fundamentals).
