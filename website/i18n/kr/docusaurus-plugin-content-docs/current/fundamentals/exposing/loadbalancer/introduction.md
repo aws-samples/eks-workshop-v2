@@ -3,7 +3,7 @@ title: "소개"
 sidebar_position: 10
 ---
 
-First lets install the AWS Load Balancer controller using helm:
+먼저 helm을 사용하여 AWS Load Balancer 컨트롤러를 설치해보겠습니다:
 
 ```bash wait=10
 $ helm repo add eks-charts https://aws.github.io/eks-charts
@@ -25,7 +25,7 @@ NOTES:
 AWS Load Balancer controller installed!
 ```
 
-We can confirm our microservices are only accessible internally by taking a look at the current `Service` resources in the cluster:
+클러스터의 현재 Service 리소스를 살펴봄으로써 우리의 마이크로서비스가 내부에서만 접근 가능한지 확인할 수 있습니다:
 
 ```bash
 $ kubectl get svc -l app.kubernetes.io/created-by=eks-workshop -A
@@ -43,9 +43,9 @@ rabbitmq    rabbitmq         ClusterIP   172.20.107.54    <none>        5672/TCP
 ui          ui               ClusterIP   172.20.62.119    <none>        80/TCP                                  1h
 ```
 
-All of our application components are currently using `ClusterIP` services, which only allows access to other workloads in the same Kubernetes cluster. In order for users to access our application we need to expose the `ui` application, and in this example we'll do so using a Kubernetes service of type `LoadBalancer`.
+현재 우리의 모든 애플리케이션 컴포넌트는 `ClusterIP` 서비스를 사용하고 있으며, 이는 같은 Kubernetes 클러스터 내의 다른 워크로드에서만 접근할 수 있게 합니다. 사용자가 우리 애플리케이션에 접근할 수 있도록 하기 위해서는 `ui` 애플리케이션을 노출해야 하며, 이 예제에서는 `LoadBalancer` 타입의 Kubernetes 서비스를 사용하여 이를 수행할 것입니다.
 
-Lets take a closer look at the current specification of the service for the `ui` component:
+`ui `컴포넌트의 현재 서비스 명세를 자세히 살펴보겠습니다:
 
 ```bash
 $ kubectl -n ui describe service ui
@@ -71,4 +71,4 @@ Session Affinity:  None
 Events:            <none>
 ```
 
-As we saw earlier this is currently using a type `ClusterIP` and our task in this module is to change this so that the retail store user interface is accessible over the public Internet.
+앞서 보았듯이 현재는 `ClusterIP` 타입을 사용하고 있으며, 이 모듈에서 우리의 작업은 리테일 스토어 사용자 인터페이스가 공용 인터넷을 통해 접근 가능하도록 이를 변경하는 것입니다.
