@@ -3,7 +3,9 @@ title: At an AWS event
 sidebar_position: 20
 ---
 
-By participating in this workshop you will be provided with an AWS account to use to complete the lab material. Connect to the portal by browsing to [https://catalog.workshops.aws/](https://catalog.workshops.aws/). Click on **Get Started**.
+이 워크샵에 참여하시면 실습 자료를 완료하는데 사용할 AWS 계정이 제공됩니다. [https://catalog.workshops.aws/로](https://catalog.workshops.aws/) 이동하여 포털에 접속하세요.
+
+**Get Started**를 클릭하세요.
 
 ![Workshop Studio Home](./assets/workshop-studio-home.webp)
 
