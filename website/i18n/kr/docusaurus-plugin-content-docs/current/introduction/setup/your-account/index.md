@@ -6,8 +6,8 @@ sidebar_position: 30
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-:::danger Warning
-Provisioning this workshop environment in your AWS account will create resources and **there will be cost associated with them**. The cleanup section provides a guide to remove them, preventing further charges.
+:::danger Warning\
+귀하의 AWS 계정에 이 워크샵 환경을 프로비저닝하면 리소스가 생성되며 **비용이 발생할 수 있습니다**. [CleanUp 섹션](cleanup)에서는 추가 요금을 방지하기 위해 리소스를 제거하는 방법을 안내합니다.\
 :::
 
 This section outlines how to set up the environment to run the labs in your own AWS account.
