@@ -6,8 +6,9 @@ sidebar_position: 50
 
 ::required-time
 
-:::tip Before you start
-Prepare your environment for this section:
+:::tip 시작하기 전에
+
+ Prepare your environment for this section:
 
 ```bash timeout=600 wait=10
 $ prepare-environment introduction/helm
@@ -97,7 +98,7 @@ In the example above we installed the NGINX chart in its default configuration. 
 There are two common ways to provide values to charts during installation:
 
 1. Create YAML files and pass them to Helm using the `-f` or `--values` flag
-1. Pass values using the `--set` flag followed by `key=value` pairs
+2. Pass values using the `--set` flag followed by `key=value` pairs
 
 Let's combine these methods to update our NGINX release. We'll use this `values.yaml` file:
 
