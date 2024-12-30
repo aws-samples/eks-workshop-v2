@@ -3,13 +3,13 @@ title: "Ingress"
 chapter: true
 sidebar_position: 40
 sidebar_custom_props: { "module": true }
-description: "Expose HTTP and HTTPS routes to the outside world using Ingress API on Amazon Elastic Kubernetes Service."
+description: "Amazon Elastic Kubernetes Service에서 Ingress API를 사용하여 HTTP 및 HTTPS 경로를 외부 세계에 노출합니다."
 ---
 
 ::required-time
 
-:::tip Before you start
-Prepare your environment for this section:
+:::tip 시작하기 전에
+이 섹션을 위한 환경을 준비하세요:
 
 ```bash timeout=300 wait=30
 $ prepare-environment exposing/ingress
