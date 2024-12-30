@@ -1,5 +1,5 @@
 ---
-title: "Introduction"
+title: "소개"
 sidebar_position: 10
 ---
 
