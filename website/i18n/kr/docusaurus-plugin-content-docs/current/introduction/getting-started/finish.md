@@ -28,7 +28,7 @@ $ kubectl wait --for=condition=Ready --timeout=180s pods \
   -l app.kubernetes.io/created-by=eks-workshop -A
 ```
 
-We'll now have a Namespace for each of our application components:
+이제 각 애플리케이션 컴포넌트에 대한 Namespace가 생성됩니다:
 
 ```bash
 $ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
@@ -43,7 +43,7 @@ rabbitmq   Active   62s
 ui         Active   62s
 ```
 
-We can also see all of the Deployments created for the components:
+컴포넌트들을 위해 생성된 모든 Deployment도 확인할 수 있습니다:
 
 ```bash
 $ kubectl get deployment -l app.kubernetes.io/created-by=eks-workshop -A
@@ -59,7 +59,7 @@ orders      orders-mysql     1/1     1            1           90s
 ui          ui               1/1     1            1           90s
 ```
 
-The sample application is now deployed and ready to provide a foundation for us to use in the rest of the labs in this workshop!
+이제 샘플 애플리케이션이 배포되었고 이 워크샵의 나머지 실습에서 사용할 기반이 준비되었습니다!
 
 :::tip
 If you want to understand more about Kustomize take a look at the [optional module](../kustomize/index.md) provided in this workshop.
