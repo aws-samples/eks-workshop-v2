@@ -20,23 +20,21 @@ import TabItem from '@theme/TabItem';
 | `eu-west-1`      | [Launch](https://eu-west-1.console.aws.amazon.com/cloudformation/home#/stacks/quickcreate?templateUrl=https://ws-assets-prod-iad-r-dub-85e3be25bd827406.s3.eu-west-1.amazonaws.com/39146514-f6d5-41cb-86ef-359f9d2f7265/eks-workshop-vscode-cfn.yaml&stackName=eks-workshop-ide&param_RepositoryRef=VAR::MANIFESTS_REF)           |
 | `ap-southeast-1` | [Launch](https://ap-southeast-1.console.aws.amazon.com/cloudformation/home#/stacks/quickcreate?templateUrl=https://ws-assets-prod-iad-r-sin-694a125e41645312.s3.ap-southeast-1.amazonaws.com/39146514-f6d5-41cb-86ef-359f9d2f7265/eks-workshop-vscode-cfn.yaml&stackName=eks-workshop-ide&param_RepositoryRef=VAR::MANIFESTS_REF) |
 
-위의 AWS 리전에서 이 지침들은 테스트되었으며, 다른 지역에서는 수정 없이 작동할 것을 보장하지 않습니다.
-
-These instructions have been tested in the AWS regions listed above and are not guaranteed to work in others without modification.
+위의 AWS 리전에서 이 지침들은 테스트되었으며, 다른 리전에서는 수정 없이 작동할 것을 보장하지 않습니다.
 
 :::warning
 
-The nature of the workshop material means that the IDE EC2 instance requires broad IAM permissions in your account, for example creating IAM roles. Before continuing please review the IAM permissions that will be provided to the IDE instance in the CloudFormation template.
+워크숍 자료의 특성상 IDE EC2 인스턴스가 계정 내에서 광범위한 IAM 권한을 필요로 합니다. 예를 들어, IAM 역할 생성 등이 있습니다. 계속 진행하기 전에 CloudFormation 템플릿에서 IDE 인스턴스에 제공될 IAM 권한을 검토하십시오.
 
-We are continuously working to optimize the IAM permissions. Please raise a [GitHub issue](https://github.com/aws-samples/eks-workshop-v2/issues) with any suggestions for improvement.
+IAM 권한 최적화를 위해 지속적으로 노력하고 있습니다. 개선 제안 사항이 있으면 [GitHub 이슈](https://github.com/aws-samples/eks-workshop-v2/issues)를 제기해 주세요
 
 :::
 
-Scroll to the bottom of the screen and acknowledge the IAM notice:
+화면 하단으로 스크롤하여 IAM 공지를 확인합니다:
 
 ![acknowledge IAM](./assets/acknowledge-iam.webp)
 
-Then click the **Create stack** button:
+그런 다음 **Create s** 버튼을 클릭합니다.
 
 ![Create Stack](./assets/create-stack.webp)
 
