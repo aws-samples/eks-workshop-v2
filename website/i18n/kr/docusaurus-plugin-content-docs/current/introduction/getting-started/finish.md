@@ -10,7 +10,6 @@ manifests/base-application/kustomization.yaml
 ```
 
 :::tip
-
 `catalog` API가 이 `kustomization`에 있는 것을 보셨나요? 이미 배포하지 않았나요? Kubernetes는 선언적 메커니즘을 사용하기 때문에 `catalog` API의 매니페스트를 다시 적용해도 모든 리소스가 이미 생성되어 있어서 Kubernetes는 아무 작업도 수행하지 않을 것입니다.\
 :::
 
