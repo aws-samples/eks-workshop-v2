@@ -68,12 +68,14 @@ $ terraform apply -var="cluster_name=$EKS_CLUSTER_NAME" -auto-approve
 
 ## 다음 단계
 
-이제 클러스터가 준비되었으니, [실습 탐색](/o/ihOxGoj6RUixHGUrQEbm/s/DOGGWuHTz1iyK4Etj3es/~/changes/11/undefined/navigating-labs) 섹션으로 이동하거나 상단 네비게이션 바를 통해 워크샵의 어떤 모듈로든 건너뛸 수 있습니다. 워크샵을 완료한 후에는 아래 단계에 따라 환경을 정리하세요.
+이제 클러스터가 준비되었으니, [실습 탐색](/docs/introduction/navigating-labs) 섹션으로 이동하거나 상단 네비게이션 바를 통해 워크샵의 어떤 모듈로든 건너뛸 수 있습니다. 워크샵을 완료한 후에는 아래 단계에 따라 환경을 정리하세요.
 
 ## 정리하기
 
 :::warning
-The following demonstrates how you will later clean up resources once you have completed your desired lab exercises. These steps will delete all provisioned infrastructure.
+
+다음은 원하는 실습 과정을 완료한 후 리소스를 정리하는 방법을 보여줍니다. 이 단계들은 프로비저닝된 모든 인프라를 삭제합니다.
+
 :::
 
 Before deleting the Cloud9/VSCode IDE environment we need to clean up the cluster that we set up above.
