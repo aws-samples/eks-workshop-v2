@@ -3,7 +3,7 @@ title: 쿠버네티스의 마이크로서비스
 sidebar_position: 30
 ---
 
-이제 샘플 애플리케이션의 전체 아키텍처에 대해 알게 되었으니, 이를 EKS에 어떻게 초기 배포할까요? **catalog** 컴포넌트를 살펴보면서 Kubernetes의 기본 구성 요소들을 알아보겠습니다:
+이제 샘플 애플리케이션의 전체 아키텍처에 대해 알게 되었으니, 이를 EKS에 어떻게 초기 배포할까요? `catalog` 컴포넌트를 살펴보면서 Kubernetes의 기본 구성 요소들을 알아보겠습니다:
 
 ![Catalog microservice in Kubernetes](./assets/catalog-microservice.webp)
 
