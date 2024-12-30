@@ -39,7 +39,7 @@ $ helm version
 
 Helm 저장소는 Helm 차트가 저장되고 관리되는 곳이며, 사용자가 차트를 쉽게 검색, 공유 및 설치할 수 있게 해줍니다. Kubernetes 클러스터에 배포할 수 있는 다양한 미리 패키징된 애플리케이션과 서비스에 쉽게 접근할 수 있도록 합니다.
 
-Bitnami Helm 저장소는 Kubernetes에서 인기 있는 애플리케이션과 도구를 배포하기 위한 Helm 차트 모음입니다.
+[Bitnami](https://github.com/bitnami/charts) Helm 저장소는 Kubernetes에서 인기 있는 애플리케이션과 도구를 배포하기 위한 Helm 차트 모음입니다.
 
 Bitnami 저장소를 우리의 Helm CLI에 추가해보겠습니다:
 
@@ -48,7 +48,7 @@ $ helm repo add bitnami https://charts.bitnami.com/bitnami
 $ helm repo update
 ```
 
-Now we can search the repository for charts, for example the `nginx` chart:
+이제 저장소에서 차트를 검색할 수 있습니다. 예를 들어 `nginx` 차트를 검색해보겠습니다:
 
 ```bash
 $ helm search repo nginx
@@ -57,9 +57,9 @@ bitnami/nginx           X.X.X           X.X.X           NGINX Open Source is a w
 [...]
 ```
 
-## Installing a Helm chart
+## Helm 차트 설치하기
 
-Let's install an NGINX server in our EKS cluster using the Helm chart we found above. When you install a chart using the Helm package manager, it creates a new **release** for that chart. Each release is tracked by Helm and can be upgraded, rolled back, or uninstalled independently from other releases.
+위에서 찾은 Helm 차트를 사용하여 EKS 클러스터에 NGINX 서버를 설치해보겠습니다. Helm 패키지 관리자를 사용하여 차트를 설치하면 해당 차트에 대한 새로운 릴리즈가 생성됩니다. 각 릴리즈는 Helm에 의해 추적되며 다른 릴리즈와 독립적으로 업그레이드, 롤백 또는 제거될 수 있습니다.
 
 ```bash
 $ echo $NGINX_CHART_VERSION
