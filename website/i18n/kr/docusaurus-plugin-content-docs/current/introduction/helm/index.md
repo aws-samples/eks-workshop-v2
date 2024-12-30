@@ -7,8 +7,7 @@ sidebar_position: 50
 ::required-time
 
 :::tip 시작하기 전에
-
-환경 준비를 해주세요: Prepare your environment for this section:
+환경 준비를 해주세요:
 
 ```bash timeout=600 wait=10
 $ prepare-environment introduction/helm
@@ -16,7 +15,7 @@ $ prepare-environment introduction/helm
 
 :::
 
-Although we will primarily be interacting with kustomize in this workshop, there will be situations where Helm will be used to install certain packages in the EKS cluster. In this lab we give a brief introduction to Helm, and we'll demonstrate how to use it to install a pre-packaged application.
+이 워크샵에서는 주로 kustomize를 사용하겠지만, EKS 클러스터에 특정 패키지를 설치하기 위해 Helm을 사용해야 하는 상황이 있을 것입니다. 이 실습에서는 Helm에 대한 간단한 소개를 하고, 미리 패키징된 애플리케이션을 설치하는 데 어떻게 사용하는지 시연하겠습니다.
 
 :::info
 
