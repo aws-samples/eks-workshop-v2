@@ -1,5 +1,5 @@
 ---
-title: Sample application
+title: 셈플 어플리케이션
 sidebar_position: 10
 ---
 
@@ -11,7 +11,7 @@ Most of the labs in this workshop use a common sample application to provide act
 
 The application has several components and dependencies:
 
-<img src={require('@site/static/img/sample-app-screens/architecture.webp').default}/>
+&lt;img src={require('@site/static/img/sample-app-screens/architecture.webp').default}/&gt;
 
 | Component     | Description                                                                                   |
 | ------------- | --------------------------------------------------------------------------------------------- |
