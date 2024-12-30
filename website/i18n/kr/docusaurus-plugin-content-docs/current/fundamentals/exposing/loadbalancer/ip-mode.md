@@ -40,13 +40,13 @@ modules/exposing/load-balancer/ip-mode/nlb.yaml
 Service/ui-nlb
 ```
 
-Apply the manifest with kustomize:
+kustomize로 매니페스트를 적용합니다:
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/exposing/load-balancer/ip-mode
 ```
 
-It will take a few minutes for the configuration of the load balancer to be updated. Run the following command to ensure the annotation is updated:
+로드 밸런서의 구성이 업데이트되는 데 몇 분이 걸릴 것입니다. 다음 명령을 실행하여 어노테이션이 업데이트되었는지 확인하세요:
 
 ```bash
 $ kubectl describe service/ui-nlb -n ui
@@ -55,7 +55,7 @@ Annotations:              service.beta.kubernetes.io/aws-load-balancer-nlb-targe
 ...
 ```
 
-You should be able to access the application using the same URL as before, with the NLB now using IP mode to expose your application.
+이전과 동일한 URL을 사용하여 애플리케이션에 접근할 수 있어야 하며, 이제 NLB는 IP 모드를 사용하여 애플리케이션을 노출합니다.
 
 ```bash
 $ ALB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`].LoadBalancerArn' | jq -r '.[0]')
@@ -80,16 +80,16 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 }
 ```
 
-Notice that we've gone from the 3 targets we observed in the previous section to just a single target. Why is that? Instead of registering the EC2 instances in our EKS cluster the load balancer controller is now registering individual Pods and sending traffic directly, taking advantage of the AWS VPC CNI and the fact that Pods each have a first-class VPC IP address.
+이전 섹션에서 관찰한 3개의 대상에서 단일 대상으로 변경된 것을 주목하세요. 왜 그럴까요? EKS 클러스터의 EC2 인스턴스를 등록하는 대신, 로드 밸런서 컨트롤러는 이제 개별 Pod를 등록하고 트래픽을 직접 전송하며, AWS VPC CNI와 Pod가 각각 일급 VPC IP 주소를 가지고 있다는 사실을 활용합니다.
 
-Let's scale up the ui component to 3 replicas see what happens:
+`ui` 컴포넌트를 3개의 복제본으로 확장하여 어떤 일이 일어나는지 살펴보겠습니다:
 
 ```bash
 $ kubectl scale -n ui deployment/ui --replicas=3
 $ kubectl wait --for=condition=Ready pod -n ui -l app.kubernetes.io/name=ui --timeout=60s
 ```
 
-Now check the load balancer targets again:
+이제 로드 밸런서 대상을 다시 확인해보세요:
 
 ```bash
 $ ALB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`].LoadBalancerArn' | jq -r '.[0]')
@@ -138,9 +138,9 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 }
 ```
 
-As expected we now have 3 targets, matching the number of replicas in the ui Deployment.
+예상대로 이제 `ui` Deployment의 복제본 수와 일치하는 3개의 대상이 있습니다.
 
-If you want to wait to make sure the application still functions the same, run the following command. Otherwise you can proceed to the next module.
+애플리케이션이 여전히 동일하게 작동하는지 확인하기 위해 기다리고 싶다면 다음 명령을 실행하세요. 그렇지 않으면 다음 모듈로 진행할 수 있습니다
 
 ```bash timeout=240
 $ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
