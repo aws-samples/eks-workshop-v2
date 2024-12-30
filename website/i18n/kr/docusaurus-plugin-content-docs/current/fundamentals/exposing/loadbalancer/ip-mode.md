@@ -9,31 +9,31 @@ AWS Load Balancer Controller는 "IP mode"로 작동하는 NLB 생성도 지원�
 
 ![IP mode](./assets/ip-mode.webp)
 
-The previous diagram explains how application traffic flows differently when the target group mode is instance and IP.
+이전 다이어그램은 대상 그룹 모드가 Instance와 IP일 때 애플리케이션 트래픽이 어떻게 다르게 흐르는지 설명합니다.
 
-When the target group mode is instance, the traffic flows via a node port created for a service on each node. In this mode, `kube-proxy` routes the traffic to the pod running this service. The service pod could be running in a different node than the node that received the traffic from the load balancer. ServiceA (green) and ServiceB (pink) are configured to operate in "instance mode".
+대상 그룹 모드가 Instance인 경우, 트래픽은 각 노드의 서비스를 위해 생성된 노드 포트를 통해 흐릅니다. 이 모드에서는 `kube-proxy`가 이 서비스를 실행하는 pod로 트래픽을 라우팅합니다. 서비스 pod는 로드 밸런서로부터 트래픽을 받은 노드와 다른 노드에서 실행될 수 있습니다. ServiceA(녹색)와 ServiceB(분홍색)는 "Instance mode"로 작동하도록 구성되어 있습니다.
 
-Alternatively, when the target group mode is IP, the traffic flows directly to the service pods from the load balancer. In this mode, we bypass a network hop of `kube-proxy`. ServiceC (blue) is configured to operate in "IP mode".
+반면에 대상 그룹 모드가 IP인 경우, 트래픽은 로드 밸런서에서 서비스 pod로 직접 흐릅니다. 이 모드에서는 `kube-proxy`의 네트워크 홉을 건너뜁니다. ServiceC(파란색)는 "IP mode"로 작동하도록 구성되어 있습니다.
 
-The numbers in the previous diagram represents the following things.
+이전 다이어그램의 숫자들은 다음과 같은 것들을 나타냅니다.
 
-1. The EKS cluster where the services are deployed
-2. The ELB instance exposing the service
-3. The target group mode configuration that can be either instance or IP
-4. The listener protocols configured for the load balancer on which the service is exposed
-5. The target group rule configuration used to determine the service destination
+1. 서비스가 배포된 EKS 클러스터
+2. 서비스를 노출하는 ELB 인스턴스
+3. 인스턴스 또는 IP가 될 수 있는 대상 그룹 모드 구성
+4. 서비스가 노출되는 로드 밸런서에 구성된 리스너 프로토콜
+5. 서비스 대상을 결정하는 데 사용되는 대상 그룹 규칙 구성
 
-There are several reasons why we might want to configure the NLB to operate in IP target mode:
+NLB를 IP 대상 모드로 구성하고자 하는 여러 가지 이유가 있습니다:
 
-1. It creates a more efficient network path for inbound connections, bypassing `kube-proxy` on the EC2 worker node
-2. It removes the need to consider aspects such as `externalTrafficPolicy` and the trade-offs of its various configuration options
-3. An application is running on Fargate instead of EC2
+1. EC2 워커 노드의 `kube-proxy`를 우회하여 인바운드 연결에 대해 더 효율적인 네트워크 경로 생성
+2. `externalTrafficPolicy이나` 다양한 구성 옵션의 트레이드오프를 고려할 필요가 없음
+3. EC2 대신 Fargate에서 애플리케이션이 실행되는 경우
 
-### Re-configuring the NLB
+### NLB 재구성 하기
 
-Let's reconfigure our NLB to use IP mode and look at the effect it has on the infrastructure.
+NLB를 IP 모드를 사용하도록 재구성하고 이것이 인프라에 미치는 영향을 살펴보겠습니다.
 
-This is the patch we'll be applying to re-configure the Service:
+다음은 Service를 재구성하기 위해 적용할 패치입니다:
 
 ```kustomization
 modules/exposing/load-balancer/ip-mode/nlb.yaml
