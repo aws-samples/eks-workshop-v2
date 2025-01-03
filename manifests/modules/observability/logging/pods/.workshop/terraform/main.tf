@@ -6,11 +6,3 @@ resource "random_string" "fluentbit_log_group" {
 locals {
   cw_log_group_name = "/${var.addon_context.eks_cluster_id}/worker-fluentbit-logs-${random_string.fluentbit_log_group.result}"
 }
-
-module "aws_for_fluentbit" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1//modules/kubernetes-addons/aws-for-fluentbit"
-
-  cw_log_group_name = local.cw_log_group_name
-
-  addon_context = var.addon_context
-}
