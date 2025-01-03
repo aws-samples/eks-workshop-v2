@@ -48,6 +48,7 @@ module "catalog_mysql" {
   maintenance_window = "Mon:00:00-Mon:03:00"
   backup_window      = "03:00-06:00"
 
+  skip_final_snapshot     = true
   backup_retention_period = 0
 
   tags = var.tags
