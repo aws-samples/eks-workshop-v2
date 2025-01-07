@@ -9,8 +9,12 @@ glob='-'
 install:
 	yarn install
 
+.PHONY: build
+build: install
+	yarn build
+
 .PHONY: serve
-serve: install
+serve: build
 	yarn serve
 
 .PHONY: tf-fmt
