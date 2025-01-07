@@ -9,7 +9,7 @@
     "releaser"
   ],
   "scripts": {
-    "serve": "yarn workspace website serve",
+    "serve": "yarn workspace website start",
     "spelling:check": "yarn cspell 'website/docs/**/*.md'",
     "links:check": "markdown-link-check -q -c link-check-config.json website/docs/**/*.md",
     "format:check": "prettier -c .",
