@@ -1,4 +1,5 @@
 import { Octokit } from "@octokit/rest";
+import fs from "fs/promises";
 
 const CATEGORIES = [
   {
@@ -56,14 +57,11 @@ function generateMarkdown(entries) {
 
 async function main() {
   let repository = process.env.GITHUB_REPOSITORY;
-  let sha = process.env.GITHUB_SHA;
   let milestoneNumber = process.env.MILESTONE_NUMBER;
 
   let auth = process.env.GITHUB_TOKEN;
 
   let { owner, repo } = parseRepositoryString(repository);
-
-  let tagName = `release-${Math.floor(Date.now() / 1000)}`;
 
   const octokit = new Octokit({
     auth,
@@ -131,20 +129,13 @@ async function main() {
 
   let output = generateMarkdown(entries);
 
-  await octokit.rest.git.createRef({
-    owner,
-    repo,
-    ref: `refs/tags/${tagName}`,
-    sha,
-  });
-
-  await octokit.rest.repos.createRelease({
-    owner,
-    repo,
-    tag_name: tagName,
-    name: milestone.data.title,
-    body: output,
-  });
+  try {
+    await fs.writeFile("/tmp/release-notes.md", output, "utf8");
+    console.log("Successfully wrote release notes to /tmp/release-notes.md");
+  } catch (error) {
+    console.error("Error writing release notes file:", error);
+    throw error;
+  }
 }
 
 await main();

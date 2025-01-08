@@ -3,6 +3,9 @@ before() {
 }
 
 after() {
+  aws eks wait fargate-profile-active --cluster-name ${EKS_CLUSTER_NAME} \
+    --fargate-profile-name checkout-profile
+    
   check=$(kubectl get po -n checkout -l app.kubernetes.io/instance=checkout,app.kubernetes.io/component=service -o json | jq -r '.items[0].spec.nodeName' | grep 'fargate' || true)
 
   if [ -z "$check" ]; then

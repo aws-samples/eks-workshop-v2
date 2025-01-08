@@ -18,7 +18,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
       - name: Get kubectl version
         run: |
           source hack/lib/kubectl-version.sh
@@ -29,11 +29,10 @@ jobs:
           version: "${{ env.KUBECTL_VERSION }}"
         id: install
       - name: Run website build
-        working-directory: website
         run: |
           export LAB_TIMES_ENABLED='true'
-          npm install
-          npm run build
+          yarn install
+          yarn workspace website build
 
   build-lab:
     name: "Build lab"
@@ -52,6 +51,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
       - uses: actions/setup-python@v5
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v4
@@ -59,19 +62,10 @@ jobs:
         uses: jaxxstorm/action-install-gh-release@v1.12.0
         with:
           repo: terraform-docs/terraform-docs
+      - name: Yarn install
+        run: |
+          yarn install
       - uses: pre-commit/action@v3.0.1
-
-  spell-check:
-    name: "Spell checker"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-      - run: |
-          npx cspell lint "website/docs/**/*.md"
 
   terraform-validate:
     name: "Validate Terraform"

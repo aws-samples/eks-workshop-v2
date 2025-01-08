@@ -6,6 +6,12 @@ sidebar_position: 2
 
 CoreDNS is the default DNS service for Kubernetes that runs in Pods with the label `k8s-app=kube-dns`. In this lab exercise we'll scale CoreDNS based on the number of schedulable nodes and cores of our cluster. Cluster Proportional Autoscaler will resize the number of CoreDNS replicas.
 
+:::info
+
+Amazon EKS offers the ability to [automatically scale CoreDNS via the EKS addon](https://docs.aws.amazon.com/eks/latest/userguide/coredns-autoscaling.html), which is the recommended path for production use. The material covered in this lab is for educational purposes.
+
+:::
+
 First lets install CPA using its Helm chart. We'll use the following `values.yaml` file to configure CPA:
 
 ::yaml{file="manifests/modules/autoscaling/workloads/cpa/values.yaml" paths="options.target,config.linear.nodesPerReplica,config.linear.min,config.linear.max"}

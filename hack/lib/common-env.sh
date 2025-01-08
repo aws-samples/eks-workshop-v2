@@ -22,3 +22,5 @@ if [ -z "$SKIP_CREDENTIALS" ]; then
   IDE_ROLE_NAME="${EKS_CLUSTER_NAME}-ide-role"
   IDE_ROLE_ARN="arn:aws:iam::${ACCOUNT_ID}:role/${IDE_ROLE_NAME}"
 fi
+
+export DOCKER_CLI_HINTS="false"

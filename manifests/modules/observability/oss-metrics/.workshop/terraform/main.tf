@@ -21,7 +21,7 @@ module "ebs_csi_driver_irsa" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.16.3"
+  version = "1.19.0"
 
   cluster_name      = var.addon_context.eks_cluster_id
   cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint
@@ -43,6 +43,8 @@ module "eks_blueprints_addons" {
     role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
     policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
+
+  observability_tag = null
 }
 
 resource "time_sleep" "blueprints_addons_sleep" {

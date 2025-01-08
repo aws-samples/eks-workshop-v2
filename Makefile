@@ -7,11 +7,11 @@ glob='-'
 
 .PHONY: install
 install:
-	cd website; npm install
+	yarn install
 
 .PHONY: serve
 serve: install
-	bash hack/serve.sh
+	yarn serve
 
 .PHONY: tf-fmt
 tf-fmt:
@@ -40,3 +40,15 @@ create-infrastructure:
 .PHONY: destroy-infrastructure
 destroy-infrastructure:
 	bash hack/destroy-infrastructure.sh $(environment)
+
+.PHONY: deploy-ide
+deploy-ide:
+	bash hack/deploy-ide-cfn.sh $(environment)
+
+.PHONY: destroy-ide
+destroy-ide:
+	bash hack/destroy-ide-cfn.sh $(environment)
+
+.PHONY: lint
+lint:
+	yarn lint
