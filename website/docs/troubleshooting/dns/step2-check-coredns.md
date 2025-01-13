@@ -92,7 +92,7 @@ Update CoreDNS addon using empty custom configuration and wait for the addon upd
 $ aws eks update-addon \
     --cluster-name $EKS_CLUSTER_NAME \
     --region $AWS_REGION \
-    --addon-name CoreDNS \
+    --addon-name coredns \
     --resolve-conflicts OVERWRITE \
     --configuration-values '{}'
 {
@@ -114,7 +114,7 @@ $ aws eks update-addon \
         "errors": []
     }
 }
-$ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --region $AWS_REGION  --addon-name CoreDNS
+$ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --region $AWS_REGION  --addon-name coredns
 ```
 
 Now, CoreDNS pod show up in Running state
