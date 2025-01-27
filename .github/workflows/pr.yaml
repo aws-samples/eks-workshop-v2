@@ -56,6 +56,9 @@ jobs:
         with:
           node-version: 20
       - uses: actions/setup-python@v5
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~1.9.0"
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v4
       - name: Setup terraform-docs
