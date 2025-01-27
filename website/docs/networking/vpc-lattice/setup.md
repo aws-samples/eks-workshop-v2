@@ -31,9 +31,10 @@ $ aws ec2 authorize-security-group-ingress --group-id $CLUSTER_SG --ip-permissio
 }
 ```
 
-This step will install the controller and the CRDs (Custom Resource Definitions) required to interact with the Kubernetes Gateway API.
+This step will install the Kubernetes Gateway API CRDs as well as the VPC Lattice controller that provide an implementation of that API:
 
 ```bash wait=30
+$ kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml
 $ aws ecr-public get-login-password --region us-east-1 \
   | helm registry login --username AWS --password-stdin public.ecr.aws
 $ helm install gateway-api-controller \
