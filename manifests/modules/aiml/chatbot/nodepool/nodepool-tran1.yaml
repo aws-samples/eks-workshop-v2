@@ -25,7 +25,7 @@ spec:
           values: ["amd64"]
         - key: "karpenter.sh/capacity-type"
           operator: In
-          values: ["on-demand"]
+          values: ["on-demand", "spot"]
       expireAfter: 720h
       terminationGracePeriod: 24h
       nodeClassRef:
