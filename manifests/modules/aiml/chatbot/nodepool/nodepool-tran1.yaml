@@ -1,23 +1,25 @@
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
-  name: x86-cpu-karpenter
+  name: trainium-tran1
 spec:
   template:
     metadata:
       labels:
-        type: karpenter
-        instanceType: mixed-x86
+        instanceType: trainium
         provisionerType: Karpenter
-        workload: rayhead
+        neuron.amazonaws.com/neuron-device: "true"
     spec:
       startupTaints:
         - key: node.kubernetes.io/not-ready
           effect: "NoExecute"
+      taints:
+        - key: aws.amazon.com/neuron
+          effect: "NoSchedule"
       requirements:
-        - key: "karpenter.k8s.aws/instance-family"
+        - key: node.kubernetes.io/instance-type
           operator: In
-          values: ["c5", "m5", "r5"]
+          values: ["trn1.2xlarge"]
         - key: "kubernetes.io/arch"
           operator: In
           values: ["amd64"]
@@ -29,9 +31,11 @@ spec:
       nodeClassRef:
         group: karpenter.k8s.aws
         kind: EC2NodeClass
-        name: x86-cpu-karpenter
+        name: trainium-tran1
   limits:
-    cpu: "256"
+    cpu: 100
+    memory: 400Gi
+    aws.amazon.com/neuron: 10
   disruption:
     consolidateAfter: 300s
     consolidationPolicy: WhenEmptyOrUnderutilized
@@ -40,7 +44,7 @@ spec:
 apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
-  name: x86-cpu-karpenter
+  name: trainium-tran1
 spec:
   amiFamily: AL2
   amiSelectorTerms:
@@ -50,9 +54,8 @@ spec:
       ebs:
         deleteOnTermination: true
         encrypted: true
-        volumeSize: 200Gi
+        volumeSize: 500Gi
         volumeType: gp3
-  detailedMonitoring: true
   role: ${KARPENTER_NODE_ROLE}
   securityGroupSelectorTerms:
     - tags:

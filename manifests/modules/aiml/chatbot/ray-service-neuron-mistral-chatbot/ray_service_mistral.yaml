@@ -1,0 +1,194 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mistral
+---
+#----------------------------------------------------------------------
+# NOTE: For deployment instructions, refer to the DoEKS website.
+#----------------------------------------------------------------------
+apiVersion: ray.io/v1
+kind: RayService
+metadata:
+  name: mistral
+  namespace: mistral
+spec:
+  serviceUnhealthySecondThreshold: 900
+  deploymentUnhealthySecondThreshold: 300
+  serveConfigV2: |
+    applications:
+      - name: mistral-deployment
+        import_path: "mistral1:entrypoint"
+        route_prefix: "/"
+        runtime_env:
+          env_vars:
+            MODEL_ID: "askulkarni2/neuron-mistral7bv0.3"
+            NEURON_CC_FLAGS: "-O1"
+            LD_LIBRARY_PATH: "/home/ray/anaconda3/lib:$LD_LIBRARY_PATH"
+            NEURON_CORES: "2"
+            NEURON_COMPILE_CACHE_URL: "/tmp/model/cache"
+            NEURON_RT_CACHE_DIRECTORY: "/tmp/model/cache"
+        deployments:
+          - name: mistral-7b
+            autoscaling_config:
+              min_replicas: 1
+              max_replicas: 1
+              target_num_ongoing_requests_per_replica: 1
+            ray_actor_options:
+              resources: {"neuron_cores": 2}
+              memory: 28000000000
+  rayClusterConfig:
+    rayVersion: '2.32.0'
+    enableInTreeAutoscaling: true
+    headGroupSpec:
+      serviceType: NodePort
+      headService:
+        metadata:
+          name: mistral
+      rayStartParams:
+        dashboard-host: '0.0.0.0'
+        num-cpus: "0" # this is to ensure no tasks or actors are scheduled on the head Pod
+      template:
+        spec:
+          containers:
+          - name: head
+            image: public.ecr.aws/e3e2e5u9/aiml/mistral-7b:latest
+            imagePullPolicy: Always # Ensure the image is always pulled when updated
+            lifecycle:
+              preStop:
+                exec:
+                  command: ["/bin/sh", "-c", "ray stop"]
+            ports:
+            - containerPort: 6379
+              name: gcs
+            - containerPort: 8265
+              name: dashboard
+            - containerPort: 10001
+              name: client
+            - containerPort: 8000
+              name: serve
+            volumeMounts:
+            - mountPath: /tmp/ray
+              name: ray-logs
+            - mountPath: /tmp/model/cache
+              name: model-cache
+            resources:
+              limits:
+                cpu: "4"
+                memory: 16Gi
+              requests:
+                cpu: "2"
+                memory: 8Gi
+            env:
+            - name: PORT
+              value: "8000"
+            - name: LD_LIBRARY_PATH
+              value: "/home/ray/anaconda3/lib:$LD_LIBRARY_PATH"
+          nodeSelector:
+            instanceType: mixed-x86
+            provisionerType: Karpenter
+            workload: rayhead
+          volumes:
+          - name: ray-logs
+            emptyDir: {}
+          - name: model-cache
+            emptyDir: {}
+    workerGroupSpecs:
+    - groupName: worker-group
+      replicas: 1
+      minReplicas: 1
+      maxReplicas: 1
+      rayStartParams:
+        resources: '"{\"neuron_cores\": 2}"'
+        num-cpus: "6"
+      template:
+        spec:
+          containers:
+          - name: worker
+            image: public.ecr.aws/e3e2e5u9/aiml/mistral-7b:latest
+            imagePullPolicy: Always # Ensure the image is always pulled when updated
+            lifecycle:
+              preStop:
+                exec:
+                  command: ["/bin/sh", "-c", "ray stop"]
+            # We are using 2 Neuron cores per HTTP request hence this configuration handles 6 requests per second
+            resources:
+              limits:
+                memory: "30Gi"
+                aws.amazon.com/neuron: "1"
+              requests:
+                memory: "28Gi"
+                aws.amazon.com/neuron: "1"
+            env:
+            # Model and Neuron configuration
+            - name: MODEL_ID
+              value: "askulkarni2/neuron-mistral7bv0.3"
+            - name: NEURON_CORES
+              value: "2"
+            - name: NEURON_RT_NUM_CORES
+              value: "2"
+            - name: NEURON_RT_VISIBLE_CORES
+              value: "0,1"
+            - name: NEURON_CC_FLAGS
+              value: "-O1"  # Changed from --no-compile
+            - name: NEURON_COMPILE_ONLY
+              value: "0"
+            - name: NEURON_RT_LOG_LEVEL
+              value: "INFO"
+            # Cache configuration
+            - name: NEURON_COMPILE_CACHE_URL
+              value: "/tmp/model/cache"
+            - name: NEURON_RT_CACHE_DIRECTORY
+              value: "/tmp/model/cache"
+            - name: NEURON_RT_USE_PREFETCHED_NEFF
+              value: "1"  # Added to use pre-compiled NEFF files
+            # Memory management
+            - name: NEURON_RT_MAX_WORKSPACE_SIZE
+              value: "8589934592"
+            - name: XLA_TENSOR_ALLOCATOR_MAXSIZE
+              value: "12884901888"
+            - name: MALLOC_ARENA_MAX
+              value: "32"
+            - name: MALLOC_TRIM_THRESHOLD_
+              value: "128K"
+            - name: XLA_PYTHON_CLIENT_MEM_FRACTION
+              value: "0.95"
+            # Runtime configuration
+            - name: NEURON_RT_STALL_ENABLE
+              value: "1"
+            - name: NEURON_RT_BLOCKING_IO
+              value: "1"
+            - name: NEURON_RT_EXEC_TIMEOUT
+              value: "900"
+            - name: RAY_memory_monitor_refresh_ms
+              value: "5000"
+            - name: RAY_memory_usage_threshold
+              value: "0.90"
+            # System paths
+            - name: LD_LIBRARY_PATH
+              value: "/home/ray/anaconda3/lib:$LD_LIBRARY_PATH"
+            - name: PORT
+              value: "8000"
+            volumeMounts:
+            - mountPath: /tmp/ray
+              name: ray-logs
+            - mountPath: /dev/shm
+              name: dshm
+            - mountPath: /tmp/model/cache
+              name: model-cache
+          volumes:
+          - name: dshm
+            emptyDir:
+              medium: Memory
+          - name: ray-logs
+            emptyDir: {}
+          - name: model-cache
+            emptyDir: {}
+          nodeSelector:
+            instanceType: trainium
+            provisionerType: Karpenter
+            neuron.amazonaws.com/neuron-device: "true"
+          tolerations:
+          - key: "aws.amazon.com/neuron"
+            operator: "Exists"
+            effect: "NoSchedule"
+          
