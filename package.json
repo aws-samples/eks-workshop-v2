@@ -9,7 +9,7 @@
     "releaser"
   ],
   "scripts": {
-    "serve": "yarn workspace website serve",
+    "serve": "yarn workspace website start",
     "spelling:check": "yarn cspell 'website/docs/**/*.md'",
     "links:check": "markdown-link-check -q -c link-check-config.json website/docs/**/*.md",
     "format:check": "prettier -c .",
@@ -25,7 +25,7 @@
     "lint-staged": "^15.2.7",
     "markdown-link-check": "3.12.2",
     "markdownlint-cli2": "^0.16.0",
-    "npm-run-all": "^4.1.5",
+    "npm-run-all2": "^5.0.0",
     "prettier": "^3.2.5",
     "prettier-plugin-sh": "^0.14.0"
   },

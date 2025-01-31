@@ -23,12 +23,12 @@
     },
     {
       "matchDepNames": ["kubernetes/kubernetes"],
-      "allowedVersions": "/^v1.30.[0-9]+$/"
+      "allowedVersions": "/^v1.31.[0-9]+$/"
     },
     {
       "matchDepNames": ["kubernetes/autoscaler"],
       "extractVersion": "^cluster-autoscaler-(?<version>.*)$",
-      "allowedVersions": "/^1.30.[0-9]+$/"
+      "allowedVersions": "/^1.31.[0-9]+$/"
     },
     {
       "automerge": true,

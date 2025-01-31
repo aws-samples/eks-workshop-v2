@@ -584,5 +584,8 @@ Outputs:
       - https://console.aws.amazon.com/secretsmanager/secret?name=${SecretName}
       - SecretName: !Sub ${AWS::StackName}-password
 
+  IdePasswordSecretName:
+    Value: !Sub ${AWS::StackName}-password
+
   IdeRole:
     Value: !Sub ${EksWorkshopIdeRole.Arn}
