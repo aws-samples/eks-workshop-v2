@@ -87,7 +87,7 @@ mv ./linux-${arch_name}/helm /usr/local/bin
 rm -rf linux-${arch_name}/ helm.tar.gz
 
 # eksctl
-download "https://github.com/weaveworks/eksctl/releases/download/v$eksctl_version/eksctl_Linux_${arch_name}.tar.gz" "eksctl.tar.gz"
+download "https://github.com/eksctl-io/eksctl/releases/download/v${eksctl_version}/eksctl_Linux_${arch_name}.tar.gz" "eksctl.tar.gz"
 tar zxf eksctl.tar.gz
 chmod +x eksctl
 mv ./eksctl /usr/local/bin
