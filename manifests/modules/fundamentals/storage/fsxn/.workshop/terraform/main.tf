@@ -24,7 +24,7 @@ resource "aws_iam_policy" "fsxn-csi-policy" {
         {
             "Effect": "Allow",
             "Action": "secretsmanager:GetSecretValue",
-            "Resource": "${module.preprovision.secret_arn}"
+            "Resource": "${module.preprovision[0].secret_arn}"
         }
     ]
     })
