@@ -10,5 +10,5 @@ output "fsxn_fs_id" {
 
 output "fsxn_svm_name" {
   description = "fsxn svm name"
-  value = aws_fsx_ontap_storage_virtual_machine.fsxnassets.name
+  value = aws_fsx_ontap_storage_virtual_machine.fsxnsvm.name
 }

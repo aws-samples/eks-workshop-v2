@@ -68,5 +68,5 @@ module "preprovision" {
 
   eks_cluster_id = var.eks_cluster_id
   tags           = var.tags
-  random_string = random_string.suffix.result
+  random_string  = random_string.suffix.result
 }

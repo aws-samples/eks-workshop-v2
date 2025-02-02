@@ -62,7 +62,7 @@ resource "aws_fsx_ontap_file_system" "fsxnassets" {
   tags = merge(
     var.tags,
     {
-      Name = "${var.addon_context.eks_cluster_id}-fsxn-assets"
+      Name = "${var.eks_cluster_id}-fsxn-assets"
     }
   )
 }
