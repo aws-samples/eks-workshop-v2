@@ -21,7 +21,7 @@ data "aws_subnets" "private_subnets_fsx" {
 }
 
 locals {
-    secret_name = "fsxn-password-secret-${var.random_string}"
+    secret_name = "${var.eks_cluster_id}-${var.random_string}"
 }
 
 resource "random_string" "fsx_password" {
@@ -42,22 +42,14 @@ resource "aws_secretsmanager_secret_version" "fsxn_password_secret" {
   })
 }
 
-data "aws_route_table" "private" {
-  count = length(data.aws_subnets.private_subnets_fsx.ids)
-
-  vpc_id    = data.aws_vpc.selected_vpc_fsx.id
-  subnet_id = data.aws_subnets.private_subnets_fsx.ids[count.index]
-}
-
 resource "aws_fsx_ontap_file_system" "fsxnassets" {
   storage_capacity    = 2048
-  subnet_ids          = slice(data.aws_subnets.private_subnets_fsx.ids, 0, 2)
+  subnet_ids          = [data.aws_subnets.private_subnets_fsx.ids[0]]
   deployment_type     = "SINGLE_AZ_1"
   throughput_capacity = 512
   preferred_subnet_id = data.aws_subnets.private_subnets_fsx.ids[0]
   security_group_ids  = [aws_security_group.fsxn.id]
   fsx_admin_password  = random_string.fsx_password.result
-  route_table_ids     = [for rt in data.aws_route_table.private : rt.id]
 
   tags = merge(
     var.tags,
