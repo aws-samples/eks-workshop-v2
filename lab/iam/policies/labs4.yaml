@@ -1,0 +1,29 @@
+Version: "2012-10-17"
+Statement:
+  - Effect: Allow
+    Action:
+      - fsx:CreateFileSystem
+      - fsx:DeleteFileSystem
+      - fsx:UpdateFileSystem
+      - fsx:DescribeFileSystems
+      - fsx:CreateStorageVirtualMachine
+      - fsx:DeleteStorageVirtualMachine
+      - fsx:UpdateStorageVirtualMachine
+      - fsx:DescribeStorageVirtualMachines
+      - fsx:ListTagsForResource
+    Resource:
+      - arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:file-system/*
+      - arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:storage-virtual-machine/*
+  - Effect: Allow
+    Action:
+      - fsx:DescribeFileSystems
+      - fsx:DescribeStorageVirtualMachines
+      - fsx:ListTagsForResource
+    Resource:
+      - ["*"]
+  - Effect: Allow
+    Action:
+      - secretsmanager:GetResourcePolicy
+      - secretsmanager:GetSecretValue
+    Resource:
+      - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${Env}*
