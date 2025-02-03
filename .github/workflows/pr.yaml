@@ -2,6 +2,13 @@ name: Pull Request
 
 on:
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
+      - labeled
+      - unlabeled
     branches:
       - main
 
