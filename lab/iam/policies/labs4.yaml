@@ -10,10 +10,11 @@ Statement:
       - fsx:DeleteStorageVirtualMachine
       - fsx:UpdateStorageVirtualMachine
       - fsx:DescribeStorageVirtualMachines
-      - fsx:ListTagsForResource
+      - fsx:TagResource
+      - fsx:UntagResource
     Resource:
-      - arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:file-system/*
-      - arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:storage-virtual-machine/*
+      - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:file-system/*
+      - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:storage-virtual-machine/*
   - Effect: Allow
     Action:
       - fsx:DescribeFileSystems
@@ -25,5 +26,8 @@ Statement:
     Action:
       - secretsmanager:GetResourcePolicy
       - secretsmanager:GetSecretValue
+      - secretsmanager:TagResource
+      - secretsmanager:UntagResource
+      - secretsmanager:PutSecretValue
     Resource:
       - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${Env}*
