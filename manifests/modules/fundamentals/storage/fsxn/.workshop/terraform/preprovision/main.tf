@@ -48,7 +48,7 @@ resource "aws_secretsmanager_secret_version" "fsxn_password_secret" {
   })
 }
 
-resource "aws_fsx_ontap_file_system" "fsxnassets" {
+resource "aws_fsx_ontap_file_system" "fsxn_filesystem" {
   storage_capacity    = 2048
   subnet_ids          = [data.aws_subnets.private_subnets_fsx.ids[0]]
   deployment_type     = "SINGLE_AZ_1"
@@ -60,14 +60,15 @@ resource "aws_fsx_ontap_file_system" "fsxnassets" {
   tags = merge(
     var.tags,
     {
-      Name = "${var.eks_cluster_id}-fsxn-assets"
+      Name = "${var.eks_cluster_id}-fsxn"
     }
   )
 }
 
-resource "aws_fsx_ontap_storage_virtual_machine" "fsxnsvm" {
-  file_system_id = aws_fsx_ontap_file_system.fsxnassets.id
-  name           = "fsxnsvm"
+resource "aws_fsx_ontap_storage_virtual_machine" "fsxn_svm" {
+  file_system_id     = aws_fsx_ontap_file_system.fsxnassets.id
+  name               = "${var.eks_cluster_id}svm"
+  svm_admin_password = random_string.fsx_password.result
 }
 
 resource "aws_security_group" "fsxn" {
