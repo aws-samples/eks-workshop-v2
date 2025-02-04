@@ -25,8 +25,14 @@ locals {
 }
 
 resource "random_string" "fsx_password" {
-  length  = 10
-  special = false
+  length           = 8
+  min_lower        = 1
+  min_numeric      = 1
+  min_special      = 1
+  min_upper        = 1
+  numeric           = true
+  special          = true
+  override_special = "!"
 }
 
 resource "aws_secretsmanager_secret" "fsxn_password_secret" {
