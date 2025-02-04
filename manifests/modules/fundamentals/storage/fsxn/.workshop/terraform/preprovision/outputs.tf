@@ -5,10 +5,10 @@ output "secret_arn" {
 
 output "fsxn_fs_id" {
   description = "fsxn file system id"
-  value = aws_fsx_ontap_file_system.fsxnassets.id
+  value = aws_fsx_ontap_file_system.fsxn_filesystem.id
 }
 
 output "fsxn_svm_name" {
   description = "fsxn svm name"
-  value = aws_fsx_ontap_storage_virtual_machine.fsxnsvm.name
+  value = aws_fsx_ontap_storage_virtual_machine.fsxn_svm.name
 }

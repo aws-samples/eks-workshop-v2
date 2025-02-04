@@ -66,7 +66,7 @@ resource "aws_fsx_ontap_file_system" "fsxn_filesystem" {
 }
 
 resource "aws_fsx_ontap_storage_virtual_machine" "fsxn_svm" {
-  file_system_id     = aws_fsx_ontap_file_system.fsxnassets.id
+  file_system_id     = aws_fsx_ontap_file_system.fsxn_filesystem.id
   name               = "${var.eks_cluster_id}svm"
   svm_admin_password = random_string.fsx_password.result
 }
