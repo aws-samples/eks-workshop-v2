@@ -5,6 +5,6 @@ output "environment_variables" {
     FSXN_SECRET         = module.preprovision[0].secret_arn
     SVM_NAME            = module.preprovision[0].fsxn_svm_name
     CLOUD_PROVIDER      = "AWS"
-    CLOUD_IDENTITY      = "'eks.amazonaws.com/role-arn: ${module.iam_iam-role-for-service-accounts-eks.iam_role_arn}'"
+    CLOUD_IDENTITY      = "'\"'eks.amazonaws.com/role-arn: ${module.iam_iam-role-for-service-accounts-eks.iam_role_arn}'\"'"
   }
 }
