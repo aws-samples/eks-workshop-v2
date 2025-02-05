@@ -1,3 +1,7 @@
+
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
 resource "aws_iam_policy" "fsxn-csi-policy" {
   name        = "${var.addon_context.eks_cluster_id}-fsxn-csi-${random_string.suffix.result}"
   description = "FSxN CSI Driver Policy"
@@ -24,7 +28,7 @@ resource "aws_iam_policy" "fsxn-csi-policy" {
         {
             "Effect": "Allow",
             "Action": "secretsmanager:GetSecretValue",
-            "Resource": "${aws_secretsmanager_secret.fsxn_password_secret.arn}"
+            "Resource": "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.addon_context.eks_cluster_id}-fsxn-password-secret"
         }
     ]
     })
