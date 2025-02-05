@@ -35,10 +35,6 @@ resource "aws_iam_policy" "fsxn-csi-policy" {
     depends_on = [ module.preprovision ]
 }
 
-data aws_secretsmanager_secret fsxn_password_secret {
-  name = "${var.addon_context.eks_cluster_id}-fsxn-password-secret"
-}
-
 module "iam_iam-role-for-service-accounts-eks" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "5.37.1"
