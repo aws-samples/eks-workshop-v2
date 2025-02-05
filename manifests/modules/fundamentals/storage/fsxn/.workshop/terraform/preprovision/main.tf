@@ -32,8 +32,9 @@ resource "random_string" "fsx_password" {
 }
 
 resource "aws_secretsmanager_secret" "fsxn_password_secret" {
-  name = "${var.eks_cluster_id}-fsxn-password-secret"
+  name = "${var.eks_cluster_id}-fsxn-secret"
   description = "FSxN CSI Driver Password"
+  recovery_window_in_days = 0
 
 }
 

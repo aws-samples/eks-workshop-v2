@@ -35,7 +35,7 @@ resource "aws_iam_policy" "fsxn-csi-policy" {
 }
 
 data "aws_secretsmanager_secret" "fsxn_password_secret" {
-  name = "${var.addon_context.eks_cluster_id}-fsxn-password-secret"
+  name = "${var.addon_context.eks_cluster_id}-fsxn-secret"
   depends_on = [ module.preprovision ]
 }
 module "iam_iam-role-for-service-accounts-eks" {
