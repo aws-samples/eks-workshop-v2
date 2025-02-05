@@ -33,15 +33,13 @@ The FSx for NetApp ONTAP CSI driver supports dynamic and static provisioning. Cu
 The workshop environment also has an FSx for NetApp ONTAP file system, Storage Virtual Machine (SVM) and the required security group pre-provisioned with an inbound rule that allows inbound NFS traffic for your Pods. You can retrieve information about the FSx for NetApp ONTAP file system by running the following AWS CLI command:
 
 ```bash
-$ aws fsx describe-file-systems --file-system-id $FSXN_ID
+$ export FSXN_ID=$(aws fsx describe-file-systems --query 'FileSystems[?not_null(Tags[?Key==`Name` && Value==`eks-workshop-fsxn`])].FileSystemId' --output text)
 ```
 
 Now, we'll need to create a TridentBackendConfig object configured to use the pre-provisioned FSx for NetApp ONTAP file system as part of this workshop infrastructure.
 
 We'll be using Kustomize to create the backend and to ingest the following environment variables values in the configuration of the trident backend config object:
- - `SVM_NAME` in the parameter`fsxFilesystemID`
- - `FSXN_ID` in the parameter`svm`
- - `FSXN_SECRET` in the parameter`credentials.name`
+ - `FSXN_ID` in the parameter`fsxFilesystemID`
 
 ```file
 manifests/modules/fundamentals/storage/fsxn/backend/fsxn-backend-nas.yaml

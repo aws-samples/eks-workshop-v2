@@ -20,10 +20,6 @@ data "aws_subnets" "private_subnets_fsx" {
   }
 }
 
-locals {
-    secret_name = "${var.eks_cluster_id}-${var.random_string}"
-}
-
 resource "random_string" "fsx_password" {
   length           = 8
   min_lower        = 1
@@ -36,8 +32,9 @@ resource "random_string" "fsx_password" {
 }
 
 resource "aws_secretsmanager_secret" "fsxn_password_secret" {
-  name = local.secret_name
+  name = "${var.eks_cluster_id}-fsxn-password-secret"
   description = "FSxN CSI Driver Password"
+
 }
 
 resource "aws_secretsmanager_secret_version" "fsxn_password_secret" {
@@ -67,7 +64,7 @@ resource "aws_fsx_ontap_file_system" "fsxn_filesystem" {
 
 resource "aws_fsx_ontap_storage_virtual_machine" "fsxn_svm" {
   file_system_id     = aws_fsx_ontap_file_system.fsxn_filesystem.id
-  name               = "${var.eks_cluster_id}svm"
+  name               = "${var.eks_cluster_id}-svm"
   svm_admin_password = random_string.fsx_password.result
 }
 
