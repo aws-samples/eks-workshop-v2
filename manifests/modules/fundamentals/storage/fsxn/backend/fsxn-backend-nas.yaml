@@ -11,5 +11,5 @@ spec:
   aws:
     fsxFilesystemID: ${FSXN_ID}
   credentials:
-    name: "arn:aws:secretsmanager:${AWS_REGION}:${AWS_ACCOUNT_ID}:secret:${EKS_CLUSTER_NAME}-fsxn-password-secret"
+    name: "${FSXN_SECRET_ARN}"
     type: awsarn
