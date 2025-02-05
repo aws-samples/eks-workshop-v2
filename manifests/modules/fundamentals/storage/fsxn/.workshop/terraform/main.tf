@@ -62,7 +62,7 @@ resource "aws_eks_addon" "eks-pod-identity-agent" {
   cluster_name                = var.eks_cluster_id
   addon_name                  = "eks-pod-identity-agent"
   addon_version               = "v1.3.4-eksbuild.1"
-  resolve_conflicts_on_update = "PRESERVE"
+  resolve_conflicts_on_update = "OVERWRITE"
 }
 
 data "aws_iam_policy_document" "assume_role" {
@@ -92,7 +92,7 @@ resource "aws_iam_role_policy_attachment" "fsxn-csi-policy-attachment" {
 }
 
 resource "aws_eks_pod_identity_association" "fsxn-csi-pod-identity-association" {
-  cluster_name    = "${var.addon_context.eks_cluster_id}-fsxn-csi-${random_string.suffix.result}"
+  cluster_name    = var.addon_context.eks_cluster_id
   namespace       = local.k8s_service_account_namespace
   service_account = local.k8s_service_account_name
   role_arn        = aws_iam_role.fsxn-csi-role.arn
