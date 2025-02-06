@@ -12,7 +12,7 @@ In order to utilize Amazon FSx for NetApp ONTAP file system with dynamic provisi
 We can install the Amazon FSxN for NetApp ONTAP Trident CSI driver using helm. We will need to provide a required IAM role that has already been created for us as part fo the preperation for the workshop. 
 ```bash
 $ helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
-$ helm install trident-operator netapp-trident/trident-operator --version 100.2410.0 --namespace trident --create-namespace --set cloudProvider=$CLOUD_PROVIDER --set cloudIdentity="$CLOUD_IDENTITY"
+$ helm install trident-operator netapp-trident/trident-operator --version 100.2410.0 --namespace trident --create-namespace
 ```
 
 
@@ -30,7 +30,8 @@ trident-operator-588c7c854d-t4c4x   1/1     Running   0          102s
 
 The FSx for NetApp ONTAP CSI driver supports dynamic and static provisioning. Currently dynamic provisioning creates an access point for each PersistentVolume. This mean an AWS EFS file system has to be created manually on AWS first and should be provided as an input to the StorageClass parameter. For static provisioning, AWS EFS file system needs to be created manually on AWS first. After that it can be mounted inside a container as a volume using the driver.
 
-The workshop environment also has an FSx for NetApp ONTAP file system, Storage Virtual Machine (SVM) and the required security group pre-provisioned with an inbound rule that allows inbound NFS traffic for your Pods. You can retrieve information about the FSx for NetApp ONTAP file system by running the following AWS CLI command:
+The workshop environment also has an FSx for NetApp ONTAP file system, Storage Virtual Machine (SVM) and the required security group pre-provisioned with an inbound rule that allows inbound NFS traffic for your Pods. 
+Retrieve the information about the FSx for NetApp ONTAP file system by running the following AWS CLI command:
 
 ```bash
 $ export FSXN_ID=$(aws fsx describe-file-systems --query 'FileSystems[?not_null(Tags[?Key==`Name` && Value==`eks-workshop-fsxn`])].FileSystemId' --output text)
@@ -39,7 +40,8 @@ $ export FSXN_ID=$(aws fsx describe-file-systems --query 'FileSystems[?not_null(
 Now, we'll need to create a TridentBackendConfig object configured to use the pre-provisioned FSx for NetApp ONTAP file system as part of this workshop infrastructure.
 
 We'll be using Kustomize to create the backend and to ingest the following environment variables values in the configuration of the trident backend config object:
- - `FSXN_ID` in the parameter`fsxFilesystemID`
+ - `FSXN_ID` in the parameter`fsxFilesystemID` - This the FSxN filesystem we're going to connect our CSI driver too. 
+ - `FSXN_SECRET_ARN` in the parameter `credentials.name` - This is the secret ARN with the credentials to connect to the ONTAP API interface. 
 
 ```file
 manifests/modules/fundamentals/storage/fsxn/backend/fsxn-backend-nas.yaml

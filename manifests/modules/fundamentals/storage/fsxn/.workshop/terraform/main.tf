@@ -1,7 +1,3 @@
-
-data "aws_caller_identity" "current" {}
-data "aws_region" "current" {}
-
 resource "aws_iam_policy" "fsxn-csi-policy" {
   name        = "${var.addon_context.eks_cluster_id}-fsxn-csi-${random_string.suffix.result}"
   description = "FSxN CSI Driver Policy"
@@ -38,25 +34,6 @@ data "aws_secretsmanager_secret" "fsxn_password_secret" {
   name = "${var.addon_context.eks_cluster_id}-fsxn-secret"
   depends_on = [ module.preprovision ]
 }
-# module "iam_iam-role-for-service-accounts-eks" {
-#   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-#   version = "5.37.1"
-
-#   role_name              = "${var.addon_context.eks_cluster_id}-fsxn-csi-${random_string.suffix.result}"
-#   allow_self_assume_role = true
-
-#   oidc_providers = {
-#     eks = {
-#       provider_arn               = var.addon_context.eks_oidc_provider_arn
-#       namespace_service_accounts = ["${local.k8s_service_account_namespace}:${local.k8s_service_account_name}"]
-#     }
-#   }
-
-#   role_policy_arns = {
-#     additional           = aws_iam_policy.fsxn-csi-policy.arn
-#   }
-
-# }
 
 resource "aws_eks_addon" "eks-pod-identity-agent" {
   cluster_name                = var.eks_cluster_id
