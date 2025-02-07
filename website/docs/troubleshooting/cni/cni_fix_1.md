@@ -1,5 +1,5 @@
 ---
-title: "Fixing Addons Configuration Issue"
+title: "Fixing Addons Configuration Issue OLD"
 sidebar_position: 41
 ---
 
