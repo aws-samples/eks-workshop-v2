@@ -21,7 +21,7 @@ The following pre-requisites are necessary to work on the content:
   - Docker
   - `make`
   - `jq`
-  - `yq` 
+  - `yq`
   - Node.js + `yarn`
   - `kubectl`
 

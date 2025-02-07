@@ -1,0 +1,31 @@
+---
+title: "DNS resolution scenario"
+sidebar_position: 50
+chapter: true
+sidebar_custom_props: { "module": true }
+description: "Service communication is disrupted due to DNS resolution issues."
+---
+
+::required-time
+
+In this lab, we will investigate a scenario where service communication is disrupted. We'll troubleshoot the networking issue and identify that the root cause is related to DNS resolution. Then we'll walk through essential troubleshooting steps to diagnose different types of DNS resolution failures, implement fixes, and restore service communication. For additional information about DNS troubleshooting in EKS, refer to [How do I troubleshoot DNS failures with Amazon EKS?](https://repost.aws/knowledge-center/eks-dns-failure)
+
+
+:::tip Before you start
+Prepare your environment for this section:
+
+```bash timeout=600 wait=5
+$ prepare-environment troubleshooting/dns
+```
+
+:::
+
+### DNS resolution in EKS
+
+In an EKS cluster, when applications need to connect to other services (either internal or external to the cluster), they must translate the target endpoint name to an IP address through DNS resolution.
+
+By default, Kubernetes clusters configure all pods to use kube-dns service ClusterIP address as its name server. When you launch an Amazon EKS cluster, EKS deploys two pod replicas of CoreDNS to serve behind kube-dns service.
+
+[CoreDNS](https://coredns.io/) is a flexible, extensible DNS server widely adopted as the standard Kubernetes cluster DNS.
+
+Let's begin our troubleshooting journey in the next section.
