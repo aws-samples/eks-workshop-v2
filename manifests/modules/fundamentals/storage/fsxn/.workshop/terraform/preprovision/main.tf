@@ -26,20 +26,19 @@ resource "random_string" "fsx_password" {
   min_numeric      = 1
   min_special      = 1
   min_upper        = 1
-  numeric           = true
+  numeric          = true
   special          = true
   override_special = "!"
 }
 
 resource "aws_secretsmanager_secret" "fsxn_password_secret" {
-  name = "${var.eks_cluster_id}-fsxn-secret"
-  description = "FSxN CSI Driver Password"
+  name                    = "${var.eks_cluster_id}-fsxn-secret"
+  description             = "FSxN CSI Driver Password"
   recovery_window_in_days = 0
-
 }
 
 resource "aws_secretsmanager_secret_version" "fsxn_password_secret" {
-    secret_id     = aws_secretsmanager_secret.fsxn_password_secret.id
+    secret_id = aws_secretsmanager_secret.fsxn_password_secret.id
     secret_string = jsonencode({
     username = "vsadmin"
     password = "${random_string.fsx_password.result}"

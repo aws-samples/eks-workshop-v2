@@ -27,11 +27,11 @@ resource "aws_iam_policy" "fsxn-csi-policy" {
             "Resource": "${data.aws_secretsmanager_secret.fsxn_password_secret.arn}"
         }
     ]
-    })
+  })
 }
 
 data "aws_secretsmanager_secret" "fsxn_password_secret" {
-  name = "${var.addon_context.eks_cluster_id}-fsxn-secret"
+  name       = "${var.addon_context.eks_cluster_id}-fsxn-secret"
   depends_on = [ module.preprovision ]
 }
 
@@ -82,8 +82,8 @@ resource "random_string" "suffix" {
 }
 
 locals {
-    k8s_service_account_namespace = "trident"
-    k8s_service_account_name      = "trident-controller"
+  k8s_service_account_namespace = "trident"
+  k8s_service_account_name      = "trident-controller"
 }
 
 
@@ -93,5 +93,4 @@ module "preprovision" {
 
   eks_cluster_id = var.eks_cluster_id
   tags           = var.tags
-  random_string  = random_string.suffix.result
 }
