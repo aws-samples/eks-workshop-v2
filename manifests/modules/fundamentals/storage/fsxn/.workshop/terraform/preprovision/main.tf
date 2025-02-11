@@ -38,8 +38,8 @@ resource "aws_secretsmanager_secret" "fsxn_password_secret" {
 }
 
 resource "aws_secretsmanager_secret_version" "fsxn_password_secret" {
-    secret_id = aws_secretsmanager_secret.fsxn_password_secret.id
-    secret_string = jsonencode({
+  secret_id = aws_secretsmanager_secret.fsxn_password_secret.id
+  secret_string = jsonencode({
     username = "vsadmin"
     password = "${random_string.fsx_password.result}"
   })

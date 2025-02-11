@@ -4,35 +4,35 @@ resource "aws_iam_policy" "fsxn-csi-policy" {
 
 
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "fsx:DescribeFileSystems",
-                "fsx:DescribeVolumes",
-                "fsx:CreateVolume",
-                "fsx:RestoreVolumeFromSnapshot",
-                "fsx:DescribeStorageVirtualMachines",
-                "fsx:UntagResource",
-                "fsx:UpdateVolume",
-                "fsx:TagResource",
-                "fsx:DeleteVolume"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": "secretsmanager:GetSecretValue",
-            "Resource": "${data.aws_secretsmanager_secret.fsxn_password_secret.arn}"
-        }
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "fsx:DescribeFileSystems",
+          "fsx:DescribeVolumes",
+          "fsx:CreateVolume",
+          "fsx:RestoreVolumeFromSnapshot",
+          "fsx:DescribeStorageVirtualMachines",
+          "fsx:UntagResource",
+          "fsx:UpdateVolume",
+          "fsx:TagResource",
+          "fsx:DeleteVolume"
+        ],
+        "Resource" : "*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : "secretsmanager:GetSecretValue",
+        "Resource" : "${data.aws_secretsmanager_secret.fsxn_password_secret.arn}"
+      }
     ]
   })
 }
 
 data "aws_secretsmanager_secret" "fsxn_password_secret" {
   name       = "${var.addon_context.eks_cluster_id}-fsxn-secret"
-  depends_on = [ module.preprovision ]
+  depends_on = [module.preprovision]
 }
 
 resource "aws_eks_addon" "eks-pod-identity-agent" {
