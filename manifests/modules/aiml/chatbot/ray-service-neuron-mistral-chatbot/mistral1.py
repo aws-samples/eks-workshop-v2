@@ -35,8 +35,7 @@ class APIIngress:
     name="mistral-7b",
     autoscaling_config={"min_replicas": 1, "max_replicas": 1},
     ray_actor_options={
-        "resources": {"neuron_cores": neuron_cores},
-        "memory": 28000000000
+        "resources": {"neuron_cores": neuron_cores}
     }
 )
 class MistralModel:
@@ -100,7 +99,7 @@ class MistralModel:
                 # load pre-complied .neff files
                 self.neuron_model.load(model_cache)
                 self.neuron_model.to_neuron()
-            
+
             logger.info("Model successfully prepared for inference")
 
             # Verify initialization

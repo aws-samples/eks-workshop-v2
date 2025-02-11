@@ -1,5 +1,5 @@
 # https://hub.docker.com/layers/rayproject/ray/2.11.0-py310/images/sha256-de798e487b76a8f2412c718c43c5f342b3eb05e0705a71325102904cd27c3613?context=explore
-FROM rayproject/ray:2.32.0-py310
+FROM rayproject/ray:2.22.0-py310
 
 # Maintainer label
 LABEL maintainer="DoEKS"
@@ -26,7 +26,7 @@ USER $USER
 
 # Set pip repository pointing to the Neuron repository and install required Python packages
 RUN pip config set global.extra-index-url https://pip.repos.neuron.amazonaws.com && \
-    pip install wget awscli regex neuronx-cc==2.* torch-neuronx torchvision transformers-neuronx sentencepiece transformers huggingface_hub tenacity psutil fastapi uvicorn mistral-inference mistral-common
+    pip install wget awscli regex neuronx-cc==2.* torch-neuronx torchvision transformers-neuronx sentencepiece transformers huggingface_hub tenacity psutil fastapi uvicorn
 
 
 # Add Neuron path to PATH

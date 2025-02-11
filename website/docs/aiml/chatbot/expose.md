@@ -17,7 +17,7 @@ $ helm repo add kuberay https://ray-project.github.io/kuberay-helm/
 ```
 
 ```bash wait=10
-$ helm install kuberay-operator kuberay/kuberay-operator --version 1.1.0
+$ helm install kuberay-operator kuberay/kuberay-operator --version 1.2.2
 NAME: kuberay-operator
 LAST DEPLOYED: Wed Jul 24 14:46:13 2024
 NAMESPACE: default
@@ -47,8 +47,8 @@ You can learn more about Neuron Device Plugins in the [AIML Inference module](..
 We can deploy the role using the following command:
 
 ```bash
-$ kubectl apply -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.19.1/src/k8/k8s-neuron-device-plugin-rbac.yml
-$ kubectl apply -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.19.1/src/k8/k8s-neuron-device-plugin.yml
+$ kubectl apply -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.21.0/src/k8/k8s-neuron-device-plugin-rbac.yml
+$ kubectl apply -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.21.0/src/k8/k8s-neuron-device-plugin.yml
 
 serviceaccount/neuron-device-plugin created
 clusterrole.rbac.authorization.k8s.io/neuron-device-plugin created

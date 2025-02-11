@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - nodepool-inf2.yaml
   - nodepool-x86.yaml
-  - nodepool-tran1.yaml
+  - nodepool-trn1.yaml

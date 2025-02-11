@@ -10,10 +10,8 @@ spec:
         instanceType: mixed-x86
         provisionerType: Karpenter
         workload: rayhead
+        vpc.amazonaws.com/has-trunk-attached: "true" # Required for Pod ENI
     spec:
-      startupTaints:
-        - key: node.kubernetes.io/not-ready
-          effect: "NoExecute"
       requirements:
         - key: "karpenter.k8s.aws/instance-family"
           operator: In
@@ -23,7 +21,7 @@ spec:
           values: ["amd64"]
         - key: "karpenter.sh/capacity-type"
           operator: In
-          values: ["on-demand", "spot"]
+          values: ["on-demand"]
       expireAfter: 720h
       terminationGracePeriod: 24h
       nodeClassRef:
@@ -60,5 +58,6 @@ spec:
   subnetSelectorTerms:
     - tags:
         karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
+        kubernetes.io/role/internal-elb: "1"
   tags:
     app.kubernetes.io/created-by: eks-workshop

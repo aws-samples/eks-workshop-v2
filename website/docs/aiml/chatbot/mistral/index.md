@@ -1,9 +1,6 @@
 ---
 title: "Understanding the Mistral-7B-Instruct-v0.3 Chat Model"
 sidebar_position: 50
-sidebar_custom_props: { "module": true }
-weight: 30
-description: "Use Inferentia to accelerate deep learning inference workloads on Amazon Elastic Kubernetes Service."
 ---
 
 
