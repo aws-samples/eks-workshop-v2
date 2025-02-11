@@ -15,6 +15,10 @@ You can find the full installation documentation for Karpenter [here](https://ka
 All that we have left to do is install Karpenter as a helm chart:
 
 ```bash
+$ aws ecr-public get-login-password \
+  --region us-east-1 | helm registry login \
+  --username AWS \
+  --password-stdin public.ecr.aws
 $ helm upgrade --install karpenter oci://public.ecr.aws/karpenter/karpenter \
   --version "${KARPENTER_VERSION}" \
   --namespace "karpenter" --create-namespace \

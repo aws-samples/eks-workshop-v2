@@ -49,10 +49,10 @@ This creation of the associated resources may take 2-3 minutes, run the followin
 
 ```bash wait=10 timeout=400
 $ kubectl wait -n checkout --timeout=3m \
-  --for=jsonpath='{.status.parents[-1:].conditions[-1:].reason}'=ResolvedRefs httproute/checkoutroute
+  --for=jsonpath='{.metadata.annotations.application-networking\.k8s\.aws\/lattice-assigned-domain-name}' httproute/checkoutroute
 ```
 
-Once completed you will find the `HTTPRoute`'s DNS name from `HTTPRoute` status (highlighted here on the `message` line):
+Once completed you will find the `HTTPRoute`'s DNS name from `HTTPRoute` annotation `application-networking.k8s.aws/lattice-assigned-domain-name`:
 
 ```bash
 $ kubectl describe httproute checkoutroute -n checkout
@@ -63,15 +63,6 @@ Annotations:  application-networking.k8s.aws/lattice-assigned-domain-name:
                 checkoutroute-checkout-0d8e3f4604a069e36.7d67968.vpc-lattice-svcs.us-east-2.on.aws
 API Version:  gateway.networking.k8s.io/v1beta1
 Kind:         HTTPRoute
-...
-Status:
-  Parents:
-    Conditions:
-      Last Transition Time:  2023-06-12T16:42:08Z
-      Message:               DNS Name: checkoutroute-checkout-0d8e3f4604a069e36.7d67968.vpc-lattice-svcs.us-east-2.on.aws
-      Reason:                ResolvedRefs
-      Status:                True
-      Type:                  ResolvedRefs
 ...
 ```
 

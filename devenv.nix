@@ -8,6 +8,7 @@
     pkgs.pre-commit
     pkgs.kubectl
     pkgs.awscli
+    pkgs.gnumake
   ];
 
   languages.javascript = {
