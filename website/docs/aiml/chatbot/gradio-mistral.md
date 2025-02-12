@@ -1,6 +1,6 @@
 ---
 title: "Configuring the Gradio Web User Interface for Access"
-sidebar_position: 70
+sidebar_position: 50
 ---
 
 After all the resources have been configured within the Ray Serve Cluster, it's now time to directly access the Mistral-7B-Instruct-v0.3 chatbot. The web interface is powered by the Gradio UI.
@@ -21,7 +21,7 @@ The components consist of a `Deployment`, `Service`, and `ConfigMap` to launch t
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/aiml/chatbot/gradio-mistral
-namespace/gradio-mistral-tran1 created
+namespace/gradio-mistral-trn1 created
 configmap/gradio-app-script created
 service/gradio-service created
 deployment.apps/gradio-deployment created
@@ -30,13 +30,13 @@ deployment.apps/gradio-deployment created
 To check the status of each component, run the following commands:
 
 ```bash
-$ kubectl get deployments -n gradio-mistral-tran1
+$ kubectl get deployments -n gradio-mistral-trn1
 NAME                READY   UP-TO-DATE   AVAILABLE   AGE
 gradio-deployment   1/1     1            1           95s
 ```
 
 ```bash
-$ kubectl get configmaps -n gradio-mistral-tran1
+$ kubectl get configmaps -n gradio-mistral-trn1
 NAME                DATA   AGE
 gradio-app-script   1      110s
 kube-root-ca.crt    1      111s
@@ -47,7 +47,7 @@ kube-root-ca.crt    1      111s
 Once the load balancer has finished deploying, use the external IP address to directly access the website:
 
 ```bash wait=10
-$ kubectl get services -n gradio-llama2-inf2
+$ kubectl get services -n gradio-mistral-trn1
 NAME             TYPE          ClUSTER-IP    EXTERNAL-IP                                                                      PORT(S)         AGE
 gradio-service   LoadBalancer  172.20.84.26  k8s-gradioll-gradiose-a6d0b586ce-06885d584b38b400.elb.us-west-2.amazonaws.com    80:30802/TCP    8m42s
 ```
@@ -56,7 +56,7 @@ To wait until the Network Load Balancer has finished provisioning, run the follo
 
 ```bash wait=240 timeout=600
 $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 5 --max-time 10 \
--k $(kubectl get service -n gradio-mistral-tran1 gradio-service -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+-k $(kubectl get service -n gradio-mistral-trn1 gradio-service -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
 ```
 
 Now that our application is exposed to the outside world, let's access it by pasting the URL in your web browser. You will see the Mistral-7B-Instruct-v0.3 chatbot and will be able to interact with it by asking questions.

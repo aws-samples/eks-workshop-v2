@@ -1,6 +1,6 @@
 ---
 title: "Deploying the Llama-2-Chat Model on Ray Serve"
-sidebar_position: 30
+sidebar_position: 70
 ---
 
 With both node pools provisioned, we can now proceed to deploy the Llama2 chatbot infrastructure.

@@ -1,6 +1,6 @@
 ---
 title: "Deploying The Mistral-7B-Instruct-v0.3 Chat Model on Ray Serve"
-sidebar_position: 60
+sidebar_position: 40
 ---
 
 With all the node pools provisioned, we can now proceed to deploy Mistral-7B-Instruct-v0.3 chatbot infrastructure.
@@ -43,11 +43,8 @@ It may take up to 15 minutes for both pods to be ready.
 We can wait for the pods to be ready using the following command:
 
 ```bash timeout=900
-$ kubectl wait pod \
---all \
---for=condition=Ready \
---namespace=mistral \
---timeout=15m
+$ for i in {1..2}; do kubectl wait pod --all -l 'ray.io/group in (worker-group, headgroup)' --for=condition=Ready --namespace=mistral --timeout=10m 2>&1 | grep -v "Error from server (NotFound)" && break || { echo "Attempt $i: Waiting for all pods..."; kubectl get pods -n mistral -l 'ray.io/group in (worker-group, headgroup)'; sleep 20; }; done
+
 pod/mistral-raycluster-ltvjb-head-7rd7d met
 pod/mistral-raycluster-ltvjb-worker-worker-group-nff7x met
 ```

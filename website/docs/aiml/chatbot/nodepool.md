@@ -3,7 +3,7 @@ title: "Provisioning Node Pools for LLM Workloads"
 sidebar_position: 20
 ---
 
-In this lab, we'll use Karpenter to provision the Inferentia-2 nodes necessary for handling the Llama2 chatbot workload. As an autoscaler, Karpenter creates the resources required to run machine learning workloads and distribute traffic efficiently.
+In this lab, we'll use Karpenter to provision the Trainium-1 nodes necessary for handling the Mistral-7B chatbot workload. As an autoscaler, Karpenter creates the resources required to run machine learning workloads and distribute traffic efficiently.
 
 :::tip
 To learn more about Karpenter, check out the [Karpenter module](../../autoscaling/compute/karpenter/index.md) in this workshop.
@@ -33,7 +33,7 @@ This secondary `NodePool` will provision `Ray Workers` on `trn1.2xlarge` instanc
 ::yaml{file="manifests/modules/aiml/chatbot/nodepool/nodepool-trn1.yaml" paths="spec.template.metadata.labels,spec.template.spec.requirements,spec.template.spec.taints,spec.limits"}
 
 1. We're asking the `NodePool` to start all new nodes with a Kubernetes label `provisionerType: Karpenter`, which will allow us to specifically target Karpenter nodes with pods for demonstration purposes. Since there are multiple nodes being autoscaled by Karpenter, there are additional labels added such as `instanceType: trn1.2xlarge` to indicate that this Karpenter node should be assigned to `trainium-trn1` pool.
-2. The [NodePool CRD](https://karpenter.sh/docs/concepts/nodepools/) supports defining node properties like instance type and zone. In this example, we're setting the `karpenter.sh/capacity-type` to initially limit Karpenter to provisioning On-Demand instances, as well as `karpenter.k8s.aws/instance-type` to limit to a subset of specific instance type. You can learn which other properties are [available here](https://karpenter.sh/docs/concepts/scheduling/#selecting-nodes). In this case, there are specifications matching the requirements of the `Ray Workers` that will run on instances from the `trn1` family.
+2. The [NodePool CRD](https://karpenter.sh/docs/concepts/nodepools/) supports defining node properties like instance type and zone. In this example, we're setting the `karpenter.sh/capacity-type` to initially limit Karpenter to provisioning On-Demand instances, as well as `karpenter.k8s.aws/instance-type` to limit to a subset of specific instance type. You can learn which other properties are [available here](https://karpenter.sh/docs/concepts/scheduling/#selecting-nodes). In this case, there are specifications matching the requirements of the `Ray Workers` that will run on `trn1.2xlarge` instances type.
 3. A `Taint` defines a specific set of properties that allow a node to repel a set of pods. This property works with its matching label, a `Toleration`. Both tolerations and taints work together to ensure that pods are properly scheduled onto the appropriate pods. You can learn more about the other properties in [this resource](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/).
 4. A `NodePool` can define a limit on the amount of CPU and memory managed by it. Once this limit is reached Karpenter will not provision additional capacity associated with that particular `NodePool`, providing a cap on the total compute.
 

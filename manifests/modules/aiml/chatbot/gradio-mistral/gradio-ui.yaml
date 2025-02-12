@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: gradio-mistral-tran1
+  name: gradio-mistral-trn1
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gradio-deployment
-  namespace: gradio-mistral-tran1
+  namespace: gradio-mistral-trn1
   labels:
     app: gradio
 spec:
@@ -51,7 +51,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: gradio-service
-  namespace: gradio-mistral-tran1
+  namespace: gradio-mistral-trn1
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
@@ -70,7 +70,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: gradio-app-script
-  namespace: gradio-mistral-tran1
+  namespace: gradio-mistral-trn1
 data:
   gradio-app-mistral-tran1.py: |
     import gradio as gr
