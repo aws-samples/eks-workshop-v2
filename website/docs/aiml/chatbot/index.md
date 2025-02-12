@@ -25,11 +25,8 @@ This will make the following changes to your lab environment:
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/aiml/chatbot/.workshop/terraform).
 
 :::
+[Mistral 7B](https://mistral.ai/en/news/announcing-mistral-7b), a 7.3B parameter model, is one of the most powerful language model for its size to date. It represents a significant advancement in language model technology, combining powerful capabilities like Text generation and completion, Information extraction, Data analysis, API interaction, Complex reasoning tasks with practical efficiency.
 
-With pre-training on 2 trillion tokens of text and code, the [Meta Llama-2-13b](https://llama.meta.com/#inside-the-model) chat model is one of the largest and most powerful large language models (LLMs) available today.
+This section will focus on gaining insights into the intricacies of deploying LLMs efficiently on EKS.
 
-From its natural language processing and text generation capabilities to handling inference and training workloads, the creation of Llama2 represents some of the newest advances in GenAI Technology.
-
-This section will focus not only on harnessing the power of Llama-2 but also on gaining insights into the intricacies of deploying LLMs efficiently on EKS.
-
-For deploying and scaling LLMs, this lab will utilize AWS Inferentia instances within the [Inf2](https://aws.amazon.com/machine-learning/inferentia/) family, such as `Inf2.24xlarge` and `Inf2.48xlarge`. Additionally, the chatbot inference workloads will utilize the [Ray Serve](https://docs.ray.io/en/latest/serve/index.html) module for building online inference APIs and streamlining the deployment of machine learning models, as well as the [Gradio UI](https://www.gradio.app/) for accessing the Llama2 chatbot.
+For deploying and scaling LLMs, this lab will utilize AWS Trainium within the [Trn1](https://aws.amazon.com/ai/machine-learning/trainium/) family, such as `trn1.2xlarge`. Additionally, the chatbot inference workloads will utilize the [Ray Serve](https://docs.ray.io/en/latest/serve/index.html) module for building online inference APIs and streamlining the deployment of machine learning models, as well as the [Gradio UI](https://www.gradio.app/) for accessing the Mistral-7B chatbot.

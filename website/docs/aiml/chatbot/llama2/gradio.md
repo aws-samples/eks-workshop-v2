@@ -1,12 +1,12 @@
 ---
 title: "Configuring the Gradio Web User Interface for Access"
-sidebar_position: 40
+sidebar_position: 80
 ---
 
 After all the resources have been configured within the Ray Serve Cluster, it's now time to directly access the Llama2 chatbot. The web interface is powered by the Gradio UI.
 
 :::tip
-You can learn more about Load Balancers in the [Load Balancer module](../../fundamentals/exposing/loadbalancer/index.md) provided in this workshop.
+You can learn more about Load Balancers in the [Load Balancer module](../../../fundamentals/exposing/loadbalancer/index.md) provided in this workshop.
 :::
 
 ### Deploying Gradio Web User Interface
