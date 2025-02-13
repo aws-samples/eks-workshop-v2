@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prod-app-config
+  namespace: prod
+data:
+  prod.py: |
+    import multiprocessing
+    import time
+    import sys
+
+    print("Pod started. Initiating controlled load...")
+    sys.stdout.flush()
+
+    def cpu_work():
+        # Target ~40% of our 500m CPU limit (200m)
+        while True:
+            start = time.time()
+            # Work for 100ms
+            while (time.time() - start) < 0.1:
+                _ = 1234 * 5678
+            # Sleep for 150ms to maintain target usage
+            time.sleep(0.15)
+
+    def memory_work():
+        # Target 80% of 512Mi = ~410Mi
+        target_bytes = 410 * 1024 * 1024
+        chunk_size = 1 * 1024 * 1024  # 1MB chunks
+        data = []
+        
+        while True:
+            try:
+                current_size = sum(len(x) for x in data)
+                if current_size < target_bytes:
+                    chunk = bytearray(chunk_size)  # Allocate 1MB
+                    data.append(chunk)
+                time.sleep(0.5)  # Slower allocation
+            except:
+                while data and len(data) > (target_bytes // chunk_size // 2):
+                    data.pop()  # Release memory if we hit limits
+                time.sleep(1)
+
+    if __name__ == '__main__':
+        # Start CPU workers (2 x 20% = ~40% of 500m)
+        for _ in range(2):
+            p = multiprocessing.Process(target=cpu_work)
+            p.daemon = True
+            p.start()
+
+        # Start memory worker
+        p = multiprocessing.Process(target=memory_work)
+        p.daemon = True
+        p.start()
+
+        while True:
+            time.sleep(1)
+---
+apiVersion: v1
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prod-ds-config
+  namespace: prod
+data:
+  prod.sh: |
+    #!/bin/sh
+    echo "Starting controlled load cycle..."
+    while true; do
+      # Reduced CPU workers from 1 to single thread at 20% usage
+      stress --cpu 1 --cpu-load 20 --vm 1 --vm-bytes 100M --timeout 20s
+      sleep 15
+      # Light load period
+      stress --cpu 1 --cpu-load 10 --vm 1 --vm-bytes 64M --timeout 20s
+      sleep 15
+    done

@@ -44,7 +44,13 @@ data "aws_vpc" "selected" {
     created-by = "eks-workshop-v2"
     env        = var.addon_context.eks_cluster_id
   }
+
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_eks_cluster.cluster.vpc_config[0].vpc_id]
+  }
 }
+
 
 data "aws_nat_gateways" "cluster_nat_gateways" {
   #  vpc_id = data.aws_eks_cluster.cluster.vpc_config[0].vpc_id
