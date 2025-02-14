@@ -1,5 +1,5 @@
 ---
-title: Ephemeral Container Storage
+title: Ephemeral container storage
 sidebar_position: 10
 ---
 
