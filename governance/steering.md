@@ -16,17 +16,18 @@ The Steering Committee is a 6 member body, overseeing the governance of the EKS 
 
 The working groups are led by chairs (6 month terms) and maintainers (6 month terms).
 
-| Working Group    | Chair                                            | Maintainers                                  |
-| :--------------- | :----------------------------------------------- | :------------------------------------------- |
-| Infrastructure   | [Niall Thomson](https://github.com/niallthomson) |                                              |
-| Fundamentals     | [Sai Vennam](https://github.com/svennam92)       |                                              |
-| Autoscaling      | _Open_                                           |                                              |
-| Automation       | [Carlos Santana](https://github.com/csantanapr)  |                                              |
-| Machine Learning | _Open_                                           |                                              |
-| Networking       | [Sheetal Joshi](https://github.com/sheetaljoshi) |                                              |
-| Observability    | [Steven David](https://github.com/StevenDavid)   | [Jyothi Goudar](https://github.com/jsgoudar) |
-| Security         | [Rodrigo Bersa](https://github.com/rodrigobersa) |                                              |
-| Storage          | [Eric Heinrichs](https://github.com/heinrichse)  | [Andrew Peng](https://github.com/pengc99)    |
+| Working Group    | Chair                                             | Maintainers                                  |
+| :--------------- | :-----------------------------------------------  | :------------------------------------------- |
+| Infrastructure   | [Niall Thomson](https://github.com/niallthomson)  |                                              |
+| Fundamentals     | [Sai Vennam](https://github.com/svennam92)        |                                              |
+| Autoscaling      | _Open_                                            |                                              |
+| Automation       | [Carlos Santana](https://github.com/csantanapr)   |                                              |
+| Machine Learning | _Open_                                            |                                              |
+| Networking       | [Sheetal Joshi](https://github.com/sheetaljoshi)  |                                              |
+| Observability    | [Steven David](https://github.com/StevenDavid)    | [Jyothi Goudar](https://github.com/jsgoudar) |
+| Security         | [Rodrigo Bersa](https://github.com/rodrigobersa)  |                                              |
+| Storage          | [Eric Heinrichs](https://github.com/heinrichse)   | [Andrew Peng](https://github.com/pengc99)    |
+| AI/ML            | [Benjamin Gardiner](https://github.com/bkgardiner)|                                              |
 
 ## Wranglers
 

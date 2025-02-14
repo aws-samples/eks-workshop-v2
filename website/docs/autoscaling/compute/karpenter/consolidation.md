@@ -14,7 +14,7 @@ Disruption is configured through the `disruption` block in a `NodePool`. You can
 ::yaml{file="manifests/modules/autoscaling/compute/karpenter/nodepool/nodepool.yaml" paths="spec.template.spec.expireAfter,spec.disruption"}
 
 1. `expireAfter` is set to a custom value so that nodes are terminated automatically after 72 hours
-2. By using the `WhenEmptyOrUnderutilized` policy Karpenter will replace nodes when it seems them "under-utilized" or they have node workload pods running
+2. The `WhenEmptyOrUnderutilized` policy enables Karpenter to replace nodes when they are either empty or underutilized 
 
 The `consolidationPolicy` can also be set to `WhenEmpty`, which restricts disruption only to nodes that contain no workload pods. Learn more about Disruption on the [Karpenter docs](https://karpenter.sh/docs/concepts/disruption/#consolidation).
 
