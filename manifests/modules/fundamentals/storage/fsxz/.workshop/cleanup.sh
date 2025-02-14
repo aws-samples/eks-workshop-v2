@@ -1,5 +1,3 @@
-### WHAT AM I MISSING FROM HERE???????
-
 # #!/bin/bash
 
 # Anything user has created after prepare-environment

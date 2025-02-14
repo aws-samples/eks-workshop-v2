@@ -6,11 +6,6 @@ spec:
   replicas: 2
   template:
     spec:
-      # containers:
-      #   - name: assets
-      #     volumeMounts:
-      #       - name: fsxz-fs
-      #         mountPath: /fsxz
       volumes:
         - name: fsxz-fs
           persistentVolumeClaim:

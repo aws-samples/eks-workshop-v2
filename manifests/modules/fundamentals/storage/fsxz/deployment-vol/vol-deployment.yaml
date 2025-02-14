@@ -22,4 +22,4 @@ spec:
       volumes:
         - name: fsxz-vol
           persistentVolumeClaim:
-            claimName: fsxz-claim
+            claimName: fsxz-vol-pvc
