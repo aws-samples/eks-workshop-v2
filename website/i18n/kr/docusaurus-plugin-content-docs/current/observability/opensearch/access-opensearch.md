@@ -1,11 +1,11 @@
 ---
-title: "Access OpenSearch"
+title: "OpenSearch 접근하기"
 sidebar_position: 10
 ---
 
-In this section we will retrieve credentials for OpenSearch from the AWS Systems Manager Parameter Store, load pre-created OpenSearch dashboards for Kubernetes events and pod logs and confirm access to OpenSearch.
+이 섹션에서는 AWS Systems Manager Parameter Store에서 OpenSearch 자격 증명을 검색하고, Kubernetes 이벤트와 파드 로그를 위해 미리 생성된 OpenSearch 대시보드를 로드하고 OpenSearch에 대한 접근을 확인할 것입니다.
 
-Credentials for the OpenSearch domain have been saved in the AWS Systems Manager Parameter Store during the provisioning process. Retrieve this information and set up the necessary environment variables.
+OpenSearch 도메인에 대한 자격 증명은 프로비저닝 과정에서 AWS Systems Manager Parameter Store에 저장되었습니다. 이 정보를 검색하고 필요한 환경 변수를 설정하세요.
 
 ```bash
 $ export OPENSEARCH_HOST=$(aws ssm get-parameter \
@@ -20,7 +20,7 @@ $ export OPENSEARCH_PASSWORD=$(aws ssm get-parameter \
 $ export OPENSEARCH_DASHBOARD_FILE=~/environment/eks-workshop/modules/observability/opensearch/opensearch-dashboards.ndjson
 ```
 
-Load pre-created OpenSearch dashboards to display Kubernetes events and pods logs. The dashboards are available in [the file](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/opensearch-dashboards.ndjson) which includes the OpenSearch index patterns, visualizations and dashboards for Kubernetes events and pod logs.
+Kubernetes 이벤트와 파드 로그를 표시하기 위해 미리 생성된 OpenSearch 대시보드를 로드합니다. 대시보드는 Kubernetes 이벤트와 파드 로그를 위한 OpenSearch 인덱스 패턴, 시각화 및 대시보드를 포함하는 [파일](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/opensearch-dashboards.ndjson)에서 사용할 수 있습니다.
 
 ```bash
 $ curl -s https://$OPENSEARCH_HOST/_dashboards/auth/login \
@@ -60,7 +60,7 @@ $ curl -s -X POST https://$OPENSEARCH_HOST/_dashboards/api/saved_objects/_import
 }
 ```
 
-View the OpenSearch server coordinates and credentials that we retrieved earlier and confirm that the OpenSearch dashboards are accessible.
+앞서 검색한 OpenSearch 서버 좌표와 자격 증명을 확인하고 OpenSearch 대시보드에 접근 가능한지 확인합니다.
 
 ```bash
 $ printf "\nOpenSearch dashboard: https://%s/_dashboards/app/dashboards \nUserName: %q \nPassword: %q \n\n" \
@@ -71,14 +71,14 @@ Username: <user name>
 Password: <password>
 ```
 
-Point your browser to the OpenSearch dashboard URL above and use the credentials to login.
+위의 OpenSearch 대시보드 URL로 브라우저를 이동하고 자격 증명을 사용하여 로그인하세요.
 
-![OpenSearch login](./assets/opensearch-login.webp)
+![OpenSearch 로그인](./assets/opensearch-login.webp)
 
-Select the Global tenant as shown below. Tenants in OpenSearch can be used to safely share resources such as index patterns, visualizations and dashboards.
+아래와 같이 Global 테넌트를 선택하세요. OpenSearch의 테넌트는 인덱스 패턴, 시각화 및 대시보드와 같은 리소스를 안전하게 공유하는 데 사용될 수 있습니다.
 
-![OpenSearch login confirmation](./assets/opensearch-confirm-2.webp)
+![OpenSearch 로그인 확인](./assets/opensearch-confirm-2.webp)
 
-You should see the two dashboards (for Kubernetes events and pod logs) that were loaded in the earlier step. The dashboards are currently empty since there is no data in OpenSearch yet. Keep this browser tab open or save the dashboard URLs. We will return to the dashboards in the next sections.
+이전 단계에서 로드한 두 개의 대시보드(Kubernetes 이벤트와 파드 로그용)가 보일 것입니다. OpenSearch에 아직 데이터가 없기 때문에 대시보드는 현재 비어 있습니다. 이 브라우저 탭을 열어두거나 대시보드 URL을 저장하세요. 다음 섹션에서 대시보드로 돌아올 것입니다.
 
-![OpenSearch login confirmation](./assets/opensearch-dashboard-launch.webp)
+![OpenSearch 로그인 확인](./assets/opensearch-dashboard-launch.webp)

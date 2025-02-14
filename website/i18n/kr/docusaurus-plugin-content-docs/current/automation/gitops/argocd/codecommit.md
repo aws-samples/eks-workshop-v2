@@ -1,17 +1,17 @@
 ---
-title: "Accessing AWS CodeCommit"
+title: "AWS CodeCommit 접근하기"
 sidebar_position: 5
 ---
 
-As AWS CodeCommit repository has been created in our lab environment, but we'll need to complete some steps before our IDE can connect to it.
+AWS CodeCommit 저장소가 우리의 실습 환경에 생성되었지만, IDE가 연결되기 전에 몇 가지 단계를 완료해야 합니다.
 
-We can add the SSH keys for CodeCommit to the known hosts file to prevent warnings later on:
+나중에 경고를 방지하기 위해 CodeCommit용 SSH 키를 known hosts 파일에 추가할 수 있습니다:
 
 ```bash
 $ ssh-keyscan -H git-codecommit.${AWS_REGION}.amazonaws.com &> ~/.ssh/known_hosts
 ```
 
-And we can set up an identity that Git will use for our commits:
+그리고 Git이 우리의 커밋에 사용할 신원을 설정할 수 있습니다:
 
 ```bash
 $ git config --global user.email "you@eksworkshop.com"

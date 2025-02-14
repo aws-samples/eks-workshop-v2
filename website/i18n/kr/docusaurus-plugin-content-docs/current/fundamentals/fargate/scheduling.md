@@ -1,9 +1,8 @@
 ---
-title: Scheduling on Fargate
+title: Fargate에서 스케줄링
 sidebar_position: 12
 ---
-
-So why isn't the `checkout` service already running on Fargate? Let's check its labels:
+그렇다면 왜 `checkout` 서비스가 이미 Fargate에서 실행되고 있지 않을까요? 레이블을 확인해 봅시다:
 
 ```bash
 $ kubectl get pod -n checkout -l app.kubernetes.io/component=service -o json | jq '.items[0].metadata.labels'
@@ -16,17 +15,17 @@ modules/fundamentals/fargate/enabling/deployment.yaml
 Deployment/checkout
 ```
 
-Apply the kustomization to the cluster:
+kustomization을 클러스터에 적용합니다:
 
-```bash timeout=220 hook=enabling
+```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/fargate/enabling
 [...]
 $ kubectl rollout status -n checkout deployment/checkout --timeout=200s
 ```
 
-This will cause the Pod specification for the `checkout` service to be updated and trigger a new deployment, replacing all the Pods. When the new Pods are scheduled, the Fargate scheduler will match the new label applied by the kustomization with our target profile and intervene to ensure our Pod is schedule on capacity managed by Fargate.
+이로 인해 `checkout` 서비스의 Pod 스펙이 업데이트되고 새로운 배포가 트리거되어 모든 Pod가 교체될 것입니다. 새로운 Pod가 스케줄링될 때, Fargate 스케줄러는 kustomization에 의해 적용된 새 레이블을 우리의 대상 프로필과 매칭하고 개입하여 우리의 Pod가 Fargate가 관리하는 용량에서 스케줄링되도록 할 것입니다.
 
-How can we confirm that it worked? Describe the new Pod thats been created and take a look at the `Events` section:
+이것이 작동했는지 어떻게 확인할 수 있을까요? 새로 생성된 Pod를 설명하고 `Events` 섹션을 살펴봅시다:
 
 ```bash
 $ kubectl describe pod -n checkout -l fargate=yes
@@ -42,9 +41,9 @@ Events:
   Normal   Started          9m4s   kubelet            Started container checkout
 ```
 
-The events from `fargate-scheduler` give us some insight in to what has happened. The entry we're mainly interested in at this stage in the lab is the event with the reason `Scheduled`. Inspecting that closely gives us the name of the Fargate instance that was provisioned for this Pod, in the case of the above example this is `fargate-ip-10-42-11-96.us-west-2.compute.internal`.
+`fargate-scheduler`의 이벤트는 무슨 일이 일어났는지에 대한 통찰력을 제공합니다. 이 실습 단계에서 우리가 주로 관심을 가져야 할 항목은 이유가 `Scheduled`인 이벤트입니다. 이를 자세히 살펴보면 이 Pod를 위해 프로비저닝된 Fargate 인스턴스의 이름을 알 수 있습니다. 위의 예에서는 `fargate-ip-10-42-11-96.us-west-2.compute.internal`입니다.
 
-We can inspect this node from `kubectl` to get additional information about the compute that was provisioned for this Pod:
+`kubectl`을 사용하여 이 노드를 검사하면 이 Pod에 대해 프로비저닝된 컴퓨팅에 대한 추가 정보를 얻을 수 있습니다:
 
 ```bash
 $ NODE_NAME=$(kubectl get pod -n checkout -l app.kubernetes.io/component=service -o json | jq -r '.items[0].spec.nodeName')
@@ -62,10 +61,8 @@ Labels:             beta.kubernetes.io/arch=amd64
                     topology.kubernetes.io/region=us-west-2
                     topology.kubernetes.io/zone=us-west-2b
 [...]
-```
+이는 기본 컴퓨팅 인스턴스의 특성에 대한 여러 가지 통찰력을 제공합니다:
 
-This provides us with a number of insights in to the nature of the underlying compute instance:
-
-- The label `eks.amazonaws.com/compute-type` confirms that a Fargate instance was provisioned
-- Another label `topology.kubernetes.io/zone` specified the availability zone that the pod is running in
-- In the `System Info` section (not shown above) we can see that the instance is running Amazon Linux 2, as well as the version information for system components like `container`, `kubelet` and `kube-proxy`
+* `eks.amazonaws.com/compute-type` 레이블은 Fargate 인스턴스가 프로비저닝되었음을 확인합니다
+* 또 다른 레이블인 `topology.kubernetes.io/zone`은 pod가 실행 중인 가용 영역을 지정합니다
+* `System Info` 섹션(위에 표시되지 않음)에서 인스턴스가 Amazon Linux 2를 실행 중이며, `container`, `kubelet`, `kube-proxy`와 같은 시스템 컴포넌트의 버전 정보도 볼 수 있습니다

@@ -1,11 +1,11 @@
 ---
-title: "Cluster bootstrap"
+title: "클러스터 부트스트랩"
 sidebar_position: 15
 ---
 
-The bootstrap process installs Flux components on a cluster and creates the relevant files within the repository for managing clusters object using GitOps with Flux.
+부트스트랩 프로세스는 클러스터에 Flux 컴포넌트를 설치하고 Flux를 사용한 GitOps로 클러스터 객체를 관리하기 위한 저장소 내의 관련 파일들을 생성합니다.
 
-Before bootstrapping a cluster, Flux allows us to run pre-bootstrap checks to verify that everything is set up correctly. Run the following command for Flux CLI to perform the checks:
+클러스터를 부트스트랩하기 전에, Flux는 모든 것이 올바르게 설정되었는지 확인하기 위해 사전 부트스트랩 검사를 실행할 수 있게 합니다. Flux CLI가 검사를 수행하도록 다음 명령을 실행하세요:
 
 ```bash
 $ flux check --pre
@@ -14,7 +14,7 @@ $ flux check --pre
 > prerequisites checks passed
 ```
 
-Now let's bootstrap Flux on our EKS cluster using the CodeCommit repository:
+이제 CodeCommit 저장소를 사용하여 EKS 클러스터에 Flux를 부트스트랩해 보겠습니다:
 
 ```bash
 $ flux bootstrap git \
@@ -26,14 +26,14 @@ $ flux bootstrap git \
   --silent
 ```
 
-Let's break down the command above:
+위 명령을 분석해 보겠습니다:
 
-- First we tell Flux which Git repository to use to store its state
-- After that, we're passing the Git `branch` that we want this instance of Flux to use, since some patterns involve multiple branches in the same Git repository
-- We use the `--components-extra` parameter to install [additional toolkit components](https://fluxcd.io/flux/components/image/) that we'll use in the Continuous Integration section
-- Finally we'll be using SSH for Flux to connect and authenticate using the SSH key at `/home/ec2-user/gitops_ssh.pem`
+- 먼저 Flux에게 상태를 저장할 Git 저장소를 알려줍니다
+- 그 다음, 일부 패턴에서는 동일한 Git 저장소에서 여러 브랜치를 사용하므로, 이 Flux 인스턴스가 사용할 Git `branch`를 전달합니다
+- `--components-extra` 매개변수를 사용하여 지속적 통합 섹션에서 사용할 [추가 툴킷 컴포넌트](https://fluxcd.io/flux/components/image/)를 설치합니다
+- 마지막으로 Flux가 `/home/ec2-user/gitops_ssh.pem`에 있는 SSH 키를 사용하여 연결하고 인증하기 위해 SSH를 사용할 것입니다
 
-Now, let's verify that the bootstrap process completed successfully by running the following command:
+이제 다음 명령을 실행하여 부트스트랩 프로세스가 성공적으로 완료되었는지 확인해 보겠습니다:
 
 ```bash
 $ flux get kustomization
@@ -41,4 +41,4 @@ NAME            REVISION        SUSPENDED       READY   MESSAGE
 flux-system     main/6e6ae1d    False           True    Applied revision: main/6e6ae1d
 ```
 
-That shows that Flux created the basic kustomization, and that it's in sync with the cluster.
+이는 Flux가 기본 kustomization을 생성했고, 클러스터와 동기화되어 있음을 보여줍니다.

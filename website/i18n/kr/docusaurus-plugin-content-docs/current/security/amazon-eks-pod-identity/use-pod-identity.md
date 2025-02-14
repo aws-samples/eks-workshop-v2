@@ -1,10 +1,10 @@
 ---
-title: "Using EKS Pod Identity"
+title: "EKS Pod Identity 사용하기"
 sidebar_position: 34
 hide_table_of_contents: true
 ---
 
-To use EKS Pod Identity in your cluster, the `EKS Pod Identity Agent` addon must be installed on your EKS cluster. Let's install it using below command.
+클러스터에서 EKS Pod Identity를 사용하기 위해서는 `EKS Pod Identity Agent` 애드온이 EKS 클러스터에 설치되어 있어야 합니다. 아래 명령어를 사용하여 설치해 보겠습니다.
 
 ```bash timeout=300 wait=60
 $ aws eks create-addon --cluster-name $EKS_CLUSTER_NAME --addon-name eks-pod-identity-agent
@@ -27,7 +27,7 @@ $ aws eks create-addon --cluster-name $EKS_CLUSTER_NAME --addon-name eks-pod-ide
 $ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --addon-name eks-pod-identity-agent
 ```
 
-Now, take a look at what has been created in your EKS cluster by the new addon. You can see a DaemonSet deployed on the `kube-system` Namespace, which will run a Pod on each Node in our Cluster.
+이제 새로운 애드온으로 EKS 클러스터에 생성된 것을 살펴보겠습니다. `kube-system` 네임스페이스에 배포된 DaemonSet을 볼 수 있는데, 이는 클러스터의 각 노드에서 Pod를 실행할 것입니다.
 
 ```bash
 $ kubectl -n kube-system get daemonset eks-pod-identity-agent
@@ -40,7 +40,7 @@ eks-pod-identity-agent-hslc5   1/1     Running   0          3d21h
 eks-pod-identity-agent-thvf5   1/1     Running   0          3d21h
 ```
 
-An IAM role, which provides the required permissions for the `carts` service to read and write to DynamoDB table has been created when you ran the `prepare-environment` script in the first step of this module. You can view the policy as shown below.
+이 모듈의 첫 단계에서 `prepare-environment` 스크립트를 실행했을 때 `carts` 서비스가 DynamoDB 테이블에 읽기 및 쓰기를 할 수 있는 권한을 제공하는 IAM 역할이 생성되었습니다. 아래와 같이 정책을 확인할 수 있습니다.
 
 ```bash
 $ aws iam get-policy-version \
@@ -63,7 +63,7 @@ $ aws iam get-policy-version \
 }
 ```
 
-The role has also been configured with the appropriate trust relationship, which allows the EKS Service Principal to assume this role for Pod Identity. You can view it with the command below.
+또한 이 역할은 Pod Identity를 위해 EKS 서비스 주체가 이 역할을 맡을 수 있도록 적절한 신뢰 관계로 구성되었습니다. 아래 명령어로 이를 확인할 수 있습니다.
 
 ```bash
 $ aws iam get-role \
@@ -86,7 +86,7 @@ $ aws iam get-role \
 }
 ```
 
-Next, we will use Amazon EKS Pod Identity feature to associate an AWS IAM role to the Kubernetes service account that will be used by our deployment. To create the association, run the following command.
+다음으로, Amazon EKS Pod Identity 기능을 사용하여 배포에서 사용할 Kubernetes 서비스 계정에 AWS IAM 역할을 연결하겠습니다. 연결을 생성하려면 다음 명령어를 실행하세요.
 
 ```bash wait=30
 $ aws eks create-pod-identity-association --cluster-name ${EKS_CLUSTER_NAME} \
@@ -107,14 +107,14 @@ $ aws eks create-pod-identity-association --cluster-name ${EKS_CLUSTER_NAME} \
 }
 ```
 
-All that's left is to verify that the `carts` Deployment is using the `carts` Service Account.
+이제 `carts` 배포가 `carts` 서비스 계정을 사용하고 있는지 확인하기만 하면 됩니다.
 
 ```bash
 $ kubectl -n carts describe deployment carts | grep 'Service Account'
   Service Account:  carts
 ```
 
-With the Service Account verified, let's recycle the `carts` Pods.
+서비스 계정 확인이 완료되었으므로, `carts` Pod들을 재시작하겠습니다.
 
 ```bash hook=enable-pod-identity hookTimeout=430
 $ kubectl -n carts rollout restart deployment/carts
@@ -124,4 +124,4 @@ Waiting for deployment "carts" rollout to finish: 1 old replicas are pending ter
 deployment "carts" successfully rolled out
 ```
 
-Now, let's verify if the DynamoDB permission issue that we had encountered has been resolved for carts application in the next section.
+이제 다음 섹션에서 우리가 겪었던 carts 애플리케이션의 DynamoDB 권한 문제가 해결되었는지 확인해 보겠습니다.

@@ -1,16 +1,16 @@
 ---
-title: "Application Metrics"
+title: "애플리케이션 메트릭"
 sidebar_position: 50
 ---
 
-In this section we'll look at gaining insight in to metrics exposed by our workloads. Some examples of these could be:
+이 섹션에서는 우리의 워크로드가 노출하는 메트릭에 대한 인사이트를 얻는 방법을 살펴보겠습니다. 이러한 예시들은 다음과 같을 수 있습니다:
 
-- System metrics such as Java heap metrics or database connection pool status
-- Application metrics related to business KPIs
+- Java 힙 메트릭이나 데이터베이스 연결 풀 상태와 같은 시스템 메트릭
+- 비즈니스 KPI와 관련된 애플리케이션 메트릭
 
-Let's look at how to ingest application metrics using AWS Distro for OpenTelemetry and visualize the metrics using Grafana.
+AWS Distro for OpenTelemetry를 사용하여 애플리케이션 메트릭을 수집하고 Grafana를 사용하여 메트릭을 시각화하는 방법을 살펴보겠습니다.
 
-Each of the components in this workshop have been instrumented to provide Prometheus metrics using libraries relevant to the particular programming language or framework. We can look at an example of these metrics from the orders service like so:
+이 워크샵의 각 컴포넌트는 특정 프로그래밍 언어나 프레임워크와 관련된 라이브러리를 사용하여 Prometheus 메트릭을 제공하도록 계측되었습니다. 주문 서비스의 이러한 메트릭 예시를 다음과 같이 볼 수 있습니다:
 
 ```bash
 $ kubectl -n orders exec deployment/orders -- curl http://localhost:8080/actuator/prometheus
@@ -28,12 +28,12 @@ watch_orders_total{productId="*",} 3.0
 watch_orders_total{productId="6d62d909-f957-430e-8689-b5129c0bb75e",} 1.0
 ```
 
-The output from this command is verbose so the example above has been pruned to show:
+이 명령의 출력은 상세하므로 위의 예시는 다음을 보여주기 위해 정리되었습니다:
 
-- System metric - How many JDBC connections are idle
-- Application metric - How many orders have been placed through the retail store
+- 시스템 메트릭 - 얼마나 많은 JDBC 연결이 유휴 상태인지
+- 애플리케이션 메트릭 - 소매점을 통해 얼마나 많은 주문이 이루어졌는지
 
-You can execute similar requests to other components, for example the checkout service:
+다른 컴포넌트에 대해서도 유사한 요청을 실행할 수 있습니다. 예를 들어 체크아웃 서비스:
 
 ```bash
 $ kubectl -n checkout exec deployment/checkout -- curl http://localhost:8080/metrics
@@ -44,7 +44,7 @@ nodejs_heap_size_total_bytes 48668672
 [...]
 ```
 
-In this lab we'll leverage ADOT to ingest the metrics for all the components and explore a dashboard to show the number of orders that have been placed. Let's take a look at the OpenTelemetry configuration used to scrape metrics from the application pods, specifically this section:
+이 실습에서는 ADOT를 활용하여 모든 컴포넌트의 메트릭을 수집하고 주문된 수를 보여주는 대시보드를 탐색할 것입니다. 애플리케이션 파드에서 메트릭을 스크랩하는 데 사용된 OpenTelemetry 구성을 살펴보겠습니다. 특히 이 섹션을 보겠습니다:
 
 ```bash
 $ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.config}' \
@@ -84,9 +84,9 @@ relabel_configs:
     action: drop
 ```
 
-This configuration leverages the Prometheus [Kubernetes service discovery](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config) mechanism to automatically discover all pods with specific annotations. This particular configuration will discover any pods with the annotation `prometheus.io/scrape`, and will enrich metrics it scrapes with Kubernetes metadata such as the namespace and pod name.
+이 구성은 Prometheus의 [Kubernetes 서비스 디스커버리](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config) 메커니즘을 활용하여 특정 어노테이션이 있는 모든 파드를 자동으로 발견합니다. 이 특정 구성은 `prometheus.io/scrape` 어노테이션이 있는 모든 파드를 발견하고, 스크랩하는 메트릭을 네임스페이스와 파드 이름과 같은 Kubernetes 메타데이터로 보강합니다.
 
-We can check the annotations on the order component pods:
+주문 컴포넌트 파드의 어노테이션을 확인할 수 있습니다:
 
 ```bash
 $ kubectl get -o yaml -n orders deployment/orders | yq '.spec.template.metadata.annotations'
@@ -95,9 +95,9 @@ prometheus.io/port: "8080"
 prometheus.io/scrape: "true"
 ```
 
-As we saw in the section regarding cluster metrics, these pod metrics will also be sent to AMP using the same OpenTelemetry exporter.
+클러스터 메트릭 섹션에서 보았듯이, 이러한 파드 메트릭도 동일한 OpenTelemetry 익스포터를 사용하여 AMP로 전송됩니다.
 
-Next use the below script to run a load generator which will place orders through the store and generate application metrics:
+다음으로 아래 스크립트를 사용하여 로드 생성기를 실행하여 스토어를 통해 주문을 하고 애플리케이션 메트릭을 생성합니다:
 
 ```bash test=false
 $ cat <<EOF | kubectl apply -f -
@@ -135,37 +135,37 @@ spec:
 EOF
 ```
 
-Open the Grafana as we did in the previous section:
+이전 섹션에서 했던 것처럼 Grafana를 엽니다:
 
-![Grafana dashboard](./assets/order-service-metrics-dashboard.webp)
+![Grafana 대시보드](./assets/order-service-metrics-dashboard.webp)
 
-Go to the dashboard page and click on the dashboard **Order Service Metrics** to review the panels within the dashboard:
+대시보드 페이지로 이동하여 **Order Service Metrics** 대시보드를 클릭하여 대시보드 내의 패널을 검토합니다:
 
-![Business Metrics](./assets/retailMetrics.webp)
+![비즈니스 메트릭](./assets/retailMetrics.webp)
 
-We can see how the dashboard was configured to query AMP by hovering over the title of the "Orders by Product" panel and clicking the "Edit" button:
+"Orders by Product" 패널의 제목 위에 마우스를 올리고 "Edit" 버튼을 클릭하여 AMP를 쿼리하도록 대시보드가 어떻게 구성되었는지 볼 수 있습니다:
 
-![Edit Panel](./assets/editPanel.webp)
+![패널 편집](./assets/editPanel.webp)
 
-The PromQL query used to create this panel is displayed at the bottom of the page:
+이 패널을 만드는 데 사용된 PromQL 쿼리가 페이지 하단에 표시됩니다:
 
-![PromQL query](./assets/promqlQuery.webp)
+![PromQL 쿼리](./assets/promqlQuery.webp)
 
-In this case we are using the query:
+이 경우 우리는 다음 쿼리를 사용하고 있습니다:
 
 ```text
 sum by(productId) (watch_orders_total{productId!="*"})
 ```
 
-Which is doing the following:
+이 쿼리는 다음을 수행합니다:
 
-- Query for the metric `watch_orders_total`
-- Ignore metrics with a `productId` value of `*`
-- Sum these metrics and group them by `productId`
+- `watch_orders_total` 메트릭을 쿼리합니다
+- `productId` 값이 `*`인 메트릭을 무시합니다
+- 이러한 메트릭을 합산하고 `productId`로 그룹화합니다
 
-You can similarly explore the other panels to understand how they have been created.
+다른 패널들도 유사하게 탐색하여 어떻게 생성되었는지 이해할 수 있습니다.
 
-Once you're satisfied with observing the metrics, you can stop the load generator using the below command.
+메트릭 관찰에 만족하셨다면, 아래 명령을 사용하여 로드 생성기를 중지할 수 있습니다.
 
 ```bash timeout=180 test=false
 $ kubectl delete pod load-generator -n other

@@ -1,5 +1,5 @@
 ---
-title: "Load Balancer 생성"
+title: "로드 밸런서 생성"
 sidebar_position: 20
 ---
 
@@ -7,9 +7,9 @@ sidebar_position: 20
 
 ::yaml{file="manifests/modules/exposing/load-balancer/nlb/nlb.yaml" paths="spec.type,spec.ports,spec.selector"}
 
-1. Network Load Balancer로 생성합니다
+1. Network Load Balancer(NLB)로 생성합니다
 2. NLB는 80번 포트에서 수신하고 8080 포트의 `ui` Pod로 연결을 전달합니다
-3. 여기서는 pod의 레이블을 사용하여 이 서비스의 대상으로 추가될 pod를 지정합니다
+3. 여기서는 pod의 레이블을 사용하여 이 서비스의 대상으로 추가될 Pod를 지정합니다
 
 이 구성을 적용합니다:
 
@@ -113,7 +113,7 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 }
 ```
 
-위의 출력은 동일한 포트의 EC2 인스턴스 ID(`i-`)를 사용하여 로드 밸런서에 등록된 3개의 대상이 있음을 보여줍니다. 이는 AWS Load Balancer Controller가 기본적으로 "instance mode"로 작동하기 때문입니다. 이 모드에서는 EKS 클러스터의 워커 노드를 대상으로 하고 `kube-proxy`가 개별 Pod로 트래픽을 전달할 수 있게 합니다.
+위의 출력은 동일한 포트의 EC2 인스턴스 ID(`i-`)를 사용하여 로드 밸런서에 등록된 3개의 대상이 있음을 보여줍니다. 이는 AWS Load Balancer 컨트롤러가 기본적으로 "instance mode"로 작동하기 때문입니다. 이 모드에서는 EKS 클러스터의 워커 노드를 대상으로 하고 `kube-proxy`가 개별 Pod로 트래픽을 전달할 수 있게 합니다.
 
 이 링크를 클릭하여 콘솔에서 NLB를 검사할 수도 있습니다:
 

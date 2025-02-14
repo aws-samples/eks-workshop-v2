@@ -1,9 +1,9 @@
 ---
-title: "Storing secrets in AWS Secrets Manager"
+title: "AWS Secrets Manager에 비밀 정보 저장하기"
 sidebar_position: 421
 ---
 
-Let's begin by creating a secret in AWS Secrets Manager using the AWS CLI. We'll create a secret that contains JSON-encoded credentials with username and password values:
+AWS CLI를 사용하여 AWS Secrets Manager에 비밀 정보를 생성하는 것부터 시작해보겠습니다. 사용자 이름과 비밀번호 값이 포함된 JSON 형식의 자격 증명을 비밀 정보로 생성할 것입니다:
 
 ```bash
 $ export SECRET_SUFFIX=$(openssl rand -hex 4)
@@ -17,7 +17,7 @@ $ aws secretsmanager create-secret --name "$SECRET_NAME" \
 }
 ```
 
-You can verify that the secret was created successfully by checking either the [AWS Secrets Manager Console](https://console.aws.amazon.com/secretsmanager/listsecrets) or using the AWS CLI. Let's use the CLI to examine the secret's metadata:
+[AWS Secrets Manager 콘솔](https://console.aws.amazon.com/secretsmanager/listsecrets)이나 AWS CLI를 사용하여 비밀 정보가 성공적으로 생성되었는지 확인할 수 있습니다. CLI를 사용하여 비밀 정보의 메타데이터를 확인해보겠습니다:
 
 ```bash
 $ aws secretsmanager describe-secret --secret-id "$SECRET_NAME"

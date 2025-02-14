@@ -1,11 +1,11 @@
 ---
-title: "Introduction"
+title: "소개"
 sidebar_position: 10
 ---
 
-The `catalog` component of our architecture uses a MySQL database as its storage backend. The way in which the way the catalog API is currently deployed uses a database deployed as a Pod in the EKS cluster.
+우리 아키텍처의 `catalog` 컴포넌트는 MySQL 데이터베이스를 스토리지 백엔드로 사용합니다. 현재 catalog API가 배포되는 방식은 EKS 클러스터 내의 Pod로 배포된 데이터베이스를 사용합니다.
 
-You can see this by running the following command:
+다음 명령어를 실행하여 이를 확인할 수 있습니다:
 
 ```bash
 $ kubectl -n catalog get pod
@@ -14,7 +14,7 @@ catalog-5d7fc9d8f-xm4hs             1/1     Running   0               14m
 catalog-mysql-0                     1/1     Running   0               14m
 ```
 
-In the case above, the Pod `catalog-mysql-0` is a MySQL Pod. We can verify our `catalog` application is using this by inspecting its environment:
+위의 경우, `catalog-mysql-0` Pod는 MySQL Pod입니다. 우리의 `catalog` 애플리케이션이 이를 사용하고 있는지 환경을 검사하여 확인할 수 있습니다:
 
 ```bash
 $ kubectl -n catalog exec deployment/catalog -- env \
@@ -22,4 +22,4 @@ $ kubectl -n catalog exec deployment/catalog -- env \
 DB_ENDPOINT=catalog-mysql:3306
 ```
 
-We want to migrate our application to use the fully managed Amazon RDS service in order to take full advantage of the scale and reliability it offers.
+우리는 Amazon RDS 서비스가 제공하는 확장성과 안정성을 최대한 활용하기 위해 애플리케이션을 완전 관리형 Amazon RDS 서비스로 마이그레이션하고자 합니다.

@@ -1,32 +1,31 @@
 ---
-title: "Control plane logs"
+title: "컨트롤 플레인 로그"
 sidebar_position: 30
 ---
+앞서 살펴본 [EKS의 로깅](https://www.eksworkshop.com/docs/observability/logging/cluster-logging/) 섹션에서 보았듯이, Amazon EKS 컨트롤 플레인 로깅은 Amazon EKS 컨트롤 플레인에서 직접 사용자 계정의 CloudWatch Logs로 감사 및 진단 로그를 제공합니다. 이러한 컨트롤 플레인 로그를 CloudWatch Logs에서 OpenSearch로 전달하여 이전 설정을 확장합니다. CloudWatch Logs를 내보내기 위한 Lambda 함수는 이 모듈의 `prepare-environment` 단계의 일부로 설정되었습니다. 이 섹션에서는 모든 EKS 컨트롤 플레인 로깅을 활성화하고, Lambda 함수를 트리거할 CloudWatch Logs 구독 필터를 추가하고 OpenSearch 컨트롤 플레인 로그 대시보드를 살펴볼 것입니다.
 
-As seen in the earlier section on [Logging in EKS](https://www.eksworkshop.com/docs/observability/logging/cluster-logging/), Amazon EKS control plane logging provides audit and diagnostic logs directly from the Amazon EKS control plane to CloudWatch Logs in your account. We build upon that earlier setup by forwarding these control plane logs from CloudWatch Logs to OpenSearch. A Lambda function to export CloudWatch Logs was setup as part of the `prepare-environment` step for this module. In this section, we will enable all EKS control plane logging, add a CloudWatch Logs subscription filter that will trigger the Lambda function and explore the OpenSearch control plane logs dashboard.
+다음 두 단락은 EKS의 컨트롤 플레인 로깅에 대한 개요를 제공합니다. EKS의 로깅에 대한 이전 섹션을 이미 살펴보았다면 이 개요를 건너뛰어도 됩니다.
 
-The next two paragraphs provide an overview of control plane logging in EKS. Feel free to skip this overview if you already followed the earlier section on Logging in EKS.
+사용 가능한 다섯 가지 유형의 컨트롤 플레인 로그가 있습니다. 개별적으로 활성화하거나 비활성화할 수 있는 각 로그 유형은 Kubernetes 컨트롤 플레인의 구성 요소에 해당합니다. 이러한 구성 요소에 대해 자세히 알아보려면 [Kubernetes 문서](https://kubernetes.io/docs/concepts/overview/components/)의 Kubernetes 구성 요소와 [Amazon EKS 컨트롤 플레인 로깅 문서](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)를 참조하세요.
 
-There are five types of control plane logs available. Each log type, which can be individually enabled or disabled, corresponds to a component of the Kubernetes control plane. To learn more about these components, see Kubernetes Components in the [Kubernetes documentation](https://kubernetes.io/docs/concepts/overview/components/) and the [Amazon EKS control plane logging documentation](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html).
+* **Kubernetes API 서버 구성 요소 로그(api)** - 클러스터의 API 서버는 Kubernetes API를 노출하는 컨트롤 플레인 구성 요소입니다
+* **감사(audit)** - Kubernetes 감사 로그는 클러스터에 영향을 미친 개별 사용자, 관리자 또는 시스템 구성 요소의 기록을 제공합니다
+* **인증자(authenticator)** - 인증자 로그는 Amazon EKS에만 고유합니다. 이러한 로그는 Amazon EKS가 IAM 자격 증명을 사용하여 Kubernetes [역할 기반 액세스 제어](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)(RBAC) 인증에 사용하는 컨트롤 플레인 구성 요소를 나타냅니다
+* **컨트롤러 관리자(controllerManager)** - 컨트롤러 관리자는 Kubernetes와 함께 제공되는 핵심 제어 루프를 관리합니다
+* **스케줄러(scheduler)** - 스케줄러 구성 요소는 클러스터에서 파드를 언제 어디서 실행할지 관리합니다
 
-- **Kubernetes API server component logs (api)** – Your cluster's API server is the control plane component that exposes the Kubernetes API
-- **Audit (audit)** – Kubernetes audit logs provide a record of the individual users, administrators, or system components that have affected your cluster
-- **Authenticator (authenticator)** – Authenticator logs are unique to Amazon EKS. These logs represent the control plane component that Amazon EKS uses for Kubernetes [Role Based Access Control](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) (RBAC) authentication using IAM credentials
-- **Controller manager (controllerManager)** – The controller manager manages the core control loops that are shipped with Kubernetes
-- **Scheduler (scheduler)** – The scheduler component manages when and where to run pods in your cluster
+다음 다이어그램은 이 섹션의 설정 개요를 제공합니다. 왼쪽에서 오른쪽으로 흐름은 다음과 같습니다:
 
-The following diagram provides an overview of the setup for this section. From left to right, the flow is as follows:
-
-1. Control plane logs are enabled in Amazon EKS, which sends logs to CloudWatch Logs
-2. A CloudWatch Logs subscription filter triggers a Lambda function and sends it the log messages
-3. The Lambda function writes the control plane logs to an OpenSearch index
-4. A single OpenSearch index named `eks-control-plane-logs` stores all the control plane logs. Later in the lab we will see how we can filter the different log types within the OpenSearch dashboard
+1. Amazon EKS에서 컨트롤 플레인 로그가 활성화되어 CloudWatch Logs로 로그를 전송합니다
+2. CloudWatch Logs 구독 필터가 Lambda 함수를 트리거하고 로그 메시지를 전송합니다
+3. Lambda 함수가 컨트롤 플레인 로그를 OpenSearch 인덱스에 기록합니다
+4. `eks-control-plane-logs`라는 단일 OpenSearch 인덱스가 모든 컨트롤 플레인 로그를 저장합니다. 실습 후반부에서 OpenSearch 대시보드 내에서 다양한 로그 유형을 필터링하는 방법을 살펴볼 것입니다
 
 ![EKS Control Plane Logs to OpenSearch](./assets/eks-control-plane-logs-overview.webp)
 
-EKS control plane logs are enabled on a per-cluster basis through the EKS API. This will often be configured using Terraform or CloudFormation, but in this lab we'll use the AWS CLI to enable the functionality. As you can see we can enable each of the cluster log types individually, and in this lab we're enabling everything.
+EKS 컨트롤 플레인 로그는 EKS API를 통해 클러스터별로 활성화됩니다. 이는 주로 Terraform이나 CloudFormation을 사용하여 구성되지만, 이 실습에서는 AWS CLI를 사용하여 기능을 활성화할 것입니다. 보시다시피 각 클러스터 로그 유형을 개별적으로 활성화할 수 있으며, 이 실습에서는 모든 것을 활성화하고 있습니다.
 
-```bash hook=cluster-logging
+```bash
 $ aws eks update-cluster-config \
     --region $AWS_REGION \
     --name $EKS_CLUSTER_NAME \
@@ -50,39 +49,39 @@ $ sleep 30
 $ aws eks wait cluster-active --name $EKS_CLUSTER_NAME
 ```
 
-We can optionally inspect the EKS control plane logging setting using the AWS console:
+선택적으로 AWS 콘솔을 사용하여 EKS 컨트롤 플레인 로깅 설정을 검사할 수 있습니다:
 
 <ConsoleButton url="https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab" service="cloudwatch" label="Open CloudWatch console"/>
 
-The **Logging** tab shows the current configuration for control plane logs for the EKS cluster within the AWS console:
+**로깅** 탭은 AWS 콘솔 내 EKS 클러스터의 컨트롤 플레인 로그에 대한 현재 구성을 보여줍니다:
 
-Access the CloudWatch log group named `/aws/eks/eks-workshop/cluster`
+`/aws/eks/eks-workshop/cluster`라는 CloudWatch 로그 그룹에 액세스하세요
 
 <ConsoleButton url="https://console.aws.amazon.com/cloudwatch/home#logsV2:log-groups/log-group/$252Faws$252Feks$252Feks-workshop$252Fcluster" service="cloudwatch" label="Open CloudWatch console"/>
 
-You will find at least one log stream associated with each of the control plane log types:
+각 컨트롤 플레인 로그 유형과 관련된 최소 하나의 로그 스트림을 찾을 수 있습니다:
 
-- `kube-apiserver-*` for Kubernetes API server logs
-- `*-audit-*` for audit logs
-- `authenticator-*` for authenticator logs
-- `kube-controller-manager-*` for controller manager logs
-- `kube-scheduler-*` for scheduler logs
+* Kubernetes API 서버 로그용 `kube-apiserver-*`
+* 감사 로그용 `*-audit-*`
+* 인증자 로그용 `authenticator-*`
+* 컨트롤러 관리자 로그용 `kube-controller-manager-*`
+* 스케줄러 로그용 `kube-scheduler-*
 
-Navigate to the Lambda function named [eks-workshop-control-plane-logs](https://console.aws.amazon.com/lambda/home#/functions/eks-workshop-control-plane-logs) to export control plane logs has been pre-provisioned during the `prepare-environment` step. Notice that the Lambda function does not have any triggers setup at the moment.
+컨트롤 플레인 로그를 내보내기 위해 `prepare-environment` 단계 동안 사전 프로비저닝된 [eks-workshop-control-plane-logs](https://console.aws.amazon.com/lambda/home#/functions/eks-workshop-control-plane-logs) Lambda 함수로 이동하세요. 현재 Lambda 함수에 설정된 트리거가 없다는 점에 주목하세요.
 
-There are two steps to connect up the Lambda function to CloudWatch Logs and to OpenSearch as shown in the overview diagram above:
+위의 개요 다이어그램에 표시된 대로 Lambda 함수를 CloudWatch Logs 및 OpenSearch에 연결하는 데는 두 단계가 있습니다:
 
-1. Setup an OpenSearch role that allows the Lambda function to write to the OpenSearch index named `eks-control-plane-logs`
-2. Configure a subscription filter for the CloudWatch log group with the Lambda function as its destination
+1. Lambda 함수가 `eks-control-plane-logs`라는 OpenSearch 인덱스에 쓸 수 있도록 하는 OpenSearch 역할 설정
+2. Lambda 함수를 대상으로 하는 CloudWatch 로그 그룹에 대한 구독 필터 구성
 
-The Lambda function ARN and its IAM role ARN are already available as environment variables:
+Lambda 함수 ARN과 해당 IAM 역할 ARN은 이미 환경 변수로 사용 가능합니다:
 
 ```bash
 $ echo $LAMBDA_ARN
 $ echo $LAMBDA_ROLE_ARN
 ```
 
-Grant the Lambda exporter function permissions to create the OpenSearch index named `eks-control-plane-logs` and write to it. The first command creates a new role within the OpenSearch domain with the necessary permissions. The second command adds a role mapping specifying the Lambda function's execution role ARN.
+Lambda 내보내기 함수에 `eks-control-plane-logs`라는 OpenSearch 인덱스를 생성하고 쓸 수 있는 권한을 부여합니다. 첫 번째 명령은 필요한 권한이 있는 OpenSearch 도메인 내에 새 역할을 생성합니다. 두 번째 명령은 Lambda 함수의 실행 역할 ARN을 지정하는 역할 매핑을 추가합니다.
 
 ```bash
 $ curl -s -XPUT "https://${OPENSEARCH_HOST}/_plugins/_security/api/roles/lambda_role" \
@@ -103,7 +102,7 @@ $ curl -s -XPUT "https://${OPENSEARCH_HOST}/_plugins/_security/api/rolesmapping/
 }
 ```
 
-Setup a subscription filter for the CloudWatch log group that specifies the Lambda function as its destination. Notice that the command specifies the `/aws/eks/eks-workshop/cluster` log group name and the Lambda function ARN. The first command creates the filter and the second command retrieves the filter details.
+Lambda 함수를 대상으로 하는 CloudWatch 로그 그룹에 대한 구독 필터를 설정합니다. 명령이 `/aws/eks/eks-workshop/cluster` 로그 그룹 이름과 Lambda 함수 ARN을 지정하는 것에 주목하세요. 첫 번째 명령은 필터를 생성하고 두 번째 명령은 필터 세부 정보를 검색합니다.
 
 ```bash
 $ aws logs put-subscription-filter \
@@ -128,11 +127,11 @@ $ aws logs describe-subscription-filters \
 }
 ```
 
-Return to the Lambda function [eks-workshop-control-plane-logs](https://console.aws.amazon.com/lambda/home#/functions/eks-workshop-control-plane-logs). CloudWatch Logs is now shown as a trigger for the Lambda function after the subscription filter was added.
+Lambda 함수 [eks-workshop-control-plane-logs](https://console.aws.amazon.com/lambda/home#/functions/eks-workshop-control-plane-logs)로 돌아가세요. 구독 필터가 추가된 후 CloudWatch Logs가 이제 Lambda 함수의 트리거로 표시됩니다.
 
-This completes the steps necessary to feed control plane logs from EKS to OpenSearch.
+이것으로 EKS에서 OpenSearch로 컨트롤 플레인 로그를 전달하는 데 필요한 단계가 완료되었습니다.
 
-Access the control plane logs dashboard from the dashboard landing page we saw earlier or use the command below to obtain its coordinates:
+이전에 본 대시보드 랜딩 페이지에서 컨트롤 플레인 로그 대시보드에 액세스하거나 아래 명령을 사용하여 해당 좌표를 얻으세요:
 
 ```bash
 $ printf "\nPod logs dashboard: https://%s/_dashboards/app/dashboards#/view/1a1c3a70-831a-11ee-8baf-a5d5c77ada98 \
@@ -144,26 +143,25 @@ Username: <user name>
 Password: <password>
 ```
 
-The dashboard provides a histogram and detailed messages for each of the five control plane logs types (in alphabetical order) - Kubernetes API server component logs, Audit logs, Authenticator logs, Controller Manager logs and Scheduler logs.
+대시보드는 다섯 가지 컨트롤 플레인 로그 유형(알파벳 순) - Kubernetes API 서버 구성 요소 로그, 감사 로그, 인증자 로그, 컨트롤러 관리자 로그 및 스케줄러 로그에 대한 히스토그램과 상세 메시지를 제공합니다.
 
-1. Date / time range. We can customize the time range that we are exploring with this dashboard (Last hour in this example)
-2. Message count per minute for API Server logs
-3. Log messages for API Server
-4. The log stream field in the dashboard is identical to the CloudWatch log stream name we saw earlier within the AWS console. The log stream field is used to filter the index for each of the five control plane log types. In this case, the filter displays just the API Server logs
-5. Message count per minute and log message shown for each of the remaining four log types
+1. 날짜/시간 범위. 이 대시보드로 탐색하는 시간 범위를 사용자 지정할 수 있습니다(이 예에서는 마지막 1시간)
+2. API 서버 로그에 대한 분당 메시지 수
+3. API 서버에 대한 로그 메시지
+4. 대시보드의 로그 스트림 필드는 이전에 AWS 콘솔에서 본 CloudWatch 로그 스트림 이름과 동일합니다. 로그 스트림 필드는 다섯 가지 컨트롤 플레인 로그 유형 각각에 대한 인덱스를 필터링하는 데 사용됩니다. 이 경우 필터는 API 서버 로그만 표시합니다
+5. 나머지 네 가지 로그 유형에 대한 분당 메시지 수와 로그 메시지가 표시됩니다
 
 :::tip
 
-Depending on the level of the EKS cluster activity, some of the control plane log panels may display `No result found` if there is no log activity of that type within the selected time range. If you encounter this situation, feel free to continue with the instructions and return to the Control Plane Logs dashboard before leaving the `Observability with OpenSearch` section.
-
+EKS 클러스터 활동 수준에 따라 선택한 시간 범위 내에 해당 유형의 로그 활동이 없는 경우 일부 컨트롤 플레인 로그 패널에 `결과를 찾을 수 없음`이 표시될 수 있습니다. 이러한 상황이 발생하면 지침을 계속 진행하고 'OpenSearch를 사용한 관찰성' 섹션을 떠나기 전에 컨트롤 플레인 로그 대시보드로 돌아오시면 됩니다.
 :::
 
 ![Control plane logs detail](./assets/eks-control-plane-logs-dashboard.webp)
 
-The scheduler logs are shown at the end of the page. Notice that the scheduler log messages indicates `Unable to schedule pod; no fit; waiting` for `scenario-c`. This schedule log message from the control plane logs is similar to the Kubernetes event we saw for `scenario-c` on the previous page.
+스케줄러 로그는 페이지 끝에 표시됩니다. 스케줄러 로그 메시지가 `scenario-c`에 대해 `파드를 스케줄링할 수 없음; 적합하지 않음; 대기 중`을 나타내는 것을 확인하세요. 이 스케줄 로그 메시지는 이전 페이지에서 본 `scenario-c`에 대한 Kubernetes 이벤트와 유사합니다.
 
 ![Control plane logs detail](./assets/eks-control-plane-logs-scheduler.webp)
 
-Expanding the row allows us to drill down and view details as a table or in JSON format.
+행을 확장하면 테이블 형식이나 JSON 형식으로 세부 정보를 자세히 볼 수 있습니다.
 
 ![Control plane logs detail](./assets/eks-control-plane-logs-detail.webp)

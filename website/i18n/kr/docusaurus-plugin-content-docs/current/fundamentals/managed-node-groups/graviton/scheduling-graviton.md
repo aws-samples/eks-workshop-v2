@@ -1,11 +1,10 @@
 ---
-title: Run pods on Graviton
+title: 그라비톤 위에 Pod 실행
 sidebar_position: 20
 ---
+이제 Graviton 노드 그룹에 테인트를 적용했으니, 이 변경사항을 활용하도록 애플리케이션을 구성해야 합니다. 이를 위해 `ui` 마이크로서비스가 Graviton 기반 관리형 노드 그룹에 속한 노드에서만 배포되도록 애플리케이션을 구성해 보겠습니다.
 
-Now that we have tainted our Graviton node group, we'll need to configure our application to take advantage of this change. To do so, let's configure our application to deploy the `ui` microservice only on nodes that are part of our Graviton-based managed node group.
-
-Before making any changes, let's check the current configuration for the UI pods. Keep in mind that these pods are being controlled by an associated deployment named `ui`.
+변경하기 전에, UI 파드의 현재 구성을 확인해 보겠습니다. 이 파드들은 `ui`라는 이름의 배포(deployment)에 의해 제어되고 있다는 점을 기억하세요.
 
 ```bash
 $ kubectl describe pod --namespace ui --selector app.kubernetes.io/name=ui
@@ -30,16 +29,16 @@ Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists fo
                              node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
 ```
 
-As anticipated, the application is running successfully on a non-tainted node. The associated pod is in a `Running` status and we can confirm that no custom tolerations have been configured. Note that Kubernetes automatically adds tolerations for `node.kubernetes.io/not-ready` and `node.kubernetes.io/unreachable` with `tolerationSeconds=300`, unless you or a controller set those tolerations explicitly. These automatically-added tolerations mean that Pods remain bound to Nodes for 5 minutes after one of these problems is detected.
+예상대로 애플리케이션이 테인트가 없는 노드에서 정상적으로 실행되고 있습니다. 관련 파드는 `Running` 상태이며 사용자 정의 톨러레이션이 구성되어 있지 않음을 확인할 수 있습니다. Kubernetes는 사용자나 컨트롤러가 명시적으로 톨러레이션을 설정하지 않는 한, `node.kubernetes.io/not-ready`와 `node.kubernetes.io/unreachable`에 대해 `tolerationSeconds=300`인 톨러레이션을 자동으로 추가합니다. 이러한 자동 추가된 톨러레이션은 이러한 문제가 감지된 후 5분 동안 파드가 노드에 바인딩된 상태로 유지됨을 의미합니다.
 
-Let's update our `ui` deployment to bind its pods to our tainted managed node group. We have pre-configured our tainted managed node group with a label of `tainted=yes` that we can use with a `nodeSelector`. The following `Kustomize` patch describes the changes needed to our deployment configuration in order to enable this setup:
+테인트된 관리형 노드 그룹에 파드를 바인딩하도록 `ui` 배포를 업데이트해 보겠습니다. 우리는 `nodeSelector`와 함께 사용할 수 있는 `tainted=yes` 레이블로 테인트된 관리형 노드 그룹을 미리 구성했습니다. 다음 `Kustomize` 패치는 이 설정을 활성화하기 위해 배포 구성에 필요한 변경사항을 설명합니다:
 
 ```kustomization
 modules/fundamentals/mng/graviton/nodeselector-wo-toleration/deployment.yaml
 Deployment/ui
 ```
 
-To apply the Kustomize changes run the following command:
+Kustomize 변경사항을 적용하려면 다음 명령을 실행하세요:
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/mng/graviton/nodeselector-wo-toleration/
@@ -50,23 +49,23 @@ service/ui unchanged
 deployment.apps/ui configured
 ```
 
-With our recently made changes, let's check the rollout status of our UI deployment:
+최근 변경사항을 적용했으니 UI 배포의 롤아웃 상태를 확인해 보겠습니다:
 
 ```bash
 $ kubectl --namespace ui rollout status --watch=false deployment/ui
 Waiting for deployment "ui" rollout to finish: 1 old replicas are pending termination...
 ```
 
-Given the default `RollingUpdate` strategy for our `ui` deployment, the K8s deployment will wait for the newly created pod to be in `Ready` state before terminating the old one. The deployment rollout seems stuck so let's investigate further:
+`ui` 배포의 기본 `RollingUpdate` 전략으로 인해, K8s 배포는 이전 파드를 종료하기 전에 새로 생성된 파드가 `Ready` 상태가 될 때까지 기다립니다. 배포 롤아웃이 멈춘 것 같으니 더 자세히 살펴보겠습니다:
 
-```bash hook=pending-pod
+```bash
 $ kubectl get pod --namespace ui -l app.kubernetes.io/name=ui
 NAME                  READY   STATUS    RESTARTS   AGE
 ui-659df48c56-z496x   0/1     Pending   0          16s
 ui-795bd46545-mrglh   1/1     Running   0          8m
 ```
 
-Investigating the individual pods under the `ui` namespace we can observe that one pod is in `Pending` state. Diving deeper into the `Pending` Pod's details provides some information on the experienced issue.
+`ui` 네임스페이스의 개별 파드를 조사해보면 하나의 파드가 `Pending` 상태인 것을 확인할 수 있습니다. `Pending` 파드의 세부 정보를 더 자세히 살펴보면 발생한 문제에 대한 정보를 얻을 수 있습니다.
 
 ```bash
 $ podname=$(kubectl get pod --namespace ui --field-selector=status.phase=Pending -o json | \
@@ -84,13 +83,13 @@ Events:
   Warning  FailedScheduling  19s   default-scheduler  0/4 nodes are available: 1 node(s) had untolerated taint {frontend: true}, 3 node(s) didn't match Pod's node affinity/selector. preemption: 0/4 nodes are available: 4 Preemption is not helpful for scheduling.
 ```
 
-Our changes are reflected in the new configuration of the `Pending` pod. We can see that we have pinned the pod to any node with the `tainted=yes` label but this introduced a new problem as our pod cannot be scheduled (`PodScheduled False`). A more useful explanation can be found under the `events`:
+새 구성에서 우리의 변경사항이 반영되었습니다. `tainted=yes` 레이블이 있는 노드에 파드를 고정했지만, 파드를 스케줄링할 수 없는 (`PodScheduled False`) 새로운 문제가 발생했습니다. `events`에서 더 유용한 설명을 찾을 수 있습니다:
 
 ```text
 0/4 nodes are available: 1 node(s) had untolerated taint {frontend: true}, 3 node(s) didn't match Pod's node affinity/selector. preemption: 0/4 nodes are available: 4 Preemption is not helpful for scheduling.
 ```
 
-To fix this, we need to add a toleration. Let's ensure our deployment and associated pods are able to tolerate the `frontend: true` taint. We can use the below `kustomize` patch to make the necessary changes:
+이를 해결하기 위해 톨러레이션을 추가해야 합니다. 배포와 관련 파드가 `frontend: true` 테인트를 허용할 수 있도록 합시다. 필요한 변경을 하기 위해 아래의 `kustomize` 패치를 사용할 수 있습니다:
 
 ```kustomization
 modules/fundamentals/mng/graviton/nodeselector-w-toleration/deployment.yaml
@@ -107,7 +106,7 @@ deployment.apps/ui configured
 $ kubectl --namespace ui rollout status deployment/ui --timeout=120s
 ```
 
-Checking the UI pod, we can see that the configuration now includes the specified toleration (`frontend=true:NoExecute`) and it is successfully scheduled on the node with corresponding taint. The following commands can be used for validation:
+UI 파드를 확인해보면, 지정된 톨러레이션(`frontend=true:NoExecute`)이 구성에 포함되어 있고 해당 테인트가 있는 노드에 성공적으로 스케줄링된 것을 볼 수 있습니다. 다음 명령어로 검증할 수 있습니다:
 
 ```bash
 $ kubectl get pod --namespace ui -l app.kubernetes.io/name=ui
@@ -172,6 +171,6 @@ Unschedulable:      false
 [...]
 ```
 
-As you can see, the `ui` pod is now running on the Graviton-based node group. In addition, you can see the Taints on the `kubectl describe node` command, and the matching Tolerations on the `kubectl describe pod` command.
+보시다시피 `ui` 파드가 이제 Graviton 기반 노드 그룹에서 실행되고 있습니다. 또한 `kubectl describe node` 명령에서 테인트를, `kubectl describe pod` 명령에서 일치하는 톨러레이션을 확인할 수 있습니다.
 
-You've successfully scheduled the `ui` application, which can run on both Intel and ARM-based processors, to run on the new Graviton-based managed node group we created in the previous step. Taints and tolerations are a powerful tool that can be used to configure how pods get scheduled onto nodes, whether it's for Graviton/GPU-enhanced nodes, or for multi-tenant Kubernetes clusters.
+이전 단계에서 생성한 새로운 Graviton 기반 관리형 노드 그룹에서 Intel과 ARM 기반 프로세서 모두에서 실행될 수 있는 `ui` 애플리케이션을 성공적으로 스케줄링했습니다. 테인트와 톨러레이션은 Graviton/GPU 강화 노드나, 멀티 테넌트 Kubernetes 클러스터를 위해 파드가 노드에 스케줄링되는 방식을 구성하는 데 사용할 수 있는 강력한 도구입니다.

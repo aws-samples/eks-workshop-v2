@@ -1,20 +1,20 @@
 ---
-title: "Reports & Auditing"
+title: "보고서 및 감사"
 sidebar_position: 74
 ---
 
-Kyverno includes a [Policy Reporting](https://kyverno.io/docs/policy-reports/) tool that uses an open format defined by the Kubernetes Policy Working Group. These reports are deployed as custom resources in the cluster. Kyverno generates these reports when admission actions like _CREATE_, _UPDATE_, and _DELETE_ are performed in the cluster. Reports are also generated as a result of background scans that validate policies on existing resources.
+Kyverno는 Kubernetes Policy Working Group에서 정의한 개방형 형식을 사용하는 [정책 보고](https://kyverno.io/docs/policy-reports/) 도구를 포함합니다. 이러한 보고서는 클러스터의 사용자 정의 리소스로 배포됩니다. Kyverno는 클러스터에서 _CREATE_, _UPDATE_, _DELETE_와 같은 승인 작업이 수행될 때 이러한 보고서를 생성합니다. 또한 기존 리소스에 대한 정책을 검증하는 백그라운드 스캔의 결과로도 보고서가 생성됩니다.
 
-Throughout this workshop, we have created several policies with specific rules. When a resource matches one or more rules according to the policy definition and violates any of them, an entry is created in the report for each violation. This can result in multiple entries if the same resource matches and violates multiple rules. When resources are deleted, their entries are removed from the reports. This means that Kyverno Reports always represent the current state of the cluster and do not record historical information.
+이 워크샵 전반에 걸쳐 우리는 특정 규칙이 있는 여러 정책을 만들었습니다. 리소스가 정책 정의에 따라 하나 이상의 규칙과 일치하고 이를 위반하는 경우, 각 위반에 대해 보고서에 항목이 생성됩니다. 동일한 리소스가 여러 규칙과 일치하고 위반하는 경우 여러 항목이 생성될 수 있습니다. 리소스가 삭제되면 해당 항목도 보고서에서 제거됩니다. 이는 Kyverno 보고서가 항상 클러스터의 현재 상태를 나타내며 과거 정보는 기록하지 않는다는 것을 의미합니다.
 
-As discussed earlier, Kyverno has two types of `validationFailureAction`:
+앞서 논의한 대로 Kyverno에는 두 가지 유형의 `validationFailureAction`이 있습니다:
 
-1. `Audit` mode: Allows resources to be created and reports the action in the Policy Reports.
-2. `Enforce` mode: Denies resource creation but does not add an entry in the Policy Reports.
+1. `Audit` 모드: 리소스 생성을 허용하고 정책 보고서에 해당 작업을 보고합니다.
+2. `Enforce` 모드: 리소스 생성을 거부하지만 정책 보고서에 항목을 추가하지 않습니다.
 
-For example, if a Policy in `Audit` mode contains a single rule requiring all resources to set the label `CostCenter`, and a Pod is created without that label, Kyverno will allow the Pod's creation but record it as a `FAIL` result in a Policy Report due to the rule violation. If this same Policy is configured with `Enforce` mode, Kyverno will immediately block the resource creation, and this will not generate an entry in the Policy Reports. However, if the Pod is created in compliance with the rule, it will be reported as `PASS` in the report. You can check blocked actions in the Kubernetes events for the Namespace where the action was requested.
+예를 들어, `Audit` 모드의 정책에 모든 리소스가 `CostCenter` 레이블을 설정해야 하는 단일 규칙이 포함되어 있고, 해당 레이블 없이 Pod가 생성되는 경우, Kyverno는 Pod 생성을 허용하지만 규칙 위반으로 인해 정책 보고서에 `FAIL` 결과로 기록됩니다. 동일한 정책이 `Enforce` 모드로 구성된 경우, Kyverno는 즉시 리소스 생성을 차단하며, 이는 정책 보고서에 항목을 생성하지 않습니다. 하지만 Pod가 규칙을 준수하여 생성되면 보고서에 `PASS`로 보고됩니다. 차단된 작업은 작업이 요청된 네임스페이스의 Kubernetes 이벤트에서 확인할 수 있습니다.
 
-Let's examine our cluster's compliance status with the policies we've created so far in this workshop by reviewing the Policy Reports generated.
+이 워크샵에서 지금까지 생성한 정책에 대한 클러스터의 준수 상태를 정책 보고서를 검토하여 살펴보겠습니다.
 
 ```bash hook=reports
 $ kubectl get policyreports -A
@@ -52,11 +52,11 @@ ui            cpol-require-labels              0      3      0      0       0   
 ui            cpol-restrict-image-registries   3      0      0      0       0      25m
 ```
 
-> Note: The output may vary.
+> 참고: 출력은 다를 수 있습니다.
 
-As we worked with ClusterPolicies, you can see in the above output that Reports were generated across all Namespaces, not just in the `default` Namespace where we created the resources to be validated. The reports show the status of objects using `PASS`, `FAIL`, `WARN`, `ERROR`, and `SKIP`.
+ClusterPolicy로 작업했기 때문에, 위의 출력에서 볼 수 있듯이 검증할 리소스를 생성한 `default` 네임스페이스뿐만 아니라 모든 네임스페이스에 걸쳐 보고서가 생성되었습니다. 보고서는 `PASS`, `FAIL`, `WARN`, `ERROR`, `SKIP`을 사용하여 객체의 상태를 보여줍니다.
 
-As mentioned earlier, blocked actions are recorded in the Namespace events. Let's examine those using the following command:
+앞서 언급했듯이 차단된 작업은 네임스페이스 이벤트에 기록됩니다. 다음 명령을 사용하여 이를 살펴보겠습니다:
 
 ```bash
 $ kubectl get events | grep block
@@ -64,9 +64,9 @@ $ kubectl get events | grep block
 3m         Warning   PolicyViolation   clusterpolicy/restrict-image-registries   Pod default/nginx-public: [validate-registries] fail (blocked); validation error: Unknown Image registry. rule validate-registries failed at path /spec/containers/0/image/
 ```
 
-> Note: The output may vary.
+> 참고: 출력은 다를 수 있습니다.
 
-Now, let's take a closer look at the Policy Reports for the `default` Namespace used in the labs:
+이제 실습에서 사용한 `default` 네임스페이스에 대한 정책 보고서를 자세히 살펴보겠습니다:
 
 ```bash
 $ kubectl get policyreports
@@ -76,11 +76,11 @@ default       cpol-require-labels              2      0      0      0       0   
 default       cpol-restrict-image-registries   1      1      0      0       0      13m
 ```
 
-Notice that for the `restrict-image-registries` ClusterPolicy, we have one `FAIL` and one `PASS` report. This is because all the ClusterPolicies were created with `Enforce` mode, and as mentioned, blocked resources are not reported. Additionally, previously running resources that could violate policy rules were already removed.
+`restrict-image-registries` ClusterPolicy에 대해 하나의 `FAIL`과 하나의 `PASS` 보고서가 있음을 주목하세요. 이는 모든 ClusterPolicy가 `Enforce` 모드로 생성되었고, 언급했듯이 차단된 리소스는 보고되지 않기 때문입니다. 또한 정책 규칙을 위반할 수 있는 이전에 실행 중이던 리소스는 이미 제거되었습니다.
 
-The `nginx` Pod, which we left running with a publicly available image, is the only remaining resource that violates the `restrict-image-registries` policy, and it's shown in the report.
+공개적으로 사용 가능한 이미지로 실행 중인 `nginx` Pod는 `restrict-image-registries` 정책을 위반하는 유일한 남은 리소스이며, 이는 보고서에 표시됩니다.
 
-To examine the violations for this Policy in more detail, describe the specific report. Use the `kubectl describe` command for the `cpol-restrict-image-registries` Report to see the validation results for the `restrict-image-registries` ClusterPolicy:
+이 정책의 위반 사항을 더 자세히 살펴보려면 특정 보고서를 설명하세요. `restrict-image-registries` ClusterPolicy에 대한 검증 결과를 보려면 `cpol-restrict-image-registries` 보고서에 대해 `kubectl describe` 명령을 사용하세요:
 
 ```bash
 $ kubectl describe policyreport cpol-restrict-image-registries
@@ -136,8 +136,8 @@ Summary:
 Events:   <none>
 ```
 
-The above output displays the `nginx` Pod policy validation receiving a `fail` Result and validation error Message. On the other hand, the `nginx-ecr` policy validation received a `pass` Result. Monitoring reports in this way could be an overhead for administrators. Kyverno also supports a GUI-based tool for [Policy reporter](https://kyverno.github.io/policy-reporter/core/targets/#policy-reporter-ui), which is outside the scope of this workshop.
+위의 출력은 `nginx` Pod 정책 검증이 `fail` 결과와 검증 오류 메시지를 받은 것을 보여줍니다. 반면에 `nginx-ecr` 정책 검증은 `pass` 결과를 받았습니다. 이러한 방식으로 보고서를 모니터링하는 것은 관리자에게 부담이 될 수 있습니다. Kyverno는 또한 이 워크샵의 범위를 벗어나는 [Policy reporter](https://kyverno.github.io/policy-reporter/core/targets/#policy-reporter-ui)를 위한 GUI 기반 도구를 지원합니다.
 
-In this lab, you learned how to augment the Kubernetes PSA/PSS configurations with Kyverno. Pod Security Standards (PSS) and the in-tree Kubernetes implementation of these standards, Pod Security Admission (PSA), provide good building blocks for managing pod security. The majority of users switching from Kubernetes Pod Security Policies (PSP) should be successful using the PSA/PSS features.
+이 실습에서는 Kyverno로 Kubernetes PSA/PSS 구성을 보강하는 방법을 배웠습니다. Pod Security Standards (PSS)와 이러한 표준의 Kubernetes 내장 구현인 Pod Security Admission (PSA)은 pod 보안 관리를 위한 좋은 기반을 제공합니다. Kubernetes Pod Security Policies (PSP)에서 전환하는 대부분의 사용자는 PSA/PSS 기능을 사용하여 성공적으로 전환할 수 있습니다.
 
-Kyverno enhances the user experience created by PSA/PSS by leveraging the in-tree Kubernetes pod security implementation and providing several helpful enhancements. You can use Kyverno to govern the proper use of pod security labels. Additionally, you can use the new Kyverno `validate.podSecurity` rule to easily manage pod security standards with additional flexibility and an enhanced user experience. And, with the Kyverno CLI, you can automate policy evaluation upstream of your clusters.
+Kyverno는 내장된 Kubernetes pod 보안 구현을 활용하고 여러 유용한 개선 사항을 제공함으로써 PSA/PSS가 만든 사용자 경험을 향상시킵니다. Kyverno를 사용하여 pod 보안 레이블의 적절한 사용을 관리할 수 있습니다. 또한 새로운 Kyverno `validate.podSecurity` 규칙을 사용하여 추가적인 유연성과 향상된 사용자 경험으로 pod 보안 표준을 쉽게 관리할 수 있습니다. 그리고 Kyverno CLI를 사용하면 클러스터 업스트림에서 정책 평가를 자동화할 수 있습니다.

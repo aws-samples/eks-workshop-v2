@@ -1,5 +1,5 @@
 ---
-title: 쿠버네티스의 마이크로서비스
+title: Kubernetes의 마이크로서비스
 sidebar_position: 30
 ---
 

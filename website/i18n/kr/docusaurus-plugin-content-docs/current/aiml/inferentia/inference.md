@@ -1,33 +1,33 @@
 ---
-title: "Run inference on AWS Inferentia"
+title: "AWS Inferentia에서 추론 실행하기"
 sidebar_position: 40
 ---
 
-Now we can use the compiled model to run an inference workload on an AWS Inferentia node.
+이제 컴파일된 모델을 사용하여 AWS Inferentia 노드에서 추론 워크로드를 실행할 수 있습니다.
 
-### Create a pod for inference
+### 추론을 위한 파드 생성하기
 
-Check the image that we'll run the inference on:
+추론을 실행할 이미지를 확인합니다:
 
 ```bash
 $ echo $AIML_DL_INF_IMAGE
 ```
 
-This is a different image than we used for training and has been optimized for inference.
+이는 학습에 사용했던 것과는 다른 이미지이며 추론에 최적화되어 있습니다.
 
-Now we can deploy a Pod for inference. This is the the manifest file for running the inference Pod:
+이제 추론을 위한 파드를 배포할 수 있습니다. 다음은 추론 파드를 실행하기 위한 매니페스트 파일입니다:
 
 ::yaml{file="manifests/modules/aiml/inferentia/inference/inference.yaml" paths="spec.nodeSelector,spec.containers.0.resources.limits"}
 
-1. For the Inference we've set the `nodeSelector` section to specify a inf2 instance type.
-2. In the `resources` `limits` section again we specify that we need a neuron core to run this Pod to expose the API.
+1. 추론을 위해 `nodeSelector` 섹션에서 inf2 인스턴스 타입을 지정했습니다.
+2. `resources` `limits` 섹션에서 API를 노출하기 위해 이 파드를 실행하는데 필요한 뉴런 코어를 다시 지정합니다.
 
 ```bash
 $ kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/inference \
   | envsubst | kubectl apply -f-
 ```
 
-Again Karpenter detects the pending Pod which this time needs a inf2 instance with needs Neuron cores. So Karpenter launches an inf2 instance which has the Inferentia chip. You can again monitor the instance provisioning with the following command:
+Karpenter는 이번에는 뉴런 코어가 필요한 inf2 인스턴스가 필요한 대기 중인 파드를 감지합니다. 따라서 Karpenter는 Inferentia 칩이 있는 inf2 인스턴스를 시작합니다. 다음 명령으로 인스턴스 프로비저닝을 다시 모니터링할 수 있습니다:
 
 ```bash test=false
 $ kubectl logs -l app.kubernetes.io/instance=karpenter -n kube-system -f | jq
@@ -63,23 +63,23 @@ $ kubectl logs -l app.kubernetes.io/instance=karpenter -n kube-system -f | jq
 ...
 ```
 
-The inference Pod should be scheduled on the node provisioned by Karpenter. Check if the Pod is in it's ready state:
+추론 파드는 Karpenter가 프로비저닝한 노드에 스케줄링되어야 합니다. 파드가 준비 상태인지 확인하세요:
 
 :::note
-It can take up to 12 minutes to provision the node, add it to the EKS cluster, and start the pod.
+노드를 프로비저닝하고 EKS 클러스터에 추가한 다음 파드를 시작하는 데 최대 12분이 걸릴 수 있습니다.
 :::
 
 ```bash timeout=600
 $ kubectl -n aiml wait --for=condition=Ready --timeout=12m pod/inference
 ```
 
-We can use the following command to get more details on the node that was provisioned to schedule our pod onto:
+다음 명령을 사용하여 파드가 스케줄링된 프로비저닝된 노드에 대한 자세한 정보를 얻을 수 있습니다:
 
 ```bash
 $ kubectl get node -l karpenter.sh/nodepool=aiml -o jsonpath='{.items[0].status.capacity}' | jq .
 ```
 
-This output shows the capacity this node has:
+이 출력은 이 노드가 가진 용량을 보여줍니다:
 
 ```json
 {
@@ -96,26 +96,26 @@ This output shows the capacity this node has:
 }
 ```
 
-We can see that this node as a `aws.amazon.com/neuron` of 1. Karpenter provisioned this node for us as that's how many neuron the Pod requested.
+이 노드에 `aws.amazon.com/neuron`이 1개 있는 것을 볼 수 있습니다. Karpenter는 파드가 요청한 뉴런 수만큼 이 노드를 프로비저닝했습니다.
 
-### Run an inference
+### 추론 실행하기
 
-This is the code that we will be using to run inference using a Neuron core on Inferentia:
+다음은 Inferentia의 뉴런 코어를 사용하여 추론을 실행하는 데 사용할 코드입니다:
 
 ```file
 manifests/modules/aiml/inferentia/inference/inference.py
 ```
 
-This Python code does the following tasks:
+이 Python 코드는 다음 작업을 수행합니다:
 
-1. It downloads and stores an image of a small kitten.
-2. It fetches the labels for classifying the image.
-3. It then imports this image and normalizes it into a tensor.
-4. It loads our previously created model.
-5. It runs the prediction on our small kitten image.
-6. It gets the top 5 results from the prediction and prints these to the command-line.
+1. 작은 고양이 이미지를 다운로드하고 저장합니다.
+2. 이미지 분류를 위한 레이블을 가져옵니다.
+3. 이 이미지를 가져와서 텐서로 정규화합니다.
+4. 이전에 생성한 모델을 로드합니다.
+5. 작은 고양이 이미지에 대한 예측을 실행합니다.
+6. 예측에서 상위 5개 결과를 가져와 명령줄에 출력합니다.
 
-We copy this code to the Pod, download our previously uploaded model, and run the following commands:
+이 코드를 파드에 복사하고, 이전에 업로드한 모델을 다운로드한 다음 다음 명령을 실행합니다:
 
 ```bash
 $ kubectl -n aiml cp ~/environment/eks-workshop/modules/aiml/inferentia/inference/inference.py inference:/
@@ -127,6 +127,6 @@ Top 5 labels:
  ['tiger', 'lynx', 'tiger_cat', 'Egyptian_cat', 'tabby']
 ```
 
-As output we get the top 5 labels back. We are running the inference on an image of a small kitten using ResNet-50's pre-trained model, so these results are expected. As a possible next step to improve performance we could create our own data set of images and train our own model for our specific use case. This could improve our prediction results.
+출력으로 상위 5개 레이블을 받습니다. ResNet-50의 사전 학습된 모델을 사용하여 작은 고양이 이미지에 대해 추론을 실행하고 있으므로 이러한 결과는 예상된 것입니다. 성능을 향상시키기 위한 다음 단계로 우리만의 이미지 데이터셋을 만들고 특정 사용 사례에 맞는 모델을 학습시킬 수 있습니다. 이를 통해 예측 결과를 개선할 수 있습니다.
 
-This concludes this lab on using AWS Inferentia with Amazon EKS.
+이것으로 Amazon EKS에서 AWS Inferentia를 사용하는 실습을 마칩니다.

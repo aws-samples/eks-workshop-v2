@@ -1,28 +1,28 @@
 ---
-title: "Policy"
+title: "정책"
 sidebar_position: 60
 ---
 
-[Policies](https://kubernetes.io/docs/concepts/policy/) defines the cluster resource usages and restricts the deployment of _Kubernetes Objects_ to meet recommended best practices. Following are different types of policies that can be viewed at the cluster level in the **_Resource Types_** - **_Policy_** section
+[정책](https://kubernetes.io/docs/concepts/policy/)은 클러스터 리소스 사용을 정의하고 권장 모범 사례를 충족하기 위해 _Kubernetes 객체_ 배포를 제한합니다. 다음은 **_리소스 유형_** - **_정책_** 섹션에서 클러스터 수준에서 볼 수 있는 다양한 유형의 정책입니다.
 
-- Limit Ranges
-- Resource Quotas
-- Network Policies
-- Pod Disruption Budgets
-- Pod Security Policies
+- 제한 범위
+- 리소스 할당량
+- 네트워크 정책
+- 파드 중단 예산
+- 파드 보안 정책
 
-A [LimitRange](https://kubernetes.io/docs/concepts/policy/limit-range/) is a policy to limit resource allocations (limits and requests) specified to respective objects kind such as Pod, PersistentVolumeClaim in a namespace. _Resource allocation_ is used to specify resources that are needed and at the same time ensure resources are not over consumed by the object. _Karpenter_ is a Kubernetes auto-scaler that helps to deploy right-sized resources based on the application demand. Refer [Karpenter](../../../autoscaling/compute/karpenter/index.md) section to configure _autoscaling_ in EKS Cluster.
+[LimitRange](https://kubernetes.io/docs/concepts/policy/limit-range/)는 네임스페이스에서 Pod, PersistentVolumeClaim과 같은 각 객체 종류에 지정된 리소스 할당(제한 및 요청)을 제한하는 정책입니다. _리소스 할당_은 필요한 리소스를 지정하고 동시에 객체가 리소스를 과다 소비하지 않도록 보장하는 데 사용됩니다. _Karpenter_는 애플리케이션 수요에 기반하여 적절한 크기의 리소스를 배포하는 데 도움을 주는 Kubernetes 자동 스케일러입니다. EKS 클러스터에서 _자동 스케일링_을 구성하려면 [Karpenter](../../../autoscaling/compute/karpenter/index.md) 섹션을 참조하세요.
 
-[Resource Quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/), are hard limit defined at the namespace level and the objects like `pods`, `services`, compute resources like `cpu` and `memory` should be created with in the hard limit, else it will be rejected defined by a ResourceQuota object.
+[리소스 할당량](https://kubernetes.io/docs/concepts/policy/resource-quotas/)은 네임스페이스 수준에서 정의된 하드 제한이며, `pods`, `services`와 같은 객체와 `cpu` 및 `memory`와 같은 컴퓨팅 리소스는 ResourceQuota 객체에 의해 정의된 하드 제한 내에서 생성되어야 하며, 그렇지 않으면 거부됩니다.
 
-A [NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/) establish the communication between source and the destinations, for example `ingress` and `egress` of the pod is controlled using network policies.
+[NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/)는 소스와 대상 간의 통신을 설정합니다. 예를 들어 파드의 `ingress`와 `egress`는 네트워크 정책을 사용하여 제어됩니다.
 
-[Pod Disruption Budget](https://kubernetes.io/docs/tasks/run-application/configure-pdb/) is a way to mitigate disruptions that can happen to a pod such as deletion, updates to deployments, removal of pod etc. More information on the types of _[disruptions](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/)_ that can happen to pods.
+[Pod Disruption Budget](https://kubernetes.io/docs/tasks/run-application/configure-pdb/)은 삭제, 배포 업데이트, 파드 제거 등과 같이 파드에 발생할 수 있는 중단을 완화하는 방법입니다. 파드에 발생할 수 있는 _[중단](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/)_ 유형에 대한 자세한 정보를 확인하세요.
 
-The following screenshot displays a list of the _PodDisruptionBudgets_ by namespace.
+다음 스크린샷은 네임스페이스별 _PodDisruptionBudgets_ 목록을 보여줍니다.
 
 ![Insights](/img/resource-view/policy-poddisruption.jpg)
 
-Let's examine the _Pod Disruption Budget_ for _karpenter_, you can see the details of this resource such as the namespace and the parameters that needs to be matched for this _Pod Disruption Budget_. In the below screenshot, `max unavailable = 1` is set, which means the maximum number of _karpenter_ pods that can be unavailable is 1.
+_karpenter_의 _Pod Disruption Budget_을 살펴보면, 네임스페이스와 이 _Pod Disruption Budget_에 대해 일치해야 하는 매개변수와 같은 이 리소스의 세부 정보를 볼 수 있습니다. 아래 스크린샷에서 `max unavailable = 1`로 설정되어 있는데, 이는 사용할 수 없는 _karpenter_ 파드의 최대 수가 1임을 의미합니다.
 
 ![Insights](/img/resource-view/policy-poddisruption-detail.jpg)

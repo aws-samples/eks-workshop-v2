@@ -3,17 +3,17 @@ title: "IP mode"
 sidebar_position: 40
 ---
 
-앞서 언급했듯이, 우리가 생성한 NLB는 "Instance mode"로 작동하고 있습니다. 인스턴스 대상 모드는 AWS EC2 인스턴스에서 실행되는 pod를 지원합니다. 이 모드에서 AWS NLB는 인스턴스로 트래픽을 보내고, 개별 워커 노드의 `kube-proxy`가 Kubernetes 클러스터의 하나 이상의 워커 노드를 통해 pod로 전달합니다.
+앞서 언급했듯이, 우리가 생성한 NLB는 "Instance mode"로 작동하고 있습니다. 인스턴스 대상 모드는 AWS EC2 인스턴스에서 실행되는 Pod를 지원합니다. 이 모드에서 AWS NLB는 인스턴스로 트래픽을 보내고, 개별 워커 노드의 `kube-proxy`가 쿠버네티스 클러스터의 하나 이상의 워커 노드를 통해  Pod로 전달합니다.
 
-AWS Load Balancer Controller는 "IP mode"로 작동하는 NLB 생성도 지원합니다. 이 모드에서는 AWS NLB가 서비스 뒤의 Kubernetes pod로 직접 트래픽을 보내므로, Kubernetes 클러스터의 워커 노드를 통한 추가 네트워크 홉이 필요하지 않습니다. IP 대상 모드는 AWS EC2 인스턴스와 AWS Fargate 모두에서 실행되는 pod를 지원합니다.
+AWS Load Balancer 컨트롤러는 "IP mode"로 작동하는 NLB 생성도 지원합니다. 이 모드에서는 AWS NLB가 서비스 뒤의 쿠버네티스  Pod로 직접 트래픽을 보내므로, 쿠버네티스 클러스터의 워커 노드를 통한 추가 네트워크 홉이 필요하지 않습니다. IP 대상 모드는 AWS EC2 인스턴스와 AWS Fargate 모두에서 실행되는 Pod를 지원합니다.
 
 ![IP mode](./assets/ip-mode.webp)
 
 이전 다이어그램은 대상 그룹 모드가 Instance와 IP일 때 애플리케이션 트래픽이 어떻게 다르게 흐르는지 설명합니다.
 
-대상 그룹 모드가 Instance인 경우, 트래픽은 각 노드의 서비스를 위해 생성된 노드 포트를 통해 흐릅니다. 이 모드에서는 `kube-proxy`가 이 서비스를 실행하는 pod로 트래픽을 라우팅합니다. 서비스 pod는 로드 밸런서로부터 트래픽을 받은 노드와 다른 노드에서 실행될 수 있습니다. ServiceA(녹색)와 ServiceB(분홍색)는 "Instance mode"로 작동하도록 구성되어 있습니다.
+대상 그룹 모드가 Instance인 경우, 트래픽은 각 노드의 서비스를 위해 생성된 노드 포트를 통해 흐릅니다. 이 모드에서는 `kube-proxy`가 이 서비스를 실행하는  Pod로 트래픽을 라우팅합니다. 서비스 Pod는 로드 밸런서로부터 트래픽을 받은 노드와 다른 노드에서 실행될 수 있습니다. ServiceA(녹색)와 ServiceB(분홍색)는 "Instance mode"로 작동하도록 구성되어 있습니다.
 
-반면에 대상 그룹 모드가 IP인 경우, 트래픽은 로드 밸런서에서 서비스 pod로 직접 흐릅니다. 이 모드에서는 `kube-proxy`의 네트워크 홉을 건너뜁니다. ServiceC(파란색)는 "IP mode"로 작동하도록 구성되어 있습니다.
+반면에 대상 그룹 모드가 IP인 경우, 트래픽은 로드 밸런서에서 서비스  Pod로 직접 흐릅니다. 이 모드에서는 `kube-proxy`의 네트워크 홉을 건너뜁니다. ServiceC(파란색)는 "IP mode"로 작동하도록 구성되어 있습니다.
 
 이전 다이어그램의 숫자들은 다음과 같은 것들을 나타냅니다.
 

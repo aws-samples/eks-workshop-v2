@@ -1,32 +1,32 @@
 ---
-title: "Simulating Complete Node Failure with FIS"
+title: "FIS를 사용한 완전한 노드 장애 시뮬레이션"
 sidebar_position: 170
-description: "Demonstrates the impact of a complete node failure on a Kubernetes environment using AWS Fault Injection Simulator."
+description: "AWS Fault Injection Simulator를 사용하여 Kubernetes 환경에서 완전한 노드 장애의 영향을 보여줍니다."
 ---
 
-## Overview
+## 개요
 
-This experiment extends our previous partial node failure test to simulate a complete failure of all nodes in our EKS cluster. This is essentially a cluster failure. It demonstrates how AWS Fault Injection Simulator (FIS) can be used to test extreme scenarios and validate your system's resilience under catastrophic conditions.
+이 실험은 이전의 부분적 노드 장애 테스트를 확장하여 EKS 클러스터의 모든 노드에서 완전한 장애를 시뮬레이션합니다. 이는 본질적으로 클러스터 장애입니다. AWS Fault Injection Simulator(FIS)를 사용하여 극단적인 시나리오를 테스트하고 재난 상황에서 시스템의 복원력을 검증하는 방법을 보여줍니다.
 
-## Experiment Details
+## 실험 세부사항
 
-This experiment is similar to the partial node failure as it is repeatable. Unlike the partial node failure simulation, this experiment:
+이 실험은 부분적 노드 장애와 마찬가지로 반복 가능합니다. 부분적 노드 장애 시뮬레이션과 달리 이 실험은:
 
-1. Terminates 100% of the instances in all node groups.
-2. Tests your cluster's ability to recover from a state of complete failure.
-3. Allows observation of the full recovery process, from total outage to full restoration.
+1. 모든 노드 그룹에서 100%의 인스턴스를 종료합니다.
+2. 완전한 장애 상태에서 클러스터의 복구 능력을 테스트합니다.
+3. 전체 중단에서 완전한 복구까지의 전체 복구 프로세스를 관찰할 수 있습니다.
 
-## Creating the Node Failure Experiment
+## 노드 장애 실험 생성
 
-Create a new AWS FIS experiment template to simulate the complete node failure:
+완전한 노드 장애를 시뮬레이션하기 위한 새로운 AWS FIS 실험 템플릿을 생성합니다:
 
 ```bash wait=30
 $ export FULL_NODE_EXP_ID=$(aws fis create-experiment-template --cli-input-json '{"description":"NodeDeletion","targets":{"Nodegroups-Target-1":{"resourceType":"aws:eks:nodegroup","resourceTags":{"eksctl.cluster.k8s.io/v1alpha1/cluster-name":"eks-workshop"},"selectionMode":"ALL"}},"actions":{"nodedeletion":{"actionId":"aws:eks:terminate-nodegroup-instances","parameters":{"instanceTerminationPercentage":"100"},"targets":{"Nodegroups":"Nodegroups-Target-1"}}},"stopConditions":[{"source":"none"}],"roleArn":"'$FIS_ROLE_ARN'","tags":{"ExperimentSuffix": "'$RANDOM_SUFFIX'"}}' --output json | jq -r '.experimentTemplate.id')
 ```
 
-## Running the Experiment
+## 실험 실행
 
-Execute the FIS experiment and monitor the cluster's response:
+FIS 실험을 실행하고 클러스터의 반응을 모니터링합니다:
 
 ```bash timeout=420
 $ aws fis start-experiment --experiment-template-id $FULL_NODE_EXP_ID --output json && timeout --preserve-status 360s ~/$SCRIPT_DIR/get-pods-by-az.sh
@@ -47,17 +47,17 @@ $ aws fis start-experiment --experiment-template-id $FULL_NODE_EXP_ID --output j
        ui-6dfb84cf67-fpg8j   1/1   Running   0     4m52s
 ```
 
-This command will show the pods distribution over 6 minutes while we observe the experiment. We should see:
+이 명령은 6분 동안 파드 분포를 보여줄 것입니다. 우리는 다음을 관찰할 수 있습니다:
 
-1. Shortly after the experiment is initiated, all nodes and pods disappear.
-2. After about 2 minutes, First node and some pods will come back online.
-3. Around 4 minutes, a second node appears and more pods start up.
-4. At 6 minutes, continued recovery as the last node come online.
+1. 실험이 시작된 직후, 모든 노드와 파드가 사라집니다.
+2. 약 2분 후, 첫 번째 노드와 일부 파드가 다시 온라인 상태가 됩니다.
+3. 약 4분 후, 두 번째 노드가 나타나고 더 많은 파드가 시작됩니다.
+4. 6분이 되면, 마지막 노드가 온라인 상태가 되면서 계속해서 복구가 진행됩니다.
 
-Due to the severity of the experiment, the retail store url will not stay operational during testing. The url should come back up after the final node is operational. If the node is not operational after this test, run `~/$SCRIPT_DIR/verify-clsuter.sh` to wait for the final node to change state to running before proceeding.
+실험의 심각성으로 인해 테스트 중에는 리테일 스토어 URL이 작동하지 않을 것입니다. URL은 마지막 노드가 작동한 후에 다시 사용 가능해질 것입니다. 이 테스트 후에 노드가 작동하지 않는 경우, `~/$SCRIPT_DIR/verify-clsuter.sh`를 실행하여 마지막 노드가 실행 상태로 변경될 때까지 기다린 후 진행하십시오.
 
 :::note
-To verify nodes and pods redistribution, you can run:
+노드와 파드 재분배를 확인하려면 다음을 실행하십시오:
 
 ```bash timeout=900 wait=30
 $ EXPECTED_NODES=3 && while true; do ready_nodes=$(kubectl get nodes --no-headers | grep " Ready" | wc -l); if [ "$ready_nodes" -eq "$EXPECTED_NODES" ]; then echo "All $EXPECTED_NODES expected nodes are ready."; echo "Listing the ready nodes:"; kubectl get nodes | grep " Ready"; break; else echo "Waiting for all $EXPECTED_NODES nodes to be ready... (Currently $ready_nodes are ready)"; sleep 10; fi; done
@@ -78,9 +78,9 @@ $ timeout 10s ~/$SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 
 :::
 
-## Verifying Retail Store Availability
+## 리테일 스토어 가용성 확인
 
-Check the retail store application's recovery:
+리테일 스토어 애플리케이션의 복구를 확인합니다:
 
 ```bash timeout=900
 $ wait-for-lb $(kubectl get ingress -n ui -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
@@ -90,23 +90,23 @@ You can now access http://k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws
 ```
 
 :::tip
-The retail url may take 10 minutes to become operational.
+리테일 URL이 작동하기까지 10분이 걸릴 수 있습니다.
 :::
 
-## Conclusion
+## 결론
 
-This experiment demonstrates:
+이 실험은 다음을 보여줍니다:
 
-1. Your cluster's response to catastrophic failure.
-2. Effectiveness of auto-scaling in replacing all failed nodes.
-3. Kubernetes' ability to reschedule all pods onto new nodes.
-4. Total system recovery time from complete failure.
+1. 재난적 장애에 대한 클러스터의 반응
+2. 실패한 모든 노드를 대체하는 자동 스케일링의 효과
+3. 새로운 노드에 모든 파드를 재스케줄링하는 Kubernetes의 능력
+4. 완전한 장애로부터의 전체 시스템 복구 시간
 
-Key learnings:
+주요 학습 사항:
 
-- Importance of robust auto-scaling configurations.
-- Value of effective pod priority and preemption settings.
-- Need for architectures that can withstand complete cluster failure.
-- Significance of regular testing of extreme scenarios.
+- 강력한 자동 스케일링 구성의 중요성
+- 효과적인 파드 우선순위 및 선점 설정의 가치
+- 완전한 클러스터 장애를 견딜 수 있는 아키텍처의 필요성
+- 극단적인 시나리오의 정기적인 테스트의 중요성
 
-By using FIS for such tests, you can safely simulate catastrophic failures, validate recovery procedures, identify critical dependencies, and measure recovery times. This helps in refining your disaster recovery plans and improving overall system resilience.
+FIS를 이러한 테스트에 사용함으로써, 재난적 장애를 안전하게 시뮬레이션하고, 복구 절차를 검증하며, 중요한 의존성을 식별하고, 복구 시간을 측정할 수 있습니다. 이는 재해 복구 계획을 개선하고 전반적인 시스템 복원력을 향상시키는 데 도움이 됩니다.

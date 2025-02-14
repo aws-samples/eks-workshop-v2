@@ -1,9 +1,9 @@
 ---
-title: "VPC architecture"
+title: "VPC 아키텍처"
 sidebar_position: 5
 ---
 
-We can start by inspecting the VPC that has been set up. For example describe the VPC:
+설정된 VPC를 검사하는 것부터 시작해보겠습니다. 예를 들어 VPC를 설명하면:
 
 ```bash
 $ aws ec2 describe-vpcs --vpc-ids $VPC_ID
@@ -52,16 +52,16 @@ $ aws ec2 describe-vpcs --vpc-ids $VPC_ID
 }
 ```
 
-Here we see there are two CIDR ranges associated with the VPC:
+여기서 VPC와 연결된 두 개의 CIDR 범위를 볼 수 있습니다:
 
-1. The `10.42.0.0/16` range which is the "primary" CIDR
-2. The `100.64.0.0/16` range which is the "secondary" CIDR
+1. "기본" CIDR인 `10.42.0.0/16` 범위
+2. "보조" CIDR인 `100.64.0.0/16` 범위
 
-You can also view this in the AWS console:
+AWS 콘솔에서도 이를 확인할 수 있습니다:
 
-<ConsoleButton url="https://console.aws.amazon.com/vpc/home#vpcs:tag:created-by=eks-workshop-v2" service="vpc" label="Open VPC console"/>
+<ConsoleButton url="https://console.aws.amazon.com/vpc/home#vpcs:tag:created-by=eks-workshop-v2" service="vpc" label="VPC 콘솔 열기"/>
 
-Describing the subnets associated with the VPC will show 9 subnets:
+VPC와 연결된 서브넷을 설명하면 9개의 서브넷이 표시됩니다:
 
 ```bash
 $ aws ec2 describe-subnets --filters "Name=tag:created-by,Values=eks-workshop-v2" \
@@ -79,16 +79,16 @@ $ aws ec2 describe-subnets --filters "Name=tag:created-by,Values=eks-workshop-v2
 ]
 ```
 
-These are split between:
+이는 다음과 같이 나뉩니다:
 
-- Public subnets: One for each availability zones using a CIDR block from the primary CIDR range
-- Private subnets: One for each availability zones using a CIDR block from the primary CIDR range
-- Secondary private subnets: One for each availability zones using a CIDR block from the **secondary** CIDR range
+- 퍼블릭 서브넷: 기본 CIDR 범위의 CIDR 블록을 사용하는 각 가용 영역별 하나
+- 프라이빗 서브넷: 기본 CIDR 범위의 CIDR 블록을 사용하는 각 가용 영역별 하나
+- 보조 프라이빗 서브넷: **보조** CIDR 범위의 CIDR 블록을 사용하는 각 가용 영역별 하나
 
-![VPC subnet architecture](./assets/vpc-secondary-networking.webp)
+![VPC 서브넷 아키텍처](./assets/vpc-secondary-networking.webp)
 
-You can view these subnets in the AWS console:
+AWS 콘솔에서 이러한 서브넷을 볼 수 있습니다:
 
-<ConsoleButton url="https://console.aws.amazon.com/vpc/home#subnets:tag:created-by=eks-workshop-v2;sort=desc:CidrBlock" service="vpc" label="Open VPC console"/>
+<ConsoleButton url="https://console.aws.amazon.com/vpc/home#subnets:tag:created-by=eks-workshop-v2;sort=desc:CidrBlock" service="vpc" label="VPC 콘솔 열기"/>
 
-Currently our pods are leveraging the private subnets `10.42.96.0/19`, `10.42.128.0/19` and `10.42.160.0/19`. In this lab exercise, we'll move them to consume IP addresses from the `100.64` subnets.
+현재 우리의 파드들은 프라이빗 서브넷 `10.42.96.0/19`, `10.42.128.0/19`, `10.42.160.0/19`를 사용하고 있습니다. 이 실습에서는 이들을 `100.64` 서브넷에서 IP 주소를 사용하도록 이동할 것입니다.

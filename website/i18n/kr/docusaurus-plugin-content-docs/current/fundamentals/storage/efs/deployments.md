@@ -1,13 +1,12 @@
 ---
-title: Persistent network storage
+title: 영구 네트웍 저장소
 sidebar_position: 10
 ---
+우리의 전자상거래 애플리케이션에는 EKS에서 웹 서버를 실행하는 `assets` 마이크로서비스를 위한 배포가 포함되어 있습니다. 웹 서버는**수평적으로 확장**할 수 있고 Pod의**새로운 상태를 선언**할 수 있기 때문에 배포에 적합한 사용 사례입니다.
 
-Our ecommerce application includes a deployment for the assets microservice, which runs a webserver on EKS. Web servers are an excellent use case for deployments as they can **scale horizontally** and **declare the new state** of the Pods.
+컴포넌트는 빌드 시점에 컨테이너 이미지에 번들로 포함된 정적 제품 이미지를 제공합니다. 이는 팀이 제품 이미지를 업데이트해야 할 때마다 컨테이너 이미지를 재빌드하고 재배포해야 한다는 것을 의미합니다. 이 실습에서는 [Amazon EFS File System](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html)과 Kubernetes [영구 볼륨](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)을 사용하여 컨테이너 이미지를 재빌드하지 않고도 기존 제품 이미지를 업데이트 하고 새로운 이미지를 추가할 수 있도록 할 것입니다.
 
-The assets component serves static product images that are currently bundled into the container image during build time. This means that whenever the team needs to update product images, they must rebuild and redeploy the container image. In this exercise, we'll use [Amazon EFS File System](https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html) and Kubernetes [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) to enable updating existing product images and adding new ones without rebuilding container images.
-
-Let's start by examining the Deployment's initial volume configuration:
+먼저 배포의 초기 볼륨 구성을 살펴보겠습니다:
 
 ```bash
 $ kubectl describe deployment -n assets
@@ -38,13 +37,13 @@ Namespace:              assets
 [...]
 ```
 
-The [`Volumes`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section shows we're only using an [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) which is tied to the Pod's lifetime.
+[`Volumes`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) 섹션을 보면 Pod의 수명과 연결된 [EmptyDir 볼륨 타입](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir)만 사용하고 있습니다.
 
 ![Assets with emptyDir](./assets/assets-emptydir.webp)
 
-An `emptyDir` volume is created when a Pod is assigned to a node and exists only while that Pod runs on that node. As the name suggests, the emptyDir volume is initially empty. While all containers in the Pod can read and write files in the emptyDir volume, **when a Pod is removed from a node for any reason, the data in the emptyDir is deleted permanently.** This makes EmptyDir unsuitable for sharing data between multiple Pods in the same Deployment when that data needs to be modified.
+`emptyDir` 볼륨은 Pod가 노드에 할당될 때 생성되며 해당 Pod가 해당 노드에서 실행되는 동안에만 존재합니다. 이름에서 알 수 있듯이, emptyDir 볼륨은 처음에는 비어 있습니다. Pod의 모든 컨테이너가 emptyDir 볼륨의 파일을 읽고 쓸 수 있지만,**어떤 이유로든 노드에서 Pod가 제거되면 emptyDir의 데이터는 영구적으로 삭제됩니다.** 이는 데이터를 수정해야 할 때 동일한 배포의 여러 Pod 간에 데이터를 공유하는 데 EmptyDir가 적합하지 않다는 것을 의미합니다
 
-The container includes some initial product images copied during the build process to `/usr/share/nginx/html/assets`. We can verify this with:
+컨테이너에는 빌드 프로세스 중에 `/usr/share/nginx/html/assets`에 복사된 초기 제품 이미지가 포함되어 있습니다. 다음과 같이 확인할 수 있습니다:
 
 ```bash
 $ kubectl exec --stdin deployment/assets \
@@ -57,14 +56,14 @@ smart_2.jpg
 wood_watch.jpg
 ```
 
-Let's scale up the `assets` Deployment to multiple replicas:
+`assets` 배포를 여러 복제본으로 확장해보겠습니다:
 
 ```bash
 $ kubectl scale -n assets --replicas=2 deployment/assets
 $ kubectl rollout status -n assets deployment/assets --timeout=60s
 ```
 
-Now let's try creating a new product image file `newproduct.png` in the `/usr/share/nginx/html/assets` directory of the first Pod:
+이제 첫 번째 Pod의 `/usr/share/nginx/html/assets` 디렉토리에 새로운 제품 이미지 파일 `newproduct.png`를 생성해보겠습니다:
 
 ```bash
 $ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[0].metadata.name}')
@@ -72,7 +71,7 @@ $ kubectl exec --stdin $POD_NAME \
   -n assets -- bash -c 'touch /usr/share/nginx/html/assets/newproduct.png'
 ```
 
-Let's verify if the new product image `newproduct.png` exists in the second Pod's file system:
+두 번째 Pod의 파일 시스템에 새로운 제품 이미지 `newproduct.png`가 존재하는지 확인해보겠습니다:
 
 ```bash
 $ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
@@ -80,6 +79,6 @@ $ kubectl exec --stdin $POD_NAME \
   -n assets -- bash -c 'ls /usr/share/nginx/html/assets'
 ```
 
-As we can see, the newly created image `newproduct.png` doesn't exist on the second Pod. To address this limitation, we need a file system that can be shared across multiple Pods when the service scales horizontally while allowing file updates without redeployment.
+보시다시피, 새로 생성된 이미지 `newproduct.png`는 두 번째 Pod에 존재하지 않습니다. 이러한 제한을 해결하기 위해서는 서비스가 수평적으로 확장될 때 여러 Pod 간에 공유할 수 있고 재배포 없이 파일 업데이트를 허용하는 파일 시스템이 필요합니다.
 
 ![Assets with EFS](./assets/assets-efs.webp)

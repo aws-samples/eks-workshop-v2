@@ -2,19 +2,18 @@
 title: StatefulSets
 sidebar_position: 10
 ---
+Deployment와 마찬가지로,[StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/)은 동일한 컨테이너 스펙을 기반으로 하는 Pod들을 관리합니다. 하지만 Deployment와 달리, StatefulSet은 각 Pod에 대해 고정된 ID를 유지합니다. 이러한 Pod들은 동일한 스펙으로 생성되지만, 재스케줄링 이벤트에서도 유지되는 영구적인 식별자를 각각 가지고 있어 서로 교체할 수 없습니다.
 
-Like Deployments, [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/) manage Pods that are based on an identical container spec. Unlike Deployments, StatefulSets maintain a sticky identity for each of its Pods. These Pods are created from the same spec, but are not interchangeable with each having a persistent identifier that it maintains across any rescheduling event.
+워크로드에 대한 영구성을 제공하기 위해 스토리지 볼륨을 사용하려면, 솔루션의 일부로 StatefulSet을 사용할 수 있습니다. StatefulSet의 개별 Pod가 실패할 수 있지만, 영구적인 Pod 식별자를 통해 기존 볼륨을 실패한 Pod를 대체하는 새로운 Pod와 더 쉽게 매칭할 수 있습니다.
 
-If you want to use storage volumes to provide persistence for your workload, you can use a StatefulSet as part of the solution. Although individual Pods in a StatefulSet are susceptible to failure, the persistent Pod identifiers make it easier to match existing volumes to the new Pods that replace any that have failed.
+StatefulSet은 다음 중 하나 이상이 필요한 애플리케이션에 유용합니다:
 
-StatefulSets are valuable for applications that require one or more of the following:
+- 안정적이고 고유한 네트워크 식별자
+- 안정적이고 영구적인 스토리지
+- 순서가 있는 우아한 배포와 확장
+- 순서가 있는 자동화된 롤링 업데이트
 
-- Stable, unique network identifiers
-- Stable, persistent storage
-- Ordered, graceful deployment and scaling
-- Ordered, automated rolling updates
-
-In our ecommerce application, we have a StatefulSet already deployed as part of the Catalog microservice. The Catalog microservice utilizes a MySQL database running on EKS. Databases are a great example for the use of StatefulSets because they require **persistent storage**. We can analyze our MySQL Database Pod to see its current volume configuration:
+우리의 전자상거래 애플리케이션에서는 Catalog 마이크로서비스의 일부로 이미 StatefulSet이 배포되어 있습니다. Catalog 마이크로서비스는 EKS에서 실행되는 MySQL 데이터베이스를 사용합니다. 데이터베이스는 영구 스토리지가 필요하기 때문에 StatefulSet 사용의 좋은 예입니다. MySQL 데이터베이스 Pod를 분석하여 현재 볼륨 구성을 확인할 수 있습니다:
 
 ```bash
 $ kubectl describe statefulset -n catalog catalog-mysql
@@ -42,33 +41,33 @@ Volume Claims:  <none>
 [...]
 ```
 
-As you can see the [`Volumes`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section of our StatefulSet shows that we're only using an [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) which "shares the Pod's lifetime".
+보시다시피 우리 StatefulSet의 [`Volumes`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) 섹션은 "Pod의 수명을 공유하는" [EmptyDir 볼륨 타입](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir)만 사용하고 있음을 보여줍니다.
 
 ![MySQL with emptyDir](./assets/mysql-emptydir.webp)
 
-An `emptyDir` volume is first created when a Pod is assigned to a node, and exists as long as that Pod is running on that node. As the name implies, the emptyDir volume is initially empty. All containers in the Pod can read and write the same files in the emptyDir volume, though that volume can be mounted on the same or different paths in each container. **When a Pod is removed from a node for any reason, the data in the emptyDir is deleted permanently.** Therefore EmptyDir is not a good fit for our MySQL Database.
+`emptyDir` 볼륨은 Pod가 노드에 할당될 때 처음 생성되며, 해당 Pod가 해당 노드에서 실행되는 동안 존재합니다. 이름에서 알 수 있듯이, emptyDir 볼륨은 처음에는 비어 있습니다. Pod의 모든 컨테이너는 emptyDir 볼륨의 동일한 파일을 읽고 쓸 수 있지만, 각 컨테이너에서 동일하거나 다른 경로에 볼륨을 마운트할 수 있습니다. **어떤 이유로든 노드에서 Pod가 제거되면, emptyDir의 데이터는 영구적으로 삭제됩니다.** 따라서 EmptyDir는 MySQL 데이터베이스에 적합하지 않습니다.
 
-We can demonstrate this by starting a shell session inside the MySQL container and creating a test file. After that we'll delete the Pod that is running in our StatefulSet. Because the pod is using an emptyDir and not a Persistent Volume (PV), the file will not survive a Pod restart. First let's run a command inside our MySQL container to create a file in the emptyDir `/var/lib/mysql` path (where MySQL saves database files):
+MySQL 컨테이너 내부에서 셸 세션을 시작하고 테스트 파일을 생성하여 이를 시연할 수 있습니다. 그런 다음 StatefulSet에서 실행 중인 Pod를 삭제할 것입니다. Pod가 영구 볼륨(PV)이 아닌 emptyDir를 사용하고 있기 때문에, Pod가 재시작되면 파일은 유지되지 않습니다. 먼저 MySQL 컨테이너 내부에서 명령을 실행하여 emptyDir`/var/lib/mysql` 경로(MySQL이 데이터베이스 파일을 저장하는 위치)에 파일을 생성해보겠습니다:
 
 ```bash
 $ kubectl exec catalog-mysql-0 -n catalog -- bash -c  "echo 123 > /var/lib/mysql/test.txt"
 ```
 
-Now, let's verify our `test.txt` file was created in the `/var/lib/mysql` directory:
+이제 **`/var/lib/mysql` 디렉토리에** `test.txt` 파일이 생성되었는지 확인해보겠습니다:
 
 ```bash
 $ kubectl exec catalog-mysql-0 -n catalog -- ls -larth /var/lib/mysql/ | grep -i test
 -rw-r--r-- 1 root  root     4 Oct 18 13:38 test.txt
 ```
 
-Now, let's remove the current `catalog-mysql` Pod. This will force the StatefulSet controller to automatically re-create a new catalog-mysql Pod:
+이제 현재 `catalog-mysql` Pod를 제거해보겠습니다. 이렇게 하면 StatefulSet 컨트롤러가 자동으로 새로운 catalog-mysql Pod를 재생성하게 됩니다:
 
 ```bash
 $ kubectl delete pods -n catalog -l app.kubernetes.io/component=mysql
 pod "catalog-mysql-0" deleted
 ```
 
-Wait for a few seconds and run the command below to check if the `catalog-mysql` Pod has been re-created:
+몇 초 기다린 후 아래 명령을 실행하여 `catalog-mysql` Pod가 재생성되었는지 확인해보세요:
 
 ```bash
 $ kubectl wait --for=condition=Ready pod -n catalog \
@@ -79,14 +78,14 @@ NAME              READY   STATUS    RESTARTS   AGE
 catalog-mysql-0   1/1     Running   0          29s
 ```
 
-Finally, let's exec back into the MySQL container shell and run a `ls` command in the `/var/lib/mysql` path to look for the `test.txt` file that was previously created:
+마지막으로, MySQL 컨테이너 셸로 다시 들어가서 `/var/lib/mysql` 경로에서 `ls` 명령을 실행하여 이전에 생성한 `test.txt` 파일을 찾아보겠습니다:
 
-```bash expectError=true
+```bash
 $ kubectl exec catalog-mysql-0 -n catalog -- cat /var/lib/mysql/test.txt
 cat: /var/lib/mysql/test.txt: No such file or directory
 command terminated with exit code 1
 ```
 
-As you can see the `test.txt` file no longer exists due to `emptyDir` volumes being ephemeral. In future sections, we'll run the same experiment and demostrate how Persistent Volumes (PVs) will persist the `test.txt` file and survive Pod restarts and/or failures.
+보시다시피 `emptyDir` 볼륨이 임시적이기 때문에 `test.txt` 파일이 더 이상 존재하지 않습니다. 이후 섹션에서는 동일한 실험을 실행하고 영구 볼륨(PV)이 어떻게 `test.txt` 파일을 유지하고 Pod 재시작 및/또는 실패에서 살아남는지 보여줄 것입니다.
 
-On the next page, we'll work on understanding the main concepts of Storage on Kubernetes and its integration with the AWS cloud ecosystem.
+다음 페이지에서는 Kubernetes의 스토리지에 대한 주요 개념과 AWS 클라우드 생태계와의 통합에 대해 이해해보겠습니다.

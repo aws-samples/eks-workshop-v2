@@ -1,35 +1,35 @@
 ---
-title: "Large Language Models with Ray Serve"
+title: "Ray Serve를 이용한 대규모 언어 모델"
 sidebar_position: 30
 chapter: true
 sidebar_custom_props: { "beta": true }
-description: "Use Inferentia to accelerate deep learning inference workloads on Amazon Elastic Kubernetes Service."
+description: "Amazon Elastic Kubernetes Service(EKS)에서 Inferentia를 사용하여 딥러닝 추론 워크로드를 가속화하세요."
 ---
 
 :::danger
-This module is not supported at AWS events or in AWS-vended accounts through Workshop Studio. This module is only supported for clusters created through the "[In your AWS account](/docs/introduction/setup/your-account)" steps.
+이 모듈은 AWS 이벤트나 Workshop Studio를 통한 AWS 제공 계정에서는 지원되지 않습니다. 이 모듈은 "[In your AWS account](/docs/introduction/setup/your-account)" 단계를 통해 생성된 클러스터에서만 지원됩니다.
 :::
 
-:::tip Before you start
-Prepare your environment for this section:
+:::tip 시작하기 전에
+이 섹션을 위해 환경을 준비하세요:
 
 ```bash timeout=300 wait=30
 $ prepare-environment aiml/chatbot
 ```
 
-This will make the following changes to your lab environment:
+이는 실습 환경에 다음과 같은 변경사항을 적용합니다:
 
-- Installs Karpenter in the Amazon EKS cluster
-- Creates an IAM Role for the Pods to use
+- Amazon EKS 클러스터에 Karpenter 설치
+- Pod가 사용할 IAM 역할 생성
 
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/aiml/chatbot/.workshop/terraform).
+이러한 변경사항을 적용하는 Terraform 코드는 [여기](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/aiml/chatbot/.workshop/terraform)에서 확인할 수 있습니다.
 
 :::
 
-With pre-training on 2 trillion tokens of text and code, the [Meta Llama-2-13b](https://llama.meta.com/#inside-the-model) chat model is one of the largest and most powerful large language models (LLMs) available today.
+2조 개의 텍스트와 코드 토큰에 대한 사전 학습을 통해, [Meta Llama-2-13b](https://llama.meta.com/#inside-the-model) 채팅 모델은 현재 사용 가능한 가장 크고 강력한 대규모 언어 모델(LLM) 중 하나입니다.
 
-From its natural language processing and text generation capabilities to handling inference and training workloads, the creation of Llama2 represents some of the newest advances in GenAI Technology.
+자연어 처리와 텍스트 생성 능력부터 추론 및 학습 워크로드 처리까지, Llama2의 생성은 GenAI 기술의 최신 발전을 대표합니다.
 
-This section will focus not only on harnessing the power of Llama-2 but also on gaining insights into the intricacies of deploying LLMs efficiently on EKS.
+이 섹션에서는 Llama-2의 성능을 활용할 뿐만 아니라 EKS에서 LLM을 효율적으로 배포하는 복잡한 과정에 대한 통찰력을 얻는 데 중점을 둘 것입니다.
 
-For deploying and scaling LLMs, this lab will utilize AWS Inferentia instances within the [Inf2](https://aws.amazon.com/machine-learning/inferentia/) family, such as `Inf2.24xlarge` and `Inf2.48xlarge`. Additionally, the chatbot inference workloads will utilize the [Ray Serve](https://docs.ray.io/en/latest/serve/index.html) module for building online inference APIs and streamlining the deployment of machine learning models, as well as the [Gradio UI](https://www.gradio.app/) for accessing the Llama2 chatbot.
+LLM 배포 및 확장을 위해, 이 실습에서는 `Inf2.24xlarge`와 `Inf2.48xlarge`와 같은 [Inf2](https://aws.amazon.com/machine-learning/inferentia/) 제품군의 AWS Inferentia 인스턴스를 활용할 것입니다. 또한, 챗봇 추론 워크로드는 온라인 추론 API 구축과 머신 러닝 모델 배포를 간소화하는 [Ray Serve](https://docs.ray.io/en/latest/serve/index.html) 모듈과 Llama2 챗봇에 접근하기 위한 [Gradio UI](https://www.gradio.app/)를 활용할 것입니다.

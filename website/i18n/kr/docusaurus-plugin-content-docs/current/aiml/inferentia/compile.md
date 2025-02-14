@@ -1,49 +1,49 @@
 ---
-title: "Compile a pre-trained model with AWS Trainium"
+title: "AWS Trainium으로 사전 학습된 모델 컴파일하기"
 sidebar_position: 30
 ---
 
-When you want a model to leverage AWS Inferentia it needs be compiled for use with AWS Inferentia using the AWS Neuron SDK.
+AWS Inferentia를 활용하고자 하는 모델은 AWS Neuron SDK를 사용하여 AWS Inferentia용으로 컴파일되어야 합니다.
 
-This is the code for compiling the model to use Inferentia that we will use:
+다음은 Inferentia 사용을 위해 모델을 컴파일하는 코드입니다:
 
 ```file
 manifests/modules/aiml/inferentia/compiler/trace.py
 ```
 
-This code loads the pre-trained ResNet-50 model and sets it to evaluation mode. Note that we are not adding any additional training data to the model. We then save the model using the AWS Neuron SDK.
+이 코드는 사전 학습된 ResNet-50 모델을 로드하고 평가 모드로 설정합니다. 모델에 추가적인 학습 데이터를 추가하지 않는다는 점에 유의하세요. 그런 다음 AWS Neuron SDK를 사용하여 모델을 저장합니다.
 
-We will deploy the Pod on the EKS cluster and compile a sample model for use with AWS Inferentia. Compiling a model for AWS Inferentia requires the [AWS Neuron SDK](https://aws.amazon.com/machine-learning/neuron/). This SDK is included with the [Deep Learning Containers (DLCs)](https://github.com/aws/deep-learning-containers/blob/v8.12-tf-1.15.5-tr-gpu-py37/available_images.md#neuron-inference-containers) that are provided by AWS.
+EKS 클러스터에 Pod를 배포하고 AWS Inferentia 사용을 위한 샘플 모델을 컴파일할 것입니다. AWS Inferentia용 모델 컴파일에는 [AWS Neuron SDK](https://aws.amazon.com/machine-learning/neuron/)가 필요합니다. 이 SDK는 AWS에서 제공하는 [Deep Learning Containers (DLCs)](https://github.com/aws/deep-learning-containers/blob/v8.12-tf-1.15.5-tr-gpu-py37/available_images.md#neuron-inference-containers)에 포함되어 있습니다.
 
-### Install the Device Plugin
+### 디바이스 플러그인 설치
 
-In order for our DLC to use the Neuron cores they need to be exposed. The [Neuron device plugin Kubernetes manifest files](https://github.com/aws-neuron/aws-neuron-sdk/tree/master/src/k8) expose the Neuron cores to the DLC. These manifest files have been pre-installed into the EKS Cluster.
+DLC가 Neuron 코어를 사용하기 위해서는 이들이 노출되어야 합니다. [Neuron 디바이스 플러그인 Kubernetes 매니페스트 파일](https://github.com/aws-neuron/aws-neuron-sdk/tree/master/src/k8)은 Neuron 코어를 DLC에 노출시킵니다. 이러한 매니페스트 파일들은 EKS 클러스터에 미리 설치되어 있습니다.
 
-When a Pod requires the exposed Neuron cores, the Kubernetes scheduler can provision an Inferentia or Trainium node to schedule the Pod to.
+Pod가 노출된 Neuron 코어를 필요로 할 때, Kubernetes 스케줄러는 Pod를 스케줄링하기 위한 Inferentia 또는 Trainium 노드를 프로비저닝할 수 있습니다.
 
-Check the image that we'll run:
+실행할 이미지를 확인하세요:
 
 ```bash
 $ echo $AIML_DL_TRN_IMAGE
 ```
 
-### Create a Pod for Training
+### 학습을 위한 Pod 생성
 
-We will run this code in a Pod on EKS. This is the manifest file for running the Pod:
+EKS에서 Pod로 이 코드를 실행할 것입니다. 다음은 Pod 실행을 위한 매니페스트 파일입니다:
 
 ::yaml{file="manifests/modules/aiml/inferentia/compiler/compiler.yaml" paths="spec.nodeSelector,spec.containers.0.resources.limits"}
 
-1. In the `nodeSelector` section we specify the instance type we want to run this pod on. In this case a trn1 instance.
-2. In the `resources` `limits` section we specify that we need a neuron core to run this Pod. This will tell the Neuron Device Plugin to expose the neuron API to the Pod.
+1. `nodeSelector` 섹션에서 이 pod를 실행할 인스턴스 유형을 지정합니다. 이 경우에는 trn1 인스턴스입니다.
+2. `resources` `limits` 섹션에서 이 Pod를 실행하는 데 필요한 neuron 코어를 지정합니다. 이는 Neuron 디바이스 플러그인에게 neuron API를 Pod에 노출하도록 지시합니다.
 
-Create the Pod by running the following command:
+다음 명령을 실행하여 Pod를 생성하세요:
 
 ```bash timeout=900
 $ kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/compiler \
   | envsubst | kubectl apply -f-
 ```
 
-Karpenter detects the pending Pod which needs a trn1 instance and Neuron cores and launches an trn1 instance which meets the requirements. Monitor the instance provisioning with the following command:
+Karpenter는 trn1 인스턴스와 Neuron 코어가 필요한 대기 중인 Pod를 감지하고 요구사항을 충족하는 trn1 인스턴스를 시작합니다. 다음 명령으로 인스턴스 프로비저닝을 모니터링하세요:
 
 ```bash test=false
 $ kubectl logs -l app.kubernetes.io/instance=karpenter -n kube-system -f | jq
@@ -77,17 +77,17 @@ $ kubectl logs -l app.kubernetes.io/instance=karpenter -n kube-system -f | jq
 }
 ```
 
-The Pod should be scheduled on the node provisioned by Karpenter. Check if the Pod is in it's ready state:
+Pod는 Karpenter가 프로비저닝한 노드에 스케줄링되어야 합니다. Pod가 준비 상태인지 확인하세요:
 
 ```bash timeout=600
 $ kubectl -n aiml wait --for=condition=Ready --timeout=10m pod/compiler
 ```
 
 :::warning
-This command can take up to 10 min.
+이 명령은 최대 10분이 소요될 수 있습니다.
 :::
 
-Next, copy the code for compiling a model on to the Pod and run it:
+다음으로, 모델 컴파일을 위한 코드를 Pod에 복사하고 실행하세요:
 
 ```bash timeout=240
 $ kubectl -n aiml cp ~/environment/eks-workshop/modules/aiml/inferentia/compiler/trace.py compiler:/
@@ -100,7 +100,7 @@ Downloading: "https://download.pytorch.org/models/resnet50-0676ba61.pth" to /roo
 Compiler status PASS
 ```
 
-Finally, upload the model to the S3 bucket that has been created for you. This will ensure we can use the model later in the lab.
+마지막으로, 모델을 여러분을 위해 생성된 S3 버킷에 업로드하세요. 이를 통해 나중에 실습에서 모델을 사용할 수 있습니다.
 
 ```bash
 $ kubectl -n aiml exec compiler -- aws s3 cp ./resnet50_neuron.pt s3://$AIML_NEURON_BUCKET_NAME/

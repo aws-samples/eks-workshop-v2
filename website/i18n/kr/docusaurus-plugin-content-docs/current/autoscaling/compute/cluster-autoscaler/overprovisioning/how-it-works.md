@@ -1,11 +1,11 @@
 ---
-title: "How it works"
+title: "작동 방식"
 sidebar_position: 30
 ---
 
-Kubernetes allows assigning priorities to Pods relative to other Pods. The Kubernetes scheduler uses these priorities to preempt lower priority Pods in order to accommodate higher priority Pods. This is achieved through `PriorityClass` resources, which define priority values that can be assigned to Pods. Additionally, a default `PriorityClass` can be assigned to a namespace.
+Kubernetes는 다른 Pod들과 비교하여 Pod에 우선순위를 할당할 수 있습니다. Kubernetes 스케줄러는 이러한 우선순위를 사용하여 우선순위가 높은 Pod를 수용하기 위해 우선순위가 낮은 Pod를 선점합니다. 이는 Pod에 할당할 수 있는 우선순위 값을 정의하는 `PriorityClass` 리소스를 통해 달성됩니다. 또한 네임스페이스에 기본 `PriorityClass`를 할당할 수 있습니다.
 
-Here's an example of a priority class that would give a Pod relatively high priority over other Pods:
+다음은 다른 Pod들보다 상대적으로 높은 우선순위를 Pod에 부여하는 우선순위 클래스의 예시입니다:
 
 ```yaml
 apiVersion: scheduling.k8s.io/v1
@@ -17,7 +17,7 @@ globalDefault: false
 description: "Priority class used for high priority Pods only."
 ```
 
-And here's an example of a Pod specification using the above priority class:
+그리고 위의 우선순위 클래스를 사용하는 Pod 명세의 예시입니다:
 
 ```yaml
 apiVersion: v1
@@ -34,21 +34,21 @@ spec:
   priorityClassName: high-priority # Priority Class specified
 ```
 
-For a detailed explanation of how this works, refer to the Kubernetes documentation on [Pod Priority and Preemption](https://kubernetes.io/docs/concepts/scheduling-eviction/Pod-priority-preemption/).
+이것이 어떻게 작동하는지에 대한 자세한 설명은 Kubernetes 문서의 [Pod 우선순위와 선점](https://kubernetes.io/docs/concepts/scheduling-eviction/Pod-priority-preemption/)을 참조하십시오.
 
-To apply this concept for over-provisioning compute in our EKS cluster, we can follow these steps:
+EKS 클러스터에서 컴퓨팅 자원을 오버프로비저닝하기 위해 이 개념을 적용하려면 다음 단계를 따를 수 있습니다:
 
-1. Create a priority class with a priority value of **"-1"** and assign it to empty [Pause Container](https://www.ianlewis.org/en/almighty-pause-container) Pods. These empty "pause" containers act as placeholders.
+1. **"-1"** 우선순위 값을 가진 우선순위 클래스를 생성하고 이를 빈 [Pause Container](https://www.ianlewis.org/en/almighty-pause-container) Pod에 할당합니다. 이러한 빈 "pause" 컨테이너는 자리 표시자 역할을 합니다.
 
-2. Create a default priority class with a priority value of **"0"**. This is assigned globally for the cluster, so any deployment without a specified priority class will be assigned this default priority.
+2. **"0"** 우선순위 값을 가진 기본 우선순위 클래스를 생성합니다. 이는 클러스터 전체에 전역적으로 할당되므로, 지정된 우선순위 클래스가 없는 모든 배포에 이 기본 우선순위가 할당됩니다.
 
-3. When a genuine workload is scheduled, the empty placeholder containers are evicted, allowing the application Pods to be provisioned immediately.
+3. 실제 워크로드가 스케줄링될 때, 빈 자리 표시자 컨테이너가 제거되어 애플리케이션 Pod가 즉시 프로비저닝될 수 있습니다.
 
-4. Since there are **Pending** (Pause Container) Pods in the cluster, the Cluster Autoscaler will provision additional Kubernetes worker nodes based on the **ASG configuration (`--max-size`)** associated with the EKS node group.
+4. 클러스터에 **대기 중인**(Pause Container) Pod가 있기 때문에, Cluster Autoscaler는 EKS 노드 그룹과 연관된 **ASG 구성(`--max-size`)**을 기반으로 추가 Kubernetes 워커 노드를 프로비저닝합니다.
 
-The level of over-provisioning can be controlled by adjusting:
+오버프로비저닝 수준은 다음을 조정하여 제어할 수 있습니다:
 
-1. The number of pause Pods (**replicas**) and their **CPU and memory** resource requests
-2. The maximum number of nodes in the EKS node group (`maxsize`)
+1. pause Pod의 수(**replicas**)와 그들의 **CPU 및 메모리** 리소스 요청
+2. EKS 노드 그룹의 최대 노드 수(`maxsize`)
 
-By implementing this strategy, we can ensure that the cluster always has some spare capacity ready to accommodate new workloads, reducing the time it takes for new Pods to become schedulable.
+이 전략을 구현함으로써, 클러스터가 항상 새로운 워크로드를 수용할 수 있는 여분의 용량을 가지고 있도록 보장하여, 새로운 Pod가 스케줄 가능해지는 데 걸리는 시간을 줄일 수 있습니다.

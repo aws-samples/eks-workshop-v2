@@ -1,13 +1,12 @@
 ---
-title: Pod Affinity and Anti-Affinity
+title: Pod 선호(Affinity)와 비선호(Anti-affinity)
 sidebar_position: 30
 ---
+Pod는 특정 노드에서 또는 특정 상황에서만 실행되도록 제한될 수 있습니다. 이는 노드당 하나의 애플리케이션 Pod만 실행하거나, Pod를 노드에서 쌍으로 실행하려는 경우를 포함할 수 있습니다. 또한 노드 어피니티를 사용할 때 Pod는 선호하는 또는 필수적인 제한을 가질 수 있습니다.
 
-Pods can be constrained to run on specific nodes or under specific circumstances. This can include cases where you want only one application pod running per node or want pods to be paired together on a node. Additionally, when using node affinity pods can have preferred or mandatory restrictions.
+이 수업에서는 `checkout-redis` Pod를 노드당 하나의 인스턴스만 실행하고 `checkout` Pod를 `checkout-redis` Pod가 존재하는 노드에서만 하나의 인스턴스를 실행하도록 스케줄링하여,  Pod 간 어피니티와 안티-어피니티에 중점을 둘 것입니다. 이를 통해 캐싱 Pod(`checkout-redis`)가 최상의 성능을 위해 `checkout`  Pod 인스턴스와 로컬로 실행되도록 보장할 것입니다.
 
-For this lesson, we'll focus on inter-pod affinity and anti-affinity by scheduling the `checkout-redis` pods to run only one instance per node and by scheduling the `checkout` pods to only run one instance of it on nodes where a `checkout-redis` pod exists. This will ensure that our caching pods (`checkout-redis`) run locally with a `checkout` pod instance for best performance.
-
-The first thing we want to do is see that the `checkout` and `checkout-redis` pods are running:
+먼저 `checkout`과 `checkout-redis` Pod가 실행 중인지 확인해보겠습니다:
 
 ```bash
 $ kubectl get pods -n checkout
@@ -16,7 +15,7 @@ checkout-698856df4d-vzkzw         1/1     Running   0          125m
 checkout-redis-6cfd7d8787-kxs8r   1/1     Running   0          127m
 ```
 
-We can see both applications have one pod running in the cluster. Now, let's find out where they are running:
+클러스터에서 두 애플리케이션 모두 하나의 Pod가 실행 중인 것을 볼 수 있습니다. 이제 이들이 어디서 실행되고 있는지 알아보겠습니다:
 
 ```bash
 $ kubectl get pods -n checkout \
@@ -25,22 +24,22 @@ checkout-698856df4d-vzkzw       ip-10-42-11-142.us-west-2.compute.internal
 checkout-redis-6cfd7d8787-kxs8r ip-10-42-10-225.us-west-2.compute.internal
 ```
 
-Based on the results above, the `checkout-698856df4d-vzkzw` pod is running on the `ip-10-42-11-142.us-west-2.compute.internal` node and the `checkout-redis-6cfd7d8787-kxs8r` pod is running on the `ip-10-42-10-225.us-west-2.compute.internal` node.
+위의 결과를 보면, `checkout-698856df4d-vzkzw` Pod는 `ip-10-42-11-142.us-west-2.compute.internal` 노드에서 실행 중이고, `checkout-redis-6cfd7d8787-kxs8r` Pod는 `ip-10-42-10-225.us-west-2.compute.internal` 노드에서 실행 중입니다.
 
 :::note
-In your environment the pods may be running on the same node initially
+여러분의 환경에서는 처음에 Pod들이 같은 노드에서 실행될 수 있습니다.
 :::
 
-Let's set up a `podAffinity` and `podAntiAffinity` policy in the **checkout** deployment to ensure that one `checkout` pod runs per node, and that it will only run on nodes where a `checkout-redis` pod is already running. We'll use the `requiredDuringSchedulingIgnoredDuringExecution` to make this a requirement, rather than a preferred behavior.
+`checkout` 배포에 `podAffinity`와 `podAntiAffinity` 정책을 설정하여 노드당 하나의 `checkout` Pod가 실행되고, `checkout-redis` Pod가 이미 실행 중인 노드에서만 실행되도록 하겠습니다. 이를 선호하는 동작이 아닌 필수 요구사항으로 만들기 위해 `requiredDuringSchedulingIgnoredDuringExecution`을 사용할 것입니다.
 
-The following kustomization adds an `affinity` section to the **checkout** deployment specifying both **podAffinity** and **podAntiAffinity** policies:
+다음 kustomization은 **podAffinity**와 **podAntiAffinity** 정책을 모두 지정하는 `affinity` 섹션을 `checkout` 배포에 추가합니다:
 
 ```kustomization
 modules/fundamentals/affinity/checkout/checkout.yaml
 Deployment/checkout
 ```
 
-To make the change, run the following command to modify the **checkout** deployment in your cluster:
+변경을 적용하기 위해 다음 명령을 실행하여 클러스터의 `checkout` 배포를 수정합니다:
 
 ```bash
 $ kubectl delete -n checkout deployment checkout
@@ -56,13 +55,13 @@ $ kubectl rollout status deployment/checkout \
   -n checkout --timeout 180s
 ```
 
-The **podAffinity** section ensures that a `checkout-redis` pod is already running on the node — this is because we can assume the `checkout` pod requires `checkout-redis` to run correctly. The **podAntiAffinity** section requires that no `checkout` pods are already running on the node by matching the **`app.kubernetes.io/component=service`** label. Now, let's scale up the deployment to check the configuration is working:
+**podAffinity** 섹션은 노드에 `checkout-redis` Pod가 이미 실행 중임을 보장합니다 — 이는 `checkout` Pod가 올바르게 실행되기 위해 `checkout-redis`가 필요하다고 가정하기 때문입니다. **podAntiAffinity** 섹션은 **`app.kubernetes.io/component=service`** 레이블을 매칭하여 노드에 `checkout` Pod가 이미 실행 중이지 않도록 요구합니다. 이제 구성이 작동하는지 확인하기 위해 배포를 확장해보겠습니다:
 
 ```bash
 $ kubectl scale -n checkout deployment/checkout --replicas 2
 ```
 
-Now validate where each pod is running:
+이제 각 Pod가 어디서 실행되고 있는지 확인합니다:
 
 ```bash
 $ kubectl get pods -n checkout \
@@ -72,16 +71,16 @@ checkout-6c7c9cdf4f-wwkm4
 checkout-redis-6cfd7d8787-gw59j ip-10-42-10-120.us-west-2.compute.internal
 ```
 
-In this example, the first `checkout` pod runs on the same pod as the existing checkout-redis pod, as it fulfills the **podAffinity** rule we set. The second one is still pending, because the **podAntiAffinity** rule we defined does not allow two checkout pods to get started on the same node. As the second node doesn't have a `checkout-redis` pod running, it will stay pending.
+이 예시에서 첫 번째 `checkout` Pod는 우리가 설정한 **podAffinity** 규칙을 충족하므로 기존 `checkout-redis` Pod와 같은 Pod에서 실행됩니다. 두 번째는 아직 대기 중인데, 이는 우리가 정의한 **podAntiAffinity** 규칙이 같은 노드에서 두 개의 `checkout` Pod가 시작되는 것을 허용하지 않기 때문입니다. 두 번째 노드에는 `checkout-redis` Pod가 실행되고 있지 않기 때문에 대기 상태로 유지됩니다.
 
-Next, we'll scale the `checkout-redis` to two instances for our two nodes, but first let's modify the `checkout-redis` deployment policy to spread out our `checkout-redis` instances across each node. To do this, we'll simply need to create a **podAntiAffinity** rule.
+다음으로, 두 노드를 위해 `checkout-redis`를 두 개의 인스턴스로 확장하겠지만, 먼저 각 노드에 `checkout-redis` 인스턴스를 분산시키기 위해 `checkout-redis` 배포 정책을 수정하겠습니다. 이를 위해 **podAntiAffinity**규칙만 생성하면 됩니다.
 
 ```kustomization
 modules/fundamentals/affinity/checkout-redis/checkout-redis.yaml
 Deployment/checkout-redis
 ```
 
-Apply it with the following command:
+다음 명령으로 적용합니다:
 
 ```bash
 $ kubectl delete -n checkout deployment checkout-redis
@@ -97,13 +96,13 @@ $ kubectl rollout status deployment/checkout-redis \
   -n checkout --timeout 180s
 ```
 
-The **podAntiAffinity** section requires that no `checkout-redis` pods are already running on the node by matching the **`app.kubernetes.io/component=redis`** label.
+**podAntiAffinity** 섹션은 `app.kubernetes.io/component=redis` 레이블을 매칭하여 노드에 `checkout-redis` Pod가 이미 실행 중이지 않도록 요구합니다.
 
 ```bash
 $ kubectl scale -n checkout deployment/checkout-redis --replicas 2
 ```
 
-Check the running pods to verify that there are now two of each running:
+실행 중인 Pod를 확인하여 각각 두 개씩 실행 중인지 확인합니다:
 
 ```bash
 $ kubectl get pods -n checkout
@@ -114,7 +113,7 @@ checkout-redis-7979df659-cjfbf   1/1     Running   0          19s
 checkout-redis-7979df659-pc6m9   1/1     Running   0          22s
 ```
 
-We can also verify where the pods are running to ensure the **podAffinity** and **podAntiAffinity** policies are being followed:
+또한 Pod가 실행되는 위치를 확인하여 **podAffinity**와 **podAntiAffinity** 정책이 준수되고 있는지 확인할 수 있습니다:
 
 ```bash
 $ kubectl get pods -n checkout \
@@ -125,13 +124,13 @@ checkout-redis-7979df659-57xcb  ip-10-42-11-142.us-west-2.compute.internal
 checkout-redis-7979df659-r7kkm  ip-10-42-12-31.us-west-2.compute.internal
 ```
 
-All looks good on the pod scheduling, but we can further verify by scaling the `checkout` pod again to see where a third pod will deploy:
+Pod 스케줄링이 모두 잘 되어 보이지만, 세 번째 Pod가 어디에 배포될지 보기 위해 `checkout` Pod를 다시 한 번 확장하여 추가로 확인할 수 있습니다:
 
 ```bash
 $ kubectl scale --replicas=3 deployment/checkout --namespace checkout
 ```
 
-If we check the running pods we can see that the third `checkout` pod has been placed in a Pending state since two of the nodes already have a pod deployed and the third node does not have a `checkout-redis` pod running.
+실행 중인 Pod를 확인하면 두 개의 노드에 이미 Pod가 배포되어 있고 세 번째 노드에는`checkout-redis` Pod가 실행되고 있지 않기 때문에 세 번째 `checkout` Pod가 `Pending` 상태로 있는 것을 볼 수 있습니다.
 
 ```bash
 $ kubectl get pods -n checkout
@@ -143,7 +142,7 @@ checkout-redis-7979df659-57xcb   1/1     Running   0          35s
 checkout-redis-7979df659-r7kkm   1/1     Running   0          2m10s
 ```
 
-Let's finish this section by removing the Pending pod:
+`Pending` Pod를 제거하여 이 섹션을 마무리 하겠습니다:
 
 ```bash
 $ kubectl scale --replicas=2 deployment/checkout --namespace checkout

@@ -1,11 +1,10 @@
 ---
-title: Create Graviton Nodes
+title: 그라비톤 노드 생성
 sidebar_position: 10
 ---
+이 실습에서는 Graviton 기반 인스턴스로 별도의 관리형 노드 그룹을 프로비저닝하고 여기에 테인트를 적용할 것입니다.
 
-In this exercise, we'll provision a separate managed node group with Graviton-based instances and apply a taint to it.
-
-To start with lets confirm the current state of nodes available in our cluster:
+먼저 클러스터에서 사용 가능한 노드의 현재 상태를 확인해보겠습니다:
 
 ```bash
 $ kubectl get nodes -L kubernetes.io/arch
@@ -15,15 +14,15 @@ ip-192-168-137-20.us-west-2.compute.internal   Ready    <none>   6h56m   vVAR::K
 ip-192-168-19-31.us-west-2.compute.internal    Ready    <none>   6h56m   vVAR::KUBERNETES_NODE_VERSION      amd64
 ```
 
-The output shows our existing nodes with columns that show the CPU architecture of each node. All of these are currently using `amd64` nodes.
+출력에는 각 노드의 CPU 아키텍처를 보여주는 열이 있는 기존 노드가 표시됩니다. 현재 이들은 모두 `amd64` 노드를 사용하고 있습니다.
 
 :::note
-We will not yet configure the taints, this is done later.
+아직 테인트를 구성하지 않을 것입니다. 이는 나중에 수행됩니다.
 :::
 
-The following command creates the Graviton node group:
+다음 명령은 Graviton 노드 그룹을 생성합니다:
 
-```bash timeout=600 hook=configure-taints
+```bash
 $ aws eks create-nodegroup \
   --cluster-name $EKS_CLUSTER_NAME \
   --nodegroup-name graviton \
@@ -36,9 +35,9 @@ $ aws eks create-nodegroup \
 ```
 
 :::tip
-The aws `eks wait nodegroup-active` command can be used to wait until a specific EKS node group is active and ready for use. This command is part of the AWS CLI and can be used to ensure that the specified node group has been successfully created and all the associated instances are running and ready.
+`aws eks wait nodegroup-active` 명령은 특정 EKS 노드 그룹이 활성화되고 사용 준비가 될 때까지 기다리는 데 사용될 수 있습니다. 이 명령은 AWS CLI의 일부이며 지정된 노드 그룹이 성공적으로 생성되고 모든 관련 인스턴스가 실행되어 준비되었는지 확인하는 데 사용될 수 있습니다.
 
-```bash wait=30 timeout=300
+```bash
 $ aws eks wait nodegroup-active \
   --cluster-name $EKS_CLUSTER_NAME \
   --nodegroup-name graviton
@@ -46,7 +45,7 @@ $ aws eks wait nodegroup-active \
 
 :::
 
-Once our new managed node group is **Active**, run the following command:
+새로운 관리형 노드 그룹이 **Active** 상태가 되면 다음 명령을 실행하세요:
 
 ```bash
 $ kubectl get nodes \
@@ -59,9 +58,11 @@ ip-192-168-19-31.us-west-2.compute.internal   Ready    <none>   6h56m  vVAR::KUB
 ip-10-42-172-231.us-west-2.compute.internal   Ready    <none>   2m5s   vVAR::KUBERNETES_NODE_VERSION     graviton    arm64
 ```
 
-The above command makes use of the `--selector` flag to query for all nodes that have a label of `eks.amazonaws.com/nodegroup` that matches the name of our managed node group `graviton`. The `--label-columns` flag also allows us to display the value of the `eks.amazonaws.com/nodegroup` label as well as the processor architecture in the output. Note that the `ARCH` column shows our tainted node group running Graviton `arm64` processors.
 
-Let's explore the current configuration of our node. The following command will list the details of all nodes that are part of our managed node group.
+
+위 명령은 `--selector` 플래그를 사용하여 우리의 관리형 노드 그룹 `graviton`의 이름과 일치하는 `eks.amazonaws.com/nodegroup` 레이블을 가진 모든 노드를 쿼리합니다. `--label-columns` 플래그는 또한 출력에 `eks.amazonaws.com/nodegroup` 레이블의 값과 프로세서 아키텍처를 표시할 수 있게 합니다. `ARCH` 열에 우리의 테인트된 노드 그룹이 Graviton `arm64` 프로세서에서 실행되고 있음을 주목하세요.
+
+노드의 현재 구성을 살펴보겠습니다. 다음 명령은 우리의 관리형 노드 그룹에 속한 모든 노드의 세부 정보를 나열합니다.
 
 ```bash
 $ kubectl describe nodes \
@@ -81,20 +82,20 @@ Taints:             <none>
 [...]
 ```
 
-A few things to point out:
+몇 가지 주목할 점:
 
-1. EKS automatically adds certain labels to allow for easier filtering, including labels for the OS type, managed node group name, instance type and others. While certain labels are provided out-of-the-box with EKS, AWS allows operators to configure their own set of custom labels at the managed node group level. This ensures that every node within a node group will have consistent labels. The `kubernetes.io/arch` label shows we're running an EC2 instance with an ARM64 CPU architecture.
-2. Currently there are no taints configured for the explored node, as shown by the `Taints: <none>` stanza.
+1. EKS는 OS 유형, 관리형 노드 그룹 이름, 인스턴스 유형 등을 포함하여 더 쉬운 필터링을 위해 자동으로 특정 레이블을 추가합니다. 특정 레이블이 EKS와 함께 기본 제공되지만, AWS는 운영자가 관리형 노드 그룹 수준에서 자체 사용자 정의 레이블 세트를 구성할 수 있도록 합니다. 이는 노드 그룹 내의 모든 노드가 일관된 레이블을 가지도록 보장합니다. `kubernetes.io/arch` 레이블은 우리가 ARM64 CPU 아키텍처를 가진 EC2 인스턴스를 실행하고 있음을 보여줍니다.
+2. 현재 탐색된 노드에 대해 구성된 테인트가 없으며, 이는 `Taints: <none>` 스탠자로 표시됩니다.
 
-## Configuring taints for Managed Node Groups
+## 관리형 노드 그룹에 대한 테인트 구성
 
-While it's easy to taint nodes using the `kubectl` CLI as described [here](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#concepts), an administrator will have to make this change every time the underlying node group scales up or down. To overcome this challenge, AWS supports adding both `labels` and `taints` to managed node groups, ensuring every node within the MNG will have the associated labels and taints configured automatically.
+[여기](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#concepts)에 설명된 대로 `kubectl` CLI를 사용하여 노드에 테인트를 적용하는 것은 쉽지만, 관리자는 기본 노드 그룹이 확장되거나 축소될 때마다 이 변경을 해야 합니다. 이 문제를 해결하기 위해 AWS는 관리형 노드 그룹에 `labels`와 `taints` 모두를 추가하는 것을 지원하여 MNG 내의 모든 노드가 관련 레이블과 테인트를 자동으로 구성하도록 보장합니다.
 
-Now let's add a taint to our pre-configured managed node group `graviton`. This taint will have `key=frontend`, `value=true` and `effect=NO_EXECUTE`. This ensures that any pods that are already running on our tainted managed node group are evicted if they do not have a matching toleration. Also, no new pods will be scheduled on to this managed node group without an appropriate toleration.
+이제 사전 구성된 관리형 노드 그룹 `graviton`에 테인트를 추가해보겠습니다. 이 테인트는 `key=frontend`, `value=true`, `effect=NO_EXECUTE`를 가질 것입니다. 이는 일치하는 톨러레이션이 없는 경우 이미 테인트된 관리형 노드 그룹에서 실행 중인 모든 Pod가 퇴출되도록 보장합니다. 또한 적절한 톨러레이션 없이는 새로운 Pod가 이 관리형 노드 그룹에 스케줄링되지 않습니다.
 
-Let's start by adding a `taint` to our managed node group using the following `aws` cli command:
+다음 `aws` cli 명령을 사용하여 관리형 노드 그룹에 `taint`를 추가하는 것부터 시작하겠습니다:
 
-```bash wait=20
+```bash
 $ aws eks update-nodegroup-config \
     --cluster-name $EKS_CLUSTER_NAME --nodegroup-name graviton \
     --taints "addOrUpdateTaints=[{key=frontend, value=true, effect=NO_EXECUTE}]"
@@ -115,26 +116,26 @@ $ aws eks update-nodegroup-config \
 }
 ```
 
-Run the following command to wait for the node group to become active.
+노드 그룹이 활성화될 때까지 기다리려면 다음 명령을 실행하세요.
 
-```bash timeout=180
+```bash
 $ aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME \
   --nodegroup-name graviton
 ```
 
-The addition, removal, or replacement of taints can be done by using the [`aws eks update-nodegroup-config`](https://docs.aws.amazon.com/cli/latest/reference/eks/update-nodegroup-config.html) CLI command to update the configuration of the managed node group. This can be done by passing either `addOrUpdateTaints` or `removeTaints` and a list of taints to the `--taints` command flag.
+테인트의 추가, 제거 또는 교체는 [`aws eks update-nodegroup-config`](https://docs.aws.amazon.com/cli/latest/reference/eks/update-nodegroup-config.html) CLI 명령을 사용하여 관리형 노드 그룹의 구성을 업데이트함으로써 수행할 수 있습니다. 이는 `addOrUpdateTaints` 또는 `removeTaints`와 테인트 목록을 `--taints` 명령 플래그에 전달하여 수행할 수 있습니다.
 
 :::tip
-You can also configure taints on a managed node group using the `eksctl` CLI. See the [docs](https://eksctl.io/usage/nodegroup-taints/) for more info.
+`eksctl` CLI를 사용하여 관리형 노드 그룹에 테인트를 구성할 수도 있습니다. 자세한 내용은 [문서](https://eksctl.io/usage/nodegroup-taints/)를 참조하세요.
 :::
 
-We used `effect=NO_EXECUTE` in our taint configuration. Managed node groups currently support the folowing values for the taint `effect`:
+우리는 테인트 구성에서 `effect=NO_EXECUTE`를 사용했습니다. 관리형 노드 그룹은 현재 테인트 `effect`에 대해 다음 값들을 지원합니다:
 
-- `NO_SCHEDULE` - This corresponds to the Kubernetes `NoSchedule` taint effect. This configures the managed node group with a taint that repels all pods that don't have a matching toleration. All running pods are **not evicted from the manage node group's nodes**.
-- `NO_EXECUTE` - This corresponds to the Kubernetes `NoExecute` taint effect. Allows nodes configured with this taint to not only repel newly scheduled pods but also **evicts any running pods without a matching toleration**.
-- `PREFER_NO_SCHEDULE` - This corresponds to the Kubernetes `PreferNoSchedule` taint effect. If possible, EKS avoids scheduling Pods that do not tolerate this taint onto the node.
+* `NO_SCHEDULE` - 이는 Kubernetes `NoSchedule` 테인트 효과에 해당합니다. 이는 일치하는 톨러레이션이 없는 모든 Pod를 배척하는 테인트로 관리형 노드 그룹을 구성합니다. 실행 중인 모든 Pod는 **관리형 노드 그룹의 노드에서 퇴출되지 않습니다**.
+* `NO_EXECUTE` - 이는 Kubernetes `NoExecute` 테인트 효과에 해당합니다. 이 테인트로 구성된 노드가 새로 스케줄링된 Pod를 배척할 뿐만 아니라 **일치하는 톨러레이션이 없는 실행 중인 모든 Pod를 퇴출**할 수 있게 합니다.
+* `PREFER_NO_SCHEDULE` - 이는 Kubernetes `PreferNoSchedule` 테인트 효과에 해당합니다. 가능한 경우 EKS는 이 테인트를 허용하지 않는 Pod를 노드에 스케줄링하지 않습니다.
 
-We can use the following command to check the taints have been correctly configured for the managed node group:
+다음 명령을 사용하여 테인트가 관리형 노드 그룹에 대해 올바르게 구성되었는지 확인할 수 있습니다:
 
 ```bash
 $ aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME \
@@ -151,11 +152,11 @@ $ aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME \
 
 :::info
 
-Updating the managed node group and propagating the labels and taints usually takes a few minutes. If you're not seeing any taints configured or getting a `null` value, please do wait a few minutes before trying the above command again.
+관리형 노드 그룹을 업데이트하고 레이블과 테인트를 전파하는 데는 보통 몇 분이 걸립니다. 구성된 테인트가 보이지 않거나 `null` 값을 받는 경우, 위 명령을 다시 시도하기 전에 몇 분 기다려주세요.
 
 :::
 
-Verifying with the `kubectl` cli command, we can also see that the taint has been correctly propagated to the associated node:
+`kubectl` cli 명령으로 확인하면, 테인트가 관련 노드에 올바르게 전파된 것을 볼 수 있습니다:
 
 ```bash
 $ kubectl describe nodes \

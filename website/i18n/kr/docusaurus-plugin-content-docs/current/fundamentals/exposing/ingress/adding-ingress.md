@@ -1,23 +1,23 @@
 ---
-title: "Creating the Ingress"
+title: "Ingress 생성"
 sidebar_position: 20
 ---
-
-Let's create an Ingress resource with the following configuration:
+다음 구성으로 Ingress 리소스를 생성해보겠습니다:
 
 ::yaml{file="manifests/modules/exposing/ingress/creating-ingress/ingress.yaml" paths="kind,metadata.annotations,spec.rules.0"}
 
-1. Use an `Ingress` kind
-2. We can use annotations to configure various behavior of the ALB thats created such as the health checks it performs on the target pods
-3. The rules section is used to express how the ALB should route traffic. In this example we route all HTTP requests where the path starts with `/` to the Kubernetes service called `ui` on port 80
+* `Ingress` 종류 사용
+* 어노테이션을 사용하여 대상 pod에 대한 상태 확인과 같은 ALB의 다양한 동작을 구성할 수 있습니다
+* rules 섹션은 ALB가 트래픽을 어떻게 라우팅해야 하는지 표현하는 데 사용됩니다.
+  이 예제에서는 경로가 `/`로 시작하는 모든 HTTP 요청을 포트 80의 `ui`라는 Kubernetes 서비스로 라우팅합니다
 
-Apply this configuration:
+이 구성을 적용합니다:
 
-```bash timeout=180 hook=add-ingress hookTimeout=430
+```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/creating-ingress
 ```
 
-Let's inspect the Ingress object created:
+생성된 Ingress 객체를 검사해보겠습니다:
 
 ```bash
 $ kubectl get ingress ui -n ui
@@ -25,7 +25,7 @@ NAME   CLASS   HOSTS   ADDRESS                                            PORTS 
 ui     alb     *       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com   80      15s
 ```
 
-The ALB will take several minutes to provision and register its targets so take some time to take a closer look at the ALB provisioned for this Ingress to see how its configured:
+ALB가 프로비저닝되고 대상을 등록하는 데 몇 분이 걸리므로, 이 Ingress에 대해 프로비저닝된 ALB가 어떻게 구성되었는지 자세히 살펴보겠습니다:
 
 ```bash
 $ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-ui`) == `true`]'
@@ -68,12 +68,12 @@ $ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalance
 ]
 ```
 
-What does this tell us?
+이것이 우리에게 알려주는 것은 무엇일까요?
 
-- The ALB is accessible over the public internet
-- It uses the public subnets in our VPC
+* ALB는 공용 인터넷을 통해 접근 가능합니다
+* VPC의 공용 서브넷을 사용합니다
 
-Inspect the targets in the target group that was created by the controller:
+컨트롤러가 생성한 대상 그룹의 대상을 검사합니다:
 
 ```bash
 $ ALB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-ui`) == `true`].LoadBalancerArn' | jq -r '.[0]')
@@ -96,26 +96,26 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 }
 ```
 
-Since we specified using IP mode in our Ingress object, the target is registered using the IP address of the `ui` pod and the port on which it serves traffic.
+Ingress 객체에서 IP 모드 사용을 지정했기 때문에, 대상은 `ui` pod의 IP 주소와 트래픽을 처리하는 포트를 사용하여 등록됩니다.
 
-You can also inspect the ALB and its target groups in the console by clicking this link:
+이 링크를 클릭하여 콘솔에서 ALB와 해당 대상 그룹을 검사할 수도 있습니다:
 
 <ConsoleButton url="https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=ui/ui;sort=loadBalancerName" service="ec2" label="Open EC2 console"/>
 
-Get the URL from the Ingress resource:
+Ingress 리소스에서 URL을 가져옵니다:
 
 ```bash
 $ kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
 k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
 
-To wait until the load balancer has finished provisioning you can run this command:
+로드 밸런서의 프로비저닝이 완료될 때까지 기다리려면 다음 명령을 실행할 수 있습니다:
 
 ```bash
 $ wait-for-lb $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
 ```
 
-And access it in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
+웹 브라우저에서 접근하면 웹 스토어의 UI가 표시되고 사용자로서 사이트를 둘러볼 수 있습니다.
 
 <Browser url="http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com">
 <img src={require('@site/static/img/sample-app-screens/home.webp').default}/>

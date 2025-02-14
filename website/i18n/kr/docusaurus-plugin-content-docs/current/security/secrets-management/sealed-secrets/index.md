@@ -1,18 +1,18 @@
 ---
-title: "Securing Secrets Using Sealed Secrets"
+title: "Sealed Secrets를 사용한 시크릿 보안"
 sidebar_position: 430
 sidebar_custom_props: { "module": true }
-description: "Provide sensitive configuration like credentials to applications running on Amazon Elastic Kubernetes Service with Sealed Secrets."
+description: "Sealed Secrets를 사용하여 Amazon Elastic Kubernetes Service(EKS)에서 실행되는 애플리케이션에 자격 증명과 같은 민감한 구성을 제공합니다."
 ---
 
 ::required-time
 
 :::caution
-The [Sealed Secrets](https://docs.bitnami.com/tutorials/sealed-secrets) project is not related to AWS Services but a third party open-source tool from [Bitnami Labs](https://bitnami.com/)
+[Sealed Secrets](https://docs.bitnami.com/tutorials/sealed-secrets) 프로젝트는 AWS 서비스와 관련이 없으며 [Bitnami Labs](https://bitnami.com/)의 서드파티 오픈소스 도구입니다
 :::
 
-:::tip Before you start
-Prepare your environment for this section:
+:::tip 시작하기 전에
+이 섹션을 위해 환경을 준비하세요:
 
 ```bash timeout=300 wait=30
 $ prepare-environment security/sealed-secrets
@@ -20,6 +20,6 @@ $ prepare-environment security/sealed-secrets
 
 :::
 
-[Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) provides a mechanism to encrypt a Secret object so that it is safe to store - even to a public repository. A SealedSecret can be decrypted only by the controller running in the Kubernetes cluster and nobody else is able to obtain the original Secret from a SealedSecret.
+[Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets)는 Secret 객체를 암호화하여 공개 리포지토리에도 안전하게 저장할 수 있는 메커니즘을 제공합니다. SealedSecret은 Kubernetes 클러스터에서 실행되는 컨트롤러만이 복호화할 수 있으며, 다른 누구도 SealedSecret으로부터 원본 Secret을 얻을 수 없습니다.
 
-In this chapter, you will use SealedSecrets to encrypt YAML manifests pertaining to Kubernetes Secrets as well as be able to deploy these encrypted Secrets to your EKS clusters using normal workflows with tools such as [kubectl](https://kubernetes.io/docs/reference/kubectl/).
+이 장에서는 SealedSecrets를 사용하여 Kubernetes Secrets와 관련된 YAML 매니페스트를 암호화하고, [kubectl](https://kubernetes.io/docs/reference/kubectl/)과 같은 도구를 사용하는 일반적인 워크플로우를 통해 이러한 암호화된 Secrets를 EKS 클러스터에 배포하는 방법을 배우게 됩니다.

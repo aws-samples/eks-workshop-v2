@@ -1,11 +1,11 @@
 ---
-title: "Deploying an application"
+title: "애플리케이션 배포하기"
 sidebar_position: 30
 ---
 
-We have successfully configured Argo CD on our cluster so now we can deploy an application. To demonstrate the difference between a GitOps-based delivery of an application and other methods, we'll migrate the UI component of the sample application which is currently using the `kubectl apply -k` approach to the new Argo CD deployment approach.
+우리는 클러스터에 Argo CD를 성공적으로 구성했으므로 이제 애플리케이션을 배포할 수 있습니다. GitOps 기반 애플리케이션 배포와 다른 방식의 차이점을 보여주기 위해, 현재 `kubectl apply -k` 접근 방식을 사용하는 샘플 애플리케이션의 UI 컴포넌트를 새로운 Argo CD 배포 방식으로 마이그레이션하겠습니다.
 
-First let's remove the existing UI component so we can replace it:
+먼저 기존 UI 컴포넌트를 제거하여 교체할 수 있도록 합니다:
 
 ```bash
 $ kubectl delete -k ~/environment/eks-workshop/base-application/ui --ignore-not-found=true
@@ -16,13 +16,13 @@ service "ui" deleted
 deployment.apps "ui" deleted
 ```
 
-Now, let's get into the cloned Git repository and start creating our GitOps configuration. Copy the existing kustomize configuration for the UI service:
+이제 클론된 Git 저장소로 이동하여 GitOps 구성을 생성하기 시작하겠습니다. UI 서비스에 대한 기존 kustomize 구성을 복사합니다:
 
 ```bash
 $ cp -R ~/environment/eks-workshop/base-application/ui/* ~/environment/argocd/apps
 ```
 
-Your Git directory should now look something like this which you can validate by running `tree ~/environment/argocd`:
+이제 Git 디렉토리가 다음과 같이 보일 것입니다. `tree ~/environment/argocd` 명령을 실행하여 확인할 수 있습니다:
 
 ```text
 .
@@ -37,11 +37,11 @@ Your Git directory should now look something like this which you can validate by
 1 directory, 6 files
 ```
 
-Open the Argo CD UI and navigate to the `apps` application.
+Argo CD UI를 열고 `apps` 애플리케이션으로 이동합니다.
 
 ![Application in the ArgoCD UI](assets/argocd-ui-insync-apps.webp)
 
-Finally we can push our configuration to the Git repository:
+마지막으로 구성을 Git 저장소에 푸시할 수 있습니다:
 
 ```bash
 $ git -C ~/environment/argocd add .
@@ -49,21 +49,21 @@ $ git -C ~/environment/argocd commit -am "Adding the UI service"
 $ git -C ~/environment/argocd push
 ```
 
-Click `Refresh` and `Sync` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
+ArgoCD UI에서 `Refresh`와 `Sync`를 클릭하거나 `argocd` CLI를 사용하여 애플리케이션을 `Sync`합니다:
 
 ```bash
 $ argocd app sync apps
 ```
 
-After a short period of time, the application should be in `Synced` state and the resources should be deployed, the UI should look like this:
+잠시 후 애플리케이션이 `Synced` 상태가 되고 리소스가 배포되어야 하며, UI는 다음과 같이 보일 것입니다:
 
 ![argocd-deploy-application](assets/argocd-deploy-application.webp)
 
-That shows that Argo CD created the basic kustomization, and that it's in sync with the cluster.
+이는 Argo CD가 기본 kustomization을 생성했으며, 클러스터와 동기화되어 있음을 보여줍니다.
 
-We've now successfully migrated the UI component to deploy using Argo CD, and any further changes pushed to the Git repository will be automatically reconciled to our EKS cluster.
+이제 UI 컴포넌트를 Argo CD를 사용하여 배포하도록 성공적으로 마이그레이션했으며, Git 저장소에 푸시된 추가 변경사항은 자동으로 EKS 클러스터에 조정될 것입니다.
 
-You should now have all the resources related to the UI services deployed. To verify, run the following commands:
+이제 UI 서비스와 관련된 모든 리소스가 배포되어 있어야 합니다. 확인하려면 다음 명령을 실행하세요:
 
 ```bash hook=deploy
 $ kubectl get deployment -n ui ui

@@ -1,31 +1,32 @@
 ---
-title: "Kubernetes Event-Driven Autoscaler (KEDA)"
+title: "Kubernetes 이벤트 드리븐 오토스케일러 (KEDA)"
 chapter: true
 sidebar_position: 40
 sidebar_custom_props: { "module": true }
-description: "Automatically scale workloads on Amazon Elastic Kubernetes Service with KEDA"
+description: "KEDA를 사용하여 Amazon Elastic Kubernetes Service(EKS)에서 워크로드를 자동으로 스케일링"
 ---
-
 ::required-time
 
-:::tip Before you start
-Prepare your environment for this section:
+:::tip 시작하기 전에
+이 섹션을 위해 환경을 준비하세요:
 
-```bash timeout=300 wait=30
+```bash
 $ prepare-environment autoscaling/workloads/keda
 ```
 
-This will make the following changes to your lab environment:
+이는 실습 환경에 다음과 같은 변경사항을 적용합니다:
 
-- Creates an IAM role required by the AWS Load Balancer Controller
-- Deploys Helm chart for AWS Load Balancer Controller
-- Creates an IAM role required by the KEDA Operator
-- Creates an Ingress resource for the UI workload
+- AWS Load Balancer 컨트롤러에 필요한 IAM 역할 생성
+- AWS Load Balancer 컨트롤러용 Helm 차트 배포
+- KEDA Operator에 필요한 IAM 역할 생성
+- UI 워크로드를 위한 Ingress 리소스 생성
 
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/autoscaling/workloads/keda/.workshop/terraform).
+이러한 변경사항을 적용하는 Terraform 코드는 [여기](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/autoscaling/workloads/keda/.workshop/terraform)에서 확인할 수 있습니다.
 
 :::
 
-In this lab, we'll look at using the [Kubernetes Event-Driven Autoscaler (KEDA)](https://keda.sh/) to scale pods in a deployment. In the previous lab on the Horizontal Pod Autoscaler (HPA), we saw how the HPA resource can be used to horizontally scale pods in a deployment based on average CPU utilization. But sometimes workloads need to scale based on external events or metrics. KEDA provides the capability to scale your workload based on events from various event sources, such as the queue length in Amazon SQS or other metrics in CloudWatch. KEDA supports 60+ [scalers](https://keda.sh/docs/scalers/) for various metrics systems, databases, messaging systems, and more.
+이 실습에서는 [Kubernetes 이벤트 드리븐 오토스케일러 (KEDA - Kubernetes Event-Driven Autoscaler)](https://keda.sh/)를 사용하여 디플로이먼트의 파드를 스케일링하는 방법을 살펴보겠습니다. 이전 수평적 파드 오토스케일러(HPA) 실습에서는 HPA 리소스를 사용하여 평균 CPU 사용률을 기반으로 디플로이먼트의 파드를 수평적으로 스케일링하는 방법을 보았습니다. 하지만 때로는 워크로드가 외부 이벤트나 메트릭을 기반으로 스케일링해야 할 필요가 있습니다. KEDA는 Amazon SQS의 대기열 길이나 CloudWatch의 다른 메트릭과 같은 다양한 이벤트 소스의 이벤트를 기반으로 워크로드를 스케일링하는 기능을 제공합니다. KEDA는 다양한 메트릭 시스템, 데이터베이스, 메시징 시스템 등을 위한 60개 이상의 [스케일러](https://keda.sh/docs/scalers/)를 지원합니다.
 
-KEDA is a lightweight workload that can be deployed into a Kubernetes cluster using a Helm chart. KEDA works with standard Kubernetes components like the Horizontal Pod Autoscaler to scale a Deployment or StatefulSet. With KEDA, you selectively choose the workloads you want to scale with these various event sources.
+KEDA는 Helm 차트를 사용하여 Kubernetes 클러스터에 배포할 수 있는 경량 워크로드입니다. KEDA는 수평적 파드 오토스케일러(HPA)와 같은 표준 Kubernetes 컴포넌트와 함께 작동하여 디플로이먼트나 스테이트풀셋을 스케일링합니다. KEDA를 사용하면 이러한 다양한 이벤트 소스로 스케일링하고자 하는 워크로드를 선택적으로 지정할 수 있습니다.
+
+---

@@ -1,11 +1,11 @@
 ---
-title: "Introduction"
+title: "소개"
 sidebar_position: 10
 ---
 
-The first thing we'll do is install Kubecost in our cluster. As part of the lab preparation an the AWS Load Balancer Controller and EBS CSI driver were pre-installed to provide ingress and storage to Kubecost.
+우리가 할 첫 번째 일은 클러스터에 Kubecost를 설치하는 것입니다. 실습 준비의 일환으로 AWS Load Balancer 컨트롤러와 EBS CSI 드라이버가 사전 설치되어 Kubecost에 인그레스와 스토리지를 제공합니다.
 
-All that we have left to do is install Kubecost as a Helm chart:
+우리가 해야 할 일은 Kubecost를 Helm 차트로 설치하는 것뿐입니다:
 
 ```bash timeout=300
 $ aws ecr-public get-login-password \
@@ -28,7 +28,7 @@ NOTES:
 [...]
 ```
 
-This will take a few minutes to complete, then we can check to see if Kubecost is running:
+이 작업은 몇 분 정도 소요되며, 그 후 Kubecost가 실행 중인지 확인할 수 있습니다:
 
 ```bash
 $ kubectl get deployment -n kubecost
@@ -37,7 +37,7 @@ kubecost-kube-state-metrics   1/1     1            1           16m
 kubecost-prometheus-server    1/1     1            1           16m
 ```
 
-Kubecost has been exposed using a `LoadBalancer` service, and we can find the URL to access it like so:
+Kubecost는 `LoadBalancer` 서비스를 사용하여 노출되었으며, 다음과 같이 접근할 URL을 찾을 수 있습니다:
 
 ```bash
 $ export KUBECOST_SERVER=$(kubectl get svc -n kubecost kubecost-cost-analyzer -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname'):9090
@@ -45,7 +45,7 @@ $ echo "Kubecost URL: http://$KUBECOST_SERVER"
 Kubecost URL: http://k8s-kubecost-kubecost-e83ecf8fc1-fc26f5c92767520f.elb.us-west-2.amazonaws.com:9090
 ```
 
-The load balancer will take some time to provision so use this command to wait until Kubecost responds:
+로드 밸런서가 프로비저닝되는 데 시간이 걸리므로 다음 명령을 사용하여 Kubecost가 응답할 때까지 기다립니다:
 
 ```bash timeout=300
 $ curl --head -X GET --retry 20 --retry-all-errors --retry-delay 15 \
@@ -67,7 +67,7 @@ Cache-Control: max-age=300
 Accept-Ranges: bytes
 ```
 
-Open the URL in your browser to access Kubecost:
+브라우저에서 URL을 열어 Kubecost에 접근하세요:
 
 <Browser url='http://k8s-kubecost-kubecost-e83ecf8fc1-fc26f5c92767520f.elb.us-west-2.amazonaws.com:9090'>
 <img src={require('./assets/overview.webp').default}/>

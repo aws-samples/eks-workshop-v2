@@ -2,10 +2,9 @@
 title: "시작하기"
 sidebar_position: 10
 ---
+먼저 helm을 사용하여 AWS Load Balancer 컨트롤러를 설치해보겠습니다:
 
-First lets install the AWS Load Balancer controller using helm:
-
-```bash wait=10
+```bash
 $ helm repo add eks-charts https://aws.github.io/eks-charts
 $ helm upgrade --install aws-load-balancer-controller eks-charts/aws-load-balancer-controller \
   --version "${LBC_CHART_VERSION}" \
@@ -25,14 +24,14 @@ NOTES:
 AWS Load Balancer controller installed!
 ```
 
-Currently there are no Ingress resources in our cluster, which you can check with the following command:
+현재 클러스터에는 Ingress 리소스가 없으며, 다음 명령으로 확인할 수 있습니다:
 
-```bash expectError=true
+```bash
 $ kubectl get ingress -n ui
 No resources found in ui namespace.
 ```
 
-There are also no Service resources of type `LoadBalancer`, which you can confirm with the following command:
+또한 `LoadBalancer` 유형의 Service 리소스도 없으며, 다음 명령으로 확인할 수 있습니다:
 
 ```bash
 $ kubectl get svc -n ui

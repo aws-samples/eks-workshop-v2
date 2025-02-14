@@ -159,9 +159,9 @@
     "message": "Cluster Proportional Autoscaler",
     "description": "The label for category Cluster Proportional Autoscaler in sidebar autoscaling"
   },
-  "sidebar.autoscaling.category.Kubernetes Event-Driven Autoscaler (KEDA)": {
-    "message": "Kubernetes Event-Driven Autoscaler (KEDA)",
-    "description": "The label for category Kubernetes Event-Driven Autoscaler (KEDA) in sidebar autoscaling"
+  "sidebar.autoscaling.category.Kubernetes 이벤트 드리븐 오토스케일러 (KEDA)": {
+    "message": "Kubernetes 이벤트 드리븐 오토스케일러 (KEDA)",
+    "description": "The label for category Kubernetes 이벤트 드리븐 오토스케일러 (KEDA) in sidebar autoscaling"
   },
   "sidebar.observability.category.View EKS console": {
     "message": "View EKS console",

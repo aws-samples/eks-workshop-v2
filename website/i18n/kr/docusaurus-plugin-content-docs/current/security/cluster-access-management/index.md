@@ -1,27 +1,27 @@
 ---
-title: "Cluster Access Management API"
+title: "클러스터 접근 관리 API"
 sidebar_position: 10
 sidebar_custom_props: { "module": true }
-description: "Manage AWS credentials using IAM Entities to provide access to Amazon Elastic Kubernetes Service for users and groups."
+description: "IAM 엔터티를 사용하여 AWS 자격 증명을 관리하고 사용자 및 그룹에 대한 Amazon Elastic Kubernetes Service(EKS) 접근을 제공합니다."
 ---
 
 ::required-time
 
-:::tip Before you start
-Prepare your environment for this section:
+:::tip 시작하기 전에
+이 섹션을 위해 환경을 준비하세요:
 
 ```bash timeout=300 wait=30
 $ prepare-environment security/cam
 ```
 
-This will make the following changes to your lab environment:
+이는 실습 환경에 다음과 같은 변경사항을 적용합니다:
 
-- Create AWS IAM roles that will be assumed for the various scenarios
+- 다양한 시나리오에 사용될 AWS IAM 역할 생성
 
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/security/cam/.workshop/terraform).
+이러한 변경사항을 적용하는 Terraform 코드는 [여기](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/security/cam/.workshop/terraform)에서 확인할 수 있습니다.
 
 :::
 
-Platform engineering teams can now rely on a simplified configuration of AWS Identity and Access Management (IAM) users and roles with Kubernetes clusters, removing the burden from cluster administrators of having to maintain and integrate a separate identity provider. The integration between AWS IAM and Amazon EKS enables administrators to leverage IAM security features such as audit logging and multi-factor authentication simply mapping IAM to Kubernetes identities, allowing administrators to fully define authorized IAM principals and their associated Kubernetes permissions directly through an EKS API during or after cluster creation.
+플랫폼 엔지니어링 팀은 이제 AWS Identity and Access Management(IAM) 사용자와 역할을 Kubernetes 클러스터와 간소화된 구성으로 연동할 수 있으며, 클러스터 관리자가 별도의 ID 공급자를 유지하고 통합해야 하는 부담을 덜 수 있습니다. AWS IAM과 Amazon EKS 간의 통합을 통해 관리자는 IAM을 Kubernetes ID에 매핑하여 감사 로깅 및 다중 인증과 같은 IAM 보안 기능을 활용할 수 있으며, 관리자는 클러스터 생성 중 또는 이후에 EKS API를 통해 승인된 IAM 주체와 관련 Kubernetes 권한을 완전히 정의할 수 있습니다.
 
-In this chapter you'll understand how the Cluster Access Management API works, and will translate the existing identity mapping controls to the new model to provide authentication and authorization to Amazon EKS clusters in a seamless way.
+이 장에서는 클러스터 접근 관리 API가 어떻게 작동하는지 이해하고, 기존의 ID 매핑 제어를 새로운 모델로 전환하여 Amazon EKS 클러스터에 대한 인증 및 권한 부여를 원활하게 제공하는 방법을 알아볼 것입니다.

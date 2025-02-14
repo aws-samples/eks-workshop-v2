@@ -1,17 +1,17 @@
 ---
-title: "Using Fluent Bit"
+title: "Fluent Bit 사용하기"
 sidebar_position: 30
 ---
 
-For Kubernetes cluster components that run in pods, these write to files inside the `/var/log` directory, bypassing the default logging mechanism. We can implement pod-level logging by deploying a node-level logging agent as a DaemonSet on each node, such as Fluent Bit.
+파드에서 실행되는 Kubernetes 클러스터 컴포넌트들은 기본 로깅 메커니즘을 우회하여 `/var/log` 디렉토리 내의 파일에 기록합니다. Fluent Bit와 같은 노드 레벨 로깅 에이전트를 DaemonSet으로 각 노드에 배포하여 파드 레벨 로깅을 구현할 수 있습니다.
 
-[Fluent Bit](https://fluentbit.io/) is a lightweight log processor and forwarder that allows you to collect data and logs from different sources, enrich them with filters and send them to multiple destinations like CloudWatch, Kinesis Data Firehose, Kinesis Data Streams and Amazon OpenSearch Service.
+[Fluent Bit](https://fluentbit.io/)는 경량 로그 프로세서이자 포워더로, 다양한 소스로부터 데이터와 로그를 수집하고 필터로 보강한 뒤 CloudWatch, Kinesis Data Firehose, Kinesis Data Streams, Amazon OpenSearch Service와 같은 여러 대상으로 전송할 수 있게 해줍니다.
 
-AWS provides a Fluent Bit image with plugins for both CloudWatch Logs and Kinesis Data Firehose. The [AWS for Fluent Bit](https://github.com/aws/aws-for-fluent-bit) image is available on the [Amazon ECR Public Gallery](https://gallery.ecr.aws/aws-observability/aws-for-fluent-bit).
+AWS는 CloudWatch Logs와 Kinesis Data Firehose 모두를 위한 플러그인이 포함된 Fluent Bit 이미지를 제공합니다. [AWS for Fluent Bit](https://github.com/aws/aws-for-fluent-bit) 이미지는 [Amazon ECR Public Gallery](https://gallery.ecr.aws/aws-observability/aws-for-fluent-bit)에서 사용할 수 있습니다.
 
-In the following section, you will see how to validate Fluent Bit agent is running as a daemonSet to send the containers / pods logs to CloudWatch Logs.
+다음 섹션에서는 Fluent Bit 에이전트가 DaemonSet으로 실행되어 컨테이너/파드 로그를 CloudWatch Logs로 전송하는 것을 어떻게 확인하는지 볼 수 있습니다.
 
-First, we can validate the resources created for Fluent Bit by entering the following command. Each node should have one pod:
+먼저, 다음 명령어를 입력하여 Fluent Bit용으로 생성된 리소스를 확인할 수 있습니다. 각 노드에는 하나의 파드가 있어야 합니다:
 
 ```bash
 $ kubectl get all -n aws-for-fluent-bit
@@ -24,7 +24,7 @@ NAME                                DESIRED   CURRENT   READY   UP-TO-DATE   AVA
 daemonset.apps/aws-for-fluent-bit   2         2         2       2            2           <none>          104m
 ```
 
-The ConfigMap for aws-for-fluent-bit is configured to stream the contents of files in the directory `/var/log/containers/*.log` from each node to the CloudWatch log group `/eks-workshop/worker-fluentbit-logs`:
+aws-for-fluent-bit용 ConfigMap은 각 노드의 `/var/log/containers/*.log` 디렉토리에 있는 파일의 내용을 CloudWatch 로그 그룹 `/eks-workshop/worker-fluentbit-logs`로 스트리밍하도록 구성되어 있습니다:
 
 ```bash
 $ kubectl describe configmaps -n aws-for-fluent-bit

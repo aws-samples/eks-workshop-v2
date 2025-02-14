@@ -1,9 +1,9 @@
 ---
-title: "Using Amazon RDS"
+title: "Amazon RDS 사용하기"
 sidebar_position: 20
 ---
 
-An RDS database has been created in our account, let's retrieve its endpoint and password to be used later:
+우리 계정에 RDS 데이터베이스가 생성되었습니다. 나중에 사용할 엔드포인트와 비밀번호를 가져와 보겠습니다:
 
 ```bash
 $ export CATALOG_RDS_ENDPOINT_QUERY=$(aws rds describe-db-instances --db-instance-identifier $EKS_CLUSTER_NAME-catalog --query 'DBInstances[0].Endpoint')
@@ -13,7 +13,7 @@ eks-workshop-catalog.cluster-cjkatqd1cnrz.us-west-2.rds.amazonaws.com:3306
 $ export CATALOG_RDS_PASSWORD=$(aws ssm get-parameter --name $EKS_CLUSTER_NAME-catalog-db --region $AWS_REGION --query "Parameter.Value" --output text --with-decryption)
 ```
 
-The first step in this process is to re-configure the catalog service to use an Amazon RDS database that has already been created. The application loads most of its configuration from a ConfigMap, let's take look at it:
+이 과정의 첫 번째 단계는 이미 생성된 Amazon RDS 데이터베이스를 사용하도록 카탈로그 서비스를 재구성하는 것입니다. 애플리케이션은 대부분의 구성을 ConfigMap에서 로드합니다. 한번 살펴보겠습니다:
 
 ```bash
 $ kubectl -n catalog get -o yaml cm catalog
@@ -27,21 +27,21 @@ metadata:
   namespace: catalog
 ```
 
-The following kustomization overwrites the ConfigMap, altering the MySQL endpoint so that the application will connect to the Amazon RDS database thats been created already for us which is being pulled from the environment variable `CATALOG_RDS_ENDPOINT`.
+다음 kustomization은 ConfigMap을 덮어쓰고, MySQL 엔드포인트를 변경하여 애플리케이션이 환경 변수 `CATALOG_RDS_ENDPOINT`에서 가져온 이미 생성된 Amazon RDS 데이터베이스에 연결되도록 합니다.
 
 ```kustomization
 modules/networking/securitygroups-for-pods/rds/kustomization.yaml
 ConfigMap/catalog
 ```
 
-Let's apply this change to use the the RDS database:
+RDS 데이터베이스를 사용하기 위해 이 변경사항을 적용해 보겠습니다:
 
 ```bash
 $ kubectl kustomize ~/environment/eks-workshop/modules/networking/securitygroups-for-pods/rds \
   | envsubst | kubectl apply -f-
 ```
 
-Check that the ConfigMap has been updated with the new values:
+ConfigMap이 새로운 값으로 업데이트되었는지 확인합니다:
 
 ```bash
 $ kubectl get -n catalog cm catalog -o yaml
@@ -57,7 +57,7 @@ metadata:
   namespace: catalog
 ```
 
-Now we need to recycle the catalog Pods to pick up our new ConfigMap contents:
+이제 새로운 ConfigMap 내용을 적용하기 위해 카탈로그 Pod들을 재시작해야 합니다:
 
 ```bash expectError=true
 $ kubectl delete pod -n catalog -l app.kubernetes.io/component=service
@@ -67,7 +67,7 @@ Waiting for deployment "catalog" rollout to finish: 1 old replicas are pending t
 error: timed out waiting for the condition
 ```
 
-We got an error, it looks like our catalog Pods failed to restart in time. What's gone wrong? Let's check the Pod logs to see what happened:
+오류가 발생했습니다. 카탈로그 Pod들이 제시간에 재시작되지 못한 것 같습니다. 무엇이 잘못되었는지 Pod 로그를 확인해 보겠습니다:
 
 ```bash
 $ kubectl -n catalog logs deployment/catalog
@@ -76,7 +76,7 @@ $ kubectl -n catalog logs deployment/catalog
 2022/12/19 17:43:05 dial tcp 10.42.11.72:3306: i/o timeout
 ```
 
-Our Pod is unable to connect to the RDS database. We can check the EC2 Security Group thats been applied to the RDS database like so:
+Pod가 RDS 데이터베이스에 연결할 수 없습니다. RDS 데이터베이스에 적용된 EC2 보안 그룹을 다음과 같이 확인할 수 있습니다:
 
 ```bash
 $ aws ec2 describe-security-groups \
@@ -118,8 +118,8 @@ $ aws ec2 describe-security-groups \
 }
 ```
 
-You can also view the security group of the RDS instance through the AWS console:
+AWS 콘솔을 통해 RDS 인스턴스의 보안 그룹을 확인할 수도 있습니다:
 
-<ConsoleButton url="https://console.aws.amazon.com/rds/home#database:id=eks-workshop-catalog;is-cluster=false" service="rds" label="Open RDS console"/>
+<ConsoleButton url="https://console.aws.amazon.com/rds/home#database:id=eks-workshop-catalog;is-cluster=false" service="rds" label="RDS 콘솔 열기"/>
 
-This security group only allows traffic to access the RDS database on port `3306` if it comes from a source which has a specific security group, in the example above `sg-037ec36e968f1f5e7`.
+이 보안 그룹은 특정 보안 그룹(위 예시에서는 `sg-037ec36e968f1f5e7`)을 가진 소스에서 오는 트래픽만 포트 `3306`을 통해 RDS 데이터베이스에 접근할 수 있도록 허용합니다.

@@ -1,24 +1,24 @@
 ---
-title: "Configuring control plane logs"
+title: "컨트롤 플레인 로그 구성"
 sidebar_position: 30
 ---
 
-You can enable each of the cluster log types individually, and in this lab we're enabling everything.
+각 클러스터 로그 유형을 개별적으로 활성화할 수 있으며, 이 실습에서는 모든 것을 활성화하고 있습니다.
 
-Let's take a look this configuration in the EKS console:
+EKS 콘솔에서 이 구성을 살펴보겠습니다:
 
 <ConsoleButton url="https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab" service="eks" label="Open EKS console"/>
 
-The **Logging** tab shows the current configuration for control plane logs for the cluster:
+**로깅** 탭은 클러스터의 컨트롤 플레인 로그에 대한 현재 구성을 보여줍니다:
 
 ![EKS Console Observability Tab](./assets/logging-cluster-observability-tab.webp)
 ![EKS Console Control Plane Tab](./assets/logging-cluster-control-plane-logging-tab.webp)
 
-You can alter the logging configuration by clicking the **Manage** button:
+**관리** 버튼을 클릭하여 로깅 구성을 변경할 수 있습니다:
 
 ![Enable Logging](./assets/logging-cluster-enable-control-plane-logging.webp)
 
-You can also enable EKS control plane logs on a per-cluster basis through the EKS API. This will often be configured using Terraform or CloudFormation, but in this lab we can use the AWS CLI to enable the functionality:
+EKS API를 통해 클러스터별로 EKS 컨트롤 플레인 로그를 활성화할 수도 있습니다. 이는 주로 Terraform이나 CloudFormation을 사용하여 구성되지만, 이 실습에서는 AWS CLI를 사용하여 기능을 활성화할 수 있습니다:
 
 ```bash hook=cluster-logging
 $ aws eks update-cluster-config \
@@ -44,20 +44,20 @@ $ sleep 30
 $ aws eks wait cluster-active --name $EKS_CLUSTER_NAME
 ```
 
-As you can see we can enable each of the cluster log types individually, and in this lab we're enabling everything.
+보시다시피 각 클러스터 로그 유형을 개별적으로 활성화할 수 있으며, 이 실습에서는 모든 것을 활성화하고 있습니다.
 
-Let's take a look this configuration in the EKS console:
+EKS 콘솔에서 이 구성을 살펴보겠습니다:
 
 <ConsoleButton url="https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab" service="eks" label="Open EKS console"/>
 
-The **Logging** tab shows the current configuration for control plane logs for the cluster:
+**로깅** 탭은 클러스터의 컨트롤 플레인 로그에 대한 현재 구성을 보여줍니다:
 
 ![EKS Console Logging Tab](./assets/logging-cluster-logging-tab.webp)
 
-You can alter the logging configuration by clicking the **Manage** button:
+**관리** 버튼을 클릭하여 로깅 구성을 변경할 수 있습니다:
 
 ![Enable Logging](./assets/logging-cluster-enable-logging.webp)
 
 :::info
-If you are using the CDK Observability Accelerator then check out the [CDK Observability Builder](https://aws-quickstart.github.io/cdk-eks-blueprints/builders/observability-builder/#supported-methods) which supports enabling all control plane logging features for EKS clusters and storing them in CloudWatch.
+CDK Observability Accelerator를 사용하는 경우 [CDK Observability Builder](https://aws-quickstart.github.io/cdk-eks-blueprints/builders/observability-builder/#supported-methods)를 확인하세요. 이는 EKS 클러스터의 모든 컨트롤 플레인 로깅 기능을 활성화하고 CloudWatch에 저장하는 것을 지원합니다.
 :::

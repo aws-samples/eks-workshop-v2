@@ -1,24 +1,24 @@
 ---
-title: "Simulating AZ Failure"
+title: "AZ 장애 시뮬레이션"
 sidebar_position: 210
-description: "This experiment simulates an Availability Zone failure to test the resilience of your Kubernetes environment hosted on AWS EKS."
+description: "이 실험은 AWS EKS에서 호스팅되는 Kubernetes 환경의 복원력을 테스트하기 위해 가용 영역(AZ) 장애를 시뮬레이션합니다."
 ---
 
-## Overview
+## 개요
 
-This repeatable experiment simulates an Availability Zone (AZ) failure, demonstrating the resilience of your application when faced with significant infrastructure disruptions. By leveraging AWS Fault Injection Simulator (FIS) and additional AWS services, we'll test how well your system maintains functionality when an entire AZ becomes unavailable.
+이 반복 가능한 실험은 가용 영역(AZ) 장애를 시뮬레이션하여 중요한 인프라 중단에 직면했을 때 애플리케이션의 복원력을 보여줍니다. AWS Fault Injection Simulator(FIS)와 추가 AWS 서비스를 활용하여 전체 AZ가 사용 불가능해질 때 시스템이 기능을 얼마나 잘 유지하는지 테스트할 것입니다.
 
-### Setting up the Experiment
+### 실험 설정
 
-Retrieve the Auto Scaling Group (ASG) name associated with your EKS cluster and create the FIS experiment template to simulate the AZ failure:
+EKS 클러스터와 연결된 Auto Scaling Group(ASG) 이름을 검색하고 AZ 장애를 시뮬레이션하기 위한 FIS 실험 템플릿을 생성합니다:
 
 ```bash wait=30
 $ export ZONE_EXP_ID=$(aws fis create-experiment-template --cli-input-json '{"description":"publicdocument-azfailure","targets":{},"actions":{"azfailure":{"actionId":"aws:ssm:start-automation-execution","parameters":{"documentArn":"arn:aws:ssm:us-west-2::document/AWSResilienceHub-SimulateAzOutageInAsgTest_2020-07-23","documentParameters":"{\"AutoScalingGroupName\":\"'$ASG_NAME'\",\"CanaryAlarmName\":\"eks-workshop-canary-alarm\",\"AutomationAssumeRole\":\"'$FIS_ROLE_ARN'\",\"IsRollback\":\"false\",\"TestDurationInMinutes\":\"2\"}","maxDuration":"PT6M"}}},"stopConditions":[{"source":"none"}],"roleArn":"'$FIS_ROLE_ARN'","tags":{"ExperimentSuffix":"'$RANDOM_SUFFIX'"}}' --output json | jq -r '.experimentTemplate.id')
 ```
 
-## Running the Experiment
+## 실험 실행
 
-Execute the FIS experiment to simulate the AZ failure:
+FIS 실험을 실행하여 AZ 장애를 시뮬레이션합니다:
 
 ```bash timeout=540
 $ aws fis start-experiment --experiment-template-id $ZONE_EXP_ID --output json && timeout --preserve-status 480s ~/$SCRIPT_DIR/get-pods-by-az.sh
@@ -47,19 +47,19 @@ $ aws fis start-experiment --experiment-template-id $ZONE_EXP_ID --output json &
        ui-6dfb84cf67-wknc5   1/1   Running   0     12m
 ```
 
-This command starts the experiment and monitors the distribution and status of pods across different nodes and AZs for 8 minutes to understand the immediate impact of the simulated AZ failure.
+이 명령은 실험을 시작하고 시뮬레이션된 AZ 장애의 즉각적인 영향을 이해하기 위해 8분 동안 서로 다른 노드와 AZ에 걸친 파드의 분포와 상태를 모니터링합니다.
 
-During the experiment, you should observe the following sequence of events:
+실험 중에 다음과 같은 일련의 이벤트가 관찰되어야 합니다:
 
-1. After about 3 minutes, an AZ zone will fail.
-2. Looking at the [Synthetic Canary](<https://console.aws.amazon.com/cloudwatch/home?region=us-west-2#alarmsV2:alarm/eks-workshop-canary-alarm?~(alarmStateFilter~'ALARM)>) you will see change state to `In Alarm`
-3. Around 4 minutes after the experiment started, you will see pods reappearing in the other AZs
-4. After the experiment is complete, after about 7 minutes, it marks the AZ as healthy, and replacement EC2 instances will be launched as a result of an EC2 autoscaling action, bringing the number of instances in each AZ to 2 again.
+1. 약 3분 후, AZ 영역이 실패합니다.
+2. [Synthetic Canary](https://console.aws.amazon.com/cloudwatch/home?region=us-west-2#alarmsV2:alarm/eks-workshop-canary-alarm?~(alarmStateFilter~'ALARM))를 보면 상태가 `In Alarm`으로 변경되는 것을 볼 수 있습니다.
+3. 실험 시작 후 약 4분이 지나면 다른 AZ에서 파드가 다시 나타나는 것을 볼 수 있습니다.
+4. 실험이 완료된 후 약 7분이 지나면 AZ를 정상 상태로 표시하고, EC2 자동 확장 작업의 결과로 대체 EC2 인스턴스가 시작되어 각 AZ의 인스턴스 수가 다시 2개가 됩니다.
 
-During this time, the retail url will stay available showing how resilient EKS is to AZ failures.
+이 기간 동안 retail url은 계속 사용 가능한 상태를 유지하여 EKS가 AZ 장애에 얼마나 탄력적인지 보여줍니다.
 
 :::note
-To verify nodes and pods redistribution, you can run:
+노드와 파드 재분배를 확인하기 위해 다음을 실행할 수 있습니다:
 
 ```bash timeout=900 wait=30
 $ EXPECTED_NODES=6 && while true; do ready_nodes=$(kubectl get nodes --no-headers | grep " Ready" | wc -l); if [ "$ready_nodes" -eq "$EXPECTED_NODES" ]; then echo "All $EXPECTED_NODES expected nodes are ready."; echo "Listing the ready nodes:"; kubectl get nodes | grep " Ready"; break; else echo "Waiting for all $EXPECTED_NODES nodes to be ready... (Currently $ready_nodes are ready)"; sleep 10; fi; done
@@ -80,9 +80,9 @@ $ timeout 10s ~/$SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 
 :::
 
-## Post-Experiment Verification
+## 실험 후 검증
 
-After the experiment, verify that your application remains operational despite the simulated AZ failure:
+실험 후, 시뮬레이션된 AZ 장애에도 불구하고 애플리케이션이 작동 상태를 유지하는지 확인합니다:
 
 ```bash timeout=900
 $ wait-for-lb $(kubectl get ingress -n ui -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
@@ -91,29 +91,29 @@ Waiting for k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com...
 You can now access http://k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com
 ```
 
-This step confirms the effectiveness of your Kubernetes cluster's high availability configuration and its ability to maintain service continuity during significant infrastructure disruptions.
+이 단계는 Kubernetes 클러스터의 고가용성 구성의 효과와 중요한 인프라 중단 시 서비스 연속성을 유지하는 능력을 확인합니다.
 
-## Conclusion
+## 결론
 
-The AZ failure simulation represents a critical test of your EKS cluster's resilience and your application's high availability design. Through this experiment, you've gained valuable insights into:
+AZ 장애 시뮬레이션은 EKS 클러스터의 복원력과 애플리케이션의 고가용성 설계에 대한 중요한 테스트를 나타냅니다. 이 실험을 통해 다음과 같은 귀중한 통찰력을 얻었습니다:
 
-1. The effectiveness of your multi-AZ deployment strategy
-2. Kubernetes' ability to reschedule pods across remaining healthy AZs
-3. The impact of an AZ failure on your application's performance and availability
-4. The efficiency of your monitoring and alerting systems in detecting and responding to major infrastructure issues
+1. 멀티 AZ 배포 전략의 효과
+2. 남은 정상 AZ에 걸쳐 파드를 재스케줄링하는 Kubernetes의 능력
+3. AZ 장애가 애플리케이션의 성능과 가용성에 미치는 영향
+4. 주요 인프라 문제를 감지하고 대응하는 모니터링 및 경고 시스템의 효율성
 
-Key takeaways from this experiment include:
+이 실험의 주요 교훈은 다음과 같습니다:
 
-- The importance of distributing your workload across multiple AZs
-- The value of proper resource allocation and pod anti-affinity rules
-- The need for robust monitoring and alerting systems that can quickly detect AZ-level issues
-- The effectiveness of your disaster recovery and business continuity plans
+- 여러 AZ에 걸쳐 워크로드를 분산하는 것의 중요성
+- 적절한 리소스 할당과 파드 안티-어피니티 규칙의 가치
+- AZ 수준의 문제를 빠르게 감지할 수 있는 강력한 모니터링 및 경고 시스템의 필요성
+- 재해 복구 및 비즈니스 연속성 계획의 효과
 
-By regularly conducting such experiments, you can:
+이러한 실험을 정기적으로 수행함으로써 다음을 할 수 있습니다:
 
-- Identify potential weaknesses in your infrastructure and application architecture
-- Refine your incident response procedures
-- Build confidence in your system's ability to withstand major failures
-- Continuously improve your application's resilience and reliability
+- 인프라와 애플리케이션 아키텍처의 잠재적 약점 식별
+- 사고 대응 절차 개선
+- 주요 장애를 견딜 수 있는 시스템 능력에 대한 신뢰 구축
+- 애플리케이션의 내결함성과 신뢰성 지속적 개선
 
-Remember, true resilience comes not just from surviving such failures, but from maintaining performance and user experience even in the face of significant infrastructure disruptions. Use the insights gained from this experiment to further enhance your application's fault tolerance and ensure seamless operations across all scenarios.
+진정한 복원력은 이러한 장애에서 살아남는 것뿐만 아니라 중요한 인프라 중단에도 성능과 사용자 경험을 유지하는 것에서 온다는 것을 기억하세요. 이 실험에서 얻은 통찰력을 활용하여 애플리케이션의 내결함성을 더욱 향상시키고 모든 시나리오에서 원활한 운영을 보장하세요.

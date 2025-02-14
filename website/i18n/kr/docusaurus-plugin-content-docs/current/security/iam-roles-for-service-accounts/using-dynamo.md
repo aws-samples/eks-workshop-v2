@@ -1,9 +1,9 @@
 ---
-title: "Using DynamoDB"
+title: "DynamoDB 사용하기"
 sidebar_position: 22
 ---
 
-The first step in this process is to re-configure the `carts` service to use a DynamoDB table that has already been created for us. The application loads most of its confirmation from a ConfigMap, lets take look at it:
+이 과정의 첫 번째 단계는 이미 생성된 DynamoDB 테이블을 사용하도록 `carts` 서비스를 재구성하는 것입니다. 애플리케이션은 대부분의 설정을 ConfigMap에서 로드하므로, 이를 살펴보겠습니다:
 
 ```bash
 $ kubectl -n carts get -o yaml cm carts
@@ -20,14 +20,14 @@ metadata:
   namespace: carts
 ```
 
-The following kustomization overwrites the ConfigMap, removing the DynamoDB endpoint configuration which tells the SDK to default to the real DynamoDB service instead of our test Pod. We've also provided it with the name of the DynamoDB table thats been created already for us which is being pulled from the environment variable `CARTS_DYNAMODB_TABLENAME`.
+다음 kustomization은 ConfigMap을 덮어쓰며, SDK가 테스트 Pod 대신 실제 DynamoDB 서비스를 기본값으로 사용하도록 DynamoDB 엔드포인트 구성을 제거합니다. 또한 환경 변수 `CARTS_DYNAMODB_TABLENAME`에서 가져온 이미 생성된 DynamoDB 테이블의 이름도 제공했습니다.
 
 ```kustomization
 modules/security/irsa/dynamo/kustomization.yaml
 ConfigMap/carts
 ```
 
-Let's check the value of `CARTS_DYNAMODB_TABLENAME` then run Kustomize to use the real DynamoDB service:
+`CARTS_DYNAMODB_TABLENAME` 값을 확인한 다음 Kustomize를 실행하여 실제 DynamoDB 서비스를 사용해 보겠습니다:
 
 ```bash
 $ echo $CARTS_DYNAMODB_TABLENAME
@@ -36,7 +36,7 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/security/irsa/dynamo \
   | envsubst | kubectl apply -f-
 ```
 
-This will overwrite our ConfigMap with new values:
+이것은 ConfigMap을 새로운 값으로 덮어쓸 것입니다:
 
 ```bash
 $ kubectl get -n carts cm carts -o yaml
@@ -51,7 +51,7 @@ metadata:
   namespace: carts
 ```
 
-Now we need to recycle all the carts Pods to pick up our new ConfigMap contents:
+이제 새로운 ConfigMap 내용을 적용하기 위해 모든 carts Pod를 재시작해야 합니다:
 
 ```bash expectError=true hook=enable-dynamo
 $ kubectl rollout restart -n carts deployment/carts
@@ -61,7 +61,7 @@ Waiting for deployment "carts" rollout to finish: 1 old replicas are pending ter
 error: timed out waiting for the condition
 ```
 
-It looks like our change failed to deploy properly, we can confirm this by looking at the Pods:
+변경 사항이 제대로 배포되지 않은 것 같습니다. Pod를 확인하여 이를 확인할 수 있습니다:
 
 ```bash
 $ kubectl -n carts get pod
@@ -71,4 +71,4 @@ carts-df76875ff-7jkhr             0/1     CrashLoopBackOff   3 (36s ago)     2m2
 carts-dynamodb-698674dcc6-hw2bg   1/1     Running            0               20m
 ```
 
-What's gone wrong?
+무엇이 잘못되었을까요?

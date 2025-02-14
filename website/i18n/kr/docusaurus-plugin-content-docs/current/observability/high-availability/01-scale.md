@@ -1,16 +1,16 @@
 ---
-title: "Lab Setup: Chaos Mesh, Scaling, and Pod affinity"
+title: "실습 설정: Chaos Mesh, 스케일링, 그리고 Pod 어피니티"
 sidebar_position: 90
-description: "Learn how to scale your pods, add Pod Anti-Affinity configurations, and use a helper script to visualize pod distribution."
+description: "Pod를 스케일링하고, Pod 안티-어피니티 설정을 추가하고, Pod 분산을 시각화하는 헬퍼 스크립트를 사용하는 방법을 배웁니다."
 ---
 
-This guide outlines steps to enhance the resilience of a UI service by implementing high availability practices. We'll cover installing helm, scaling the UI service, implementing pod anti-affinity, and using a helper script to visualize pod distribution across availability zones.
+이 가이드는 고가용성 방식을 구현하여 UI 서비스의 복원력을 향상시키는 단계를 설명합니다. helm 설치, UI 서비스 스케일링, pod 안티-어피니티 구현, 그리고 가용성 영역 전반에 걸친 pod 분산을 시각화하는 헬퍼 스크립트 사용을 다룰 것입니다.
 
-## Installing Chaos Mesh
+## Chaos Mesh 설치하기
 
-To enhance our cluster's resilience testing capabilities, we'll install Chaos Mesh. Chaos Mesh is a powerful chaos engineering tool for Kubernetes environments. It allows us to simulate various failure scenarios and test how our applications respond.
+클러스터의 복원력 테스트 기능을 향상시키기 위해 Chaos Mesh를 설치할 것입니다. Chaos Mesh는 Kubernetes 환경을 위한 강력한 카오스 엔지니어링 도구입니다. 이를 통해 다양한 장애 시나리오를 시뮬레이션하고 애플리케이션의 반응을 테스트할 수 있습니다.
 
-Let's install Chaos Mesh in our cluster using Helm:
+Helm을 사용하여 클러스터에 Chaos Mesh를 설치해 보겠습니다:
 
 ```bash timeout=240
 $ helm repo add chaos-mesh https://charts.chaos-mesh.org
@@ -31,28 +31,27 @@ TEST SUITE: None
 
 ```
 
-## Scaling and Topology Spread Constraints
+## 스케일링과 토폴로지 분산 제약 조건
 
-We use a Kustomize patch to modify the UI deployment, scaling it to 5 replicas and adding topology spread constraints rules. This ensures UI pods are distributed across different nodes, reducing the impact of node failures.
+Kustomize 패치를 사용하여 UI 배포를 수정하고, 5개의 레플리카로 스케일링하며 토폴로지 분산 제약 조건 규칙을 추가합니다. 이를 통해 UI pod가 서로 다른 노드에 분산되어 노드 장애의 영향을 줄일 수 있습니다.
 
-Here's the content of our patch file:
+다음은 패치 파일의 내용입니다:
 
 ```kustomization
 modules/observability/resiliency/high-availability/config/scale_and_affinity_patch.yaml
 Deployment/ui
 ```
 
-Apply the changes using Kustomize patch and
-[Kustomization file](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/resiliency/high-availability/config/kustomization.yaml):
+Kustomize 패치와 [Kustomization 파일](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/resiliency/high-availability/config/kustomization.yaml)을 사용하여 변경사항을 적용합니다:
 
 ```bash timeout=120
 $ kubectl delete deployment ui -n ui
 $ kubectl apply -k ~/environment/eks-workshop/modules/observability/resiliency/high-availability/config/
 ```
 
-## Verify Retail Store Accessibility
+## 리테일 스토어 접근성 확인
 
-After applying these changes, it's important to verify that your retail store is accessible:
+이러한 변경사항을 적용한 후, 리테일 스토어가 접근 가능한지 확인하는 것이 중요합니다:
 
 ```bash timeout=900
 $ wait-for-lb $(kubectl get ingress -n ui -o jsonpath='{.items[0].status.loadBalancer.ingress[0].hostname}')
@@ -61,19 +60,19 @@ Waiting for k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com...
 You can now access http://k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com
 ```
 
-Once this command completes, it will output a URL. Open this URL in a new browser tab to verify that your retail store is accessible and functioning correctly.
+이 명령이 완료되면 URL이 출력됩니다. 새 브라우저 탭에서 이 URL을 열어 리테일 스토어가 접근 가능하고 올바르게 작동하는지 확인하세요.
 
 :::tip
-The retail url may take 5-10 minutes to become operational.
+리테일 URL이 작동하기까지 5-10분이 소요될 수 있습니다.
 :::
 
-## Helper Script: Get Pods by AZ
+## 헬퍼 스크립트: 가용성 영역별 Pod 조회
 
-The `get-pods-by-az.sh` script helps visualize the distribution of Kubernetes pods across different availability zones in the terminal. You can view the script file on github [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/resiliency/scripts/get-pods-by-az.sh).
+`get-pods-by-az.sh` 스크립트는 터미널에서 서로 다른 가용성 영역에 걸친 Kubernetes pod의 분산을 시각화하는 데 도움을 줍니다. [여기](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/resiliency/scripts/get-pods-by-az.sh)에서 스크립트 파일을 볼 수 있습니다.
 
-### Script Execution
+### 스크립트 실행
 
-To run the script and see the distribution of pods across availability zones, execute:
+가용성 영역에 걸친 pod의 분산을 보려면 다음을 실행하세요:
 
 ```bash
 $ timeout 10s ~/$SCRIPT_DIR/get-pods-by-az.sh | head -n 30
@@ -95,9 +94,9 @@ $ timeout 10s ~/$SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 ```
 
 :::info
-For more information on these changes, check out these sections:
+이러한 변경사항에 대한 자세한 정보는 다음 섹션을 확인하세요:
 
 - [Chaos Mesh](https://chaos-mesh.org/)
-- [Pod Affinity and Anti-Affinity](/docs/fundamentals/managed-node-groups/basics/affinity/)
+- [Pod 어피니티와 안티-어피니티](/docs/fundamentals/managed-node-groups/basics/affinity/)
 
 :::

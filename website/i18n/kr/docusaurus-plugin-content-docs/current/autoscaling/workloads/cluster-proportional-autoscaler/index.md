@@ -1,45 +1,44 @@
 ---
-title: "Cluster Proportional Autoscaler"
+title: "클러스터 비례 오토스케일러 (CPA)"
 sidebar_position: 15
 sidebar_custom_props: { "module": true }
-description: "Scale workloads proportional to the size of your Amazon Elastic Kubernetes Service cluster with Cluster Proportional Autoscaler."
+description: "클러스터 비례 오토스케일러를 사용하여 Amazon Elastic Kubernetes Service(EKS) 클러스터의 크기에 비례하여 워크로드를 확장합니다."
 ---
-
 ::required-time
 
-:::tip Before you start
-Prepare your environment for this section:
+:::tip 시작하기 전에
+이 섹션을 위한 환경을 준비하세요:
 
-```bash timeout=300 wait=30
+```bash
 $ prepare-environment autoscaling/workloads/cpa
 ```
 
 :::
 
-In this lab, we'll learn about [Cluster Proportional Autoscaler](https://github.com/kubernetes-sigs/cluster-proportional-autoscaler) and how to scale out applications proportional to the size of the cluster compute.
+이 실습에서는 [클러스터 비례 오토스케일러](https://github.com/kubernetes-sigs/cluster-proportional-autoscaler)에 대해 알아보고 클러스터 컴퓨팅 크기에 비례하여 애플리케이션을 확장하는 방법을 배우겠습니다.
 
-Cluster Proportional Autoscaler (CPA) is a horizontal pod autoscaler that scales replicas based on the number of nodes in a cluster. The proportional autoscaler container watches over the number of schedulable nodes and cores of a cluster and resizes the number of replicas. This functionality is desirable for applications that need to be autoscaled with the size of the cluster such as CoreDNS and other services that scale with the number of nodes/pods in a cluster. CPA has Golang API clients running inside pods that connect to the API Server and polls the number of nodes and cores in the cluster. The scaling parameters and data points are provided via a ConfigMap to the autoscaler and it refreshes its parameters table every poll interval to be up to date with the latest desired scaling parameters. Unlike other autoscalers CPA does not rely on the Metrics API and does not require the Metrics Server.
+클러스터 비례 오토스케일러(CPA - Cluster Proportional Autoscaler)는 클러스터의 노드 수에 기반하여 레플리카를 확장하는 수평적 파드 오토스케일러(HPA)입니다. 비례 오토스케일러 컨테이너는 클러스터의 스케줄 가능한 노드와 코어의 수를 모니터링하고 레플리카의 수를 조정합니다. 이 기능은 CoreDNS와 같이 클러스터의 노드/파드 수에 따라 확장되는 애플리케이션과 같이 클러스터 크기에 맞춰 자동 확장이 필요한 애플리케이션에 유용합니다. CPA는 파드 내부에서 실행되는 Golang API 클라이언트를 통해 API 서버에 연결하여 클러스터의 노드 및 코어 수를 폴링합니다. 스케일링 파라미터와 데이터 포인트는 ConfigMap을 통해 오토스케일러에 제공되며, 매 폴링 간격마다 파라미터 테이블을 새로 고쳐 최신 스케일링 파라미터를 유지합니다. 다른 오토스케일러와 달리 CPA는 Metrics API에 의존하지 않으며 Metrics Server가 필요하지 않습니다.
 
 ![CPA](./assets/cpa.webp)
 
-Some of the main use cases for CPA include:
+CPA의 주요 사용 사례는 다음과 같습니다:
 
-- Over-provisioning
-- Scale out core platform services
-- Simple and easy mechanism to scale out workloads as it does not require metrics server or prometheus adapter
+- 오버 프로비저닝
+- 코어 플랫폼 서비스 확장
+- `metrics` 서버나 `prometheus` 어댑터가 필요 없는 간단하고 쉬운 워크로드 확장 메커니즘
 
-## Scaling Methods used by Cluster Proportional Autoscaler
+## 클러스터 비례 오토스케일러(CPA)가 사용하는 스케일링 방법
 
-### Linear
+### 선형(Linear)
 
-- This scaling method will scale the application in direct proportion to how many nodes or cores are available in a cluster
-- Either one of the `coresPerReplica` or `nodesPerReplica` could be omitted
-- When `preventSinglePointFailure` is set to `true`, the controller ensures at least 2 replicas if there are more than one node
-- When `includeUnschedulableNodes` is set to `true`, the replicas will be scaled based on the total number of nodes. Otherwise, the replicas will only scale based on the number of schedulable nodes (i.e., cordoned and draining nodes are excluded)
-- All of `min`,`max`,`preventSinglePointFailure`,`includeUnschedulableNodes` are optional. If not set, `min` will be defaulted to 1, `preventSinglePointFailure` will be defaulted to `false` and `includeUnschedulableNodes` will be defaulted to `false`
-- Both `coresPerReplica` and `nodesPerReplica` are float
+- 이 스케일링 방법은 클러스터에서 사용 가능한 노드 또는 코어 수에 직접적으로 비례하여 애플리케이션을 확장합니다
+- `coresPerReplica` 또는 `nodesPerReplica` 중 하나를 생략할 수 있습니다
+- `preventSinglePointFailure`가 `true`로 설정된 경우, 컨트롤러는 노드가 둘 이상일 때 최소 2개의 레플리카를 보장합니다
+- `includeUnschedulableNodes`가 `true`로 설정된 경우, 전체 노드 수를 기준으로 레플리카가 확장됩니다. 그렇지 않으면 스케줄 가능한 노드 수(즉, 코든되고 드레이닝되는 노드는 제외)만을 기준으로 레플리카가 확장됩니다
+- `min`, `max`, `preventSinglePointFailure`, `includeUnschedulableNodes`는 모두 선택사항입니다. 설정하지 않으면 `min`은 1로, `preventSinglePointFailure`는 `false`로, `includeUnschedulableNodes`는 `false`로 기본 설정됩니다
+- `coresPerReplica`와 `nodesPerReplica`는 모두 부동소수점 값입니다
 
-### ConfigMap for Linear
+### 선형 ConfigMap
 
 ```text
 data:
@@ -54,7 +53,7 @@ data:
     }
 ```
 
-**The Equation of Linear Control Mode:**
+**선형 제어 모드의 방정식:**
 
 ```text
 replicas = max( ceil( cores * 1/coresPerReplica ) , ceil( nodes * 1/nodesPerReplica ) )
@@ -62,15 +61,15 @@ replicas = min(replicas, max)
 replicas = max(replicas, min)
 ```
 
-### Ladder
+### 계단식(Ladder)
 
-- This scaling method uses a step function to determine the ratio of nodes:replicas and/or cores:replicas
-- The step ladder function uses the data point for core and node scaling from the ConfigMap. The lookup which yields the higher number of replicas will be used as the target scaling number.
-- Either one of the `coresPerReplica` or `nodesPerReplica` could be omitted
-- Replicas can be set to 0 (unlike in linear mode)
-- Scaling to 0 replicas could be used to enable optional features as a cluster grows
+- 이 스케일링 방법은 노드:레플리카 및/또는 코어:레플리카 비율을 결정하기 위해 계단 함수를 사용합니다
+- 계단식 함수는 ConfigMap의 코어 및 노드 스케일링을 위한 데이터 포인트를 사용합니다. 더 많은 레플리카 수를 산출하는 조회 결과가 목표 스케일링 수로 사용됩니다
+- `coresPerReplica` 또는 `nodesPerReplica` 중 하나를 생략할 수 있습니다
+- 레플리카를 0으로 설정할 수 있습니다(선형 모드와 달리)
+- 0 레플리카로의 스케일링은 클러스터가 성장함에 따라 선택적 기능을 활성화하는 데 사용될 수 있습니다
 
-### ConfigMap for Ladder
+### 계단식 ConfigMap
 
 ```text
 data:
@@ -93,8 +92,8 @@ data:
     }
 ```
 
-#### Comparison to Horizontal Pod Autoscaler
+#### 수평적 파드 오토스케일러(HPA)와의 비교
 
-Horizontal Pod Autoscaler is a top level Kubernetes API resource. HPA is a closed feedback loop autoscaler which monitors CPU/Memory utilization of the pods and scales the number of replicas automatically. HPA relies on the Metrics API and requires Metrics Server whereas Cluster Proportional Autoscaler does not use Metrics Server nor the Metrics API. Cluster Proportional Autoscaler is not scaled with a Kubernetes resource but instead uses flags to identify target workloads and a ConfigMap for scaling configuration. CPA provides a simple control loop that watches the cluster size and scales the target controller. The inputs for CPA are number of schedulable cores and nodes in the cluster.
+수평적 파드 오토스케일러(HPA)는 최상위 Kubernetes API 리소스입니다. HPA는 파드의 CPU/메모리 사용률을 모니터링하고 레플리카 수를 자동으로 조정하는 폐쇄 피드백 루프 오토스케일러입니다. HPA는 Metrics API에 의존하고 Metrics Server가 필요한 반면, 클러스터 비례 오토스케일러는 Metrics Server나 Metrics API를 사용하지 않습니다. 클러스터 비례 오토스케일러는 Kubernetes 리소스로 확장되지 않고 대신 플래그를 사용하여 대상 워크로드를 식별하고 스케일링 구성을 위해 ConfigMap을 사용합니다. CPA는 클러스터 크기를 감시하고 대상 컨트롤러를 확장하는 간단한 제어 루프를 제공합니다. CPA의 입력은 클러스터의 스케줄 가능한 코어와 노드의 수입니다.
 
-In this lab we'll demonstrate scaling the CoreDNS system component of the EKS cluster proportional to the amount of compute in the cluster.
+이 실습에서는 클러스터의 컴퓨팅 양에 비례하여 EKS 클러스터의 CoreDNS 시스템 컴포넌트를 확장하는 것을 시연하겠습니다.

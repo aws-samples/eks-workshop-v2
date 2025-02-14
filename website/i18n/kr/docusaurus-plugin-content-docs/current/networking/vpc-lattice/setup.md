@@ -1,11 +1,11 @@
 ---
-title: "Deploy the Controller"
+title: "컨트롤러 배포"
 sidebar_position: 10
 ---
 
-Follow these instructions to create a cluster and deploy the AWS Gateway API Controller.
+클러스터를 생성하고 AWS Gateway API 컨트롤러를 배포하려면 다음 지침을 따르세요.
 
-First, configure security group to receive traffic from the VPC Lattice network. You must set up security groups so that they allow all Pods communicating with VPC Lattice to allow traffic from the VPC Lattice managed prefix lists. See [Control traffic to resources using security groups](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html) for details. Lattice has both an IPv4 and IPv6 prefix lists available.
+먼저, VPC Lattice 네트워크로부터 트래픽을 수신하도록 보안 그룹을 구성하세요. VPC Lattice와 통신하는 모든 Pod가 VPC Lattice 관리형 프리픽스 리스트로부터의 트래픽을 허용하도록 보안 그룹을 설정해야 합니다. 자세한 내용은 [보안 그룹을 사용하여 리소스에 대한 트래픽 제어](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html)를 참조하세요. Lattice는 IPv4와 IPv6 프리픽스 리스트를 모두 제공합니다.
 
 ```bash
 $ CLUSTER_SG=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --output json| jq -r '.cluster.resourcesVpcConfig.clusterSecurityGroupId')
@@ -31,7 +31,7 @@ $ aws ec2 authorize-security-group-ingress --group-id $CLUSTER_SG --ip-permissio
 }
 ```
 
-This step will install the controller and the CRDs (Custom Resource Definitions) required to interact with the Kubernetes Gateway API.
+이 단계에서는 컨트롤러와 Kubernetes Gateway API와 상호 작용하는 데 필요한 CRD(Custom Resource Definitions)를 설치합니다.
 
 ```bash wait=30
 $ aws ecr-public get-login-password --region us-east-1 \
@@ -47,7 +47,7 @@ $ helm install gateway-api-controller \
     --wait
 ```
 
-The controller will now be running as a deployment:
+이제 컨트롤러가 배포로 실행됩니다:
 
 ```bash
 $ kubectl get deployment -n gateway-api-controller

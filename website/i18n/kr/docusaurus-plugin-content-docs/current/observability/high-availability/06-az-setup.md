@@ -1,12 +1,12 @@
 ---
-title: "AZ Failure Experiment Setup"
+title: "AZ 장애 실험 설정"
 sidebar_position: 190
-description: "Scale your application to two instances and prepare for an AZ failure simulation experiment."
+description: "애플리케이션을 두 개의 인스턴스로 확장하고 AZ 장애 시뮬레이션 실험을 준비합니다."
 ---
 
-### Scaling Instances
+### 인스턴스 확장
 
-To see the full impact of an Availability Zone (AZ) failure, let's first scale up to two instances per AZ as well as increase the number of pods up to 9:
+가용 영역(AZ) 장애의 전체적인 영향을 확인하기 위해, 먼저 AZ당 두 개의 인스턴스로 확장하고 파드 수를 9개까지 늘려보겠습니다:
 
 ```bash timeout=120 wait=30
 $ export ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[? Tags[? (Key=='eks:cluster-name') && Value=='eks-workshop']].AutoScalingGroupName" --output text)
@@ -41,11 +41,11 @@ $ timeout 10s ~/$SCRIPT_DIR/get-pods-by-az.sh | head -n 30
        ui-6dfb84cf67-lvdc2   1/1   Running   0     5m26s
 ```
 
-### Setting up a Synthetic Canary
+### 합성 카나리 설정
 
-Before starting the experiment, set up a synthetic canary for heartbeat monitoring:
+실험을 시작하기 전에, 하트비트 모니터링을 위한 합성 카나리를 설정하세요:
 
-1. First, create an S3 bucket for the canary artifacts:
+1. 먼저, 카나리 아티팩트를 위한 S3 버킷을 생성합니다:
 
    ```bash wait=30
    $ export BUCKET_NAME="eks-workshop-canary-artifacts-$(date +%s)"
@@ -54,13 +54,13 @@ Before starting the experiment, set up a synthetic canary for heartbeat monitori
    make_bucket: eks-workshop-canary-artifacts-1724131402
    ```
 
-2. Create the blueprint:
+2. 블루프린트를 생성합니다:
 
    ```file
    manifests/modules/observability/resiliency/scripts/create-blueprint.sh
    ```
 
-   Place this canary blueprint into the bucket:
+   이 카나리 블루프린트를 버킷에 넣습니다:
 
    ```bash wait=30
    $ ~/$SCRIPT_DIR/create-blueprint.sh
@@ -70,7 +70,7 @@ Before starting the experiment, set up a synthetic canary for heartbeat monitori
    The script is configured to check the URL: http://k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws.com
    ```
 
-3. Create a synthetic canary with a Cloudwatch alarm:
+3. Cloudwatch 경보가 포함된 합성 카나리를 생성합니다:
 
    ```bash wait=60
    $ aws synthetics create-canary \
@@ -99,6 +99,6 @@ Before starting the experiment, set up a synthetic canary for heartbeat monitori
    --region $AWS_REGION
    ```
 
-This sets up a canary that checks the health of your application every minute and a CloudWatch alarm that triggers if the success percentage falls below 95%.
+이렇게 하면 매 분마다 애플리케이션의 상태를 확인하는 카나리와 성공률이 95% 미만으로 떨어질 경우 트리거되는 CloudWatch 경보가 설정됩니다.
 
-With these steps completed, your application is now scaled across to two instances in AZs and you've set up the necessary monitoring for the upcoming AZ failure simulation experiment.
+이러한 단계들이 완료되면, 이제 애플리케이션이 AZ의 두 인스턴스로 확장되었고 앞으로 있을 AZ 장애 시뮬레이션 실험을 위한 필요한 모니터링이 설정된 것입니다.

@@ -1,12 +1,12 @@
 ---
-title: "Applying a Security Group"
+title: "보안 그룹 적용하기"
 sidebar_position: 40
 hide_table_of_contents: true
 ---
 
-In order for our catalog Pod to successfully connect to the RDS instance we'll need to use the correct security group. Although this security group could be applied to the EKS worker nodes themselves, this would result in any workload in our cluster having network access to the RDS instance. Instead we'll apply Security Groups for Pods to specifically allow our catalog Pods access to the RDS instance.
+카탈로그 Pod가 RDS 인스턴스에 성공적으로 연결하기 위해서는 올바른 보안 그룹을 사용해야 합니다. 이 보안 그룹을 EKS 워커 노드 자체에 적용할 수 있지만, 이는 클러스터의 모든 워크로드가 RDS 인스턴스에 대한 네트워크 액세스 권한을 갖게 되는 결과를 초래합니다. 대신 Pod용 보안 그룹을 적용하여 카탈로그 Pod가 RDS 인스턴스에 접근할 수 있도록 특별히 허용할 것입니다.
 
-A security group which allows access to the RDS database has already been set up for you, and we can view it like so:
+RDS 데이터베이스에 대한 접근을 허용하는 보안 그룹이 이미 설정되어 있으며, 다음과 같이 확인할 수 있습니다:
 
 ```bash
 $ export CATALOG_SG_ID=$(aws ec2 describe-security-groups \
@@ -57,19 +57,19 @@ $ aws ec2 describe-security-groups \
 }
 ```
 
-This security group:
+이 보안 그룹은:
 
-- Allows inbound traffic for the HTTP API served by the Pod on port 8080
-- Allows all egress traffic
-- Will be allowed to access the RDS database as we saw earlier
+- Pod가 제공하는 HTTP API에 대한 8080 포트의 인바운드 트래픽을 허용합니다
+- 모든 이그레스 트래픽을 허용합니다
+- 앞서 보았듯이 RDS 데이터베이스에 접근할 수 있도록 허용됩니다
 
-In order for our Pod to use this security group we need to use the `SecurityGroupPolicy` CRD to tell EKS which security group is to be mapped to a specific set of Pods. This is what we'll configure:
+Pod가 이 보안 그룹을 사용하기 위해서는 `SecurityGroupPolicy` CRD를 사용하여 EKS에 어떤 보안 그룹이 특정 Pod 세트에 매핑되어야 하는지 알려줘야 합니다. 다음과 같이 구성할 것입니다:
 
 ```file
 manifests/modules/networking/securitygroups-for-pods/sg/policy.yaml
 ```
 
-Apply this to the cluster then recycle the catalog Pods once again:
+이것을 클러스터에 적용한 다음 카탈로그 Pod를 다시 한 번 재시작합니다:
 
 ```bash
 $ kubectl kustomize ~/environment/eks-workshop/modules/networking/securitygroups-for-pods/sg \
@@ -92,7 +92,7 @@ $ kubectl rollout status -n catalog deployment/catalog --timeout 30s
 deployment "catalog" successfully rolled out
 ```
 
-This time the catalog Pod will start and the rollout will succeed. You can check the logs to confirm its connecting to the RDS database:
+이번에는 카탈로그 Pod가 시작되고 롤아웃이 성공할 것입니다. 로그를 확인하여 RDS 데이터베이스에 연결되는지 확인할 수 있습니다:
 
 ```bash
 $ kubectl -n catalog logs deployment/catalog | grep Connect

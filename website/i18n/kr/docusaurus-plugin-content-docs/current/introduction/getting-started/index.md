@@ -2,7 +2,7 @@
 title: 시작하기
 sidebar_position: 30
 sidebar_custom_props: { "module": true }
-description: "Amazon Elastic Kubernetes Service에서 워크로드를 실행하는 기본 사항을 학습합니다."
+description: "Amazon Elastic Kubernetes Service(EKS)에서 워크로드를 실행하는 기본 사항을 학습합니다."
 ---
 
 ::required-time

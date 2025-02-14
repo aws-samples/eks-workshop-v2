@@ -1,57 +1,57 @@
 ---
-title: "Policy management with Kyverno"
+title: "Kyverno를 사용한 정책 관리"
 sidebar_position: 70
 sidebar_custom_props: { "module": true }
-description: "Apply policy-as-code with Kyverno on Amazon Elastic Kubernetes Service."
+description: "Amazon Elastic Kubernetes Service(EKS)에서 Kyverno를 사용하여 코드로서의 정책을 적용합니다."
 ---
 
 ::required-time
 
-:::tip Before you start
-Prepare your environment for this section:
+:::tip 시작하기 전에
+이 섹션을 위해 환경을 준비하세요:
 
 ```bash timeout=300 wait=30
 $ prepare-environment security/kyverno
 ```
 
-This will make the following changes to your lab environment:
+이는 실습 환경에 다음과 같은 변경사항을 적용합니다:
 
-Install the following Kubernetes addons in the EKS cluster:
+EKS 클러스터에 다음 Kubernetes 애드온을 설치합니다:
 
 - Kyverno Policy Manager
 - Kyverno Policies
 - Policy Reporter
 
-You can view the Terraform that applies these changes [here](https://github.com/aws-samples/eks-workshop-v2/tree/main/manifests/modules/security/kyverno/.workshop/terraform).
+이러한 변경사항을 적용하는 Terraform 코드는 [여기](https://github.com/aws-samples/eks-workshop-v2/tree/main/manifests/modules/security/kyverno/.workshop/terraform)에서 확인할 수 있습니다.
 :::
 
-As containers are increasingly adopted in production environments, DevOps, Security, and Platform teams require an effective solution to collaborate and manage Governance and [Policy-as-Code (PaC)](https://aws.github.io/aws-eks-best-practices/security/docs/pods/#policy-as-code-pac). This ensures that all teams share the same source of truth regarding security and use a consistent baseline "language" when describing their individual needs.
+컨테이너가 프로덕션 환경에서 점점 더 많이 채택됨에 따라, DevOps, 보안 및 플랫폼 팀은 거버넌스와 [코드로서의 정책(PaC)](https://aws.github.io/aws-eks-best-practices/security/docs/pods/#policy-as-code-pac)을 협업하고 관리하기 위한 효과적인 솔루션이 필요합니다. 이를 통해 모든 팀이 보안에 관한 동일한 진실의 원천을 공유하고 개별 요구사항을 설명할 때 일관된 기준 "언어"를 사용할 수 있습니다.
 
-Kubernetes, by its nature, is designed as a tool to build upon and orchestrate, which means it lacks pre-defined guardrails out of the box. To provide builders with a way to control security, Kubernetes offers [Pod Security Admission (PSA)](https://kubernetes.io/docs/concepts/security/pod-security-admission/) starting from version 1.23. PSA is a built-in admission controller that implements the security controls outlined in the [Pod Security Standards (PSS)](https://kubernetes.io/docs/concepts/security/pod-security-standards/), and is enabled by default in Amazon Elastic Kubernetes Service (EKS).
+Kubernetes는 본질적으로 구축하고 오케스트레이션하기 위한 도구로 설계되었기 때문에, 기본적으로 사전 정의된 가드레일이 부족합니다. 개발자들에게 보안 제어 방법을 제공하기 위해, Kubernetes는 버전 1.23부터 [Pod Security Admission (PSA)](https://kubernetes.io/docs/concepts/security/pod-security-admission/)을 제공합니다. PSA는 [Pod Security Standards (PSS)](https://kubernetes.io/docs/concepts/security/pod-security-standards/)에 설명된 보안 제어를 구현하는 내장 어드미션 컨트롤러이며, Amazon Elastic Kubernetes Service(EKS)에서 기본적으로 활성화되어 있습니다.
 
-### What is Kyverno?
+### Kyverno란 무엇인가?
 
-[Kyverno](https://kyverno.io/) (Greek for "govern") is a policy engine specifically designed for Kubernetes. It is a Cloud Native Computing Foundation (CNCF) project that enables teams to collaborate and enforce Policy-as-Code.
+[Kyverno](https://kyverno.io/)(그리스어로 "통치하다"라는 의미)는 Kubernetes를 위해 특별히 설계된 정책 엔진입니다. 이는 팀이 코드로서의 정책을 협업하고 시행할 수 있게 하는 Cloud Native Computing Foundation (CNCF) 프로젝트입니다.
 
-The Kyverno policy engine integrates with the Kubernetes API server as a [Dynamic Admission Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/), allowing policies to **mutate** and **validate** inbound Kubernetes API requests. This ensures compliance with defined rules prior to the data being persisted and applied to the cluster.
+Kyverno 정책 엔진은 [동적 어드미션 컨트롤러](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/)로서 Kubernetes API 서버와 통합되어, 정책이 인바운드 Kubernetes API 요청을 **변경**하고 **검증**할 수 있게 합니다. 이를 통해 데이터가 클러스터에 저장되고 적용되기 전에 정의된 규칙을 준수하도록 보장합니다.
 
-Kyverno uses declarative Kubernetes resources written in YAML, eliminating the need to learn a new policy language. Results are available as Kubernetes resources and events.
+Kyverno는 YAML로 작성된 선언적 Kubernetes 리소스를 사용하므로, 새로운 정책 언어를 배울 필요가 없습니다. 결과는 Kubernetes 리소스와 이벤트로 제공됩니다.
 
-Kyverno policies can be used to **validate**, **mutate**, and **generate** resource configurations, as well as **validate** image signatures and attestations, providing all the necessary building blocks for comprehensive software supply chain security standards enforcement.
+Kyverno 정책은 리소스 구성을 **검증**, **변경**, **생성**하고, 이미지 서명과 증명을 **검증**하는 데 사용될 수 있어, 포괄적인 소프트웨어 공급망 보안 표준 시행에 필요한 모든 구성 요소를 제공합니다.
 
-### How Kyverno Works
+### Kyverno의 작동 방식
 
-Kyverno operates as a Dynamic Admission Controller in a Kubernetes Cluster. It receives validating and mutating admission webhook HTTP callbacks from the Kubernetes API server and applies matching policies to return results that enforce admission policies or reject requests. It can also be used to audit requests and monitor the security posture of the environment before enforcement.
+Kyverno는 Kubernetes 클러스터에서 동적 어드미션 컨트롤러로 작동합니다. Kubernetes API 서버로부터 검증 및 변경 어드미션 웹훅 HTTP 콜백을 받아 일치하는 정책을 적용하여 어드미션 정책을 시행하거나 요청을 거부하는 결과를 반환합니다. 또한 시행 전에 요청을 감사하고 환경의 보안 상태를 모니터링하는 데 사용될 수 있습니다.
 
-The diagram below illustrates the high-level logical architecture of Kyverno:
+아래 다이어그램은 Kyverno의 높은 수준의 논리적 아키텍처를 보여줍니다:
 
 ![KyvernoArchitecture](assets/ky-arch.webp)
 
-The two major components are the Webhook Server and the Webhook Controller. The **Webhook Server** handles incoming AdmissionReview requests from the Kubernetes API server and sends them to the Engine for processing. It is dynamically configured by the **Webhook Controller**, which monitors installed policies and modifies the webhooks to request only the resources matched by those policies.
+두 가지 주요 구성 요소는 웹훅 서버와 웹훅 컨트롤러입니다. **웹훅 서버**는 Kubernetes API 서버로부터 들어오는 AdmissionReview 요청을 처리하여 처리를 위해 엔진으로 전송합니다. 이는 **웹훅 컨트롤러**에 의해 동적으로 구성되며, 웹훅 컨트롤러는 설치된 정책을 모니터링하고 해당 정책과 일치하는 리소스만 요청하도록 웹훅을 수정합니다.
 
 ---
 
-Before proceeding with the labs, validate the Kyverno resources provisioned by the `prepare-environment` script:
+실습을 진행하기 전에, `prepare-environment` 스크립트에 의해 프로비저닝된 Kyverno 리소스를 검증하세요:
 
 ```bash
 $ kubectl -n kyverno get all

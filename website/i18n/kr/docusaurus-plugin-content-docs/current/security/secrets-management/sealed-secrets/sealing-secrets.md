@@ -1,11 +1,11 @@
 ---
-title: "Sealing your Secrets"
+title: "시크릿 봉인하기"
 sidebar_position: 433
 ---
 
-### Exploring the catalog Pod
+### catalog Pod 살펴보기
 
-The `catalog` deployment in the `catalog` Namespace accesses the following database values from the catalog-db secret via environment variables:
+`catalog` 네임스페이스의 `catalog` 디플로이먼트는 catalog-db 시크릿에서 다음 데이터베이스 값들을 환경 변수로 접근합니다:
 
 - `DB_USER`
 - `DB_PASSWORD`
@@ -40,7 +40,7 @@ $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.co
       name: catalog-db
 ```
 
-Upon exploring the `catalog-db` Secret we can see that it is only encoded with base64 which can be easily decoded as follows hence making it difficult for the secrets manifests to be part of the GitOps workflow.
+`catalog-db` 시크릿을 살펴보면 base64로만 인코딩되어 있어 쉽게 디코딩할 수 있음을 알 수 있습니다. 이는 시크릿 매니페스트를 GitOps 워크플로우의 일부로 사용하기 어렵게 만듭니다.
 
 ```file
 manifests/base-application/catalog/secrets.yaml
@@ -53,20 +53,20 @@ $ kubectl -n catalog get secrets catalog-db --template {{.data.password}} | base
 default_password%
 ```
 
-Let's create a new secret `catalog-sealed-db`. We'll create a new file `new-catalog-db.yaml` with the same keys and values as the `catalog-db` Secret.
+새로운 시크릿 `catalog-sealed-db`를 만들어보겠습니다. `catalog-db` 시크릿과 동일한 키와 값을 가진 새 파일 `new-catalog-db.yaml`을 생성하겠습니다.
 
 ```file
 manifests/modules/security/sealed-secrets/new-catalog-db.yaml
 ```
 
-Now, let’s create SealedSecret YAML manifests with kubeseal.
+이제 kubeseal을 사용하여 SealedSecret YAML 매니페스트를 생성해보겠습니다.
 
 ```bash
 $ kubeseal --format=yaml < ~/environment/eks-workshop/modules/security/sealed-secrets/new-catalog-db.yaml \
   > /tmp/sealed-catalog-db.yaml
 ```
 
-Alternatively, the public key can be fetched from the controller and use it offline to seal your Secrets:
+또는 컨트롤러에서 공개 키를 가져와 오프라인에서 시크릿을 봉인하는 데 사용할 수 있습니다:
 
 ```bash test=false
 $ kubeseal --fetch-cert > /tmp/public-key-cert.pem
@@ -74,7 +74,7 @@ $ kubeseal --cert=/tmp/public-key-cert.pem --format=yaml < ~/environment/eks-wor
   > /tmp/sealed-catalog-db.yaml
 ```
 
-It will create a sealed-secret with the following content:
+다음과 같은 내용의 sealed-secret이 생성됩니다:
 
 ```yaml
 apiVersion: bitnami.com/v1alpha1
@@ -96,13 +96,13 @@ spec:
     type: Opaque
 ```
 
-Let's deploy the SealedSecret to your EKS cluster:
+EKS 클러스터에 SealedSecret을 배포해보겠습니다:
 
 ```bash
 $ kubectl apply -f /tmp/sealed-catalog-db.yaml
 ```
 
-The controller logs shows that it picks up the SealedSecret custom resource that was just deployed, unseals it to create a regular Secret.
+컨트롤러 로그를 보면 방금 배포된 SealedSecret 커스텀 리소스를 감지하고, 이를 해제하여 일반 시크릿을 생성하는 것을 확인할 수 있습니다.
 
 ```bash
 $ kubectl logs deployments/sealed-secrets-controller -n kube-system
@@ -111,7 +111,7 @@ $ kubectl logs deployments/sealed-secrets-controller -n kube-system
 2022/11/07 04:28:27 Event(v1.ObjectReference{Kind:"SealedSecret", Namespace:"catalog", Name:"catalog-sealed-db", UID:"a2ae3aef-f475-40e9-918c-697cd8cfc67d", APIVersion:"bitnami.com/v1alpha1", ResourceVersion:"23351", FieldPath:""}): type: 'Normal' reason: 'Unsealed' SealedSecret unsealed successfully
 ```
 
-Verify that the `catalog-sealed-db` Secret unsealed from the SealedSecret was deployed by the controller to the secure-secrets namespace.
+컨트롤러가 secure-secrets 네임스페이스에 SealedSecret에서 해제된 `catalog-sealed-db` 시크릿을 배포했는지 확인합니다.
 
 ```bash
 $ kubectl get secret -n catalog catalog-sealed-db
@@ -120,7 +120,7 @@ NAME                       TYPE     DATA   AGE
 catalog-sealed-db          Opaque   4      7m51s
 ```
 
-Let's redeploy the **catalog** deployment that reads from the above Secret. We have updated the `catalog` deployment to read the `catalog-sealed-db` Secret as follows:
+위의 시크릿을 읽는 **catalog** 디플로이먼트를 다시 배포해보겠습니다. `catalog` 디플로이먼트를 다음과 같이 `catalog-sealed-db` 시크릿을 읽도록 업데이트했습니다:
 
 ```kustomization
 modules/security/sealed-secrets/deployment.yaml
@@ -132,4 +132,4 @@ $ kubectl apply -k ~/environment/eks-workshop/modules/security/sealed-secrets
 $ kubectl rollout status -n catalog deployment/catalog --timeout 30s
 ```
 
-The **catalog-sealed-db** which is a SealedSecret resource is safe to be stored in a Git repository along with YAML manifests pertaining to other Kubernetes resources such as DaemonSets, Deployments, ConfigMaps etc. deployed in the cluster. You can then use a GitOps workflow to manage the deployment of these resources to your cluster.
+SealedSecret 리소스인 **catalog-sealed-db**는 DaemonSet, Deployment, ConfigMap 등과 같은 클러스터에 배포된 다른 Kubernetes 리소스와 관련된 YAML 매니페스트와 함께 Git 저장소에 안전하게 저장할 수 있습니다. 그런 다음 GitOps 워크플로우를 사용하여 이러한 리소스들의 클러스터 배포를 관리할 수 있습니다.

@@ -1,11 +1,11 @@
 ---
-title: "Introduction"
+title: "소개"
 sidebar_position: 3
 ---
 
-Each ACK service controller is packaged into a separate container image that is published in a public repository corresponding to an individual ACK service controller. For each AWS service that we wish to provision, resources for the corresponding controller must be installed in the Amazon EKS cluster. Helm charts and official container images for ACK are available [here](https://gallery.ecr.aws/aws-controllers-k8s).
+각 ACK 서비스 컨트롤러는 개별 ACK 서비스 컨트롤러에 해당하는 공개 리포지토리에 게시되는 별도의 컨테이너 이미지로 패키징됩니다. 프로비저닝하고자 하는 각 AWS 서비스에 대해, 해당 컨트롤러의 리소스가 Amazon EKS 클러스터에 설치되어야 합니다. ACK를 위한 Helm 차트와 공식 컨테이너 이미지는 [여기](https://gallery.ecr.aws/aws-controllers-k8s)에서 확인할 수 있습니다.
 
-In this section, since we'll be working with Amazon DynamoDB ACK, we first need to install that ACK controller by using the Helm chart:
+이 섹션에서는 Amazon DynamoDB ACK를 사용할 것이므로, 먼저 Helm 차트를 사용하여 해당 ACK 컨트롤러를 설치해야 합니다:
 
 ```bash wait=60
 $ aws ecr-public get-login-password --region us-east-1 | \
@@ -19,7 +19,7 @@ $ helm install ack-dynamodb  \
   --wait
 ```
 
-The controller will be running as a deployment in the `ack-system` namespace:
+컨트롤러는 `ack-system` 네임스페이스에서 디플로이먼트로 실행됩니다:
 
 ```bash
 $ kubectl get deployment -n ack-system

@@ -8,31 +8,31 @@
     "description": "The alt text of navbar logo"
   },
   "item.label.Intro": {
-    "message": "Intro",
+    "message": "소개",
     "description": "Navbar item with label Intro"
   },
   "item.label.Fundamentals": {
-    "message": "Fundamentals",
+    "message": "기본",
     "description": "Navbar item with label Fundamentals"
   },
   "item.label.Autoscaling": {
-    "message": "Autoscaling",
+    "message": "오토스케일링",
     "description": "Navbar item with label Autoscaling"
   },
   "item.label.Observability": {
-    "message": "Observability",
+    "message": "관측성",
     "description": "Navbar item with label Observability"
   },
   "item.label.Security": {
-    "message": "Security",
+    "message": "보안",
     "description": "Navbar item with label Security"
   },
   "item.label.Networking": {
-    "message": "Networking",
+    "message": "네트워킹",
     "description": "Navbar item with label Networking"
   },
   "item.label.Automation": {
-    "message": "Automation",
+    "message": "자동화",
     "description": "Navbar item with label Automation"
   },
   "item.label.AI/ML": {

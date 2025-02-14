@@ -1,16 +1,15 @@
 ---
-title: "Running a workload on Spot"
+title: "스팟에서 워크로드 실행하기"
 sidebar_position: 30
 ---
-
-Next, let's modify our sample retail store application to run the catalog component on the newly created Spot instances. To do so, we'll utilize Kustomize to apply a patch to the `catalog` Deployment, adding a `nodeSelector` field with `eks.amazonaws.com/capacityType: SPOT`.
+다음으로, 새로 생성된 스팟 인스턴스에서 카탈로그 컴포넌트를 실행하도록 샘플 소매점 애플리케이션을 수정해 보겠습니다. 이를 위해 Kustomize를 사용하여 `catalog` Deployment에 패치를 적용하고, `eks.amazonaws.com/capacityType: SPOT`가 포함된 `nodeSelector` 필드를 추가할 것입니다.
 
 ```kustomization
 modules/fundamentals/mng/spot/deployment/deployment.yaml
 Deployment/catalog
 ```
 
-Apply the Kustomize patch with the following command.
+다음 명령으로 Kustomize 패치를 적용하세요.
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/mng/spot/deployment
@@ -25,13 +24,13 @@ deployment.apps/catalog configured
 statefulset.apps/catalog-mysql unchanged
 ```
 
-Ensure the successful deployment of your app with the following command.
+다음 명령으로 앱이 성공적으로 배포되었는지 확인하세요.
 
 ```bash
 $ kubectl rollout status deployment/catalog -n catalog --timeout=5m
 ```
 
-Finally, let's verify that the catalog pods are running on Spot instances. Run the following two commands.
+마지막으로, 카탈로그 파드가 스팟 인스턴스에서 실행되고 있는지 확인해 보겠습니다. 다음 두 명령을 실행하세요.
 
 ```bash
 $ kubectl get pods -l app.kubernetes.io/component=service -n catalog -o wide
@@ -46,6 +45,6 @@ ip-10-42-99-254.us-east-2.compute.internal    Ready    <none>   16m   vVAR::KUBE
 
 ```
 
-The first command tells us that the catalog pod is running on node `ip-10-42-99-254.us-east-2.compute.internal`, which we verify is a Spot instance by matching it to the output of the second command.
+첫 번째 명령은 카탈로그 파드가 `ip-10-42-99-254.us-east-2.compute.internal` 노드에서 실행 중임을 알려줍니다. 두 번째 명령의 출력과 대조하여 이것이 스팟 인스턴스임을 확인할 수 있습니다.
 
-In this lab, you deployed a managed node group that creates Spot instances, and then modified the `catalog` deployment to run on the newly created Spot instances. Following this process, you can modify any of the running deployments in the cluster by adding the `nodeSelector` parameter, as specified in the Kustomization patch above.
+이 실습에서는 스팟 인스턴스를 생성하는 관리형 노드 그룹을 배포한 다음, 새로 생성된 스팟 인스턴스에서 실행되도록 `catalog` 배포를 수정했습니다. 이 과정을 따라 위의 Kustomization 패치에 명시된 대로 `nodeSelector` 매개변수를 추가하여 클러스터에서 실행 중인 모든 배포를 수정할 수 있습니다.

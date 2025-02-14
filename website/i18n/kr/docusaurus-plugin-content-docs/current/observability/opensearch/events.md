@@ -1,13 +1,13 @@
 ---
-title: "Kubernetes events"
+title: "Kubernetes 이벤트"
 sidebar_position: 20
 ---
 
-This section demonstrates how we can export Kubernetes events to OpenSearch and use OpenSearch to improve observability of the EKS cluster. We'll deploy the Kubernetes [events exporter](https://github.com/resmoio/kubernetes-event-exporter) to forward events to OpenSearch, generate additional Kubernetes events by creating test workloads, explore the OpenSearch Kubernetes events dashboard, identify issues and optionally explore events within the Kubernetes cluster
+이 섹션에서는 Kubernetes 이벤트를 OpenSearch로 내보내고 OpenSearch를 사용하여 EKS 클러스터의 관찰 가능성을 향상시키는 방법을 보여줍니다. Kubernetes [events exporter](https://github.com/resmoio/kubernetes-event-exporter)를 배포하여 이벤트를 OpenSearch로 전달하고, 테스트 워크로드를 생성하여 추가 Kubernetes 이벤트를 생성하며, OpenSearch Kubernetes 이벤트 대시보드를 탐색하고, 문제를 식별하고 선택적으로 Kubernetes 클러스터 내의 이벤트를 탐색할 것입니다.
 
-[Kubernetes Events](https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1/) provide a rich source of information that can be used to monitor applications and cluster state, respond to failures and perform diagnostics. Events generally denote some state change. Examples include pod creation, adding replicas and scheduling resources. Each event includes a `type` field which is set to Normal or Warning to indicate success of failure.
+[Kubernetes 이벤트](https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1/)는 애플리케이션 및 클러스터 상태를 모니터링하고, 장애에 대응하며 진단을 수행하는 데 사용할 수 있는 풍부한 정보 소스를 제공합니다. 이벤트는 일반적으로 어떤 상태 변화를 나타냅니다. 예를 들어 파드 생성, 레플리카 추가 및 리소스 스케줄링 등이 있습니다. 각 이벤트에는 성공 또는 실패를 나타내는 Normal 또는 Warning으로 설정된 `type` 필드가 포함됩니다.
 
-You've already worked with Kubernetes events if you have ever run `kubectl describe` on a resource. As shown below the last section of output from `kubectl describe` displays the Kubernetes events related to the resource.
+리소스에 대해 `kubectl describe`를 실행한 적이 있다면 이미 Kubernetes 이벤트를 다룬 경험이 있습니다. 아래와 같이 `kubectl describe`의 출력 마지막 섹션에 해당 리소스와 관련된 Kubernetes 이벤트가 표시됩니다.
 
 ```shell
 kubectl describe pod nginx
@@ -22,13 +22,13 @@ Events:
   Normal  Started    3s    kubelet            Started container nginx
 ```
 
-Kubernetes events are continuously generated but retained within the cluster for only one hour. This retention period is consistent with the Kubernetes upstream default event time-to-live (TTL) of 60 minutes. OpenSearch provides a durable store that simplifies collection, analysis and visualization of these events.
+Kubernetes 이벤트는 지속적으로 생성되지만 클러스터 내에서는 1시간 동안만 유지됩니다. 이 보존 기간은 Kubernetes 업스트림 기본 이벤트 유효 기간(TTL)인 60분과 일치합니다. OpenSearch는 이러한 이벤트의 수집, 분석 및 시각화를 단순화하는 지속적인 저장소를 제공합니다.
 
-The following diagram provides an overview of the setup for this section. `kubernetes-events-exporter` will be deployed in the `opensearch-exporter` namespace to forward events to the OpenSearch domain. Events are stored in the `eks-kubernetes-events` index in OpenSearch. An OpenSearch dashboard that we loaded earlier is used to visualize the events.
+다음 다이어그램은 이 섹션의 설정 개요를 제공합니다. `kubernetes-events-exporter`가 `opensearch-exporter` 네임스페이스에 배포되어 이벤트를 OpenSearch 도메인으로 전달합니다. 이벤트는 OpenSearch의 `eks-kubernetes-events` 인덱스에 저장됩니다. 이전에 로드한 OpenSearch 대시보드는 이벤트를 시각화하는 데 사용됩니다.
 
 ![Kubernetes events to OpenSearch](./assets/eks-events-overview.webp)
 
-Deploy Kubernetes events exporter and configure it to send events to our OpenSearch domain. The base configuration is available [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/config/events-exporter-values.yaml). The OpenSearch credentials we retrieved earlier are being used to configure the exporter. The second command verifies that the Kubernetes events pod is running.
+Kubernetes 이벤트 내보내기를 배포하고 OpenSearch 도메인으로 이벤트를 보내도록 구성합니다. 기본 구성은 [여기](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/config/events-exporter-values.yaml)에서 확인할 수 있습니다. 이전에 검색한 OpenSearch 자격 증명을 사용하여 내보내기를 구성합니다. 두 번째 명령은 Kubernetes 이벤트 파드가 실행 중인지 확인합니다.
 
 ```bash timeout=120 wait=30
 $ helm install events-to-opensearch \
@@ -50,7 +50,7 @@ NAME                                                              READY   STATUS
 events-to-opensearch-kubernetes-event-exporter-67fc698978-2f9wc   1/1     Running   0             10s
 ```
 
-Now we'll generate additional Kubernetes events by launching three deployments labelled `scenario-a, scenario-b and scenario-c` within the `test` namespace to demonstrate `Normal` and `Warning` events. Each deployment intentionally includes an error.
+이제 `Normal` 및 `Warning` 이벤트를 보여주기 위해 `test` 네임스페이스 내에 `scenario-a, scenario-b 및 scenario-c`로 레이블이 지정된 세 개의 배포를 시작하여 추가 Kubernetes 이벤트를 생성할 것입니다. 각 배포에는 의도적으로 오류가 포함되어 있습니다.
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/observability/opensearch/scenarios/events/base
@@ -63,11 +63,11 @@ deployment.apps/scenario-c created
 
 :::tip
 
-The Kubernetes events exporter we launched in the previous step sends events from the last hour and any new ones to OpenSearch. Therefore, the exact list of events we see when we run the following commands and inspect the OpenSearch dashboard will vary depending on the EKS cluster activity within the last hour.
+이전 단계에서 시작한 Kubernetes 이벤트 내보내기는 지난 1시간 동안의 이벤트와 새로운 이벤트를 OpenSearch로 보냅니다. 따라서 다음 명령을 실행하고 OpenSearch 대시보드를 검사할 때 볼 수 있는 정확한 이벤트 목록은 지난 1시간 동안의 EKS 클러스터 활동에 따라 다를 수 있습니다.
 
 :::
 
-Explore the OpenSearch Kubernetes events dashboard by returning to the OpenSearch dashboard that we used in the previous page. Access the Kubernetes events dashboard from the dashboard landing page we saw earlier or use the command below to obtain its coordinates:
+이전 페이지에서 사용한 OpenSearch 대시보드로 돌아가 OpenSearch Kubernetes 이벤트 대시보드를 탐색합니다. 이전에 본 대시보드 랜딩 페이지에서 Kubernetes 이벤트 대시보드에 액세스하거나 아래 명령을 사용하여 해당 좌표를 얻을 수 있습니다:
 
 ```bash
 $ printf "\nKubernetes Events dashboard: https://%s/_dashboards/app/dashboards#/view/06cca640-6a05-11ee-bdf2-9d2ccb0785e7 \
@@ -79,50 +79,50 @@ Username: <user name>
 Password: <password>
 ```
 
-The live dashboard should look similar to the image below but the numbers and messages will vary depending on cluster activity. An explanation of the dashboards sections and fields follows.
+실시간 대시보드는 아래 이미지와 유사하게 보이지만 숫자와 메시지는 클러스터 활동에 따라 다를 수 있습니다. 대시보드 섹션과 필드에 대한 설명은 다음과 같습니다.
 
-1. [Header] Shows date / time range. We can customize the time range that we are exploring with this dashboard (Last 30 minutes in this example)
-2. [Top section] Date histogram of events (split between Normal and Warning events)
-3. [Middle section] Kubernetes events shows the total number of events (Normal and Warning)
-4. [Middle section] Warning events seen during the selected time interval.
-5. [Middle section] Warnings broken out by namespace. All the warnings are in the `test` namespace in this example
-6. [Bottom section] Detailed events and messages with most recent event first
+1. [헤더] 날짜/시간 범위를 표시합니다. 이 대시보드로 탐색하는 시간 범위를 사용자 정의할 수 있습니다(이 예에서는 최근 30분).
+2. [상단 섹션] 이벤트의 날짜 히스토그램(Normal 및 Warning 이벤트로 구분)
+3. [중간 섹션] Kubernetes 이벤트는 총 이벤트 수(Normal 및 Warning)를 보여줍니다.
+4. [중간 섹션] 선택한 시간 간격 동안 발생한 Warning 이벤트.
+5. [중간 섹션] 네임스페이스별로 분류된 Warning. 이 예에서는 모든 Warning이 `test` 네임스페이스에 있습니다.
+6. [하단 섹션] 가장 최근 이벤트부터 시작하는 상세 이벤트 및 메시지
 
 ![Kubernetes Events dashboard](./assets/events-dashboard.webp)
 
-The next image focuses on the bottom section with event details including:
+다음 이미지는 이벤트 세부 정보가 포함된 하단 섹션에 초점을 맞춥니다:
 
-1. Last timestamp for the event
-1. Event type (normal or warning). Notice that hovering our mouse over a field enables us to filter by that value (e.g. filter for Warning events)
-1. Name of Kubernetes resource (along with the object type and namespace)
-1. Human readable message
+1. 이벤트의 마지막 타임스탬프
+2. 이벤트 유형(normal 또는 warning). 필드 위에 마우스를 올리면 해당 값으로 필터링할 수 있습니다(예: Warning 이벤트로 필터링)
+3. Kubernetes 리소스의 이름(객체 유형 및 네임스페이스 포함)
+4. 사람이 읽을 수 있는 메시지
 
 ![Kubernetes Events debugging](./assets/events-debug.webp)
 
-We can drill down into the full event details as shown in the following image:
+다음 이미지와 같이 전체 이벤트 세부 정보를 자세히 살펴볼 수 있습니다:
 
-1. Clicking on the '>' next to each event opens up a new section
-1. The full event document can be viewed as a table or in JSON format
+1. 각 이벤트 옆의 '>'를 클릭하면 새 섹션이 열립니다
+2. 전체 이벤트 문서는 테이블 또는 JSON 형식으로 볼 수 있습니다
 
-An explanation of data fields within Kubernetes events can be found on [kubernetes.io](https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1) or by running `kubectl explain events`.
+Kubernetes 이벤트 내의 데이터 필드에 대한 설명은 [kubernetes.io](https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1)에서 찾거나 `kubectl explain events`를 실행하여 확인할 수 있습니다.
 
 ![Kubernetes Events detail](./assets/events-detail.webp)
 
-We can use the Kubernetes events dashboard to identify why the three deployments (`scenario-a, scenario-b and scenario-c`) are experiencing issues. All the pods we deployed earlier are in the `test` namespace.
+Kubernetes 이벤트 대시보드를 사용하여 세 개의 배포(`scenario-a, scenario-b 및 scenario-c`)가 문제를 겪고 있는 이유를 식별할 수 있습니다. 이전에 배포한 모든 파드는 `test` 네임스페이스에 있습니다.
 
-**scenario-a:** From the dashboard we can see that `scenario-a` has a reason of `FailedMount` and the message `MountVolume.SetUp failed for volume "secret-volume" : secret "misspelt-secret-name" not found`. The pod is attempting to mount a secret that does not exist.
+**scenario-a:** 대시보드에서 `scenario-a`의 이유가 `FailedMount`이고 메시지가 `MountVolume.SetUp failed for volume "secret-volume" : secret "misspelt-secret-name" not found`인 것을 볼 수 있습니다. 파드가 존재하지 않는 시크릿을 마운트하려고 시도하고 있습니다.
 
 ![Answer for scenario-a](./assets/scenario-a.webp)
 
-**scenario-b:** `scenario-b` has failed with a message `Failed to pull image "wrong-image": rpc error: code = Unknown desc = failed to pull and unpack image "docker.io/library/wrong-image:latest": failed to resolve reference "docker.io/library/wrong-image:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed.` The pod is not getting created because it references a non-existent image.
+**scenario-b:** `scenario-b`는 `Failed to pull image "wrong-image": rpc error: code = Unknown desc = failed to pull and unpack image "docker.io/library/wrong-image:latest": failed to resolve reference "docker.io/library/wrong-image:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed.`라는 메시지와 함께 실패했습니다. 존재하지 않는 이미지를 참조하기 때문에 파드가 생성되지 않고 있습니다.
 
 ![Answer for scenario-b](./assets/scenario-b.webp)
 
-**scenario-c:** The dashboard shows a reason of `FailedScheduling` and the message `0/3 nodes are available: 3 Insufficient cpu. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.` This deployment is requesting CPU that exceeds what any of the current cluster nodes can provide. (We do not have any of the cluster autoscaling capabilities enabled within this module of EKS workshop.)
+**scenario-c:** 대시보드에 `FailedScheduling` 이유와 `0/3 nodes are available: 3 Insufficient cpu. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.`라는 메시지가 표시됩니다. 이 배포는 현재 클러스터 노드가 제공할 수 있는 것보다 많은 CPU를 요청하고 있습니다. (이 EKS 워크샵 모듈에서는 클러스터 자동 확장 기능을 활성화하지 않았습니다.)
 
 ![Answer for scenario-c](./assets/scenario-c.webp)
 
-Fix the issues and revisit OpenSearch dashboard to see changes
+문제를 해결하고 OpenSearch 대시보드를 다시 방문하여 변경 사항을 확인합니다
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/observability/opensearch/scenarios/events/fix
@@ -133,15 +133,15 @@ deployment.apps/scenario-b configured
 deployment.apps/scenario-c configured
 ```
 
-Go back to the OpenSearch dashboard and notice that the earlier issues have been resolved. The updated deployment launches new pods that are successful and the pods created earlier (with errors) are deleted.
+OpenSearch 대시보드로 돌아가서 이전 문제가 해결되었음을 확인합니다. 업데이트된 배포는 성공적인 새 파드를 시작하고 이전에 생성된 파드(오류 포함)는 삭제됩니다.
 
 :::tip
-As issues are fixed, a new set of Normal Kubernetes events are generated. The earlier events (Normal or Warning) remain as part of the history. Therefore the number of Normal and Warning events always _increases_.
+문제가 해결되면 새로운 Normal Kubernetes 이벤트가 생성됩니다. 이전 이벤트(Normal 또는 Warning)는 기록의 일부로 남아 있습니다. 따라서 Normal 및 Warning 이벤트의 수는 항상 _증가합니다_.
 :::
 
-We can optionally explore Kubernetes events from within the EKS cluster. The events we were exploring from within the OpenSearch dashboard mirror the information that is available within the cluster.
+선택적으로 EKS 클러스터 내에서 Kubernetes 이벤트를 탐색할 수 있습니다. OpenSearch 대시보드 내에서 탐색한 이벤트는 클러스터 내에서 사용 가능한 정보를 반영합니다.
 
-Retrieve the five most recent events in the cluster.
+클러스터에서 가장 최근의 5개 이벤트를 검색합니다.
 
 ```bash
 $ kubectl get events --sort-by='.lastTimestamp' -A | head -5
@@ -153,7 +153,7 @@ ui                    44m         Normal    Scheduled           pod/ui-5dfb7d65f
 
 ```
 
-See events with a warning or failed status.
+경고 또는 실패 상태의 이벤트를 확인합니다.
 
 ```bash
 $ kubectl get events --sort-by='.lastTimestamp' --field-selector type!=Normal -A | head -5
@@ -165,7 +165,7 @@ test        6m28s       Warning   Failed             pod/scenario-b-cff56c84-xn9
 
 ```
 
-See the most recent event (across all namespaces) in JSON format. Notice that the output is very similar to the details found within the OpenSearch index. (The Opensearch document has additional fields to facilitate indexing within OpenSearch).
+JSON 형식으로 가장 최근의 이벤트(모든 네임스페이스에 걸쳐)를 확인합니다. 출력이 OpenSearch 인덱스 내의 세부 정보와 매우 유사함을 알 수 있습니다. (OpenSearch 문서에는 OpenSearch 내 인덱싱을 용이하게 하는 추가 필드가 있습니다.)
 
 ```bash
 $ kubectl get events --sort-by='.lastTimestamp' -o json -A | jq '.items[-1]'

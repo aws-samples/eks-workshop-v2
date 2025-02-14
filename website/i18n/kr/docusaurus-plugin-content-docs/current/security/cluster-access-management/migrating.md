@@ -1,11 +1,11 @@
 ---
-title: "Migrating from aws-auth identity mapping"
+title: "aws-auth 신원 매핑에서 마이그레이션"
 sidebar_position: 20
 ---
 
-Customer who already use EKS may already be using the `aws-auth` ConfigMap mechanism to manage IAM principal access to cluster. This section demonstrates how you can migrate entries from this older mechanism to using cluster access entries.
+이미 EKS를 사용하고 있는 고객은 클러스터 접근을 관리하기 위해 `aws-auth` ConfigMap 메커니즘을 사용하고 있을 수 있습니다. 이 섹션에서는 이전 메커니즘에서 클러스터 접근 항목을 사용하는 방식으로 마이그레이션하는 방법을 보여줍니다.
 
-An IAM role `eks-workshop-admins` has been pre-configured in the EKS cluster that is used for a group with EKS administrative permissions. Lets check the `aws-auth` ConfigMap:
+EKS 관리자 권한을 가진 그룹을 위해 `eks-workshop-admins` IAM 역할이 EKS 클러스터에 사전 구성되어 있습니다. `aws-auth` ConfigMap을 확인해 보겠습니다:
 
 ```bash
 $ kubectl --context default get -o yaml -n kube-system cm aws-auth
@@ -32,14 +32,14 @@ metadata:
   uid: 2a1f9dc7-e32d-44e5-93b3-e5cf7790d95e
 ```
 
-Impersonate this IAM role to check its access:
+이 IAM 역할을 가장하여 접근 권한을 확인해 보겠습니다:
 
 ```bash
 $ aws eks update-kubeconfig --name $EKS_CLUSTER_NAME \
   --role-arn $ADMINS_IAM_ROLE --alias admins --user-alias admins
 ```
 
-We should be able to list any pods, for example:
+예를 들어 모든 파드를 나열할 수 있어야 합니다:
 
 ```bash
 $ kubectl --context admins get pod -n carts
@@ -48,27 +48,27 @@ carts-6d4478747c-vvzhm          1/1     Running   0          5m54s
 carts-dynamodb-d9f9f48b-k5v99   1/1     Running   0          15d
 ```
 
-Delete the `aws-auth` ConfigMap entry for this IAM role, we'll use `eksctl` for convenience:
+이 IAM 역할에 대한 `aws-auth` ConfigMap 항목을 삭제하겠습니다. 편의상 `eksctl`을 사용하겠습니다:
 
 ```bash wait=10
 $ eksctl delete iamidentitymapping --cluster $EKS_CLUSTER_NAME --arn $ADMINS_IAM_ROLE
 ```
 
-Now if we try the same command as before we will be denied access:
+이제 이전과 동일한 명령을 시도하면 접근이 거부될 것입니다:
 
 ```bash expectError=true
 $ kubectl --context admins get pod -n carts
 error: You must be logged in to the server (Unauthorized)
 ```
 
-Lets add an access entry to enable the cluster admins to access the cluster again:
+클러스터 관리자가 다시 클러스터에 접근할 수 있도록 접근 항목을 추가해 보겠습니다:
 
 ```bash
 $ aws eks create-access-entry --cluster-name $EKS_CLUSTER_NAME \
   --principal-arn $ADMINS_IAM_ROLE
 ```
 
-Now we can associate an access policy for this principal that uses the `AmazonEKSClusterAdminPolicy` policy:
+이제 `AmazonEKSClusterAdminPolicy` 정책을 사용하는 이 주체에 대한 접근 정책을 연결할 수 있습니다:
 
 ```bash wait=10
 $ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME \
@@ -77,7 +77,7 @@ $ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME \
   --access-scope type=cluster
 ```
 
-Test access has working again:
+접근이 다시 작동하는지 테스트해 보겠습니다:
 
 ```bash
 $ kubectl --context admins get pod -n carts

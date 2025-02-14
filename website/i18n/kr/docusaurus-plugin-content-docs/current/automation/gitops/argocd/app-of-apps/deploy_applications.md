@@ -1,11 +1,11 @@
 ---
-title: "Deploying applications"
+title: "애플리케이션 배포하기"
 sidebar_position: 60
 ---
 
-We have successfully configured Argo CD App of Apps, so now we can deploy an environment specific customization for the set of application.
+Argo CD App of Apps를 성공적으로 구성했으므로 이제 애플리케이션 세트에 대한 환경별 커스터마이제이션을 배포할 수 있습니다.
 
-First let's remove the existing Applications so we can replace it:
+먼저 기존 애플리케이션을 제거하여 교체할 수 있도록 하겠습니다:
 
 ```bash
 $ kubectl delete -k ~/environment/eks-workshop/base-application --ignore-not-found=true
@@ -20,7 +20,7 @@ namespace "ui" deleted
 ...
 ```
 
-We will then need to create a customization for each application:
+그런 다음 각 애플리케이션에 대한 커스터마이제이션을 생성해야 합니다:
 
 ```text
 .
@@ -50,21 +50,21 @@ We will then need to create a customization for each application:
 manifests/modules/automation/gitops/argocd/apps-kustomization/ui/kustomization.yaml
 ```
 
-We define a path to `base` Kubernetes manifests for an application, in this case `ui`, using `resources`. We also define which configuration should be applied to `ui` application in EKS cluster using `patches`.
+`resources`를 사용하여 애플리케이션(이 경우 `ui`)에 대한 `base` Kubernetes 매니페스트 경로를 정의합니다. 또한 `patches`를 사용하여 EKS 클러스터의 `ui` 애플리케이션에 적용할 구성을 정의합니다.
 
 ```file
 manifests/modules/automation/gitops/argocd/apps-kustomization/ui/deployment-patch.yaml
 ```
 
-We would like to have `1` replica for `ui` application. All other application will use configuration from `base` Kubernetes manifests.
+`ui` 애플리케이션에 대해 `1`개의 레플리카를 가지도록 하겠습니다. 다른 모든 애플리케이션은 `base` Kubernetes 매니페스트의 구성을 사용할 것입니다.
 
-Copy files to the Git repository directory:
+Git 저장소 디렉토리에 파일을 복사합니다:
 
 ```bash
 $ cp -R ~/environment/eks-workshop/modules/automation/gitops/argocd/apps-kustomization ~/environment/argocd/
 ```
 
-Your final Git directory should now look like this. You can validate it by running `tree ~/environment/argocd`:
+최종 Git 디렉토리는 이제 다음과 같이 보일 것입니다. `tree ~/environment/argocd` 명령을 실행하여 확인할 수 있습니다:
 
 ```text
 |-- app-of-apps
@@ -97,7 +97,7 @@ Your final Git directory should now look like this. You can validate it by runni
 12 directories, 19 files
 ```
 
-Push changes to the Git repository:
+Git 저장소에 변경 사항을 푸시합니다:
 
 ```bash
 $ git -C ~/environment/argocd add .
@@ -105,20 +105,20 @@ $ git -C ~/environment/argocd commit -am "Adding apps kustomization"
 $ git -C ~/environment/argocd push
 ```
 
-Click `Refresh` and `Sync` in ArgoCD UI, use `argocd` CLI to `Sync` the application or wait until automatic `Sync` will be finished:
+ArgoCD UI에서 `Refresh`와 `Sync`를 클릭하거나, `argocd` CLI를 사용하여 `Sync`하거나, 자동 `Sync`가 완료될 때까지 기다립니다:
 
 ```bash
 $ argocd app sync apps
 $ argocd app sync ui
 ```
 
-We've now successfully migrated the all the applications to deploy using Argo CD, and any further changes pushed to the Git repository will be automatically reconciled to EKS cluster.
+이제 모든 애플리케이션을 Argo CD를 사용하여 배포하도록 성공적으로 마이그레이션했으며, Git 저장소에 푸시된 추가 변경 사항은 EKS 클러스터에 자동으로 조정될 것입니다.
 
-When Argo CD finish the sync, all our applications will be in `Synced` state.
+Argo CD가 동기화를 완료하면 모든 애플리케이션이 `Synced` 상태가 됩니다.
 
 ![argocd-ui-apps.png](assets/argocd-ui-apps-synced.webp)
 
-You should also have all the resources related to the `ui` application deployed. To verify, run the following commands:
+`ui` 애플리케이션과 관련된 모든 리소스도 배포되어 있어야 합니다. 확인하려면 다음 명령을 실행하세요:
 
 ```bash hook=deploy
 $ kubectl get deployment -n ui ui

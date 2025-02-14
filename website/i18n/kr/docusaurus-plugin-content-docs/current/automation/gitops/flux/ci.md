@@ -1,21 +1,21 @@
 ---
-title: "Continuous Integration and GitOps"
+title: "지속적 통합과 GitOps"
 sidebar_position: 50
 ---
 
-We have successfully bootstrapped Flux on EKS cluster and deployed the application. To demonstrate how to make changes in the source code an application, build a new container images and leverage GitOps to deploy a new image to a cluster we introduce Continuous Integration pipeline. We will leverage AWS Developer Tools and [DevOps principles](https://aws.amazon.com/devops/what-is-devops/) to build [multi-architecture container images](https://aws.amazon.com/blogs/containers/introducing-multi-architecture-container-images-for-amazon-ecr/) for Amazon ECR.
+EKS 클러스터에 Flux를 성공적으로 부트스트랩하고 애플리케이션을 배포했습니다. 소스 코드의 변경사항을 적용하고, 새로운 컨테이너 이미지를 빌드하며, GitOps를 활용하여 새 이미지를 클러스터에 배포하는 방법을 보여주기 위해 지속적 통합 파이프라인을 소개합니다. AWS Developer Tools와 [DevOps 원칙](https://aws.amazon.com/devops/what-is-devops/)을 활용하여 Amazon ECR용 [멀티 아키텍처 컨테이너 이미지](https://aws.amazon.com/blogs/containers/introducing-multi-architecture-container-images-for-amazon-ecr/)를 빌드할 것입니다.
 
-We created Continuous Integration Pipeline during the prepare environment step and now we need to make it up and running.
+환경 준비 단계에서 지속적 통합 파이프라인을 생성했으며 이제 이를 실행해야 합니다.
 
 ![CI](assets/ci-multi-arch.webp)
 
-First, clone CodeCommit repository for the application sources:
+먼저, 애플리케이션 소스를 위한 CodeCommit 저장소를 복제합니다:
 
 ```bash
 $ git clone ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-retail-store-sample ~/environment/retail-store-sample-codecommit
 ```
 
-Next, populate the CodeCommit repository with the sources from the public repository of the [Sample application](https://github.com/aws-containers/retail-store-sample-app):
+다음으로, [샘플 애플리케이션](https://github.com/aws-containers/retail-store-sample-app)의 공개 저장소에서 소스를 CodeCommit 저장소에 채웁니다:
 
 ```bash
 $ git clone https://github.com/aws-containers/retail-store-sample-app ~/environment/retail-store-sample-app
@@ -23,7 +23,7 @@ $ git -C ~/environment/retail-store-sample-codecommit checkout -b main
 $ cp -R ~/environment/retail-store-sample-app/src ~/environment/retail-store-sample-codecommit
 ```
 
-We use AWS CodeBuild and define `buildspec.yml` to build new `x86_64` and `arm64` images in parallel.
+AWS CodeBuild를 사용하고 `buildspec.yml`을 정의하여 새로운 `x86_64`와 `arm64` 이미지를 병렬로 빌드합니다.
 
 ```file
 manifests/modules/automation/gitops/flux/buildspec.yml
@@ -34,7 +34,7 @@ $ cp ~/environment/eks-workshop/modules/automation/gitops/flux/buildspec.yml \
   ~/environment/retail-store-sample-codecommit/buildspec.yml
 ```
 
-We use AWS CodeBuild also to build `Image Index` for `multi-architecture image` using `buildspec-manifest.yml`
+`buildspec-manifest.yml`을 사용하여 `멀티 아키텍처 이미지`를 위한 `Image Index`를 빌드하기 위해 AWS CodeBuild도 사용합니다.
 
 ```file
 manifests/modules/automation/gitops/flux/buildspec-manifest.yml
@@ -45,7 +45,7 @@ $ cp ~/environment/eks-workshop/modules/automation/gitops/flux/buildspec-manifes
   ~/environment/retail-store-sample-codecommit/buildspec-manifest.yml
 ```
 
-Now we are ready to push our changes to CodeCommit and start the CodePipeline
+이제 변경사항을 CodeCommit에 푸시하고 CodePipeline을 시작할 준비가 되었습니다.
 
 ```bash
 $ git -C ~/environment/retail-store-sample-codecommit add .
@@ -53,27 +53,27 @@ $ git -C ~/environment/retail-store-sample-codecommit commit -am "initial commit
 $ git -C ~/environment/retail-store-sample-codecommit push --set-upstream origin main
 ```
 
-You can navigate to `CodePipeline` in AWS Console and explore `eks-workshop-retail-store-sample` pipeline:
+AWS 콘솔에서 `CodePipeline`으로 이동하여 `eks-workshop-retail-store-sample` 파이프라인을 살펴볼 수 있습니다:
 
-<ConsoleButton url="https://console.aws.amazon.com/codesuite/codepipeline/pipelines/eks-workshop-retail-store-sample/view" service="codepipeline" label="Open CodePipeline console"/>
+<ConsoleButton url="https://console.aws.amazon.com/codesuite/codepipeline/pipelines/eks-workshop-retail-store-sample/view" service="codepipeline" label="CodePipeline 콘솔 열기"/>
 
-It should look something like this:
+다음과 같이 보일 것입니다:
 
 ![ci-start](assets/ci-start.webp)
 
-As a result of a CodePipeline run with CodeBuild you will have a new image in ECR
+CodeBuild를 사용한 CodePipeline 실행 결과로 ECR에 새로운 이미지가 생성됩니다.
 
 ```bash
 $ echo IMAGE_URI_UI=$IMAGE_URI_UI
 ```
 
-The suffix `z7llv2` in the name `retail-store-sample-ui-z7llv2` is random and will be different in your case.
+`retail-store-sample-ui-z7llv2` 이름의 접미사 `z7llv2`는 무작위이며 귀하의 경우 다를 것입니다.
 
 ![ci-start](assets/ecr.webp)
 
-While we are waiting for pipeline to create new images (5-10 minutes), let's [automate image updates to Git](https://fluxcd.io/flux/guides/image-update/) using Flux Image Automation Controller which we installed during the initial Flux bootstrap process.
+파이프라인이 새 이미지를 생성하는 동안(5-10분), 초기 Flux 부트스트랩 과정에서 설치한 Flux Image Automation 컨트롤러를 사용하여 [Git에 대한 이미지 업데이트를 자동화](https://fluxcd.io/flux/guides/image-update/)해 보겠습니다.
 
-Next, edit file `deployment.yaml` and add placeholder for new container image URL:
+다음으로, `deployment.yaml` 파일을 편집하고 새 컨테이너 이미지 URL의 플레이스홀더를 추가합니다:
 
 ```bash
 $ git -C ~/environment/flux pull
@@ -82,13 +82,13 @@ $ less ~/environment/flux/apps/ui/deployment.yaml | grep imagepolicy
           image: "public.ecr.aws/aws-containers/retail-store-sample-ui:0.4.0" # {"$imagepolicy": "flux-system:ui"}
 ```
 
-This will change the image in the pod specification to:
+이것은 pod 명세의 이미지를 다음과 같이 변경할 것입니다:
 
 ```text
 image: "public.ecr.aws/aws-containers/retail-store-sample-ui:0.4.0" `# {"$imagepolicy": "flux-system:ui"}`
 ```
 
-Commit these changes to deployment:
+이러한 변경사항을 배포에 커밋합니다:
 
 ```bash
 $ git -C ~/environment/flux add .
@@ -97,27 +97,27 @@ $ git -C ~/environment/flux push
 $ flux reconcile kustomization apps --with-source
 ```
 
-We need to deploy custom resource definitions (ImageRepository, ImagePolicy, ImageUpdateAutomation) for Flux to enable monitoring of new container images in ECR and automated deployment using GitOps.
+ECR의 새 컨테이너 이미지 모니터링과 GitOps를 사용한 자동 배포를 활성화하기 위해 Flux에 대한 사용자 정의 리소스 정의(ImageRepository, ImagePolicy, ImageUpdateAutomation)를 배포해야 합니다.
 
-An `ImageRepository`:
+`ImageRepository`:
 
 ```file
 manifests/modules/automation/gitops/flux/imagerepository.yaml
 ```
 
-An `ImagePolicy`:
+`ImagePolicy`:
 
 ```file
 manifests/modules/automation/gitops/flux/imagepolicy.yaml
 ```
 
-An `ImageUpdateAutomation`:
+`ImageUpdateAutomation`:
 
 ```file
 manifests/modules/automation/gitops/flux/imageupdateautomation.yaml
 ```
 
-Add these files to the application repository and apply them:
+이 파일들을 애플리케이션 저장소에 추가하고 적용합니다:
 
 ```bash
 $ cp ~/environment/eks-workshop/modules/automation/gitops/flux/image*.yaml \
@@ -130,11 +130,11 @@ $ kubectl apply -f ~/environment/retail-store-sample-codecommit/imagepolicy.yaml
 $ kubectl apply -f ~/environment/retail-store-sample-codecommit/imageupdateautomation.yaml
 ```
 
-We created the following architecture:
+다음과 같은 아키텍처를 만들었습니다:
 
 ![ci-eks-gitops](assets/ci-eks-gitops.webp)
 
-Now, lets reconcile the changes.
+이제 변경사항을 조정해 보겠습니다.
 
 ```bash
 $ flux reconcile image repository ui
@@ -144,25 +144,25 @@ $ git -C ~/environment/flux pull
 $ kubectl -n ui get pods
 ```
 
-We can check that `image:` in the `deployment` has been updated to a new tag.
+`deployment`의 `image:`가 새로운 태그로 업데이트되었는지 확인할 수 있습니다.
 
 ```bash
 $ kubectl -n ui describe deployment ui | grep Image
 ```
 
-To access `UI` using a browser we need to expose it by creating an Ingress resource with the following manifest:
+브라우저를 사용하여 `UI`에 접근하기 위해 다음 매니페스트로 Ingress 리소스를 생성하여 노출해야 합니다:
 
 ```file
 manifests/modules/automation/gitops/flux/ci-ingress/ingress.yaml
 ```
 
-This will cause the AWS Load Balancer Controller to provision an Application Load Balancer and configure it to route traffic to the Pods for the `ui` application.
+이로 인해 AWS Load Balancer 컨트롤러가 Application Load Balancer(ALB)를 프로비저닝하고 `ui` 애플리케이션의 Pod로 트래픽을 라우팅하도록 구성합니다.
 
 ```bash timeout=180 wait=10
 $ kubectl apply -k ~/environment/eks-workshop/modules/automation/gitops/flux/ci-ingress
 ```
 
-Let's inspect the Ingress object created:
+생성된 Ingress 객체를 검사해 보겠습니다:
 
 ```bash
 $ kubectl get ingress ui -n ui
@@ -170,7 +170,7 @@ NAME   CLASS   HOSTS   ADDRESS                                            PORTS 
 ui     alb     *       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com   80      15s
 ```
 
-We wait 2-5 minutes until Application Load Balancer will be provisioned and check the UI page using URL of the ingress.
+Application Load Balancer(ALB)가 프로비저닝될 때까지 2-5분 기다린 후 ingress의 URL을 사용하여 UI 페이지를 확인합니다.
 
 ```bash timeout=300
 $ export UI_URL=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
@@ -179,9 +179,9 @@ $ wait-for-lb $UI_URL
 
 ![ui-before](assets/ui-before.webp)
 
-Let's introduce changes to the source code of the Sample Application.
+샘플 애플리케이션의 소스 코드에 변경사항을 도입해 보겠습니다.
 
-Edit the file:
+파일을 편집합니다:
 
 ```bash
 $ sed -i 's/\(^\s*<a class="navbar-brand" href="\/home">\)Retail Store Sample/\1Retail Store Sample New/' \
@@ -189,11 +189,11 @@ $ sed -i 's/\(^\s*<a class="navbar-brand" href="\/home">\)Retail Store Sample/\1
 $ less ~/environment/retail-store-sample-codecommit/src/ui/src/main/resources/templates/fragments/layout.html | grep New
 ```
 
-Change line 24
+24번 줄을 변경합니다
 
-`<a class="navbar-brand" href="/home">Retail Store Sample</a>` to `<a class="navbar-brand" href="/home">Retail Store Sample New</a>`
+`<a class="navbar-brand" href="/home">Retail Store Sample</a>`를 `<a class="navbar-brand" href="/home">Retail Store Sample New</a>`로 변경
 
-Commit changes.
+변경사항을 커밋합니다.
 
 ```bash wait=30
 $ git -C ~/environment/retail-store-sample-codecommit status
@@ -202,7 +202,7 @@ $ git -C ~/environment/retail-store-sample-codecommit commit -am "Update UI src"
 $ git -C ~/environment/retail-store-sample-codecommit push
 ```
 
-Lets wait until the CodePipeline execution has finished:
+CodePipeline 실행이 완료될 때까지 기다립니다:
 
 ```bash timeout=900 wait=30
 $ kubectl -n ui describe deployment ui | grep Image
@@ -210,7 +210,7 @@ $ while [[ "$(aws codepipeline get-pipeline-state --name ${EKS_CLUSTER_NAME}-ret
 $ while [[ "$(aws codepipeline get-pipeline-state --name ${EKS_CLUSTER_NAME}-retail-store-sample --query 'stageStates[1].actionStates[2].latestExecution.status' --output text)" != "Succeeded" ]]; do echo "Waiting for pipeline to reach 'Succeeded' state ..."; sleep 10; done && echo "Pipeline has reached the 'Succeeded' state."
 ```
 
-Then we can trigger Flux to make sure it reconciles the new image:
+그런 다음 Flux를 트리거하여 새 이미지를 조정하도록 할 수 있습니다:
 
 ```bash
 $ flux reconcile image repository ui
@@ -219,7 +219,7 @@ $ flux reconcile kustomization apps --with-source
 $ kubectl wait deployment -n ui ui --for condition=Available=True --timeout=120s
 ```
 
-If we pull the Git repository we can see the changes made in the log:
+Git 저장소를 가져오면 로그에서 변경된 내용을 볼 수 있습니다:
 
 ```bash
 $ git -C ~/environment/flux pull
@@ -232,17 +232,17 @@ Date:   Fri Nov 3 17:18:08 2023 +0000
 [...]
 ```
 
-Similarly the CodeCommit commits view will show activity:
+마찬가지로 CodeCommit 커밋 보기에서도 활동을 확인할 수 있습니다:
 
-<ConsoleButton url="https://console.aws.amazon.com/codesuite/codecommit/repositories/eks-workshop-gitops/commits" service="codecommit" label="Open CodeCommit console"/>
+<ConsoleButton url="https://console.aws.amazon.com/codesuite/codecommit/repositories/eks-workshop-gitops/commits" service="codecommit" label="CodeCommit 콘솔 열기"/>
 
-We can also check the pods to see the image has been update:
+pod를 확인하여 이미지가 업데이트되었는지 확인할 수 있습니다:
 
 ```bash
 $ kubectl -n ui get pods
 $ kubectl -n ui describe deployment ui | grep Image
 ```
 
-After successful build and deployment (5-10 minutes) we will have the new version of UI application up and running.
+성공적인 빌드와 배포(5-10분) 후에 새로운 버전의 UI 애플리케이션이 실행됩니다.
 
 ![ui-after](assets/ui-after.webp)

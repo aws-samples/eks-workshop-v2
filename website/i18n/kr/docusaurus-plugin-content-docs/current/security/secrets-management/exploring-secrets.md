@@ -1,13 +1,13 @@
 ---
-title: "Exploring Secrets"
+title: "시크릿 탐색하기"
 sidebar_position: 41
 ---
 
-Kubernetes secrets can be exposed to the Pods in different ways such as via environment variables and volumes.
+Kubernetes 시크릿은 환경 변수나 볼륨과 같은 다양한 방법으로 Pod에 노출될 수 있습니다.
 
-### Exposing Secrets as Environment Variables
+### 환경 변수로 시크릿 노출하기
 
-You may expose the keys, namely, username and password, in the database-credentials Secret to a Pod as environment variables using a Pod manifest as shown (below):
+database-credentials 시크릿의 username과 password라는 키를 아래와 같이 Pod 매니페스트를 사용하여 Pod의 환경 변수로 노출할 수 있습니다:
 
 ```yaml
 apiVersion: v1
@@ -32,9 +32,9 @@ spec:
               key: password
 ```
 
-### Exposing Secrets as Volumes
+### 볼륨으로 시크릿 노출하기
 
-Secrets can also be mounted as data volumes on to a Pod and you can control the paths within the volume where the Secret keys are projected using a Pod manifest as shown (below):
+시크릿은 Pod에 데이터 볼륨으로 마운트될 수도 있으며, 아래와 같이 Pod 매니페스트를 사용하여 시크릿 키가 프로젝트되는 볼륨 내의 경로를 제어할 수 있습니다:
 
 ```yaml
 apiVersion: v1
@@ -61,7 +61,7 @@ spec:
             path: DATABASE_PASSWORD
 ```
 
-With the above Pod specification, the following will occur:
+위의 Pod 명세를 사용하면 다음과 같은 결과가 발생합니다:
 
-- value for the username key in the database-credentials Secret is stored in the file `/etc/data/DATABASE_USER` within the Pod
-- value for the password key is stored in the file `/etc/data/DATABASE_PASSWORD`
+- database-credentials 시크릿의 username 키에 대한 값이 Pod 내의 `/etc/data/DATABASE_USER` 파일에 저장됩니다
+- password 키에 대한 값이 `/etc/data/DATABASE_PASSWORD` 파일에 저장됩니다

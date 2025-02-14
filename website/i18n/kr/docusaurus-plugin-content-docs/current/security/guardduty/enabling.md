@@ -1,15 +1,15 @@
 ---
-title: "Enable GuardDuty Protection on EKS"
+title: "EKS에서 GuardDuty 보호 활성화"
 sidebar_position: 51
 ---
 
-In this lab, we'll enable Amazon GuardDuty EKS Protection. This will provide threat detection coverage for EKS Audit Log Monitoring and EKS Runtime Monitoring to help you protect your clusters.
+이 실습에서는 Amazon GuardDuty EKS Protection을 활성화할 것입니다. 이를 통해 클러스터를 보호하는 데 도움이 되는 EKS 감사 로그 모니터링 및 EKS 런타임 모니터링에 대한 위협 탐지 범위를 제공합니다.
 
-EKS Audit Log Monitoring uses Kubernetes audit logs to capture chronological activities from users, applications using the Kubernetes API, and the control plane searching for potentially suspicious activities.
+EKS 감사 로그 모니터링은 Kubernetes 감사 로그를 사용하여 사용자, Kubernetes API를 사용하는 애플리케이션 및 잠재적으로 의심스러운 활동을 검색하는 컨트롤 플레인의 시간순 활동을 캡처합니다.
 
-EKS Runtime Monitoring uses operating system-level events to help you detect potential threats in Amazon EKS nodes and containers.
+EKS 런타임 모니터링은 운영 체제 수준의 이벤트를 사용하여 Amazon EKS 노드와 컨테이너에서 잠재적인 위협을 탐지하는 데 도움을 줍니다.
 
-Lets enable GuardDuty using the AWS CLI:
+AWS CLI를 사용하여 GuardDuty를 활성화해 보겠습니다:
 
 ```bash test=false
 $ aws guardduty create-detector --enable --features '[{"Name" : "EKS_AUDIT_LOGS", "Status" : "ENABLED"}, {"Name" : "EKS_RUNTIME_MONITORING", "Status" : "ENABLED", "AdditionalConfiguration" : [{"Name" : "EKS_ADDON_MANAGEMENT", "Status" : "ENABLED"}]}]'
@@ -18,7 +18,7 @@ $ aws guardduty create-detector --enable --features '[{"Name" : "EKS_AUDIT_LOGS"
 }
 ```
 
-After several minutes validate the `aws-guardduty-agent` Pod deployment in your EKS Cluster.
+몇 분 후에 EKS 클러스터에서 `aws-guardduty-agent` Pod 배포를 확인합니다.
 
 ```bash test=false
 $ kubectl -n amazon-guardduty get pods
@@ -28,10 +28,10 @@ aws-guardduty-agent-hgbsg   1/1     Running   0          58s
 aws-guardduty-agent-k7x2b   1/1     Running   0          58s
 ```
 
-Then navigate to **Findings** section of the GuardDuty console:
+그런 다음 GuardDuty 콘솔의 **Findings** 섹션으로 이동합니다:
 
 <ConsoleButton url="https://console.aws.amazon.com/guardduty/home#/findings?macros=current" service="guardduty" label="Open GuardDuty console"/>
 
-You should find that there are no findings available yet.
+아직 사용 가능한 결과가 없음을 확인할 수 있습니다.
 
 ![GuardDuty findings](assets/findings.webp)

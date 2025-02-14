@@ -1,38 +1,37 @@
 ---
-title: "Multiple Ingress pattern"
+title: "다중 Ingress 패턴"
 sidebar_position: 30
 ---
+동일한 EKS 클러스터에서 여러 개의 Ingress 객체를 활용하는 것이 일반적입니다. 예를 들어 여러 다른 워크로드를 노출하는 경우입니다. 기본적으로 각 Ingress는 별도의 ALB 생성을 초래하지만, IngressGroup 기능을 활용하여 여러 Ingress 리소스를 그룹화할 수 있습니다. 컨트롤러는 IngressGroup 내의 모든 Ingress에 대한 Ingress 규칙을 자동으로 병합하고 단일 ALB로 지원합니다. 또한, Ingress에 정의된 대부분의 어노테이션은 해당 Ingress에 의해 정의된 경로에만 적용됩니다.
 
-It's common to leverage multiple Ingress objects in the same EKS cluster, for example to expose multiple different workloads. By default each Ingress will result in the creation of a separate ALB, but we can leverage the IngressGroup feature which enables you to group multiple Ingress resources together. The controller will automatically merge Ingress rules for all Ingresses within IngressGroup and support them with a single ALB. In addition, most annotations defined on an Ingress only apply to the paths defined by that Ingress.
+이 예제에서는 경로 기반 라우팅을 활용하여 요청을 적절한 쿠버네티스 서비스로 전달하면서, `ui` 컴포넌트와 동일한 ALB를 통해 catalog API를 노출할 것입니다. 먼저 `catalog` API에 아직 접근할 수 없는지 확인해보겠습니다:
 
-In this example, we'll expose the `catalog` API out through the same ALB as the `ui` component, leveraging path-based routing to dispatch requests to the appropriate Kubernetes service. Let's check we can't already access the catalog API:
-
-```bash expectError=true
+```bash
 $ ADDRESS=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
 $ curl $ADDRESS/catalogue
 ```
 
-The first thing we'll do is re-create the Ingress for `ui` component adding the annotation `alb.ingress.kubernetes.io/group.name`:
+첫 번째로 할 일은 `ui` 컴포넌트의 Ingress를 `alb.ingress.kubernetes.io/group.name` 어노테이션을 추가하여 다시 생성하는 것입니다:
 
 ```file
 manifests/modules/exposing/ingress/multiple-ingress/ingress-ui.yaml
 ```
 
-Now, let's create a separate Ingress for the `catalog` component that also leverages the same `group.name`:
+이제, 동일한 `group.name`을 활용하는 `catalog` 컴포넌트에 대한 별도의 Ingress를 생성해보겠습니다:
 
 ```file
 manifests/modules/exposing/ingress/multiple-ingress/ingress-catalog.yaml
 ```
 
-This ingress is also configuring rules to route requests prefixed with `/catalogue` to the `catalog` component.
+이 ingress는 `/catalogue`로 시작하는 요청을 `catalog` 컴포넌트로 라우팅하도록 규칙을 구성합니다.
 
-Apply these manifests to the cluster:
+이러한 매니페스트를 클러스터에 적용합니다:
 
-```bash timeout=180 hook=add-ingress hookTimeout=430
+```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/multiple-ingress
 ```
 
-We'll now have two separate Ingress objects in our cluster:
+이제 클러스터에 두 개의 별도 Ingress 객체가 있게 됩니다:
 
 ```bash
 $ kubectl get ingress -l app.kubernetes.io/created-by=eks-workshop -A
@@ -41,9 +40,9 @@ catalog     catalog   alb     *       k8s-retailappgroup-2c24c1c4bc-17962260.us-
 ui          ui        alb     *       k8s-retailappgroup-2c24c1c4bc-17962260.us-west-2.elb.amazonaws.com   80      2m21s
 ```
 
-Notice that the `ADDRESS` of both are the same URL, which is because both of these Ingress objects are being grouped together behind the same ALB.
+두 Ingress의 `ADDRESS`가 동일한 URL인 것을 주목하세요. 이는 두 Ingress 객체가 동일한 ALB 뒤에 그룹화되어 있기 때문입니다.
 
-We can take a look at the ALB listener to see how this works:
+ALB 리스너를 살펴보면 이것이 어떻게 작동하는지 알 수 있습니다:
 
 ```bash
 $ ALB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-retailappgroup`) == `true`].LoadBalancerArn' | jq -r '.[0]')
@@ -51,34 +50,34 @@ $ LISTENER_ARN=$(aws elbv2 describe-listeners --load-balancer-arn $ALB_ARN | jq 
 $ aws elbv2 describe-rules --listener-arn $LISTENER_ARN
 ```
 
-The output of this command will illustrate that:
+이 명령의 출력은 다음을 보여줍니다:
 
-- Requests with path prefix `/catalogue` will get sent to a target group for the catalog service
-- Everything else will get sent to a target group for the ui service
-- As a default backup there is a 404 for any requests that happen to fall through the cracks
+- `/catalogue` 경로 접두사가 있는 요청은 catalog 서비스의 대상 그룹으로 전송됩니다
+- 나머지는 모두 `ui` 서비스의 대상 그룹으로 전송됩니다
+- 기본 백업으로 누락된 요청에 대해 `404`가 있습니다
 
-You can also check out the new ALB configuration in the AWS console:
+AWS 콘솔에서 새로운 ALB 구성을 확인할 수도 있습니다:
 
 <ConsoleButton url="https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=retail-app-group;sort=loadBalancerName" service="ec2" label="Open EC2 console"/>
 
-To wait until the load balancer has finished provisioning you can run this command:
+로드 밸런서의 프로비저닝이 완료될 때까지 기다리려면 다음 명령을 실행할 수 있습니다:
 
 ```bash
 $ wait-for-lb $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
 ```
 
-Try accessing the new Ingress URL in the browser as before to check the web UI still works:
+이전처럼 브라우저에서 새로운 Ingress URL에 접근하여 웹 UI가 여전히 작동하는지 확인해보세요:
 
 ```bash
 $ kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
 k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
 
-Now try accessing the specific path we directed to the catalog service:
+이제 catalog 서비스로 지정한 특정 경로에 접근해보세요:
 
 ```bash
 $ ADDRESS=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
 $ curl $ADDRESS/catalogue | jq .
 ```
 
-You'll receive back a JSON payload from the catalog service, demonstrating that we've been able to expose multiple Kubernetes services via the same ALB.
+catalog 서비스로부터 JSON 페이로드를 받게 될 것입니다. 이는 동일한 ALB를 통해 여러 쿠버네티스 서비스를 노출할 수 있었음을 보여줍니다.

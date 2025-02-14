@@ -1,73 +1,73 @@
 ---
-title: "Automatic Node Provisioning"
+title: "자동 노드 프로비저닝"
 sidebar_position: 40
 ---
+스케줄링할 수 없는 파드의 요구사항에 따라 Karpenter가 어떻게 적절한 크기의 EC2 인스턴스를 동적으로 프로비저닝하는지 살펴보면서 Karpenter 작업을 시작해보겠습니다. 이를 통해 EKS 클러스터의 미사용 컴퓨팅 리소스를 줄일 수 있습니다.
 
-We'll start putting Karpenter to work by examining how it can dynamically provision appropriately sized EC2 instances depending on the needs of pods that cannot be scheduled at any given time. This can reduce the amount of unused compute resources in an EKS cluster.
+이전 섹션에서 생성한 NodePool은 Karpenter가 사용할 수 있는 특정 인스턴스 유형을 지정했습니다. 이러한 인스턴스 유형을 살펴보겠습니다:
 
-The NodePool created in the previous section expressed specific instance types that Karpenter was allowed to use, lets take a look at those instance types:
 
-| Instance Type | vCPU | Memory | Price |
-| ------------- | ---- | ------ | ----- |
-| `c5.large`    | 2    | 4GB    | +     |
-| `m5.large`    | 2    | 8GB    | ++    |
-| `r5.large`    | 2    | 16GB   | +++   |
-| `m5.xlarge`   | 4    | 16GB   | ++++  |
+| 인스턴스 유형 | vCPU | 메모리 | 가격 |
+| ------------- | ---- | ------ | ---- |
+| `c5.large`    | 2    | 4GB    | +    |
+| `m5.large`    | 2    | 8GB    | ++   |
+| `r5.large`    | 2    | 16GB   | +++  |
+| `m5.xlarge`   | 4    | 16GB   | ++++ |
 
-Let's create some Pods and see how Karpenter adapts. Currently there are no nodes managed by Karpenter:
+파드를 몇 개 생성하고 Karpenter가 어떻게 적응하는지 살펴보겠습니다. 현재 Karpenter가 관리하는 노드는 없습니다:
 
 ```bash
 $ kubectl get node -l type=karpenter
 No resources found
 ```
 
-We'll use the following Deployment to trigger Karpenter to scale out:
+다음 Deployment를 사용하여 Karpenter의 스케일 아웃을 트리거하겠습니다:
 
 ::yaml{file="manifests/modules/autoscaling/compute/karpenter/scale/deployment.yaml" paths="spec.replicas,spec.template.spec.nodeSelector,spec.template.spec.containers.0.image,spec.template.spec.containers.0.resources"}
 
-1. Initially specifies 0 replicas to run, we'll scale it up later
-2. Requires the pods to be scheduled to capacity provisioned by Karpenter by using a node selector that matches our NodePool
-3. Uses a simple `pause` container image
-4. Requests `1Gi` of memory for each pod
+1. 초기에는 실행할 레플리카를 0개로 지정하고, 나중에 스케일 업할 예정입니다
+2. NodePool과 일치하는 노드 셀렉터를 사용하여 Karpenter가 프로비저닝한 용량에 파드가 스케줄링되도록 요구합니다
+3. 간단한 `pause` 컨테이너 이미지를 사용합니다
+4. 각 파드에 대해 `1Gi`의 메모리를 요청합니다
 
-:::info What's a pause container?
-You'll notice in this example we're using the image:
+:::info `pause` 컨테이너란 무엇인가요?
+이 예제에서 다음 이미지를 사용하고 있음을 알 수 있습니다:
 
 `public.ecr.aws/eks-distro/kubernetes/pause`
 
-This is a small container that will consume no real resources and starts quickly, which makes it great for demonstrating scaling scenarios. We'll be using this for many of the examples in this particular lab.
+이는 실제 리소스를 거의 사용하지 않고 빠르게 시작되는 작은 컨테이너로, 스케일링 시나리오를 보여주는 데 매우 적합합니다. 이 특정 실습에서 많은 예제에 이것을 사용할 것입니다.
 :::
 
-Apply this deployment:
+이 deployment를 적용하세요:
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/autoscaling/compute/karpenter/scale
 deployment.apps/inflate created
 ```
 
-Now let's deliberately scale this deployment to demonstrate that Karpenter is making optimized decisions. Since we've requested 1Gi of memory, if we scale the deployment to 5 replicas that will request a total of 5Gi of memory.
+이제 Karpenter가 최적화된 결정을 내리는 것을 보여주기 위해 의도적으로 이 deployment를 스케일링해보겠습니다. `1Gi`의 메모리를 요청했으므로, deployment를 5개의 레플리카로 스케일링하면 총 5Gi의 메모리가 요청됩니다.
 
-Before we proceed, what instance from the table above do you think Karpenter will end up provisioning? Which instance type would you want it to?
+계속 진행하기 전에, 위 표에서 Karpenter가 어떤 인스턴스를 프로비저닝할 것 같나요? 어떤 인스턴스 유형을 원하시나요?
 
-Scale the deployment:
+deployment를 스케일링하세요:
 
 ```bash
 $ kubectl scale -n other deployment/inflate --replicas 5
 ```
 
-Because this operation is creating one or more new EC2 instances it will take a while, you can use `kubectl` to wait until its done with this command:
+이 작업은 하나 이상의 새로운 EC2 인스턴스를 생성하므로 시간이 걸립니다. 다음 명령으로 `kubectl`을 사용하여 완료될 때까지 기다릴 수 있습니다:
 
-```bash hook=karpenter-deployment timeout=200
+```bash
 $ kubectl rollout status -n other deployment/inflate --timeout=180s
 ```
 
-Once all of the Pods are running, lets see what instance type it selecting:
+모든 파드가 실행되면 어떤 인스턴스 유형이 선택되었는지 확인해보겠습니다:
 
 ```bash
 $ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter | grep 'launched nodeclaim' | jq '.'
 ```
 
-You should see output that indicates the instance type and the purchase option:
+인스턴스 유형과 구매 옵션을 나타내는 출력이 표시되어야 합니다:
 
 ```json
 {
@@ -94,19 +94,19 @@ You should see output that indicates the instance type and the purchase option:
 }
 ```
 
-The pods that we scheduled will fit nicely in to an EC2 instance with 8GB of memory, and since Karpenter will always prioritize the lowest price instance type for on-demand instances, it will select `m5.large`.
+스케줄링한 파드들은 8GB 메모리를 가진 EC2 인스턴스에 잘 맞을 것이며, Karpenter는 온디맨드 인스턴스의 경우 항상 가장 낮은 가격의 인스턴스 유형을 우선시하므로 `m5.large`를 선택할 것입니다.
 
 :::info
-There are certain cases where a different instance type might be selected other than the lowest price, for example if that cheapest instance type has no remaining capacity available in the region you're working in
+작업 중인 리전에서 가장 저렴한 인스턴스 유형의 용량이 남아있지 않은 경우와 같이, 가장 저렴한 것이 아닌 다른 인스턴스 유형이 선택되는 특정 경우가 있습니다
 :::
 
-We can also check the metadata added to the node by Karpenter:
+Karpenter가 노드에 추가한 메타데이터도 확인할 수 있습니다:
 
 ```bash
 $ kubectl get node -l type=karpenter -o jsonpath='{.items[0].metadata.labels}' | jq '.'
 ```
 
-This output will show the various labels that are set, for example the instance type, purchase option, availability zone etc:
+이 출력은 인스턴스 유형, 구매 옵션, 가용 영역 등과 같은 설정된 다양한 레이블을 보여줍니다:
 
 ```json
 {
@@ -139,4 +139,4 @@ This output will show the various labels that are set, for example the instance 
 }
 ```
 
-This simple examples illustrates the fact that Karpenter can dynamically select the right instance type based on the resource requirements of the workloads that require compute capacity. This differs fundamentally from a model oriented around node pools, such as Cluster Autoscaler, where the instance types within a single node group must have consistent CPU and memory characteristics.
+이 간단한 예제는 Karpenter가 컴퓨팅 용량이 필요한 워크로드의 리소스 요구사항에 따라 적절한 인스턴스 유형을 동적으로 선택할 수 있다는 것을 보여줍니다. 이는 단일 노드 그룹 내의 인스턴스 유형이 일관된 CPU와 메모리 특성을 가져야 하는 Cluster Autoscaler와 같은 노드 풀 중심 모델과는 근본적으로 다릅니다.

@@ -1,12 +1,12 @@
 ---
-title: "Networking"
+title: "네트워킹"
 sidebar_position: 3
 chapter: true
 weight: 20
 ---
 
-Understanding Kubernetes networking is critical for efficiently operating your cluster and applications. In this chapter, we'll dive into various aspects of Kubernetes networking, including Pod networking, service networking, and service communications.
+쿠버네티스 네트워킹을 이해하는 것은 클러스터와 애플리케이션을 효율적으로 운영하는데 매우 중요합니다. 이 장에서는 파드 네트워킹, 서비스 네트워킹, 서비스 통신을 포함한 쿠버네티스 네트워킹의 다양한 측면을 살펴보겠습니다.
 
-In Amazon EKS, Pod networking, also known as cluster networking, is solved through the use of a Kubernetes CNI plugin called Amazon VPC CNI. We highly recommend exploring the various options available with Amazon VPC CNI before moving on to Amazon VPC Lattice.
+Amazon EKS에서 클러스터 네트워킹이라고도 하는 파드 네트워킹은 Amazon VPC CNI라는 쿠버네티스 CNI 플러그인을 통해 해결됩니다. Amazon VPC Lattice로 넘어가기 전에 Amazon VPC CNI에서 사용할 수 있는 다양한 옵션들을 충분히 살펴보시기를 권장합니다.
 
-To continue to the next step, please use the button provided below.
+다음 단계로 진행하려면 아래 제공된 버튼을 사용하세요.

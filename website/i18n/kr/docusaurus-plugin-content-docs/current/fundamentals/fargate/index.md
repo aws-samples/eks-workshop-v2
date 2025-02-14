@@ -2,36 +2,35 @@
 title: Fargate
 sidebar_position: 40
 sidebar_custom_props: { "module": true }
-description: "Leverage AWS Fargate, the serverless compute engine for containers, with Amazon Elastic Kubernetes Service."
+description: "Amazon Elastic Kubernetes Service(EKS)와 함께 컨테이너를 위한 서버리스 컴퓨팅 엔진인 AWS Fargate를 활용하세요."
 ---
-
 ::required-time
 
-:::tip Before you start
-Prepare your environment for this section:
+:::tip 시작하기 전에
+이 섹션을 위해 환경을 준비하세요:
 
-```bash timeout=400 wait=30
+```bash
 $ prepare-environment fundamentals/fargate
+
 ```
 
-This will make the following changes to your lab environment:
+이는 실습 환경에 다음과 같은 변경사항을 적용할 것입니다:
 
-- Create an IAM role to be used by Fargate
+* Fargate에서 사용할 IAM 역할 생성
 
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/fundamentals/fargate/.workshop/terraform).
-
+[여기](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/fundamentals/fargate/.workshop/terraform)에서 이러한 변경사항을 적용하는 Terraform을 볼 수 있습니다.
 :::
 
-In the previous module we saw how to provision EC2 compute instances to run Pods in our EKS cluster, and how managed node groups help reduce the operational burden. However, in this model you’re still responsible for the availability, capacity, and maintenance of the underlying infrastructure.
+이전 모듈에서 우리는 EKS 클러스터에서 Pod를 실행하기 위해 EC2 컴퓨팅 인스턴스를 프로비저닝하는 방법과 관리형 노드 그룹이 운영 부담을 줄이는 데 어떻게 도움이 되는지 살펴보았습니다. 그러나 이 모델에서는 여전히 기본 인프라의 가용성, 용량 및 유지 관리에 대한 책임이 있습니다.
 
-[AWS Fargate](https://aws.amazon.com/fargate/) is a technology that provides on-demand, right-sized compute capacity for containers. With AWS Fargate, you don't have to provision, configure, or scale groups of virtual machines on your own to run containers. You also don't need to choose server types, decide when to scale your node groups, or optimize cluster packing. You can control which Pods start on Fargate and how they run with Fargate profiles. Fargate profiles are defined as part of your Amazon EKS cluster.
+[AWS Fargate](https://aws.amazon.com/fargate/)는 컨테이너를 위한 온디맨드, 적정 크기의 컴퓨팅 용량을 제공하는 기술입니다. AWS Fargate를 사용하면 컨테이너를 실행하기 위해 직접 가상 머신 그룹을 프로비저닝, 구성 또는 확장할 필요가 없습니다. 또한 서버 유형을 선택하거나, 노드 그룹을 확장할 시기를 결정하거나, 클러스터 패킹을 최적화할 필요가 없습니다. Fargate 프로필을 통해 어떤 Pod가 Fargate에서 시작되고 어떻게 실행되는지 제어할 수 있습니다. Fargate 프로필은 Amazon EKS 클러스터의 일부로 정의됩니다.
 
 ![Fargate Architecture](./assets/fargate.webp)
 
-Amazon EKS integrates Kubernetes with AWS Fargate by using controllers that are built by AWS using the upstream, extensible model provided by Kubernetes. These controllers run as part of the Amazon EKS managed Kubernetes control plane and are responsible for scheduling native Kubernetes Pods onto Fargate. The Fargate controllers include a new scheduler that runs alongside the default Kubernetes scheduler in addition to several mutating and validating admission controllers. When you start a Pod that meets the criteria for running on Fargate, the Fargate controllers that are running in the cluster recognize, update, and schedule the Pod onto Fargate.
+Amazon EKS는 Kubernetes에서 제공하는 업스트림, 확장 가능한 모델을 사용하여 AWS가 구축한 컨트롤러를 통해 Kubernetes를 AWS Fargate와 통합합니다. 이러한 컨트롤러는 Amazon EKS 관리형 Kubernetes 컨트롤 플레인의 일부로 실행되며 네이티브 Kubernetes Pod를 Fargate에 스케줄링하는 역할을 합니다. Fargate 컨트롤러에는 기본 Kubernetes 스케줄러와 함께 실행되는 새로운 스케줄러와 여러 변형 및 검증 승인 컨트롤러가 포함됩니다. Fargate에서 실행할 기준을 충족하는 Pod를 시작하면 클러스터에서 실행 중인 Fargate 컨트롤러가 Pod를 인식하고 업데이트하며 Fargate에 스케줄링합니다.
 
-The benefits of Fargate include:
+Fargate의 이점은 다음과 같습니다:
 
-- AWS Fargate enables you to focus on your applications. You define your application content, networking, storage, and scaling requirements. There is no provisioning, patching, cluster capacity management, or infrastructure management required.
-- AWS Fargate supports all of the common container use cases including microservices architecture applications, batch processing, machine learning applications, and migrating on-premises applications to the cloud.
-- Choose AWS Fargate for its isolation model and security. You should also select Fargate if you want to launch containers without having to provision or manage EC2 instances. If you require greater control of your EC2 instances or broader customization options, then use ECS or EKS without Fargate.
+* AWS Fargate를 사용하면 애플리케이션에 집중할 수 있습니다. 애플리케이션 내용, 네트워킹, 스토리지 및 확장 요구사항을 정의하면 됩니다. 프로비저닝, 패치, 클러스터 용량 관리 또는 인프라 관리가 필요하지 않습니다.
+* AWS Fargate는 마이크로서비스 아키텍처 애플리케이션, 배치 처리, 머신 러닝 애플리케이션 및 온프레미스 애플리케이션을 클라우드로 마이그레이션하는 등 모든 일반적인 컨테이너 사용 사례를 지원합니다.
+* 격리 모델과 보안을 위해 AWS Fargate를 선택하세요. 또한 EC2 인스턴스를 프로비저닝하거나 관리하지 않고 컨테이너를 시작하려면 Fargate를 선택하세요. EC2 인스턴스에 대한 더 큰 제어나 더 넓은 사용자 지정 옵션이 필요한 경우 Fargate 없이 ECS 또는 EKS를 사용하세요.

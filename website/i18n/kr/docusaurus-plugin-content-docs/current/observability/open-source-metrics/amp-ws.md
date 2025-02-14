@@ -1,15 +1,15 @@
 ---
-title: "Storing metrics with AMP"
+title: "AMP를 사용하여 메트릭 저장하기"
 sidebar_position: 20
 ---
 
-An Amazon Managed Service for Prometheus workspace is already created for you. You should be able to see it in the console:
+Amazon Managed Service for Prometheus 작업 공간이 이미 생성되어 있습니다. 콘솔에서 확인할 수 있어야 합니다:
 
-<ConsoleButton url="https://console.aws.amazon.com/prometheus/home#/workspaces" service="aps" label="Open APS console"/>
+<ConsoleButton url="https://console.aws.amazon.com/prometheus/home#/workspaces" service="aps" label="APS 콘솔 열기"/>
 
-To view the workspace, click on the **All Workspaces** tab on the left control panel. Select the workspace that starts with **eks-workshop** and you can view several tabs under the workspace such as rules management, alert manager etc.
+작업 공간을 보려면 왼쪽 제어 패널에서 **모든 작업 공간** 탭을 클릭하세요. **eks-workshop**으로 시작하는 작업 공간을 선택하면 규칙 관리, 알림 관리자 등 작업 공간 아래의 여러 탭을 볼 수 있습니다.
 
-Let's verify the successful ingestion of the metrics:
+메트릭이 성공적으로 수집되었는지 확인해 보겠습니다:
 
 ```bash
 $ awscurl -X POST --region $AWS_REGION --service aps "${AMP_ENDPOINT}api/v1/query?query=up" | jq '.data.result[1]'

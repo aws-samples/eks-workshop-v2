@@ -1,24 +1,24 @@
 ---
-title: "Sealed Secrets for Kubernetes"
+title: "쿠버네티스를 위한 Sealed Secrets"
 sidebar_position: 431
 ---
 
-Sealed Secrets is composed of two parts:
+Sealed Secrets는 두 부분으로 구성됩니다:
 
-- A cluster-side controller
-- A client-side CLI called `kubeseal`
+- 클러스터 측 컨트롤러
+- `kubeseal`이라는 클라이언트 측 CLI
 
-Once the controller starts up, it looks for a cluster-wide private/public key pair, and generates a new 4096 bit RSA key pair if not found. The private key is persisted in a Secret object in the same namespace as that of the controller (by default kube-system). The public key portion of this is made publicly available to anyone wanting to use SealedSecrets with this cluster.
+컨트롤러가 시작되면 클러스터 전체의 비공개/공개 키 쌍을 찾고, 찾지 못할 경우 새로운 4096비트 RSA 키 쌍을 생성합니다. 비공개 키는 컨트롤러와 동일한 네임스페이스(기본값 kube-system)의 Secret 객체에 저장됩니다. 이 키 쌍의 공개 키 부분은 이 클러스터에서 SealedSecrets를 사용하고자 하는 모든 사람이 공개적으로 사용할 수 있게 됩니다.
 
-During encryption, each value in the original Secret is symmetrically encrypted using AES-256 with a randomly-generated session key. The session key is then asymmetrically encrypted with the controller’s public key using SHA256 and the original Secret’s namespace/name as the input parameter. The output of the encryption process is a string that is constructed as follows:
-length (2 bytes) of encrypted session key + encrypted session key + encrypted Secret
+암호화 과정에서 원본 Secret의 각 값은 무작위로 생성된 세션 키를 사용하여 AES-256으로 대칭 암호화됩니다. 그런 다음 세션 키는 컨트롤러의 공개 키를 사용하여 SHA256과 원본 Secret의 네임스페이스/이름을 입력 매개변수로 사용하여 비대칭으로 암호화됩니다. 암호화 과정의 출력은 다음과 같이 구성된 문자열입니다:
+암호화된 세션 키의 길이(2바이트) + 암호화된 세션 키 + 암호화된 Secret
 
-When a SealedSecret custom resource is deployed to the Kubernetes cluster, the controller will pick it up, unseal it using the private key and create a Secret resource. During decryption, the SealedSecret’s namespace/name is used again as the input parameter. This ensures that the SealedSecret and Secret are strictly tied to the same namespace and name.
+SealedSecret 커스텀 리소스가 쿠버네티스 클러스터에 배포되면, 컨트롤러가 이를 감지하고 비공개 키를 사용하여 해제한 후 Secret 리소스를 생성합니다. 복호화 과정에서 SealedSecret의 네임스페이스/이름이 다시 입력 매개변수로 사용됩니다. 이를 통해 SealedSecret과 Secret이 동일한 네임스페이스와 이름에 엄격하게 연결되도록 보장됩니다.
 
-The companion CLI tool, kubeseal, is used for creating a SealedSecret custom resource definition (CRD) from a Secret resource definition using the public key. kubeseal can communicate with the controller through the Kubernetes API server and retrieve the public key needed for encrypting a Secret at run-time. The public key may also be downloaded from the controller and saved locally to be used offline.
+동반되는 CLI 도구인 kubeseal은 공개 키를 사용하여 Secret 리소스 정의로부터 SealedSecret 커스텀 리소스 정의(CRD)를 생성하는 데 사용됩니다. kubeseal은 쿠버네티스 API 서버를 통해 컨트롤러와 통신하고 실행 시점에 Secret을 암호화하는 데 필요한 공개 키를 검색할 수 있습니다. 공개 키는 컨트롤러에서 다운로드하여 오프라인에서 사용할 수 있도록 로컬에 저장할 수도 있습니다.
 
-The SealedSecrets can have the following three scopes:
+SealedSecrets는 다음 세 가지 범위를 가질 수 있습니다:
 
-- **strict (default)** : The secret must be sealed with exactly the same name and namespace. These attributes become part of the encrypted data and thus changing name and/or namespace would lead to "decryption error".
-- **namespace-wide** : The sealed secret can be freely renamed the within a given namespace.
-- **cluster-wide** : The secret can be unsealed in any namespace and can be given any name.
+- **strict (기본값)** : Secret은 정확히 동일한 이름과 네임스페이스로 봉인되어야 합니다. 이러한 속성들은 암호화된 데이터의 일부가 되므로 이름 및/또는 네임스페이스를 변경하면 "복호화 오류"가 발생합니다.
+- **namespace-wide** : 봉인된 secret은 주어진 네임스페이스 내에서 자유롭게 이름을 변경할 수 있습니다.
+- **cluster-wide** : secret은 모든 네임스페이스에서 해제될 수 있으며 어떤 이름이든 지정할 수 있습니다.

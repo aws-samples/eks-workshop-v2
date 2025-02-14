@@ -1,8 +1,7 @@
 ---
-title: EFS CSI Driver
+title: EFS CSI 드라이버
 sidebar_position: 20
 ---
-
 Before diving into this section, you should be familiar with the Kubernetes storage objects (volumes, persistent volumes (PV), persistent volume claims (PVC), dynamic provisioning and ephemeral storage) that were introduced in the [Storage](../index.md) main section.
 
 The [Amazon Elastic File System Container Storage Interface (CSI) Driver](https://github.com/kubernetes-sigs/aws-efs-csi-driver) enables you to run stateful containerized applications by providing a CSI interface that allows Kubernetes clusters running on AWS to manage the lifecycle of Amazon EFS file systems.
@@ -11,7 +10,7 @@ To utilize Amazon EFS with dynamic provisioning on our EKS cluster, we first nee
 
 For improved security and simplified management, you can run the Amazon EFS CSI driver as an Amazon EKS add-on. Since the required IAM role has already been created for us, we can proceed with installing the add-on:
 
-```bash timeout=300 wait=60
+```bash
 $ aws eks create-addon --cluster-name $EKS_CLUSTER_NAME --addon-name aws-efs-csi-driver \
   --service-account-role-arn $EFS_CSI_ADDON_ROLE
 $ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --addon-name aws-efs-csi-driver

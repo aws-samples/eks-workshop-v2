@@ -2,34 +2,34 @@
 title: "AWS Controllers for Kubernetes (ACK)"
 sidebar_position: 1
 sidebar_custom_props: { "module": true }
-description: "Directly manage AWS services from Amazon Elastic Kubernetes Service with AWS Controllers for Kubernetes."
+description: "AWS Controllers for Kubernetes를 사용하여 Amazon Elastic Kubernetes Service(EKS)에서 직접 AWS 서비스를 관리합니다."
 ---
 
 ::required-time
 
-:::tip Before you start
-Prepare your environment for this section:
+:::tip 시작하기 전에
+이 섹션을 위해 환경을 준비하세요:
 
 ```bash timeout=300 wait=30
 $ prepare-environment automation/controlplanes/ack
 ```
 
-This will make the following changes to your lab environment:
+이는 실습 환경에 다음과 같은 변경사항을 적용합니다:
 
-- Install the AWS Controllers for DynamoDB in the Amazon EKS cluster
+- Amazon EKS 클러스터에 DynamoDB용 AWS 컨트롤러 설치
 
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/automation/controlplanes/ack/.workshop/terraform).
+이러한 변경사항을 적용하는 Terraform 코드는 [여기](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/automation/controlplanes/ack/.workshop/terraform)에서 확인할 수 있습니다.
 
 :::
 
-The [AWS Controllers for Kubernetes (ACK)](https://aws-controllers-k8s.github.io/community/) project enables you to define and use AWS service resources directly from Kubernetes using familiar YAML constructs.
+[AWS Controllers for Kubernetes (ACK)](https://aws-controllers-k8s.github.io/community/) 프로젝트를 통해 친숙한 YAML 구문을 사용하여 Kubernetes에서 직접 AWS 서비스 리소스를 정의하고 사용할 수 있습니다.
 
-With ACK, you can leverage AWS services such as databases ([RDS](https://aws-controllers-k8s.github.io/community/docs/tutorials/rds-example/) or others) and queues ([SQS](https://aws-controllers-k8s.github.io/community/docs/tutorials/sqs-example/) etc.) for your Kubernetes applications without manually defining resources outside of the cluster. This reduces the overall complexity of managing your application's dependencies.
+ACK를 사용하면 데이터베이스([RDS](https://aws-controllers-k8s.github.io/community/docs/tutorials/rds-example/) 또는 기타)와 큐([SQS](https://aws-controllers-k8s.github.io/community/docs/tutorials/sqs-example/) 등)와 같은 AWS 서비스를 클러스터 외부에서 수동으로 리소스를 정의할 필요 없이 Kubernetes 애플리케이션에 활용할 수 있습니다. 이를 통해 애플리케이션 종속성 관리의 전반적인 복잡성이 감소됩니다.
 
-While the sample application can run entirely within your cluster, including stateful workloads like databases and message queues (which is suitable for development), using AWS managed services such as Amazon DynamoDB and Amazon MQ in testing and production environments allows your team to focus on customers and business projects rather than administering databases or message brokers.
+샘플 애플리케이션은 데이터베이스와 메시지 큐와 같은 상태 저장 워크로드를 포함하여 클러스터 내에서 완전히 실행될 수 있지만(개발에 적합), 테스트 및 프로덕션 환경에서 Amazon DynamoDB와 Amazon MQ와 같은 AWS 관리형 서비스를 사용하면 팀이 데이터베이스나 메시지 브로커 관리 대신 고객과 비즈니스 프로젝트에 집중할 수 있습니다.
 
-In this lab, we'll use ACK to provision these services and create secrets and configmaps containing the binding information to connect the application to these AWS managed services.
+이 실습에서는 ACK를 사용하여 이러한 서비스를 프로비저닝하고, 애플리케이션을 이러한 AWS 관리형 서비스에 연결하기 위한 바인딩 정보가 포함된 시크릿과 컨피그맵을 생성할 것입니다.
 
-For learning purposes, we're using helm to install the ACK controller. Another option is to use Terraform that allows for rapid deployment of AWS Service Controllers to your cluster. For more information, see the [ACK Terraform module documentation](https://registry.terraform.io/modules/aws-ia/eks-ack-addons/aws/latest#module_dynamodb).
+학습 목적으로 helm을 사용하여 ACK 컨트롤러를 설치합니다. 다른 옵션으로는 클러스터에 AWS 서비스 컨트롤러를 빠르게 배포할 수 있는 Terraform을 사용하는 방법이 있습니다. 자세한 내용은 [ACK Terraform 모듈 문서](https://registry.terraform.io/modules/aws-ia/eks-ack-addons/aws/latest#module_dynamodb)를 참조하세요.
 
 ![EKS with DynamoDB](./assets/eks-workshop-ddb.webp)

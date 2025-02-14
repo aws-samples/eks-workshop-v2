@@ -2,12 +2,11 @@
 title: "Compute"
 sidebar_position: 10
 ---
+Kubernetes에서 우리가 가장 먼저 오토스케일링을 확인하고 싶은 부분은 파드를 실행하는 데 사용되는 EC2 컴퓨트 인프라입니다. 이는 파드가 추가되거나 제거됨에 따라 워커 노드로서 EKS 클러스터에서 사용 가능한 EC2 인스턴스의 수를 동적으로 조정합니다.
 
-In Kubernetes the first aspect we want to ensure we're autoscaling is the EC2 compute infrastructure used to run our pods. This will adjust the number of EC2 instances available to the EKS cluster as worker nodes dynamically as pods are added or removed.
+Kubernetes에서 컴퓨트 오토스케일링을 구현하는 방법은 여러 가지가 있으며, AWS에서는 두 가지 주요 메커니즘을 사용할 수 있습니다:
 
-There are a number of ways to implement compute autoscaling in Kubernetes, and at AWS there are two primary mechanisms available:
-
-- Kubernetes Cluster Autoscaler tool
+- Kubernetes Cluster Autoscaler 도구
 - Karpenter
 
-In this chapter, we'll explore the different ways to achieve compute autoscaling in Kubernetes at AWS using the Kubernetes Cluster Autoscaler tool and Karpenter mechanisms.
+이 장에서는 Kubernetes Cluster Autoscaler 도구와 Karpenter 메커니즘을 사용하여 AWS에서 Kubernetes의 컴퓨트 오토스케일링을 달성하는 다양한 방법을 살펴보겠습니다.

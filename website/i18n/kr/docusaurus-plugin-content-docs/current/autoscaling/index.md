@@ -1,12 +1,12 @@
 ---
-title: "Autoscaling"
+title: "오토스케일링"
 sidebar_position: 5
 weight: 30
 ---
 
-Autoscaling monitors your workloads and automatically adjusts capacity to maintain steady, predictable performance while also optimizing for cost. When using Kubernetes there are two main relevant mechanisms which can be used to scale automatically:
+오토스케일링은 워크로드를 모니터링하고 안정적이고 예측 가능한 성능을 유지하면서 비용을 최적화하기 위해 용량을 자동으로 조정합니다. Kubernetes를 사용할 때 자동으로 확장하는 데 사용할 수 있는 두 가지 주요 메커니즘이 있습니다:
 
-- **Compute:** As pods are scaled the underlying compute in a Kubernetes cluster must also adapt by adjusting the number or size of worker nodes used to run the Pods.
-- **Pods:** Since pods are used to run workloads in a Kubernetes cluster, scaling a workload is primarily done by scaling Pods either horizontally or vertically in response to scenarios such as changes in load on a given application.
+- **Compute:** 파드가 확장됨에 따라 Kubernetes 클러스터의 기본 컴퓨트도 파드를 실행하는 데 사용되는 워커 노드의 수나 크기를 조정하여 적응해야 합니다.
+- **Pods:** 파드는 Kubernetes 클러스터에서 워크로드를 실행하는 데 사용되므로, 워크로드의 스케일링은 주로 특정 애플리케이션의 부하 변화와 같은 시나리오에 대응하여 파드를 수평 또는 수직으로 확장하여 수행됩니다.
 
-In this chapter, we'll explore the various mechanisms available for automatically scaling both the number of pods and a cluster's compute capacity.
+이 장에서는 파드의 수와 클러스터의 컴퓨트 용량을 자동으로 확장하는 데 사용할 수 있는 다양한 메커니즘을 살펴보겠습니다.

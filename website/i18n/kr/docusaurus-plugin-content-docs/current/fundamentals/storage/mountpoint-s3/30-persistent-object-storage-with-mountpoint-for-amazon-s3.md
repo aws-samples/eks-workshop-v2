@@ -1,29 +1,28 @@
 ---
-title: Persistent Object Storage with Mountpoint for Amazon S3
+title: Amazon S3용 마운트포인트 - 영구 오브젝트 스토리지
 sidebar_position: 30
 ---
+이전 단계에서 이미지 객체를 위한 스테이징 디렉토리를 생성하고, 이미지 자산을 다운로드하고, S3 버킷에 업로드하여 환경을 준비했습니다. 또한 `Mountpoint for Amazon S3` CSI 드라이버를 설치하고 구성했습니다. 이제 `Mountpoint for Amazon S3` CSI 드라이버가 제공하는 영구 볼륨(PV)을 사용하도록 Pod를 연결하여 Amazon S3가 지원하는 **수평적 확장**과 **영구 스토리지**를 갖춘 이미지 호스트 애플리케이션을 만드는 목표를 완료하겠습니다.
 
-In our previous steps, we prepared our environment by creating a staging directory for image objects, downloading image assets, and uploading them to our S3 bucket. We also installed and configured the Mountpoint for Amazon S3 CSI driver. Now we'll complete our objective of creating an image host application with **horizontal scaling** and **persistent storage** backed by Amazon S3 by attaching our pods to use the Persistent Volume (PV) provided by the Mountpoint for Amazon S3 CSI driver.
+[영구 볼륨](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)을 생성하고 배포의 `assets` 컨테이너를 수정하여 이 볼륨을 마운트하는 것부터 시작하겠습니다.
 
-Let's start by creating a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and modifying the `assets` container in our deployment to mount this volume.
-
-First, let's examine the `s3pvclaim.yaml` file to understand its parameters and configuration:
+먼저 `s3pvclaim.yaml` 파일을 살펴보고 매개변수와 구성을 이해해보겠습니다:
 
 ::yaml{file="manifests/modules/fundamentals/storage/s3/deployment/s3pvclaim.yaml" paths="spec.accessModes,spec.mountOptions"}
 
-1. `ReadWriteMany`: Allows the same S3 bucket to be mounted to multiple pods for read/write
-2. `allow-delete`: Allows users to delete objects from the mounted bucket  
-   `allow-other`: Allows users other than the owner to access the mounted bucket  
-   `uid=999`: Sets User ID (UID) of files/directories in the mounted bucket to 999  
-   `gid=999`: Sets Group ID (GID) of files/directories in the mounted bucket to 999  
-   `region=us-west-2`: Sets the region of the S3 bucket to us-west-2
+1. `ReadWriteMany`: 동일한 S3 버킷을 여러 Pod에 읽기/쓰기용으로 마운트할 수 있음
+2. `allow-delete`: 사용자가 마운트된 버킷에서 객체를 삭제할 수 있음
+   `allow-other`: 소유자 외의 사용자가 마운트된 버킷에 접근할 수 있음
+   `uid=999`: 마운트된 버킷의 파일/디렉토리의 사용자 ID(UID)를 `999`로 설정
+   `gid=999`: 마운트된 버킷의 파일/디렉토리의 그룹 ID(GID)를 `999`로 설정
+   `region=us-west-2`: S3 버킷의 리전을 `us-west-2`로 설정
 
 ```kustomization
 modules/fundamentals/storage/s3/deployment/deployment.yaml
 Deployment/assets
 ```
 
-Now let's apply this configuration and redeploy our application:
+이제 이 구성을 적용하고 애플리케이션을 재배포해보겠습니다:
 
 ```bash
 $ kubectl kustomize ~/environment/eks-workshop/modules/fundamentals/storage/s3/deployment \
@@ -37,14 +36,14 @@ persistentvolumeclaim/s3-claim created
 deployment.apps/assets configured
 ```
 
-We'll monitor the deployment progress:
+배포 진행 상황을 모니터링하겠습니다:
 
 ```bash
 $ kubectl rollout status --timeout=180s deployment/assets -n assets
 deployment "assets" successfully rolled out
 ```
 
-Let's verify our volume mounts, noting the new `/mountpoint-s3` mount point:
+새로운`/mountpoint-s3` 마운트 포인트를 포함한 볼륨 마운트를 확인해보겠습니다:
 
 ```bash
 $ kubectl get deployment -n assets -o yaml | yq '.items[].spec.template.spec.containers[].volumeMounts'
@@ -54,7 +53,7 @@ $ kubectl get deployment -n assets -o yaml | yq '.items[].spec.template.spec.con
   name: tmp-volume
 ```
 
-Examine our newly created PersistentVolume:
+새로 생성된 영구 볼륨을 검사해보겠습니다:
 
 ```bash
 $ kubectl get pv
@@ -62,7 +61,7 @@ NAME    CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM             ST
 s3-pv   1Gi        RWX            Retain           Bound    assets/s3-claim                  <unset>                          2m31s
 ```
 
-Review the PersistentVolumeClaim details:
+영구 볼륨 클레임 세부 정보를 검토해보겠습니다:
 
 ```bash
 $ kubectl describe pvc -n assets
@@ -82,7 +81,7 @@ Used By:       assets-9fbbbcd6f-c74vv
 Events:        <none>
 ```
 
-Verify our running pods:
+실행 중인 Pod를 확인해보겠습니다:
 
 ```bash
 $ kubectl get pods -n assets
@@ -91,7 +90,7 @@ assets-9fbbbcd6f-c74vv   1/1     Running   0          2m36s
 assets-9fbbbcd6f-vb9jz   1/1     Running   0          2m38s
 ```
 
-Let's examine our final deployment configuration with the Mountpoint for Amazon S3 CSI driver:
+`Mountpoint for Amazon S3` CSI 드라이버가 포함된 최종 배포 구성을 살펴보겠습니다:
 
 ```bash
 $ kubectl describe deployment -n assets
@@ -127,7 +126,7 @@ Namespace:              assets
 [...]
 ```
 
-Now let's demonstrate the shared storage functionality. First, we'll list and create files in the first pod:
+이제 공유 스토리지 기능을 시연해보겠습니다. 먼저 첫 번째 Pod에서 파일을 나열하고 생성해보겠습니다:
 
 ```bash
 $ POD_1=$(kubectl -n assets get pods -o jsonpath='{.items[0].metadata.name}')
@@ -140,7 +139,7 @@ wood_watch.jpg
 $ kubectl exec --stdin $POD_1 -n assets -- bash -c 'touch /mountpoint-s3/divewatch.jpg'
 ```
 
-To verify the persistence and sharing of our storage layer, let's check the second pod for the file we just created:
+스토리지 계층의 지속성과 공유를 확인하기 위해 방금 생성한 파일이 두 번째 Pod에 있는지 확인해보겠습니다:
 
 ```bash
 $ POD_2=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
@@ -154,7 +153,7 @@ smart_2.jpg
 wood_watch.jpg
 ```
 
-Finally, let's create another file from the second pod and verify its presence in the S3 bucket:
+마지막으로 두 번째 Pod에서 다른 파일을 생성하고 S3 버킷에 존재하는지 확인해보겠습니다:
 
 ```bash
 $ POD_2=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
@@ -169,4 +168,4 @@ $ aws s3 ls $BUCKET_NAME
 2024-10-14 19:29:05      43122 wood_watch.jpg
 ```
 
-With that we've successfully demonstrated how we can use Mountpoint for Amazon S3 for persistent shared storage for workloads running on EKS.
+이로써 EKS에서 실행되는 워크로드를 위한 영구 공유 스토리지로 `Mountpoint for Amazon S3`를 어떻게 사용할 수 있는지 성공적으로 시연했습니다.
