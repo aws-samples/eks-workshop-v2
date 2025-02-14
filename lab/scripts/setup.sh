@@ -38,6 +38,7 @@ function prepare-environment() {
 }
 
 function use-cluster() { bash /usr/local/bin/use-cluster \$1; source ~/.bashrc.d/env.bash; }
+function create-cluster() { URL=https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/refs/heads/${REPOSITORY_REF}/cluster/eksctl/cluster.yaml; echo "Creating cluster with eksctl from $URL"; curl -fsSL $URL | envsubst | eksctl create cluster -f -; }
 EOT
 
 REPOSITORY_OWNER=${REPOSITORY_OWNER:-"aws-samples"}
