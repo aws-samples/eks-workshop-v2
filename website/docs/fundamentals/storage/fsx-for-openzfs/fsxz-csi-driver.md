@@ -5,7 +5,9 @@ sidebar_position: 20
 
 Before diving into this section, you should be familiar with the Kubernetes storage objects (volumes, persistent volumes (PV), persistent volume claims (PVC), dynamic provisioning and ephemeral storage) that were introduced in the [Storage](../index.md) main section.
 
-The [Amazon FSx for OpenZFS Container Storage Interface (CSI) Driver](https://github.com/kubernetes-sigs/aws-fsx-openzfs-csi-driver) enables you to run stateful containerized applications by providing a CSI interface that allows Kubernetes clusters running on AWS to manage the lifecycle of Amazon FSx for OpenZFS file systems and volumes.
+The [Amazon FSx for OpenZFS Container Storage Interface (CSI) Driver](https://github.com/kubernetes-sigs/aws-fsx-openzfs-csi-driver) enables you to run stateful containerized applications by providing a CSI interface that allows Kubernetes clusters running on AWS to manage the lifecycle of Amazon FSx for OpenZFS file systems and volumes.  The following architecture diagram illustrates how we will use Amazon FSx for OpenZFS as persistent storage for our EKS pods:
+
+![Assets with FSx for OpenZFS](./assets/assets-fsxz.webp)
 
 To utilize Amazon FSx for OpenZFS with dynamic provisioning on our EKS cluster, we first need to create an IAM role allowed to interact with FSx.  Once the IAM role has been created we can install the CSI driver.  The driver implements the CSI specification which allows container orchestrators to manage Amazon FSx for OpenZFS file systems and volumes throughout their lifecycle.
 

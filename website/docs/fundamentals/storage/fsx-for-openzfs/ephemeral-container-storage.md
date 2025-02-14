@@ -1,5 +1,5 @@
 ---
-title: Persistent network storage
+title: Ephemeral Container Storage
 sidebar_position: 10
 ---
 
@@ -64,12 +64,21 @@ $ kubectl scale -n assets --replicas=2 deployment/assets
 $ kubectl rollout status -n assets deployment/assets --timeout=60s
 ```
 
-Now let's try creating a new product image file `newproduct.png` in the `/usr/share/nginx/html/assets` directory of the first Pod:
+Now let's try creating a new product image file `newproduct.png` in the `/usr/share/nginx/html/assets` directory of the first Pod and then confirm it exists using `ls`:
 
 ```bash
 $ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[0].metadata.name}')
 $ kubectl exec --stdin $POD_NAME \
   -n assets -- bash -c 'touch /usr/share/nginx/html/assets/newproduct.png'
+$ kubectl exec --stdin $POD_NAME \
+  -n assets -- bash -c 'ls /usr/share/nginx/html/assets'
+chrono_classic.jpg
+gentleman.jpg
+newproduct.png  <-----------
+pocket_watch.jpg
+smart_1.jpg
+smart_2.jpg
+wood_watch.jpg
 ```
 
 Let's verify if the new product image `newproduct.png` exists in the second Pod's file system:
@@ -78,8 +87,12 @@ Let's verify if the new product image `newproduct.png` exists in the second Pod'
 $ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
 $ kubectl exec --stdin $POD_NAME \
   -n assets -- bash -c 'ls /usr/share/nginx/html/assets'
+chrono_classic.jpg
+gentleman.jpg
+pocket_watch.jpg
+smart_1.jpg
+smart_2.jpg
+wood_watch.jpg
 ```
 
 As we can see, the newly created image `newproduct.png` doesn't exist on the second Pod. To address this limitation, we need a file system that can be shared across multiple Pods when the service scales horizontally while allowing file updates without redeployment.
-
-![Assets with FSx for OpenZFS](./assets/assets-fsxz.webp)
