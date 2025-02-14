@@ -175,17 +175,17 @@ Events:
   Normal  ProvisioningSucceeded  57s                 fsx.openzfs.csi.aws.com_fsx-openzfs-csi-controller-6b9cdcddf6-tnckv_2917fbd4-ab3b-4385-8053-e2e1c265d44f  Successfully provisioned volume pvc-d3d958e7-6028-41d6-baee-36d3f85944c1
 ```
 
-To demonstrate the shared storage functionality, let's create a new file `newproduct.png` in the assets directory of the first Pod:
+To demonstrate the shared storage functionality, let's create a new file `new_gmt_watch.png` in the assets directory of the first Pod:
 
 ```bash
 $ POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[0].metadata.name}')
 $ kubectl exec --stdin $POD_NAME \
-  -n assets -c assets -- bash -c 'touch /usr/share/nginx/html/assets/newproduct.png'
+  -n assets -c assets -- bash -c 'touch /usr/share/nginx/html/assets/new_gmt_watch.png'
 $ kubectl exec --stdin $POD_NAME \
   -n assets -c assets -- bash -c 'ls /usr/share/nginx/html/assets'
 chrono_classic.jpg
 gentleman.jpg
-newproduct.png  <-----------
+new_gmt_watch.png  <-----------
 pocket_watch.jpg
 smart_1.jpg
 smart_2.jpg
@@ -200,7 +200,7 @@ $ kubectl exec --stdin $POD_NAME \
   -n assets -c assets -- bash -c 'ls /usr/share/nginx/html/assets'
 chrono_classic.jpg
 gentleman.jpg
-newproduct.png  <-----------
+new_gmt_watch.png  <-----------
 pocket_watch.jpg
 smart_1.jpg
 smart_2.jpg
