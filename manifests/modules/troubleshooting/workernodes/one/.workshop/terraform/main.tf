@@ -11,20 +11,31 @@ provider "aws" {
   }
 } */
 
+data "aws_eks_cluster" "cluster" {
+  name = var.eks_cluster_id
+}
+
+data "aws_vpc" "eks_vpc" {
+  id = data.aws_eks_cluster.cluster.vpc_config[0].vpc_id
+}
+
 data "aws_subnets" "private" {
-  tags = {
-    created-by = "eks-workshop-v2"
-    env        = var.addon_context.eks_cluster_id
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.eks_vpc.id]
   }
+
   filter {
     name   = "tag:Name"
     values = ["*Private*"]
   }
+
+  tags = {
+    created-by = "eks-workshop-v2"
+    env        = var.addon_context.eks_cluster_id
+  }
 }
 
-data "aws_eks_cluster" "cluster" {
-  name = var.eks_cluster_id
-}
 
 #scale nodegroup to 0 and create a new managed node group for scenario (otherwise the issue will transition mng to degraded state and fail reset-environment will take a very long time e.g. 20 minutes)
 # Decrease desired count to 0
@@ -169,86 +180,5 @@ resource "null_resource" "increase_desired_count" {
   }
   depends_on = [aws_eks_node_group.new_nodegroup_1]
 }
-
-
-
-#TESTING DESTROY COMMAND
-
-# data "aws_vpc" "selected" {
-#   tags = {
-#     created-by = "eks-workshop-v2"
-#     env        = var.addon_context.eks_cluster_id
-#   }
-# }
-
-# resource "null_resource" "create_security_group" {
-
-#   provisioner "local-exec" {
-#     command = <<-EOT
-#       SG_ID=$(aws ec2 create-security-group \
-#         --group-name "testing" \
-#         --description "A simple security group for testing purposes" \
-#         --vpc-id "${data.aws_vpc.selected.id}" \
-#         --tag-specifications 'ResourceType=security-group,Tags=[{Key=Name,Value=testing}]' \
-#         --output json | jq -r '.GroupId')
-
-#       echo $SG_ID > sg_id.txt
-
-#       aws ec2 authorize-security-group-egress \
-#         --group-id $SG_ID \
-#         --protocol all \
-#         --port all \
-#         --cidr 0.0.0.0/0
-
-#       aws ec2 authorize-security-group-ingress \
-#         --group-id $SG_ID \
-#         --protocol tcp \
-#         --port 22 \
-#         --cidr 0.0.0.0/0
-#     EOT
-#   }
-
-#   provisioner "local-exec" {
-#     when    = destroy
-#     command = <<-EOT
-#       SG_ID=$(cat sg_id.txt)
-#       aws ec2 delete-security-group --group-id $SG_ID
-#     EOT
-#   }
-# }
-
-# data "local_file" "sg_id" {
-#   depends_on = [null_resource.create_security_group]
-#   filename   = "sg_id.txt"
-# }
-
-# output "security_group_id" {
-#   value = trimspace(data.local_file.sg_id.content)
-# }
-
-
-
-# resource "null_resource" "test" {
-#   provisioner "local-exec" {
-#     command = "aws ec2 disable-ebs-encryption-by-default "
-#     environment = {
-#       AWS_DEFAULT_REGION = "us-west-2" # Replace with your desired region
-#     }
-#     when = destroy
-#   }
-
-# resource "null_resource" "disable_ebs_encryption" {
-#   provisioner "local-exec" {
-#     command = "aws ec2 disable-ebs-encryption-by-default "
-#     environment = {
-#       AWS_DEFAULT_REGION = "us-west-2" # Replace with your desired region
-#     }
-#     when = destroy
-#   }
-
-# provisioner "local-exec" {
-#   command = "mkdir -p /eks-workshop/logs; echo \" key: ${each.key} Value:${each.value}\" >> /eks-workshop/logs/action-load-balancer-output.log"
-# }
-# }
 
 

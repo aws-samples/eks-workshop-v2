@@ -1,4 +1,3 @@
-##To do - added nodegroup name as variable and change change to use the variable instead.
 
 terraform {
   required_providers {
