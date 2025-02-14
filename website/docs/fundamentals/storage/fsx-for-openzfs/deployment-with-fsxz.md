@@ -191,7 +191,7 @@ $ kubectl exec --stdin $POD_NAME \
   -n assets -c assets -- bash -c 'ls /usr/share/nginx/html/assets'
 chrono_classic.jpg
 gentleman.jpg
-newproduct.png <-----------
+newproduct.png  <-----------
 pocket_watch.jpg
 smart_1.jpg
 smart_2.jpg
