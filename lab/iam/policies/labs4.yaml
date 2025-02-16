@@ -15,6 +15,10 @@ Statement:
     Resource:
       - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:file-system/*
       - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:storage-virtual-machine/*
+    Condition:
+      StringLike:
+        aws:ResourceTag/env:
+          - ${Env}*
   - Effect: Allow
     Action:
       - fsx:DescribeFileSystems
@@ -22,12 +26,4 @@ Statement:
       - fsx:ListTagsForResource
     Resource:
       - ["*"]
-  - Effect: Allow
-    Action:
-      - secretsmanager:GetResourcePolicy
-      - secretsmanager:GetSecretValue
-      - secretsmanager:TagResource
-      - secretsmanager:UntagResource
-      - secretsmanager:PutSecretValue
-    Resource:
-      - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${Env}*
+
