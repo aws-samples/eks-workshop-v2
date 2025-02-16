@@ -14,6 +14,7 @@ $ kubectl get serviceaccounts -n kube-system -l app.kubernetes.io/name=aws-load-
 ```
 
 Example output:
+
 ```yaml {8}
 apiVersion: v1
 items:
@@ -52,6 +53,7 @@ $ kubectl logs -n kube-system -l app.kubernetes.io/name=aws-load-balancer-contro
 ```
 
 You might see an error like this:
+
 ```text
 {"level":"error","ts":"2024-06-11T14:24:24Z","msg":"Reconciler error","controller":"ingress","object":{"name":"ui","namespace":"ui"},"namespace":"ui","name":"ui","reconcileID":"49d27bbb-96e5-43b4-b115-b7a07e757148","error":"AccessDenied: User: arn:aws:sts::xxxxxxxxxxxx:assumed-role/alb-controller-20240611131524228000000002/1718115201989397805 is not authorized to perform: elasticloadbalancing:CreateLoadBalancer on resource: arn:aws:elasticloadbalancing:us-west-2:xxxxxxxxxxxx:loadbalancer/app/k8s-ui-ui-5ddc3ba496/* because no identity-based policy allows the elasticloadbalancing:CreateLoadBalancer action\n\tstatus code: 403, request id: a24a1620-3a75-46b7-b3c3-9c80fada159e"}
 ```
@@ -61,6 +63,7 @@ The error indicates the IAM role lacks the `elasticloadbalancing:CreateLoadBalan
 ### Step 3: Fix the IAM Policy
 
 To resolve this, we need to update the IAM role with the correct permissions. For this workshop, we've pre-created the correct policy. We'll:
+
 1. Attach the correct policy
 2. Remove the incorrect policy
 
@@ -86,10 +89,12 @@ k8s-ui-ui-5ddc3ba496-1208241872.us-west-2.elb.amazonaws.com
 ```
 
 :::tip
-The Load Balancer creation can take a few minutes. You can verify the process by:
+**The Load Balancer creation can take a few minutes**. You can verify the process by:
+
 1. Checking CloudTrail for successful `CreateLoadBalancer` API calls
 2. Monitoring the controller logs for successful creation messages
 3. Watching the ingress resource for the ALB DNS name to appear
+
 :::
 
 For reference, the complete set of permissions required for the AWS Load Balancer Controller can be found in the [official documentation](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/deploy/installation/#setup-iam-manually).

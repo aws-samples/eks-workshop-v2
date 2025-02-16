@@ -4,63 +4,58 @@ chapter: true
 sidebar_position: 80
 ---
 
-# Troubleshooting EKS
-
 ::required-time
 
 :::tip Before you start
 Prepare your environment for this section:
 
 ```bash timeout=600 wait=10
-$ prepare-environment troubleshooting/alb/creating-alb
+$ prepare-environment troubleshooting/alb
 ```
-This will:
-    - Deploy a sample UI application
-    - Configure an ingress resource
-    - Set up initial AWS Load Balancer Controller configuration (with deliberate issues for troubleshooting)
-    - Create necessary IAM roles and policies 
+
+This will: - Deploy a sample UI application - Configure an ingress resource - Set up initial AWS Load Balancer Controller configuration (with deliberate issues for troubleshooting) - Create necessary IAM roles and policies
 
 :::
 
 In this module, we'll explore common issues that can occur when working with Amazon EKS and learn effective troubleshooting techniques. We'll work through real-world scenarios focusing on the AWS Load Balancer Controller and service connectivity problems. If you'd like to learn more about how a Load balancer controller work, check out the [Fundamentals module](/docs/fundamentals/).
 
-### Environment Setup Details
+## Environment Setup Details
 
 The prepare-environment script has created several resources with specific issues that we'll troubleshoot:
 
-    - A UI application deployment in the ui namespace
-    - An ingress resource configured to use the AWS Load Balancer Controller
-    - IAM roles and policies (with intentional misconfigurations)
-    - Kubernetes service resources
+- A UI application deployment in the ui namespace
+- An ingress resource configured to use the AWS Load Balancer Controller
+- IAM roles and policies (with intentional misconfigurations)
+- Kubernetes service resources
 
 These components have been configured with common real-world issues that we'll identify and fix throughout this module.
 
-### What We'll Cover
+## What We'll Cover
 
 We'll troubleshoot several issues including:
 
-    - Missing or incorrect subnet tags preventing ALB creation
-    - IAM permission issues blocking the Load Balancer Controller
-    - Service selector misconfigurations
-    - Ingress backend service problems
+- Missing or incorrect subnet tags preventing ALB creation
+- IAM permission issues blocking the Load Balancer Controller
+- Service selector misconfigurations
+- Ingress backend service problems
 
-### Prerequisites
+## Prerequisites
 
 Before proceeding, ensure you have:
 
-    - Access to the EKS cluster
-    - Proper AWS CLI configuration
-    - kubectl installed and configured
-     -Basic understanding of Kubernetes networking concepts
+- Access to the EKS cluster
+- Proper AWS CLI configuration
+- kubectl installed and configured
+  -Basic understanding of Kubernetes networking concepts
 
-### Tools We'll Use
+## Tools We'll Use
 
 Throughout this module, we'll use these troubleshooting tools:
 
-    - kubectl commands for Kubernetes resource inspection
-    - AWS CLI for checking AWS resource states
-    - CloudWatch Logs for controller diagnostics
-    - AWS IAM tools for permission verification
+- kubectl commands for Kubernetes resource inspection
+- AWS CLI for checking AWS resource states
+- CloudWatch Logs for controller diagnostics
+- AWS IAM tools for permission verification
 
 :::tip Before you proceed
 After a couple minutes from running the prepare-environment script, verify the service and ingress is up and running.
@@ -77,5 +72,13 @@ NAME   CLASS   HOSTS   ADDRESS   PORTS   AGE
 ui     alb     *                 80      11m
 
 ```
+
+Let's verify the load balancer was indeed not created, but now with via the aws cli:
+
+```bash
+$ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-ui`) == `true`]'
+[]
+```
+
 :::
 Let's begin by investigating why our Application Load Balancer isn't being created!

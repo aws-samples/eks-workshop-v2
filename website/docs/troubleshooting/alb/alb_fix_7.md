@@ -21,12 +21,11 @@ Let's inspect the service configuration:
 $ kubectl -n ui get service/ui -o yaml
 ```
 
-```yaml {27}
+```yaml {24}
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    ...
+  annotations: ...
   labels:
     app.kubernetes.io/component: service
     app.kubernetes.io/created-by: eks-workshop
@@ -38,10 +37,10 @@ metadata:
   namespace: ui
 spec:
   ports:
-  - name: http
-    port: 80
-    protocol: TCP
-    targetPort: http
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: http
   selector:
     app.kubernetes.io/component: service
     app.kubernetes.io/instance: ui
@@ -219,6 +218,21 @@ spec:
 
 The service selector `app.kubernetes.io/name: ui-app` doesn't match the pod label `app.kubernetes.io/name: ui`.
 
+:::tip
+You can either update the service selector as follows:
+
+```text
+kubectl edit service <service-name> -n <namespace>
+```
+
+or
+
+```text
+kubectl patch service <service-name> -n <namespace> --type='json' -p='[{"op": "replace", "path": "/spec/selector", "value": {"key1": "value1", "key2": "value2"}}]'
+```
+
+:::
+
 ### Step 7: Fix the Service Selector
 
 Let's update the service selector to match the pod labels:
@@ -233,10 +247,11 @@ After applying the fix, refresh your browser. You should now see the UI applicat
 
 :::tip
 When troubleshooting service-to-pod connectivity:
+
 1. Always verify the service selectors match pod labels exactly
 2. Use `kubectl get endpoints` to verify pod selection
 3. Check for typos in label names and values
+
 :::
 
 You've successfully fixed the service configuration issues and completed the ALB troubleshooting exercise! Take a well-deserved break.
-
