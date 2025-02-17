@@ -1,5 +1,5 @@
 ---
-title: "OpenSearch를 통한 옵저버빌러티"
+title: "OpenSearch를 통한 관측성"
 sidebar_position: 35
 sidebar_custom_props: { "module": true }
 description: "OpenSearch를 중심으로 Amazon Elastic Kubernetes Service(EKS)의 관측성 기능을 구축합니다."
