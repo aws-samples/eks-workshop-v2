@@ -64,16 +64,17 @@ The error indicates the IAM role lacks the `elasticloadbalancing:CreateLoadBalan
 
 To resolve this, we need to update the IAM role with the correct permissions. For this workshop, we've pre-created the correct policy. We'll:
 
-1. Attach the correct policy
-2. Remove the incorrect policy
+#### 3.1. Attach the correct policy
 
 ```bash
-# Attach the correct policy
 $ aws iam attach-role-policy \
     --role-name ${LOAD_BALANCER_CONTROLLER_ROLE_NAME} \
     --policy-arn ${LOAD_BALANCER_CONTROLLER_POLICY_ARN_FIX}
+```
 
-# Remove the incorrect policy
+#### 3.2. Remove the incorrect policy
+
+```bash
 $ aws iam detach-role-policy \
     --role-name ${LOAD_BALANCER_CONTROLLER_ROLE_NAME} \
     --policy-arn ${LOAD_BALANCER_CONTROLLER_POLICY_ARN_ISSUE}
@@ -83,7 +84,7 @@ $ aws iam detach-role-policy \
 
 Check if the ingress is now properly configured with an ALB:
 
-```bash timeout=180 hook=fix-5 hookTimeout=600
+```bash timeout=600 hook=fix-5 hookTimeout=600
 $ kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
 k8s-ui-ui-5ddc3ba496-1208241872.us-west-2.elb.amazonaws.com
 ```
