@@ -1,0 +1,11 @@
+.banner {
+  background-color: #FF9900;
+  padding: 8px;
+  text-align: center;
+  width: 100%;
+}
+
+.bannerText {
+  color: #FFFFFF;
+  font-size: 16px;
+}
