@@ -1,0 +1,42 @@
+{
+  "title": {
+    "message": "EKS Workshop",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "Amazon Web Services",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Intro": {
+    "message": "소개",
+    "description": "Navbar item with label Intro"
+  },
+  "item.label.Fundamentals": {
+    "message": "기본",
+    "description": "Navbar item with label Fundamentals"
+  },
+  "item.label.Autoscaling": {
+    "message": "오토스케일링",
+    "description": "Navbar item with label Autoscaling"
+  },
+  "item.label.Observability": {
+    "message": "관측성",
+    "description": "Navbar item with label Observability"
+  },
+  "item.label.Security": {
+    "message": "보안",
+    "description": "Navbar item with label Security"
+  },
+  "item.label.Networking": {
+    "message": "네트워킹",
+    "description": "Navbar item with label Networking"
+  },
+  "item.label.Automation": {
+    "message": "자동화",
+    "description": "Navbar item with label Automation"
+  },
+  "item.label.AI/ML": {
+    "message": "AI/ML",
+    "description": "Navbar item with label AI/ML"
+  }
+}
