@@ -127,7 +127,7 @@ ip-10-42-180-244.us-west-2.compute.internal   <unknown>    <unknown>   <unknown>
 
 #### 4.2. Next, attempt to check pod metrics
 
-```bash
+```bash expectError=true
 $ kubectl top pods -n prod
 error: Metrics not available for pod prod/prod-app-xx-xx, age: 17m14.466020856s
 ```
@@ -240,58 +240,17 @@ The Dev team has identified and fixed a memory leak in the application. Let's im
 $ kubectl apply -f /home/ec2-user/environment/eks-workshop/modules/troubleshooting/workernodes/three/yaml/configmaps-new.yaml
 ```
 
-#### 7.2. Set resource limits for the deployment
+#### 7.2. Set resource limits for the deployment (cpu: 500m, memory: 512Mi)
 
 ```bash timeout=10 wait=5
-$ kubectl patch deployment prod-app -n prod --patch '
-{
-  "spec": {
-    "template": {
-      "spec": {
-        "containers": [{
-          "name": "prod-app",
-          "resources": {
-            "limits": {
-              "cpu": "500m",
-              "memory": "512Mi"
-            },
-            "requests": {
-              "cpu": "250m",
-              "memory": "256Mi"
-            }
-          }
-        }]
-      }
-    }
-  }
-}'
+$ kubectl patch deployment prod-app -n prod --patch '{"spec":{"template":{"spec":{"containers":[{"name":"prod-app","resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"256Mi"}}}]}}}}'
+
 ```
 
-#### 7.3. Set resource limits for the DaemonSet
+#### 7.3. Set resource limits for the DaemonSet (cpu: 500m, memory: 512Mi)
 
 ```bash timeout=10 wait=5
-$ kubectl patch daemonset prod-d -n prod --patch '
-{
-  "spec": {
-    "template": {
-      "spec": {
-        "containers": [{
-          "name": "prod-app",
-          "resources": {
-            "limits": {
-              "cpu": "500m",
-              "memory": "512Mi"
-            },
-            "requests": {
-              "cpu": "250m",
-              "memory": "256Mi"
-            }
-          }
-        }]
-      }
-    }
-  }
-}'
+$ kubectl patch daemonset prod-ds -n prod --patch '{"spec":{"template":{"spec":{"containers":[{"name":"prod-ds","resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"256Mi"}}}]}}}}'
 ```
 
 #### 7.4. Perform rolling updates and scale back to desired state
@@ -323,7 +282,7 @@ $ aws ec2 reboot-instances --instance-ids $INSTANCE_IDS
 
 #### 8.2. Verify pod resource usage
 
-```bash
+```bash test=false
 $ kubectl top pods -n prod
 NAME                       CPU(cores)   MEMORY(bytes)
 prod-app-f8597858c-2n4fd   215m         425Mi
@@ -337,7 +296,7 @@ prod-ds-x59km              586m         3Mi
 
 #### 8.3. Check node resource usage
 
-```bash
+```bash test=false
 $ kubectl top node --selector=kubernetes.io/hostname=$NODE_NAME
 NAME                                          CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
 ip-10-42-180-244.us-west-2.compute.internal   1612m        83%    3145Mi          44%
