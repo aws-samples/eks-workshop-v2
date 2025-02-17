@@ -16,8 +16,8 @@ $ prepare-environment troubleshooting/workernodes/two
 
 The preparation of the lab might take a couple of minutes and it will make the following changes to your lab environment:
 
-- Create a new managed node group called *_new_nodegroup_2_*
-- Introduce a problem to the managed node group which causes node to *_not join_*
+- Create a new managed node group called _*new_nodegroup_2*_
+- Introduce a problem to the managed node group which causes node to _*not join*_
 - Set desired managed node group count to 1
 
 :::
@@ -28,11 +28,11 @@ Corporation XYZ's e-commerce platform has been steadily growing, and the enginee
 
 Sam, an experienced DevOps engineer, has been tasked with executing this expansion plan. Sam begins by creating a new VPC subnet in the us-west-2 region, with a new CIDR block. The goal is to have the new managed node group run the application workloads in this new subnet, separate from the existing node groups.
 
-After creating the new subnet, Sam proceeds to configure the new managed node group *_new_nodegroup_2_* in the EKS cluster. During the node group creation process, Sam notices that the new nodes are not visible in the EKS cluster and not joining the cluster.
+After creating the new subnet, Sam proceeds to configure the new managed node group _*new_nodegroup_2*_ in the EKS cluster. During the node group creation process, Sam notices that the new nodes are not visible in the EKS cluster and not joining the cluster.
 
 ### Step 1: Verify Node Status
 
-1. Let's first verify if the new nodes from nodegroup *new_nodegroup_2* are visible in the cluster:
+1. Let's first verify if the new nodes from nodegroup _new_nodegroup_2_ are visible in the cluster:
 
 ```bash timeout=30 hook=fix-2-1 hookTimeout=30
 $ kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_2
@@ -46,7 +46,9 @@ Let's examine the EKS managed node group configuration to verify its status and 
 ```bash
 $ aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_2
 ```
+
 Output:
+
 ```json {7,12,15-16}
 {
     "nodegroup": {
@@ -82,7 +84,6 @@ Key observations from the output:
 - No health issues reported
 - Scaling configuration is correct
 
-
 ### Step 3: Investigate Auto Scaling Group
 
 Let's check the ASG activities to understand the instance launch status:
@@ -94,7 +95,9 @@ Let's check the ASG activities to understand the instance launch status:
 ```bash
 $ aws autoscaling describe-scaling-activities --auto-scaling-group-name ${NEW_NODEGROUP_2_ASG_NAME} --query 'Activities[*].{AutoScalingGroupName:AutoScalingGroupName,Description:Description,Cause:Cause,StatusCode:StatusCode}'
 ```
+
 Output:
+
 ```json {6,11}
 {
     "Activities": [
@@ -110,7 +113,6 @@ Output:
     ]
 }
 ```
-
 
 :::info
 You can check the EKS console as well. Click the Autoscaling group name to open the ASG console view ASG activity.
@@ -138,41 +140,44 @@ Let's inspect the launched EC2 instance configuration:
 ```bash
 $ aws ec2 describe-instances --instance-ids $NEW_NODEGROUP_2_INSTANCE_ID --query 'Reservations[*].Instances[*].{InstanceState: State.Name, SubnetId: SubnetId, VpcId: VpcId, InstanceProfile: IamInstanceProfile, SecurityGroups: SecurityGroups}' --output json
 ```
+
 Output:
+
 ```json {4,8,14}
 [
-    [
+  [
+    {
+      "InstanceState": "running",
+      "SubnetId": "subnet-1234abcd1234abcd1",
+      "VpcId": "vpc-1234abcd1234abcd1",
+      "InstanceProfile": {
+        "Arn": "arn:aws:iam::1234567890:instance-profile/eks-abcd1234-1234-abcd-1234-1234abcd1234",
+        "Id": "ABCDEFGHIJK1LMNOP2QRS"
+      },
+      "SecurityGroups": [
         {
-            "InstanceState": "running",
-            "SubnetId": "subnet-1234abcd1234abcd1",
-            "VpcId": "vpc-1234abcd1234abcd1",
-            "InstanceProfile": {
-                "Arn": "arn:aws:iam::1234567890:instance-profile/eks-abcd1234-1234-abcd-1234-1234abcd1234",
-                "Id": "ABCDEFGHIJK1LMNOP2QRS"
-            },
-            "SecurityGroups": [
-                {
-                    "GroupName": "eks-cluster-sg-eks-workshop-123456789",
-                    "GroupId": "sg-1234abcd1234abcd1"
-                }
-            ]
+          "GroupName": "eks-cluster-sg-eks-workshop-123456789",
+          "GroupId": "sg-1234abcd1234abcd1"
         }
-    ]
+      ]
+    }
+  ]
 ]
 ```
+
 Important aspects to verify:
 
 - Instance state is "running"
 - Instance profile and IAM role assignments
 - Security group configurations
-:::info
-To use the console, click the button below to open the EC2 Console.
-<ConsoleButton
-  url="https://us-west-2.console.aws.amazon.com/ec2/home?region=us-west-2#Instances:instanceState=running;search=troubleshooting-two-eks-workshop"
-  service="ec2"
-  label="Open EC2 Console"
-/>
-:::
+  :::info
+  To use the console, click the button below to open the EC2 Console.
+  <ConsoleButton
+    url="https://us-west-2.console.aws.amazon.com/ec2/home?region=us-west-2#Instances:instanceState=running;search=troubleshooting-two-eks-workshop"
+    service="ec2"
+    label="Open EC2 Console"
+  />
+  :::
 
 ### Step 5: Analyze Network Configuration
 
@@ -182,44 +187,45 @@ Let's examine the subnet and routing configuration:
 **Note:** _For your convenience Subnet ID is added as env variable `$NEW_NODEGROUP_2_SUBNET_ID`._
 :::
 
-1. Check subnet configuration:
+#### 5.1. Check subnet configuration
 
 ```bash
 $ aws ec2 describe-subnets --subnet-ids $NEW_NODEGROUP_2_SUBNET_ID --query 'Subnets[*].{AvailabilityZone: AvailabilityZone, AvailableIpAddressCount: AvailableIpAddressCount, CidrBlock: CidrBlock, State: State}'
 ```
+
 Output:
+
 ```json {4}
 [
-    {
-        "AvailabilityZone": "us-west-2a",
-        "AvailableIpAddressCount": 8186,
-        "CidrBlock": "10.42.192.0/19",
-        "State": "available"
-    }
+  {
+    "AvailabilityZone": "us-west-2a",
+    "AvailableIpAddressCount": 8186,
+    "CidrBlock": "10.42.192.0/19",
+    "State": "available"
+  }
 ]
 ```
 
-2. Obtain route table ID.
+#### 5.2. Obtain route table ID
 
 ```bash
 $ aws ec2 describe-route-tables \
   --filters "Name=association.subnet-id,Values=$NEW_NODEGROUP_2_SUBNET_ID" \
   --query "RouteTables[*].{RouteTableId:RouteTableId,AssociatedSubnets:Associations[*].SubnetId}"
 ```
+
 Output:
+
 ```json {4}
 [
-    {
-        "RouteTableId": "rtb-1234abcd1234abcd1",
-        "AssociatedSubnets": [
-            "subnet-1234abcd1234abcd1"
-        ]
-    }
+  {
+    "RouteTableId": "rtb-1234abcd1234abcd1",
+    "AssociatedSubnets": ["subnet-1234abcd1234abcd1"]
+  }
 ]
-
 ```
 
-3. Examine route table configuration:
+#### 5.3. Examine route table configuration
 
 :::info
 **Note:** _For your convenience Subnet ID is added as env variable `$NEW_NODEGROUP_2_ROUTETABLE_ID`._
@@ -228,15 +234,17 @@ Output:
 ```bash timeout=15 hook=fix-2-2 hookTimeout=20
 $ aws ec2 describe-route-tables --route-table-ids $NEW_NODEGROUP_2_ROUTETABLE_ID --query 'RouteTables[0].Routes'
 ```
+
 Output:
+
 ```json {4}
 [
-    {
-        "DestinationCidrBlock": "10.42.0.0/16",
-        "GatewayId": "local",
-        "Origin": "CreateRouteTable",
-        "State": "active"
-    }
+  {
+    "DestinationCidrBlock": "10.42.0.0/16",
+    "GatewayId": "local",
+    "Origin": "CreateRouteTable",
+    "State": "active"
+  }
 ]
 ```
 
@@ -255,30 +263,34 @@ To use the VPC console click the button. Check the Subnet Details tab, and Route
 
 ### Step 6: Implement Solution
 
-
 The root cause is identified as missing internet access for the worker nodes. Let's implement the fix:
 
 :::info
 **Note:** _For your convenience NatGateway ID is added as env variable `$DEFAULT_NODEGROUP_NATGATEWAY_ID`._
 :::
 
-1. Add NAT Gateway route:
+#### 6.1. Add NAT Gateway route
 
 ```bash
 $ aws ec2 create-route --route-table-id $NEW_NODEGROUP_2_ROUTETABLE_ID --destination-cidr-block 0.0.0.0/0 --nat-gateway-id $DEFAULT_NODEGROUP_NATGATEWAY_ID
 ```
+
 Output:
+
 ```json {}
 {
-    "Return": true
+  "Return": true
 }
-
 ```
-2. Verify the new route:
+
+#### 6.2. Verify the new route
+
 ```bash
 $ aws ec2 describe-route-tables --route-table-ids $NEW_NODEGROUP_2_ROUTETABLE_ID --query 'RouteTables[*].{RouteTableId:RouteTableId,VpcId:VpcId,Routes:Routes}'
 ```
+
 Output:
+
 ```json {13,14}
 [
     {
@@ -312,26 +324,21 @@ Click the button below to use the VPC Console.
 />
 :::
 
+#### 6.3. Recycle the node group to trigger new instance launch
 
-3. Recycle the node group to trigger new instance launch:
-
-
- Scale down to 0. This can take up to about 30 seconds.
-
+Scale down to 0. This can take up to about 30 seconds.
 
 ```bash timeout=90 wait=60
 $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_2 --scaling-config desiredSize=0; aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_2; if [ $? -eq 0 ]; then echo "Node group scaled down to 0"; else echo "Failed to scale down node group"; exit 1; fi
 ```
 
-
-
- Scale back to 1. This can take up to about 30 seconds.
+Scale back to 1. This can take up to about 30 seconds.
 
 ```bash timeout=90 wait=60
 $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_2 --scaling-config desiredSize=1 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_2; if [ $? -eq 0 ]; then echo "Node group scaled up to 1"; else echo "Failed to scale up node group"; exit 1; fi
 ```
 
-### Verification
+### Step 7: Verification
 
 Verify the node has successfully joined the cluster:
 
@@ -344,17 +351,20 @@ ip-10-42-108-252.us-west-2.compute.internal   Ready    <none>   3m9s   v1.30.0-e
 ### Key Takeaways
 
 #### Network Requirements
+
 - Worker nodes require internet access for AWS service communication
 - NAT Gateway provides secure outbound connectivity
 - Route table configuration is critical for node bootstrapping
 
-####    Troubleshooting Approach
+#### Troubleshooting Approach
+
 - Verify node group configuration
 - Check instance status
 - Analyze network configuration
 - Examine routing tables
 
-####    Best Practices
+#### Best Practices
+
 - Implement proper network planning
 - Use private subnets with NAT Gateway
 - Follow AWS security best practices
@@ -362,12 +372,14 @@ ip-10-42-108-252.us-west-2.compute.internal   Ready    <none>   3m9s   v1.30.0-e
 
 ### Additional Resources
 
-####  Security and Access Control
+#### Security and Access Control
+
 - [Security Group Requirements](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html#security-group-restricting-cluster-traffic) - Essential security group rules and configurations required for EKS cluster communication
 - [AWS User Guide for Private Clusters](https://docs.aws.amazon.com/eks/latest/userguide/private-clusters.html) - Comprehensive guide for setting up and managing private EKS clusters
 - [Configuring Private Access to AWS Services](https://eksctl.io/usage/eks-private-cluster/#configuring-private-access-to-additional-aws-services) - Detailed instructions for configuring private access to AWS services using VPC endpoints - eksctl
 
 #### Best Practices Documentation
+
 - [EKS Networking Best Practices](https://docs.aws.amazon.com/eks/latest/best-practices/networking.html) - AWS recommended networking practices for EKS cluster design and operation
 - [VPC Endpoint Services Guide](https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html) - Complete guide to implementing and managing VPC endpoints for secure service access
 

@@ -27,13 +27,13 @@ The preparation of the lab might take a couple of minutes and it will make the f
 Corporation XYZ is launching a new e-commerce platform in the us-west-2 region using an EKS cluster running Kubernetes version 1.30. During a security review, several gaps were identified in the cluster's security posture, particularly around node group volume encryption and AMI customization.
 
 The security team provided specific requirements including:
-  - Enabling encryption for node group volumes
-  - Setting up best practice network configurations
-  - Ensuring EKS Optimized AMIs are used
-  - Enabling Kubernetes auditing
 
+- Enabling encryption for node group volumes
+- Setting up best practice network configurations
+- Ensuring EKS Optimized AMIs are used
+- Enabling Kubernetes auditing
 
-Sam, an engineer with Kubernetes experience but new to EKS, created a new managed node group named *new_nodegroup_1* to implement these requirements. However, no new nodes are joining the cluster despite the node group creation appearing successful. Initial checks of the EKS cluster status, node group configuration, and Kubernetes events haven't revealed any obvious issues.
+Sam, an engineer with Kubernetes experience but new to EKS, created a new managed node group named _new_nodegroup_1_ to implement these requirements. However, no new nodes are joining the cluster despite the node group creation appearing successful. Initial checks of the EKS cluster status, node group configuration, and Kubernetes events haven't revealed any obvious issues.
 
 ### Step 1: Verify Node Status
 
@@ -51,10 +51,10 @@ This confirms Sam's observation - no nodes are present from the new nodegroup (n
 ### Step 2: Check Managed Node Group Status
 
 Since Managed Node Groups are responsible for creating nodes, let's examine the nodegroup details. Key aspects to check:
+
 - Node group existence
 - Status and health
 - Desired size
-
 
 ```bash
 $ aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_1
@@ -111,6 +111,7 @@ $ aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name new_no
         ...
 }
 ```
+
 :::note
 The health status reveals a KMS key issue preventing instance launches. This aligns with Sam's attempt to implement volume encryption.
 :::
@@ -122,7 +123,6 @@ Let's examine the ASG activities to understand the launch failures:
 :::info
 Note: For your convenience, the Autoscaling Group name is available as env variable $NEW_NODEGROUP_1_ASG_NAME.
 :::
-
 
 ```bash
 $ aws autoscaling describe-scaling-activities --auto-scaling-group-name ${NEW_NODEGROUP_1_ASG_NAME}
@@ -152,57 +152,56 @@ You can also view this information in the EKS Console. Click on the Autoscaling 
 />
 :::
 
-
 ### Step 5: Examine Launch Template Configuration
 
 Let's check the Launch Template for encryption settings:
 
+#### 5.1. Find the Launch Template ID from the ASG or managed nodegroup. In this example we will use ASG
 
-1. Find the Launch Template ID from the ASG or managed nodegroup. In this example we will use ASG.
+```bash
+$ aws autoscaling describe-auto-scaling-groups \
+--auto-scaling-group-names ${NEW_NODEGROUP_1_ASG_NAME} \
+--query 'AutoScalingGroups[0].MixedInstancesPolicy.LaunchTemplate.LaunchTemplateSpecification.LaunchTemplateId' \
+--output text
+```
 
-  ```bash
-  $ aws autoscaling describe-auto-scaling-groups \
-  --auto-scaling-group-names ${NEW_NODEGROUP_1_ASG_NAME} \
-  --query 'AutoScalingGroups[0].MixedInstancesPolicy.LaunchTemplate.LaunchTemplateSpecification.LaunchTemplateId' \
-  --output text
-  ```
+#### 5.2. Now we can check the encryption settings
 
-2. Now we can check the encryption settings.
-  :::info
-  **Note:** _For your convenience we have added the Launch Template ID as env variable with the variable `$NEW_NODEGROUP_1_LT_ID`._
-  :::
+:::info
+**Note:** _For your convenience we have added the Launch Template ID as env variable with the variable `$NEW_NODEGROUP_1_LT_ID`._
+:::
 
-  ```bash
-  $ aws ec2 describe-launch-template-versions --launch-template-id ${NEW_NODEGROUP_1_LT_ID} --query 'LaunchTemplateVersions[].{LaunchTemplateId:LaunchTemplateId,DefaultVersion:DefaultVersion,BlockDeviceMappings:LaunchTemplateData.BlockDeviceMappings}'
+```bash
+$ aws ec2 describe-launch-template-versions --launch-template-id ${NEW_NODEGROUP_1_LT_ID} --query 'LaunchTemplateVersions[].{LaunchTemplateId:LaunchTemplateId,DefaultVersion:DefaultVersion,BlockDeviceMappings:LaunchTemplateData.BlockDeviceMappings}'
 
-  {
-      "LaunchTemplateVersions": [
-          {
-              "LaunchTemplateId": "lt-1234abcd1234abcd1",
-              ...
-              "DefaultVersion": true,
-              "LaunchTemplateData": {
-              ...
-                  "BlockDeviceMappings": [
-                      {
-                          "DeviceName": "/dev/xvda",
-                          "Ebs": {
-      --->>>                 "Encrypted": true,
-      --->>>                 "KmsKeyId": "arn:aws:kms:us-west-2:xxxxxxxxxxxx:key/xxxxxxxxxxxx",
-                              "VolumeSize": 20,
-                              "VolumeType": "gp2"
-                          }
-                      }
-                  ]
-  ```
+{
+    "LaunchTemplateVersions": [
+        {
+            "LaunchTemplateId": "lt-1234abcd1234abcd1",
+            ...
+            "DefaultVersion": true,
+            "LaunchTemplateData": {
+            ...
+                "BlockDeviceMappings": [
+                    {
+                        "DeviceName": "/dev/xvda",
+                        "Ebs": {
+    --->>>                 "Encrypted": true,
+    --->>>                 "KmsKeyId": "arn:aws:kms:us-west-2:xxxxxxxxxxxx:key/xxxxxxxxxxxx",
+                            "VolumeSize": 20,
+                            "VolumeType": "gp2"
+                        }
+                    }
+                ]
+```
 
 ### Step 6: Verify KMS Key Configuration
 
-1. Let's examine the KMS key status and permissions:
+#### 6.1. Let's examine the KMS key status and permissions
 
-  :::info
-  **Note:** _For your convenience we have added the KMS Key ID as env variable with the variable `$NEW_KMS_KEY_ID`._
-  :::
+:::info
+**Note:** _For your convenience we have added the KMS Key ID as env variable with the variable `$NEW_KMS_KEY_ID`._
+:::
 
 ```bash
 $ aws kms describe-key --key-id ${NEW_KMS_KEY_ID} --query 'KeyMetadata.{KeyId:KeyId,Enabled:Enabled,KeyUsage:KeyUsage,KeyState:KeyState,KeyManager:KeyManager}'
@@ -234,8 +233,7 @@ You can also view this information in the KMS Console. The key will have an alia
 />
 :::
 
-
-2. Check the key policy for the CMK.
+#### 6.2. Check the key policy for the CMK
 
 ```bash
 $ aws kms get-key-policy --key-id ${NEW_KMS_KEY_ID} | jq -r '.Policy | fromjson'
@@ -260,12 +258,12 @@ The key policy is missing required permissions for the AutoScaling service role.
 
 ### Step 7: Implement Solution
 
-1. Add the required KMS key policy:
-
+#### 7.1. Add the required KMS key policy
 
 ```bash
 $ NEW_POLICY=$(echo '{"Version":"2012-10-17","Id":"default","Statement":[{"Sid":"EnableIAMUserPermissions","Effect":"Allow","Principal":{"AWS":"arn:aws:iam::'"$AWS_ACCOUNT_ID"':root"},"Action":"kms:*","Resource":"*"},{"Sid":"AllowAutoScalingServiceRole","Effect":"Allow","Principal":{"AWS":"arn:aws:iam::'"$AWS_ACCOUNT_ID"':role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"},"Action":["kms:Encrypt","kms:Decrypt","kms:ReEncrypt*","kms:GenerateDataKey*","kms:DescribeKey"],"Resource":"*"},{"Sid":"AllowAttachmentOfPersistentResources","Effect":"Allow","Principal":{"AWS":"arn:aws:iam::'"$AWS_ACCOUNT_ID"':role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"},"Action":"kms:CreateGrant","Resource":"*","Condition":{"Bool":{"kms:GrantIsForAWSResource":"true"}}}]}') && aws kms put-key-policy --key-id "$NEW_KMS_KEY_ID" --policy-name default --policy "$NEW_POLICY" && aws kms get-key-policy --key-id "$NEW_KMS_KEY_ID" --policy-name default | jq -r '.Policy | fromjson'
 ```
+
 :::note
 The policy will look similar to the below.
 
@@ -315,22 +313,21 @@ The policy will look similar to the below.
   ]
 }
 ```
+
 :::
 
-
-2. Scale down the node group:
+#### 7.2. Scale down the node group
 
 ```bash timeout=90 wait=45
 $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_1 --scaling-config desiredSize=0; aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_1; if [ $? -eq 0 ]; then echo "Node group scaled down to 0"; else echo "Failed to scale down node group"; exit 1; fi
 
 ```
+
 :::info
- This can take up to about 30 seconds.
+This can take up to about 30 seconds.
 :::
 
-3. Scale up the node group:
-
-
+#### 7.3. Scale up the node group
 
 ```bash timeout=90 wait=45
 $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_1 --scaling-config desiredSize=1 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_1; if [ $? -eq 0 ]; then echo "Node group scaled up to 1"; else echo "Failed to scale up node group"; exit 1; fi
@@ -338,21 +335,22 @@ $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegro
 ```
 
 :::info
- This can take up to about 30 seconds.
+This can take up to about 30 seconds.
 :::
 
-### Verification
+### Step 8: Verification
 
 Let's verify our fix has resolved the issue:
 
-1. Check node group status:
+#### 8.1. Check node group status
 
 ```bash timeout=100 wait=70
 $ aws eks describe-nodegroup --cluster-name ${EKS_CLUSTER_NAME} --nodegroup-name new_nodegroup_1 --query 'nodegroup.status' --output text
 ACTIVE
 ```
 
-2. Verify node joining:
+#### 8.2. Verify node joining
+
 ```bash timeout=100 wait=10
 $ kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_1
 NAME                                          STATUS   ROLES    AGE    VERSION
@@ -361,26 +359,28 @@ ip-10-42-108-252.us-west-2.compute.internal   Ready    <none>   3m9s   v1.30.0-e
 
 ## Key Takeaways
 
-#### Security Implementation
-  - Properly configure KMS key policies when implementing encryption
-  - Ensure service roles have necessary permissions
-  - Validate security configurations before deployment
+### Security Implementation
 
-#### Troubleshooting Process
-  - Follow the resource chain (Node → Node Group → ASG → Launch Template)
-  - Check health status and error messages at each level
-  - Verify service role permissions
+- Properly configure KMS key policies when implementing encryption
+- Ensure service roles have necessary permissions
+- Validate security configurations before deployment
 
-#### Best Practices
-  - Test security implementations in non-production environments
-  - Document required permissions for service roles
-  - Implement proper error handling and monitoring
+### Troubleshooting Process
 
-#### Additional Resources
+- Follow the resource chain (Node → Node Group → ASG → Launch Template)
+- Check health status and error messages at each level
+- Verify service role permissions
 
-  - [EBS Encryption Key Policy](https://docs.aws.amazon.com/autoscaling/ec2/userguide/key-policy-requirements-EBS-encryption.html#policy-example-cmk-access)
-  - [EKS Launch Templates](https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
-  - [Specifying an AMI](https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html#launch-template-custom-ami)
-  - [Troubleshooting Worker Node Join Failures - AWS Doc](https://docs.aws.amazon.com/eks/latest/userguide/troubleshooting.html#worker-node-fail)
-  - [Troubleshooting Worker Node Join Failures - Knowledge Center](https://repost.aws/knowledge-center/eks-worker-nodes-cluster)
+### Best Practices
 
+- Test security implementations in non-production environments
+- Document required permissions for service roles
+- Implement proper error handling and monitoring
+
+### Additional Resources
+
+- [EBS Encryption Key Policy](https://docs.aws.amazon.com/autoscaling/ec2/userguide/key-policy-requirements-EBS-encryption.html#policy-example-cmk-access)
+- [EKS Launch Templates](https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
+- [Specifying an AMI](https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html#launch-template-custom-ami)
+- [Troubleshooting Worker Node Join Failures - AWS Doc](https://docs.aws.amazon.com/eks/latest/userguide/troubleshooting.html#worker-node-fail)
+- [Troubleshooting Worker Node Join Failures - Knowledge Center](https://repost.aws/knowledge-center/eks-worker-nodes-cluster)
