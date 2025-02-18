@@ -4,7 +4,7 @@ sidebar_position: 30
 ---
 
 
-As a 7B parameter model, Mistral-7B-Instruct-v0.3 model offers remarkable performance while remaining deployable on standard hardware configurations. It requires aproximately ~26-28 GB memory (13 GB for 7B parameters and additional ~13 GB for Optimizer states and overhead). `trn1.2xlarge` instance with 32GB memory is suitable for running the Mistral-7B model, as it provides enough headroom Model weights, Optimizer states, KV cache, Input/output tensors and Runtime overhead. 
+As a 7B parameter model, Mistral-7B-Instruct-v0.3 model offers remarkable performance while remaining deployable on standard hardware configurations. It requires approximately ~26-28 GB memory (13 GB for 7B parameters and additional ~13 GB for Optimizer states and overhead). `trn1.2xlarge` instance with 32GB memory is suitable for running the Mistral-7B model, as it provides enough headroom Model weights, Optimizer states, KV cache, Input/output tensors and Runtime overhead. 
 
 Mistral-7B-Instruct-v0.3 is implemented using FastAPI, Ray Serve, and PyTorch-based Hugging Face Transformers to create a seamless API for text generation.
 
