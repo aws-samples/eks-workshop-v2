@@ -1,6 +1,6 @@
 ---
 title: Amazon FSx for OpenZFS
-sidebar_position: 30
+sidebar_position: 40
 sidebar_custom_props: { "module": true }
 description: "Fully managed, high-performance, elastic file storage for workloads on Amazon Elastic Kubernetes Service with Amazon FSx for OpenZFS."
 ---
