@@ -37,6 +37,7 @@ spec:
       rayStartParams:
         dashboard-host: '0.0.0.0'
         num-cpus: "0" # this is to ensure no tasks or actors are scheduled on the head Pod
+        num-gpus: "0"
       template:
         metadata:
           labels:
@@ -66,11 +67,9 @@ spec:
               limits:
                 cpu: "4"
                 memory: 16Gi
-                vpc.amazonaws.com/pod-eni: "1"
               requests:
                 cpu: "2"
                 memory: 10Gi
-                vpc.amazonaws.com/pod-eni: "1"
             env:
             - name: PORT
               value: "8000"
@@ -171,12 +170,18 @@ spec:
               name: ray-logs
             - mountPath: /dev/shm
               name: dshm
+            - mountPath: /tmp/model
+              name: nvme-storage
           volumes:
           - name: ray-logs
             emptyDir: {}
           - name: dshm
             emptyDir:
               medium: Memory
+          - name: nvme-storage
+            hostPath:
+              path: /mnt/k8s-disks/0
+              type: Directory
           nodeSelector:
             instanceType: trn1.2xlarge
             provisionerType: Karpenter

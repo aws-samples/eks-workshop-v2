@@ -48,6 +48,7 @@ spec:
   amiFamily: AL2
   amiSelectorTerms:
     - alias: al2@latest
+  instanceStorePolicy: RAID0
   blockDeviceMappings:
     - deviceName: /dev/xvda
       ebs:
@@ -59,6 +60,8 @@ spec:
   securityGroupSelectorTerms:
     - tags:
         karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
+    - tags:
+        kubernetes.io/cluster/eks-workshop: owned
   subnetSelectorTerms:
     - tags:
         karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
