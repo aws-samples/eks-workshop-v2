@@ -18,7 +18,7 @@ parameters:
   RootVolumeConfiguration: '{"CopyTagsToSnapshots": false, "DataCompressionType": "LZ4", "NfsExports": [{"ClientConfigurations": [{"Clients": "$VPC_CIDR", "Options": ["rw","crossmnt","no_root_squash"]}]}], "ReadOnly": false, "RecordSizeKiB": 128}'
   WeeklyMaintenanceStartTime: '"7:09:00"'
   SecurityGroupIds: '["$FSXZ_SG"]'
-  Tags: '[{"Key": "Name", "Value": "eks-workshop-FSxZ"}]'
+  Tags: '[{"Key": "Name", "Value": "$EKS_CLUSTER_NAME-FSxZ"}]'
 reclaimPolicy: Delete
 allowVolumeExpansion: true
 mountOptions:

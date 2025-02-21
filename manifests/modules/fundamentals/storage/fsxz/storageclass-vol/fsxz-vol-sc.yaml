@@ -11,7 +11,7 @@ parameters:
   NfsExports: '[{"ClientConfigurations": [{"Clients": "$VPC_CIDR", "Options": ["rw","crossmnt","no_root_squash"]}]}]'
   ReadOnly: 'false'
   RecordSizeKiB: '128'
-  Tags: '[{"Key": "Name", "Value": "eks-workshop-data"}]'
+  Tags: '[{"Key": "Name", "Value": "$EKS_CLUSTER_NAME-data"}]'
   OptionsOnDeletion: '["DELETE_CHILD_VOLUMES_AND_SNAPSHOTS"]'
 reclaimPolicy: Delete
 allowVolumeExpansion: false

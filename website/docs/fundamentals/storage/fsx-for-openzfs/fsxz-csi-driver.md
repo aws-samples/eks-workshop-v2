@@ -47,7 +47,7 @@ The FSx for OpenZFS CSI driver supports both dynamic and static provisioning. Fo
 
 In this lab we'll use dynamic provisioning by creating a [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured to deploy an FSx for OpenZFS file system.  Once deployed we'll again use dynamic provisioning to create an additional StorageClass object configured to deploy a volume on our newly created FSx for OpenZFS file system.
 
-Using Kustomize, we'll create the file system storage class and inject the `PRIVATE_SUBNET0`, `VPC_CIDR`, and `FSXZ_SG` environment variables into the `SubnetIds`, `RootVolumeConfiguration`, and `SecurityGroupIds` parameters respectively:
+Using Kustomize, we'll create the file system storage class and inject the `PRIVATE_SUBNET0`, `VPC_CIDR`, `FSXZ_SG`, and `EKS_CLUSTER_NAME` environment variables into the `SubnetIds`, `RootVolumeConfiguration`, `SecurityGroupIds`, and `Name` parameters respectively:
 
 ```file
 manifests/modules/fundamentals/storage/fsxz/storageclass-fs/fsxz-fs-sc.yaml
@@ -66,16 +66,17 @@ Let's examine the StorageClass. Note that it uses the FSx OpenZFS CSI driver as 
 $ kubectl describe sc fsxz-fs-sc
 Name:            fsxz-fs-sc
 IsDefaultClass:  No
-Annotations:     kubectl.kubernetes.io/last-applied-configuration={"allowVolumeExpansion":true,"apiVersion":"storage.k8s.io/v1","kind":"StorageClass","metadata":{"annotations":{},"name":"fsxz-fs-sc"},"mountOptions":["nfsvers=4.1","rsize=1048576","wsize=1048576","timeo=600"],"parameters":{"AutomaticBackupRetentionDays":"0","CopyTagsToBackups":"false","CopyTagsToVolumes":"false","DailyAutomaticBackupStartTime":"\"00:00\"","DeploymentType":"\"SINGLE_AZ_HA_2\"","DiskIopsConfiguration":"{\"Mode\": \"AUTOMATIC\"}","OptionsOnDeletion":"[\"DELETE_CHILD_VOLUMES_AND_SNAPSHOTS\"]","ResourceType":"filesystem","RootVolumeConfiguration":"{\"CopyTagsToSnapshots\": false, \"DataCompressionType\": \"LZ4\", \"NfsExports\": [{\"ClientConfigurations\": [{\"Clients\": \"10.42.0.0/16\", \"Options\": [\"rw\",\"crossmnt\",\"no_root_squash\"]}]}], \"ReadOnly\": false, \"RecordSizeKiB\": 128}","SecurityGroupIds":"sg-08a44ccd82ced2a2d","SkipFinalBackupOnDeletion":"true","SubnetIds":"subnet-0aeb35fb3c5f0041a","Tags":"[{\"Key\": \"Name\", \"Value\": \"FSxZ-EKS\"}]","ThroughputCapacity":"640","WeeklyMaintenanceStartTime":"\"7:09:00\""},"provisioner":"fsx.openzfs.csi.aws.com","reclaimPolicy":"Delete"}
+Annotations:     kubectl.kubernetes.io/last-applied-configuration={"allowVolumeExpansion":true,"apiVersion":"storage.k8s.io/v1","kind":"StorageClass","metadata":{"annotations":{},"name":"fsxz-fs-sc"},"mountOptions":["nfsvers=4.1","rsize=1048576","wsize=1048576","timeo=600","nconnect=16"],"parameters":{"AutomaticBackupRetentionDays":"0","CopyTagsToBackups":"false","CopyTagsToVolumes":"false","DailyAutomaticBackupStartTime":"\"00:00\"","DeploymentType":"\"SINGLE_AZ_HA_2\"","DiskIopsConfiguration":"{\"Mode\": \"AUTOMATIC\"}","OptionsOnDeletion":"[\"DELETE_CHILD_VOLUMES_AND_SNAPSHOTS\"]","ResourceType":"filesystem","RootVolumeConfiguration":"{\"CopyTagsToSnapshots\": false, \"DataCompressionType\": \"LZ4\", \"NfsExports\": [{\"ClientConfigurations\": [{\"Clients\": \"10.42.0.0/16\", \"Options\": [\"rw\",\"crossmnt\",\"no_root_squash\"]}]}], \"ReadOnly\": false, \"RecordSizeKiB\": 128}","SecurityGroupIds":"[\"sg-04b432cd820a78e9e\"]","SkipFinalBackupOnDeletion":"true","SubnetIds":"[\"subnet-04a0e84c1297a99a9\"]","Tags":"[{\"Key\": \"Name\", \"Value\": \"eks-workshop-FSxZ\"}]","ThroughputCapacity":"640","WeeklyMaintenanceStartTime":"\"7:09:00\""},"provisioner":"fsx.openzfs.csi.aws.com","reclaimPolicy":"Delete"}
 
 Provisioner:           fsx.openzfs.csi.aws.com
-Parameters:            AutomaticBackupRetentionDays=0,CopyTagsToBackups=false,CopyTagsToVolumes=false,DailyAutomaticBackupStartTime="00:00",DeploymentType="SINGLE_AZ_HA_2",DiskIopsConfiguration={"Mode": "AUTOMATIC"},OptionsOnDeletion=["DELETE_CHILD_VOLUMES_AND_SNAPSHOTS"],ResourceType=filesystem,RootVolumeConfiguration={"CopyTagsToSnapshots": false, "DataCompressionType": "LZ4", "NfsExports": [{"ClientConfigurations": [{"Clients": "10.42.0.0/16", "Options": ["rw","crossmnt","no_root_squash"]}]}], "ReadOnly": false, "RecordSizeKiB": 128},SecurityGroupIds=sg-08a44ccd82ced2a2d,SkipFinalBackupOnDeletion=true,SubnetIds=subnet-0aeb35fb3c5f0041a,Tags=[{"Key": "Name", "Value": "FSxZ-EKS"}],ThroughputCapacity=640,WeeklyMaintenanceStartTime="7:09:00"
+Parameters:            AutomaticBackupRetentionDays=0,CopyTagsToBackups=false,CopyTagsToVolumes=false,DailyAutomaticBackupStartTime="00:00",DeploymentType="SINGLE_AZ_HA_2",DiskIopsConfiguration={"Mode": "AUTOMATIC"},OptionsOnDeletion=["DELETE_CHILD_VOLUMES_AND_SNAPSHOTS"],ResourceType=filesystem,RootVolumeConfiguration={"CopyTagsToSnapshots": false, "DataCompressionType": "LZ4", "NfsExports": [{"ClientConfigurations": [{"Clients": "10.42.0.0/16", "Options": ["rw","crossmnt","no_root_squash"]}]}], "ReadOnly": false, "RecordSizeKiB": 128},SecurityGroupIds=["sg-04b432cd820a78e9e"],SkipFinalBackupOnDeletion=true,SubnetIds=["subnet-04a0e84c1297a99a9"],Tags=[{"Key": "Name", "Value": "eks-workshop-FSxZ"}],ThroughputCapacity=640,WeeklyMaintenanceStartTime="7:09:00"
 AllowVolumeExpansion:  True
 MountOptions:
   nfsvers=4.1
   rsize=1048576
   wsize=1048576
   timeo=600
+  nconnect=16
 ReclaimPolicy:      Delete
 VolumeBindingMode:  Immediate
 Events:             <none>

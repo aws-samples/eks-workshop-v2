@@ -45,7 +45,7 @@ $ export FILESYSTEM_ID=$(aws fsx describe-file-systems | jq -r '.FileSystems[] |
 $ export ROOT_VOL_ID=$(aws fsx describe-file-systems --file-system-id $FILESYSTEM_ID | jq -r '.FileSystems[] | .OpenZFSConfiguration.RootVolumeId')
 ```
 
-Using Kustomize, we'll create the volume storage class and inject the `ROOT_VOL_ID` and `VPC_CIDR` environment variables into the `ParentVolumeId` and `NfsExports` parameters respectively:
+Using Kustomize, we'll create the volume storage class and inject the `ROOT_VOL_ID`, `VPC_CIDR`, and `EKS_CLUSTER_NAME` environment variables into the `ParentVolumeId`, `NfsExports`, and `Name` parameters respectively:
 
 ```file
 manifests/modules/fundamentals/storage/fsxz/storageclass-vol/fsxz-vol-sc.yaml
