@@ -6,7 +6,7 @@ provisioner: fsx.openzfs.csi.aws.com
 parameters:
   ResourceType: "filesystem"
   DeploymentType: '"SINGLE_AZ_HA_2"'
-  ThroughputCapacity: '640'
+  ThroughputCapacity: '320'
   SubnetIds: '["$PRIVATE_SUBNET0"]'
   SkipFinalBackupOnDeletion: 'true'
   OptionsOnDeletion: '["DELETE_CHILD_VOLUMES_AND_SNAPSHOTS"]'

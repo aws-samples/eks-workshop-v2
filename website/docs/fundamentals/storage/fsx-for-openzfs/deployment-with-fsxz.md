@@ -5,7 +5,7 @@ sidebar_position: 30
 
 With the Amazon FSx for OpenZFS file system StorageClass defined we can now dynamically provision the file system. Once the file system has deployed successfully we can use Kustomize to update the FSx for OpenZFS volume StorageClass and then dynamically provision a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and mount it.
 
-First, let's examine the `fsxz-fs-pvc.yaml` file which defines a PersistentVolumeClaim to create the 2TiB Amazon FSx for OpenZFS file system from the fsx-fs-sc StorageClass we created earlier:
+First, let's examine the `fsxz-fs-pvc.yaml` file which defines a PersistentVolumeClaim to create the 128GiB Amazon FSx for OpenZFS file system from the fsx-fs-sc StorageClass we created earlier:
 
 ```file
 manifests/modules/fundamentals/storage/fsxz/deployment-fs/fsxz-fs-pvc.yaml
@@ -64,10 +64,10 @@ Let's examine the volume StorageClass. Note that it uses the FSx OpenZFS CSI dri
 $ kubectl describe sc fsxz-vol-sc
 Name:            fsxz-vol-sc
 IsDefaultClass:  No
-Annotations:     kubectl.kubernetes.io/last-applied-configuration={"allowVolumeExpansion":false,"apiVersion":"storage.k8s.io/v1","kind":"StorageClass","metadata":{"annotations":{},"name":"fsxz-vol-sc"},"mountOptions":["nfsvers=4.1","rsize=1048576","wsize=1048576","timeo=600","nconnect=16"],"parameters":{"CopyTagsToSnapshots":"false","DataCompressionType":"\"LZ4\"","NfsExports":"[{\"ClientConfigurations\": [{\"Clients\": \"10.42.0.0/16\", \"Options\": [\"rw\",\"crossmnt\",\"no_root_squash\"]}]}]","OptionsOnDeletion":"[\"DELETE_CHILD_VOLUMES_AND_SNAPSHOTS\"]","ParentVolumeId":"\"fsvol-058ef92589ca07bc6\"","ReadOnly":"false","RecordSizeKiB":"128","ResourceType":"volume","Tags":"[{\"Key\": \"Name\", \"Value\": \"data\"}]"},"provisioner":"fsx.openzfs.csi.aws.com","reclaimPolicy":"Delete"}
+Annotations:     kubectl.kubernetes.io/last-applied-configuration={"allowVolumeExpansion":false,"apiVersion":"storage.k8s.io/v1","kind":"StorageClass","metadata":{"annotations":{},"name":"fsxz-vol-sc"},"mountOptions":["nfsvers=4.1","rsize=1048576","wsize=1048576","timeo=600","nconnect=16"],"parameters":{"CopyTagsToSnapshots":"false","DataCompressionType":"\"LZ4\"","NfsExports":"[{\"ClientConfigurations\": [{\"Clients\": \"10.42.0.0/16\", \"Options\": [\"rw\",\"crossmnt\",\"no_root_squash\"]}]}]","OptionsOnDeletion":"[\"DELETE_CHILD_VOLUMES_AND_SNAPSHOTS\"]","ParentVolumeId":"\"fsvol-0efa720c2c77956a4\"","ReadOnly":"false","RecordSizeKiB":"128","ResourceType":"volume","Tags":"[{\"Key\": \"Name\", \"Value\": \"eks-workshop-data\"}]"},"provisioner":"fsx.openzfs.csi.aws.com","reclaimPolicy":"Delete"}
 
 Provisioner:           fsx.openzfs.csi.aws.com
-Parameters:            CopyTagsToSnapshots=false,DataCompressionType="LZ4",NfsExports=[{"ClientConfigurations": [{"Clients": "10.42.0.0/16", "Options": ["rw","crossmnt","no_root_squash"]}]}],OptionsOnDeletion=["DELETE_CHILD_VOLUMES_AND_SNAPSHOTS"],ParentVolumeId="fsvol-058ef92589ca07bc6",ReadOnly=false,RecordSizeKiB=128,ResourceType=volume,Tags=[{"Key": "Name", "Value": "data"}]
+Parameters:            CopyTagsToSnapshots=false,DataCompressionType="LZ4",NfsExports=[{"ClientConfigurations": [{"Clients": "10.42.0.0/16", "Options": ["rw","crossmnt","no_root_squash"]}]}],OptionsOnDeletion=["DELETE_CHILD_VOLUMES_AND_SNAPSHOTS"],ParentVolumeId="fsvol-0efa720c2c77956a4",ReadOnly=false,RecordSizeKiB=128,ResourceType=volume,Tags=[{"Key": "Name", "Value": "eks-workshop-data"}]
 AllowVolumeExpansion:  False
 MountOptions:
   nfsvers=4.1
@@ -120,8 +120,8 @@ A PersistentVolume (PV) has been automatically created to fulfill our Persistent
 ```bash
 $ kubectl get pv
 NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                 STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
-pvc-2f21b09f-7d01-4414-97f6-699db3f2d7f2   2Ti        RWX            Delete           Bound    assets/fsxz-fs-pvc    fsxz-fs-sc     <unset>                          2m40s
-pvc-d3d958e7-6028-41d6-baee-36d3f85944c1   1Gi        RWX            Delete           Bound    assets/fsxz-vol-pvc   fsxz-vol-sc    <unset>                          31s
+pvc-904e8698-c9dd-426d-9d4e-a2bf35e1c46d   128Gi      RWX            Delete           Bound    assets/fsxz-fs-pvc    fsxz-fs-sc     <unset>                          5m29s
+pvc-de67d22d-040d-4898-b0ce-0b3139a227c1   1Gi        RWX            Delete           Bound    assets/fsxz-vol-pvc   fsxz-vol-sc    <unset>                          27s                       31s
 ```
 
 Let's examine the details of our PersistentVolumeClaim (PVC):
@@ -132,30 +132,30 @@ Name:          fsxz-fs-pvc
 Namespace:     assets
 StorageClass:  fsxz-fs-sc
 Status:        Bound
-Volume:        pvc-2f21b09f-7d01-4414-97f6-699db3f2d7f2
+Volume:        pvc-904e8698-c9dd-426d-9d4e-a2bf35e1c46d
 Labels:        <none>
 Annotations:   pv.kubernetes.io/bind-completed: yes
                pv.kubernetes.io/bound-by-controller: yes
                volume.beta.kubernetes.io/storage-provisioner: fsx.openzfs.csi.aws.com
                volume.kubernetes.io/storage-provisioner: fsx.openzfs.csi.aws.com
 Finalizers:    [kubernetes.io/pvc-protection]
-Capacity:      2Ti
+Capacity:      128Gi
 Access Modes:  RWX
 VolumeMode:    Filesystem
 Used By:       <none>
 Events:
   Type     Reason                 Age                   From                                                                                                      Message
   ----     ------                 ----                  ----                                                                                                      -------
-  Normal   Provisioning           7m20s (x3 over 12m)   fsx.openzfs.csi.aws.com_fsx-openzfs-csi-controller-6b9cdcddf6-tnckv_2917fbd4-ab3b-4385-8053-e2e1c265d44f  External provisioner is provisioning volume for claim "assets/fsxz-fs-pvc"
-  Normal   ExternalProvisioning   6m14s (x26 over 12m)  persistentvolume-controller                                                                               Waiting for a volume to be created either by the external provisioner 'fsx.openzfs.csi.aws.com' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
-  Normal   ProvisioningSucceeded  3m5s                  fsx.openzfs.csi.aws.com_fsx-openzfs-csi-controller-6b9cdcddf6-tnckv_2917fbd4-ab3b-4385-8053-e2e1c265d44f  Successfully provisioned volume pvc-2f21b09f-7d01-4414-97f6-699db3f2d7f2
+  Normal   Provisioning           7m30s (x5 over 17m)   fsx.openzfs.csi.aws.com_fsx-openzfs-csi-controller-6b9cdcddf6-kwx7p_35a063fc-5d91-4ba1-9bce-4d71de597b14  External provisioner is provisioning volume for claim "assets/fsxz-fs-pvc"
+  Normal   ExternalProvisioning   7m24s (x42 over 17m)  persistentvolume-controller                                                                               Waiting for a volume to be created either by the external provisioner 'fsx.openzfs.csi.aws.com' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+  Normal   ProvisioningSucceeded  5m59s                 fsx.openzfs.csi.aws.com_fsx-openzfs-csi-controller-6b9cdcddf6-kwx7p_35a063fc-5d91-4ba1-9bce-4d71de597b14  Successfully provisioned volume pvc-904e8698-c9dd-426d-9d4e-a2bf35e1c46d
 
 
 Name:          fsxz-vol-pvc
 Namespace:     assets
 StorageClass:  fsxz-vol-sc
 Status:        Bound
-Volume:        pvc-d3d958e7-6028-41d6-baee-36d3f85944c1
+Volume:        pvc-de67d22d-040d-4898-b0ce-0b3139a227c1
 Labels:        <none>
 Annotations:   pv.kubernetes.io/bind-completed: yes
                pv.kubernetes.io/bound-by-controller: yes
@@ -165,14 +165,14 @@ Finalizers:    [kubernetes.io/pvc-protection]
 Capacity:      1Gi
 Access Modes:  RWX
 VolumeMode:    Filesystem
-Used By:       assets-8bf5b5bfd-njghl
-               assets-8bf5b5bfd-nmvzp
+Used By:       assets-8bf5b5bfd-2gcc6
+               assets-8bf5b5bfd-lw9qp
 Events:
-  Type    Reason                 Age                 From                                                                                                      Message
-  ----    ------                 ----                ----                                                                                                      -------
-  Normal  Provisioning           118s                fsx.openzfs.csi.aws.com_fsx-openzfs-csi-controller-6b9cdcddf6-tnckv_2917fbd4-ab3b-4385-8053-e2e1c265d44f  External provisioner is provisioning volume for claim "assets/fsxz-vol-pvc"
-  Normal  ExternalProvisioning   60s (x5 over 118s)  persistentvolume-controller                                                                               Waiting for a volume to be created either by the external provisioner 'fsx.openzfs.csi.aws.com' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
-  Normal  ProvisioningSucceeded  57s                 fsx.openzfs.csi.aws.com_fsx-openzfs-csi-controller-6b9cdcddf6-tnckv_2917fbd4-ab3b-4385-8053-e2e1c265d44f  Successfully provisioned volume pvc-d3d958e7-6028-41d6-baee-36d3f85944c1
+  Type    Reason                 Age                  From                                                                                                      Message
+  ----    ------                 ----                 ----                                                                                                      -------
+  Normal  Provisioning           2m13s                fsx.openzfs.csi.aws.com_fsx-openzfs-csi-controller-6b9cdcddf6-kwx7p_35a063fc-5d91-4ba1-9bce-4d71de597b14  External provisioner is provisioning volume for claim "assets/fsxz-vol-pvc"
+  Normal  ExternalProvisioning   69s (x7 over 2m13s)  persistentvolume-controller                                                                               Waiting for a volume to be created either by the external provisioner 'fsx.openzfs.csi.aws.com' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+  Normal  ProvisioningSucceeded  57s                  fsx.openzfs.csi.aws.com_fsx-openzfs-csi-controller-6b9cdcddf6-kwx7p_35a063fc-5d91-4ba1-9bce-4d71de597b14  Successfully provisioned volume pvc-de67d22d-040d-4898-b0ce-0b3139a227c1
 ```
 
 To demonstrate the shared storage functionality, let's create a new file `new_gmt_watch.png` in the assets directory of the first Pod:
