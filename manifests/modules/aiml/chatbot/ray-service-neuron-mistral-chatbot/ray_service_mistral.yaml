@@ -45,7 +45,7 @@ spec:
         spec:
           containers:
           - name: head
-            image: public.ecr.aws/e3e2e5u9/aiml/mistral-7b:latest
+            image: public.ecr.aws/aws-containers/aiml/mistral-7b:0.1.0
             imagePullPolicy: Always # Ensure the image is always pulled when updated
             lifecycle:
               preStop:
