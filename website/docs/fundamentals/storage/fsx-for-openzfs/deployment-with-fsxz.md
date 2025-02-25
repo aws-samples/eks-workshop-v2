@@ -3,7 +3,7 @@ title: Dynamic provisioning using FSx for OpenZFS
 sidebar_position: 30
 ---
 
-With the Amazon FSx for OpenZFS file system StorageClass defined we can now dynamically provision the file system.  Once the file system has deployed successfully we can use Kustomize to update the FSx for OpenZFS volume StorageClass and then dynamically provision a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and mount it.
+With the Amazon FSx for OpenZFS file system StorageClass defined we can now dynamically provision the file system. Once the file system has deployed successfully we can use Kustomize to update the FSx for OpenZFS volume StorageClass and then dynamically provision a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and mount it.
 
 First, let's examine the `fsxz-fs-pvc.yaml` file which defines a PersistentVolumeClaim to create the 2TiB Amazon FSx for OpenZFS file system from the fsx-fs-sc StorageClass we created earlier:
 
@@ -23,9 +23,9 @@ persistentvolumeclaim/fsxz-fs-pvc created
 deployment.apps/assets configured
 ```
 
-Run the following to view the progress of the file system PVC deployment and creation of the FSx for OpenZFS file system.  This will typically take 10-15 minutes and when complete the deployment will show as successfully rolled out:
+Run the following to view the progress of the file system PVC deployment and creation of the FSx for OpenZFS file system. This will typically take 10-15 minutes and when complete the deployment will show as successfully rolled out:
 
-```bash
+```bash timeout=1860
 $ kubectl rollout status --timeout=1800s deployment/assets -n assets
 Waiting for deployment "assets" rollout to finish: 1 out of 2 new replicas have been updated...
 Waiting for deployment "assets" rollout to finish: 1 out of 2 new replicas have been updated...
@@ -35,7 +35,7 @@ Waiting for deployment "assets" rollout to finish: 1 old replicas are pending te
 deployment "assets" successfully rolled out
 ```
 
-When the FSx for OpenZFS file system was created, a root volume for the file system was created as well.  It is best practice not to store data in the root volume, but instead create separate child volumes of the root and store data in them.  Now that the root volume has been created, you can obtain its volume ID and create a child volume below it within the file system.
+When the FSx for OpenZFS file system was created, a root volume for the file system was created as well. It is best practice not to store data in the root volume, but instead create separate child volumes of the root and store data in them. Now that the root volume has been created, you can obtain its volume ID and create a child volume below it within the file system.
 
 Run the following to obtain the root volume ID and set it to an environment variable we'll inject into the volume StorageClass using Kustomize:
 
@@ -92,7 +92,7 @@ persistentvolumeclaim/fsxz-vol-pvc created
 deployment.apps/assets configured
 ```
 
-Run the following to view the progress of the volume PVC deployment and creation of the volume on the FSx for OpenZFS file system.  This will typically take less than 5 minutes and when complete, the deployment will show as successfully rolled out:
+Run the following to view the progress of the volume PVC deployment and creation of the volume on the FSx for OpenZFS file system. This will typically take less than 5 minutes and when complete, the deployment will show as successfully rolled out:
 
 ```bash
 $ kubectl rollout status --timeout=600s deployment/assets -n assets

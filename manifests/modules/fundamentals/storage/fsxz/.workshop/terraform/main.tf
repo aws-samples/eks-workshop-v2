@@ -127,3 +127,15 @@ resource "aws_security_group_rule" "fsxz_egress" {
 
   cidr_blocks = ["0.0.0.0/0"]
 }
+
+module "iam_assumable_role_fsx" {
+  source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+  version                       = "5.44.0"
+  create_role                   = true
+  role_name                     = "${var.addon_context.eks_cluster_id}-fsxz"
+  provider_url                  = var.addon_context.eks_oidc_issuer_url
+  role_policy_arns              = ["arn:aws:iam::aws:policy/AmazonFSxFullAccess"]
+  oidc_fully_qualified_subjects = ["system:serviceaccount:kube-system:fsx-openzfs-csi-controller-sa"]
+
+  tags = var.tags
+}
