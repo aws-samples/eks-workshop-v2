@@ -29,24 +29,31 @@ This configuration accomplishes the following:
 
 After applying the configurations, we'll monitor the progress of the head and worker pods:
 
-```bash wait=5
-$ kubectl get pod -n mistral
-NAME                                                    READY   STATUS    RESTARTS   AGE
-pod/mistral-raycluster-ltvjb-head-7rd7d                  0/2     Pending   0          4s
-pod/mistral-raycluster-ltvjb-worker-worker-group-nff7x   0/1     Pending   0          4s
+```bash wait=5 test=false
+$ kubectl get pod -n mistral --watch
+NAME                                                 READY   STATUS              RESTARTS   AGE
+mistral-raycluster-xxhsj-head-l6zwx                  0/2     ContainerCreating   0          3m4s
+mistral-raycluster-xxhsj-worker-group-worker-b8wqf   0/1     Init:0/1            0          3m4s
+...
+mistral-raycluster-xxhsj-head-l6zwx                  1/2     Running             0          3m48s
+mistral-raycluster-xxhsj-head-l6zwx                  2/2     Running             0          3m59s
+mistral-raycluster-xxhsj-worker-group-worker-b8wqf   0/1     Init:0/1            0          4m25s
+mistral-raycluster-xxhsj-worker-group-worker-b8wqf   0/1     PodInitializing     0          4m36s
+mistral-raycluster-xxhsj-worker-group-worker-b8wqf   0/1     Running             0          4m37s
+mistral-raycluster-xxhsj-worker-group-worker-b8wqf   1/1     Running             0          4m48
 ```
 
 :::caution
-It may take up to 5-7 minutes for both head and worker ray pods to be ready and another 5-7 minutes for model deployment. Once model is deployed it is ready to serve any request for inference. 
+It may take up to 5 minutes for both pods to be ready.
 :::
 
-We can wait for the pods to be ready using the following command:
+We can also use the following command to wait for the pods to get ready:
 
 ```bash timeout=900
-$ for i in {1..2}; do kubectl wait pod --all -l 'ray.io/group in (worker-group, headgroup)' --for=condition=Ready --namespace=mistral --timeout=10m 2>&1 | grep -v "Error from server (NotFound)" && break || { echo "Attempt $i: Waiting for all pods..."; kubectl get pods -n mistral -l 'ray.io/group in (worker-group, headgroup)'; sleep 20; }; done
+$ for i in {1..2}; do kubectl wait pod --all -l 'ray.io/group in (worker-group, headgroup)' --for=condition=Ready --namespace=mistral --timeout=15m 2>&1 | grep -v "Error from server (NotFound)" && break || { echo "Attempt $i: Waiting for all pods..."; kubectl get pods -n mistral -l 'ray.io/group in (worker-group, headgroup)'; sleep 20; }; done
 
-pod/mistral-raycluster-ltvjb-head-7rd7d met
-pod/mistral-raycluster-ltvjb-worker-worker-group-nff7x met
+pod/mistral-raycluster-xxhsj-head-l6zwx met
+pod/mistral-raycluster-xxhsj-worker-group-worker-b8wqf met
 ```
 
 We can wait for the RayService to be running with this command:
@@ -55,26 +62,35 @@ We can wait for the RayService to be running with this command:
 $ kubectl wait --for=jsonpath='{.status.serviceStatus}'=Running rayservice/mistral -n mistral --timeout=10m
 rayservice.ray.io/mistral condition met
 ```
-
-
-Lets verify that everything is in place:
+Once the pods are fully deployed, we'll verify that everything is in place:
 
 ```bash
 $ kubectl get all -n mistral
 NAME                                                     READY   STATUS    RESTARTS   AGE
-pod/mistral-raycluster-ltvjb-head-7rd7d                  2/2     Running   0          7m
-pod/mistral-raycluster-ltvjb-worker-worker-group-nff7x   1/1     Running   0          7m
+pod/mistral-raycluster-xxhsj-head-l6zwx                  2/2     Running   0          5m34s
+pod/mistral-raycluster-xxhsj-worker-group-worker-b8wqf   1/1     Running   0          5m34s
 
-NAME                        TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)                                                                       AGE
-service/mistral             NodePort       172.20.74.49    <none>           6379:32625/TCP,8265:30941/TCP,10001:32430/TCP,8000:31393/TCP,8080:31361/TCP   94m
-service/mistral-head-svc    NodePort       172.20.121.46   <none>           8000:30481/TCP,8080:32609/TCP,6379:31066/TCP,8265:31006/TCP,10001:30220/TCP   92m
-service/mistral-serve-svc   NodePort       172.20.241.50   <none>           8000:32351/TCP                                                                92m
+NAME              TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)                                                                       AGE
+service/mistral   NodePort   172.20.88.94   <none>        8000:32094/TCP,8080:30713/TCP,6379:32600/TCP,8265:31347/TCP,10001:32268/TCP   5m35s
 
 NAME                                         DESIRED WORKERS   AVAILABLE WORKERS   CPUS   MEMORY   GPUS   STATUS   AGE
-raycluster.ray.io/mistral-raycluster-ltvjb   1                 1                   2      36Gi     0      ready    94m
+raycluster.ray.io/mistral-raycluster-xxhsj   1                 1                   6      36Gi     0      ready    5m36s
 
-NAME                        SERVICE STATUS   NUM SERVE ENDPOINTS
-rayservice.ray.io/mistral   Running          2
+NAME                        SERVICE STATUS                NUM SERVE ENDPOINTS
+rayservice.ray.io/mistral   WaitForServeDeploymentReady   
+
+```
+Note that the service status is `WaitForServeDeploymentReady`. This indicates that Ray is still working to get the model deployed.
+
+:::caution
+Configuring RayService may take up to 10 minutes.
+:::
+
+We can wait for the RayService to be running with this command:
+
+```bash wait=5 timeout=600
+$ kubectl wait --for=jsonpath='{.status.serviceStatus}'=Running rayservice/mistral -n mistral --timeout=10m
+rayservice.ray.io/mistral condition met
 ```
 
 With everything properly deployed, we can now proceed to create the web interface for the chatbot.
