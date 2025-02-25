@@ -27,10 +27,9 @@ spec:
               max_replicas: 1
               target_num_ongoing_requests_per_replica: 1
   rayClusterConfig:
-    rayVersion: '2.22.0'
+    rayVersion: '2.42.1'
     enableInTreeAutoscaling: true
     headGroupSpec:
-      serviceType: NodePort
       headService:
         metadata:
           name: mistral
@@ -68,8 +67,8 @@ spec:
                 cpu: "4"
                 memory: 16Gi
               requests:
-                cpu: "2"
-                memory: 10Gi
+                cpu: "4"
+                memory: 16Gi
             env:
             - name: PORT
               value: "8000"
@@ -126,7 +125,7 @@ spec:
                 memory: 26Gi
                 aws.amazon.com/neuron: "1"
               requests:
-                cpu: 4
+                cpu: 5
                 memory: 26Gi
                 aws.amazon.com/neuron: "1"
             env:

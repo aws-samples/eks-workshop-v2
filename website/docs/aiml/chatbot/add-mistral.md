@@ -37,7 +37,7 @@ pod/mistral-raycluster-ltvjb-worker-worker-group-nff7x   0/1     Pending   0    
 ```
 
 :::caution
-It may take up to 15 minutes for both pods to be ready.
+It may take up to 5-7 minutes for both head and worker ray pods to be ready and another 5-7 minutes for model deployment. Once model is deployed it is ready to serve any request for inference. 
 :::
 
 We can wait for the pods to be ready using the following command:
@@ -49,7 +49,15 @@ pod/mistral-raycluster-ltvjb-head-7rd7d met
 pod/mistral-raycluster-ltvjb-worker-worker-group-nff7x met
 ```
 
-Once the pods are fully deployed, we'll verify that everything is in place:
+We can wait for the RayService to be running with this command:
+
+```bash wait=5 timeout=600
+$ kubectl wait --for=jsonpath='{.status.serviceStatus}'=Running rayservice/mistral -n mistral --timeout=10m
+rayservice.ray.io/mistral condition met
+```
+
+
+Lets verify that everything is in place:
 
 ```bash
 $ kubectl get all -n mistral
@@ -67,17 +75,6 @@ raycluster.ray.io/mistral-raycluster-ltvjb   1                 1                
 
 NAME                        SERVICE STATUS   NUM SERVE ENDPOINTS
 rayservice.ray.io/mistral   Running          2
-```
-
-:::caution
-Configuring RayService may take up to 10 minutes.
-:::
-
-We can wait for the RayService to be running with this command:
-
-```bash wait=5 timeout=600
-$ kubectl wait --for=jsonpath='{.status.serviceStatus}'=Running rayservice/mistral -n mistral --timeout=10m
-rayservice.ray.io/mistral condition met
 ```
 
 With everything properly deployed, we can now proceed to create the web interface for the chatbot.
