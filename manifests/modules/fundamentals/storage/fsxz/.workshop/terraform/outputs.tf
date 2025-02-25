@@ -6,5 +6,6 @@ output "environment_variables" {
     FSXZ_SG          = aws_security_group.fsxz_sg.id
     EKS_CLUSTER_NAME = var.eks_cluster_id
     REGION           = data.aws_region.region_current.name
+    FSXZ_IAM_ROLE    = module.iam_assumable_role_fsx.iam_role_arn,
   }
 }
