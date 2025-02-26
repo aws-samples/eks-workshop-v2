@@ -50,7 +50,7 @@ It may take up to 5-8 minutes for both pods to be ready.
 We can also use the following command to wait for the pods to get ready:
 
 ```bash wait=5 timeout=900
-$ for i in {1..2}; do kubectl wait pod --all -l 'ray.io/group in (worker-group, headgroup)' --for=condition=Ready --namespace=mistral --timeout=15m 2>&1 | grep -v "Error from server (NotFound)" && break || { echo "Attempt $i: Waiting for all pods..."; kubectl get pods -n mistral -l 'ray.io/group in (worker-group, headgroup)'; sleep 20; }; done
+$ for i in {1..2}; do kubectl wait pod --all -l 'ray.io/group in (worker-group, headgroup)' --for=condition=Ready --namespace=mistral --timeout=6m 2>&1 | grep -v "Error from server (NotFound)" && break || { echo "Attempt $i: Waiting for all pods..."; kubectl get pods -n mistral -l 'ray.io/group in (worker-group, headgroup)'; sleep 20; }; done
 
 pod/mistral-raycluster-xxhsj-head-l6zwx met
 pod/mistral-raycluster-xxhsj-worker-group-worker-b8wqf met
