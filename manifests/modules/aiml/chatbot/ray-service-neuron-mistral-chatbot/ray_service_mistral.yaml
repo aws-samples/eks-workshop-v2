@@ -27,12 +27,9 @@ spec:
               max_replicas: 1
               target_num_ongoing_requests_per_replica: 1
   rayClusterConfig:
-    rayVersion: '2.42.1'
+    rayVersion: '2.22.0'
     enableInTreeAutoscaling: true
     headGroupSpec:
-      headService:
-        metadata:
-          name: mistral
       rayStartParams:
         dashboard-host: '0.0.0.0'
         num-cpus: "0" # this is to ensure no tasks or actors are scheduled on the head Pod
@@ -67,7 +64,7 @@ spec:
                 cpu: "4"
                 memory: 16Gi
               requests:
-                cpu: "4"
+                cpu: "2"
                 memory: 16Gi
             env:
             - name: PORT
@@ -125,7 +122,7 @@ spec:
                 memory: 26Gi
                 aws.amazon.com/neuron: "1"
               requests:
-                cpu: 5
+                cpu: 4
                 memory: 26Gi
                 aws.amazon.com/neuron: "1"
             env:

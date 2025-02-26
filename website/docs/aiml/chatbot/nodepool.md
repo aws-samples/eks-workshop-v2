@@ -1,6 +1,6 @@
 ---
 title: "Provisioning Node Pools for LLM Workloads"
-sidebar_position: 20
+sidebar_position: 30
 ---
 
 In this lab, we'll use Karpenter to provision the Trainium-1 nodes necessary for handling the Mistral-7B chatbot workload. As an autoscaler, Karpenter creates the resources required to run machine learning workloads and distribute traffic efficiently.

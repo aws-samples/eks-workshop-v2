@@ -1,9 +1,9 @@
 ---
 title: "Large Language Models with Ray Serve"
-sidebar_position: 30
+sidebar_position: 10
 chapter: true
 sidebar_custom_props: { "module": true }
-description: "Use Inferentia to accelerate deep learning inference workloads on Amazon Elastic Kubernetes Service."
+description: "Use Trainium to accelerate deep learning inference workloads on Amazon Elastic Kubernetes Service."
 ---
 
 ::required-time

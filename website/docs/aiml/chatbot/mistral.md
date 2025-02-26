@@ -1,6 +1,6 @@
 ---
 title: "Understanding the Mistral-7B-Instruct-v0.3 Chat Model"
-sidebar_position: 30
+sidebar_position: 40
 ---
 
 

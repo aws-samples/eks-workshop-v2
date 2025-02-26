@@ -54,7 +54,7 @@ spec:
       ebs:
         deleteOnTermination: true
         encrypted: true
-        volumeSize: 200Gi
+        volumeSize: 500Gi
         volumeType: gp3
   role: ${KARPENTER_NODE_ROLE}
   securityGroupSelectorTerms:

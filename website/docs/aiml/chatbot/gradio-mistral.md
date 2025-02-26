@@ -1,6 +1,6 @@
 ---
 title: "Configuring the Gradio Web User Interface for Access"
-sidebar_position: 50
+sidebar_position: 60
 ---
 
 After all the resources have been configured within the Ray Serve Cluster, it's now time to directly access the Mistral-7B-Instruct-v0.3 chatbot. The web interface is powered by the Gradio UI.

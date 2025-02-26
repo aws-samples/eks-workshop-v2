@@ -1,5 +1,5 @@
 # https://hub.docker.com/layers/rayproject/ray/2.11.0-py310/images/sha256-de798e487b76a8f2412c718c43c5f342b3eb05e0705a71325102904cd27c3613?context=explore
-FROM rayproject/ray:2.42.1-py310
+FROM rayproject/ray:2.22.0-py310
 
 # Maintainer label
 LABEL maintainer="DoEKS"
@@ -42,5 +42,3 @@ RUN mkdir -p /serve_app
 WORKDIR /serve_app
 
 COPY mistral1.py /serve_app/mistral1.py
-
-

@@ -1,6 +1,6 @@
 ---
 title: "Deploying The Mistral-7B-Instruct-v0.3 Chat Model on Ray Serve"
-sidebar_position: 40
+sidebar_position: 50
 ---
 
 With all the node pools provisioned, we can now proceed to deploy Mistral-7B-Instruct-v0.3 chatbot infrastructure.
@@ -44,24 +44,18 @@ mistral-raycluster-xxhsj-worker-group-worker-b8wqf   1/1     Running            
 ```
 
 :::caution
-It may take up to 5 minutes for both pods to be ready.
+It may take up to 5-8 minutes for both pods to be ready.
 :::
 
 We can also use the following command to wait for the pods to get ready:
 
-```bash timeout=900
+```bash wait=5 timeout=900
 $ for i in {1..2}; do kubectl wait pod --all -l 'ray.io/group in (worker-group, headgroup)' --for=condition=Ready --namespace=mistral --timeout=15m 2>&1 | grep -v "Error from server (NotFound)" && break || { echo "Attempt $i: Waiting for all pods..."; kubectl get pods -n mistral -l 'ray.io/group in (worker-group, headgroup)'; sleep 20; }; done
 
 pod/mistral-raycluster-xxhsj-head-l6zwx met
 pod/mistral-raycluster-xxhsj-worker-group-worker-b8wqf met
 ```
 
-We can wait for the RayService to be running with this command:
-
-```bash wait=5 timeout=600
-$ kubectl wait --for=jsonpath='{.status.serviceStatus}'=Running rayservice/mistral -n mistral --timeout=10m
-rayservice.ray.io/mistral condition met
-```
 Once the pods are fully deployed, we'll verify that everything is in place:
 
 ```bash
@@ -70,8 +64,8 @@ NAME                                                     READY   STATUS    RESTA
 pod/mistral-raycluster-xxhsj-head-l6zwx                  2/2     Running   0          5m34s
 pod/mistral-raycluster-xxhsj-worker-group-worker-b8wqf   1/1     Running   0          5m34s
 
-NAME              TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)                                                                       AGE
-service/mistral   NodePort   172.20.88.94   <none>        8000:32094/TCP,8080:30713/TCP,6379:32600/TCP,8265:31347/TCP,10001:32268/TCP   5m35s
+NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                                         AGE
+service/mistral   ClusterIP   172.20.112.247   <none>        6379/TCP,8265/TCP,10001/TCP,8000/TCP,8080/TCP   2m6s
 
 NAME                                         DESIRED WORKERS   AVAILABLE WORKERS   CPUS   MEMORY   GPUS   STATUS   AGE
 raycluster.ray.io/mistral-raycluster-xxhsj   1                 1                   6      36Gi     0      ready    5m36s

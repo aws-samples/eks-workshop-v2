@@ -22,13 +22,13 @@ spec:
     spec:
       containers:
         - name: gradio
-          image: public.ecr.aws/data-on-eks/gradio-web-app-base:latest
+          image: public.ecr.aws/aws-containers/eks-workshop/gradio-web-app-base:0.1.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 7860
           resources:
             requests:
-              cpu: "1"
+              cpu: "512m"
               memory: "4096Mi"
             limits:
               cpu: "1"

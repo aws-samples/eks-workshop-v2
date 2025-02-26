@@ -1,6 +1,6 @@
 ---
 title: "Install KubeRay and Neuron Devices"
-sidebar_position: 10
+sidebar_position: 20
 ---
 
 Before deploying the node pools and Ray Serve Cluster on EKS, it's important to have the necessary tools in place for the workloads to be properly configured.
@@ -17,7 +17,7 @@ $ helm repo add kuberay https://ray-project.github.io/kuberay-helm/
 ```
 
 ```bash wait=10
-$ helm install kuberay-operator kuberay/kuberay-operator --version 1.2.2
+$ helm install kuberay-operator kuberay/kuberay-operator --version 1.2.0
 NAME: kuberay-operator
 LAST DEPLOYED: Wed Jul 24 14:46:13 2024
 NAMESPACE: default
@@ -47,8 +47,8 @@ You can learn more about Neuron Device Plugins in the [AIML Inference module](..
 We can deploy the role using the following command:
 
 ```bash
-$ kubectl apply -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.21.0/src/k8/k8s-neuron-device-plugin-rbac.yml
-$ kubectl apply -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.21.0/src/k8/k8s-neuron-device-plugin.yml
+$ kubectl apply -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.21.1/src/k8/k8s-neuron-device-plugin-rbac.yml
+$ kubectl apply -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.21.1/src/k8/k8s-neuron-device-plugin.yml
 
 serviceaccount/neuron-device-plugin created
 clusterrole.rbac.authorization.k8s.io/neuron-device-plugin created
