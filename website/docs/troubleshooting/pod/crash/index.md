@@ -5,7 +5,7 @@ chapter: true
 sidebar_custom_props: { "module": true }
 ---
 
-In this section we will learn how to troubleshoot the pod for one of the scenarios where it is stuck in ContainerCreating state.
+In this section, we will learn how to troubleshoot a pod that is stuck in the ContainerCreating state.
 
 :::tip Before you start
 Prepare your environment for this section:
@@ -38,7 +38,7 @@ The task for you in this troubleshooting section is to find the cause for the de
 
 ## Let's start the troubleshooting
 
-### Step 1
+### Step 1: Verify pod status
 
 First, we need to verify the status of our pods.
 
@@ -48,9 +48,9 @@ NAME                       READY   STATUS              RESTARTS   AGE
 efs-app-5c4df89785-m4qz4   0/1     ContainerCreating   0          19m
 ```
 
-### Step 2
+### Step 2: Describe the pod
 
-You can see that the pod status is showing as ContainerCreating. Lets describe the pod to see the events.
+You can see that the pod status is showing as ContainerCreating. Let's describe the pod to see the events.
 
 ```bash expectError=true
 $ export POD=`kubectl get pods -o jsonpath='{.items[*].metadata.name}'`
@@ -81,10 +81,10 @@ Warning: config file does not have fips_mode_enabled item in section mount.. You
   Warning  FailedMount  3m33s (x6 over 23m)  kubelet  MountVolume.SetUp failed for volume "pvc-719c8ef2-5bdb-4638-b4db-7d59b53d21f0" : rpc error: code = DeadlineExceeded desc = context deadline exceeded
 ```
 
-### Step 3
+### Step 3: Check node networking configuration
 
-From the events of the pod, we can see the ' Cannot connect to file system mount target ip address x.x.x.x.
-Connection to the mount target IP address x.x.x.x timeout.'. This gives us an idea that the EFS file system is failed to mount for the pods to use as persistent volume. With out which the pod cannot move to running state. Lets check the networking configuration of the node on which the pod is scheduled to run.
+From the events of the pod, we can see the 'Cannot connect to file system mount target ip address x.x.x.x.
+Connection to the mount target IP address x.x.x.x timeout'. This suggests that the EFS file system is failing to mount for the pods to use as persistent volume. With out which the pod cannot move to running state. Let's check the networking configuration of the node on which the pod is scheduled to run.
 
 In the below commands, we are getting the instance id of the node where pod is scheduled and then fetching the security groups attached to that node and further checking the egress rules to see if there are limitations on destination.
 
@@ -108,10 +108,10 @@ $ aws ec2 describe-security-groups --group-ids $SG --query "SecurityGroups[].IpP
 ]
 ```
 
-You can see that the egress rules have no limitations. IpProtocol -1 indicates all protocols and the CidrIp indicates the destination as 0.0.0.0/0. So the communication from the worker node is not restricted and should be able to reach the EFS mount target.
+The egress rules have no limitations. IpProtocol -1 indicates all protocols and the CidrIp indicates the destination as 0.0.0.0/0. So the communication from the worker node is not restricted and should be able to reach the EFS mount target.
 
 :::info
-Alternatively, click the button below to open the EKS Console. Then navigate to eks-workshop cluster, Resources and select pods workloads. Select default instead of All namespaces in namespace drop down. Then click on efs-app pod and from their click on Node and then on Instance, which should take you to EC2 console. Click on Security and you should see the security groups attached to the worker node and the Outbound rules of it.
+Alternatively, you can check this in the EKS Consol. Navigate to eks-workshop cluster, Resources and select pods workloads. Select default instead of All namespaces in namespace drop down. Then click on efs-app pod and from their click on Node and then on Instance, which should take you to EC2 console. Click on Security to see the security groups attached to the worker node and its outbound rules.
 <ConsoleButton
   url="https://us-west-2.console.aws.amazon.com/eks/home?region=us-west-2#/clusters/eks-workshop"
   service="eks"
@@ -119,16 +119,9 @@ Alternatively, click the button below to open the EKS Console. Then navigate to 
 />
 :::
 
-### Step 4
+### Step 4: Check EFS file system networking configuration
 
-Now, lets check the EFS file system networking configuration.
-
-In the below commands, we are
-
-- Retrieving the Availability zone of the worker node using instance id.
-- Retrieving the EFS id from the persistent volume claim.
-- Retrieving the mount target ENI for the availability zone corresponding to the instance Id.
-- Retrieving the security groups attached to the mount target ENI and checking the inbound rules of the security group
+Now, let's check the EFS file system networking configuration.
 
 ```bash
 $ export AZ=`aws ec2 describe-instances --instance-ids $INSTANCE --query "Reservations[*].Instances[*].[Placement.AvailabilityZone]" --output text`
@@ -153,10 +146,10 @@ $ aws ec2 describe-security-groups --group-ids $MT_SG --query "SecurityGroups[].
 ]
 ```
 
-You should see that the security group attached to the mount target of EFS have inbound rules only on port 80 from the VPC CIDR. However, for the mount to be successful the security group of mount target should allow traffic on port 2049. Which is why the mount request is timing out from the EKS worker node.
+The security group attached to the mount target of EFS has inbound rules only on port 80 from the VPC CIDR. However, for the mount to be successful, the security group of mount target should allow traffic on port 2049. This is why the mount request is timing out from the EKS worker node.
 
 :::info
-Alternatively, you can also check the console for the same. Click the button below to open the EFS Console. Then click on EFS file system Id which has name as eks-workshop-efs. Then click on Network to view mount targets for all availability zones and the security groups attached to the each mount target.
+Alternatively, you can also check this in EFS console. Click on EFS file system Id named eks-workshop-efs. Then click on Network to view mount targets for all availability zones and the security groups attached to each mount target.
 
 <ConsoleButton
   url="https://us-west-2.console.aws.amazon.com/efs/home?region=us-west-2#/file-systems"
@@ -165,14 +158,9 @@ Alternatively, you can also check the console for the same. Click the button bel
 />
 :::
 
-### Step 5
+### Step 5: Add inbound rule to EFS mount target security group
 
-Lets add the inboud rule to EFS mount target security group to allow NFS traffic on port 2049 from VPC CIDR of the EKS cluster.
-
-In the below commands, we are
-
-- Retrieving the VPC of the EKS cluster and the CIDR of the VPC.
-- Adding inbound rule to mount target security group allowing traffic on port 2049 from VPC CIDR.
+Let's add the inboud rule to EFS mount target security group to allow NFS traffic on port 2049 from VPC CIDR of the EKS cluster.
 
 ```bash
 $ export VPC_ID=`aws eks describe-cluster --name eks-workshop --query "cluster.resourcesVpcConfig.vpcId" --output text`
@@ -213,6 +201,6 @@ This concludes the pod stuck in ContainerCreating troubleshooting section.
 General, troubleshooting workflow of pods stuck in ContainerCreating state is to check pod events and for volume mount issues:
 
 - Check the volume claim used by the pod and identify the type of volume used.
-- Then check the csi driver used for that volume and check the requirements to use that volume in EKS pods at [EKS Storage](https://docs.aws.amazon.com/eks/latest/userguide/storage.html)
+- Check the csi driver used for that volume and check the requirements to use that volume in EKS pods at [EKS Storage](https://docs.aws.amazon.com/eks/latest/userguide/storage.html)
 - Confirm that all the requiements mentioned in the corresponding storage type document are met.
-- Further check for troubleshooting guide of that CSI driver if exists. For example, to check mount issues of EFS with EKS there is a troubleshooting guide at [EFS CSi Driver](https://repost.aws/knowledge-center/eks-troubleshoot-efs-volume-mount-issues)
+- Check for troubleshooting guide of that CSI driver if exists. For example, to check mount issues of EFS with EKS there is a troubleshooting guide at [EFS CSi Driver](https://repost.aws/knowledge-center/eks-troubleshoot-efs-volume-mount-issues)

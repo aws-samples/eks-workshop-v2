@@ -18,8 +18,8 @@ The preparation of the lab might take a couple of minutes and it will make the f
 
 - Create a ECR repo named retail-sample-app-ui.
 - Create a EC2 instance and push retail store sample app image in to the ECR repo from the instance using tag 0.4.0
-- Create a new deployment named ui-private in default namespace
-- Introduce an issue to the deployment spec, so we can learn how to troubleshoot this type of issues
+- Create a new deployment named ui-private in default namespace.
+- Introduce an issue to the deployment spec, so we can learn how to troubleshoot this type of issue.
 
 :::
 
@@ -39,7 +39,7 @@ The task for you in this troubleshooting section is to find the cause for the de
 
 ## Let's start the troubleshooting
 
-### Step 1
+### Step 1: Check pod status
 
 First, we need to verify the status of our pods.
 
@@ -49,9 +49,9 @@ NAME                          READY   STATUS             RESTARTS   AGE
 ui-private-7655bf59b9-jprrj   0/1     ImagePullBackOff   0          4m42s
 ```
 
-### Step 2
+### Step 2: Describe the pod
 
-You can see that the pod status is showing as ImagePullBackOff. Lets describe the pod to see the events.
+You can see that the pod status is showing as ImagePullBackOff. Let's describe the pod to see the events.
 
 ```bash expectError=true
 $ POD=`kubectl get pods -o jsonpath='{.items[*].metadata.name}'`
@@ -67,18 +67,16 @@ Events:
   Normal   BackOff    4s (x21 over 5m14s)    kubelet            Back-off pulling image "1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0"
 ```
 
-### Step 3
-
-From the events of the pod, we can see the 'Failed to pull image' warning, with cause as 403 Forbidden. This gives us an idea that the kubelet faced access denied while trying to pull the image used in the deployment. Lets get the URI of the image used in the deployment.
+From the events of the pod, we can see the 'Failed to pull image' warning, with cause as 403 Forbidden. This indicates that the kubelet faced access denied while trying to pull the image used in the deployment. Let's get the URI of the image used in the deployment.
 
 ```bash
 $ kubectl get deploy ui-private -o jsonpath='{.spec.template.spec.containers[*].image}'
 "1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0"
 ```
 
-### Step 4
+### Step 3: Check the image reference
 
-From the image URI, we can see that the image is referenced from the account where our EKS cluster is in. Lets check the ECR repository to see if any such image exists.
+From the image URI, the image is referenced from the account where our EKS cluster is in. Let's check the ECR repository to see if any such image exists.
 
 ```bash
 $ aws ecr describe-images --repository-name retail-sample-app-ui --image-ids imageTag=0.4.0
@@ -100,10 +98,10 @@ $ aws ecr describe-images --repository-name retail-sample-app-ui --image-ids ima
 }
 ```
 
-You should see that the image path we have in deployment i.e. account_id.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0 have a valid registryId i.e. account-number, valid repositoryName i.e. "retail-sample-app-ui" and valid imageTag i.e. "0.4.0". Which confirms the path of the image is correct and is not a wrong reference.
+The image path we have in deployment i.e. account_id.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0 have a valid registryId i.e. account-number, valid repositoryName i.e. "retail-sample-app-ui" and valid imageTag i.e. "0.4.0". Which confirms the path of the image is correct and is not a wrong reference.
 
 :::info
-Alternatively, you can also check the console for the same. Click the button below to open the ECR Console. Then click on retail-sample-app-ui repository and the image tag 0.4.0, you should then see the complete URI of the image which should match with the URI in deployment spec i.e. account_id.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0
+Alternatively, you can also check from the ECR console. Click the button below to open the ECR Console. Then click on retail-sample-app-ui repository and the image tag 0.4.0, you should then see the complete URI of the image which matches with the URI in deployment spec i.e. account_id.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:0.4.0
 <ConsoleButton
   url="https://us-west-2.console.aws.amazon.com/ecr/private-registry/repositories?region=us-west-2"
   service="ecr"
@@ -111,11 +109,11 @@ Alternatively, you can also check the console for the same. Click the button bel
 />
 :::
 
-### Step 5
+### Step 4: Check kubelet permissions
 
-As we confirmed that the image URI is correct, lets check the permissions of the kubelet and confirm if the permissions required to pull images from ECR exists.
+As we confirmed that the image URI is correct, let's check the permissions of the kubelet and confirm if the permissions required to pull images from ECR exists.
 
-Get the IAM role attached to worker nodes in the managed node group of the cluster and list the IAM policies attached to it.
+Get the IAM role attached to worker nodes in the managed node group of the cluster and list the IAM policies attached to the role.
 
 ```bash
 $ ROLE_NAME=`aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name default --query 'nodegroup.nodeRole' --output text | cut -d'/' -f2`
@@ -142,11 +140,11 @@ $ aws iam list-attached-role-policies --role-name $ROLE_NAME
 }
 ```
 
-You should see that the AWS managed policy "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly" is attached to the worker node role and this policy should provide enough permissions to pull a Image from ECR preivate repository. What else could we check now?
+The AWS managed policy "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly" is attached to the worker node role and this policy should provide enough permissions to pull a Image from ECR preivate repository. What else could we check now?
 
-### Step 6
+### Step 5: Check ECR repo permissions
 
-The perimissions to the ECR repository can be managed at both Identity and Resource level. The Identity level permissions are provided at IAM and the resource level permissions are provided at the repository level. As we confirmed that identity based permissions are good, the issue could be with resource level permissions. Lets the check the policy for ECR repo.
+The perimissions to the ECR repository can be managed at both Identity and Resource level. The Identity level permissions are provided at IAM and the resource level permissions are provided at the repository level. As we confirmed that identity based permissions are good, the issue could be with resource level permissions. Let's the check the policy for ECR repo.
 
 ```bash
 $ aws ecr get-repository-policy --repository-name retail-sample-app-ui --query policyText --output text | jq .
@@ -180,9 +178,9 @@ $ aws ecr get-repository-policy --repository-name retail-sample-app-ui --query p
 }
 ```
 
-You should see that the ECR repository policy has Effect as Deny and the Principal as the EKS managed node role. Which is restricting the kubelet from pulling images in this repository. Lets change the effect to allow and see if the kubelet is able to pull the image.
+The ECR repository policy has Effect as Deny and the Principal as the EKS managed node role. Which is restricting the kubelet from pulling images in this repository. Let's change the effect to allow and see if the kubelet is able to pull the image.
 
-We will be using below json file to modify the ecr repository permissions. You can notice that the Effect is set to Allow for the Node IAM role.
+We will be using below json file to modify the ECR repository permissions. You can notice that the Effect is set to Allow for the Node IAM role.
 
 ```json {6}
 {
@@ -223,7 +221,7 @@ $ aws ecr set-repository-policy --repository-name retail-sample-app-ui --policy-
 
 You can confirm if the ECR repo policy updated successfully, by using the above get-repository-policy command.
 
-### Step 7
+### Step 6: Restart the deployment and verify the pod status
 
 Now, restart the deployment and check if the pods are running.
 
@@ -240,9 +238,9 @@ That concludes the private ECR ImagePullBackOff troubleshooting section.
 
 General troubleshooting workflow of the pod with ImagePullBackOff on private image includes:
 
-- Check the pod events for a clue on cause of the issue such as not found, access denied or timeout.
-- If not found, ensure that the image exists in the path referenced in the private ECR repositories.
-- For access denied, check the permissions on worker node role and the ECR repository policy.
+- Check the pod events for a clue on cause of the issue such as "not found", "access denied" or "timeout".
+- If "not found", ensure that the image exists in the path referenced in the private ECR repositories.
+- For "access denied", check the permissions on worker node role and the ECR repository policy.
 - For timeout on ECR, ensure that the worker node is configured to reach the ECR endpoint.
 
 References:

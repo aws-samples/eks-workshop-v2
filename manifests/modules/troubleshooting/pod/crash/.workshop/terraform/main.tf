@@ -37,11 +37,6 @@ data "aws_subnets" "public" {
   }
 }
 
-/*
-data "aws_eks_cluster" "cluster" {
-  name = var.eks_cluster_id
-}
-*/
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
@@ -79,6 +74,7 @@ resource "aws_security_group" "efs_sg" {
 
   tags = {
     Name = "efs_sg"
+    env  = "eks-workshop"
   }
 }
 
