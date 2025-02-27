@@ -62,10 +62,10 @@ spec:
             resources:
               limits:
                 cpu: "4"
-                memory: 16Gi
+                memory: 10Gi
               requests:
                 cpu: "2"
-                memory: 16Gi
+                memory: 10Gi
             env:
             - name: PORT
               value: "8000"

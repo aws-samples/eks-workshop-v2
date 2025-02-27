@@ -1,5 +1,10 @@
 {
   "/aiml/index.md": 1,
+  "/aiml/chatbot/add-mistral.md": 666117,
+  "/aiml/chatbot/expose.md": 21404,
+  "/aiml/chatbot/gradio-mistral.md": 526008,
+  "/aiml/chatbot/index.md": 203818,
+  "/aiml/chatbot/nodepool.md": 4230,
   "/aiml/inferentia/compile.md": 331930,
   "/aiml/inferentia/index.md": 205489,
   "/aiml/inferentia/inference.md": 282459,
