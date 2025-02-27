@@ -9,4 +9,4 @@ spec:
   storageClassName: fsxz-fs-sc
   resources:
     requests:
-      storage: 2048Gi
+      storage: 128Gi
