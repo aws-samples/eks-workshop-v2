@@ -1,0 +1,30 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fsxz-fs-sc
+provisioner: fsx.openzfs.csi.aws.com
+parameters:
+  ResourceType: "filesystem"
+  DeploymentType: '"SINGLE_AZ_HA_2"'
+  ThroughputCapacity: '320'
+  SubnetIds: '["$PRIVATE_SUBNET0"]'
+  SkipFinalBackupOnDeletion: 'true'
+  OptionsOnDeletion: '["DELETE_CHILD_VOLUMES_AND_SNAPSHOTS"]'
+  AutomaticBackupRetentionDays: '0'
+  CopyTagsToBackups: 'false'
+  CopyTagsToVolumes: 'false'
+  DailyAutomaticBackupStartTime: '"00:00"'
+  DiskIopsConfiguration: '{"Mode": "AUTOMATIC"}'
+  RootVolumeConfiguration: '{"CopyTagsToSnapshots": false, "DataCompressionType": "LZ4", "NfsExports": [{"ClientConfigurations": [{"Clients": "$VPC_CIDR", "Options": ["rw","crossmnt","no_root_squash"]}]}], "ReadOnly": false, "RecordSizeKiB": 128}'
+  WeeklyMaintenanceStartTime: '"7:09:00"'
+  SecurityGroupIds: '["$FSXZ_SG"]'
+  Tags: '[{"Key": "Name", "Value": "$EKS_CLUSTER_NAME-FSxZ"}]'
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+mountOptions:
+  - nfsvers=4.1
+  - rsize=1048576
+  - wsize=1048576
+  - timeo=600
+  - nconnect=16
+  
