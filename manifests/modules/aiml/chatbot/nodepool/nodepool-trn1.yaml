@@ -1,36 +1,40 @@
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
-  name: inferentia-inf2
+  name: trainium-trn1
 spec:
   template:
     metadata:
       labels:
-        instanceType: inferentia-inf2
+        instanceType: trn1.2xlarge
         provisionerType: Karpenter
+        neuron.amazonaws.com/neuron-device: "true"
+        vpc.amazonaws.com/has-trunk-attached: "true" # Required for Pod ENI
     spec:
       taints:
         - key: aws.amazon.com/neuron
           value: "true"
           effect: "NoSchedule"
       requirements:
-        - key: "karpenter.k8s.aws/instance-family"
+        - key: node.kubernetes.io/instance-type
           operator: In
-          values: ["inf2"]
+          values: ["trn1.2xlarge"]
         - key: "kubernetes.io/arch"
           operator: In
           values: ["amd64"]
         - key: "karpenter.sh/capacity-type"
           operator: In
-          values: ["on-demand", "spot"]
+          values: ["on-demand"]
       expireAfter: 720h
       terminationGracePeriod: 24h
       nodeClassRef:
         group: karpenter.k8s.aws
         kind: EC2NodeClass
-        name: inferentia-inf2
+        name: trainium-trn1
   limits:
-    cpu: "512"
+    aws.amazon.com/neuron: 2
+    cpu: 16
+    memory: 64Gi
   disruption:
     consolidateAfter: 300s
     consolidationPolicy: WhenEmptyOrUnderutilized
@@ -39,11 +43,12 @@ spec:
 apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
-  name: inferentia-inf2
+  name: trainium-trn1
 spec:
   amiFamily: AL2
   amiSelectorTerms:
     - alias: al2@latest
+  instanceStorePolicy: RAID0
   blockDeviceMappings:
     - deviceName: /dev/xvda
       ebs:
@@ -55,8 +60,13 @@ spec:
   securityGroupSelectorTerms:
     - tags:
         karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
+    - tags:
+        kubernetes.io/cluster/eks-workshop: owned
   subnetSelectorTerms:
     - tags:
         karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
+        kubernetes.io/role/internal-elb: "1"
   tags:
     app.kubernetes.io/created-by: eks-workshop
+    karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
+    aws-neuron: "true"
