@@ -141,7 +141,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /readyz
-            port: https
+            port: 4443
             scheme: HTTPS
           initialDelaySeconds: 20
           periodSeconds: 10
@@ -149,7 +149,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /livez
-            port: https
+            port: 4443
             scheme: HTTPS
           initialDelaySeconds: 20
           periodSeconds: 10
