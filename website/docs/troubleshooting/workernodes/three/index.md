@@ -179,33 +179,11 @@ The CloudWatch metrics reveal:
 :::
 
 
-### Step 6: Implementing Immediate Fixes
+### Step 6: Mitigate Impact
 
-Let's implement immediate fixes to stabilize the node:
+Let's check deployment details and implement immediate changes to stabilize the node:
 
-1. Scale down the deployment to reduce load:
-
-```bash   
-$ kubectl scale deployment prod-app -n prod --replicas=1
-```
-
-:::note Node Recovery
-If the node doesn't recover after scaling down, you may need to reboot the instance:
-```bash test=false
-$ aws ec2 reboot-instances --instance-ids $INSTANCE_IDS
-```
-Wait approximately 1 minute for the node to recover.
-:::
-
-2. Monitor node status:
-```bash test=false
-$ kubectl get nodes --selector=kubernetes.io/hostname=$NODE_NAME --watch
-NAME                                          STATUS   ROLES    AGE     VERSION
-ip-10-42-180-244.us-west-2.compute.internal   Ready    <none>   0h43m   v1.30.8-eks-aeac579
-```
-
-3. Check resource configurations:
-
+1. Check the deployment resource configurations:
 
 ```bash
 $ kubectl get pods -n prod -o custom-columns="NAME:.metadata.name,CPU_REQUEST:.spec.containers[*].resources.requests.cpu,MEM_REQUEST:.spec.containers[*].resources.requests.memory,CPU_LIMIT:.spec.containers[*].resources.limits.cpu,MEM_LIMIT:.spec.containers[*].resources.limits.memory"
@@ -221,6 +199,40 @@ prod-ds-558sx               100m          128Mi         <none>      <none>
 :::info
 Notice that neither the deployment nor the DaemonSet has resource limits configured, which allowed unconstrained resource consumption.
 :::
+
+2. Let's scale down the deployment and stop the resource overload:
+
+```bash bash timeout=40 wait=25
+$ kubectl scale deployment/prod-app -n prod --replicas=0 && kubectl delete pod -n prod -l app=prod-app --force --grace-period=0 && kubectl wait --for=delete pod -n prod -l app=prod-app
+```
+
+3. Scale down the node group:
+
+```bash timeout=90 wait=45
+$ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=0; aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3; if [ $? -eq 0 ]; then echo "Node group scaled down to 0"; else echo "Failed to scale down node group"; exit 1; fi
+
+```
+:::info
+ This can take up to about 30 seconds.
+:::
+
+4. Scale up the node group 
+
+```bash timeout=90 wait=45
+$ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=1 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && for i in {1..6}; do NODE_NAME_2=$(kubectl get nodes --selector eks.amazonaws.com/nodegroup=new_nodegroup_3 -o jsonpath='{.items[0].metadata.name}' 2>/dev/null) && [ -n "$NODE_NAME_2" ] && break || sleep 5; done && [ -n "$NODE_NAME_2" ] && echo "Node group scaled up to 1. New node name: $NODE_NAME_2" || (echo "Failed to scale up node group or get node name" && exit 1)
+
+```
+
+:::info
+The script will store new node name as NODE_NAME_2. This can take up to about 30 seconds.
+:::
+
+5. Verify node status: 
+```bash test=false
+$ kubectl get nodes --selector=kubernetes.io/hostname=$NODE_NAME_2
+NAME                                          STATUS   ROLES    AGE     VERSION
+ip-10-42-180-24.us-west-2.compute.internal    Ready    <none>   0h43m   v1.30.8-eks-aeac579
+```
 
 ### Step 7: Implementing Long-term Solutions
 
@@ -257,39 +269,45 @@ $ kubectl rollout restart deployment/prod-app -n prod && kubectl rollout restart
 
 Let's verify our fixes have resolved the issues:
 
-
-1. Check node status
-```bash
-$ kubectl get node --selector=kubernetes.io/hostname=$NODE_NAME
-NAME                                          STATUS   ROLES    AGE     VERSION
-ip-10-42-180-244.us-west-2.compute.internal   Ready    <none>   1h35m   v1.30.8-eks-aeac579     
-```
-
-:::note
-If the node hasn't transitioned to Ready state, you may need to reboot it:
+1. Check pod creations
 ```bash test=false
-$ aws ec2 reboot-instances --instance-ids $INSTANCE_IDS
+$ kubectl get pods -n prod
+NAME                        READY   STATUS    RESTARTS   AGE
+prod-app-666f8f7bd5-658d6   1/1     Running   0          1m
+prod-app-666f8f7bd5-6jrj4   1/1     Running   0          1m
+prod-app-666f8f7bd5-9rf6m   1/1     Running   0          1m
+prod-app-666f8f7bd5-pm545   1/1     Running   0          1m
+prod-app-666f8f7bd5-ttkgs   1/1     Running   0          1m
+prod-app-666f8f7bd5-zm8lx   1/1     Running   0          1m
+prod-ds-ll4lv               1/1     Running   0          1m
+
 ```
-:::
 
 2. Verify pod resource usage
 ```bash test=false
 $ kubectl top pods -n prod
 NAME                       CPU(cores)   MEMORY(bytes)   
-prod-app-f8597858c-2n4fd   215m         425Mi           
-prod-app-f8597858c-rrfdf   203m         426Mi           
-prod-app-f8597858c-ssxxx   203m         426Mi           
-prod-app-f8597858c-xhqd2   205m         425Mi           
-prod-app-f8597858c-xppmg   248m         425Mi           
-prod-app-f8597858c-zh46j   215m         425Mi           
-prod-ds-x59km              586m         3Mi  
+prod-app-666f8f7bd5-658d6   215m         425Mi           
+prod-app-666f8f7bd5-6jrj4   203m         426Mi           
+prod-app-666f8f7bd5-9rf6m   203m         426Mi           
+prod-app-666f8f7bd5-pm545   205m         425Mi           
+prod-app-666f8f7bd5-ttkgs   248m         425Mi           
+prod-app-666f8f7bd5-zm8lx   215m         425Mi           
+prod-ds-ll4lv               586m         3Mi  
 ```
 
-3. Check node resource usage
+3. Check node status
+```bash
+$ kubectl get node --selector=kubernetes.io/hostname=$NODE_NAME_2
+NAME                                          STATUS   ROLES    AGE     VERSION
+ip-10-42-180-24.us-west-2.compute.internal    Ready    <none>   1h35m   v1.30.8-eks-aeac579     
+```
+
+4. Check node resource usage
 ```bash test=false
 $ kubectl top node --selector=kubernetes.io/hostname=$NODE_NAME   
 NAME                                          CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
-ip-10-42-180-244.us-west-2.compute.internal   1612m        83%    3145Mi          44%  
+ip-10-42-180-24.us-west-2.compute.internal    1612m        83%    3145Mi          44%  
 ```
 
 ### Key Takeaways
