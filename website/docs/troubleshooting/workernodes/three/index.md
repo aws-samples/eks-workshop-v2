@@ -7,7 +7,6 @@ sidebar_custom_props: { "module": true }
 
 ::required-time
 
-
 :::tip Before you start
 Prepare your environment for this section:
 
@@ -27,7 +26,7 @@ The preparation of the lab might take a little over five minutes and it will mak
 
 Corporation XYZ's DevOps team has deployed a new node group and the application team deployed a new version of their application, including a production application (prod-app) and its supporting DaemonSet (prod-ds).
 
-After deploying their applications, the monitoring team has reported that the node is transitioning to a ***NotReady*** state. The root cause isn't immediately apparent, and as the DevOps on-call engineer, you need to investigate why the node is becoming unresponsive and implement a solution to restore normal operation.
+After deploying their applications, the monitoring team has reported that the node is transitioning to a **_NotReady_** state. The root cause isn't immediately apparent, and as the DevOps on-call engineer, you need to investigate why the node is becoming unresponsive and implement a solution to restore normal operation.
 
 ### Step 1: Verify Node Status
 
@@ -39,28 +38,30 @@ NAME                                          STATUS     ROLES    AGE     VERSIO
 ip-10-42-180-244.us-west-2.compute.internal   NotReady   <none>   15m     v1.27.1-eks-2f008fe
 ```
 
-
 :::info
 **Note:** For your convenience, we have added the node name as the environment variable $NODE_NAME. You can check this with:
+
 ```bash
 $ echo $NODE_NAME
 ```
-:::    
 
+:::
 
 ### Step 2: Check System Pod Status
+
 Let's examine the status of kube-system pods on the affected node to identify any system-level issues:
 
 ```bash
 $ kubectl get pods -n kube-system -o wide --field-selector spec.nodeName=$NODE_NAME
 ```
+
 This command will show us all kube-system pods running on the affected node, helping us identify any potential issues of the node caused by these. You should note that all the pods are in running state.
 
 ### Step 3: Examine Node Conditions
 
-Let's examine the node's describe output to understand the cause of the *NotReady* state.
+Let's examine the node's describe output to understand the cause of the _NotReady_ state.
 
-```bash      
+```bash
 $ kubectl describe node $NODE_NAME | sed -n '/^Taints:/,/^[A-Z]/p;/^Conditions:/,/^[A-Z]/p;/^Events:/,$p'
 
 
@@ -78,7 +79,7 @@ Addresses:
 Events:
   Type     Reason                   Age                    From                     Message
   ----     ------                   ----                   ----                     -------
-  Normal   Starting                 3m18s                  kube-proxy               
+  Normal   Starting                 3m18s                  kube-proxy
   Normal   Starting                 3m31s                  kubelet                  Starting kubelet.
   Warning  InvalidDiskCapacity      3m31s                  kubelet                  invalid capacity 0 on image filesystem
   Normal   NodeHasSufficientMemory  3m31s (x2 over 3m31s)  kubelet                  Node ip-10-42-180-244.us-west-2.compute.internal status is now: NodeHasSufficientMemory
@@ -93,55 +94,59 @@ Events:
   Warning  SystemOOM                94s                    kubelet                  System OOM encountered, victim process: python, pid: 4763
   Normal   NodeNotReady             52s                    node-controller          Node ip-10-42-180-244.us-west-2.compute.internal status is now: NodeNotReady
 ```
-Here we see that the Node's kubelet is in the *Unknown* state and cannot be reached. You can read more about this status from the [Kubernetes documentation](https://kubernetes.io/docs/reference/node/node-status/#condition).
+
+Here we see that the Node's kubelet is in the _Unknown_ state and cannot be reached. You can read more about this status from the [Kubernetes documentation](https://kubernetes.io/docs/reference/node/node-status/#condition).
 
 :::note Node Status Information
 The node has the following taints:
 
-  - **node.kubernetes.io/unreachable:NoExecute**: Indicates pods will be evicted if they don't tolerate this taint
-  - **node.kubernetes.io/unreachable:NoSchedule**: Prevents new pods from being scheduled
+- **node.kubernetes.io/unreachable:NoExecute**: Indicates pods will be evicted if they don't tolerate this taint
+- **node.kubernetes.io/unreachable:NoSchedule**: Prevents new pods from being scheduled
 
 The node conditions show that the kubelet has stopped posting status updates, which can typically indicate severe resource constraints or system instability.
 :::
 
 ### Step 4: Analyzing Resource Usage
 
-Let's examine the resource utilization of our workloads using a monitoring tool. 
+Let's examine the resource utilization of our workloads using a monitoring tool.
 
 :::info
 The metrics-server has already been installed in your cluster to provide resource usage data.
 :::
 
-1.  First, check node-level metrics:
-```bash    
+#### 4.1. First, check node-level metrics
+
+```bash
 $ kubectl top nodes
-NAME                                          CPU(cores)   CPU%        MEMORY(bytes)   MEMORY%     
-ip-10-42-142-116.us-west-2.compute.internal   34m          1%          940Mi           13%         
-ip-10-42-185-41.us-west-2.compute.internal    27m          1%          1071Mi          15%         
-ip-10-42-96-176.us-west-2.compute.internal    175m         9%          2270Mi          32%         
-ip-10-42-180-244.us-west-2.compute.internal   <unknown>    <unknown>   <unknown>       <unknown>  
+NAME                                          CPU(cores)   CPU%        MEMORY(bytes)   MEMORY%
+ip-10-42-142-116.us-west-2.compute.internal   34m          1%          940Mi           13%
+ip-10-42-185-41.us-west-2.compute.internal    27m          1%          1071Mi          15%
+ip-10-42-96-176.us-west-2.compute.internal    175m         9%          2270Mi          32%
+ip-10-42-180-244.us-west-2.compute.internal   <unknown>    <unknown>   <unknown>       <unknown>
 ```
-2.  Next, attempt to check pod metrics:
+
+#### 4.2. Next, attempt to check pod metrics
 
 ```bash expectError=true
 $ kubectl top pods -n prod
 error: Metrics not available for pod prod/prod-app-xx-xx, age: 17m14.466020856s
 ```
-    
+
 :::note
 We can observe that:
-  - The troubled node shows unknown for all metrics
-  - Other nodes are operating normally with moderate resource usage
-  - Pod metrics in the prod namespace are unavailable 
-:::
 
+- The troubled node shows unknown for all metrics
+- Other nodes are operating normally with moderate resource usage
+- Pod metrics in the prod namespace are unavailable
+
+:::
 
 ### Step 5: CloudWatch Metrics Investigation
 
 Since Metrics Server isn't providing data, let's use CloudWatch to check EC2 instance metrics:
 
 :::info
-For your convenience, the instance ID of the worker node in new_nodegroup_3 has been stored as an environment variable _$INSTANCE_ID_.
+For your convenience, the instance ID of the worker node in new*nodegroup_3 has been stored as an environment variable *$INSTANCE*ID*.
 :::
 
 ```bash
@@ -170,14 +175,15 @@ $ aws cloudwatch get-metric-data --region us-west-2 --start-time $(date -u -d '1
     "Messages": []
 }
 ```
+
 :::info
 The CloudWatch metrics reveal:
 
-  - CPU utilization consistently above 99%
-  - Significant increase in resource usage over time
-  - Clear indication of resource exhaustion 
-:::
+- CPU utilization consistently above 99%
+- Significant increase in resource usage over time
+- Clear indication of resource exhaustion
 
+:::
 
 ### Step 6: Mitigate Impact
 
@@ -238,34 +244,32 @@ ip-10-42-180-24.us-west-2.compute.internal    Ready    <none>   0h43m   v1.30.8-
 
 The Dev team has identified and fixed a memory leak in the application. Let's implement the fix and establish proper resource management:
 
-1. Apply the updated application configuration:
+#### 7.1. Apply the updated application configuration
 
 ```bash timeout=10 wait=5
 $ kubectl apply -f /home/ec2-user/environment/eks-workshop/modules/troubleshooting/workernodes/three/yaml/configmaps-new.yaml
 ```
 
-2. Set resource limits for the deployment (cpu: 500m, memory: 512Mi):
+#### 7.2. Set resource limits for the deployment (cpu: 500m, memory: 512Mi)
 
-```bash timeout=10 wait=5  
+```bash timeout=10 wait=5
 $ kubectl patch deployment prod-app -n prod --patch '{"spec":{"template":{"spec":{"containers":[{"name":"prod-app","resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"256Mi"}}}]}}}}'
 
 ```
 
-3. Set resource limits for the DaemonSet (cpu: 500m, memory: 512Mi):
+#### 7.3. Set resource limits for the DaemonSet (cpu: 500m, memory: 512Mi)
 
 ```bash timeout=10 wait=5
 $ kubectl patch daemonset prod-ds -n prod --patch '{"spec":{"template":{"spec":{"containers":[{"name":"prod-ds","resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"256Mi"}}}]}}}}'
 ```
-    
 
-4. Perform rolling updates and scale back to desired state:
-
+#### 7.4. Perform rolling updates and scale back to desired state
 
 ```bash timeout=20 wait=10
 $ kubectl rollout restart deployment/prod-app -n prod && kubectl rollout restart daemonset/prod-ds -n prod && kubectl scale deployment prod-app -n prod --replicas=6
 ```
 
-### Verification
+### Step 8: Verification
 
 Let's verify our fixes have resolved the issues:
 
@@ -283,7 +287,8 @@ prod-ds-ll4lv               1/1     Running   0          1m
 
 ```
 
-2. Verify pod resource usage
+#### 8.2. Verify pod resource usage
+
 ```bash test=false
 $ kubectl top pods -n prod
 NAME                       CPU(cores)   MEMORY(bytes)   
@@ -312,27 +317,28 @@ ip-10-42-180-24.us-west-2.compute.internal    1612m        83%    3145Mi        
 
 ### Key Takeaways
 
-  1. Resource Management
-      - Always set appropriate resource requests and limits
-      - Monitor cumulative workload impact
-      - Implement proper resource quotas
+1. Resource Management
 
-  2. Monitoring
-      - Use multiple monitoring tools
-      - Set up proactive alerting
-      - Monitor both container and node-level metrics
+   - Always set appropriate resource requests and limits
+   - Monitor cumulative workload impact
+   - Implement proper resource quotas
 
-  3. Best Practices
-      - Implement horizontal pod autoscaling
-      - Use autoscaling: [Cluster-autoscaler](https://docs.aws.amazon.com/eks/latest/best-practices/cas.html), [Karpenter](https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html), [EKS Auto Mode](https://docs.aws.amazon.com/eks/latest/userguide/automode.html)
-      - Regular capacity planning
-      - Implement proper error handling in applications
+2. Monitoring
+
+   - Use multiple monitoring tools
+   - Set up proactive alerting
+   - Monitor both container and node-level metrics
+
+3. Best Practices
+   - Implement horizontal pod autoscaling
+   - Use autoscaling: [Cluster-autoscaler](https://docs.aws.amazon.com/eks/latest/best-practices/cas.html), [Karpenter](https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html), [EKS Auto Mode](https://docs.aws.amazon.com/eks/latest/userguide/automode.html)
+   - Regular capacity planning
+   - Implement proper error handling in applications
 
 ### Additional Resources
 
-  - [Kubernetes Resource Management](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)
-  - [Out of Resource Handling](https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/)
-  - [EKS Best Practices](https://aws.github.io/aws-eks-best-practices/)
-  - [Container Insights](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-metrics-EKS.html)
-  - [Knowledge Center Guide](https://repost.aws/knowledge-center/eks-node-status-ready)
-
+- [Kubernetes Resource Management](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)
+- [Out of Resource Handling](https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/)
+- [EKS Best Practices](https://aws.github.io/aws-eks-best-practices/)
+- [Container Insights](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-metrics-EKS.html)
+- [Knowledge Center Guide](https://repost.aws/knowledge-center/eks-node-status-ready)

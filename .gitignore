@@ -47,4 +47,9 @@ website/package-lock.json
 !.yarn/plugins
 !.yarn/releases
 !.yarn/sdks
-!.yarn/versions
+!.yarn/versions# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
