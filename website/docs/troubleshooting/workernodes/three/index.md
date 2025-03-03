@@ -273,7 +273,8 @@ $ kubectl rollout restart deployment/prod-app -n prod && kubectl rollout restart
 
 Let's verify our fixes have resolved the issues:
 
-1. Check pod creations
+#### 8.1. Check pod creations
+
 ```bash test=false
 $ kubectl get pods -n prod
 NAME                        READY   STATUS    RESTARTS   AGE
