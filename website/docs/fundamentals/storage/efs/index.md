@@ -1,13 +1,19 @@
 ---
 title: Amazon EFS
-sidebar_position: 30
+sidebar_position: 40
 sidebar_custom_props: { "module": true }
-description: "Serverless, fully elastic file storage for workloads on Amazon Elastic Kubernetes Service with Amazon Elastic File System."
+description: "Fully managed, high-performance, elastic file storage for workloads on Amazon Elastic Kubernetes Service with Amazon EFS."
 ---
+:::info Upcoming Live Workshop
 
-::required-time
+Register for the **Building Modern Resilient Applications using Amazon EKS & Amazon EFS** Live Workshop
 
+<LaunchButton url="https://aws-experience.com/amer/smb/e/f84b0/building-modern-resilient-applications-using-amazon-eks-and-amazon-efs" label="Book Now" />
+
+:::
+---
 :::tip Before you start
+
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30
@@ -32,3 +38,4 @@ In this lab, you will:
 - Implement dynamic provisioning using EFS in a Kubernetes deployment
 
 This hands-on experience will demonstrate how to effectively use Amazon EFS with Amazon EKS for scalable, persistent storage solutions.
+
