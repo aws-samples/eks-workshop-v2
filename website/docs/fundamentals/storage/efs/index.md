@@ -1,8 +1,8 @@
 ---
 title: Amazon EFS
-sidebar_position: 40
+sidebar_position: 30
 sidebar_custom_props: { "module": true }
-description: "Fully managed, high-performance, elastic file storage for workloads on Amazon Elastic Kubernetes Service with Amazon EFS."
+description: "Serverless, fully elastic file storage for workloads on Amazon Elastic Kubernetes Service with Amazon Elastic File System."
 ---
 :::info Upcoming Live Workshop
 
