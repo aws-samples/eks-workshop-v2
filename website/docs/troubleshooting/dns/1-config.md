@@ -9,12 +9,16 @@ DNS resolution in a cluster can be affected by multiple configuration options, w
 When troubleshooting connectivity and DNS resolution issues in your cluster, you typically won't know the root cause upfront. We recommend **not** examining the setup script, but instead following the lab steps to learn a systematic troubleshooting approach for DNS resolution issues in EKS clusters.
 :::
 
+### Step 1 - Execute configuration script 
+
 Let's introduce the issues for this module by running the following script:
 
 ```bash timeout=180 wait=5
 $ bash ~/environment/eks-workshop/modules/troubleshooting/dns/.workshop/lab-setup.sh
 Configuration applied successfully!
 ```
+
+### Step 2 - Restart application pods
 
 Next, redeploy application pods:
 
@@ -34,6 +38,8 @@ checkout    checkout-84c6769ddd-rvwnv         1/1     Running            0      
 orders      orders-6d74499d87-lhgwh           0/1     Running            2 (44s ago)   110s
 ui          ui-5f4d85f85f-hdhjg               1/1     Running            0             109s
 ```
+
+### Step 3 - Troubleshoot application issues
 
 Let's investigate the issue.
 

@@ -5,6 +5,8 @@ sidebar_position: 52
 
 In EKS clusters, CoreDNS pods handle DNS resolution. Let's verify that these pods are running correctly.
 
+### Step 1 - Check pod status
+
 First, check CoreDNS pods in the kube-system namespace:
 
 ```bash timeout=30
@@ -14,9 +16,13 @@ CoreDNS-6fdb8f5699-dq7xw   0/1     Pending   0          42s
 CoreDNS-6fdb8f5699-z57jw   0/1     Pending   0          42s
 ```
 
-We can see that CoreDNS pods are not running! This clearly explains the DNS resolution issues in the cluster.
+We can see that CoreDNS pods are not running. This clearly explains the DNS resolution issues in the cluster.
 
-The pods are in Pending state, indicating they haven't been scheduled to any node. Let's investigate why by checking the pod description:
+The pods are in Pending state, indicating they haven't been scheduled to any node. 
+
+### Step 2 - Check pod events
+
+Let's investigate further by checking events related to this pod in the pod description:
 
 ```bash timeout=30
 $ kubectl describe po -l k8s-app=kube-dns -n kube-system
@@ -28,6 +34,8 @@ Events:
 ```
 
 The warning message indicates a mismatch between node labels and the CoreDNS pod node selector/affinity.
+
+### Step 3 - Check node selection
 
 Let's examine the CoreDNS pod node selector:
 
@@ -68,6 +76,10 @@ $ kubectl get node -o jsonpath='{.items[0].metadata.labels}' | jq
 ```
 
 We've found the issue: The CoreDNS pod requires nodes with label `workshop-default: no`, but our nodes are labeled with `workshop-default: yes`.
+
+:::info
+There are different options in pod's yaml manifest to influence pod scheduling on nodes. Other parameters include affinity, anti-affinity, and pod topology spread constraints. More details in the [Kubernetes documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/).
+:::
 
 ### Root Cause
 
