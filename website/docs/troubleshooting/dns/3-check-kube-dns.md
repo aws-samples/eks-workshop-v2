@@ -3,7 +3,9 @@ title: "Checking kube-dns service"
 sidebar_position: 53
 ---
 
-In Kubernetes, pods use their configured nameserver for DNS resolution. The nameserver configuration is stored in `/etc/resolv.conf`, and by default, Kubernetes configures the kube-dns service ClusterIP as the nameserver for all pods.
+In Kubernetes, pods use their configured nameservers for DNS resolution. The nameserver configuration is stored in `/etc/resolv.conf`, and by default, Kubernetes configures the kube-dns service ClusterIP as the nameserver for all pods.
+
+### Step 1 - Check pod's resolv.conf
 
 Let's verify this configuration by checking the nameserver setting in a pod:
 
@@ -14,6 +16,8 @@ nameserver 172.20.0.10
 options ndots:5
 ```
 
+### Step 2 - Check kube-dns service IP
+
 Now, let's confirm this IP matches the kube-dns service ClusterIP:
 
 ```bash timeout=30
@@ -23,6 +27,8 @@ kube-dns   ClusterIP   172.20.0.10   <none>        53/UDP,53/TCP,9153/TCP   22d
 ```
 
 The nameserver IP matches the kube-dns service ClusterIP, which is correct.
+
+### Step 3 - Check kube-dns service endpoints
 
 Next, verify that the kube-dns service is properly configured to route traffic to CoreDNS pods:
 
@@ -55,11 +61,11 @@ The service endpoints match the CoreDNS pod IPs, confirming proper service confi
 Your environment will show different IPs. What matters is that the service endpoints match the CoreDNS pod IPs.
 :::
 
-Finally, let's verify kube-proxy functionality:
+### Step 4 - Check kube-proxy pods
 
-:::info
-Kube-proxy manages service routing within the cluster. It's responsible for routing DNS resolution traffic from the kube-dns service to CoreDNS pods.
-:::
+Let's verify kube-proxy functionality.
+
+Kube-proxy manages service routing within the cluster. It's responsible for routing DNS traffic from the kube-dns service to CoreDNS pods.
 
 Check kube-proxy pod status:
 
@@ -99,7 +105,7 @@ To fix this issue, we will rollback kube-proxy configuration to its default mode
 
 For more information about IPVS mode, see [Running kube-proxy in IPVS Mode](https://docs.aws.amazon.com/eks/latest/best-practices/ipvs.html).
 
-Use aws cli to apply the default kube-proxy addon configuration. Note that we are passing an empty configuration in this update command, which applies the default kube-proxy iptables mode:
+Use AWS CLI to apply the default kube-proxy addon configuration. Note that passing an empty configuration applies the default kube-proxy iptables mode:
 
 ```bash timeout=30 wait=5
 $ aws eks update-addon --cluster-name $EKS_CLUSTER_NAME --addon-name kube-proxy --region $AWS_REGION \
