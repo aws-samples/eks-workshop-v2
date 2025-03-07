@@ -5,18 +5,39 @@ locals {
   secondary_cidr = "100.64.0.0/22"
 }
 
-data "aws_vpc" "selected" {
-  tags = {
-    created-by = "eks-workshop-v2"
-    env        = var.addon_context.eks_cluster_id
-  }
+# data "aws_vpc" "selected" {
+#   tags = {
+#     created-by = "eks-workshop-v2"
+#     env        = var.addon_context.eks_cluster_id
+#   }
+# }
+
+data "aws_eks_cluster" "cluster" {
+  name = var.eks_cluster_id
 }
 
+data "aws_vpc" "selected" {
+  id = data.aws_eks_cluster.cluster.vpc_config[0].vpc_id
+}
+
+# data "aws_eks_cluster" "this" {
+#   name = var.addon_context.eks_cluster_id
+# }
+
+# data "aws_vpc" "selected" {
+#   id = data.aws_eks_cluster.this.vpc_config[0].vpc_id
+# }
+
 data "aws_subnets" "private" {
-  tags = {
-    created-by = "eks-workshop-v2"
-    env        = var.addon_context.eks_cluster_id
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.selected.id]
   }
+
+  #  tags = {
+  #    created-by = "eks-workshop-v2"
+  #    env        = var.addon_context.eks_cluster_id
+  #  }
 
   filter {
     name   = "tag:Name"
@@ -124,7 +145,7 @@ resource "aws_eks_node_group" "cni_troubleshooting_nodes" {
   node_group_name = "cni_troubleshooting_nodes"
   node_role_arn   = aws_iam_role.node_role.arn
   subnet_ids      = aws_subnet.small_subnet[*].id
-  instance_types  = ["m5.large"]
+  instance_types  = ["c5.large"]
 
   scaling_config {
     desired_size = 0
@@ -153,13 +174,13 @@ resource "aws_eks_node_group" "cni_troubleshooting_nodes" {
 
 data "aws_eks_addon" "vpc_cni" {
   addon_name   = "vpc-cni"
-  cluster_name = var.addon_context.eks_cluster_id
+  cluster_name = var.eks_cluster_id # Changed from var.addon_context.eks_cluster_id
 }
 
 resource "null_resource" "change_config" {
   triggers = {
     config          = data.aws_eks_addon.vpc_cni.configuration_values,
-    cluster_name    = var.addon_context.eks_cluster_id,
+    cluster_name    = var.eks_cluster_id, # Changed to be consistent
     role_arn        = data.aws_eks_addon.vpc_cni.service_account_role_arn,
     node_group_name = aws_eks_node_group.cni_troubleshooting_nodes.node_group_name,
     role_name       = split("/", data.aws_eks_addon.vpc_cni.service_account_role_arn)[1],

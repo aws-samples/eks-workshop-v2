@@ -189,7 +189,8 @@ The CloudWatch metrics reveal:
 
 Let's check deployment details and implement immediate changes to stabilize the node:
 
-1. Check the deployment resource configurations:
+
+#### 6.1. Check the deployment resource configurations:
 
 ```bash
 $ kubectl get pods -n prod -o custom-columns="NAME:.metadata.name,CPU_REQUEST:.spec.containers[*].resources.requests.cpu,MEM_REQUEST:.spec.containers[*].resources.requests.memory,CPU_LIMIT:.spec.containers[*].resources.limits.cpu,MEM_LIMIT:.spec.containers[*].resources.limits.memory"
@@ -206,13 +207,13 @@ prod-ds-558sx               100m          128Mi         <none>      <none>
 Notice that neither the deployment nor the DaemonSet has resource limits configured, which allowed unconstrained resource consumption.
 :::
 
-2. Let's scale down the deployment and stop the resource overload:
+#### 6.2. Let's scale down the deployment and stop the resource overload:
 
 ```bash bash timeout=40 wait=25
 $ kubectl scale deployment/prod-app -n prod --replicas=0 && kubectl delete pod -n prod -l app=prod-app --force --grace-period=0 && kubectl wait --for=delete pod -n prod -l app=prod-app
 ```
 
-3. Scale down the node group:
+#### 6.3. Scale down the node group:
 
 ```bash timeout=90 wait=45
 $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=0; aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3; if [ $? -eq 0 ]; then echo "Node group scaled down to 0"; else echo "Failed to scale down node group"; exit 1; fi
@@ -222,7 +223,7 @@ $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegro
  This can take up to about 30 seconds.
 :::
 
-4. Scale up the node group 
+#### 6.4. Scale up the node group 
 
 ```bash timeout=90 wait=45
 $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=1 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && for i in {1..6}; do NODE_NAME_2=$(kubectl get nodes --selector eks.amazonaws.com/nodegroup=new_nodegroup_3 -o jsonpath='{.items[0].metadata.name}' 2>/dev/null) && [ -n "$NODE_NAME_2" ] && break || sleep 5; done && [ -n "$NODE_NAME_2" ] && echo "Node group scaled up to 1. New node name: $NODE_NAME_2" || (echo "Failed to scale up node group or get node name" && exit 1)
@@ -233,7 +234,7 @@ $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegro
 The script will store new node name as NODE_NAME_2. This can take up to about 30 seconds.
 :::
 
-5. Verify node status: 
+#### 6.5. Verify node status: 
 ```bash test=false
 $ kubectl get nodes --selector=kubernetes.io/hostname=$NODE_NAME_2
 NAME                                          STATUS   ROLES    AGE     VERSION
@@ -302,14 +303,14 @@ prod-app-666f8f7bd5-zm8lx   215m         425Mi
 prod-ds-ll4lv               586m         3Mi  
 ```
 
-3. Check node status
+#### 8.3. Check node status
 ```bash
 $ kubectl get node --selector=kubernetes.io/hostname=$NODE_NAME_2
 NAME                                          STATUS   ROLES    AGE     VERSION
 ip-10-42-180-24.us-west-2.compute.internal    Ready    <none>   1h35m   v1.30.8-eks-aeac579     
 ```
 
-4. Check node resource usage
+#### 8.4. Check node resource usage
 ```bash test=false
 $ kubectl top node --selector=kubernetes.io/hostname=$NODE_NAME   
 NAME                                          CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
@@ -318,19 +319,19 @@ ip-10-42-180-24.us-west-2.compute.internal    1612m        83%    3145Mi        
 
 ### Key Takeaways
 
-1. Resource Management
+#### 1. Resource Management
 
    - Always set appropriate resource requests and limits
    - Monitor cumulative workload impact
    - Implement proper resource quotas
 
-2. Monitoring
+#### 2. Monitoring
 
    - Use multiple monitoring tools
    - Set up proactive alerting
    - Monitor both container and node-level metrics
 
-3. Best Practices
+#### 3. Best Practices
    - Implement horizontal pod autoscaling
    - Use autoscaling: [Cluster-autoscaler](https://docs.aws.amazon.com/eks/latest/best-practices/cas.html), [Karpenter](https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html), [EKS Auto Mode](https://docs.aws.amazon.com/eks/latest/userguide/automode.html)
    - Regular capacity planning

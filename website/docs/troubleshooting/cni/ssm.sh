@@ -3,6 +3,7 @@ COMMAND_ID=$(aws ssm send-command \
     --instance-ids $1 \
     --document-name "AWS-RunShellScript" \
     --comment "Demo run shell script on Linux Instances" \
+    #--parameters "{\"commands\":[\"sudo -Hiu root bash << END\",\"tail -n $3 /var/log/aws-routed-eni/$2.log | grep $4\", \"END\"]}" \
     --parameters '{"commands":["sudo -Hiu root bash << END","tail -n '$3' /var/log/aws-routed-eni/'$2'.log | grep '$4'", "END"]}' \
     --output text \
     --query "Command.CommandId")
