@@ -6,7 +6,7 @@ set -e
 kubectl_version='1.31.6'
 
 # renovate: depName=helm/helm
-helm_version='3.16.4'
+helm_version='3.17.1'
 
 # renovate: depName=eksctl-io/eksctl
 eksctl_version='0.205.0'
