@@ -3,7 +3,7 @@ title: "Checking VPC configuration"
 sidebar_position: 54
 ---
 
-DNS traffic between application pods, the kube-dns service, and CoreDNS pods often traverses multiple nodes and VPC subnets. We need to verify that DNS traffic can flow freely at the VPC level.
+DNS traffic between application pods, kube-dns service, and CoreDNS pods often traverses multiple nodes and VPC subnets. We need to verify that DNS traffic can flow freely at the VPC level.
 
 Two main VPC components can filter network traffic:
 - Security Groups
@@ -12,7 +12,7 @@ Two main VPC components can filter network traffic:
 We should verify that both worker node Security Groups and subnet Network ACLs allow DNS traffic (port 53 UDP/TCP) in both directions.
 
 
-### Identifying Security Groups
+### Step 1 - Identify worker node Security Groups
 
 Let's start by identifying the Security Groups associated with cluster worker nodes.
 
@@ -44,7 +44,11 @@ $ aws ec2 describe-instances \
 +------------------------+
 ```
 
-We can see that worker nodes only use the cluster Security Group `sg-0fcabbda9848b346e`. Let's examine its rules:
+We can see that worker nodes only use the cluster Security Group `sg-0fcabbda9848b346e`. 
+
+### Step 2 - Check worker node Security Group rules
+
+Let's examine worker node Security Group rules:
 
 ```bash timeout=30
 $ aws ec2 describe-security-group-rules \

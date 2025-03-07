@@ -24,14 +24,6 @@ data "aws_eks_cluster" "cluster" {
   name = var.eks_cluster_id
 }
 
-/*
-data "aws_vpc" "selected" {
-  tags = {
-    created-by = "eks-workshop-v2"
-    env        = var.addon_context.eks_cluster_id
-  }
-}
-*/
 
 data "aws_eks_node_group" "default" {
   cluster_name    = data.aws_eks_cluster.cluster.id
@@ -49,7 +41,7 @@ data "aws_subnets" "selected" {
 }
 
 resource "aws_iam_role" "ecr_ec2_role" {
-  name = "ecr_ec2_role"
+  name = "eks-workshop-ecr-ec2-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -66,13 +58,13 @@ resource "aws_iam_role" "ecr_ec2_role" {
 }
 
 resource "aws_iam_instance_profile" "ecr_ec2" {
-  name = "ecr_ec2"
+  name = "eks-workshop-ecr-ec2"
   role = resource.aws_iam_role.ecr_ec2_role.name
 }
 
 resource "aws_instance" "ui_to_ecr" {
   ami                  = data.aws_ssm_parameter.eks_ami.value
-  instance_type        = "t3.medium"
+  instance_type        = "m5.large"
   user_data            = <<-EOF
               #!/bin/bash
               sudo yum update -y
@@ -86,7 +78,10 @@ resource "aws_instance" "ui_to_ecr" {
               EOF
   subnet_id            = element(data.aws_subnets.selected.ids, 0)
   iam_instance_profile = resource.aws_iam_instance_profile.ecr_ec2.name
-  depends_on           = [resource.aws_ecr_repository.ui]
+  tags = {
+    env = "eks-workshop"
+  }
+  depends_on = [resource.aws_ecr_repository.ui]
 }
 
 resource "aws_ecr_repository" "ui" {
@@ -145,33 +140,6 @@ resource "local_file" "deployment_yaml" {
   filename = "${path.module}/deployment.yaml"
   content  = data.template_file.deployment_yaml.rendered
 }
-
-/*
-resource "null_resource" "ui_to_ecr" {
-
-  #provisioner "local-exec" {
-  #  command = "aws ecr get-login-password | docker login --username AWS --password-stdin ${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.id}.amazonaws.com"
-  #}
-
-  provisioner "local-exec" {
-    command = "docker pull public.ecr.aws/aws-containers/retail-store-sample-ui:0.4.0"
-  }
-
-  provisioner "local-exec" {
-    command = "docker images | grep retail-store | awk '{ print $3 }' | xargs -I {} docker tag {} ${resource.aws_ecr_repository.ui.repository_url}:0.4.0"
-  }
-
-  #provisioner "local-exec" {
-  #  command = "sudo docker tag ${tag} ${resource.aws_ecr_repository.ui.repository_url}:0.4.0"
-  #}
-
-  provisioner "local-exec" {
-    command = "aws ecr get-login-password | docker login --username AWS --password-stdin ${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.id}.amazonaws.com &&  docker push ${resource.aws_ecr_repository.ui.repository_url}:0.4.0"
-  }
-
-  depends_on = [resource.aws_ecr_repository.ui]
-}
-*/
 
 resource "null_resource" "kustomize_app" {
   triggers = {
