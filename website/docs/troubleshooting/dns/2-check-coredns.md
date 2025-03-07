@@ -1,26 +1,28 @@
 ---
-title: "Step 2 - Check coredns pods"
+title: "Checking CoreDNS pods"
 sidebar_position: 52
 ---
 
-In EKS clusters, DNS resolution is performed by coredns pods. We need to ensure that coredns pods are running without errors.
+In EKS clusters, CoreDNS pods handle DNS resolution. Let's verify that these pods are running correctly.
 
-Check coredns pods in kube-system namespace:
+### Step 1 - Check pod status
+
+First, check CoreDNS pods in the kube-system namespace:
 
 ```bash timeout=30
 $ kubectl get pod -l k8s-app=kube-dns -n kube-system
 NAME                       READY   STATUS    RESTARTS   AGE
-coredns-6fdb8f5699-dq7xw   0/1     Pending   0          42s
-coredns-6fdb8f5699-z57jw   0/1     Pending   0          42s
+CoreDNS-6fdb8f5699-dq7xw   0/1     Pending   0          42s
+CoreDNS-6fdb8f5699-z57jw   0/1     Pending   0          42s
 ```
 
-Coredns pods are not running!
-This is definitely a problem that affect DNS Resolution in the cluster.
+We can see that CoreDNS pods are not running. This clearly explains the DNS resolution issues in the cluster.
 
-Coredns pods show in Pending state, which indicates that pods has not been scheduled to any node.
-Check pod description to know what happneded during pod scheduling.
+The pods are in Pending state, indicating they haven't been scheduled to any node. 
 
-Describe coredns pods and analyze the Events section:
+### Step 2 - Check pod events
+
+Let's investigate further by checking events related to this pod in the pod description:
 
 ```bash timeout=30
 $ kubectl describe po -l k8s-app=kube-dns -n kube-system
@@ -31,18 +33,20 @@ Events:
   Warning  FailedScheduling  29s   default-scheduler  0/3 nodes are available: 3 node(s) didn't match Pod's node affinity/selector. preemption: 0/3 nodes are available: 3 Preemption is not helpful for scheduling.
 ```
 
-The Warning message indicates that node label don't match coredns pod node selector or affinity.
+The warning message indicates a mismatch between node labels and the CoreDNS pod node selector/affinity.
 
-Check coredns pod node selector:
+### Step 3 - Check node selection
+
+Let's examine the CoreDNS pod node selector:
 
 ```bash timeout=30
-$ kubectl get deployment coredns -n kube-system -o jsonpath='{.spec.template.spec.nodeSelector}' | jq
+$ kubectl get deployment CoreDNS -n kube-system -o jsonpath='{.spec.template.spec.nodeSelector}' | jq
 {
   "workshop-default": "no"
 }
 ```
 
-Now let's check whether worker node have this label:
+Now, check the worker node labels:
 
 ```bash timeout=30
 $ kubectl get node -o jsonpath='{.items[0].metadata.labels}' | jq
@@ -71,22 +75,21 @@ $ kubectl get node -o jsonpath='{.items[0].metadata.labels}' | jq
 }
 ```
 
-The last line of the output shows node label `"workshop-default": "yes"`. However, coredns pod node selector uses label `"workshop-default": "no"`.
+We've found the issue: The CoreDNS pod requires nodes with label `workshop-default: no`, but our nodes are labeled with `workshop-default: yes`.
 
-We found the problem: coredns node selector doesn't match existing node labels.
+:::info
+There are different options in pod's yaml manifest to influence pod scheduling on nodes. Other parameters include affinity, anti-affinity, and pod topology spread constraints. More details in the [Kubernetes documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/).
+:::
 
-### Root Casue
+### Root Cause
 
-In the real world, users may use node selectors with corends to ensure that coredns pods run on specific nodes, dedicated to cluster kube-system controllers.
-When using node selectors, keep in mind that if selector and node label don't match, pods can get stuck in Pending state and never run.
+In production environments, teams often use node selectors with CoreDNS to run these pods on dedicated nodes for cluster system components. However, if the selectors don't match node labels, pods remain in Pending state.
 
-In this case, corends addon was updated to use a node-selector that doesn't match any of the existing node. Then, coredns pods are stuck in Pending state.
+In this case, the CoreDNS addon was configured with a node selector that doesn't match any existing nodes, preventing the pods from running.
 
-### How to resolve this issue?
+### Resolution
 
-To resolve this issue, update coredns addon to use its default configuration, which removes nodeSelector requriements and allows coredns pods to run any of the worker nodes.
-
-Update coredns addon using empty custom configuration and wait for the addon update to complete:
+To fix this, we'll update the CoreDNS addon to use its default configuration, removing the nodeSelector requirements:
 
 ```bash timeout=180
 $ aws eks update-addon \
@@ -117,18 +120,16 @@ $ aws eks update-addon \
 $ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --region $AWS_REGION  --addon-name coredns
 ```
 
-Now, coredns pod show up in Running state
+Verify that CoreDNS pods are now running:
 
 ```bash timeout=30
 $ kubectl get pod -l k8s-app=kube-dns -n kube-system
 NAME                       READY   STATUS    RESTARTS   AGE
-coredns-7f6dd6865f-7qcjr   1/1     Running   0          100s
-coredns-7f6dd6865f-kxw2x   1/1     Running   0          100s
+CoreDNS-7f6dd6865f-7qcjr   1/1     Running   0          100s
+CoreDNS-7f6dd6865f-kxw2x   1/1     Running   0          100s
 ```
 
-As addiotnal step, verify that coredns application is not showing any errors. For that, let's check coredns logs.
-
-Check coredns pod logs:
+Finally, check CoreDNS logs to ensure the application is running without errors:
 
 ```bash timeout=30
 $ kubectl logs -l k8s-app=kube-dns -n kube-system
@@ -142,10 +143,8 @@ CoreDNS-1.11.1
 linux/amd64, go1.21.5, e9c721d80
 ```
 
-Coredns logs don't show errors, which means that corends application should be processing DNS requests as expected.
+The logs show no errors, indicating that CoreDNS is now processing DNS requests correctly.
 
 ### Next Steps
 
-At this point, we have resolved the problem with coredns pods and ensured that coredns application is running without errors.
-
-Let's continue to the next lab to cover additional troubleshooting steps and ensure every aspect of DNS resolution is correct.
+We've resolved the CoreDNS pod scheduling issue and verified the application is running properly. Let's proceed to the next lab for additional DNS resolution troubleshooting steps.

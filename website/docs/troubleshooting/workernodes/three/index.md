@@ -1,6 +1,6 @@
 ---
 title: "Node in Not-Ready state"
-sidebar_position: 72
+sidebar_position: 73
 chapter: true
 sidebar_custom_props: { "module": true }
 ---
@@ -17,292 +17,329 @@ $ prepare-environment troubleshooting/workernodes/three
 The preparation of the lab might take a little over five minutes and it will make the following changes to your lab environment:
 
 - Create a new managed node group called **_new_nodegroup_3_**
-- Introduce a problem to the managed node group which causes node to transition to the _NotReady_ state
+- Deploy resource kubernetes resources (deployment, daemonset, namespace, configmaps, priority-class)
 - Set desired managed node group count to 1
 
 :::
 
 ### Background
 
-Corporate XYZ's e-commerce platform has been steadily growing, and the engineering team has decided to expand the EKS cluster to handle the increased workload. The team has already created a new managed node group **_new_nodegroup_3_**, and those have been successfully integrated into the cluster.
+Corporation XYZ's DevOps team has deployed a new node group and the application team deployed a new version of their application, including a production application (prod-app) and its supporting DaemonSet (prod-ds).
 
-Now, the engineering team wants to ensure that the security and access control mechanisms are properly configured for the EKS cluster. They have assigned this task to Sam, an experienced DevOps engineer.
+After deploying their applications, the monitoring team has reported that the node is transitioning to a **_NotReady_** state. The root cause isn't immediately apparent, and as the DevOps on-call engineer, you need to investigate why the node is becoming unresponsive and implement a solution to restore normal operation.
 
-Sam's main objective is to grant a new admin user access to the EKS Cluster. So he makes modification to the aws-auth configmap, which is responsible for mapping IAM users and roles to Kubernetes RBAC permissions. The goal is to grant specific users additional permissions to access and manage the EKS cluster.
+### Step 1: Verify Node Status
 
-After making the changes to the AWS-Auth ConfigMap, the development team complains that they are not able to run any pods on the new managed nodegroup. Sam checks the Kubernetes events and logs, but does not find any obvious errors or issues. The EKS cluster status also appears to be healthy.
-
-As time passes, Sam notices that the new worker node is transitioning to the **NotReady** state, indicating that they are unable to reach the cluster and participate in the workload.
-
-Can you help Sam identify the root cause of the worker node issue and suggest the necessary steps to resolve the problem, so the new nodes can successfully join the EKS cluster?
-
-### Step 1
-
-1. First let's confirm and verify what you have learned from the engineer to see if there is a node in **NotReady** state.
+Let's first verify the node's status to confirm the current state:
 
 ```bash timeout=40 hook=fix-3-1 hookTimeout=60 wait=30
 $ kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_3
 NAME                                          STATUS     ROLES    AGE     VERSION
-ip-10-42-174-208.us-west-2.compute.internal   NotReady   <none>   3m13s   v1.xx.x-eks-a737599
+ip-10-42-180-244.us-west-2.compute.internal   NotReady   <none>   15m     v1.27.1-eks-2f008fe
 ```
-
-As you can see, we can confirm the node from _new_nodegroup_3_ is in NotReady state.
-
-:::important
-We will be gathering more information for this node throughout the scenario, so let's go ahead and add the node name as an environment variable. Please copy and paste the following in your terminal.
-
-```bash
-$ export NEW_NODEGROUP_3_NODE_NAME=$(kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_3 | awk 'NR==2 {print $1}')
-
-```
-
-You can confirm variable the was taken.
-
-```bash
-$ echo $NEW_NODEGROUP_3_NODE_NAME
-```
-
-:::
-
-### Step 2
-
-First step after confirming node state is the check the node object itself. To check further into the node let's run a describe node and check for any signals pointing us more towards the problem.
 
 :::info
-**Note:** We have modified the describe command so it will output node Conditions, Allocated resources, and Events to minimize the output. Let's go through one at a time.
-:::
-
-First let's check the output for Node Conditions. This is where we can see statuses for each for the conditions. Towards the right-end under Reason and Message, we can see the reason for the _Unknown_ status is due to Kubelet stop posting node status.
+**Note:** For your convenience, we have added the node name as the environment variable $NODE_NAME. You can check this with:
 
 ```bash
-$ kubectl describe node $NEW_NODEGROUP_3_NODE_NAME | sed -n '/Conditions:/,/Addresses:/p'
+$ echo $NODE_NAME
+```
 
+:::
+
+### Step 2: Check System Pod Status
+
+Let's examine the status of kube-system pods on the affected node to identify any system-level issues:
+
+```bash
+$ kubectl get pods -n kube-system -o wide --field-selector spec.nodeName=$NODE_NAME
+```
+
+This command will show us all kube-system pods running on the affected node, helping us identify any potential issues of the node caused by these. You should note that all the pods are in running state.
+
+### Step 3: Examine Node Conditions
+
+Let's examine the node's describe output to understand the cause of the _NotReady_ state.
+
+```bash
+$ kubectl describe node $NODE_NAME | sed -n '/^Taints:/,/^[A-Z]/p;/^Conditions:/,/^[A-Z]/p;/^Events:/,$p'
+
+
+Taints:             node.kubernetes.io/unreachable:NoExecute
+                    node.kubernetes.io/unreachable:NoSchedule
+Unschedulable:      false
 Conditions:
   Type             Status    LastHeartbeatTime                 LastTransitionTime                Reason              Message
   ----             ------    -----------------                 ------------------                ------              -------
-  MemoryPressure   Unknown   Thu, 10 Oct 2024 17:00:39 +0000   Thu, 10 Oct 2024 17:01:22 +0000   NodeStatusUnknown   Kubelet stopped posting node status.
-  DiskPressure     Unknown   Thu, 10 Oct 2024 17:00:39 +0000   Thu, 10 Oct 2024 17:01:22 +0000   NodeStatusUnknown   Kubelet stopped posting node status.
-  PIDPressure      Unknown   Thu, 10 Oct 2024 17:00:39 +0000   Thu, 10 Oct 2024 17:01:22 +0000   NodeStatusUnknown   Kubelet stopped posting node status.
-  Ready            Unknown   Thu, 10 Oct 2024 17:00:39 +0000   Thu, 10 Oct 2024 17:01:22 +0000   NodeStatusUnknown   Kubelet stopped posting node status.
+  MemoryPressure   Unknown   Wed, 12 Feb 2025 15:20:21 +0000   Wed, 12 Feb 2025 15:21:04 +0000   NodeStatusUnknown   Kubelet stopped posting node status.
+  DiskPressure     Unknown   Wed, 12 Feb 2025 15:20:21 +0000   Wed, 12 Feb 2025 15:21:04 +0000   NodeStatusUnknown   Kubelet stopped posting node status.
+  PIDPressure      Unknown   Wed, 12 Feb 2025 15:20:21 +0000   Wed, 12 Feb 2025 15:21:04 +0000   NodeStatusUnknown   Kubelet stopped posting node status.
+  Ready            Unknown   Wed, 12 Feb 2025 15:20:21 +0000   Wed, 12 Feb 2025 15:21:04 +0000   NodeStatusUnknown   Kubelet stopped posting node status.
 Addresses:
-```
-
-Next, we can check below, there are two pods (_vpc cni & kube-proxy_) running. They both have minimal CPU Requests configured and based on this it is unlikely that these pods are creating high resource utilizations.
-
-```bash
-$ kubectl describe node $NEW_NODEGROUP_3_NODE_NAME | sed -n '/Non-terminated Pods:/,/Events:/p'
-Non-terminated Pods:          (2 in total)
-  Namespace                   Name                CPU Requests  CPU Limits  Memory Requests  Memory Limits  Age
-  ---------                   ----                ------------  ----------  ---------------  -------------  ---
-  kube-system                 aws-node-7f69d      50m (2%)      0 (0%)      0 (0%)           0 (0%)         34m
-  kube-system                 kube-proxy-fxqmv    100m (5%)     0 (0%)      0 (0%)           0 (0%)         34m
-Allocated resources:
-  (Total limits may be over 100 percent, i.e., overcommitted.)
-  Resource           Requests   Limits
-  --------           --------   ------
-  cpu                150m (7%)  0 (0%)
-  memory             0 (0%)     0 (0%)
-  ephemeral-storage  0 (0%)     0 (0%)
-  hugepages-1Gi      0 (0%)     0 (0%)
-  hugepages-2Mi      0 (0%)     0 (0%)
 Events:
+  Type     Reason                   Age                    From                     Message
+  ----     ------                   ----                   ----                     -------
+  Normal   Starting                 3m18s                  kube-proxy
+  Normal   Starting                 3m31s                  kubelet                  Starting kubelet.
+  Warning  InvalidDiskCapacity      3m31s                  kubelet                  invalid capacity 0 on image filesystem
+  Normal   NodeHasSufficientMemory  3m31s (x2 over 3m31s)  kubelet                  Node ip-10-42-180-244.us-west-2.compute.internal status is now: NodeHasSufficientMemory
+  Normal   NodeHasNoDiskPressure    3m31s (x2 over 3m31s)  kubelet                  Node ip-10-42-180-244.us-west-2.compute.internal status is now: NodeHasNoDiskPressure
+  Normal   NodeHasSufficientPID     3m31s (x2 over 3m31s)  kubelet                  Node ip-10-42-180-244.us-west-2.compute.internal status is now: NodeHasSufficientPID
+  Normal   NodeAllocatableEnforced  3m31s                  kubelet                  Updated Node Allocatable limit across pods
+  Normal   RegisteredNode           3m27s                  node-controller          Node ip-10-42-180-244.us-west-2.compute.internal event: Registered Node ip-10-42-180-244.us-west-2.compute.internal in Controller
+  Normal   Synced                   3m27s                  cloud-node-controller    Node synced successfully
+  Normal   ControllerVersionNotice  3m12s                  vpc-resource-controller  The node is managed by VPC resource controller version v1.6.3
+  Normal   NodeReady                3m10s                  kubelet                  Node ip-10-42-180-244.us-west-2.compute.internal status is now: NodeReady
+  Normal   NodeTrunkInitiated       3m8s                   vpc-resource-controller  The node has trunk interface initialized successfully
+  Warning  SystemOOM                94s                    kubelet                  System OOM encountered, victim process: python, pid: 4763
+  Normal   NodeNotReady             52s                    node-controller          Node ip-10-42-180-244.us-west-2.compute.internal status is now: NodeNotReady
 ```
 
-Events are a common place to check to the latest messages logged during the lifecycle of a node. The takeaway from this particular output is that the kubelet transitioned into _NodeNotReady_.
+Here we see that the Node's kubelet is in the _Unknown_ state and cannot be reached. You can read more about this status from the [Kubernetes documentation](https://kubernetes.io/docs/reference/node/node-status/#condition).
 
-```bash
-$ kubectl describe node $NEW_NODEGROUP_3_NODE_NAME | sed -n '/Events:/,$p'
-Events:
-  Type     Reason                   Age                From                     Message
-  ----     ------                   ----               ----                     -------
-  Normal   Starting                 30m                kube-proxy
-  Normal   Starting                 31m                kubelet                  Starting kubelet.
-  Warning  InvalidDiskCapacity      31m                kubelet                  invalid capacity 0 on image filesystem
-  Normal   NodeHasSufficientMemory  31m (x2 over 31m)  kubelet                  Node ip-10-42-174-208.us-west-2.compute.internal status is now: NodeHasSufficientMemory
-  Normal   NodeHasNoDiskPressure    31m (x2 over 31m)  kubelet                  Node ip-10-42-174-208.us-west-2.compute.internal status is now: NodeHasNoDiskPressure
-  Normal   NodeHasSufficientPID     31m (x2 over 31m)  kubelet                  Node ip-10-42-174-208.us-west-2.compute.internal status is now: NodeHasSufficientPID
-  Normal   NodeAllocatableEnforced  31m                kubelet                  Updated Node Allocatable limit across pods
-  Normal   Synced                   31m                cloud-node-controller    Node synced successfully
-  Normal   RegisteredNode           30m                node-controller          Node ip-10-42-174-208.us-west-2.compute.internal event: Registered Node ip-10-42-174-208.us-west-2.compute.internal in Controller
-  Normal   ControllerVersionNotice  30m                vpc-resource-controller  The node is managed by VPC resource controller version v1.4.10
-  Normal   NodeReady                30m                kubelet                  Node ip-10-42-174-208.us-west-2.compute.internal status is now: NodeReady
-  Normal   NodeNotReady             29m                node-controller          Node ip-10-42-174-208.us-west-2.compute.internal status is now: NodeNotReady
-  Warning  Unsupported              29m (x9 over 30m)  vpc-resource-controller  The instance type t3.medium is not supported for trunk interface (Security Group for Pods)
-```
+:::note Node Status Information
+The node has the following taints:
 
-Some important considerations when investigating node in _NotReady_ or _Unknown_ status is that this could be caused due to MemoryPressure, DiskcPressure, PIDPressure or any problem with the kubelet which can prevent it from sending heartbeats to the cluster's Control Plane. See the kubernetes [node-status document](https://kubernetes.io/docs/reference/node/node-status/#condition) for more details.
+- **node.kubernetes.io/unreachable:NoExecute**: Indicates pods will be evicted if they don't tolerate this taint
+- **node.kubernetes.io/unreachable:NoSchedule**: Prevents new pods from being scheduled
 
-### Step 3
-
-When a node start up, there are necessary components that must be running to ensure proper pod assigning and proper service network configurations deployed for proper traffic flow from and to the worker node. We can check these components by ensuring these pods are up and running. Let's check with kube-proxy first which is a network proxy that enables service abstraction and load balancing in a Kubernetes cluster.
-
-```bash
-$ kubectl get pods --namespace=kube-system --selector=k8s-app=kube-proxy -o wide | grep $NEW_NODEGROUP_3_NODE_NAME
-kube-proxy-abcde   1/1     Running   0               127m    10.42.174.208   ip-10-42-174-208.us-west-2.compute.internal   <none>           <none>
-```
-
-Looks like it is in the 1/1 running state. Next we can check the vpc cni (aws-node pod) which is a networking plugin for Kubernetes that enables pod networking in Amazon VPC environments, allowing pods to have the same IP address inside the cluster as they do on the AWS VPC network.
-
-```bash timeout=20 hook=fix-3-2 hookTimeout=25 wait=15
-$ kubectl get pods --namespace=kube-system --selector=k8s-app=aws-node -o wide | grep $NEW_NODEGROUP_3_NODE_NAME
-aws-node-7f69d   0/2     Pending   0               131m    10.42.174.208   ip-10-42-174-208.us-west-2.compute.internal   <none>           <none>
-```
-
-The aws-node pod is in the _Pending_ state so we need to figure out how to investigate further as to why.
-
-:::important
-We will be investigating further for this pod so please save the pod name as an environment variable. You can copy and paste the following in your terminal.
-
-```bash
-$ NEW_NODEGROUP_3_VPC_CNI_POD=$(kubectl get pods --namespace=kube-system --selector=k8s-app=aws-node --field-selector=spec.nodeName=$NEW_NODEGROUP_3_NODE_NAME -o jsonpath='{.items[0].metadata.name}')
-```
-
-You can confirm variable has taken.
-
-```bash
-$ echo $NEW_NODEGROUP_3_VPC_CNI_POD
-```
-
+The node conditions show that the kubelet has stopped posting status updates, which can typically indicate severe resource constraints or system instability.
 :::
 
-### Step 4
+### Step 4: Analyzing Resource Usage
 
-A pod in _Pending_ generally means that it has been accepted by the Kubernetes cluster, but one or more of the containers has not be set up and made ready to run. Many times this can be due to lack of node resources or time spend waiting for container image to download. More on Pod phases [here](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase).
+Let's examine the resource utilization of our workloads using a monitoring tool.
 
-Let's check the pod events to see if it has been scheduled.
+:::info
+The metrics-server has already been installed in your cluster to provide resource usage data.
+:::
+
+#### 4.1. First, check node-level metrics
 
 ```bash
-$ kubectl describe pod $NEW_NODEGROUP_3_VPC_CNI_POD -n kube-system | sed -n '/Events:/,$p'
-Events:
-  Type    Reason     Age    From               Message
-  ----    ------     ----   ----               -------
-  Normal  Scheduled  3m38s  default-scheduler  Successfully assigned kube-system/aws-node-xxxxx to ip-10-42-174-208.us-west-2.compute.internal
+$ kubectl top nodes
+NAME                                          CPU(cores)   CPU%        MEMORY(bytes)   MEMORY%
+ip-10-42-142-116.us-west-2.compute.internal   34m          1%          940Mi           13%
+ip-10-42-185-41.us-west-2.compute.internal    27m          1%          1071Mi          15%
+ip-10-42-96-176.us-west-2.compute.internal    175m         9%          2270Mi          32%
+ip-10-42-180-244.us-west-2.compute.internal   <unknown>    <unknown>   <unknown>       <unknown>
 ```
 
-Looks like the pod has been scheduled successfully, but we saw that 0 out of the 2 containers start up successfully. So next we can check logs for the first container to see if we get any more insight.
+#### 4.2. Next, attempt to check pod metrics
 
 ```bash expectError=true
-$ kubectl logs $NEW_NODEGROUP_3_VPC_CNI_POD -n kube-system aws-node
-Error from server (InternalError): Internal error occurred: Authorization error (user=kube-apiserver-kubelet-client, verb=get, resource=nodes, subresource=proxy)
+$ kubectl top pods -n prod
+error: Metrics not available for pod prod/prod-app-xx-xx, age: 17m14.466020856s
 ```
 
-There is an internal error pointing to an Authorization error between the API server's kubelet client when initiating a GET call for the worker node resource. In order for proper communication from the Cluster's API server and the worker node to happen, proper authentication followed by authorization must occur from the worker node.
+:::note
+We can observe that:
 
-We know that our devops engineer was working with aws-auth configmap to add new users so lets check out how the configmap looks.
+- The troubled node shows unknown for all metrics
+- Other nodes are operating normally with moderate resource usage
+- Pod metrics in the prod namespace are unavailable
 
-```bash
-$ kubectl describe configmap aws-auth -n kube-system
+:::
 
-Data
-====
-mapRoles:
-----
-- groups:
-  - system:bootstrappers
-  - system:nodes
-  rolearn: arn:aws:iam::1234567890:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-1234abcd1234
-  username: system:node:{{EC2PrivateDNSName}}
-- groups:
-  - system:bootstrappers
-  - system:nodes
-  rolearn: arn:aws:iam::1234567890:role/xnew_nodegroup_3
-  username: system:node:{{EC2PrivateDNSName}}
+### Step 5: CloudWatch Metrics Investigation
 
-```
-
-Looking closely at the node role arn, there appears to be a random string infront of new_nodegroup_3 (xnew_nodegroup_3). This does not look to belong there so let's confirm the node role name.
+Since Metrics Server isn't providing data, let's use CloudWatch to check EC2 instance metrics:
 
 :::info
-**Note:** _For your convenience we have added the Cluster name as env variable with the variable `$EKS_CLUSTER_NAME`._
+For your convenience, the instance ID of the worker node in new*nodegroup_3 has been stored as an environment variable *$INSTANCE*ID*.
 :::
 
 ```bash
-$ aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_3 --query 'nodegroup.nodeRole' --output text
-arn:aws:iam::1234567890:role/new_nodegroup_3
-```
+$ aws cloudwatch get-metric-data --region us-west-2 --start-time $(date -u -d '1 hour ago' +"%Y-%m-%dT%H:%M:%SZ") --end-time $(date -u +"%Y-%m-%dT%H:%M:%SZ") --metric-data-queries '[{"Id":"cpu","MetricStat":{"Metric":{"Namespace":"AWS/EC2","MetricName":"CPUUtilization","Dimensions":[{"Name":"InstanceId","Value":"'$INSTANCE_ID'"}]},"Period":60,"Stat":"Average"}}]'
 
-As expected, we can see that the aws-auth configmap was modified. Please modify the aws-auth configmap properly without the 'x' string infront of the node name.
+{
+    "MetricDataResults": [
+        {
+            "Id": "cpu",
+            "Label": "CPUUtilization",
+            "Timestamps": [
+                "2025-02-12T16:25:00+00:00",
+                "2025-02-12T16:20:00+00:00",
+                "2025-02-12T16:15:00+00:00",
+                "2025-02-12T16:10:00+00:00"
+            ],
+            "Values": [
+                99.87333333333333,
+                99.89633636636336,
+                99.86166666666668,
+                62.67880324995537
+            ],
+            "StatusCode": "Complete"
+        }
+    ],
+    "Messages": []
+}
+```
 
 :::info
-**Note:** The command below will modify the configmap by removing the 'x' infront of the role. Another way to modify is to run 'kubectl edit configmap aws-auth -n kube-system' command and make changes to the configmap resource directly.
+The CloudWatch metrics reveal:
+
+- CPU utilization consistently above 99%
+- Significant increase in resource usage over time
+- Clear indication of resource exhaustion
+
 :::
 
+### Step 6: Mitigate Impact
+
+Let's check deployment details and implement immediate changes to stabilize the node:
+
+1. Check the deployment resource configurations:
+
 ```bash
-$ kubectl get configmap aws-auth -n kube-system -o yaml | sed 's/\(rolearn: arn:aws:iam::[0-9]*:role\/\)x\(.*\)/\1\2/' | kubectl apply -f -
+$ kubectl get pods -n prod -o custom-columns="NAME:.metadata.name,CPU_REQUEST:.spec.containers[*].resources.requests.cpu,MEM_REQUEST:.spec.containers[*].resources.requests.memory,CPU_LIMIT:.spec.containers[*].resources.limits.cpu,MEM_LIMIT:.spec.containers[*].resources.limits.memory"
+NAME                        CPU_REQUEST   MEM_REQUEST   CPU_LIMIT   MEM_LIMIT
+prod-app-74b97f9d85-k6c84   100m          64Mi          <none>      <none>
+prod-app-74b97f9d85-mpcrv   100m          64Mi          <none>      <none>
+prod-app-74b97f9d85-wdqlr   100m          64Mi          <none>      <none>
+...
+...
+prod-ds-558sx               100m          128Mi         <none>      <none>
 ```
 
-Confirm that the configmap has been updated correctly and if it all looks good we can refresh the node.
+:::info
+Notice that neither the deployment nor the DaemonSet has resource limits configured, which allowed unconstrained resource consumption.
+:::
 
-```bash
-$ kubectl describe configmap aws-auth -n kube-system
+2. Let's scale down the deployment and stop the resource overload:
+
+```bash bash timeout=40 wait=25
+$ kubectl scale deployment/prod-app -n prod --replicas=0 && kubectl delete pod -n prod -l app=prod-app --force --grace-period=0 && kubectl wait --for=delete pod -n prod -l app=prod-app
 ```
 
-### Step 5
+3. Scale down the node group:
 
-To refresh the node we can decrease the managed node group desired count to 0 and then back to 1. The script below will modify desiredSize to 0, wait for the nodegroup status to transition from InProgress to Active, then exit. This can take up to about 30 seconds.
-
-```bash timeout=90 wait=60
+```bash timeout=90 wait=45
 $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=0; aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3; if [ $? -eq 0 ]; then echo "Node group scaled down to 0"; else echo "Failed to scale down node group"; exit 1; fi
 
-{
-    "update": {
-        "id": "abcd1234-1234-abcd-1234-1234abcd1234",
-        "status": "InProgress",
-        "type": "ConfigUpdate",
-        "params": [
-            {
-                "type": "DesiredSize",
-                "value": "0"
-            }
-        ],
-        "createdAt": "2024-10-23T16:56:03.522000+00:00",
-        "errors": []
-    }
-}
-Node group scaled down to 0
+```
+:::info
+ This can take up to about 30 seconds.
+:::
+
+4. Scale up the node group 
+
+```bash timeout=90 wait=45
+$ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=1 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && for i in {1..6}; do NODE_NAME_2=$(kubectl get nodes --selector eks.amazonaws.com/nodegroup=new_nodegroup_3 -o jsonpath='{.items[0].metadata.name}' 2>/dev/null) && [ -n "$NODE_NAME_2" ] && break || sleep 5; done && [ -n "$NODE_NAME_2" ] && echo "Node group scaled up to 1. New node name: $NODE_NAME_2" || (echo "Failed to scale up node group or get node name" && exit 1)
+
 ```
 
-Once the above command is successful, you can set the desiredSize back to 1. This can take up to about 30 seconds.
+:::info
+The script will store new node name as NODE_NAME_2. This can take up to about 30 seconds.
+:::
 
-```bash timeout=90 wait=60
-$ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=1 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3; if [ $? -eq 0 ]; then echo "Node group scaled up to 1"; else echo "Failed to scale up node group"; exit 1; fi
-
-{
-    "update": {
-        "id": "abcd1234-1234-abcd-1234-1234abcd1234",
-        "status": "InProgress",
-        "type": "ConfigUpdate",
-        "params": [
-            {
-                "type": "DesiredSize",
-                "value": "1"
-            }
-        ],
-        "createdAt": "2024-10-23T16:57:21.859000+00:00",
-        "errors": []
-    }
-}
-Node group scaled up to 1
+5. Verify node status: 
+```bash test=false
+$ kubectl get nodes --selector=kubernetes.io/hostname=$NODE_NAME_2
+NAME                                          STATUS   ROLES    AGE     VERSION
+ip-10-42-180-24.us-west-2.compute.internal    Ready    <none>   0h43m   v1.30.8-eks-aeac579
 ```
 
-If all goes well, you will see the new node join on the cluster after about up to one minute.
+### Step 7: Implementing Long-term Solutions
 
-```bash timeout=100 wait=70
-$ kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_3
-NAME                                          STATUS   ROLES    AGE    VERSION
-ip-10-42-174-206.us-west-2.compute.internal   Ready   <none>   3m13s   v1.xx.x-eks-a737599
+The Dev team has identified and fixed a memory leak in the application. Let's implement the fix and establish proper resource management:
+
+#### 7.1. Apply the updated application configuration
+
+```bash timeout=10 wait=5
+$ kubectl apply -f /home/ec2-user/environment/eks-workshop/modules/troubleshooting/workernodes/three/yaml/configmaps-new.yaml
 ```
 
-## Wrapping it up
+#### 7.2. Set resource limits for the deployment (cpu: 500m, memory: 512Mi)
 
-In this scenario, the Devops engineer managed the cluster access for IAM users using aws-auth configmap. There are several benefits of using [Access Entries](https://docs.aws.amazon.com/eks/latest/userguide/access-entries.html) over modifying the aws-auth ConfigMap in Amazon EKS. To name a few, it provides higher level of security and efficiency by managing accessibility through EKS API. In this scenario, the engineer was managing user access manually by editing the aws-auth configmap which led to accidental unwanted entries to the configmap.
+```bash timeout=10 wait=5
+$ kubectl patch deployment prod-app -n prod --patch '{"spec":{"template":{"spec":{"containers":[{"name":"prod-app","resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"256Mi"}}}]}}}}'
 
-There are several other scenarios when it comes to nodes in the _NotReady_ or _Unknown_ status. We've covered checking the Node Conditions and aws-node/kube-proxy pods in this scenario which led to use identifying permissions related errors.
+```
 
-Aside from this, other factors that can lead to unknown status include:
+#### 7.3. Set resource limits for the DaemonSet (cpu: 500m, memory: 512Mi)
 
-- **Network reachability between control plane and worker nodes.** Our scenario brushed on this as communication was hindered due to permissions, however network related issues like SG, NACL or route table routeability between the two endpoints can also contribute.
-- **Reachability to the EC2 API endpoint.** This is needed for the vpc cni to perform its needed operations to prepare ip addresses for pods.
-- **Kubelet issues.** If kubelet encountered an issue it can prevent communication to the control plane. An example of when a kubelet can encounter issue is when customizing the worker node AMI/launchtemplate and modifies the kubelet or OS.
+```bash timeout=10 wait=5
+$ kubectl patch daemonset prod-ds -n prod --patch '{"spec":{"template":{"spec":{"containers":[{"name":"prod-ds","resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"256Mi"}}}]}}}}'
+```
 
-Please review the troubleshooting document [here](https://repost.aws/knowledge-center/eks-node-status-ready) to learn about troubleshooting nodes in the NotReady or Unknown status.
+#### 7.4. Perform rolling updates and scale back to desired state
+
+```bash timeout=20 wait=10
+$ kubectl rollout restart deployment/prod-app -n prod && kubectl rollout restart daemonset/prod-ds -n prod && kubectl scale deployment prod-app -n prod --replicas=6
+```
+
+### Step 8: Verification
+
+Let's verify our fixes have resolved the issues:
+
+#### 8.1. Check pod creations
+
+```bash test=false
+$ kubectl get pods -n prod
+NAME                        READY   STATUS    RESTARTS   AGE
+prod-app-666f8f7bd5-658d6   1/1     Running   0          1m
+prod-app-666f8f7bd5-6jrj4   1/1     Running   0          1m
+prod-app-666f8f7bd5-9rf6m   1/1     Running   0          1m
+prod-app-666f8f7bd5-pm545   1/1     Running   0          1m
+prod-app-666f8f7bd5-ttkgs   1/1     Running   0          1m
+prod-app-666f8f7bd5-zm8lx   1/1     Running   0          1m
+prod-ds-ll4lv               1/1     Running   0          1m
+
+```
+
+#### 8.2. Verify pod resource usage
+
+```bash test=false
+$ kubectl top pods -n prod
+NAME                       CPU(cores)   MEMORY(bytes)   
+prod-app-666f8f7bd5-658d6   215m         425Mi           
+prod-app-666f8f7bd5-6jrj4   203m         426Mi           
+prod-app-666f8f7bd5-9rf6m   203m         426Mi           
+prod-app-666f8f7bd5-pm545   205m         425Mi           
+prod-app-666f8f7bd5-ttkgs   248m         425Mi           
+prod-app-666f8f7bd5-zm8lx   215m         425Mi           
+prod-ds-ll4lv               586m         3Mi  
+```
+
+3. Check node status
+```bash
+$ kubectl get node --selector=kubernetes.io/hostname=$NODE_NAME_2
+NAME                                          STATUS   ROLES    AGE     VERSION
+ip-10-42-180-24.us-west-2.compute.internal    Ready    <none>   1h35m   v1.30.8-eks-aeac579     
+```
+
+4. Check node resource usage
+```bash test=false
+$ kubectl top node --selector=kubernetes.io/hostname=$NODE_NAME   
+NAME                                          CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
+ip-10-42-180-24.us-west-2.compute.internal    1612m        83%    3145Mi          44%  
+```
+
+### Key Takeaways
+
+1. Resource Management
+
+   - Always set appropriate resource requests and limits
+   - Monitor cumulative workload impact
+   - Implement proper resource quotas
+
+2. Monitoring
+
+   - Use multiple monitoring tools
+   - Set up proactive alerting
+   - Monitor both container and node-level metrics
+
+3. Best Practices
+   - Implement horizontal pod autoscaling
+   - Use autoscaling: [Cluster-autoscaler](https://docs.aws.amazon.com/eks/latest/best-practices/cas.html), [Karpenter](https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html), [EKS Auto Mode](https://docs.aws.amazon.com/eks/latest/userguide/automode.html)
+   - Regular capacity planning
+   - Implement proper error handling in applications
+
+### Additional Resources
+
+- [Kubernetes Resource Management](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)
+- [Out of Resource Handling](https://kubernetes.io/docs/tasks/administer-cluster/out-of-resource/)
+- [EKS Best Practices](https://aws.github.io/aws-eks-best-practices/)
+- [Container Insights](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-metrics-EKS.html)
+- [Knowledge Center Guide](https://repost.aws/knowledge-center/eks-node-status-ready)

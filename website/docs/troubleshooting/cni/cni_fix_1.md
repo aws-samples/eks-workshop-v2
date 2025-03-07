@@ -1,5 +1,5 @@
 ---
-title: "Section 1 - Fixing Addons Configuration Issue"
+title: "Fixing Addons Configuration Issue OLD"
 sidebar_position: 41
 ---
 
@@ -128,7 +128,7 @@ Conditions:
 
 Let's analyze the situation: The node was in a NotReady state because the CNI (Container Network Interface) plugin wasn't initialized.
 
-:::Info
+:::info
 On EKS Linux nodes, the CNI plugin is initialized by a healthy VPC CNI pod called 'aws-node'. These aws-node pods run as DaemonSets, meaning each Linux worker node should have one.
 :::
 

@@ -1,5 +1,5 @@
 ---
-title: "Section 2 - Fixing Policy Issue"
+title: "Fixing Policy Issue"
 sidebar_position: 42
 ---
 
@@ -142,7 +142,7 @@ This error suggests that the aws-node/L-IPAMD component lacks the necessary perm
 
 ### Step 7
 
-Let's verify the VPC CNI IAM role whether it has the required **AmazonEKS_CNI_Policy** managed policy. This policy should be associted with IAM role assigned during the VPC CNI addon configuration update in Step 5. Let's check the role's policies to confirm this.
+Let's verify the VPC CNI IAM role whether it has the required **AmazonEKS_CNI_Policy** managed policy. This policy should be associated with IAM role assigned during the VPC CNI addon configuration update in Step 5. Let's check the role's policies to confirm this.
 
 :::info
 For your convenience, we have set the environment variable **VPC_CNI_IAM_ROLE_NAME** to contain the name of the IAM role associated with the VPC CNI managed add-on.

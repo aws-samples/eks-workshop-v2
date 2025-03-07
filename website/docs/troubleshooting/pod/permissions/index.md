@@ -141,6 +141,7 @@ $ aws iam list-attached-role-policies --role-name $ROLE_NAME
 ```
 
 The AWS managed policy "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly" is attached to the worker node role and this policy should provide enough permissions to pull a Image from ECR preivate repository. What else could we check now?
+=======
 
 ### Step 5: Check ECR repo permissions
 

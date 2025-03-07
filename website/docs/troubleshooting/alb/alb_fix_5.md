@@ -1,18 +1,19 @@
 ---
-title: "Section 2 - Fixing Policy Issue"
+title: "Fixing IAM Policy Issue"
 sidebar_position: 31
 ---
 
-In this section we will cover a specific troubleshooting step to address issues where the ALB is not properly forwarding traffic to the target groups. It provides step-by-step instructions and relevant configuration examples to help resolve this problem.
+In this section, we'll address an issue where the AWS Load Balancer Controller lacks the necessary IAM permissions to create and manage Application Load Balancers. We'll walk through identifying and fixing the IAM policy configuration.
 
-### Step 5
+### Step 1: Identify the Service Account Role
 
-With this setup, we’re leveraging IAM Roles for Service Accounts, which essentially allows pods to assume IAM roles using service accounts in Kubernetes and OIDC provider associated with your EKS cluster. Locate the service account that load balancer controller is using and find out the IAM role associated with it, to identify the IAM entity that would make API calls to provision your load balancer.
-Try running:
+First, let's examine the service account used by the Load Balancer Controller. The controller uses IAM Roles for Service Accounts (IRSA) to make AWS API calls:
 
 ```bash
 $ kubectl get serviceaccounts -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller -o yaml
 ```
+
+Example output:
 
 ```yaml {8}
 apiVersion: v1
@@ -41,53 +42,60 @@ metadata:
   resourceVersion: ""
 ```
 
-:::tip
-Can you verify if there’s a call in your CloudTrail events with the IAM role listed in the output for above command? If not, take a look at the logs from your controller.
-:::
+Note the IAM role ARN in the `eks.amazonaws.com/role-arn` annotation. This is the role that needs the correct permissions.
 
-### Step 6
+### Step 2: Check Controller Logs
 
-You can check the logs from controller pods to find additional details which could be preventing the load balancer to create. Let's check the logs using the command below.
+Let's examine the Load Balancer Controller logs to understand the permission issues:
 
 ```bash
 $ kubectl logs -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller
 ```
 
-For example the output may show something similar to the below output.
+You might see an error like this:
 
 ```text
 {"level":"error","ts":"2024-06-11T14:24:24Z","msg":"Reconciler error","controller":"ingress","object":{"name":"ui","namespace":"ui"},"namespace":"ui","name":"ui","reconcileID":"49d27bbb-96e5-43b4-b115-b7a07e757148","error":"AccessDenied: User: arn:aws:sts::xxxxxxxxxxxx:assumed-role/alb-controller-20240611131524228000000002/1718115201989397805 is not authorized to perform: elasticloadbalancing:CreateLoadBalancer on resource: arn:aws:elasticloadbalancing:us-west-2:xxxxxxxxxxxx:loadbalancer/app/k8s-ui-ui-5ddc3ba496/* because no identity-based policy allows the elasticloadbalancing:CreateLoadBalancer action\n\tstatus code: 403, request id: a24a1620-3a75-46b7-b3c3-9c80fada159e"}
 ```
 
-As you can see the error indicates the IAM role does not have the correct permissions, in this case the permissions to create the load balancer `elasticloadbalancing:CreateLoadBalancer`.
+The error indicates the IAM role lacks the `elasticloadbalancing:CreateLoadBalancer` permission.
 
-:::tip
-Verify the correct permissions required by the IAM role in the documentations here [[1]](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/deploy/installation/#setup-iam-manually) where you can find the latest IAM permissions json file required for the LB Controller. After the changes, you have to wait a few minutes for the changes to reflect, since IAM uses an eventual consistency model. To make the changes, locate the IAM role through the AWS console and add the missing permissions that are shown in the log. In this case CreateLoadBalancer is missing.
-:::
+### Step 3: Fix the IAM Policy
 
-Now let's fix it. To avoid conflicts with the automation of the workshop, we have already provisioned the correct permissions into the account and added the environment variable `LOAD_BALANCER_CONTROLLER_ROLE_NAME` that contains the role name and `LOAD_BALANCER_CONTROLLER_POLICY_ARN_FIX` which contains the correct IAM policy arn, and `LOAD_BALANCER_CONTROLLER_POLICY_ARN_ISSUE` that contains the incorrect IAM policy arn.
+To resolve this, we need to update the IAM role with the correct permissions. For this workshop, we've pre-created the correct policy. We'll:
 
-So, to fix it we will just need to attach the correct IAM policy, as follows:
+#### 3.1. Attach the correct policy
 
 ```bash
-$ aws iam attach-role-policy --role-name ${LOAD_BALANCER_CONTROLLER_ROLE_NAME} --policy-arn ${LOAD_BALANCER_CONTROLLER_POLICY_ARN_FIX}
+$ aws iam attach-role-policy \
+    --role-name ${LOAD_BALANCER_CONTROLLER_ROLE_NAME} \
+    --policy-arn ${LOAD_BALANCER_CONTROLLER_POLICY_ARN_FIX}
 ```
 
-and detach the incorrect IAM policy from the role:
+#### 3.2. Remove the incorrect policy
 
 ```bash
-$ aws iam detach-role-policy --role-name ${LOAD_BALANCER_CONTROLLER_ROLE_NAME} --policy-arn ${LOAD_BALANCER_CONTROLLER_POLICY_ARN_ISSUE}
+$ aws iam detach-role-policy \
+    --role-name ${LOAD_BALANCER_CONTROLLER_ROLE_NAME} \
+    --policy-arn ${LOAD_BALANCER_CONTROLLER_POLICY_ARN_ISSUE}
 ```
 
-Try accessing the new Ingress URL in the browser as before to check if you can access the UI app:
+### Step 4: Verify the Fix
 
-```bash timeout=180 hook=fix-5 hookTimeout=600
+Check if the ingress is now properly configured with an ALB:
+
+```bash timeout=600 hook=fix-5 hookTimeout=600
 $ kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
 k8s-ui-ui-5ddc3ba496-1208241872.us-west-2.elb.amazonaws.com
 ```
 
 :::tip
-It can take a couple of minutes for the Load Balancer to be available once created.
+**The Load Balancer creation can take a few minutes**. You can verify the process by:
+
+1. Checking CloudTrail for successful `CreateLoadBalancer` API calls
+2. Monitoring the controller logs for successful creation messages
+3. Watching the ingress resource for the ALB DNS name to appear
+
 :::
 
-Also, feel free to go to CloudTrail again and verify the API call for CreateLoadBalancer is there.
+For reference, the complete set of permissions required for the AWS Load Balancer Controller can be found in the [official documentation](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/deploy/installation/#setup-iam-manually).

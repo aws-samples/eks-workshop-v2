@@ -1,11 +1,13 @@
 ---
-title: "Step 3 - Check kube-dns service"
+title: "Checking kube-dns service"
 sidebar_position: 53
 ---
 
-Pods use their configured nameserver to resolve DNS names. In Linux systems, nameserver configuration is written to file `/etc/resolv.conf`. By default, Kubernetes writes the kube-dns service ClusterIP as nameserver on every pod, inside file `/etc/resolv.conf`.
+In Kubernetes, pods use their configured nameservers for DNS resolution. The nameserver configuration is stored in `/etc/resolv.conf`, and by default, Kubernetes configures the kube-dns service ClusterIP as the nameserver for all pods.
 
-Let’s check pod nameserver configuration to ensure that kube-dns service ClusterIP is set as nameserver in file `/etc/resolv.conf`. You can check any application pod becasue this configuration is globally applied to all pods in the cluster.
+### Step 1 - Check pod's resolv.conf
+
+Let's verify this configuration by checking the nameserver setting in a pod:
 
 ```bash timeout=30
 $ kubectl exec -it -n catalog catalog-mysql-0 -- cat /etc/resolv.conf
@@ -14,9 +16,9 @@ nameserver 172.20.0.10
 options ndots:5
 ```
 
-The nameserver is set to IP 172.20.0.10.
+### Step 2 - Check kube-dns service IP
 
-Confirm that this is the kube-dns service ClusterIP:
+Now, let's confirm this IP matches the kube-dns service ClusterIP:
 
 ```bash timeout=30
 $ kubectl get svc kube-dns -n kube-system
@@ -24,11 +26,11 @@ NAME       TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)                  AGE
 kube-dns   ClusterIP   172.20.0.10   <none>        53/UDP,53/TCP,9153/TCP   22d
 ```
 
-Perfect!
-The nameserver in file `/etc/resolv.conf` is pointing to kube-dns ClusterIP.
+The nameserver IP matches the kube-dns service ClusterIP, which is correct.
 
-Now, let’s ensure that kube-dns service points to Coredns pods.
-For that, check the endpoints for service kube-dns:
+### Step 3 - Check kube-dns service endpoints
+
+Next, verify that the kube-dns service is properly configured to route traffic to CoreDNS pods:
 
 ```bash timeout=30
 $ kubectl describe svc kube-dns -n kube-system
@@ -44,26 +46,28 @@ Endpoints:         10.42.122.16:53,10.42.153.96:53
 ...
 ```
 
-Then, ensure that kube-dns service endpoints are set to Coredns pod IP addresses:
+Compare these endpoints with CoreDNS pod IPs:
 
 ```bash timeout=30
 $ kubectl get pod -l k8s-app=kube-dns -n kube-system -o wide
 NAME                       READY   STATUS    RESTARTS   AGE   IP             ...
-coredns-787cb67946-72sqg   1/1     Running   0          18h   10.42.122.16   ...
-coredns-787cb67946-gtddh   1/1     Running   0          22d   10.42.153.96   ...
+CoreDNS-787cb67946-72sqg   1/1     Running   0          18h   10.42.122.16   ...
+CoreDNS-787cb67946-gtddh   1/1     Running   0          22d   10.42.153.96   ...
 ```
 
-Excellent, we can see that kube-dns service endpoints align with Coredns pod IP addresses.
+The service endpoints match the CoreDNS pod IPs, confirming proper service configuration.
 
-In your environment, coredns IPs will be different than the IPs in this output. The requirement is that the IPs shown in the service Endpoints section are the same as the IPs shown for coredns pods.
-
-Last, we need to verify that kube-proxy is working without issues.
-
-:::info
-Kube-proxy is responsible for configuring service routing inside the cluster. When DNS resolution traffic goes to kube-dns service, kube-proxy configuration is used to routed this traffic to Coredns pods.
+:::note
+Your environment will show different IPs. What matters is that the service endpoints match the CoreDNS pod IPs.
 :::
 
-First, check that kube-proxy pods are up and running:
+### Step 4 - Check kube-proxy pods
+
+Let's verify kube-proxy functionality.
+
+Kube-proxy manages service routing within the cluster. It's responsible for routing DNS traffic from the kube-dns service to CoreDNS pods.
+
+Check kube-proxy pod status:
 
 ```bash timeout=30
 $ kubectl get pod -n kube-system -l k8s-app=kube-proxy
@@ -73,9 +77,9 @@ kube-proxy-hqw8v   0/1     CrashLoopBackOff   2 (21s ago)   34s
 kube-proxy-rqszf   0/1     CrashLoopBackOff   2 (21s ago)   35s
 ```
 
-We found another problem: kube-proxy pods are not running!
+We've discovered another issue: kube-proxy pods are failing!
 
-Check kube-proxy logs to know what is happening when it tries to run:
+Examine kube-proxy logs:
 
 ```bash timeout=30
 $ kubectl logs -n kube-system -l k8s-app=kube-proxy
@@ -85,23 +89,23 @@ E1109 22:18:36.012763       1 server.go:558] "Error running ProxyServer" err="ca
 E1109 22:18:36.012808       1 run.go:74] "command failed" err="can't use the IPVS proxier: no such file or directory"
 ```
 
-The last line of the logs shows that kube-proxy fails due to an issue related to IPVS configuration.
+The logs indicate an IPVS configuration issue.
 
 :::info
-IPVS is a configuration mode for kube-proxy that uses hash tables rather than linear searching to process packets, providing efficiency for clusters with thousands of nodes and services.
+IPVS (IP Virtual Server) is an alternative kube-proxy mode that uses hash tables for packet processing, offering better performance in large clusters.
 :::
 
 ### Root Cause
 
-While trying to update the configuration mode for kube-proxy, users may apply a bad configuration and cause kube-proxy to fail. Then, kube-proxy is not able to set up ClusterIP rules for Kubernetes services, including kube-dns service. Connections to kube-dns service fail and DNS resolution in the cluster is impaired.
+A misconfiguration of kube-proxy's IPVS mode is causing pod failures. When kube-proxy fails, it cannot set up ClusterIP rules for services, including kube-dns, which disrupts DNS resolution cluster-wide.
 
-### How to resolve this issue?
+### Resolution
 
 To fix this issue, we will rollback kube-proxy configuration to its default mode: **iptables**.
 
-If you would like to read further about kube-proxy IPVS mode and how to configure it, check out [Running kube-proxy in IPVS Mode](https://docs.aws.amazon.com/eks/latest/best-practices/ipvs.html).
+For more information about IPVS mode, see [Running kube-proxy in IPVS Mode](https://docs.aws.amazon.com/eks/latest/best-practices/ipvs.html).
 
-Use aws cli to apply the default kube-proxy addon configuration. Note that we are passing an empty configuration in this update command, which applies the default kube-proxy iptables mode:
+Use AWS CLI to apply the default kube-proxy addon configuration. Note that passing an empty configuration applies the default kube-proxy iptables mode:
 
 ```bash timeout=30 wait=5
 $ aws eks update-addon --cluster-name $EKS_CLUSTER_NAME --addon-name kube-proxy --region $AWS_REGION \
@@ -128,14 +132,14 @@ $ aws eks update-addon --cluster-name $EKS_CLUSTER_NAME --addon-name kube-proxy 
 }
 ```
 
-Then, re-deploy kube-proxy pods and wait for the addon update to complete:
+Redeploy kube-proxy pods and wait for the update to complete:
 
 ```bash timeout=180 wait=5
 $ kubectl -n kube-system delete pod -l "k8s-app=kube-proxy"
 $ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --region $AWS_REGION  --addon-name kube-proxy
 ```
 
-Now, check kube-proxy pods to ensure that they are Ready:
+Verify kube-proxy pods are running:
 
 ```bash timeout=30
 $ kubectl get pod -n kube-system -l k8s-app=kube-proxy
@@ -145,7 +149,7 @@ kube-proxy-fkr7m   1/1     Running   0          3m13s
 kube-proxy-nttzw   1/1     Running   0          3m13s
 ```
 
-Also, check kube-proxy logs to make sure that there are no errors in the logs:
+Check kube-proxy logs for any errors:
 
 ```bash timeout=30
 $ kubectl logs -n kube-system -l k8s-app=kube-proxy
@@ -158,6 +162,6 @@ I1109 22:33:35.099387       1 proxier.go:799] "SyncProxyRules complete" elapsed=
 
 ### Next Steps
 
-At this point, we have resolved the issue with kube-proxy configuration and kube-proxy pods are running as expected now. This enures that our application pods can communicate with kubedns service and perform DNS resolution with coredns pods.
+We've resolved the kube-proxy configuration issue, ensuring proper communication between application pods and CoreDNS through the kube-dns service.
 
-Let's continue to the next lab to cover the last troubleshooting steps that will cover in this lab.
+Let's proceed to the final troubleshooting steps in the next lab.

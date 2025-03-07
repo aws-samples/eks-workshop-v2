@@ -1,5 +1,5 @@
 ---
-title: "Section 3 - Expanding Worker Node Subnet"
+title: "Expanding Worker Node Subnet"
 sidebar_position: 43
 ---
 
@@ -143,9 +143,9 @@ Having identified that our existing node subnets are running low on available IP
 
 ### Step 12
 
-When expanding your EKS cluster, it's possible to create new subnets for additional nodegroups, even if these subnets weren't part of the original cluster configuration.
+When expanding your EKS cluster, it's possible to create new subnets for additional node groups, even if these subnets weren't part of the original cluster configuration.
 :::info
-In our case, we've established new subnets on a secondary VPC CIDR to accommodate our new nodegroups, they are defined in these environment variables
+In our case, we've established new subnets on a secondary VPC CIDR to accommodate our new node groups, they are defined in these environment variables
 
 1. **ADDITIONAL_SUBNET_1**
 2. **ADDITIONAL_SUBNET_2**

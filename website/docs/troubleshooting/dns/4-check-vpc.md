@@ -1,22 +1,24 @@
 ---
-title: "Step 4 - Check VPC configuration"
+title: "Checking VPC configuration"
 sidebar_position: 54
 ---
 
-When DNS traffic flows from application pods to kube-dns service and to Coredns pods, it likely traverses different nodes and different VPC subnets. We must ensure that that DNS traffic can flow between worker nodes and subnets at the VPC level.
+DNS traffic between application pods, kube-dns service, and CoreDNS pods often traverses multiple nodes and VPC subnets. We need to verify that DNS traffic can flow freely at the VPC level.
 
-In the VPC, there are two main components that can filter network traffic: Security Groups and Network ACLs.
-We must ensure that Security Groups associated with worker nodes and Networks ACLs associated with worker node subnets allow DNS traffic to flow in and out.
+Two main VPC components can filter network traffic:
+- Security Groups
+- Network ACLs
 
-:::info
-Note that DNS traffic uses port 53 with protocols UDP and TCP.
-:::
+We should verify that both worker node Security Groups and subnet Network ACLs allow DNS traffic (port 53 UDP/TCP) in both directions.
 
-First, identify which Security Groups are associated with cluster worker nodes.
 
-There is an especial Security Group defined during cluster creation: the cluster Security Group. EKS associates this Security Group with the cluster endpoint and with all Managed Nodes in the cluster to ensure communication between nodes and control plane. If no additional Security Group is associated with worker nodes by the user, the cluster Security Group is the only Security Group that is associated with Managed Nodes. Then, let’s identify and review this cluster security group.
+### Step 1 - Identify worker node Security Groups
 
-Get the id of the cluster Security Group (the security group ID will be different in your environment):
+Let's start by identifying the Security Groups associated with cluster worker nodes.
+
+During cluster creation, EKS creates a cluster Security Group that's associated with both the cluster endpoint and all Managed Nodes. If no additional Security Groups are configured, this is the only Security Group controlling worker node traffic.
+
+First, get the cluster Security Group ID:
 
 ```bash timeout=30
 $ export CLUSTER_SG_ID=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --region $AWS_REGION --query "cluster.resourcesVpcConfig.clusterSecurityGroupId" --output text)
@@ -24,7 +26,7 @@ $ echo $CLUSTER_SG_ID
 sg-0fcabbda9848b346e
 ```
 
-Now let’s see whether worker nodes have additional security groups. For that, query all security groups associated with worker nodes:
+Now check for any additional Security Groups on worker nodes:
 
 ```bash timeout=30
 $ aws ec2 describe-instances \
@@ -42,9 +44,11 @@ $ aws ec2 describe-instances \
 +------------------------+
 ```
 
-All worker nodes are associated only with the cluster security group: `sg-0fcabbda9848b346e` in my case. Then we only need to check this security group to know what traffic is allowed to reach worker nodes.
+We can see that worker nodes only use the cluster Security Group `sg-0fcabbda9848b346e`. 
 
-Next, check the rules in this security group and analyze whether DNS traffic is allowed or not:
+### Step 2 - Check worker node Security Group rules
+
+Let's examine worker node Security Group rules:
 
 ```bash timeout=30
 $ aws ec2 describe-security-group-rules \
@@ -70,31 +74,29 @@ There are 3 Ingress rules and 1 Egress rule with the following details:
 - Ingress TCP port 443 from within this same security group (sg-0fcabbda9848b346e)
 - Ingress all protocols and ports from another security group (sg-09eca28cacae05248), which is not associated with worker nodes.
 
-DNS traffic, which uses protocols UDP and TCP on port 53, is not allowed. Then, DNS requests from pods will be dropped and lookup request will time out, as we saw before in application logs.
+Notably absent are rules allowing DNS traffic (UDP/TCP port 53), explaining our DNS resolution failures.
 
-### Root Casue
+### Root Cause
 
-In an attempt to secure communications in the cluster VPC, users may restric traffic in the cluster security group, which is also applied to all worker nodes. It is important to ensure that DNS traffic is allowed in this Security Group. Alternatively, users may create a separate Security Group and associate it with all wroker nodes, to ensure that nodes and pods can connect with each other, inlcuding DNS traffic.
+When tightening cluster security, users might overly restrict the cluster Security Group rules. For proper cluster operation, DNS traffic must be allowed either through the cluster Security Group or through a separate Security Group attached to worker nodes.
 
-In this case, the cluster Security Group was restricted to allow only traffic on port 443 and 10250. DNS traffic is not allowed in the cluster Security Group nor in any other Security Group associated with worker nodes. Therefore, name resolution request from application time out and application connectivity fails.
+In this case, the cluster Security Group only allows ports 443 and 10250, blocking DNS traffic and causing name resolution timeouts.
 
-### How to resolve this issue?
+### Resolution
 
-To fix this problem, we need to add a rule to this security group to allow DNS traffic. Moreover, EKS recommends that the cluster security group allows all traffic within the security group, to ensure that communication between managed nodes and control plane is allowed, [View Amazon EKS security group requirements for clusters](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html).
-
-Execute the following command to allow all traffic within the cluster security group:
+Following [EKS security group requirements](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html), we'll allow all traffic within the cluster Security Group:
 
 ```bash timeout=30 wait=5
 $ aws ec2 authorize-security-group-ingress --group-id $CLUSTER_SG_ID --protocol -1 --port -1 --source-group $CLUSTER_SG_ID
 ```
 
-Next, recreate all application pods:
+Recreate the application pods:
 
 ```bash timeout=30 wait=30
 $ kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernetes.io/component=service -A
 ```
 
-Last, check pod status to ensure that application pods move to Ready state:
+Verify all pods reach Ready state:
 
 ```bash timeout=30
 $ kubectl get pod -l app.kubernetes.io/created-by=eks-workshop -A
@@ -111,13 +113,22 @@ orders      orders-mysql-6fbd688d4b-m7gpt     1/1     Running   0          19h
 ui          ui-5f4d85f85f-xnh8q               1/1     Running   0          50s
 ```
 
-For further details about Security Group requriemens in EKS, [View Amazon EKS security group requirements for clusters](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html).
+For more information, see [Amazon EKS security group requirements](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html).
 
-:::info
-In addition to Security Groups, Network Access Control Lists can also block traffic to and from EKS pods and nodes. Network ACLs is another important configuration to check when traffic is not flowing as expected. In this lab we are not covering Network ACLs. If you want to know more, check out [Control subnet traffic with network access control lists](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html).
+:::info Network ACLs
+While this lab focuses on Security Groups, Network ACLs can also affect traffic flow in EKS clusters. For more information about Network ACLs, see [Control subnet traffic with network access control lists](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html).
 :::
 
 ### Conclusions
 
 Throughout the multiple sections of this lab, we investigated and root caused different issues that affect DNS resolution in EKS clusters, and performed the needed steps to fix them.
 All application pods should be in Ready state as shown above.
+
+In this lab, we've:
+
+1. Identified multiple issues affecting DNS resolution in our EKS cluster
+2. Followed a systematic troubleshooting approach to diagnose each issue
+3. Applied the necessary fixes to restore DNS functionality
+4. Verified that all application pods are now running properly
+
+All application pods should now be in Ready state with DNS resolution working correctly.

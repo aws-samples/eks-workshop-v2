@@ -13,7 +13,7 @@ Statement:
       - s3:DeleteObject
       - s3:DeleteObjectVersion
     Resource:
-      - arn:aws:s3:::eks-workshop-canary-artifacts*
+      - arn:aws:s3:::${Env}-*
       - arn:aws:s3:::aws-synthetics-library*
   - Effect: Allow
     Action:

@@ -33,9 +33,9 @@ logmessage "Setting cluster Security Group to its default configuration"
 
 CLUSTER_SG_ID=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --region $AWS_REGION --query "cluster.resourcesVpcConfig.clusterSecurityGroupId" --output text)
 # echo $CLUSTER_SG_ID
-aws ec2 authorize-security-group-ingress --group-id $CLUSTER_SG_ID --protocol -1 --port -1 --source-group $CLUSTER_SG_ID > /dev/null 2>&1 || echo "Cleanup step 1 of 3 already applied."
-aws ec2 revoke-security-group-ingress --group-id $CLUSTER_SG_ID --protocol tcp --port 443 --source-group $CLUSTER_SG_ID > /dev/null 2>&1 || echo "Cleanup step 2 of 3 already applied."
-aws ec2 revoke-security-group-ingress  --group-id $CLUSTER_SG_ID --protocol tcp --port 10250 --source-group $CLUSTER_SG_ID > /dev/null 2>&1 || echo "Cleanup step 3 of 3 already applied."
+aws ec2 authorize-security-group-ingress --group-id $CLUSTER_SG_ID --protocol -1 --port -1 --source-group $CLUSTER_SG_ID > /dev/null 2>&1 || echo "EKS Cluster SG allows ingress traffic from itself"
+aws ec2 revoke-security-group-ingress --group-id $CLUSTER_SG_ID --protocol tcp --port 443 --source-group $CLUSTER_SG_ID > /dev/null 2>&1 || echo "EKS Cluster SG revoked extra rule for 443"
+aws ec2 revoke-security-group-ingress  --group-id $CLUSTER_SG_ID --protocol tcp --port 10250 --source-group $CLUSTER_SG_ID > /dev/null 2>&1 || echo "EKS Cluster SG revoked extra rule for 10250"
 sleep 2
 
 

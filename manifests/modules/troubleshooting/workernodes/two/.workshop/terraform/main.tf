@@ -1,4 +1,3 @@
-##To do - added nodegroup name as variable and change change to use the variable instead.
 
 terraform {
   required_providers {
@@ -30,25 +29,6 @@ locals {
   }
 }
 
-
-# data "aws_vpc" "selected" {
-#   tags = {
-#     created-by = "eks-workshop-v2"
-#     env        = var.addon_context.eks_cluster_id
-#   }
-# }
-
-# data "aws_subnets" "public" {
-#   tags = {
-#     created-by = "eks-workshop-v2"
-#     env        = var.addon_context.eks_cluster_id
-#   }
-# }
-#   filter {
-#     name   = "tag:Name"
-#     values = ["*Public*"]
-#   }
-
 data "aws_eks_cluster" "cluster" {
   name = var.eks_cluster_id
 }
@@ -58,20 +38,18 @@ data "aws_eks_node_group" "default" {
   node_group_name = "default"
 }
 
-# data "aws_subnet" "default_nodegroup_subnet" {
-#   id = tolist(data.aws_eks_node_group.default.subnet_ids)[0]
-# }
-
-# data "aws_nat_gateway" "default_nodegroup_nat" {
-#   subnet_id = data.aws_subnet.default_nodegroup_subnet.id
-# }
-
 data "aws_vpc" "selected" {
   tags = {
     created-by = "eks-workshop-v2"
     env        = var.addon_context.eks_cluster_id
   }
+
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_eks_cluster.cluster.vpc_config[0].vpc_id]
+  }
 }
+
 
 data "aws_nat_gateways" "cluster_nat_gateways" {
   #  vpc_id = data.aws_eks_cluster.cluster.vpc_config[0].vpc_id
@@ -85,11 +63,6 @@ data "aws_nat_gateways" "cluster_nat_gateways" {
     name   = "state"
     values = ["available"]
   }
-
-  # filter {
-  #   name   = "tag:created-by"
-  #   values = ["eks-workshop-v2"]
-  # }
 }
 
 # Create a new subnet
@@ -159,14 +132,11 @@ resource "aws_eks_node_group" "new_nodegroup_2" {
     aws_subnet.new_subnet,
     aws_route_table_association.new_subnet_association,
   ]
-  # # Allow Terraform to delete the node group
-  # force_delete = true
 
   # combine local tags with resource-specific tags
   tags = merge(local.tags, {
     Name = "troubleshooting-new-node-group"
   })
-  # helps manage updates more smoothly
   lifecycle {
     create_before_destroy = true
   }
@@ -189,14 +159,8 @@ resource "null_resource" "increase_desired_count" {
     command = "aws eks update-nodegroup-config --cluster-name ${data.aws_eks_cluster.cluster.id} --nodegroup-name new_nodegroup_2 --scaling-config minSize=0,maxSize=2,desiredSize=1"
 
     when = create
-    # environment = {
-    #   AWS_DEFAULT_REGION = "us-west-2" # Replace with any region
-    # }
   }
-  # provisioner "local-exec" {
-  #   when    = destroy
-  #   command = "aws eks update-nodegroup-config --cluster-name ${self.triggers.cluster_name} --nodegroup-name ${self.triggers.node_group_name} --scaling-config minSize=0,maxSize=2,desiredSize=0"
-  # }
+
   depends_on = [aws_eks_node_group.new_nodegroup_2]
 }
 
@@ -221,11 +185,3 @@ data "aws_instances" "new_nodegroup_2_instances" {
   depends_on           = [null_resource.wait_for_instance]
 }
 
-
-# data "aws_instances" "new_nodegroup_2_instances" {
-#   instance_tags = {
-#     "aws:autoscaling:groupName" = data.aws_autoscaling_group.new_nodegroup_2.name
-#   }
-#   instance_state_names = ["running"]
-#   depends_on           = [null_resource.increase_desired_count]
-# }

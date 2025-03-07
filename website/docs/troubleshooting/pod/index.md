@@ -2,6 +2,7 @@
 title: "Pod Issue Scenarios"
 sidebar_position: 60
 description: "Troubleshoot common pod issues in Amazon EKS clusters"
+
 ---
 
 ::required-time

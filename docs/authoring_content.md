@@ -2,8 +2,6 @@
 
 This guide outlines how to author content for the workshop, whether adding new content or modifying existing content.
 
-<!-- toc -->
-
 1. [Pre-requisites](#pre-requisites)
 1. [Create a work branch](#create-a-work-branch)
 1. [Environment setup](#environment-setup)
@@ -13,7 +11,6 @@ This guide outlines how to author content for the workshop, whether adding new c
 1. [Cleaning up your lab](#cleaning-up-your-lab)
 1. [Testing](#testing)
 1. [Tear down AWS resources](#raising-a-pull-request)
-<!-- tocstop -->
 
 ## Pre-requisites
 
@@ -24,8 +21,11 @@ The following pre-requisites are necessary to work on the content:
   - Docker
   - `make`
   - `jq`
-  - `npm`
+  - `yq`
+  - Node.js + `yarn`
   - `kubectl`
+
+Double-check the version of `yq` installed in your environment. Many package managers will automatically install a version of yq that is incompatible with this workshop as a pre-requisote when installing `jq`. The latest version of `yq` can be downloaded here [https://github.com/mikefarah/yq](https://github.com/mikefarah/yq)
 
 ## Create a work branch
 
@@ -42,13 +42,13 @@ To start developing you'll need to run some initial commands.
 
 First install the dependencies by running the following command in the root of the repository.
 
-```
+```bash
 make install
 ```
 
 Once this is complete you can run the following command to start the development server:
 
-```
+```bash
 make serve
 ```
 
@@ -76,13 +76,13 @@ Many of the convenience scripts we'll use will make calls to AWS APIs so will ne
 
 You can then use the following convenience command to create the infrastructure:
 
-```
+```bash
 make create-infrastructure
 ```
 
 Once you're finished with the test environment you can delete all of the infrastructure using the following convenience command:
 
-```
+```bash
 make destroy-infrastructure
 ```
 
@@ -230,6 +230,18 @@ There is an automated testing capability provided with the workshop that allows 
 **Your content must be able to be tested in an automated manner. If this is not possible then the content will be rejected due to maintenance burden.**
 
 See this [doc](./automated_tests.md) for more information on automated tests.
+
+## Before your Pull Request
+
+The last step is to ensure that your submission passes all of the linting checks. These are in place to keep the codebase consistent and avoid issues such as basic spelling mistakes.
+
+```bash
+make lint
+```
+
+If you need to add a new word to the dictionary see the file `.spelling`.
+
+You can resolve prettier formatting problems using `yarn format:fix`.
 
 ## Raising a Pull Request
 

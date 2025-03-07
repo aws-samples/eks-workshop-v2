@@ -1,0 +1,47 @@
+{
+  "name": "eks-workshop",
+  "version": "1.0.0",
+  "description": "EKS Workshop",
+  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "website",
+    "releaser"
+  ],
+  "scripts": {
+    "serve": "yarn workspace website start",
+    "spelling:check": "yarn cspell 'website/docs/**/*.md'",
+    "links:check": "markdown-link-check -q -c link-check-config.json website/docs/**/*.md",
+    "format:check": "prettier -c .",
+    "format:fix": "prettier -w .",
+    "markdown:check": "markdownlint-cli2 'website/docs/**/*.md'",
+    "lint": "yarn links:check && yarn format:check && yarn markdown:check && yarn spelling:check",
+    "lint:staged": "yarn lint-staged --no-stash"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "cspell": "^8.8.1",
+    "lint-staged": "^15.2.7",
+    "markdown-link-check": "3.12.2",
+    "markdownlint-cli2": "^0.16.0",
+    "npm-run-all2": "^5.0.0",
+    "prettier": "^3.2.5",
+    "prettier-plugin-sh": "^0.14.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write"
+    ],
+    "*.{json,yaml}": [
+      "prettier --write"
+    ],
+    "*.md": [
+      "prettier --write",
+      "cspell",
+      "markdown-link-check -q -c link-check-config.json",
+      "markdownlint-cli2"
+    ]
+  },
+  "packageManager": "yarn@4.5.3"
+}

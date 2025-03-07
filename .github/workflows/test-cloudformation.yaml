@@ -28,7 +28,7 @@ jobs:
       - name: Set branch name
         run: echo "TEST_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
       - name: Get AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4.0.2
+        uses: aws-actions/configure-aws-credentials@v4.0.3
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-duration-seconds: 3600
@@ -38,15 +38,13 @@ jobs:
         id: deploy
         env:
           AWS_REGION: "${{ secrets.AWS_REGION }}"
+          CLUSTER_ID: "${{ env.CLUSTER_ID }}"
         run: |
-          aws cloudformation deploy --stack-name cfn-test-${CLUSTER_ID}-${TEST_BRANCH} \
-            --template-file ./lab/cfn/eks-workshop-ide-cfn.yaml \
-            --parameter-overrides RepositoryRef=${TEST_BRANCH} \
-            --capabilities CAPABILITY_NAMED_IAM
+          make deploy-ide environment="${CLUSTER_ID}"
       - name: Cleanup
         if: always()
         env:
           AWS_REGION: "${{ secrets.AWS_REGION }}"
+          CLUSTER_ID: "${{ env.CLUSTER_ID }}"
         run: |
-          aws cloudformation delete-stack --stack-name cfn-test-${CLUSTER_ID}-${TEST_BRANCH}
-          aws cloudformation wait stack-delete-complete --stack-name cfn-test-${CLUSTER_ID}-${TEST_BRANCH}
+          make destroy-ide environment="${CLUSTER_ID}"
