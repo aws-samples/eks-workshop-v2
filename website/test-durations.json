@@ -1,5 +1,10 @@
 {
   "/aiml/index.md": 1,
+  "/aiml/chatbot/add-mistral.md": 666117,
+  "/aiml/chatbot/expose.md": 21404,
+  "/aiml/chatbot/gradio-mistral.md": 526008,
+  "/aiml/chatbot/index.md": 203818,
+  "/aiml/chatbot/nodepool.md": 4230,
   "/aiml/inferentia/compile.md": 331930,
   "/aiml/inferentia/index.md": 205489,
   "/aiml/inferentia/inference.md": 282459,
@@ -86,6 +91,7 @@
   "/fundamentals/storage/mountpoint-s3/20-introduction-to-mountpoint-for-amazon-s3.md": 45869,
   "/fundamentals/storage/mountpoint-s3/30-persistent-object-storage-with-mountpoint-for-amazon-s3.md": 23439,
   "/fundamentals/storage/mountpoint-s3/index.md": 153471,
+  "/fundamentals/storage/fsx-for-openzfs/index.md": 1200,
   "/introduction/getting-started/finish.md": 17926,
   "/introduction/getting-started/first.md": 12371,
   "/introduction/getting-started/index.md": 832,

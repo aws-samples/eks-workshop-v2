@@ -12,13 +12,13 @@ $ ADDRESS=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingr
 $ curl $ADDRESS/catalogue
 ```
 
-The first thing we'll do is re-create the Ingress for `ui` component adding the annotation `alb.ingress.kubernetes.io/group.name`:
+The first thing we'll do is create a new Ingress for the `ui` component adding the annotation `alb.ingress.kubernetes.io/group.name`:
 
 ```file
 manifests/modules/exposing/ingress/multiple-ingress/ingress-ui.yaml
 ```
 
-Now, let's create a separate Ingress for the `catalog` component that also leverages the same `group.name`:
+Then we'll create a separate Ingress for the `catalog` component that also leverages the same `group.name`:
 
 ```file
 manifests/modules/exposing/ingress/multiple-ingress/ingress-catalog.yaml
@@ -28,17 +28,18 @@ This ingress is also configuring rules to route requests prefixed with `/catalog
 
 Apply these manifests to the cluster:
 
-```bash timeout=180 hook=add-ingress hookTimeout=430
+```bash timeout=180 hook=multiple-ingress hookTimeout=530
 $ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/multiple-ingress
 ```
 
-We'll now have two separate Ingress objects in our cluster:
+We'll now have two additional Ingress objects in our cluster that end with `-multi`:
 
 ```bash
 $ kubectl get ingress -l app.kubernetes.io/created-by=eks-workshop -A
-NAMESPACE   NAME      CLASS   HOSTS   ADDRESS                                                              PORTS   AGE
-catalog     catalog   alb     *       k8s-retailappgroup-2c24c1c4bc-17962260.us-west-2.elb.amazonaws.com   80      2m21s
-ui          ui        alb     *       k8s-retailappgroup-2c24c1c4bc-17962260.us-west-2.elb.amazonaws.com   80      2m21s
+NAMESPACE      NAME      CLASS   HOSTS   ADDRESS                                                              PORTS   AGE
+catalog-multi  catalog   alb     *       k8s-retailappgroup-2c24c1c4bc-17962260.us-west-2.elb.amazonaws.com   80      2m21s
+ui-multi       ui        alb     *       k8s-retailappgroup-2c24c1c4bc-17962260.us-west-2.elb.amazonaws.com   80      2m21s
+ui             ui        alb     *       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com                     80      4m3s
 ```
 
 Notice that the `ADDRESS` of both are the same URL, which is because both of these Ingress objects are being grouped together behind the same ALB.
@@ -64,20 +65,20 @@ You can also check out the new ALB configuration in the AWS console:
 To wait until the load balancer has finished provisioning you can run this command:
 
 ```bash
-$ wait-for-lb $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ wait-for-lb $(kubectl get ingress -n catalog catalog-multi -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
 ```
 
 Try accessing the new Ingress URL in the browser as before to check the web UI still works:
 
 ```bash
-$ kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
+$ kubectl get ingress -n catalog catalog-multi -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
 k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
 
 Now try accessing the specific path we directed to the catalog service:
 
 ```bash
-$ ADDRESS=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ ADDRESS=$(kubectl get ingress -n catalog catalog-multi -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
 $ curl $ADDRESS/catalogue | jq .
 ```
 
