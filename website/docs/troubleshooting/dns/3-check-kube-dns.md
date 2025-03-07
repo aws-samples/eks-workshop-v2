@@ -63,11 +63,9 @@ Your environment will show different IPs. What matters is that the service endpo
 
 ### Step 4 - Check kube-proxy pods
 
-Let's verify kube-proxy functionality.
+#### 4.1. Verify kube-proxy functionality
 
-Kube-proxy manages service routing within the cluster. It's responsible for routing DNS traffic from the kube-dns service to CoreDNS pods.
-
-Check kube-proxy pod status:
+Kube-proxy manages service routing within the cluster. It's responsible for routing DNS traffic from the kube-dns service to CoreDNS pods. Let's check kube-proxy pod status:
 
 ```bash timeout=30
 $ kubectl get pod -n kube-system -l k8s-app=kube-proxy
@@ -77,9 +75,9 @@ kube-proxy-hqw8v   0/1     CrashLoopBackOff   2 (21s ago)   34s
 kube-proxy-rqszf   0/1     CrashLoopBackOff   2 (21s ago)   35s
 ```
 
-We've discovered another issue: kube-proxy pods are failing!
+You can see kube-proxy pods are failing.
 
-Examine kube-proxy logs:
+#### 4.2. Examine kube-proxy logs
 
 ```bash timeout=30
 $ kubectl logs -n kube-system -l k8s-app=kube-proxy
@@ -103,9 +101,11 @@ A misconfiguration of kube-proxy's IPVS mode is causing pod failures. When kube-
 
 To fix this issue, we will rollback kube-proxy configuration to its default mode: **iptables**.
 
+:::info
 For more information about IPVS mode, see [Running kube-proxy in IPVS Mode](https://docs.aws.amazon.com/eks/latest/best-practices/ipvs.html).
+:::
 
-Use AWS CLI to apply the default kube-proxy addon configuration. Note that passing an empty configuration applies the default kube-proxy iptables mode:
+Use the AWS CLI to apply the default kube-proxy addon configuration. Note that passing an empty configuration applies the default kube-proxy iptables mode:
 
 ```bash timeout=30 wait=5
 $ aws eks update-addon --cluster-name $EKS_CLUSTER_NAME --addon-name kube-proxy --region $AWS_REGION \
@@ -139,7 +139,7 @@ $ kubectl -n kube-system delete pod -l "k8s-app=kube-proxy"
 $ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --region $AWS_REGION  --addon-name kube-proxy
 ```
 
-Verify kube-proxy pods are running:
+Then verify kube-proxy pods are running:
 
 ```bash timeout=30
 $ kubectl get pod -n kube-system -l k8s-app=kube-proxy
@@ -149,7 +149,7 @@ kube-proxy-fkr7m   1/1     Running   0          3m13s
 kube-proxy-nttzw   1/1     Running   0          3m13s
 ```
 
-Check kube-proxy logs for any errors:
+Finally, check kube-proxy logs for any errors:
 
 ```bash timeout=30
 $ kubectl logs -n kube-system -l k8s-app=kube-proxy

@@ -22,9 +22,9 @@ $ prepare-environment troubleshooting/dns
 
 ### DNS resolution in EKS
 
-In an EKS cluster, when applications need to connect to other services (either internal or external to the cluster), they must translate the target endpoint name to an IP address through DNS resolution.
+In an EKS cluster, when applications need to connect to other services (either internal or external to the cluster), they must resolve the target endpoint name to an IP address through DNS.
 
-By default, Kubernetes clusters configure all pods to use kube-dns service ClusterIP address as its name server. When you launch an Amazon EKS cluster, EKS deploys two pod replicas of CoreDNS to serve behind kube-dns service.
+By default, Kubernetes clusters configure all pods to use kube-dns service ClusterIP address as their name server. When you launch an Amazon EKS cluster, EKS deploys two pod replicas of CoreDNS to serve behind kube-dns service.
 
 [CoreDNS](https://coredns.io/) is a flexible, extensible DNS server widely adopted as the standard Kubernetes cluster DNS.
 

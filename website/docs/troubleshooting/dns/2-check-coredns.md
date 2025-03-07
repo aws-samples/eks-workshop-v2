@@ -16,17 +16,19 @@ CoreDNS-6fdb8f5699-dq7xw   0/1     Pending   0          42s
 CoreDNS-6fdb8f5699-z57jw   0/1     Pending   0          42s
 ```
 
-We can see that CoreDNS pods are not running. This clearly explains the DNS resolution issues in the cluster.
+We can see that CoreDNS pods are not running which clearly explains the DNS resolution issues in the cluster.
 
+:::info
 The pods are in Pending state, indicating they haven't been scheduled to any node. 
+:::
 
 ### Step 2 - Check pod events
 
-Let's investigate further by checking events related to this pod in the pod description:
+Let's investigate further by checking events related to these pods in their descriptions:
 
 ```bash timeout=30
-$ kubectl describe po -l k8s-app=kube-dns -n kube-system
-...
+$ kubectl describe po -l k8s-app=kube-dns -n kube-system | sed -n '/Events:/,/^$/p'
+
 Events:
   Type     Reason            Age   From               Message
   ----     ------            ----  ----               -------
@@ -75,7 +77,7 @@ $ kubectl get node -o jsonpath='{.items[0].metadata.labels}' | jq
 }
 ```
 
-We've found the issue: The CoreDNS pod requires nodes with label `workshop-default: no`, but our nodes are labeled with `workshop-default: yes`.
+The CoreDNS pod requires nodes with label `workshop-default: no`, however the nodes are labeled with `workshop-default: yes`.
 
 :::info
 There are different options in pod's yaml manifest to influence pod scheduling on nodes. Other parameters include affinity, anti-affinity, and pod topology spread constraints. More details in the [Kubernetes documentation](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/).
@@ -113,14 +115,14 @@ $ aws eks update-addon \
                 "value": "{}"
             }
         ],
-        "createdAt": "2024-11-09T16:25:15.885000-05:00",
+        "createdAt": "20XX-XX-09T16:25:15.885000-05:00",
         "errors": []
     }
 }
 $ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --region $AWS_REGION  --addon-name coredns
 ```
 
-Verify that CoreDNS pods are now running:
+Then verify that CoreDNS pods are now running:
 
 ```bash timeout=30
 $ kubectl get pod -l k8s-app=kube-dns -n kube-system

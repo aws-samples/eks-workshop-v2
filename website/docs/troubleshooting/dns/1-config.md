@@ -5,10 +5,6 @@ sidebar_position: 51
 
 DNS resolution in a cluster can be affected by multiple configuration options, which may disrupt service communications. In this module, we'll simulate common DNS-related issues frequently encountered in EKS clusters.
 
-:::tip Don't open the lab setup script, just execute it
-When troubleshooting connectivity and DNS resolution issues in your cluster, you typically won't know the root cause upfront. We recommend **not** examining the setup script, but instead following the lab steps to learn a systematic troubleshooting approach for DNS resolution issues in EKS clusters.
-:::
-
 ### Step 1 - Execute configuration script 
 
 Let's introduce the issues for this module by running the following script:
@@ -26,7 +22,7 @@ Next, redeploy application pods:
 $ kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernetes.io/component=service -A
 ```
 
-Wait for all pods to be recreated and check the application status. You'll notice some pods fail to reach Ready state, showing multiple restarts with Error or CrashLoopBackOff status:
+Wait for all pods to be recreated, then check the application status. You'll notice some pods fail to reach Ready state, showing multiple restarts with Error or CrashLoopBackOff status:
 
 ```bash timeout=30 expectError=true
 $ kubectl get pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernetes.io/component=service -A
@@ -41,11 +37,9 @@ ui          ui-5f4d85f85f-hdhjg               1/1     Running            0      
 
 ### Step 3 - Troubleshoot application issues
 
-Let's investigate the issue.
+#### 3.1. Investigate the issue
 
-When pods fail to start properly, we can use `kubectl describe pod` to check for pod and container provisioning issues.
-
-Examine the events section of the non-ready catalog pod:
+When pods fail to start properly, we can use `kubectl describe pod` to check for pod and container provisioning issues. Examine the events section of the non-ready catalog pod:
 
 ```bash timeout=30 expectError=true
 $ kubectl describe pod -l app.kubernetes.io/name=catalog -l app.kubernetes.io/component=service -n catalog
@@ -62,6 +56,8 @@ Events:
 ```
 
 The events show that while the container starts, the application fails to run properly. Failed readiness probes trigger container restarts.
+
+#### 3.1. Check application logs
 
 Check the application logs to understand why the application isn't running:
 
@@ -80,7 +76,9 @@ $ kubectl logs -l app.kubernetes.io/name=catalog -l app.kubernetes.io/component=
 
 The logs reveal that the application fails to connect to the database due to DNS resolution timeout when trying to resolve the MySQL database service name (catalog-mysql).
 
+:::info
 You can optionally check logs for other non-ready pods, which will show similar DNS resolution failures.
+:::
 
 ### Next Steps
 
