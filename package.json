@@ -23,7 +23,7 @@
   "devDependencies": {
     "cspell": "^8.8.1",
     "lint-staged": "^15.2.7",
-    "markdown-link-check": "3.12.2",
+    "markdown-link-check": "3.13.6",
     "markdownlint-cli2": "^0.16.0",
     "npm-run-all2": "^5.0.0",
     "prettier": "^3.2.5",
