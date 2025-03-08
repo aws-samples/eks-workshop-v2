@@ -4,22 +4,22 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "5.72.0"
+      version = "5.90.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.32.0"
+      version = "2.36.0"
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "2.15.0"
+      version = "2.17.0"
     }
     kubectl = {
       source  = "gavinbunney/kubectl"
-      version = "1.14.0"
+      version = "1.19.0"
     }
     local = {
-      version = "2.5.1"
+      version = "2.5.2"
     }
   }
 }
