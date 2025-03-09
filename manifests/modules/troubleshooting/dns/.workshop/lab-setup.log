@@ -1,0 +1,68 @@
+Sun Nov 10 23:15:16 UTC 2024 - Lab Setup Started
++ special_echo 'Applying configuration!'
++ echo 'Applying configuration!'
+++ aws eks describe-addon --cluster-name eks-workshop --addon-name kube-proxy --query addon.configurationValues --region us-west-2 --output text
++ output='{}'
++ [[ {} != \{\} ]]
++ aws eks update-addon --cluster-name eks-workshop --addon-name kube-proxy --region us-west-2 --configuration-values '{"ipvs": {"scheduler": "r"}, "mode": "ipvs"}' --resolve-conflicts OVERWRITE
+{
+    "update": {
+        "id": "45178be3-e0b1-31e0-b44c-b5cac0ba8f5e",
+        "status": "InProgress",
+        "type": "AddonUpdate",
+        "params": [
+            {
+                "type": "ResolveConflicts",
+                "value": "OVERWRITE"
+            },
+            {
+                "type": "ConfigurationValues",
+                "value": "{\"ipvs\": {\"scheduler\": \"r\"}, \"mode\": \"ipvs\"}"
+            }
+        ],
+        "createdAt": "2024-11-10T23:15:18.655000+00:00",
+        "errors": []
+    }
+}
++ sleep 2
++ kubectl -n kube-system delete pod -l k8s-app=kube-proxy
+pod "kube-proxy-fdr78" deleted
+pod "kube-proxy-mh8m5" deleted
+pod "kube-proxy-vrrtc" deleted
++ aws eks wait addon-active --cluster-name eks-workshop --region us-west-2 --addon-name kube-proxy
++ kubectl scale deployment coredns --replicas=0 -n kube-system
+deployment.apps/coredns scaled
++ sleep 2
++ aws eks update-addon --cluster-name eks-workshop --region us-west-2 --addon-name coredns --resolve-conflicts OVERWRITE --configuration-values '{"nodeSelector":{"workshop-default":"no"},"replicaCount":0}'
+{
+    "update": {
+        "id": "b4a260d1-825f-350e-8188-a0f2a9e79bb5",
+        "status": "InProgress",
+        "type": "AddonUpdate",
+        "params": [
+            {
+                "type": "ResolveConflicts",
+                "value": "OVERWRITE"
+            },
+            {
+                "type": "ConfigurationValues",
+                "value": "{\"nodeSelector\":{\"workshop-default\":\"no\"},\"replicaCount\":0}"
+            }
+        ],
+        "createdAt": "2024-11-10T23:15:28.093000+00:00",
+        "errors": []
+    }
+}
++ aws eks wait addon-active --cluster-name eks-workshop --region us-west-2 --addon-name coredns
++ kubectl scale deployment coredns --replicas=2 -n kube-system
+deployment.apps/coredns scaled
+++ aws eks describe-cluster --name eks-workshop --region us-west-2 --query cluster.resourcesVpcConfig.clusterSecurityGroupId --output text
++ CLUSTER_SG_ID=sg-0fcabbda9848b346e
++ aws ec2 revoke-security-group-ingress --group-id sg-0fcabbda9848b346e --protocol -1 --port -1 --source-group sg-0fcabbda9848b346e
++ aws ec2 authorize-security-group-ingress --group-id sg-0fcabbda9848b346e --protocol tcp --port 443 --source-group sg-0fcabbda9848b346e
++ aws ec2 authorize-security-group-ingress --group-id sg-0fcabbda9848b346e --protocol tcp --port 10250 --source-group sg-0fcabbda9848b346e
+++ date -u
++ echo 'Sun Nov 10 23:15:45 UTC 2024 - Lab Setup Completed'
+Sun Nov 10 23:15:45 UTC 2024 - Lab Setup Completed
++ special_echo 'Configuration applied successfully!'
++ echo 'Configuration applied successfully!'

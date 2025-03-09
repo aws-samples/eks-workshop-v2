@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: prod-ds
+  namespace: prod
+spec:
+  selector:
+    matchLabels:
+      name: prod-ds
+  template:
+    metadata:
+      labels:
+        name: prod-ds
+    spec:
+      priorityClassName: high-priority
+      restartPolicy: Always
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nodegroup-type
+                operator: In
+                values:
+                - prod-app
+      tolerations:
+      - operator: Exists
+      containers:
+      - name: prod-ds
+        image: polinux/stress
+        resources:
+          requests:
+            memory: 128Mi
+            cpu: 100m
+        command: ["/bin/sh"]
+        args: ["/prod/prod.sh"]
+        volumeMounts:
+        - name: prod-volume
+          mountPath: /prod
+      volumes:
+      - name: prod-volume
+        configMap:
+          name: prod-ds-config
+          defaultMode: 0755
