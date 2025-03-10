@@ -82,3 +82,4 @@ Statement:
           - guardduty.amazonaws.com
           - spot.amazonaws.com
           - fis.amazonaws.com
+          - transitgateway.amazonaws.com

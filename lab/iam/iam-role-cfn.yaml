@@ -41,6 +41,15 @@ Resources:
       PolicyDocument:
         file: ./iam/policies/ec2.yaml
 
+  EksWorkshopSsmPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${Env}-ide-ssm
+      PolicyDocument:
+        file: ./iam/policies/ssm.yaml
+
   EksWorkshopLabsPolicy1:
     Type: AWS::IAM::ManagedPolicy
     DependsOn:
