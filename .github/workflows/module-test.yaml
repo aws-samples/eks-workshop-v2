@@ -49,7 +49,7 @@ jobs:
           echo "Using cluster ID ${CLUSTER_ID}"
           echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
       - name: Get AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4.0.2
+        uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-duration-seconds: 3600
@@ -63,7 +63,7 @@ jobs:
           make create-infrastructure environment="$CLUSTER_ID"
       - name: Refresh AWS credentials
         if: always()
-        uses: aws-actions/configure-aws-credentials@v4.0.2
+        uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-duration-seconds: 3600
@@ -89,7 +89,7 @@ jobs:
           path: website/test-durations.json
       - name: Refresh AWS credentials
         if: always()
-        uses: aws-actions/configure-aws-credentials@v4.0.2
+        uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-duration-seconds: 3600
@@ -106,7 +106,7 @@ jobs:
           make test environment="$CLUSTER_ID" module="cleanup"
       - name: Refresh AWS credentials
         if: always()
-        uses: aws-actions/configure-aws-credentials@v4.0.2
+        uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-duration-seconds: 3600

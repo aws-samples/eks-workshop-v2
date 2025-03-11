@@ -58,6 +58,12 @@ Statement:
       - !Sub arn:aws:elasticfilesystem:${AWS::Region}:${AWS::AccountId}:file-system/*
   - Effect: Allow
     Action:
+      - fsx:Describe*
+      - fsx:ListTagsForResource
+    Resource:
+      - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:file-system/*
+  - Effect: Allow
+    Action:
       - ssm:DescribeParameters
       - ssm:ListTagsForResource
     Resource: ["*"]

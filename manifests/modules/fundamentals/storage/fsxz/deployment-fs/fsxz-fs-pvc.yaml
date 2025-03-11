@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fsxz-fs-pvc
+  namespace: assets
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: fsxz-fs-sc
+  resources:
+    requests:
+      storage: 128Gi

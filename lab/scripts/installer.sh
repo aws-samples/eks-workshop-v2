@@ -3,33 +3,33 @@
 set -e
 
 # renovate: depName=kubernetes/kubernetes
-kubectl_version='1.31.3'
+kubectl_version='1.31.6'
 
 # renovate: depName=helm/helm
-helm_version='3.16.4'
+helm_version='3.17.1'
 
 # renovate: depName=eksctl-io/eksctl
-eksctl_version='0.197.0'
+eksctl_version='0.205.0'
 
 kubeseal_version='0.18.4'
 
 # renovate: depName=mikefarah/yq
-yq_version='4.44.6'
+yq_version='4.45.1'
 
 # renovate: depName=fluxcd/flux2
-flux_version='2.4.0'
+flux_version='2.5.1'
 
 # renovate: depName=argoproj/argo-cd
-argocd_version='2.13.2'
+argocd_version='2.14.4'
 
 # renovate: depName=hashicorp/terraform
-terraform_version='1.9.8'
+terraform_version='1.11.1'
 
 # renovate: depName=aws/amazon-ec2-instance-selector
 ec2_instance_selector_version='2.4.1'
 
 # renovate: depName=hatoo/oha
-oha_version='1.4.7'
+oha_version='1.8.0'
 
 download () {
   url=$1
@@ -87,7 +87,7 @@ mv ./linux-${arch_name}/helm /usr/local/bin
 rm -rf linux-${arch_name}/ helm.tar.gz
 
 # eksctl
-download "https://github.com/weaveworks/eksctl/releases/download/v$eksctl_version/eksctl_Linux_${arch_name}.tar.gz" "eksctl.tar.gz"
+download "https://github.com/eksctl-io/eksctl/releases/download/v${eksctl_version}/eksctl_Linux_${arch_name}.tar.gz" "eksctl.tar.gz"
 tar zxf eksctl.tar.gz
 chmod +x eksctl
 mv ./eksctl /usr/local/bin
