@@ -42,7 +42,7 @@ The warning message indicates a mismatch between node labels and the CoreDNS pod
 Let's examine the CoreDNS pod node selector:
 
 ```bash timeout=30
-$ kubectl get deployment CoreDNS -n kube-system -o jsonpath='{.spec.template.spec.nodeSelector}' | jq
+$ kubectl get deployment coredns -n kube-system -o jsonpath='{.spec.template.spec.nodeSelector}' | jq
 {
   "workshop-default": "no"
 }

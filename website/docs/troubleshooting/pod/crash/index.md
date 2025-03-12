@@ -38,10 +38,10 @@ The task for you in this troubleshooting section is to find the cause for the de
 
 ### Step 1: Verify pod status
 
-First, we need to verify the status of our pods.
+First, we need to verify the status of our pod.
 
 ```bash
-$ kubectl get pods
+$ kubectl get pods -l app=efs-app
 NAME                       READY   STATUS              RESTARTS   AGE
 efs-app-5c4df89785-m4qz4   0/1     ContainerCreating   0          19m
 ```
@@ -51,7 +51,7 @@ efs-app-5c4df89785-m4qz4   0/1     ContainerCreating   0          19m
 You can see that the pod status is showing as ContainerCreating. Let's describe the pod to see the events.
 
 ```bash expectError=true
-$ export POD=`kubectl get pods -o jsonpath='{.items[*].metadata.name}'`
+$ export POD=`kubectl get pods -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep efs`
 $ kubectl describe pod $POD | awk '/Events:/,/^$/'
 Events:
   Type     Reason            Age                From               Message
@@ -184,7 +184,7 @@ After 3-4 minutes, you should notice that the pod in default namespace is in run
 
 ```bash timeout=180 hook=fix-3 hookTimeout=600
 $ kubectl rollout restart deploy/efs-app
-$ kubectl get pods $POD
+$ kubectl get pods -l app=efs-app
 NAME                       READY   STATUS    RESTARTS   AGE
 efs-app-5c4df89785-m4qz4   1/1     Running   0          102m
 ```

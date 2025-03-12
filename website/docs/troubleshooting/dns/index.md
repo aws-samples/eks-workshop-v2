@@ -15,7 +15,7 @@ In this lab, we will investigate a scenario where service communication is disru
 Prepare your environment for this section:
 
 ```bash timeout=600 wait=5
-$ prepare-environment troubleshooting/dns
+$ prepare-environment
 ```
 
 :::
