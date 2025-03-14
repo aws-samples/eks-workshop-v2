@@ -1,0 +1,23 @@
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumBGPPeeringPolicy
+metadata:
+  name: bgp-peering
+  namespace: kube-system
+spec:
+  nodeSelector:
+    matchExpressions:
+    - key: eks.amazonaws.com/compute-type
+      operator: In
+      values:
+      - hybrid
+  virtualRouters:
+  - localASN: 64561
+    exportPodCIDR: true
+    neighbors:
+    - peerAddress: 10.52.0.1/32
+      peerASN: 65000
+      holdTimeSeconds: 30
+      keepAliveTimeSeconds: 10 
+      gracefulRestart:
+        enabled: true
+        restartTimeSeconds: 120

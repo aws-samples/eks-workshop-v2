@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: nginx-remote
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: eks.amazonaws.com/compute-type
+                    operator: In
+                    values:
+                      - hybrid
+      containers:
+        - name: nginx
+          image: public.ecr.aws/nginx/nginx:1.26
+          volumeMounts:
+            - name: workdir
+              mountPath: /usr/share/nginx/html
+          resources:
+            requests:
+              cpu: 200m
+            limits:
+              cpu: 200m
+          ports:
+            - containerPort: 80
+      initContainers:
+        - name: install
+          image: busybox:1.28
+          command: [ "sh", "-c"]
+          args:
+            - 'echo "Connected to $(POD_IP) on $(NODE_NAME)" > /work-dir/index.html'
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: workdir
+              mountPath: "/work-dir"
+      volumes:
+        - name: workdir
+          emptyDir: {}

@@ -129,3 +129,6 @@ keda
 AIML
 DCGM
 Mountpoint
+nodeadm
+containerd
+nodeconfig

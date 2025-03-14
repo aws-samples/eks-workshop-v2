@@ -86,3 +86,7 @@ Statement:
       - kms:Get*
       - kms:Describe*
     Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - ssm:GetParameter
+    Resource: !Sub arn:aws:ssm:${AWS::Region}::parameter/aws/service/*
