@@ -12,12 +12,13 @@ to create the activation and populate the `ACTIVATION_ID` and `ACTIVATION_CODE`
 environment variables.
 
 ```bash timeout=300 wait=30
-$ eval $(aws ssm create-activation \
+$ export ACTIVATION_JSON=$(aws ssm create-activation \
 --default-instance-name hybrid-ssm-node \
 --iam-role $HYBRID_ROLE_NAME \
 --registration-limit 1 \
---region $AWS_REGION \
-| jq -r '"export ACTIVATION_ID=\(.ActivationId) ACTIVATION_CODE=\(.ActivationCode)"')
+--region $AWS_REGION)
+$ export ACTIVATION_ID=$(echo $ACTIVATION_JSON | jq -r ".ActivationId")
+$ export ACTIVATION_CODE=$(echo $ACTIVATION_JSON | jq -r ".ActivationCode")
 ```
 
 With our activation created, we can now create a `nodeconfig.yaml` which will be
