@@ -19,4 +19,6 @@ COPY run.sh /
 
 USER ec2-user
 
+WORKDIR /home/ec2-user/environment
+
 ENTRYPOINT ["bash", "-l", "/run.sh"]
