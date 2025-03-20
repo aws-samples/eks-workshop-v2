@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prod-app
+  namespace: prod
+spec:
+  replicas: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  selector:
+    matchLabels:
+      app: prod-app
+  template:
+    metadata:
+      labels:
+        app: prod-app
+    spec:
+      priorityClassName: high-priority
+      terminationGracePeriodSeconds: 60
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nodegroup-type
+                operator: In
+                values:
+                - prod-app
+      tolerations:
+      - key: node.kubernetes.io/memory-pressure
+        operator: Exists
+        effect: NoExecute
+      - key: node.kubernetes.io/disk-pressure
+        operator: Exists
+        effect: NoExecute
+      containers:
+      - name: prod-app
+        image: python:3.9-slim
+        securityContext:
+          privileged: true
+        resources:
+          requests:
+            memory: 64Mi
+            cpu: 100m
+        command: ["python"]
+        args: ["/prod/prod.py"]
+        volumeMounts:
+        - name: prod-volume
+          mountPath: /prod
+      volumes:
+      - name: prod-volume
+        configMap:
+          name: prod-app-config
+          defaultMode: 0755
