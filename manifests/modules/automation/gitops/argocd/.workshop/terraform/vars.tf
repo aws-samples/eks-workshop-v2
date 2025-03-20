@@ -38,5 +38,5 @@ variable "argocd_chart_version" {
   description = "The chart version of argocd to use"
   type        = string
   # renovate-helm: depName=argo-cd registryUrl=https://argoproj.github.io/argo-helm
-  default = "7.7.22"
+  default = "7.8.9"
 }

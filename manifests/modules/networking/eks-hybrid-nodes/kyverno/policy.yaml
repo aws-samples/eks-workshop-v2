@@ -1,0 +1,65 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: set-pod-deletion-cost
+  annotations:
+    policies.kyverno.io/title: Set Pod Deletion Cost
+    policies.kyverno.io/category: Pod Management
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >-
+      Sets pod-deletion-cost label on nginx pods scheduled to hybrid compute nodes.
+spec:
+  rules:
+    - name: set-deletion-cost-for-nginx-on-hybrid
+      match:
+        any:
+          - resources:
+              kinds:
+                # Listen specifically for Pod/binding, which is when a Pod is scheduled to a Node
+                - Pod/binding
+      # Create some variables
+      context:
+        # node variable is populated by extracting the info from the binding request object
+        - name: node
+          variable:
+            jmesPath: request.object.target.name
+            default: ""
+        # computeType variable is populated by asking the API for details about the Node the Pod was scheduled on
+        - name: computeType
+          apiCall:
+            urlPath: "/api/v1/nodes/{{node}}"
+            jmesPath: 'metadata.labels."eks.amazonaws.com/compute-type" || ''empty'''
+      # preconditions allow us to use the variables we've defined and check computeType for 'hybrid'
+      preconditions:
+        all:
+          - key: "{{ computeType }}"
+            operator: Equals
+            value: hybrid
+      # finally we're going to modify the Pod itself and add the pod-deletion-cost annotation
+      mutate:
+        targets:
+          - apiVersion: v1
+            kind: Pod
+            name: "{{ request.object.metadata.name }}"
+            namespace: "{{ request.object.metadata.namespace }}"
+        patchStrategicMerge:
+          metadata:
+            annotations:
+              controller.kubernetes.io/pod-deletion-cost: "1"
+      # This rule labels all the pods we've evaluated for example purposes
+    - name: do-anything
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod/binding
+      mutate:
+        targets:
+          - apiVersion: v1
+            kind: Pod
+            name: "{{ request.object.metadata.name }}"
+            namespace: "{{ request.object.metadata.namespace }}"
+        patchStrategicMerge:
+          metadata:
+            labels:
+              touched-by-kyverno: "true"
