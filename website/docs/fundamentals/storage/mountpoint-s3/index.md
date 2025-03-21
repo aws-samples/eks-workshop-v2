@@ -8,7 +8,7 @@ description: "Serverless object storage for workloads on Amazon Elastic Kubernet
 ::required-time
 
 :::tip Before you start
-Prepare your environment for this section:
+Prepare Your Environment For This Section:
 
 ```bash timeout=1800 wait=30
 $ prepare-environment fundamentals/storage/s3
