@@ -1,0 +1,26 @@
+{
+  "link.title.Community": {
+    "message": "Community",
+    "description": "The title of the footer links column with title=Community in the footer"
+  },
+  "link.title.Other": {
+    "message": "Other",
+    "description": "The title of the footer links column with title=Other in the footer"
+  },
+  "link.item.label.GitHub": {
+    "message": "GitHub",
+    "description": "The label of footer link with label=GitHub linking to https://github.com/aws-samples/eks-workshop-v2"
+  },
+  "link.item.label.Site Terms": {
+    "message": "Site Terms",
+    "description": "The label of footer link with label=Site Terms linking to https://aws.amazon.com/terms/?nc1=f_pr"
+  },
+  "link.item.label.Privacy": {
+    "message": "Privacy",
+    "description": "The label of footer link with label=Privacy linking to https://aws.amazon.com/privacy/?nc1=f_pr"
+  },
+  "copyright": {
+    "message": "© 2024, Amazon Web Services, Inc. or its affiliates. All rights reserved.",
+    "description": "The footer copyright"
+  }
+}

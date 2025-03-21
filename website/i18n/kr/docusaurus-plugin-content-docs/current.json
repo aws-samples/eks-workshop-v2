@@ -1,0 +1,246 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.introduction.category.Setup": {
+    "message": "Setup",
+    "description": "The label for category Setup in sidebar introduction"
+  },
+  "sidebar.introduction.category.In your AWS account": {
+    "message": "In your AWS account",
+    "description": "The label for category In your AWS account in sidebar introduction"
+  },
+  "sidebar.introduction.category.Getting started": {
+    "message": "Getting started",
+    "description": "The label for category Getting started in sidebar introduction"
+  },
+  "sidebar.fundamentals.category.Exposing applications": {
+    "message": "Exposing applications",
+    "description": "The label for category Exposing applications in sidebar fundamentals"
+  },
+  "sidebar.fundamentals.category.Load Balancers": {
+    "message": "Load Balancers",
+    "description": "The label for category Load Balancers in sidebar fundamentals"
+  },
+  "sidebar.fundamentals.category.Ingress": {
+    "message": "Ingress",
+    "description": "The label for category Ingress in sidebar fundamentals"
+  },
+  "sidebar.fundamentals.category.Storage": {
+    "message": "Storage",
+    "description": "The label for category Storage in sidebar fundamentals"
+  },
+  "sidebar.fundamentals.category.Amazon EBS": {
+    "message": "Amazon EBS",
+    "description": "The label for category Amazon EBS in sidebar fundamentals"
+  },
+  "sidebar.fundamentals.category.Amazon EFS": {
+    "message": "Amazon EFS",
+    "description": "The label for category Amazon EFS in sidebar fundamentals"
+  },
+  "sidebar.fundamentals.category.Mountpoint for Amazon S3": {
+    "message": "Mountpoint for Amazon S3",
+    "description": "The label for category Mountpoint for Amazon S3 in sidebar fundamentals"
+  },
+  "sidebar.fundamentals.category.Managed Node Groups": {
+    "message": "Managed Node Groups",
+    "description": "The label for category Managed Node Groups in sidebar fundamentals"
+  },
+  "sidebar.fundamentals.category.MNG basics": {
+    "message": "MNG basics",
+    "description": "The label for category MNG basics in sidebar fundamentals"
+  },
+  "sidebar.fundamentals.category.Graviton (ARM) instances": {
+    "message": "Graviton (ARM) instances",
+    "description": "The label for category Graviton (ARM) instances in sidebar fundamentals"
+  },
+  "sidebar.fundamentals.category.Spot instances": {
+    "message": "Spot instances",
+    "description": "The label for category Spot instances in sidebar fundamentals"
+  },
+  "sidebar.fundamentals.category.Fargate": {
+    "message": "Fargate",
+    "description": "The label for category Fargate in sidebar fundamentals"
+  },
+  "sidebar.security.category.Cluster Access Management API": {
+    "message": "Cluster Access Management API",
+    "description": "The label for category Cluster Access Management API in sidebar security"
+  },
+  "sidebar.security.category.IAM Roles for Service Accounts": {
+    "message": "IAM Roles for Service Accounts",
+    "description": "The label for category IAM Roles for Service Accounts in sidebar security"
+  },
+  "sidebar.security.category.Amazon EKS Pod Identity": {
+    "message": "Amazon EKS Pod Identity",
+    "description": "The label for category Amazon EKS Pod Identity in sidebar security"
+  },
+  "sidebar.security.category.Secrets Management": {
+    "message": "Secrets Management",
+    "description": "The label for category Secrets Management in sidebar security"
+  },
+  "sidebar.security.category.Managing Secrets with AWS Secrets Manager": {
+    "message": "Managing Secrets with AWS Secrets Manager",
+    "description": "The label for category Managing Secrets with AWS Secrets Manager in sidebar security"
+  },
+  "sidebar.security.category.Securing Secrets Using Sealed Secrets": {
+    "message": "Securing Secrets Using Sealed Secrets",
+    "description": "The label for category Securing Secrets Using Sealed Secrets in sidebar security"
+  },
+  "sidebar.security.category.Amazon GuardDuty for EKS": {
+    "message": "Amazon GuardDuty for EKS",
+    "description": "The label for category Amazon GuardDuty for EKS in sidebar security"
+  },
+  "sidebar.security.category.EKS Log Monitoring": {
+    "message": "EKS Log Monitoring",
+    "description": "The label for category EKS Log Monitoring in sidebar security"
+  },
+  "sidebar.security.category.EKS Runtime Monitoring": {
+    "message": "EKS Runtime Monitoring",
+    "description": "The label for category EKS Runtime Monitoring in sidebar security"
+  },
+  "sidebar.security.category.Pod Security Standards": {
+    "message": "Pod Security Standards",
+    "description": "The label for category Pod Security Standards in sidebar security"
+  },
+  "sidebar.security.category.Policy management with Kyverno": {
+    "message": "Policy management with Kyverno",
+    "description": "The label for category Policy management with Kyverno in sidebar security"
+  },
+  "sidebar.networking.category.Amazon VPC CNI": {
+    "message": "Amazon VPC CNI",
+    "description": "The label for category Amazon VPC CNI in sidebar networking"
+  },
+  "sidebar.networking.category.Network Policies": {
+    "message": "Network Policies",
+    "description": "The label for category Network Policies in sidebar networking"
+  },
+  "sidebar.networking.category.Security Groups for Pods": {
+    "message": "Security Groups for Pods",
+    "description": "The label for category Security Groups for Pods in sidebar networking"
+  },
+  "sidebar.networking.category.Custom Networking": {
+    "message": "Custom Networking",
+    "description": "The label for category Custom Networking in sidebar networking"
+  },
+  "sidebar.networking.category.Prefix Delegation": {
+    "message": "Prefix Delegation",
+    "description": "The label for category Prefix Delegation in sidebar networking"
+  },
+  "sidebar.networking.category.Amazon VPC Lattice": {
+    "message": "Amazon VPC Lattice",
+    "description": "The label for category Amazon VPC Lattice in sidebar networking"
+  },
+  "sidebar.autoscaling.category.Compute": {
+    "message": "Compute",
+    "description": "The label for category Compute in sidebar autoscaling"
+  },
+  "sidebar.autoscaling.category.Cluster Autoscaler (CA)": {
+    "message": "Cluster Autoscaler (CA)",
+    "description": "The label for category Cluster Autoscaler (CA) in sidebar autoscaling"
+  },
+  "sidebar.autoscaling.category.Cluster Over-Provisioning": {
+    "message": "Cluster Over-Provisioning",
+    "description": "The label for category Cluster Over-Provisioning in sidebar autoscaling"
+  },
+  "sidebar.autoscaling.category.Karpenter": {
+    "message": "Karpenter",
+    "description": "The label for category Karpenter in sidebar autoscaling"
+  },
+  "sidebar.autoscaling.category.Workloads": {
+    "message": "Workloads",
+    "description": "The label for category Workloads in sidebar autoscaling"
+  },
+  "sidebar.autoscaling.category.Horizontal Pod Autoscaler": {
+    "message": "Horizontal Pod Autoscaler",
+    "description": "The label for category Horizontal Pod Autoscaler in sidebar autoscaling"
+  },
+  "sidebar.autoscaling.category.Cluster Proportional Autoscaler": {
+    "message": "Cluster Proportional Autoscaler",
+    "description": "The label for category Cluster Proportional Autoscaler in sidebar autoscaling"
+  },
+  "sidebar.autoscaling.category.Kubernetes 이벤트 드리븐 오토스케일러 (KEDA)": {
+    "message": "Kubernetes 이벤트 드리븐 오토스케일러 (KEDA)",
+    "description": "The label for category Kubernetes 이벤트 드리븐 오토스케일러 (KEDA) in sidebar autoscaling"
+  },
+  "sidebar.observability.category.View EKS console": {
+    "message": "View EKS console",
+    "description": "The label for category View EKS console in sidebar observability"
+  },
+  "sidebar.observability.category.Resources": {
+    "message": "Resources",
+    "description": "The label for category Resources in sidebar observability"
+  },
+  "sidebar.observability.category.Logging in EKS": {
+    "message": "Logging in EKS",
+    "description": "The label for category Logging in EKS in sidebar observability"
+  },
+  "sidebar.observability.category.Control plane logs": {
+    "message": "Control plane logs",
+    "description": "The label for category Control plane logs in sidebar observability"
+  },
+  "sidebar.observability.category.Pod logging": {
+    "message": "Pod logging",
+    "description": "The label for category Pod logging in sidebar observability"
+  },
+  "sidebar.observability.category.Observability with OpenSearch": {
+    "message": "Observability with OpenSearch",
+    "description": "The label for category Observability with OpenSearch in sidebar observability"
+  },
+  "sidebar.observability.category.EKS open source observability": {
+    "message": "EKS open source observability",
+    "description": "The label for category EKS open source observability in sidebar observability"
+  },
+  "sidebar.observability.category.Container Insights on EKS": {
+    "message": "Container Insights on EKS",
+    "description": "The label for category Container Insights on EKS in sidebar observability"
+  },
+  "sidebar.observability.category.Cost visibility with Kubecost": {
+    "message": "Cost visibility with Kubecost",
+    "description": "The label for category Cost visibility with Kubecost in sidebar observability"
+  },
+  "sidebar.observability.category.Chaos Engineering with EKS": {
+    "message": "Chaos Engineering with EKS",
+    "description": "The label for category Chaos Engineering with EKS in sidebar observability"
+  },
+  "sidebar.automation.category.GitOps": {
+    "message": "GitOps",
+    "description": "The label for category GitOps in sidebar automation"
+  },
+  "sidebar.automation.category.Flux": {
+    "message": "Flux",
+    "description": "The label for category Flux in sidebar automation"
+  },
+  "sidebar.automation.category.Argo CD": {
+    "message": "Argo CD",
+    "description": "The label for category Argo CD in sidebar automation"
+  },
+  "sidebar.automation.category.App of Apps": {
+    "message": "App of Apps",
+    "description": "The label for category App of Apps in sidebar automation"
+  },
+  "sidebar.automation.category.Control Planes": {
+    "message": "Control Planes",
+    "description": "The label for category Control Planes in sidebar automation"
+  },
+  "sidebar.automation.category.AWS Controllers for Kubernetes (ACK)": {
+    "message": "AWS Controllers for Kubernetes (ACK)",
+    "description": "The label for category AWS Controllers for Kubernetes (ACK) in sidebar automation"
+  },
+  "sidebar.automation.category.Crossplane": {
+    "message": "Crossplane",
+    "description": "The label for category Crossplane in sidebar automation"
+  },
+  "sidebar.automation.category.Compositions": {
+    "message": "Compositions",
+    "description": "The label for category Compositions in sidebar automation"
+  },
+  "sidebar.aiml.category.Inference with AWS Inferentia": {
+    "message": "Inference with AWS Inferentia",
+    "description": "The label for category Inference with AWS Inferentia in sidebar aiml"
+  },
+  "sidebar.aiml.category.Large Language Models with Ray Serve": {
+    "message": "Large Language Models with Ray Serve",
+    "description": "The label for category Large Language Models with Ray Serve in sidebar aiml"
+  }
+}
