@@ -3,10 +3,10 @@
 set -e
 
 # renovate: depName=kubernetes/kubernetes
-kubectl_version='1.31.6'
+kubectl_version='1.31.7'
 
 # renovate: depName=helm/helm
-helm_version='3.17.1'
+helm_version='3.17.2'
 
 # renovate: depName=eksctl-io/eksctl
 eksctl_version='0.205.0'
@@ -20,7 +20,7 @@ yq_version='4.45.1'
 flux_version='2.5.1'
 
 # renovate: depName=argoproj/argo-cd
-argocd_version='2.14.4'
+argocd_version='2.14.8'
 
 # renovate: depName=hashicorp/terraform
 terraform_version='1.9.8'
