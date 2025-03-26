@@ -472,7 +472,7 @@ Resources:
     Properties:
       Roles:
         - !Ref EksWorkshopIdeRole
-      ManagedPolicyName: ${Env}-ide-ssm
+      ManagedPolicyName: !Sub ${AWS::StackName}-ssm
       PolicyDocument:
         file: ./iam/policies/ssm.yaml
 
