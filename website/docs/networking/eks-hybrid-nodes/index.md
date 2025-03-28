@@ -3,6 +3,7 @@ title: "Amazon EKS Hybrid Nodes"
 sidebar_position: 50
 sidebar_custom_props: { "module": true }
 weight: 10 # used by test framework
+description: "Amazon EKS Hybrid Nodes unifies management of Kubernetes across cloud, on premises, and edge environments, driving higher scalability, availability, and efficiency."
 ---
 
 ::required-time{estimatedLabExecutionTimeMinutes="30"}
