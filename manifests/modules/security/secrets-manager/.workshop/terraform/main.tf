@@ -2,11 +2,20 @@ data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 data "aws_region" "current" {}
 
-module "secrets_store_csi_driver" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1//modules/kubernetes-addons/secrets-store-csi-driver"
+module "eks_blueprints_addons" {
+  source  = "aws-ia/eks-blueprints-addons/aws"
+  version = "1.20.0"
 
-  helm_config = {
-    version = "1.3.4"
+  cluster_name      = var.addon_context.eks_cluster_id
+  cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint
+  cluster_version   = var.eks_cluster_version
+  oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
+
+  enable_secrets_store_csi_driver = true
+
+  secrets_store_csi_driver = {
+    chart_version = "1.3.4"
+
     set = [{
       name  = "syncSecret.enabled"
       value = true
@@ -15,29 +24,30 @@ module "secrets_store_csi_driver" {
         name  = "enableSecretRotation"
         value = true
     }]
+
+    wait = true
   }
 
-  addon_context = var.addon_context
-}
+  enable_secrets_store_csi_driver_provider_aws = true
 
-module "secrets_store_csi_driver_provider_aws" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1//modules/kubernetes-addons/csi-secrets-store-provider-aws"
+  secrets_store_csi_driver_provider_aws = {
+    chart_version = "0.3.4"
 
-  helm_config = {
-    version = "0.3.4"
+    wait = true
   }
 
-  addon_context = var.addon_context
-}
+  enable_external_secrets = true
 
-module "external_secrets" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.32.1//modules/kubernetes-addons/external-secrets"
+  external_secrets = {
+    chart_version = "0.9.5"
 
-  helm_config = {
-    version = "0.9.5"
+    role_name   = "${var.addon_context.eks_cluster_id}-external-secrets"
+    policy_name = "${var.addon_context.eks_cluster_id}-external-secrets"
+
+    wait = true
   }
 
-  addon_context = var.addon_context
+  observability_tag = null
 }
 
 module "secrets_manager_role" {
