@@ -7,9 +7,10 @@ weight: 20 # used by test framework
 
 Amazon EKS Hybrid Nodes use temporary IAM credentials provisioned by AWS SSM
 hybrid activations or AWS IAM Roles Anywhere to authenticate with the Amazon EKS
-cluster. In this workshop, we will use SSM hybrid activations. Run the following
-to create the activation and populate the `ACTIVATION_ID` and `ACTIVATION_CODE`
-environment variables.
+cluster. In this workshop, we will use SSM hybrid activations.
+
+To create hybrid activation and populate the `ACTIVATION_ID` and `ACTIVATION_CODE`
+environment variables, run the following commands:
 
 ```bash timeout=300 wait=30
 $ export ACTIVATION_JSON=$(aws ssm create-activation \
@@ -33,7 +34,7 @@ $ cat ~/environment/eks-workshop/modules/networking/eks-hybrid-nodes/nodeconfig.
 | envsubst > nodeconfig.yaml
 ```
 
-Let's copy that nodeconfig.yaml file over to our hybrid node instance.
+Let's copy `nodeconfig.yaml` over to our hybrid node instance.
 
 ```bash timeout=300 wait=30
 $ mkdir -p ~/.ssh/
@@ -41,7 +42,7 @@ $ ssh-keyscan -H $HYBRID_NODE_IP &> ~/.ssh/known_hosts
 $ scp -i private-key.pem nodeconfig.yaml ubuntu@$HYBRID_NODE_IP:/home/ubuntu/nodeconfig.yaml
 ```
 
-Next, let's install the hybrid nodes dependencies using `nodeadm` on our EC2 instance. The hybrid nodes dependencies include containerd, kubelet, kubectl, and AWS SSM or AWS IAM Roles Anywhere components. See Hybrid nodes [nodeadm reference](https://docs.aws.amazon.com/eks/latest/userguide/hybrid-nodes-nodeadm.html) for more information on the components and file locations installed by nodeadm install.
+Next, let's install the hybrid nodes dependencies using `nodeadm` on our EC2 instance. This includes containerd, kubelet, kubectl, and AWS SSM or AWS IAM Roles Anywhere components. See hybrid nodes [nodeadm reference](https://docs.aws.amazon.com/eks/latest/userguide/hybrid-nodes-nodeadm.html) for more information on the components and file locations installed by `nodeadm install`.
 
 ```bash timeout=300 wait=30
 $ ssh -i private-key.pem ubuntu@$HYBRID_NODE_IP \
