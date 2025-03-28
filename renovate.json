@@ -39,6 +39,14 @@
     {
       "matchPackagePatterns": ["^@docusaurus"],
       "enabled": false
+    },
+    {
+      "matchFileNames": ["lab/scripts/installer.sh"],
+      "groupName": "IDE binaries",
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ]
     }
   ],
   "customManagers": [
