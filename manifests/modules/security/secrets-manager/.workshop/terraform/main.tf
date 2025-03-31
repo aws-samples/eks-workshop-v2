@@ -41,8 +41,8 @@ module "eks_blueprints_addons" {
   external_secrets = {
     chart_version = "0.9.5"
 
-    role_name   = "${var.addon_context.eks_cluster_id}-external-secrets"
-    policy_name = "${var.addon_context.eks_cluster_id}-external-secrets"
+    role_name   = "${var.addon_context.eks_cluster_id}-ext-secrets"
+    policy_name = "${var.addon_context.eks_cluster_id}-ext-secrets"
 
     wait = true
   }
