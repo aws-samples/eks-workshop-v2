@@ -24,7 +24,7 @@ data "aws_ecrpublic_authorization_token" "token" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.20.0"
+  version = "1.21.0"
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
@@ -71,7 +71,7 @@ resource "aws_eks_addon" "pod_identity" {
 
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "20.34"
+  version = "20.35"
 
   cluster_name          = var.addon_context.eks_cluster_id
   enable_v1_permissions = true
@@ -104,7 +104,7 @@ resource "helm_release" "karpenter" {
   repository_password = data.aws_ecrpublic_authorization_token.token.password
   chart               = "karpenter"
   # renovate: datasource=github-releases depName=aws/karpenter-provider-aws
-  version = "1.3.1"
+  version = "1.3.3"
   wait    = true
 
   values = [
