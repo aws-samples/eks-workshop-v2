@@ -9,7 +9,7 @@ kubectl_version='1.31.7'
 helm_version='3.17.2'
 
 # renovate: depName=eksctl-io/eksctl
-eksctl_version='0.206.0'
+eksctl_version='0.207.0'
 
 kubeseal_version='0.18.4'
 
