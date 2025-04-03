@@ -7577,7 +7577,7 @@ __metadata:
     markdownlint-cli2: "npm:^0.17.0"
     npm-run-all2: "npm:^7.0.0"
     prettier: "npm:^3.2.5"
-    prettier-plugin-sh: "npm:^0.15.0"
+    prettier-plugin-sh: "npm:^0.16.0"
   languageName: unknown
   linkType: soft
 
@@ -13321,15 +13321,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier-plugin-sh@npm:^0.15.0":
-  version: 0.15.0
-  resolution: "prettier-plugin-sh@npm:0.15.0"
+"prettier-plugin-sh@npm:^0.16.0":
+  version: 0.16.0
+  resolution: "prettier-plugin-sh@npm:0.16.0"
   dependencies:
     mvdan-sh: "npm:^0.10.1"
     sh-syntax: "npm:^0.4.2"
   peerDependencies:
     prettier: ^3.0.3
-  checksum: 10c0/256599d89deb83bd9fd85041936b852841fa198735ae2327ea4889f375b8c5a02e39139dd63a77911f49ef2fe7d44c36d01350ca4f93967d807bbadf2513a9bd
+  checksum: 10c0/d83a6716d271f24da006c0bbe08fb3be18ebcf6e88cddb0d83af8c4377a04ad718e7cbd9bfb2e80e1e3f12008c920888e06c68c9f5bbe8233bf0e4e8b6de4a82
   languageName: node
   linkType: hard
 
