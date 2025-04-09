@@ -5,9 +5,9 @@ sidebar_custom_props: { "module": false }
 weight: 30 # used by test framework
 ---
 
-Building on our previous deployment, we'll now explore a scenario that simulates a "cloud bursting" use case. This will demonstrate how EKS Hybrid Nodes can be used to handle overflow workloads or specific computational needs. We'll deploy a new workload that, like our previous example, uses `nodeAffinity` to prefer our hybrid nodes.
+Building on our previous deployment, we'll now explore a scenario that simulates a "cloud bursting" use case. This will demonstrate how workloads running on EKS Hybrid Nodes can "burst" to EC2 nodes, using elastic cloud capacity during peak demand.
 
-The `preferredDuringSchedulingIgnoredDuringExecution` strategy tells Kubernetes
+We'll deploy a new workload that, like our previous example, uses `nodeAffinity` to prefer our hybrid nodes. The `preferredDuringSchedulingIgnoredDuringExecution` strategy tells Kubernetes
 to _prefer_ our Hybrid Node when scheduling but _ignore_ that during execution.
 This means that when there is no more room on our single hybrid node, these pods
 are free to schedule elsewhere in the cluster, meaning our EC2 instances. Which
@@ -20,12 +20,12 @@ want that!
 
 We're going to deploy [Kyverno](https://kyverno.io/), which is a policy engine
 for Kubernetes. Kyverno will be setup with a policy that watches for Pods that
-get scheduled to our hybrid node, and will add an Annotation to that running
+get scheduled to hybrid nodes (which have been labeled `eks.amazonaws.com/compute-type: hybrid`), and will add an Annotation to that running
 pod. The
 [controller.kubernetes.io/pod-deletion-cost](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#pod-deletion-cost)
-Annotation effectively tells Kubernetes to delete less _expensive_ pods first.
+annotation effectively tells Kubernetes to delete less _expensive_ pods first.
 
-Let's get to work. We'll use Helm to install Kyverno and we'll deploy the policy included below.
+Let's get to work. We'll use Helm to install Kyverno and then deploy the policy included below.
 
 ```bash timeout=300 wait=30
 $ helm repo add kyverno https://kyverno.github.io/kyverno/
@@ -33,11 +33,17 @@ $ helm install kyverno kyverno/kyverno --version 3.3.7 -n kyverno --create-names
 
 ```
 
-The ClusterPolicy manifest below tells Kyverno to watch for pods that
-land on our EKS Hybrid Nodes instance, and adds the _pod-deletion-cost_
+The `ClusterPolicy` manifest below tells Kyverno to watch for pods that
+land on our EKS Hybrid Nodes instance, and adds the `pod-deletion-cost`
 annotation to them.
 
-::yaml{file="manifests/modules/networking/eks-hybrid-nodes/kyverno/policy.yaml"}
+::yaml{file="manifests/modules/networking/eks-hybrid-nodes/kyverno/policy.yaml" paths="spec.rules.0.match, spec.rules.0.context.0, spec.rules.0.context.1, spec.rules.0.preconditions, spec.rules.0.mutate"}
+
+1. Watch for `Pod/binding` resources, at which point Pod has been scheduled to a Node
+2. Set `node` variable with corresponding value from admission review request
+3. Set `computeType` variable by quering Kubernetes API for information about the Node to which Pod has been scheduled
+4. Only select Pods that have been scheduled to 'hybrid' nodes
+5. Modify the Pod to add the `pod-deletion-cost` annotation
 
 Let's apply that now.
 
@@ -118,7 +124,7 @@ nginx-deployment-7474978d4f-txxlw   mi-0ebe45e33a53e04f2                        
 nginx-deployment-7474978d4f-wqbsd   ip-10-42-154-155.us-west-2.compute.internal   <none>
 ```
 
-Let's scale our sample deployment back down to 3 again. We'll be left with three pods running on our Hybrid Node, which brings us back to or original state.
+Let's scale our sample deployment back down to 3 again. We'll be left with three pods running on our hybrid node, which brings us back to or original state.
 
 ```bash timeout=300 wait=30
 $ kubectl scale deployment nginx-deployment --replicas 3
