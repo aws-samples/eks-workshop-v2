@@ -14,6 +14,18 @@ $ kubectl rollout status deployment/ui \
 deployment "ui" successfully rolled out
 ```
 
+Meanwhile, if you check the fluent-bit daemonsets logs, you will observe that a new log stream is created under the existing log group for the `ui` component.
+
+```bash
+$ kubectl logs daemonset.apps/aws-for-fluent-bit -n aws-for-fluent-bit
+...
+[2025/04/11 22:36:58] [ info] [filter:kubernetes:kubernetes.0]  token updated
+[2025/04/11 22:36:58] [ info] [input:tail:tail.0] inotify_fs_add(): inode=31633333 watch_fd=14 name=/var/log/containers/ui-8564fc5cfb-59rlg_ui_ui-18c9b46d1e3395db11f7b6925ab05a275ad9cb0053d4cb1b1db06d2cf5d7fcc6.log
+[2025/04/11 22:36:59] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream ui-8564fc5cfb-59rlg.ui in log group /aws/eks/fluentbit-cloudwatch/workload/ui
+[2025/04/11 22:36:59] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Created log stream ui-8564fc5cfb-59rlg.ui
+...
+```
+
 Now we can check that our `ui` component is creating logs by directly using `kubectl logs`:
 
 ```bash

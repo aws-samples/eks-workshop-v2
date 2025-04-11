@@ -9,7 +9,11 @@ For Kubernetes cluster components that run in pods, these write to files inside 
 
 AWS provides a Fluent Bit image with plugins for both CloudWatch Logs and Kinesis Data Firehose. The [AWS for Fluent Bit](https://github.com/aws/aws-for-fluent-bit) image is available on the [Amazon ECR Public Gallery](https://gallery.ecr.aws/aws-observability/aws-for-fluent-bit).
 
-In the following section, you will see how to validate Fluent Bit agent is running as a daemonSet to send the containers / pods logs to CloudWatch Logs.
+Fluent-bit can be used to ship logs to various destinations. However, in this lab, we will see how it is leveraged to ship the container logs to CloudWatch.
+
+![Fluent-bit Architecture](./assets/fluentbit-architecture.webp)
+
+In the following section, you will see how to validate Fluent Bit agent is already running as a daemonSet to send the containers / pods logs to CloudWatch Logs. Read more about how to [deploy Fluent Bit to send logs from containers to CloudWatch Logs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-logs-FluentBit.html#Container-Insights-FluentBit-troubleshoot).
 
 First, we can validate the resources created for Fluent Bit by entering the following command. Each node should have one pod:
 
@@ -75,4 +79,38 @@ fluent-bit.conf:
 
 ...........
 
+```
+
+Use the `kubectl logs` command to check the Fluent Bit daemonset logs, where you will observe new CloudWatch Log groups and streams are created for each workload.
+
+```bash
+$ kubectl logs daemonset.apps/aws-for-fluent-bit -n aws-for-fluent-bit
+
+Found 3 pods, using pod/aws-for-fluent-bit-vlx8j
+AWS for Fluent Bit Container Image Version 2.28.4
+Fluent Bit v1.9.9
+* Copyright (C) 2015-2022 The Fluent Bit Authors
+* Fluent Bit is a CNCF sub-project under the umbrella of Fluentd
+* https://fluentbit.io
+
+[2025/04/11 22:25:59] [ info] [fluent bit] version=1.9.9, commit=5fcfe330e5, pid=1
+[2025/04/11 22:25:59] [ info] [storage] version=1.3.0, type=memory-only, sync=normal, checksum=disabled, max_chunks_up=128
+[2025/04/11 22:25:59] [ info] [cmetrics] version=0.3.7
+[2025/04/11 22:25:59] [ info] [filter:kubernetes:kubernetes.0] https=1 host=kubernetes.default.svc.cluster.local port=443
+[2025/04/11 22:25:59] [ info] [filter:kubernetes:kubernetes.0]  token updated
+[2025/04/11 22:25:59] [ info] [filter:kubernetes:kubernetes.0] local POD info OK
+[2025/04/11 22:25:59] [ info] [filter:kubernetes:kubernetes.0] testing connectivity with API server...
+[2025/04/11 22:25:59] [ info] [filter:kubernetes:kubernetes.0] connectivity OK
+[2025/04/11 22:25:59] [ info] [sp] stream processor started
+...
+...
+[2025/04/11 22:26:12] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream orders-79bc47b54d-gsxd7.orders in log group /aws/eks/fluentbit-cloudwatch/workload/orders
+[2025/04/11 22:26:12] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Log Group /aws/eks/fluentbit-cloudwatch/workload/orders not found. Will attempt to create it.
+[2025/04/11 22:26:12] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log group /aws/eks/fluentbit-cloudwatch/workload/orders
+[2025/04/11 22:26:12] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Created log group /aws/eks/fluentbit-cloudwatch/workload/orders
+[2025/04/11 22:26:12] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream orders-79bc47b54d-gsxd7.orders in log group /aws/eks/fluentbit-cloudwatch/workload/orders
+[2025/04/11 22:26:12] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Created log stream orders-79bc47b54d-gsxd7.orders
+...
+[2025/04/11 22:26:19] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream orders-79bc47b54d-vvpf2.orders in log group /aws/eks/fluentbit-cloudwatch/workload/orders
+[2025/04/11 22:26:19] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Created log stream orders-79bc47b54d-vvpf2.orders
 ```
