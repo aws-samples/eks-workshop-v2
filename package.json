@@ -27,7 +27,7 @@
     "markdownlint-cli2": "^0.17.0",
     "npm-run-all2": "^7.0.0",
     "prettier": "^3.2.5",
-    "prettier-plugin-sh": "^0.15.0"
+    "prettier-plugin-sh": "^0.17.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
