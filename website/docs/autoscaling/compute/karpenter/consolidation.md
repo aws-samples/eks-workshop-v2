@@ -44,13 +44,13 @@ ip-10-42-9-102.us-west-2.compute.internal    Ready    <none>   14m     vVAR::KUB
 
 Next, scale the number of replicas back down to 5:
 
-```bash
+```bash wait=90
 $ kubectl scale -n other deployment/inflate --replicas 5
 ```
 
 We can check the Karpenter logs to get an idea of what actions it took in response to our scaling in the deployment. Wait about 5-10 seconds before running the following command:
 
-```bash test=false
+```bash hook=grep
 $ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter | grep 'disrupting node(s)' | jq '.'
 ```
 
