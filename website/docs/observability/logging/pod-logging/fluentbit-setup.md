@@ -13,9 +13,9 @@ Fluent-bit can be used to ship logs to various destinations. However, in this la
 
 ![Fluent-bit Architecture](./assets/fluentbit-architecture.webp)
 
-In the following section, you will see how to validate Fluent Bit agent is already running as a daemonSet to send the containers / pods logs to CloudWatch Logs. Read more about how to [deploy Fluent Bit to send logs from containers to CloudWatch Logs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-logs-FluentBit.html#Container-Insights-FluentBit-troubleshoot).
+In the following section, you will see how to validate Fluent Bit agent is already running as a DaemonSet to send the containers / Pods logs to CloudWatch Logs. Read more about how to [deploy Fluent Bit to send logs from containers to CloudWatch Logs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-logs-FluentBit.html#Container-Insights-FluentBit-troubleshoot).
 
-First, we can validate the resources created for Fluent Bit by entering the following command. Each node should have one pod:
+First, we can validate the resources created for Fluent Bit by entering the following command. Each node should have one Pod:
 
 ```bash
 $ kubectl get all -n aws-for-fluent-bit
@@ -81,7 +81,7 @@ fluent-bit.conf:
 
 ```
 
-Use the `kubectl logs` command to check the Fluent Bit daemonset logs, where you will observe new CloudWatch Log groups and streams are created for each workload.
+Use the `kubectl logs` command to check the Fluent Bit DaemonSet logs, where you will observe new CloudWatch Log groups and streams are created for each workload.
 
 ```bash
 $ kubectl logs daemonset.apps/aws-for-fluent-bit -n aws-for-fluent-bit

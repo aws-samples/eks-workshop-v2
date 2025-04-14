@@ -14,7 +14,7 @@ $ kubectl rollout status deployment/ui \
 deployment "ui" successfully rolled out
 ```
 
-Meanwhile, if you check the fluent-bit daemonsets logs, you will observe that a new log stream is created under the existing log group for the `ui` component.
+Meanwhile, if you check the fluent-bit DaemonSet logs, you will observe that a new log stream is created under the existing log group for the `ui` component.
 
 ```bash
 $ kubectl logs daemonset.apps/aws-for-fluent-bit -n aws-for-fluent-bit
