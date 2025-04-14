@@ -30,6 +30,6 @@ $ prepare-environment networking/eks-hybrid-nodes
 
 :::
 
-The architecture diagram below is a high-level example of what we are building. We're going to connect our eks-workshop cluster to a simulated "remote" networking via AWS Transit Gateway. In production, your remote network would commonly be connected via AWS Direct Connect or site-to-site vpn. In turn, those connections would be attached to a Transit Gateway in our cluster VPC. Our "remote" network will have a single EC2 node running that will be used as our EKS Hybrid Node for lab purposes. You will run commands on this node via SSH from your IDE. It is important to note that running EKS Hybrid Nodes on EC2 is **not** supported, we are only doing it here for demo purposes.
+The architecture diagram below is a high-level example of what we are building. We're going to connect our EKS cluster to a simulated "remote" network via AWS Transit Gateway. In production, your remote network would commonly be connected via AWS Direct Connect or AWS Site-to-Site VPN. In turn, those connections would be attached to a Transit Gateway in our cluster VPC. Our "remote" network will have a single EC2 node running that will be used as our EKS Hybrid Node for lab purposes. You will run commands on this node via SSH from your IDE. It is important to note that running EKS Hybrid Nodes on EC2 is **not** supported, we are only doing it here for demo purposes.
 
 ![Architecture Diagram](./assets/lab_environment.png)
