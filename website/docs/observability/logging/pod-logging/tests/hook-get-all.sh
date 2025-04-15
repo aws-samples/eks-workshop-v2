@@ -6,8 +6,8 @@ before() {
 
 after() {
   sleep 10
-  echo "fluent-bit log in progress"
-  if [[ $TEST_OUTPUT != *"Created log stream"* ]]; then
+  echo "get fluent-bit ds"
+  if [[ $TEST_OUTPUT != *"daemonset.apps/aws-for-fluent-bit"* ]]; then
     echo "Failed to match expected output"
     echo $TEST_OUTPUT
     exit 1
