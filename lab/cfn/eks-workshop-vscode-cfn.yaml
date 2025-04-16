@@ -467,6 +467,15 @@ Resources:
       PolicyDocument:
         file: ./iam/policies/labs3.yaml
 
+  EksWorkshopSsmPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-ssm
+      PolicyDocument:
+        file: ./iam/policies/ssm.yaml
+
   EksWorkshopIdeInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:

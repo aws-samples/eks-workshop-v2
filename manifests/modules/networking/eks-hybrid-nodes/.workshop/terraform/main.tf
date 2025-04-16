@@ -162,7 +162,7 @@ resource "aws_security_group" "hybrid_nodes" {
 module "hybrid_node" {
   depends_on = [aws_ec2_transit_gateway.tgw, aws_internet_gateway.remote]
   source     = "terraform-aws-modules/ec2-instance/aws"
-  version    = "~> 5.7.1"
+  version    = "~> 5.8.0"
 
   metadata_options = {
     "http_tokens" : "required"
@@ -368,7 +368,7 @@ resource "aws_vpc_security_group_ingress_rule" "node_from_remote_pod" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.19.0"
+  version = "1.21.0"
 
   cluster_name      = var.addon_context.eks_cluster_id
   cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint

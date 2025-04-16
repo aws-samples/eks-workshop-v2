@@ -20,7 +20,7 @@ The preparation of the lab might take a couple of minutes and it will make the f
 - Create a EC2 instance and push retail store sample app image in to the ECR repo from the instance using tag 0.4.0
 - Create a new deployment named ui-private in default namespace.
 - Introduce an issue to the deployment spec, so we can learn how to troubleshoot this type of issue.
-:::
+  :::
 
 Now let's verify if the deployment is created, so we can start troubleshooting the scenario.
 
@@ -29,6 +29,7 @@ $ kubectl get deploy ui-private -n default
 NAME         READY   UP-TO-DATE   AVAILABLE   AGE
 ui-private   0/1     1            0           4m25s
 ```
+
 :::info
 If you get the same output, it means you are ready to start the troubleshooting.
 :::
@@ -138,11 +139,11 @@ $ aws iam list-attached-role-policies --role-name $ROLE_NAME
 }
 ```
 
-The AWS managed policy "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly" is attached to the worker node role and this policy should provide enough permissions to pull a Image from ECR preivate repository. 
+The AWS managed policy "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly" is attached to the worker node role and this policy should provide enough permissions to pull a Image from ECR private repository.
 
 ### Step 5: Check ECR repo permissions
 
-The perimissions to the ECR repository can be managed at both Identity and Resource level. The Identity level permissions are provided at IAM and the resource level permissions are provided at the repository level. As we confirmed that identity based permissions are good, let's the check the policy for ECR repo.
+The permissions to the ECR repository can be managed at both Identity and Resource level. The Identity level permissions are provided at IAM and the resource level permissions are provided at the repository level. As we confirmed that identity based permissions are good, let's the check the policy for ECR repo.
 
 ```bash
 $ aws ecr get-repository-policy --repository-name retail-sample-app-ui --query policyText --output text | jq .
@@ -179,7 +180,7 @@ $ aws ecr get-repository-policy --repository-name retail-sample-app-ui --query p
 The ECR repository policy has Effect as Deny and the Principal as the EKS managed node role. Which is restricting the kubelet from pulling images in this repository. Let's change the effect to allow and see if the kubelet is able to pull the image.
 
 :::note
-We will be using below json file to modify the ECR repository permissions. 
+We will be using below json file to modify the ECR repository permissions.
 
 ```json {6}
 {
@@ -211,6 +212,7 @@ We will be using below json file to modify the ECR repository permissions.
   ]
 }
 ```
+
 :::
 
 ```bash
