@@ -3,5 +3,6 @@ output "environment_variables" {
   value = {
     LBC_CHART_VERSION = var.load_balancer_controller_chart_version
     LBC_ROLE_ARN      = module.eks_blueprints_addons.aws_load_balancer_controller.iam_role_arn
+    DNS_ROLE_ARN      = module.eks_blueprints_addons.external_dns.iam_role_arn
   }
 }
