@@ -1,5 +1,5 @@
 ---
-title: "Fixing Service Configuration"
+title: "Service Not Registering Endpoints"
 sidebar_position: 32
 ---
 

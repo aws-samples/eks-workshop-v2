@@ -1,5 +1,5 @@
 ---
-title: "Fixing IAM Policy Issue"
+title: "IAM Policy Issue"
 sidebar_position: 31
 ---
 

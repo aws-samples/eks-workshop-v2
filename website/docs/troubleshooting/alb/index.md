@@ -2,6 +2,7 @@
 title: "ALB Controller Scenario"
 chapter: true
 sidebar_position: 80
+sidebar_custom_props: { "module": true }
 ---
 
 ::required-time
