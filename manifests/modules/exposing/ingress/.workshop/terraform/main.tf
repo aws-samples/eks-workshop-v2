@@ -1,6 +1,26 @@
+data "aws_vpc" "this" {
+  tags = {
+    created-by = "eks-workshop-v2"
+    env        = var.addon_context.eks_cluster_id
+  }
+}
+
+resource "aws_route53_zone" "private_zone" {
+  name = "retailstore.com"
+  comment = "Private hosted zone for EKS Workshop use"
+  vpc {
+    vpc_id = data.aws_vpc.this.id
+  }
+
+  tags = {
+    created-by = "eks-workshop-v2"
+    env        = var.addon_context.eks_cluster_id
+  }
+}
+
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.21.0"
+  version = "1.20.0"
 
   cluster_name      = var.addon_context.eks_cluster_id
   cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint
@@ -12,6 +32,15 @@ module "eks_blueprints_addons" {
     role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
     policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
+
+  enable_external_dns = true
+  external_dns = {
+    name          = "external-dns"
+    chart_version = "1.16.1"
+    repository    = "https://kubernetes-sigs.github.io/external-dns/"
+    namespace     = "external-dns"
+  }
+  external_dns_route53_zone_arns = [aws_route53_zone.private_zone.arn]
 
   create_kubernetes_resources = false
 
