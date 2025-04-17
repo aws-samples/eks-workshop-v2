@@ -21,7 +21,7 @@ Let's inspect the service configuration:
 $ kubectl -n ui get service/ui -o yaml
 ```
 
-```yaml {24}
+```yaml {12}
 apiVersion: v1
 kind: Service
 metadata:

@@ -42,7 +42,7 @@ metadata:
   resourceVersion: ""
 ```
 
-Note the IAM role ARN in the `eks.amazonaws.com/role-arn` annotation. This is the role that needs the correct permissions.
+1. `eks.amazonaws.com/role-arn`: This tags references AIM role that needs the correct permissions.
 
 ### Step 2: Check Controller Logs
 
