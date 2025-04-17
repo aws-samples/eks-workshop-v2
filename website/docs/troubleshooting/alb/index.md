@@ -23,9 +23,8 @@ This will:
 - Set up initial AWS Load Balancer Controller configuration (with deliberate issues for troubleshooting)
 - Create necessary IAM roles and policies
 
-:::
-
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/troubleshooting/alb/.workshop/terraform).
+:::
 
 ## Environment Setup Details
 
