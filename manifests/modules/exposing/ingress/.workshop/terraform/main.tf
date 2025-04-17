@@ -34,13 +34,6 @@ module "eks_blueprints_addons" {
   }
 
   enable_external_dns = true
-  external_dns = {
-    name          = "external-dns"
-    chart_version = "1.16.1"
-    repository    = "https://kubernetes-sigs.github.io/external-dns/"
-    namespace     = "external-dns"
-  }
-  external_dns_route53_zone_arns = [aws_route53_zone.private_zone.arn]
 
   create_kubernetes_resources = false
 
