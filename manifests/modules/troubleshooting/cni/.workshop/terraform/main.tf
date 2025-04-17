@@ -5,12 +5,6 @@ locals {
   secondary_cidr = "100.64.0.0/22"
 }
 
-# data "aws_vpc" "selected" {
-#   tags = {
-#     created-by = "eks-workshop-v2"
-#     env        = var.addon_context.eks_cluster_id
-#   }
-# }
 
 data "aws_eks_cluster" "cluster" {
   name = var.eks_cluster_id
@@ -20,24 +14,11 @@ data "aws_vpc" "selected" {
   id = data.aws_eks_cluster.cluster.vpc_config[0].vpc_id
 }
 
-# data "aws_eks_cluster" "this" {
-#   name = var.addon_context.eks_cluster_id
-# }
-
-# data "aws_vpc" "selected" {
-#   id = data.aws_eks_cluster.this.vpc_config[0].vpc_id
-# }
-
 data "aws_subnets" "private" {
   filter {
     name   = "vpc-id"
     values = [data.aws_vpc.selected.id]
   }
-
-  #  tags = {
-  #    created-by = "eks-workshop-v2"
-  #    env        = var.addon_context.eks_cluster_id
-  #  }
 
   filter {
     name   = "tag:Name"
