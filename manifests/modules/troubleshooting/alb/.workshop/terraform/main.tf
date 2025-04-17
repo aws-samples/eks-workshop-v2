@@ -1,18 +1,5 @@
-terraform {
-  required_providers {
-    #    kubectl = {
-    #      source  = "gavinbunney/kubectl"
-    #      version = ">= 1.14"
-    #    }
-  }
-}
 
-
-
-provider "aws" {
-  region = "us-east-1"
-  alias  = "virginia"
-}
+data "aws_region" "current" {}
 
 locals {
   tags = {
