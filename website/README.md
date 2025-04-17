@@ -11,6 +11,7 @@ $ yarn
 ### Local Development
 
 ```
+$ cd website/
 $ yarn start
 ```
 
