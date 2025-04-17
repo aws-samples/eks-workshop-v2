@@ -7,6 +7,8 @@ sidebar_custom_props: { "module": true }
 
 ::required-time
 
+In this lab, we'll explore common issues that can occur when working with Amazon EKS and learn effective troubleshooting techniques. We'll work through real-world scenarios focusing on the AWS Load Balancer Controller and service connectivity problems. If you'd like to learn more about how a Load balancer controller work, check out the [Fundamentals module](/docs/fundamentals/).
+
 :::tip Before you start
 Prepare your environment for this section:
 
@@ -14,11 +16,14 @@ Prepare your environment for this section:
 $ prepare-environment troubleshooting/alb
 ```
 
-This will: - Deploy a sample UI application - Configure an ingress resource - Set up initial AWS Load Balancer Controller configuration (with deliberate issues for troubleshooting) - Create necessary IAM roles and policies
+This will:
+
+- Deploy a sample UI application
+- Configure an ingress resource
+- Set up initial AWS Load Balancer Controller configuration (with deliberate issues for troubleshooting)
+- Create necessary IAM roles and policies
 
 :::
-
-In this module, we'll explore common issues that can occur when working with Amazon EKS and learn effective troubleshooting techniques. We'll work through real-world scenarios focusing on the AWS Load Balancer Controller and service connectivity problems. If you'd like to learn more about how a Load balancer controller work, check out the [Fundamentals module](/docs/fundamentals/).
 
 ## Environment Setup Details
 
