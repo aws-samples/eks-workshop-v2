@@ -1,7 +1,7 @@
 ---
-title: "ALB Controller Scenario"
+title: "ALB Controller"
 chapter: true
-sidebar_position: 80
+sidebar_position: 40
 sidebar_custom_props: { "module": true }
 ---
 
