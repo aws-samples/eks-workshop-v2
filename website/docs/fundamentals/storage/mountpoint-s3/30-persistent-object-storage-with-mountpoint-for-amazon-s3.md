@@ -16,7 +16,7 @@ First, let's examine the `s3pvclaim.yaml` file to understand its parameters and 
    `allow-other`: Allows users other than the owner to access the mounted bucket  
    `uid=999`: Sets User ID (UID) of files/directories in the mounted bucket to 999  
    `gid=999`: Sets Group ID (GID) of files/directories in the mounted bucket to 999  
-   `region=us-west-2`: Sets the region of the S3 bucket to us-west-2
+   `region= $AWS_REGION`: Sets the region of the S3 bucket
 
 ```kustomization
 modules/fundamentals/storage/s3/deployment/deployment.yaml

@@ -12,7 +12,7 @@ spec:
     - allow-other
     - uid=999
     - gid=999 
-    - region=us-west-2 
+    - region=$AWS_REGION
   csi:
     driver: s3.csi.aws.com
     volumeHandle: s3-csi-driver-volume
