@@ -23,9 +23,9 @@ You can view the Terraform that applies these changes [here](https://github.com/
 
 :::
 
-[Amazon FSx for OpenZFS](https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/what-is-fsx.html) (Amazon FSx for OpenZFS) provides a fully managed, high-performance shared file system accessible via both NFSv3 and NFSv4.  You have access to your shared data sets at microsoecond latencies with millions of IOPS and up to 21 GB/s of throughput.  FSx for OpenZFS also includes many enterprise features such as zero space snapshots, zero space clones, data replication, thin provisioning, user quotas, and compression.
+[Amazon FSx for OpenZFS](https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/what-is-fsx.html) (Amazon FSx for OpenZFS) provides a fully managed, high-performance shared file system accessible via both NFSv3 and NFSv4. You have access to your shared data sets at microsecond latencies with millions of IOPS and up to 21 GB/s of throughput. FSx for OpenZFS also includes many enterprise features such as zero space snapshots, zero space clones, data replication, thin provisioning, user quotas, and compression.
 
-There are two different storage classes; an all SSD-based storage class and an Intelligent-Tiering storage class.  File systems leveraging the SSD storage class provide consistent microsecond latencies.  Intelligent-Tiering file systems provide microsecond latencies for writes and cached reads and tens of milliseconds latency for read cache misses.  The Intelligent-Tiering storage class provides fully elastic storage capacity growing and shrinking with your dataset only charging for the capacity consumed all at S3 like pricing.
+There are two different storage classes; an all SSD-based storage class and an Intelligent-Tiering storage class. File systems leveraging the SSD storage class provide consistent microsecond latencies. Intelligent-Tiering file systems provide microsecond latencies for writes and cached reads and tens of milliseconds latency for read cache misses. The Intelligent-Tiering storage class provides fully elastic storage capacity growing and shrinking with your dataset only charging for the capacity consumed all at S3 like pricing.
 
 In this lab, you will:
 

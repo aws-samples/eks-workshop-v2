@@ -1,28 +1,10 @@
 ---
 title: "ImagePullBackOff - ECR Private Image"
-sidebar_position: 61
+sidebar_position: 71
 chapter: true
-sidebar_custom_props: { "module": true }
 ---
 
-In this section we will learn how to troubleshoot the pod ImagePullBackOff error for a ECR private image.
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=600 wait=300
-$ prepare-environment troubleshooting/pod/permissions
-```
-
-The preparation of the lab might take a couple of minutes and it will make the following changes to your lab environment:
-
-- Create a ECR repo named retail-sample-app-ui.
-- Create a EC2 instance and push retail store sample app image in to the ECR repo from the instance using tag 0.4.0
-- Create a new deployment named ui-private in default namespace.
-- Introduce an issue to the deployment spec, so we can learn how to troubleshoot this type of issue.
-  :::
-
-Now let's verify if the deployment is created, so we can start troubleshooting the scenario.
+In this section we will learn how to troubleshoot the pod ImagePullBackOff error for a ECR private image. Now let's verify if the deployment is created, so we can start troubleshooting the scenario.
 
 ```bash
 $ kubectl get deploy ui-private -n default
@@ -43,7 +25,7 @@ The task for you in this troubleshooting section is to find the cause for the de
 First, we need to verify the status of our pods.
 
 ```bash
-$ kubectl get pods
+$ kubectl get pods -l app=app-private
 NAME                          READY   STATUS             RESTARTS   AGE
 ui-private-7655bf59b9-jprrj   0/1     ImagePullBackOff   0          4m42s
 ```
@@ -53,7 +35,7 @@ ui-private-7655bf59b9-jprrj   0/1     ImagePullBackOff   0          4m42s
 You can see that the pod status is showing as ImagePullBackOff. Let's describe the pod to see the events.
 
 ```bash expectError=true
-$ POD=`kubectl get pods -o jsonpath='{.items[*].metadata.name}'`
+$ POD=`kubectl get pods -l app=app-private -o jsonpath='{.items[*].metadata.name}'`
 $ kubectl describe pod $POD | awk '/Events:/,/^$/'
 Events:
   Type     Reason     Age                    From               Message
@@ -227,7 +209,7 @@ Now, restart the deployment and check if the pods are running.
 
 ```bash timeout=180 hook=fix-2 hookTimeout=600
 $ kubectl rollout restart deploy ui-private
-$ kubectl get pods
+$ kubectl get pods -l app=app-private
 NAME                          READY   STATUS    RESTARTS   AGE
 ui-private-7655bf59b9-s9pvb   1/1     Running   0          65m
 ```
@@ -241,7 +223,7 @@ General troubleshooting workflow of the pod with ImagePullBackOff on private ima
 - For "access denied", check the permissions on worker node role and the ECR repository policy.
 - For timeout on ECR, ensure that the worker node is configured to reach the ECR endpoint.
 
-#### Additional Resources:
+## Additional Resources
 
 - [ECR on EKS](https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_on_EKS.html)
 - [ECR Repository Policies](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policies.html)

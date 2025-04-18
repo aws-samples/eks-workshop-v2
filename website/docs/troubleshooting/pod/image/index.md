@@ -1,32 +1,17 @@
 ---
 title: "ImagePullBackOff - Public Image"
-sidebar_position: 62
+sidebar_position: 72
 chapter: true
-sidebar_custom_props: { "module": true }
 ---
 
-In this section we will learn how to troubleshoot the pod ImagePullBackOff error for a ECR public image.
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=600 wait=300
-$ prepare-environment troubleshooting/pod/image
-```
-
-The preparation of the lab might take a couple of minutes and it will make the following changes to your lab environment:
-
-- Create a new deployment named ui-new in default namespace
-- Introduce an issue to the deployment spec, so we can learn how to troubleshoot these types of issues
-:::
-
-Now let's verify if the deployment is created, so we can start troubleshooting the scenario.
+In this section we will learn how to troubleshoot the pod ImagePullBackOff error for a ECR public image. Now let's verify if the deployment is created, so we can start troubleshooting the scenario.
 
 ```bash
 $ kubectl get deployment ui-new -n default
 NAME     READY   UP-TO-DATE   AVAILABLE   AGE
 ui-new   0/1     1            0           75s
 ```
+
 :::info
 If you get the same output, it means you are ready to start the troubleshooting.
 :::
@@ -40,7 +25,7 @@ The task for you in this troubleshooting section is to find the cause for the de
 First, we need to verify the status of our pods using `kubectl` tool.
 
 ```bash
-$ kubectl get pods
+$ kubectl get pods -l app=app-new
 NAME                      READY   STATUS             RESTARTS   AGE
 ui-new-5654dd8969-7w98k   0/1     ImagePullBackOff   0          13s
 ```
@@ -50,7 +35,7 @@ ui-new-5654dd8969-7w98k   0/1     ImagePullBackOff   0          13s
 You can see that the pod status is showing as ImagePullBackOff. Let's describe the pod to see the events.
 
 ```bash expectError=true timeout=20
-$ POD=`kubectl get pods -o jsonpath='{.items[*].metadata.name}'`
+$ POD=`kubectl get pods -l app=app-new -o jsonpath='{.items[*].metadata.name}'`
 $ kubectl describe pod $POD | awk '/Events:/,/^$/'
 Events:
   Type     Reason     Age                From               Message
@@ -62,28 +47,32 @@ Events:
   Warning  Failed     12s (x3 over 47s)  kubelet            Failed to pull image "public.ecr.aws/aws-containers/retailing-store-sample-ui:0.4.0": rpc error: code = NotFound desc = failed to pull and unpack image "public.ecr.aws/aws-containers/retailing-store-sample-ui:0.4.0": failed to resolve reference "public.ecr.aws/aws-containers/retailing-store-sample-ui:0.4.0": public.ecr.aws/aws-containers/retailing-store-sample-ui:0.4.0: not found
   Warning  Failed     12s (x3 over 47s)  kubelet            Error: ErrImagePull
 ```
+
 From the events of the pod, we can see the "Failed to pull image" warning with error code NotFound. This indicates that the referenced image in the pod/deployment spec was not found at the path.
 
 ### Step 3: Check the image reference
 
- Let's check the image used by the pod.
+Let's check the image used by the pod.
 
 ```bash
 $ kubectl get pod $POD -o jsonpath='{.spec.containers[*].image}'
 public.ecr.aws/aws-containers/retailing-store-sample-ui:0.4.0
 ```
+
 From the image URI, we can see that the image is referenced from public ECR repository of AWS.
+
 ### Step 4: Verify image existence
 
- Let's check if image named retailing-store-sample-ui with tag 0.4.0 exists at [aws-containers ECR](https://gallery.ecr.aws/aws-containers). Search for the "retailing-store-sample-ui" and you will notice that no such image repository shows up. You can also easily verify the image existence in public ECR by using the image URI in a browser. In our case [image-uri](https://gallery.ecr.aws/aws-containers/retailing-store-sample-ui) will show a "Repository not found" message.
+Let's check if image named retailing-store-sample-ui with tag 0.4.0 exists at [aws-containers ECR](https://gallery.ecr.aws/aws-containers). Search for the "retailing-store-sample-ui" and you will notice that no such image repository shows up. You can also easily verify the image existence in public ECR by using the image URI in a browser. In our case [image-uri](https://gallery.ecr.aws/aws-containers/retailing-store-sample-ui) will show a "Repository not found" message.
 
 ![RepoDoesNotExist](../assets/rep-not-found.webp)
 
 ### Step 5: Update the deployment with the correct image
 
-To resolve the issue, we will have to update the deployment/pod spec with correct image reference. In our case it is public.ecr.aws/aws-containers/retail-store-sample-ui:0.4.0. 
+To resolve the issue, we will have to update the deployment/pod spec with correct image reference. In our case it is public.ecr.aws/aws-containers/retail-store-sample-ui:0.4.0.
 
 #### 5.1. Verify if image exists
+
 Before we update the deployment, let's verify if this image exists using above mentioned method i.e. by visiting the [image-uri](https://gallery.ecr.aws/aws-containers/retail-store-sample-ui). You should be able to see the retail-store-sample-ui image with multiple tags available, including 0.4.0.
 
 ![RepoExist](../assets/repo-found.webp)
@@ -100,11 +89,10 @@ deployment.apps/ui-new patched
 Verify the new pod is created and running successfully.
 
 ```bash timeout=180 hook=fix-1 hookTimeout=600
-$ kubectl get pods
+$ kubectl get pods -l app=app-new
 NAME                     READY   STATUS    RESTARTS   AGE
 ui-new-77856467b-2z2s6   1/1     Running   0          13s
 ```
-
 
 ## Wrapping it up
 
