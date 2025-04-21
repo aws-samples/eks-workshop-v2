@@ -1,7 +1,6 @@
 ---
 title: "ImagePullBackOff - Public Image"
 sidebar_position: 72
-chapter: true
 ---
 
 In this section we will learn how to troubleshoot the pod ImagePullBackOff error for a ECR public image. Now let's verify if the deployment is created, so we can start troubleshooting the scenario.
@@ -65,7 +64,7 @@ From the image URI, we can see that the image is referenced from public ECR repo
 
 Let's check if image named retailing-store-sample-ui with tag 0.4.0 exists at [aws-containers ECR](https://gallery.ecr.aws/aws-containers). Search for the "retailing-store-sample-ui" and you will notice that no such image repository shows up. You can also easily verify the image existence in public ECR by using the image URI in a browser. In our case [image-uri](https://gallery.ecr.aws/aws-containers/retailing-store-sample-ui) will show a "Repository not found" message.
 
-![RepoDoesNotExist](../assets/rep-not-found.webp)
+![RepoDoesNotExist](assets/rep-not-found.webp)
 
 ### Step 5: Update the deployment with the correct image
 
@@ -75,7 +74,7 @@ To resolve the issue, we will have to update the deployment/pod spec with correc
 
 Before we update the deployment, let's verify if this image exists using above mentioned method i.e. by visiting the [image-uri](https://gallery.ecr.aws/aws-containers/retail-store-sample-ui). You should be able to see the retail-store-sample-ui image with multiple tags available, including 0.4.0.
 
-![RepoExist](../assets/repo-found.webp)
+![RepoExist](assets/repo-found.webp)
 
 #### 5.1. Update image in the deployment with correct reference
 

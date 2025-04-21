@@ -1,7 +1,6 @@
 ---
 title: "PodStuck - ContainerCreating"
 sidebar_position: 73
-chapter: true
 ---
 
 In this section, we will learn how to troubleshoot a pod that is stuck in the ContainerCreating state. Now let's verify if the deployment is created, so we can start troubleshooting the scenario.
@@ -108,7 +107,7 @@ Now, let's check the EFS file system networking configuration.
 $ export AZ=`aws ec2 describe-instances --instance-ids $INSTANCE --query "Reservations[*].Instances[*].[Placement.AvailabilityZone]" --output text`
 $ export EFS=`kubectl get pv $(kubectl get pvc efs-claim -o jsonpath='{.spec.volumeName}') -o jsonpath='{.spec.csi.volumeHandle}' | cut -d':' -f1`
 $ export MT_ENI=`aws efs describe-mount-targets --file-system-id $EFS --query "MountTargets[?AvailabilityZoneName=='$AZ'].[NetworkInterfaceId]" --output text`
-$ export MT_SG=`aws ec2 describe-network-interfaces --network-interface-ids $MT_ENI --query "NetworkInterfaces[*].[Groups[*].GroupId]" --output text`
+$ export MT_ENI=`aws efs describe-mount-targets --file-system-id $EFS --query "MountTargets[*].[NetworkInterfaceId]" --output text`
 $ aws ec2 describe-security-groups --group-ids $MT_SG --query "SecurityGroups[].IpPermissions[]"
 [
     {
@@ -144,9 +143,15 @@ You can also check this in EFS console. Click on EFS file system Id named eks-wo
 Let's add the inbound rule to EFS mount target security group to allow NFS traffic on port 2049 from VPC CIDR of the EKS cluster.
 
 ```bash
-$ export VPC_ID=`aws eks describe-cluster --name eks-workshop --query "cluster.resourcesVpcConfig.vpcId" --output text`
+$ export VPC_ID=`aws eks describe-cluster --name ${EKS_CLUSTER_NAME} --query "cluster.resourcesVpcConfig.vpcId" --output text`
 $ export CIDR=`aws ec2 describe-vpcs --vpc-ids $VPC_ID --query "Vpcs[*].CidrBlock" --output text`
-$ aws ec2 authorize-security-group-ingress --group-id $MT_SG --protocol tcp --port 2049 --cidr $CIDR
+$ export MT_SG_UNIQUE=$(echo $MT_SG | xargs -n1 | sort -u | xargs)
+$ for sg_id in $MT_SG_UNIQUE; do
+$  echo "Adding ingress rule to security group: $sg_id"
+$  aws ec2 authorize-security-group-ingress --group-id $sg_id --protocol tcp --port 2049 --cidr $CIDR
+$ done
+
+
 {
     "Return": true,
     "SecurityGroupRules": [
@@ -166,7 +171,7 @@ $ aws ec2 authorize-security-group-ingress --group-id $MT_SG --protocol tcp --po
 
 After 3-4 minutes, you should notice that the pod in default namespace is in running state
 
-```bash timeout=180 hook=fix-3 hookTimeout=600
+```bash timeout=600 hook=fix-3 hookTimeout=600
 $ kubectl rollout restart deploy/efs-app
 $ kubectl get pods -l app=efs-app
 NAME                       READY   STATUS    RESTARTS   AGE

@@ -1,7 +1,6 @@
 ---
 title: "ImagePullBackOff - ECR Private Image"
 sidebar_position: 71
-chapter: true
 ---
 
 In this section we will learn how to troubleshoot the pod ImagePullBackOff error for a ECR private image. Now let's verify if the deployment is created, so we can start troubleshooting the scenario.
@@ -198,7 +197,7 @@ We will be using below json file to modify the ECR repository permissions.
 :::
 
 ```bash
-$ export ROLE_ARN=`aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name default --query 'nodegroup.nodeRole'`
+$ export ROLE_ARN=`aws eks describe-nodegroup --cluster-name ${EKS_CLUSTER_NAME} --nodegroup-name default --query 'nodegroup.nodeRole'`
 $ echo '{"Version":"2012-10-17","Statement":[{"Sid":"new policy","Effect":"Allow","Principal":{"AWS":'${ROLE_ARN}'},"Action":["ecr:BatchCheckLayerAvailability","ecr:BatchDeleteImage","ecr:BatchGetImage","ecr:CompleteLayerUpload","ecr:DeleteRepository","ecr:DeleteRepositoryPolicy","ecr:DescribeRepositories","ecr:GetDownloadUrlForLayer","ecr:GetRepositoryPolicy","ecr:InitiateLayerUpload","ecr:ListImages","ecr:PutImage","ecr:SetRepositoryPolicy","ecr:UploadLayerPart"]}]}' > ~/ecr-policy.json
 $ aws ecr set-repository-policy --repository-name retail-sample-app-ui --policy-text file://~/ecr-policy.json
 ```

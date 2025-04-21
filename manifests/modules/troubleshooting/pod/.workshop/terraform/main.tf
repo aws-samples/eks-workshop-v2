@@ -167,7 +167,7 @@ resource "null_resource" "kustomize_app2" {
   }
 
   provisioner "local-exec" {
-    command = "kubectl apply -f ~/environment/eks-workshop/modules/troubleshooting/pod/image/"
+    command = "kubectl apply -f ${path.module}/deployment_image.yaml"
     when    = create
   }
 }
