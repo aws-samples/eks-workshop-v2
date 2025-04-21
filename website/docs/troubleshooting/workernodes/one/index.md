@@ -7,20 +7,6 @@ sidebar_custom_props: { "module": true }
 
 ::required-time
 
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=600 wait=30
-$ prepare-environment troubleshooting/workernodes/one
-```
-
-The preparation of the lab might take a couple of minutes and it will make the following changes to your lab environment:
-
-- Create a new managed node group called **_new_nodegroup_1_**
-- Introduce a problem to the managed node group which causes node to **_not join_**
-- Set desired managed node group count to 1
-
-:::
 
 ### Background
 
@@ -73,8 +59,13 @@ You can also view this information in the EKS Console:
 
 The nodegroup should eventually transition to a DEGRADED state. Let's examine the detailed status:
 
+:::info
+If the Workernodes workshop environment was deployed within 10 minutes, you may see nodegroup in ACTIVE state. If so, please observe the output below for your information. The nodegroup should transition to DEGRADED within 10 minutes of deployment. You can proceed to Step 4 to check the AutoScaling Group directly. 
+:::
+
 ```bash
-$ aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_1 --query 'Nodegroup.{NodegroupName:NodegroupName,Status:Status,ScalingConfig:ScalingConfig,AutoScalingGroups:Resources.AutoScalingGroups,Health:Health}'
+$ aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_1 --query 'nodegroup.{NodegroupName:nodegroupName,Status:status,ScalingConfig:scalingConfig,AutoScalingGroups:resources.autoScalingGroups,Health:health}'
+
 
 {
     "nodegroup": {
@@ -207,20 +198,11 @@ $ aws ec2 describe-launch-template-versions --launch-template-id ${NEW_NODEGROUP
 $ aws kms describe-key --key-id ${NEW_KMS_KEY_ID} --query 'KeyMetadata.{KeyId:KeyId,Enabled:Enabled,KeyUsage:KeyUsage,KeyState:KeyState,KeyManager:KeyManager}'
 
 {
-    "KeyMetadata": {
-        ...
-        "KeyId": "1234abcd-1234-abcd-1234-1234abcd1234",
-        ...
-        "Enabled": true,                                 <<<---
-        "Description": "Example KMS CMK",
-        "KeyUsage": "ENCRYPT_DECRYPT",
-        "KeyState": "Enabled",                           <<<---
-        "Origin": "AWS_KMS",
-        "KeyManager": "CUSTOMER",
-        "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
-        "KeySpec": "SYMMETRIC_DEFAULT",
-        ...
-    }
+    "KeyId": "1234abcd-1234-abcd-1234-1234abcd1234",
+    "Enabled": true,                                 <<<---
+    "KeyUsage": "ENCRYPT_DECRYPT",
+    "KeyState": "Enabled",                           <<<---
+    "KeyManager": "CUSTOMER"
 }
 ```
 
@@ -316,26 +298,14 @@ The policy will look similar to the below.
 
 :::
 
-#### 7.2. Scale down the node group
+#### 7.2. Scale down and scale up the node group
 
-```bash timeout=90 wait=45
-$ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_1 --scaling-config desiredSize=0; aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_1; if [ $? -eq 0 ]; then echo "Node group scaled down to 0"; else echo "Failed to scale down node group"; exit 1; fi
-
+```bash timeout=120 wait=90
+$ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_1 --scaling-config desiredSize=0 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_1 && aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_1 --scaling-config desiredSize=1 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_1
 ```
 
 :::info
-This can take up to about 30 seconds.
-:::
-
-#### 7.3. Scale up the node group
-
-```bash timeout=90 wait=45
-$ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_1 --scaling-config desiredSize=1 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_1; if [ $? -eq 0 ]; then echo "Node group scaled up to 1"; else echo "Failed to scale up node group"; exit 1; fi
-
-```
-
-:::info
-This can take up to about 30 seconds.
+This can take up to 1 minute.
 :::
 
 ### Step 8: Verification
@@ -356,7 +326,9 @@ $ kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_1
 NAME                                          STATUS   ROLES    AGE    VERSION
 ip-10-42-108-252.us-west-2.compute.internal   Ready    <none>   3m9s   v1.30.0-eks-036c24b
 ```
-
+:::info
+Newly joined node can take up to about 1 minute to show.
+:::
 ## Key Takeaways
 
 ### Security Implementation

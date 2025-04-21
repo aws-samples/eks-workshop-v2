@@ -7,21 +7,6 @@ sidebar_custom_props: { "module": true }
 
 ::required-time
 
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=600 wait=30
-$ prepare-environment troubleshooting/workernodes/two
-```
-
-The preparation of the lab might take a couple of minutes and it will make the following changes to your lab environment:
-
-- Create a new managed node group called _*new_nodegroup_2*_
-- Introduce a problem to the managed node group which causes node to _*not join*_
-- Set desired managed node group count to 1
-
-:::
-
 ### Background
 
 Corporation XYZ's e-commerce platform has been steadily growing, and the engineering team has decided to expand the EKS cluster to handle the increased workload. The team plans to create a new subnet in the us-west-2 region and provision a new managed node group under this subnet.
@@ -44,7 +29,7 @@ No resources found
 Let's examine the EKS managed node group configuration to verify its status and configuration:
 
 ```bash
-$ aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_2
+$ aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_2 --query 'nodegroup.{nodegroupName:nodegroupName,nodegroupArn:nodegroupArn,clusterName:clusterName,status:status,capacityType:capacityType,scalingConfig:scalingConfig,health:{issues:health.issues}}'
 ```
 
 Output:
@@ -326,16 +311,10 @@ Click the button below to use the VPC Console.
 
 #### 6.3. Recycle the node group to trigger new instance launch
 
-Scale down to 0. This can take up to about 30 seconds.
+Scale down and scale up the node group. This can take up to 1 minute.
 
-```bash timeout=90 wait=60
-$ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_2 --scaling-config desiredSize=0; aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_2; if [ $? -eq 0 ]; then echo "Node group scaled down to 0"; else echo "Failed to scale down node group"; exit 1; fi
-```
-
-Scale back to 1. This can take up to about 30 seconds.
-
-```bash timeout=90 wait=60
-$ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_2 --scaling-config desiredSize=1 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_2; if [ $? -eq 0 ]; then echo "Node group scaled up to 1"; else echo "Failed to scale up node group"; exit 1; fi
+```bash timeout=120 wait=90
+$ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_2 --scaling-config desiredSize=0 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_2 && aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_2 --scaling-config desiredSize=1 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_2
 ```
 
 ### Step 7: Verification
@@ -347,6 +326,9 @@ $ kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_2
 NAME                                          STATUS   ROLES    AGE    VERSION
 ip-10-42-108-252.us-west-2.compute.internal   Ready    <none>   3m9s   v1.30.0-eks-036c24b
 ```
+:::info
+Newly joined node can take up to about 1 minute to show.
+:::
 
 ### Key Takeaways
 

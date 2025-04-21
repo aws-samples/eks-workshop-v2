@@ -7,26 +7,11 @@ sidebar_custom_props: { "module": true }
 
 ::required-time
 
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=700 wait=30
-$ prepare-environment troubleshooting/workernodes/three
-```
-
-The preparation of the lab might take a little over five minutes and it will make the following changes to your lab environment:
-
-- Create a new managed node group called **_new_nodegroup_3_**
-- Deploy resource kubernetes resources (deployment, daemonset, namespace, configmaps, priority-class)
-- Set desired managed node group count to 1
-
-:::
-
 ### Background
 
-Corporation XYZ's DevOps team has deployed a new node group and the application team deployed a new version of their application, including a production application (prod-app) and its supporting DaemonSet (prod-ds).
+Corporation XYZ's DevOps team has deployed a new node group and the application team deployed a new application outside of the retail-app, including a deployment (prod-app) and its supporting DaemonSet (prod-ds).
 
-After deploying their applications, the monitoring team has reported that the node is transitioning to a **_NotReady_** state. The root cause isn't immediately apparent, and as the DevOps on-call engineer, you need to investigate why the node is becoming unresponsive and implement a solution to restore normal operation.
+After deploying these applications, the monitoring team has reported that the node is transitioning to a **_NotReady_** state. The root cause isn't immediately apparent, and as the DevOps on-call engineer, you need to investigate why the node is becoming unresponsive and implement a solution to restore normal operation.
 
 ### Step 1: Verify Node Status
 
@@ -39,12 +24,7 @@ ip-10-42-180-244.us-west-2.compute.internal   NotReady   <none>   15m     v1.27.
 ```
 
 :::info
-**Note:** For your convenience, we have added the node name as the environment variable $NODE_NAME. You can check this with:
-
-```bash
-$ echo $NODE_NAME
-```
-
+**Note:** For your convenience, we have added the node name as the environment variable $NODE_NAME.
 :::
 
 ### Step 2: Check System Pod Status
@@ -213,28 +193,19 @@ Notice that neither the deployment nor the DaemonSet has resource limits configu
 $ kubectl scale deployment/prod-app -n prod --replicas=0 && kubectl delete pod -n prod -l app=prod-app --force --grace-period=0 && kubectl wait --for=delete pod -n prod -l app=prod-app
 ```
 
-#### 6.3. Scale down the node group:
+#### 6.3. Recycle the node on the nodegroup
 
-```bash timeout=90 wait=45
-$ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=0; aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3; if [ $? -eq 0 ]; then echo "Node group scaled down to 0"; else echo "Failed to scale down node group"; exit 1; fi
 
-```
-:::info
- This can take up to about 30 seconds.
-:::
-
-#### 6.4. Scale up the node group 
-
-```bash timeout=90 wait=45
-$ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=1 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && for i in {1..6}; do NODE_NAME_2=$(kubectl get nodes --selector eks.amazonaws.com/nodegroup=new_nodegroup_3 -o jsonpath='{.items[0].metadata.name}' 2>/dev/null) && [ -n "$NODE_NAME_2" ] && break || sleep 5; done && [ -n "$NODE_NAME_2" ] && echo "Node group scaled up to 1. New node name: $NODE_NAME_2" || (echo "Failed to scale up node group or get node name" && exit 1)
-
+```bash timeout=120 wait=95
+$ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=0 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=1 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && for i in {1..6}; do NODE_NAME_2=$(kubectl get nodes --selector eks.amazonaws.com/nodegroup=new_nodegroup_3 -o jsonpath='{.items[0].metadata.name}' 2>/dev/null) && [ -n "$NODE_NAME_2" ] && break || sleep 5; done && [ -n "$NODE_NAME_2" ]
 ```
 
 :::info
-The script will store new node name as NODE_NAME_2. This can take up to about 30 seconds.
+This can take up to 1 minute. The script will store the new node name as NODE_NAME_2.
 :::
 
-#### 6.5. Verify node status: 
+
+#### 6.4. Verify node status: 
 ```bash test=false
 $ kubectl get nodes --selector=kubernetes.io/hostname=$NODE_NAME_2
 NAME                                          STATUS   ROLES    AGE     VERSION
@@ -248,7 +219,7 @@ The Dev team has identified and fixed a memory leak in the application. Let's im
 #### 7.1. Apply the updated application configuration
 
 ```bash timeout=10 wait=5
-$ kubectl apply -f /home/ec2-user/environment/eks-workshop/modules/troubleshooting/workernodes/three/yaml/configmaps-new.yaml
+$ kubectl apply -f /home/ec2-user/environment/eks-workshop/modules/troubleshooting/workernodes/yaml/configmaps-new.yaml
 ```
 
 #### 7.2. Set resource limits for the deployment (cpu: 500m, memory: 512Mi)
