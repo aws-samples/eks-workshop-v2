@@ -1,6 +1,6 @@
 ---
-title: "DNS resolution scenario"
-sidebar_position: 50
+title: "DNS Resolution"
+sidebar_position: 60
 chapter: true
 sidebar_custom_props: { "module": true }
 description: "Service communication is disrupted due to DNS resolution issues."
@@ -9,7 +9,6 @@ description: "Service communication is disrupted due to DNS resolution issues."
 ::required-time
 
 In this lab, we will investigate a scenario where service communication is disrupted. We'll troubleshoot the networking issue and identify that the root cause is related to DNS resolution. Then we'll walk through essential troubleshooting steps to diagnose different types of DNS resolution failures, implement fixes, and restore service communication. For additional information about DNS troubleshooting in EKS, refer to [How do I troubleshoot DNS failures with Amazon EKS?](https://repost.aws/knowledge-center/eks-dns-failure)
-
 
 :::tip Before you start
 Prepare your environment for this section:

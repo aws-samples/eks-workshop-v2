@@ -1,6 +1,6 @@
 ---
-title: "VPC CNI scenario"
-sidebar_position: 40
+title: "VPC CNI"
+sidebar_position: 80
 chapter: true
 sidebar_custom_props: { "module": true }
 description: "Troubleshooting issues related to EKS VPC CNI IAM policy, IP allocation and scheduling"
@@ -100,6 +100,7 @@ $ aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name c
     }
 }
 ```
+
 Next check the worker node instances are in the running state.
 
 ```bash
@@ -120,6 +121,7 @@ ip-10-42-139-247.us-west-2.compute.internal   Ready      <none>   15m   v1.30.0-
 ip-10-42-172-120.us-west-2.compute.internal   Ready      <none>   15m   v1.30.0-eks-036c24b
 ip-100-64-3-8.us-west-2.compute.internal      NotReady   <none>   42s   v1.30.4-eks-a737599
 ```
+
 Finally, check the base app is deployed.
 
 ```bash

@@ -2,7 +2,7 @@ data "aws_partition" "current" {}
 
 module "ebs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.53.0"
+  version = "5.54.1"
 
   role_name_prefix   = "${var.addon_context.eks_cluster_id}-ebs-csi-"
   policy_name_prefix = "${var.addon_context.eks_cluster_id}-ebs-csi-"
@@ -21,7 +21,7 @@ module "ebs_csi_driver_irsa" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.20.0"
+  version = "1.21.0"
 
   cluster_name      = var.addon_context.eks_cluster_id
   cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint
@@ -115,7 +115,7 @@ resource "aws_prometheus_workspace" "this" {
 
 module "iam_assumable_role_adot" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version = "5.53.0"
+  version = "5.54.1"
 
   create_role  = true
   role_name    = "${var.addon_context.eks_cluster_id}-adot-collector"
@@ -134,27 +134,44 @@ resource "kubernetes_namespace" "grafana" {
   }
 }
 
-module "eks_blueprints_kubernetes_grafana_addon" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.25.0//modules/kubernetes-addons/grafana"
+module "grafana" {
+  source  = "aws-ia/eks-blueprints-addon/aws"
+  version = "1.1.1"
 
   depends_on = [
     time_sleep.blueprints_addons_sleep,
     kubernetes_config_map.order_service_metrics_dashboard
   ]
 
-  addon_context = var.addon_context
+  description      = "Grafana"
+  chart            = "grafana"
+  chart_version    = "6.43.1"
+  namespace        = kubernetes_namespace.grafana.metadata[0].name
+  create_namespace = false
+  repository       = "https://grafana.github.io/helm-charts"
+  values           = [local.grafana_values]
+  wait             = true
+  set = [{
+    name  = "serviceAccount.name"
+    value = "grafana"
+  }]
 
-  irsa_policies = [
-    aws_iam_policy.grafana.arn
+  create_role             = true
+  role_name               = "${var.addon_context.eks_cluster_id}-grafana"
+  policy_name             = "${var.addon_context.eks_cluster_id}-grafana"
+  source_policy_documents = [data.aws_iam_policy_document.grafana.json]
+  set_irsa_names = [
+    "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn",
   ]
-
-  helm_config = {
-    create_namespace = false
-    namespace        = kubernetes_namespace.grafana.metadata[0].name
-
-    values = [local.grafana_values]
+  oidc_providers = {
+    this = {
+      provider_arn = var.addon_context.eks_oidc_provider_arn
+      # namespace is inherited from chart
+      service_account = "grafana"
+    }
   }
 }
+
 
 resource "kubernetes_config_map" "order_service_metrics_dashboard" {
   metadata {
@@ -435,6 +452,14 @@ EOF
   }
 }
 
+data "aws_iam_policy_document" "grafana" {
+  statement {
+    effect    = "Allow"
+    resources = ["*"]
+    actions   = ["aps:*"]
+  }
+}
+
 resource "aws_iam_policy" "grafana" {
   name = "${var.addon_context.eks_cluster_id}-grafana-other"
 
@@ -454,10 +479,6 @@ resource "aws_iam_policy" "grafana" {
 
 locals {
   grafana_values = <<EOF
-serviceAccount:
-  create: false
-  name: grafana
-
 env:
   AWS_SDK_LOAD_CONFIG: true
   GF_AUTH_SIGV4_AUTH_ENABLED: true

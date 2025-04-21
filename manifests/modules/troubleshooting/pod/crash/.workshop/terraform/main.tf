@@ -1,16 +1,3 @@
-terraform {
-  required_providers {
-    #    kubectl = {
-    #      source  = "gavinbunney/kubectl"
-    #      version = ">= 1.14"
-    #    }
-  }
-}
-
-provider "aws" {
-  region = "us-east-1"
-  alias  = "virginia"
-}
 
 data "aws_caller_identity" "current" {}
 
@@ -94,7 +81,7 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
 }
 
 data "template_file" "deployment_yaml" {
-  template = file("${path.module}/deployment.yaml.tpl")
+  template = file("${path.module}/deployment_crash.yaml.tpl")
 
   vars = {
     filesystemid = resource.aws_efs_file_system.efs.id
@@ -102,7 +89,7 @@ data "template_file" "deployment_yaml" {
 }
 
 resource "local_file" "deployment_yaml" {
-  filename = "${path.module}/deployment.yaml"
+  filename = "${path.module}/deployment_crash.yaml"
   content  = data.template_file.deployment_yaml.rendered
 }
 
@@ -112,7 +99,7 @@ resource "null_resource" "kustomize_app" {
   }
 
   provisioner "local-exec" {
-    command = "kubectl apply -f ${path.module}/deployment.yaml"
+    command = "kubectl apply -f ${path.module}/deployment_crash.yaml"
     when    = create
   }
 

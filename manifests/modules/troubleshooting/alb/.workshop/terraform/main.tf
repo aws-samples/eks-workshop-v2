@@ -1,18 +1,5 @@
-terraform {
-  required_providers {
-    #    kubectl = {
-    #      source  = "gavinbunney/kubectl"
-    #      version = ">= 1.14"
-    #    }
-  }
-}
 
-
-
-provider "aws" {
-  region = "us-east-1"
-  alias  = "virginia"
-}
+data "aws_region" "current" {}
 
 locals {
   tags = {
@@ -133,44 +120,4 @@ resource "null_resource" "kustomize_app" {
 
   depends_on = [aws_iam_role_policy_attachment.issue_policy_attachment]
 }
-
-
-
-# Example to now how to get variables from add ons outputs DO-NOT-DELETE; AddOns and helms documentaitons does not show exactly the output variables returned
-#resource "null_resource" "blue_print_output" {
-#  for_each = module.eks_blueprints_addons.aws_load_balancer_controller
-#  triggers = {
-#
-#    timestamp      = timestamp()
-#  }
-#
-#  #count = length(module.eks_blueprints_addons.aws_load_balancer_controller)
-#  provisioner "local-exec" {
-#    command = "mkdir -p /eks-workshop/logs; echo \" key: ${each.key} Value:${each.value}\" >> /eks-workshop/logs/action-load-balancer-output.log"
-#  }
-#
-#  depends_on = [module.eks_blueprints_addons,time_sleep.blueprints_addons_sleep]
-#}
-
-#option to run a bash script file
-#resource "null_resource" "break2" {
-#  provisioner "local-exec" {
-#    command = "${path.module}/template/break.sh ${path.module} mod2"    
-#  }
-#
-#  triggers = {
-#    always_run = timestamp()
-#  }
-#  depends_on = [module.eks_blueprints_addons,time_sleep.blueprints_addons_sleep]
-#}
-
-#option to run a kubectl manifest
-#resource "kubectl_manifest" "alb" {
-#  yaml_body = templatefile("${path.module}/template/ingress.yaml", {
-#
-#  })
-#
-#  depends_on = [null_resource.break_policy]
-#}
-
 

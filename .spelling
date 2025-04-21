@@ -138,4 +138,6 @@ loadbalancer
 nodeadm
 containerd
 nodeconfig
-
+cni-tshoot
+resolv
+untolerated

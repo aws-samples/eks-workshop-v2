@@ -38,12 +38,12 @@ variable "cluster_autoscaler_version" {
   description = "The version of cluster-autoscaler to use"
   type        = string
   # renovate: datasource=github-releases depName=kubernetes/autoscaler
-  default = "1.31.1"
+  default = "1.31.2"
 }
 
 variable "cluster_autoscaler_chart_version" {
   description = "The chart version of cluster-autoscaler to use"
   type        = string
   # renovate-helm: depName=cluster-autoscaler registryUrl=https://kubernetes.github.io/autoscaler
-  default = "9.46.2"
+  default = "9.46.6"
 }

@@ -1,34 +1,17 @@
 ---
 title: "ImagePullBackOff - ECR Private Image"
-sidebar_position: 61
+sidebar_position: 71
 chapter: true
-sidebar_custom_props: { "module": true }
 ---
 
-In this section we will learn how to troubleshoot the pod ImagePullBackOff error for a ECR private image.
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=600 wait=300
-$ prepare-environment troubleshooting/pod/permissions
-```
-
-The preparation of the lab might take a couple of minutes and it will make the following changes to your lab environment:
-
-- Create a ECR repo named retail-sample-app-ui.
-- Create a EC2 instance and push retail store sample app image in to the ECR repo from the instance using tag 0.4.0
-- Create a new deployment named ui-private in default namespace.
-- Introduce an issue to the deployment spec, so we can learn how to troubleshoot this type of issue.
-:::
-
-Now let's verify if the deployment is created, so we can start troubleshooting the scenario.
+In this section we will learn how to troubleshoot the pod ImagePullBackOff error for a ECR private image. Now let's verify if the deployment is created, so we can start troubleshooting the scenario.
 
 ```bash
 $ kubectl get deploy ui-private -n default
 NAME         READY   UP-TO-DATE   AVAILABLE   AGE
 ui-private   0/1     1            0           4m25s
 ```
+
 :::info
 If you get the same output, it means you are ready to start the troubleshooting.
 :::
@@ -42,7 +25,7 @@ The task for you in this troubleshooting section is to find the cause for the de
 First, we need to verify the status of our pods.
 
 ```bash
-$ kubectl get pods
+$ kubectl get pods -l app=app-private
 NAME                          READY   STATUS             RESTARTS   AGE
 ui-private-7655bf59b9-jprrj   0/1     ImagePullBackOff   0          4m42s
 ```
@@ -52,7 +35,7 @@ ui-private-7655bf59b9-jprrj   0/1     ImagePullBackOff   0          4m42s
 You can see that the pod status is showing as ImagePullBackOff. Let's describe the pod to see the events.
 
 ```bash expectError=true
-$ POD=`kubectl get pods -o jsonpath='{.items[*].metadata.name}'`
+$ POD=`kubectl get pods -l app=app-private -o jsonpath='{.items[*].metadata.name}'`
 $ kubectl describe pod $POD | awk '/Events:/,/^$/'
 Events:
   Type     Reason     Age                    From               Message
@@ -138,11 +121,11 @@ $ aws iam list-attached-role-policies --role-name $ROLE_NAME
 }
 ```
 
-The AWS managed policy "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly" is attached to the worker node role and this policy should provide enough permissions to pull a Image from ECR preivate repository. 
+The AWS managed policy "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly" is attached to the worker node role and this policy should provide enough permissions to pull a Image from ECR private repository.
 
 ### Step 5: Check ECR repo permissions
 
-The perimissions to the ECR repository can be managed at both Identity and Resource level. The Identity level permissions are provided at IAM and the resource level permissions are provided at the repository level. As we confirmed that identity based permissions are good, let's the check the policy for ECR repo.
+The permissions to the ECR repository can be managed at both Identity and Resource level. The Identity level permissions are provided at IAM and the resource level permissions are provided at the repository level. As we confirmed that identity based permissions are good, let's the check the policy for ECR repo.
 
 ```bash
 $ aws ecr get-repository-policy --repository-name retail-sample-app-ui --query policyText --output text | jq .
@@ -179,7 +162,7 @@ $ aws ecr get-repository-policy --repository-name retail-sample-app-ui --query p
 The ECR repository policy has Effect as Deny and the Principal as the EKS managed node role. Which is restricting the kubelet from pulling images in this repository. Let's change the effect to allow and see if the kubelet is able to pull the image.
 
 :::note
-We will be using below json file to modify the ECR repository permissions. 
+We will be using below json file to modify the ECR repository permissions.
 
 ```json {6}
 {
@@ -211,6 +194,7 @@ We will be using below json file to modify the ECR repository permissions.
   ]
 }
 ```
+
 :::
 
 ```bash
@@ -225,7 +209,7 @@ Now, restart the deployment and check if the pods are running.
 
 ```bash timeout=180 hook=fix-2 hookTimeout=600
 $ kubectl rollout restart deploy ui-private
-$ kubectl get pods
+$ kubectl get pods -l app=app-private
 NAME                          READY   STATUS    RESTARTS   AGE
 ui-private-7655bf59b9-s9pvb   1/1     Running   0          65m
 ```
@@ -239,7 +223,7 @@ General troubleshooting workflow of the pod with ImagePullBackOff on private ima
 - For "access denied", check the permissions on worker node role and the ECR repository policy.
 - For timeout on ECR, ensure that the worker node is configured to reach the ECR endpoint.
 
-#### Additional Resources:
+## Additional Resources
 
 - [ECR on EKS](https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_on_EKS.html)
 - [ECR Repository Policies](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policies.html)

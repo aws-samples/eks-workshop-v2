@@ -39,7 +39,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: centos
+        image: public.ecr.aws/docker/library/centos:latest
         command: ["/bin/sh"]
         args: ["-c", "while true; do echo $(date -u) >> /example/out.txt; sleep 5; done"]
         volumeMounts:

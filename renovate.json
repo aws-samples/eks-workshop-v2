@@ -5,7 +5,7 @@
     ":rebaseStalePrs",
     ":automergeStableNonMajor"
   ],
-  "automergeSchedule": [ "* * 1-10 * *" ],
+  "schedule": ["* * 1-10 * *"],
   "enabledManagers": ["custom.regex", "github-actions", "terraform", "npm"],
   "labels": ["content/other"],
   "packageRules": [
@@ -39,6 +39,11 @@
     {
       "matchPackagePatterns": ["^@docusaurus"],
       "enabled": false
+    },
+    {
+      "matchFileNames": ["lab/scripts/installer.sh"],
+      "groupName": "IDE binaries",
+      "matchUpdateTypes": ["minor", "patch"]
     }
   ],
   "customManagers": [

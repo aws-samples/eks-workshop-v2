@@ -1,5 +1,5 @@
 ---
-title: "Fixing IAM Policy Issue"
+title: "IAM Policy Issue"
 sidebar_position: 31
 ---
 
@@ -15,34 +15,9 @@ $ kubectl get serviceaccounts -n kube-system -l app.kubernetes.io/name=aws-load-
 
 Example output:
 
-```yaml {8}
-apiVersion: v1
-items:
-  - apiVersion: v1
-    automountServiceAccountToken: true
-    kind: ServiceAccount
-    metadata:
-      annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::xxxxxxxxxxxx:role/alb-controller-20240611131524228000000002
-        meta.helm.sh/release-name: aws-load-balancer-controller
-        meta.helm.sh/release-namespace: kube-system
-      creationTimestamp: "2024-06-11T13:15:32Z"
-      labels:
-        app.kubernetes.io/instance: aws-load-balancer-controller
-        app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/name: aws-load-balancer-controller
-        app.kubernetes.io/version: v2.7.1
-        helm.sh/chart: aws-load-balancer-controller-1.7.1
-      name: aws-load-balancer-controller-sa
-      namespace: kube-system
-      resourceVersion: "4950707"
-      uid: 6d842045-f2b4-4406-869b-f2addc67ff4d
-kind: List
-metadata:
-  resourceVersion: ""
-```
+::yaml{file="manifests/modules/troubleshooting/alb/files/iam_issue_service_account_role.yaml" paths="items.0.metadata.annotations"}
 
-Note the IAM role ARN in the `eks.amazonaws.com/role-arn` annotation. This is the role that needs the correct permissions.
+1. `eks.amazonaws.com/role-arn`: This tag references AIM role that needs the correct permissions.
 
 ### Step 2: Check Controller Logs
 

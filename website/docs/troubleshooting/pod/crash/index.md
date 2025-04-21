@@ -1,33 +1,17 @@
 ---
 title: "PodStuck - ContainerCreating"
-sidebar_position: 63
+sidebar_position: 73
 chapter: true
-sidebar_custom_props: { "module": true }
 ---
 
-In this section, we will learn how to troubleshoot a pod that is stuck in the ContainerCreating state.
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=600 wait=300
-$ prepare-environment troubleshooting/pod/crash
-```
-
-The preparation of the lab might take a couple of minutes and it will make the following changes to your lab environment:
-
-- Install aws-efs-csi-driver addon in the EKS cluster.
-- Create a EFS filesystem and mount targets.
-- Create a deployment named efs-app backed by a persistent volume claim named efs-claim to leverage EFS as persistent volume, in the default namespace.
-:::
-
-Now let's verify if the deployment is created, so we can start troubleshooting the scenario.
+In this section, we will learn how to troubleshoot a pod that is stuck in the ContainerCreating state. Now let's verify if the deployment is created, so we can start troubleshooting the scenario.
 
 ```bash
 $ kubectl get deploy efs-app -n default
 NAME      READY   UP-TO-DATE   AVAILABLE   AGE
 efs-app   0/1     1            0           18m
 ```
+
 :::info
 If you get the same output, it means you are ready to start the troubleshooting.
 :::
@@ -51,7 +35,7 @@ efs-app-5c4df89785-m4qz4   0/1     ContainerCreating   0          19m
 You can see that the pod status is showing as ContainerCreating. Let's describe the pod to see the events.
 
 ```bash expectError=true
-$ export POD=`kubectl get pods -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep efs`
+$ export POD=`kubectl get pods -l app=efs-app -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep efs`
 $ kubectl describe pod $POD | awk '/Events:/,/^$/'
 Events:
   Type     Reason            Age                From               Message
@@ -78,7 +62,8 @@ b'mount.nfs4: mount point /var/lib/kubelet/pods/b2db07f9-0bae-4324-98e6-e4c978a0
 Warning: config file does not have fips_mode_enabled item in section mount.. You should be able to find a new config file in the same folder as current config file /etc/amazon/efs/efs-utils.conf. Consider update the new config file to latest config file. Use the default value [fips_mode_enabled = False].Warning: config file does not have retry_nfs_mount_command item in section mount.. You should be able to find a new config file in the same folder as current config file /etc/amazon/efs/efs-utils.conf. Consider update the new config file to latest config file. Use the default value [retry_nfs_mount_command = True].
   Warning  FailedMount  3m33s (x6 over 23m)  kubelet  MountVolume.SetUp failed for volume "pvc-719c8ef2-5bdb-4638-b4db-7d59b53d21f0" : rpc error: code = DeadlineExceeded desc = context deadline exceeded
 ```
-We can see 'Cannot connect to file system mount target ip address x.x.x.x.' and 'Connection to the mount target IP address x.x.x.x timeout' messages. This suggests that the EFS file system is failing to mount on the pod. 
+
+We can see 'Cannot connect to file system mount target ip address x.x.x.x.' and 'Connection to the mount target IP address x.x.x.x timeout' messages. This suggests that the EFS file system is failing to mount on the pod.
 
 ### Step 3: Check node networking configuration
 
@@ -115,7 +100,6 @@ You can also check this in the EKS Console. Navigate to eks-workshop cluster, fi
 />
 :::
 
-
 ### Step 4: Check EFS file system networking configuration
 
 Now, let's check the EFS file system networking configuration.
@@ -143,7 +127,7 @@ $ aws ec2 describe-security-groups --group-ids $MT_SG --query "SecurityGroups[].
 ]
 ```
 
-The security group attached to the mount target of EFS has inbound rules only on port 80 from the VPC CIDR. The security group of mount target should allow traffic on port 2049. 
+The security group attached to the mount target of EFS has inbound rules only on port 80 from the VPC CIDR. The security group of mount target should allow traffic on port 2049.
 
 :::info
 You can also check this in EFS console. Click on EFS file system Id named eks-workshop-efs. Then click on Network to view mount targets for all availability zones and the security groups attached to each mount target.
