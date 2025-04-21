@@ -24,6 +24,5 @@ Statement:
       - fsx:DescribeFileSystems
       - fsx:DescribeStorageVirtualMachines
       - fsx:ListTagsForResource
-    Resource:
-      - ["*"]
+    Resource: ["*"]
 
