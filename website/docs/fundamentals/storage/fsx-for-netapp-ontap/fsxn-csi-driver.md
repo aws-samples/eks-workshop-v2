@@ -12,7 +12,7 @@ In order to utilize Amazon FSx for NetApp ONTAP file system with dynamic provisi
 We can install the Amazon FSxN for NetApp ONTAP Trident CSI driver using helm. We will need to provide a required IAM role that has already been created for us as part fo the preperation for the workshop. 
 ```bash
 $ helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
-$ helm install trident-operator netapp-trident/trident-operator --version 100.2410.0 --namespace trident --create-namespace
+$ helm install trident-operator netapp-trident/trident-operator --version 100.2410.0 --namespace trident --create-namespace --wait
 ```
 
 
