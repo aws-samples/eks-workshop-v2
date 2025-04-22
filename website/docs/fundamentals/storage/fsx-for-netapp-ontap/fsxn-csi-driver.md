@@ -34,7 +34,7 @@ The workshop environment also has an FSx for NetApp ONTAP file system, Storage V
 Retrieve the information about the FSx for NetApp ONTAP file system by running the following AWS CLI command:
 
 ```bash
-$ export FSXN_ID=$(aws fsx describe-file-systems --query 'FileSystems[?not_null(Tags[?Key==`Name` && Value==`eks-workshop-fsxn`])].FileSystemId' --output text)
+$ export FSXN_ID=$(aws fsx describe-file-systems --output json | jq -r --arg cluster_name "${EKS_CLUSTER_NAME}-fsxn" '.FileSystems[] | select(.Tags[] | select(.Key=="Name" and .Value==$cluster_name)) | .FileSystemId')
 ```
 
 Now, we'll need to create a TridentBackendConfig object configured to use the pre-provisioned FSx for NetApp ONTAP file system as part of this workshop infrastructure.
