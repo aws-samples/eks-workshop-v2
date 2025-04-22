@@ -19,7 +19,7 @@ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --region $AWS_REGION 
 logmessage "Setting coredns addon to its default configuration"
 
 aws eks update-addon \
-    --cluster-name eks-workshop \
+    --cluster-name $EKS_CLUSTER_NAME \
     --region $AWS_REGION \
     --addon-name coredns \
     --resolve-conflicts OVERWRITE \

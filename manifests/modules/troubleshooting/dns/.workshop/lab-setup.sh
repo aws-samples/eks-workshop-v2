@@ -50,7 +50,7 @@ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --region $AWS_REGION 
 kubectl scale deployment coredns --replicas=0 -n kube-system
 sleep 2
 aws eks update-addon \
-    --cluster-name eks-workshop \
+    --cluster-name $EKS_CLUSTER_NAME \
     --region $AWS_REGION \
     --addon-name coredns \
     --resolve-conflicts OVERWRITE \

@@ -100,7 +100,7 @@ if [ ! -z "$INSTANCE_IDS" ]; then
     # Terminate instances and scale down nodegroup in parallel
     aws ec2 terminate-instances --instance-ids $INSTANCE_IDS &
     aws eks update-nodegroup-config \
-        --cluster-name eks-workshop \
+        --cluster-name $EKS_CLUSTER_NAME \
         --nodegroup-name new_nodegroup_3 \
         --scaling-config desiredSize=0,minSize=0,maxSize=1 &
 fi
@@ -130,13 +130,13 @@ if kubectl get namespace prod >/dev/null 2>&1; then
 fi
 
 # Final nodegroup deletion
-if aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_3 >/dev/null 2>&1; then
+if aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_3 >/dev/null 2>&1; then
     logmessage "Deleting nodegroup..."
-    aws eks delete-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_3
+    aws eks delete-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_3
     
     timeout=180
     while [ $timeout -gt 0 ]; do
-        if ! aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_3 >/dev/null 2>&1; then
+        if ! aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_3 >/dev/null 2>&1; then
             logmessage "Nodegroup deleted successfully."
             break
         fi
