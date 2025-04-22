@@ -15,15 +15,18 @@ Prepare your environment for this section:
 ```bash timeout=600 wait=10
 $ prepare-environment troubleshooting/alb
 ```
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/troubleshooting/alb/.workshop/terraform).
+:::
+:::info
 
-This will:
+The preparation of the lab might take a couple of minutes and it will make the following changes to your lab environment:
+
 
 - Deploy a sample UI application
 - Configure an ingress resource
 - Set up initial AWS Load Balancer Controller configuration (with deliberate issues for troubleshooting)
 - Create necessary IAM roles and policies
 
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/troubleshooting/alb/.workshop/terraform).
 :::
 
 ## Environment Setup Details

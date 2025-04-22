@@ -16,8 +16,10 @@ Prepare your environment for this section:
 ```bash timeout=600 wait=5
 $ prepare-environment
 ```
-
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/troubleshooting/dns/.workshop/terraform).
 :::
+
+
 
 ### DNS resolution in EKS
 

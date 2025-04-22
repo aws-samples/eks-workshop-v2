@@ -14,10 +14,15 @@ Prepare your environment for this section:
 $ prepare-environment troubleshooting/workernodes
 ```
 
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/troubleshooting/workernodes/.workshop/terraform).
+
+
 :::
 :::info
 
-The preparation of the lab might take a couple of minutes and it will make the following changes to your lab environment: - Create a new managed node groups called new_nodegroup_1, new_nodegroup_2, new_nodegroup_3 with desired managed node group count to 1 - Introduce a problem to the managed node groups which causes node join failure and ready issue - Deploy resource kubernetes resources (deployment, daemonset, namespace, configmaps, priority-class)
+The preparation of the lab might take a couple of minutes and it will make the following changes to your lab environment: 
+- Create a new managed node groups called new_nodegroup_1, new_nodegroup_2, new_nodegroup_3 with desired managed node group count to 1 
+- Introduce a problem to the managed node groups which causes node join failure and ready issue 
+- Deploy resource kubernetes resources (deployment, daemonset, namespace, configmaps, priority-class)
 
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/troubleshooting/workernodes/.workshop/terraform).
 :::
