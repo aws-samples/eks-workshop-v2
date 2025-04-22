@@ -3,6 +3,7 @@ output "environment_variables" {
   value = {
     # Common variables
     MY_ENVIRONMENT_VARIABLE = "abc1234",
+    EKS_CLUSTER_NAME        = var.addon_context.eks_cluster_id,
 
     # Nodegroup 1 variables
     NEW_NODEGROUP_1_ASG_NAME = aws_eks_node_group.new_nodegroup_1.resources[0].autoscaling_groups[0].name,
