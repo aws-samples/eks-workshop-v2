@@ -1,9 +1,11 @@
 #!/bin/bash
 
+set -e
+
 # Array to track background processes
 declare -a pids
 
-echo "Starting cleanup operations..."
+logmessage "Starting cleanup operations..."
 
 # Function to delete resources in parallel
 delete_resource() {
@@ -13,11 +15,11 @@ delete_resource() {
     local extra_args=$4
 
     if kubectl get $resource_type $resource_name ${namespace:+-n $namespace} > /dev/null 2>&1; then
-        echo "Deleting $resource_type $resource_name ${namespace:+in namespace $namespace}..."
+        logmessage "Deleting $resource_type $resource_name ${namespace:+in namespace $namespace}..."
         kubectl delete $resource_type $resource_name ${namespace:+-n $namespace} --ignore-not-found $extra_args &
         pids+=($!)
     else
-        echo "$resource_type $resource_name ${namespace:+in namespace $namespace} does not exist."
+        logmessage "$resource_type $resource_name ${namespace:+in namespace $namespace} does not exist."
     fi
 }
 
@@ -28,14 +30,14 @@ patch_and_delete() {
     local namespace=$3
 
     if kubectl get $resource_type $resource_name ${namespace:+-n $namespace} > /dev/null 2>&1; then
-        echo "Patching and deleting $resource_type $resource_name ${namespace:+in namespace $namespace}..."
+        logmessage "Patching and deleting $resource_type $resource_name ${namespace:+in namespace $namespace}..."
         # Patch to remove finalizers
         kubectl patch $resource_type $resource_name ${namespace:+-n $namespace} -p '{"metadata":{"finalizers":null}}' --type=merge
         # Delete with force and no grace period
         kubectl delete $resource_type $resource_name ${namespace:+-n $namespace} --ignore-not-found &
         pids+=($!)
     else
-        echo "$resource_type $resource_name ${namespace:+in namespace $namespace} does not exist."
+        logmessage "$resource_type $resource_name ${namespace:+in namespace $namespace} does not exist."
     fi
 }
 
@@ -46,21 +48,18 @@ delete_resource deployment ui-private default
 delete_resource deployment ui-new default
 
 ###======PodStuck - ContainerCreating
-delete_resource deployment efs-app default "--force --grace-period=0"
-
-# Handle PVC deletion more efficiently
-patch_and_delete pvc efs-claim default
+delete_resource deployment efs-app default
+delete_resource pod "-l app=efs-app" "--force"
 
 # Find and handle PV in parallel
 {
     PV_NAME=$(kubectl get pv -o jsonpath='{.items[?(@.spec.claimRef.name=="efs-claim")].metadata.name}')
     if [ -n "$PV_NAME" ]; then
-        echo "Patching and deleting PV $PV_NAME..."
-        kubectl patch pv "$PV_NAME" -p '{"metadata":{"finalizers":null}}' --type=merge
-        kubectl delete pv "$PV_NAME" --ignore-not-found --force --grace-period=0 &
+        logmessage "Patching and deleting PV $PV_NAME..."        
+        patch_and_delete pv "$PV_NAME" default
         pids+=($!)
     else
-        echo "No PV associated with efs-claim."
+        logmessage "No PV associated with efs-claim."
     fi
 } &
 pids+=($!)
@@ -73,9 +72,9 @@ delete_resource csidriver efs.csi.aws.com
 
 
 # Wait for all background processes to complete
-echo "Waiting for all deletion operations to complete..."
+logmessage "Waiting for all deletion operations to complete..."
 for pid in "${pids[@]}"; do
     wait $pid
 done
 
-echo "Cleanup completed."
+logmessage "Cleanup completed."

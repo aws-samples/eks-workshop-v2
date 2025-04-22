@@ -29,6 +29,8 @@ metadata:
     app: efs-app
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector: 
     matchLabels:
       app: efs-app
