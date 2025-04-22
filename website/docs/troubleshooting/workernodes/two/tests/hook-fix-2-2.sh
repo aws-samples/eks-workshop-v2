@@ -13,7 +13,6 @@ after() {
     >&2 echo "Found NatGatewayId when it should not exist"
     exit 1
   fi  
-  # If we get here, it means NatGatewayId was not found, so test passes
   exit 0
 }
 
