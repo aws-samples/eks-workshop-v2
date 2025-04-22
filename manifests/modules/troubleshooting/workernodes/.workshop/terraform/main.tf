@@ -166,6 +166,9 @@ resource "aws_eks_node_group" "new_nodegroup_1" {
 }
 
 resource "null_resource" "increase_desired_count" {
+  triggers = {
+    always_run = timestamp()
+  }
   provisioner "local-exec" {
     command = "aws eks update-nodegroup-config --cluster-name ${data.aws_eks_cluster.cluster.id} --nodegroup-name ${aws_eks_node_group.new_nodegroup_1.node_group_name} --scaling-config minSize=0,maxSize=1,desiredSize=1"
     when    = create
@@ -325,6 +328,9 @@ resource "aws_eks_node_group" "new_nodegroup_3" {
 
 # Kubernetes Resources Deployment for Scenario 3
 resource "null_resource" "deploy_kubernetes_resources" {
+  triggers = {
+    always_run = timestamp()
+  }
   provisioner "local-exec" {
     when    = create
     command = <<-EOT
@@ -342,6 +348,10 @@ resource "null_resource" "deploy_kubernetes_resources" {
 }
 
 resource "null_resource" "deploy_metrics_server" {
+  triggers = {
+    always_run = timestamp()
+  }
+
   provisioner "local-exec" {
     when    = create
     command = "kubectl apply -f ~/environment/eks-workshop/modules/troubleshooting/workernodes/yaml/metrics-server.yaml"
@@ -359,8 +369,12 @@ resource "null_resource" "deploy_metrics_server" {
 #}
 
 resource "null_resource" "increase_nodegroup_2" {
+  triggers = {
+    always_run = timestamp()
+  }
   provisioner "local-exec" {
     command = "aws eks update-nodegroup-config --cluster-name ${data.aws_eks_cluster.cluster.id} --nodegroup-name new_nodegroup_2 --scaling-config minSize=0,maxSize=1,desiredSize=1"
+    when    = create
   }
   depends_on = [aws_eks_node_group.new_nodegroup_2]
 }
@@ -375,5 +389,6 @@ resource "null_resource" "wait_for_instance" {
         sleep 10
       done
     EOT
+    when    = create
   }
 }

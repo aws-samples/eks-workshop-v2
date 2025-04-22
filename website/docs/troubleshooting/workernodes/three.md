@@ -2,7 +2,6 @@
 title: "Node in Not-Ready state"
 sidebar_position: 73
 chapter: true
-sidebar_custom_props: { "module": true }
 ---
 
 ::required-time
@@ -169,8 +168,7 @@ The CloudWatch metrics reveal:
 
 Let's check deployment details and implement immediate changes to stabilize the node:
 
-
-#### 6.1. Check the deployment resource configurations:
+#### 6.1. Check the deployment resource configurations
 
 ```bash
 $ kubectl get pods -n prod -o custom-columns="NAME:.metadata.name,CPU_REQUEST:.spec.containers[*].resources.requests.cpu,MEM_REQUEST:.spec.containers[*].resources.requests.memory,CPU_LIMIT:.spec.containers[*].resources.limits.cpu,MEM_LIMIT:.spec.containers[*].resources.limits.memory"
@@ -187,14 +185,13 @@ prod-ds-558sx               100m          128Mi         <none>      <none>
 Notice that neither the deployment nor the DaemonSet has resource limits configured, which allowed unconstrained resource consumption.
 :::
 
-#### 6.2. Let's scale down the deployment and stop the resource overload:
+#### 6.2. Let's scale down the deployment and stop the resource overload
 
 ```bash bash timeout=40 wait=25
 $ kubectl scale deployment/prod-app -n prod --replicas=0 && kubectl delete pod -n prod -l app=prod-app --force --grace-period=0 && kubectl wait --for=delete pod -n prod -l app=prod-app
 ```
 
 #### 6.3. Recycle the node on the nodegroup
-
 
 ```bash timeout=120 wait=95
 $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=0 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=1 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && for i in {1..6}; do NODE_NAME_2=$(kubectl get nodes --selector eks.amazonaws.com/nodegroup=new_nodegroup_3 -o jsonpath='{.items[0].metadata.name}' 2>/dev/null) && [ -n "$NODE_NAME_2" ] && break || sleep 5; done && [ -n "$NODE_NAME_2" ]
@@ -204,8 +201,8 @@ $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegro
 This can take up to 1 minute. The script will store the new node name as NODE_NAME_2.
 :::
 
+#### 6.4. Verify node status
 
-#### 6.4. Verify node status: 
 ```bash test=false
 $ kubectl get nodes --selector=kubernetes.io/hostname=$NODE_NAME_2
 NAME                                          STATUS   ROLES    AGE     VERSION
@@ -264,49 +261,52 @@ prod-ds-ll4lv               1/1     Running   0          1m
 
 ```bash test=false
 $ kubectl top pods -n prod
-NAME                       CPU(cores)   MEMORY(bytes)   
-prod-app-666f8f7bd5-658d6   215m         425Mi           
-prod-app-666f8f7bd5-6jrj4   203m         426Mi           
-prod-app-666f8f7bd5-9rf6m   203m         426Mi           
-prod-app-666f8f7bd5-pm545   205m         425Mi           
-prod-app-666f8f7bd5-ttkgs   248m         425Mi           
-prod-app-666f8f7bd5-zm8lx   215m         425Mi           
-prod-ds-ll4lv               586m         3Mi  
+NAME                       CPU(cores)   MEMORY(bytes)
+prod-app-666f8f7bd5-658d6   215m         425Mi
+prod-app-666f8f7bd5-6jrj4   203m         426Mi
+prod-app-666f8f7bd5-9rf6m   203m         426Mi
+prod-app-666f8f7bd5-pm545   205m         425Mi
+prod-app-666f8f7bd5-ttkgs   248m         425Mi
+prod-app-666f8f7bd5-zm8lx   215m         425Mi
+prod-ds-ll4lv               586m         3Mi
 ```
 
 #### 8.3. Check node status
+
 ```bash
 $ kubectl get node --selector=kubernetes.io/hostname=$NODE_NAME_2
 NAME                                          STATUS   ROLES    AGE     VERSION
-ip-10-42-180-24.us-west-2.compute.internal    Ready    <none>   1h35m   v1.30.8-eks-aeac579     
+ip-10-42-180-24.us-west-2.compute.internal    Ready    <none>   1h35m   v1.30.8-eks-aeac579
 ```
 
 #### 8.4. Check node resource usage
+
 ```bash test=false
-$ kubectl top node --selector=kubernetes.io/hostname=$NODE_NAME   
-NAME                                          CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
-ip-10-42-180-24.us-west-2.compute.internal    1612m        83%    3145Mi          44%  
+$ kubectl top node --selector=kubernetes.io/hostname=$NODE_NAME
+NAME                                          CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
+ip-10-42-180-24.us-west-2.compute.internal    1612m        83%    3145Mi          44%
 ```
 
 ### Key Takeaways
 
 #### 1. Resource Management
 
-   - Always set appropriate resource requests and limits
-   - Monitor cumulative workload impact
-   - Implement proper resource quotas
+- Always set appropriate resource requests and limits
+- Monitor cumulative workload impact
+- Implement proper resource quotas
 
 #### 2. Monitoring
 
-   - Use multiple monitoring tools
-   - Set up proactive alerting
-   - Monitor both container and node-level metrics
+- Use multiple monitoring tools
+- Set up proactive alerting
+- Monitor both container and node-level metrics
 
 #### 3. Best Practices
-   - Implement horizontal pod autoscaling
-   - Use autoscaling: [Cluster-autoscaler](https://docs.aws.amazon.com/eks/latest/best-practices/cas.html), [Karpenter](https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html), [EKS Auto Mode](https://docs.aws.amazon.com/eks/latest/userguide/automode.html)
-   - Regular capacity planning
-   - Implement proper error handling in applications
+
+- Implement horizontal pod autoscaling
+- Use autoscaling: [Cluster-autoscaler](https://docs.aws.amazon.com/eks/latest/best-practices/cas.html), [Karpenter](https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html), [EKS Auto Mode](https://docs.aws.amazon.com/eks/latest/userguide/automode.html)
+- Regular capacity planning
+- Implement proper error handling in applications
 
 ### Additional Resources
 

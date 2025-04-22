@@ -2,7 +2,6 @@
 title: "Node Join Failure"
 sidebar_position: 72
 chapter: true
-sidebar_custom_props: { "module": true }
 ---
 
 ::required-time
@@ -326,6 +325,7 @@ $ kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_2
 NAME                                          STATUS   ROLES    AGE    VERSION
 ip-10-42-108-252.us-west-2.compute.internal   Ready    <none>   3m9s   v1.30.0-eks-036c24b
 ```
+
 :::info
 Newly joined node can take up to about 1 minute to show.
 :::

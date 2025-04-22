@@ -16,13 +16,13 @@ force_delete_namespace() {
     local max_attempts=3
     local attempt=1
     
-    echo "Attempting to force delete namespace: $namespace"
+    logmessage "Attempting to force delete namespace: $namespace"
     
     # First try normal deletion
     kubectl delete namespace $namespace --timeout=30s 2>/dev/null || true
     
     while kubectl get namespace $namespace >/dev/null 2>&1 && [ $attempt -le $max_attempts ]; do
-        echo "Attempt $attempt to force delete namespace $namespace"
+        logmessage "Attempt $attempt to force delete namespace $namespace"
         
         # Get namespace json and remove finalizers
         kubectl get namespace $namespace -o json | jq '.spec.finalizers = []' > temp_ns.json
@@ -42,7 +42,7 @@ force_delete_namespace() {
             
         else
             # Final attempt: Most aggressive approach
-            echo "Using aggressive deletion approach..."
+            logmessage "Using aggressive deletion approach..."
             kubectl get namespace $namespace -o json | jq '.metadata.finalizers = []' | kubectl replace --raw "/api/v1/namespaces/$namespace/finalize" -f - >/dev/null 2>&1 || true
             kubectl patch namespace $namespace -p '{"metadata":{"finalizers":null}}' --type=merge 2>/dev/null || true
         fi
@@ -57,10 +57,10 @@ force_delete_namespace() {
     
     # Final check
     if kubectl get namespace $namespace >/dev/null 2>&1; then
-        echo "WARNING: Namespace $namespace still exists after all deletion attempts"
+        logmessage "WARNING: Namespace $namespace still exists after all deletion attempts"
         return 1
     else
-        echo "Successfully deleted namespace $namespace"
+        logmessage "Successfully deleted namespace $namespace"
         return 0
     fi
 }
@@ -69,7 +69,7 @@ force_delete_namespace() {
 cleanup_namespace_resources() {
     local namespace=$1
     
-    echo "Cleaning up resources in namespace: $namespace"
+    logmessage "Cleaning up resources in namespace: $namespace"
     
     # Delete all resources that might block namespace deletion
     local resources=(
@@ -81,13 +81,13 @@ cleanup_namespace_resources() {
     )
     
     for resource in "${resources[@]}"; do
-        echo "Forcing deletion of $resource in namespace $namespace"
+        logmessage "Forcing deletion of $resource in namespace $namespace"
         kubectl delete $resource --all -n $namespace --force --grace-period=0 2>/dev/null || true
     done
 }
 
 # Start AWS operations in parallel
-echo "Starting parallel AWS resource cleanup..."
+logmessage "Starting parallel AWS resource cleanup..."
 
 # Get instance IDs and start termination if any exist
 INSTANCE_IDS=$(aws ec2 describe-instances \
@@ -106,7 +106,7 @@ if [ ! -z "$INSTANCE_IDS" ]; then
 fi
 
 # Clean up metrics-server components
-echo "Cleaning up metrics-server components..."
+logmessage "Cleaning up metrics-server components..."
 kubectl delete apiservice v1beta1.metrics.k8s.io --force --grace-period=0 2>/dev/null || true
 kubectl delete -n kube-system serviceaccount metrics-server --force --grace-period=0 2>/dev/null || true
 kubectl delete clusterrole system:aggregated-metrics-reader --force --grace-period=0 2>/dev/null || true
@@ -124,38 +124,38 @@ kubectl delete priorityclass high-priority --force --grace-period=0 2>/dev/null 
 
 # Clean up prod namespace
 if kubectl get namespace prod >/dev/null 2>&1; then
-    echo "Cleaning up prod namespace..."
+    logmessage "Cleaning up prod namespace..."
     cleanup_namespace_resources prod
     force_delete_namespace prod
 fi
 
 # Final nodegroup deletion
 if aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_3 >/dev/null 2>&1; then
-    echo "Deleting nodegroup..."
+    logmessage "Deleting nodegroup..."
     aws eks delete-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_3
     
     timeout=180
     while [ $timeout -gt 0 ]; do
         if ! aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_3 >/dev/null 2>&1; then
-            echo "Nodegroup deleted successfully."
+            logmessage "Nodegroup deleted successfully."
             break
         fi
-        echo "Waiting for nodegroup deletion... (${timeout}s remaining)"
+        logmessage "Waiting for nodegroup deletion... (${timeout}s remaining)"
         sleep 10
         timeout=$((timeout - 10))
     done
 fi
 
 # Delete launch template
-echo "Deleting launch template..."
+logmessage "Deleting launch template..."
 aws ec2 delete-launch-template --launch-template-name new_nodegroup_3 2>/dev/null || true
 
 # Delete IAM role and policies
-echo "Cleaning up IAM resources..."
+logmessage "Cleaning up IAM resources..."
 aws iam detach-role-policy --role-name new_nodegroup_3 --policy-arn arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy 2>/dev/null || true
 aws iam detach-role-policy --role-name new_nodegroup_3 --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly 2>/dev/null || true
 aws iam delete-role --role-name new_nodegroup_3 2>/dev/null || true
 
-echo "Cleanup process completed. Please check for any remaining resources manually."
+logmessage "Cleanup process completed. Please check for any remaining resources manually."
 
 

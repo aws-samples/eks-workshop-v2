@@ -2,11 +2,9 @@
 title: "Missing Worker Nodes"
 sidebar_position: 71
 chapter: true
-sidebar_custom_props: { "module": true }
 ---
 
 ::required-time
-
 
 ### Background
 
@@ -60,7 +58,7 @@ You can also view this information in the EKS Console:
 The nodegroup should eventually transition to a DEGRADED state. Let's examine the detailed status:
 
 :::info
-If the Workernodes workshop environment was deployed within 10 minutes, you may see nodegroup in ACTIVE state. If so, please observe the output below for your information. The nodegroup should transition to DEGRADED within 10 minutes of deployment. You can proceed to Step 4 to check the AutoScaling Group directly. 
+If the Workernodes workshop environment was deployed within 10 minutes, you may see nodegroup in ACTIVE state. If so, please observe the output below for your information. The nodegroup should transition to DEGRADED within 10 minutes of deployment. You can proceed to Step 4 to check the AutoScaling Group directly.
 :::
 
 ```bash
@@ -326,9 +324,11 @@ $ kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_1
 NAME                                          STATUS   ROLES    AGE    VERSION
 ip-10-42-108-252.us-west-2.compute.internal   Ready    <none>   3m9s   v1.30.0-eks-036c24b
 ```
+
 :::info
 Newly joined node can take up to about 1 minute to show.
 :::
+
 ## Key Takeaways
 
 ### Security Implementation
