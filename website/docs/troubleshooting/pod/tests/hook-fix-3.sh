@@ -6,7 +6,7 @@ before() {
 
 after() {
   # Initial sleep before starting the check cycles
-  sleep 120
+  sleep 60
 
   # Maximum number of attempts (adjust as needed)
   max_attempts=10

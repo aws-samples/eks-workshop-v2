@@ -51,18 +51,23 @@ delete_resource deployment ui-new default
 delete_resource deployment efs-app default
 delete_resource pod "-l app=efs-app" "--force"
 
-# Find and handle PV in parallel
-{
-    PV_NAME=$(kubectl get pv -o jsonpath='{.items[?(@.spec.claimRef.name=="efs-claim")].metadata.name}')
-    if [ -n "$PV_NAME" ]; then
-        logmessage "Patching and deleting PV $PV_NAME..."        
-        patch_and_delete pv "$PV_NAME" default
-        pids+=($!)
-    else
-        logmessage "No PV associated with efs-claim."
-    fi
-} &
-pids+=($!)
+# First delete the PVC
+logmessage "Deleting PVC efs-claim..."
+patch_and_delete pvc efs-claim default
+
+# Wait for PVC deletion to complete before handling PV
+wait ${pids[-1]}
+
+# Now find and handle PV sequentially after PVC is deleted
+PV_NAME=$(kubectl get pv -o jsonpath='{.items[?(@.spec.claimRef.name=="efs-claim")].metadata.name}' 2>/dev/null || echo "")
+if [ -n "$PV_NAME" ]; then
+    logmessage "Patching and deleting PV $PV_NAME..."
+    kubectl patch pv "$PV_NAME" -p '{"metadata":{"finalizers":null}}' --type=merge
+    kubectl delete pv "$PV_NAME" --ignore-not-found &
+    pids+=($!)
+else
+    logmessage "No PV associated with efs-claim."
+fi
 
 # Delete storage class
 delete_resource storageclass efs-sc
