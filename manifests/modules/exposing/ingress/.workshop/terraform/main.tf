@@ -5,7 +5,7 @@ data "aws_vpc" "this" {
   }
 }
 
-data "external" "current_vpc_id" {
+data "external" "vs_code_vpc_id" {
   program = ["bash", "-c", <<EOF
     TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
     MAC=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/mac)
@@ -22,7 +22,7 @@ resource "aws_route53_zone" "private_zone" {
     vpc_id = data.aws_vpc.this.id
   }
   vpc {
-    vpc_id = data.external.current_vpc_id.result.vpc_id
+    vpc_id = data.external.vs_code_vpc_id.result.vpc_id
   }
 
   tags = {
