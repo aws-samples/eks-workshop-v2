@@ -8,7 +8,7 @@ kubectl delete -k ~/environment/eks-workshop/modules/networking/eks-hybrid-nodes
 
 kubectl delete deployment nginx-deployment --ignore-not-found=true
 
-kubectl delete clusterpolicies.kyverno.io set-pod-deletion-cost --ignore-not-found 
+delete-all-if-crd-exists clusterpolicies.kyverno.io
 
 uninstall-helm-chart cilium cilium
 uninstall-helm-chart kyverno kyverno
