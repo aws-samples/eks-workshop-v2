@@ -11,7 +11,7 @@ deploy a sample workload using the `Deployment` and `Ingress` manifests below:
 ::yaml{file="manifests/modules/networking/eks-hybrid-nodes/kustomize/deployment.yaml" paths="spec.template.spec.affinity.nodeAffinity"}
 
 1. We use `nodeAffinity` rules to tell the Kubernetes scheduler to _prefer_ cluster nodes
-with the `eks.amazonaws.com/compute-type=hybrid` label and value.
+   with the `eks.amazonaws.com/compute-type=hybrid` label and value.
 
 ::yaml{file="manifests/modules/networking/eks-hybrid-nodes/kustomize/ingress.yaml" paths="spec.ingressClassName"}
 

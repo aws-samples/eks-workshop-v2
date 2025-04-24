@@ -11,7 +11,7 @@ spec:
     - allow-delete
     - allow-other
     - uid=999
-    - gid=999 
+    - gid=999
     - region=$AWS_REGION
   csi:
     driver: s3.csi.aws.com
@@ -27,8 +27,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: "" 
+  storageClassName: ""
   resources:
     requests:
-      storage: 1Gi 
+      storage: 1Gi
   volumeName: s3-pv
