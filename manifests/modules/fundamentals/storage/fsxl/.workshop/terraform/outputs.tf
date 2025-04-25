@@ -4,8 +4,6 @@ output "environment_variables" {
     FSX_CSI_ADDON_ROLE = module.fsx_lustre_csi_driver_irsa.iam_role_arn
     BUCKET_NAME        = aws_s3_bucket.s3_data.id
     EKS_CLUSTER_NAME   = var.eks_cluster_id
-    FSX_SUBNET         = data.aws_subnets.private_fsx.ids[0]
-    FSX_SG_ID         = aws_security_group.fsx_lustre.id
     FSX_ID            = aws_fsx_lustre_file_system.fsx_lustre.id
     FSX_DNS_NAME      = aws_fsx_lustre_file_system.fsx_lustre.dns_name
     FSX_MOUNT_NAME    = aws_fsx_lustre_file_system.fsx_lustre.mount_name

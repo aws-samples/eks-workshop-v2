@@ -7,7 +7,7 @@ resource "aws_iam_role_policy_attachment" "fsx_full_access" {
 # Add after the policy attachment
 resource "time_sleep" "wait_for_policy_propagation" {
   depends_on = [aws_iam_role_policy_attachment.fsx_full_access]
-  create_duration = "30s"  # reduce to minimum amount possible
+  create_duration = "10s"  # reduce to minimum amount possible
 }
 
 # Add Service_Linked_Role inline policy
