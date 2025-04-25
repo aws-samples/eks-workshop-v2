@@ -147,17 +147,15 @@ Let's add the inbound rule to EFS mount target security group to allow NFS traff
 $ export VPC_ID=`aws eks describe-cluster --name ${EKS_CLUSTER_NAME} --query "cluster.resourcesVpcConfig.vpcId" --output text`
 $ export CIDR=`aws ec2 describe-vpcs --vpc-ids $VPC_ID --query "Vpcs[*].CidrBlock" --output text`
 $ for sg_id in $MT_SG_UNIQUE; do
-$  echo "Adding ingress rule to security group: $sg_id"
-$  aws ec2 authorize-security-group-ingress --group-id $MT_SG_UNIQUE --protocol tcp --port 2049 --cidr $CIDR
-$ done
-
-
+$    echo "Adding ingress rule to security group: $sg_id"
+$    aws ec2 authorize-security-group-ingress --group-id "$sg_id" --protocol tcp --port 2049 --cidr "$CIDR"
+$  done
 {
     "Return": true,
     "SecurityGroupRules": [
         {
-            "SecurityGroupRuleId": "sgr-05ae66b3cfaf2b03c",
-            "GroupId": "sg-0d69452207db88cde",
+            "SecurityGroupRuleId": "sgr-05ae66b3cfafxxxxx",
+            "GroupId": "sg-0d69452207dbxxxxx",
             "GroupOwnerId": "682844965773",
             "IsEgress": false,
             "IpProtocol": "tcp",
@@ -168,6 +166,7 @@ $ done
     ]
 }
 ```
+
 
 After 3-4 minutes, you should notice that the pod in default namespace is in running state
 

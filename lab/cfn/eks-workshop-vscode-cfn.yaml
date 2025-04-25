@@ -467,6 +467,17 @@ Resources:
       PolicyDocument:
         file: ./iam/policies/labs3.yaml
 
+  EksWorkshopTroubleshootPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-troubleshoot
+      PolicyDocument:
+        file: ./iam/policies/troubleshoot.yaml
+
   EksWorkshopSsmPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:

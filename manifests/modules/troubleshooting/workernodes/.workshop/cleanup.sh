@@ -156,6 +156,6 @@ aws iam detach-role-policy --role-name new_nodegroup_3 --policy-arn arn:aws:iam:
 aws iam detach-role-policy --role-name new_nodegroup_3 --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly 2>/dev/null || true
 aws iam delete-role --role-name new_nodegroup_3 2>/dev/null || true
 
-logmessage "Cleanup process completed. Please check for any remaining resources manually."
+logmessage "Cleanup complete."
 
 
