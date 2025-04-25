@@ -3,12 +3,12 @@ title: "External DNS"
 sidebar_position: 30
 ---
 
-External-DNS is a Kubernetes controller that automatically manages DNS records for your cluster's external-facing services and ingresses. It acts as a bridge between Kubernetes resources and DNS providers like AWS Route 53, 
+External-DNS is a Kubernetes controller that automatically manages DNS records for your cluster's services and ingresses. It acts as a bridge between Kubernetes resources and DNS providers like AWS Route 53, 
 ensuring your DNS records stay synchronized with your cluster's state
 
 In this lab, we'll automate DNS management for Kubernetes Ingress resources using External-DNS with AWS Route 53
 
-We'll install External-DNS using Helm. The IAM Role ARN and Helm chart version will be provided as environment variables by Terraform:
+We'll install External-DNS using Helm, the IAM Role ARN and Helm chart version provided as environment variables:
 
 ```bash expectError=true
 helm repo add external-dns https://kubernetes-sigs.github.io/external-dns/
