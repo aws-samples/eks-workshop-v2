@@ -32,13 +32,6 @@ NAME                                READY   STATUS    RESTARTS   AGE
 external-dns-5bdb4478b-fl48s        1/1     Running   0          2m
 ```
 
-Annotating Ingress for DNS
-To enable External-DNS to manage DNS records for your service, annotate your Ingress resource with the desired hostname.
-
-Open the file:
-external-dns.alpha.kubernetes.io/hostname
-~/environment/eks-workshop/modules/exposing/ingress/creating-ingress/ingress.yaml
-
 Let's create an Ingress resource with DNS configuration:
 
 ::yaml{file="manifests/modules/exposing/ingress/external-dns/ingress.yaml" paths="metadata.annotations.external-dns.alpha.kubernetes.io/hostname,spec.rules.0.host"}
