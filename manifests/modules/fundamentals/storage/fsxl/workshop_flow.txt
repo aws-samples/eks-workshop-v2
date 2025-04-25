@@ -1,0 +1,63 @@
+1. Prepare environment (wait 10 minutes for FSx Lustre file system to be created)
+
+2. Put files into S3 bucket
+
+mkdir ~/environment/assets-images/
+cd ~/environment/assets-images/
+curl --remote-name-all https://raw.githubusercontent.com/aws-containers/retail-store-sample-app/main/src/assets/public/assets/{chrono_classic.jpg,gentleman.jpg,pocket_watch.jpg,smart_2.jpg,wood_watch.jpg}
+cd ~/environment/
+aws s3 cp ~/environment/assets-images/ s3://$BUCKET_NAME/ --recursive
+aws s3 ls $BUCKET_NAME
+
+3. Helm use for CSI Driver installation
+
+helm repo add aws-fsx-csi-driver https://kubernetes-sigs.github.io/aws-fsx-csi-driver/
+
+helm upgrade --install aws-fsx-csi-driver \
+    --namespace kube-system \
+    aws-fsx-csi-driver/aws-fsx-csi-driver
+
+4. Verify installation
+kubectl get daemonset fsx-csi-node -n kube-system
+
+5. Statically provision FSx for Lustre volume in EKS cluster
+kubectl kustomize ~/environment/eks-workshop/modules/fundamentals/storage/fsx_lustre/deployment \
+  | envsubst | kubectl apply -f-
+
+(Use below for testing purposes only)
+kubectl delete -k ~/environment/eks-workshop/modules/fundamentals/storage/fsx_lustre/deployment
+
+6. Check status of deployment
+kubectl rollout status --timeout=130s deployment/assets -n assets
+
+7. Check mounts on deployment
+kubectl get deployment -n assets \
+  -o yaml | yq '.items[].spec.template.spec.containers[].volumeMounts'
+
+8. Check PV
+kubectl get pv
+
+9. Check PVC in asseets namespace
+kubectl describe pvc -n assets
+
+10. Show that contents from S3 bucket, imported into FSx Lustre and now in pods
+POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[0].metadata.name}')
+kubectl exec --stdin $POD_NAME -n assets -- bash -c 'ls /fsx-lustre/'
+
+11. Put divewatch.png in S3 bucket
+touch divewatch.png && aws s3 cp divewatch.png s3://$BUCKET_NAME/divewatch.png
+
+12. Now verify that this file exists in the first Pod
+kubectl exec --stdin $POD_NAME -n assets -- bash -c 'ls /fsx-lustre/'
+
+12. Now verify that this file exists in the second Pod
+POD_NAME=$(kubectl -n assets get pods -o jsonpath='{.items[1].metadata.name}')
+kubectl exec --stdin $POD_NAME -n assets -- bash -c 'ls /fsx-lustre/'
+
+13. Pods are sharing storage with FSx Lustre file system that is synced with S3 bucket so
+as files added they are propogated to FSx Lustre and pod mounts
+
+
+
+
+  
