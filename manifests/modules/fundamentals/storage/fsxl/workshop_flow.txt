@@ -1,5 +1,7 @@
 1. Prepare environment (wait 10 minutes for FSx Lustre file system to be created)
 
+prepare-environment fundamentals/storage/fsxl
+
 2. Put files into S3 bucket
 
 mkdir ~/environment/assets-images/
