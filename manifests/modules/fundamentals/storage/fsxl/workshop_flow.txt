@@ -1,4 +1,4 @@
-1. Prepare environment (wait 10 minutes for FSx Lustre file system to be created)
+1. Prepare environment (wait ~13 minutes for FSx Lustre file system to be created)
 
 prepare-environment fundamentals/storage/fsxl
 
@@ -23,11 +23,8 @@ helm upgrade --install aws-fsx-csi-driver \
 kubectl get daemonset fsx-csi-node -n kube-system
 
 5. Statically provision FSx for Lustre volume in EKS cluster
-kubectl kustomize ~/environment/eks-workshop/modules/fundamentals/storage/fsx_lustre/deployment \
+kubectl kustomize ~/environment/eks-workshop/modules/fundamentals/storage/fsxl/deployment \
   | envsubst | kubectl apply -f-
-
-(Use below for testing purposes only)
-kubectl delete -k ~/environment/eks-workshop/modules/fundamentals/storage/fsx_lustre/deployment
 
 6. Check status of deployment
 kubectl rollout status --timeout=130s deployment/assets -n assets
