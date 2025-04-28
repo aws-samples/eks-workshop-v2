@@ -87,7 +87,7 @@ deployment.apps/ui-new patched
 
 Verify the new pod is created and running successfully.
 
-```bash timeout=180 hook=fix-1 hookTimeout=600
+```bash timeout=180 hook=fix-1 hookTimeout=600 wait=20
 $ kubectl get pods -l app=app-new
 NAME                     READY   STATUS    RESTARTS   AGE
 ui-new-77856467b-2z2s6   1/1     Running   0          13s

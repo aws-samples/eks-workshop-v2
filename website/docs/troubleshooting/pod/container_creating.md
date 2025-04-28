@@ -167,10 +167,9 @@ $  done
 }
 ```
 
-
 After 3-4 minutes, you should notice that the pod in default namespace is in running state
 
-```bash timeout=600 hook=fix-3 hookTimeout=600
+```bash timeout=600 hook=fix-3 hookTimeout=600 wait=60
 $ kubectl rollout restart deploy/efs-app
 $ sleep 120
 $ kubectl get pods -l app=efs-app
