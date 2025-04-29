@@ -18,7 +18,7 @@ jobs:
           - fundamentals/managed-node-groups**
           - fundamentals/fargate**
           - fundamentals/exposing**
-          - fundamentals/storage/{efs,ebs,s3}**
+          - fundamentals/storage/{efs,ebs,mountpoint}**
           - fundamentals/storage/{fsx}**
     uses: ./.github/workflows/module-test.yaml
     with:
