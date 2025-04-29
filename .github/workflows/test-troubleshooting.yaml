@@ -1,0 +1,32 @@
+name: Troubleshooting Tests
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 7 * * 3"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  test-alb:
+    uses: ./.github/workflows/module-test.yaml
+    with:
+      glob: troubleshooting/alb
+    secrets: inherit
+  test-dns:
+    uses: ./.github/workflows/module-test.yaml
+    with:
+      glob: troubleshooting/dns
+    secrets: inherit
+  test-pod:
+    uses: ./.github/workflows/module-test.yaml
+    with:
+      glob: troubleshooting/pod
+    secrets: inherit
+  test-workernodes:
+    uses: ./.github/workflows/module-test.yaml
+    with:
+      glob: troubleshooting/workernodes
+    secrets: inherit

@@ -155,7 +155,7 @@ logmessage "Cleaning up IAM resources..."
 aws iam detach-role-policy --role-name new_nodegroup_3 --policy-arn arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy 2>/dev/null || true
 aws iam detach-role-policy --role-name new_nodegroup_3 --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly 2>/dev/null || true
 aws iam delete-role --role-name new_nodegroup_3 2>/dev/null || true
-
 logmessage "Cleanup complete."
+
 
 
