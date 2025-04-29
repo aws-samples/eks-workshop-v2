@@ -9,7 +9,7 @@ after() {
 
   export ui_endpoint=$(kubectl -n kube-system get ingress -n ui ui -o json | jq -r '.status.loadBalancer.ingress[0].hostname')
 
-  echo "endpoint: $ui_endpoint"
+  echo "Validating endpoint: $ui_endpoint"
   if [ -z "$ui_endpoint" ]; then
     >&2 echo "Failed to retrieve hostname from Ingress"
     exit 1
@@ -17,17 +17,20 @@ after() {
 
   EXIT_CODE=0
 
-  timeout -s TERM 800 bash -c \
-    'while [[ "$(curl -s -o /dev/null -L -w ''%{http_code}'' ${ui_endpoint}/home)" != "200" ]];\
-    do sleep 20;\
-    done' || EXIT_CODE=$?
-
-  echo "Timeout completed"
-
-  if [ $EXIT_CODE -ne 0 ]; then
-    >&2 echo "Ingress did not become available after 800 seconds"
-    exit 1
-  fi
+  while true; do
+      response_code=$(curl -s -o /dev/null -L -w '%{http_code}' ${ui_endpoint}/home)
+      echo "Current HTTP response code: ${response_code}"
+      
+      if [ "${response_code}" = "200" ]; then
+          echo "Success! Endpoint is now available."
+          exit 0
+          
+      fi
+      
+      echo "Waiting 20 seconds before next attempt..."
+      EXIT_CODE=1
+      sleep 20
+  done
 }
 
 "$@"

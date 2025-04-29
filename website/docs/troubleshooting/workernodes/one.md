@@ -41,7 +41,7 @@ Since Managed Node Groups are responsible for creating nodes, let's examine the 
 - Desired size
 
 ```bash
-$ aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_1
+$ aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_1
 ```
 
 :::info
@@ -62,7 +62,7 @@ If the Workernodes workshop environment was deployed within 10 minutes, you may 
 :::
 
 ```bash
-$ aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_1 --query 'nodegroup.{NodegroupName:nodegroupName,Status:status,ScalingConfig:scalingConfig,AutoScalingGroups:resources.autoScalingGroups,Health:health}'
+$ aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_1 --query 'nodegroup.{NodegroupName:nodegroupName,Status:status,ScalingConfig:scalingConfig,AutoScalingGroups:resources.autoScalingGroups,Health:health}'
 
 
 {

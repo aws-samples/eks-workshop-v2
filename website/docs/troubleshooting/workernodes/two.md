@@ -28,7 +28,7 @@ No resources found
 Let's examine the EKS managed node group configuration to verify its status and configuration:
 
 ```bash
-$ aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_2 --query 'nodegroup.{nodegroupName:nodegroupName,nodegroupArn:nodegroupArn,clusterName:clusterName,status:status,capacityType:capacityType,scalingConfig:scalingConfig,health:{issues:health.issues}}'
+$ aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_2 --query 'nodegroup.{nodegroupName:nodegroupName,nodegroupArn:nodegroupArn,clusterName:clusterName,status:status,capacityType:capacityType,scalingConfig:scalingConfig,health:{issues:health.issues}}'
 ```
 
 Output:

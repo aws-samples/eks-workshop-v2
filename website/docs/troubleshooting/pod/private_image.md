@@ -206,7 +206,7 @@ $ aws ecr set-repository-policy --repository-name retail-sample-app-ui --policy-
 
 Now, restart the deployment and check if the pods are running.
 
-```bash timeout=180 hook=fix-2 hookTimeout=600
+```bash timeout=180 hook=fix-2 hookTimeout=600 wait=20
 $ kubectl rollout restart deploy ui-private
 $ kubectl get pods -l app=app-private
 NAME                          READY   STATUS    RESTARTS   AGE

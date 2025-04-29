@@ -237,7 +237,7 @@ kubectl patch service <service-name> -n <namespace> --type='json' -p='[{"op": "r
 
 Let's update the service selector to match the pod labels:
 
-```bash timeout=840 hook=fix-7 hookTimeout=840
+```bash timeout=960 hook=fix-7 hookTimeout=960
 $ kubectl apply -k ~/environment/eks-workshop/modules/troubleshooting/alb/creating-alb/fix_ui
 ```
 
