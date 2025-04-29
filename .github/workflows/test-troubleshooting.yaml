@@ -1,4 +1,4 @@
-name: Troubleshooting Tests
+name: Test - Troubleshooting
 
 on:
   workflow_dispatch:
