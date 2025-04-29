@@ -1,0 +1,28 @@
+Version: "2012-10-17"
+Statement:
+  - Effect: Allow
+    Action:
+      - fsx:CreateFileSystem
+      - fsx:DeleteFileSystem
+      - fsx:UpdateFileSystem
+      - fsx:DescribeFileSystems
+      - fsx:CreateStorageVirtualMachine
+      - fsx:DeleteStorageVirtualMachine
+      - fsx:UpdateStorageVirtualMachine
+      - fsx:DescribeStorageVirtualMachines
+      - fsx:TagResource
+      - fsx:UntagResource
+    Resource:
+      - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:file-system/*
+      - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:storage-virtual-machine/*
+    Condition:
+      StringLike:
+        aws:ResourceTag/env:
+          - ${Env}*
+  - Effect: Allow
+    Action:
+      - fsx:DescribeFileSystems
+      - fsx:DescribeStorageVirtualMachines
+      - fsx:ListTagsForResource
+    Resource: ["*"]
+
