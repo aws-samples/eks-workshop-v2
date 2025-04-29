@@ -15,11 +15,12 @@ jobs:
       fail-fast: false
       matrix:
         module:
-          - fundamentals/managed-node-groups
-          - fundamentals/fargate
-          - fundamentals/exposing
-          - fundamentals/storage
+          - fundamentals/managed-node-groups**
+          - fundamentals/fargate**
+          - fundamentals/exposing**
+          - fundamentals/storage/{efs,ebs,s3}**
+          - fundamentals/storage/{fsx}**
     uses: ./.github/workflows/module-test.yaml
     with:
-      module: ${{ matrix.module }}
+      glob: ${{ matrix.module }}
     secrets: inherit
