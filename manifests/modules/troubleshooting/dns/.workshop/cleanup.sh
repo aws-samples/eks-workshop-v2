@@ -42,6 +42,6 @@ sleep 2
 logmessage "Ensure application is Ready"
 
 # Recycle workload pods in case stateful pods got restarted
-kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernetes.io/component=service -A
+kubectl delete pod -l app.kubernetes.io/created-by=$EKS_CLUSTER_NAME -l app.kubernetes.io/component=service -A
 # Wait for the workload pods previously recycled
-kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
+kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=$EKS_CLUSTER_NAME -A

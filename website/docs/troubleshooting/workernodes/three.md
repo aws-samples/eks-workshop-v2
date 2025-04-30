@@ -85,42 +85,7 @@ The node has the following taints:
 The node conditions show that the kubelet has stopped posting status updates, which can typically indicate severe resource constraints or system instability.
 :::
 
-### Step 4: Analyzing Resource Usage
-
-Let's examine the resource utilization of our workloads using a monitoring tool.
-
-:::info
-The metrics-server has already been installed in your cluster to provide resource usage data.
-:::
-
-#### 4.1. First, check node-level metrics
-
-```bash
-$ kubectl top nodes
-NAME                                          CPU(cores)   CPU%        MEMORY(bytes)   MEMORY%
-ip-10-42-142-116.us-west-2.compute.internal   34m          1%          940Mi           13%
-ip-10-42-185-41.us-west-2.compute.internal    27m          1%          1071Mi          15%
-ip-10-42-96-176.us-west-2.compute.internal    175m         9%          2270Mi          32%
-ip-10-42-180-244.us-west-2.compute.internal   <unknown>    <unknown>   <unknown>       <unknown>
-```
-
-#### 4.2. Next, attempt to check pod metrics
-
-```bash expectError=true
-$ kubectl top pods -n prod
-error: Metrics not available for pod prod/prod-app-xx-xx, age: 17m14.466020856s
-```
-
-:::note
-We can observe that:
-
-- The troubled node shows unknown for all metrics
-- Other nodes are operating normally with moderate resource usage
-- Pod metrics in the prod namespace are unavailable
-
-:::
-
-### Step 5: CloudWatch Metrics Investigation
+### Step 4: CloudWatch Metrics Investigation
 
 Since Metrics Server isn't providing data, let's use CloudWatch to check EC2 instance metrics:
 
@@ -164,11 +129,11 @@ The CloudWatch metrics reveal:
 
 :::
 
-### Step 6: Mitigate Impact
+### Step 5: Mitigate Impact
 
 Let's check deployment details and implement immediate changes to stabilize the node:
 
-#### 6.1. Check the deployment resource configurations
+#### 5.1. Check the deployment resource configurations
 
 ```bash
 $ kubectl get pods -n prod -o custom-columns="NAME:.metadata.name,CPU_REQUEST:.spec.containers[*].resources.requests.cpu,MEM_REQUEST:.spec.containers[*].resources.requests.memory,CPU_LIMIT:.spec.containers[*].resources.limits.cpu,MEM_LIMIT:.spec.containers[*].resources.limits.memory"
@@ -185,13 +150,13 @@ prod-ds-558sx               100m          128Mi         <none>      <none>
 Notice that neither the deployment nor the DaemonSet has resource limits configured, which allowed unconstrained resource consumption.
 :::
 
-#### 6.2. Let's scale down the deployment and stop the resource overload
+#### 5.2. Let's scale down the deployment and stop the resource overload
 
 ```bash bash timeout=40 wait=25
 $ kubectl scale deployment/prod-app -n prod --replicas=0 && kubectl delete pod -n prod -l app=prod-app --force --grace-period=0 && kubectl wait --for=delete pod -n prod -l app=prod-app
 ```
 
-#### 6.3. Recycle the node on the nodegroup
+#### 5.3. Recycle the node on the nodegroup
 
 ```bash timeout=120 wait=95
 $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=0 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=1 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && for i in {1..6}; do NODE_NAME_2=$(kubectl get nodes --selector eks.amazonaws.com/nodegroup=new_nodegroup_3 -o jsonpath='{.items[0].metadata.name}' 2>/dev/null) && [ -n "$NODE_NAME_2" ] && break || sleep 5; done && [ -n "$NODE_NAME_2" ]
@@ -201,7 +166,7 @@ $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegro
 This can take up to 1 minute. The script will store the new node name as NODE_NAME_2.
 :::
 
-#### 6.4. Verify node status
+#### 5.4. Verify node status
 
 ```bash test=false
 $ kubectl get nodes --selector=kubernetes.io/hostname=$NODE_NAME_2
@@ -209,40 +174,47 @@ NAME                                          STATUS   ROLES    AGE     VERSION
 ip-10-42-180-24.us-west-2.compute.internal    Ready    <none>   0h43m   v1.30.8-eks-aeac579
 ```
 
-### Step 7: Implementing Long-term Solutions
+### Step 6: Implementing Long-term Solutions
 
 The Dev team has identified and fixed a memory leak in the application. Let's implement the fix and establish proper resource management:
 
-#### 7.1. Apply the updated application configuration
+#### 6.1. Apply the updated application configuration
 
 ```bash timeout=10 wait=5
 $ kubectl apply -f /home/ec2-user/environment/eks-workshop/modules/troubleshooting/workernodes/yaml/configmaps-new.yaml
 ```
 
-#### 7.2. Set resource limits for the deployment (cpu: 500m, memory: 512Mi)
+#### 6.2. Set resource limits for the deployment (cpu: 500m, memory: 512Mi)
 
 ```bash timeout=10 wait=5
 $ kubectl patch deployment prod-app -n prod --patch '{"spec":{"template":{"spec":{"containers":[{"name":"prod-app","resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"256Mi"}}}]}}}}'
 
 ```
 
-#### 7.3. Set resource limits for the DaemonSet (cpu: 500m, memory: 512Mi)
+#### 6.3. Set resource limits for the DaemonSet (cpu: 500m, memory: 512Mi)
 
 ```bash timeout=10 wait=5
 $ kubectl patch daemonset prod-ds -n prod --patch '{"spec":{"template":{"spec":{"containers":[{"name":"prod-ds","resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"256Mi"}}}]}}}}'
 ```
 
-#### 7.4. Perform rolling updates and scale back to desired state
+#### 6.4. Perform rolling updates and scale back to desired state
 
 ```bash timeout=20 wait=10
 $ kubectl rollout restart deployment/prod-app -n prod && kubectl rollout restart daemonset/prod-ds -n prod && kubectl scale deployment prod-app -n prod --replicas=6
 ```
 
-### Step 8: Verification
+### Step 7: Verification
 
 Let's verify our fixes have resolved the issues:
 
-#### 8.1. Check pod creations
+### 7.1 Check pod limits
+```bash
+$ kubectl get pods -n prod -o custom-columns="NAME:.metadata.name,CPU_REQUEST:.spec.containers[*].resources.requests.cpu,MEM_REQUEST:.spec.containers[*].resources.requests.memory,CPU_LIMIT:.spec.containers[*].resources.limits.cpu,MEM_LIMIT:.spec.containers[*].resources.limits.memory"
+```
+
+You should now see CPU and MEM Limits set.
+
+#### 7.2. Check pod creations
 
 ```bash test=false
 $ kubectl get pods -n prod
@@ -257,34 +229,18 @@ prod-ds-ll4lv               1/1     Running   0          1m
 
 ```
 
-#### 8.2. Verify pod resource usage
-
-```bash test=false
-$ kubectl top pods -n prod
-NAME                       CPU(cores)   MEMORY(bytes)
-prod-app-666f8f7bd5-658d6   215m         425Mi
-prod-app-666f8f7bd5-6jrj4   203m         426Mi
-prod-app-666f8f7bd5-9rf6m   203m         426Mi
-prod-app-666f8f7bd5-pm545   205m         425Mi
-prod-app-666f8f7bd5-ttkgs   248m         425Mi
-prod-app-666f8f7bd5-zm8lx   215m         425Mi
-prod-ds-ll4lv               586m         3Mi
+### 7.3 Check node CPU resource
+```bash
+$ INSTANCE_ID=$(kubectl get node ${NODE_NAME_2} -o jsonpath='{.spec.providerID}' | cut -d '/' -f5) && aws cloudwatch get-metric-data --region us-west-2 --start-time $(date -u -d '1 hour ago' +"%Y-%m-%dT%H:%M:%SZ") --end-time $(date -u +"%Y-%m-%dT%H:%M:%SZ") --metric-data-queries '[{"Id":"cpu","MetricStat":{"Metric":{"Namespace":"AWS/EC2","MetricName":"CPUUtilization","Dimensions":[{"Name":"InstanceId","Value":"'$INSTANCE_ID'"}]},"Period":60,"Stat":"Average"}}]'
 ```
+Check that CPU is not over utilized. 
 
-#### 8.3. Check node status
+#### 7.4. Check node status
 
 ```bash
 $ kubectl get node --selector=kubernetes.io/hostname=$NODE_NAME_2
 NAME                                          STATUS   ROLES    AGE     VERSION
 ip-10-42-180-24.us-west-2.compute.internal    Ready    <none>   1h35m   v1.30.8-eks-aeac579
-```
-
-#### 8.4. Check node resource usage
-
-```bash test=false
-$ kubectl top node --selector=kubernetes.io/hostname=$NODE_NAME
-NAME                                          CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
-ip-10-42-180-24.us-west-2.compute.internal    1612m        83%    3145Mi          44%
 ```
 
 ### Key Takeaways
