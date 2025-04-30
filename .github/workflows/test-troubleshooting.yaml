@@ -3,7 +3,7 @@ name: Test - Troubleshooting
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 7 * * 3"
+    - cron: "0 7 * * 6"
 
 permissions:
   id-token: write
