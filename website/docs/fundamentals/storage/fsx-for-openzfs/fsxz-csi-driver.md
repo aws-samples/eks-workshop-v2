@@ -19,7 +19,7 @@ We'll use Helm to add the repository and install the FSx for OpenZFS CSI driver 
 $ helm repo add aws-fsx-openzfs-csi-driver https://kubernetes-sigs.github.io/aws-fsx-openzfs-csi-driver
 $ helm repo update
 $ helm upgrade --install aws-fsx-openzfs-csi-driver \
-    --namespace kube-system \
+    --namespace kube-system --wait \
     --set "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"="$FSXZ_IAM_ROLE" \
     aws-fsx-openzfs-csi-driver/aws-fsx-openzfs-csi-driver
 ```
