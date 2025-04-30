@@ -102,10 +102,10 @@ $ aws cloudwatch get-metric-data --region us-west-2 --start-time $(date -u -d '1
             "Id": "cpu",
             "Label": "CPUUtilization",
             "Timestamps": [
-                "2025-02-12T16:25:00+00:00",
-                "2025-02-12T16:20:00+00:00",
-                "2025-02-12T16:15:00+00:00",
-                "2025-02-12T16:10:00+00:00"
+                "2025-0X-XXT16:25:00+00:00",
+                "2025-0X-XXT16:20:00+00:00",
+                "2025-0X-XXT16:15:00+00:00",
+                "2025-0X-XXT16:10:00+00:00"
             ],
             "Values": [
                 99.87333333333333,
@@ -159,11 +159,18 @@ $ kubectl scale deployment/prod-app -n prod --replicas=0 && kubectl delete pod -
 #### 5.3. Recycle the node on the nodegroup
 
 ```bash timeout=120 wait=95
-$ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=0 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=1 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && for i in {1..6}; do NODE_NAME_2=$(kubectl get nodes --selector eks.amazonaws.com/nodegroup=new_nodegroup_3 -o jsonpath='{.items[0].metadata.name}' 2>/dev/null) && [ -n "$NODE_NAME_2" ] && break || sleep 5; done && [ -n "$NODE_NAME_2" ]
+$ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=0 && \
+aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && \
+aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --labels "addOrUpdateLabels={status=new-node}" && \
+aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && \
+aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=1 && \
+aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && \
+for i in {1..12}; do NODE_NAME_2=$(kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_3,status=new-node --no-headers -o custom-columns=":metadata.name" 2>/dev/null) && [ -n "$NODE_NAME_2" ] && break || sleep 5; done && \
+[ -n "$NODE_NAME_2" ]
 ```
 
 :::info
-This can take up to 1 minute. The script will store the new node name as NODE_NAME_2.
+This can take up to a little over 1 minute. The script will store the new node name as NODE_NAME_2.
 :::
 
 #### 5.4. Verify node status
@@ -188,7 +195,6 @@ $ kubectl apply -f /home/ec2-user/environment/eks-workshop/modules/troubleshooti
 
 ```bash timeout=10 wait=5
 $ kubectl patch deployment prod-app -n prod --patch '{"spec":{"template":{"spec":{"containers":[{"name":"prod-app","resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"256Mi"}}}]}}}}'
-
 ```
 
 #### 6.3. Set resource limits for the DaemonSet (cpu: 500m, memory: 512Mi)
@@ -207,14 +213,7 @@ $ kubectl rollout restart deployment/prod-app -n prod && kubectl rollout restart
 
 Let's verify our fixes have resolved the issues:
 
-### 7.1 Check pod limits
-```bash
-$ kubectl get pods -n prod -o custom-columns="NAME:.metadata.name,CPU_REQUEST:.spec.containers[*].resources.requests.cpu,MEM_REQUEST:.spec.containers[*].resources.requests.memory,CPU_LIMIT:.spec.containers[*].resources.limits.cpu,MEM_LIMIT:.spec.containers[*].resources.limits.memory"
-```
-
-You should now see CPU and MEM Limits set.
-
-#### 7.2. Check pod creations
+### 7.1 Check pod creations
 
 ```bash test=false
 $ kubectl get pods -n prod
@@ -226,15 +225,46 @@ prod-app-666f8f7bd5-pm545   1/1     Running   0          1m
 prod-app-666f8f7bd5-ttkgs   1/1     Running   0          1m
 prod-app-666f8f7bd5-zm8lx   1/1     Running   0          1m
 prod-ds-ll4lv               1/1     Running   0          1m
+```
 
+#### 7.2. Check pod limits
+```bash
+$ kubectl get pods -n prod -o custom-columns="NAME:.metadata.name,CPU_REQUEST:.spec.containers[*].resources.requests.cpu,MEM_REQUEST:.spec.containers[*].resources.requests.memory,CPU_LIMIT:.spec.containers[*].resources.limits.cpu,MEM_LIMIT:.spec.containers[*].resources.limits.memory"
+NAME                        CPU_REQUEST   MEM_REQUEST   CPU_LIMIT   MEM_LIMIT
+prod-app-6d67889dc8-4hc7m   250m          256Mi         500m        512Mi
+prod-app-6d67889dc8-6s8wr   250m          256Mi         500m        512Mi
+prod-app-6d67889dc8-fd6kq   250m          256Mi         500m        512Mi
+prod-app-6d67889dc8-gzcbn   250m          256Mi         500m        512Mi
+prod-app-6d67889dc8-qvtvj   250m          256Mi         500m        512Mi
+prod-app-6d67889dc8-rf478   250m          256Mi         500m        512Mi
+prod-ds-srdqx               250m          256Mi         500m        512Mi
 ```
 
 ### 7.3 Check node CPU resource
 ```bash
 $ INSTANCE_ID=$(kubectl get node ${NODE_NAME_2} -o jsonpath='{.spec.providerID}' | cut -d '/' -f5) && aws cloudwatch get-metric-data --region us-west-2 --start-time $(date -u -d '1 hour ago' +"%Y-%m-%dT%H:%M:%SZ") --end-time $(date -u +"%Y-%m-%dT%H:%M:%SZ") --metric-data-queries '[{"Id":"cpu","MetricStat":{"Metric":{"Namespace":"AWS/EC2","MetricName":"CPUUtilization","Dimensions":[{"Name":"InstanceId","Value":"'$INSTANCE_ID'"}]},"Period":60,"Stat":"Average"}}]'
+{
+    "MetricDataResults": [
+        {
+            "Id": "cpu",
+            "Label": "CPUUtilization",
+            "Timestamps": [
+                "2025-0X-XXT18:30:00+00:00",
+                "2025-0X-XXT18:25:00+00:00"
+            ],
+            "Values": [
+                88.05,
+                58.63008430846801
+            ],
+            "StatusCode": "Complete"
+        }
+    ],
+    "Messages": []
+}
 ```
+:::info
 Check that CPU is not over utilized. 
-
+:::
 #### 7.4. Check node status
 
 ```bash
