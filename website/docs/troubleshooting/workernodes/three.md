@@ -213,7 +213,7 @@ $ kubectl rollout restart deployment/prod-app -n prod && kubectl rollout restart
 
 Let's verify our fixes have resolved the issues:
 
-### 7.1 Check pod creations
+#### 7.1 Check pod creations
 
 ```bash test=false
 $ kubectl get pods -n prod
@@ -240,7 +240,7 @@ prod-app-6d67889dc8-rf478   250m          256Mi         500m        512Mi
 prod-ds-srdqx               250m          256Mi         500m        512Mi
 ```
 
-### 7.3 Check node CPU resource
+#### 7.3 Check node CPU resource
 ```bash
 $ INSTANCE_ID=$(kubectl get node ${NODE_NAME_2} -o jsonpath='{.spec.providerID}' | cut -d '/' -f5) && aws cloudwatch get-metric-data --region us-west-2 --start-time $(date -u -d '1 hour ago' +"%Y-%m-%dT%H:%M:%SZ") --end-time $(date -u +"%Y-%m-%dT%H:%M:%SZ") --metric-data-queries '[{"Id":"cpu","MetricStat":{"Metric":{"Namespace":"AWS/EC2","MetricName":"CPUUtilization","Dimensions":[{"Name":"InstanceId","Value":"'$INSTANCE_ID'"}]},"Period":60,"Stat":"Average"}}]'
 {
