@@ -50,13 +50,19 @@ data "aws_caller_identity" "current" {}
 # Additional Data Sources
 
 data "aws_autoscaling_group" "new_nodegroup_1" {
-  name       = aws_eks_node_group.new_nodegroup_1.resources[0].autoscaling_groups[0].name
-  depends_on = [aws_eks_node_group.new_nodegroup_1]
+  name = aws_eks_node_group.new_nodegroup_1.resources[0].autoscaling_groups[0].name
+  depends_on = [
+    aws_eks_node_group.new_nodegroup_1,
+    null_resource.increase_desired_count
+  ]
 }
 
-data "aws_autoscaling_group" "new_nodegroup_3" {
-  name       = aws_eks_node_group.new_nodegroup_3.resources[0].autoscaling_groups[0].name
-  depends_on = [aws_eks_node_group.new_nodegroup_3]
+data "aws_autoscaling_group" "new_nodegroup_2" {
+  name = aws_eks_node_group.new_nodegroup_2.resources[0].autoscaling_groups[0].name
+  depends_on = [
+    aws_eks_node_group.new_nodegroup_2,
+    null_resource.increase_nodegroup_2
+  ]
 }
 
 
@@ -259,12 +265,6 @@ resource "aws_eks_node_group" "new_nodegroup_2" {
     aws_route_table_association.new_subnet_association
   ]
 }
-
-data "aws_autoscaling_group" "new_nodegroup_2" {
-  name       = aws_eks_node_group.new_nodegroup_2.resources[0].autoscaling_groups[0].name
-  depends_on = [aws_eks_node_group.new_nodegroup_2]
-}
-
 
 # Scenario 3 Resources
 resource "aws_iam_role" "new_nodegroup_3" {
