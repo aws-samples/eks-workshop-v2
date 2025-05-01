@@ -72,7 +72,7 @@ checkout-6c7c9cdf4f-wwkm4
 checkout-redis-6cfd7d8787-gw59j ip-10-42-10-120.us-west-2.compute.internal
 ```
 
-In this example, the first `checkout` pod runs on the same pod as the existing checkout-redis pod, as it fulfills the **podAffinity** rule we set. The second one is still pending, because the **podAntiAffinity** rule we defined does not allow two checkout pods to get started on the same node. As the second node doesn't have a `checkout-redis` pod running, it will stay pending.
+In this example, the first `checkout` pod runs on the same node as the existing `checkout-redis` pod, as it fulfills the **podAffinity** rule we set. The second one is still pending, because the **podAntiAffinity** rule we defined does not allow two `checkout` pods to get started on the same node. As the second node doesn't have a `checkout-redis` pod running, it will stay pending.
 
 Next, we'll scale the `checkout-redis` to two instances for our two nodes, but first let's modify the `checkout-redis` deployment policy to spread out our `checkout-redis` instances across each node. To do this, we'll simply need to create a **podAntiAffinity** rule.
 
