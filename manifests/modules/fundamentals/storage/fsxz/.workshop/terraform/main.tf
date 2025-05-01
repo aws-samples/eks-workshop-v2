@@ -41,14 +41,6 @@ data "aws_security_group" "default" {
   name   = "default"
 }
 
-data "aws_security_group" "eks_nodes" {
-  vpc_id = data.aws_vpc.selected_fsxz.id
-  tags = {
-    # Adjust this tag to match your EKS node security group
-    "aws:eks:cluster-name" = var.eks_cluster_id
-  }
-}
-
 # Create the FSxZ Security Group
 resource "aws_security_group" "fsxz_sg" {
   name        = "${var.eks_cluster_id}-fsxz"
