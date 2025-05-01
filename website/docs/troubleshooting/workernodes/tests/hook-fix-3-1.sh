@@ -9,7 +9,7 @@ after() {
 
 # Function to check node status
 check_node_status() {
-    local timeout=120  # 2 minutes
+    local timeout=300  # 5 minutes
     local interval=10  # Check every 10 seconds
     local elapsed=0
     

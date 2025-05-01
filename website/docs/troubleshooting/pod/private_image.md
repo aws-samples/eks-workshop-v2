@@ -96,7 +96,7 @@ As we confirmed that the image URI is correct, let's check the permissions of th
 Get the IAM role attached to worker nodes in the managed node group of the cluster and list the IAM policies attached to the role.
 
 ```bash
-$ ROLE_NAME=`aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name default --query 'nodegroup.nodeRole' --output text | cut -d'/' -f2`
+$ ROLE_NAME=`aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name default --query 'nodegroup.nodeRole' --output text | cut -d'/' -f2`
 $ aws iam list-attached-role-policies --role-name $ROLE_NAME
 {
     "AttachedPolicies": [
