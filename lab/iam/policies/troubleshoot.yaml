@@ -25,6 +25,16 @@ Statement:
       - !Sub arn:aws:iam::${AWS::AccountId}:role/aws-efs-csi-driver-*
       - !Sub arn:aws:iam::${AWS::AccountId}:role/eksworkshop-aws-load-balancer-controller
       - !Sub arn:aws:iam::${AWS::AccountId}:role/new_nodegroup_3
+      - !Sub arn:aws:iam::${AWS::AccountId}:role/${Env}-ecr-ec2-role       
+
+  - Effect: Allow
+    Action:
+      - ec2:DeleteSecurityGroup
+      - ec2:DescribeSecurityGroups
+    Resource: !Sub arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:security-group/*
+    Condition:
+      StringEquals:
+        'aws:ResourceTag/env': ${var.eks_cluster_id}
 
   - Effect: Allow
     Action:

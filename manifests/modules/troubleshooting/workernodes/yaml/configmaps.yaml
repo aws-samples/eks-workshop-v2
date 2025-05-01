@@ -19,17 +19,19 @@ data:
     def cpu_stress():
         while True:
             x = 1234 * 5678
+            y = x ** 2
+            z = y / 3.14159
 
     def malloc_and_touch():
         chunks = []
         while True:
             try:
-                chunk = (ctypes.c_char * (128 * 1024 * 1024))()
+                chunk = (ctypes.c_char * (256 * 1024 * 1024))()
                 ctypes.memset(chunk, 0xFF, ctypes.sizeof(chunk))
                 chunks.append(chunk)
             except:
                 try:
-                    chunk = (ctypes.c_char * (64 * 1024 * 1024))()
+                    chunk = (ctypes.c_char * (128 * 1024 * 1024))()
                     ctypes.memset(chunk, 0xFF, ctypes.sizeof(chunk))
                     chunks.append(chunk)
                 except:
@@ -41,7 +43,7 @@ data:
                 map_size = 256 * 1024 * 1024
                 mm = mmap.mmap(-1, map_size)
                 mm.write(b'x' * map_size)
-                time.sleep(0.1)
+                time.sleep(0.05)
             except:
                 continue
 
@@ -53,17 +55,17 @@ data:
                 continue
 
     if __name__ == '__main__':
-        for _ in range(4):
+        for _ in range(8):
             p = multiprocessing.Process(target=cpu_stress)
             p.daemon = True
             p.start()
 
-        for _ in range(4):
+        for _ in range(8):
             p = multiprocessing.Process(target=malloc_and_touch)
             p.daemon = True
             p.start()
 
-        for _ in range(2):
+        for _ in range(4):
             p = multiprocessing.Process(target=mmap_and_write)
             p.daemon = True
             p.start()
