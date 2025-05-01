@@ -43,7 +43,6 @@ data "aws_security_group" "default" {
 
 data "aws_security_group" "eks_nodes" {
   vpc_id = data.aws_vpc.selected_fsxz.id
-  
   tags = {
     # Adjust this tag to match your EKS node security group
     "aws:eks:cluster-name" = var.eks_cluster_id
@@ -183,8 +182,8 @@ module "fsx_openzfs" {
   security_group_ids              = [aws_security_group.fsxz_sg.id]
 
   root_volume_configuration = {
-    data_compression_type  = "LZ4"
-    record_size_kib        = 128
+    data_compression_type = "LZ4"
+    record_size_kib       = 128
     nfs_exports = {
       client_configurations = [
         {
