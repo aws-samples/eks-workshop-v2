@@ -46,7 +46,7 @@ data "aws_subnets" "selected" {
 }
 
 resource "aws_iam_role" "ecr_ec2_role" {
-  name = "${var.addon_context.eks_cluster_id}-ecr-ec2-role)"
+  name = "${var.addon_context.eks_cluster_id}-ecr-ec2-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
