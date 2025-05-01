@@ -40,7 +40,7 @@ When the FSx for OpenZFS file system was created, a root volume for the file sys
 Run the following to obtain the root volume ID and set it to an environment variable we'll inject into the volume StorageClass using Kustomize:
 
 ```bash
-$ export FILESYSTEM_ID=$(aws fsx describe-file-systems | jq -r '.FileSystems[] | select(.Tags[] | select(.Key=="Name" and .Value=="eks-workshop-FSxZ")).FileSystemId')
+$ export FILESYSTEM_ID=$(aws fsx describe-file-systems | jq -r --arg cluster_name "${EKS_CLUSTER_NAME}-FSxZ" '.FileSystems[] | select(.Tags[] | select(.Key=="Name" and .Value==$cluster_name)).FileSystemId')
 
 $ export ROOT_VOL_ID=$(aws fsx describe-file-systems --file-system-id $FILESYSTEM_ID | jq -r '.FileSystems[] | .OpenZFSConfiguration.RootVolumeId')
 ```
@@ -94,7 +94,7 @@ deployment.apps/assets configured
 
 Run the following to view the progress of the volume PVC deployment and creation of the volume on the FSx for OpenZFS file system. This will typically take less than 5 minutes and when complete, the deployment will show as successfully rolled out:
 
-```bash
+```bash timeout=660
 $ kubectl rollout status --timeout=600s deployment/assets -n assets
 Waiting for deployment "assets" rollout to finish: 1 out of 2 new replicas have been updated...
 Waiting for deployment "assets" rollout to finish: 1 out of 2 new replicas have been updated...
