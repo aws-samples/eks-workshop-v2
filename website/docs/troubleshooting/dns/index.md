@@ -14,9 +14,9 @@ In this lab, we will investigate a scenario where service communication is disru
 Prepare your environment for this section:
 
 ```bash timeout=600 wait=5
-$ prepare-environment
+$ prepare-environment troubleshooting/dns
 ```
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/troubleshooting/dns/.workshop/terraform).
+The prepare-environment script for this module resets the workshop environment.
 :::
 
 
