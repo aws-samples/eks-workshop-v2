@@ -96,7 +96,7 @@ As we confirmed that the image URI is correct, let's check the permissions of th
 Get the IAM role attached to worker nodes in the managed node group of the cluster and list the IAM policies attached to the role.
 
 ```bash
-$ ROLE_NAME=`aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name default --query 'nodegroup.nodeRole' --output text | cut -d'/' -f2`
+$ ROLE_NAME=`aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name default --query 'nodegroup.nodeRole' --output text | cut -d'/' -f2`
 $ aws iam list-attached-role-policies --role-name $ROLE_NAME
 {
     "AttachedPolicies": [
@@ -206,7 +206,7 @@ $ aws ecr set-repository-policy --repository-name retail-sample-app-ui --policy-
 
 Now, restart the deployment and check if the pods are running.
 
-```bash timeout=180 hook=fix-2 hookTimeout=600
+```bash timeout=180 hook=fix-2 hookTimeout=600 wait=20
 $ kubectl rollout restart deploy ui-private
 $ kubectl get pods -l app=app-private
 NAME                          READY   STATUS    RESTARTS   AGE

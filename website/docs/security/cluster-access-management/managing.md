@@ -39,7 +39,7 @@ The cluster creator is the entity that actually created the cluster, either via 
 If you describe these access entries you'll be able to see more information:
 
 ```bash
-$ NODE_ROLE=$(aws eks list-access-entries --cluster $EKS_CLUSTER_NAME --output text | awk '/Node/ {print $2}')
+$ NODE_ROLE=$(aws eks list-access-entries --cluster $EKS_CLUSTER_NAME --output text | awk '/NodeInstanceRole/ {print $2}')
 $ aws eks describe-access-entry --cluster $EKS_CLUSTER_NAME --principal-arn $NODE_ROLE
 {
     "accessEntry": {

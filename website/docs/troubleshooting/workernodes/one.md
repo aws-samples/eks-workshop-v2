@@ -41,7 +41,7 @@ Since Managed Node Groups are responsible for creating nodes, let's examine the 
 - Desired size
 
 ```bash
-$ aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_1
+$ aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_1
 ```
 
 :::info
@@ -62,7 +62,7 @@ If the Workernodes workshop environment was deployed within 10 minutes, you may 
 :::
 
 ```bash
-$ aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_1 --query 'nodegroup.{NodegroupName:nodegroupName,Status:status,ScalingConfig:scalingConfig,AutoScalingGroups:resources.autoScalingGroups,Health:health}'
+$ aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_1 --query 'nodegroup.{NodegroupName:nodegroupName,Status:status,ScalingConfig:scalingConfig,AutoScalingGroups:resources.autoScalingGroups,Health:health}'
 
 
 {
@@ -109,9 +109,16 @@ The health status reveals a KMS key issue preventing instance launches. This ali
 
 Let's examine the ASG activities to understand the launch failures:
 
-:::info
-Note: For your convenience, the Autoscaling Group name is available as env variable $NEW_NODEGROUP_1_ASG_NAME.
-:::
+#### 4.1. Identify Nodegroup's Auto Scaling Group Name
+
+Run the below command to capture Nodegroup Autoscale Group name as NEW_NODEGROUP_1_ASG_NAME.
+
+```bash
+$ NEW_NODEGROUP_1_ASG_NAME=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_1 --query 'nodegroup.resources.autoScalingGroups[0].name' --output text)
+echo $NEW_NODEGROUP_1_ASG_NAME
+```
+
+#### 4.2. Check the AutoScaling Activities
 
 ```bash
 $ aws autoscaling describe-scaling-activities --auto-scaling-group-name ${NEW_NODEGROUP_1_ASG_NAME}

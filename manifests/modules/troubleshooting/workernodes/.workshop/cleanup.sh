@@ -105,20 +105,6 @@ if [ ! -z "$INSTANCE_IDS" ]; then
         --scaling-config desiredSize=0,minSize=0,maxSize=1 &
 fi
 
-# Clean up metrics-server components
-logmessage "Cleaning up metrics-server components..."
-kubectl delete apiservice v1beta1.metrics.k8s.io --force --grace-period=0 2>/dev/null || true
-kubectl delete -n kube-system serviceaccount metrics-server --force --grace-period=0 2>/dev/null || true
-kubectl delete clusterrole system:aggregated-metrics-reader --force --grace-period=0 2>/dev/null || true
-kubectl delete clusterrole system:metrics-server --force --grace-period=0 2>/dev/null || true
-kubectl delete clusterrolebinding metrics-server:system:auth-delegator --force --grace-period=0 2>/dev/null || true
-kubectl delete clusterrolebinding system:metrics-server --force --grace-period=0 2>/dev/null || true
-kubectl delete -n kube-system service metrics-server --force --grace-period=0 2>/dev/null || true
-kubectl delete -n kube-system deployment metrics-server --force --grace-period=0 2>/dev/null || true
-
-# Delete helm release for metrics-server if it exists
-helm uninstall metrics-server-custom -n kube-system 2>/dev/null || true
-
 # Delete PriorityClass
 kubectl delete priorityclass high-priority --force --grace-period=0 2>/dev/null || true
 
@@ -155,7 +141,7 @@ logmessage "Cleaning up IAM resources..."
 aws iam detach-role-policy --role-name new_nodegroup_3 --policy-arn arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy 2>/dev/null || true
 aws iam detach-role-policy --role-name new_nodegroup_3 --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly 2>/dev/null || true
 aws iam delete-role --role-name new_nodegroup_3 2>/dev/null || true
+logmessage "Cleanup complete."
 
-logmessage "Cleanup process completed. Please check for any remaining resources manually."
 
 

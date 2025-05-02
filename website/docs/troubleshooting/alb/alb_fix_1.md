@@ -96,21 +96,19 @@ aws ec2 describe-route-tables --filters 'Name=association.subnet-id,Values=<ENTE
 :::
 
 ```bash
-$ for subnet_id in $(aws ec2 describe-subnets --filters "Name=tag:alpha.eksctl.io/cluster-name,Values=${EKS_CLUSTER_NAME}" --query 'Subnets[].SubnetId[]' --output text); do
-$    echo "Subnet: ${subnet_id}"
-$    aws ec2 describe-route-tables --filters "Name=association.subnet-id,Values=${subnet_id}" \
-$      --query 'RouteTables[].Routes[].[DestinationCidrBlock,GatewayId]'
-$ done
-[
-      [
-         "10.42.0.0/16",
-         "local"
-      ],
-      [
-         "0.0.0.0/0",
-         "igw-xxxxxxxxxxxxxxxxx"
-      ]
-]...
+$ for subnet_id in $(aws ec2 describe-subnets --filters "Name=tag:alpha.eksctl.io/cluster-name,Values=${EKS_CLUSTER_NAME}" --query 'Subnets[].SubnetId[]' --output text); do \
+    echo "Subnet: ${subnet_id}"; \
+    aws ec2 describe-route-tables --filters "Name=association.subnet-id,Values=${subnet_id}" \
+      --query 'RouteTables[].Routes[].[DestinationCidrBlock,GatewayId]' --output text; \
+done
+
+Subnet: subnet-xxxxxxxxxxxxxxxxx
+10.42.0.0/16    local
+0.0.0.0/0       igw-xxxxxxxxxxxxxxxxx
+Subnet: subnet-xxxxxxxxxxxxxxxxx
+10.42.0.0/16    local
+0.0.0.0/0       igw-xxxxxxxxxxxxxxxxx
+...
 ```
 
 A public subnet will have a route `0.0.0.0/0` pointing to an Internet Gateway (igw-xxx).

@@ -46,7 +46,7 @@ data "aws_subnets" "selected" {
 }
 
 resource "aws_iam_role" "ecr_ec2_role" {
-  name = "eks-workshop-ecr-ec2-role"
+  name = "${var.addon_context.eks_cluster_id}-ecr-ec2-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -63,7 +63,7 @@ resource "aws_iam_role" "ecr_ec2_role" {
 }
 
 resource "aws_iam_instance_profile" "ecr_ec2" {
-  name = "eks-workshop-ecr-ec2"
+  name = "${var.eks_cluster_id}-ecr-ec2"
   role = resource.aws_iam_role.ecr_ec2_role.name
 }
 
@@ -84,7 +84,7 @@ resource "aws_instance" "ui_to_ecr" {
   subnet_id            = element(data.aws_subnets.selected.ids, 0)
   iam_instance_profile = resource.aws_iam_instance_profile.ecr_ec2.name
   tags = {
-    env = "eks-workshop"
+    env = "${var.eks_cluster_id}"
   }
   depends_on = [resource.aws_ecr_repository.ui]
 }
@@ -191,7 +191,7 @@ module "eks_blueprints_addons" {
 
 resource "aws_efs_file_system" "efs" {
   tags = {
-    Name = "eks-workshop-efs"
+    Name = "${var.eks_cluster_id}-efs"
   }
 }
 
@@ -209,7 +209,7 @@ resource "aws_security_group" "efs_sg" {
 
   tags = {
     Name = "efs_sg"
-    env  = "eks-workshop"
+    env  = "${var.eks_cluster_id}"
   }
 }
 
