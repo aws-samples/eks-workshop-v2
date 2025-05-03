@@ -7,7 +7,7 @@ Our ecommerce application includes a deployment for the assets microservice, whi
 
 The assets component serves static product images that are currently bundled into the container image during build time. This means that whenever the team needs to update product images, they must rebuild and redeploy the container image. In this exercise, we'll use [Amazon FSx for OpenZFS](https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/what-is-fsx.html) and a Kubernetes [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) to enable updating existing product images and adding new ones without rebuilding container images.
 
-Let's start by examining the Deployment's initial volume configuration:
+Let's start by examining the deployment's initial volume configuration:
 
 ```bash
 $ kubectl describe deployment -n assets
