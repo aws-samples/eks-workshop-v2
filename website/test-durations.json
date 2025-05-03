@@ -201,5 +201,14 @@
   "/security/secrets-management/secrets-manager/create-secret.md": 1273,
   "/security/secrets-management/secrets-manager/external-secrets.md": 14963,
   "/security/secrets-management/secrets-manager/index.md": 281009,
-  "/security/secrets-management/secrets-manager/mounting-secrets.md": 16049
+  "/security/secrets-management/secrets-manager/mounting-secrets.md": 16049,
+  "/troubleshooting/alb/index.md": 16049,
+  "/troubleshooting/pod/index.md": 16049,
+  "/troubleshooting/dns/index.md": 16049,
+  "/troubleshooting/dns/1-config.md": 16049,
+  "/troubleshooting/dns/2-check-coredns.md": 16049,
+  "/troubleshooting/dns/3-check-kube-dns.md": 16049,
+  "/troubleshooting/dns/4-check-vpc.md": 16049,
+  "/troubleshooting/cni/index.md": 16049,
+  "/troubleshooting/workernodes/index.md": 16049
 }

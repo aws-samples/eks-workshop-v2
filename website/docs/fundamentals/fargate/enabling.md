@@ -31,7 +31,7 @@ $ aws eks wait fargate-profile-active --cluster-name ${EKS_CLUSTER_NAME} \
 
 Now we can inspect the Fargate profile:
 
-```bash wait=60
+```bash wait=120
 $ aws eks describe-fargate-profile \
     --cluster-name $EKS_CLUSTER_NAME \
     --fargate-profile-name checkout-profile

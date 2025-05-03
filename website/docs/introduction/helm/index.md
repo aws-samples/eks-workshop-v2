@@ -59,7 +59,7 @@ bitnami/nginx           X.X.X           X.X.X           NGINX Open Source is a w
 
 Let's install an NGINX server in our EKS cluster using the Helm chart we found above. When you install a chart using the Helm package manager, it creates a new **release** for that chart. Each release is tracked by Helm and can be upgraded, rolled back, or uninstalled independently from other releases.
 
-```bash
+```bash hook=install
 $ echo $NGINX_CHART_VERSION
 $ helm install nginx bitnami/nginx \
   --version $NGINX_CHART_VERSION \
@@ -109,12 +109,13 @@ This adds several custom Kubernetes labels to the NGINX pods, as well as setting
 
 We'll also add additional replicas using the `--set` flag:
 
-```bash
+```bash hook=replicas
 $ helm upgrade --install nginx bitnami/nginx \
   --version $NGINX_CHART_VERSION \
   --namespace nginx --create-namespace --wait \
   --set replicaCount=3 \
-  --values ~/environment/eks-workshop/modules/introduction/helm/values.yaml
+  --values ~/environment/eks-workshop/modules/introduction/helm/values.yaml \
+  --wait
 ```
 
 List the releases:

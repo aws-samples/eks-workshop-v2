@@ -85,8 +85,7 @@ const config = {
           editUrl:
             "https://github.com/aws-samples/eks-workshop-v2/tree/main/website",
           exclude: [
-            "security/guardduty/runtime-monitoring/reverse-shell.md",
-            "fundamentals/storage/fsx-for-netapp-ontap",
+            "security/guardduty/runtime-monitoring/reverse-shell.md"
           ],
         },
         theme: {
@@ -164,6 +163,12 @@ const config = {
             docId: "aiml/index",
             position: "left",
             label: "AI/ML",
+          },
+          {
+            type: "doc",
+            docId: "troubleshooting/index",
+            position: "left",
+            label: "Troubleshooting",
           },
           {
             href: "https://github.com/aws-samples/eks-workshop-v2",

@@ -466,13 +466,35 @@ Resources:
       ManagedPolicyName: !Sub ${AWS::StackName}-labs3
       PolicyDocument:
         file: ./iam/policies/labs3.yaml
+  
+  EksWorkshopLabsPolicy4:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-labs4
+      PolicyDocument:
+        file: ./iam/policies/labs4.yaml
+
+  EksWorkshopTroubleshootPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-troubleshoot
+      PolicyDocument:
+        file: ./iam/policies/troubleshoot.yaml
 
   EksWorkshopSsmPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
       Roles:
         - !Ref EksWorkshopIdeRole
-      ManagedPolicyName: ${Env}-ide-ssm
+      ManagedPolicyName: !Sub ${AWS::StackName}-ssm
       PolicyDocument:
         file: ./iam/policies/ssm.yaml
 
