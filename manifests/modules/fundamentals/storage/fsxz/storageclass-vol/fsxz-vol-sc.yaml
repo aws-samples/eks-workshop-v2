@@ -6,17 +6,16 @@ provisioner: fsx.openzfs.csi.aws.com
 parameters:
   ResourceType: "volume"
   ParentVolumeId: '"$ROOT_VOL_ID"'
-  CopyTagsToSnapshots: 'false'
+  CopyTagsToSnapshots: 'true'
   DataCompressionType: '"LZ4"'
   NfsExports: '[{"ClientConfigurations": [{"Clients": "$VPC_CIDR", "Options": ["rw","crossmnt","no_root_squash"]}]}]'
   ReadOnly: 'false'
   RecordSizeKiB: '128'
-  Tags: '[{"Key": "Name", "Value": "$EKS_CLUSTER_NAME-data"}]'
   OptionsOnDeletion: '["DELETE_CHILD_VOLUMES_AND_SNAPSHOTS"]'
 reclaimPolicy: Delete
 allowVolumeExpansion: false
 mountOptions:
-  - nfsvers=4.1
+  - nfsvers=4.2
   - rsize=1048576
   - wsize=1048576
   - timeo=600
