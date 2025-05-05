@@ -15,7 +15,7 @@
   "keywords": [],
   "author": "",
   "devDependencies": {
-    "@types/chai": "^4.3.17",
+    "@types/chai": "^5.0.0",
     "@types/glob-to-regexp": "^0.4.4",
     "@types/mdast": "^4.0.4",
     "@types/mocha": "^10.0.7",
