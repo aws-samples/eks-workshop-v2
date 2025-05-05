@@ -14,7 +14,7 @@ logmessage "Scaling down assets deployment..."
 kubectl scale -n assets --replicas=0 deployment/assets
 
 if [ ! -z "$check" ]; then
-  # logmessage "Deleting FSX Lustre CSI driver addon..."
+  logmessage "Deleting FSX Lustre CSI driver addon..."
 
   helm uninstall aws-fsx-csi-driver -n kube-system
 fi

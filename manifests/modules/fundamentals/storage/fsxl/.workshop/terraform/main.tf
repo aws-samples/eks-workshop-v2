@@ -7,7 +7,7 @@ resource "aws_iam_role_policy_attachment" "fsx_full_access" {
 # Add after the policy attachment
 resource "time_sleep" "wait_for_policy_propagation" {
   depends_on = [aws_iam_role_policy_attachment.fsx_full_access]
-  create_duration = "10s"  # reduce to minimum amount possible
+  create_duration = "5s"  # reduce to minimum amount possible
 }
 
 # Add Service_Linked_Role inline policy
@@ -107,10 +107,9 @@ resource "aws_s3_bucket" "s3_data" {
 
 resource "aws_fsx_lustre_file_system" "fsx_lustre" {
   depends_on = [time_sleep.wait_for_policy_propagation]
-  import_path      = "s3://${aws_s3_bucket.s3_data.bucket}"
+
   storage_capacity = 1200
   subnet_ids       = [data.aws_subnets.private_fsx.ids[1]]
-  auto_import_policy = "NEW_CHANGED"
   security_group_ids = [aws_security_group.fsx_lustre.id] 
 
   # Additional recommended settings
