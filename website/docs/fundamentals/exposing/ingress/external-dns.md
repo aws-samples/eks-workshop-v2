@@ -68,7 +68,7 @@ You can also verify the new DNS record in the AWS Route 53 console by clicking t
 
 <ConsoleButton url="https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones" service="route53" label="Open Route53 console"/>
 
-Note: Route 53 private hosted zones are only accessible from associated VPCs (the EKS cluster VPC and VS Code VPC in this example).
+Note: Route 53 private hosted zones are only accessible from associated VPCs (the EKS cluster VPC and workshop IDE VPC in this example).
 
 Testing Application Access, from your terminal test the application endpoint using the DNS name:
 
