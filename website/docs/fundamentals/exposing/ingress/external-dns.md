@@ -3,8 +3,7 @@ title: "External DNS"
 sidebar_position: 30
 ---
 
-ExternalDNS is a Kubernetes controller that automatically manages DNS records for your cluster's services and ingresses. It acts as a bridge between Kubernetes resources and DNS providers like AWS Route 53, 
-ensuring your DNS records stay synchronized with your cluster's state
+ExternalDNS is a Kubernetes controller that automatically manages DNS records for your cluster's services and ingresses. It acts as a bridge between Kubernetes resources and DNS providers like AWS Route 53, ensuring your DNS records stay synchronized with your cluster's state. Using DNS entries for your load balancers provides human-readable, memorable addresses instead of auto-generated hostnames, making your services easily accessible and recognizable as your corporate resources with domain names that align with your organization's branding
 
 In this lab, we'll automate DNS management for Kubernetes Ingress resources using ExternalDNS with AWS Route 53
 
