@@ -42,16 +42,16 @@ Let's create an Ingress resource with DNS configuration:
 
 Apply this configuration:
 
-```bash timeout=180 hook=add-ingress hookTimeout=430
+```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/external-dns
 ```
 
 Let's inspect the Ingress object created with host name:
 
 ```bash
-$ kubectl get ingress ui-retailstroe-com -n ui
+$ kubectl get ingress ui-retailstore-com -n ui
 NAME                   CLASS   HOSTS                    ADDRESS                                            PORTS   AGE
-ui-retailstroe-com     alb     ui.retailstroe.com       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com   80      15s
+ui-retailstore-com     alb     ui.retailstore.com       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com   80      15s
 ```
 
 Verifying DNS record creation, ExternalDNS will automatically create the DNS record in the retailstore.com Route 53 private hosted zone.
