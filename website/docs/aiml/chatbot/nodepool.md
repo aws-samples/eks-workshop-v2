@@ -1,9 +1,9 @@
 ---
-title: "Provisioning Node Pools for LLM Workloads"
+title: "Provisioning compute"
 sidebar_position: 30
 ---
 
-In this lab, we'll use Karpenter to provision the Trainium-1 nodes necessary for handling the Mistral-7B chatbot workload. As an autoscaler, Karpenter creates the resources required to run machine learning workloads and distribute traffic efficiently.
+In this lab, we'll use Karpenter to provision the Trainium nodes necessary for handling the Mistral-7B chatbot workload.
 
 :::tip
 To learn more about Karpenter, check out the [Karpenter module](../../autoscaling/compute/karpenter/index.md) in this workshop.
@@ -28,7 +28,7 @@ Here's the first Karpenter `NodePool` that will provision one `Head Pod` on `x86
 2. The [NodePool CRD](https://karpenter.sh/docs/concepts/nodepools/) supports defining node properties like instance type and zone. In this example, we're setting the `karpenter.sh/capacity-type` to initially limit Karpenter to provisioning On-Demand instances, as well as `karpenter.k8s.aws/instance-family` to limit to a subset of specific instance types. You can learn which other properties are [available here](https://karpenter.sh/docs/concepts/scheduling/#selecting-nodes). Compared to the previous lab, there are more specifications defining the unique constraints of the `Head Pod`, such as defining an instance family of `r5`, `m5`, and `c5` nodes.
 3. A `NodePool` can define a limit on the amount of CPU and memory managed by it. Once this limit is reached Karpenter will not provision additional capacity associated with that particular `NodePool`, providing a cap on the total compute.
 
-This secondary `NodePool` will provision `Ray Workers` on `trn1.2xlarge` instances:
+This second `NodePool` will provision `Ray Workers` on `trn1.2xlarge` instances:
 
 ::yaml{file="manifests/modules/aiml/chatbot/nodepool/nodepool-trn1.yaml" paths="spec.template.metadata.labels,spec.template.spec.requirements,spec.template.spec.taints,spec.limits"}
 
@@ -37,7 +37,7 @@ This secondary `NodePool` will provision `Ray Workers` on `trn1.2xlarge` instanc
 3. A `Taint` defines a specific set of properties that allow a node to repel a set of pods. This property works with its matching label, a `Toleration`. Both tolerations and taints work together to ensure that pods are properly scheduled onto the appropriate pods. You can learn more about the other properties in [this resource](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/).
 4. A `NodePool` can define a limit on the amount of CPU and memory managed by it. Once this limit is reached Karpenter will not provision additional capacity associated with that particular `NodePool`, providing a cap on the total compute.
 
-Both of these defined node pools will allow Karpenter to properly schedule nodes and handle the workload demands of the Ray Cluster.
+Both of these defined node pools will allow Karpenter to properly schedule nodes and handle the workload demands of the Ray cluster.
 
 Apply the `NodePool` and `EC2NodeClass` manifests for both pools:
 
@@ -54,9 +54,9 @@ Once properly deployed, check for the node pools:
 
 ```bash
 $ kubectl get nodepool
-NAME                NODECLASS
-trainium-trn1       trainium-trn1 
-x86-cpu-karpenter   x86-cpu-karpenter
+NAME                NODECLASS           NODES   READY   AGE
+trainium-trn1       trainium-trn1       0       True    31s
+x86-cpu-karpenter   x86-cpu-karpenter   0       True    31s
 ```
 
 As seen from the above command, both node pools have been properly provisioned, allowing Karpenter to allocate new nodes into the newly created pools as needed.
