@@ -41,7 +41,7 @@ annotation to them.
 
 1. Watch for `Pod/binding` resources, at which point Pod has been scheduled to a Node
 2. Set `node` variable with corresponding value from admission review request
-3. Set `computeType` variable by quering Kubernetes API for information about the Node to which Pod has been scheduled
+3. Set `computeType` variable by querying Kubernetes API for information about the Node to which Pod has been scheduled
 4. Only select Pods that have been scheduled to 'hybrid' nodes
 5. Modify the Pod to add the `pod-deletion-cost` annotation
 

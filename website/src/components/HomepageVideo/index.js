@@ -9,7 +9,7 @@ export default function HomepageVideo() {
         <div className={styles.video}>
           <ReactPlayer
             controls
-            url="https://www.youtube.com/watch?v=E956xeOt050"
+            url="https://www.youtube-nocookie.com/embed/E956xeOt050"
           />
         </div>
       </div>

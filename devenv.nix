@@ -4,7 +4,7 @@
   packages = [ 
     pkgs.git
     pkgs.jq
-    pkgs.yq
+    pkgs.yq-go
     pkgs.pre-commit
     pkgs.kubectl
     pkgs.awscli

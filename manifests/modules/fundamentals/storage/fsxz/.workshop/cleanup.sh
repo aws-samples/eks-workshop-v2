@@ -17,14 +17,11 @@ kubectl scale -n assets --replicas=0 deployment/assets
 logmessage "Deleting PV and PVC that were created..."
 
 # Delete PVC
-kubectl delete pvc fsxz-fs-pvc -n assets --ignore-not-found=true
 kubectl delete pvc fsxz-vol-pvc -n assets --ignore-not-found=true
 
 # Delete PV
-kubectl delete pv fsxz-fs-pv --ignore-not-found=true
 kubectl delete pv fsxz-vol-pv --ignore-not-found=true
 
-kubectl delete storageclass fsxz-fs-sc --ignore-not-found=true
 kubectl delete storageclass fsxz-vol-sc --ignore-not-found=true
 
 uninstall-helm-chart aws-fsx-openzfs-csi-driver kube-system

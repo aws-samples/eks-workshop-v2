@@ -81,7 +81,7 @@ jobs:
           DOCKER_DNS_OVERRIDE: "8.8.8.8"
         run: |
           export AWS_DEFAULT_REGION="$AWS_REGION"
-          make test environment="$CLUSTER_ID" module="$MODULE" glob="$GLOB"
+          bash hack/run-tests.sh "$CLUSTER_ID" "$MODULE" "$GLOB"
       - uses: actions/upload-artifact@v4
         id: upload-durations
         with:

@@ -52,7 +52,7 @@ $ aws eks wait cluster-active --name $EKS_CLUSTER_NAME
 
 We can optionally inspect the EKS control plane logging setting using the AWS console:
 
-<ConsoleButton url="https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab" service="cloudwatch" label="Open CloudWatch console"/>
+<ConsoleButton url="https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab" service="eks" label="Open EKS console"/>
 
 The **Logging** tab shows the current configuration for control plane logs for the EKS cluster within the AWS console:
 
