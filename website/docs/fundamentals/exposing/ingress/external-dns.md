@@ -10,8 +10,8 @@ In this lab, we'll automate DNS management for Kubernetes Ingress resources usin
 We'll install ExternalDNS using Helm, the IAM Role ARN and Helm chart version provided as environment variables:
 
 ```bash
-helm repo add external-dns https://kubernetes-sigs.github.io/external-dns/
-helm upgrade --install external-dns external-dns/external-dns --version "${DNS_CHART_VERSION}" \
+$ helm repo add external-dns https://kubernetes-sigs.github.io/external-dns/
+$ helm upgrade --install external-dns external-dns/external-dns --version "${DNS_CHART_VERSION}" \
     --namespace external-dns \
     --create-namespace \
     --set provider.name=aws \
@@ -34,7 +34,8 @@ external-dns-5bdb4478b-fl48s        1/1     Running   0          2m
 
 Let's create an Ingress resource with DNS configuration:
 
-::yaml{file="manifests/modules/exposing/ingress/external-dns/ingress.yaml" paths="metadata.annotations.external-dns.alpha.kubernetes.io/hostname,spec.rules.0.host"}
+
+::yaml{file="manifests/modules/exposing/ingress/external-dns/ingress.yaml" paths="metadata.annotations,spec.rules.0.host"}
 
 1. The annotation `external-dns.alpha.kubernetes.io/hostname` tells ExternalDNS which DNS name to create and manage for the Ingress, automating the mapping of your app’s hostname to its load balancer.
 2. The `spec.rules.host` defines the domain name your Ingress will listen to, which ExternalDNS uses to create a matching DNS record for the associated load balancer.
