@@ -10,7 +10,7 @@ Let's validate that the addons were deployed correctly.
 First, check the Secret Store CSI driver `DaemonSet` and its `Pods`:
 
 ```bash
-$ kubectl -n secrets-store-csi-driver get pods,daemonsets -l app=secrets-store-csi-driver
+$ kubectl -n kube-system get pods,daemonsets -l app=secrets-store-csi-driver
 NAME                                                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
 daemonset.apps/csi-secrets-store-secrets-store-csi-driver   3         3         3       3            3           kubernetes.io/os=linux   3m57s
 
