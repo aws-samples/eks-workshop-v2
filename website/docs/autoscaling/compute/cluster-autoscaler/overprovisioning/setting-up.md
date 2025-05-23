@@ -5,11 +5,11 @@ sidebar_position: 35
 
 To implement over-provisioning effectively, it's considered a best practice to create appropriate `PriorityClass` resources for your applications. Let's begin by creating a global default priority class using the `globalDefault: true` field. This default `PriorityClass` will be assigned to pods and deployments that don't specify a `PriorityClassName`.
 
-```file
-manifests/modules/autoscaling/compute/overprovisioning/setup/priorityclass-default.yaml
-```
+::yaml{file="manifests/modules/autoscaling/compute/overprovisioning/setup/priorityclass-default.yaml" paths="value,globalDefault"}
 
-::yaml{file="manifests/modules/autoscaling/compute/overprovisioning/setup/priorityclass-pause.yaml" paths="value,globalDefault"}
+```file
+manifests/modules/autoscaling/compute/overprovisioning/setup/priorityclass-pause.yaml
+```
 
 1. The value is specified in the required `value` field. The higher the value, the higher the priority.
 2. The `globalDefault` field indicates that the value of this PriorityClass should be used for Pods without a priorityClassName.
