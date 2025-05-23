@@ -9,6 +9,11 @@ To implement over-provisioning effectively, it's considered a best practice to c
 manifests/modules/autoscaling/compute/overprovisioning/setup/priorityclass-default.yaml
 ```
 
+::yaml{file="manifests/modules/autoscaling/compute/overprovisioning/setup/priorityclass-pause.yaml" paths="value,globalDefault"}
+
+1. The value is specified in the required `value` field. The higher the value, the higher the priority.
+2. The `globalDefault` field indicates that the value of this PriorityClass should be used for Pods without a priorityClassName.
+
 Next, we'll create a `PriorityClass` specifically for the pause pods used in over-provisioning, with a priority value of `-1`.
 
 ```file
