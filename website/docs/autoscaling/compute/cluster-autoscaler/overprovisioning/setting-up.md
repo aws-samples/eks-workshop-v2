@@ -18,9 +18,12 @@ Next, we'll create a `PriorityClass` specifically for the pause pods used in ove
 
 Pause pods play a crucial role in ensuring that there are enough available nodes based on the amount of over-provisioning needed for your environment. It's important to keep in mind the `--max-size` parameter in the ASG of the EKS node group, as the Cluster Autoscaler won't increase the number of nodes beyond this maximum specified in the ASG.
 
-::yaml{file="manifests/modules/autoscaling/compute/overprovisioning/setup/deployment-pause.yaml" paths="spec.template.spec.priorityClassName"}
+::yaml{file="manifests/modules/autoscaling/compute/overprovisioning/setup/deployment-pause.yaml" paths="spec.replicas,spec.template.spec.priorityClassName"}
 
-In this scenario, we're going to schedule a single pause pod requesting `6.5Gi` of memory. This means it will consume almost an entire `m5.large` instance, resulting in two "spare" worker nodes being available at all times.
+1. Deploy 2 replicas of the pause pod
+2. Use the priority class we created previously
+
+Since these pods are requesting `6.5Gi` of memory each will consume almost an entire `m5.large` instance, resulting in two "spare" worker nodes being available at all times.
 
 Let's apply these updates to our cluster:
 
