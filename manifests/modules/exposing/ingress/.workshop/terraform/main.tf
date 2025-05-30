@@ -16,7 +16,7 @@ EOF
 }
 
 resource "aws_route53_zone" "private_zone" {
-  name = "retailstore.com"
+  name    = "retailstore.com"
   comment = "Private hosted zone for EKS Workshop use"
   vpc {
     vpc_id = data.aws_vpc.this.id
@@ -40,7 +40,7 @@ module "eks_blueprints_addons" {
   cluster_version   = var.eks_cluster_version
   oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
 
-  enable_external_dns = true
+  enable_external_dns            = true
   external_dns_route53_zone_arns = [aws_route53_zone.private_zone.arn]
   external_dns = {
     create_role = true
