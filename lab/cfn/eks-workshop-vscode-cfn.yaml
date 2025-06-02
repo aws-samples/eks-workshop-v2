@@ -366,8 +366,8 @@ Resources:
 
                   curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/banner.sh | bash
 
-                  code-server --install-extension ms-kubernetes-tools.vscode-kubernetes-tools --force
-                  code-server --install-extension redhat.vscode-yaml --force
+                  code-server --install-extension ms-kubernetes-tools.vscode-kubernetes-tools --force || true
+                  code-server --install-extension redhat.vscode-yaml --force || true
 
                   EOT
 

@@ -20,4 +20,4 @@ These labs are designed in a way that you can pick any combination of modules th
 
 To learn about the basics of Amazon EKS, watch this short ~10 minute video:
 
-<ReactPlayer controls url="https://www.youtube.com/watch?v=E956xeOt050" /> <br />
+<ReactPlayer controls url="https://www.youtube-nocookie.com/embed/E956xeOt050" /> <br />

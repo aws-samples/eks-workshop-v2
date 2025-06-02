@@ -41,3 +41,9 @@ variable "load_balancer_controller_chart_version" {
   default = "1.12.0"
 }
 
+variable "external_dns_chart_version" {
+  description = "The chart version of external-dns to use"
+  type        = string
+  # renovate-helm: depName=external-dns
+  default = "1.16.1"
+}
