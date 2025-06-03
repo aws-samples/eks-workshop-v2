@@ -5,25 +5,14 @@ data "aws_vpc" "this" {
   }
 }
 
-data "external" "vs_code_vpc_id" {
-  program = ["bash", "-c", <<EOF
-    TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-    MAC=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/mac)
-    VPC_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/network/interfaces/macs/$MAC/vpc-id)
-    echo "{\"vpc_id\": \"$VPC_ID\"}"
-EOF
-  ]
-}
-
 resource "aws_route53_zone" "private_zone" {
   name    = "retailstore.com"
   comment = "Private hosted zone for EKS Workshop use"
   vpc {
     vpc_id = data.aws_vpc.this.id
   }
-  vpc {
-    vpc_id = data.external.vs_code_vpc_id.result.vpc_id
-  }
+
+  force_destroy = true
 
   tags = {
     created-by = "eks-workshop-v2"

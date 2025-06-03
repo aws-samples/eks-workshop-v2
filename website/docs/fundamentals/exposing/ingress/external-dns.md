@@ -3,11 +3,11 @@ title: "External DNS"
 sidebar_position: 30
 ---
 
-ExternalDNS is a Kubernetes controller that automatically manages DNS records for your cluster's services and ingresses. It acts as a bridge between Kubernetes resources and DNS providers like AWS Route 53, ensuring your DNS records stay synchronized with your cluster's state. Using DNS entries for your load balancers provides human-readable, memorable addresses instead of auto-generated hostnames, making your services easily accessible and recognizable as your corporate resources with domain names that align with your organization's branding
+[ExternalDNS](https://github.com/kubernetes-sigs/external-dns) is a Kubernetes controller that automatically manages DNS records for your cluster's services and ingresses. It acts as a bridge between Kubernetes resources and DNS providers like AWS Route 53, ensuring your DNS records stay synchronized with your cluster's state. Using DNS entries for your load balancers provides human-readable, memorable addresses instead of auto-generated host names, making your services easily accessible and recognizable as your corporate resources with domain names that align with your organization's branding
 
-In this lab, we'll automate DNS management for Kubernetes Ingress resources using ExternalDNS with AWS Route 53
+In this lab we'll automate DNS management for Kubernetes Ingress resources using ExternalDNS with AWS Route 53.
 
-We'll install ExternalDNS using Helm, the IAM Role ARN and Helm chart version provided as environment variables:
+First let's install ExternalDNS using Helm, with the IAM role ARN and Helm chart version provided as environment variables:
 
 ```bash
 $ helm repo add external-dns https://kubernetes-sigs.github.io/external-dns/
@@ -32,8 +32,7 @@ NAME                                READY   STATUS    RESTARTS   AGE
 external-dns-5bdb4478b-fl48s        1/1     Running   0          2m
 ```
 
-Let's create an Ingress resource with DNS configuration:
-
+Now let's update our previous Ingress resource with DNS configuration:
 
 ::yaml{file="manifests/modules/exposing/ingress/external-dns/ingress.yaml" paths="metadata.annotations,spec.rules.0.host"}
 
@@ -48,32 +47,37 @@ $ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/external-
 
 Let's inspect the Ingress object created with host name:
 
-```bash
-$ kubectl get ingress ui-retailstore-com -n ui
-NAME                   CLASS   HOSTS                    ADDRESS                                            PORTS   AGE
-ui-retailstore-com     alb     ui.retailstore.com       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com   80      15s
+```bash wait=120
+$ kubectl get ingress ui   -n ui
+NAME     CLASS   HOSTS                    ADDRESS                                            PORTS   AGE
+ui       alb     ui.retailstore.com       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com   80      4m15s
 ```
 
-Verifying DNS record creation, ExternalDNS will automatically create the DNS record in the retailstore.com Route 53 private hosted zone.
+Verifying DNS record creation, ExternalDNS will automatically create the DNS record in the `retailstore.com` Route 53 private hosted zone.
+
+:::note
+
+It can take several minutes for the DNS entries to be reconciled.
+
+:::
 
 Check ExternalDNS logs to confirm DNS record creation:
 
 ```bash
-$ kubectl -n external-dns logs -l app.kubernetes.io/instance=external-dns
+$ kubectl -n external-dns logs deployment/external-dns
 Desired change: CREATE ui.retailstore.com A
 5 record(s) were successfully updated
 ```
 
-You can also verify the new DNS record in the AWS Route 53 console by clicking the link and navigating to the retailstore.com private hosted zone.
+You can also verify the new DNS record in the AWS Route 53 console by clicking the link and navigating to the `retailstore.com` private hosted zone:
 
 <ConsoleButton url="https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones" service="route53" label="Open Route53 console"/>
 
-Note: Route 53 private hosted zones are only accessible from associated VPCs (the EKS cluster VPC and workshop IDE VPC in this example).
-
-Testing Application Access, from your terminal test the application endpoint using the DNS name:
+Route 53 private hosted zones are only accessible from associated VPCs, in this case the EKS cluster VPC. To test the DNS entry we'll use `curl` from inside a pod:
 
 ```bash
-$ curl -i http://ui.retailstore.com/actuator/health/liveness
+$ kubectl -n ui exec -it \
+  deployment/ui -- curl -i http://ui.retailstore.com/actuator/health/liveness
 
 HTTP/1.1 200 OK
 Date: Thu, 24 Apr 2025 07:45:12 GMT
