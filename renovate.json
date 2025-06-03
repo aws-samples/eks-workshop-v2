@@ -2,7 +2,8 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
-    ":rebaseStalePrs"
+    ":rebaseStalePrs",
+    ":automergeStableNonMajor"
   ],
   "schedule": ["* * 1-10 * *"],
   "enabledManagers": ["custom.regex", "github-actions", "terraform", "npm"],
