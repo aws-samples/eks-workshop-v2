@@ -36,9 +36,17 @@ Let's set up a `podAffinity` and `podAntiAffinity` policy in the **checkout** de
 The following kustomization adds an `affinity` section to the **checkout** deployment specifying both **podAffinity** and **podAntiAffinity** policies:
 
 ```kustomization
-modules/fundamentals/affinity/checkout/checkout.yaml
+::yaml{file="manifests/modules/fundamentals/affinity/checkout/checkout.yaml" paths="spec.template.spec.affinity.podAffinity,spec.template.spec.affinity.podAntiAffinity"}
 Deployment/checkout
 ```
+
+1. The podAffinity section ensures:
+   - Checkout pods will only be scheduled on nodes where Redis pods are running.
+   - This is enforced by matching pods with label `app.kubernetes.io/component: redis`.
+   - The `topologyKey: kubernetes.io/hostname` ensures this rule applies at the node level.
+2. The podAntiAffinity section ensures:
+   - Only one checkout pod runs per node.
+   - This is achieved by preventing pods with labels `app.kubernetes.io/component: service` and `app.kubernetes.io/instance: checkout` from running on the same node.
 
 To make the change, run the following command to modify the **checkout** deployment in your cluster:
 
@@ -77,9 +85,14 @@ In this example, the first `checkout` pod runs on the same node as the existing 
 Next, we'll scale the `checkout-redis` to two instances for our two nodes, but first let's modify the `checkout-redis` deployment policy to spread out our `checkout-redis` instances across each node. To do this, we'll simply need to create a **podAntiAffinity** rule.
 
 ```kustomization
-modules/fundamentals/affinity/checkout-redis/checkout-redis.yaml
+::yaml{file="manifests/modules/fundamentals/affinity/checkout-redis/checkout-redis.yaml" paths="spec.template.spec.affinity.podAntiAffinity"}
 Deployment/checkout-redis
 ```
+
+1. The podAntiAffinity section ensures:
+   - Redis pods are distributed across different nodes.
+   - This is enforced by preventing multiple pods with label `app.kubernetes.io/component: redis` from running on the same node.
+   - The `topologyKey: kubernetes.io/hostname` ensures this rule applies at the node level.
 
 Apply it with the following command:
 
