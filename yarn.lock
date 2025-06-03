@@ -4457,10 +4457,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reteps/dockerfmt@npm:^0.3.2":
-  version: 0.3.4
-  resolution: "@reteps/dockerfmt@npm:0.3.4"
-  checksum: 10c0/f270e221267d0ea3957a58b2a24291c70b98cdfda14131b736d61363a7c9f89936e0c5da8196743b27d5dda397f8a7805c9afad827bfbe2489b0b02a1391b53a
+"@reteps/dockerfmt@npm:^0.3.5":
+  version: 0.3.6
+  resolution: "@reteps/dockerfmt@npm:0.3.6"
+  checksum: 10c0/b6ca467ba97ea49071c44d0fbecf131fc8045165e950d0d01372c1834000c58d53f62bff42f09b851f7a9d91899047f071cd8fe57e1fc88fc27e2a3d2bdb214d
   languageName: node
   linkType: hard
 
@@ -13314,14 +13314,14 @@ __metadata:
   linkType: hard
 
 "prettier-plugin-sh@npm:^0.17.0":
-  version: 0.17.2
-  resolution: "prettier-plugin-sh@npm:0.17.2"
+  version: 0.17.4
+  resolution: "prettier-plugin-sh@npm:0.17.4"
   dependencies:
-    "@reteps/dockerfmt": "npm:^0.3.2"
+    "@reteps/dockerfmt": "npm:^0.3.5"
     sh-syntax: "npm:^0.5.6"
   peerDependencies:
     prettier: ^3.0.3
-  checksum: 10c0/f9971cb5cfd4a84115c6fd06c43239dc75295ee6ac2a2f9a02f786cdeee889f8a4e9192cabf013d0db7e33f6a8b14a1c3efc0fb17ad72daaa6067b7c7e681c80
+  checksum: 10c0/a9619c34a3fdd32684d15518ca4ee7791410fa3784a10f310f199f5a2083cab03f4f9d95f1d1ba069f105eee632d386c39396d9dd60169259c77aef1f30c735c
   languageName: node
   linkType: hard
 
