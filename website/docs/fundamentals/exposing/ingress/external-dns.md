@@ -63,7 +63,7 @@ It can take several minutes for the DNS entries to be reconciled.
 
 Check ExternalDNS logs to confirm DNS record creation:
 
-```bash
+```bash hook=dns-logs
 $ kubectl -n external-dns logs deployment/external-dns
 Desired change: CREATE ui.retailstore.com A
 5 record(s) were successfully updated
@@ -75,7 +75,7 @@ You can also verify the new DNS record in the AWS Route 53 console by clicking t
 
 Route 53 private hosted zones are only accessible from associated VPCs, in this case the EKS cluster VPC. To test the DNS entry we'll use `curl` from inside a pod:
 
-```bash
+```bash hook=dns-curl
 $ kubectl -n ui exec -it \
   deployment/ui -- curl -i http://ui.retailstore.com/actuator/health/liveness
 
