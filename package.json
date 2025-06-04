@@ -21,7 +21,7 @@
   "author": "",
   "license": "Apache-2.0",
   "devDependencies": {
-    "cspell": "^8.8.1",
+    "cspell": "^9.0.0",
     "lint-staged": "^15.2.7",
     "markdown-link-check": "3.13.7",
     "markdownlint-cli2": "^0.17.0",
