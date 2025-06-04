@@ -7604,7 +7604,7 @@ __metadata:
     cspell: "npm:^8.8.1"
     lint-staged: "npm:^15.2.7"
     markdown-link-check: "npm:3.13.7"
-    markdownlint-cli2: "npm:^0.17.0"
+    markdownlint-cli2: "npm:^0.18.0"
     npm-run-all2: "npm:^7.0.0"
     prettier: "npm:^3.2.5"
     prettier-plugin-sh: "npm:^0.17.0"
@@ -8157,7 +8157,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0, fast-glob@npm:^3.3.2":
+"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0, fast-glob@npm:^3.3.3":
   version: 3.3.3
   resolution: "fast-glob@npm:3.3.3"
   dependencies:
@@ -8737,17 +8737,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globby@npm:14.0.2":
-  version: 14.0.2
-  resolution: "globby@npm:14.0.2"
+"globby@npm:14.1.0":
+  version: 14.1.0
+  resolution: "globby@npm:14.1.0"
   dependencies:
     "@sindresorhus/merge-streams": "npm:^2.1.0"
-    fast-glob: "npm:^3.3.2"
-    ignore: "npm:^5.2.4"
-    path-type: "npm:^5.0.0"
+    fast-glob: "npm:^3.3.3"
+    ignore: "npm:^7.0.3"
+    path-type: "npm:^6.0.0"
     slash: "npm:^5.1.0"
-    unicorn-magic: "npm:^0.1.0"
-  checksum: 10c0/3f771cd683b8794db1e7ebc8b6b888d43496d93a82aad4e9d974620f578581210b6c5a6e75ea29573ed16a1345222fab6e9b877a8d1ed56eeb147e09f69c6f78
+    unicorn-magic: "npm:^0.3.0"
+  checksum: 10c0/527a1063c5958255969620c6fa4444a2b2e9278caddd571d46dfbfa307cb15977afb746e84d682ba5b6c94fc081e8997f80ff05dd235441ba1cb16f86153e58e
   languageName: node
   linkType: hard
 
@@ -9458,6 +9458,13 @@ __metadata:
   version: 5.3.2
   resolution: "ignore@npm:5.3.2"
   checksum: 10c0/f9f652c957983634ded1e7f02da3b559a0d4cc210fca3792cb67f1b153623c9c42efdc1c4121af171e295444459fc4a9201101fb041b1104a3c000bccb188337
+  languageName: node
+  linkType: hard
+
+"ignore@npm:^7.0.3":
+  version: 7.0.5
+  resolution: "ignore@npm:7.0.5"
+  checksum: 10c0/ae00db89fe873064a093b8999fe4cc284b13ef2a178636211842cceb650b9c3e390d3339191acb145d81ed5379d2074840cf0c33a20bdbd6f32821f79eb4ad5d
   languageName: node
   linkType: hard
 
@@ -10562,36 +10569,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"markdownlint-cli2@npm:^0.17.0":
-  version: 0.17.2
-  resolution: "markdownlint-cli2@npm:0.17.2"
+"markdownlint-cli2@npm:^0.18.0":
+  version: 0.18.1
+  resolution: "markdownlint-cli2@npm:0.18.1"
   dependencies:
-    globby: "npm:14.0.2"
+    globby: "npm:14.1.0"
     js-yaml: "npm:4.1.0"
     jsonc-parser: "npm:3.3.1"
-    markdownlint: "npm:0.37.4"
+    markdown-it: "npm:14.1.0"
+    markdownlint: "npm:0.38.0"
     markdownlint-cli2-formatter-default: "npm:0.0.5"
     micromatch: "npm:4.0.8"
   bin:
     markdownlint-cli2: markdownlint-cli2-bin.mjs
-  checksum: 10c0/dda9710adfa09c32f10b621e3d5fa691a7ff58d0aceeca5b751021953f56051f649e52132e55e076f1876683c8cdeb2448cad107d82ed95f8c127ce94b0b89eb
+  checksum: 10c0/c65460b99539cdff0b89bcb308b385ef5e841b9b96c1bd3b07b492afc591f03ab9c1d5ee544887463a94a9c52cbc0e7557fed8d4738f2031e34156140fece5b6
   languageName: node
   linkType: hard
 
-"markdownlint@npm:0.37.4":
-  version: 0.37.4
-  resolution: "markdownlint@npm:0.37.4"
+"markdownlint@npm:0.38.0":
+  version: 0.38.0
+  resolution: "markdownlint@npm:0.38.0"
   dependencies:
-    markdown-it: "npm:14.1.0"
-    micromark: "npm:4.0.1"
-    micromark-core-commonmark: "npm:2.0.2"
-    micromark-extension-directive: "npm:3.0.2"
+    micromark: "npm:4.0.2"
+    micromark-core-commonmark: "npm:2.0.3"
+    micromark-extension-directive: "npm:4.0.0"
     micromark-extension-gfm-autolink-literal: "npm:2.1.0"
     micromark-extension-gfm-footnote: "npm:2.1.0"
-    micromark-extension-gfm-table: "npm:2.1.0"
+    micromark-extension-gfm-table: "npm:2.1.1"
     micromark-extension-math: "npm:3.1.0"
-    micromark-util-types: "npm:2.0.1"
-  checksum: 10c0/831c2aefac6b2386254eed371296d15944a9ca50abe057b46124727acee386f79bbb407d73447982269ec82b367f2d492ceb89dbc550eecf0f9e7c59a41efbc8
+    micromark-util-types: "npm:2.0.2"
+  checksum: 10c0/8937dd91e1e107cb3e079447ca465c7877097762bfe692c76db3629b054954583c7b703cf747370af0edf0263130a8c2f8ff6e9297f5ee722c27aa51d2a69f33
   languageName: node
   linkType: hard
 
@@ -10944,7 +10951,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromark-core-commonmark@npm:2.0.2, micromark-core-commonmark@npm:^2.0.0":
+"micromark-core-commonmark@npm:2.0.3":
+  version: 2.0.3
+  resolution: "micromark-core-commonmark@npm:2.0.3"
+  dependencies:
+    decode-named-character-reference: "npm:^1.0.0"
+    devlop: "npm:^1.0.0"
+    micromark-factory-destination: "npm:^2.0.0"
+    micromark-factory-label: "npm:^2.0.0"
+    micromark-factory-space: "npm:^2.0.0"
+    micromark-factory-title: "npm:^2.0.0"
+    micromark-factory-whitespace: "npm:^2.0.0"
+    micromark-util-character: "npm:^2.0.0"
+    micromark-util-chunked: "npm:^2.0.0"
+    micromark-util-classify-character: "npm:^2.0.0"
+    micromark-util-html-tag-name: "npm:^2.0.0"
+    micromark-util-normalize-identifier: "npm:^2.0.0"
+    micromark-util-resolve-all: "npm:^2.0.0"
+    micromark-util-subtokenize: "npm:^2.0.0"
+    micromark-util-symbol: "npm:^2.0.0"
+    micromark-util-types: "npm:^2.0.0"
+  checksum: 10c0/bd4a794fdc9e88dbdf59eaf1c507ddf26e5f7ddf4e52566c72239c0f1b66adbcd219ba2cd42350debbe24471434d5f5e50099d2b3f4e5762ca222ba8e5b549ee
+  languageName: node
+  linkType: hard
+
+"micromark-core-commonmark@npm:^2.0.0":
   version: 2.0.2
   resolution: "micromark-core-commonmark@npm:2.0.2"
   dependencies:
@@ -10968,7 +10999,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromark-extension-directive@npm:3.0.2, micromark-extension-directive@npm:^3.0.0":
+"micromark-extension-directive@npm:4.0.0":
+  version: 4.0.0
+  resolution: "micromark-extension-directive@npm:4.0.0"
+  dependencies:
+    devlop: "npm:^1.0.0"
+    micromark-factory-space: "npm:^2.0.0"
+    micromark-factory-whitespace: "npm:^2.0.0"
+    micromark-util-character: "npm:^2.0.0"
+    micromark-util-symbol: "npm:^2.0.0"
+    micromark-util-types: "npm:^2.0.0"
+    parse-entities: "npm:^4.0.0"
+  checksum: 10c0/b4aef0f44339543466ae186130a4514985837b6b12d0c155bd1162e740f631e58f0883a39d0c723206fa0ff53a9b579965c79116f902236f6f123c3340b5fefb
+  languageName: node
+  linkType: hard
+
+"micromark-extension-directive@npm:^3.0.0":
   version: 3.0.2
   resolution: "micromark-extension-directive@npm:3.0.2"
   dependencies:
@@ -11037,20 +11083,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromark-extension-gfm-table@npm:2.1.0":
-  version: 2.1.0
-  resolution: "micromark-extension-gfm-table@npm:2.1.0"
-  dependencies:
-    devlop: "npm:^1.0.0"
-    micromark-factory-space: "npm:^2.0.0"
-    micromark-util-character: "npm:^2.0.0"
-    micromark-util-symbol: "npm:^2.0.0"
-    micromark-util-types: "npm:^2.0.0"
-  checksum: 10c0/c1b564ab68576406046d825b9574f5b4dbedbb5c44bede49b5babc4db92f015d9057dd79d8e0530f2fecc8970a695c40ac2e5e1d4435ccf3ef161038d0d1463b
-  languageName: node
-  linkType: hard
-
-"micromark-extension-gfm-table@npm:^2.0.0":
+"micromark-extension-gfm-table@npm:2.1.1, micromark-extension-gfm-table@npm:^2.0.0":
   version: 2.1.1
   resolution: "micromark-extension-gfm-table@npm:2.1.1"
   dependencies:
@@ -11433,10 +11466,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromark-util-types@npm:2.0.1, micromark-util-types@npm:^2.0.0":
-  version: 2.0.1
-  resolution: "micromark-util-types@npm:2.0.1"
-  checksum: 10c0/872ec9334bb42afcc91c5bed8b7ee03b75654b36c6f221ab4d2b1bb0299279f00db948bf38ec6bc1ec03d0cf7842c21ab805190bf676157ba587eb0386d38b71
+"micromark-util-types@npm:2.0.2":
+  version: 2.0.2
+  resolution: "micromark-util-types@npm:2.0.2"
+  checksum: 10c0/c8c15b96c858db781c4393f55feec10004bf7df95487636c9a9f7209e51002a5cca6a047c5d2a5dc669ff92da20e57aaa881e81a268d9ccadb647f9dce305298
   languageName: node
   linkType: hard
 
@@ -11447,7 +11480,39 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromark@npm:4.0.1, micromark@npm:^4.0.0":
+"micromark-util-types@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "micromark-util-types@npm:2.0.1"
+  checksum: 10c0/872ec9334bb42afcc91c5bed8b7ee03b75654b36c6f221ab4d2b1bb0299279f00db948bf38ec6bc1ec03d0cf7842c21ab805190bf676157ba587eb0386d38b71
+  languageName: node
+  linkType: hard
+
+"micromark@npm:4.0.2":
+  version: 4.0.2
+  resolution: "micromark@npm:4.0.2"
+  dependencies:
+    "@types/debug": "npm:^4.0.0"
+    debug: "npm:^4.0.0"
+    decode-named-character-reference: "npm:^1.0.0"
+    devlop: "npm:^1.0.0"
+    micromark-core-commonmark: "npm:^2.0.0"
+    micromark-factory-space: "npm:^2.0.0"
+    micromark-util-character: "npm:^2.0.0"
+    micromark-util-chunked: "npm:^2.0.0"
+    micromark-util-combine-extensions: "npm:^2.0.0"
+    micromark-util-decode-numeric-character-reference: "npm:^2.0.0"
+    micromark-util-encode: "npm:^2.0.0"
+    micromark-util-normalize-identifier: "npm:^2.0.0"
+    micromark-util-resolve-all: "npm:^2.0.0"
+    micromark-util-sanitize-uri: "npm:^2.0.0"
+    micromark-util-subtokenize: "npm:^2.0.0"
+    micromark-util-symbol: "npm:^2.0.0"
+    micromark-util-types: "npm:^2.0.0"
+  checksum: 10c0/07462287254219d6eda6eac8a3cebaff2994e0575499e7088027b825105e096e4f51e466b14b2a81b71933a3b6c48ee069049d87bc2c2127eee50d9cc69e8af6
+  languageName: node
+  linkType: hard
+
+"micromark@npm:^4.0.0":
   version: 4.0.1
   resolution: "micromark@npm:4.0.1"
   dependencies:
@@ -12472,10 +12537,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-type@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "path-type@npm:5.0.0"
-  checksum: 10c0/e8f4b15111bf483900c75609e5e74e3fcb79f2ddb73e41470028fcd3e4b5162ec65da9907be077ee5012c18801ff7fffb35f9f37a077f3f81d85a0b7d6578efd
+"path-type@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "path-type@npm:6.0.0"
+  checksum: 10c0/55baa8b1187d6dc683d5a9cfcc866168d6adff58e5db91126795376d818eee46391e00b2a4d53e44d844c7524a7d96aa68cc68f4f3e500d3d069a39e6535481c
   languageName: node
   linkType: hard
 
@@ -15501,10 +15566,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unicorn-magic@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "unicorn-magic@npm:0.1.0"
-  checksum: 10c0/e4ed0de05b0a05e735c7d8a2930881e5efcfc3ec897204d5d33e7e6247f4c31eac92e383a15d9a6bccb7319b4271ee4bea946e211bf14951fec6ff2cbbb66a92
+"unicorn-magic@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "unicorn-magic@npm:0.3.0"
+  checksum: 10c0/0a32a997d6c15f1c2a077a15b1c4ca6f268d574cf5b8975e778bb98e6f8db4ef4e86dfcae4e158cd4c7e38fb4dd383b93b13eefddc7f178dea13d3ac8a603271
   languageName: node
   linkType: hard
 
