@@ -22,7 +22,7 @@ data "aws_ecrpublic_authorization_token" "token" {
 
 module "iam_assumable_role_carts" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "5.55.0"
+  version                       = "5.58.0"
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-carts-ack"
   provider_url                  = var.addon_context.eks_oidc_issuer_url
@@ -82,7 +82,7 @@ EOF
 
 module "iam_assumable_role_ack" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "5.55.0"
+  version                       = "5.58.0"
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-ack-controller"
   provider_url                  = var.addon_context.eks_oidc_issuer_url

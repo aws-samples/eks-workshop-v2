@@ -8,7 +8,7 @@ resource "aws_s3_bucket" "mountpoint_s3" {
 # Create S3 CSI Driver IAM Role and associated policy
 module "mountpoint_s3_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.55.0"
+  version = "5.58.0"
 
   # Create prefixes
   role_name_prefix   = "${var.addon_context.eks_cluster_id}-s3-csi-"
