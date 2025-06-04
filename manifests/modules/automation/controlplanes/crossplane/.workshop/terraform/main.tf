@@ -42,7 +42,7 @@ locals {
 
 module "upbound_irsa_aws" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.55.0"
+  version = "5.58.0"
 
   role_name_prefix           = "${var.addon_context.eks_cluster_id}-ddb-upbound-"
   policy_name_prefix         = "${var.addon_context.eks_cluster_id}-ddb-upbound-"
@@ -102,7 +102,7 @@ resource "kubectl_manifest" "upbound_aws_provider_config" {
 
 module "iam_assumable_role_carts" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "5.55.0"
+  version                       = "5.58.0"
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-carts-crossplane"
   provider_url                  = var.addon_context.eks_oidc_issuer_url
