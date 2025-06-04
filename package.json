@@ -43,7 +43,7 @@
       "markdownlint-cli2"
     ]
   },
-  "packageManager": "yarn@4.8.1",
+  "packageManager": "yarn@4.9.2",
   "dependencies": {
     "@docusaurus/core": "^3.7.0",
     "@docusaurus/module-type-aliases": "^3.7.0",
