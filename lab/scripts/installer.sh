@@ -118,6 +118,9 @@ chmod +x flux
 mv ./flux /usr/local/bin
 rm -rf flux.tar.gz
 
+# git-remote
+pip install git-remote-s3
+
 # terraform
 download "https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_${arch_name}.zip" "terraform.zip"
 unzip -o -q terraform.zip -d /tmp
