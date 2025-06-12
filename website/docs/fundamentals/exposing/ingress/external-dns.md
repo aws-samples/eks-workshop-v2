@@ -77,7 +77,7 @@ Route 53 private hosted zones are only accessible from associated VPCs, in this 
 
 ```bash hook=dns-curl
 $ kubectl -n ui exec -it \
-  deployment/ui -- curl -i http://ui.retailstore.com/actuator/health/liveness
+  deployment/ui -- bash -c "curl -i http://ui.retailstore.com/actuator/health/liveness; echo"
 
 HTTP/1.1 200 OK
 Date: Thu, 24 Apr 2025 07:45:12 GMT
