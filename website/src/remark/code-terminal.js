@@ -8,7 +8,7 @@ const plugin = (options) => {
       if (node.lang === "bash") {
         const value = node.value;
 
-        const smartMode = false;
+        var smartMode = false;
         var m;
 
         if (node.meta) {
