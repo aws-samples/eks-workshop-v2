@@ -45,17 +45,11 @@ annotation to them.
 4. Only select Pods that have been scheduled to 'hybrid' nodes
 5. Modify the Pod to add the `pod-deletion-cost` annotation
 
-Let's apply that now.
-
-```bash timeout=300 wait=30
-$ kubectl apply -f ~/environment/eks-workshop/modules/networking/eks-hybrid-nodes/kyverno/policy.yaml
-```
-
-Before we can test our workload, we need to make wait for Kyverno to be up and
-running so it can enforce the policy we just set up.
+Let's make sure that Kyverno is up and running, and apply our policy.
 
 ```bash timeout=300 wait=30
 $ kubectl wait --for=condition=Ready pods --all -n kyverno --timeout=2m
+$ kubectl apply -f ~/environment/eks-workshop/modules/networking/eks-hybrid-nodes/kyverno/policy.yaml
 ```
 
 Now we'll deploy our sample workload. This will use the nodeAffinity rules discussed earlier to land 3 nginx pods on our hybrid node.
