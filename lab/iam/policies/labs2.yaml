@@ -118,9 +118,11 @@ Statement:
   - Effect: Allow
     Action:
       - codepipeline:CreatePipeline
+      - codepipeline:UpdatePipeline
       - codepipeline:DeletePipeline
       - codepipeline:GetPipeline
       - codepipeline:GetPipelineState
+      - codepipeline:ListPipelineExecutions
       - codepipeline:ListTagsForResource
       - codepipeline:TagResource
     Resource:
