@@ -22,7 +22,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "cspell": "^9.0.0",
-    "lint-staged": "^15.2.7",
+    "lint-staged": "^16.0.0",
     "markdown-link-check": "3.13.7",
     "markdownlint-cli2": "^0.18.0",
     "npm-run-all2": "^8.0.0",
