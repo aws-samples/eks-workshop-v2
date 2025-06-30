@@ -25,7 +25,7 @@ pod. The
 [controller.kubernetes.io/pod-deletion-cost](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#pod-deletion-cost)
 annotation effectively tells Kubernetes to delete less _expensive_ pods first.
 
-Let's get to work. We'll use Helm to install Kyverno and then deploy the policy included below.
+Let's get to work. We'll use Helm to install Kyverno and then deploy the policy included below:
 
 ```bash timeout=300 wait=30
 $ helm repo add kyverno https://kyverno.github.io/kyverno/
@@ -45,14 +45,14 @@ annotation to them.
 4. Only select Pods that have been scheduled to 'hybrid' nodes
 5. Modify the Pod to add the `pod-deletion-cost` annotation
 
-Let's make sure that Kyverno is up and running, and apply our policy.
+Let's make sure that Kyverno is up and running, and apply our policy:
 
 ```bash timeout=300 wait=30
 $ kubectl wait --for=condition=Ready pods --all -n kyverno --timeout=2m
 $ kubectl apply -f ~/environment/eks-workshop/modules/networking/eks-hybrid-nodes/kyverno/policy.yaml
 ```
 
-Now we'll deploy our sample workload. This will use the nodeAffinity rules discussed earlier to land 3 nginx pods on our hybrid node.
+Now we'll deploy our sample workload. This will use the nodeAffinity rules discussed earlier to land 3 nginx pods on our hybrid node:
 
 ```bash timeout=300 wait=30
 $ kubectl apply -f ~/environment/eks-workshop/modules/networking/eks-hybrid-nodes/deployment.yaml
@@ -83,7 +83,7 @@ be scheduled elsewhere (our cloud instances).
 
 Usually scaling would be automatic based on CPU, Memory, GPU availability, or a
 external factors like queue depth. Here, we're just going to force the scale
-up.
+up:
 
 ```bash timeout=300 wait=30
 $ kubectl scale deployment nginx-deployment --replicas 15
@@ -96,7 +96,7 @@ pods that landed on our hybrid node, and left it off of all of the Pods that
 landed on EC2. When we scale back down, Kubernetes will delete all the _cheap_
 Pods first, Pods that have no cost on them. Kubernetes will then see all the
 others as equal and the normal deletion logic kicks in. Let's see that in action
-now.
+now:
 
 ```bash timeout=300 wait=30
 $ kubectl get pods  -o=custom-columns='NAME:.metadata.name,NODE:.spec.nodeName,ANNOTATIONS:.metadata.annotations'
@@ -118,13 +118,13 @@ nginx-deployment-7474978d4f-txxlw   mi-0ebe45e33a53e04f2                        
 nginx-deployment-7474978d4f-wqbsd   ip-10-42-154-155.us-west-2.compute.internal   <none>
 ```
 
-Let's scale our sample deployment back down to 3 again. We'll be left with three pods running on our hybrid node, which brings us back to or original state.
+Let's scale our sample deployment back down to 3 again. We'll be left with three pods running on our hybrid node, which brings us back to or original state:
 
 ```bash timeout=300 wait=30
 $ kubectl scale deployment nginx-deployment --replicas 3
 ```
 
-Finally, just to be sure, let's make sure we're back down to 3 replicas running on our hybrid node.
+Finally, just to be sure, let's make sure we're back down to 3 replicas running on our hybrid node:
 
 ```bash timeout=300 wait=30
 $ kubectl get pods  -o=custom-columns='NAME:.metadata.name,NODE:.spec.nodeName,ANNOTATIONS:.metadata.annotations'
