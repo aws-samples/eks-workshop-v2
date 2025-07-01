@@ -20,7 +20,6 @@
   "/automation/gitops/argocd/deploy_application.md": 14040,
   "/automation/gitops/argocd/index.md": 217154,
   "/automation/gitops/argocd/update_application.md": 6915,
-  "/automation/gitops/flux/ci.md": 615336,
   "/automation/gitops/flux/cluster_bootstrap.md": 17802,
   "/automation/gitops/flux/codecommit.md": 357,
   "/automation/gitops/flux/deploy_application.md": 78608,
