@@ -25,6 +25,18 @@ Our repository will consist of:
 └── Dockerfile
 ```
 
+The Dockerfile we'll use is intentionally simplified for this lab:
+
+```file
+manifests/modules/automation/continuousdelivery/codepipeline/repo/Dockerfile
+```
+
+The `values.yaml` file in the root of the repository will only be responsible for configuring the correct container image and tag:
+
+::yaml{file="manifests/modules/automation/continuousdelivery/codepipeline/repo/values.yaml"}
+
+The `IMAGE_URL` and `IMAGE_REPOSITORY` environment variables will be set in our pipeline, as we'll see later.
+
 First let's set up Git:
 
 ```bash
@@ -46,5 +58,3 @@ $ helm pull oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart:0.8
 $ tar zxf /tmp/retail-store-sample-ui-chart-0.8.5.tgz \
   -C ~/environment/codepipeline/chart --strip-components=1
 ```
-
-For now we won't push the files as we don't want to trigger our pipeline yet.

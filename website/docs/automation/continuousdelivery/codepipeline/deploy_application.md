@@ -77,3 +77,5 @@ $ kubectl get deployment -n ui ui -o json | jq -r '.spec.template.spec.container
 We can also click the `deploy_eks` action to view more details such as the logs:
 
 ![Pipeline deploy detail](assets/pipeline-deploy-detail.webp)
+
+With that we have successfully create a pipeline that builds our application container image and deploys it to an EKS cluster using a Helm chart.
