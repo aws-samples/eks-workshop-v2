@@ -23,7 +23,7 @@ Welcome to the repository for the [Amazon Elastic Kubernetes Services workshop](
 
 ## Introduction
 
-The Amazon EKS Workshop is built to help users learn about Amazon EKS features and integrations with popular open-source projects. The workshop is abstracted into high-level learning modules, including Networking, Security, DevOps Automation, and more. These are further broken down into standalone labs focusing on a particular feature, tool, or use-case. To ensure a consistent and predictable learning experience, the Amazon EKS Workshop closely adheres to the following tenets:
+test The Amazon EKS Workshop is built to help users learn about Amazon EKS features and integrations with popular open-source projects. The workshop is abstracted into high-level learning modules, including Networking, Security, DevOps Automation, and more. These are further broken down into standalone labs focusing on a particular feature, tool, or use-case. To ensure a consistent and predictable learning experience, the Amazon EKS Workshop closely adheres to the following tenets:
 
 **Tenets**:
 
