@@ -244,4 +244,4 @@ kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernete
 kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
 
 # Finished
-logmessage "\n✅ Environment is ${GREEN}ready${NC}"
+logmessage "\n✅ Environment is ${GREEN}ready${NC}!"
