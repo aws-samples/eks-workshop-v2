@@ -1,82 +1,79 @@
 ---
-title: "Deploy an application"
-sidebar_position: 2
+title: "Deploy the application"
+sidebar_position: 30
 ---
 
-In this module, we will deploy the UI component using retail-store-sample-app with a CodePipeline pipeline.
-
-## Run Pipeline
-
-Now that the pipeline is set up, let's run the pipeline, which will build the image from retail-store-sample-app and deploy it to our EKS cluster.
+Before we can deploy the application lets delete the existing UI component and recreate the namespace:
 
 ```bash
-$ git -C ~/environment/cd add .
-$ git -C ~/environment/cd commit -am "Initial setup"
-$ git -C ~/environment/cd remote add origin s3+zip://${EKS_CLUSTER_NAME}-${AWS_ACCOUNT_ID}-retail-store-sample-ui/my-repo
-$ git -C ~/environment/cd push --set-upstream origin master
+$ kubectl delete namespace ui
+$ kubectl create namespace ui
 ```
 
-It will take CodePipeline 6-8 mins to build the image and deploy all changes to the EKS action.
+Now let's run the pipeline, which will build the image and deploy it to our EKS cluster.
+
+```bash wait=20
+$ git -C ~/environment/codepipeline add .
+$ git -C ~/environment/codepipeline commit -am "Initial setup"
+$ git -C ~/environment/codepipeline push --set-upstream origin main
+```
+
+It will take CodePipeline 3-5 minutes to build the image and deploy all changes to the EKS cluster. You can watch the pipeline progress in the AWS console or use these commands to wait until it has completed:
 
 ```bash timeout=900
 $ while [[ "$(aws codepipeline list-pipeline-executions --pipeline-name ${EKS_CLUSTER_NAME}-retail-store-cd --query 'pipelineExecutionSummaries[0].trigger.triggerType' --output text)" != "CloudWatchEvent" ]]; do echo "Waiting for pipeline to start ..."; sleep 10; done && echo "Pipeline started."
 $ while [[ "$(aws codepipeline list-pipeline-executions --pipeline-name ${EKS_CLUSTER_NAME}-retail-store-cd --query 'pipelineExecutionSummaries[0].status' --output text)" != "Succeeded" ]]; do echo "Waiting for pipeline execution to finish ..."; sleep 10; done && echo "Pipeline execution successful."
 ```
 
-We've now successfully migrated the UI component to deploy using CodePipeline.
+Once complete the pipeline will show the stages have succeeded.
 
-We can see that the `build-image` action used a dynamic tag with random value (corresponding to S3 object ETag) and `deploy_eks` action replaced `$IMAGE_TAG` in `deployment.yaml` with same value.
+![Pipeline complete](./assets/pipeline-complete.webp)
 
-![Image 1](assets/ecr_image.webp) ![Image 2](assets/ecr_action_input.webp) ![Image 3](assets/eks_action_logs.webp)
+Now we can review the changes that have been made by the pipeline. First we can check the ECR repository:
 
-### Add UI load balancer
+<ConsoleButton
+  url="https://console.aws.amazon.com/ecr/private-registry/repositories"
+  service="ecr"
+  label="Open ECR console"
+/>
 
-Not let's visualize the output of our pipeline run.
+Open the repository `retail-store-sample-ui` and inspect the image that has been pushed.
 
-We will provision an Application Load Balancer and configure it to route traffic to the Pods for the `ui` application.
+![Image 1](assets/ecr_image.webp)
+
+We can also verify that a Helm release has been installed in the cluster:
+
+```bash hook=deployment
+$ helm ls -n ui
+NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                                   APP VERSION
+ui      ui              1               2025-07-01 05:16:56.016555446 +0000 UTC deployed        retail-store-sample-ui-chart-0.8.5
+```
+
+Check the values used to configure it to see that our custom image repository and tag were used:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/automation/continuousdelivery/codepipeline/ci-ingress
-$ sleep 10 && kubectl get ingress ui -n ui
-NAME   CLASS   HOSTS   ADDRESS                                            PORTS   AGE
-ui     alb     *       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com   80      15s
+$ helm get values -n ui ui
+USER-SUPPLIED VALUES:
+image:
+  repository: 1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-store-sample-ui-sm7zww
+  tag: e37f1e7932270d24d7bd7583d484dc2a
 ```
 
-We will wait 2-5 minutes while the Application Load Balancer is provisioned and check the UI page using the URL of the ingress.
-
-```bash test=false
-$ export UI_URL=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
-$ wait-for-lb $UI_URL
-```
-
-The UI will look like following:
-
-![Image 4](assets/ui_first_change.webp)
-
-### Adding a change in source application
-
-Now let's make a code change to the home page.
-
-We will remove the suffix `, minus the paperwork` in the home page header.
+This will have resulted in a deployment:
 
 ```bash
-$ sed -i 's|Everything a secret agent needs, minus the paperwork|Everything a secret agent needs|' ~/environment/cd/src/ui/src/main/resources/templates/home.html
-$ git -C ~/environment/cd add .
-$ git -C ~/environment/cd commit -am "Change home page layout."
-$ git -C ~/environment/cd push --set-upstream origin master
+$ kubectl get deployment -n ui
+NAME   READY   UP-TO-DATE   AVAILABLE   AGE
+ui     1/1     1            1           42s
 ```
 
-It will take CodePipeline 6-8 minutes to deploy all changes to EKS action.
+The pod will be using the image built in the pipeline:
 
-```bash timeout=600
-$ while [[ ! "$(aws codepipeline list-pipeline-executions --pipeline-name ${EKS_CLUSTER_NAME}-retail-store-cd --query 'pipelineExecutionSummaries[0].sourceRevisions[0].revisionSummary' --output text)" == *"layout." ]]; do echo "Waiting for pipeline to start ..."; sleep 10; done && echo "Pipeline started."
-$ while [[ "$(aws codepipeline list-pipeline-executions --pipeline-name ${EKS_CLUSTER_NAME}-retail-store-cd --query 'pipelineExecutionSummaries[0].status' --output text)" != "Succeeded" ]]; do echo "Waiting for pipeline execution to finish ..."; sleep 10; done && echo "Pipeline execution successful."
+```bash
+$ kubectl get deployment -n ui ui -o json | jq -r '.spec.template.spec.containers[0].image'
+1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-store-sample-ui-sm7zww:e37f1e7932270d24d7bd7583d484dc2a
 ```
 
-The UI will look like following after the pipeline run:
+We can also click the `deploy_eks` action to view more details such as the logs:
 
-![Image 5](assets/ui_second_change.webp)
-
-You can view the history of changes to the source application in execution history.
-
-![Image 6](assets/change_history.webp)
+![Pipeline deploy detail](assets/pipeline-deploy-detail.webp)

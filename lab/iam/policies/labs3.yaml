@@ -70,3 +70,16 @@ Statement:
     Resource:
       - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*${Env}*
       - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:*${Env}*
+  - Effect: Allow
+    Action:
+      - cloudformation:ListStacks
+      - cloudformation:DescribeStacks
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - cloudformation:CreateStack
+      - cloudformation:DeleteStack
+      - cloudformation:TagResource
+      - cloudformation:UntagResource
+    Resource:
+      - !Sub arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${Env}*

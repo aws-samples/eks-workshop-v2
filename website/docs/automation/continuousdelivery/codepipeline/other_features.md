@@ -1,6 +1,6 @@
 ---
 title: "Features of CodePipeline"
-sidebar_position: 3
+sidebar_position: 40
 ---
 
 ### Other features of EKS action in CodePipeline

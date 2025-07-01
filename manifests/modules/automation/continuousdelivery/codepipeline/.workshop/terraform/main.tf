@@ -33,7 +33,7 @@ resource "aws_ecr_repository" "ecr_ui" {
 }
 
 resource "aws_s3_bucket" "source_bucket" {
-  bucket = "${var.addon_context.eks_cluster_id}-${data.aws_caller_identity.current.account_id}-retail-store-sample-ui"
+  bucket        = "${var.addon_context.eks_cluster_id}-${data.aws_caller_identity.current.account_id}-retail-store-sample-ui"
   force_destroy = true
 }
 
@@ -46,7 +46,7 @@ resource "aws_s3_bucket_versioning" "versioning" {
 }
 
 resource "aws_s3_bucket_notification" "s3_notify_eventbridge" {
-  bucket = aws_s3_bucket.source_bucket.id
+  bucket      = aws_s3_bucket.source_bucket.id
   eventbridge = true
 }
 
@@ -54,23 +54,47 @@ resource "aws_cloudwatch_event_rule" "s3_trigger_pipeline" {
   name        = aws_s3_bucket.source_bucket.bucket
   description = "Trigger CodePipeline when a file is uploaded to S3"
   event_pattern = jsonencode({
-    source = ["aws.s3"],
+    source      = ["aws.s3"],
     detail-type = ["Object Created"],
     detail = {
       bucket = {
         name = [aws_s3_bucket.source_bucket.id]
       },
       object = {
-        key = ["my-repo/refs/heads/master/repo.zip"]
+        key = ["my-repo/refs/heads/main/repo.zip"]
       }
     }
   })
 }
 
+// Terraform does not support all the parameters needed for this pipeline
+// So use CloudFormation instead
+resource "aws_cloudformation_stack" "eks_workshop_pipeline" {
+  name          = "${var.addon_context.eks_cluster_id}-pipeline-stack"
+  template_body = file("${path.module}/pipeline.yaml")
+
+  parameters = {
+    PipelineName      = "${var.addon_context.eks_cluster_id}-retail-store-cd"
+    ServiceRoleArn    = aws_iam_role.codepipeline_role.arn
+    ArtifactBucket    = aws_s3_bucket.build_artifact_bucket.bucket
+    KMSKeyId          = aws_kms_key.artifact_encryption_key.arn
+    SourceBucket      = aws_s3_bucket.source_bucket.bucket
+    ECRRepositoryName = aws_ecr_repository.ecr_ui.id
+    EKSClusterName    = var.addon_context.eks_cluster_id
+  }
+
+  capabilities = ["CAPABILITY_IAM"]
+}
+
+locals {
+  pipeline_name = aws_cloudformation_stack.eks_workshop_pipeline.outputs["PipelineName"]
+  pipeline_arn  = aws_cloudformation_stack.eks_workshop_pipeline.outputs["PipelineArn"]
+}
+
 resource "aws_cloudwatch_event_target" "codepipeline_target" {
-  rule      = aws_cloudwatch_event_rule.s3_trigger_pipeline.name
-  arn       = aws_codepipeline.codepipeline.arn
-  role_arn  = aws_iam_role.eventbridge_invoke_pipeline.arn
+  rule     = aws_cloudwatch_event_rule.s3_trigger_pipeline.name
+  arn      = local.pipeline_arn
+  role_arn = aws_iam_role.eventbridge_invoke_pipeline.arn
 }
 
 resource "aws_iam_role" "eventbridge_invoke_pipeline" {
@@ -94,9 +118,9 @@ resource "aws_iam_role_policy" "invoke_pipeline_policy" {
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
-      Effect = "Allow",
-      Action = "codepipeline:StartPipelineExecution",
-      Resource = aws_codepipeline.codepipeline.arn
+      Effect   = "Allow",
+      Action   = "codepipeline:StartPipelineExecution",
+      Resource = local.pipeline_arn
     }]
   })
 }
@@ -220,80 +244,7 @@ resource "aws_kms_key" "artifact_encryption_key" {
   deletion_window_in_days = 10
 }
 
-resource "aws_codepipeline" "codepipeline" {
-  name          = "${var.addon_context.eks_cluster_id}-retail-store-cd"
-  role_arn      = aws_iam_role.codepipeline_role.arn
-  pipeline_type = "V2"
 
-  artifact_store {
-    location = aws_s3_bucket.build_artifact_bucket.bucket
-    type     = "S3"
-
-    encryption_key {
-      id   = aws_kms_key.artifact_encryption_key.arn
-      type = "KMS"
-    }
-  }
-
-  stage {
-    name = "Source"
-
-    action {
-      name             = "Source"
-      category         = "Source"
-      owner            = "AWS"
-      provider         = "S3"
-      version          = "1"
-      output_artifacts = ["source"]
-      namespace        = "Source"
-
-      configuration = {
-        S3Bucket             = aws_s3_bucket.source_bucket.bucket
-        S3ObjectKey          = "my-repo/refs/heads/master/repo.zip"
-        PollForSourceChanges = "false"
-      }
-    }
-  }
-
-  stage {
-    name = "Build"
-
-    action {
-      name            = "build_image"
-      category        = "Build"
-      owner           = "AWS"
-      provider        = "ECRBuildAndPublish"
-      input_artifacts = ["source"]
-      version         = "1"
-      run_order       = 1
-
-      configuration = {
-        DockerFilePath    = "src/ui"
-        ECRRepositoryName = aws_ecr_repository.ecr_ui.id
-      }
-    }
-  }
-
-  stage {
-    name = "Deploy"
-
-    action {
-      name            = "deploy_eks"
-      category        = "Deploy"
-      owner           = "AWS"
-      provider        = "EKS"
-      input_artifacts = ["source"]
-      version         = "1"
-      run_order       = 1
-
-      configuration = {
-        ClusterName   = var.addon_context.eks_cluster_id
-        ManifestFiles = "app/ui/deployment.yaml"
-        Namespace     = "ui"
-      }
-    }
-  }
-}
 
 module "iam_assumable_role_ui" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
@@ -342,4 +293,41 @@ module "eks_blueprints_addons" {
   oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
 
   observability_tag = null
+}
+
+resource "kubernetes_manifest" "ui_alb" {
+  depends_on = [module.eks_blueprints_addons]
+
+  manifest = {
+    "apiVersion" = "networking.k8s.io/v1"
+    "kind"       = "Ingress"
+    "metadata" = {
+      "name"      = "ui"
+      "namespace" = "ui"
+      "annotations" = {
+        "alb.ingress.kubernetes.io/scheme"           = "internet-facing"
+        "alb.ingress.kubernetes.io/target-type"      = "ip"
+        "alb.ingress.kubernetes.io/healthcheck-path" = "/actuator/health/liveness"
+      }
+    }
+    "spec" = {
+      ingressClassName = "alb",
+      "rules" = [{
+        "http" = {
+          paths = [{
+            path     = "/"
+            pathType = "Prefix"
+            "backend" = {
+              service = {
+                name = "ui"
+                port = {
+                  number = 80
+                }
+              }
+            }
+          }]
+        }
+      }]
+    }
+  }
 }
