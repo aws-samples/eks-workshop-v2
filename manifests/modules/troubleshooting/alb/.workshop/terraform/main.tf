@@ -58,7 +58,7 @@ resource "null_resource" "break_public_subnet" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.16.2"
+  version = "1.21.0"
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
@@ -82,7 +82,7 @@ module "eks_blueprints_addons" {
 
 # create a new policy from json file 
 resource "aws_iam_policy" "issue" {
-  name   = "issue"
+  name   = "eksworkshopissue"
   path   = "/"
   policy = file("${path.module}/template/other_issue.json")
 }
@@ -120,4 +120,3 @@ resource "null_resource" "kustomize_app" {
 
   depends_on = [aws_iam_role_policy_attachment.issue_policy_attachment]
 }
-

@@ -38,6 +38,7 @@ Let's update our `ui` deployment to bind its pods to our tainted managed node gr
 modules/fundamentals/mng/graviton/nodeselector-wo-toleration/deployment.yaml
 Deployment/ui
 ```
+In the above manifest, the `nodeSelector` specifies that pods should only be scheduled on nodes with the label `kubernetes.io/arch: arm64`. This `nodeSelector` effectively restricts the UI pods to run only on ARM64 architecture nodes (Graviton nodes).
 
 To apply the Kustomize changes run the following command:
 
@@ -96,6 +97,12 @@ To fix this, we need to add a toleration. Let's ensure our deployment and associ
 modules/fundamentals/mng/graviton/nodeselector-w-toleration/deployment.yaml
 Deployment/ui
 ```
+This YAML builds upon the previous configuration by adding a toleration. The `tolerations` section allows the pod to be scheduled on nodes with the `frontend` taint as explained below:
+- `key: "frontend"` specifies the taint key to tolerate.
+- `operator: "Exists"` means the pod will tolerate the taint regardless of its value.
+- `effect: "NoExecute"` matches the taint effect, allowing the pod to run on nodes with this taint.
+
+The nodeSelector remains the same, ensuring pods run only on ARM64 architecture nodes. To apply the Kustomize changes run the following command:
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/mng/graviton/nodeselector-w-toleration/

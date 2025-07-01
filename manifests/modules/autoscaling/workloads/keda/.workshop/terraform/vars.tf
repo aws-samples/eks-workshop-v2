@@ -45,5 +45,5 @@ variable "keda_chart_version" {
   description = "The chart version of keda to use"
   type        = string
   # renovate-helm: depName=keda registryUrl=https://kedacore.github.io/charts
-  default = "2.16.1"
+  default = "2.17.1"
 }

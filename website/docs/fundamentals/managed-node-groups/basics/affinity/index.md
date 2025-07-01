@@ -39,6 +39,14 @@ The following kustomization adds an `affinity` section to the **checkout** deplo
 modules/fundamentals/affinity/checkout/checkout.yaml
 Deployment/checkout
 ```
+In the above manifest, the `podAffinity` section ensures:
+   - Checkout pods will only be scheduled on nodes where Redis pods are running.
+   - This is enforced by matching pods with label `app.kubernetes.io/component: redis`.
+   - The `topologyKey: kubernetes.io/hostname` ensures this rule applies at the node level.
+
+The `podAntiAffinity` section ensures:
+   - Only one checkout pod runs per node.
+   - This is achieved by preventing pods with labels `app.kubernetes.io/component: service` and `app.kubernetes.io/instance: checkout` from running on the same node.
 
 To make the change, run the following command to modify the **checkout** deployment in your cluster:
 
@@ -72,7 +80,7 @@ checkout-6c7c9cdf4f-wwkm4
 checkout-redis-6cfd7d8787-gw59j ip-10-42-10-120.us-west-2.compute.internal
 ```
 
-In this example, the first `checkout` pod runs on the same pod as the existing checkout-redis pod, as it fulfills the **podAffinity** rule we set. The second one is still pending, because the **podAntiAffinity** rule we defined does not allow two checkout pods to get started on the same node. As the second node doesn't have a `checkout-redis` pod running, it will stay pending.
+In this example, the first `checkout` pod runs on the same node as the existing `checkout-redis` pod, as it fulfills the **podAffinity** rule we set. The second one is still pending, because the **podAntiAffinity** rule we defined does not allow two `checkout` pods to get started on the same node. As the second node doesn't have a `checkout-redis` pod running, it will stay pending.
 
 Next, we'll scale the `checkout-redis` to two instances for our two nodes, but first let's modify the `checkout-redis` deployment policy to spread out our `checkout-redis` instances across each node. To do this, we'll simply need to create a **podAntiAffinity** rule.
 
@@ -80,6 +88,10 @@ Next, we'll scale the `checkout-redis` to two instances for our two nodes, but f
 modules/fundamentals/affinity/checkout-redis/checkout-redis.yaml
 Deployment/checkout-redis
 ```
+In the above manifest, the `podAntiAffinity` section ensures:
+   - Redis pods are distributed across different nodes.
+   - This is enforced by preventing multiple pods with label `app.kubernetes.io/component: redis` from running on the same node.
+   - The `topologyKey: kubernetes.io/hostname` ensures this rule applies at the node level.
 
 Apply it with the following command:
 

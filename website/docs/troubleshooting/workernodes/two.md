@@ -28,7 +28,7 @@ No resources found
 Let's examine the EKS managed node group configuration to verify its status and configuration:
 
 ```bash
-$ aws eks describe-nodegroup --cluster-name eks-workshop --nodegroup-name new_nodegroup_2 --query 'nodegroup.{nodegroupName:nodegroupName,nodegroupArn:nodegroupArn,clusterName:clusterName,status:status,capacityType:capacityType,scalingConfig:scalingConfig,health:{issues:health.issues}}'
+$ aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_2 --query 'nodegroup.{nodegroupName:nodegroupName,nodegroupArn:nodegroupArn,clusterName:clusterName,status:status,capacityType:capacityType,scalingConfig:scalingConfig,health:{issues:health.issues}}'
 ```
 
 Output:
@@ -72,9 +72,15 @@ Key observations from the output:
 
 Let's check the ASG activities to understand the instance launch status:
 
-:::info
-**Note:** _For your convenience Autoscaling Group name is as env variable `$NEW_NODEGROUP_2_ASG_NAME`._
-:::
+#### 3.1. Identify Nodegroup's Auto Scaling Group Name
+
+Run the below command to capture Nodegroup Autoscale Group name as NEW_NODEGROUP_2_ASG_NAME.
+
+```bash
+$ NEW_NODEGROUP_2_ASG_NAME=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_1 --query 'nodegroup.resources.autoScalingGroups[0].name' --output text)
+echo $NEW_NODEGROUP_2_ASG_NAME
+```
+#### 4.2. Check the AutoScaling Activities
 
 ```bash
 $ aws autoscaling describe-scaling-activities --auto-scaling-group-name ${NEW_NODEGROUP_2_ASG_NAME} --query 'Activities[*].{AutoScalingGroupName:AutoScalingGroupName,Description:Description,Cause:Cause,StatusCode:StatusCode}'

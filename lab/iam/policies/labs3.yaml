@@ -83,3 +83,17 @@ Statement:
       - cloudformation:UntagResource
     Resource:
       - !Sub arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${Env}*
+  - Effect: Allow
+    Action:
+      - route53:CreateHostedZone
+      - route53:DeleteHostedZone
+      - route53:AssociateVPCWithHostedZone
+      - route53:DisassociateVPCFromHostedZone
+      - route53:GetChange
+      - route53:GetHostedZone
+      - route53:ListResourceRecordSets
+      - route53:ListTagsForResource
+      - route53:ChangeTagsForResource
+      - route53:ChangeResourceRecordSets
+      - route53:GetDNSSEC
+    Resource: ["*"]

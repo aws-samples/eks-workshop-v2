@@ -1,19 +1,9 @@
 ---
-title: "Deploying The Mistral-7B-Instruct-v0.3 Chat Model on Ray Serve"
+title: "Deploying with Ray Serve"
 sidebar_position: 50
 ---
 
-With all the node pools provisioned, we can now proceed to deploy Mistral-7B-Instruct-v0.3 chatbot infrastructure.
-
-Let's begin by deploying the `ray-service-mistral.yaml` file:
-
-```bash wait=5
-$ kubectl apply -k ~/environment/eks-workshop/modules/aiml/chatbot/ray-service-neuron-mistral-chatbot
-namespace/mistral created
-rayservice.ray.io/mistral created
-```
-
-### Creating the Ray Service Pods for Inference
+With all the node pools provisioned, we can now proceed to deploy the Mistral-7B-Instruct-v0.3 inference infrastructure.
 
 The `ray-service-mistral.yaml` file defines the Kubernetes configuration for deploying the Ray Serve service for the mistral7bv0.3 AI chatbot:
 
@@ -24,10 +14,18 @@ manifests/modules/aiml/chatbot/ray-service-neuron-mistral-chatbot/ray_service_mi
 This configuration accomplishes the following:
 
 1. Creates a Kubernetes namespace named `mistral` for resource isolation
-2. Deploys a RayService named `rayservice.ray.io/mistral` that utilizes a Python script to create the Ray Serve component
+2. Deploys a RayService named `rayservice.ray.io/mistral` that utilizes a Python script to create the Ray Serve components
 3. Provisions a Head Pod and Worker Pods to pull Docker images from Amazon Elastic Container Registry (ECR)
 
-After applying the configurations, we'll monitor the progress of the head and worker pods:
+Let's begin by deploying the `ray-service-mistral.yaml` file:
+
+```bash wait=5
+$ kubectl apply -k ~/environment/eks-workshop/modules/aiml/chatbot/ray-service-neuron-mistral-chatbot
+namespace/mistral created
+rayservice.ray.io/mistral created
+```
+
+After applying the configuration we'll monitor the progress of the head and worker pods:
 
 ```bash wait=5 test=false
 $ kubectl get pod -n mistral --watch
@@ -47,7 +45,7 @@ mistral-raycluster-xxhsj-worker-group-worker-b8wqf   1/1     Running            
 It may take up to 5-8 minutes for both pods to be ready.
 :::
 
-We can also use the following command to wait for the pods to get ready:
+We can also use the following command to wait for the pods to become ready:
 
 ```bash wait=5 timeout=900
 $ for i in {1..2}; do kubectl wait pod --all --for=condition=Ready --namespace=mistral --timeout=10m 2>&1 | grep -v "Error from server (NotFound)" && break || { echo "Attempt $i: Waiting for all pods..."; kubectl get pods -n mistral; sleep 20; }; done
@@ -71,10 +69,11 @@ NAME                                         DESIRED WORKERS   AVAILABLE WORKERS
 raycluster.ray.io/mistral-raycluster-xxhsj   1                 1                   6      36Gi     0      ready    5m36s
 
 NAME                        SERVICE STATUS                NUM SERVE ENDPOINTS
-rayservice.ray.io/mistral   WaitForServeDeploymentReady   
+rayservice.ray.io/mistral   WaitForServeDeploymentReady
 
 ```
-Note that the service status is `WaitForServeDeploymentReady`. This indicates that Ray is still working to get the model deployed.
+
+Note that the service status is `WaitForServeDeploymentReady`. This indicates that Ray is still working to deploy the model.
 
 :::caution
 Configuring RayService may take up to 10 minutes.
