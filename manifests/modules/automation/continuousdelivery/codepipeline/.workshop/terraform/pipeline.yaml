@@ -1,0 +1,111 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "CloudFormation template to recreate eks-workshop-retail-store-cd CodePipeline"
+
+Parameters:
+  PipelineName:
+    Type: String
+    Description: Name of the CodePipeline
+
+  ServiceRoleArn:
+    Type: String
+    Description: IAM role ARN for CodePipeline service
+
+  ArtifactBucket:
+    Type: String
+    Description: S3 bucket for pipeline artifacts
+
+  KMSKeyId:
+    Type: String
+    Description: KMS key for artifact encryption
+
+  SourceBucket:
+    Type: String
+    Description: S3 bucket containing source code
+
+  ECRRepositoryName:
+    Type: String
+    Description: ECR repository name for container images
+
+  EKSClusterName:
+    Type: String
+    Description: EKS cluster name for deployment
+
+Resources:
+  CodePipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: !Ref PipelineName
+      RoleArn: !Ref ServiceRoleArn
+      PipelineType: V2
+      ExecutionMode: SUPERSEDED
+      ArtifactStore:
+        Type: S3
+        Location: !Ref ArtifactBucket
+        EncryptionKey:
+          Id: !Ref KMSKeyId
+          Type: KMS
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: Source
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              RunOrder: 1
+              Configuration:
+                PollForSourceChanges: "false"
+                S3Bucket: !Ref SourceBucket
+                S3ObjectKey: my-repo/refs/heads/main/repo.zip
+              OutputArtifacts:
+                - Name: source
+              Namespace: Source
+
+        - Name: Build
+          Actions:
+            - Name: build_image
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: ECRBuildAndPublish
+                Version: "1"
+              RunOrder: 1
+              Configuration:
+                ECRRepositoryName: !Ref ECRRepositoryName
+                ImageTags: "#{Source.ETag}"
+              InputArtifacts:
+                - Name: source
+
+        - Name: Deploy
+          Actions:
+            - Name: deploy_eks
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: EKS
+                Version: "1"
+              RunOrder: 1
+              Region: us-west-2
+              Configuration:
+                ClusterName: !Ref EKSClusterName
+                HelmChartLocation: chart
+                HelmReleaseName: ui
+                HelmValuesFiles: ../values.yaml
+                Namespace: ui
+              EnvironmentVariables:
+                - Name: IMAGE_REPOSITORY
+                  Value: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepositoryName}"
+                - Name: IMAGE_TAG
+                  Value: "#{Source.ETag}"
+              InputArtifacts:
+                - Name: source
+
+Outputs:
+  PipelineName:
+    Description: Name of the created CodePipeline
+    Value: !Ref CodePipeline
+
+  PipelineArn:
+    Description: ARN of the created CodePipeline
+    Value: !Sub "arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${CodePipeline}"
