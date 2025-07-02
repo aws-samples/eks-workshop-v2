@@ -37,6 +37,9 @@ const config = {
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.png",
   noIndex: process.env.ENABLE_INDEX !== "1",
+  customFields: {
+    showNotification: process.env.SHOW_NOTIFICATION === "1",
+  },
 
   organizationName: "aws-samples",
   projectName: "eks-workshop-v2",
