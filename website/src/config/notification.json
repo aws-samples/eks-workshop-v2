@@ -1,5 +1,5 @@
 {
-  "enabled": false,
+  "enabled": true,
   "prefix": "Live:",
   "text": "Hands-on EKS Workshop Series -",
   "linkText": "Register",
