@@ -8,6 +8,7 @@ cd $SCRIPT_DIR/..
 
 export ENABLE_INDEX="1"
 export MANIFESTS_REF="$BRANCH"
+export SHOW_NOTIFICATION="1"
 
 yarn install
 yarn workspace website clear
