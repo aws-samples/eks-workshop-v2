@@ -31,7 +31,7 @@ resource "aws_eks_addon" "pod_identity" {
 
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "20.36.0"
+  version = "20.37.1"
 
   cluster_name          = var.addon_context.eks_cluster_id
   enable_v1_permissions = true
