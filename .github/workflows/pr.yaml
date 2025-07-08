@@ -69,7 +69,7 @@ jobs:
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v4
       - name: Setup terraform-docs
-        uses: jaxxstorm/action-install-gh-release@v1.14.0
+        uses: jaxxstorm/action-install-gh-release@v2.1.0
         with:
           repo: terraform-docs/terraform-docs
       - name: Yarn install
@@ -109,7 +109,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check for content label
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const labels = context.payload.pull_request.labels;

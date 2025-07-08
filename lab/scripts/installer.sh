@@ -3,33 +3,33 @@
 set -e
 
 # renovate: depName=kubernetes/kubernetes
-kubectl_version='1.31.8'
+kubectl_version='1.31.10'
 
 # renovate: depName=helm/helm
-helm_version='3.17.3'
+helm_version='3.18.3'
 
 # renovate: depName=eksctl-io/eksctl
-eksctl_version='0.207.0'
+eksctl_version='0.210.0'
 
 kubeseal_version='0.18.4'
 
 # renovate: depName=mikefarah/yq
-yq_version='4.45.2'
+yq_version='4.45.4'
 
 # renovate: depName=fluxcd/flux2
-flux_version='2.5.1'
+flux_version='2.6.3'
 
 # renovate: depName=argoproj/argo-cd
-argocd_version='2.14.11'
+argocd_version='2.14.15'
 
 # renovate: depName=hashicorp/terraform
-terraform_version='1.11.4'
+terraform_version='1.12.2'
 
 # renovate: depName=aws/amazon-ec2-instance-selector
 ec2_instance_selector_version='2.4.1'
 
 # renovate: depName=hatoo/oha
-oha_version='1.8.0'
+oha_version='1.9.0'
 
 download () {
   url=$1
@@ -117,6 +117,9 @@ tar zxf flux.tar.gz
 chmod +x flux
 mv ./flux /usr/local/bin
 rm -rf flux.tar.gz
+
+# git-remote
+pip install git-remote-s3
 
 # terraform
 download "https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_${arch_name}.zip" "terraform.zip"

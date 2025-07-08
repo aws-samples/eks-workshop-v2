@@ -58,7 +58,7 @@ $ kubectl -n other get opentelemetrycollector adot -o yaml
 Let's break this down in to sections to get a better understanding of what has been deployed. This is the OpenTelemetry collector configuration:
 
 ```bash
-$ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.config}' | yq
+$ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.config}' | jq
 ```
 
 This is configuring an OpenTelemetry pipeline with the following structure:
