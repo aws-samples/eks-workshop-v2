@@ -6,7 +6,7 @@ set -e
 kubectl_version='1.31.10'
 
 # renovate: depName=helm/helm
-helm_version='3.18.3'
+helm_version='3.18.4'
 
 # renovate: depName=eksctl-io/eksctl
 eksctl_version='0.210.0'
@@ -17,7 +17,7 @@ kubeseal_version='0.18.4'
 yq_version='4.45.4'
 
 # renovate: depName=fluxcd/flux2
-flux_version='2.6.3'
+flux_version='2.6.4'
 
 # renovate: depName=argoproj/argo-cd
 argocd_version='2.14.15'
