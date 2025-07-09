@@ -20,7 +20,7 @@ module "eks_blueprints_addons" {
 
 module "iam_assumable_role_keda" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "5.58.0"
+  version                       = "5.59.0"
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-keda"
   provider_url                  = var.addon_context.eks_oidc_issuer_url
