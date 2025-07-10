@@ -104,13 +104,14 @@ The environment created will also have AWS credentials injected, so you will imm
 Running `make ide` will launch the same code-server IDE that is created in Cloud Formation but running in a local container. This is accessible in your browser at `http://localhost:8889`. You will be prompted for a password, this is auto-generated each time and you can find it the in command output (see below):
 
 ```text
+[...]
 Installing extensions...
 Installing extension 'redhat.vscode-yaml'...
 Extension 'redhat.vscode-yaml' v1.18.0 was successfully installed.
 Installing extensions...
 Installing extension 'ms-kubernetes-tools.vscode-kubernetes-tools'...
 Extension 'ms-kubernetes-tools.vscode-kubernetes-tools' v1.3.25 was successfully installed.
-Added new context arn:aws:eks:us-west-2:785487814634:cluster/eks-workshop to /home/ec2-user/.kube/config
+Added new context arn:aws:eks:us-west-2:1234567890:cluster/eks-workshop to /home/ec2-user/.kube/config
 --------------------------------------------------------
 Starting IDE with password GpkmEJXpzE1Is4m2
 --------------------------------------------------------
