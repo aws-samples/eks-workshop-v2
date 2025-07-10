@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: assets
+  name: nginx
 spec:
   template:
     spec:
       containers:
-        - name: assets
+        - name: nginx
           securityContext:
             runAsNonRoot: true
             runAsUser: 999

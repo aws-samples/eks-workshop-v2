@@ -5,5 +5,5 @@ metadata:
   namespace: catalog
 type: Opaque
 data:
-  password: ZGVmYXVsdF9wYXNzd29yZA==
-  username: Y2F0YWxvZ191c2Vy
+  RETAIL_CATALOG_PERSISTENCE_USER: "Y2F0YWxvZw=="
+  RETAIL_CATALOG_PERSISTENCE_PASSWORD: "ZFltTmZXVjR1RXZUem9GdQ=="

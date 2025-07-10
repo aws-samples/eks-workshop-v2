@@ -10,8 +10,8 @@ spec:
   mountOptions:
     - allow-delete
     - allow-other
-    - uid=999
-    - gid=999
+    - uid=1000
+    - gid=1000
     - region=$AWS_REGION
   csi:
     driver: s3.csi.aws.com
@@ -23,7 +23,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: s3-claim
-  namespace: assets
+  namespace: ui
 spec:
   accessModes:
     - ReadWriteMany
