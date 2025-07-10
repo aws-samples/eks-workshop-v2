@@ -14,7 +14,7 @@ eksctl_version='0.210.0'
 kubeseal_version='0.18.4'
 
 # renovate: depName=mikefarah/yq
-yq_version='4.45.4'
+yq_version='4.46.1'
 
 # renovate: depName=fluxcd/flux2
 flux_version='2.6.4'
