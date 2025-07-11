@@ -338,36 +338,9 @@ Resources:
                   bind-addr: 127.0.0.1:8889
                   EOF
 
-                  mkdir -p ~/.local/share/code-server/User
-                  touch ~/.local/share/code-server/User/settings.json
-                  tee ~/.local/share/code-server/User/settings.json <<EOF
-                  {
-                    "extensions.autoUpdate": false,
-                    "extensions.autoCheckUpdates": false,
-                    "security.workspace.trust.enabled": false,
-                    "task.allowAutomaticTasks": "on",
-                    "telemetry.telemetryLevel": "off",
-                    "workbench.startupEditor": "terminal"
-                  }
-                  EOF
-
-                  mkdir -p ~/environment/.vscode
-                  tee ~/environment/.vscode/settings.json <<EOF
-                  {
-                    "files.exclude": {
-                      "**/.*": true
-                    }
-                  }
-                  EOF
-
-                  echo '{ "query": { "folder": "/home/ec2-user/environment" } }' > ~/.local/share/code-server/coder.json
-
                   curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/setup.sh | bash
 
                   curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/banner.sh | bash
-
-                  code-server --install-extension ms-kubernetes-tools.vscode-kubernetes-tools --force || true
-                  code-server --install-extension redhat.vscode-yaml --force || true
 
                   EOT
 
@@ -466,7 +439,7 @@ Resources:
       ManagedPolicyName: !Sub ${AWS::StackName}-labs3
       PolicyDocument:
         file: ./iam/policies/labs3.yaml
-  
+
   EksWorkshopLabsPolicy4:
     Type: AWS::IAM::ManagedPolicy
     DependsOn:

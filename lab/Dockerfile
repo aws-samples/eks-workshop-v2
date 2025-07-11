@@ -11,7 +11,11 @@ ADD scripts/installer.sh /tmp/installer.sh
 
 RUN bash /tmp/installer.sh
 
-ADD scripts/entrypoint.sh /entrypoint.sh
+COPY scripts/code-server.sh /tmp/code-server.sh
+
+RUN bash /tmp/code-server.sh
+
+COPY --chmod=755 scripts/entrypoint.sh /entrypoint.sh
 
 COPY --chmod=755 bin/* /usr/local/bin
 
@@ -25,4 +29,4 @@ RUN mkdir -p ~/environment
 
 WORKDIR /home/ec2-user/environment
 
-ENTRYPOINT ["bash", "/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
