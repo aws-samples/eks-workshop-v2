@@ -88,20 +88,40 @@ make destroy-infrastructure
 
 ### Simulating the workshop environment
 
-When in the process of creating the content its likely you'll need to be fairly interactive in testing commands etc. During a real workshop users would do this on the Cloud9 IDE, but for our purposes for developing content quickly this is a poor experience because it is designed to refresh content automatically from GitHub. As a result it is recommended to _NOT use the Cloud9 IDE_ created by the Cloud Formation in this repository and instead use the flow below.
+When in the process of creating the content its likely you'll need to be fairly interactive in testing commands etc. During a real workshop users would do this on the cloud IDE, but for our purposes for developing content quickly this is a poor experience because it is designed to refresh content automatically from GitHub. As a result it is recommended to _NOT use the code-server IDE_ created by the Cloud Formation in this repository and instead use the flow below.
 
-The repository provides a mechanism to easily create an interactive shell with access to the EKS cluster created by `make create-infrastructure`. This shell will automatically pick up changes to the content on your local machine and mirrors the Cloud9 used in a real workshop in terms of tools and setup. As such to use this utility you must have already run `make create-infrastructure`.
+The repository provides a mechanism to easily create an interactive shell with access to the EKS cluster created by `make create-infrastructure`. This environment will automatically pick up changes to the content on your local machine and mirrors the Cloud9 used in a real workshop in terms of tools and setup. As such to use this utility you must have already run `make create-infrastructure`.
 
-The shell session created will have AWS credentials injected, so you will immediately be able to use the `aws` CLI and `kubectl` commands with no further configuration.
+The environment created will also have AWS credentials injected, so you will immediately be able to use the `aws` CLI and `kubectl` commands with no further configuration.
 
 > [!NOTE]
-> If using [finch CLI](https://github.com/runfinch/finch) instead of `docker` CLI you need to set two environment variable `CONTAINER_CLI` or run `make` with the variable set like `CONTAINER_CLI=finch make shell` here how to set the variable in the terminal session for every command.
+> If using [finch CLI](https://github.com/runfinch/finch) instead of `docker` CLI you need to set two environment variable `CONTAINER_CLI` or run `make` with the variable set like `CONTAINER_CLI=finch make ide` here how to set the variable in the terminal session for every command.
 >
 > ```bash
 > export CONTAINER_CLI=finch
 > ```
 
-Run `make shell`:
+Running `make ide` will launch the same code-server IDE that is created in Cloud Formation but running in a local container. This is accessible in your browser at `http://localhost:8889`. You will be prompted for a password, this is auto-generated each time and you can find it the in command output (see below):
+
+```text
+[...]
+Installing extensions...
+Installing extension 'redhat.vscode-yaml'...
+Extension 'redhat.vscode-yaml' v1.18.0 was successfully installed.
+Installing extensions...
+Installing extension 'ms-kubernetes-tools.vscode-kubernetes-tools'...
+Extension 'ms-kubernetes-tools.vscode-kubernetes-tools' v1.3.25 was successfully installed.
+Added new context arn:aws:eks:us-west-2:1234567890:cluster/eks-workshop to /home/ec2-user/.kube/config
+--------------------------------------------------------
+Starting IDE with password GpkmEJXpzE1Is4m2
+--------------------------------------------------------
+[2025-07-10T23:33:58.011Z] info  code-server 4.101.2 aff005e19626ac6802223713fa569e743c125725
+[2025-07-10T23:33:58.014Z] info  Using user-data-dir /home/ec2-user/.local/share/code-server
+[2025-07-10T23:33:58.022Z] info  Using config file /home/ec2-user/.config/code-server/config.yaml
+[2025-07-10T23:33:58.022Z] info  HTTP server listening on http://0.0.0.0:8889/
+```
+
+Alternatively if you want a simpler shell experience you can run `make shell`. This has the same primary features as `make ide` but it does not provide the web IDE:
 
 ```bash
 ➜  eks-workshop-v2 git:(main) ✗ make shell

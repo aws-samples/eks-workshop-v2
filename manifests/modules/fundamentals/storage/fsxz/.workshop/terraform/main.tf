@@ -1,7 +1,7 @@
 # Create FSxZ OIDC providers
 module "fsxz_oidc_providers" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.54.1"
+  version = "5.59.0"
 
   # Create prefixes
   role_name_prefix   = "${var.addon_context.eks_cluster_id}-fsxz-csi-"
@@ -34,6 +34,11 @@ data "aws_subnet" "private_fsxz" {
   tags = {
     Name = "*Private*A"
   }
+}
+
+data "aws_security_group" "default" {
+  vpc_id = data.aws_vpc.selected_fsxz.id
+  name   = "default"
 }
 
 # Create the FSxZ Security Group
@@ -71,6 +76,16 @@ resource "aws_security_group_rule" "fsxz-udp111" {
   type              = "ingress"
 
   cidr_blocks = [data.aws_vpc.selected_fsxz.cidr_block]
+}
+
+resource "aws_security_group_rule" "fsxz-tcp2049-default-sg" {
+  description              = "FSxZ TCP port 2049 rule from default SG"
+  from_port                = 2049
+  to_port                  = 2049
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.fsxz_sg.id
+  source_security_group_id = data.aws_security_group.default.id
+  type                     = "ingress"
 }
 
 resource "aws_security_group_rule" "fsxz-tcp2049" {
@@ -130,7 +145,7 @@ resource "aws_security_group_rule" "fsxz_egress" {
 
 module "iam_assumable_role_fsx" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "5.54.1"
+  version                       = "5.59.0"
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-fsxz"
   provider_url                  = var.addon_context.eks_oidc_issuer_url
@@ -138,4 +153,36 @@ module "iam_assumable_role_fsx" {
   oidc_fully_qualified_subjects = ["system:serviceaccount:kube-system:fsx-openzfs-csi-controller-sa"]
 
   tags = var.tags
+}
+
+module "fsx_openzfs" {
+  source     = "terraform-aws-modules/fsx/aws//modules/openzfs"
+  depends_on = [module.iam_assumable_role_fsx, aws_security_group.fsxz_sg, aws_security_group_rule.fsxz-tcp2049-default-sg]
+  name       = "${var.eks_cluster_id}-FSxZ"
+
+  # File system
+  automatic_backup_retention_days = 0
+  copy_tags_to_volumes            = true
+  copy_tags_to_backups            = true
+  deployment_type                 = "SINGLE_AZ_2"
+  create_security_group           = false
+  skip_final_backup               = true
+  storage_capacity                = 128
+  storage_type                    = "SSD"
+  subnet_ids                      = [data.aws_subnet.private_fsxz.id]
+  throughput_capacity             = 160
+  security_group_ids              = [aws_security_group.fsxz_sg.id]
+
+  root_volume_configuration = {
+    data_compression_type = "LZ4"
+    record_size_kib       = 128
+    nfs_exports = {
+      client_configurations = [
+        {
+          clients = data.aws_vpc.selected_fsxz.cidr_block
+          options = ["sync", "rw"]
+        }
+      ]
+    }
+  }
 }

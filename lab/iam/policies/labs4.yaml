@@ -3,18 +3,19 @@ Statement:
   - Effect: Allow
     Action:
       - fsx:CreateFileSystem
-      - fsx:DeleteFileSystem
-      - fsx:UpdateFileSystem
-      - fsx:DescribeFileSystems
       - fsx:CreateStorageVirtualMachine
+      - fsx:CreateVolume
+      - fsx:DeleteFileSystem
       - fsx:DeleteStorageVirtualMachine
-      - fsx:UpdateStorageVirtualMachine
-      - fsx:DescribeStorageVirtualMachines
+      - fsx:DeleteVolume
       - fsx:TagResource
       - fsx:UntagResource
+      - fsx:UpdateStorageVirtualMachine
+      - fsx:UpdateFileSystem
     Resource:
       - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:file-system/*
       - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:storage-virtual-machine/*
+      - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:volume/*
     Condition:
       StringLike:
         aws:ResourceTag/env:
@@ -23,6 +24,9 @@ Statement:
     Action:
       - fsx:DescribeFileSystems
       - fsx:DescribeStorageVirtualMachines
+      - fsx:DescribeVolumes
       - fsx:ListTagsForResource
-    Resource: ["*"]
-
+    Resource:
+      - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:file-system/*
+      - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:storage-virtual-machine/*
+      - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:volume/*

@@ -21,13 +21,13 @@
   "author": "",
   "license": "Apache-2.0",
   "devDependencies": {
-    "cspell": "^8.8.1",
-    "lint-staged": "^15.2.7",
+    "cspell": "^9.0.0",
+    "lint-staged": "^16.0.0",
     "markdown-link-check": "3.13.7",
-    "markdownlint-cli2": "^0.17.0",
-    "npm-run-all2": "^7.0.0",
+    "markdownlint-cli2": "^0.18.0",
+    "npm-run-all2": "^8.0.0",
     "prettier": "^3.2.5",
-    "prettier-plugin-sh": "^0.17.0"
+    "prettier-plugin-sh": "^0.18.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -43,7 +43,7 @@
       "markdownlint-cli2"
     ]
   },
-  "packageManager": "yarn@4.8.1",
+  "packageManager": "yarn@4.9.2",
   "dependencies": {
     "@docusaurus/core": "^3.7.0",
     "@docusaurus/module-type-aliases": "^3.7.0",

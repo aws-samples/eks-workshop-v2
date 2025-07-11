@@ -3,46 +3,14 @@ title: Dynamic provisioning using FSx for OpenZFS
 sidebar_position: 30
 ---
 
-With the Amazon FSx for OpenZFS file system StorageClass defined we can now dynamically provision the file system. Once the file system has deployed successfully we can use Kustomize to update the FSx for OpenZFS volume StorageClass and then dynamically provision a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and mount it.
+With the Amazon FSx for OpenZFS CSI driver installed you can now create the [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) for the data volume.
 
-First, let's examine the `fsxz-fs-pvc.yaml` file which defines a PersistentVolumeClaim to create the 128GiB Amazon FSx for OpenZFS file system from the fsx-fs-sc StorageClass we created earlier:
-
-```file
-manifests/modules/fundamentals/storage/fsxz/deployment-fs/fsxz-fs-pvc.yaml
-```
-
-Run the following to create the file system PVC and deploy the Amazon FSx for OpenZFS file system based on the StorageClass:
-
-```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/fsxz/deployment-fs
-namespace/assets unchanged
-serviceaccount/assets unchanged
-configmap/assets unchanged
-service/assets unchanged
-persistentvolumeclaim/fsxz-fs-pvc created
-deployment.apps/assets configured
-```
-
-Run the following to view the progress of the file system PVC deployment and creation of the FSx for OpenZFS file system. This will typically take 10-15 minutes and when complete the deployment will show as successfully rolled out:
-
-```bash timeout=1860
-$ kubectl rollout status --timeout=1800s deployment/assets -n assets
-Waiting for deployment "assets" rollout to finish: 1 out of 2 new replicas have been updated...
-Waiting for deployment "assets" rollout to finish: 1 out of 2 new replicas have been updated...
-Waiting for deployment "assets" rollout to finish: 1 out of 2 new replicas have been updated...
-Waiting for deployment "assets" rollout to finish: 1 old replicas are pending termination...
-Waiting for deployment "assets" rollout to finish: 1 old replicas are pending termination...
-deployment "assets" successfully rolled out
-```
-
-When the FSx for OpenZFS file system was created, a root volume for the file system was created as well. It is best practice not to store data in the root volume, but instead create separate child volumes of the root and store data in them. Now that the root volume has been created, you can obtain its volume ID and create a child volume below it within the file system.
+When the FSx for OpenZFS file system was created by the workshop, a root volume for the file system was created as well. It is best practice not to store data in the root volume, but instead create separate child volumes of the root and store data in them. Since the root volume was created by the workshop, you can obtain its volume ID and create a child volume below it within the file system.
 
 Run the following to obtain the root volume ID and set it to an environment variable we'll inject into the volume StorageClass using Kustomize:
 
 ```bash
-$ export FILESYSTEM_ID=$(aws fsx describe-file-systems | jq -r --arg cluster_name "${EKS_CLUSTER_NAME}-FSxZ" '.FileSystems[] | select(.Tags[] | select(.Key=="Name" and .Value==$cluster_name)).FileSystemId')
-
-$ export ROOT_VOL_ID=$(aws fsx describe-file-systems --file-system-id $FILESYSTEM_ID | jq -r '.FileSystems[] | .OpenZFSConfiguration.RootVolumeId')
+$ export ROOT_VOL_ID=$(aws fsx describe-file-systems --file-system-id $FSXZ_FS_ID | jq -r '.FileSystems[] | .OpenZFSConfiguration.RootVolumeId')
 ```
 
 Using Kustomize, we'll create the volume storage class and inject the `ROOT_VOL_ID`, `VPC_CIDR`, and `EKS_CLUSTER_NAME` environment variables into the `ParentVolumeId`, `NfsExports`, and `Name` parameters respectively:
@@ -58,7 +26,7 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/fundamentals/storage/fsxz
   | envsubst | kubectl apply -f-
 ```
 
-Let's examine the volume StorageClass. Note that it uses the FSx OpenZFS CSI driver as the provisioner and is updated with the Root Volume ID and VPC CIDR we exported earlier:
+Let's examine the volume StorageClass by running the command below. Note that it uses the FSx OpenZFS CSI driver as the provisioner and is updated with the VPC CIDR and Root Volume ID we exported earlier:
 
 ```bash
 $ kubectl describe sc fsxz-vol-sc
@@ -120,7 +88,6 @@ A PersistentVolume (PV) has been automatically created to fulfill our Persistent
 ```bash
 $ kubectl get pv
 NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                 STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
-pvc-904e8698-c9dd-426d-9d4e-a2bf35e1c46d   128Gi      RWX            Delete           Bound    assets/fsxz-fs-pvc    fsxz-fs-sc     <unset>                          5m29s
 pvc-de67d22d-040d-4898-b0ce-0b3139a227c1   1Gi        RWX            Delete           Bound    assets/fsxz-vol-pvc   fsxz-vol-sc    <unset>                          27s                       31s
 ```
 
@@ -128,29 +95,6 @@ Let's examine the details of our PersistentVolumeClaim (PVC):
 
 ```bash
 $ kubectl describe pvc -n assets
-Name:          fsxz-fs-pvc
-Namespace:     assets
-StorageClass:  fsxz-fs-sc
-Status:        Bound
-Volume:        pvc-904e8698-c9dd-426d-9d4e-a2bf35e1c46d
-Labels:        <none>
-Annotations:   pv.kubernetes.io/bind-completed: yes
-               pv.kubernetes.io/bound-by-controller: yes
-               volume.beta.kubernetes.io/storage-provisioner: fsx.openzfs.csi.aws.com
-               volume.kubernetes.io/storage-provisioner: fsx.openzfs.csi.aws.com
-Finalizers:    [kubernetes.io/pvc-protection]
-Capacity:      128Gi
-Access Modes:  RWX
-VolumeMode:    Filesystem
-Used By:       <none>
-Events:
-  Type     Reason                 Age                   From                                                                                                      Message
-  ----     ------                 ----                  ----                                                                                                      -------
-  Normal   Provisioning           7m30s (x5 over 17m)   fsx.openzfs.csi.aws.com_fsx-openzfs-csi-controller-6b9cdcddf6-kwx7p_35a063fc-5d91-4ba1-9bce-4d71de597b14  External provisioner is provisioning volume for claim "assets/fsxz-fs-pvc"
-  Normal   ExternalProvisioning   7m24s (x42 over 17m)  persistentvolume-controller                                                                               Waiting for a volume to be created either by the external provisioner 'fsx.openzfs.csi.aws.com' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
-  Normal   ProvisioningSucceeded  5m59s                 fsx.openzfs.csi.aws.com_fsx-openzfs-csi-controller-6b9cdcddf6-kwx7p_35a063fc-5d91-4ba1-9bce-4d71de597b14  Successfully provisioned volume pvc-904e8698-c9dd-426d-9d4e-a2bf35e1c46d
-
-
 Name:          fsxz-vol-pvc
 Namespace:     assets
 StorageClass:  fsxz-vol-sc
