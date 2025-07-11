@@ -1,6 +1,6 @@
 FROM public.ecr.aws/amazonlinux/amazonlinux:2023
 
-RUN yum install -y tar gzip vim shadow-utils && useradd \
+RUN yum install -y tar gzip vi shadow-utils && useradd \
     --home "/home/ec2-user" \
     --create-home \
     --user-group \

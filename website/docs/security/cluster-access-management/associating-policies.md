@@ -56,8 +56,8 @@ $ kubectl --context readonly get pod -A
 This should return all pods in the cluster. However if we try to perform an action other than reading we should get an error:
 
 ```bash expectError=true
-$ kubectl --context readonly delete pod -n assets --all
-Error from server (Forbidden): pods "assets-7c7948bfc8-wbsbr" is forbidden: User "arn:aws:sts::1234567890:assumed-role/eks-workshop-read-only/EKSGetTokenAuth" cannot delete resource "pods" in API group "" in the namespace "assets"
+$ kubectl --context readonly delete pod -n ui --all
+Error from server (Forbidden): pods "ui-7c7948bfc8-wbsbr" is forbidden: User "arn:aws:sts::1234567890:assumed-role/eks-workshop-read-only/EKSGetTokenAuth" cannot delete resource "pods" in API group "" in the namespace "ui"
 ```
 
 Next we can explore restricting a policy to one or more namespaces. Update the access policy associating for our read-only IAM role using `--access-scope type=namespace`:
@@ -108,20 +108,20 @@ $ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --pri
 }
 ```
 
-As mentioned, since you used the same `AmazonEKSViewPolicy` policy ARN, it just replaced the previous cluster scoped access configuration to a namespaced scope. Now associate a different policy ARN, scoped to the `assets` namespace.
+As mentioned, since you used the same `AmazonEKSViewPolicy` policy ARN, it just replaced the previous cluster scoped access configuration to a namespaced scope. Now associate a different policy ARN, scoped to the `ui` namespace.
 
 ```bash wait=10
 $ aws eks associate-access-policy --cluster-name $EKS_CLUSTER_NAME \
   --principal-arn $READ_ONLY_IAM_ROLE \
   --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSEditPolicy \
-  --access-scope type=namespace,namespaces=assets
+  --access-scope type=namespace,namespaces=ui
 ```
 
-Try to run the previous access denied command to delete Pods the `assets` namespace.
+Try to run the previous access denied command to delete Pods the `ui` namespace.
 
 ```bash
-$ kubectl --context readonly delete pod -n assets --all
-pod "assets-7c7948bfc8-xdmnv" deleted
+$ kubectl --context readonly delete pod -n ui --all
+pod "ui-7c7948bfc8-xdmnv" deleted
 ```
 
 Now you have access to both namespaces. List the associated access policies.
@@ -135,7 +135,7 @@ $ aws eks list-associated-access-policies --cluster-name $EKS_CLUSTER_NAME --pri
             "accessScope": {
                 "type": "namespace",
                 "namespaces": [
-                    "assets"
+                    "ui"
                 ]
             },
             "associatedAt": "2024-05-29T17:23:55.299000+00:00",
@@ -167,6 +167,6 @@ $ kubectl --context readonly get pod -A
 Error from server (Forbidden): pods is forbidden: User "arn:aws:sts::1234567890:assumed-role/eks-workshop-read-only/EKSGetTokenAuth" cannot list resource "pods" in API group "" at the cluster scope
 ```
 
-Still not have access to the whole cluster, which is expected since the access scope is mapped to the `assets` and `carts` namespaces.
+Still not have access to the whole cluster, which is expected since the access scope is mapped to the `ui` and `carts` namespaces.
 
 This has demonstrated how we can use associate the pre-defined EKS access policies to access entries in order to easily provide access to an EKS cluster to an IAM role.

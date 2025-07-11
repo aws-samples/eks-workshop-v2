@@ -1,5 +1,5 @@
 ---
-title: "Verifying DynamoDB Access"
+title: "Verifying DynamoDB access"
 sidebar_position: 25
 ---
 

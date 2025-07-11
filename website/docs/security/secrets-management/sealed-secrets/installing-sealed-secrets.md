@@ -9,7 +9,8 @@ The first thing we'll do is install the sealed secrets controller in the EKS clu
 
 ```bash
 $ kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.18.0/controller.yaml
-$ kubectl wait --for=condition=Ready --timeout=30s pods -l name=sealed-secrets-controller -n kube-system
+$ kubectl wait --for=condition=Ready --timeout=30s \
+  pods -l name=sealed-secrets-controller -n kube-system
 ```
 
 Now we'll check the status of the pod
@@ -41,7 +42,8 @@ q5P11EvxPBfIt9xDx5Jz4JWp5M7wWawGaeBqTmTDbSkc
 We can view the contents of the Secret which contains the sealing key as a public/private key pair in YAML format as follows:
 
 ```bash
-$ kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key -o yaml
+$ kubectl get secret -n kube-system \
+  -l sealedsecrets.bitnami.com/sealed-secrets-key -o yaml
 apiVersion: v1
 items:
 - apiVersion: v1

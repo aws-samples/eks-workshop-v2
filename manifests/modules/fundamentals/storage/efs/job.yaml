@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: populate-manifests
+  namespace: ui
+spec:
+  template:
+    spec:
+      containers:
+        - name: download-extract
+          image: public.ecr.aws/docker/library/busybox:1.37
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              cd /efs && 
+              wget -O archive.zip https://github.com/aws-containers/retail-store-sample-app/releases/download/v1.2.1/sample-images.zip && 
+              unzip archive.zip -d /efs && 
+              rm archive.zip
+          volumeMounts:
+            - name: efs-volume
+              mountPath: /efs
+      restartPolicy: Never
+      volumes:
+        - name: efs-volume
+          persistentVolumeClaim:
+            claimName: efs-claim
+  backoffLimit: 2

@@ -30,7 +30,6 @@ We can confirm our microservices are only accessible internally by taking a look
 ```bash
 $ kubectl get svc -l app.kubernetes.io/created-by=eks-workshop -A
 NAMESPACE   NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                                 AGE
-assets      assets           ClusterIP   172.20.119.246   <none>        80/TCP                                  1h
 carts       carts            ClusterIP   172.20.180.149   <none>        80/TCP                                  1h
 carts       carts-dynamodb   ClusterIP   172.20.92.137    <none>        8000/TCP                                1h
 catalog     catalog          ClusterIP   172.20.83.84     <none>        80/TCP                                  1h

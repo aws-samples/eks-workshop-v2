@@ -1,5 +1,5 @@
 ---
-title: "Privileged Container with sensitive mount"
+title: "Privileged container with sensitive mount"
 sidebar_position: 524
 ---
 
@@ -19,7 +19,9 @@ Apply the manifest shown above with the following command:
 $ kubectl apply -f ~/environment/eks-workshop/modules/security/Guardduty/mount/privileged-pod-example.yaml
 ```
 
-_This Pod will just run once, until it reaches the State `Completed`_
+:::note
+This Pod will just run once, until it reaches the State `Completed`
+:::
 
 Within a few minutes we'll see the two finding `PrivilegeEscalation:Kubernetes/PrivilegedContainer` and `Persistence:Kubernetes/ContainerWithSensitiveMount` in the [GuardDuty Findings console](https://console.aws.amazon.com/guardduty/home#/findings).
 

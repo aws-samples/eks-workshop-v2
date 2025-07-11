@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fsxz-claim
+  namespace: ui
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: fsxz-vol-sc
+  resources:
+    requests:
+      storage: 1Gi

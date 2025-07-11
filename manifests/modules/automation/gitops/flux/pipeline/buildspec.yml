@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Build started on `date`
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR in $AWS_REGION
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-8)
+      - IMAGE_TAG=build-${COMMIT_HASH:=latest}
+      - echo ECR_URI=$ECR_URI
+      - echo IMAGE_TAG=$IMAGE_TAG
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_URI
+  build:
+    commands:
+      - echo Building container image ...
+      - docker build -t $ECR_URI:$IMAGE_TAG .
+      - docker images
+  post_build:
+    commands:
+      - docker push $ECR_URI:$IMAGE_TAG
+      - echo Build completed on `date`

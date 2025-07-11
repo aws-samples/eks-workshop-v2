@@ -128,12 +128,12 @@ NAME                       READY   STATUS    RESTARTS   AGE
 catalog-777c4d5dc8-lmf6v   1/1     Running   0          1m
 catalog-mysql-0            1/1     Running   0          24h
 $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.containers[] | .env'
-- name: DB_USER
+- name: RETAIL_CATALOG_PERSISTENCE_USER
   valueFrom:
     secretKeyRef:
       key: username
       name: catalog-external-secret
-- name: DB_PASSWORD
+- name: RETAIL_CATALOG_PERSISTENCE_PASSWORD
   valueFrom:
     secretKeyRef:
       key: password

@@ -17,4 +17,5 @@ And we can set up an identity that Git will use for our commits:
 ```bash
 $ git config --global user.email "you@eksworkshop.com"
 $ git config --global user.name "Your Name"
+$ git config --global init.defaultBranch main
 ```

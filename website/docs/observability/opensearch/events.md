@@ -147,7 +147,6 @@ Retrieve the five most recent events in the cluster.
 $ kubectl get events --sort-by='.lastTimestamp' -A | head -5
 NAMESPACE             LAST SEEN   TYPE      REASON              OBJECT                                                                 MESSAGE
 catalog               44m         Normal    SuccessfulCreate    replicaset/catalog-857f89d57d                                          Created pod: catalog-857f89d57d-xl4xc
-assets                44m         Normal    Scheduled           pod/assets-7ccc84cb4d-k5btz                                            Successfully assigned assets/assets-7ccc84cb4d-k5btz to ip-10-42-153-25.us-west-2.compute.internal
 orders                44m         Normal    Scheduled           pod/orders-5696b978f5-gk2d7                                            Successfully assigned orders/orders-5696b978f5-gk2d7 to ip-10-42-104-177.us-west-2.compute.internal
 ui                    44m         Normal    Scheduled           pod/ui-5dfb7d65fc-7l94z                                                Successfully assigned ui/ui-5dfb7d65fc-7l94z to ip-10-42-190-29.us-west-2.compute.internal
 
