@@ -7,7 +7,7 @@ availabilityZones:
 metadata:
   name: ${EKS_CLUSTER_NAME}
   region: ${AWS_REGION}
-  version: "1.31"
+  version: "1.33"
   tags:
     karpenter.sh/discovery: ${EKS_CLUSTER_NAME}
     created-by: eks-workshop-v2
@@ -36,7 +36,7 @@ managedNodeGroups:
     maxSize: 6
     instanceType: m5.large
     privateNetworking: true
-    releaseVersion: "1.31.3-20250103"
+    releaseVersion: "1.33.0-20250704"
     updateConfig:
       maxUnavailablePercentage: 50
     labels:
