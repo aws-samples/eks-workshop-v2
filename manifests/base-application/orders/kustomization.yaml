@@ -7,6 +7,6 @@ resources:
   - configMap.yaml
   - serviceAccount.yaml
   - service.yaml
-  - service-mysql.yaml
+  - service-postgresql.yaml
   - deployment.yaml
-  - deployment-mysql.yaml
+  - deployment-postgresql.yaml

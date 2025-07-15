@@ -7,22 +7,18 @@ Now that we have a secret stored in AWS Secrets Manager and synchronized with a 
 
 Currently, the `catalog` Deployment accesses database credentials from the `catalog-db` secret via environment variables:
 
-- `DB_USER`
-- `DB_PASSWORD`
+- `RETAIL_CATALOG_PERSISTENCE_USER`
+- `RETAIL_CATALOG_PERSISTENCE_PASSWORD`
+
+This is done by referencing a Secret with `envFrom`:
 
 ```bash
-$ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.containers[] | .env'
+$ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.containers[] | .envFrom'
 
-- name: DB_USER
-  valueFrom:
-    secretKeyRef:
-      key: username
-      name: catalog-db
-- name: DB_PASSWORD
-  valueFrom:
-    secretKeyRef:
-      key: password
-      name: catalog-db
+- configMapRef:
+    name: catalog
+- secretRef:
+    name: catalog-db
 ```
 
 The `catalog` Deployment currently has no additional `volumes` or `volumeMounts` except for an `emptyDir` mounted at `/tmp`:
@@ -100,12 +96,12 @@ The environment variables are now sourced from the newly created `catalog-secret
 
 ```bash
 $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.containers[] | .env'
-- name: DB_USER
+- name: RETAIL_CATALOG_PERSISTENCE_USER
   valueFrom:
     secretKeyRef:
       key: username
       name: catalog-secret
-- name: DB_PASSWORD
+- name: RETAIL_CATALOG_PERSISTENCE_PASSWORD
   valueFrom:
     secretKeyRef:
       key: password

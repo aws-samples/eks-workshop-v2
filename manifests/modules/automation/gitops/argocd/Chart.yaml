@@ -1,0 +1,10 @@
+apiVersion: v2
+name: retail-store-sample-chart
+description: A Helm chart for the AWS retail store ui component
+type: application
+version: 0.0.1
+dependencies:
+  - name: retail-store-sample-ui-chart
+    alias: ui
+    version: 1.2.1
+    repository: oci://public.ecr.aws/aws-containers

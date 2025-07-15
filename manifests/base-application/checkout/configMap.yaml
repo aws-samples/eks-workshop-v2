@@ -3,5 +3,6 @@ kind: ConfigMap
 metadata:
   name: checkout
 data:
-  REDIS_URL: redis://checkout-redis.checkout:6379
-  ENDPOINTS_ORDERS: http://orders.orders.svc:80
+  RETAIL_CHECKOUT_PERSISTENCE_PROVIDER: redis
+  RETAIL_CHECKOUT_PERSISTENCE_REDIS_URL: redis://checkout-redis:6379
+  RETAIL_CHECKOUT_ENDPOINTS_ORDERS: http://orders.orders.svc:80

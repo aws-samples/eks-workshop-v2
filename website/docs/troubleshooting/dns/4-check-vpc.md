@@ -7,12 +7,13 @@ DNS traffic between application pods, kube-dns service, and CoreDNS pods often t
 
 :::info
 Two main VPC components can filter network traffic:
+
 - Security Groups
 - Network ACLs
+
 :::
 
 We should verify that both worker node Security Groups and subnet Network ACLs allow DNS traffic (port 53 UDP/TCP) in both directions.
-
 
 ### Step 1 - Identify worker node Security Groups
 
@@ -44,7 +45,7 @@ $ aws ec2 describe-instances \
 +------------------------+
 ```
 
-We can see that worker nodes only use the cluster Security Group `sg-xxxxbbda9848bxxxx`. 
+We can see that worker nodes only use the cluster Security Group `sg-xxxxbbda9848bxxxx`.
 
 ### Step 2 - Check worker node Security Group rules
 
@@ -74,7 +75,8 @@ There are 3 Ingress rules and 1 Egress rule with the following details:
 - Ingress TCP port 10250 from within this same security group (sg-0fcabbda9848b346e)
 - Ingress TCP port 443 from within this same security group (sg-0fcabbda9848b346e)
 - Ingress all protocols and ports from another security group (sg-09eca28cacae05248), which is not associated with worker nodes.
-:::
+
+  :::
 
 Notably absent are rules allowing DNS traffic (UDP/TCP port 53), explaining our DNS resolution failures.
 
@@ -103,7 +105,6 @@ Verify all pods reach Ready state:
 ```bash timeout=30
 $ kubectl get pod -l app.kubernetes.io/created-by=eks-workshop -A
 NAMESPACE   NAME                              READY   STATUS    RESTARTS   AGE
-assets      assets-784b5f5656-fjh7t           1/1     Running   0          50s
 carts       carts-5475469b7c-bwjsf            1/1     Running   0          50s
 carts       carts-dynamodb-69fc586887-pmkw7   1/1     Running   0          19h
 catalog     catalog-5578f9649b-pkdfz          1/1     Running   0          50s
@@ -114,6 +115,7 @@ orders      orders-6d74499d87-mh2r2           1/1     Running   0          50s
 orders      orders-mysql-6fbd688d4b-m7gpt     1/1     Running   0          19h
 ui          ui-5f4d85f85f-xnh8q               1/1     Running   0          50s
 ```
+
 :::info
 For more information, see [Amazon EKS security group requirements](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html).
 :::

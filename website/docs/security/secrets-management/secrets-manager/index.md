@@ -1,5 +1,5 @@
 ---
-title: "Managing Secrets with AWS Secrets Manager"
+title: "Managing secrets with AWS Secrets Manager"
 sidebar_position: 420
 sidebar_custom_props: { "module": true }
 description: "Provide sensitive configuration like credentials to applications running on Amazon Elastic Kubernetes Service with AWS Secrets Manager."
