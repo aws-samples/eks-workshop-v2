@@ -23,7 +23,7 @@ Example output:
 
 Let's examine the Load Balancer Controller logs to understand the permission issues:
 
-```bash wait=15
+```bash wait=30
 $ kubectl logs -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller
 ```
 
