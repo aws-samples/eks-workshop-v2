@@ -60,6 +60,7 @@ $ aws iam detach-role-policy \
 ```bash
 $ kubectl -n kube-system rollout restart deploy aws-load-balancer-controller
 deployment.apps/aws-load-balancer-controller restarted
+$ kubectl -n kube-system wait --for=condition=available deployment/aws-load-balancer-controller
 ```
 
 ### Step 4: Verify the Fix
