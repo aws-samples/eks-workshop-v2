@@ -55,6 +55,14 @@ $ aws iam detach-role-policy \
     --policy-arn ${LOAD_BALANCER_CONTROLLER_POLICY_ARN_ISSUE}
 ```
 
+#### 3.3. Restart the Load Balancer Controller to pick up the new subnet configuration
+
+```bash
+$ kubectl -n kube-system rollout restart deploy aws-load-balancer-controller
+deployment.apps/aws-load-balancer-controller restarted
+$ kubectl -n kube-system wait --for=condition=available deployment/aws-load-balancer-controller
+```
+
 ### Step 4: Verify the Fix
 
 Check if the ingress is now properly configured with an ALB:
