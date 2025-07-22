@@ -9,7 +9,7 @@ You can see this by running the following command:
 
 ```bash
 $ kubectl -n catalog get pod
-NAME                              READY   STATUS    RESTARTS        AGE
+NAME                                READY   STATUS    RESTARTS        AGE
 catalog-5d7fc9d8f-xm4hs             1/1     Running   0               14m
 catalog-mysql-0                     1/1     Running   0               14m
 ```
@@ -18,8 +18,8 @@ In the case above, the Pod `catalog-mysql-0` is a MySQL Pod. We can verify our `
 
 ```bash
 $ kubectl -n catalog exec deployment/catalog -- env \
-  | grep DB_ENDPOINT
-DB_ENDPOINT=catalog-mysql:3306
+  | grep RETAIL_CATALOG_PERSISTENCE_ENDPOINT
+RETAIL_CATALOG_PERSISTENCE_ENDPOINT=catalog-mysql:3306
 ```
 
 We want to migrate our application to use the fully managed Amazon RDS service in order to take full advantage of the scale and reliability it offers.

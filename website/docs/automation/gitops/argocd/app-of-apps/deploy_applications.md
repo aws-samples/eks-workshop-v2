@@ -1,132 +1,77 @@
 ---
-title: "Deploying applications"
+title: "Adding more workloads"
 sidebar_position: 60
 ---
 
-We have successfully configured Argo CD App of Apps, so now we can deploy an environment specific customization for the set of application.
+Now that we've set up the foundation of the App of Apps pattern, we can add the additional workload Helm charts to the Git repository.
 
-First let's remove the existing Applications so we can replace it:
-
-```bash
-$ kubectl delete -k ~/environment/eks-workshop/base-application --ignore-not-found=true
-namespace "assets" deleted
-namespace "carts" deleted
-namespace "catalog" deleted
-namespace "checkout" deleted
-namespace "orders" deleted
-namespace "other" deleted
-namespace "rabbitmq" deleted
-namespace "ui" deleted
-...
-```
-
-We will then need to create a customization for each application:
+The repository structure will look like this after adding the application charts:
 
 ```text
 .
 |-- app-of-apps
 |   |-- ...
-`-- apps-kustomization
-    |-- assets
-    |   `-- kustomization.yaml
-    |-- carts
-    |   `-- kustomization.yaml
-    |-- catalog
-    |   `-- kustomization.yaml
-    |-- checkout
-    |   `-- kustomization.yaml
-    |-- orders
-    |   `-- kustomization.yaml
-    |-- other
-    |   `-- kustomization.yaml
-    |-- rabbitmq
-    |   `-- kustomization.yaml
-    `-- ui
-        |-- deployment-patch.yaml
-        `-- kustomization.yaml
+|-- carts
+|   `-- Chart.yaml
+|-- catalog
+|   `-- Chart.yaml
+|-- checkout
+|   `-- Chart.yaml
+|-- orders
+|   `-- Chart.yaml
+`-- ui
+    `-- Chart.yaml
 ```
 
-```file
-manifests/modules/automation/gitops/argocd/apps-kustomization/ui/kustomization.yaml
-```
-
-We define a path to `base` Kubernetes manifests for an application, in this case `ui`, using `resources`. We also define which configuration should be applied to `ui` application in EKS cluster using `patches`.
-
-```file
-manifests/modules/automation/gitops/argocd/apps-kustomization/ui/deployment-patch.yaml
-```
-
-We would like to have `1` replica for `ui` application. All other application will use configuration from `base` Kubernetes manifests.
-
-Copy files to the Git repository directory:
+Let's copy the application chart files to our Git repository directory:
 
 ```bash
-$ cp -R ~/environment/eks-workshop/modules/automation/gitops/argocd/apps-kustomization ~/environment/argocd/
+$ cp -R ~/environment/eks-workshop/modules/automation/gitops/argocd/app-charts/* \
+  ~/environment/argocd/
 ```
 
-Your final Git directory should now look like this. You can validate it by running `tree ~/environment/argocd`:
-
-```text
-|-- app-of-apps
-|   |-- Chart.yaml
-|   |-- templates
-|   |   |-- _application.yaml
-|   |   `-- application.yaml
-|   `-- values.yaml
-|-- apps
-|   ...
-`-- apps-kustomization
-    |-- assets
-    |   `-- kustomization.yaml
-    |-- carts
-    |   `-- kustomization.yaml
-    |-- catalog
-    |   `-- kustomization.yaml
-    |-- checkout
-    |   `-- kustomization.yaml
-    |-- orders
-    |   `-- kustomization.yaml
-    |-- other
-    |   `-- kustomization.yaml
-    |-- rabbitmq
-    |   `-- kustomization.yaml
-    `-- ui
-        |-- deployment-patch.yaml
-        `-- kustomization.yaml
-
-12 directories, 19 files
-```
-
-Push changes to the Git repository:
+Next, commit and push these changes to the Git repository:
 
 ```bash
 $ git -C ~/environment/argocd add .
-$ git -C ~/environment/argocd commit -am "Adding apps kustomization"
+$ git -C ~/environment/argocd commit -am "Adding apps charts"
 $ git -C ~/environment/argocd push
 ```
 
-Click `Refresh` and `Sync` in ArgoCD UI, use `argocd` CLI to `Sync` the application or wait until automatic `Sync` will be finished:
+Sync the apps application:
 
 ```bash
 $ argocd app sync apps
-$ argocd app sync ui
+$ argocd app wait -l app.kubernetes.io/created-by=eks-workshop
 ```
 
-We've now successfully migrated the all the applications to deploy using Argo CD, and any further changes pushed to the Git repository will be automatically reconciled to EKS cluster.
-
-When Argo CD finish the sync, all our applications will be in `Synced` state.
+When Argo CD completes the process, all our applications will be in the `Synced` state as shown in the ArgoCD UI:
 
 ![argocd-ui-apps.png](assets/argocd-ui-apps-synced.webp)
 
-You should also have all the resources related to the `ui` application deployed. To verify, run the following commands:
+We should now see a set of new namespaces with each application component deployed:
 
 ```bash hook=deploy
-$ kubectl get deployment -n ui ui
-NAME   READY   UP-TO-DATE   AVAILABLE   AGE
-ui     1/1     1            1           61s
-$ kubectl get pod -n ui
-NAME                 READY   STATUS   RESTARTS   AGE
-ui-6d5bb7b95-rjfxd   1/1     Running  0          62s
+$ kubectl get namespaces
+NAME              STATUS   AGE
+argocd            Active   18m
+carts             Active   28s
+catalog           Active   28s
+checkout          Active   28s
+default           Active   8h
+kube-node-lease   Active   8h
+kube-public       Active   8h
+kube-system       Active   8h
+orders            Active   28s
+ui                Active   11m
 ```
 
-![argocd-deploy-application](../assets/argocd-deploy-application.webp)
+Let's examine one of the deployed workloads more closely. For example, we can check the carts component:
+
+```bash
+$ kubectl get deployment -n carts
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+carts   1/1     1            1           46s
+```
+
+This confirms that our GitOps-based deployment using the App of Apps pattern has successfully deployed all microservices to our cluster.

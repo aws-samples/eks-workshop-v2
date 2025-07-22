@@ -2,7 +2,7 @@
 
 set -e
 
-delete-all-if-crd-exists opentelemetrycollectors.opentelemetry.io
+kubectl delete namespace catalog --ignore-not-found=true
 
 delete-all-if-crd-exists clustersecretstores.external-secrets.io
 

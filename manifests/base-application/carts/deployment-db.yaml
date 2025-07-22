@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: dynamodb
-          image: "amazon/dynamodb-local:1.13.1"
+          image: "amazon/dynamodb-local:1.25.1"
           imagePullPolicy: IfNotPresent
           ports:
             - name: dynamodb

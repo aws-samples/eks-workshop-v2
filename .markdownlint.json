@@ -3,5 +3,6 @@
   "MD013": false,
   "MD014": false,
   "MD033": false,
+  "MD059": false,
   "customRules": ["mdlint/aws-arn-rule.js"]
 }

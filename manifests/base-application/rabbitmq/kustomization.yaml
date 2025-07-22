@@ -3,5 +3,6 @@ kind: Kustomization
 namespace: rabbitmq
 resources:
   - namespace.yaml
-  - generated.yaml
-# helm template -n rabbitmq rabbitmq bitnami/rabbitmq --set image.registry=public.ecr.aws > generated.yaml
+  - secret.yaml
+  - service.yaml
+  - statefulset.yaml

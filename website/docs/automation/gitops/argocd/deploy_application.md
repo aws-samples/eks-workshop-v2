@@ -3,45 +3,46 @@ title: "Deploying an application"
 sidebar_position: 30
 ---
 
-We have successfully configured Argo CD on our cluster so now we can deploy an application. To demonstrate the difference between a GitOps-based delivery of an application and other methods, we'll migrate the UI component of the sample application which is currently using the `kubectl apply -k` approach to the new Argo CD deployment approach.
+Now that we have successfully configured Argo CD on our cluster, let's deploy an application. To demonstrate the difference between a GitOps-based delivery approach and traditional deployment methods, we'll migrate the UI component of our sample application from using the `kubectl apply -k` approach to an Argo CD-managed deployment.
 
-First let's remove the existing UI component so we can replace it:
+An Argo CD application is a Custom Resource Definition (CRD) that represents a deployed application instance in an environment. It defines key information such as the application name, Git repository location, and path to the Kubernetes manifests. The application resource also specifies the desired state, target revision, sync policy, and health check policy.
+
+First, let's remove the existing sample application from the cluster:
 
 ```bash
-$ kubectl delete -k ~/environment/eks-workshop/base-application/ui --ignore-not-found=true
+$ kubectl delete namespace -l app.kubernetes.io/created-by=eks-workshop
+namespace "carts" deleted
+namespace "catalog" deleted
+namespace "checkout" deleted
+namespace "orders" deleted
+namespace "other" deleted
+namespace "rabbitmq" deleted
 namespace "ui" deleted
-serviceaccount "ui" deleted
-configmap "ui" deleted
-service "ui" deleted
-deployment.apps "ui" deleted
 ```
 
-Now, let's get into the cloned Git repository and start creating our GitOps configuration. Copy the existing kustomize configuration for the UI service:
+Now we'll populate our Git repository with a simple Helm chart:
+
+::yaml{file="manifests/modules/automation/gitops/argocd/Chart.yaml"}
+
+This chart wraps the published chart for the UI component by using it as a Helm dependency.
+
+Let's copy this file to our Git directory:
 
 ```bash
-$ cp -R ~/environment/eks-workshop/base-application/ui/* ~/environment/argocd/apps
+$ mkdir -p ~/environment/argocd/ui
+$ cp ~/environment/eks-workshop/modules/automation/gitops/argocd/Chart.yaml \
+  ~/environment/argocd/ui
 ```
 
-Your Git directory should now look something like this which you can validate by running `tree ~/environment/argocd`:
+Our Git directory should now have this structure:
 
-```text
-.
-└── apps
-    ├── configMap.yaml
-    ├── deployment.yaml
-    ├── kustomization.yaml
-    ├── namespace.yaml
-    ├── serviceAccount.yaml
-    └── service.yaml
-
-1 directory, 6 files
+```bash
+$ tree ~/environment/argocd
+`-- ui
+    `-- Chart.yaml
 ```
 
-Open the Argo CD UI and navigate to the `apps` application.
-
-![Application in the ArgoCD UI](assets/argocd-ui-insync-apps.webp)
-
-Finally we can push our configuration to the Git repository:
+Now we'll push our configuration to the Git repository:
 
 ```bash
 $ git -C ~/environment/argocd add .
@@ -49,21 +50,55 @@ $ git -C ~/environment/argocd commit -am "Adding the UI service"
 $ git -C ~/environment/argocd push
 ```
 
-Click `Refresh` and `Sync` in ArgoCD UI or use `argocd` CLI to `Sync` the application:
+Next, let's create an Argo CD Application configured to use our Git repository:
 
 ```bash
-$ argocd app sync apps
+$ argocd app create ui --repo $GITOPS_REPO_URL_ARGOCD \
+  --path ui --dest-server https://kubernetes.default.svc \
+  --dest-namespace ui --sync-option CreateNamespace=true
+application 'ui' created
 ```
 
-After a short period of time, the application should be in `Synced` state and the resources should be deployed, the UI should look like this:
+We can verify that the application has been created:
+
+```bash
+$ argocd app list
+NAME         CLUSTER                         NAMESPACE  PROJECT  STATUS     HEALTH   SYNCPOLICY  CONDITIONS
+argocd/ui    https://kubernetes.default.svc  ui         default  OutOfSync  Missing  Manual      <none>
+```
+
+This application is now visible in the Argo CD UI:
+
+![Application in the ArgoCD UI](assets/argocd-ui-outofsync.webp)
+
+Alternatively, we can also interact with Argo CD objects directly using the `kubectl` command:
+
+```bash
+$ kubectl get applications.argoproj.io -n argocd
+NAME   SYNC STATUS   HEALTH STATUS
+apps   OutOfSync     Missing
+```
+
+If you open the Argo CD UI and navigate to the `apps` application, you'll see:
+
+![Application in the ArgoCD UI](assets/argocd-ui-outofsync-apps.webp)
+
+In Argo CD, "out of sync" indicates that the desired state defined in your Git repository doesn't match the actual state in your Kubernetes cluster. Although Argo CD is capable of automated synchronization, for now we'll manually trigger this process:
+
+```bash
+$ argocd app sync ui
+$ argocd app wait ui --timeout 120
+```
+
+After a short period, the application should reach the `Synced` state, with all resources deployed. The UI should look like this:
 
 ![argocd-deploy-application](assets/argocd-deploy-application.webp)
 
-That shows that Argo CD created the basic kustomization, and that it's in sync with the cluster.
+This confirms that Argo CD has successfully installed the Helm chart and it's now in sync with the cluster.
 
-We've now successfully migrated the UI component to deploy using Argo CD, and any further changes pushed to the Git repository will be automatically reconciled to our EKS cluster.
+We've now successfully migrated the UI component to be deployed using Argo CD. Any future changes pushed to the Git repository will be automatically reconciled to our EKS cluster.
 
-You should now have all the resources related to the UI services deployed. To verify, run the following commands:
+To verify that all resources related to the UI service are deployed, run the following commands:
 
 ```bash hook=deploy
 $ kubectl get deployment -n ui ui

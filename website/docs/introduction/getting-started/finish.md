@@ -33,7 +33,6 @@ We'll now have a Namespace for each of our application components:
 ```bash
 $ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
 NAME       STATUS   AGE
-assets     Active   62s
 carts      Active   62s
 catalog    Active   7m17s
 checkout   Active   62s
@@ -48,7 +47,6 @@ We can also see all of the Deployments created for the components:
 ```bash
 $ kubectl get deployment -l app.kubernetes.io/created-by=eks-workshop -A
 NAMESPACE   NAME             READY   UP-TO-DATE   AVAILABLE   AGE
-assets      assets           1/1     1            1           90s
 carts       carts            1/1     1            1           90s
 carts       carts-dynamodb   1/1     1            1           90s
 catalog     catalog          1/1     1            1           7m46s

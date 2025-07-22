@@ -4,7 +4,7 @@ sidebar_position: 10
 weight: 10
 ---
 
-First lets install Argo CD in our cluster:
+Let's begin by installing Argo CD in our cluster:
 
 ```bash
 $ helm repo add argo-cd https://argoproj.github.io/argo-helm
@@ -22,7 +22,7 @@ NOTES:
 [...]
 ```
 
-For the purpose of this lab the Argo CD server UI has been exposed outside of the cluster using Kubernetes Service of `Load Balancer` type. To get the URL from Argo CD service run the following command:
+For the purpose of this lab, the Argo CD server UI has been configured to be accessible outside of the cluster using a Kubernetes service with a load balancer. To obtain the URL, execute the following commands:
 
 ```bash
 $ export ARGOCD_SERVER=$(kubectl get svc argocd-server -n argocd -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname')
@@ -30,7 +30,7 @@ $ echo "ArgoCD URL: https://$ARGOCD_SERVER"
 ArgoCD URL: https://acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com
 ```
 
-The load balancer will take some time to provision so use this command to wait until ArgoCD responds:
+The load balancer will take some time to provision. Use this command to wait until ArgoCD responds:
 
 ```bash timeout=600 wait=60
 $ curl --head -X GET --retry 20 --retry-all-errors --retry-delay 15 \
@@ -48,27 +48,36 @@ X-Frame-Options: sameorigin
 X-Xss-Protection: 1
 ```
 
-The initial username is `admin` and the password is auto-generated. You can get it by running the following command:
+For authentication, the default username is `admin` and the password is auto-generated. Retrieve the password with the following command:
 
 ```bash
 $ export ARGOCD_PWD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
 $ echo "ArgoCD admin password: $ARGOCD_PWD"
 ```
 
-Log in to the Argo CD UI using the URL and credentials you just obtained. You will be presented with a screen that looks like this:
+Use the URL and credentials you just obtained to log in to the Argo CD UI. You'll see an interface that looks like this:
 
 ![argocd-ui](assets/argocd-ui.webp)
 
-Argo CD also provides a powerful CLI tool called `argocd` that can be used to manage applications.
+In addition to the UI, Argo CD provides a powerful CLI tool called `argocd` for managing applications.
 
 :::info
-For the purpose of this lab, `argocd` CLI has been installed for you. You can learn more about installing the CLI tool by following the [instructions](https://argo-cd.readthedocs.io/en/stable/cli_installation/).
+For this lab, the `argocd` CLI has already been installed for you. You can learn more about installing the CLI tool by following the [instructions](https://argo-cd.readthedocs.io/en/stable/cli_installation/).
 :::
 
-In order to interact with Argo CD objects using CLI, we need to login to the Argo CD server by running the following commands:
+To interact with Argo CD using the CLI, you need to authenticate with the Argo CD server:
 
 ```bash
 $ argocd login $ARGOCD_SERVER --username admin --password $ARGOCD_PWD --insecure
 'admin:login' logged in successfully
 Context 'acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com' updated
+```
+
+Finally, register the Git repository with ArgoCD to provide access:
+
+```bash
+$ argocd repo add $GITOPS_REPO_URL_ARGOCD \
+  --ssh-private-key-path ${HOME}/.ssh/gitops_ssh.pem \
+  --insecure-ignore-host-key --upsert --name git-repo
+Repository 'ssh://...' added
 ```
