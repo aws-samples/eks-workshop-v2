@@ -1,27 +1,42 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx
+  name: pss
   labels:
     app.kubernetes.io/created-by: eks-workshop
 spec:
   selector:
     matchLabels:
-      app: nginx
+      app: pss
   replicas: 1
   template:
     metadata:
       labels:
-        app: nginx
+        app: pss
         app.kubernetes.io/created-by: eks-workshop
     spec:
       containers:
-        - name: nginx
-          image: public.ecr.aws/docker/library/nginx:1.29
+        - name: pss
+          image: public.ecr.aws/aws-containers/retail-store-sample-catalog:1.2.1
           ports:
             - containerPort: 80
           securityContext:
-            capabilities:
-              drop:
-                - ALL
             readOnlyRootFilesystem: false
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            successThreshold: 3
+            periodSeconds: 5
+          resources:
+            limits:
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 512Mi
