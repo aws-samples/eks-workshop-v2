@@ -5,11 +5,13 @@ sidebar_position: 30
 
 Now that we understand the EFS storage class for Kubernetes, let's create a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and modify the UI component to mount this volume.
 
-First, let's examine the `efspvclaim.yaml` file which defines a PersistentVolumeClaim requesting 5GB of storage from the `efs-sc` storage class we created earlier:
+First, let's examine the `efspvclaim.yaml` file:
 
-```file
-manifests/modules/fundamentals/storage/efs/deployment/efspvclaim.yaml
-```
+::yaml{file="manifests/modules/fundamentals/storage/efs/deployment/efspvclaim.yaml" paths="kind,spec.storageClassName,spec.resources.requests.storage"}
+
+1. The resource being defined is a PersistentVolumeClaim
+2. This refers to the 'efs-sc' storage class we created earlier
+3. We are requesting 5GB of storage 
 
 Now we'll update the UI component to reference the EFS PVC:
 

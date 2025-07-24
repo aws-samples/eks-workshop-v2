@@ -42,13 +42,12 @@ $ echo $EFS_ID
 fs-061cb5c5ed841a6b0
 ```
 
-Next, we'll create a [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured to use our pre-provisioned EFS file system and [EFS Access points](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html) in provisioning mode.
+Next, we'll create a [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured to use our pre-provisioned EFS file system and [EFS Access points](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html) in provisioning mode using the `efsstorageclass.yaml` file.
 
-Using Kustomize, we'll create the storage class and inject the `EFS_ID` environment variable into the `filesystemid` parameter:
+::yaml{file="manifests/modules/fundamentals/storage/efs/storageclass/efsstorageclass.yaml" paths="parameters.fileSystemId"}
 
-```file
-manifests/modules/fundamentals/storage/efs/storageclass/efsstorageclass.yaml
-```
+1. Inject `EFS_ID` environment variable into the `filesystemid` parameter
+
 
 Apply the kustomization:
 
