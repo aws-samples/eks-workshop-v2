@@ -6,9 +6,9 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 cd $SCRIPT_DIR/..
 
-export ENABLE_INDEX="1"
+export ENABLE_INDEX=${ENABLE_INDEX:0}
 export MANIFESTS_REF="$BRANCH"
-export SHOW_NOTIFICATION="1"
+export SHOW_NOTIFICATION=${SHOW_NOTIFICATION:0}
 
 yarn install
 yarn workspace website clear

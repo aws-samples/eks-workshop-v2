@@ -1,9 +1,9 @@
-name: Publish Content
+name: Publish Preview
 
 on:
   push:
     branches:
-      - stable
+      - main
   workflow_dispatch: {}
 
 permissions:
@@ -39,10 +39,8 @@ jobs:
           role-session-name: GithubActionsSession-publish
       - name: Run publish
         env:
-          CONTENT_BUCKET: "${{ secrets.CONTENT_BUCKET }}"
-          CONTENT_CLOUDFRONT: "${{ secrets.CONTENT_CLOUDFRONT }}"
-          BRANCH: stable
-          ENABLE_INDEX: 1
-          SHOW_NOTIFICATION: 1
+          CONTENT_BUCKET: "${{ secrets.PREVIEW_BUCKET }}"
+          CONTENT_CLOUDFRONT: "${{ secrets.PREVIEW_CLOUDFRONT }}"
+          BRANCH: main
         run: |
           bash hack/publish-content.sh
