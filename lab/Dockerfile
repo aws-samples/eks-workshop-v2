@@ -24,6 +24,7 @@ RUN mkdir -p /eks-workshop && chown ec2-user /eks-workshop
 USER ec2-user
 
 COPY --chmod=755 scripts/setup.sh /tmp/setup.sh
+COPY --chmod=755 scripts/setup-ide.sh /tmp/setup-ide.sh
 
 RUN mkdir -p ~/environment
 

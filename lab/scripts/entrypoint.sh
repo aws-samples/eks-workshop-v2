@@ -14,6 +14,8 @@ if [ $# -eq 0 ]; then
   bash -l
 else
   if [[ "$1" == "ide" ]]; then
+    bash /tmp/setup-ide.sh
+    
     export PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 16)
 
     echo "--------------------------------------------------------"

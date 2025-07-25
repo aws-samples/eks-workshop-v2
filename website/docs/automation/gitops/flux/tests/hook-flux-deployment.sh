@@ -7,7 +7,7 @@ before() {
 after() {
   sleep 30
   
-  kubectl wait --for=condition=Ready --timeout=60s pods -n ui
+  kubectl wait --for=condition=Ready --timeout=60s pods -n ui --all
 }
 
 "$@"
