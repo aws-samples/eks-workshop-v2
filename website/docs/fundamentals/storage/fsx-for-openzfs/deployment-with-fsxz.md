@@ -10,7 +10,7 @@ First, let's examine the `fsxzpvcclaim.yaml` file:
 ::yaml{file="manifests/modules/fundamentals/storage/fsxz/deployment/fsxzpvcclaim.yaml" paths="kind,spec.storageClassName,spec.resources.requests.storage"}
 
 1. The resource being defined is a PersistentVolumeClaim
-2. This refers to the 'fsxz-vol-sc' storage class we created earlier
+2. This refers to the `fsxz-vol-sc` storage class we created earlier
 3. We are requesting 1GB of storage 
 
 Now we'll update the UI component to reference the FSx for OpenZFS PVC:

@@ -11,7 +11,7 @@ First, let's examine the `fsxnpvclaim.yaml` file:
 ::yaml{file="manifests/modules/fundamentals/storage/fsxn/deployment/fsxnpvclaim.yaml" paths="kind,spec.storageClassName,spec.resources.requests.storage"}
 
 1. The resource being defined is a PersistentVolumeClaim
-2. This refers to the 'fsxn-sc-nfs' storage class we created earlier
+2. This refers to the `fsxn-sc-nfs` storage class we created earlier
 3. We are requesting 5GB of storage 
 
 

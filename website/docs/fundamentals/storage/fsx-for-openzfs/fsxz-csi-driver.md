@@ -65,10 +65,11 @@ Next, we'll create a [StorageClass](https://kubernetes.io/docs/concepts/storage/
 
 For this, let's examine the `fsxzstorageclass.yaml` file:
 
-::yaml{file="manifests/modules/fundamentals/storage/fsxz/storageclass/fsxzstorageclass.yaml" paths="parameters.ParentVolumeId, parameters.NfsExports"}
+::yaml{file="manifests/modules/fundamentals/storage/fsxz/storageclass/fsxzstorageclass.yaml" paths="provisioner,parameters.ParentVolumeId, parameters.NfsExports"}
 
-1. Assign the `ROOT_VOL_ID` environment variable to the `ParentVolumeId` parameter
-2. Inject the `VPC_CIDR` environment variable into the `NfsExports` parameter
+1. Set the `provisioner` parameter to `fsx.openzfs.csi.aws.com` for the FSx for OpenZFS CSI provisioner
+2. Assign the `ROOT_VOL_ID` environment variable to the `ParentVolumeId` parameter
+3. Inject the `VPC_CIDR` environment variable into the `NfsExports` parameter
 
 Apply the kustomization:
 
