@@ -1,11 +1,13 @@
 FROM public.ecr.aws/amazonlinux/amazonlinux:2023
 
-RUN yum install -y tar gzip vi shadow-utils && useradd \
+RUN yum install -y tar gzip vi shadow-utils sudo && useradd \
     --home "/home/ec2-user" \
     --create-home \
     --user-group \
     --shell /bin/bash \
     ec2-user
+
+RUN echo "ec2-user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 ADD scripts/installer.sh /tmp/installer.sh
 
