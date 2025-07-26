@@ -52,32 +52,23 @@ serviceAccount.yaml
 statefulset-mysql.yaml
 ```
 
-These manifests include the Deployment for the catalog API:
+These manifests include the Deployment for the catalog API which expresses the desired state of the catalog API component:
 
-```file
-manifests/base-application/catalog/deployment.yaml
-```
+::yaml{file="manifests/base-application/catalog/deployment.yaml" paths="spec.replicas,spec.template.metadata.labels,spec.template.spec.containers.0.image,spec.template.spec.containers.0.ports,spec.template.spec.containers.0.livenessProbe,spec.template.spec.containers.0.resources"}
 
-This Deployment expresses the desired state of the catalog API component:
-
-- Use the `public.ecr.aws/aws-containers/retail-store-sample-catalog` container image
-- Run a single replica
-- Expose the container on port 8080 named `http`
-- Run [probes/healthchecks](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) against the `/health` path
-- [Requests](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) a specific amount of CPU and memory so the Kubernetes scheduler can place it on a node with enough available resources
-- Apply labels to the Pods so other resources can refer to them
+1. Run a single replica
+2. Apply labels to the Pods so other resources can refer to them
+3. Use the `public.ecr.aws/aws-containers/retail-store-sample-catalog` container image
+4. Expose the container on port 8080 named `http`
+5. Run [probes/healthchecks](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) against the `/health` path
+6. [Requests](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) a specific amount of CPU and memory so the Kubernetes scheduler can place it on a node with enough available resources
 
 The manifests also include the Service used by other components to access the catalog API:
 
-```file
-manifests/base-application/catalog/service.yaml
-```
+::yaml{file="manifests/base-application/catalog/service.yaml" paths="spec.ports,spec.selector"}
 
-This Service:
-
-- Selects catalog Pods using labels that match what we expressed in the Deployment above
-- Exposes itself on port 80
-- Targets the `http` port exposed by the Deployment, which translates to port 8080
+1. Exposes itself on port 80 and targets the `http` port exposed by the Deployment, which translates to port 8080
+2. Selects catalog Pods using labels that match what we expressed in the Deployment above
 
 Let's create the catalog component:
 
@@ -146,7 +137,7 @@ catalog-mysql   ClusterIP   172.20.181.252   <none>        3306/TCP   2m48s
 These Services are internal to the cluster, so we cannot access them from the Internet or even the VPC. However, we can use [exec](https://kubernetes.io/docs/tasks/debug/debug-application/get-shell-running-container/) to access an existing Pod in the EKS cluster to check the catalog API is working:
 
 ```bash
-$ kubectl -n catalog exec -it \
+$ kubectl -n catalog exec -i \
   deployment/catalog -- curl catalog.catalog.svc/catalogue | jq .
 ```
 
