@@ -26,7 +26,7 @@ argocd_version='2.14.15'
 terraform_version='1.12.2'
 
 # renovate: depName=aws/amazon-ec2-instance-selector
-ec2_instance_selector_version='2.4.1'
+ec2_instance_selector_version='3.1.1'
 
 # renovate: depName=hatoo/oha
 oha_version='1.9.0'
