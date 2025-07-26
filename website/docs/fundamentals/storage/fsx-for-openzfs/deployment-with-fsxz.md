@@ -5,11 +5,13 @@ sidebar_position: 30
 
 Now that we understand the FSx for OpenZFS storage class for Kubernetes, let's create a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and modify the UI component to mount this volume.
 
-First, let's examine the `fsxzpvcclaim.yaml` file which defines a PersistentVolumeClaim requesting 5GB of storage from the `fsxz-vol-sc` storage class we created earlier:
+First, let's examine the `fsxzpvcclaim.yaml` file:
 
-```file
-manifests/modules/fundamentals/storage/fsxz/deployment/fsxzpvcclaim.yaml
-```
+::yaml{file="manifests/modules/fundamentals/storage/fsxz/deployment/fsxzpvcclaim.yaml" paths="kind,spec.storageClassName,spec.resources.requests.storage"}
+
+1. The resource being defined is a PersistentVolumeClaim
+2. This refers to the `fsxz-vol-sc` storage class we created earlier
+3. We are requesting 1GB of storage 
 
 Now we'll update the UI component to reference the FSx for OpenZFS PVC:
 
@@ -47,7 +49,7 @@ A PersistentVolume (PV) has been automatically created to fulfill our Persistent
 ```bash
 $ kubectl get pv
 NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                                 STORAGECLASS   REASON   AGE
-pvc-342a674d-b426-4214-b8b6-7847975ae121   5Gi        RWX            Delete           Bound    ui/fsxz-claim                      fsxz-vol-sc                  2m33s
+pvc-342a674d-b426-4214-b8b6-7847975ae121   1Gi        RWX            Delete           Bound    ui/fsxz-claim                      fsxz-vol-sc                  2m33s
 ```
 
 Let's examine the details of our PersistentVolumeClaim (PVC):
