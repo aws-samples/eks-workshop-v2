@@ -36,7 +36,7 @@ Archive:  /tmp/sample-images.zip
 Next, we'll copy these image assets to our S3 bucket using the `aws s3 cp` command:
 
 ```bash
-$ aws s3 cp ~/environment/assets-images/ s3://$BUCKET_NAME/
+$ aws s3 cp --recursive ~/environment/assets-images/ s3://$BUCKET_NAME/
 upload: assets-images/79bce3f3-935f-4912-8c62-0d2f3e059405.jpg to s3://eks-workshop-mountpoint-s320250709143521722200000002/79bce3f3-935f-4912-8c62-0d2f3e059405.jpg
 [...]
 ```

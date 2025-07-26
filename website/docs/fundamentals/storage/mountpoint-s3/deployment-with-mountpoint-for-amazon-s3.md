@@ -128,7 +128,7 @@ Namespace:              ui
 Now let's demonstrate the shared storage functionality. First, we'll list the current files in `/mountpoint-s3` through one of the UI component Pods:
 
 ```bash hook=sample-images
-$ POD_1=$(kubectl -n ui get pods -o jsonpath='{.items[0].metadata.name}')
+$ export POD_1=$(kubectl -n ui get pods -o jsonpath='{.items[0].metadata.name}')
 $ kubectl exec --stdin $POD_1 -n ui -- bash -c 'ls /mountpoint-s3/'
 1ca35e86-4b4c-4124-b6b5-076ba4134d0d.jpg
 4f18544b-70a5-4352-8e19-0d070f46745d.jpg
@@ -153,7 +153,7 @@ $ kubectl exec --stdin $POD_1 -n ui -- bash -c 'curl -sS -o /mountpoint-s3/place
 To verify the persistence and sharing of our storage layer, let's check for the file we just created using the second UI Pod:
 
 ```bash
-$ POD_2=$(kubectl -n ui get pods -o jsonpath='{.items[1].metadata.name}')
+$ export POD_2=$(kubectl -n ui get pods -o jsonpath='{.items[1].metadata.name}')
 $ kubectl exec --stdin $POD_2 -n ui -- bash -c 'ls /mountpoint-s3/'
 1ca35e86-4b4c-4124-b6b5-076ba4134d0d.jpg
 4f18544b-70a5-4352-8e19-0d070f46745d.jpg
