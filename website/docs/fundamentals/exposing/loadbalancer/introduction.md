@@ -38,7 +38,6 @@ checkout    checkout         ClusterIP   172.20.77.176    <none>        80/TCP  
 checkout    checkout-redis   ClusterIP   172.20.32.208    <none>        6379/TCP                                1h
 orders      orders           ClusterIP   172.20.146.72    <none>        80/TCP                                  1h
 orders      orders-mysql     ClusterIP   172.20.54.235    <none>        3306/TCP                                1h
-rabbitmq    rabbitmq         ClusterIP   172.20.107.54    <none>        5672/TCP,4369/TCP,25672/TCP,15672/TCP   1h
 ui          ui               ClusterIP   172.20.62.119    <none>        80/TCP                                  1h
 ```
 

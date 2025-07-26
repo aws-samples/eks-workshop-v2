@@ -38,7 +38,6 @@ catalog    Active   7m17s
 checkout   Active   62s
 orders     Active   62s
 other      Active   62s
-rabbitmq   Active   62s
 ui         Active   62s
 ```
 

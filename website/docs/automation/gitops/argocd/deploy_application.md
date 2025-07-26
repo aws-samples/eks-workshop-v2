@@ -16,7 +16,6 @@ namespace "catalog" deleted
 namespace "checkout" deleted
 namespace "orders" deleted
 namespace "other" deleted
-namespace "rabbitmq" deleted
 namespace "ui" deleted
 ```
 

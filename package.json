@@ -16,7 +16,7 @@
     "format:fix": "prettier -w .",
     "markdown:check": "markdownlint-cli2 'website/docs/**/*.md'",
     "lint": "yarn links:check && yarn format:check && yarn markdown:check && yarn spelling:check",
-    "lint:staged": "yarn lint-staged --no-stash"
+    "lint:staged": "yarn lint-staged --concurrent false --no-stash"
   },
   "author": "",
   "license": "Apache-2.0",
