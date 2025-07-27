@@ -46,14 +46,13 @@ The FSx for NetApp ONTAP CSI driver supports both dynamic and static provisionin
 - **Dynamic provisioning**: The driver creates volumes on the existing FSx for NetApp ONTAP file system. This requires an existing AWS FSx for NetApp ONTAP file system that must be specified in the StorageClass parameters.
 - **Static provisioning**: This also requires a pre-created AWS FSx for NetApp ONTAP file system, which can then be mounted as a volume inside a container using the driver.
 
-Next, we'll create a TridentBackendConfig object configured to use the pre-provisioned FSx for NetApp ONTAP file system. We'll be using Kustomize to create the backend and inject the following environment variables:
+Next, we'll create a TridentBackendConfig object configured to use the pre-provisioned FSx for NetApp ONTAP file system. For this, lets examine the `fsxn-backend-nas.yaml` file we'll be using to create the backend:
 
-- `FSXN_ID` in the parameter `fsxFilesystemID` - This is the FSxN filesystem we're going to connect our CSI driver to.
-- `FSXN_SECRET_ARN` in the parameter `credentials.name` - This is the secret ARN with the credentials to connect to the ONTAP API interface.
+::yaml{file="manifests/modules/fundamentals/storage/fsxn/backend/fsxn-backend-nas.yaml" paths="spec.svm,spec.aws.fsxFilesystemID,spec.credentials.name"}
 
-```file
-manifests/modules/fundamentals/storage/fsxn/backend/fsxn-backend-nas.yaml
-```
+1. Inject `EKS_CLUSTER_NAME` environment variable into the `svm` parameter - This is the Storage Virtual Machine name
+2. Inject `FSXN_ID` environment variable into the `fsxFilesystemID` parameter - This is the FSxN filesystem we're going to connect our CSI driver to
+3. Inject `FSXN_SECRET_ARN` environment variable into the `credentials.name` parameter - This is the ARN of a secret stored securely in AWS Secrets Manager, which contains the credentials to connect to the ONTAP API interface
 
 Apply the backend configuration:
 
@@ -71,11 +70,12 @@ NAME                    BACKEND NAME    BACKEND UUID                           P
 backend-tbc-ontap-nas   tbc-ontap-nas   bbae8686-25e4-4fca-a4c7-7ab664c7db9c   Bound   Success
 ```
 
-Now let's create the [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object:
+Now let's create the [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object using the `fsxnstorageclass.yaml` file:
 
-```file
-manifests/modules/fundamentals/storage/fsxn/storageclass/fsxnstorageclass.yaml
-```
+::yaml{file="manifests/modules/fundamentals/storage/fsxn/storageclass/fsxnstorageclass.yaml" paths="provisioner,parameters.backendType"}
+
+1. Set the `provisioner` parameter to `csi.trident.netapp.io` for the Amazon FSx for NetApp ONTAP CSI provisioner
+2. Set the `backendType` to `ontap-nas` to indicate that the ONTAP NAS driver should be used for accessing the ONTAP volume
 
 Apply the StorageClass:
 

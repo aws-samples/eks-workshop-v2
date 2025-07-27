@@ -5,11 +5,15 @@ sidebar_position: 30
 
 Now that we understand the FSx for NetApp ONTAP storage class for Kubernetes, let's create a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and modify the UI component to mount this volume.
 
-First, let's examine the `fsxnpvclaim.yaml` file which defines a PersistentVolumeClaim requesting 5GB of storage from the `fsxn-sc-nfs` storage class we created earlier:
 
-```file
-manifests/modules/fundamentals/storage/fsxn/deployment/fsxnpvclaim.yaml
-```
+First, let's examine the `fsxnpvclaim.yaml` file:
+
+::yaml{file="manifests/modules/fundamentals/storage/fsxn/deployment/fsxnpvclaim.yaml" paths="kind,spec.storageClassName,spec.resources.requests.storage"}
+
+1. The resource being defined is a PersistentVolumeClaim
+2. This refers to the `fsxn-sc-nfs` storage class we created earlier
+3. We are requesting 5GB of storage 
+
 
 Now we'll update the UI component to reference the FSx for NetApp ONTAP PVC:
 

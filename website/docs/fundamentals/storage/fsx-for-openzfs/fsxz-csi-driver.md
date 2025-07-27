@@ -63,11 +63,13 @@ fsvol-0123456789abcdef0
 
 Next, we'll create a [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) object configured to use our pre-provisioned FSx for OpenZFS file system and create child volumes in provisioning mode.
 
-Using Kustomize, we'll create the storage class and inject the `ROOT_VOL_ID`, `VPC_CIDR`, and `EKS_CLUSTER_NAME` environment variables into the `ParentVolumeId`, `NfsExports`, and `Name` parameters respectively:
+For this, let's examine the `fsxzstorageclass.yaml` file:
 
-```file
-manifests/modules/fundamentals/storage/fsxz/storageclass/fsxzstorageclass.yaml
-```
+::yaml{file="manifests/modules/fundamentals/storage/fsxz/storageclass/fsxzstorageclass.yaml" paths="provisioner,parameters.ParentVolumeId, parameters.NfsExports"}
+
+1. Set the `provisioner` parameter to `fsx.openzfs.csi.aws.com` for the FSx for OpenZFS CSI provisioner
+2. Assign the `ROOT_VOL_ID` environment variable to the `ParentVolumeId` parameter
+3. Inject the `VPC_CIDR` environment variable into the `NfsExports` parameter
 
 Apply the kustomization:
 
