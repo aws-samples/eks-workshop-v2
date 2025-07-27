@@ -138,7 +138,7 @@ These Services are internal to the cluster, so we cannot access them from the In
 
 ```bash
 $ kubectl -n catalog exec -i \
-  deployment/catalog -- curl catalog.catalog.svc/catalogue | jq .
+  deployment/catalog -- curl catalog.catalog.svc/catalog/products | jq .
 ```
 
 You should receive back a JSON payload with product information. Congratulations, you've just deployed your first microservice to Kubernetes with EKS!
