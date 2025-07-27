@@ -61,13 +61,13 @@ To wait until the load balancer has finished provisioning you can run this comma
 
 ```bash timeout=180
 $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
-  -k $(kubectl get ingress -n catalog catalog-multi -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+  -k $(kubectl get ingress -n catalog catalog-multi -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 ```
 
 Try accessing the new Ingress URL in the browser as before to check the web UI still works:
 
 ```bash
-$ ADDRESS=$(kubectl get ingress -n catalog catalog-multi -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ ADDRESS=$(kubectl get ingress -n catalog catalog-multi -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 $ echo "http://${ADDRESS}"
 http://k8s-retailappgroup-2c24c1c4bc-17962260.us-west-2.elb.amazonaws.com
 ```
@@ -75,7 +75,7 @@ http://k8s-retailappgroup-2c24c1c4bc-17962260.us-west-2.elb.amazonaws.com
 Now try accessing a path we directed to the catalog service:
 
 ```bash
-$ ADDRESS=$(kubectl get ingress -n catalog catalog-multi -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ ADDRESS=$(kubectl get ingress -n catalog catalog-multi -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 $ curl $ADDRESS/catalog/products | jq .
 ```
 
