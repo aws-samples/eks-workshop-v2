@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+        - name: ui
+          volumeMounts:
+            - name: fsxzvolume
+              mountPath: /fsxz
+          env:
+            - name: RETAIL_UI_PRODUCT_IMAGES_PATH
+              value: /fsxz
+      volumes:
+        - name: fsxzvolume
+          persistentVolumeClaim:
+            claimName: fsxz-claim

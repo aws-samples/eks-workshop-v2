@@ -27,8 +27,8 @@ Notice the `volumeClaimTemplates` field which specifies the instructs Kubernetes
 This is how we'll re-configure the catalog component itself to use the new StatefulSet:
 
 ```kustomization
-modules/fundamentals/storage/ebs/deployment.yaml
-Deployment/catalog
+modules/fundamentals/storage/ebs/configMap.yaml
+ConfigMap/catalog
 ```
 
 Apply the changes and wait for the new Pods to be rolled out:

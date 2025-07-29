@@ -27,7 +27,7 @@ You can view the Terraform that applies these changes [here](https://github.com/
 
 In this lab, you will:
 
-- Learn about persistent network storage with the assets microservice
+- Learn about persistent network storage
 - Configure and deploy the EFS CSI Driver for Kubernetes
 - Implement dynamic provisioning using EFS in a Kubernetes deployment
 

@@ -42,5 +42,7 @@ jobs:
           CONTENT_BUCKET: "${{ secrets.CONTENT_BUCKET }}"
           CONTENT_CLOUDFRONT: "${{ secrets.CONTENT_CLOUDFRONT }}"
           BRANCH: stable
+          ENABLE_INDEX: 1
+          SHOW_NOTIFICATION: 1
         run: |
           bash hack/publish-content.sh

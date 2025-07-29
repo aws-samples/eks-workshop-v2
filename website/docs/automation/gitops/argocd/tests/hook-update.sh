@@ -8,7 +8,7 @@ after() {
   EXIT_CODE=0
   
   timeout -s TERM 120 bash -c \
-    'while [[ $(kubectl get pod -l app.kubernetes.io/instance=ui -n ui -o json | jq -r ".items | length") -lt 3 ]];\
+    'while [[ $(kubectl get pod -n ui -o json | jq -r ".items | length") -lt 3 ]];\
     do sleep 10;\
     done' || EXIT_CODE=$?
 

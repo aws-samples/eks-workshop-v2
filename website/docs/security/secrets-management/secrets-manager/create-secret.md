@@ -9,7 +9,7 @@ Let's begin by creating a secret in AWS Secrets Manager using the AWS CLI. We'll
 $ export SECRET_SUFFIX=$(openssl rand -hex 4)
 $ export SECRET_NAME="$EKS_CLUSTER_NAME-catalog-secret-${SECRET_SUFFIX}"
 $ aws secretsmanager create-secret --name "$SECRET_NAME" \
-  --secret-string '{"username":"catalog_user", "password":"default_password"}' --region $AWS_REGION
+  --secret-string '{"username":"catalog", "password":"dYmNfWV4uEvTzoFu"}' --region $AWS_REGION
 {
     "ARN": "arn:aws:secretsmanager:$AWS_REGION:$AWS_ACCOUNT_ID:secret:$EKS_CLUSTER_NAME/catalog-secret-ABCdef",
     "Name": "eks-workshop/static-secret",

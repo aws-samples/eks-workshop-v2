@@ -11,16 +11,17 @@ apiVersion: v1
 data:
   AWS_ACCESS_KEY_ID: key
   AWS_SECRET_ACCESS_KEY: secret
-  CARTS_DYNAMODB_CREATETABLE: true
-  CARTS_DYNAMODB_ENDPOINT: http://carts-dynamodb:8000
-  CARTS_DYNAMODB_TABLENAME: Items
+  RETAIL_CART_PERSISTENCE_DYNAMODB_CREATE_TABLE: "true"
+  RETAIL_CART_PERSISTENCE_DYNAMODB_ENDPOINT: http://carts-dynamodb:8000
+  RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME: Items
+  RETAIL_CART_PERSISTENCE_PROVIDER: dynamodb
 kind: ConfigMap
 metadata:
   name: carts
   namespace: carts
 ```
 
-The following kustomization overwrites the ConfigMap, removing the DynamoDB endpoint configuration which tells the SDK to default to the real DynamoDB service instead of our test Pod. We've also provided it with the name of the DynamoDB table thats been created already for us which is being pulled from the environment variable `CARTS_DYNAMODB_TABLENAME`.
+The following kustomization overwrites the ConfigMap, removing the DynamoDB endpoint configuration which tells the SDK to default to the real DynamoDB service instead of our test Pod. We've also provided it with the name of the DynamoDB table thats been created already for us which is being pulled from the environment variable `RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME`.
 
 ```kustomization
 modules/security/irsa/dynamo/kustomization.yaml
@@ -42,7 +43,8 @@ This will overwrite our ConfigMap with new values:
 $ kubectl get -n carts cm carts -o yaml
 apiVersion: v1
 data:
-  CARTS_DYNAMODB_TABLENAME: eks-workshop-carts
+  RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME: eks-workshop-carts
+  RETAIL_CART_PERSISTENCE_PROVIDER: dynamodb
 kind: ConfigMap
 metadata:
   labels:
