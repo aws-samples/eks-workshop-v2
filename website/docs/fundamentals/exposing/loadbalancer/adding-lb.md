@@ -122,7 +122,7 @@ You can also inspect the NLB in the console by clicking this link:
 Get the URL from the Service resource:
 
 ```bash
-$ ADDRESS=$(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}}")
+$ ADDRESS=$(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 $ echo "http://${ADDRESS}"
 http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
