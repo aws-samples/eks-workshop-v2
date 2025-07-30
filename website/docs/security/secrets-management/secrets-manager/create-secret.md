@@ -1,3 +1,4 @@
+
 ---
 title: "Storing secrets in AWS Secrets Manager"
 sidebar_position: 421
@@ -11,11 +12,15 @@ $ export SECRET_NAME="$EKS_CLUSTER_NAME-catalog-secret-${SECRET_SUFFIX}"
 $ aws secretsmanager create-secret --name "$SECRET_NAME" \
   --secret-string '{"username":"catalog", "password":"dYmNfWV4uEvTzoFu"}' --region $AWS_REGION
 {
-    "ARN": "arn:aws:secretsmanager:$AWS_REGION:$AWS_ACCOUNT_ID:secret:$EKS_CLUSTER_NAME/catalog-secret-ABCdef",
-    "Name": "eks-workshop/static-secret",
+    "ARN": "arn:aws:secretsmanager:$AWS_REGION:$AWS_ACCOUNT_ID:secret:$SECRET_NAME",
+    "Name": "$SECRET_NAME",
     "VersionId": "7e0b352d-6666-4444-aaaa-cec1f1d2df1b"
 }
 ```
+
+:::note
+We're using a random suffix to ensure our secret name is unique, which is important in environments where multiple workshop instances might be running simultaneously.
+:::
 
 You can verify that the secret was created successfully by checking either the [AWS Secrets Manager Console](https://console.aws.amazon.com/secretsmanager/listsecrets) or using the AWS CLI. Let's use the CLI to examine the secret's metadata:
 
@@ -33,3 +38,5 @@ $ aws secretsmanager describe-secret --secret-id "$SECRET_NAME"
     "CreatedDate": "2023-10-10T20:44:51.439000+00:00"
 }
 ```
+
+This secret will be used throughout the following sections as we explore different methods of accessing AWS Secrets Manager secrets from our Kubernetes applications.

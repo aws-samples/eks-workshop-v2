@@ -1,3 +1,4 @@
+
 ---
 title: "Mounting AWS Secrets Manager secret on Kubernetes Pod"
 sidebar_position: 423
@@ -71,7 +72,9 @@ $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.co
   name: tmp-volume
 ```
 
+:::info
 Mounted Secrets provide a secure way to access sensitive information as files inside the Pod's container filesystem. This approach offers several benefits including not exposing secret values as environment variables and automatic updates when the source Secret is modified.
+:::
 
 Let's examine the contents of the mounted Secret inside the Pod:
 
@@ -79,11 +82,11 @@ Let's examine the contents of the mounted Secret inside the Pod:
 $ kubectl -n catalog exec deployment/catalog -- ls /etc/catalog-secret/
 eks-workshop-catalog-secret  password  username
 $ kubectl -n catalog exec deployment/catalog -- cat /etc/catalog-secret/${SECRET_NAME}
-{"username":"catalog_user", "password":"default_password"}
+{"username":"catalog", "password":"dYmNfWV4uEvTzoFu"}
 $ kubectl -n catalog exec deployment/catalog -- cat /etc/catalog-secret/username
-catalog_user
+catalog
 $ kubectl -n catalog exec deployment/catalog -- cat /etc/catalog-secret/password
-default_password
+dYmNfWV4uEvTzoFu
 ```
 
 The mountPath `/etc/catalog-secret` contains three files:
@@ -115,7 +118,11 @@ catalog-secret   Opaque   2      43s
 We can confirm the environment variables are set correctly in the running pod:
 
 ```bash
-$ kubectl -n catalog exec -ti deployment/catalog -- env | grep DB_
+$ kubectl -n catalog exec -ti deployment/catalog -- env | grep RETAIL_CATALOG_PERSISTENCE
+RETAIL_CATALOG_PERSISTENCE_USER=catalog
+RETAIL_CATALOG_PERSISTENCE_PASSWORD=dYmNfWV4uEvTzoFu
 ```
 
+:::note
 We now have a Kubernetes Secret fully integrated with AWS Secrets Manager that can leverage secret rotation, a best practice for secrets management. When a secret is rotated or updated in AWS Secrets Manager, we can roll out a new version of the Deployment allowing the CSI Secret Store driver to synchronize the Kubernetes Secret contents with the updated value.
+:::
