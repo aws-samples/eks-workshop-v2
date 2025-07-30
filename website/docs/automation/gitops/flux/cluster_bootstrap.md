@@ -1,11 +1,12 @@
+
 ---
 title: "Cluster bootstrap"
 sidebar_position: 15
 ---
 
-The bootstrap process installs Flux components on a cluster and creates the relevant files within the repository for managing clusters object using GitOps with Flux.
+The bootstrap process installs Flux components on a cluster and creates the relevant files within the repository for managing cluster objects using GitOps with Flux.
 
-Before bootstrapping a cluster, Flux allows us to run pre-bootstrap checks to verify that everything is set up correctly. Run the following command for Flux CLI to perform the checks:
+Before bootstrapping a cluster, Flux allows us to run pre-bootstrap checks to verify that everything is set up correctly. Run the following command for Flux CLI to perform these checks:
 
 ```bash
 $ flux check --pre
@@ -28,12 +29,12 @@ $ flux bootstrap git \
 
 Let's break down the command above:
 
-- First we tell Flux which Git repository to use to store its state
-- After that, we're passing the Git `branch` that we want this instance of Flux to use, since some patterns involve multiple branches in the same Git repository
-- We use the `--components-extra` parameter to install [additional toolkit components](https://fluxcd.io/flux/components/image/) that we'll use in the Continuous Integration section
-- Finally we'll be using SSH for Flux to connect and authenticate using the SSH key at `/home/ec2-user/gitops_ssh.pem`
+- `--url`: Specifies the Git repository URL where Flux will store its state
+- `--branch`: Indicates which Git branch this instance of Flux will use (important when following patterns with multiple branches in the same repo)
+- `--components-extra`: Installs [additional toolkit components](https://fluxcd.io/flux/components/image/) needed for Continuous Integration features we'll use later
+- `--private-key-file`: Tells Flux to use SSH for authenticating with the Git repository using the specified key
 
-Now, let's verify that the bootstrap process completed successfully by running the following command:
+Let's verify that the bootstrap process completed successfully by checking the status of the kustomization:
 
 ```bash
 $ flux get kustomization
@@ -41,4 +42,4 @@ NAME            REVISION        SUSPENDED       READY   MESSAGE
 flux-system     main/6e6ae1d    False           True    Applied revision: main/6e6ae1d
 ```
 
-That shows that Flux created the basic kustomization, and that it's in sync with the cluster.
+The output confirms that Flux created the basic kustomization, and that it's successfully synchronized with the cluster. The `READY: True` status indicates that Flux has successfully applied the configuration from the Git repository to the cluster.

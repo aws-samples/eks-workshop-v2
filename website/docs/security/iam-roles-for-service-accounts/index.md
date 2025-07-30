@@ -8,6 +8,7 @@ description: "Manage AWS credentials for your applications running on Amazon Ela
 ::required-time
 
 :::tip Before you start
+
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30

@@ -1,4 +1,3 @@
-
 ---
 title: "Managing secrets with AWS Secrets Manager"
 sidebar_position: 420

@@ -1,4 +1,3 @@
-
 ---
 title: "External Secrets Operator"
 sidebar_position: 424

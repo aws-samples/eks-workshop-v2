@@ -1,4 +1,3 @@
-
 ---
 title: "Storing secrets in AWS Secrets Manager"
 sidebar_position: 421

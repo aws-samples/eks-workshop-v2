@@ -1,4 +1,3 @@
-
 ---
 title: "Mounting AWS Secrets Manager secret on Kubernetes Pod"
 sidebar_position: 423
