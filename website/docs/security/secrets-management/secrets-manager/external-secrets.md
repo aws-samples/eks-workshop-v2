@@ -51,7 +51,6 @@ provider:
           namespace: external-secrets
     region: us-west-2
     service: SecretsManager
-
 ```
 
 The ClusterSecretStore uses a [JSON Web Token (JWT)](https://jwt.io/) referenced to our ServiceAccount to authenticate with AWS Secrets Manager.
@@ -144,4 +143,10 @@ $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.co
 
 There is no single "best" choice between **AWS Secrets and Configuration Provider (ASCP)** and **External Secrets Operator (ESO)** for managing AWS Secrets Manager secrets.
 
-Each tool has distinct advantages. ASCP can mount secrets directly from AWS Secrets Manager as volumes, avoiding exposure as environment variables, though this requires volume management. ESO simplifies Kubernetes Secrets lifecycle management and offers cluster-wide SecretStore capability, but doesn't support volume mounting. Your specific use case should drive the decision, and using both tools can provide maximum flexibility and security in secrets management.
+Each tool has distinct advantages:
+
+- **ASCP** can mount secrets directly from AWS Secrets Manager as volumes, avoiding exposure as environment variables, though this requires volume management.
+
+- **ESO** simplifies Kubernetes Secrets lifecycle management and offers cluster-wide SecretStore capability, but doesn't support volume mounting.
+
+Your specific use case should drive the decision, and using both tools can provide maximum flexibility and security in secrets management.
