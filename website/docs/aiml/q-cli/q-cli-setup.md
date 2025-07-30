@@ -35,7 +35,7 @@ Now, we will equip Amazon Q CLI with Amazon EKS MCP server. Here is the Amazon E
 manifests/modules/aiml/q-cli/setup/eks-mcp.json
 ```
 
-The following commands configure the MCP server and installs `uvx` tool required for EKS MCP server to function. Press enter key when the `uvx` installation asks for your inputs.
+The following commands configure the MCP server and installs `uvx` tool required for EKS MCP server to function. 
 
 ```bash
 $ mkdir -p $HOME/.aws/amazonq 
