@@ -51,7 +51,7 @@ First, the `objects` parameter points to a secret named `$SECRET_NAME` that we c
 ```bash
 $ kubectl get secretproviderclass -n catalog catalog-spc -o yaml | yq '.spec.parameters.objects'
 
-- objectName: "eks-workshop/catalog-secret"
+- objectName: "eks-workshop-catalog-secret-WDD8yS"
   objectType: "secretsmanager"
   jmesPath:
     - path: username
@@ -74,6 +74,4 @@ $ kubectl get secretproviderclass -n catalog catalog-spc -o yaml | yq '.spec.sec
   type: Opaque
 ```
 
-:::info
 The Secret Store CSI Driver acts as an intermediary between Kubernetes and external secrets providers like AWS Secrets Manager. When configured with a SecretProviderClass, it can both mount secrets as files in Pod volumes and create synchronized Kubernetes Secret objects, providing flexibility in how applications consume these secrets.
-:::

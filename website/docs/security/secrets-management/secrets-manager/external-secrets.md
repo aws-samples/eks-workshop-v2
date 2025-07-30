@@ -85,7 +85,7 @@ dataFrom:
   - extract:
       conversionStrategy: Default
       decodingStrategy: None
-      key: eks-workshop/catalog-secret
+      key: eks-workshop-catalog-secret-WDD8yS
 refreshInterval: 1h
 secretStoreRef:
   kind: ClusterSecretStore

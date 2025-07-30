@@ -77,7 +77,9 @@ Let's examine the contents of the mounted Secret inside the Pod:
 
 ```bash
 $ kubectl -n catalog exec deployment/catalog -- ls /etc/catalog-secret/
-eks-workshop-catalog-secret  password  username
+eks-workshop-catalog-secret-WDD8yS
+password
+username
 $ kubectl -n catalog exec deployment/catalog -- cat /etc/catalog-secret/${SECRET_NAME}
 {"username":"catalog", "password":"dYmNfWV4uEvTzoFu"}
 $ kubectl -n catalog exec deployment/catalog -- cat /etc/catalog-secret/username
@@ -117,8 +119,11 @@ We can confirm the environment variables are set correctly in the running pod:
 
 ```bash
 $ kubectl -n catalog exec -ti deployment/catalog -- env | grep PERSISTENCE
-RETAIL_CATALOG_PERSISTENCE_USER=catalog
+RETAIL_CATALOG_PERSISTENCE_ENDPOINT=catalog-mysql:3306
 RETAIL_CATALOG_PERSISTENCE_PASSWORD=dYmNfWV4uEvTzoFu
+RETAIL_CATALOG_PERSISTENCE_PROVIDER=mysql
+RETAIL_CATALOG_PERSISTENCE_DB_NAME=catalog
+RETAIL_CATALOG_PERSISTENCE_USER=catalog
 ```
 
 We now have a Kubernetes Secret fully integrated with AWS Secrets Manager that can leverage secret rotation, a best practice for secrets management. When a secret is rotated or updated in AWS Secrets Manager, we can roll out a new version of the Deployment allowing the CSI Secret Store driver to synchronize the Kubernetes Secret contents with the updated value.

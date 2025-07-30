@@ -11,8 +11,8 @@ $ export SECRET_NAME="$EKS_CLUSTER_NAME-catalog-secret-${SECRET_SUFFIX}"
 $ aws secretsmanager create-secret --name "$SECRET_NAME" \
   --secret-string '{"username":"catalog", "password":"dYmNfWV4uEvTzoFu"}' --region $AWS_REGION
 {
-    "ARN": "arn:aws:secretsmanager:$AWS_REGION:$AWS_ACCOUNT_ID:secret:$SECRET_NAME",
-    "Name": "$SECRET_NAME",
+    "ARN": "arn:aws:secretsmanager:us-west-2:1234567890:secret:eks-workshop-catalog-secret-WDD8yS",
+    "Name": "eks-workshop-catalog-secret-WDD8yS",
     "VersionId": "7e0b352d-6666-4444-aaaa-cec1f1d2df1b"
 }
 ```
