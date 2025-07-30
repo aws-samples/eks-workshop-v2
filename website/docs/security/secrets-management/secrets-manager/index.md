@@ -9,6 +9,7 @@ description: "Provide sensitive configuration like credentials to applications r
 ::required-time
 
 :::tip Before you start
+
 Prepare your environment for this section:
 
 ```bash timeout=600 wait=30 hook=install
@@ -24,6 +25,7 @@ Install the following Kubernetes addons in your EKS Cluster:
 - External Secrets Operator
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/security/secrets-manager/.workshop/terraform).
+
 :::
 
 [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) is a service that enables you to easily rotate, manage, and retrieve sensitive data including credentials, API keys, and certificates. Using the [AWS Secrets and Configuration Provider (ASCP)](https://github.com/aws/secrets-store-csi-driver-provider-aws) with the [Kubernetes Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/), you can mount secrets stored in Secrets Manager as volumes in Kubernetes Pods.
