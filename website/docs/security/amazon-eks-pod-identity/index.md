@@ -18,7 +18,6 @@ This will make the following changes to your lab environment:
 
 - Create an Amazon DynamoDB table
 - Create an IAM role for AmazonEKS workloads to access the DynamoDB table
-- Install the EKS Managed Addon for EKS Pod Identity Agent
 - Install the AWS Load Balancer Controller in the Amazon EKS cluster
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/security/eks-pod-identity/.workshop/terraform).
