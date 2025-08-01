@@ -60,9 +60,10 @@ The output will show Karpenter identifying specific nodes to cordon, drain and t
 {
   "level": "INFO",
   "time": "2023-11-16T22:47:05.659Z",
-  "logger": "controller.disruption",
-  "message": "disrupting via consolidation delete, terminating 1 candidates ip-10-42-44-164.us-west-2.compute.internal/m5.large/on-demand",
-  "commit": "1072d3b"
+  "logger": "controller",
+  "message": "disrupting node(s)",
+  "commit": "1072d3b",
+  [...]
 }
 ```
 
