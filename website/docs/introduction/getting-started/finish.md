@@ -45,15 +45,15 @@ We can also see all of the Deployments created for the components:
 
 ```bash
 $ kubectl get deployment -l app.kubernetes.io/created-by=eks-workshop -A
-NAMESPACE   NAME             READY   UP-TO-DATE   AVAILABLE   AGE
-carts       carts            1/1     1            1           90s
-carts       carts-dynamodb   1/1     1            1           90s
-catalog     catalog          1/1     1            1           7m46s
-checkout    checkout         1/1     1            1           90s
-checkout    checkout-redis   1/1     1            1           90s
-orders      orders           1/1     1            1           90s
-orders      orders-mysql     1/1     1            1           90s
-ui          ui               1/1     1            1           90s
+NAMESPACE   NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+carts       carts               1/1     1            1           90s
+carts       carts-dynamodb      1/1     1            1           90s
+catalog     catalog             1/1     1            1           7m46s
+checkout    checkout            1/1     1            1           90s
+checkout    checkout-redis      1/1     1            1           90s
+orders      orders              1/1     1            1           90s
+orders      orders-postgresql   1/1     1            1           90s
+ui          ui                  1/1     1            1           90s
 ```
 
 The sample application is now deployed and ready to provide a foundation for us to use in the rest of the labs in this workshop!

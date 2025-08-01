@@ -50,7 +50,7 @@ $ kubectl rollout status -n catalog deployment/catalog --timeout=120s
 
 Let's verify the changes made in the `catalog` namespace.
 
-The Deployment now has a new `volume` and corresponding `volumeMount` that uses the CSI Secret Store Driver and is mounted at `/etc/catalog-secrets`:
+The Deployment now has a new `volume` and corresponding `volumeMount` that uses the CSI Secret Store Driver and is mounted at `/etc/catalog-secret`:
 
 ```bash
 $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.volumes'
@@ -77,20 +77,23 @@ Let's examine the contents of the mounted Secret inside the Pod:
 
 ```bash
 $ kubectl -n catalog exec deployment/catalog -- ls /etc/catalog-secret/
-eks-workshop-catalog-secret  password  username
+eks-workshop-catalog-secret-WDD8yS
+password
+username
 $ kubectl -n catalog exec deployment/catalog -- cat /etc/catalog-secret/${SECRET_NAME}
-{"username":"catalog_user", "password":"default_password"}
+{"username":"catalog", "password":"dYmNfWV4uEvTzoFu"}
 $ kubectl -n catalog exec deployment/catalog -- cat /etc/catalog-secret/username
-catalog_user
+catalog
 $ kubectl -n catalog exec deployment/catalog -- cat /etc/catalog-secret/password
-default_password
+dYmNfWV4uEvTzoFu
 ```
 
-The mountPath `/etc/catalog-secret` contains three files:
+:::info
+When mounting secrets from AWS Secrets Manager using the CSI driver, three files are created in the mountPath:
 
-1. `eks-workshop-catalog-secret`: Contains the complete secret value in JSON format
-2. `password`: Contains the password value filtered by jmesPath
-3. `username`: Contains the username value filtered by jmesPath
+1. A file with the name of your AWS secret containing the complete JSON value
+2. Individual files for each key extracted via jmesPath expressions as defined in the SecretProviderClass
+   :::
 
 The environment variables are now sourced from the newly created `catalog-secret`, which was automatically created by the SecretProviderClass via the CSI Secret Store driver:
 
@@ -115,7 +118,12 @@ catalog-secret   Opaque   2      43s
 We can confirm the environment variables are set correctly in the running pod:
 
 ```bash
-$ kubectl -n catalog exec -ti deployment/catalog -- env | grep DB_
+$ kubectl -n catalog exec -ti deployment/catalog -- env | grep PERSISTENCE
+RETAIL_CATALOG_PERSISTENCE_ENDPOINT=catalog-mysql:3306
+RETAIL_CATALOG_PERSISTENCE_PASSWORD=dYmNfWV4uEvTzoFu
+RETAIL_CATALOG_PERSISTENCE_PROVIDER=mysql
+RETAIL_CATALOG_PERSISTENCE_DB_NAME=catalog
+RETAIL_CATALOG_PERSISTENCE_USER=catalog
 ```
 
 We now have a Kubernetes Secret fully integrated with AWS Secrets Manager that can leverage secret rotation, a best practice for secrets management. When a secret is rotated or updated in AWS Secrets Manager, we can roll out a new version of the Deployment allowing the CSI Secret Store driver to synchronize the Kubernetes Secret contents with the updated value.

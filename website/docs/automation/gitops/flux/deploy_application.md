@@ -76,7 +76,7 @@ You Git directory should now look something like this which you can validate by 
 ```text
 .
 ├── apps
-│   ├── kustomization.yaml
+│   ├── repository.yaml
 │   └── ui
 │       ├── helm.yaml
 │       └── kustomization.yaml
@@ -101,10 +101,10 @@ $ git -C ~/environment/flux push origin main
 It will take Flux some time to notice the changes in CodeCommit and reconcile. You can use the Flux CLI to watch for our new `apps` kustomization to appear:
 
 ```bash test=false
-$ flux get kustomization --watch
-NAMESPACE     NAME          AGE   READY   STATUS
-flux-system   flux-system   14h   True    Applied revision: main/f39f67e6fb870eed5997c65a58c35f8a58515969
-flux-system   apps          34s   True    Applied revision: main/f39f67e6fb870eed5997c65a58c35f8a58515969
+$ flux get kustomization --watch --timeout=10m
+NAME           REVISION            SUSPENDED    READY   MESSAGE
+flux-system    main@sha1:f39f67e   False        True    Applied revision: main@sha1:f39f67e
+apps           main@sha1:f39f67e   False        True    Applied revision: main@sha1:f39f67e
 ```
 
 You can also manually trigger Flux to reconcile like so:
@@ -127,14 +127,16 @@ ui-54ff78779b-qnrrc   1/1     Running   0          5m
 Get the URL from the Ingress resource:
 
 ```bash
-$ kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
-k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
+$ ADDRESS=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+$ echo "http://${ADDRESS}"
+http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
 
 To wait until the load balancer has finished provisioning you can run this command:
 
 ```bash
-$ wait-for-lb $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
+  -k $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 ```
 
 And access it in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.

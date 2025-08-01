@@ -104,16 +104,16 @@ Verify all pods reach Ready state:
 
 ```bash timeout=30
 $ kubectl get pod -l app.kubernetes.io/created-by=eks-workshop -A
-NAMESPACE   NAME                              READY   STATUS    RESTARTS   AGE
-carts       carts-5475469b7c-bwjsf            1/1     Running   0          50s
-carts       carts-dynamodb-69fc586887-pmkw7   1/1     Running   0          19h
-catalog     catalog-5578f9649b-pkdfz          1/1     Running   0          50s
-catalog     catalog-mysql-0                   1/1     Running   0          19h
-checkout    checkout-84c6769ddd-d46n2         1/1     Running   0          50s
-checkout    checkout-redis-76bc7cb6f9-4g5qz   1/1     Running   0          23d
-orders      orders-6d74499d87-mh2r2           1/1     Running   0          50s
-orders      orders-mysql-6fbd688d4b-m7gpt     1/1     Running   0          19h
-ui          ui-5f4d85f85f-xnh8q               1/1     Running   0          50s
+NAMESPACE   NAME                                 READY   STATUS    RESTARTS   AGE
+carts       carts-5475469b7c-bwjsf               1/1     Running   0          50s
+carts       carts-dynamodb-69fc586887-pmkw7      1/1     Running   0          19h
+catalog     catalog-5578f9649b-pkdfz             1/1     Running   0          50s
+catalog     catalog-mysql-0                      1/1     Running   0          19h
+checkout    checkout-84c6769ddd-d46n2            1/1     Running   0          50s
+checkout    checkout-redis-76bc7cb6f9-4g5qz      1/1     Running   0          23d
+orders      orders-6d74499d87-mh2r2              1/1     Running   0          50s
+orders      orders-postgresql-6fbd688d4b-m7gpt   1/1     Running   0          19h
+ui          ui-5f4d85f85f-xnh8q                  1/1     Running   0          50s
 ```
 
 :::info
