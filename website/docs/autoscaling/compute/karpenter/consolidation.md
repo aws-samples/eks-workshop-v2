@@ -95,9 +95,10 @@ The output will show Karpenter consolidating via replace, replacing the m5.large
 {
   "level": "INFO",
   "time": "2023-11-16T22:50:23.249Z",
-  "logger": "controller.disruption",
-  "message": "disrupting via consolidation replace, terminating 1 candidates ip-10-42-9-102.us-west-2.compute.internal/m5.large/on-demand and replacing with on-demand node from types c5.large",
-  "commit": "1072d3b"
+  "logger": "controller",
+  "message": "disrupting node(s)",
+  "commit": "1072d3b",
+  [...]
 }
 ```
 
