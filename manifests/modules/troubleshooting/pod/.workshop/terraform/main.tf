@@ -76,10 +76,10 @@ resource "aws_instance" "ui_to_ecr" {
               sudo yum install -y docker
               sudo service docker start
               sudo usermod -a -G docker ec2-user
-              docker pull public.ecr.aws/aws-containers/retail-store-sample-ui:0.4.0
-              docker images | grep retail-store | awk '{ print $3 }' | xargs -I {} docker tag {} ${resource.aws_ecr_repository.ui.repository_url}:0.4.0
+              docker pull public.ecr.aws/aws-containers/retail-store-sample-ui:1.0.0
+              docker images | grep retail-store | awk '{ print $3 }' | xargs -I {} docker tag {} ${resource.aws_ecr_repository.ui.repository_url}:1.0.0
               aws ecr get-login-password | docker login --username AWS --password-stdin ${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.id}.amazonaws.com
-              docker push ${resource.aws_ecr_repository.ui.repository_url}:0.4.0
+              docker push ${resource.aws_ecr_repository.ui.repository_url}:1.0.0
               EOF
   subnet_id            = element(data.aws_subnets.selected.ids, 0)
   iam_instance_profile = resource.aws_iam_instance_profile.ecr_ec2.name
@@ -136,7 +136,7 @@ data "template_file" "deployment_yaml1" {
   template = file("${path.module}/deployment_permissions.yaml.tpl")
 
   vars = {
-    image = "${resource.aws_ecr_repository.ui.repository_url}:0.4.0"
+    image = "${resource.aws_ecr_repository.ui.repository_url}:1.0.0"
   }
 }
 
