@@ -36,7 +36,7 @@ data "aws_eks_node_group" "default" {
 }
 
 data "aws_ssm_parameter" "eks_ami" {
-  name = "/aws/service/eks/optimized-ami/${var.eks_cluster_version}/amazon-linux-2/recommended/image_id"
+  name = "/aws/service/eks/optimized-ami/${data.aws_eks_cluster.cluster.version}/amazon-linux-2023/x86_64/standard/recommended/image_id"
 }
 
 data "aws_subnets" "selected" {
@@ -73,7 +73,7 @@ resource "aws_instance" "ui_to_ecr" {
   user_data            = <<-EOF
               #!/bin/bash
               sudo yum update -y
-              sudo amazon-linux-extras install docker
+              sudo yum install -y docker
               sudo service docker start
               sudo usermod -a -G docker ec2-user
               docker pull public.ecr.aws/aws-containers/retail-store-sample-ui:0.4.0
