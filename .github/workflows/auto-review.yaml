@@ -56,7 +56,5 @@ jobs:
           branch: "automated-review/${{ github.event.inputs.directory }}"
           body-path: /tmp/summary.md
           delete-branch: true
-          labels: |
-            content/other
           add-paths: |
             website/docs/**/*.md
