@@ -16,7 +16,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /catalogue
+          - path: /catalog
             pathType: Prefix
             backend:
               service:

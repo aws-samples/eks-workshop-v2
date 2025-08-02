@@ -3,15 +3,17 @@ title: "Managing cluster access"
 sidebar_position: 12
 ---
 
-Now that you have a basic understanding of Cluster Access Management API let's start some hands on activities. First it's important to know that before the Cluster Access Management API was available, Amazon EKS relied on the `aws-auth` configuration map to authenticate and provide access to the clusters. With that said now Amazon EKS provides three different modes of authentication:
+Now that you have a basic understanding of Cluster Access Management API, let's start with some hands-on activities. First, it's important to know that before the Cluster Access Management API was available, Amazon EKS relied on the `aws-auth` ConfigMap to authenticate and provide access to clusters. Amazon EKS now provides three different authentication modes:
 
-1. `CONFIG_MAP`: Uses `aws-auth` configuration map exclusively. (this will be deprecated in the future)
-2. `API_AND_CONFIG_MAP`: Source authenticated IAM principals from both EKS access entry APIs and the `aws-auth` configuration map, prioritizing the access entries.
-3. `API`: Exclusively rely on EKS access entry APIs. **This is recommended method.**
+1. `CONFIG_MAP`: Uses `aws-auth` ConfigMap exclusively (this will be deprecated in the future)
+2. `API_AND_CONFIG_MAP`: Sources authenticated IAM principals from both EKS access entry APIs and the `aws-auth` ConfigMap, prioritizing the access entries
+3. `API`: Exclusively relies on EKS access entry APIs (recommended method)
 
-One thing to take in consideration is that you can update your cluster configuration from `CONFIG_MAP` to `API_AND_CONFIG_MAP` and from `API_AND_CONFIG_MAP` to `API`, but not the other way. This means that this is a one-way operation, as soon as you move towards using the Cluster Access Management API you won't be able to revert that change to rely on the `aws-auth` configuration map authentication.
+:::note
+You can update your cluster configuration from `CONFIG_MAP` to `API_AND_CONFIG_MAP` and from `API_AND_CONFIG_MAP` to `API`, but not the other way around. This is a one-way operation - once you move toward using the Cluster Access Management API, you won't be able to revert to relying solely on the `aws-auth` ConfigMap authentication.
+:::
 
-Check which method your cluster is configured with `awscli`.
+Let's check which authentication method your cluster is configured with using `awscli`:
 
 ```bash
 $ aws eks describe-cluster --name $EKS_CLUSTER_NAME --query 'cluster.accessConfig'
@@ -20,7 +22,7 @@ $ aws eks describe-cluster --name $EKS_CLUSTER_NAME --query 'cluster.accessConfi
 }
 ```
 
-Since the cluster is already using the API as one of the authentication options EKS has already mapped a couple of default access entries to the cluster. Let's check them:
+Since the cluster is already using the API as one of the authentication options, EKS has already mapped a couple of default access entries to the cluster. Let's check them:
 
 ```bash
 $ aws eks list-access-entries --cluster $EKS_CLUSTER_NAME
@@ -32,11 +34,11 @@ $ aws eks list-access-entries --cluster $EKS_CLUSTER_NAME
 }
 ```
 
-These access entries are automatically created at the moment the authentication mode is set to `API_AND_CONFIG_MAP` or `API` to grant access for the cluster creator entity and the Managed Node Groups that belong to the cluster.
+These access entries are automatically created when the authentication mode is set to `API_AND_CONFIG_MAP` or `API` to grant access for the cluster creator entity and the Managed Node Groups that belong to the cluster.
 
-The cluster creator is the entity that actually created the cluster, either via AWS Console, `awscli`, eksctl or any Infrastructure-as-Code (IaC) such as AWS CloudFormation or Terraform. The identity is automatically mapped to the cluster at the creation time and it was not visible in the past when the authentication method was restricted to `CONFIG_MAP`. Now, with the Cluster Access Management API it is possible to opt-out to create this identity mapping or even remove it after the cluster is deployed.
+The cluster creator is the entity that actually created the cluster, either via AWS Console, `awscli`, eksctl or any Infrastructure-as-Code (IaC) tool such as AWS CloudFormation or Terraform. This identity is automatically mapped to the cluster at creation time and was not visible in the past when the authentication method was restricted to `CONFIG_MAP`. Now, with the Cluster Access Management API, it's possible to opt-out of creating this identity mapping or even remove it after the cluster is deployed.
 
-If you describe these access entries you'll be able to see more information:
+Let's describe these access entries to see more information:
 
 ```bash
 $ NODE_ROLE=$(aws eks list-access-entries --cluster $EKS_CLUSTER_NAME --output text | awk '/NodeInstanceRole/ {print $2}')

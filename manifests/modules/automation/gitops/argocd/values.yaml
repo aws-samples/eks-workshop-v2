@@ -14,3 +14,7 @@ applicationSet:
 
 redis-ha:
   enabled: false
+
+configs:
+  cm:
+    timeout.reconciliation: 5s

@@ -3,5 +3,6 @@ kind: ConfigMap
 metadata:
   name: orders
 data:
-  SPRING_PROFILES_ACTIVE: mysql,rabbitmq
-  SPRING_RABBITMQ_HOST: rabbitmq.rabbitmq.svc
+  RETAIL_ORDERS_PERSISTENCE_PROVIDER: postgres
+  RETAIL_ORDERS_PERSISTENCE_ENDPOINT: orders-postgresql:5432
+  RETAIL_ORDERS_PERSISTENCE_NAME: orders

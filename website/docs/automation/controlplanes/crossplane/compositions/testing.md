@@ -32,7 +32,7 @@ To verify that the **Carts** module is indeed using the newly provisioned Dynamo
 1. Add a few items to your cart in the web interface.
 2. Observe that the items appear in your cart, as shown in the screenshot below:
 
-![Cart screenshot showing added items](../assets/cart-items-present.webp)
+<img src={require('@site/static/img/sample-app-screens/shopping-cart-items.webp').default}/>
 
 To confirm that these items are being stored in the DynamoDB table, run the following command:
 

@@ -24,6 +24,6 @@ Action:
 Check that the DynamoDB table has been created and your IAM credentials are configured with the appropriate access.
 ```
 
-The application is generating an error which indicates that the IAM role our Pod is using to access DynamoDB does not have the required permissions. This is happening because by default, if no IAM roles or policies are linked to our Pod, it use the IAM role linked to the instance profile assigned to the EC2 instance on which its running, in this case this role does not have an IAM policy that allows access to DynamoDB.
+The application is generating an error which indicates that the IAM role our Pod is using to access DynamoDB does not have the required permissions. This is happening because by default, when no IAM roles or policies are linked to our Pod, it uses the IAM role attached to the EC2 instance profile on which it's running. In this case, this role does not have an IAM policy that allows access to DynamoDB.
 
-One way we could solve this is to expand the IAM permissions of our EC2 instance profile, but this would allow any Pod that runs on them to access our DynamoDB table which is not secure, and not a good practice of granting the principle of least privilege. Instead we'll use EKS Pod Identity to allow the specific access required by the `carts` application at Pod level.
+One approach would be to expand the IAM permissions of our EC2 instance profile, but this would allow any Pod running on those instances to access our DynamoDB table. This violates the principle of least privilege and is not a security best practice. Instead, we'll use EKS Pod Identity to provide the specific permissions required by the `carts` application at the Pod level, ensuring fine-grained access control.

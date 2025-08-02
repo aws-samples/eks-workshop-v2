@@ -16,7 +16,7 @@ const plugin = (options) => {
 
       const normalizedPath = `${path.normalize(`${attributes.file}`)}`;
 
-      let title = `/eks-workshop/${normalizedPath}`;
+      let title = attributes.title || `/eks-workshop/${normalizedPath}`;
 
       if (normalizedPath.startsWith("manifests/")) {
         title = `${normalizedPath}`.replace(
@@ -26,7 +26,6 @@ const plugin = (options) => {
       }
 
       const filePath = `${manifestsDir}/${attributes.file}`;
-      const extension = path.extname(filePath).slice(1);
 
       // TODO check extension is yaml
 

@@ -37,8 +37,8 @@ Now, let's verify that the bootstrap process completed successfully by running t
 
 ```bash
 $ flux get kustomization
-NAME            REVISION        SUSPENDED       READY   MESSAGE
-flux-system     main/6e6ae1d    False           True    Applied revision: main/6e6ae1d
+NAME           REVISION            SUSPENDED    READY   MESSAGE
+flux-system    main@sha1:6e6ae1d   False        True    Applied revision: main@sha1:6e6ae1d
 ```
 
 That shows that Flux created the basic kustomization, and that it's in sync with the cluster.

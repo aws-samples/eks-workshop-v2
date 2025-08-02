@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pss
+  labels:
+    app.kubernetes.io/created-by: eks-workshop
+spec:
+  selector:
+    matchLabels:
+      app: pss
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pss
+        app.kubernetes.io/created-by: eks-workshop
+    spec:
+      containers:
+        - name: pss
+          image: public.ecr.aws/aws-containers/retail-store-sample-catalog:1.2.1
+          ports:
+            - containerPort: 80
+          securityContext:
+            readOnlyRootFilesystem: false
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            successThreshold: 3
+            periodSeconds: 5
+          resources:
+            limits:
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 512Mi

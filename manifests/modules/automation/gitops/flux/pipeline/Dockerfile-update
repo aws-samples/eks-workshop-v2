@@ -1,0 +1,3 @@
+FROM public.ecr.aws/aws-containers/retail-store-sample-ui:1.2.1
+
+ENV RETAIL_UI_THEME=orange

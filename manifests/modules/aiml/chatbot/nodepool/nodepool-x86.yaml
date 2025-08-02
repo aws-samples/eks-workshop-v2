@@ -40,9 +40,9 @@ kind: EC2NodeClass
 metadata:
   name: x86-cpu-karpenter
 spec:
-  amiFamily: AL2
+  amiFamily: AL2023
   amiSelectorTerms:
-    - alias: al2@latest
+    - alias: al2023@latest
   blockDeviceMappings:
     - deviceName: /dev/xvda
       ebs:

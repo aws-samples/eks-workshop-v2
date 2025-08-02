@@ -23,7 +23,7 @@ Example output:
 
 Let's examine the Load Balancer Controller logs to understand the permission issues:
 
-```bash wait=15
+```bash wait=25  expectError=true
 $ kubectl logs -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller
 ```
 
@@ -53,6 +53,14 @@ $ aws iam attach-role-policy \
 $ aws iam detach-role-policy \
     --role-name ${LOAD_BALANCER_CONTROLLER_ROLE_NAME} \
     --policy-arn ${LOAD_BALANCER_CONTROLLER_POLICY_ARN_ISSUE}
+```
+
+#### 3.3. Restart the Load Balancer Controller to pick up the new subnet configuration
+
+```bash
+$ kubectl -n kube-system rollout restart deploy aws-load-balancer-controller
+deployment.apps/aws-load-balancer-controller restarted
+$ kubectl -n kube-system wait --for=condition=available deployment/aws-load-balancer-controller
 ```
 
 ### Step 4: Verify the Fix

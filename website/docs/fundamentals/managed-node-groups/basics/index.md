@@ -26,9 +26,9 @@ $ eksctl get nodegroup --cluster $EKS_CLUSTER_NAME --name $EKS_DEFAULT_MNG_NAME
 
 There are several attributes of managed node groups that we can see from this output:
 
-- Configuration of minimum, maximum and desired counts of the number of nodes in this group
+- Configuration of minimum, maximum and desired counts of the number of nodes in this group. In this context the minimum and maximum are simply set bounds for the underlying Autoscaling Group, enabling compute autoscaling will be explored in the [respective labs](/docs/autoscaling/compute).
 - The instance type for this node group is `m5.large`
-- Uses the `AL2_x86_64` EKS AMI type
+- `AL2023_x86_64_STANDARD` indicates its using the Amazon EKS optimized Amazon Linux 2023 AMI, see [the documentation](https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html) for more information.
 
 We can also inspect the nodes and the placement in the availability zones.
 

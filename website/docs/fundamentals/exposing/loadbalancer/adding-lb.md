@@ -122,14 +122,16 @@ You can also inspect the NLB in the console by clicking this link:
 Get the URL from the Service resource:
 
 ```bash
-$ kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
-k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
+$ ADDRESS=$(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+$ echo "http://${ADDRESS}"
+http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
 
 To wait until the load balancer has finished provisioning you can run this command:
 
 ```bash
-$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
+  -k $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 ```
 
 Now that our application is exposed to the outside world, lets try to access it by pasting that URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.

@@ -3,6 +3,6 @@ kind: ConfigMap
 metadata:
   name: catalog
 data:
-  DB_NAME: catalog
-  DB_ENDPOINT: catalog-mysql:3306
-  DB_READ_ENDPOINT: catalog-mysql:3306
+  RETAIL_CATALOG_PERSISTENCE_PROVIDER: mysql
+  RETAIL_CATALOG_PERSISTENCE_ENDPOINT: catalog-mysql:3306
+  RETAIL_CATALOG_PERSISTENCE_DB_NAME: catalog

@@ -3,7 +3,7 @@ title: "Creating a Simple Policy"
 sidebar_position: 71
 ---
 
-To gain an understanding of Kyverno Policies, we'll start our lab with a simple Pod Label requirement. As you may know, Labels in Kubernetes are used to tag objects and resources in the cluster.
+To gain an understanding of Kyverno policies, we'll start our lab with a simple Pod label requirement. As you may know, labels in Kubernetes are used to tag resources in the cluster.
 
 Below is a sample policy requiring a Label `CostCenter`:
 
@@ -20,7 +20,7 @@ Kyverno has two kinds of Policy resources: **ClusterPolicy** used for Cluster-Wi
 - The `message` is what gets displayed to a user if this rule fails validation.
 - The `pattern` object defines what pattern will be checked in the resource. In this case, it's looking for `metadata.labels` with `CostCenter`.
 
-This example Policy will block any Pod creation that doesn't have the label `CostCenter`.
+This example policy will block any Pod creation that doesn't have the label `CostCenter`.
 
 Create the policy using the following command:
 
@@ -49,7 +49,7 @@ $ kubectl -n ui get pods
 No resources found in ui namespace.
 ```
 
-As mentioned, the Pod was not recreated. Try to force a rollout of the `ui` deployment:
+As mentioned, the Pod was not recreated. Try to force a rollout of the `ui` Deployment:
 
 ```bash expectError=true
 $ kubectl -n ui rollout restart deployment/ui
@@ -64,7 +64,7 @@ require-labels:
 
 The rollout failed with the admission webhook denying the request due to the `require-labels` Kyverno Policy.
 
-You can also check this `error` message by describing the `ui` deployment or viewing the `events` in the `ui` Namespace:
+You can also check this `error` message by describing the `ui` Deployment or viewing the `events` in the `ui` Namespace:
 
 ```bash
 $ kubectl -n ui describe deployment ui
@@ -122,21 +122,21 @@ $ kubectl apply -f  ~/environment/eks-workshop/modules/security/kyverno/simple-p
 clusterpolicy.kyverno.io/add-labels created
 ```
 
-To validate the Mutation Webhook, let's roll out the `assets` Deployment without explicitly adding a label:
+To validate the Mutation Webhook, let's roll out the `carts` Deployment without explicitly adding a label:
 
 ```bash
-$ kubectl -n assets rollout restart deployment/assets
-deployment.apps/assets restarted
-$ kubectl -n assets rollout status deployment/assets
-deployment "assets" successfully rolled out
+$ kubectl -n carts rollout restart deployment/carts
+deployment.apps/carts restarted
+$ kubectl -n carts rollout status deployment/carts
+deployment "carts" successfully rolled out
 ```
 
 Validate that the label `CostCenter=IT` was automatically added to the Pod to meet the policy requirements, resulting in a successful Pod creation even though the Deployment didn't have the label specified:
 
 ```bash
-$ kubectl -n assets get pods --show-labels
+$ kubectl -n carts get pods --show-labels
 NAME                     READY   STATUS    RESTARTS   AGE   LABELS
-assets-bb88b4789-kmk62   1/1     Running   0          25s   CostCenter=IT,app.kubernetes.io/component=service,app.kubernetes.io/created-by=eks-workshop,app.kubernetes.io/instance=assets,app.kubernetes.io/name=assets,pod-template-hash=bb88b4789
+carts-bb88b4789-kmk62   1/1     Running   0          25s   CostCenter=IT,app.kubernetes.io/component=service,app.kubernetes.io/created-by=eks-workshop,app.kubernetes.io/instance=carts,app.kubernetes.io/name=carts,pod-template-hash=bb88b4789
 ```
 
 It's also possible to mutate existing resources in your Amazon EKS Clusters with Kyverno Policies using `patchStrategicMerge` and `patchesJson6902` parameters in your Kyverno Policy.

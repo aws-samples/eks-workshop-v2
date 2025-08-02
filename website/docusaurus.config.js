@@ -37,6 +37,9 @@ const config = {
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.png",
   noIndex: process.env.ENABLE_INDEX !== "1",
+  customFields: {
+    showNotification: process.env.SHOW_NOTIFICATION === "1",
+  },
 
   organizationName: "aws-samples",
   projectName: "eks-workshop-v2",
@@ -73,8 +76,8 @@ const config = {
                   MANIFESTS_REF: manifestsRef,
                   MANIFESTS_OWNER: manifestsOwner,
                   MANIFESTS_REPOSITORY: manifestsRepository,
-                  KUBERNETES_VERSION: "1.31",
-                  KUBERNETES_NODE_VERSION: "1.31-eks-036c24b",
+                  KUBERNETES_VERSION: "1.33",
+                  KUBERNETES_NODE_VERSION: "1.33-eks-036c24b",
                 },
               },
             ],

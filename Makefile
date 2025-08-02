@@ -25,6 +25,10 @@ test:
 shell:
 	bash hack/shell.sh $(environment)
 
+.PHONY: ide
+ide:
+	bash hack/shell.sh $(environment) ide
+
 .PHONY: reset-environment
 reset-environment:
 	bash hack/shell.sh $(environment) reset-environment

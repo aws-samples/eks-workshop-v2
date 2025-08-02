@@ -45,9 +45,9 @@ kind: EC2NodeClass
 metadata:
   name: trainium-trn1
 spec:
-  amiFamily: AL2
+  amiFamily: AL2023
   amiSelectorTerms:
-    - alias: al2@latest
+    - alias: al2023@latest
   instanceStorePolicy: RAID0
   blockDeviceMappings:
     - deviceName: /dev/xvda

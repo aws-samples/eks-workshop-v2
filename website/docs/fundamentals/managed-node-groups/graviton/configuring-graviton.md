@@ -30,7 +30,7 @@ $ aws eks create-nodegroup \
   --node-role $GRAVITON_NODE_ROLE \
   --subnets $PRIMARY_SUBNET_1 $PRIMARY_SUBNET_2 $PRIMARY_SUBNET_3 \
   --instance-types t4g.medium \
-  --ami-type AL2_ARM_64 \
+  --ami-type AL2023_ARM_64_STANDARD \
   --scaling-config minSize=1,maxSize=3,desiredSize=1 \
   --disk-size 20
 ```

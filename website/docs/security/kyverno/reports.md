@@ -44,9 +44,6 @@ kyverno       cpol-restrict-image-registries   0      24     0      0       0   
 orders        cpol-baseline-policy             6      0      0      0       0      19m
 orders        cpol-require-labels              0      6      0      0       0      27m
 orders        cpol-restrict-image-registries   6      0      0      0       0      25m
-rabbitmq      cpol-baseline-policy             2      0      0      0       0      19m
-rabbitmq      cpol-require-labels              0      2      0      0       0      27m
-rabbitmq      cpol-restrict-image-registries   2      0      0      0       0      25m
 ui            cpol-baseline-policy             3      0      0      0       0      19m
 ui            cpol-require-labels              0      3      0      0       0      27m
 ui            cpol-restrict-image-registries   3      0      0      0       0      25m

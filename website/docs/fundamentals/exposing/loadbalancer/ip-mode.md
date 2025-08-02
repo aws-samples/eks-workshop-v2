@@ -143,5 +143,6 @@ As expected we now have 3 targets, matching the number of replicas in the ui Dep
 If you want to wait to make sure the application still functions the same, run the following command. Otherwise you can proceed to the next module.
 
 ```bash timeout=240
-$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
+  -k $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 ```

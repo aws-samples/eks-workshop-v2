@@ -19,7 +19,7 @@ after() {
   EXIT_CODE=0
 
   timeout -s TERM 400 bash -c \
-    'while [[ "$(curl -s -o /dev/null -L -w ''%{http_code}'' ${catalog_endpoint}/catalogue)" != "200" ]];\
+    'while [[ "$(curl -s -o /dev/null -L -w ''%{http_code}'' ${catalog_endpoint}/catalog/products)" != "200" ]];\
     do sleep 20;\
     done' || EXIT_CODE=$?
 

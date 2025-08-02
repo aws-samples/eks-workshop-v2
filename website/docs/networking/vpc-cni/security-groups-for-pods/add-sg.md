@@ -95,9 +95,8 @@ deployment "catalog" successfully rolled out
 This time the catalog Pod will start and the rollout will succeed. You can check the logs to confirm its connecting to the RDS database:
 
 ```bash
-$ kubectl -n catalog logs deployment/catalog | grep Connect
-2022/12/20 20:52:10 Connecting to catalog_user:xxxxxxxxxx@tcp(eks-workshop-catalog.cjkatqd1cnrz.us-west-2.rds.amazonaws.com:3306)/catalog?timeout=5s
-2022/12/20 20:52:10 Connected
-2022/12/20 20:52:10 Connecting to catalog_user:xxxxxxxxxx@tcp(eks-workshop-catalog.cjkatqd1cnrz.us-west-2.rds.amazonaws.com:3306)/catalog?timeout=5s
-2022/12/20 20:52:10 Connected
+$ kubectl -n catalog logs deployment/catalog
+Using mysql database eks-workshop-catalog.cjkatqd1cnrz.us-west-2.rds.amazonaws.com:3306
+Running database migration...
+Database migration complete
 ```

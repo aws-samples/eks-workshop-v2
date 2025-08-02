@@ -29,9 +29,9 @@ kind: EC2NodeClass
 metadata:
   name: aiml
 spec:
-  amiFamily: AL2
+  amiFamily: AL2023
   amiSelectorTerms:
-    - alias: al2@latest
+    - alias: al2023@latest
   blockDeviceMappings:
     - deviceName: /dev/xvda
       ebs:
