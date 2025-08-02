@@ -32,15 +32,17 @@ output "environment_variables" {
     # Nodegroup 3 variables
     NODE_NAME = try(
       format(
-        "ip-%s.us-west-2.compute.internal",
-        replace(try(data.aws_instances.new_nodegroup_3_instances.private_ips[0], ""), ".", "-")
+        "ip-%s.%s.compute.internal",
+        replace(try(data.aws_instances.new_nodegroup_3_instances.private_ips[0], ""), ".", "-"),
+        data.aws_region.current.name
       ),
       "No running instances found"
     ),
     INSTANCE_ID = try(
       data.aws_instances.new_nodegroup_3_instances.ids[0],
       "No instance ID found"
-    )
+    ),
+    AWS_REGION = data.aws_region.current.name
   }
 
   depends_on = [
