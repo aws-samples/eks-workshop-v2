@@ -327,8 +327,7 @@ $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegro
 
 Verify the node has successfully joined the cluster:
 
-```bash timeout=100 hook=fix-2-3 hookTimeout=110 wait=70
-$ kubectl wait --for=condition=ready nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_2
+```bash timeout=100 hook=fix-2-3 hookTimeout=130 wait=90
 $ kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_2
 NAME                                          STATUS   ROLES    AGE    VERSION
 ip-10-42-108-252.us-west-2.compute.internal   Ready    <none>   3m9s   v1.30.0-eks-036c24b
