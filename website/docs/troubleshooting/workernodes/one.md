@@ -115,7 +115,7 @@ Run the below command to capture Nodegroup Autoscale Group name as NEW_NODEGROUP
 
 ```bash
 $ NEW_NODEGROUP_1_ASG_NAME=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_1 --query 'nodegroup.resources.autoScalingGroups[0].name' --output text)
-echo $NEW_NODEGROUP_1_ASG_NAME
+$ echo $NEW_NODEGROUP_1_ASG_NAME
 ```
 
 #### 4.2. Check the AutoScaling Activities
@@ -327,6 +327,7 @@ ACTIVE
 #### 8.2. Verify node joining
 
 ```bash timeout=100 wait=10
+$ kubectl wait --for=condition=ready nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_1
 $ kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_1
 NAME                                          STATUS   ROLES    AGE    VERSION
 ip-10-42-108-252.us-west-2.compute.internal   Ready    <none>   3m9s   v1.30.0-eks-036c24b

@@ -94,7 +94,7 @@ For your convenience, the instance ID of the worker node in new*nodegroup_3 has 
 :::
 
 ```bash
-$ aws cloudwatch get-metric-data --region us-west-2 --start-time $(date -u -d '1 hour ago' +"%Y-%m-%dT%H:%M:%SZ") --end-time $(date -u +"%Y-%m-%dT%H:%M:%SZ") --metric-data-queries '[{"Id":"cpu","MetricStat":{"Metric":{"Namespace":"AWS/EC2","MetricName":"CPUUtilization","Dimensions":[{"Name":"InstanceId","Value":"'$INSTANCE_ID'"}]},"Period":60,"Stat":"Average"}}]'
+$ aws cloudwatch get-metric-data --region $AWS_REGION --start-time $(date -u -d '1 hour ago' +"%Y-%m-%dT%H:%M:%SZ") --end-time $(date -u +"%Y-%m-%dT%H:%M:%SZ") --metric-data-queries '[{"Id":"cpu","MetricStat":{"Metric":{"Namespace":"AWS/EC2","MetricName":"CPUUtilization","Dimensions":[{"Name":"InstanceId","Value":"'$INSTANCE_ID'"}]},"Period":60,"Stat":"Average"}}]'
 
 {
     "MetricDataResults": [
@@ -242,7 +242,7 @@ prod-ds-srdqx               250m          256Mi         500m        512Mi
 
 #### 7.3 Check node CPU resource
 ```bash wait=300 test=false
-$ INSTANCE_ID=$(kubectl get node ${NODE_NAME_2} -o jsonpath='{.spec.providerID}' | cut -d '/' -f5) && aws cloudwatch get-metric-data --region us-west-2 --start-time $(date -u -d '1 hour ago' +"%Y-%m-%dT%H:%M:%SZ") --end-time $(date -u +"%Y-%m-%dT%H:%M:%SZ") --metric-data-queries '[{"Id":"cpu","MetricStat":{"Metric":{"Namespace":"AWS/EC2","MetricName":"CPUUtilization","Dimensions":[{"Name":"InstanceId","Value":"'$INSTANCE_ID'"}]},"Period":60,"Stat":"Average"}}]'
+$ INSTANCE_ID=$(kubectl get node ${NODE_NAME_2} -o jsonpath='{.spec.providerID}' | cut -d '/' -f5) && aws cloudwatch get-metric-data --region $AWS_REGION --start-time $(date -u -d '1 hour ago' +"%Y-%m-%dT%H:%M:%SZ") --end-time $(date -u +"%Y-%m-%dT%H:%M:%SZ") --metric-data-queries '[{"Id":"cpu","MetricStat":{"Metric":{"Namespace":"AWS/EC2","MetricName":"CPUUtilization","Dimensions":[{"Name":"InstanceId","Value":"'$INSTANCE_ID'"}]},"Period":60,"Stat":"Average"}}]'
 {
     "MetricDataResults": [
         {
