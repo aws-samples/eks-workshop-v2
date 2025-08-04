@@ -3,7 +3,7 @@ title: "Using Amazon RDS"
 sidebar_position: 20
 ---
 
-An RDS database has been created in our account, let's retrieve its endpoint and password to be used later:
+An RDS database has been created in our account. Let's retrieve its endpoint and password to be used later:
 
 ```bash
 $ export CATALOG_RDS_ENDPOINT=$(aws rds describe-db-instances --db-instance-identifier $EKS_CLUSTER_NAME-catalog | jq -r '.DBInstances[0].Endpoint.Address')
@@ -12,7 +12,7 @@ eks-workshop-catalog.cluster-cjkatqd1cnrz.us-west-2.rds.amazonaws.com
 $ export CATALOG_RDS_PASSWORD=$(aws ssm get-parameter --name $EKS_CLUSTER_NAME-catalog-db --region $AWS_REGION --query "Parameter.Value" --output text --with-decryption)
 ```
 
-The first step in this process is to re-configure the catalog service to use an Amazon RDS database that has already been created. The application loads most of its configuration from a ConfigMap, let's take look at it:
+The first step in this process is to re-configure the catalog service to use an Amazon RDS database that has already been created. The application loads most of its configuration from a ConfigMap. Let's take a look at it:
 
 ```bash
 $ kubectl -n catalog get -o yaml cm catalog
@@ -27,14 +27,14 @@ metadata:
   namespace: catalog
 ```
 
-The following kustomization overwrites the ConfigMap, altering the MySQL endpoint so that the application will connect to the Amazon RDS database thats been created already for us which is being pulled from the environment variable `CATALOG_RDS_ENDPOINT`.
+The following kustomization overwrites the ConfigMap, altering the MySQL endpoint so that the application will connect to the Amazon RDS database that's been created already for us, which is being pulled from the environment variable `CATALOG_RDS_ENDPOINT`:
 
 ```kustomization
 modules/networking/securitygroups-for-pods/rds/kustomization.yaml
 ConfigMap/catalog
 ```
 
-Let's apply this change to use the the RDS database:
+Let's apply this change to use the RDS database:
 
 ```bash
 $ kubectl kustomize ~/environment/eks-workshop/modules/networking/securitygroups-for-pods/rds \
@@ -68,7 +68,7 @@ Waiting for deployment "catalog" rollout to finish: 1 old replicas are pending t
 error: timed out waiting for the condition
 ```
 
-We got an error, it looks like our catalog Pods failed to restart in time. What's gone wrong? Let's check the Pod logs to see what happened:
+We got an error - it looks like our catalog Pods failed to restart in time. What's gone wrong? Let's check the Pod logs to see what happened:
 
 ```bash
 $ kubectl -n catalog logs deployment/catalog
@@ -79,7 +79,7 @@ Using mysql database eks-workshop-catalog.cjkatqd1cnrz.us-west-2.rds.amazonaws.c
 panic: failed to connect database
 ```
 
-Our Pod is unable to connect to the RDS database. We can check the EC2 Security Group thats been applied to the RDS database like so:
+Our Pod is unable to connect to the RDS database. We can check the EC2 Security Group that's been applied to the RDS database like so:
 
 ```bash
 $ aws ec2 describe-security-groups \

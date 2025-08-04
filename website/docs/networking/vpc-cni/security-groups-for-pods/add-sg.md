@@ -4,7 +4,7 @@ sidebar_position: 40
 hide_table_of_contents: true
 ---
 
-In order for our catalog Pod to successfully connect to the RDS instance we'll need to use the correct security group. Although this security group could be applied to the EKS worker nodes themselves, this would result in any workload in our cluster having network access to the RDS instance. Instead we'll apply Security Groups for Pods to specifically allow our catalog Pods access to the RDS instance.
+In order for our catalog Pod to successfully connect to the RDS instance, we'll need to use the correct security group. Although this security group could be applied to the EKS worker nodes themselves, this would result in any workload in our cluster having network access to the RDS instance. Instead, we'll apply Security Groups for Pods to specifically allow our catalog Pods access to the RDS instance.
 
 A security group which allows access to the RDS database has already been set up for you, and we can view it like so:
 
@@ -63,7 +63,7 @@ This security group:
 - Allows all egress traffic
 - Will be allowed to access the RDS database as we saw earlier
 
-In order for our Pod to use this security group we need to use the `SecurityGroupPolicy` CRD to tell EKS which security group is to be mapped to a specific set of Pods. This is what we'll configure:
+In order for our Pod to use this security group, we need to use the `SecurityGroupPolicy` CRD to tell EKS which security group is to be mapped to a specific set of Pods. This is what we'll configure:
 
 ```file
 manifests/modules/networking/securitygroups-for-pods/sg/policy.yaml
@@ -92,7 +92,7 @@ $ kubectl rollout status -n catalog deployment/catalog --timeout 30s
 deployment "catalog" successfully rolled out
 ```
 
-This time the catalog Pod will start and the rollout will succeed. You can check the logs to confirm its connecting to the RDS database:
+This time the catalog Pod will start and the rollout will succeed. You can check the logs to confirm it's connecting to the RDS database:
 
 ```bash
 $ kubectl -n catalog logs deployment/catalog
