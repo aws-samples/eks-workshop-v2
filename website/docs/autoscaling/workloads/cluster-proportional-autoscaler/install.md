@@ -12,14 +12,16 @@ Amazon EKS offers the ability to [automatically scale CoreDNS via the EKS addon]
 
 :::
 
-First lets install CPA using its Helm chart. We'll use the following `values.yaml` file to configure CPA:
+First let's install CPA using its Helm chart. We'll use the following `values.yaml` file to configure CPA:
 
 ::yaml{file="manifests/modules/autoscaling/workloads/cpa/values.yaml" paths="options.target,config.linear.nodesPerReplica,config.linear.min,config.linear.max"}
 
-1. Target the deployment `coredns`
-2. Add a replica for every 2 worker nodes in the cluster
-3. Always run at least 2 replicas
-4. Do not scale to more than 6 replicas
+The configuration:
+
+1. Targets the deployment `coredns`
+2. Adds a replica for every 2 worker nodes in the cluster
+3. Always runs at least 2 replicas
+4. Does not scale to more than 6 replicas
 
 :::caution
 
@@ -27,7 +29,7 @@ The configuration above should not be considered best practice for automatically
 
 :::
 
-Install the chart:
+Let's install the chart:
 
 ```bash
 $ helm repo add cluster-proportional-autoscaler https://kubernetes-sigs.github.io/cluster-proportional-autoscaler
