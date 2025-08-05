@@ -19,7 +19,7 @@ Then we'll create a separate Ingress for the `catalog` component that also lever
 manifests/modules/exposing/ingress/multiple-ingress/ingress-catalog.yaml
 ```
 
-This Ingress is also configuring rules to route requests prefixed with `/catalogue` to the `catalog` component.
+This Ingress is also configuring rules to route requests prefixed with `/catalog` to the `catalog` component.
 
 Apply these manifests to the cluster:
 

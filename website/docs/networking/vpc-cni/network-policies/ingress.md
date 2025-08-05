@@ -15,7 +15,7 @@ Before applying the policy, the 'catalog' service can be accessed by both the 'u
 $ kubectl exec deployment/ui -n ui -- curl -v catalog.catalog/health --connect-timeout 5
    Trying XXX.XXX.XXX.XXX:80...
 * Connected to catalog.catalog (XXX.XXX.XXX.XXX) port 80 (#0)
-> GET /catalogue HTTP/1.1
+> GET /health HTTP/1.1
 > Host: catalog.catalog
 > User-Agent: curl/7.88.1
 > Accept: */*
@@ -30,7 +30,7 @@ As well as the 'orders' component:
 $ kubectl exec deployment/orders -n orders -- curl -v catalog.catalog/health --connect-timeout 5
    Trying XXX.XXX.XXX.XXX:80...
 * Connected to catalog.catalog (XXX.XXX.XXX.XXX) port 80 (#0)
-> GET /catalogue HTTP/1.1
+> GET /health HTTP/1.1
 > Host: catalog.catalog
 > User-Agent: curl/7.88.1
 > Accept: */*
@@ -57,7 +57,7 @@ Now, we can validate the policy by confirming that we can still access the 'cata
 $ kubectl exec deployment/ui -n ui -- curl -v catalog.catalog/health --connect-timeout 5
   Trying XXX.XXX.XXX.XXX:80...
 * Connected to catalog.catalog (XXX.XXX.XXX.XXX) port 80 (#0)
-> GET /catalogue HTTP/1.1
+> GET /health HTTP/1.1
 > Host: catalog.catalog
 > User-Agent: curl/7.88.1
 > Accept: */*
