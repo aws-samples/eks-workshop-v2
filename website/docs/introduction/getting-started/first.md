@@ -1,9 +1,15 @@
 ---
-title: Deploying our first component
-sidebar_position: 40
+title: Deploying components
+sidebar_position: 30
 ---
 
-The sample application is composed of a set of Kubernetes manifests organized in a way that can be easily applied with Kustomize. Kustomize is an open-source tool also provided as a native feature of the `kubectl` CLI. This workshop uses Kustomize to apply changes to Kubernetes manifests, making it easier to understand changes to manifest files without needing to manually edit YAML. As we work through the various modules of this workshop, we'll incrementally apply overlays and patches with Kustomize.
+# Deploying Components
+
+Now that you understand the application architecture, let's deploy it step by step. We'll start with a single component to see how your Kubernetes knowledge applies in practice.
+
+## Understanding the Manifests
+
+The sample application is composed of Kubernetes manifests organized for easy deployment with Kustomize. Since you've learned about Pods, Deployments, Services, and Configuration, you'll recognize these concepts in the manifests.
 
 The easiest way to browse the YAML manifests for the sample application and the modules in this workshop is using the file browser in the IDE:
 
@@ -52,23 +58,27 @@ serviceAccount.yaml
 statefulset-mysql.yaml
 ```
 
-These manifests include the Deployment for the catalog API which expresses the desired state of the catalog API component:
+Let's examine the catalog Deployment manifest to see how it applies the concepts you learned:
 
 ::yaml{file="manifests/base-application/catalog/deployment.yaml" paths="spec.replicas,spec.template.metadata.labels,spec.template.spec.containers.0.image,spec.template.spec.containers.0.ports,spec.template.spec.containers.0.livenessProbe,spec.template.spec.containers.0.resources"}
 
-1. Run a single replica
-2. Apply labels to the Pods so other resources can refer to them
-3. Use the `public.ecr.aws/aws-containers/retail-store-sample-catalog` container image
-4. Expose the container on port 8080 named `http`
-5. Run [probes/healthchecks](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) against the `/health` path
-6. [Requests](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) a specific amount of CPU and memory so the Kubernetes scheduler can place it on a node with enough available resources
+Notice how this Deployment uses concepts from [Kubernetes Fundamentals](../../kubernetes-fundamentals):
 
-The manifests also include the Service used by other components to access the catalog API:
+1. **Replicas** - Runs a single replica (you learned about scaling in [Deployments](../../kubernetes-fundamentals/deployments))
+2. **Labels** - Applies labels so Services can select these Pods
+3. **Container Image** - Uses a pre-built container image from ECR Public
+4. **Ports** - Exposes port 8080 for the HTTP API
+5. **Health Checks** - Uses liveness probes (you learned about these in [Pods](../../kubernetes-fundamentals/pods))
+6. **Resources** - Requests specific CPU and memory for scheduling
+
+The Service manifest shows how to expose the application:
 
 ::yaml{file="manifests/base-application/catalog/service.yaml" paths="spec.ports,spec.selector"}
 
-1. Exposes itself on port 80 and targets the `http` port exposed by the Deployment, which translates to port 8080
-2. Selects catalog Pods using labels that match what we expressed in the Deployment above
+This Service demonstrates concepts from [Services](../../kubernetes-fundamentals/services):
+
+1. **Port mapping** - Exposes port 80 externally, routes to port 8080 on Pods
+2. **Selectors** - Uses labels to find the right Pods (matches the Deployment labels above)
 
 Let's create the catalog component:
 
@@ -92,7 +102,7 @@ NAME      STATUS   AGE
 catalog   Active   15s
 ```
 
-We can take a look at the Pods running in this namespace:
+Let's examine the Pods that were created:
 
 ```bash
 $ kubectl get pod -n catalog
@@ -101,7 +111,11 @@ catalog-846479dcdd-fznf5   1/1     Running   2 (43s ago)   46s
 catalog-mysql-0            1/1     Running   0             46s
 ```
 
-Notice we have a Pod for our catalog API and another for the MySQL database. If the `catalog` Pod is showing a status of `CrashLoopBackOff`, it needs to be able to connect to the `catalog-mysql` Pod before it will start. Kubernetes will keep restarting it until this is the case. In that case, we can use [kubectl wait](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#wait) to monitor specific Pods until they are in a Ready state:
+Notice we have two Pods:
+- **catalog-846479dcdd-fznf5** - The catalog API (managed by a Deployment)
+- **catalog-mysql-0** - The MySQL database (managed by a StatefulSet)
+
+This demonstrates the Pod concepts you learned in [Kubernetes Fundamentals](../../kubernetes-fundamentals/pods). If the catalog Pod shows `CrashLoopBackOff`, it's waiting to connect to the database - Kubernetes will keep restarting it until the connection succeeds.
 
 ```bash
 $ kubectl wait --for=condition=Ready pods --all -n catalog --timeout=180s
@@ -117,7 +131,12 @@ You can ["follow" the kubectl logs output](https://kubernetes.io/docs/reference/
 $ kubectl logs -n catalog deployment/catalog
 ```
 
-Kubernetes also allows us to easily scale the number of catalog Pods horizontally:
+## Applying Your Kubernetes Knowledge
+
+Let's use the concepts you learned to interact with the application:
+
+### Scaling (from Deployments)
+Scale the catalog service horizontally:
 
 ```bash
 $ kubectl scale -n catalog --replicas 3 deployment/catalog
@@ -125,7 +144,8 @@ deployment.apps/catalog scaled
 $ kubectl wait --for=condition=Ready pods --all -n catalog --timeout=180s
 ```
 
-The manifests we applied also create a Service for each of our application and MySQL Pods that can be used by other components in the cluster to connect:
+### Services (from Services)
+Examine the Services that were created:
 
 ```bash
 $ kubectl get svc -n catalog
@@ -134,11 +154,28 @@ catalog         ClusterIP   172.20.83.84     <none>        80/TCP     2m48s
 catalog-mysql   ClusterIP   172.20.181.252   <none>        3306/TCP   2m48s
 ```
 
-These Services are internal to the cluster, so we cannot access them from the Internet or even the VPC. However, we can use [exec](https://kubernetes.io/docs/tasks/debug/debug-application/get-shell-running-container/) to access an existing Pod in the EKS cluster to check the catalog API is working:
+These are ClusterIP Services (internal only), just like you learned in [Services](../../kubernetes-fundamentals/services).
+
+### Testing the Application
+Use kubectl exec (from Pods) to test the API:
 
 ```bash
 $ kubectl -n catalog exec -i \
   deployment/catalog -- curl catalog.catalog.svc/catalog/products | jq .
 ```
 
-You should receive back a JSON payload with product information. Congratulations, you've just deployed your first microservice to Kubernetes with EKS!
+You should receive back a JSON payload with product information. 
+
+## What You've Accomplished
+
+Congratulations! You've successfully applied your Kubernetes knowledge to deploy a real microservice. You used:
+
+- **Namespaces** - Organized resources logically
+- **Deployments** - Managed the catalog API Pods
+- **StatefulSets** - Managed the MySQL database
+- **Services** - Enabled communication between components
+- **ConfigMaps and Secrets** - Configured the application (check them with `kubectl get configmap,secret -n catalog`)
+
+## Next Steps
+
+Now let's deploy the complete application in [Full Deployment](./full-deployment) to see how all the microservices work together.
