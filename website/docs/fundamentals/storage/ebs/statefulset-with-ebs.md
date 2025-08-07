@@ -18,11 +18,11 @@ Why are we not updating the existing StatefulSet? The fields we need to update a
 
 Here in the new catalog database StatefulSet:
 
-```file
-manifests/modules/fundamentals/storage/ebs/statefulset-mysql.yaml
-```
+::yaml{file="manifests/modules/fundamentals/storage/ebs/statefulset-mysql.yaml" paths="spec.volumeClaimTemplates,spec.volumeClaimTemplates.0.spec.storageClassName,spec.volumeClaimTemplates.0.spec.resources.requests.storage"}
 
-Notice the `volumeClaimTemplates` field which specifies the instructs Kubernetes to utilize Dynamic Volume Provisioning to create a new EBS Volume, a [PersistentVolume (PV)](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and a [PersistentVolumeClaim (PVC)](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims) all automatically.
+1. The `volumeClaimTemplates` field instructs Kubernetes to utilize Dynamic Volume Provisioning to create a new EBS Volume, a [PersistentVolume (PV)](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and a [PersistentVolumeClaim (PVC)](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims) all automatically.
+2. Specify the `storageClassName` as `ebs-csi-default-sc` which is the name of the default storage class
+3. We are requesting a `30GB` EBS volume
 
 This is how we'll re-configure the catalog component itself to use the new StatefulSet:
 
