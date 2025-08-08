@@ -1,5 +1,5 @@
 ---
-title: "Troubleshoot Amazon EKS cluster issues using Amazon Q CLI"
+title: "Basic Troubleshooting"
 sidebar_position: 22
 ---
 
@@ -43,8 +43,16 @@ As shown in the following screenshot, Q CLI should be able to provide an accurat
 
 ![q-cli-eks-rca-analysis](./assets/q-cli-response-3.jpg)
 
-With this, we conclude this module introducing Amazon Q CLI and Amazon EKS MCP server to you. You may continue to experiment with these tools to explore and appreciate the power they bring to your fingertips. Once you are done, you may run the following command to end the session of Q CLI.
+Now, let's end the Q CLI session and clean up this failing pod to see a more complex troubleshooting use case in the next section.
+
+Enter the following command to exit Q CLI session.
 
 ```text
 /quit
+```
+
+Finally, run the following command to delete the failing pod.
+
+```bash
+$ kubectl delete -f /eks-workshop/manifests/modules/aiml/q-cli/troubleshoot/failing-pod.yaml --ignore-not-found
 ```

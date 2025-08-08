@@ -1,5 +1,5 @@
 ---
-title: "Retrieve Amazon EKS cluster details using Amazon Q CLI"
+title: "Retrieve cluster details"
 sidebar_position: 21
 ---
 

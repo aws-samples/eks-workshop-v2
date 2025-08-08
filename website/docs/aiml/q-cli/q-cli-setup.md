@@ -1,5 +1,5 @@
 ---
-title: "Amazon Q CLI Setup"
+title: "Setup"
 sidebar_position: 20
 ---
 
