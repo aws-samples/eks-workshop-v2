@@ -1,6 +1,6 @@
 ---
 title: MNG basics
-sidebar_position: 30
+sidebar_position: 10
 sidebar_custom_props: { "module": true }
 description: "Learn the fundamentals of Managed Node Groups on Amazon Elastic Kubernetes Service."
 ---
