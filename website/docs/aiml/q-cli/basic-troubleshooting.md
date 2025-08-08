@@ -36,7 +36,7 @@ $ q chat
 Ask Q CLI to help troubleshoot the issue by entering the following question:
 
 ```text
-I have a failing pod in my eks-workshop cluster. Please find the cause of the failure and let me know how to solve it.
+I have a failing pod in my eks-workshop cluster. Find the cause of the failure and let me know how to solve it.
 ```
 
 Q CLI will analyze the cluster state and provide a root cause analysis for the pod being in the pending state. The response you receive may vary, but it should look similar to this:

@@ -88,7 +88,7 @@ $ q chat
 Ask Q CLI to help troubleshoot the issue:
 
 ```text
-I have a pod in my eks-workshop cluster that is showing CrashLoopBackOff status. Please troubleshoot the issue and tell me how to solve it.
+I have a pod in my eks-workshop cluster that is showing CrashLoopBackOff status. Troubleshoot the issue and solve it.
 ```
 
 Q CLI will request permissions to execute various commands to gather information about the pods, events, logs, and permissions. After analyzing the information, it would provide a root cause analysis and suggest a solution.

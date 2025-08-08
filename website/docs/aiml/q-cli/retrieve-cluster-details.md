@@ -16,7 +16,7 @@ The `>` symbol at the beginning of a command line indicates you have an active A
 Let's start by getting details about our EKS cluster. Enter the following prompt:
 
 ```text
-Please provide me the details of the EKS cluster in my current context.
+Tell me about the EKS cluster in my current context.
 ```
 
 Observe how Amazon Q CLI processes this natural language command. You'll notice it executes various `aws` CLI commands, indicated by the caption `Using tool: use_aws`. For this request, Amazon Q CLI didn't need to use any tools from the EKS MCP server.
