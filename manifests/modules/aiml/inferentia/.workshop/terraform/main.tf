@@ -33,9 +33,8 @@ module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
   version = "21.0.8"
 
-  cluster_name          = var.addon_context.eks_cluster_id
-  enable_v1_permissions = true
-  namespace             = local.namespace
+  cluster_name = var.addon_context.eks_cluster_id
+  namespace    = local.namespace
 
   iam_role_name                   = "${var.addon_context.eks_cluster_id}-karpenter-controller"
   iam_role_use_name_prefix        = false
