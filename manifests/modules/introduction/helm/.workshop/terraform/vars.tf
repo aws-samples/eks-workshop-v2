@@ -38,5 +38,5 @@ variable "nginx_chart_version" {
   description = "The chart version of nginx to use"
   type        = string
   # renovate-helm: depName=nginx registryUrl=https://charts.bitnami.com/bitnami
-  default = "21.0.6"
+  default = "21.1.4"
 }
