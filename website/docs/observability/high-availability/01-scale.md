@@ -98,6 +98,6 @@ $ timeout 10s ~/$SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 For more information on these changes, check out these sections:
 
 - [Chaos Mesh](https://chaos-mesh.org/)
-- [Pod Affinity and Anti-Affinity](/docs/fundamentals/managed-node-groups/basics/affinity/)
+- [Pod Affinity and Anti-Affinity](/docs/fundamentals/compute/managed-node-groups/basics/affinity/)
 
 :::

@@ -6,7 +6,7 @@ sidebar_position: 30
 In this lab, we'll use Karpenter to provision the Trainium nodes necessary for handling the Mistral-7B chatbot workload.
 
 :::tip
-To learn more about Karpenter, check out the [Karpenter module](../../autoscaling/compute/karpenter/index.md) in this workshop.
+To learn more about Karpenter, check out the [Karpenter module](../../fundamentals/compute/karpenter/index.md) in this workshop.
 :::
 
 Karpenter has already been installed in our EKS Cluster and runs as a deployment:

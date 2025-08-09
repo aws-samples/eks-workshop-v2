@@ -1,6 +1,6 @@
 ---
 title: Spot instances
-sidebar_position: 50
+sidebar_position: 30
 sidebar_custom_props: { "module": true }
 description: "Take advantage of discounts with Amazon EC2 Spot instances on Amazon Elastic Kubernetes Service."
 ---
