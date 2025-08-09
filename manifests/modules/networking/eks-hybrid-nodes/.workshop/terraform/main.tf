@@ -175,11 +175,11 @@ module "hybrid_node" {
   vpc_security_group_ids = [aws_security_group.hybrid_nodes.id]
   key_name               = module.key_pair.key_pair_name
 
-  root_block_device = [{
+  root_block_device = {
     volume_size           = 100
     volume_type           = "gp3"
     delete_on_termination = true
-  }]
+  }
 
   source_dest_check = false
 
