@@ -105,7 +105,7 @@ resource "aws_s3_bucket" "inference" {
 
 module "iam_assumable_role_inference" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "5.59.0"
+  version                       = "5.60.0"
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-inference"
   provider_url                  = var.addon_context.eks_oidc_issuer_url
