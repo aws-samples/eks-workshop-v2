@@ -36,4 +36,8 @@ done
 
 terraform -chdir="${conf_dir}" init -backend=false
 
+echo ""
+echo "Validating ${conf_dir}"
+echo ""
+
 terraform -chdir="${conf_dir}" validate
