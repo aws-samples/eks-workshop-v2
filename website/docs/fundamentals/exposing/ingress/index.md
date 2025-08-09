@@ -17,8 +17,8 @@ $ prepare-environment exposing/ingress
 
 This will make the following changes to your lab environment:
 
-- Creates an IAM role required by the AWS Load Balancer Controller
-- Creates an IAM role required by ExternalDNS
+- Create an IAM role required by the AWS Load Balancer Controller
+- Create an IAM role required by ExternalDNS
 - Create an AWS Route 53 private hosted zone
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/exposing/ingress/.workshop/terraform).
