@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: catalog-multi
+  namespace: catalog
+  labels:
+    app.kubernetes.io/created-by: eks-workshop
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+    # HIGHLIGHT
+    alb.ingress.kubernetes.io/group.name: retail-app-group
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /catalog
+            pathType: Prefix
+            backend:
+              service:
+                name: catalog
+                port:
+                  number: 80
