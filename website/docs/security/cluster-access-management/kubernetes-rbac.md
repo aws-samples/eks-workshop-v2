@@ -9,15 +9,18 @@ In this section of the lab, we'll show how to configure access entries with gran
 
 First, let's create the Kubernetes objects that model our required permissions. This `Role` provides the permissions we outlined above:
 
-```file
-manifests/modules/security/cam/rbac/role.yaml
-```
+::yaml{file="manifests/modules/security/cam/rbac/role.yaml" paths="metadata.namespace,rules.0,rules.1"}
+
+1. Restrict the role permissions to apply only to the `carts` namespace
+2. This rule allows read-only operations `verbs: ["get", "list", "watch"]` on all resources `resources: ["*"]`
+3. This rule allows delete operations `verbs: ["delete"]` specific to pods only `resources: ["pods"]`
 
 And this `RoleBinding` will map the role to a group named `carts-team`:
 
-```file
-manifests/modules/security/cam/rbac/rolebinding.yaml
-```
+::yaml{file="manifests/modules/security/cam/rbac/rolebinding.yaml" paths="roleRef,subjects.0"}
+
+1. `roleRef` references the `carts-team-role` `Role` we created earlier 
+2. `subjects` specifies that a `Group` named `carts-team` will get the permissions associated with the `Role`
 
 Let's apply these manifests:
 
