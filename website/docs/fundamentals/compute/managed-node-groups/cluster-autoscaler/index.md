@@ -1,6 +1,6 @@
 ---
 title: "Cluster Autoscaler (CA)"
-sidebar_position: 20
+sidebar_position: 10
 sidebar_custom_props: { "module": true }
 description: "Automatically manage compute for Amazon Elastic Kubernetes Service with Cluster Autoscaler."
 ---

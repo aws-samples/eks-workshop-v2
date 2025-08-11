@@ -11,7 +11,7 @@ sidebar_position: 60
 - Pod Disruption Budgets
 - Pod Security Policies
 
-A [LimitRange](https://kubernetes.io/docs/concepts/policy/limit-range/) is a policy to limit resource allocations (limits and requests) specified to respective objects kind such as Pod, PersistentVolumeClaim in a namespace. _Resource allocation_ is used to specify resources that are needed and at the same time ensure resources are not over consumed by the object. _Karpenter_ is a Kubernetes auto-scaler that helps to deploy right-sized resources based on the application demand. Refer [Karpenter](../../../autoscaling/compute/karpenter/index.md) section to configure _autoscaling_ in EKS Cluster.
+A [LimitRange](https://kubernetes.io/docs/concepts/policy/limit-range/) is a policy to limit resource allocations (limits and requests) specified to respective objects kind such as Pod, PersistentVolumeClaim in a namespace. _Resource allocation_ is used to specify resources that are needed and at the same time ensure resources are not over consumed by the object. _Karpenter_ is a Kubernetes auto-scaler that helps to deploy right-sized resources based on the application demand. Refer [Karpenter](../../../fundamentals/compute/karpenter/index.md) section to configure _autoscaling_ in EKS Cluster.
 
 [Resource Quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/), are hard limit defined at the namespace level and the objects like `pods`, `services`, compute resources like `cpu` and `memory` should be created with in the hard limit, else it will be rejected defined by a ResourceQuota object.
 

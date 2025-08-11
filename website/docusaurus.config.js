@@ -129,12 +129,6 @@ const config = {
           },
           {
             type: "doc",
-            docId: "autoscaling/index",
-            position: "left",
-            label: "Autoscaling",
-          },
-          {
-            type: "doc",
             docId: "observability/index",
             position: "left",
             label: "Observability",
