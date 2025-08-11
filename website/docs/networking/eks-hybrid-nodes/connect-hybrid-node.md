@@ -22,12 +22,13 @@ $ export ACTIVATION_ID=$(echo $ACTIVATION_JSON | jq -r ".ActivationId")
 $ export ACTIVATION_CODE=$(echo $ACTIVATION_JSON | jq -r ".ActivationCode")
 ```
 
-With our activation created, we can now create a `nodeconfig.yaml` which will be
-referenced when we join our instance to the cluster. This utilizes the SSM
-`ACTIVATION_CODE` and `ACTIVATION_ID` created in the previous step as well as
-the `EKS_CLUSTER_NAME` name and `AWS_REGION` environment variables.
+With our activation created, we can now create a `NodeConfig` which will be
+referenced when we join our instance to the cluster. 
 
-::yaml{file="manifests/modules/networking/eks-hybrid-nodes/nodeconfig.yaml"}
+::yaml{file="manifests/modules/networking/eks-hybrid-nodes/nodeconfig.yaml" paths="spec.cluster,spec.hybrid.ssm"}
+
+1. Specify the target EKS cluster `name` and `region` using the  `$EKS_CLUSTER_NAME` and `$AWS_REGION` environment variables
+2. Specify the SSM `activationCode` and `activationId` by using the `$ACTIVATION_CODE` and `$ACTIVATION_ID` environment variables created in the previous step 
 
 ```bash
 $ cat ~/environment/eks-workshop/modules/networking/eks-hybrid-nodes/nodeconfig.yaml \
@@ -73,7 +74,20 @@ Great! The node appears but with a `NotReady` status. This is because we must in
 $ helm repo add cilium https://helm.cilium.io/
 ```
 
-With the repo added, we can install Cilium using the configuration provided below.
+Next, let us look at the configuration values we will provide as input to the Cilium helm chart:
+
+::yaml{file="manifests/modules/networking/eks-hybrid-nodes/cilium-values.yaml" paths="affinity.nodeAffinity,ipam.mode,ipam.operator.clusterPoolIPv4MaskSize,ipam.operator.clusterPoolIPv4PodCIDRList,operator.replicas,operator.affinity,operator.unmanagedPodWatcher.restart,envoy.enabled"}
+
+1. This `affinity.nodeAffinity` configuration targets nodes by `eks.amazonaws.com/compute-type` and ensures that the main CNI daemonset pods that handle networking on each node only run on `hybrid` nodes
+2. Set `ipam.mode` to `cluster-pool` to use cluster-wide IP pool for pod IP allocation
+3. Set `clusterPoolIPv4MaskSize: 25` to specify `/25` subnets allocated per node (128 IP addresses)
+4. Set `clusterPoolIPv4PodCIDRList` to `10.53.0.0/16` to specify the dedicated CIDR for the hybrid node pods
+5. Set `replicas: 1` to specify a single instance of the operator will run
+6. This `affinity.nodeAffinity` configuration targets nodes by `eks.amazonaws.com/compute-type` and ensures that the main CNI operator pods that manage the CNI configuration on each node only run on `hybrid` nodes
+7. Set `unmanagedPodWatcher.restart: false` to disable pod restart watching
+8. Set `envoy.enabled: false` to disable Envoy proxy integration
+
+Let us install Cilium using this configuration.
 
 ```bash timeout=300 wait=30
 $ helm install cilium cilium/cilium \
@@ -82,8 +96,6 @@ $ helm install cilium cilium/cilium \
 --create-namespace \
 --values ~/environment/eks-workshop/modules/networking/eks-hybrid-nodes/cilium-values.yaml
 ```
-
-::yaml{file="manifests/modules/networking/eks-hybrid-nodes/cilium-values.yaml"}
 
 After installing Cilium our Hybrid Node should come up, happy and healthy.
 

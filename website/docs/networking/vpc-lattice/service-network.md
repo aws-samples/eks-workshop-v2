@@ -7,9 +7,10 @@ The Gateway API controller has been configured to create a VPC Lattice service n
 
 Before creating a `Gateway`, we need to formalize the types of load balancing implementations that are available via the Kubernetes resource model with a [GatewayClass](https://gateway-api.sigs.k8s.io/concepts/api-overview/#gatewayclass). The controller that listens to the Gateway API relies on an associated `GatewayClass` resource that the user can reference from their `Gateway`:
 
-```file
-manifests/modules/networking/vpc-lattice/controller/gatewayclass.yaml
-```
+::yaml{file="manifests/modules/networking/vpc-lattice/controller/gatewayclass.yaml" paths="metadata.name,spec.controllerName"}
+
+1. Set `amazon-vpc-lattice` as the `GatewayClass` name for reference by `Gateway` resources
+2. Set `application-networking.k8s.aws/gateway-api-controller` as the `controllerName` to specify the AWS Gateway API controller that manages gateways of this class
 
 Lets create the `GatewayClass`:
 
@@ -19,9 +20,11 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/networking/vpc-lattice/con
 
 The following YAML will create a Kubernetes `Gateway` resource which is associated with a VPC Lattice **Service Network**.
 
-```file
-manifests/modules/networking/vpc-lattice/controller/eks-workshop-gw.yaml
-```
+::yaml{file="manifests/modules/networking/vpc-lattice/controller/eks-workshop-gw.yaml" paths="metadata.name,spec.gatewayClassName,spec.listeners.0"}
+
+1. Set the Gateway identifier as the EKS Cluster name by setting `metadata.name` to the `EKS_CLUSTER_NAME` environment variable
+2. Set `amazon-vpc-lattice` as the `gatewayClassName` to refer to the VPC Lattice GatewayClass defined earlier
+3. This configuration specifies that the `listener` will accept `HTTP` traffic on port `80`
 
 Apply it with the following command:
 

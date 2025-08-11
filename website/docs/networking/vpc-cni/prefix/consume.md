@@ -5,11 +5,12 @@ sidebar_position: 40
 
 To demonstrate VPC CNI behavior of adding additional prefixes to our worker nodes, we'll deploy pause pods to utilize more IP addresses than are currently assigned. We're utilizing a large number of these pods to simulate the addition of application pods in to the cluster either through deployments or scaling operations.
 
-```file
-manifests/modules/networking/prefix/deployment-pause.yaml
-```
+::yaml{file="manifests/modules/networking/prefix/deployment-pause.yaml" paths="spec.replicas,spec.template.spec.containers.0.image"}
 
-This will spin up `150 pods` and may take some time:
+1. Creates 150 identical pods
+2. Set the image to `registry.k8s.io/pause` which provides a lightweight container that consumes minimal resources
+
+Apply the pause pod deployment and wait for it to be ready. It may take some time to spin up the `150 pods`:
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/networking/prefix
