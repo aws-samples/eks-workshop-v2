@@ -42,18 +42,19 @@ Run the following command to get the list of instances.
 ```bash
 $ ec2-instance-selector --vcpus 2 --memory 4 --gpus 0 --current-generation \
   -a x86_64 --deny-list 't.*' --output table-wide
-Instance Type  VCPUs   Mem (GiB)  Hypervisor  Current Gen  Hibernation Support  CPU Arch  Network Performance
--------------  -----   ---------  ----------  -----------  -------------------  --------  -------------------
-c5.large       2       4          nitro       true         true                 x86_64    Up to 10 Gigabit
-c5a.large      2       4          nitro       true         false                x86_64    Up to 10 Gigabit
-c5ad.large     2       4          nitro       true         false                x86_64    Up to 10 Gigabit
-c5d.large      2       4          nitro       true         true                 x86_64    Up to 10 Gigabit
-c6a.large      2       4          nitro       true         false                x86_64    Up to 12.5 Gigabit
-c6i.large      2       4          nitro       true         true                 x86_64    Up to 12.5 Gigabit
-c6id.large     2       4          nitro       true         true                 x86_64    Up to 12.5 Gigabit
-c6in.large     2       4          nitro       true         false                x86_64    Up to 25 Gigabit
-c7a.large      2       4          nitro       true         false                x86_64    Up to 12.5 Gigabit
-c7i.large      2       4          nitro       true         false                x86_64    Up to 12.5 Gigabit
+Instance Type   VCPUs   Mem (GiB)  Hypervisor  Current Gen  Hibernation Support  CPU Arch  Network Performance  ENIs    GPUs    GPU Mem (GiB)  GPU Info  On-Demand Price/Hr  Spot Price/Hr
+-------------   -----   ---------  ----------  -----------  -------------------  --------  -------------------  ----    ----    -------------  --------  ------------------  -------------
+c5.large        2       4          nitro       true         true                 x86_64    Up to 10 Gigabit     3       0       0              none      $0.085              $0.0344
+c5a.large       2       4          nitro       true         false                x86_64    Up to 10 Gigabit     3       0       0              none      $0.077              $0.0275
+c5ad.large      2       4          nitro       true         false                x86_64    Up to 10 Gigabit     3       0       0              none      $0.086              $0.0403
+c5d.large       2       4          nitro       true         true                 x86_64    Up to 10 Gigabit     3       0       0              none      $0.096              $0.0468
+c6a.large       2       4          nitro       true         true                 x86_64    Up to 12.5 Gigabit   3       0       0              none      $0.0765             $0.0313
+c6i.large       2       4          nitro       true         true                 x86_64    Up to 12.5 Gigabit   3       0       0              none      $0.085              $0.0351
+c6id.large      2       4          nitro       true         true                 x86_64    Up to 12.5 Gigabit   3       0       0              none      $0.1008             $0.0472
+c6in.large      2       4          nitro       true         true                 x86_64    Up to 25 Gigabit     3       0       0              none      $0.1134             $0.0396
+c7a.large       2       4          nitro       true         true                 x86_64    Up to 12.5 Gigabit   3       0       0              none      $0.10264            $0.0338
+c7i-flex.large  2       4          nitro       true         true                 x86_64    Up to 12.5 Gigabit   3       0       0              none      $0.08479            $0.0419
+c7i.large       2       4          nitro       true         true                 x86_64    Up to 12.5 Gigabit   3       0       0              none      $0.08925            $0.031
 ```
 
 We'll use these instances when we define our node group in the next section.
