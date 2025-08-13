@@ -194,7 +194,7 @@ EOF
   tags   = var.tags
 }
 
-resource "aws_eks_pod_identity_association" "example" {
+resource "aws_eks_pod_identity_association" "carts_pod_identity_association" {
   cluster_name    = var.addon_context.eks_cluster_id
   namespace       = "carts"
   service_account = "carts"

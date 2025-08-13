@@ -5,10 +5,6 @@ sidebar_position: 21
 
 In this section we will use Amazon Q CLI along with the [MCP server for Amazon EKS](https://awslabs.github.io/mcp/servers/eks-mcp-server/) to retrieve details of the EKS cluster using natural language commands.
 
-:::caution
-You must have an active Amazon Q CLI session in your terminal for this lab. If you don't have one, please complete the [Amazon Q CLI Setup](q-cli-setup.md) lab before proceeding.
-:::
-
 :::info
 The `>` symbol at the beginning of a command line indicates you have an active Amazon Q CLI session. You can type or paste the prompt text provided in this lab at this prompt. If you don't see the `>` prompt, restart your Amazon Q CLI session using the `q chat` command.
 :::
@@ -24,6 +20,10 @@ Observe how Amazon Q CLI processes this natural language command. You'll notice 
 You should see an EKS cluster summary generated in Markdown format similar to the following:
 
 ![q-cli-eks-cluster-summary](./assets/q-cli-response-1.jpg)
+
+:::tip
+As per the basic characteristics of GenAI models, it is possible and normal to see the response you may get from Q CLI be different from what is shown in this and other Q CLI labs for the given prompts. You may get somewhat different responses for the same prompt if you try them more than once.
+:::
 
 Now, let's try a more complex query that requires the EKS MCP server:
 

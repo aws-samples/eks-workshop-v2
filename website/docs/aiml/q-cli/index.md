@@ -1,9 +1,9 @@
 ---
-title: "Troubleshooting with Amazon Q CLI"
+title: "Operating EKS with Amazon Q CLI"
 sidebar_position: 10
 chapter: true
 sidebar_custom_props: { "module": true }
-description: "Use Amazon Q CLI along with Amazon EKS MCP server to troubleshoot workloads on Amazon Elastic Kubernetes Service."
+description: "Use Amazon Q CLI along with Amazon EKS MCP server to manage Amazon EKS clusters."
 ---
 
 :::tip Before you start

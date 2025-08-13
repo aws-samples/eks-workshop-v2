@@ -6,13 +6,16 @@ sidebar_position: 20
 In this section we will configure Amazon Q CLI along with the [MCP server for Amazon EKS](https://awslabs.github.io/mcp/servers/eks-mcp-server/) to work with the EKS cluster using natural language commands.
 
 :::info
-Amazon Q CLI is a powerful tool that leverages generative AI capabilities for common development and operations tasks. Its capabilities can be enhanced by adding purpose-built MCP servers for specialized knowledge. We'll use the Amazon EKS MCP server with Amazon Q CLI in this section. You can find a catalog of AWS-provided MCP servers [here](https://awslabs.github.io/mcp/), which can be used with Amazon Q CLI in a similar way.
+Amazon Q CLI is leverages generative AI capabilities for common development and operations tasks. Its capabilities can be enhanced by adding purpose-built MCP servers for specialized knowledge. We'll use the Amazon EKS MCP server with Amazon Q CLI in this section. You can find a catalog of AWS-provided MCP servers [here](https://awslabs.github.io/mcp/), which can be used with Amazon Q CLI in a similar way.
 :::
 
 First, download the Amazon Q CLI binary for your operating system architecture:
 
 ```bash
-$ ARCH=$(arch) && curl --proto '=https' --tlsv1.2 -sSf https://desktop-release.q.us-east-1.amazonaws.com/1.12.4/q-${ARCH}-linux.zip -o q.zip
+$ ARCH=$(arch) 
+$ curl --proto '=https' --tlsv1.2 \
+  -sSf https://desktop-release.q.us-east-1.amazonaws.com/1.12.4/q-${ARCH}-linux.zip \
+  -o q.zip
 ```
 
 Install Amazon Q CLI:
@@ -44,13 +47,13 @@ Configure the MCP server and install the required `uvx` tool:
 ```bash
 $ mkdir -p $HOME/.aws/amazonq 
 $ cp ~/environment/eks-workshop/modules/aiml/q-cli/setup/eks-mcp.json $HOME/.aws/amazonq/mcp.json
-$ curl -LsSf https://astral.sh/uv/install.sh | sh
+$ curl -LsSf https://astral.sh/uv/0.8.9/install.sh | sh
 ```
 
 To use Amazon Q CLI, you'll need to authenticate using either an AWS Builder ID or a Pro license subscription. 
 
 :::tip
-If you don't have either credential, you can create a free AWS Builder ID by following [these instructions](https://docs.aws.amazon.com/signin/latest/userguide/create-aws_builder_id.html). This Builder ID can also be used for personal use of Amazon Q CLI.
+You can create a free AWS Builder ID by following [these instructions](https://docs.aws.amazon.com/signin/latest/userguide/create-aws_builder_id.html). This Builder ID can also be used for personal use of Amazon Q CLI.
 :::
 
 ```bash
