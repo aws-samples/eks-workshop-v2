@@ -26,9 +26,12 @@ To implement best practices, we'll define a policy that restricts the use of una
 
 For this lab, we'll use the [Amazon ECR Public Gallery](https://public.ecr.aws/) as our trusted registry, blocking any containers that use images hosted in other registries. Here's a sample Kyverno policy to restrict image pulling for this use case:
 
-```file
-manifests/modules/security/kyverno/images/restrict-registries.yaml
-```
+::yaml{file="manifests/modules/security/kyverno/images/restrict-registries.yaml" paths="spec.validationFailureAction,spec.background,spec.rules.0.match,spec.rules.0.validate.pattern"}
+
+1. `validationFailureAction: Enforce` blocks non-compliant Pods from being created
+2. `background: true` applies the policy to existing resources in addition to new ones
+3. `match.any.resources.kinds: [Pod]` applies the policy to all Pod resources cluster-wide
+4. `validate.pattern` enforces that all container images must originate from the `public.ecr.aws/*` registry, blocking any images from unauthorized registries
 
 > Note: This policy doesn't restrict the usage of InitContainers or Ephemeral Containers to the referred repository.
 
