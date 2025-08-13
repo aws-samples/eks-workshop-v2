@@ -26,7 +26,7 @@ The baseline profile of the Pod Security Standards is a collection of the most f
 
 1. `background: true` applies the policy to existing resources in addition to new ones
 2. `validationFailureAction: Enforce` blocks non-compliant Pods from being created
-3. `match.any.resources.kinds: [Pod]` applies the policy to all `Pod` resources cluster-wide
+3. `match.any.resources.kinds: [Pod]` applies the policy to all Pod resources cluster-wide
 4. `validate.podSecurity` enforces Kubernetes Pod Security Standards at the `baseline` level with moderate security restrictions using the `latest` standards version
 
 Go ahead and apply the Baseline Policy:

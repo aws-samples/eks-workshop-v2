@@ -11,7 +11,7 @@ To simulate the finding you'll be using a pre-configure manifest with some speci
 
 ::yaml{file="manifests/modules/security/Guardduty/mount/privileged-pod-example.yaml" paths="spec.containers.0.securityContext,spec.containers.0.volumeMounts.0.mountPath,spec.volumes.0.hostPath.path"}
 
-1. Setting `SecurityContext: privileged: true` grants full root privileges to the `Pod`
+1. Setting `SecurityContext: privileged: true` grants full root privileges to the Pod
 2. `mountPath: /host-etc` specifies that the mapped host volume will be accessible inside the container at `/host-etc` 
 3. `path: /etc` specifies that `/etc` directory from the host system will be the source directory for the mount
 

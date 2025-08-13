@@ -32,7 +32,7 @@ We need to create a `ClusterSecretStore` resource - this is a cluster-wide Secre
 2. Use the `$AWS_REGION` environment variable to specify the AWS region where secrets are stored
 3. `auth.jwt` uses IRSA to authenticate via the `external-secrets-sa` service account in the `external-secrets` namespace, which is linked to an IAM role with AWS Secrets Manager permissions
 
-Lets use this file to create the `ClusterSecretStore` resource.
+Lets use this file to create the ClusterSecretStore resource.
 
 ```bash
 $ cat ~/environment/eks-workshop/modules/security/secrets-manager/cluster-secret-store.yaml \

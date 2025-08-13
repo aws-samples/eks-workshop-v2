@@ -11,7 +11,7 @@ Below is a sample `ClusterPolicy` which will block any Pod creation that doesn't
 
 1. `spec.validationFailureAction` tells Kyverno if the resource being validated should be allowed but reported (`Audit`) or blocked (`Enforce`). The default is `Audit`, but in our example it is set to `Enforce`
 2. The `rules` section contains one or more rules to be validated
-3. The `match` statement sets the scope of what will be checked. In this case, it's any `Pod` resource
+3. The `match` statement sets the scope of what will be checked. In this case, it's any Pod resource
 4. The `validate` statement attempts to positively check what is defined. If the statement, when compared with the requested resource, is true, it's allowed. If false, it's blocked
 5. The `message` is what gets displayed to a user if this rule fails validation
 6. The `pattern` object defines what pattern will be checked in the resource. In this case, it's looking for `metadata.labels` with `CostCenter`
@@ -104,7 +104,7 @@ Below is a sample Policy with a mutation rule defined:
 
 ::yaml{file="manifests/modules/security/kyverno/simple-policy/add-labels-mutation-policy.yaml" paths="spec.rules.0.match,spec.rules.0.mutate"}
 
-1. `match.any.resources.kinds: [Pod]` targets this `ClusterPolicy` to all `Pod` resources cluster-wide
+1. `match.any.resources.kinds: [Pod]` targets this `ClusterPolicy` to all Pod resources cluster-wide
 2.  `mutate` modifies resources during creation (vs. validate which blocks/allows). `patchStrategicMerge.metadata.labels.CostCenter: IT` automatically adds `CostCenter: IT` label to every Pod
 
 Go ahead and create the above Policy using the following command:

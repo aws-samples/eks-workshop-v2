@@ -30,7 +30,7 @@ For this lab, we'll use the [Amazon ECR Public Gallery](https://public.ecr.aws/)
 
 1. `validationFailureAction: Enforce` blocks non-compliant Pods from being created
 2. `background: true` applies the policy to existing resources in addition to new ones
-3. `match.any.resources.kinds: [Pod]` applies the policy to all `Pod` resources cluster-wide
+3. `match.any.resources.kinds: [Pod]` applies the policy to all Pod resources cluster-wide
 4. `validate.pattern` enforces that all container images must originate from the `public.ecr.aws/*` registry, blocking any images from unauthorized registries
 
 > Note: This policy doesn't restrict the usage of InitContainers or Ephemeral Containers to the referred repository.
