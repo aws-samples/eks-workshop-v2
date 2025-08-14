@@ -120,7 +120,7 @@ spec:
       mountPath: /scripts
   initContainers:
   - name: setup
-    image: public.ecr.aws/aws-containers/retail-store-sample-utils:load-gen.0.4.0
+    image: public.ecr.aws/aws-containers/retail-store-sample-utils:load-gen.1.2.1
     command:
     - bash
     args:
