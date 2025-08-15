@@ -6,8 +6,6 @@ environment=$1
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-source $SCRIPT_DIR/lib/common-env.sh
-
 terraform_dir="$(mktemp -d)"
 manifests_dir="${SCRIPT_DIR}/../manifests"
 
