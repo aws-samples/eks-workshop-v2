@@ -27,7 +27,7 @@ jobs:
       durations-artifact: ${{ steps.upload-durations.outputs.artifact-id }}
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install utilities
         run: |
           sudo apt install -y gettext
