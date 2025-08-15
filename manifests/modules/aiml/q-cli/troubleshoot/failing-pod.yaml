@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: failing-pod
+  namespace: default
+  labels:
+    app: volume-demo
+spec:
+  containers:
+  - name: main-container
+    image: busybox:1.37.0-glibc
+    command: ["sleep", "3600"]
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+    volumeMounts:
+    # Persistent volume claim - persistent storage
+    - name: persistent-storage
+      mountPath: /data
+  
+  volumes:
+  
+  # Persistent Volume Claim
+  - name: persistent-storage
+    persistentVolumeClaim:
+      claimName: my-pvc
+
+  restartPolicy: Always
+  serviceAccountName: default
