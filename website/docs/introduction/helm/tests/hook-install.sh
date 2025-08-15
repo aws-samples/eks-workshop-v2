@@ -5,9 +5,9 @@ before() {
 }
 
 after() {
-  kubectl rollout status -n nginx deployment/nginx --timeout=40s
+  kubectl rollout status -n ui deployment/ui --timeout=40s
 
-  POD_COUNT=$(kubectl get pod -n nginx -l app.kubernetes.io/name=nginx -o json | jq -r ".items | length")
+  POD_COUNT=$(kubectl get pod -n ui -o json | jq -r ".items | length")
   
   if [[ $POD_COUNT -eq 1 ]]; then
     exit 0
