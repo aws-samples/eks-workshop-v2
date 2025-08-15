@@ -33,10 +33,3 @@ variable "resources_precreated" {
   description = "Have expensive resources been created already"
   type        = bool
 }
-
-variable "nginx_chart_version" {
-  description = "The chart version of nginx to use"
-  type        = string
-  # renovate-helm: depName=nginx registryUrl=https://charts.bitnami.com/bitnami
-  default = "21.1.4"
-}
