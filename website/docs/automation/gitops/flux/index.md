@@ -16,8 +16,8 @@ $ prepare-environment automation/gitops/flux
 
 This will make the following changes to your lab environment:
 
-- Create an AWS CodeCommit repository
-- Create an IAM user with access to the CodeCommit repository
+- Install the AWS Load Balancer controller in the Amazon EKS cluster
+- Install the EKS managed addon for the EBS CSI driver
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/automation/gitops/flux/.workshop/terraform).
 
