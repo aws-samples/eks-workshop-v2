@@ -32,3 +32,6 @@ In this section, you will learn how to:
 - Deploy applications to Amazon EKS using Amazon Q CLI
 - Troubleshoot workloads on Amazon EKS using Amazon Q CLI
 
+:::caution Preview
+This module is currently in preview, please [report any issues](https://github.com/aws-samples/eks-workshop-v2/issues) encountered.
+:::
