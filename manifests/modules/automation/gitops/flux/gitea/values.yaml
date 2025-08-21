@@ -1,0 +1,55 @@
+gitea:
+  config:
+    database:
+      DB_TYPE: postgres
+    repository:
+      ENABLE_PUSH_CREATE_USER: true
+    indexer:
+      ISSUE_INDEXER_TYPE: bleve
+      REPO_INDEXER_ENABLED: true
+    session:
+      PROVIDER: memory
+    cache:
+      ADAPTER: memory
+    service:
+      DISABLE_REGISTRATION: true
+      REQUIRE_SIGNIN_VIEW: true
+      REGISTER_EMAIL_CONFIRM: false
+      ENABLE_NOTIFY_MAIL: false
+      ALLOW_ONLY_EXTERNAL_REGISTRATION: false
+      ENABLE_CAPTCHA: false
+      DEFAULT_KEEP_EMAIL_PRIVATE: false
+      DEFAULT_ALLOW_CREATE_ORGANIZATION: true
+      DEFAULT_ENABLE_TIMETRACKING: true
+      NO_REPLY_ADDRESS: noreply.localhost
+
+  admin:
+    username: "workshop-user"
+    email: "you@eksworkshop.com"
+
+service:
+  http:
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: external
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: instance
+  ssh:
+    type: LoadBalancer
+    port: 2222
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: external
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: instance
+
+valkey-cluster:
+  enabled: false
+valkey:
+  enabled: false
+postgresql:
+  enabled: true
+postgresql-ha:
+  enabled: false
+
+persistence:
+  enabled: true

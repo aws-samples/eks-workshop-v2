@@ -13,8 +13,8 @@ $ kubectl delete namespace ui
 
 Next, clone the repository we used to bootstrap Flux in the previous section:
 
-```bash
-$ git clone ssh://${GITOPS_IAM_SSH_KEY_ID}@git-codecommit.${AWS_REGION}.amazonaws.com/v1/repos/${EKS_CLUSTER_NAME}-gitops ~/environment/flux
+```bash hook=clone
+$ git clone ssh://git@${GITEA_SSH_HOSTNAME}:2222/workshop-user/flux.git
 ```
 
 Now, let's start populating the Flux repository by creating a directory for our "apps". This directory is designed to contain a sub-directory for each application component:
@@ -90,7 +90,7 @@ You Git directory should now look something like this which you can validate by 
 3 directories, 7 files
 ```
 
-Finally we can push our configuration to CodeCommit:
+Finally we can push our configuration to Git:
 
 ```bash
 $ git -C ~/environment/flux add .
@@ -98,7 +98,7 @@ $ git -C ~/environment/flux commit -am "Adding the UI service"
 $ git -C ~/environment/flux push origin main
 ```
 
-It will take Flux some time to notice the changes in CodeCommit and reconcile. You can use the Flux CLI to watch for our new `apps` kustomization to appear:
+It will take Flux some time to notice the changes in Git and reconcile. You can use the Flux CLI to watch for our new `apps` kustomization to appear:
 
 ```bash test=false
 $ flux get kustomization --watch --timeout=10m
@@ -134,9 +134,10 @@ http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com
 
 To wait until the load balancer has finished provisioning you can run this command:
 
-```bash
-$ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
-  -k $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+```bash timeout=300
+$ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 \
+  --connect-timeout 10 --max-time 60 \
+  $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 ```
 
 And access it in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
