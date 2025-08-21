@@ -23,7 +23,7 @@ Let's inspect the Service resources for the `ui` application again:
 $ kubectl get service -n ui
 NAME     TYPE           CLUSTER-IP      EXTERNAL-IP                                                            PORT(S)        AGE
 ui       ClusterIP      172.16.69.215   <none>                                                                 80/TCP         7m38s
-ui-nlb   LoadBalancer   172.16.77.201   k8s-ui-uinlb-199980a8f9-5a4808a6e378d625.elb.us-west-2.amazonaws.com   80:30549/TCP   105s
+ui-nlb   LoadBalancer   172.16.77.201   k8s-ui-uinlb-e1c1ebaeb4-28a0d1a388d43825.elb.us-west-2.amazonaws.com   80:30549/TCP   105s
 ```
 
 We see two separate resources, with the new `ui-nlb` entry being of type `LoadBalancer`. Most importantly note it has an "external IP" value, this is the DNS entry that can be used to access our application from outside the Kubernetes cluster.
@@ -147,7 +147,7 @@ Get the URL from the Service resource:
 ```bash
 $ ADDRESS=$(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 $ echo "http://${ADDRESS}"
-http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
+http://k8s-ui-uinlb-e1c1ebaeb4-28a0d1a388d43825.elb.us-west-2.amazonaws.com
 ```
 
 To wait until the load balancer has finished provisioning you can run this command:
@@ -159,6 +159,6 @@ $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-ti
 
 Now that our application is exposed to the outside world, lets try to access it by pasting that URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
 
-<Browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
+<Browser url="http://k8s-ui-uinlb-e1c1ebaeb4-28a0d1a388d43825.elb.us-west-2.amazonaws.com">
 <img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
 </Browser>
