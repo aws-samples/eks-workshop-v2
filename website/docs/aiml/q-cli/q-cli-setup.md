@@ -9,20 +9,20 @@ In this section we will configure Amazon Q CLI along with the [MCP server for Am
 Amazon Q CLI is leverages generative AI capabilities for common development and operations tasks. Its capabilities can be enhanced by adding purpose-built MCP servers for specialized knowledge. We'll use the Amazon EKS MCP server with Amazon Q CLI in this section. You can find a catalog of AWS-provided MCP servers [here](https://awslabs.github.io/mcp/), which can be used with Amazon Q CLI in a similar way.
 :::
 
-First, download the Amazon Q CLI binary for your operating system architecture:
+First, download the Amazon Q CLI release for your operating system and CPU architecture:
 
 ```bash
-$ ARCH=$(arch) 
+$ ARCH=$(arch)
 $ curl --proto '=https' --tlsv1.2 \
   -sSf https://desktop-release.q.us-east-1.amazonaws.com/1.12.4/q-${ARCH}-linux.zip \
-  -o q.zip
+  -o /tmp/q.zip
 ```
 
 Install Amazon Q CLI:
 
 ```bash
-$ unzip q.zip
-$ sudo Q_INSTALL_GLOBAL=true ./q/install.sh --no-confirm
+$ unzip /tmp/q.zip /tmp
+$ sudo Q_INSTALL_GLOBAL=true /tmp/q/install.sh --no-confirm
 ```
 
 Verify the installation:
@@ -45,12 +45,12 @@ Configure the MCP server and install the required `uvx` tool:
 :::
 
 ```bash
-$ mkdir -p $HOME/.aws/amazonq 
+$ mkdir -p $HOME/.aws/amazonq
 $ cp ~/environment/eks-workshop/modules/aiml/q-cli/setup/eks-mcp.json $HOME/.aws/amazonq/mcp.json
 $ curl -LsSf https://astral.sh/uv/0.8.9/install.sh | sh
 ```
 
-To use Amazon Q CLI, you'll need to authenticate using either an AWS Builder ID or a Pro license subscription. 
+To use Amazon Q CLI, you'll need to authenticate using either an AWS Builder ID or a Pro license subscription.
 
 :::tip
 You can create a free AWS Builder ID by following [these instructions](https://docs.aws.amazon.com/signin/latest/userguide/create-aws_builder_id.html). This Builder ID can also be used for personal use of Amazon Q CLI.
@@ -71,7 +71,7 @@ Select your preferred option and follow the prompts to complete the login proces
 Let's verify that the MCP server is available by initializing a session:
 
 ```bash
-$ q 
+$ q
 0 of 1 mcp servers initialized. Servers still loading:
  - awslabseks_mcp_server
 ```
@@ -99,4 +99,3 @@ When a tool is marked as `not trusted`, Amazon Q CLI will request your permissio
 You can follow the same procedure to add other [MCP servers from AWS Labs](https://awslabs.github.io/mcp/) for additional capabilities. For this lab, we'll only need the EKS MCP server we've configured.
 
 In the next section, we'll use Amazon Q CLI to retrieve information about our EKS cluster.
-

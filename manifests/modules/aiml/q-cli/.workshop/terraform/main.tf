@@ -200,3 +200,11 @@ resource "aws_eks_pod_identity_association" "carts_pod_identity_association" {
   service_account = "carts"
   role_arn        = module.iam_assumable_role_carts.iam_role_arn
 }
+
+resource "local_file" "rules" {
+  content = templatefile("${path.module}/templates/rules.md", {
+    aws_region = data.aws_region.current.name
+  })
+  filename = "/home/ec2-user/environment/.amazonq/rules/lab.md"
+}
+

@@ -14,10 +14,11 @@ $ prepare-environment aiml/q-cli
 ```
 
 This will make the following changes to your lab environment:
+
 - Creates a DynamoDB table for Carts application
 - Creates a KMS key for the DynamoDB table
 - Creates an IAM role and policy to allow the DynamoDB table to use the KMS key
-- Create EKS Pod Identity setup to allow Carts application to access the DynamoDB table
+- Configure EKS Pod Identity setup to allow Carts application to access the DynamoDB table
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/aiml/q-cli/.workshop/terraform).
 :::
