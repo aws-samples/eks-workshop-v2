@@ -14,4 +14,8 @@ ALWAYS use the EKS MCP server tools instead of running kubectl commands where po
 
 NEVER run `aws eks update-kubeconfig` commands, this is already set up
 
+When waiting for pods or deployments to become ready or terminate prefer to use kubectl over sleep commands
+
+If a Pod has a recent restart annotation assume it is in crash loop backoff state
+
 <!-- INSTRUCTIONS END -->

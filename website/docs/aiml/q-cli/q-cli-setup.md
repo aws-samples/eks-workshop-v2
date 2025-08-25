@@ -21,7 +21,7 @@ $ curl --proto '=https' --tlsv1.2 \
 Install Amazon Q CLI:
 
 ```bash
-$ unzip /tmp/q.zip /tmp
+$ unzip /tmp/q.zip -d /tmp
 $ sudo Q_INSTALL_GLOBAL=true /tmp/q/install.sh --no-confirm
 ```
 
@@ -56,7 +56,7 @@ To use Amazon Q CLI, you'll need to authenticate using either an AWS Builder ID 
 You can create a free AWS Builder ID by following [these instructions](https://docs.aws.amazon.com/signin/latest/userguide/create-aws_builder_id.html). This Builder ID can also be used for personal use of Amazon Q CLI.
 :::
 
-```bash
+```bash test=false
 $ q login
 ? Select login method >
 > Use for Free with Builder ID
@@ -70,7 +70,7 @@ Select your preferred option and follow the prompts to complete the login proces
 
 Let's verify that the MCP server is available by initializing a session:
 
-```bash
+```bash test=false
 $ q
 0 of 1 mcp servers initialized. Servers still loading:
  - awslabseks_mcp_server
