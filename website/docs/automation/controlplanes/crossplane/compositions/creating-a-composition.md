@@ -43,7 +43,7 @@ A Composition informs Crossplane about the actions to take when a Composite Reso
 
 We can review this in several parts to make better sense of it. 
 
-This section maps the XR's spec.name field to the Managed Resource's external-name annotation, which Crossplane uses to set the actual DynamoDB table name in AWS.
+This section maps the XR's `spec.name` field to the Managed Resource's external-name annotation, which Crossplane uses to set the actual DynamoDB table name in AWS.
 
 ::yaml{file="manifests/modules/automation/controlplanes/crossplane/compositions/composition/table.yaml" zoomPath="spec.patchSets.0.patches.1.toFieldPath" zoomBefore="2"}
 
