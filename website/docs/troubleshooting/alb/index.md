@@ -83,7 +83,7 @@ ui     alb     *                 80      11m
 
 ```
 
-Let's verify the load balancer was indeed not created with aws cli:
+Let's verify the load balancer was indeed not created:
 
 ```bash
 $ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-ui`) == `true`]'
