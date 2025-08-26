@@ -26,7 +26,11 @@ The `_application.yaml` is a template file which will be used to dynamically cre
 
 The `values.yaml` file specifies a list of components for which ArgoCD applications will be generated, as well as configuration related to the Git repository that will be common across all applications:
 
-::yaml{file="manifests/modules/automation/gitops/argocd/app-of-apps/values.yaml"}
+::yaml{file="manifests/modules/automation/gitops/argocd/app-of-apps/values.yaml" paths="spec.destination.server,spec.source,applications"}
+
+1. Specifies the Kubernetes API server endpoint where applications will be deployed (local cluster)
+2. Use the `${GITOPS_REPO_URL_ARGOCD}` environment variable to specify the Git repository containing the application manifests, and the Git branch to track (`main`)
+3. The `applications` list specifies the names of the applications to be deployed
 
 First, let's copy this foundational App of Apps configuration to our Git directory:
 
