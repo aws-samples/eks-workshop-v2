@@ -7,7 +7,7 @@ sidebar_custom_props: { "module": true }
 
 ::required-time
 
-In this lab, we'll explore common issues that can occur when working with Amazon EKS and learn effective troubleshooting techniques. We'll work through real-world scenarios focusing on the AWS Load Balancer Controller and service connectivity problems. If you'd like to learn more about how a Load balancer controller work, check out the [Fundamentals module](/docs/fundamentals/).
+In this lab, we'll explore common issues that can occur when working with Amazon EKS and learn effective troubleshooting techniques. We'll work through real-world scenarios focusing on the AWS Load Balancer Controller and service connectivity problems. If you'd like to learn more about how a Load balancer controller work, check out the [Fundamentals module](/docs/fundamentals/) or [AWS LB Controller](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html) official documentation for more information.
 
 :::tip Before you start
 Prepare your environment for this section:
