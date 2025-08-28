@@ -87,7 +87,7 @@ Ask Q CLI to help troubleshoot the issue:
 I have a pod in my eks-workshop cluster that is with status CrashLoopBackOff. Troubleshoot the issue and resolve it for me.
 ```
 
-To address the prompt Q CLI will use a variety of tools from the MCP server. In addition to the tools seen in the previous example it may also:
+To address the prompt, Q CLI will use a variety of tools from the MCP server. In addition to the tools seen in the previous example, it may also:
 
 1. Describe IAM roles and policies in the scope using `get_policies_for_role` tool from EKS MCP server
 2. Fetch further information related to AWS resources with the `use_aws` tools that is built in to Q CLI

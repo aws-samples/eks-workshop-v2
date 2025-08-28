@@ -74,4 +74,10 @@ The pod will automatically schedule once the PVC is created or the volume requir
 
 </details>
 
+To exit the Q CLI session, enter:
+
+```text
+/quit
+```
+
 In the next section, we'll explore a more complex troubleshooting scenario.
