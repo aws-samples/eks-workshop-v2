@@ -17,7 +17,7 @@ Example output:
 
 ::yaml{file="manifests/modules/troubleshooting/alb/files/iam_issue_service_account_role.yaml" paths="items.0.metadata.annotations"}
 
-1. `eks.amazonaws.com/role-arn`: This tag references AIM role that needs the correct permissions.
+1. `eks.amazonaws.com/role-arn`: This tag references IAM role that needs the correct permissions.
 
 ### Step 2: Check Controller Logs
 
