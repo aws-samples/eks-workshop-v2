@@ -81,4 +81,4 @@ k8s-ui-ui-5ddc3ba496-1208241872.us-west-2.elb.amazonaws.com
 
 :::
 
-For reference, the complete set of permissions required for the AWS Load Balancer Controller can be found in the [official documentation](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/deploy/installation/#setup-iam-manually).
+For reference, the complete set of permissions required for the AWS Load Balancer Controller can be found in the [official documentation](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/deploy/installation/#setup-iam-manually).
