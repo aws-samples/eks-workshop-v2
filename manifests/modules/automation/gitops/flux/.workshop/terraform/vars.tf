@@ -37,6 +37,5 @@ variable "resources_precreated" {
 variable "gitea_chart_version" {
   description = "The chart version of gitea to use"
   type        = string
-  # renovate-helm: depName=argo-cd registryUrl=https://argoproj.github.io/argo-helm
-  default = "12.1.3"
+  default     = "12.1.3"
 }

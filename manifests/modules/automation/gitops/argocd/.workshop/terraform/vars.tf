@@ -40,3 +40,9 @@ variable "argocd_chart_version" {
   # renovate-helm: depName=argo-cd registryUrl=https://argoproj.github.io/argo-helm
   default = "7.9.1"
 }
+
+variable "gitea_chart_version" {
+  description = "The chart version of gitea to use"
+  type        = string
+  default     = "12.1.3"
+}
