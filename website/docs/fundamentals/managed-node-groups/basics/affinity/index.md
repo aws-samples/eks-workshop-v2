@@ -39,6 +39,14 @@ The following kustomization adds an `affinity` section to the **checkout** deplo
 modules/fundamentals/affinity/checkout/checkout.yaml
 Deployment/checkout
 ```
+In the above manifest, the `podAffinity` section ensures:
+   - Checkout pods will only be scheduled on nodes where Redis pods are running.
+   - This is enforced by matching pods with label `app.kubernetes.io/component: redis`.
+   - The `topologyKey: kubernetes.io/hostname` ensures this rule applies at the node level.
+
+The `podAntiAffinity` section ensures:
+   - Only one checkout pod runs per node.
+   - This is achieved by preventing pods with labels `app.kubernetes.io/component: service` and `app.kubernetes.io/instance: checkout` from running on the same node.
 
 To make the change, run the following command to modify the **checkout** deployment in your cluster:
 
@@ -80,6 +88,10 @@ Next, we'll scale the `checkout-redis` to two instances for our two nodes, but f
 modules/fundamentals/affinity/checkout-redis/checkout-redis.yaml
 Deployment/checkout-redis
 ```
+In the above manifest, the `podAntiAffinity` section ensures:
+   - Redis pods are distributed across different nodes.
+   - This is enforced by preventing multiple pods with label `app.kubernetes.io/component: redis` from running on the same node.
+   - The `topologyKey: kubernetes.io/hostname` ensures this rule applies at the node level.
 
 Apply it with the following command:
 

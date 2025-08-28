@@ -1,0 +1,13 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: ui
+  namespace: flux-system
+spec:
+  provider: aws
+  interval: 1m
+  image: ${IMAGE_URI_UI}
+  accessFrom:
+    namespaceSelectors:
+      - matchLabels:
+          kubernetes.io/metadata.name: flux-system

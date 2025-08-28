@@ -31,11 +31,10 @@ resource "aws_eks_addon" "pod_identity" {
 
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "20.35.0"
+  version = "21.0.8"
 
-  cluster_name          = var.addon_context.eks_cluster_id
-  enable_v1_permissions = true
-  namespace             = local.namespace
+  cluster_name = var.addon_context.eks_cluster_id
+  namespace    = local.namespace
 
   iam_role_name                   = "${var.addon_context.eks_cluster_id}-karpenter-controller"
   iam_role_use_name_prefix        = false
@@ -106,7 +105,7 @@ resource "aws_s3_bucket" "inference" {
 
 module "iam_assumable_role_inference" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "5.54.1"
+  version                       = "5.60.0"
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-inference"
   provider_url                  = var.addon_context.eks_oidc_issuer_url

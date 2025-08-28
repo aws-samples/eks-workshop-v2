@@ -10,7 +10,7 @@ description: "Fully managed, high-performance, elastic file storage for workload
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=300 wait=30
+```bash timeout=900 wait=30
 $ prepare-environment fundamentals/storage/fsxz
 ```
 
@@ -30,7 +30,7 @@ There are two different storage classes; an all SSD-based storage class and an I
 
 In this lab, you will:
 
-- Learn about persistent network storage with the assets microservice
+- Learn about persistent network storage
 - Configure and deploy the FSx for OpenZFS CSI Driver for Kubernetes
 - Implement dynamic provisioning using FSx for OpenZFS in a Kubernetes deployment
 

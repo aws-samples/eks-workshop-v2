@@ -24,37 +24,20 @@ $ kubectl -n external-secrets describe sa external-secrets-sa | grep Annotations
 Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::1234567890:role/eks-workshop-external-secrets-sa-irsa
 ```
 
-We need to create a `ClusterSecretStore` resource - this is a cluster-wide SecretStore that can be referenced by ExternalSecrets from any namespace:
+We need to create a `ClusterSecretStore` resource - this is a cluster-wide SecretStore that can be referenced by ExternalSecrets from any namespace. Lets inspect the file we will use to create this `ClusterSecretStore`:
 
-```file
-manifests/modules/security/secrets-manager/cluster-secret-store.yaml
-```
+::yaml{file="manifests/modules/security/secrets-manager/cluster-secret-store.yaml" paths="spec.provider.aws.service,spec.provider.aws.region,spec.provider.aws.auth.jwt"}
+
+1. Set `service: SecretsManager` to use AWS Secrets Manager as the secret source
+2. Use the `$AWS_REGION` environment variable to specify the AWS region where secrets are stored
+3. `auth.jwt` uses IRSA to authenticate via the `external-secrets-sa` service account in the `external-secrets` namespace, which is linked to an IAM role with AWS Secrets Manager permissions
+
+Lets use this file to create the ClusterSecretStore resource.
 
 ```bash
 $ cat ~/environment/eks-workshop/modules/security/secrets-manager/cluster-secret-store.yaml \
   | envsubst | kubectl apply -f -
 ```
-
-Let's examine the specifications of this newly created resource:
-
-```bash
-$ kubectl get clustersecretstores.external-secrets.io
-NAME                   AGE   STATUS   CAPABILITIES   READY
-cluster-secret-store   81s   Valid    ReadWrite      True
-$ kubectl get clustersecretstores.external-secrets.io cluster-secret-store  -o yaml | yq '.spec'
-provider:
-  aws:
-    auth:
-      jwt:
-        serviceAccountRef:
-          name: external-secrets-sa
-          namespace: external-secrets
-    region: us-west-2
-    service: SecretsManager
-
-```
-
-The ClusterSecretStore uses a [JSON Web Token (JWT)](https://jwt.io/) referenced to our ServiceAccount to authenticate with AWS Secrets Manager.
 
 Next, we'll create an `ExternalSecret` that defines what data should be fetched from AWS Secrets Manager and how it should be transformed into a Kubernetes Secret. We'll then update our `catalog` Deployment to use these credentials:
 
@@ -86,7 +69,7 @@ dataFrom:
   - extract:
       conversionStrategy: Default
       decodingStrategy: None
-      key: eks-workshop/catalog-secret
+      key: eks-workshop-catalog-secret-WDD8yS
 refreshInterval: 1h
 secretStoreRef:
   kind: ClusterSecretStore
@@ -128,12 +111,12 @@ NAME                       READY   STATUS    RESTARTS   AGE
 catalog-777c4d5dc8-lmf6v   1/1     Running   0          1m
 catalog-mysql-0            1/1     Running   0          24h
 $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.containers[] | .env'
-- name: DB_USER
+- name: RETAIL_CATALOG_PERSISTENCE_USER
   valueFrom:
     secretKeyRef:
       key: username
       name: catalog-external-secret
-- name: DB_PASSWORD
+- name: RETAIL_CATALOG_PERSISTENCE_PASSWORD
   valueFrom:
     secretKeyRef:
       key: password
@@ -144,4 +127,10 @@ $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.co
 
 There is no single "best" choice between **AWS Secrets and Configuration Provider (ASCP)** and **External Secrets Operator (ESO)** for managing AWS Secrets Manager secrets.
 
-Each tool has distinct advantages. ASCP can mount secrets directly from AWS Secrets Manager as volumes, avoiding exposure as environment variables, though this requires volume management. ESO simplifies Kubernetes Secrets lifecycle management and offers cluster-wide SecretStore capability, but doesn't support volume mounting. Your specific use case should drive the decision, and using both tools can provide maximum flexibility and security in secrets management.
+Each tool has distinct advantages:
+
+- **ASCP** can mount secrets directly from AWS Secrets Manager as volumes, avoiding exposure as environment variables, though this requires volume management.
+
+- **ESO** simplifies Kubernetes Secrets lifecycle management and offers cluster-wide SecretStore capability, but doesn't support volume mounting.
+
+Your specific use case should drive the decision, and using both tools can provide maximum flexibility and security in secrets management.

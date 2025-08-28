@@ -29,18 +29,16 @@ We can confirm our microservices are only accessible internally by taking a look
 
 ```bash
 $ kubectl get svc -l app.kubernetes.io/created-by=eks-workshop -A
-NAMESPACE   NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                                 AGE
-assets      assets           ClusterIP   172.20.119.246   <none>        80/TCP                                  1h
-carts       carts            ClusterIP   172.20.180.149   <none>        80/TCP                                  1h
-carts       carts-dynamodb   ClusterIP   172.20.92.137    <none>        8000/TCP                                1h
-catalog     catalog          ClusterIP   172.20.83.84     <none>        80/TCP                                  1h
-catalog     catalog-mysql    ClusterIP   172.20.181.252   <none>        3306/TCP                                1h
-checkout    checkout         ClusterIP   172.20.77.176    <none>        80/TCP                                  1h
-checkout    checkout-redis   ClusterIP   172.20.32.208    <none>        6379/TCP                                1h
-orders      orders           ClusterIP   172.20.146.72    <none>        80/TCP                                  1h
-orders      orders-mysql     ClusterIP   172.20.54.235    <none>        3306/TCP                                1h
-rabbitmq    rabbitmq         ClusterIP   172.20.107.54    <none>        5672/TCP,4369/TCP,25672/TCP,15672/TCP   1h
-ui          ui               ClusterIP   172.20.62.119    <none>        80/TCP                                  1h
+NAMESPACE   NAME               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                                 AGE
+carts       carts              ClusterIP   172.20.180.149   <none>        80/TCP                                  1h
+carts       carts-dynamodb     ClusterIP   172.20.92.137    <none>        8000/TCP                                1h
+catalog     catalog            ClusterIP   172.20.83.84     <none>        80/TCP                                  1h
+catalog     catalog-mysql      ClusterIP   172.20.181.252   <none>        3306/TCP                                1h
+checkout    checkout           ClusterIP   172.20.77.176    <none>        80/TCP                                  1h
+checkout    checkout-redis     ClusterIP   172.20.32.208    <none>        6379/TCP                                1h
+orders      orders             ClusterIP   172.20.146.72    <none>        80/TCP                                  1h
+orders      orders-postgresql  ClusterIP   172.20.54.235    <none>        3306/TCP                                1h
+ui          ui                 ClusterIP   172.20.62.119    <none>        80/TCP                                  1h
 ```
 
 All of our application components are currently using `ClusterIP` services, which only allows access to other workloads in the same Kubernetes cluster. In order for users to access our application we need to expose the `ui` application, and in this example we'll do so using a Kubernetes service of type `LoadBalancer`.

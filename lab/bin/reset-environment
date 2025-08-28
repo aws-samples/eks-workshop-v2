@@ -1,16 +1,25 @@
 #!/bin/bash
 
+GREEN='\033[1;32m'
+RED='\033[1;31m'
+PURPLE='\033[1;35m'
+NC='\033[0m' # No Color
+
 # Make sure we run from a consistent directory
 cd ~
 
 mkdir -p /eks-workshop/logs
 log_file=/eks-workshop/logs/action-$(date +%s).log
 
+if [ -f /home/ec2-user/.banner-text ]; then
+  cat /home/ec2-user/.banner-text
+fi
+
 exec 7>&1
 
 logmessage() {
-  echo "$@" >&7
-  echo "$@" >&1
+  echo -e "$@" >&7
+  echo -e "$@" >&1
 }
 export -f logmessage
 
@@ -25,7 +34,7 @@ fi
 if [ -z "$EKS_DEFAULT_MNG_MIN" ]; then
   EKS_CLUSTER_NAME=${EKS_CLUSTER_NAME:-"eks-workshop"}
 
-  logmessage "Error: Please run 'use-cluster $EKS_CLUSTER_NAME'"
+  logmessage "${RED}Error:${NC} Please run 'use-cluster $EKS_CLUSTER_NAME'"
   exit 1
 fi
 
@@ -44,13 +53,15 @@ trap 'catch $? $LINENO' EXIT
 
 catch() {
   if [ "$1" != "0" ]; then
-    logmessage "An error occurred, please contact your workshop proctor or raise an issue at https://github.com/aws-samples/eks-workshop-v2/issues"
+    logmessage "🚨 An ${RED}error${NC} occurred, please contact your workshop proctor or raise an issue at https://github.com/aws-samples/eks-workshop-v2/issues"
     logmessage "The full log can be found here: $log_file"
   fi
   exec 3<&-
 }
 
 mkdir -p /eks-workshop
+
+logmessage "🚀 We're preparing your environment for the next lab, sit tight!"
 
 REPOSITORY_REF=${REPOSITORY_REF:-""}
 
@@ -59,7 +70,7 @@ if [ ! -z "${REPOSITORY_REF}" ]; then
   rm -rf $manifests_path
   rm -rf $repository_path
 
-  logmessage "Refreshing copy of workshop repository from GitHub..."
+  logmessage "📦 Refreshing copy of workshop repository from GitHub..."
 
   git clone --depth=1 --single-branch --branch=${REPOSITORY_REF} --quiet https://github.com/$REPOSITORY_OWNER/$REPOSITORY_NAME.git $repository_path
   
@@ -83,8 +94,7 @@ if [ ! -z "$module" ]; then
   fi
 fi
 
-logmessage "Resetting the environment..."
-logmessage "Tip: Read the rest of the lab introduction while you wait!"
+logmessage "🎓 ${PURPLE}Tip:${NC} Read the rest of the lab introduction while you wait!\n"
 
 if [ -f "/eks-workshop/hooks/cleanup.sh" ]; then
   bash /eks-workshop/hooks/cleanup.sh
@@ -108,7 +118,7 @@ kubectl apply -k $base_path --prune --all \
   --prune-allowlist=scheduling.k8s.io/v1/PriorityClass \
   --prune-allowlist=networking.k8s.io/v1/Ingress
 
-logmessage "Waiting for application to become ready..."
+logmessage "\n⏳ Waiting for application to become ready..."
 
 sleep 10
 
@@ -129,7 +139,7 @@ export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
 
 RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-"false"}
 
-logmessage "Cleaning up previous lab infrastructure..."
+logmessage "\n🔃 Cleaning up previous lab infrastructure..."
 
 tf_dir=$(realpath --relative-to="$PWD" '/eks-workshop/terraform')
 
@@ -147,7 +157,7 @@ if [ ! -z "$module" ]; then
   fi
 
   if [ -f "$module_path/.workshop/terraform/main.tf" ]; then
-    logmessage "Creating infrastructure for next lab..."
+    logmessage "\n🚧 Creating infrastructure for next lab..."
 
     cp -R $module_path/.workshop/terraform/* /eks-workshop/terraform/lab
 
@@ -157,7 +167,7 @@ if [ ! -z "$module" ]; then
     terraform -chdir="$tf_dir" apply -refresh=false --auto-approve
   elif [ -f "$module_path/.workshop/terraform/addon.tf" ]; then
     # This is the deprecated legacy code path that will be removed
-    logmessage "Creating infrastructure for next lab..."
+    logmessage "\n🚧 Creating infrastructure for next lab..."
 
     cp -R $module_path/.workshop/terraform/* /eks-workshop/terraform
 
@@ -182,7 +192,7 @@ expected_size_config="$EKS_DEFAULT_MNG_MIN $EKS_DEFAULT_MNG_MAX $EKS_DEFAULT_MNG
 mng_size_config=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME | jq -r '.nodegroup.scalingConfig | "\(.minSize) \(.maxSize) \(.desiredSize)"')
 
 if [[ "$mng_size_config" != "$expected_size_config" ]]; then
-  logmessage "Setting EKS Node Group back to initial sizing..."
+  logmessage "\nSetting EKS Node Group back to initial sizing..."
 
   WAIT_EXIT_CODE=0
 
@@ -190,7 +200,7 @@ if [[ "$mng_size_config" != "$expected_size_config" ]]; then
   aws eks wait nodegroup-active --cluster-name $EKS_CLUSTER_NAME --nodegroup-name $EKS_DEFAULT_MNG_NAME || WAIT_EXIT_CODE=$?
 
   if [ $WAIT_EXIT_CODE -ne 0 ]; then
-    logmessage "Default node group is still being modified unexpectedly, please try again."
+    logmessage "${RED}Error:${NC} Default node group is still being modified unexpectedly, please try again."
     logmessage "If this error persists please contact your workshop proctor or raise an issue at https://github.com/aws-samples/eks-workshop-v2/issues"
     exit 1
   fi
@@ -205,7 +215,7 @@ fi
 asg_size_config=$(aws autoscaling describe-auto-scaling-groups --filters "Name=tag:eks:nodegroup-name,Values=$EKS_DEFAULT_MNG_NAME" "Name=tag:eks:cluster-name,Values=$EKS_CLUSTER_NAME" | jq -r '.AutoScalingGroups[0] | "\(.MinSize) \(.MaxSize) \(.DesiredCapacity)"')
 
 if [[ "$asg_size_config" != "$expected_size_config" ]]; then
-  logmessage "Setting ASG back to initial sizing..."
+  logmessage "\nSetting ASG back to initial sizing..."
 
   export ASG_NAME=$(aws autoscaling describe-auto-scaling-groups --filters "Name=tag:eks:nodegroup-name,Values=$EKS_DEFAULT_MNG_NAME" "Name=tag:eks:cluster-name,Values=$EKS_CLUSTER_NAME" --query "AutoScalingGroups[0].AutoScalingGroupName" --output text)
   aws autoscaling update-auto-scaling-group \
@@ -223,7 +233,7 @@ timeout -s TERM 300 bash -c \
     done' || EXIT_CODE=$?
 
 if [ $EXIT_CODE -ne 0 ]; then
-  >&2 echo "Error: Nodes did not scale back to 3"
+  >&2 echo "${RED}Error:${NC} Nodes did not scale back to 3"
   exit 1
 fi
 
@@ -234,4 +244,4 @@ kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernete
 kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
 
 # Finished
-logmessage 'Environment is ready'
+logmessage "\n✅ Environment is ${GREEN}ready${NC}!"

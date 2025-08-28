@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: populate-images
+  namespace: ui
+spec:
+  template:
+    spec:
+      containers:
+        - name: download-extract
+          image: public.ecr.aws/docker/library/busybox:1.37
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              wget -O /tmp/archive.zip https://github.com/aws-containers/retail-store-sample-app/releases/download/v1.2.1/sample-images.zip && 
+              unzip /tmp/archive.zip -d /storage
+          volumeMounts:
+            - name: storage-volume
+              mountPath: /storage
+      restartPolicy: Never
+      volumes:
+        - name: storage-volume
+          persistentVolumeClaim:
+            claimName: ${PVC_NAME}
+  backoffLimit: 2

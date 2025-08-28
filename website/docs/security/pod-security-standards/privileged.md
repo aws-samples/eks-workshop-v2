@@ -7,13 +7,13 @@ We'll start looking at PSS by exploring the Privileged profile, which is the mos
 
 From Kubernetes version 1.23, by default, all PSA modes (i.e. enforce, audit and warn) are enabled for privileged PSS profile at the cluster level. That means, by default, PSA allows Deployments or Pods with Privileged PSS profile (i.e. absence of any restrictions) across all namespaces. These default settings provide less impact to clusters and reduce negative impact to applications. As we'll see, Namespace labels can be used to opt-in to more restrictive settings.
 
-You can check that there are no PSA labels explicitly added to the `assets` namespace, by default:
+You can check that there are no PSA labels explicitly added to the `pss` namespace, by default:
 
 ```bash
-$ kubectl describe ns assets
-Name:         assets
+$ kubectl describe ns pss
+Name:         pss
 Labels:       app.kubernetes.io/created-by=eks-workshop
-              kubernetes.io/metadata.name=assets
+              kubernetes.io/metadata.name=pss
 Annotations:  <none>
 Status:       Active
 
@@ -22,100 +22,68 @@ No resource quota.
 No LimitRange resource.
 ```
 
-As you see, the `assets` namespace does not have any PSA labels attached.
+As you see, the `pss` namespace does not have any PSA labels attached.
 
-Let us also check for currently running Deployment and Pod in the `assets` namespace.
+Let us also check for currently running Deployment and Pod in the `pss` namespace.
 
 ```bash
-$ kubectl -n assets get deployment
+$ kubectl -n pss get deployment
 NAME     READY   UP-TO-DATE   AVAILABLE   AGE
-assets   1/1     1            1           5m24s
-$ kubectl -n assets get pod
+pss    1/1     1            1           5m24s
+$ kubectl -n pss get pod
 NAME                     READY   STATUS    RESTARTS   AGE
-assets-ddb8f87dc-8z6l9   1/1     Running   0          5m24s
+pss-ddb8f87dc-8z6l9    1/1     Running   0          5m24s
 ```
 
-The YAML for the assets Pod will show us the current security configuration:
+The YAML for the pss Pod will show us the current security configuration:
 
 ```bash
-$ kubectl -n assets get deployment assets -o yaml | yq '.spec.template.spec'
+$ kubectl -n pss get deployment pss -o yaml | yq '.spec.template.spec'
 containers:
-  - envFrom:
-      - configMapRef:
-          name: assets
-    image: public.ecr.aws/aws-containers/retail-store-sample-assets:0.4.0
+  - image: public.ecr.aws/aws-containers/retail-store-sample-catalog:1.2.1
     imagePullPolicy: IfNotPresent
-    livenessProbe:
-      failureThreshold: 3
-      httpGet:
-        path: /health.html
-        port: 8080
-        scheme: HTTP
-      periodSeconds: 3
-      successThreshold: 1
-      timeoutSeconds: 1
-    name: assets
+    name: pss
     ports:
-      - containerPort: 8080
-        name: http
+      - containerPort: 80
         protocol: TCP
-    resources:
-      limits:
-        memory: 128Mi
-      requests:
-        cpu: 128m
-        memory: 128Mi
+    resources: {}
     securityContext:
-      capabilities:
-        drop:
-          - ALL
       readOnlyRootFilesystem: false
     terminationMessagePath: /dev/termination-log
     terminationMessagePolicy: File
-    volumeMounts:
-      - mountPath: /tmp
-        name: tmp-volume
 dnsPolicy: ClusterFirst
 restartPolicy: Always
 schedulerName: default-scheduler
 securityContext: {}
-serviceAccount: assets
-serviceAccountName: assets
 terminationGracePeriodSeconds: 30
-volumes:
-  - emptyDir:
-      medium: Memory
-    name: tmp-volume
 ```
 
-In the above Pod security configuration, the `securityContext` is nil at the Pod level. At the container level, the `securityContext` is configured to drop all the Linux capabilities and `readOnlyRootFilesystem` is set to false. The fact that the deployment and Pod are already running indicates that the PSA (configured for Privileged PSS profile by default) allowed above Pod security configuration.
+In the above Pod security configuration, the `securityContext` is nil at the Pod level. At the container level, the `securityContext` is configured such that `readOnlyRootFilesystem` is set to false. The fact that the deployment and Pod are already running indicates that the PSA (configured for Privileged PSS profile by default) allowed above Pod security configuration.
 
-But what are the other security controls this PSA allows? To check that, lets add some more permissions to the above Pod security configuration and check if the PSA still allows it or not in the `assets` namespace. Specifically lets add the `privileged` and the `runAsUser:0` flags to the Pod, which means that it can access the hosts resources which is commonly required workloads like monitoring agents and service mesh sidecars, and also allowed to run as the `root` user:
+But what are the other security controls this PSA allows? To check that, lets add some more permissions to the above Pod security configuration and check if the PSA still allows it or not in the `pss` namespace. Specifically lets add the `privileged` and the `runAsUser:0` flags to the Pod, which means that it can access the hosts resources which is commonly required workloads like monitoring agents and service mesh sidecars, and also allowed to run as the `root` user:
 
 ```kustomization
 modules/security/pss-psa/privileged-workload/deployment.yaml
-Deployment/assets
+Deployment/pss
 ```
 
 Run Kustomize to apply the above changes and check if PSA allows the Pod with the above security permissions.
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/security/pss-psa/privileged-workload
-namespace/assets unchanged
-serviceaccount/assets unchanged
-configmap/assets unchanged
-service/assets unchanged
-deployment.apps/assets configured
+namespace/pss unchanged
+deployment.apps/pss configured
+$ kubectl rollout status -n pss deployment/pss --timeout=60s
 ```
 
-Let us check if Deployment and Pod are re-created with above security permissions in the the `assets` namespace
+Let us check if Deployment and Pod are re-created with above security permissions in the the `pss` namespace
 
 ```bash
-$ kubectl -n assets get pod
+$ kubectl -n pss get pod
 NAME                      READY   STATUS    RESTARTS   AGE
-assets-64c49f848b-gmrtt   1/1     Running   0          9s
+pss-64c49f848b-gmrtt      1/1     Running   0          9s
 
-$ kubectl -n assets exec $(kubectl -n assets get pods -o name) -- whoami
+$ kubectl -n pss exec $(kubectl -n pss get pods -o name) -- whoami
 root
 ```
 

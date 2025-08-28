@@ -87,3 +87,14 @@ Statement:
     Condition:
       StringEquals:
         aws:ResourceTag/eks:nodegroup-name: "new_nodegroup_3"
+
+  - Effect: Allow
+    Action:
+      - cloudformation:CreateStack
+      - cloudformation:UpdateStack
+      - cloudformation:DeleteStack
+      - cloudformation:DescribeStacks
+      - cloudformation:DescribeStackEvents
+      - cloudformation:DescribeStackResources
+      - cloudformation:GetTemplate
+    Resource: !Sub arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/eks-workshop-*/*

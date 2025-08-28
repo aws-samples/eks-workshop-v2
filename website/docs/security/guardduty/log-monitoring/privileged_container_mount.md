@@ -1,5 +1,5 @@
 ---
-title: "Privileged Container with sensitive mount"
+title: "Privileged container with sensitive mount"
 sidebar_position: 524
 ---
 
@@ -7,11 +7,13 @@ In this lab you will be creating a container with `privileged` Security Context,
 
 This exercise will generate two different findings, `PrivilegeEscalation:Kubernetes/PrivilegedContainer` which indicates that a container was launched with Privileged permissions, and `Persistence:Kubernetes/ContainerWithSensitiveMount` indicating a sensitive external host path mounted inside the container.
 
-To simulate the finding you'll be using a pre-configure manifest with some specific parameters already set, `SecurityContext: privileged: true` and also the `volume` and `volumeMount` options, mapping the `/etc` host directory to `/host-etc` Pod volume mount.
+To simulate the finding you'll be using a pre-configure manifest with some specific parameters already set:
 
-```file
-manifests/modules/security/Guardduty/mount/privileged-pod-example.yaml
-```
+::yaml{file="manifests/modules/security/Guardduty/mount/privileged-pod-example.yaml" paths="spec.containers.0.securityContext,spec.containers.0.volumeMounts.0.mountPath,spec.volumes.0.hostPath.path"}
+
+1. Setting `SecurityContext: privileged: true` grants full root privileges to the Pod
+2. `mountPath: /host-etc` specifies that the mapped host volume will be accessible inside the container at `/host-etc` 
+3. `path: /etc` specifies that `/etc` directory from the host system will be the source directory for the mount
 
 Apply the manifest shown above with the following command:
 
@@ -19,7 +21,9 @@ Apply the manifest shown above with the following command:
 $ kubectl apply -f ~/environment/eks-workshop/modules/security/Guardduty/mount/privileged-pod-example.yaml
 ```
 
-_This Pod will just run once, until it reaches the State `Completed`_
+:::note
+This Pod will just run once, until it reaches the State `Completed`
+:::
 
 Within a few minutes we'll see the two finding `PrivilegeEscalation:Kubernetes/PrivilegedContainer` and `Persistence:Kubernetes/ContainerWithSensitiveMount` in the [GuardDuty Findings console](https://console.aws.amazon.com/guardduty/home#/findings).
 

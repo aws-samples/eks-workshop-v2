@@ -1,0 +1,79 @@
+.notification {
+  background-color: #1a1a1a;
+  padding: 12px 16px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 1000;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  max-width: 400px;
+  min-width: 300px;
+  transform: translateX(100%);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.notificationVisible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.notificationText {
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 400;
+  flex: 1;
+  margin-right: 12px;
+}
+
+.notificationText b {
+  color: #ffffff;
+}
+
+.notificationText a {
+  color: #ff9900;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.notificationText a:hover {
+  color: #ffb84d;
+  text-decoration: underline;
+}
+
+.linkIcon {
+  font-size: 12px;
+  width: 12px;
+  height: 12px;
+  margin-left: 4px;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.dismissButton {
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.dismissButton:hover {
+  background-color: rgba(255,255,255,0.1);
+  opacity: 1;
+}
+

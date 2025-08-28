@@ -1,10 +1,10 @@
 #!/bin/bash
 
+set -e
+
 environment=$1
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-
-source $SCRIPT_DIR/lib/common-env.sh
 
 terraform_dir="$(mktemp -d)"
 manifests_dir="${SCRIPT_DIR}/../manifests"
@@ -35,5 +35,9 @@ EOF
 done
 
 terraform -chdir="${conf_dir}" init -backend=false
+
+echo ""
+echo "Validating ${conf_dir}"
+echo ""
 
 terraform -chdir="${conf_dir}" validate

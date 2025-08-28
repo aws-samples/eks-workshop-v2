@@ -77,9 +77,10 @@ Let's check the ASG activities to understand the instance launch status:
 Run the below command to capture Nodegroup Autoscale Group name as NEW_NODEGROUP_2_ASG_NAME.
 
 ```bash
-$ NEW_NODEGROUP_2_ASG_NAME=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_1 --query 'nodegroup.resources.autoScalingGroups[0].name' --output text)
-echo $NEW_NODEGROUP_2_ASG_NAME
+$ NEW_NODEGROUP_2_ASG_NAME=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_2 --query 'nodegroup.resources.autoScalingGroups[0].name' --output text)
+$ echo $NEW_NODEGROUP_2_ASG_NAME
 ```
+
 #### 4.2. Check the AutoScaling Activities
 
 ```bash
@@ -326,7 +327,7 @@ $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegro
 
 Verify the node has successfully joined the cluster:
 
-```bash timeout=100 hook=fix-2-3 hookTimeout=110 wait=70
+```bash timeout=100 hook=fix-2-3 hookTimeout=130 wait=90
 $ kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_2
 NAME                                          STATUS   ROLES    AGE    VERSION
 ip-10-42-108-252.us-west-2.compute.internal   Ready    <none>   3m9s   v1.30.0-eks-036c24b
