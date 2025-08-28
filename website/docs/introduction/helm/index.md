@@ -63,7 +63,7 @@ We can break this command down as follows:
 - Install the chart in the `ui` namespace
 - Wait for Pods in the release to get to a ready state
 
-Once the chart has installed we can list the releases in our EKS cluster:
+Once the chart is installed we can list the releases in our EKS cluster:
 
 ```bash
 $ helm list -A
