@@ -2,4 +2,6 @@
 
 set -e
 
-uninstall-helm-chart nginx nginx
+uninstall-helm-chart ui ui
+
+kubectl delete namespace ui --ignore-not-found
