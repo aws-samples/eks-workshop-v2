@@ -7,9 +7,12 @@ Once we've configured Crossplane with the details of the new XR, we can either c
 
 With this claim, the developer only needs to specify a default **DynamoDB table name, hash keys, and global index name** to create the table. This allows the platform or SRE team to standardize aspects such as billing mode, default read/write capacity, projection type, and cost and infrastructure-related tags.
 
-```file
-manifests/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml
-```
+::yaml{file="manifests/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml" paths="metadata.name,spec.dynamoConfig.attribute.0,spec.dynamoConfig.attribute.1,spec.dynamoConfig.globalSecondaryIndex"}
+
+1. Specify the DynamoDB table name using cluster name environment variable as prefix
+2. Specify `id` as the Primary key attribute
+3. Specify `customerId` as the Secondary attribute
+4. Specify `idx_global_customerId` as the Global Secondary Index name.
 
 Let's start by cleaning up the DynamoDB table created in the previous Managed Resource section:
 

@@ -9,9 +9,16 @@ By default, the **Carts** component in the sample application uses a DynamoDB lo
 
 Let's explore how we'll create the DynamoDB table via a Crossplane managed resource manifest:
 
-```file
-manifests/modules/automation/controlplanes/crossplane/managed/table.yaml
-```
+::yaml{file="manifests/modules/automation/controlplanes/crossplane/managed/table.yaml" paths="apiVersion,kind,metadata,spec.forProvider.attribute,spec.forProvider.hashKey,spec.forProvider.billingMode,spec.forProvider.globalSecondaryIndex,spec.providerConfigRef"}
+
+1. Uses Upbound's AWS DynamoDB provider
+2. Creates a DynamoDB table resource
+3. Specify Kubernetes object with cluster-prefixed name and external name annotation 
+4. Defines `id` and `customerId` as string (`S`) type attributes
+5. Sets `id` as the primary partition key
+6. Specifies the On-demand pricing model
+7. Creates global secondary index on `customerId` with all attributes projected
+8. References the AWS provider configuration for authentication
 
 Now, we can create the configuration for the DynamoDB table using a `dynamodb.aws.upbound.io` resource.
 

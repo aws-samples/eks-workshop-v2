@@ -19,11 +19,14 @@ namespace "other" deleted
 namespace "ui" deleted
 ```
 
-Now we'll populate our Git repository with a simple Helm chart:
+Now we'll populate our Git repository with a simple Helm chart which wraps the published chart for the UI component by using it as a Helm dependency:
 
-::yaml{file="manifests/modules/automation/gitops/argocd/Chart.yaml"}
+::yaml{file="manifests/modules/automation/gitops/argocd/Chart.yaml" paths="name,type,version,dependencies.0"}
 
-This chart wraps the published chart for the UI component by using it as a Helm dependency.
+1. The name of the wrapper Helm chart
+2. Indicates this chart deploys an application
+3. Specify a version for the chart
+4. Specify the name, alias and version of the retail store UI component from AWS's public OCI registry as the dependency of the wrapper Helm chart
 
 Let's copy this file to our Git directory:
 
