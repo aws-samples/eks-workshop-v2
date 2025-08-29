@@ -21,6 +21,9 @@ Let's inspect the Service resources for the `ui` application again:
 
 ```bash
 $ kubectl get service -n ui
+NAME     TYPE           CLUSTER-IP      EXTERNAL-IP                                                            PORT(S)        AGE
+ui       ClusterIP      172.16.69.215   <none>                                                                 80/TCP         7m38s
+ui-nlb   LoadBalancer   172.16.77.201   k8s-ui-uinlb-e1c1ebaeb4-28a0d1a388d43825.elb.us-west-2.amazonaws.com   80:30549/TCP   105s
 ```
 
 We see two separate resources, with the new `ui-nlb` entry being of type `LoadBalancer`. Most importantly note it has an "external IP" value, this is the DNS entry that can be used to access our application from outside the Kubernetes cluster.
@@ -61,7 +64,12 @@ $ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalance
                 "LoadBalancerAddresses": []
             }
         ],
-        "IpAddressType": "ipv4"
+        "SecurityGroups": [
+            "sg-03688f7b9bef3fc57",
+            "sg-09743892e52e82896"
+        ],
+        "IpAddressType": "ipv4",
+        "EnablePrefixForIpv6SourceNat": "off"
     }
 ]
 ```
@@ -81,32 +89,47 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
     "TargetHealthDescriptions": [
         {
             "Target": {
-                "Id": "i-06a12e62c14e0c39a",
-                "Port": 31338
+                "Id": "i-03d705cd2404b089d",
+                "Port": 30549
             },
-            "HealthCheckPort": "31338",
+            "HealthCheckPort": "30549",
             "TargetHealth": {
                 "State": "healthy"
+            },
+            "AdministrativeOverride": {
+                "State": "no_override",
+                "Reason": "AdministrativeOverride.NoOverride",
+                "Description": "No override is currently active on target"
             }
         },
         {
             "Target": {
-                "Id": "i-088e21d0af0f2890c",
-                "Port": 31338
+                "Id": "i-0d33c31067a053ece",
+                "Port": 30549
             },
-            "HealthCheckPort": "31338",
+            "HealthCheckPort": "30549",
             "TargetHealth": {
                 "State": "healthy"
+            },
+            "AdministrativeOverride": {
+                "State": "no_override",
+                "Reason": "AdministrativeOverride.NoOverride",
+                "Description": "No override is currently active on target"
             }
         },
         {
             "Target": {
-                "Id": "i-0fe2202d18299816f",
-                "Port": 31338
+                "Id": "i-0c221e809e435b965",
+                "Port": 30549
             },
-            "HealthCheckPort": "31338",
+            "HealthCheckPort": "30549",
             "TargetHealth": {
                 "State": "healthy"
+            },
+            "AdministrativeOverride": {
+                "State": "no_override",
+                "Reason": "AdministrativeOverride.NoOverride",
+                "Description": "No override is currently active on target"
             }
         }
     ]
@@ -124,7 +147,7 @@ Get the URL from the Service resource:
 ```bash
 $ ADDRESS=$(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 $ echo "http://${ADDRESS}"
-http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
+http://k8s-ui-uinlb-e1c1ebaeb4-28a0d1a388d43825.elb.us-west-2.amazonaws.com
 ```
 
 To wait until the load balancer has finished provisioning you can run this command:
@@ -136,6 +159,6 @@ $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-ti
 
 Now that our application is exposed to the outside world, lets try to access it by pasting that URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
 
-<Browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
+<Browser url="http://k8s-ui-uinlb-e1c1ebaeb4-28a0d1a388d43825.elb.us-west-2.amazonaws.com">
 <img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
 </Browser>
