@@ -45,7 +45,7 @@ $ argocd app sync apps
 $ argocd app wait -l app.kubernetes.io/created-by=eks-workshop
 ```
 
-When Argo CD completes the process, all our applications will be in the `Synced` state as shown in the ArgoCD UI:
+When Argo CD completes the process, all our applications will be in the `Synced` state as shown in the Argo CD UI:
 
 ![argocd-ui-apps.png](assets/argocd-ui-apps-synced.webp)
 
@@ -59,6 +59,7 @@ carts             Active   28s
 catalog           Active   28s
 checkout          Active   28s
 default           Active   8h
+gitea             Active   19m
 kube-node-lease   Active   8h
 kube-public       Active   8h
 kube-system       Active   8h

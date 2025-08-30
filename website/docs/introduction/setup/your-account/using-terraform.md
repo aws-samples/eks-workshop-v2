@@ -7,7 +7,7 @@ sidebar_position: 30
 Creating the workshop cluster with Terraform is currently in preview. Please raise any issues encountered in the [GitHub repository](https://github.com/aws-samples/eks-workshop-v2/issues).
 :::
 
-This section outlines how to build a cluster for the lab exercises using [Hashicorp Terraform](https://developer.hashicorp.com/terraform). This is intended for learners who are familiar with using Terraform infrastructure-as-code.
+This section outlines how to build a cluster for the lab exercises using [HashiCorp Terraform](https://developer.hashicorp.com/terraform). This is intended for learners who are familiar with using Terraform infrastructure-as-code.
 
 The `terraform` CLI has been pre-installed in your IDE environment, so we can immediately create the cluster. Let's examine the main Terraform configuration files that will be used to build the cluster and its supporting infrastructure.
 

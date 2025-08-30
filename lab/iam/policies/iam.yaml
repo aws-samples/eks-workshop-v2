@@ -83,3 +83,4 @@ Statement:
           - spot.amazonaws.com
           - fis.amazonaws.com
           - transitgateway.amazonaws.com
+          - fsx.amazonaws.com

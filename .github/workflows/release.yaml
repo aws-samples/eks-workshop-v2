@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -22,7 +22,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: Get kubectl version
         run: |
           source hack/lib/kubectl-version.sh
@@ -33,7 +33,7 @@ jobs:
           version: "${{ env.KUBECTL_VERSION }}"
         id: install
       - name: Get AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4.2.1
+        uses: aws-actions/configure-aws-credentials@v4.3.1
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-duration-seconds: 900

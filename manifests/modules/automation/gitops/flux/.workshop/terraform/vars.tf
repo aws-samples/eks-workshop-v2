@@ -33,3 +33,9 @@ variable "resources_precreated" {
   description = "Have expensive resources been created already"
   type        = bool
 }
+
+variable "gitea_chart_version" {
+  description = "The chart version of gitea to use"
+  type        = string
+  default     = "12.1.3"
+}

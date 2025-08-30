@@ -50,9 +50,9 @@ export class MarkdownSh {
       spec: "-",
     };
 
-    if (output == "xunit") {
+    if (output === "xunit") {
       mochaOpts.reporterOptions.xunit = outputPath;
-    } else if (output == "json") {
+    } else if (output === "json") {
       mochaOpts.reporterOptions.json = outputPath;
     }
 

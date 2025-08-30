@@ -12,4 +12,4 @@ What is GitOps? Coined by Weaveworks CEO, Alexis Richardson, GitOps is an operat
 
 Watch a video walk-through of the GitOps section with one of the module maintainers, Carlos Santana (AWS) here:
 
-<ReactPlayer controls url="https://www.youtube-nocookie.com/embed/dONzzCc0oHo" /> <br />
+<ReactPlayer controls src="https://www.youtube-nocookie.com/embed/dONzzCc0oHo" width={640} height={360} /> <br />
