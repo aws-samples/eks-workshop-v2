@@ -79,6 +79,7 @@ To exit the Q CLI session, enter:
 ```text
 /quit
 ```
+
 Now, remove the failing Pod: 
 
 ```bash
