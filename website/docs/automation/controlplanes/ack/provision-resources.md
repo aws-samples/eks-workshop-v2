@@ -9,9 +9,15 @@ By default, the **Carts** component in the sample application uses a DynamoDB lo
 
 Let's examine how we can create the DynamoDB Table using a Kubernetes manifest:
 
-```file
-manifests/modules/automation/controlplanes/ack/dynamodb/dynamodb-create.yaml
-```
+::yaml{file="manifests/modules/automation/controlplanes/ack/dynamodb/dynamodb-create.yaml" paths="apiVersion,kind,spec.keySchema,spec.attributeDefinitions,spec.billingMode,spec.tableName,spec.globalSecondaryIndexes"}
+
+1. Uses ACK DynamoDB controller
+2. Creates a DynamoDB table resource
+3. Specify Primary key using `id` attribute as partition key (`HASH`)
+4. Defines `id` and `customerId` as string attributes
+5. Specifies On-demand pricing model
+6. Specifies the DynamoDB table name using the `${EKS_CLUSTER_NAME}` environment variable prefix
+7. Creates a global secondary index named `idx_global_customerId` that enables efficient queries by `customerID` with all table attributes projected
 
 :::info
 Keen observers will notice that the YAML specification closely resembles the [API signature](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_CreateTable.html) for DynamoDB, including familiar fields such as `tableName` and `attributeDefinitions`.
