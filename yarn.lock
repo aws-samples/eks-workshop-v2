@@ -15279,8 +15279,8 @@ __metadata:
   linkType: hard
 
 "react-player@npm:^3.0.0":
-  version: 3.3.1
-  resolution: "react-player@npm:3.3.1"
+  version: 3.3.2
+  resolution: "react-player@npm:3.3.2"
   dependencies:
     "@mux/mux-player-react": "npm:^3.5.1"
     cloudflare-video-element: "npm:^1.3.3"
@@ -15296,7 +15296,7 @@ __metadata:
     "@types/react": ^17.0.0 || ^18 || ^19
     react: ^17.0.2 || ^18 || ^19
     react-dom: ^17.0.2 || ^18 || ^19
-  checksum: 10c0/5e96ba2f4e130608ab40b768e4f8afea1901a904a0d75474918f49c86b6ada316766fbfabef34bcafac3d960aa8fce01d3ece88fe4715ced078e80a73ce2f81c
+  checksum: 10c0/e5967b9e5f9d9ffbb51663917ed1f39adf8a7d39bbd1f6fafd064641a983f234983668732b7aa34f452a3c408c855101eff46ddc89e57bd06da86144107e53ce
   languageName: node
   linkType: hard
 
