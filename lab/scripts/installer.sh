@@ -29,7 +29,7 @@ terraform_version='1.13.1'
 ec2_instance_selector_version='3.1.1'
 
 # renovate: depName=hatoo/oha
-oha_version='1.9.0'
+oha_version='1.10.0'
 
 download () {
   url=$1
