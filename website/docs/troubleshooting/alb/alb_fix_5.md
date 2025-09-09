@@ -37,7 +37,9 @@ The error indicates the IAM role lacks the `elasticloadbalancing:CreateLoadBalan
 
 ### Step 3: Fix the IAM Policy
 
-To resolve this, we need to update the IAM role with the correct permissions. For this workshop, we've pre-created the correct policy. We'll:
+To resolve this, we need to update the IAM role with the correct permissions. For this workshop, we've pre-created the correct policy with the necessary IAM policy permissions based on the [installation guide](https://docs.aws.amazon.com/eks/latest/userguide/lbc-helm.html) for the AWS Load Balancer Controller:
+
+Now we'll:
 
 #### 3.1. Attach the correct policy
 
