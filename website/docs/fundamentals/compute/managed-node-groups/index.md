@@ -1,6 +1,6 @@
 ---
 title: Managed Node Groups
-sidebar_position: 30
+sidebar_position: 10
 ---
 
 An EKS cluster contains one or more EC2 nodes that Pods are scheduled on. EKS nodes run in your AWS account and connect to the control plane of your cluster through the cluster API server endpoint. You deploy one or more nodes into a node group. A node group is one or more EC2 instances that are deployed in an EC2 Auto Scaling group.

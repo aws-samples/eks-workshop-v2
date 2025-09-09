@@ -1,6 +1,6 @@
 ---
 title: Fargate
-sidebar_position: 40
+sidebar_position: 30
 sidebar_custom_props: { "module": true }
 description: "Leverage AWS Fargate, the serverless compute engine for containers, with Amazon Elastic Kubernetes Service."
 ---

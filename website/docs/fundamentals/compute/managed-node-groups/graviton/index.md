@@ -1,6 +1,6 @@
 ---
 title: Graviton (ARM) instances
-sidebar_position: 40
+sidebar_position: 20
 sidebar_custom_props: { "module": true }
 description: "Leverage AWS Graviton processors with Amazon Elastic Kubernetes Service."
 ---
