@@ -28,3 +28,5 @@ pause-pods-5556d545f7-k5vj7   0/1     Pending   0          16m
 ```
 
 This eviction process allows our workload pods to transition to `ContainerCreating` and `Running` states more quickly, demonstrating the benefits of cluster over-provisioning.
+
+But why are these pods now pending? Shouldn't Cluster Autoscaler have provisioned additional nodes? The answer is that the Managed Node Group configured for our cluster has a maximum size of `6`, which means that we've reached the limit of the number of instances in our lab cluster.
