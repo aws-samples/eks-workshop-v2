@@ -17,7 +17,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Use Node.js ${{ env.node_version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ env.node_version }}
           registry-url: "https://registry.npmjs.org"
