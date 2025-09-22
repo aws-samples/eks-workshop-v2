@@ -162,7 +162,7 @@ resource "aws_security_group" "hybrid_nodes" {
 module "hybrid_node" {
   depends_on = [aws_ec2_transit_gateway.tgw, aws_internet_gateway.remote]
   source     = "terraform-aws-modules/ec2-instance/aws"
-  version    = "6.0.1"
+  version    = "6.1.1"
 
   metadata_options = {
     "http_tokens" : "required"
