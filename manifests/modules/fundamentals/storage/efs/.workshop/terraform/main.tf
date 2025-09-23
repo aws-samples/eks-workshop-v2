@@ -1,6 +1,6 @@
 module "efs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.59.0"
+  version = "5.60.0"
 
   role_name_prefix   = "${var.addon_context.eks_cluster_id}-efs-csi-"
   policy_name_prefix = "${var.addon_context.eks_cluster_id}-ebs-csi-"
@@ -27,7 +27,7 @@ module "preprovision" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.21.1"
+  version = "1.22.0"
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {

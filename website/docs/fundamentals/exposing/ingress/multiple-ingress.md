@@ -7,19 +7,20 @@ It's common to leverage multiple Ingress objects in the same EKS cluster, for ex
 
 In this example, we'll expose the `catalog` API out through the same ALB as the `ui` component, leveraging path-based routing to dispatch requests to the appropriate Kubernetes service.
 
-The first thing we'll do is create a new Ingress for the `ui` component adding the annotation `alb.ingress.kubernetes.io/group.name`:
+The first thing we'll do is create a new Ingress for the `ui` component:
 
-```file
-manifests/modules/exposing/ingress/multiple-ingress/ingress-ui.yaml
-```
+::yaml{file="manifests/modules/exposing/ingress/multiple-ingress/ingress-ui.yaml" paths="metadata.annotations,spec.rules.0"}
 
-Then we'll create a separate Ingress for the `catalog` component that also leverages the same `group.name`:
+1. Set the IngressGroup to `retail-app-group` by adding the annotation `alb.ingress.kubernetes.io/group.name`
+2. The rules section is used to express how the ALB should route traffic. For the `ui` component we route all HTTP requests where the path starts with `/` to the Kubernetes service called `ui` on port 80
 
-```file
-manifests/modules/exposing/ingress/multiple-ingress/ingress-catalog.yaml
-```
 
-This Ingress is also configuring rules to route requests prefixed with `/catalog` to the `catalog` component.
+Then we'll create a separate Ingress for the `catalog` component:
+
+::yaml{file="manifests/modules/exposing/ingress/multiple-ingress/ingress-catalog.yaml" paths="metadata.annotations,spec.rules.0"}
+
+1. To specify the same IngressGroup as the `ui` component set `alb.ingress.kubernetes.io/group.name` to the value `retail-app-group` in the annotations section
+2. The rules section is used to express how the ALB should route traffic. For the `catalog` component we route all HTTP requests where the path starts with `/catalog` to the Kubernetes service called `catalog` on port 80
 
 Apply these manifests to the cluster:
 

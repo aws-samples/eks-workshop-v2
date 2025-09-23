@@ -67,19 +67,26 @@ resource "aws_iam_instance_profile" "ecr_ec2" {
   role = resource.aws_iam_role.ecr_ec2_role.name
 }
 
+resource "aws_ecr_repository" "ui" {
+  name                 = "retail-sample-app-ui"
+  image_tag_mutability = "MUTABLE"
+  force_delete         = true
+
+}
+
 resource "aws_instance" "ui_to_ecr" {
   ami                  = data.aws_ssm_parameter.eks_ami.value
   instance_type        = "m5.large"
   user_data            = <<-EOF
               #!/bin/bash
-              sudo yum update -y
-              sudo yum install -y docker
-              sudo service docker start
-              sudo usermod -a -G docker ec2-user
-              docker pull public.ecr.aws/aws-containers/retail-store-sample-ui:1.0.0
-              docker images | grep retail-store | awk '{ print $3 }' | xargs -I {} docker tag {} ${resource.aws_ecr_repository.ui.repository_url}:1.0.0
-              aws ecr get-login-password | docker login --username AWS --password-stdin ${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.id}.amazonaws.com
-              docker push ${resource.aws_ecr_repository.ui.repository_url}:1.0.0
+              sudo dnf update -y
+              curl -L https://github.com/containerd/nerdctl/releases/download/v1.7.7/nerdctl-1.7.7-linux-amd64.tar.gz | sudo tar -xz -C /usr/local/bin
+              sudo systemctl start containerd
+              sudo systemctl enable containerd
+              sudo /usr/local/bin/nerdctl pull public.ecr.aws/aws-containers/retail-store-sample-ui:1.2.1
+              sudo /usr/local/bin/nerdctl images | grep retail-store | awk '{ print $3 }' | xargs -I {} sudo /usr/local/bin/nerdctl tag {} ${resource.aws_ecr_repository.ui.repository_url}:1.2.1
+              aws ecr get-login-password | sudo /usr/local/bin/nerdctl login --username AWS --password-stdin ${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.id}.amazonaws.com
+              sudo /usr/local/bin/nerdctl push ${resource.aws_ecr_repository.ui.repository_url}:1.2.1
               EOF
   subnet_id            = element(data.aws_subnets.selected.ids, 0)
   iam_instance_profile = resource.aws_iam_instance_profile.ecr_ec2.name
@@ -89,12 +96,6 @@ resource "aws_instance" "ui_to_ecr" {
   depends_on = [resource.aws_ecr_repository.ui]
 }
 
-resource "aws_ecr_repository" "ui" {
-  name                 = "retail-sample-app-ui"
-  image_tag_mutability = "MUTABLE"
-  force_delete         = true
-
-}
 
 data "aws_iam_policy_document" "private_registry" {
   statement {
@@ -132,31 +133,19 @@ resource "aws_ecr_repository_policy" "example" {
   depends_on = [resource.aws_instance.ui_to_ecr]
 }
 
-data "template_file" "deployment_yaml1" {
-  template = file("${path.module}/deployment_permissions.yaml.tpl")
-
-  vars = {
-    image = "${resource.aws_ecr_repository.ui.repository_url}:1.0.0"
-  }
-}
-
-
-resource "local_file" "deployment_yaml1" {
-  filename = "${path.module}/deployment_permissions.yaml"
-  content  = data.template_file.deployment_yaml1.rendered
-}
-
 resource "null_resource" "kustomize_app1" {
   triggers = {
     always_run = timestamp()
   }
 
   provisioner "local-exec" {
-    command = "kubectl apply -f ${path.module}/deployment_permissions.yaml"
-    when    = create
+    command = "kubectl apply -f - <<EOF\n${templatefile("${path.module}/deployment_permissions.yaml.tpl", {
+      image = "${resource.aws_ecr_repository.ui.repository_url}:1.2.1"
+    })}\nEOF"
+    when = create
   }
 
-  depends_on = [resource.local_file.deployment_yaml1, resource.aws_instance.ui_to_ecr]
+  depends_on = [resource.aws_instance.ui_to_ecr]
 }
 
 
@@ -175,7 +164,7 @@ resource "null_resource" "kustomize_app2" {
 ###======PodStuck - ContainerCreating
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.21.1"
+  version = "1.22.0"
 
   enable_aws_efs_csi_driver = true
   aws_efs_csi_driver = {
@@ -228,28 +217,17 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
   ip_protocol       = "-1" # semantically equivalent to all ports
 }
 
-data "template_file" "deployment_yaml2" {
-  template = file("${path.module}/deployment_crash.yaml.tpl")
-
-  vars = {
-    filesystemid = resource.aws_efs_file_system.efs.id
-  }
-}
-
-resource "local_file" "deployment_yaml2" {
-  filename = "${path.module}/deployment_crash.yaml"
-  content  = data.template_file.deployment_yaml2.rendered
-}
-
 resource "null_resource" "kustomize_app3" {
   triggers = {
     always_run = timestamp()
   }
 
   provisioner "local-exec" {
-    command = "kubectl apply -f ${path.module}/deployment_crash.yaml"
-    when    = create
+    command = "kubectl apply -f - <<EOF\n${templatefile("${path.module}/deployment_crash.yaml.tpl", {
+      filesystemid = resource.aws_efs_file_system.efs.id
+    })}\nEOF"
+    when = create
   }
 
-  depends_on = [resource.local_file.deployment_yaml2, resource.aws_efs_file_system.efs]
+  depends_on = [resource.aws_efs_file_system.efs]
 }

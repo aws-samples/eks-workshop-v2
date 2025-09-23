@@ -9,7 +9,7 @@ Pod networking, also called cluster networking, is the center of Kubernetes netw
 
 Watch a video walk-through of the networking module by one of the module maintainers, Sheetal Joshi (AWS) here:
 
-<ReactPlayer controls url="https://www.youtube-nocookie.com/embed/EAZnXII9NTY" /> <br />
+<ReactPlayer controls src="https://www.youtube-nocookie.com/embed/EAZnXII9NTY" width={640} height={360} /> <br />
 
 Amazon EKS uses Amazon VPC to provide networking capabilities to worker nodes and Kubernetes Pods. An EKS cluster consists of two VPCs: an AWS managed VPC that hosts the Kubernetes control plane and a second customer-managed VPC that hosts the Kubernetes worker nodes where containers run, as well as other AWS infrastructure (like load balancers) used by a cluster. All worker nodes need the ability to connect to the managed API server endpoint. This connection allows the worker node to register itself with the Kubernetes control plane and to receive requests to run application pods.
 

@@ -1,7 +1,7 @@
 # Create FSxZ OIDC providers
 module "fsxz_oidc_providers" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.59.0"
+  version = "5.60.0"
 
   # Create prefixes
   role_name_prefix   = "${var.addon_context.eks_cluster_id}-fsxz-csi-"
@@ -145,7 +145,7 @@ resource "aws_security_group_rule" "fsxz_egress" {
 
 module "iam_assumable_role_fsx" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "5.59.0"
+  version                       = "5.60.0"
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-fsxz"
   provider_url                  = var.addon_context.eks_oidc_issuer_url
@@ -189,7 +189,7 @@ module "fsx_openzfs" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.21.1"
+  version = "1.22.0"
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {

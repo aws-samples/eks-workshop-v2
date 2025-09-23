@@ -7,17 +7,20 @@ As previously mentioned, the cluster access management controls and associated A
 
 In this section of the lab, we'll show how to configure access entries with granular permissions using Kubernetes groups. This is useful when the pre-defined access policies are too permissive. As part of the lab setup, we created an IAM role named `eks-workshop-carts-team`. In this scenario, we'll demonstrate how to use that role to provide a team that only works on the **carts** service with permissions that allow them to view all resources in the `carts` namespace, but also delete pods.
 
-First, let's create the Kubernetes objects that model our required permissions. This `Role` provides the permissions we outlined above:
+First, let's create the Kubernetes objects that model our required permissions. This Role provides the permissions we outlined above:
 
-```file
-manifests/modules/security/cam/rbac/role.yaml
-```
+::yaml{file="manifests/modules/security/cam/rbac/role.yaml" paths="metadata.namespace,rules.0,rules.1"}
 
-And this `RoleBinding` will map the role to a group named `carts-team`:
+1. Restrict the Role permissions to apply only to the `carts` namespace
+2. This rule allows read-only operations `verbs: ["get", "list", "watch"]` on all resources `resources: ["*"]`
+3. This rule allows delete operations `verbs: ["delete"]` specific to pods only `resources: ["pods"]`
 
-```file
-manifests/modules/security/cam/rbac/rolebinding.yaml
-```
+And this `RoleBinding` will map the Role to a Group named `carts-team`:
+
+::yaml{file="manifests/modules/security/cam/rbac/rolebinding.yaml" paths="roleRef,subjects.0"}
+
+1. `roleRef` references the `carts-team-role` Role we created earlier 
+2. `subjects` specifies that a Group named `carts-team` will get the permissions associated with the Role
 
 Let's apply these manifests:
 

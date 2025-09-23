@@ -7,10 +7,9 @@ resource "aws_eks_addon" "pod_identity" {
 
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "20.37.1"
+  version = "21.0.8"
 
   cluster_name                    = var.addon_context.eks_cluster_id
-  enable_pod_identity             = true
   create_pod_identity_association = true
   namespace                       = "karpenter"
   iam_role_name                   = "${var.addon_context.eks_cluster_id}-karpenter-controller"
