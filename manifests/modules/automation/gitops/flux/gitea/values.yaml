@@ -48,8 +48,15 @@ valkey:
   enabled: false
 postgresql:
   enabled: true
+  image:
+    repository: bitnamilegacy/postgresql
+    tag: 17.6.0-debian-12-r4
 postgresql-ha:
   enabled: false
 
 persistence:
   enabled: true
+
+global:
+  security:
+    allowInsecureImages: true
