@@ -18,7 +18,7 @@ $ helm upgrade --install gitea oci://docker.gitea.com/charts/gitea \
 
 Make sure that Gitea is up and running before proceeding:
 
-```bash timeout=300
+```bash timeout=300 wait=10
 $ export GITEA_HOSTNAME=$(kubectl get svc -n gitea gitea-http -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 \
   --connect-timeout 10 --max-time 60 \
