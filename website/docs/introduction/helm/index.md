@@ -1,7 +1,7 @@
 ---
 title: Helm
 sidebar_custom_props: { "module": true }
-sidebar_position: 60
+sidebar_position: 69
 ---
 
 ::required-time
@@ -159,4 +159,113 @@ $ helm uninstall nginx --namespace nginx --wait
 
 This will delete all the resources created by the chart for that release from our EKS cluster.
 
-Now that you understand how Helm works, proceed to the [Fundamentals module](/docs/fundamentals).
+## Deploying Applications with Helm
+
+Now let's see how Helm can be used to deploy our retail store application. While the workshop primarily uses Kustomize, understanding Helm is valuable as many third-party applications are distributed as Helm charts.
+
+### Creating a Simple Chart for the Catalog Service
+
+Let's create a basic Helm chart for our catalog service to understand how applications can be packaged and deployed with Helm:
+
+```bash
+$ helm create retail-catalog
+```
+
+This creates a basic chart structure. Let's examine what was created:
+
+```bash
+$ ls -la retail-catalog/
+total 8
+drwxr-xr-x  4 user user  128 Nov 15 10:30 .
+drwxr-xr-x  3 user user   96 Nov 15 10:30 ..
+-rw-r--r--  1 user user 1141 Nov 15 10:30 Chart.yaml
+drwxr-xr-x  2 user user   64 Nov 15 10:30 charts
+drwxr-xr-x  3 user user   96 Nov 15 10:30 templates
+-rw-r--r--  1 user user 1862 Nov 15 10:30 values.yaml
+```
+
+### Customizing the Chart
+
+Let's modify the default values to deploy our catalog service. Update the `values.yaml` file:
+
+```bash
+$ cat > retail-catalog/values.yaml << 'EOF'
+replicaCount: 2
+
+image:
+  repository: public.ecr.aws/aws-containers/retail-store-sample-catalog
+  tag: "0.4.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+resources:
+  requests:
+    cpu: 128m
+    memory: 512Mi
+  limits:
+    cpu: 256m
+    memory: 512Mi
+
+nameOverride: "catalog"
+fullnameOverride: "catalog"
+EOF
+```
+
+### Installing the Chart
+
+Now let's install our catalog service using the Helm chart:
+
+```bash
+$ helm install catalog ./retail-catalog --namespace catalog --create-namespace
+```
+
+Verify the deployment:
+
+```bash
+$ helm list -n catalog
+NAME     NAMESPACE  REVISION  UPDATED                                  STATUS    CHART               APP VERSION
+catalog  catalog    1         2024-11-15 10:35:42.123456789 +0000 UTC  deployed  retail-catalog-0.1.0  1.16.0
+```
+
+Check the running pods:
+
+```bash
+$ kubectl get pods -n catalog
+NAME                       READY   STATUS    RESTARTS   AGE
+catalog-7d4b8c9f8d-abc12   1/1     Running   0          2m
+catalog-7d4b8c9f8d-def34   1/1     Running   0          2m
+```
+
+### Upgrading the Release
+
+One of Helm's strengths is managing application upgrades. Let's scale our application by updating the replica count:
+
+```bash
+$ helm upgrade catalog ./retail-catalog \
+  --namespace catalog \
+  --set replicaCount=3
+```
+
+### Rolling Back
+
+If something goes wrong, Helm makes it easy to rollback:
+
+```bash
+$ helm rollback catalog 1 -n catalog
+```
+
+### Cleaning Up
+
+Remove the Helm release:
+
+```bash
+$ helm uninstall catalog -n catalog
+```
+
+This example shows how Helm provides a higher-level abstraction for deploying applications, with built-in support for upgrades, rollbacks, and configuration management.
+
+Now that you understand how Helm works, you can proceed to [Kustomize](../kustomize) to learn about declarative configuration management, or jump ahead to the [Fundamentals module](/docs/fundamentals).

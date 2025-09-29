@@ -1,6 +1,6 @@
 ---
-title: Application Overview
-sidebar_position: 24
+title: Sample Application Overview
+sidebar_position: 40
 ---
 
 # Sample Application Overview

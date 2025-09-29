@@ -1,27 +1,111 @@
 ---
-title: Getting started
-sidebar_position: 30
+title: Getting Started
+sidebar_position: 50
 sidebar_custom_props: { "module": true }
 description: "Learn the basics of running workloads on Amazon Elastic Kubernetes Service."
 ---
 
 ::required-time
 
-Welcome to the first hands-on lab in the EKS workshop. The goal of this exercise is to familiarize ourselves with the fundamental conecepts of Kuberntes and deploy sample application components using `kubectl`, `helm` and `kustomize`.
-
-As we deploy these components, we dive into fundamental concepts to become familiar with Kubernetes concepts - such as Pods, Services, Workload Types, etc.
-
-Let's deploy your first workload to the EKS cluster in your lab environment and explore!
+Welcome to the first hands-on lab in the EKS workshop. The goal of this exercise is to prepare the IDE with necessary configurations and explore the structure.
 
 Before we begin we need to run the following command to prepare our IDE environment and EKS cluster:
+
+:::tip Prepare your environment for this section:
 
 ```bash
 $ prepare-environment introduction/getting-started
 ```
+This command will clone the EKS workshop Git repository into the IDE environment.
+:::
 
-What is this command doing? For this lab it is cloning the EKS Workshop Git repository in to the IDE environment so the Kubernetes manifest files we need are present on the file system.
+The `prepare-environment` command is a crucial tool that sets up your lab environment for each workshop module. Here's what it does behind the scenes:
 
-You'll notice in subsequent labs we'll also run this command, where it will perform two important additional functions:
+- **Repository Setup**: Downloads the latest EKS Workshop content from GitHub to `/eks-workshop/repository` and links Kubernetes manifests to `~/environment/eks-workshop`
+- **Cluster Reset & Cleanup**: Resets the sample retail application to its base state. Removes any leftover resources from previouse labs and restores EKS managed node groups to initial size (3 nodes).
+- **Lab-Specific Infrastructure**: Ensure the target module is ready to use by creating any extra AWS resources using Terraform, deploying the required Kubernetes manifests, configuring environment variables, and installing necessary add-ons or components.
 
-1. Reset the EKS cluster back to its initial state
-2. Install any additional components needed in to the cluster for the upcoming lab exercise
+### Basic Usage Patterns
+```
+$ prepare-environment <module>/<lab>
+```
+
+**Examples**
+```
+# For the getting started lab
+$ prepare-environment introduction/getting-started
+
+# For Karpenter autoscaling
+$ prepare-environment autoscaling/compute/karpenter
+
+# For storage with EBS
+$ prepare-environment fundamentals/storage/ebs
+
+# For networking security groups
+$ prepare-environment networking/securitygroups-for-pods
+```
+
+### Reset Entire Environment
+```
+# Resets everything back to base state
+$ prepare-environment
+```
+
+## Repository Structure Overview
+
+After running `prepare-environment`, you'll have access to the workshop materials in your IDE. Here's how the repository is organized:
+
+#### Key Directories
+
+**`~/environment/eks-workshop/`** - Your main working directory containing:
+
+- **`base-application/`** - The core retail store application manifests
+  - `ui/` - Frontend web interface
+  - `catalog/` - Product catalog service
+  - `carts/` - Shopping cart service  
+  - `checkout/` - Order checkout service
+  - `orders/` - Order management service
+
+- **`modules/`** - Lab-specific resources organized by learning module
+  - `introduction/` - Getting started and basic concepts
+  - `fundamentals/` - Core Kubernetes and EKS concepts
+  - `networking/` - VPC CNI, load balancing, ingress
+  - `security/` - Pod security, RBAC, encryption
+  - `observability/` - Monitoring, logging, tracing
+  - `autoscaling/` - HPA, VPA, Cluster Autoscaler, Karpenter
+  - And more...
+
+#### Lab Structure Pattern
+
+Each lab follows a consistent structure:
+```
+modules/<module>/<lab>/
+├── .workshop/
+│   ├── terraform/          # Lab-specific AWS infrastructure
+│   ├── cleanup.sh         # Reset script for this lab
+│   └── manifests/         # Additional Kubernetes resources
+└── <kubernetes-files>     # Main lab Kubernetes manifests
+```
+
+This modular approach allows you to:
+- Jump between labs in any order
+- Have consistent, isolated environments for each exercise
+- Easily reset and clean up between labs
+
+:::tip Congratulations!
+
+You've successfully prepared your EKS workshop environment! You cluster is ready and the repository structure is set up for hands-on learning.
+
+:::
+
+### What's Next?
+
+We can deploy the application in several ways, and we'll be using `Kustomize` throughout this workshop. However, you need a good understanding of Kubernetes basics for the best learning experience. 
+
+The following optional labs will set you up with the necessary knowledge by deploying and exploring the sample application:
+
+**[Kubernetes Basics](./concepts/kubernetes-basics)** - Deploy the retail store application step-by-step using core Kubernetes resources. Learn how pods, deployments, and services work together by creating them yourself.
+
+**[Kustomize](./concepts/kustomize)** - Use Kustomize to deploy and customize the application for different environments. Learn how to manage configuration variations without duplicating YAML files.
+
+**[Helm](./concepts/helm)** - Deploy the application using Helm charts. Understand how Helm simplifies complex deployments and enables reusable, templated configurations.

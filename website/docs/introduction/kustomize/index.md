@@ -1,7 +1,7 @@
 ---
 title: Kustomize
 sidebar_custom_props: { "module": true }
-sidebar_position: 50
+sidebar_position: 68
 ---
 
 ::required-time
@@ -17,13 +17,56 @@ $ prepare-environment
 
 [Kustomize](https://kustomize.io/) allows you to manage Kubernetes manifest files using declarative "kustomization" files. It provides the ability to express "base" manifests for your Kubernetes resources and then apply changes using composition, customization and easily making cross-cutting changes across many resources.
 
-For example, take a look at the following manifest file for the `checkout` Deployment:
+## Deploying the Retail Store Application
+
+Let's start by deploying the complete retail store application using Kustomize. The application consists of multiple microservices that work together:
+
+### Deploy the Base Application
+
+First, let's deploy the entire retail store application using the base configuration:
+
+```bash
+$ kubectl apply -k ~/environment/eks-workshop/base-application
+```
+
+This single command deploys all the microservices. Let's see what was created:
+
+```bash
+$ kubectl get pods -A -l app.kubernetes.io/created-by=eks-workshop
+NAME                               READY   STATUS    RESTARTS   AGE
+cart-6d4f8c9b8d-xyz12             1/1     Running   0          2m
+catalog-7b5c9d8e9f-abc34          1/1     Running   0          2m
+checkout-8c6d0e1f2g-def56         1/1     Running   0          2m
+orders-9d7e2f3g4h-ghi78          1/1     Running   0          2m
+ui-0e8f3g4h5i-jkl90              1/1     Running   0          2m
+```
+
+### Understanding the Kustomization Structure
+
+The base application uses a `kustomization.yaml` file that references all the component directories:
+
+```bash
+$ cat ~/environment/eks-workshop/base-application/kustomization.yaml
+```
+
+Each service has its own directory with Kubernetes manifests:
+
+```bash
+$ ls ~/environment/eks-workshop/base-application/
+cart/  catalog/  checkout/  orders/  ui/  kustomization.yaml
+```
+
+### Customizing with Overlays
+
+Now let's see Kustomize's power by creating customizations. For example, let's scale the `checkout` service horizontally by updating the `replicas` field from 1 to 3.
+
+Take a look at the following manifest file for the `checkout` Deployment:
 
 ```file
 manifests/base-application/checkout/deployment.yaml
 ```
 
-This file has already been applied in the previous [Getting Started](../getting-started) lab, but let's say we wanted to scale this component horizontally by updating the `replicas` field using Kustomize. Rather than manually updating this YAML file, we'll use Kustomize to update the `spec/replicas` field from 1 to 3.
+Rather than manually updating this YAML file, we'll use Kustomize to update the `spec/replicas` field from 1 to 3.
 
 To do so, we'll apply the following kustomization.
 
@@ -94,6 +137,47 @@ $ kubectl kustomize ~/environment/eks-workshop/base-application \
 
 This uses `envsubst` to substitute environment variable placeholders in the Kubernetes manifest files with the actual values based on your particular environment. For example in some manifests we need to reference the EKS cluster name with `$EKS_CLUSTER_NAME` or the AWS region with `$AWS_REGION`.
 
-Now that you understand how Kustomize works, you can proceed to the [Helm module](/docs/introduction/helm) or go directly to the [Fundamentals module](/docs/fundamentals).
+## Advanced Kustomize Patterns
+
+### Environment-Specific Configurations
+
+Kustomize excels at managing different configurations for different environments. You might have:
+
+- **Base**: Common configuration shared across all environments
+- **Development Overlay**: Lower resource limits, debug logging enabled
+- **Production Overlay**: Higher resource limits, multiple replicas, monitoring enabled
+
+### Cross-Cutting Changes
+
+One of Kustomize's strengths is making changes across multiple resources. For example, you could:
+
+- Add labels to all resources: `commonLabels`
+- Add annotations to all resources: `commonAnnotations`
+- Set resource limits across all deployments
+- Configure image pull policies consistently
+
+### Deploying Individual Services
+
+You can also deploy individual services using their specific kustomization:
+
+```bash
+# Deploy just the catalog service
+$ kubectl apply -k ~/environment/eks-workshop/base-application/catalog
+
+# Deploy just the UI service  
+$ kubectl apply -k ~/environment/eks-workshop/base-application/ui
+```
+
+### Viewing Generated Manifests
+
+Before applying changes, you can preview what Kustomize will generate:
+
+```bash
+$ kubectl kustomize ~/environment/eks-workshop/base-application/catalog
+```
+
+This shows you exactly what Kubernetes resources will be created without actually applying them to the cluster.
+
+Now that you understand how Kustomize works, you can proceed to the [Getting Started](/docs/introduction/getting-started) hands-on lab or go directly to the [Fundamentals module](/docs/fundamentals).
 
 To learn more about Kustomize, you can refer to the official Kubernetes [documentation](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/).
