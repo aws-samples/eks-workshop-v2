@@ -126,7 +126,7 @@ While this lab focuses on Security Groups, Network ACLs can also affect traffic 
 
 ### Conclusions
 
-Throughout the multiple sections of this lab, we investigated and root caused different issues that affect DNS resolution in EKS clusters, and performed the needed steps to fix them.
+Throughout the multiple sections of this lab, we investigated and identified the root cause of different issues that affect DNS resolution in EKS clusters, and performed the needed steps to fix them.
 
 In this lab, we've:
 

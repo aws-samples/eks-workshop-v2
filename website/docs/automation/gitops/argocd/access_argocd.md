@@ -26,11 +26,11 @@ For the purpose of this lab, the Argo CD server UI has been configured to be acc
 
 ```bash
 $ export ARGOCD_SERVER=$(kubectl get svc argocd-server -n argocd -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname')
-$ echo "ArgoCD URL: https://$ARGOCD_SERVER"
-ArgoCD URL: https://acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com
+$ echo "Argo CD URL: https://$ARGOCD_SERVER"
+Argo CD URL: https://acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com
 ```
 
-The load balancer will take some time to provision. Use this command to wait until ArgoCD responds:
+The load balancer will take some time to provision. Use this command to wait until Argo CD responds:
 
 ```bash timeout=600 wait=60
 $ curl --head -X GET --retry 20 --retry-all-errors --retry-delay 15 \
@@ -52,7 +52,7 @@ For authentication, the default username is `admin` and the password is auto-gen
 
 ```bash
 $ export ARGOCD_PWD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
-$ echo "ArgoCD admin password: $ARGOCD_PWD"
+$ echo "Argo CD admin password: $ARGOCD_PWD"
 ```
 
 Use the URL and credentials you just obtained to log in to the Argo CD UI. You'll see an interface that looks like this:
@@ -73,10 +73,11 @@ $ argocd login $ARGOCD_SERVER --username admin --password $ARGOCD_PWD --insecure
 Context 'acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com' updated
 ```
 
-Finally, register the Git repository with ArgoCD to provide access:
+Finally, register the Git repository with Argo CD to provide access:
 
 ```bash
-$ argocd repo add $GITOPS_REPO_URL_ARGOCD \
+$ export GITEA_SSH_HOSTNAME=$(kubectl get svc -n gitea gitea-ssh -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+$ argocd repo add ssh://git@${GITEA_SSH_HOSTNAME}:2222/workshop-user/argocd.git \
   --ssh-private-key-path ${HOME}/.ssh/gitops_ssh.pem \
   --insecure-ignore-host-key --upsert --name git-repo
 Repository 'ssh://...' added

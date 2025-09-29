@@ -70,6 +70,8 @@ resource "aws_cloudwatch_event_rule" "s3_trigger_pipeline" {
 // Terraform does not support all the parameters needed for this pipeline
 // So use CloudFormation instead
 resource "aws_cloudformation_stack" "eks_workshop_pipeline" {
+  depends_on = [time_sleep.wait]
+
   name          = "${var.addon_context.eks_cluster_id}-pipeline-stack"
   template_body = file("${path.module}/pipeline.yaml")
 
@@ -160,6 +162,12 @@ data "aws_iam_policy_document" "codepipeline_assume_role" {
 resource "aws_iam_role" "codepipeline_role" {
   name               = "${var.addon_context.eks_cluster_id}-codepipeline-role"
   assume_role_policy = data.aws_iam_policy_document.codepipeline_assume_role.json
+}
+
+resource "time_sleep" "wait" {
+  depends_on = [aws_iam_role.codepipeline_role]
+
+  create_duration = "15s"
 }
 
 data "aws_iam_policy_document" "codepipeline_policy" {
