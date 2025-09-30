@@ -3,7 +3,7 @@ title: "Provisioning compute"
 sidebar_position: 30
 ---
 
-In this lab, we'll use Karpenter to provision the Trainium nodes necessary for handling the Mistral-7B model workload.
+In this lab, we'll use Karpenter to provision AWS Trainium nodes specifically designed for accelerated machine learning inference. Trainium is AWS's purpose-built ML accelerator that provides high performance and cost-effectiveness for running inference workloads like our Mistral-7B model.
 
 :::tip
 To learn more about Karpenter, check out the [Karpenter module](../../fundamentals/compute/karpenter/index.md) in this workshop.
@@ -17,7 +17,7 @@ NAME        READY   UP-TO-DATE   AVAILABLE   AGE
 karpenter   2/2     2            2           11m
 ```
 
-Lets review the configuration for the Karpenter NodePool:
+Let's review the configuration for the Karpenter NodePool that we'll be using to provision Trainium instances:
 
 ::yaml{file="manifests/modules/aiml/chatbot/nodepool-trn1.yaml" paths="spec.template.metadata.labels,spec.template.spec.requirements,spec.template.spec.taints,spec.limits"}
 
@@ -26,7 +26,7 @@ Lets review the configuration for the Karpenter NodePool:
 3. A `Taint` defines a specific set of properties that allow a node to repel a set of pods. This property works with its matching label, a `Toleration`. Both tolerations and taints work together to ensure that pods are properly scheduled onto the appropriate nodes. You can learn more about the other properties in [this resource](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/).
 4. A `NodePool` can define a limit on the amount of CPU and memory managed by it. Once this limit is reached Karpenter will not provision additional capacity associated with that particular `NodePool`, providing a cap on the total compute.
 
-Create the NodePool:
+Let's create the NodePool:
 
 ```bash
 $ cat ~/environment/eks-workshop/modules/aiml/chatbot/nodepool-trn1.yaml \
@@ -43,4 +43,4 @@ NAME                NODECLASS           NODES   READY   AGE
 trainium-trn1       trainium-trn1       0       True    31s
 ```
 
-As seen from the above command the NodePool has been properly provisioned, allowing Karpenter to provision new nodes as needed.
+As seen from the above command the NodePool has been properly provisioned, allowing Karpenter to provision new nodes as needed. When we deploy our ML workload in the next step, Karpenter will automatically create the required Trainium instances based on the resource requests and limits we specify.
