@@ -1,5 +1,5 @@
 ---
-title: "Large Language Models with Ray Serve"
+title: "Large Language Models with vLLM"
 sidebar_position: 10
 chapter: true
 sidebar_custom_props: { "module": true }
@@ -18,7 +18,7 @@ $ prepare-environment aiml/chatbot
 This will make the following changes to your lab environment:
 
 - Installs Karpenter in the Amazon EKS cluster
-- Creates an IAM Role for the Pods to use
+- Installs the AWS Load Balancer Controller in the Amazon EKS cluster
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/aiml/chatbot/.workshop/terraform).
 
@@ -28,4 +28,4 @@ You can view the Terraform that applies these changes [here](https://github.com/
 
 This section will focus on gaining insights into the intricacies of deploying LLMs efficiently on EKS.
 
-For deploying and scaling the model, this lab will utilize AWS Trainium through the [Trn1](https://aws.amazon.com/ai/machine-learning/trainium/) family. Model inference will utilize the [Ray Serve](https://docs.ray.io/en/latest/serve/index.html) project for building online inference APIs and streamlining the deployment of machine learning models.
+For deploying and scaling the model, this lab will utilize AWS Trainium through the [Trn1](https://aws.amazon.com/ai/machine-learning/trainium/) family. Model inference will utilize the [vLLM](https://github.com/vllm-project/vllm) project to serve an HTTP endpoint that can be used to invoke the model.
