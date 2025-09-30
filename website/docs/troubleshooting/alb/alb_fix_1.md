@@ -63,7 +63,7 @@ Events:
 
 ```
 
-The error indicates the AWS Load Balancer Controller cannot find any subnets tagged for use with load balancers. Here the documentation to set up [ALB with EKS](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/deploy/subnet_discovery/) correctly.
+The error indicates the AWS Load Balancer Controller cannot find any subnets tagged for use with load balancers. Here is the documentation to set up [ALB with EKS](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/deploy/subnet_discovery/) correctly.
 
 ### Step 4: Fix Subnet Tags
 
