@@ -1,5 +1,5 @@
 ---
-title: "Fast path - Developers"
+title: "⚡ Fast path - Developers"
 chapter: true
 ---
 
@@ -9,7 +9,7 @@ chapter: true
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30
-$ prepare-environment fast-path/developers
+$ prepare-environment fastpath/developers
 ```
 
 Each section of this lab will outline what resources have been setup for your convenience.
