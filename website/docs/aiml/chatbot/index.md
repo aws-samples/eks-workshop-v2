@@ -24,8 +24,6 @@ You can view the Terraform that applies these changes [here](https://github.com/
 
 :::
 
-## Introduction to Mistral 7B and Language Models
-
 [Mistral 7B](https://mistral.ai/en/news/announcing-mistral-7b) is an open-source large language model (LLM) with 7.3 billion parameters designed to provide a balance of performance and efficiency. Unlike larger models that require massive computational resources, Mistral 7B offers impressive capabilities in a more deployable package. It excels at text generation, completion, information extraction, data analysis, and complex reasoning tasks while maintaining practical resource requirements.
 
 In this module, we'll explore how to deploy and efficiently serve Mistral 7B on Amazon EKS. You'll learn how to:
@@ -38,4 +36,3 @@ In this module, we'll explore how to deploy and efficiently serve Mistral 7B on 
 For accelerating model inference, we'll leverage AWS Trainium through the [Trn1](https://aws.amazon.com/ai/machine-learning/trainium/) instance family. These purpose-built accelerators are optimized for deep learning workloads and offer significant performance improvements for model inference compared to standard CPU-based solutions.
 
 Our inference architecture will utilize [vLLM](https://github.com/vllm-project/vllm), a high-throughput and memory-efficient inference engine specifically designed for LLMs. vLLM provides an OpenAI-compatible API endpoint that makes it easy to integrate with existing applications.
-
