@@ -19,7 +19,7 @@ This configuration makes the following important changes:
 1. Enables the chat bot component in the UI interface
 2. Configures the application to use the OpenAI model provider, which works with vLLM's OpenAI-compatible API
 3. Specifies the appropriate model name, which is required by the OpenAI endpoint format
-4. Sets the endpoint URL to `http://mistral.vllm:8080`, connecting to our Kubernetes Service for the vLLM deployment
+4. Sets the endpoint URL to `http://mistral.vllm:8080`, connecting to our Kubernetes Service for the vLLM Deployment
 
 Let's apply these changes to our running application:
 

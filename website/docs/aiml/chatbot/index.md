@@ -3,7 +3,7 @@ title: "Large Language Models with vLLM"
 sidebar_position: 10
 chapter: true
 sidebar_custom_props: { "module": true }
-description: "Use Trainium to accelerate deep learning inference workloads on Amazon Elastic Kubernetes Service."
+description: "Use AWS Trainium to accelerate deep learning inference workloads on Amazon Elastic Kubernetes Service."
 ---
 
 ::required-time

@@ -11,7 +11,7 @@ $ kubectl rollout status --timeout=600s deployment/mistral -n vllm
 
 ## Testing with a direct API call
 
-Once the deployment is healthy, we can perform a simple test of the endpoint using `curl`. This allows us to verify that our model can correctly process inference requests:
+Once the Deployment is healthy, we can perform a simple test of the endpoint using `curl`. This allows us to verify that our model can correctly process inference requests:
 
 ```bash
 $ kubectl run curl-test --image=curlimages/curl \
