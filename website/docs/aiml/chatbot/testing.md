@@ -11,19 +11,23 @@ $ kubectl rollout status --timeout=600s deployment/mistral -n vllm
 
 ## Testing with a direct API call
 
-Once the Deployment is healthy, we can perform a simple test of the endpoint using `curl`. This allows us to verify that our model can correctly process inference requests:
+Once the Deployment is healthy, we can perform a simple test of the endpoint using `curl`. This allows us to verify that our model can correctly process inference requests.
+
+We'll send this payload:
+
+```file
+manifests/modules/aiml/chatbot/post.json
+```
+
+Run the test command:
 
 ```bash test=false
+$ payload=$(cat ~/environment/eks-workshop/modules/aiml/chatbot/post.json)
 $ kubectl run curl-test --image=curlimages/curl \
  --rm -itq --restart=Never -- \
  curl http://mistral.vllm:8080/v1/completions \
  -H "Content-Type: application/json" \
- -d '{
-    "model": "/models/mistral-7b-v0.3",
-    "prompt": "The names of the colors in the rainbow are: ",
-    "max_tokens": 100,
-    "temperature": 0
-}' | jq
+ -d "$payload" | jq
 {
   "id": "cmpl-af24a0c6ef904f0bb7e2be29e317096b",
   "object": "text_completion",
