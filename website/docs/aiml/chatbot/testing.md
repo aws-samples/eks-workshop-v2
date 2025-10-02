@@ -21,8 +21,8 @@ manifests/modules/aiml/chatbot/post.json
 
 Run the test command:
 
-```bash hook=model
-$ payload=$(cat ~/environment/eks-workshop/modules/aiml/chatbot/post.json)
+```bash
+$ export payload=$(cat ~/environment/eks-workshop/modules/aiml/chatbot/post.json)
 $ kubectl run curl-test --image=curlimages/curl \
  --rm -itq --restart=Never -- \
  curl http://mistral.vllm:8080/v1/completions \
