@@ -21,7 +21,7 @@ manifests/modules/aiml/chatbot/post.json
 
 Run the test command:
 
-```bash test=false
+```bash hook=model
 $ payload=$(cat ~/environment/eks-workshop/modules/aiml/chatbot/post.json)
 $ kubectl run curl-test --image=curlimages/curl \
  --rm -itq --restart=Never -- \
@@ -59,7 +59,7 @@ In this example, we sent the prompt `The names of the colors in the rainbow are:
 
 For a more interactive experience, we can access the demo web store and use the integrated chat interface:
 
-```bash hook=model
+```bash
 $ LB_HOSTNAME=$(kubectl -n ui get service ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}')
 $ echo "http://$LB_HOSTNAME"
 http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
