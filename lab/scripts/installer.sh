@@ -6,7 +6,7 @@ set -e
 kubectl_version='1.33.5'
 
 # renovate: depName=helm/helm
-helm_version='3.18.6'
+helm_version='3.19.0'
 
 # renovate: depName=eksctl-io/eksctl
 eksctl_version='0.214.0'
@@ -17,16 +17,16 @@ kubeseal_version='0.18.4'
 yq_version='4.47.2'
 
 # renovate: depName=fluxcd/flux2
-flux_version='2.6.4'
+flux_version='2.7.0'
 
 # renovate: depName=argoproj/argo-cd
-argocd_version='2.14.17'
+argocd_version='2.14.20'
 
 # renovate: depName=hashicorp/terraform
-terraform_version='1.13.2'
+terraform_version='1.13.3'
 
 # renovate: depName=aws/amazon-ec2-instance-selector
-ec2_instance_selector_version='3.1.1'
+ec2_instance_selector_version='3.1.2'
 
 # renovate: depName=hatoo/oha
 oha_version='1.10.0'
