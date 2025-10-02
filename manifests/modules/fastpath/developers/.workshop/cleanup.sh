@@ -9,7 +9,6 @@ kubectl delete namespace carts --ignore-not-found
 
 # Autoscaling
 kubectl delete pod load-generator --ignore-not-found
-kubectl delete scaledobject ui-hpa -n ui --ignore-not-found
 
 uninstall-helm-chart keda keda
 kubectl delete ns keda --ignore-not-found
