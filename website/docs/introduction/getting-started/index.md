@@ -25,32 +25,6 @@ The `prepare-environment` command is a crucial tool that sets up your lab enviro
 - **Cluster Reset & Cleanup**: Resets the sample retail application to its base state. Removes any leftover resources from previouse labs and restores EKS managed node groups to initial size (3 nodes).
 - **Lab-Specific Infrastructure**: Ensure the target module is ready to use by creating any extra AWS resources using Terraform, deploying the required Kubernetes manifests, configuring environment variables, and installing necessary add-ons or components.
 
-### Basic Usage Patterns
-```
-$ prepare-environment <module>/<lab>
-```
-
-**Examples**
-```
-# For the getting started lab
-$ prepare-environment introduction/getting-started
-
-# For Karpenter autoscaling
-$ prepare-environment autoscaling/compute/karpenter
-
-# For storage with EBS
-$ prepare-environment fundamentals/storage/ebs
-
-# For networking security groups
-$ prepare-environment networking/securitygroups-for-pods
-```
-
-### Reset Entire Environment
-```
-# Resets everything back to base state
-$ prepare-environment
-```
-
 ## Repository Structure Overview
 
 After running `prepare-environment`, you'll have access to the workshop materials in your IDE. Here's how the repository is organized:

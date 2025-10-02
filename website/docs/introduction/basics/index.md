@@ -1,5 +1,5 @@
 ---
-title: K8s Basics
+title: Kubernetes Basics
 sidebar_position: 60
 sidebar_custom_props: { "module": true }
 description: "Learn fundamental Kubernetes concepts including basics, Helm, and Kustomize."

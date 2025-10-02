@@ -21,24 +21,35 @@ The lab exercises are designed in a way that you can run any modules as a self-c
 
 The `prepare-environment` tool helps you set up and configure your lab environment for each section. Simply run:
 
-```bash test=false
-$ prepare-environment <name>
+```
+$ prepare-environment $MODULE_NAME
 ```
 
-For example, `getting-started` section in `introduction` module can be initialized using the following command - 
+### Basic Usage Patterns
+```
+$ prepare-environment $MODULE_NAME/$LAB
+```
 
-::required-time
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=300 wait=10
+**Examples**
+```
+# For the getting started lab
 $ prepare-environment introduction/getting-started
+
+# For Karpenter autoscaling
+$ prepare-environment autoscaling/compute/karpenter
+
+# For storage with EBS
+$ prepare-environment fundamentals/storage/ebs
+
+# For networking security groups
+$ prepare-environment networking/securitygroups-for-pods
 ```
 
-:::
-
-This command for getting-started lab will clone the EKS Workshop Git repository into the IDE environment, so the Kubernetes manifest files we need are present on the filesystem.
+### Reset Entire Environment
+```
+# Resets everything back to base state
+$ prepare-environment
+```
 
 
 :::caution

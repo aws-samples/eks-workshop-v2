@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: catalog-migration
+  namespace: catalog
+  labels:
+    app.kubernetes.io/name: catalog-migration
+    app.kubernetes.io/created-by: eks-workshop
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: catalog-migration
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: migrator
+        image: migrate/migrate:v4.16.2
+        command:
+        - migrate
+        - -path
+        - /migrations
+        - -database
+        - mysql://root:my-secret-pw@catalog-mysql:3306/catalog
+        - up
+        volumeMounts:
+        - name: migrations
+          mountPath: /migrations
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+      volumes:
+      - name: migrations
+        configMap:
+          name: catalog-migrations
