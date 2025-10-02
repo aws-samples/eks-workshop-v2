@@ -14,5 +14,5 @@ spec:
               value: "openai"
             - name: RETAIL_UI_CHAT_MODEL
               value: "/models/mistral-7b-v0.3"
-            - name: RETAIL_UI_CHAT_ENABLED
+            - name: RETAIL_UI_CHAT_OPENAI_BASE_URL
               value: "http://mistral.vllm:8080"

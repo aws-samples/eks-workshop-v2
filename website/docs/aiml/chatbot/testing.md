@@ -5,7 +5,7 @@ sidebar_position: 70
 
 By now the Mistral-7B model should be available, or close to becoming available. We can verify this by running the following command, which will block until the model is running if it isn't already:
 
-```bash
+```bash wait=10 timeout=700
 $ kubectl rollout status --timeout=600s deployment/mistral -n vllm
 ```
 
@@ -13,7 +13,7 @@ $ kubectl rollout status --timeout=600s deployment/mistral -n vllm
 
 Once the Deployment is healthy, we can perform a simple test of the endpoint using `curl`. This allows us to verify that our model can correctly process inference requests:
 
-```bash
+```bash test=false
 $ kubectl run curl-test --image=curlimages/curl \
  --rm -itq --restart=Never -- \
  curl http://mistral.vllm:8080/v1/completions \
@@ -55,7 +55,7 @@ In this example, we sent the prompt `The names of the colors in the rainbow are:
 
 For a more interactive experience, we can access the demo web store and use the integrated chat interface:
 
-```bash
+```bash hook=model
 $ LB_HOSTNAME=$(kubectl -n ui get service ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}')
 $ echo "http://$LB_HOSTNAME"
 http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
