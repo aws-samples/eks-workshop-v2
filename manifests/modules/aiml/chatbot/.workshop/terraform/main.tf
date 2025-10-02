@@ -124,3 +124,34 @@ resource "helm_release" "karpenter" {
     ]
   }
 }
+
+resource "kubernetes_manifest" "ui_nlb" {
+  depends_on = [module.eks_blueprints_addons]
+
+  manifest = {
+    "apiVersion" = "v1"
+    "kind"       = "Service"
+    "metadata" = {
+      "name"      = "ui-nlb"
+      "namespace" = "ui"
+      "annotations" = {
+        "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
+        "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
+        "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "instance"
+      }
+    }
+    "spec" = {
+      "type" = "LoadBalancer"
+      "ports" = [{
+        "port"       = 80
+        "targetPort" = 8080
+        "name"       = "http"
+      }]
+      "selector" = {
+        "app.kubernetes.io/name"      = "ui"
+        "app.kubernetes.io/instance"  = "ui"
+        "app.kubernetes.io/component" = "service"
+      }
+    }
+  }
+}

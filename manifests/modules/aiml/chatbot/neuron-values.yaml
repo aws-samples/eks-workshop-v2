@@ -1,0 +1,9 @@
+devicePlugin:
+  tolerations:
+    - key: aws.amazon.com/neuron
+      operator: Exists
+      effect: NoSchedule
+scheduler:
+  enabled: true
+npd:
+  enabled: false
