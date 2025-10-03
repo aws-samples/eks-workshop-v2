@@ -1,5 +1,5 @@
 ---
-title: "Karpenter Setup"
+title: "Provisioning compute"
 sidebar_position: 20
 ---
 

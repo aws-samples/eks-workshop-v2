@@ -98,7 +98,7 @@ This output shows the capacity this node has:
 
 We can see that this node as a `aws.amazon.com/neuron` of 1. Karpenter provisioned this node for us as that's how many neuron the Pod requested.
 
-### Run an inference
+### Run inference
 
 This is the code that we will be using to run inference using a Neuron core on Inferentia:
 
@@ -108,18 +108,18 @@ manifests/modules/aiml/inferentia/inference/inference.py
 
 This Python code does the following tasks:
 
-1. It downloads and stores an image of a small kitten.
-2. It fetches the labels for classifying the image.
-3. It then imports this image and normalizes it into a tensor.
-4. It loads our previously created model.
-5. It runs the prediction on our small kitten image.
-6. It gets the top 5 results from the prediction and prints these to the command-line.
+1. Downloads and stores an image of a small kitten.
+2. Fetches the labels for classifying the image.
+3. Imports this image and normalizes it into a tensor.
+4. Loads our previously created model.
+5. Runs the prediction on our small kitten image.
+6. Gets the top 5 results from the prediction and prints these to the command-line.
 
-We copy this code to the Pod, download our previously uploaded model, and run the following commands:
+We'll copy this code to the Pod, download our previously uploaded model, and run the following commands:
 
 ```bash
 $ kubectl -n aiml cp ~/environment/eks-workshop/modules/aiml/inferentia/inference/inference.py inference:/
-$ kubectl -n aiml exec inference -- pip install --upgrade boto3 botocore
+$ kubectl -n aiml exec inference -- pip install --upgrade boto3==1.40.16 botocore==1.40.16
 $ kubectl -n aiml exec inference -- aws s3 cp s3://$AIML_NEURON_BUCKET_NAME/resnet50_neuron.pt ./
 $ kubectl -n aiml exec inference -- python /inference.py
 
