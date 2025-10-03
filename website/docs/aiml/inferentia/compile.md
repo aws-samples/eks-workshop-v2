@@ -1,5 +1,5 @@
 ---
-title: "Compile a pre-trained model with AWS Trainium"
+title: "Compile a pre-trained model"
 sidebar_position: 30
 ---
 
