@@ -28,7 +28,7 @@ $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 \
 An SSH key will be needed to interact with Git. The environment preparation for this lab created one, we just need to register it with Gitea:
 
 ```bash
-$ curl -X 'POST' \
+$ curl -X 'POST' --retry 3 --retry-all-errors \
   "http://workshop-user:$GITEA_PASSWORD@${GITEA_HOSTNAME}:3000/api/v1/user/keys" \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
@@ -38,7 +38,7 @@ $ curl -X 'POST' \
 And we'll also need to create the Gitea repository that Flux will use:
 
 ```bash
-$ curl -X 'POST' \
+$ curl -X 'POST' --retry 3 --retry-all-errors \
   "http://workshop-user:$GITEA_PASSWORD@${GITEA_HOSTNAME}:3000/api/v1/user/repos" \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \

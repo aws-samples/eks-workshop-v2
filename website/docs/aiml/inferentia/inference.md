@@ -15,7 +15,7 @@ $ echo $AIML_DL_INF_IMAGE
 
 This is a different image than we used for training and has been optimized for inference.
 
-Now we can deploy a Pod for inference. This is the the manifest file for running the inference Pod:
+Now we can deploy a Pod for inference. This is the manifest file for running the inference Pod:
 
 ::yaml{file="manifests/modules/aiml/inferentia/inference/inference.yaml" paths="spec.nodeSelector,spec.containers.0.resources.limits"}
 
@@ -63,7 +63,7 @@ $ kubectl logs -l app.kubernetes.io/instance=karpenter -n kube-system -f | jq
 ...
 ```
 
-The inference Pod should be scheduled on the node provisioned by Karpenter. Check if the Pod is in it's ready state:
+The inference Pod should be scheduled on the node provisioned by Karpenter. Check if the Pod is in its ready state:
 
 :::note
 It can take up to 12 minutes to provision the node, add it to the EKS cluster, and start the pod.
@@ -96,9 +96,9 @@ This output shows the capacity this node has:
 }
 ```
 
-We can see that this node as a `aws.amazon.com/neuron` of 1. Karpenter provisioned this node for us as that's how many neuron the Pod requested.
+We can see that this node has an `aws.amazon.com/neuron` of 1. Karpenter provisioned this node for us as that's how many Neuron cores the Pod requested.
 
-### Run an inference
+### Run inference
 
 This is the code that we will be using to run inference using a Neuron core on Inferentia:
 
@@ -108,18 +108,18 @@ manifests/modules/aiml/inferentia/inference/inference.py
 
 This Python code does the following tasks:
 
-1. It downloads and stores an image of a small kitten.
-2. It fetches the labels for classifying the image.
-3. It then imports this image and normalizes it into a tensor.
-4. It loads our previously created model.
-5. It runs the prediction on our small kitten image.
-6. It gets the top 5 results from the prediction and prints these to the command-line.
+1. Downloads and stores an image of a small kitten.
+2. Fetches the labels for classifying the image.
+3. Imports this image and normalizes it into a tensor.
+4. Loads our previously created model.
+5. Runs the prediction on our small kitten image.
+6. Gets the top 5 results from the prediction and prints these to the command-line.
 
-We copy this code to the Pod, download our previously uploaded model, and run the following commands:
+We'll copy this code to the Pod, download our previously uploaded model, and run the following commands:
 
 ```bash
 $ kubectl -n aiml cp ~/environment/eks-workshop/modules/aiml/inferentia/inference/inference.py inference:/
-$ kubectl -n aiml exec inference -- pip install --upgrade boto3 botocore
+$ kubectl -n aiml exec inference -- pip install --upgrade boto3==1.40.16 botocore==1.40.16
 $ kubectl -n aiml exec inference -- aws s3 cp s3://$AIML_NEURON_BUCKET_NAME/resnet50_neuron.pt ./
 $ kubectl -n aiml exec inference -- python /inference.py
 

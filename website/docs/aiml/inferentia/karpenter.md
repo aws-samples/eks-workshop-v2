@@ -1,5 +1,5 @@
 ---
-title: "Karpenter Setup"
+title: "Provisioning compute"
 sidebar_position: 20
 ---
 
@@ -9,7 +9,7 @@ In this section we will configure Karpenter to allow the creation of Inferentia 
 You can learn more about Karpenter in the [Karpenter module](../../fundamentals/compute/karpenter/index.md) that's provided in this workshop.
 :::
 
-Karpenter has been installed in our EKS cluster, and runs as a deployment:
+Karpenter has been installed in our EKS cluster, and runs as a Deployment:
 
 ```bash
 $ kubectl get deployment -n kube-system
@@ -32,4 +32,4 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/nodepool 
   | envsubst | kubectl apply -f-
 ```
 
-Now the NodePool is ready for the creation for our training and inference Pods.
+Now the NodePool is ready for the creation of our training and inference Pods.

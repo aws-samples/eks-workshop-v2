@@ -1,0 +1,119 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mistral
+  namespace: vllm
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/app-metrics: "true"
+    prometheus.io/port: "8080"
+  labels:
+    model: mistral7b
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    model: mistral7b
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mistral
+  namespace: vllm
+  labels:
+    model: mistral7b
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      model: mistral7b
+  template:
+    metadata:
+      labels:
+        model: mistral7b
+    spec:
+      nodeSelector:
+        instanceType: trn1.2xlarge
+        neuron.amazonaws.com/neuron-device: "true"
+      tolerations:
+        - effect: NoSchedule
+          key: aws.amazon.com/neuron
+          operator: Exists
+      initContainers:
+        - name: model-download
+          image: python:3.11
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e              
+              pip install -U "huggingface_hub[cli]"
+              pip install hf_transfer
+
+              mkdir -p /models/mistral-7b-v0.3
+              HF_HUB_ENABLE_HF_TRANSFER=1 hf download aws-neuron/Mistral-7B-Instruct-v0.3-seqlen-2048-bs-1-cores-2 --local-dir /models/mistral-7b-v0.3
+
+              echo ""
+              echo "Model download is complete."
+          volumeMounts:
+            - name: local-storage
+              mountPath: /models
+      containers:
+        - name: vllm
+          image: public.ecr.aws/neuron/pytorch-inference-vllm-neuronx:0.9.1-neuronx-py311-sdk2.26.0-ubuntu22.04
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            [
+              "vllm serve /models/mistral-7b-v0.3 --tokenizer /models/mistral-7b-v0.3 --port 8080 --host 0.0.0.0 --device neuron --tensor-parallel-size 2 --max-num-seqs 4 --use-v2-block-manager --max-model-len 2048 --dtype bfloat16",
+            ]
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+              name: http
+          resources:
+            requests:
+              cpu: 4
+              memory: 24Gi
+              aws.amazon.com/neuron: 1
+            limits:
+              cpu: 4
+              memory: 24Gi
+              aws.amazon.com/neuron: 1
+          volumeMounts:
+            - name: dshm
+              mountPath: /dev/shm
+            - name: local-storage
+              mountPath: /models
+          env:
+            - name: NEURON_RT_NUM_CORES
+              value: "2"
+            - name: NEURON_RT_VISIBLE_CORES
+              value: "0,1"
+            - name: VLLM_LOGGING_LEVEL
+              value: "INFO"
+            - name: VLLM_NEURON_FRAMEWORK
+              value: "neuronx-distributed-inference"
+            - name: NEURON_COMPILED_ARTIFACTS
+              value: "/models/mistral-7b-v0.3"
+            - name: MALLOC_ARENA_MAX
+              value: "1"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 5
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+        - name: local-storage
+          hostPath:
+            path: /mnt/k8s-disks/0
+            type: Directory
