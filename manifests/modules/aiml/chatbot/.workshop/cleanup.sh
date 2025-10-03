@@ -12,5 +12,5 @@ uninstall-helm-chart neuron-helm-chart kube-system
 
 logmessage "Deleting Karpenter resources..."
 
-kubectl delete nodepool --all
-kubectl delete ec2nodeclass --all
+delete-all-if-crd-exists nodepools.karpenter.sh
+delete-all-if-crd-exists ec2nodeclasses.karpenter.k8s.aws
