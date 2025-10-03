@@ -3,8 +3,6 @@ title: "Configuring the chat bot"
 sidebar_position: 60
 ---
 
-## Integrating vLLM with the retail application
-
 The sample retail application includes a built-in chat interface that allows customers to interact with the store using natural language. This feature can help customers find products, get recommendations, or answer questions about store policies. For this module, we'll configure this chat component to use our Mistral-7B model served through vLLM.
 
 Let's reconfigure the UI component to enable the chat bot functionality and point it to our vLLM endpoint:

@@ -3,8 +3,6 @@ title: "Install the Neuron plugin"
 sidebar_position: 20
 ---
 
-## Integrating Neuron Device Support in Kubernetes
-
 For Kubernetes to recognize and effectively utilize AWS Neuron accelerators, we need to install the Neuron device plugin. This plugin is responsible for exposing Neuron cores and devices as schedulable resources within the Kubernetes cluster, allowing the scheduler to appropriately provision nodes with Neuron acceleration when requested by workloads.
 
 The [AWS Neuron SDK](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/) is a software development kit that enables machine learning workloads on AWS Inferentia and Trainium chips. The device plugin is a key component that bridges Kubernetes' resource management capabilities with these specialized accelerators.
