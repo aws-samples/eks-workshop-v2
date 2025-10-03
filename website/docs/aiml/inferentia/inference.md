@@ -15,7 +15,7 @@ $ echo $AIML_DL_INF_IMAGE
 
 This is a different image than we used for training and has been optimized for inference.
 
-Now we can deploy a Pod for inference. This is the the manifest file for running the inference Pod:
+Now we can deploy a Pod for inference. This is the manifest file for running the inference Pod:
 
 ::yaml{file="manifests/modules/aiml/inferentia/inference/inference.yaml" paths="spec.nodeSelector,spec.containers.0.resources.limits"}
 
@@ -63,7 +63,7 @@ $ kubectl logs -l app.kubernetes.io/instance=karpenter -n kube-system -f | jq
 ...
 ```
 
-The inference Pod should be scheduled on the node provisioned by Karpenter. Check if the Pod is in it's ready state:
+The inference Pod should be scheduled on the node provisioned by Karpenter. Check if the Pod is in its ready state:
 
 :::note
 It can take up to 12 minutes to provision the node, add it to the EKS cluster, and start the pod.
@@ -96,7 +96,7 @@ This output shows the capacity this node has:
 }
 ```
 
-We can see that this node as a `aws.amazon.com/neuron` of 1. Karpenter provisioned this node for us as that's how many neuron the Pod requested.
+We can see that this node has an `aws.amazon.com/neuron` of 1. Karpenter provisioned this node for us as that's how many Neuron cores the Pod requested.
 
 ### Run inference
 
