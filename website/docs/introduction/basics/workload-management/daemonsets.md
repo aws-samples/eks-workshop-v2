@@ -1,22 +1,33 @@
 ---
 title: DaemonSets
 sidebar_position: 33
+sidebar_custom_props: { "module": true }
 ---
 
 # DaemonSets
 
-**DaemonSets** ensure that a copy of a pod runs on every node (or selected nodes) in your cluster. They're perfect for system-level services that need to run everywhere.
+::required-time
+
+:::tip Before you start
+Prepare your environment for this section:
+
+```bash timeout=300 wait=10
+$ prepare-environment introduction/basics/daemonsets
+```
+
+:::
+
+**DaemonSets** ensure that a copy of a pod runs on **every node** (or a subset of nodes) in your cluster. They are ideal for system-level services that must operate on all nodes, such as logging, monitoring, and network agents.
 
 Key benefits:
-- **Node coverage** - Automatically runs one pod per node
-- **Automatic scaling** - New nodes get pods, removed nodes lose pods
-- **System services** - Perfect for logging, monitoring, and networking
-- **Node selection** - Can target specific nodes with selectors
-- **Host access** - Can access node resources like logs and metrics
+- **Cover all nodes** - One Pod per node
+- **Scale automatically with nodes** - New nodes get pods, removed nodes lose pods
+- **Run system services** - Ideal for logging, monitoring, and networking
+- **Target specific nodes** - Using selectors or affinity
+- **Access host resources** - Like logs, metrics, and system files
 
 ## When to Use DaemonSets
-
-Use DaemonSets for services that need to run on every node:
+Daemonsets are perfect for services that need to run on every node or a subset of nodes:
 - **Log collectors** - Fluentd, Filebeat, Fluent Bit
 - **Monitoring agents** - Node Exporter, Datadog agent, New Relic
 - **Network plugins** - CNI plugins, load balancer controllers
@@ -25,24 +36,25 @@ Use DaemonSets for services that need to run on every node:
 
 ## Deploying a DaemonSet
 
-Let's create a simple log collector DaemonSet:
+Let's create a simple log collector DaemonSet that runs on all nodes and collects logs from the host filesystem:
 
-::yaml{file="manifests/modules/introduction/basics/log-collector.yaml" paths="kind,metadata.name,spec.selector,spec.template.spec.containers.0.volumeMounts,spec.template.spec.volumes" title="log-collector.yaml"}
+::yaml{file="manifests/modules/introduction/basics/daemonsets/log-collector.yaml" paths="kind,metadata.name,spec.selector,spec.template.spec.containers.0.volumeMounts,spec.template.spec.volumes" title="log-collector.yaml"}
 
 1. `kind: DaemonSet`: Creates a DaemonSet controller
-2. `metadata.name`: Name of the DaemonSet (log-collector)
+2. `metadata.name`: Name of the DaemonSet (`log-collector`)
 3. `spec.selector`: How DaemonSet finds its pods (by labels)
 4. `spec.template.spec.containers.0.volumeMounts`: How container accesses node files
 5. `spec.template.spec.volumes`: Host paths for accessing node logs
 
 Key DaemonSet characteristics:
-- No `replicas` field - automatically runs one pod per node
-- `hostPath` volumes - Access node filesystem for logs
-- Typically deployed in `kube-system` namespace
+- No `replicas` field - Kubernetes automatically runs one pod per node
+- Pods automatically scale as nodes are added or removed.
+- `hostPath` volumes allow Pods to access node files, if required.
+- Typically deployed in `kube-system` namespace for system services, but can run in other namespaces.
 
 Deploy the DaemonSet:
 ```bash
-$ kubectl apply -f ~/environment/eks-workshop/modules/introduction/basics/log-collector.yaml
+$ kubectl apply -f ~/environment/eks-workshop/modules/introduction/basics/daemonsets/log-collector.yaml
 ```
 
 ## Inspecting Your DaemonSet
@@ -73,7 +85,7 @@ log-collector-ghi56   1/1     Running   ip-10-42-3-1   2m
 
 ## Node Selection
 
-Target specific nodes using node selectors:
+Target specific nodes using nodeSelector:
 
 ```yaml
 spec:
@@ -86,7 +98,7 @@ spec:
         image: monitoring:latest
 ```
 
-Or use node affinity for more complex rules:
+Or use nodeAffinity for more complex rules:
 
 ```yaml
 spec:
@@ -102,43 +114,18 @@ spec:
                 values:
                 - amd64
 ```
-
-## Managing DaemonSets
-
-**Update a DaemonSet:**
-```bash
-$ kubectl patch daemonset -n kube-system log-collector -p '{"spec":{"template":{"spec":{"containers":[{"name":"fluentd","image":"fluentd:v1.17"}]}}}}'
-```
-
-**Check rollout status:**
-```bash
-$ kubectl rollout status daemonset/log-collector -n kube-system
-```
-
-**View DaemonSet events:**
-```bash
-$ kubectl describe daemonset -n kube-system log-collector
-```
+Use nodeSelector for simple label matches and nodeAffinity for more complex scheduling requirements.
 
 ## DaemonSets vs Other Controllers
 
-**DaemonSets:**
-- One pod per node automatically
-- No replica count needed
-- Perfect for system services
-- Pods tied to specific nodes
+| Controller | Purpose | Replica Count | Node Placement | Use Case |
+|------------|---------|---------------|----------------|----------|
+| DaemonSet  | One Pod per node | Automatic | All nodes or subset | System services |
+| Deployment | Multiple interchangeable Pods | Configurable | Any node | Stateless apps |
+| StatefulSet | Pods with stable identity | Configurable | Any node | Stateful apps |
 
-**Deployments:**
-- Configurable number of replicas
-- Pods can run on any available node
-- Perfect for application services
-- Pods are interchangeable
+> DaemonSets are ideal for services that must run on every node or a specific set of nodes.
 
-**StatefulSets:**
-- Configurable replicas with stable identities
-- Pods have unique names and storage
-- Perfect for stateful applications
-- Ordered operations
 
 ## Key Points to Remember
 
@@ -148,10 +135,4 @@ $ kubectl describe daemonset -n kube-system log-collector
 * Can access node resources through hostPath volumes
 * Use node selectors to target specific nodes
 * Pods are automatically added/removed as nodes join/leave
-
-## Next Steps
-
-Now that you understand DaemonSets, explore other workload controllers:
-- **[Jobs](./jobs)** - For batch processing and scheduled tasks
-
-Or learn about **[Services](../services)** - how to provide network access to your workloads.
+* Ideal for consistent system functionality across all nodes

@@ -17,10 +17,29 @@ Think of workload controllers as smart managers that:
 Kubernetes provides several workload controllers, each designed for specific use cases:
 
 - **Deployments** manage multiple identical pods for stateless applications. They handle scaling, rolling updates, and automatic replacement of failed pods. Perfect for web applications where any pod can handle any request.
+- **ReplicaSets** ensure a specified number of identical pods are running at any time. While you rarely create ReplicaSets directly, they're the building blocks that Deployments use under the hood to manage pods.
 - **StatefulSets** provide stable identities and persistent storage for stateful applications. Each pod gets a unique name (like `mysql-0`, `mysql-1`) and its own persistent volume. Essential for databases and clustered applications.
 - **DaemonSets** ensure exactly one pod runs on each node (or selected nodes). Great for system-level services like log collectors or monitoring agents that need to run everywhere in your cluster.
 - **Jobs** run pods until they complete successfully, then stop. Unlike other controllers, they don't restart completed pods. Ideal for one-time tasks like data migrations or batch processing.
 - **CronJobs** create Jobs on a schedule using familiar cron syntax. They're perfect for recurring tasks like backups, report generation, or cleanup operations.
+
+## Understanding the Controller Hierarchy
+
+It's helpful to understand how these controllers relate to each other:
+
+**Deployment → ReplicaSet → Pods**
+
+When you create a Deployment, here's what happens:
+1. **Deployment** creates and manages ReplicaSets
+2. **ReplicaSet** creates and manages the actual Pods
+3. **Pods** run your application containers
+
+This layered approach enables powerful features:
+- **Rolling updates**: Deployments create new ReplicaSets while gradually scaling down old ones
+- **Rollbacks**: Deployments can switch back to previous ReplicaSet versions
+- **Scaling**: Changes to replica count flow through ReplicaSets to Pods
+
+You'll often see ReplicaSets when debugging (like `kubectl get rs`), but you typically manage them indirectly through Deployments.
 
 ### Why Use Workload Controllers?
 
@@ -41,6 +60,7 @@ Kubernetes provides several workload controllers, each designed for specific use
 | Controller | Purpose | Best For |
 |------------|---------|----------|
 | **Deployments** | Stateless applications | Web apps, APIs, microservices |
+| **ReplicaSets** | Maintain pod replicas | Usually managed by Deployments |
 | **StatefulSets** | Stateful applications | Databases, message queues |
 | **DaemonSets** | Node-level services | Logging agents, monitoring |
 | **Jobs** | Run-to-completion tasks | Data migration, batch processing |
