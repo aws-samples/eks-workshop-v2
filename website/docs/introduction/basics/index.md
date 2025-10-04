@@ -1,46 +1,73 @@
 ---
 title: Kubernetes Basics
 sidebar_position: 60
-sidebar_custom_props: { "module": true }
-description: "Learn fundamental Kubernetes concepts including basics, Helm, and Kustomize."
+description: "Learn fundamental Kubernetes concepts including architecture, Helm, and Kustomize."
 ---
+
 # Kubernetes Concepts
-Before diving into hands-on labs, it's essential to understand how Kubernetes works and the tools we'll use throughout this workshop. This section covers the architecture, core concepts, and deployment tools that will help you successfully navigate the EKS workshop.
+
+Before diving into hands-on labs, it's important to understand **how Kubernetes works** and **the tools you'll use** throughout this workshop. This section introduces the core architecture, key components, and deployment tools that form the foundation of your EKS learning journey.
 
 :::info
-If you are already familiar with Kubernetes concepts, you can skip this section.
+Already familiar with Kubernetes fundamentals? You can skip ahead to the next section.
 :::
+
+---
 
 ## Kubernetes Architecture Overview
 
-Kubernetes follows a **master-worker architecture** where the control plane manages the cluster and worker nodes run your applications.
+Kubernetes follows a **control plane–worker node architecture**, where the **control plane** manages the cluster and **worker nodes** run your workloads.
+
+![Kubernetes Cluster Architecture](https://kubernetes.io/images/docs/kubernetes-cluster-architecture.svg)
+*Figure: Simplified Kubernetes cluster architecture.*
 
 ### Control Plane Components
-The control plane makes global decisions about the cluster and detects/responds to cluster events:
 
-- **API Server** - The front-end for the Kubernetes control plane, exposing the Kubernetes API
-- **etcd** - Consistent and highly-available key-value store for all cluster data
-- **Scheduler** - Assigns pods to nodes based on resource requirements and constraints
-- **Controller Manager** - Runs controller processes that regulate the state of the cluster
+The control plane makes global decisions about the cluster and ensures the system’s desired state.
+
+- **API Server** — Acts as the front-end for Kubernetes, exposing the Kubernetes API to users and components.  
+- **etcd** — A highly available key-value store that holds all cluster data.  
+- **Scheduler** — Assigns Pods to nodes based on resource availability and constraints.  
+- **Controller Manager** — Runs background processes (controllers) that maintain cluster health and reconcile actual vs. desired states.
 
 ### Worker Node Components
-Each worker node runs the components necessary to support pods:
 
-- **kubelet** - Agent that communicates with the control plane and manages pods
-- **Container Runtime** - Software responsible for running containers (like containerd)
-- **kube-proxy** - Network proxy that maintains network rules for pod communication
+Each node runs the components needed to host and manage Pods.
+
+- **kubelet** — Communicates with the control plane and ensures containers are running as expected.  
+- **Container Runtime** — Executes containers (e.g., containerd, CRI-O).  
+- **kube-proxy** — Maintains network rules and manages communication between Pods and services.
+
+---
 
 ## Amazon EKS Architecture
 
-Amazon Elastic Kubernetes Service (EKS) provides a fully managed Kubernetes service that eliminates the complexity of operating Kubernetes clusters. With EKS, you can:
-* Deploy applications faster with less operational overhead
-* Scale seamlessly to meet changing workload demands
-* Improve security through AWS integration and automated updates
-* Choose between standard EKS or fully automated EKS Auto Mode
+**Amazon Elastic Kubernetes Service (EKS)** is a managed Kubernetes service that simplifies cluster operations.  
+It takes care of control plane management, upgrades, and high availability, so you can focus on your workloads.
+
+With EKS, you can:
+- **Deploy applications faster** with less operational overhead  
+- **Scale seamlessly** to handle changing workloads  
+- **Enhance security** using AWS IAM and managed updates  
+- **Choose your compute model** — traditional EC2 nodes or serverless with EKS Auto Mode
+
+### Shared Responsibility Model
 
 In Amazon EKS:
-- **AWS manages the control plane** - API server, etcd, scheduler, and controllers run in AWS-managed infrastructure
-- **You manage worker nodes** - EC2 instances, Fargate, or hybrid nodes that run your applications
-- **Integrated AWS services** - Load balancers, storage, networking, and security services work seamlessly
+- **AWS manages the control plane** — including the API Server, etcd, scheduler, and controllers.  
+- **You manage the worker nodes** — EC2, Fargate, or hybrid options where your applications run.  
+- **AWS services integrate natively** — including load balancers, IAM roles, VPC networking, and storage.
 
-![](https://docs.aws.amazon.com/images/eks/latest/userguide/images/whatis.png)
+![Amazon EKS Architecture](https://docs.aws.amazon.com/images/eks/latest/userguide/images/whatis.png)
+*Figure: Amazon EKS architecture and integration with AWS services.*
+
+---
+
+## Summary
+
+By the end of this section, you should be able to:
+- Describe how the Kubernetes control plane and nodes interact  
+- Understand which components AWS manages in EKS  
+- Recognize how EKS simplifies Kubernetes operations at scale  
+
+Once you’re comfortable with these fundamentals, you’ll be ready to explore **Helm**, **Kustomize**, and real-world **EKS deployments** in the upcoming modules.

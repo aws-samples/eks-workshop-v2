@@ -1,20 +1,34 @@
 ---
 title: Services
 sidebar_position: 40
+sidebar_custom_props: { "module": true }
 ---
 
 # Services
 
+::required-time
+
+:::tip Before you start
+Prepare your environment for this section:
+
+```bash timeout=300 wait=10
+$ prepare-environment introduction/basics/services
+```
+
+:::
+
 **Services** provide stable network endpoints for accessing pods. Since pods are ephemeral and can be created/destroyed frequently, services give you consistent DNS names and IP addresses for reliable communication.
 
-Key benefits:
-- **Stable networking** - Consistent IP and DNS name that doesn't change
-- **Load balancing** - Distributes requests across healthy pods automatically
-- **Service discovery** - Other components can find services by name
-- **Pod abstraction** - Clients don't need to know individual pod IPs
-- **Automatic updates** - Handles pod lifecycle changes seamlessly
+Services provide:
+- **Stable networking:** Consistent IP and DNS name that doesn't change
+- **Load balancing:** Distributes requests across healthy pods automatically
+- **Service discovery:** Other components can find services by name
+- **Pod abstraction:** Clients don't need to know individual pod IPs
+- **Automatic updates:** Handles pod lifecycle changes seamlessly
 
-## Service Types
+In this lab, you'll learn about services by creating one for our retail store's catalog component and exploring how services enable communication between pods.
+
+### Service Types
 
 Kubernetes provides different service types for various use cases:
 
@@ -25,7 +39,7 @@ Kubernetes provides different service types for various use cases:
 | **LoadBalancer** | External access via cloud load balancer | External |
 | **ExternalName** | Map to external DNS name | External |
 
-## Creating a Service
+### Creating Your First Service
 
 Let's examine the catalog service from our retail store:
 
@@ -42,7 +56,7 @@ Deploy the service:
 $ kubectl apply -f ~/environment/eks-workshop/manifests/base-application/catalog/
 ```
 
-## Inspecting Your Service
+### Exploring Your Service
 
 Check service status:
 ```bash
@@ -72,7 +86,7 @@ Get detailed service information:
 $ kubectl describe service -n catalog catalog
 ```
 
-## Service Discovery
+### Service Discovery
 
 Services enable automatic service discovery through DNS names:
 
@@ -95,7 +109,7 @@ curl http://catalog-mysql:3306
 curl http://catalog-mysql.catalog.svc.cluster.local:3306
 ```
 
-## Testing Service Communication
+### Testing Service Communication
 
 Let's test service discovery and communication:
 
@@ -116,7 +130,7 @@ $ curl http://catalog.catalog.svc.cluster.local/products
 $ exit
 ```
 
-## Load Balancing
+### Load Balancing
 
 Services automatically distribute traffic across healthy pods:
 
@@ -135,40 +149,7 @@ $ for i in $(seq 1 5); do curl -s http://catalog.catalog.svc.cluster.local/actua
 
 You'll see requests distributed across different pod hostnames.
 
-## Service Types in Detail
-
-### ClusterIP (Default)
-Internal cluster communication only:
-```yaml
-spec:
-  type: ClusterIP  # Default, can be omitted
-  ports:
-  - port: 80
-    targetPort: 8080
-```
-
-### NodePort
-Exposes service on each node's IP:
-```yaml
-spec:
-  type: NodePort
-  ports:
-  - port: 80
-    targetPort: 8080
-    nodePort: 30080  # Optional: auto-assigned if not specified
-```
-
-### LoadBalancer
-Uses cloud provider's load balancer:
-```yaml
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 80
-    targetPort: 8080
-```
-
-## Port Forwarding for Testing
+### Port Forwarding for Testing
 
 Access services locally for testing:
 
@@ -180,21 +161,9 @@ $ kubectl port-forward -n catalog service/catalog 8080:80
 $ curl http://localhost:8080/products
 ```
 
-## Services vs Ingress
-
-**Services:**
-- Internal cluster communication
-- Load balancing across pods
-- Service discovery via DNS
-- Different types for different access patterns
-
-**Ingress:**
-- External HTTP/HTTPS access
-- Path and host-based routing
-- TLS termination
-- Works with services as backends
-
-Services handle pod-to-pod communication, while Ingress handles external access to services.
+:::info
+Port forwarding temporarily connects your local port to a service, allowing you to access the application directly from your laptop for testing purposes.
+:::
 
 ## Key Points to Remember
 
@@ -204,11 +173,3 @@ Services handle pod-to-pod communication, while Ingress handles external access 
 * DNS names follow the pattern: service.namespace.svc.cluster.local
 * Services automatically load balance traffic across healthy pods
 * Use port forwarding to test services locally
-
-## Next Steps
-
-Now that you understand how services enable communication between components, explore how to expose your applications to external traffic:
-- **[Load Balancers](../../modules/exposing/load-balancer)** - Expose services externally using cloud load balancers
-- **[Ingress](../../modules/exposing/ingress)** - HTTP/HTTPS routing and TLS termination
-
-Or continue learning about **[Namespaces](./namespaces)** - how to organize and isolate your applications.
