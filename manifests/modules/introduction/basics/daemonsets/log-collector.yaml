@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: fluentd
-        image: fluentd:v1.16
+        image: public.ecr.aws/aws-observability/aws-for-fluent-bit:stable
         volumeMounts:
         - name: varlog
           mountPath: /var/log

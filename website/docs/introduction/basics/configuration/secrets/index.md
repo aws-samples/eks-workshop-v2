@@ -31,17 +31,15 @@ In this lab, you'll learn about Secrets by creating database credentials for our
 
 Let's create a Secret for our retail store's catalog service. The catalog needs database credentials to connect to its MySQL database:
 
-::yaml{file="manifests/modules/introduction/basics/secrets/catalog-secret.yaml" paths="kind,metadata.name,metadata.namespace,type,stringData" title="catalog-secret.yaml"}
+::yaml{file="manifests/base-application/catalog/secrets.yaml" paths="kind,metadata.name,data" title="catalog-secret.yaml"}
 
 1. `kind: Secret`: Tells Kubernetes what type of resource to create
 2. `metadata.name`: Unique identifier for this Secret within the namespace
-3. `metadata.namespace`: Which namespace the Secret belongs to (catalog namespace)
-4. `type: Opaque`: The default type for arbitrary user-defined data
-5. `stringData`: Key-value pairs containing sensitive data (automatically base64 encoded)
+5. `data`: Key-value pairs containing sensitive data (base64 encoded)
 
 Apply the Secret configuration:
 ```bash
-$ kubectl apply -f ~/environment/eks-workshop/modules/introduction/basics/secrets/catalog-secret.yaml
+$ kubectl apply -k ~/environment/eks-workshop/modules/introduction/basics/secrets
 ```
 
 ### Exploring Your Secret
@@ -75,7 +73,7 @@ $ kubectl get secret catalog-db -n catalog -o yaml
 
 You'll see the data is base64 encoded. To decode a value:
 ```bash
-$ kubectl get secret catalog-db -n catalog -o jsonpath='{.data.username}' | base64 --decode
+$ kubectl get secret catalog-db -n catalog -o jsonpath='{.data.RETAIL_CATALOG_PERSISTENCE_USER}' | base64 --decode
 ```
 
 ### Using Secrets in Pods
@@ -110,23 +108,6 @@ DB_USERNAME=catalog-user
 The password is also available but won't be shown in logs for security:
 ```bash
 $ kubectl exec -n catalog catalog-pod -- printenv DB_PASSWORD
-```
-
-Now let's test if the catalog service can connect to its database:
-```bash
-$ kubectl port-forward -n catalog catalog-pod 8080:8080 &
-```
-
-Test the catalog API:
-```bash
-$ curl localhost:8080/catalogue
-```
-
-You should see JSON data with product information, indicating the catalog service successfully connected to the database using the credentials from our Secret!
-
-Stop the port-forward:
-```bash
-$ pkill -f "kubectl port-forward"
 ```
 
 ## Secrets vs ConfigMaps

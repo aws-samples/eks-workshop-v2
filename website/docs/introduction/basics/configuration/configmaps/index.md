@@ -27,23 +27,22 @@ ConfigMaps provide:
 
 In this lab, you'll learn about ConfigMaps by creating one for our retail store's UI component and seeing how it connects to backend services.
 
-### Creating Your First ConfigMap
+### Creating ConfigMap
 
 Let's create a ConfigMap for our retail store's UI component. The UI needs to know where to find the backend services:
 
-::yaml{file="manifests/modules/introduction/basics/configmaps/ui-configmap.yaml" paths="kind,metadata.name,metadata.namespace,data" title="ui-configmap.yaml"}
+::yaml{file="manifests/base-application/ui/configMap.yaml" paths="kind,metadata.name,data" title="ui-configmap.yaml"}
 
 1. `kind: ConfigMap`: Tells Kubernetes what type of resource to create
 2. `metadata.name`: Unique identifier for this ConfigMap within the namespace
-3. `metadata.namespace`: Which namespace the ConfigMap belongs to (ui namespace)
 4. `data`: Key-value pairs containing the configuration data
 
 Apply the ConfigMap configuration:
 ```bash
-$ kubectl apply -f ~/environment/eks-workshop/modules/introduction/basics/configmaps/ui-configmap.yaml
+$ kubectl apply -k ~/environment/eks-workshop/modules/introduction/basics/configmaps/
 ```
 
-### Exploring Your ConfigMap
+### Exploring ConfigMap
 
 Now let's examine the ConfigMap we just created:
 
@@ -59,7 +58,7 @@ ui-config   1      30s
 
 Get detailed information about the ConfigMap:
 ```bash
-$ kubectl describe configmap -n ui ui-config
+$ kubectl describe configmap ui -n ui
 ```
 
 This shows:
@@ -69,7 +68,7 @@ This shows:
 
 View the ConfigMap's data in YAML format:
 ```bash
-$ kubectl get configmap ui-config -n ui -o yaml
+$ kubectl get configmap ui -n ui -o yaml
 ```
 
 ### Using ConfigMaps in Pods
@@ -97,20 +96,6 @@ You should see:
 ```
 CATALOG_BASE_URL=http://catalog.catalog.svc.cluster.local
 ```
-
-Now let's test if the UI can connect to the catalog service (which was deployed by the prepare script):
-```bash
-$ kubectl port-forward -n ui ui-pod 8080:8080
-```
-
-Open your browser to http://localhost:8080 or test with curl:
-```bash
-$ curl localhost:8080
-```
-
-
-You should now see the retail store UI properly loading product data from the catalog service! The page will show products because the UI can now find the catalog service using the configuration from our ConfigMap.
-
 
 ## Key Points to Remember
 
