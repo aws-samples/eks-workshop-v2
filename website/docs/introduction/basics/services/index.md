@@ -57,8 +57,8 @@ Let's examine the UI service from our retail store:
 5. `spec.selector`: Selects which pods receive traffic
 
 Deploy the service:
-```bash
-$ kubectl apply -k ~/environment/eks-workshop/base-application/ui/
+```bash hook=ready
+$ kubectl apply -k ~/environment/eks-workshop/modules/introduction/basics/services/
 ```
 
 ### How Services Connect to Pods
@@ -75,21 +75,25 @@ Let's see this in action with our UI service:
 
 ```bash
 # Check the service selector
-$ kubectl get service -n ui ui -o yaml | grep -A 3 selector:
-```
-
-You'll see something like:
-```yaml
-selector:
-  app.kubernetes.io/component: service
-  app.kubernetes.io/instance: ui
-  app.kubernetes.io/name: ui
+$ kubectl get service -n ui ui -o jsonpath='{.spec.selector}' | jq
+{
+  "app.kubernetes.io/component": "service",
+  "app.kubernetes.io/instance": "ui",
+  "app.kubernetes.io/name": "ui"
+}
 ```
 
 Now check which pods have matching labels:
 ```bash
 # Look for pods with matching labels
-$ kubectl get pods -n ui -l app.kubernetes.io/component=service --show-labels
+$ kubectl get pod -n ui -l app.kubernetes.io/component=service -o jsonpath='{.items[0].metadata.labels}{"\n"}' | jq 
+{
+  "app.kubernetes.io/component": "service",
+  "app.kubernetes.io/created-by": "eks-workshop",
+  "app.kubernetes.io/instance": "ui",
+  "app.kubernetes.io/name": "ui",
+  "pod-template-hash": "5989474687"
+}
 ```
 
 You'll see the UI pods have labels that match the service selector. This is how the service knows which pods to send traffic to.
@@ -109,10 +113,6 @@ This label-based system means:
 Check service status:
 ```bash
 $ kubectl get service -n ui
-```
-
-You'll see output showing the service details:
-```
 NAME   TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
 ui     ClusterIP   172.20.83.84    <none>        80/TCP    15m
 ```
@@ -120,17 +120,33 @@ ui     ClusterIP   172.20.83.84    <none>        80/TCP    15m
 View service endpoints (the actual pod IPs):
 ```bash
 $ kubectl get endpoints -n ui ui
-```
-
-This shows which pods receive traffic:
-```
 NAME   ENDPOINTS           AGE
 ui     10.42.1.15:8080     15m
 ```
+> This shows which pods receive traffic
 
 Get detailed service information:
 ```bash
 $ kubectl describe service -n ui ui
+Name:                     ui
+Namespace:                ui
+Labels:                   app.kubernetes.io/component=service
+                          app.kubernetes.io/created-by=eks-workshop
+                          app.kubernetes.io/instance=ui
+                          app.kubernetes.io/name=ui
+Annotations:              <none>
+Selector:                 app.kubernetes.io/component=service,app.kubernetes.io/instance=ui,app.kubernetes.io/name=ui
+Type:                     ClusterIP
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       172.16.88.252
+IPs:                      172.16.88.252
+Port:                     http  80/TCP
+TargetPort:               http/TCP
+Endpoints:                10.42.129.33:8080
+Session Affinity:         None
+Internal Traffic Policy:  Cluster
+Events:                   <none>
 ```
 
 ### Service Discovery
@@ -158,23 +174,33 @@ curl http://ui.ui.svc.cluster.local:80
 
 ### Testing Service Communication
 
-Let's test service discovery and communication:
+Let's test service discovery and communication by creating a test pod:
 
 ```bash
-# Create a test pod
-$ kubectl run test-pod --image=curlimages/curl --rm -it --restart=Never -- sh
+# Create a test pod for network testing
+$ kubectl run test-pod --image=curlimages/curl --restart=Never -- sleep 3600
+$ kubectl wait --for=condition=ready pod/test-pod --timeout=60s
 ```
 
-Inside the test pod:
 ```bash
-# Test DNS resolution
-$ nslookup ui.ui.svc.cluster.local
+# Test DNS resolution from within the cluster
+$ kubectl exec test-pod -- nslookup ui.ui.svc.cluster.local
+Server:         172.16.0.10
+Address:        172.16.0.10:53
 
-# Test HTTP communication (shows pod info)
-$ curl http://ui.ui.svc.cluster.local/actuator/info
 
-# Exit the test pod
-$ exit
+Name:   ui.ui.svc.cluster.local
+Address: 172.16.88.252
+```
+
+```bash
+# Test HTTP communication (shows the web page)
+$ kubectl exec test-pod -- curl -s http://ui.ui.svc.cluster.local/actuator/info | jq
+{
+  "pod": {
+    "name": "ui-6db5f6bd84-cx4mg"
+  }
+}
 ```
 
 ### Load Balancing
@@ -182,29 +208,36 @@ $ exit
 Services automatically distribute traffic across all healthy pods that match their selector:
 
 **Scale the UI deployment to see load balancing:**
-```bash
+```bash hook=replicas
 $ kubectl scale deployment -n ui ui --replicas=3
 ```
 
 **Watch how the service endpoints update:**
 ```bash
 $ kubectl get endpoints -n ui ui
+NAME   ENDPOINTS                                               AGE
+ui     10.42.117.212:8080,10.42.129.33:8080,10.42.174.4:8080   11m
 ```
 
 You'll now see multiple pod IPs listed as endpoints - the service automatically discovered the new pods because they have matching labels.
 
 **Test load balancing:**
 ```bash
-$ kubectl run test-pod --image=curlimages/curl --rm -it --restart=Never -- sh
-
-# Inside the pod, make multiple requests
-$ for i in $(seq 1 5); do curl -s http://ui.ui.svc.cluster.local/actuator/info ; sleep 1s; echo ""; done
-
-# Exit the test pod
-$ exit
+# Make multiple requests to see load balancing in action (single line)
+$ for i in $(seq 1 5); do printf "Request %d:" "$i"; kubectl exec test-pod -- curl -s http://ui.ui.svc.cluster.local/actuator/info; echo; sleep 1; done
+Request 1:{"pod":{"name":"ui-6db5f6bd84-xgpf4"}}
+Request 2:{"pod":{"name":"ui-6db5f6bd84-cx4mg"}}
+Request 3:{"pod":{"name":"ui-6db5f6bd84-7bq8w"}}
+Request 4:{"pod":{"name":"ui-6db5f6bd84-7bq8w"}}
+Request 5:{"pod":{"name":"ui-6db5f6bd84-cx4mg"}}
 ```
 
 You'll see requests distributed across different pod hostnames, demonstrating how the service load balances across all matching pods.
+
+```bash
+# Clean up the test pod
+$ kubectl delete pod test-pod
+```
 
 ## Key Points to Remember
 
