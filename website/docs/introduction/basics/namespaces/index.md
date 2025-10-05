@@ -74,6 +74,20 @@ $ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
 
 The `-l` flag stands for "label selector" and filters resources based on their labels. In this case, we're only showing namespaces that have the label `app.kubernetes.io/created-by=eks-workshop`. This is useful for finding resources created by this workshop among all the namespaces in your cluster.
 
+Describe namespace
+```bash
+$ kubectl describe namespace ui
+Name:         ui
+Labels:       app.kubernetes.io/created-by=eks-workshop
+              kubernetes.io/metadata.name=ui
+Annotations:  <none>
+Status:       Active
+
+No resource quota.
+
+No LimitRange resource.
+```
+
 ### Using Namespaces
 When working with resources, you can specify the namespace in two ways:
 

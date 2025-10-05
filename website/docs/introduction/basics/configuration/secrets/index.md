@@ -48,10 +48,6 @@ Now let's examine the Secret we just created:
 
 ```bash
 $ kubectl get secrets -n catalog
-```
-
-You should see output like:
-```
 NAME         TYPE     DATA   AGE
 catalog-db   Opaque   2      30s
 ```
@@ -59,6 +55,17 @@ catalog-db   Opaque   2      30s
 Get detailed information about the Secret:
 ```bash
 $ kubectl describe secret -n catalog catalog-db
+Name:         catalog-db
+Namespace:    catalog
+Labels:       <none>
+Annotations:  <none>
+
+Type:  Opaque
+
+Data
+====
+RETAIL_CATALOG_PERSISTENCE_PASSWORD:  16 bytes
+RETAIL_CATALOG_PERSISTENCE_USER:      7 bytes
 ```
 
 This shows:
@@ -69,26 +76,42 @@ This shows:
 Notice that the actual values are not displayed for security reasons. To see the base64 encoded data:
 ```bash
 $ kubectl get secret catalog-db -n catalog -o yaml
+apiVersion: v1
+data:
+  RETAIL_CATALOG_PERSISTENCE_PASSWORD: ZFltTmZXVjR1RXZUem9GdQ==
+  RETAIL_CATALOG_PERSISTENCE_USER: Y2F0YWxvZw==
+kind: Secret
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"RETAIL_CATALOG_PERSISTENCE_PASSWORD":"ZFltTmZXVjR1RXZUem9GdQ==","RETAIL_CATALOG_PERSISTENCE_USER":"Y2F0YWxvZw=="},"kind":"Secret","metadata":{"annotations":{},"name":"catalog-db","namespace":"catalog"}}
+  creationTimestamp: "2025-10-05T17:52:34Z"
+  name: catalog-db
+  namespace: catalog
+  resourceVersion: "902820"
+  uid: 726e4fef-f82b-4a7e-a063-f72f18a941cd
+type: Opaque
 ```
 
 You'll see the data is base64 encoded. To decode a value:
 ```bash
 $ kubectl get secret catalog-db -n catalog -o jsonpath='{.data.RETAIL_CATALOG_PERSISTENCE_USER}' | base64 --decode
+catalog
 ```
 
 ### Using Secrets in Pods
 
 Now let's create a pod that uses our Secret. We'll update our catalog pod to use the database credentials:
 
-::yaml{file="manifests/modules/introduction/basics/secrets/catalog-pod-with-secret.yaml" paths="kind,metadata.name,spec.containers,spec.containers.0.env,spec.containers.0.env.0.valueFrom.secretKeyRef" title="catalog-pod-with-secret.yaml"}
+::yaml{file="manifests/modules/introduction/basics/secrets/catalog-pod-with-secret.yaml" paths="kind,metadata.name,spec.containers,spec.containers.0.envFrom" title="catalog-pod-with-secret.yaml"}
 
-The key difference here is:
-- `env.valueFrom.secretKeyRef`: References a specific key from a Secret
-- `secretKeyRef.name`: The name of the Secret to reference
-- `secretKeyRef.key`: The specific key within the Secret
+The key differences here are:
+- `envFrom.configMapRef`: Loads all key-value pairs from a ConfigMap as environment variables
+- `envFrom.secretRef`: Loads all key-value pairs from a Secret as environment variables
+- This approach automatically makes all Secret data available without mapping individual keys
 
 Apply the updated pod configuration:
-```bash
+```bash hook=ready
 $ kubectl apply -f ~/environment/eks-workshop/modules/introduction/basics/secrets/catalog-pod-with-secret.yaml
 ```
 
@@ -97,18 +120,23 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/introduction/basics/secret
 Let's verify that our pod can access the secret values:
 
 ```bash
-$ kubectl exec -n catalog catalog-pod -- env | grep DB_USERNAME
+$ kubectl exec -n catalog catalog-pod -- env | grep RETAIL_CATALOG_PERSISTENCE_USER
+RETAIL_CATALOG_PERSISTENCE_USER=catalog_user
 ```
 
-You should see:
-```
-DB_USERNAME=catalog-user
-```
-
-The password is also available but won't be shown in logs for security:
+You can also see all catalog-related environment variables:
 ```bash
-$ kubectl exec -n catalog catalog-pod -- printenv DB_PASSWORD
+$ kubectl exec -n catalog catalog-pod -- env | grep RETAIL_CATALOG
+RETAIL_CATALOG_PERSISTENCE_PROVIDER=mysql
+RETAIL_CATALOG_PERSISTENCE_ENDPOINT=catalog-mysql:3306
+RETAIL_CATALOG_PERSISTENCE_DB_NAME=catalog
+RETAIL_CATALOG_PERSISTENCE_USER=catalog_user
+RETAIL_CATALOG_PERSISTENCE_PASSWORD=dYmNfWV4uEvTzoFu
 ```
+
+:::warning
+In production, avoid printing passwords to logs or console output. This is shown here for educational purposes only.
+:::
 
 ## Secrets vs ConfigMaps
 

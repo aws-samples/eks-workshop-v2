@@ -48,28 +48,48 @@ Now let's examine the ConfigMap we just created:
 
 ```bash
 $ kubectl get configmaps -n ui
-```
-
-You should see output like:
-```
-NAME        DATA   AGE
-ui-config   1      30s
+NAME               DATA   AGE
+kube-root-ca.crt   1      2m51s
+ui                 4      2m50s
 ```
 
 Get detailed information about the ConfigMap:
 ```bash
 $ kubectl describe configmap ui -n ui
+Name:         ui
+Namespace:    ui
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+RETAIL_UI_ENDPOINTS_CARTS:
+----
+http://carts.carts.svc:80
+
+RETAIL_UI_ENDPOINTS_CATALOG:
+----
+http://catalog.catalog.svc:80
+
+RETAIL_UI_ENDPOINTS_CHECKOUT:
+----
+http://checkout.checkout.svc:80
+
+RETAIL_UI_ENDPOINTS_ORDERS:
+----
+http://orders.orders.svc:80
+
+
+BinaryData
+====
+
+Events:  <none>
 ```
 
 This shows:
 - **Data section** - The key-value pairs stored in the ConfigMap
 - **Labels** - Metadata tags for organization
 - **Annotations** - Additional metadata
-
-View the ConfigMap's data in YAML format:
-```bash
-$ kubectl get configmap ui -n ui -o yaml
-```
 
 ### Using ConfigMaps in Pods
 
@@ -80,7 +100,7 @@ Now let's create a pod that uses our ConfigMap. We'll update our UI pod to use t
 1. `envFrom.configMapRef`: Loads all key-value pairs from the ConfigMap as environment variables
 
 Apply the updated pod configuration:
-```bash
+```bash hook=ready
 $ kubectl apply -f ~/environment/eks-workshop/modules/introduction/basics/configmaps/ui-pod-with-config.yaml
 ```
 
@@ -89,12 +109,17 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/introduction/basics/config
 Let's verify that our pod can now access the configuration:
 
 ```bash
-$ kubectl exec -n ui ui-pod -- env | grep CATALOG_BASE_URL
+$ kubectl exec -n ui ui-pod -- env | grep RETAIL_UI_ENDPOINTS_CATALOG
+RETAIL_UI_ENDPOINTS_CATALOG=http://catalog.catalog.svc:80
 ```
 
-You should see:
-```
-CATALOG_BASE_URL=http://catalog.catalog.svc.cluster.local
+You can also see all the ConfigMap environment variables:
+```bash
+$ kubectl exec -n ui ui-pod -- env | grep RETAIL_UI
+RETAIL_UI_ENDPOINTS_CATALOG=http://catalog.catalog.svc:80
+RETAIL_UI_ENDPOINTS_CARTS=http://carts.carts.svc:80
+RETAIL_UI_ENDPOINTS_ORDERS=http://orders.orders.svc:80
+RETAIL_UI_ENDPOINTS_CHECKOUT=http://checkout.checkout.svc:80
 ```
 
 ## Key Points to Remember

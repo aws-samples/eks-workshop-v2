@@ -44,15 +44,11 @@ Deploy the database:
 $ kubectl apply -k ~/environment/eks-workshop/base-application/catalog/
 ```
 
-## Inspecting Your StatefulSet
+## Inspecting StatefulSet
 
 Check StatefulSet status:
 ```bash
 $ kubectl get statefulset -n catalog
-```
-
-You'll see output like:
-```
 NAME            READY   AGE
 catalog-mysql   1/1     2m
 ```
@@ -60,13 +56,10 @@ catalog-mysql   1/1     2m
 View the pods created:
 ```bash
 $ kubectl get pods -n catalog
-```
-
-Notice the predictable pod name with a number suffix:
-```
 NAME              READY   STATUS    RESTARTS   AGE
 catalog-mysql-0   1/1     Running   0          2m
 ```
+> Notice the predictable pod name with a number suffix
 
 Get detailed information about the StatefulSet:
 ```bash
@@ -75,20 +68,12 @@ $ kubectl describe statefulset -n catalog catalog-mysql
 
 The suffix (`-0`, `-1`, etc.) allows you to track each Pod individually for storage and network purposes.
 
-## Scaling Your StatefulSet
+## Scaling StatefulSet
 
 Scale up to 3 replicas:
 ```bash
 $ kubectl scale statefulset -n catalog catalog-mysql --replicas=3
-```
-
-Watch the ordered creation:
-```bash
-$ kubectl get pods -n catalog -w
-```
-
-You'll see pods created one at a time in order:
-```
+$ kubectl get pods -n catalog
 NAME              READY   STATUS    RESTARTS   AGE
 catalog-mysql-0   1/1     Running   0          5m
 catalog-mysql-1   0/1     Pending   0          10s
@@ -96,6 +81,7 @@ catalog-mysql-1   1/1     Running   0          30s
 catalog-mysql-2   0/1     Pending   0          5s
 catalog-mysql-2   1/1     Running   0          25s
 ```
+You'll see pods created one at a time in order
 
 Scale back down:
 ```bash
@@ -115,7 +101,9 @@ Kubernetes also ensures that **each Pod keeps its persistent volume**, even when
 | Network Identity  | Stable                        | Dynamic           |
 | Use Case          | Databases, message queues     | Stateless apps    |
 
-> StatefulSets are ideal for applications that require persistent identity, stable networking, and ordered operations.
+:::info
+StatefulSets are ideal for applications that require persistent identity, stable networking, and ordered operations.
+:::
 
 ## Key Points to Remember
 

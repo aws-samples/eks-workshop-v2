@@ -62,26 +62,20 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/introduction/basics/daemon
 Check DaemonSet status:
 ```bash
 $ kubectl get daemonset -n kube-system
-```
-
-You'll see output showing desired vs current pods:
-```
 NAME            DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   AGE
 log-collector   3         3         3       3            3           2m
 ```
+> You'll see output showing desired vs current pods:
 
 View the pods across all nodes:
 ```bash
 $ kubectl get pods -n kube-system -l app=log-collector -o wide
-```
-
-Notice one pod per node:
-```
 NAME                  READY   STATUS    NODE           AGE
 log-collector-abc12   1/1     Running   ip-10-42-1-1   2m
 log-collector-def34   1/1     Running   ip-10-42-2-1   2m
 log-collector-ghi56   1/1     Running   ip-10-42-3-1   2m
 ```
+> Notice one pod per node
 
 ## Node Selection
 
@@ -124,8 +118,9 @@ Use nodeSelector for simple label matches and nodeAffinity for more complex sche
 | Deployment | Multiple interchangeable Pods | Configurable | Any node | Stateless apps |
 | StatefulSet | Pods with stable identity | Configurable | Any node | Stateful apps |
 
-> DaemonSets are ideal for services that must run on every node or a specific set of nodes.
-
+:::info
+DaemonSets are ideal for services that must run on every node or a specific set of nodes.
+:::
 
 ## Key Points to Remember
 
