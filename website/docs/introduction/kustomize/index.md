@@ -1,7 +1,7 @@
 ---
 title: Kustomize
 sidebar_custom_props: { "module": true }
-sidebar_position: 68
+sidebar_position: 70
 ---
 
 ::required-time
