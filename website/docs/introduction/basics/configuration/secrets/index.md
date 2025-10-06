@@ -151,7 +151,7 @@ In production, avoid printing passwords to logs or console output. This is shown
 
 While Kubernetes Secrets provide basic security for sensitive data, production environments often require more sophisticated secrets management solutions. For enhanced security features like automatic rotation, fine-grained access control, and integration with external secret stores, explore:
 
-**[AWS Secrets Manager Integration](../../../security/secrets-management/secrets-manager/)** - Learn how to integrate AWS Secrets Manager with your EKS cluster for enterprise-grade secrets management with automatic rotation and centralized control.
+**[AWS Secrets Manager Integration](../../../../security/secrets-management/secrets-manager/)** - Learn how to integrate AWS Secrets Manager with your EKS cluster for enterprise-grade secrets management with automatic rotation and centralized control.
 
 ## Key Points to Remember
 

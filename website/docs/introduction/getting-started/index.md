@@ -78,8 +78,8 @@ We can deploy the application in several ways, and we'll be using `Kustomize` th
 
 The following optional labs will set you up with the necessary knowledge by deploying and exploring the sample application:
 
-**[Kubernetes Basics](./concepts/kubernetes-basics)** - Deploy the retail store application step-by-step using core Kubernetes resources. Learn how pods, deployments, and services work together by creating them yourself.
+**[Kubernetes Basics](../basics)** - Deploy the retail store application step-by-step using core Kubernetes resources. Learn how pods, deployments, and services work together by creating them yourself.
 
-**[Kustomize](./concepts/kustomize)** - Use Kustomize to deploy and customize the application for different environments. Learn how to manage configuration variations without duplicating YAML files.
+**[Kustomize](../kustomize)** - Use Kustomize to deploy and customize the application for different environments. Learn how to manage configuration variations without duplicating YAML files.
 
-**[Helm](./concepts/helm)** - Deploy the application using Helm charts. Understand how Helm simplifies complex deployments and enables reusable, templated configurations.
+**[Helm](../helm)** - Deploy the application using Helm charts. Understand how Helm simplifies complex deployments and enables reusable, templated configurations.
