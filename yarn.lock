@@ -4952,10 +4952,10 @@ __metadata:
   linkType: hard
 
 "@mux/mux-player-react@npm:^3.6.0":
-  version: 3.6.0
-  resolution: "@mux/mux-player-react@npm:3.6.0"
+  version: 3.6.1
+  resolution: "@mux/mux-player-react@npm:3.6.1"
   dependencies:
-    "@mux/mux-player": "npm:3.6.0"
+    "@mux/mux-player": "npm:3.6.1"
     "@mux/playback-core": "npm:0.31.0"
     prop-types: "npm:^15.8.1"
   peerDependencies:
@@ -4967,19 +4967,19 @@ __metadata:
       optional: true
     "@types/react-dom":
       optional: true
-  checksum: 10c0/349cd29c62578901a0804412e707c381cd1f87023c5401c95414813549bc8deca80e61662a9690fef6cf2c7b9c65ea3ff3998858a063dc6087de3a7bee602779
+  checksum: 10c0/1fe4cfe4702e6d5528a00fe33acd10da10577db93b42c80e542d4ccd820d40749b67b805ffd22c3f6ea6e3787f8b4135cc47a5ad94d8748cf6ed54e1fdc43f42
   languageName: node
   linkType: hard
 
-"@mux/mux-player@npm:3.6.0":
-  version: 3.6.0
-  resolution: "@mux/mux-player@npm:3.6.0"
+"@mux/mux-player@npm:3.6.1":
+  version: 3.6.1
+  resolution: "@mux/mux-player@npm:3.6.1"
   dependencies:
     "@mux/mux-video": "npm:0.27.0"
     "@mux/playback-core": "npm:0.31.0"
-    media-chrome: "npm:~4.13.1"
+    media-chrome: "npm:~4.14.0"
     player.style: "npm:^0.2.0"
-  checksum: 10c0/dd8d7ead1eaf85720988301d19134990c859f42e617ed37f9461ce6a3b0abc9186adcffd757ac1737e42b44d95459a924d288e372df660a6da48c16774ba1b30
+  checksum: 10c0/1170734bd1b978b65180b482680c1c9d7ac59c795c2e7585f922ef57ed78185a99a0ccef220ab84dd7194681a2d61c63daf0c6ba587714e466361d53f0a6ead9
   languageName: node
   linkType: hard
 
@@ -12643,12 +12643,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"media-chrome@npm:~4.13.0, media-chrome@npm:~4.13.1":
+"media-chrome@npm:~4.13.0":
   version: 4.13.1
   resolution: "media-chrome@npm:4.13.1"
   dependencies:
     ce-la-react: "npm:^0.3.0"
   checksum: 10c0/4b7166345ff241cd696f63cb2dc6d8c62a7549e228181c2699f85e4575d6a0b67852c9a061da25ec4dee17cd02c72ffeb880534c966e747a5aed21715ec76072
+  languageName: node
+  linkType: hard
+
+"media-chrome@npm:~4.14.0":
+  version: 4.14.0
+  resolution: "media-chrome@npm:4.14.0"
+  dependencies:
+    ce-la-react: "npm:^0.3.0"
+  checksum: 10c0/7a4220d1f1488a3ba28d5c6f77bb2e1b2c997c70d5da8f26436541732c79f063856635afb2fb223e92370d94c8203ac9cff8eb6440a7b1013af548375fe7c899
   languageName: node
   linkType: hard
 

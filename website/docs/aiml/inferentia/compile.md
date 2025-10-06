@@ -1,5 +1,5 @@
 ---
-title: "Compile a pre-trained model with AWS Trainium"
+title: "Compile a pre-trained model"
 sidebar_position: 30
 ---
 
@@ -77,14 +77,14 @@ $ kubectl logs -l app.kubernetes.io/instance=karpenter -n kube-system -f | jq
 }
 ```
 
-The Pod should be scheduled on the node provisioned by Karpenter. Check if the Pod is in it's ready state:
+The Pod should be scheduled on the node provisioned by Karpenter. Check if the Pod is in its ready state:
 
 ```bash timeout=600
 $ kubectl -n aiml wait --for=condition=Ready --timeout=10m pod/compiler
 ```
 
 :::warning
-This command can take up to 10 min.
+This command can take up to 10 minutes.
 :::
 
 Next, copy the code for compiling a model on to the Pod and run it:
