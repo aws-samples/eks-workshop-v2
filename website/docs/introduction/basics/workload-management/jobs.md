@@ -198,6 +198,11 @@ data-processor             Complete   1/1           13s        17m
 manual-cleanup             Running    0/1           5s         5s
 ```
 
+Wait for the job pod to be running before checking logs:
+```bash
+$ kubectl wait --for=jsonpath='{.status.phase}'=Running pod -l job-name=manual-cleanup -n catalog --timeout=60s
+```
+
 Check the logs of the job execution:
 ```bash
 $ kubectl logs job/manual-cleanup -n catalog
@@ -232,7 +237,7 @@ manual-cleanup             Complete   1/1           10s        56s
 ```
 
 To see which jobs were created by a specific CronJob, look for jobs with names starting with the CronJob name:
-```bash
+```bash hook=cronjob-first-run
 $ kubectl get jobs -n catalog | grep catalog-cleanup
 catalog-cleanup-29328192   Complete   1/1           9s         74s
 catalog-cleanup-29328193   Complete   1/1           8s         14s

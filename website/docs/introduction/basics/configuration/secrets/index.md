@@ -111,7 +111,7 @@ The key differences here are:
 - This approach automatically makes all Secret data available without mapping individual keys
 
 Apply the updated pod configuration:
-```bash hook=ready
+```bash
 $ kubectl apply -f ~/environment/eks-workshop/modules/introduction/basics/secrets/catalog-pod-with-secret.yaml
 ```
 
@@ -119,7 +119,7 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/introduction/basics/secret
 
 Let's verify that our pod can access the secret values:
 
-```bash
+```bash hook=ready
 $ kubectl exec -n catalog catalog-pod -- env | grep RETAIL_CATALOG_PERSISTENCE_USER
 RETAIL_CATALOG_PERSISTENCE_USER=catalog_user
 ```

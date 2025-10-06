@@ -2,12 +2,12 @@
 set -Eeuo pipefail
 
 before() {
-    echo "noop"
+    echo "Waiting for catalog pod to be ready..."
+    kubectl wait --for=condition=ready pod/catalog-pod -n catalog --timeout=300s
 }
 
 after() {
-    echo "Waiting for catalog pod to be ready..."
-    kubectl wait --for=condition=ready pod/catalog-pod -n catalog --timeout=300s
+    echo "noop"
 }
 
 "$@"
