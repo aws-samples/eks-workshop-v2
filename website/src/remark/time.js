@@ -59,7 +59,7 @@ const plugin = (options) => {
             children: [
               {
                 type: "text",
-                value: "Estimated time required:",
+                value: "⏱️  Estimated time required:",
               },
             ],
             data: {

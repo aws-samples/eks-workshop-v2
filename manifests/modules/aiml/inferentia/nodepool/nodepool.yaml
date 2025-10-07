@@ -38,7 +38,29 @@ spec:
         deleteOnTermination: true
         volumeSize: 100Gi
         volumeType: gp3
+        iops: 16000
+        throughput: 1000
   role: ${KARPENTER_NODE_ROLE}
+  userData: |
+    MIME-Version: 1.0
+    Content-Type: multipart/mixed; boundary="//"
+
+    --//
+    Content-Type: text/x-shellscript; charset="us-ascii"
+
+    #!/bin/bash
+    sed -i "s/^max_concurrent_downloads_per_image = .*$/max_concurrent_downloads_per_image = 10/" /etc/soci-snapshotter-grpc/config.toml
+    sed -i "s/^max_concurrent_unpacks_per_image = .*$/max_concurrent_unpacks_per_image = 10/" /etc/soci-snapshotter-grpc/config.toml
+
+    --//
+    Content-Type: application/node.eks.aws
+
+    apiVersion: node.eks.aws/v1alpha1
+    kind: NodeConfig
+    spec:
+      featureGates:
+        FastImagePull: true
+    --//
   securityGroupSelectorTerms:
     - tags:
         karpenter.sh/discovery: ${EKS_CLUSTER_NAME}

@@ -80,4 +80,9 @@ To exit the Q CLI session, enter:
 /quit
 ```
 
+Now, remove the failing Pod: 
+
+```bash
+$ kubectl delete -f ~/environment/eks-workshop/modules/aiml/q-cli/troubleshoot/failing-pod.yaml --ignore-not-found
+```
 In the next section, we'll explore a more complex troubleshooting scenario.

@@ -18,7 +18,7 @@ $ helm upgrade --install gitea oci://docker.gitea.com/charts/gitea \
 
 Make sure that Gitea is up and running before proceeding:
 
-```bash timeout=300
+```bash timeout=300 wait=10
 $ export GITEA_HOSTNAME=$(kubectl get svc -n gitea gitea-http -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 \
   --connect-timeout 10 --max-time 60 \
@@ -28,7 +28,7 @@ $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 \
 An SSH key will be needed to interact with Git. The environment preparation for this lab created one, we just need to register it with Gitea:
 
 ```bash
-$ curl -X 'POST' \
+$ curl -X 'POST' --retry 3 --retry-all-errors \
   "http://workshop-user:$GITEA_PASSWORD@${GITEA_HOSTNAME}:3000/api/v1/user/keys" \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
@@ -38,7 +38,7 @@ $ curl -X 'POST' \
 And we'll also need to create the Gitea repository that Flux will use:
 
 ```bash
-$ curl -X 'POST' \
+$ curl -X 'POST' --retry 3 --retry-all-errors \
   "http://workshop-user:$GITEA_PASSWORD@${GITEA_HOSTNAME}:3000/api/v1/user/repos" \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
