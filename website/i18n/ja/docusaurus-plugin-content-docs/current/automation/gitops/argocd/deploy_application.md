@@ -1,7 +1,7 @@
 ---
 title: "アプリケーションのデプロイ"
 sidebar_position: 30
-kiteTranslationSourceHash: 8f2a363fe34f614c15afae5bc1863c4c
+kiteTranslationSourceHash: 3fd9aa30e85dcc8ec0ef8bd7bb93b45a
 ---
 
 Argo CDをクラスターに正常に設定したので、アプリケーションをデプロイしましょう。GitOpsベースの配信アプローチと従来のデプロイ方法の違いを示すために、サンプルアプリケーションのUIコンポーネントを`kubectl apply -k`アプローチからArgo CD管理のデプロイに移行します。
@@ -20,11 +20,14 @@ namespace "other" deleted
 namespace "ui" deleted
 ```
 
-次に、シンプルなHelmチャートでGitリポジトリを設定します：
+次に、UIコンポーネント用の公開チャートをHelm依存関係として使用する単純なHelmチャートでGitリポジトリを設定します：
 
-::yaml{file="manifests/modules/automation/gitops/argocd/Chart.yaml"}
+::yaml{file="manifests/modules/automation/gitops/argocd/Chart.yaml" paths="name,type,version,dependencies.0"}
 
-このチャートは、UIコンポーネント用の公開チャートをHelm依存関係として使用することでラップしています。
+1. ラッパーHelmチャートの名前
+2. このチャートがアプリケーションをデプロイすることを示す
+3. チャートのバージョンを指定
+4. ラッパーHelmチャートの依存関係として、AWSのパブリックOCIレジストリからリテールストアUIコンポーネントの名前、エイリアス、バージョンを指定
 
 このファイルをGitディレクトリにコピーしましょう：
 
@@ -69,7 +72,7 @@ argocd/ui    https://kubernetes.default.svc  ui         default  OutOfSync  Miss
 
 このアプリケーションはArgo CD UIで確認できます：
 
-![Application in the Argo CD UI](assets/argocd-ui-outofsync.webp)
+![Argo CD UIでのアプリケーション](assets/argocd-ui-outofsync.webp)
 
 あるいは、`kubectl`コマンドを使用してArgo CDオブジェクトを直接操作することもできます：
 
@@ -79,9 +82,9 @@ NAME   SYNC STATUS   HEALTH STATUS
 apps   OutOfSync     Missing
 ```
 
-Argo CDを開いて`apps`アプリケーションに移動すると、以下のように表示されます：
+Argo CD UIを開いて`apps`アプリケーションに移動すると、以下のように表示されます：
 
-![Application in the Argo CD UI](assets/argocd-ui-outofsync-apps.webp)
+![Argo CD UIでのアプリケーション](assets/argocd-ui-outofsync-apps.webp)
 
 Argo CDでは、「out of sync」（同期していない）は、Gitリポジトリで定義された望ましい状態がKubernetesクラスター内の実際の状態と一致していないことを示します。Argo CDは自動同期が可能ですが、今は手動でこのプロセスをトリガーします：
 

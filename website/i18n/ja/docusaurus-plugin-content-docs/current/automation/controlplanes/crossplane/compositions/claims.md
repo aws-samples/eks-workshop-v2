@@ -1,16 +1,19 @@
 ---
 title: "クレーム"
 sidebar_position: 20
-kiteTranslationSourceHash: 28950d07d6d15ca70f021a5ce28c7303
+kiteTranslationSourceHash: f8cf7316dabe0adda876e1130c9ae84b
 ---
 
 Crossplaneに新しいXRの詳細を設定した後、直接作成するか、クレームを使用することができます。通常、Crossplaneの構成を担当するチーム（多くの場合、プラットフォームチームまたはSREチーム）のみがXRを直接作成する権限を持っています。その他の人は、Composite Resource Claim（略してクレーム）と呼ばれる軽量のプロキシリソースを通じてXRを管理します。
 
 このクレームにより、開発者はテーブルを作成するために**DynamoDBテーブル名、ハッシュキー、およびグローバルインデックス名**のデフォルトのみを指定する必要があります。これにより、プラットフォームチームやSREチームは、課金モード、デフォルトの読み書き容量、プロジェクションタイプ、コストやインフラ関連のタグなどの側面を標準化することができます。
 
-```file
-manifests/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml
-```
+::yaml{file="manifests/modules/automation/controlplanes/crossplane/compositions/claim/claim.yaml" paths="metadata.name,spec.dynamoConfig.attribute.0,spec.dynamoConfig.attribute.1,spec.dynamoConfig.globalSecondaryIndex"}
+
+1. クラスター名環境変数をプレフィックスとして使用したDynamoDBテーブル名を指定します
+2. `id`をプライマリキー属性として指定します
+3. `customerId`をセカンダリー属性として指定します
+4. `idx_global_customerId`をグローバルセカンダリインデックス名として指定します
 
 まず、前の「マネージドリソース」セクションで作成したDynamoDBテーブルをクリーンアップしましょう：
 

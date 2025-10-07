@@ -1,20 +1,27 @@
 ---
 title: "Managed Resources"
 sidebar_position: 20
-kiteTranslationSourceHash: e81d15132f922d1b0a8726eea8a68b82
+kiteTranslationSourceHash: 03e3d2eeed31babc8a55ebff6ea17a61
 ---
 
-デフォルトでは、サンプルアプリケーションの**Carts**コンポーネントは、EKSクラスタ内でポッドとして実行されている`carts-dynamodb`という名前のDynamoDBローカルインスタンスを使用しています。このラボのセクションでは、Crossplaneマネージドリソースを使用してアプリケーション用のAmazon DynamoDBクラウドベースのテーブルをプロビジョニングし、**Carts**デプロイメントを設定して、ローカルコピーの代わりに新しくプロビジョニングされたDynamoDBテーブルを使用するようにします。
+デフォルトでは、サンプルアプリケーションの**Carts**コンポーネントは、EKSクラスタ内でポッドとして実行されている`carts-dynamodb`という名前のDynamoDB localインスタンスを使用しています。このラボのセクションでは、Crossplaneマネージドリソースを使用してアプリケーション用のAmazon DynamoDBクラウドベースのテーブルをプロビジョニングし、**Carts**デプロイメントを設定して、ローカルコピーの代わりに新しくプロビジョニングされたDynamoDBテーブルを使用するようにします。
 
 ![Crossplane reconciler concept](./assets/Crossplane-desired-current-ddb.webp)
 
 Crossplaneマネージドリソースマニフェストを使用してDynamoDBテーブルを作成する方法を見てみましょう：
 
-```file
-manifests/modules/automation/controlplanes/crossplane/managed/table.yaml
-```
+::yaml{file="manifests/modules/automation/controlplanes/crossplane/managed/table.yaml" paths="apiVersion,kind,metadata,spec.forProvider.attribute,spec.forProvider.hashKey,spec.forProvider.billingMode,spec.forProvider.globalSecondaryIndex,spec.providerConfigRef"}
 
-次に、`dynamodb.aws.upbound.io`リソースを使用してDynamoDBテーブルの設定を作成できます。
+1. Upboundの AWS DynamoDB プロバイダーを使用
+2. DynamoDB テーブルリソースを作成
+3. クラスタ接頭辞付きの名前と外部名アノテーションを持つKubernetesオブジェクトを指定
+4. `id`と`customerId`を文字列（`S`）タイプの属性として定義
+5. `id`をプライマリパーティションキーとして設定
+6. オンデマンド価格モデルを指定
+7. `customerId`にグローバルセカンダリインデックスを作成し、すべての属性をプロジェクション
+8. 認証のためのAWSプロバイダー設定を参照
+
+では、`dynamodb.aws.upbound.io`リソースを使用してDynamoDBテーブルの設定を作成しましょう。
 
 ```bash wait=10 timeout=400 hook=table
 $ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/crossplane/managed \
