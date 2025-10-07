@@ -1,0 +1,16 @@
+---
+title: "Kubecost と Amazon Managed Service for Prometheus"
+sidebar_position: 30
+kiteTranslationSourceHash: 7baeccc794148618a4f2e4f643dedfdf
+---
+
+現在、KubecostはKubernetesクラスター内でセルフホスト型のPrometheusインスタンスを使用しています。Kubecostのデプロイメント設定を更新して、代わりにAmazon Managed Service for Prometheus（AMP）を使用することができます。
+
+AMPは、Prometheusと互換性のあるモニタリングおよびアラートサービスで、コンテナ化されたアプリケーションとインフラストラクチャを大規模に監視することを容易にします。オープンソースのPrometheusクエリ言語を使用して、基盤となるモニタリングインフラストラクチャのスケーリングを心配することなく、コンテナ化されたワークロードのパフォーマンスを監視しアラートを出すことができます。このサービスは、ワークロードの増減に応じて、運用メトリクスの取り込み、保存、アラート、およびクエリを自動的にスケーリングします。さらに、AWSセキュリティサービスと統合されており、データへの高速かつ安全なアクセスを可能にします。これにより、モニタリングスタックを管理する代わりに、ワークロードに集中することができます。
+
+以下は、KubecostがAMPと統合する方法を示す画像です。KubecostはAMPにクエリを送信するためにSignature Version 4（SigV4）プロキシを使用します。SigV4は、HTTPで送信されるAWS APIリクエストに認証情報を追加するプロセスです。セキュリティのため、AWSへのほとんどのリクエストはアクセスキーで署名する必要があります。アクセスキーは、アクセスキーIDとシークレットアクセスキーで構成され、一般的にセキュリティ認証情報と呼ばれています。AWSサービスがリクエストを受信すると、あなたがリクエストで送信した署名を計算するのと同じ手順を実行します。その後、AWSは計算された署名とリクエストで送信された署名を比較します。署名が一致する場合、リクエストは処理されます。署名が一致しない場合、リクエストは拒否されます。
+
+![KubecostとAMP統合のアーキテクチャ図](./assets/AWS-AMP-integ-architecture.webp)
+
+KubecostとAMPの統合を開始するには、[こちらのブログ記事](https://aws.amazon.com/blogs/mt/integrating-kubecost-with-amazon-managed-service-for-prometheus/)をチェックしてください。
+

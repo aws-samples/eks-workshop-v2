@@ -1,4 +1,5 @@
 {
+  "contentDir": "website/docs",
   "ai": {
     "model": "us.anthropic.claude-3-7-sonnet-20250219-v1:0",
     "maxTokens": 8000,
@@ -7,7 +8,12 @@
       "tokens": 160000
     },
     "contextStrategy": "siblings",
-    "styleGuides": ["./docs/style_guide.md"],
-    "exemplars": ["./website/docs/security/iam-roles-for-service-accounts"]
+    "styleGuides": [
+      "./docs/style_guide.md",
+      "i18n"
+    ],
+    "exemplars": [
+      "./website/docs/security/iam-roles-for-service-accounts"
+    ]
   }
 }

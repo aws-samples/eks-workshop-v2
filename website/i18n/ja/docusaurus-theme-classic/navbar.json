@@ -1,0 +1,46 @@
+{
+  "title": {
+    "message": "EKS Workshop",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "Amazon Web Services",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Intro": {
+    "message": "Intro",
+    "description": "Navbar item with label Intro"
+  },
+  "item.label.Fundamentals": {
+    "message": "Fundamentals",
+    "description": "Navbar item with label Fundamentals"
+  },
+  "item.label.Autoscaling": {
+    "message": "Autoscaling",
+    "description": "Navbar item with label Autoscaling"
+  },
+  "item.label.Observability": {
+    "message": "Observability",
+    "description": "Navbar item with label Observability"
+  },
+  "item.label.Security": {
+    "message": "Security",
+    "description": "Navbar item with label Security"
+  },
+  "item.label.Networking": {
+    "message": "Networking",
+    "description": "Navbar item with label Networking"
+  },
+  "item.label.Automation": {
+    "message": "Automation",
+    "description": "Navbar item with label Automation"
+  },
+  "item.label.AI/ML": {
+    "message": "AI/ML",
+    "description": "Navbar item with label AI/ML"
+  },
+  "item.label.Troubleshooting": {
+    "message": "Troubleshooting",
+    "description": "Navbar item with label Troubleshooting"
+  }
+}

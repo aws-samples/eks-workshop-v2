@@ -254,6 +254,10 @@
   text-overflow: ellipsis;
 }
 
+.navbar__items--right .dropdown--right {
+  padding: 0 10px;
+}
+
 /* docusaurus switches to mobile view at 996px */
 @media (min-width: 997px) and (max-width: 1250px) {
   .navbar__brand .navbar__title {
