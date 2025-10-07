@@ -336,7 +336,7 @@ resource "aws_route" "remote_route_to_pod" {
 
 module "eks_hybrid_node_role" {
   source      = "terraform-aws-modules/eks/aws//modules/hybrid-node-role"
-  version     = "21.1.5"
+  version     = "21.3.2"
   name        = "${var.eks_cluster_id}-hybrid-node-role"
   policy_name = "${var.eks_cluster_id}-hybrid-node-policy"
   tags        = var.tags
