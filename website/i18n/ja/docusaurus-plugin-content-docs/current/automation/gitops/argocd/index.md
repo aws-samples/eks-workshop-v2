@@ -3,7 +3,7 @@ title: "Argo CD"
 sidebar_position: 3
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes ServiceでのArgo CDを使用した宣言的なGitOps継続的デリバリー。"
-kiteTranslationSourceHash: a1187126cce56eb990c6be52d0698b2b
+kiteTranslationSourceHash: 917f480cca3b58b603a5220f1d863e71
 ---
 
 ::required-time
@@ -17,8 +17,8 @@ $ prepare-environment automation/gitops/argocd
 
 これにより、ラボ環境に以下の変更が適用されます：
 
-- AWS CodeCommitリポジトリの作成
-- リポジトリへの認証のためのIAMユーザーとSSHキーの作成
+- Amazon EKSクラスターにAWS Load Balancerコントローラーをインストール
+- EBS CSIドライバー用のEKSマネージドアドオンをインストール
 
 これらの変更を適用するTerraformは[ここ](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/automation/gitops/argocd/.workshop/terraform)で確認できます。
 
@@ -36,4 +36,3 @@ CNCFの卒業プロジェクトとして、Argo CDはいくつかの主要な機
 - 様々なデプロイメント戦略のサポート
 
 Argo CDを使用することで、Kubernetesアプリケーションがソース設定と一貫性を保ち、望ましい状態と実際の状態の間に発生する可能性のあるドリフトを自動的に修正することができます。
-

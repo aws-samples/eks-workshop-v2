@@ -1,7 +1,7 @@
 ---
 title: "ACKリソースのプロビジョニング"
 sidebar_position: 5
-kiteTranslationSourceHash: efd51db38b348816cf3ae48cfe3bb815
+kiteTranslationSourceHash: bb50816c222887d853906f58febc41e8
 ---
 
 デフォルトでは、サンプルアプリケーションの**Carts**コンポーネントは、EKSクラスター内でポッドとして実行されている`carts-dynamodb`というDynamoDBローカルインスタンスを使用しています。このセクションでは、Kubernetesカスタムリソースを使用してアプリケーション用のAmazon DynamoDBクラウドベーステーブルをプロビジョニングし、**Carts**デプロイメントをローカルコピーの代わりにこの新しくプロビジョニングされたDynamoDBテーブルを使用するように構成します。
@@ -10,9 +10,15 @@ kiteTranslationSourceHash: efd51db38b348816cf3ae48cfe3bb815
 
 Kubernetesマニフェストを使用してDynamoDBテーブルを作成する方法を見てみましょう：
 
-```file
-manifests/modules/automation/controlplanes/ack/dynamodb/dynamodb-create.yaml
-```
+::yaml{file="manifests/modules/automation/controlplanes/ack/dynamodb/dynamodb-create.yaml" paths="apiVersion,kind,spec.keySchema,spec.attributeDefinitions,spec.billingMode,spec.tableName,spec.globalSecondaryIndexes"}
+
+1. ACK DynamoDBコントローラーを使用
+2. DynamoDBテーブルリソースを作成
+3. `id`属性をパーティションキー（`HASH`）として使用してプライマリキーを指定
+4. `id`と`customerId`を文字列属性として定義
+5. オンデマンド課金モデルを指定
+6. `${EKS_CLUSTER_NAME}`環境変数プレフィックスを使用してDynamoDBテーブル名を指定
+7. すべてのテーブル属性が射影された`idx_global_customerId`という名前のグローバルセカンダリインデックスを作成し、`customerID`による効率的なクエリを可能にします
 
 :::info
 注意深い観察者は、YAMLの仕様がDynamoDBの[APIシグネチャ](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_CreateTable.html)に非常に似ていることに気づくでしょう。`tableName`や`attributeDefinitions`などの馴染みのあるフィールドが含まれています。
