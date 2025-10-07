@@ -1,7 +1,7 @@
 ---
 title: "セットアップ"
 sidebar_position: 50
-kiteTranslationSourceHash: 7f20c20f092d617f950814cf355f770d
+kiteTranslationSourceHash: 6f6483fb0c8bfdb3081d5416c314963a
 ---
 
 Helmチャートを使用してDRY（Don't Repeat Yourself）アプローチでArgo CDアプリケーションのテンプレートを作成します：
@@ -27,7 +27,11 @@ Helmチャートを使用してDRY（Don't Repeat Yourself）アプローチでA
 
 `values.yaml`ファイルは、Argo CDアプリケーションが生成されるコンポーネントのリストと、すべてのアプリケーション間で共通となるGitリポジトリに関連する設定を指定します：
 
-::yaml{file="manifests/modules/automation/gitops/argocd/app-of-apps/values.yaml"}
+::yaml{file="manifests/modules/automation/gitops/argocd/app-of-apps/values.yaml" paths="spec.destination.server,spec.source,applications"}
+
+1. アプリケーションがデプロイされるKubernetes APIサーバーエンドポイントを指定します（ローカルクラスター）
+2. `${GITOPS_REPO_URL_ARGOCD}`環境変数を使用して、アプリケーションマニフェストを含むGitリポジトリと、追跡するGitブランチ（`main`）を指定します
+3. `applications`リストは、デプロイされるアプリケーションの名前を指定します
 
 まず、このApp of Appsの基本構成をGitディレクトリにコピーしましょう：
 
