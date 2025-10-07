@@ -5,7 +5,7 @@ import * as path from "path";
 import { globSync } from "glob";
 import getReadingTime from "reading-time";
 
-const timingDataString = fs.readFileSync(`./test-durations.json`, {
+const timingDataString = fs.readFileSync(`${process.cwd}/test-durations.json`, {
   encoding: "utf8",
   flag: "r",
 });
