@@ -1,5 +1,5 @@
 ---
-title: Setup
+title: Environment Setup
 sidebar_position: 20
 ---
 
