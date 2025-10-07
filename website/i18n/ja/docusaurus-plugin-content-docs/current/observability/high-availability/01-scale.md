@@ -98,6 +98,6 @@ $ timeout 10s ~/$SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 これらの変更の詳細については、次のセクションをご覧ください：
 
 - [カオスメッシュ](https://chaos-mesh.org/)
-- [Podアフィニティとアンチアフィニティ](/docs/fundamentals/managed-node-groups/basics/affinity/)
+- [Podアフィニティとアンチアフィニティ](../../fundamentals/compute/managed-node-groups/basics/affinity/)
 
 :::
