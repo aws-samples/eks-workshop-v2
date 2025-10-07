@@ -19,7 +19,7 @@ data "aws_subnets" "private_sg_rds" {
 
 module "catalog_mysql" {
   source  = "terraform-aws-modules/rds/aws"
-  version = "6.12.0"
+  version = "6.13.0"
 
   identifier = "${var.eks_cluster_id}-catalog"
 
