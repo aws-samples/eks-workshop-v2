@@ -1,0 +1,10 @@
+{
+  "terminal.copyCommand": {
+    "message": "Copy command",
+    "description": "The button on terminal component to copy a command"
+  },
+  "terminal.copyAllCommands": {
+    "message": "Copy all commands",
+    "description": "The button on terminal component to copy all commands"
+  }
+}
