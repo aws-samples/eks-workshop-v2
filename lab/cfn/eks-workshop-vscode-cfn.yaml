@@ -31,7 +31,7 @@ Parameters:
   CodeServerVersion:
     Type: String
     Description: Default code-server version to use
-    Default: "4.91.1"
+    Default: "4.104.2"
   AmiParameterStoreName:
     Type: "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>"
     Default: "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64"
