@@ -17,7 +17,7 @@ kubeseal_version='0.18.4'
 yq_version='4.47.2'
 
 # renovate: depName=fluxcd/flux2
-flux_version='2.7.1'
+flux_version='2.7.2'
 
 # renovate: depName=argoproj/argo-cd
 argocd_version='2.14.20'
