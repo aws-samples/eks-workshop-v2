@@ -6641,13 +6641,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^13.1.0":
-  version: 13.1.0
-  resolution: "commander@npm:13.1.0"
-  checksum: 10c0/7b8c5544bba704fbe84b7cab2e043df8586d5c114a4c5b607f83ae5060708940ed0b5bd5838cf8ce27539cde265c1cbd59ce3c8c6b017ed3eec8943e3a415164
-  languageName: node
-  linkType: hard
-
 "commander@npm:^14.0.0":
   version: 14.0.0
   resolution: "commander@npm:14.0.0"
@@ -7767,7 +7760,7 @@ __metadata:
     "@aws/toolkit-md": "npm:^0.1.5"
     cspell: "npm:^9.0.0"
     lint-staged: "npm:^16.0.0"
-    markdown-link-check: "npm:3.13.7"
+    markdown-link-check: "npm:3.14.0"
     markdownlint-cli2: "npm:^0.18.0"
     npm-run-all2: "npm:^8.0.0"
     prettier: "npm:^3.2.5"
@@ -10396,16 +10389,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"link-check@npm:^5.4.0":
-  version: 5.4.0
-  resolution: "link-check@npm:5.4.0"
+"link-check@npm:^5.5.0":
+  version: 5.5.0
+  resolution: "link-check@npm:5.5.0"
   dependencies:
     is-relative-url: "npm:^4.0.0"
     ms: "npm:^2.1.3"
     needle: "npm:^3.3.1"
     node-email-verifier: "npm:^2.0.0"
     proxy-agent: "npm:^6.4.0"
-  checksum: 10c0/8d63b7ee144a9b5b051455458a57ae3ce6f804ec77c4a7969a8b59cad5c15189222ff0d71833e45e3ca347e34699069e00ffe9b7b0a926c9879473e648965811
+  checksum: 10c0/0e0cf946449c33968c4cc2ff4372ab392ad0a1957ba1da3af89baed7b07e1da9bea240303d1e8a996386d20248e401b87852c47cb93d2a8f1e5026a21f55bff7
   languageName: node
   linkType: hard
 
@@ -10689,14 +10682,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"markdown-link-check@npm:3.13.7":
-  version: 3.13.7
-  resolution: "markdown-link-check@npm:3.13.7"
+"markdown-link-check@npm:3.14.0":
+  version: 3.14.0
+  resolution: "markdown-link-check@npm:3.14.0"
   dependencies:
     async: "npm:^3.2.6"
     chalk: "npm:^5.3.0"
-    commander: "npm:^13.1.0"
-    link-check: "npm:^5.4.0"
+    commander: "npm:^14.0.0"
+    link-check: "npm:^5.5.0"
     markdown-link-extractor: "npm:^4.0.2"
     needle: "npm:^3.3.1"
     progress: "npm:^2.0.3"
@@ -10704,7 +10697,7 @@ __metadata:
     xmlbuilder2: "npm:^3.1.1"
   bin:
     markdown-link-check: markdown-link-check
-  checksum: 10c0/31ccd54eb3f471a0a3815685c175db587e20c05cc8e09244c5118b8fadf7f79e7f579c82e33bb74939e1c431b828da8d4eae255ed7c78faa5bcf46e4f4e6d7f6
+  checksum: 10c0/ea9991eaead08f0c0bfcd85376a5119f39377e3d5723c5dfeaadb1029cc42f07bf5d43431e22b495d544666fe53a24393cd5c1120627b451970074d554d841d6
   languageName: node
   linkType: hard
 
