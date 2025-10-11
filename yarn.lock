@@ -7760,7 +7760,7 @@ __metadata:
     "@aws/toolkit-md": "npm:^0.1.5"
     cspell: "npm:^9.0.0"
     lint-staged: "npm:^16.0.0"
-    markdown-link-check: "npm:3.14.0"
+    markdown-link-check: "npm:3.14.1"
     markdownlint-cli2: "npm:^0.18.0"
     npm-run-all2: "npm:^8.0.0"
     prettier: "npm:^3.2.5"
@@ -10682,9 +10682,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"markdown-link-check@npm:3.14.0":
-  version: 3.14.0
-  resolution: "markdown-link-check@npm:3.14.0"
+"markdown-link-check@npm:3.14.1":
+  version: 3.14.1
+  resolution: "markdown-link-check@npm:3.14.1"
   dependencies:
     async: "npm:^3.2.6"
     chalk: "npm:^5.3.0"
@@ -10697,7 +10697,7 @@ __metadata:
     xmlbuilder2: "npm:^3.1.1"
   bin:
     markdown-link-check: markdown-link-check
-  checksum: 10c0/ea9991eaead08f0c0bfcd85376a5119f39377e3d5723c5dfeaadb1029cc42f07bf5d43431e22b495d544666fe53a24393cd5c1120627b451970074d554d841d6
+  checksum: 10c0/60f2846f2bb0b00e3d5ce7336a0367714ecd15244842c856d94ed3915ce570d4f95c819817996498d5cbf7c1a1e01609defb4c4ff33c2cca74111963bf17d507
   languageName: node
   linkType: hard
 
