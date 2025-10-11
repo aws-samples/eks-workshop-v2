@@ -5,11 +5,10 @@ sidebar_position: 20
 
 Let's create an Ingress resource with the following configuration:
 
-::yaml{file="manifests/modules/exposing/ingress/creating-ingress/ingress.yaml" paths="kind,metadata.annotations,spec.rules.0"}
+::yaml{file="manifests/modules/exposing/ingress/creating-ingress/ingress.yaml" paths="kind,spec.rules.0"}
 
 1. Use an `Ingress` kind
-2. We can use annotations to configure various behavior of the ALB thats created such as the health checks it performs on the target pods
-3. The rules section is used to express how the ALB should route traffic. In this example we route all HTTP requests where the path starts with `/` to the Kubernetes service called `ui` on port 80
+2. The rules section is used to express how the ALB should route traffic. In this example we route all HTTP requests where the path starts with `/` to the Kubernetes service called `ui` on port 80
 
 Apply this configuration:
 
