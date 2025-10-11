@@ -1,7 +1,9 @@
 ---
-title: "⚡ Fast path - Developers"
-chapter: true
+title: "Developer Essentials"
+sidebar_position: 20
 ---
+
+# Developer Essentials
 
 ::required-time
 
@@ -11,12 +13,11 @@ This fast path uses a dedicated Amazon EKS Auto Mode cluster. Amazon EKS Auto Mo
 Switch to the Auto Mode cluster:
 
 ```bash
-$ use-cluster eks-workshop-auto
+$ use-cluster ${EKS_CLUSTER_NAME}-auto
 ```
-
 :::
 
-Welcome to the EKS Workshop fast path for developers! This is a collection of labs optimized for developers to learn the features of Amazon EKS most commonly required when deploying workloads.
+Welcome to the EKS Workshop Developer Essentials! This is a collection of labs optimized for developers to learn the features of Amazon EKS most commonly required when deploying workloads.
 
 Throughout this series of exercises you'll learn:
 

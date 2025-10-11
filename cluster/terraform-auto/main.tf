@@ -281,5 +281,3 @@ resource "aws_iam_role_policy_attachment" "auto_keda_cloudwatch" {
   policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/CloudWatchReadOnlyAccess"
   role       = aws_iam_role.auto_keda.name
 }
-
-
