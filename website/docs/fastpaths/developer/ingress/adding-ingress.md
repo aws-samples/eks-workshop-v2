@@ -3,25 +3,42 @@ title: "Creating the Ingress"
 sidebar_position: 20
 ---
 
-Let's create an Ingress resource with the following configuration:
+With Amazon EKS Auto Mode, we need to configure an IngressClass and IngressClassParams:
 
-::yaml{file="manifests/modules/exposing/ingress/creating-ingress/ingress.yaml" paths="kind,spec.rules.0"}
+::yaml{file="manifests/modules/exposing/ingress/creating-ingress/ingressclass.yaml" paths="0.spec.controller,0.spec.parameters,1.spec"}
+
+1. The `controller` field must be set to `eks.amazonaws.com/alb` to target the Auto Mode ALB capability
+2. The `parameters` section references an IngressClassParams resource with `apiGroup: eks.amazonaws.com`
+3. The IngressClassParams defines AWS-specific configuration like the load balancer scheme and target type
+
+Apply the configuration:
+
+```bash
+$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/creating-ingress
+```
+
+Now let's create an Ingress resource:
+
+::yaml{file="manifests/modules/exposing/ingress/creating-ingress/ingress.yaml" paths="kind,spec.ingressClassName,spec.rules"}
 
 1. Use an `Ingress` kind
-2. The rules section is used to express how the ALB should route traffic. In this example we route all HTTP requests where the path starts with `/` to the Kubernetes service called `ui` on port 80
+2. The `ingressClassName` references our Auto Mode IngressClass
+3. The rules section routes all HTTP requests where the path starts with `/` to the Kubernetes service called `ui` on port 80
 
-Apply this configuration:
+Note: With EKS Auto Mode, annotations are not supported on Ingress resources. All ALB configuration must be done in the IngressClassParams.
+
+Apply the Ingress:
 
 ```bash timeout=180 hook=add-ingress hookTimeout=430
-$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/creating-ingress
+$ kubectl apply -f ~/environment/eks-workshop/modules/exposing/ingress/ingress.networking.k8s.io/ui created
 ```
 
 Let's inspect the Ingress object created:
 
 ```bash
 $ kubectl get ingress ui -n ui
-NAME   CLASS   HOSTS   ADDRESS                                            PORTS   AGE
-ui     alb     *       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com   80      15s
+NAME   CLASS          HOSTS   ADDRESS                                                     PORTS   AGE
+ui     eks-auto-alb   *       k8s-ui-ui-6cd0ef095e-78768930.us-west-2.elb.amazonaws.com   80      5s
 ```
 
 The ALB will take several minutes to provision and register its targets so take some time to take a closer look at the ALB provisioned for this Ingress to see how its configured:
