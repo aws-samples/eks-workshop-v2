@@ -1,21 +1,9 @@
 ---
 title: Deployments
 sidebar_position: 31
-sidebar_custom_props: { "module": true }
 ---
 
 # Deployments
-
-::required-time
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=300 wait=10
-$ prepare-environment introduction/basics/deployments
-```
-
-:::
 
 **Deployments** are the most common workload controller for running stateless applications. They make sure your application always runs the desired number of Pods - automatically handling creation, scaling, updates, and recovery.
 

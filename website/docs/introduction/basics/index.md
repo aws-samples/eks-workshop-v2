@@ -1,6 +1,7 @@
 ---
 title: Kubernetes Basics
 sidebar_position: 60
+sidebar_custom_props: { "module": true }
 description: "Learn fundamental Kubernetes concepts including architecture, Helm, and Kustomize."
 ---
 
@@ -8,11 +9,14 @@ description: "Learn fundamental Kubernetes concepts including architecture, Helm
 
 Before diving into hands-on labs, it's important to understand **how Kubernetes works** and **the tools you'll use** throughout this workshop. This section introduces the core architecture, key components, and deployment tools that form the foundation of your EKS learning journey.
 
-:::info
-Already familiar with Kubernetes fundamentals? You can skip ahead to the next section.
-:::
+:::tip Before you start
+Prepare your environment for this section:
 
----
+```bash timeout=300 wait=10
+$ prepare-environment introduction/basics
+```
+
+:::
 
 ## Kubernetes Architecture Overview
 
@@ -61,13 +65,23 @@ In Amazon EKS:
 ![Amazon EKS Architecture](https://docs.aws.amazon.com/images/eks/latest/userguide/images/whatis.png)
 *Figure: Amazon EKS architecture and integration with AWS services.*
 
----
+## Key Points to Remember
 
-## Summary
+Understanding Kubernetes architecture is crucial for effective cluster management and troubleshooting:
 
-By the end of this section, you should be able to:
-- Describe how the Kubernetes control plane and nodes interact  
-- Understand which components AWS manages in EKS  
-- Recognize how EKS simplifies Kubernetes operations at scale  
+### Control Plane vs. Worker Nodes
+- **Control plane** components (API Server, etcd, Scheduler, Controller Manager) handle cluster-wide decisions and state management
+- **Worker nodes** (kubelet, container runtime, kube-proxy) focus on running and networking your applications
+- This separation allows for scalable, resilient cluster operations
 
-Once you’re comfortable with these fundamentals, you’ll be ready to explore **Helm**, **Kustomize**, and real-world **EKS deployments** in the upcoming modules.
+### EKS Advantages
+- **Reduced operational burden** — AWS manages control plane complexity, patching, and high availability
+- **Native AWS integration** — Seamless connectivity with VPC, IAM, Load Balancers, and other AWS services
+- **Flexible compute options** — Choose between EC2, Fargate, or Auto Mode based on your workload needs
+
+### Design Principles
+- **Declarative configuration** — Define desired state; Kubernetes controllers work to achieve it
+- **API-driven** — All interactions go through the Kubernetes API for consistency and auditability
+- **Extensible** — Custom resources and controllers allow you to extend Kubernetes functionality
+
+These architectural concepts will be essential as you progress through deploying applications, managing configurations with Helm and Kustomize, and implementing advanced cluster features.

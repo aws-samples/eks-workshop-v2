@@ -1,21 +1,9 @@
 ---
 title: Jobs & CronJobs
 sidebar_position: 34
-sidebar_custom_props: { "module": true }
 ---
 
 # Jobs & CronJobs
-
-::required-time
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=300 wait=10
-$ prepare-environment introduction/basics/jobs
-```
-
-:::
 
 **Jobs** and **CronJobs** are controllers for running **finite or recurring tasks**. Unlike Deployments or StatefulSets that keep pods running continuously, Jobs run tasks to completion, and CronJobs run Jobs on a schedule.
 
@@ -71,6 +59,11 @@ View the job's pod:
 $ kubectl get pods -n catalog -l job-name=data-processor
 NAME                   READY   STATUS      RESTARTS   AGE
 data-processor-h7mg7   0/1     Completed   0          25s
+```
+
+Wait for the job to complete:
+```bash
+$ kubectl wait --for=condition=complete --timeout=60s job/data-processor -n catalog
 ```
 
 Check job logs to see the processing output:

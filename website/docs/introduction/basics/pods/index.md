@@ -1,21 +1,9 @@
 ---
 title: Pods
 sidebar_position: 20
-sidebar_custom_props: { "module": true }
 ---
 
 # Pods
-
-::required-time
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=300 wait=10
-$ prepare-environment introduction/basics/pods
-```
-
-:::
 
 **Pods** are the smallest deployable units in Kubernetes. A Pod represents one or more containers that share storage, network, and configuration settings for how they should run together.
 
@@ -189,6 +177,34 @@ In the browser, You'll see the Retail store application landing page.
 
 Press `CTRL+C` to break `port-forward` session.
 
+### Deleting Pods
+
+When you no longer need a pod, you can delete it using the `kubectl delete` command. There are several ways to delete pods:
+
+**Method 1: Delete by name**
+```bash
+$ kubectl delete pod -n ui ui-pod
+pod "ui-pod" deleted
+```
+
+**Method 2: Delete using the manifest file**
+Let's recreate the `ui-pod` and delete using mainfest file.
+```bash
+$ kubectl apply -f ~/environment/eks-workshop/modules/introduction/basics/pods/ui-pod.yaml
+$ kubectl delete -f ~/environment/eks-workshop/modules/introduction/basics/pods/ui-pod.yaml
+pod "ui-pod" deleted
+```
+
+After deletion, verify the pod is gone:
+```bash
+$ kubectl get pods -n ui
+No resources found in ui namespace.
+```
+
+:::warning
+When you delete a pod directly, it's gone forever. The data inside the pod (unless stored in persistent volumes) is lost. In production environments, pods are typically managed by controllers like Deployments that automatically recreate them if needed.
+:::
+
 ### Pod Lifecycle
 
 Pods have well-defined lifecycle phases that reflect their current state in the cluster.
@@ -211,6 +227,3 @@ Kubernetes controllers continuously monitor pod states and take action (like res
 :::info
 In real-world scenarios, you rarely create pods directly — instead, you use higher-level resources like Deployments, ReplicaSets, or Jobs to manage them.
 :::
-
-## Next steps
-Next, explore [Workload management](../workload-management/) to learn how Kubernetes manages pods at scale.

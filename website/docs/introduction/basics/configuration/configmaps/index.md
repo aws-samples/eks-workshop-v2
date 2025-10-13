@@ -1,21 +1,9 @@
 ---
 title: ConfigMaps
 sidebar_position: 10
-sidebar_custom_props: { "module": true }
 ---
 
 # ConfigMaps
-
-::required-time
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=300 wait=10
-$ prepare-environment introduction/basics/configmaps
-```
-
-:::
 
 **ConfigMaps** allow you to decouple configuration artifacts from image content to keep containerized applications portable. They store non-confidential data in key-value pairs and can be consumed by pods as environment variables, command-line arguments, or configuration files.
 

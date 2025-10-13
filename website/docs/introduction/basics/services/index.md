@@ -1,21 +1,9 @@
 ---
 title: Services
 sidebar_position: 40
-sidebar_custom_props: { "module": true }
 ---
 
 # Services
-
-::required-time
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=300 wait=10
-$ prepare-environment introduction/basics/services
-```
-
-:::
 
 **Services** provide stable network endpoints for accessing pods. Since pods are ephemeral and can be created/destroyed frequently, services give you consistent DNS names and IP addresses for reliable communication.
 

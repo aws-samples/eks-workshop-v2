@@ -1,21 +1,9 @@
 ---
 title: Namespaces
 sidebar_position: 10
-sidebar_custom_props: { "module": true }
 ---
 
 # Namespaces
-
-::required-time
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=300 wait=10
-$ prepare-environment introduction/basics/namespaces
-```
-
-:::
 
 **Namespaces** provide a way to organize and isolate resources within a single Kubernetes cluster. Think on them as virtual clusters inside your physical cluster - they help you separate different applications, environments, or teams while sharing the same underlying infrastructure.
 

@@ -1,21 +1,9 @@
 ---
 title: StatefulSets
 sidebar_position: 32
-sidebar_custom_props: { "module": true }
 ---
 
 # StatefulSets
-
-::required-time
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=300 wait=10
-$ prepare-environment introduction/basics/statefulsets
-```
-
-:::
 
 **StatefulSets** manage applications that need **stable identities and persistent storage**. Unlike Deployments, where Pods are interchangeable, each Pod in a StatefulSet **keeps a unique, predictable identity** throughout its lifecycle.
 

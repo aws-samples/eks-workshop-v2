@@ -1,21 +1,9 @@
 ---
 title: DaemonSets
 sidebar_position: 33
-sidebar_custom_props: { "module": true }
 ---
 
 # DaemonSets
-
-::required-time
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=300 wait=10
-$ prepare-environment introduction/basics/daemonsets
-```
-
-:::
 
 **DaemonSets** ensure that a copy of a pod runs on **every node** (or a subset of nodes) in your cluster. They are ideal for system-level services that must operate on all nodes, such as logging, monitoring, and network agents.
 

@@ -1,21 +1,9 @@
 ---
 title: Secrets
 sidebar_position: 20
-sidebar_custom_props: { "module": true }
 ---
 
 # Secrets
-
-::required-time
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=300 wait=10
-$ prepare-environment introduction/basics/secrets
-```
-
-:::
 
 **Secrets** are used to store and manage sensitive information such as passwords, OAuth tokens, SSH keys, and TLS certificates. They provide a more secure way to handle confidential data compared to putting it directly in pod specifications or container images.
 
