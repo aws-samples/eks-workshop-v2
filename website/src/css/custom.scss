@@ -13,8 +13,9 @@
   --ifm-color-primary-light: #33925d;
   --ifm-color-primary-lighter: #359962;
   --ifm-color-primary-lightest: #3cad6e;
-  --ifm-hero-background-color: #000716;
+  --ifm-hero-background-color: #0f1b2a;
   --ifm-navbar-background-color: #000716;
+  --ifm-secondary-nav-background-color: #1a2332;
   --ifm-navbar-link-color: #d1d5db;
   --ifm-navbar-link-hover-color: #ff9900;
   --ifm-menu-color: #414d5c;
@@ -52,11 +53,34 @@
   --ifm-tabs-color-active-border: #ff9900;
   --dark-search-text-color: #999;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  
+  /* Tone down admonition colors in dark mode */
+  --ifm-color-warning-contrast-background: #3d3416;
+  --ifm-color-warning-contrast-foreground: #f0d090;
+  --ifm-color-success-contrast-background: #1a3a2e;
+  --ifm-color-success-contrast-foreground: #90d0a0;
 }
 
 .navbar__title {
   margin-left: 1rem;
   margin-right: 1rem;
+  font-size: clamp(0.85rem, 4vw, 1.5rem);
+  font-weight: 400;
+}
+
+@media (max-width: 600px) {
+  .navbar__title {
+    font-size: 1.1rem !important;
+  }
+  
+  .navbar__brand {
+    margin-right: 1.5rem !important;
+    flex-shrink: 0;
+  }
+  
+  .navbar__items {
+    gap: 1rem !important;
+  }
 }
 
 .footer {
@@ -239,32 +263,43 @@
 .navbar__items {
   display: flex;
   flex-wrap: nowrap;
-  /* adjust this when adding new nav bar items */
-  max-width: 1050px;
 }
 
-/* Navbar items that dynamically shrink */
+/* Hide navbar items on desktop - they're in secondary nav */
 .navbar__item {
-  flex-grow: 1;
-  flex-shrink: 1;
-  padding: 0 0px;
-  font-size: clamp(0.8em, 1.2vw, 1em);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: none;
 }
 
-/* docusaurus switches to mobile view at 996px */
-@media (min-width: 997px) and (max-width: 1250px) {
-  .navbar__brand .navbar__title {
-    display: none; /* Hide the navbar title */
-  }
-
-  .navbar__items {
-    max-width: 80%;
-  }
+/* Show navbar items only in mobile sidebar */
+.navbar-sidebar .navbar__item {
+  display: block;
 }
 
 .navbar__search-input {
   max-width: 150px; /* Set a maximum width for the search input */
+}
+
+@media (max-width: 550px) {
+  .navbar__search-input {
+    margin-left: 1rem;
+  }
+}
+
+/* Tone down admonitions in dark mode */
+[data-theme="dark"] .theme-admonition-caution,
+[data-theme="dark"] .alert--warning {
+  background-color: rgba(255, 153, 0, 0.15);
+  border-color: rgba(255, 153, 0, 0.4);
+}
+
+[data-theme="dark"] .theme-admonition-tip,
+[data-theme="dark"] .alert--success {
+  background-color: rgba(0, 200, 83, 0.15);
+  border-color: rgba(0, 200, 83, 0.4);
+}
+
+[data-theme="dark"] .theme-admonition-warning,
+[data-theme="dark"] .alert--danger {
+  background-color: rgba(250, 82, 82, 0.15);
+  border-color: rgba(250, 82, 82, 0.4);
 }

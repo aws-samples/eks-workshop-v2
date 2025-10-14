@@ -3,6 +3,8 @@ title: Cleaning up
 sidebar_position: 90
 ---
 
+import IdeCleanup from '../../../_partials/setup/ide-cleanup.mdx';
+
 :::caution
 
 Make sure you have run the respective clean up instructions for the mechanism you used to provision the lab EKS cluster before proceeding:
@@ -14,11 +16,11 @@ Make sure you have run the respective clean up instructions for the mechanism yo
 
 This section outlines how to clean up the IDE we've used to run the labs.
 
-First, open CloudShell in the region where you deployed the CloudFormation stack:
+<IdeCleanup />
+
+Alternatively, you can use CloudShell to delete the stack:
 
 <ConsoleButton url="https://console.aws.amazon.com/cloudshell/home" service="console" label="Open CloudShell"/>
-
-Then run the following command to delete the CloudFormation stack:
 
 ```bash test=false
 $ aws cloudformation delete-stack --stack-name eks-workshop-ide
