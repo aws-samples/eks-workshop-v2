@@ -26,7 +26,7 @@ const baseUrl = process.env.BASE_URL || "";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "EKS Workshop",
+  title: "Amazon EKS Workshop",
   tagline:
     "Practical exercises to learn about Amazon Elastic Kubernetes Service",
   url: "https://www.eksworkshop.com",
@@ -37,6 +37,29 @@ const config = {
   noIndex: process.env.ENABLE_INDEX !== "1",
   customFields: {
     showNotification: process.env.SHOW_NOTIFICATION === "1",
+    secondaryNav: {
+      eksGroup: {
+        label: 'Amazon EKS',
+        items: [
+          { to: '/docs/introduction', label: 'Intro' },
+          { to: '/docs/fundamentals', label: 'Fundamentals' },
+          { to: '/docs/observability', label: 'Observability' },
+          { to: '/docs/security', label: 'Security' },
+          { to: '/docs/networking', label: 'Networking' },
+          { to: '/docs/automation', label: 'Automation' },
+          { to: '/docs/aiml', label: 'AI/ML' },
+          { to: '/docs/troubleshooting', label: 'Troubleshooting' },
+        ],
+      },
+      autoModeGroup: {
+        label: 'Amazon EKS Auto Mode',
+        items: [
+          { to: '/docs/fastpaths/setup', label: 'Intro' },
+          { to: '/docs/fastpaths/developer', label: 'Developer' },
+          { to: '/docs/fastpaths/operator', label: 'Operator' },
+        ],
+      },
+    },
   },
 
   organizationName: "aws-samples",
@@ -109,7 +132,7 @@ const config = {
       ],
       image: "img/meta.jpg",
       navbar: {
-        title: "EKS Workshop",
+        title: "Amazon EKS Workshop",
         logo: {
           alt: "Amazon Web Services",
           src: "img/logo.svg",
@@ -162,12 +185,6 @@ const config = {
             docId: "troubleshooting/index",
             position: "left",
             label: "Troubleshooting",
-          },
-          {
-            href: "https://github.com/aws-samples/eks-workshop-v2",
-            position: "right",
-            className: "header-github-link",
-            "aria-label": "GitHub repository",
           },
         ],
       },
