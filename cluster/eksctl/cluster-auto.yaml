@@ -1,0 +1,26 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+availabilityZones:
+  - ${AWS_REGION}a
+  - ${AWS_REGION}b
+  - ${AWS_REGION}c
+metadata:
+  name: ${EKS_CLUSTER_AUTO_NAME}
+  region: ${AWS_REGION}
+  version: "1.33"
+  tags:
+    karpenter.sh/discovery: ${EKS_CLUSTER_AUTO_NAME}
+    created-by: eks-workshop-v2
+    env: ${EKS_CLUSTER_AUTO_NAME}
+vpc:
+  cidr: 10.43.0.0/16
+  clusterEndpoints:
+    privateAccess: true
+    publicAccess: true
+autoModeConfig:
+  enabled: true
+  nodePools: [general-purpose, system]
+accessConfig:
+  authenticationMode: API
+  bootstrapClusterCreatorAdminPermissions: true
+
