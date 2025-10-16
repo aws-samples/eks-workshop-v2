@@ -7,7 +7,6 @@ spec:
     apiVersion: v1alpha1
     kind: WebApplicationDynamoDB
     spec:
-      # Basic types
       appName: string | required=true description="Web Application Name"
       replicas: integer | default=1 minimum=1 maximum=100
       image: string | default=nginx
@@ -31,16 +30,11 @@ spec:
 
       env: map[string]string | default={}
 
-      # Structured type
       ingress:
         enabled: boolean | default=false
         path: string | default="/"
         healthcheckPath: string | default="/health"
         groupname: string | default="eks-workshop"
-    # status:
-    #   deploymentConditions: ${deployment.status.conditions}
-    #   availableReplicas: ${deployment.status.availableReplicas}
-    #   url: ${ingress.status.loadBalancer.ingress[0].hostname}
 
   resources:
   - id: podIdentityAssociation
@@ -80,7 +74,6 @@ spec:
 
         env: ${schema.spec.env}
 
-        # Structured type
         ingress:
           enabled: ${schema.spec.ingress.enabled}
           path: ${schema.spec.ingress.path}
