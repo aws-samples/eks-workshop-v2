@@ -3,9 +3,9 @@ title: "Using Fluent Bit"
 sidebar_position: 30
 ---
 
-For Kubernetes cluster components that run in pods, these write to files inside the `/var/log` directory, bypassing the default logging mechanism. We can implement pod-level logging by deploying a node-level logging agent as a DaemonSet on each node, such as Fluent Bit.
+In this lab, we will configure [Fluent Bit](https://fluentbit.io/) logging agent as a DaemonSet in the EKS Auto Mode cluster.
 
-[Fluent Bit](https://fluentbit.io/) is a lightweight log processor and forwarder that allows you to collect data and logs from different sources, enrich them with filters and send them to multiple destinations like CloudWatch, Kinesis Data Firehose, Kinesis Data Streams and Amazon OpenSearch Service.
+Fluent Bit is a lightweight log processor and forwarder that allows you to collect data and logs from different sources, enrich them with filters and send them to multiple destinations like CloudWatch, Kinesis Data Firehose, Kinesis Data Streams and Amazon OpenSearch Service.
 
 AWS provides a Fluent Bit image with plugins for both CloudWatch Logs and Kinesis Data Firehose. The [AWS for Fluent Bit](https://github.com/aws/aws-for-fluent-bit) image is available on the [Amazon ECR Public Gallery](https://gallery.ecr.aws/aws-observability/aws-for-fluent-bit).
 
@@ -13,7 +13,7 @@ Fluent Bit can be used to ship logs to various destinations. However, in this la
 
 ![Fluent-bit Architecture](./assets/fluentbit-architecture.png)
 
-In the following section, you will see how to validate Fluent Bit agent is already running as a DaemonSet to send the containers / Pods logs to CloudWatch Logs. Read more about how to [deploy Fluent Bit to send logs from containers to CloudWatch Logs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-logs-FluentBit.html#Container-Insights-FluentBit-troubleshoot).
+In the following section, we will see how to validate Fluent Bit agent is already running as a DaemonSet to send the containers / Pods logs to CloudWatch Logs. Read more about how to [deploy Fluent Bit to send logs from containers to CloudWatch Logs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-logs-FluentBit.html#Container-Insights-FluentBit-troubleshoot).
 
 First, we can validate the resources created for Fluent Bit by entering the following command. Each node should have one Pod:
 
@@ -31,7 +31,7 @@ NAME                                DESIRED   CURRENT   READY   UP-TO-DATE   AVA
 daemonset.apps/aws-for-fluent-bit   3         3         3       3            3           <none>          96s
 ```
 
-The ConfigMap for aws-for-fluent-bit is configured to stream the contents of files in the directory `/var/log/containers/*.log` from each node to the CloudWatch log group `/eks-workshop/worker-fluentbit-logs`:
+The ConfigMap for `aws-for-fluent-bit` is configured to stream the contents of files in the directory `/var/log/containers/*.log` from each node to the CloudWatch log group `/eks-workshop/worker-fluentbit-logs`.
 
 ```bash hook=desc-cm
 $ kubectl describe configmap -n kube-system -l app.kubernetes.io/name=aws-for-fluent-bit
@@ -50,13 +50,13 @@ Data
 fluent-bit.conf:
 ----
 [SERVICE]
-    HTTP_Server  On
-    HTTP_Listen  0.0.0.0
-    HTTP_PORT    2020
-    Health_Check On
-    HC_Errors_Count 5
-    HC_Retry_Failure_Count 5
-    HC_Period 5
+    HTTP_Server             On
+    HTTP_Listen             0.0.0.0
+    HTTP_PORT               2020
+    Health_Check            On
+    HC_Errors_Count         5
+    HC_Retry_Failure_Count  5
+    HC_Period               5
 
     Parsers_File /fluent-bit/parsers/parsers.conf
 [INPUT]
@@ -114,3 +114,4 @@ Fluent Bit v1.9.9
 [2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream ui-8564fc5cfb-54llk.ui in log group /aws/eks/fluentbit-cloudwatch/workload/ui
 [2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Created log stream ui-8564fc5cfb-54llk.ui
 ```
+In the next lab, we will verify these logs in CloudWatch.

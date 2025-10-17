@@ -1,5 +1,5 @@
 ---
-title: Workload storage with Amazon EBS
+title: Adding workload storage with EBS
 sidebar_position: 40
 description: "Persistent block storage for workloads on Amazon Elastic Kubernetes Service with Amazon Elastic Block Store."
 ---

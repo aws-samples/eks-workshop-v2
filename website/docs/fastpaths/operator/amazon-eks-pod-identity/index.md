@@ -1,6 +1,6 @@
 ---
 title: "Accessing AWS APIs securely from workloads"
-sidebar_position: 50
+sidebar_position: 60
 description: "Manage AWS credentials for your applications running on Amazon Elastic Kubernetes Service with EKS Pod Identity."
 ---
 
