@@ -32,3 +32,5 @@ else
   echo "Creating auto mode cluster ${EKS_CLUSTER_AUTO_NAME} with terraform"
   bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster-auto.yaml | envsubst | eksctl create cluster -f -'
 fi
+
+wait
