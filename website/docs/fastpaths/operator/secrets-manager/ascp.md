@@ -3,7 +3,7 @@ title: "AWS Secrets and Configuration Provider (ASCP)"
 sidebar_position: 422
 ---
 
-The `prepare-environment` script we ran in the [previous step](./index.md) has already installed the AWS Secrets and Configuration Provider (ASCP) for the Kubernetes Secrets Store CSI Driver required for this lab.
+The EKS auto mode cluster has already been configured with the AWS Secrets and Configuration Provider (ASCP) for the Kubernetes Secrets Store CSI Driver required for this lab.
 
 Let's validate that the addons were deployed correctly.
 
