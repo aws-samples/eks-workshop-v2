@@ -5,28 +5,29 @@ sidebar_position: 40
 
 We'll start putting Karpenter to work by examining how it can dynamically provision appropriately sized EC2 instances depending on the needs of pods that cannot be scheduled at any given time. This can reduce the amount of unused compute resources in an EKS cluster.
 
-The NodePool created in the previous section expressed specific instance types that Karpenter was allowed to use, lets take a look at those instance types:
+The NodePool inspected in the previous section expressed specific instance families that Karpenter was allowed to use. They were 
 
-| Instance Type | vCPU | Memory | Price |
-| ------------- | ---- | ------ | ----- |
-| `c5.large`    | 2    | 4GB    | +     |
-| `m5.large`    | 2    | 8GB    | ++    |
-| `r5.large`    | 2    | 16GB   | +++   |
-| `m5.xlarge`   | 4    | 16GB   | ++++  |
+| Instance families | Generation |   OS   | Architecture |
+| ----------------- | ---------- | ------ | ------------ |
+| `c`, `m`, `r`     |     >4     | Linux  | amd64        |
 
-Let's create some Pods and see how Karpenter adapts. Currently there are no nodes managed by Karpenter:
+This broad configuration provide a wide range of choices to Karpenter for selecting a right-sized instance based on the requirements.
+
+Let's create some Pods and see how Karpenter adapts. Currently there should a couple of nodes available that are managed by Karpenter:
 
 ```bash
-$ kubectl get node -l type=karpenter
-No resources found
+$ kubectl get node -l karpenter.sh/nodepool=general-purpose
+
+NAME                  STATUS   ROLES    AGE   VERSION
+i-07fd006840ed07309   Ready    <none>   17h   v1.33.4-eks-e386d34
+i-0e209b70f1d2dfae0   Ready    <none>   14h   v1.33.4-eks-e386d34
 ```
 
 We'll use the following Deployment to trigger Karpenter to scale out:
 
-::yaml{file="manifests/modules/autoscaling/compute/karpenter/scale/deployment.yaml" paths="spec.replicas,spec.template.spec.nodeSelector,spec.template.spec.containers.0.image,spec.template.spec.containers.0.resources"}
+::yaml{file="manifests/modules/autoscaling/compute/karpenter/automode/scale/deployment.yaml" paths="spec.replicas,spec.template.spec.containers.0.image,spec.template.spec.containers.0.resources"}
 
 1. Initially specifies 0 replicas to run, we'll scale it up later
-2. Requires the pods to be scheduled to capacity provisioned by Karpenter by using a node selector that matches our NodePool
 3. Uses a simple `pause` container image
 4. Requests `1Gi` of memory for each pod
 
@@ -41,7 +42,7 @@ This is a small container that will consume no real resources and starts quickly
 Apply this deployment:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/autoscaling/compute/karpenter/scale
+$ kubectl apply -k ~/environment/eks-workshop/modules/autoscaling/compute/karpenter/automode/scale
 deployment.apps/inflate created
 ```
 
@@ -61,82 +62,44 @@ Because this operation is creating one or more new EC2 instances it will take a 
 $ kubectl rollout status -n other deployment/inflate --timeout=180s
 ```
 
-Once all of the Pods are running, lets see what instance type it selecting:
+Let's now check the action taken by Karpenter listing those events. Wait for 5-10 seconds to see the events getting listed.
 
 ```bash
-$ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter | grep 'launched nodeclaim' | jq '.'
+$ kubectl get events | grep 'nodeclaim' 
 ```
 
-You should see output that indicates the instance type and the purchase option:
+You should see the output showing a new node is launched. 
 
-```json
-{
-  "level": "INFO",
-  "time": "2023-11-16T22:32:00.413Z",
-  "logger": "controller.nodeclaim.lifecycle",
-  "message": "launched nodeclaim",
-  "commit": "1072d3b",
-  "nodeclaim": "default-xxm79",
-  "nodepool": "default",
-  "provider-id": "aws:///us-west-2a/i-0bb8a7e6111d45591",
-  # HIGHLIGHT
-  "instance-type": "m5.large",
-  "zone": "us-west-2a",
-  # HIGHLIGHT
-  "capacity-type": "on-demand",
-  "allocatable": {
-    "cpu": "1930m",
-    "ephemeral-storage": "17Gi",
-    "memory": "6903Mi",
-    "pods": "29",
-    "vpc.amazonaws.com/pod-eni": "9"
-  }
-}
+```
+2m55s       Normal    Launched                  nodeclaim/general-purpose-5c74h   Status condition transitioned, Type: Launched, Status: Unknown -> True, Reason: Launched
+2m52s       Normal    DisruptionBlocked         nodeclaim/general-purpose-5c74h   Nodeclaim does not have an associated node
+2m39s       Normal    Registered                nodeclaim/general-purpose-5c74h   Status condition transitioned, Type: Registered, Status: Unknown -> True, Reason: Registered
+2m36s       Normal    Initialized               nodeclaim/general-purpose-5c74h   Status condition transitioned, Type: Initialized, Status: Unknown -> True, Reason: Initialized
+2m36s       Normal    Ready                     nodeclaim/general-purpose-5c74h   Status condition transitioned, Type: Ready, Status: Unknown -> True, Reason: Ready
+12m         Normal    Unconsolidatable          nodeclaim/general-purpose-nhtc7   Can't replace with a cheaper node
 ```
 
-The pods that we scheduled will fit nicely in to an EC2 instance with 8GB of memory, and since Karpenter will always prioritize the lowest price instance type for on-demand instances, it will select `m5.large`.
+Karpenter will find the most suitable instance type that is big enough to accommodate all to-be-scheduled Pods and lower in cost at the same time. 
 
 :::info
 There are certain cases where a different instance type might be selected other than the lowest price, for example if that cheapest instance type has no remaining capacity available in the region you're working in
 :::
 
-We can also check the metadata added to the node by Karpenter:
+Let's again list all the available nodes in the cluster.
 
 ```bash
-$ kubectl get node -l type=karpenter -o jsonpath='{.items[0].metadata.labels}' | jq '.'
+$ kubectl get nodes \
+  -L beta.kubernetes.io/instance-type \
+  -L kubernetes.io/arch \
+  -L kubernetes.io/os \
+  --sort-by=.metadata.creationTimestamp
+
+NAME                  STATUS   ROLES    AGE   VERSION               INSTANCE-TYPE   ARCH    OS
+i-07fd006840ed07309   Ready    <none>   20h   v1.33.4-eks-e386d34   c6a.large       amd64   linux
+i-0e209b70f1d2dfae0   Ready    <none>   17h   v1.33.4-eks-e386d34   c6a.large       amd64   linux
+i-0a78dba9f62f5e0e4   Ready    <none>   60m   v1.33.4-eks-e386d34   m5a.large       amd64   linux
 ```
 
-This output will show the various labels that are set, for example the instance type, purchase option, availability zone etc:
-
-```json
-{
-  "beta.kubernetes.io/arch": "amd64",
-  "beta.kubernetes.io/instance-type": "m5.large",
-  "beta.kubernetes.io/os": "linux",
-  "failure-domain.beta.kubernetes.io/region": "us-west-2",
-  "failure-domain.beta.kubernetes.io/zone": "us-west-2a",
-  "k8s.io/cloud-provider-aws": "1911afb91fc78905500a801c7b5ae731",
-  "karpenter.k8s.aws/instance-category": "m",
-  "karpenter.k8s.aws/instance-cpu": "2",
-  "karpenter.k8s.aws/instance-family": "m5",
-  "karpenter.k8s.aws/instance-generation": "5",
-  "karpenter.k8s.aws/instance-hypervisor": "nitro",
-  "karpenter.k8s.aws/instance-memory": "8192",
-  "karpenter.k8s.aws/instance-pods": "29",
-  "karpenter.k8s.aws/instance-size": "large",
-  "karpenter.sh/capacity-type": "on-demand",
-  "karpenter.sh/initialized": "true",
-  "karpenter.sh/provisioner-name": "default",
-  "kubernetes.io/arch": "amd64",
-  "kubernetes.io/hostname": "ip-100-64-10-200.us-west-2.compute.internal",
-  "kubernetes.io/os": "linux",
-  "node.kubernetes.io/instance-type": "m5.large",
-  "topology.ebs.csi.aws.com/zone": "us-west-2a",
-  "topology.kubernetes.io/region": "us-west-2",
-  "topology.kubernetes.io/zone": "us-west-2a",
-  "type": "karpenter",
-  "vpc.amazonaws.com/has-trunk-attached": "true"
-}
-```
+You can see that the last node added to the pool is as per the `NodePool` configuration table shown earlier in this page.
 
 This simple examples illustrates the fact that Karpenter can dynamically select the right instance type based on the resource requirements of the workloads that require compute capacity. This differs fundamentally from a model oriented around node pools, such as Cluster Autoscaler, where the instance types within a single node group must have consistent CPU and memory characteristics.
