@@ -40,6 +40,7 @@ fi
 
 rm -f /home/ec2-user/.kube/config
 
+aws eks update-kubeconfig --name $EKS_CLUSTER_AUTO_NAME --alias default --user-alias default
 aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --alias default --user-alias default
 
 module=$1
