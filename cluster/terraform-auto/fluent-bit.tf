@@ -4,73 +4,128 @@ resource "random_string" "fluentbit_log_group" {
 }
 
 locals {
-  cw_log_group_name = "/${var.addon_context.eks_cluster_id}/worker-fluentbit-logs-${random_string.fluentbit_log_group.result}"
+  cw_log_group_name = "/${var.auto_cluster_name}/worker-fluentbit-logs-${random_string.fluentbit_log_group.result}"
 }
 
-module "eks_blueprints_addons" {
-  source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.22.0"
-
-  cluster_name      = var.addon_context.eks_cluster_id
-  cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint
-  cluster_version   = var.eks_cluster_version
-  oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
-
-  enable_aws_for_fluentbit = true
-
-  aws_for_fluentbit = {
-    chart_version = "0.1.32"
-
-    role_name   = "${var.addon_context.eks_cluster_id}-fluent-bit"
-    policy_name = "${var.addon_context.eks_cluster_id}-fluent-bit"
-
-    wait = true
-  }
-
-  aws_for_fluentbit_cw_log_group = local.cw_log_group_name
-
-  observability_tag = null
+# Create CloudWatch log group for FluentBit
+resource "aws_cloudwatch_log_group" "fluentbit" {
+  name              = local.cw_log_group_name
+  retention_in_days = 7
+  tags              = local.tags
 }
 
-# tflint-ignore: terraform_unused_declarations
-variable "eks_cluster_id" {
-  description = "EKS cluster name"
-  type        = string
+# IAM role for FluentBit with CloudWatch write permissions using Pod Identity
+resource "aws_iam_role" "auto_fluentbit" {
+  name_prefix = "${var.auto_cluster_name}-fluent-bit-"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = [
+        "sts:AssumeRole",
+        "sts:TagSession"
+      ]
+      Effect = "Allow"
+      Principal = {
+        Service = "pods.eks.amazonaws.com"
+      }
+    }]
+  })
+
+  tags = local.tags
 }
 
-# tflint-ignore: terraform_unused_declarations
-variable "eks_cluster_version" {
-  description = "EKS cluster version"
-  type        = string
+# IAM policy for FluentBit CloudWatch log write access
+resource "aws_iam_policy" "auto_fluentbit_cloudwatch" {
+  name_prefix = "${var.auto_cluster_name}-fluent-bit-"
+  description = "CloudWatch Logs policy for FluentBit"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams"
+        ]
+        Resource = "arn:${data.aws_partition.current.partition}:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/${var.auto_cluster_name}/*"
+      }
+    ]
+  })
+
+  tags = local.tags
 }
 
-# tflint-ignore: terraform_unused_declarations
-variable "cluster_security_group_id" {
-  description = "EKS cluster security group ID"
-  type        = any
+# Attach CloudWatch policy to FluentBit role
+resource "aws_iam_role_policy_attachment" "auto_fluentbit_cloudwatch" {
+  policy_arn = aws_iam_policy.auto_fluentbit_cloudwatch.arn
+  role       = aws_iam_role.auto_fluentbit.name
 }
 
-# tflint-ignore: terraform_unused_declarations
-variable "addon_context" {
-  description = "Addon context that can be passed directly to blueprints addon modules"
-  type        = any
+# EKS Pod Identity Association for FluentBit
+resource "aws_eks_pod_identity_association" "fluentbit" {
+  cluster_name    = aws_eks_cluster.auto_mode.name
+  namespace       = "amazon-cloudwatch"
+  service_account = "fluent-bit"
+  role_arn        = aws_iam_role.auto_fluentbit.arn
+
+  depends_on = [
+    aws_eks_cluster.auto_mode,
+    aws_iam_role.auto_fluentbit
+  ]
 }
 
-# tflint-ignore: terraform_unused_declarations
-variable "tags" {
-  description = "Tags to apply to AWS resources"
-  type        = any
-}
+# Helm release for AWS for FluentBit (Pod Identity compatible)
+resource "helm_release" "aws_for_fluent_bit" {
+  name       = "aws-for-fluent-bit"
+  repository = "https://aws.github.io/eks-charts"
+  chart      = "aws-for-fluent-bit"
+  namespace  = "amazon-cloudwatch"
+  version    = "0.1.32"
 
-# tflint-ignore: terraform_unused_declarations
-variable "resources_precreated" {
-  description = "Have expensive resources been created already"
-  type        = bool
+  create_namespace = true
+
+  set = [
+    {
+      name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value = aws_iam_role.auto_fluentbit.arn
+    },
+    {
+      name  = "cloudWatchLogs.enabled"
+      value = "true"
+    },
+    {
+      name  = "cloudWatchLogs.region"
+      value = data.aws_region.current.id
+    },
+    {
+      name  = "cloudWatchLogs.logGroupName"
+      value = aws_cloudwatch_log_group.fluentbit.name
+    },
+    {
+      name  = "firehose.enabled"
+      value = "false"
+    },
+    {
+      name  = "kinesis.enabled"
+      value = "false"
+    }
+  ]
+
+  depends_on = [
+    aws_eks_cluster.auto_mode,
+    aws_cloudwatch_log_group.fluentbit,
+    aws_eks_pod_identity_association.fluentbit
+  ]
 }
 
 output "environment_variables" {
   description = "Environment variables to be added to the IDE shell"
   value = {
-    CLOUDWATCH_LOG_GROUP_NAME = local.cw_log_group_name
+    CLOUDWATCH_LOG_GROUP_NAME = aws_cloudwatch_log_group.fluentbit.name
   }
 }

@@ -2,6 +2,25 @@ locals {
 }
 
 
+# Add access for the current user/role running Terraform
+resource "aws_eks_access_entry" "current_user" {
+  cluster_name  = aws_eks_cluster.auto_mode.name
+  principal_arn = data.aws_caller_identity.current.arn
+  type          = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "current_user_admin" {
+  cluster_name  = aws_eks_cluster.auto_mode.name
+  principal_arn = data.aws_caller_identity.current.arn
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+  access_scope {
+    type = "cluster"
+  }
+
+  depends_on = [aws_eks_access_entry.current_user]
+}
+
 resource "aws_dynamodb_table" "auto_carts" {
   name             = "${var.auto_cluster_name}-carts"
   hash_key         = "id"

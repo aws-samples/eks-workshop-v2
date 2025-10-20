@@ -1,25 +1,13 @@
 ---
-title: "Karpenter"
+title: "Autoscaling EKS infrastructure with Karpenter"
 sidebar_position: 20
-sidebar_custom_props: { "module": true }
 description: "Automatically manage compute for Amazon Elastic Kubernetes Service with Karpenter."
 ---
 
 ::required-time
 
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=900 wait=30
-$ prepare-environment autoscaling/compute/karpenter
-```
-
-This will make the following changes to your lab environment:
-
-- Installs various IAM roles and other AWS resources required by Karpenter
-
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/autoscaling/compute/karpenter/.workshop/terraform).
-
+:::tip What's been set up for you
+Your Amazon EKS Auto Mode cluster includes the **Karpenter**, which enables EKS cluster autoscaling out of the box.
 :::
 
 In this lab, we'll look at [Karpenter](https://github.com/aws/karpenter), an open-source autoscaling project built for Kubernetes. Karpenter is designed to provide the right compute resources to match your application’s needs in seconds, not minutes, by observing the aggregate resource requests of unschedulable pods and making decisions to launch and terminate nodes to minimize scheduling latencies.
@@ -33,3 +21,5 @@ Karpenter's goal is to improve the efficiency and cost of running workloads on K
 - Provisioning nodes that meet the requirements of the pods
 - Scheduling the pods to run on the new nodes
 - Removing the nodes when the nodes are no longer needed
+
+As we don't need to install Karpenter, we can directly move on to configuring Karpenter so that it will provision infrastructure for our pods based on demand.
