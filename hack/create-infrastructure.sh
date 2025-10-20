@@ -20,7 +20,7 @@ if [ $cluster_exists -eq 0 ]; then
   echo "Cluster ${EKS_CLUSTER_NAME} already exists"
 else
   echo "Creating cluster ${EKS_CLUSTER_NAME}"
-  bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster.yaml | envsubst | eksctl create cluster -f -'
+  bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster.yaml | envsubst | eksctl create cluster -f -'&
 fi
 
 auto_cluster_exists=0
@@ -30,7 +30,7 @@ if [ $auto_cluster_exists -eq 0 ]; then
   echo "Auto mode cluster ${EKS_CLUSTER_AUTO_NAME} already exists"
 else
   echo "Creating auto mode cluster ${EKS_CLUSTER_AUTO_NAME} with terraform"
-  bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster-auto.yaml | envsubst | eksctl create cluster -f -'
+  bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster-auto.yaml | envsubst | eksctl create cluster -f -'&
 fi
 
 wait
