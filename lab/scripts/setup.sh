@@ -31,7 +31,6 @@ function prepare-environment() {
   bash /usr/local/bin/reset-environment \$1
   exit_code=\$?
   source ~/.bashrc.d/workshop-env.bash
-  kubectl config use-context \${EKS_CLUSTER_NAME}
   return \$exit_code
 }
 
