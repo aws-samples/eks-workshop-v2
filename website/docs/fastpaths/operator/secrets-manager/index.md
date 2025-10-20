@@ -1,28 +1,17 @@
 ---
 title: "Managing secrets with AWS Secrets Manager"
 sidebar_position: 40
-sidebar_custom_props: { "module": true }
 description: "Provide sensitive configuration like credentials to applications running on Amazon Elastic Kubernetes Service with AWS Secrets Manager."
 ---
 
 ::required-time
 
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=600 wait=30 hook=install
-$ prepare-environment security/secrets-manager
-```
-
-This will make the following changes to your lab environment:
-
-Install the following Kubernetes addons in your EKS Cluster:
+:::tip What's been set up for you
+Your Amazon EKS Auto Mode cluster is configured with the following components.
 
 - Kubernetes Secrets Store CSI Driver
 - AWS Secrets and Configuration Provider
 - External Secrets Operator
-
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/security/secrets-manager/.workshop/terraform).
 :::
 
 [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) is a service that enables you to easily rotate, manage, and retrieve sensitive data including credentials, API keys, and certificates. Using the [AWS Secrets and Configuration Provider (ASCP)](https://github.com/aws/secrets-store-csi-driver-provider-aws) with the [Kubernetes Secrets Store CSI Driver](https://secrets-store-csi-driver.sigs.k8s.io/), you can mount secrets stored in Secrets Manager as volumes in Kubernetes Pods.
