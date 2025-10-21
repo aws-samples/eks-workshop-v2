@@ -1,11 +1,4 @@
 
-# tflint-ignore: terraform_unused_declarations
-variable "eks_cluster_auto_id" {
-  description = "EKS Auto Mode cluster name"
-  type        = string
-  default     = "eks-workshop-auto"
-}
-
 data "aws_eks_cluster" "eks_cluster" {
   name = var.eks_cluster_auto_id
 }

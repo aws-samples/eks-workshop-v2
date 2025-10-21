@@ -60,7 +60,7 @@ resource "aws_iam_role" "secrets_manager_role" {
     }]
   })
 
-  tags = local.tags
+  tags = var.tags
 }
 
 # IAM policy for Secrets Manager access (keeping same permissions)
