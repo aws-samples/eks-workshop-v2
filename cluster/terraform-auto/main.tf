@@ -2,24 +2,6 @@ locals {
 }
 
 
-resource "aws_eks_access_entry" "auto_workshop_ide" {
-  cluster_name  = aws_eks_cluster.auto_mode.name
-  principal_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/eks-workshop-ide-role"
-  type          = "STANDARD"
-}
-
-resource "aws_eks_access_policy_association" "auto_workshop_ide_admin" {
-  cluster_name  = aws_eks_cluster.auto_mode.name
-  principal_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/eks-workshop-ide-role"
-  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-
-  access_scope {
-    type = "cluster"
-  }
-
-  depends_on = [aws_eks_access_entry.auto_workshop_ide]
-}
-
 resource "aws_dynamodb_table" "auto_carts" {
   name             = "${var.auto_cluster_name}-carts"
   hash_key         = "id"
