@@ -1,0 +1,39 @@
+
+# tflint-ignore: terraform_unused_declarations
+variable "eks_cluster_auto_id" {
+  description = "EKS Auto Mode cluster name"
+  type        = string
+  default     = "eks-workshop-auto"
+}
+
+data "aws_eks_cluster" "eks_cluster" {
+  name = var.eks_cluster_auto_id
+}
+
+data "aws_eks_cluster_auth" "this" {
+  name = var.eks_cluster_auto_id
+}
+
+locals {
+  tags = {
+    created-by = "eks-workshop-v2"
+    env        = var.eks_cluster_auto_id
+  }
+}
+
+data "aws_caller_identity" "current" {}
+data "aws_partition" "current" {}
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+data "aws_region" "current" {}
+
+# Helm provider configuration for EKS
+provider "helm" {
+  kubernetes = {
+    host                   = data.aws_eks_cluster.eks_cluster.cluster_id
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_cluster.certificate_authority[0].data)
+    token                  = data.aws_eks_cluster_auth.this.token
+  }
+}
