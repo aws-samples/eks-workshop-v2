@@ -6,16 +6,14 @@ resource "helm_release" "secrets_store_csi_driver" {
   namespace  = "kube-system"
   version    = "1.3.4"
 
-  set = [
-    {
+  set {
       name  = "syncSecret.enabled"
       value = "true"
-    },
-    {
+  }
+  set {
       name  = "enableSecretRotation"
       value = "true"
-    }
-  ]
+  }
 }
 
 # AWS Secrets Store CSI Driver Provider via Helm
