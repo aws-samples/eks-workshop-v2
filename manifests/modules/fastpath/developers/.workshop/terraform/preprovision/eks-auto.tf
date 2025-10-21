@@ -14,13 +14,6 @@ data "aws_eks_cluster_auth" "this" {
   name = var.eks_cluster_auto_id
 }
 
-locals {
-  tags = {
-    created-by = "eks-workshop-v2"
-    env        = var.eks_cluster_auto_id
-  }
-}
-
 data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 data "aws_availability_zones" "available" {
