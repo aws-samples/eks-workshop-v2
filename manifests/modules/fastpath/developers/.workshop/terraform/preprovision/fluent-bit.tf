@@ -11,7 +11,7 @@ locals {
 resource "aws_cloudwatch_log_group" "fluentbit" {
   name              = local.cw_log_group_name
   retention_in_days = 7
-  tags              = local.tags
+  tags              = var.tags
 }
 
 # IAM role for FluentBit with CloudWatch write permissions using Pod Identity
@@ -32,7 +32,7 @@ resource "aws_iam_role" "auto_fluentbit" {
     }]
   })
 
-  tags = local.tags
+  tags = var.tags
 }
 
 # IAM policy for FluentBit CloudWatch log write access
@@ -57,7 +57,7 @@ resource "aws_iam_policy" "auto_fluentbit_cloudwatch" {
     ]
   })
 
-  tags = local.tags
+  tags = var.tags
 }
 
 # Attach CloudWatch policy to FluentBit role
