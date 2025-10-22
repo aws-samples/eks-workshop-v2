@@ -25,8 +25,7 @@ resource "helm_release" "secrets_store_csi_driver_provider_aws" {
   version    = "0.3.4"
 
   depends_on = [
-    helm_release.secrets_store_csi_driver,
-    aws_eks_access_policy_association.teamstack
+    helm_release.secrets_store_csi_driver
   ]
 }
 
@@ -39,9 +38,6 @@ resource "helm_release" "external_secrets" {
   version    = "0.9.5"
 
   create_namespace = true
-  depends_on = [
-    aws_eks_access_policy_association.teamstack
-  ]
 }
 
 # IAM role for Secrets Manager access using Pod Identity
