@@ -57,6 +57,9 @@ resource "aws_eks_cluster" "auto_mode" {
   }
 
   kubernetes_network_config {
+    service_ipv4_cidr = "172.20.0.0/16"  # Custom service CIDR
+    ip_family         = "ipv4"           # Optional: ipv4 (default) or ipv6
+
     elastic_load_balancing {
       enabled = true
     }

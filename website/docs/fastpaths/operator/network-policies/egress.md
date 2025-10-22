@@ -21,7 +21,7 @@ $ kubectl apply -n ui -f ~/environment/eks-workshop/modules/networking/network-p
 Now let us try accessing the 'catalog' component from the 'ui' component,
 
 ```bash expectError=true
-$ kubectl exec deployment/ui -n ui -- curl -s http://catalog.catalog/health --connect-timeout 5
+$ kubectl exec deployment/ui -n ui -- curl http://catalog.catalog/health --connect-timeout 5
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0
@@ -41,15 +41,16 @@ In the case of the 'ui' component, it needs to communicate with all the other se
 
 The network policy below was designed with the above requirements in mind.
 
-::yaml{file="manifests/modules/networking/network-policies/apply-network-policies/allow-ui-egress.yaml" paths="spec.egress.0.to.0,spec.egress.0.to.1"}
+::yaml{file="manifests/modules/fastpath/operators/network-policies/allow-ui-egress.yaml" paths="spec.egress.0.to.0,spec.egress.0.to.1,spec.egress.0.to.2"}
 
-1. The first egress rule focuses on allowing egress traffic to all `service` components such as 'catalog', 'orders' etc. (without providing access to the database components), along with the `namespaceSelector` which allows for egress traffic to any namespace as long as the pod labels match `app.kubernetes.io/component: service`
-2. The second egress rule focuses on allowing egress traffic to all components in the `kube-system` namespace, which enables DNS lookups and other key communications with the components in the system namespace
+1. The first egress rule focuses on allowing egress traffic to DNS server for domain name resolution of internal services.  
+2. The first egress rule focuses on allowing egress traffic to all `service` components such as 'catalog', 'orders' etc. (without providing access to the database components), along with the `namespaceSelector` which allows for egress traffic to any namespace as long as the pod labels match `app.kubernetes.io/component: service`
+3. The second egress rule focuses on allowing egress traffic to all components in the `kube-system` namespace, which enables other key communications with the components in the system namespace
 
 Lets apply this additional policy:
 
 ```bash wait=30
-$ kubectl apply -f ~/environment/eks-workshop/modules/networking/network-policies/apply-network-policies/allow-ui-egress.yaml
+$ kubectl apply -f ~/environment/eks-workshop/modules/fastpath/operators/network-policies/allow-ui-egress.yaml
 ```
 
 Now, we can test to see if we can connect to 'catalog' service:
