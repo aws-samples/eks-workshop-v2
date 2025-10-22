@@ -115,7 +115,8 @@ resource "helm_release" "aws_for_fluent_bit" {
 
   depends_on = [
     aws_cloudwatch_log_group.fluentbit,
-    aws_eks_pod_identity_association.fluentbit
+    aws_eks_pod_identity_association.fluentbit,
+    aws_eks_access_policy_association.teamstack
   ]
 }
 
