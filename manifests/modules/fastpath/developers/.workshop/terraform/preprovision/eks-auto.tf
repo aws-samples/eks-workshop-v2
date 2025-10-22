@@ -1,9 +1,9 @@
 
-data "aws_eks_cluster" "eks_cluster" {
+data "aws_eks_cluster" "eks_cluster_auto" {
   name = var.eks_cluster_auto_id
 }
 
-data "aws_eks_cluster_auth" "this" {
+data "aws_eks_cluster_auth" "this_auto" {
   name = var.eks_cluster_auto_id
 }
 
@@ -28,9 +28,10 @@ terraform {
 }
 
 provider "helm" {
+    alias = "auto-mode"
     kubernetes {
-      host = data.aws_eks_cluster.eks_cluster.endpoint
-      cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_cluster.certificate_authority[0].data)
-      token = data.aws_eks_cluster_auth.this.token
+      host = data.aws_eks_cluster.eks_cluster_auto.endpoint
+      cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_cluster_auto.certificate_authority[0].data)
+      token = data.aws_eks_cluster_auth.this_auto.token
     }
 }

@@ -26,7 +26,7 @@ accessConfig:
   accessEntries:
    - principalARN: ${RESOURCE_CODEBUILD_ROLE_ARN}
      accessPolicies:
-       - policyARN: "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy"
+       - policyARN: "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
          accessScope:
           type: cluster
 
