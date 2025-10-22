@@ -25,6 +25,9 @@ do
   cat << EOF > $conf_dir/$target.tf
 module "gen-$target" {
   source = "./$target"
+  providers = {
+    helm.auto_mode = helm.auto_mode
+  }
 
   eks_cluster_id            = local.eks_cluster_id
   eks_cluster_version       = local.eks_cluster_version
