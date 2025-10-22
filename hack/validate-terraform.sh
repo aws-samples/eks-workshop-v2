@@ -17,7 +17,9 @@ cp $manifests_dir/.workshop/terraform/base.tf $conf_dir/base.tf
 
 find $manifests_dir/modules -type d -name "terraform" -print0 | while read -d $'\0' file
 do
-  target=$(echo $file | md5sum | cut -f1 -d" ")
+  md5=$(echo ${file#"$manifests_dir/modules/"} | md5sum | cut -f1 -d" " | cut -d'/' -f1 | rev) # In case of non-unique
+  first_path=$(echo ${file#"$manifests_dir/modules/"} | cut -d'/' -f1,2 | tr '/' '_')
+  target="${first_path}-$md5"
   cp -R $file $conf_dir/$target
 
   cat << EOF > $conf_dir/$target.tf
