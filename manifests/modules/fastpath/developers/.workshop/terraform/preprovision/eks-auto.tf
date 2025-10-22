@@ -23,15 +23,7 @@ terraform {
     helm = {
       source  = "hashicorp/helm"
       version = "2.17.0"
+      configuration_aliases = [ helm.auto_mode ]
     }
   }
-}
-
-provider "helm" {
-    alias = "auto-mode"
-    kubernetes {
-      host = data.aws_eks_cluster.eks_cluster_auto.endpoint
-      cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_cluster_auto.certificate_authority[0].data)
-      token = data.aws_eks_cluster_auth.this_auto.token
-    }
 }
