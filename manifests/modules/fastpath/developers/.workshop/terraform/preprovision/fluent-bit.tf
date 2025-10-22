@@ -85,6 +85,7 @@ resource "helm_release" "aws_for_fluent_bit" {
   chart      = "aws-for-fluent-bit"
   namespace  = "amazon-cloudwatch"
   version    = "0.1.32"
+  provider   = helm.auto-mode
 
   create_namespace = true
 
