@@ -45,6 +45,13 @@ variable "resources_precreated" {
   default     = false
 }
 
+# tflint-ignore: terraform_unused_declarations
+variable "eks_cluster_auto_id" {
+  description = "EKS Auto Mode cluster name"
+  type        = string
+  default     = "eks-workshop-auto"
+}
+
 data "aws_partition" "current" {}
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
@@ -55,6 +62,13 @@ data "aws_eks_cluster" "eks_cluster" {
 
 data "aws_eks_cluster_auth" "this" {
   name = var.eks_cluster_id
+}
+
+data "aws_eks_cluster" "eks_cluster_auto" {
+  name = var.eks_cluster_auto_id
+}
+data "aws_eks_cluster_auth" "this_auto" {
+  name = var.eks_cluster_auto_id
 }
 
 provider "aws" {
@@ -75,6 +89,15 @@ provider "helm" {
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_cluster.certificate_authority[0].data)
     token                  = data.aws_eks_cluster_auth.this.token
   }
+}
+
+provider "helm" {
+    alias = "auto_mode"
+    kubernetes {
+      host = data.aws_eks_cluster.eks_cluster_auto.endpoint
+      cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_cluster_auto.certificate_authority[0].data)
+      token = data.aws_eks_cluster_auth.this_auto.token
+    }
 }
 
 provider "kubectl" {

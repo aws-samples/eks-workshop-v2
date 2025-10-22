@@ -23,7 +23,7 @@ resource "helm_release" "secrets_store_csi_driver_provider_aws" {
   chart      = "secrets-store-csi-driver-provider-aws"
   namespace  = "kube-system"
   version    = "0.3.4"
-  provider   = helm.auto-mode
+  provider   = helm.auto_mode
 
   depends_on = [
     helm_release.secrets_store_csi_driver
@@ -37,7 +37,7 @@ resource "helm_release" "external_secrets" {
   chart      = "external-secrets"
   namespace  = "external-secrets-system"
   version    = "0.9.5"
-  provider   = helm.auto-mode
+  provider   = helm.auto_mode
 
   create_namespace = true
 }
