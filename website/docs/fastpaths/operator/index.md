@@ -13,7 +13,7 @@ This fast path uses a dedicated Amazon EKS Auto Mode cluster. Amazon EKS Auto Mo
 Switch to the Auto Mode cluster:
 
 ```bash
-$ use-cluster ${EKS_CLUSTER_NAME}-auto
+$ prepare-environment fastpath/developer
 ```
 :::
 
