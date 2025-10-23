@@ -4,7 +4,7 @@ resource "helm_release" "secrets_store_csi_driver" {
   repository = "https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts"
   chart      = "secrets-store-csi-driver"
   namespace  = "kube-system"
-  version    = "1.3.4"
+  version    = "1.5.4"
   provider   = helm.auto_mode
 
   set {
@@ -23,7 +23,7 @@ resource "helm_release" "secrets_store_csi_driver_provider_aws" {
   repository = "https://aws.github.io/secrets-store-csi-driver-provider-aws"
   chart      = "secrets-store-csi-driver-provider-aws"
   namespace  = "kube-system"
-  version    = "0.3.4"
+  version    = "2.1.1"
   provider   = helm.auto_mode
 
   depends_on = [
@@ -37,7 +37,7 @@ resource "helm_release" "external_secrets" {
   repository = "https://charts.external-secrets.io"
   chart      = "external-secrets"
   namespace  = "external-secrets-system"
-  version    = "0.9.5"
+  version    = "0.20.3"
   provider   = helm.auto_mode
 
   create_namespace = true
