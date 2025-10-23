@@ -42,7 +42,7 @@ rm -f /home/ec2-user/.kube/config
 
 EKS_CLUSTER_AUTO_NAME=${EKS_CLUSTER_AUTO_NAME:-"eks-workshop-auto"}
 
-aws eks update-kubeconfig --name $EKS_CLUSTER_AUTO_NAME
+aws eks update-kubeconfig --name $EKS_CLUSTER_AUTO_NAME --alias eks-workshop-auto
 aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --alias default --user-alias default
 
 module=$1
@@ -76,7 +76,7 @@ if [ ! -z "${REPOSITORY_REF}" ]; then
   logmessage "📦 Refreshing copy of workshop repository from GitHub..."
 
   git clone --depth=1 --single-branch --branch=${REPOSITORY_REF} --quiet https://github.com/$REPOSITORY_OWNER/$REPOSITORY_NAME.git $repository_path
-  
+
   logmessage ""
 
   cp -R $repository_path/manifests $manifests_path
@@ -93,6 +93,11 @@ if [ ! -z "$module" ]; then
   fi
 
   if [ $module = "introduction/getting-started" ]; then
+    exit
+  fi
+
+  if [[ "$module" = "fastpath/"* ]]; then
+    kubectl config use-context eks-workshop-auto
     exit
   fi
 fi
