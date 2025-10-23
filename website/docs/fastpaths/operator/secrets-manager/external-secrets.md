@@ -17,7 +17,7 @@ default               0         7m
 external-secrets-sa   0         7m
 ```
 
-The operator uses a ServiceAccount named `external-secrets-sa` which is tied to an IAM role via [IRSA](../../iam-roles-for-service-accounts/), providing access to AWS Secrets Manager for retrieving secrets:
+The operator uses a ServiceAccount named `external-secrets-sa` which is tied to an IAM role via [EKS Pod Identities](../amazon-eks-pod-identity/), providing access to AWS Secrets Manager for retrieving secrets:
 
 ```bash
 $ kubectl -n external-secrets describe sa external-secrets-sa | grep Annotations
@@ -30,7 +30,7 @@ We need to create a `ClusterSecretStore` resource - this is a cluster-wide Secre
 
 1. Set `service: SecretsManager` to use AWS Secrets Manager as the secret source
 2. Use the `$AWS_REGION` environment variable to specify the AWS region where secrets are stored
-3. `auth.jwt` uses IRSA to authenticate via the `external-secrets-sa` service account in the `external-secrets` namespace, which is linked to an IAM role with AWS Secrets Manager permissions
+3. `auth.jwt` uses EKS Pod Identites to authenticate via the `external-secrets-sa` service account in the `external-secrets` namespace, which is linked to an IAM role with AWS Secrets Manager permissions
 
 Lets use this file to create the ClusterSecretStore resource.
 
