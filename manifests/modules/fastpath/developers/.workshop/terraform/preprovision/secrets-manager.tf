@@ -15,10 +15,6 @@ resource "helm_release" "secrets_store_csi_driver" {
       name  = "enableSecretRotation"
       value = "true"
   }
-  set {
-      name  = "serviceAccount.name"
-      value = "external-secrets-sa" # To be consistent with the auto-generated one with IRSA
-  }
 }
 
 # AWS Secrets Store CSI Driver Provider via Helm
@@ -45,6 +41,11 @@ resource "helm_release" "external_secrets" {
   provider   = helm.auto_mode
 
   create_namespace = true
+
+  set {
+      name  = "serviceAccount.name"
+      value = "external-secrets-sa" # To be consistent with the auto-generated one with IRSA
+  }
 }
 
 # IAM role for Secrets Manager access using Pod Identity
