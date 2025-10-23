@@ -8,7 +8,7 @@ resource "helm_release" "secrets_store_csi_driver_provider_aws" {
   provider   = helm.auto_mode
 
   set {
-      name  = "sscd.fullname"
+      name  = "secrets-store-csi-driver.fullnameOverride"
       value = "secret-store-csi-driver"
   }
 
