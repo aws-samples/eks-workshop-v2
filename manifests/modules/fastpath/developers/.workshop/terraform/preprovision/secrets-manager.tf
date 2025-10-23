@@ -36,7 +36,7 @@ resource "helm_release" "external_secrets" {
   name       = "external-secrets"
   repository = "https://charts.external-secrets.io"
   chart      = "external-secrets"
-  namespace  = "external-secrets-system"
+  namespace  = "external-secrets"
   version    = "0.9.5"
   provider   = helm.auto_mode
 
