@@ -7,6 +7,11 @@ resource "helm_release" "secrets_store_csi_driver_provider_aws" {
   version    = "2.1.1"
   provider   = helm.auto_mode
 
+  set {
+      name  = "sscd.fullname"
+      value = "secret-store-csi-driver"
+  }
+
 }
 
 # External Secrets Operator via Helm
