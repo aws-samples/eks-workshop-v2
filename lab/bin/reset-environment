@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 GREEN='\033[1;32m'
 RED='\033[1;31m'
@@ -42,7 +42,7 @@ rm -f /home/ec2-user/.kube/config
 
 EKS_CLUSTER_AUTO_NAME=${EKS_CLUSTER_AUTO_NAME:-"eks-workshop-auto"}
 
-aws eks update-kubeconfig --name $EKS_CLUSTER_AUTO_NAME --alias default --user-alias default
+aws eks update-kubeconfig --name $EKS_CLUSTER_AUTO_NAME
 aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --alias default --user-alias default
 
 module=$1
