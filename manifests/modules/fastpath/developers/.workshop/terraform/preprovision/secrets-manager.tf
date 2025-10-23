@@ -1,22 +1,3 @@
-# Secrets Store CSI Driver via Helm (Pod Identity compatible)
-resource "helm_release" "secrets_store_csi_driver" {
-  name       = "secrets-store-csi-driver"
-  repository = "https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts"
-  chart      = "secrets-store-csi-driver"
-  namespace  = "kube-system"
-  version    = "1.5.4"
-  provider   = helm.auto_mode
-
-  set {
-      name  = "syncSecret.enabled"
-      value = "true"
-  }
-  set {
-      name  = "enableSecretRotation"
-      value = "true"
-  }
-}
-
 # AWS Secrets Store CSI Driver Provider via Helm
 resource "helm_release" "secrets_store_csi_driver_provider_aws" {
   name       = "secrets-store-csi-driver-provider-aws"
@@ -26,9 +7,6 @@ resource "helm_release" "secrets_store_csi_driver_provider_aws" {
   version    = "2.1.1"
   provider   = helm.auto_mode
 
-  depends_on = [
-    helm_release.secrets_store_csi_driver
-  ]
 }
 
 # External Secrets Operator via Helm
