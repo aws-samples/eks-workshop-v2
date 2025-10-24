@@ -2,12 +2,12 @@
 
 set -e
 
-EKS_CLUSTER_NAME="eks-workshop-auto"
+EKS_CLUSTER_AUTO_NAME="eks-workshop-auto"
 
-echo "Resetting eks-workshop-auto cluster to clean state..."
+echo "Resetting $EKS_CLUSTER_AUTO_NAME cluster to clean state..."
 
 # Update kubeconfig to point to auto-mode cluster
-aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --alias default --user-alias default
+aws eks update-kubeconfig --name $EKS_CLUSTER_AUTO_NAME --alias eks-workshop-auto
 
 # Delete any workshop-created resources
 kubectl delete namespace other --ignore-not-found
