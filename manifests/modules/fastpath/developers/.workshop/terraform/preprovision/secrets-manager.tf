@@ -8,12 +8,12 @@ resource "helm_release" "secrets_store_csi_driver" {
   provider   = helm.auto_mode
 
   set {
-      name  = "syncSecret.enabled"
-      value = "true"
+    name  = "syncSecret.enabled"
+    value = "true"
   }
   set {
-      name  = "enableSecretRotation"
-      value = "true"
+    name  = "enableSecretRotation"
+    value = "true"
   }
 }
 
@@ -43,8 +43,8 @@ resource "helm_release" "external_secrets" {
   create_namespace = true
 
   set {
-      name  = "serviceAccount.name"
-      value = local.external_secrets_sa # To be consistent with the auto-generated one with IRSA
+    name  = "serviceAccount.name"
+    value = local.external_secrets_sa # To be consistent with the auto-generated one with IRSA
   }
 }
 
@@ -116,7 +116,7 @@ resource "aws_eks_pod_identity_association" "secrets_manager_role" {
 
 locals {
   external_secrets_namespace = "external-secrets"
-  external_secrets_sa = "external-secrets-sa"
+  external_secrets_sa        = "external-secrets-sa"
 }
 
 # IAM role for Secrets Manager access using Pod Identity

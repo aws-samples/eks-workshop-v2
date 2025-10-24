@@ -92,12 +92,12 @@ provider "helm" {
 }
 
 provider "helm" {
-    alias = "auto_mode"
-    kubernetes {
-      host = data.aws_eks_cluster.eks_cluster_auto.endpoint
-      cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_cluster_auto.certificate_authority[0].data)
-      token = data.aws_eks_cluster_auth.this_auto.token
-    }
+  alias = "auto_mode"
+  kubernetes {
+    host                   = data.aws_eks_cluster.eks_cluster_auto.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_cluster_auto.certificate_authority[0].data)
+    token                  = data.aws_eks_cluster_auth.this_auto.token
+  }
 }
 
 provider "kubectl" {

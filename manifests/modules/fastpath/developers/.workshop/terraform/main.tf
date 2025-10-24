@@ -6,7 +6,7 @@ module "preprovision" {
     helm.auto_mode = helm.auto_mode
   }
 
-  eks_cluster_id = var.eks_cluster_id
+  eks_cluster_id      = var.eks_cluster_id
   eks_cluster_auto_id = var.eks_cluster_auto_id
-  tags           = var.tags
+  tags                = var.tags
 }
