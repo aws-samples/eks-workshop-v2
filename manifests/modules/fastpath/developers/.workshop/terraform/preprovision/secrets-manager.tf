@@ -44,7 +44,7 @@ resource "helm_release" "external_secrets" {
 
   set {
       name  = "serviceAccount.name"
-      value = "external-secrets-sa" # To be consistent with the auto-generated one with IRSA
+      value = local.external_secrets_sa # To be consistent with the auto-generated one with IRSA
   }
 }
 
@@ -112,4 +112,73 @@ resource "aws_eks_pod_identity_association" "secrets_manager_role" {
   depends_on = [
     aws_iam_role.secrets_manager_role
   ]
+}
+
+locals {
+  external_secrets_namespace = "external-secrets"
+  external_secrets_sa = "external-secrets-sa"
+}
+
+# IAM role for Secrets Manager access using Pod Identity
+resource "aws_iam_role" "external_secrets" {
+  name_prefix = "${var.eks_cluster_auto_id}-external-secrets"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = [
+        "sts:AssumeRole",
+        "sts:TagSession"
+      ]
+      Effect = "Allow"
+      Principal = {
+        Service = "pods.eks.amazonaws.com"
+      }
+    }]
+  })
+
+  tags = var.tags
+}
+
+# IAM policy for Secrets Manager access (keeping same permissions)
+resource "aws_iam_policy" "external_secrets" {
+  name_prefix = "${var.eks_cluster_auto_id}-secrets-manager-"
+  policy      = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetResourcePolicy",
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:ListSecretVersionIds"
+      ],
+      "Resource": "arn:${data.aws_partition.current.partition}:secretsmanager:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:secret:*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": "arn:${data.aws_partition.current.partition}:kms:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:key/*"
+    }
+  ]
+}
+POLICY
+}
+
+# Attach policy to role
+resource "aws_iam_role_policy_attachment" "external_secrets" {
+  policy_arn = aws_iam_policy.external_secrets.arn
+  role       = aws_iam_role.external_secrets.name
+}
+
+# Pod Identity Association for role
+resource "aws_eks_pod_identity_association" "external_secrets" {
+  cluster_name    = var.eks_cluster_auto_id
+  namespace       = local.external_secrets_namespace
+  service_account = local.external_secrets_sa
+  role_arn        = aws_iam_role.external_secrets.arn
 }
