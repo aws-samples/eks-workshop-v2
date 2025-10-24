@@ -14,7 +14,7 @@ Now, let us try implementing an ingress network policy that will restrict access
 1. The `podSelector` targets pods with labels `app.kubernetes.io/name: orders` and `app.kubernetes.io/component: service`
 2. The `ingress.from` allows inbound connections only from pods with the label `app.kubernetes.io/name: ui`
 
-Lets apply this policy:
+Let's apply this policy:
 
 ```bash wait=30
 $ kubectl apply -f ~/environment/eks-workshop/modules/networking/network-policies/apply-network-policies/allow-order-ingress-fail-debug.yaml

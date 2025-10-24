@@ -10,27 +10,23 @@ Let's validate that the addons were deployed correctly.
 First, check the Secret Store CSI driver `DaemonSet` and its `Pods`:
 
 ```bash
-$ kubectl -n kube-system get pods,daemonsets -l app=secrets-store-csi-driver
+$ kubectl -n kube-system get daemonsets,pods -l app=secrets-store-csi-driver
 NAME                                                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
 daemonset.apps/csi-secrets-store-secrets-store-csi-driver   3         3         3       3            3           kubernetes.io/os=linux   3m57s
 
 NAME                                                   READY   STATUS    RESTARTS   AGE
 pod/csi-secrets-store-secrets-store-csi-driver-bzddm   3/3     Running   0          3m57s
-pod/csi-secrets-store-secrets-store-csi-driver-k7m6c   3/3     Running   0          3m57s
-pod/csi-secrets-store-secrets-store-csi-driver-x2rs4   3/3     Running   0          3m57s
 ```
 
 Next, check the CSI Secrets Store Provider for AWS driver `DaemonSet` and its `Pods`:
 
 ```bash
-$ kubectl -n kube-system get pods,daemonset -l "app=secrets-store-csi-driver-provider-aws"
+$ kubectl -n kube-system get daemonset,pods -l "app=secrets-store-csi-driver-provider-aws"
 NAME                                                   DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
 daemonset.apps/secrets-store-csi-driver-provider-aws   3         3         3       3            3           kubernetes.io/os=linux   2m3s
 
 NAME                                              READY   STATUS    RESTARTS   AGE
 pod/secrets-store-csi-driver-provider-aws-4jf8f   1/1     Running   0          2m2s
-pod/secrets-store-csi-driver-provider-aws-djtf5   1/1     Running   0          2m2s
-pod/secrets-store-csi-driver-provider-aws-dzg9r   1/1     Running   0          2m2s
 ```
 
 To provide access to secrets stored in AWS Secrets Manager via the CSI driver, you'll need a `SecretProviderClass` - a namespaced custom resource that provides driver configurations and parameters matching the information in AWS Secrets Manager.
