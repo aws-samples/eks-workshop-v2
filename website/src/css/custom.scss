@@ -235,6 +235,11 @@
   background-color: #0073bb;
 }
 
+/* A muted sage green works well for optional content - it's noticeable but not distracting */
+.optional {
+  background-color: #7fb39c;
+}
+
 .category-wrapper {
   display: flex;
   width: 100%;
