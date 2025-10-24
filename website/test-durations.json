@@ -94,6 +94,18 @@
   "/introduction/getting-started/finish.md": 17926,
   "/introduction/getting-started/first.md": 12371,
   "/introduction/getting-started/index.md": 832,
+  "/introduction/basics/index.md": 87253,
+  "/introduction/basics/namespaces/index.md": 11632,
+  "/introduction/basics/pods/index.md": 22068,
+  "/introduction/basics/workload-management/index.md": 1,
+  "/introduction/basics/workload-management/jobs.md": 33585,
+  "/introduction/basics/workload-management/deployments.md": 13833,
+  "/introduction/basics/workload-management/statefulsets.md": 8602,
+  "/introduction/basics/workload-management/daemonsets.md": 2563,
+  "/introduction/basics/services/index.md": 61307,
+  "/introduction/basics/configuration/index.md": 1,
+  "/introduction/basics/configuration/configmaps/index.md": 25044,
+  "/introduction/basics/configuration/secrets/index.md": 9419,
   "/introduction/helm/index.md": 182112,
   "/introduction/index.md": 1,
   "/introduction/kustomize/index.md": 155526,
@@ -233,6 +245,5 @@
   "/fastpaths/developer/keda/test-keda.md": 1,
   "/fastpaths/operator/index.md": 1,
   "/fastpaths/setup/index.md": 1,
-  "/fastpaths/setup/aws-event.md": 1,
-  "/fastpaths/setup/self-paced.md": 1
+  "/fastpaths/setup/aws-event.md": 1
 }
