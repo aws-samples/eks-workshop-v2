@@ -90,28 +90,28 @@ resource "helm_release" "aws_for_fluent_bit" {
   create_namespace = true
 
   set {
-      name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-      value = aws_iam_role.auto_fluentbit.arn
-    }
-  set {
-      name  = "cloudWatchLogs.enabled"
-      value = "true"
-    }
-  set {
-      name  = "cloudWatchLogs.region"
-      value = data.aws_region.current.id
+    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = aws_iam_role.auto_fluentbit.arn
   }
   set {
-      name  = "cloudWatchLogs.logGroupName"
-      value = aws_cloudwatch_log_group.fluentbit.name
+    name  = "cloudWatchLogs.enabled"
+    value = "true"
   }
   set {
-      name  = "firehose.enabled"
-      value = "false"
+    name  = "cloudWatchLogs.region"
+    value = data.aws_region.current.id
   }
   set {
-      name  = "kinesis.enabled"
-      value = "false"
+    name  = "cloudWatchLogs.logGroupName"
+    value = aws_cloudwatch_log_group.fluentbit.name
+  }
+  set {
+    name  = "firehose.enabled"
+    value = "false"
+  }
+  set {
+    name  = "kinesis.enabled"
+    value = "false"
   }
 
   depends_on = [
