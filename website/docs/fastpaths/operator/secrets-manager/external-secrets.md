@@ -19,23 +19,21 @@ external-secrets-sa   0         7m
 
 The operator uses a ServiceAccount named `external-secrets-sa` which is tied to an IAM role via [EKS Pod Identities](../amazon-eks-pod-identity/), providing access to AWS Secrets Manager for retrieving secrets:
 
-```bash
-$ kubectl -n external-secrets describe sa external-secrets-sa | grep Annotations
-Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::1234567890:role/eks-workshop-external-secrets-sa-irsa
-```
-
 We need to create a `ClusterSecretStore` resource - this is a cluster-wide SecretStore that can be referenced by ExternalSecrets from any namespace. Lets inspect the file we will use to create this `ClusterSecretStore`:
 
-::yaml{file="manifests/modules/security/secrets-manager/cluster-secret-store.yaml" paths="spec.provider.aws.service,spec.provider.aws.region,spec.provider.aws.auth.jwt"}
+::yaml{file="manifests/modules/fastpath/operators/external-secrets/cluster-secret-store.yaml" paths="spec.provider.aws.service,spec.provider.aws.region"}
 
 1. Set `service: SecretsManager` to use AWS Secrets Manager as the secret source
 2. Use the `$AWS_REGION` environment variable to specify the AWS region where secrets are stored
-3. `auth.jwt` uses EKS Pod Identites to authenticate via the `external-secrets-sa` service account in the `external-secrets` namespace, which is linked to an IAM role with AWS Secrets Manager permissions
+
+:::note
+With EKS Pod Identites there is no need for the auth section here as the ServiceAccount authenticate via the Pod Identity Association linking the service account `external-secrets-sa` to an IAM role with AWS Secrets Manager permissions
+:::
 
 Lets use this file to create the ClusterSecretStore resource.
 
 ```bash
-$ cat ~/environment/eks-workshop/modules/security/secrets-manager/cluster-secret-store.yaml \
+$ cat ~/environment/eks-workshop/modules/fastpath/operators/external-secrets/cluster-secret-store.yaml \
   | envsubst | kubectl apply -f -
 ```
 
