@@ -14,7 +14,7 @@ This fast path uses a dedicated Amazon EKS Auto Mode cluster. Amazon EKS Auto Mo
 Switch to the Auto Mode cluster:
 
 ```bash
-$ prepare-environment fastpath/developer
+$ prepare-environment fastpaths/developer
 ```
 :::
 

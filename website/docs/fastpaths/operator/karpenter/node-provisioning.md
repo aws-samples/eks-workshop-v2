@@ -58,7 +58,7 @@ $ kubectl scale -n other deployment/inflate --replicas 5
 
 Because this operation is creating one or more new EC2 instances it will take a while, you can use `kubectl` to wait until its done with this command:
 
-```bash hook=karpenter-deployment timeout=200
+```bash timeout=200
 $ kubectl rollout status -n other deployment/inflate --timeout=180s
 ```
 

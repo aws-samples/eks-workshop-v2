@@ -17,16 +17,15 @@ $ kubectl exec deployment/catalog -n catalog -- curl -s http://checkout.checkout
 ```
 Let us make required configuration changes in our EKS Auto Mode cluster to enable network policies. For that, create a ConfigMap for VPC container network interface (CNI) that provides networking for the cluster.
 
-```bash
-$ kubectl apply -f - <<EOF
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: amazon-vpc-cni
-  namespace: kube-system
-data:
-  enable-network-policy-controller: "true"
-EOF
+
+::yaml{file="manifests/modules/fastpaths/operators/network-policies/vpc-cni-policies.yaml" paths="data.enable-network-policy-controller"}
+
+1. This will enable the network policy controller in the vpc-cni plugin
+
+Apply this configuration:
+
+```bash timeout=180
+$ kubectl apply -f ~/environment/eks-workshop/modules/fastpaths/operators/network-policies/vpc-cni-policies.yaml
 ```
 
 Let's now implement some network rules so we can better control the follow of traffic for the sample application.

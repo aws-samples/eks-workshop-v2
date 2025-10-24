@@ -96,7 +96,7 @@ if [ ! -z "$module" ]; then
     exit
   fi
 
-  if [[ "$module" = "fastpath/"* ]]; then
+  if [[ "$module" = "fastpaths/"* ]]; then
     kubectl config use-context eks-workshop-auto
     exit
   fi

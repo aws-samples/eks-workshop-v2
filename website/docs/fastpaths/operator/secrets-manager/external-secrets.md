@@ -21,7 +21,7 @@ The operator uses a ServiceAccount named `external-secrets-sa` which is tied to 
 
 We need to create a `ClusterSecretStore` resource - this is a cluster-wide SecretStore that can be referenced by ExternalSecrets from any namespace. Lets inspect the file we will use to create this `ClusterSecretStore`:
 
-::yaml{file="manifests/modules/fastpath/operators/external-secrets/cluster-secret-store.yaml" paths="spec.provider.aws.service,spec.provider.aws.region"}
+::yaml{file="manifests/modules/fastpaths/operators/external-secrets/cluster-secret-store.yaml" paths="spec.provider.aws.service,spec.provider.aws.region"}
 
 1. Set `service: SecretsManager` to use AWS Secrets Manager as the secret source
 2. Use the `$AWS_REGION` environment variable to specify the AWS region where secrets are stored
@@ -33,7 +33,7 @@ With EKS Pod Identites there is no need for the auth section here as the Service
 Lets use this file to create the ClusterSecretStore resource.
 
 ```bash
-$ cat ~/environment/eks-workshop/modules/fastpath/operators/external-secrets/cluster-secret-store.yaml \
+$ cat ~/environment/eks-workshop/modules/fastpaths/operators/external-secrets/cluster-secret-store.yaml \
   | envsubst | kubectl apply -f -
 ```
 

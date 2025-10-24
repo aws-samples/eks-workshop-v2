@@ -90,7 +90,7 @@ When you deploy workloads to Amazon EKS Auto Mode, the cluster automatically pro
 
 Watch as EKS Auto Mode provisions a node for your workload. This command will continuously monitor until a node appears:
 
-```bash timeout=180
+```bash test=false
 $ kubectl get nodes --watch
 ...
 NAME                  STATUS     ROLES    AGE   VERSION

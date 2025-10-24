@@ -9,7 +9,7 @@ Now let's update the catalog MySQL database to use persistent EBS storage. With 
 
 The StorageClass defines how EKS Auto Mode will provision EBS volumes. While EKS Auto Mode includes the EBS CSI Driver, you need to create a StorageClass that references `ebs.csi.eks.amazonaws.com` to use the storage capability.
 
-::yaml{file="manifests/modules/fastpath/developers/ebs/storageclass.yaml" paths="provisioner,parameters.type"}
+::yaml{file="manifests/modules/fastpaths/developers/ebs/storageclass.yaml" paths="provisioner,parameters.type"}
 
 1. `provisioner: ebs.csi.eks.amazonaws.com` - Uses EKS Auto Mode's built-in EBS CSI Driver
 2. `type: gp3` - Specifies the EBS volume type
@@ -17,7 +17,7 @@ The StorageClass defines how EKS Auto Mode will provision EBS volumes. While EKS
 Apply the StorageClass:
 
 ```bash
-$ kubectl apply -f ~/environment/eks-workshop/modules/fastpath/developers/ebs/storageclass.yaml
+$ kubectl apply -f ~/environment/eks-workshop/modules/fastpaths/developers/ebs/storageclass.yaml
 ```
 
 ## Update the catalog MySQL database
@@ -32,7 +32,7 @@ $ kubectl delete -n catalog statefulset catalog-mysql
 
 Now recreate it with persistent storage enabled. The updated StatefulSet includes a `volumeClaimTemplates` section:
 
-::yaml{file="manifests/modules/fastpath/developers/ebs/statefulset-mysql.yaml" paths="spec.volumeClaimTemplates.0.spec.storageClassName,spec.volumeClaimTemplates.0.spec.accessModes,spec.volumeClaimTemplates.0.spec.resources"}
+::yaml{file="manifests/modules/fastpaths/developers/ebs/statefulset-mysql.yaml" paths="spec.volumeClaimTemplates.0.spec.storageClassName,spec.volumeClaimTemplates.0.spec.accessModes,spec.volumeClaimTemplates.0.spec.resources"}
 
 1. The `storageClassName` specifies the ebs-sc StorageClass for dynamic provisioning
 2. The `accessModes` specifies ReadWriteOnce, allowing the volume to be mounted by a single node
@@ -41,7 +41,7 @@ Now recreate it with persistent storage enabled. The updated StatefulSet include
 Apply the configuration:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/fastpath/developers/ebs
+$ kubectl apply -k ~/environment/eks-workshop/modules/fastpaths/developers/ebs
 ```
 
 ## Verify the PersistentVolumeClaim

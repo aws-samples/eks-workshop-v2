@@ -41,7 +41,7 @@ In the case of the 'ui' component, it needs to communicate with all the other se
 
 The network policy below was designed with the above requirements in mind.
 
-::yaml{file="manifests/modules/fastpath/operators/network-policies/allow-ui-egress.yaml" paths="spec.egress.0.to.0,spec.egress.0.to.1,spec.egress.0.to.2"}
+::yaml{file="manifests/modules/fastpaths/operators/network-policies/allow-ui-egress.yaml" paths="spec.egress.0.to.0,spec.egress.0.to.1,spec.egress.0.to.2"}
 
 1. The first egress rule focuses on allowing egress traffic to DNS server for domain name resolution of internal services.  
 2. The first egress rule focuses on allowing egress traffic to all `service` components such as 'catalog', 'orders' etc. (without providing access to the database components), along with the `namespaceSelector` which allows for egress traffic to any namespace as long as the pod labels match `app.kubernetes.io/component: service`
@@ -50,7 +50,7 @@ The network policy below was designed with the above requirements in mind.
 Lets apply this additional policy:
 
 ```bash wait=30
-$ kubectl apply -f ~/environment/eks-workshop/modules/fastpath/operators/network-policies/allow-ui-egress.yaml
+$ kubectl apply -f ~/environment/eks-workshop/modules/fastpaths/operators/network-policies/allow-ui-egress.yaml
 ```
 
 Now, we can test to see if we can connect to 'catalog' service:
