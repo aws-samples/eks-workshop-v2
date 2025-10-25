@@ -1,10 +1,11 @@
 ---
 title: "AWS Controllers for Kubernetes (ACK)"
 sidebar_position: 1
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
+description: "Directly manage AWS services from Amazon Elastic Kubernetes Service with AWS Controllers for Kubernetes."
 ---
 
-{{% required-time %}}
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:
@@ -14,21 +15,21 @@ $ prepare-environment automation/controlplanes/ack
 ```
 
 This will make the following changes to your lab environment:
-- Install the AWS Controllers for DynamoDB in the Amazon EKS cluster
-- Install the AWS Load Balancer controller in the Amazon EKS cluster
 
-You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/automation/controlplanes/ack/.workshop/terraform). 
+- Install the AWS Controllers for DynamoDB in the Amazon EKS cluster
+
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/automation/controlplanes/ack/.workshop/terraform).
 
 :::
 
-The [AWS Controllers for Kubernetes (ACK)](https://aws-controllers-k8s.github.io/community/) project lets you define and use AWS service resources directly from Kubernetes using familiar YAML constructs. 
+The [AWS Controllers for Kubernetes (ACK)](https://aws-controllers-k8s.github.io/community/) project enables you to define and use AWS service resources directly from Kubernetes using familiar YAML constructs.
 
-With ACK, you can take advantage of using AWS services such as databases ([RDS](https://aws-controllers-k8s.github.io/community/docs/tutorials/rds-example/) or others) and/or queues ([SQS](https://aws-controllers-k8s.github.io/community/docs/tutorials/sqs-example/) etc) for your Kubernetes applications without having to define resources manually outside of the cluster. This reduces the overall complexity for managing the dependencies of your application.
+With ACK, you can leverage AWS services such as databases ([RDS](https://aws-controllers-k8s.github.io/community/docs/tutorials/rds-example/) or others) and queues ([SQS](https://aws-controllers-k8s.github.io/community/docs/tutorials/sqs-example/) etc.) for your Kubernetes applications without manually defining resources outside of the cluster. This reduces the overall complexity of managing your application's dependencies.
 
-The sample application could be run completely within your cluster, including stateful workloads like database and message queues. This is a good approach when you're developing the application. However, when the team wants to make the application available in other stages like testing and production, they will use AWS managed services such as Amazon DynamoDB databases and Amazon MQ brokers. This allows the team to focus on its customers and business projects and not have to administer and manage databases or message brokers.
+While the sample application can run entirely within your cluster, including stateful workloads like databases and message queues (which is suitable for development), using AWS managed services such as Amazon DynamoDB and Amazon MQ in testing and production environments allows your team to focus on customers and business projects rather than administering databases or message brokers.
 
-In this lab, we'll leverage ACK to provision these services and create secrets and configmaps containing the binding information connecting the application to these AWS managed services.
+In this lab, we'll use ACK to provision these services and create secrets and configmaps containing the binding information to connect the application to these AWS managed services.
 
-An important point to note here is that during the provisioning process above, we're using the new ACK Terraform module which allows you to rapidly deploy AWS Service Controllers to your cluster. See [here](https://registry.terraform.io/modules/aws-ia/eks-ack-addons/aws/latest#module_dynamodb) for more information.
+For learning purposes, we're using helm to install the ACK controller. Another option is to use Terraform that allows for rapid deployment of AWS Service Controllers to your cluster. For more information, see the [ACK Terraform module documentation](https://registry.terraform.io/modules/aws-ia/eks-ack-addons/aws/latest#module_dynamodb).
 
-![EKS with DynamoDB](./assets/eks-workshop-ddb.png)
+![EKS with DynamoDB](./assets/eks-workshop-ddb.webp)

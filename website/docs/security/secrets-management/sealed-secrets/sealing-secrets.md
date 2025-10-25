@@ -1,43 +1,24 @@
 ---
 title: "Sealing your Secrets"
-sidebar_position: 73
+sidebar_position: 433
 ---
 
 ### Exploring the catalog Pod
 
-The `catalog` deployment in the `catalog` Namespace accesses the following database values from the catalog-db secret via environment variables:
+Currently, the `catalog` Deployment accesses database credentials from the `catalog-db` secret via environment variables:
 
-* `DB_USER`
-* `DB_PASSWORD`
+- `RETAIL_CATALOG_PERSISTENCE_USER`
+- `RETAIL_CATALOG_PERSISTENCE_PASSWORD`
+
+This is done by referencing a Secret with `envFrom`:
 
 ```bash
-$ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.containers[] | .env'
+$ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.containers[] | .envFrom'
 
-- name: DB_USER
-  valueFrom:
-    secretKeyRef:
-      key: username
-      name: catalog-db
-- name: DB_PASSWORD
-  valueFrom:
-    secretKeyRef:
-      key: password
-      name: catalog-db
-- name: DB_NAME
-  valueFrom:
-    configMapKeyRef:
-      key: name
-      name: catalog
-- name: DB_READ_ENDPOINT
-  valueFrom:
-    secretKeyRef:
-      key: endpoint
-      name: catalog-db
-- name: DB_ENDPOINT
-  valueFrom:
-    secretKeyRef:
-      key: endpoint
-      name: catalog-db
+- configMapRef:
+    name: catalog
+- secretRef:
+    name: catalog-db
 ```
 
 Upon exploring the `catalog-db` Secret we can see that it is only encoded with base64 which can be easily decoded as follows hence making it difficult for the secrets manifests to be part of the GitOps workflow.
@@ -47,10 +28,10 @@ manifests/base-application/catalog/secrets.yaml
 ```
 
 ```bash
-$ kubectl -n catalog get secrets catalog-db --template {{.data.username}} | base64 -d
-catalog_user%                                                                                                                                                                                                   
-$ kubectl -n catalog get secrets catalog-db --template {{.data.password}} | base64 -d
-default_password% 
+$ kubectl -n catalog get secrets catalog-db --template {{.data.RETAIL_CATALOG_PERSISTENCE_USER}} | base64 -d
+catalog%
+$ kubectl -n catalog get secrets catalog-db --template {{.data.RETAIL_CATALOG_PERSISTENCE_PASSWORD}} | base64 -d
+dYmNfWV4uEvTzoFu%
 ```
 
 Let's create a new secret `catalog-sealed-db`. We'll create a new file `new-catalog-db.yaml` with the same keys and values as the `catalog-db` Secret.
@@ -114,7 +95,7 @@ $ kubectl logs deployments/sealed-secrets-controller -n kube-system
 Verify that the `catalog-sealed-db` Secret unsealed from the SealedSecret was deployed by the controller to the secure-secrets namespace.
 
 ```bash
-$ kubectl get secret -n catalog catalog-sealed-db 
+$ kubectl get secret -n catalog catalog-sealed-db
 
 NAME                       TYPE     DATA   AGE
 catalog-sealed-db          Opaque   4      7m51s

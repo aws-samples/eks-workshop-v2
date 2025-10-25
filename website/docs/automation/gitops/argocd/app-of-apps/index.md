@@ -4,34 +4,28 @@ chapter: true
 sidebar_position: 100
 ---
 
-[Argo CD](https://argoproj.github.io/cd/) can deploy a set of applications to different environments (DEV, TEST, PROD ...) using `base` Kubernetes manifests for applications and customizations specific to an environment.
+When managing complex application stacks composed of multiple microservices, manually creating and maintaining individual Argo CD applications can become operationally challenging. The App of Apps pattern addresses this complexity by enabling you to manage multiple applications through a single parent application.
 
-We can leverage [Argo CD App of Apps pattern](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) to implement this use case. This pattern allows us to specify one Argo CD Application that consists of other applications.
+The App of Apps pattern leverages Argo CD's declarative approach by creating one parent Argo CD application that contains manifests defining other Argo CD applications. This creates a hierarchical structure where the parent application monitors a Git repository containing application definitions, automatically creating, updating, or deleting child applications based on changes to these manifests.
 
-![argo-cd-app-of-apps](assets/argocd-app-of-apps.png)
+This pattern provides several operational advantages:
 
-We reference [EKS Workshop Git repository](https://github.com/aws-samples/eks-workshop-v2/tree/main/environment/eks-workshop/manifests/base) as a Git repository with `base` manifests for your Kubernetes resources. This repository will contain an initial resource state for each application.
+- **Centralized Management**: All application definitions are maintained in a single Git repository, providing a unified view of your deployment landscape
+- **Environment Consistency**: Ensures consistent application deployment across multiple environments by maintaining declarative configuration
+- **Operational Efficiency**: Reduces manual overhead and potential for configuration drift
+- **GitOps Compliance**: Maintains the principle of Git as the single source of truth for your application portfolio
 
+The workflow operates as follows: the parent application continuously monitors a Git repository containing Argo CD Application manifests. When changes are committed to the repository, Argo CD detects these modifications and automatically manages the lifecycle of child applications. Each child application then synchronizes its resources from its respective source repository.
+
+A typical repository structure might look like this:
+
+```text
+app-of-apps/
+├── parent-app.yaml          # The parent application
+└── applications/            # Individual app definitions
+    ├── frontend-app.yaml
+    ├── backend-app.yaml
+    └── database-app.yaml
 ```
-.
-|-- manifests
-| |-- assets
-| |-- carts
-| |-- catalog
-| |-- checkout
-| |-- orders
-| |-- other
-| |-- rabbitmq
-| `-- ui
-```
 
-This example shows how to use Helm to create a configuration for a particular, for example DEV, environment.
-A typical layout of a Git repository could be:
-
-```
-.
-|-- app-of-apps
-|   |-- ...
-`-- apps-kustomization
-    ...
-```
+This pattern is particularly effective for bootstrapping entire environments and maintaining consistency across multiple clusters. Rather than manually configuring individual applications through the Argo CD UI, you can declaratively define your entire application portfolio and allow Argo CD to manage the deployment lifecycle automatically.

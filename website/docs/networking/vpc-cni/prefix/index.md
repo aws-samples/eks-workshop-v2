@@ -1,10 +1,11 @@
 ---
 title: "Prefix Delegation"
 sidebar_position: 40
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
+description: "Increase pod density on Amazon Elastic Kubernetes Service with prefix delegation."
 ---
 
-{{% required-time %}}
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:
@@ -19,12 +20,12 @@ Amazon VPC CNI assigns network prefixes to [Amazon EC2 network interfaces](https
 
 With prefix assignment mode, the maximum number of elastic network interfaces per instance type remains the same, but you can now configure Amazon VPC CNI to assign /28 (16 IP addresses) IPv4 address prefixes, instead of assigning individual IPv4 addresses to the slots on network interfaces on nitro EC2 instance type. When `ENABLE_PREFIX_DELEGATION` is set to true VPC CNI allocates an IP address to a Pod from the prefix assigned to an ENI.
 
-![Subnets](prefix_subnets.png)
+![Subnets](assets/prefix_subnets.webp)
 
 During worker node initialization, the VPC CNI assigns one or more prefixes to the primary ENI. The CNI pre-allocates a prefix for faster pod startup by maintaining a warm pool.
 
 As more Pods scheduled additional prefixes will be requested for the existing ENI. First, the VPC CNI attempts to allocate a new prefix to an existing ENI. If the ENI is at capacity, the VPC CNI attempts to allocate a new ENI to the node. New ENIs will be attached until the maximum ENI limit (defined by the instance type) is reached. When a new ENI is attached, ipamd will allocate one or more prefixes needed to maintain the warm pool settings.
 
-![prefix-flow](prefix_flow.jpeg)
+![prefix-flow](assets/prefix_flow.webp)
 
-Please visit [EKS best practices guide](https://aws.github.io/aws-eks-best-practices/networking/prefix-mode/) for the list of recommendations for using VPC CNI in prefix mode.
+Please visit [EKS best practices guide](https://aws.github.io/aws-eks-best-practices/networking/prefix-mode/index_linux/) for the list of recommendations for using VPC CNI in prefix mode.

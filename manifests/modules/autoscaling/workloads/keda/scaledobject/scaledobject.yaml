@@ -1,0 +1,26 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: ui-hpa
+  namespace: ui
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ui
+  pollingInterval: 30
+  cooldownPeriod: 300
+  minReplicaCount: 1
+  maxReplicaCount: 10
+  triggers:
+    - type: aws-cloudwatch
+      metadata:
+        namespace: AWS/ApplicationELB
+        expression: SELECT COUNT(RequestCountPerTarget) FROM SCHEMA("AWS/ApplicationELB", LoadBalancer, TargetGroup) WHERE TargetGroup = '${TARGETGROUP_ID}' AND LoadBalancer = '${ALB_ID}'
+        metricStat: Sum
+        metricStatPeriod: "60"
+        metricUnit: Count
+        targetMetricValue: "100"
+        minMetricValue: "0"
+        awsRegion: "${AWS_REGION}"
+        identityOwner: operator

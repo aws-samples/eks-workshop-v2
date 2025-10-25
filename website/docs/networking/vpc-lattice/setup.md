@@ -3,11 +3,9 @@ title: "Deploy the Controller"
 sidebar_position: 10
 ---
 
-# Deploying the AWS Gateway API Controller
-
 Follow these instructions to create a cluster and deploy the AWS Gateway API Controller.
 
-First, configure security group to receive traffic from the VPC Lattice network. You must set up security groups so that they allow all Pods communicating with VPC Lattice to allow traffic from the VPC Lattice managed prefix lists.  See [Control traffic to resources using security groups](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html) for details. Lattice has both an IPv4 and IPv6 prefix lists available.
+First, configure security group to receive traffic from the VPC Lattice network. You must set up security groups so that they allow all Pods communicating with VPC Lattice to allow traffic from the VPC Lattice managed prefix lists. See [Control traffic to resources using security groups](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html) for details. Lattice has both an IPv4 and IPv6 prefix lists available.
 
 ```bash
 $ CLUSTER_SG=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --output json| jq -r '.cluster.resourcesVpcConfig.clusterSecurityGroupId')
@@ -33,14 +31,15 @@ $ aws ec2 authorize-security-group-ingress --group-id $CLUSTER_SG --ip-permissio
 }
 ```
 
-This step will install the controller and the CRDs (Custom Resource Definitions) required to interact with the Kubernetes Gateway API.
+This step will install the Kubernetes Gateway API CRDs as well as the VPC Lattice controller that provide an implementation of that API:
 
 ```bash wait=30
+$ kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml
 $ aws ecr-public get-login-password --region us-east-1 \
   | helm registry login --username AWS --password-stdin public.ecr.aws
 $ helm install gateway-api-controller \
     oci://public.ecr.aws/aws-application-networking-k8s/aws-gateway-controller-chart \
-    --version=v1.0.0 \
+    --version=v${LATTICE_CONTROLLER_VERSION} \
     --create-namespace \
     --set=aws.region=${AWS_REGION} \
     --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="$LATTICE_IAM_ROLE" \

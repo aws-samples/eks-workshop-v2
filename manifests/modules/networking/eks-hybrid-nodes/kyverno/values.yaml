@@ -1,0 +1,40 @@
+# Configuration
+config:
+  # -- resourceFilters exclude list
+  # Items to exclude from config.resourceFilters
+  resourceFiltersExclude:
+    - "[Binding,*,*]"
+    - "[Pod/binding,*,*]"
+
+# Admission controller configuration
+admissionController:
+  rbac:
+    clusterRole:
+      # -- Extra resource permissions to add in the cluster role
+      extraResources:
+        - apiGroups:
+            - ""
+          resources:
+            - nodes
+          verbs:
+            - get
+
+# Background controller configuration
+backgroundController:
+  rbac:
+    clusterRole:
+      # -- Extra resource permissions to add in the cluster role
+      extraResources:
+        - apiGroups:
+            - ""
+          resources:
+            - pods
+            - pods/binding
+          verbs:
+            - update
+        - apiGroups:
+            - ""
+          resources:
+            - nodes
+          verbs:
+            - get

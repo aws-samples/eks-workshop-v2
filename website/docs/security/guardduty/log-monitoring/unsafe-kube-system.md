@@ -1,6 +1,6 @@
 ---
 title: "Unsafe execution in kube-system Namespace"
-sidebar_position: 131
+sidebar_position: 521
 ---
 
 This finding indicates that a command was executed inside a Pod in the `kube-system` Namespace on EKS Cluster.
@@ -24,22 +24,21 @@ $ kubectl -n kube-system exec nginx -- pwd
 
 Within a few minutes we'll see the finding `Execution:Kubernetes/ExecInKubeSystemPod` in the [GuardDuty Findings console](https://console.aws.amazon.com/guardduty/home#/findings)
 
-![](assets/exec-finding.png)
+![Exec finding](assets/exec-finding.webp)
 
 If you click on the finding, it will open a tab in the right side of the screen, with the finding details, and a brief explanation about it.
 
-![](assets/finding-details.png)
-
+![Finding details](assets/finding-details.webp)
 
 It also gives you the option to investigate the finding using Amazon Detective.
 
-![](assets/investigate.png)
+![Investigate finding](assets/investigate.webp)
 
-One importand information that is worth to take a look is the **Action** of the finding, on this on (Log monitoring type) we can see that is related to a `KUBERNETES_API_CALL`.
+Check the **Action** of the finding, where we can see that is related to a `KUBERNETES_API_CALL`.
 
-![](assets/finding-action.png)
+![Finding action](assets/finding-action.webp)
 
-Clean up the offensor Pod we used to generate the finding:
+Clean up the offending Pod we used to generate the finding:
 
 ```bash
 $ kubectl -n kube-system delete pod nginx

@@ -4,6 +4,11 @@ export host=$1
 
 set -Eeuo pipefail
 
+if [ -z "$host" ]; then
+  echo "Host was not provided, please ensure load balancer has been created successfully."
+  exit 1
+fi
+
 echo "Waiting for ${host}..."
 
 EXIT_CODE=0

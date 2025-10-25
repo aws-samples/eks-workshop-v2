@@ -1,10 +1,11 @@
 ---
 title: "Cost visibility with Kubecost"
 sidebar_position: 60
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
+description: "Gain cost visibility and insights for teams using Amazon Elastic Kubernetes Service with Kubecost."
 ---
 
-{{% required-time %}}
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:
@@ -14,9 +15,9 @@ $ prepare-environment observability/kubecost
 ```
 
 This will make the following changes to your lab environment:
+
 - Install the AWS Load Balancer controller in the Amazon EKS cluster
 - Install the EKS managed addon for the EBS CSI driver
-- Install Kubecost in the Amazon EKS cluster
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/kubecost/.workshop/terraform).
 
@@ -30,7 +31,11 @@ This is the exact challenge that Kubecost is dedicated to tackling. Founded in 2
 
 In this chapter, we'll take a look at how to use Kubecost to measure the cost allocation of various components at namespace level, deployment level and pod level. We'll also see the resource efficiency to check whether the deployments are over provisioned or under provisioned, health of the system, etc.
 
-:::tip 
-After completing this module checkout how to use Kubecost and [Amazon Managed Service for Prometheus](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html) to extend cost visibility beyond a single EKS cluster with [Multi-Cluster Cost Monitoring](https://aws.amazon.com/blogs/containers/multi-cluster-cost-monitoring-using-kubecost-with-amazon-eks-and-amazon-managed-service-for-prometheus/). 
+:::tip
+After completing this module checkout how to use Kubecost and [Amazon Managed Service for Prometheus](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html) to extend cost visibility beyond a single EKS cluster with [Multi-Cluster Cost Monitoring](https://aws.amazon.com/blogs/containers/multi-cluster-cost-monitoring-using-kubecost-with-amazon-eks-and-amazon-managed-service-for-prometheus/). Learn how to [secure access to Kubecost dashboard using Amazon Cognito](https://aws.amazon.com/blogs/containers/securing-kubecost-access-with-amazon-cognito/).
 
+:::
+
+:::info
+If you are using the CDK Observability Accelerator then check out the [Kubecost Addon](https://aws-quickstart.github.io/cdk-eks-blueprints/addons/kubecost/). The addon greatly simplifies the process of setting up Kubecost and AMP for your EKS clusters.
 :::

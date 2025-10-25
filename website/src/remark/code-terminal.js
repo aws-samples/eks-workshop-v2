@@ -1,40 +1,47 @@
-const visit = require('unist-util-visit');
+import { visit } from "unist-util-visit";
 
 const regex = /(\w+)=([^\s]+)/g;
 
 const plugin = (options) => {
   const transformer = async (ast, vfile) => {
-    visit(ast, 'code', (node) => {
-      if(node.lang === 'bash') {
-        value = node.value
+    visit(ast, "code", (node, index, parent) => {
+      if (node.lang === "bash") {
+        const value = node.value;
 
-        smartMode = false
+        var smartMode = false;
+        var m;
 
-        if(node.meta) {
-          while((m = regex.exec(node.meta)) !== null) {
-            key = m[1]
-            metaValue = m[2]
+        if (node.meta) {
+          while ((m = regex.exec(node.meta)) !== null) {
+            const key = m[1];
+            const metaValue = m[2];
 
-            switch(key) {
-              case 'smartMode':
-                smartMode = (metaValue === 'true')
+            switch (key) {
+              case "smartMode":
+                smartMode = metaValue === "true";
                 break;
             }
           }
-        } 
+        }
 
-        // TODO: Is this necessary? Was having issues with formatting
-        //output = Buffer.from(output).toString('base64')
+        const jsxNode = {
+          type: "mdxJsxFlowElement",
+          name: "Terminal",
+          attributes: [
+            {
+              type: "mdxJsxAttribute",
+              name: "output",
+              value: Buffer.from(value).toString("base64"),
+            },
+          ],
+          children: [],
+        };
 
-        node.type = 'jsx'
-        
-        node.value= `<terminal output='${Buffer.from(value).toString('base64')}'></terminal>`
-
-        delete node.lang
+        parent.children.splice(index, 1, jsxNode);
       }
     });
   };
   return transformer;
 };
 
-module.exports = plugin;
+export default plugin;

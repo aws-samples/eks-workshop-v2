@@ -7,15 +7,15 @@ metadata:
     app.kubernetes.io/team: database
 spec:
   replicas: 1
+  serviceName: catalog-mysql
   selector:
     matchLabels:
       app.kubernetes.io/name: catalog
       app.kubernetes.io/instance: catalog
       app.kubernetes.io/component: mysql
-  serviceName: mysql
   template:
     metadata:
-      labels: 
+      labels:
         app.kubernetes.io/name: catalog
         app.kubernetes.io/instance: catalog
         app.kubernetes.io/component: mysql
@@ -24,32 +24,30 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: "public.ecr.aws/docker/library/mysql:5.7"
-          args: 
-            - "--ignore-db-dir=lost+found"
+          image: "public.ecr.aws/docker/library/mysql:8.0"
           imagePullPolicy: IfNotPresent
           env:
             - name: MYSQL_ROOT_PASSWORD
               value: my-secret-pw
+            - name: MYSQL_DATABASE
+              value: catalog
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
                   name: catalog-db
-                  key: username
+                  key: RETAIL_CATALOG_PERSISTENCE_USER
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: catalog-db
-                  key: password
-            - name: MYSQL_DATABASE
-              value: catalog
+                  key: RETAIL_CATALOG_PERSISTENCE_PASSWORD
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
           ports:
             - name: mysql
               containerPort: 3306
               protocol: TCP
-          volumeMounts:
-            - name: data
-              mountPath: /var/lib/mysql
       volumes:
         - name: data
           emptyDir: {}

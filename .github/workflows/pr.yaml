@@ -1,0 +1,122 @@
+name: Pull Request
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
+      - labeled
+      - unlabeled
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build-website:
+    name: "Build website"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Get kubectl version
+        run: |
+          source hack/lib/kubectl-version.sh
+          echo "Using kubectl ${KUBECTL_VERSION}"
+          echo "KUBECTL_VERSION=$KUBECTL_VERSION" >> $GITHUB_ENV
+      - uses: azure/setup-kubectl@v4
+        with:
+          version: "${{ env.KUBECTL_VERSION }}"
+        id: install
+      - name: Run website build
+        run: |
+          export LAB_TIMES_ENABLED='true'
+          yarn install
+          yarn workspace website build
+
+  build-lab:
+    name: "Build lab"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+      - name: Make shell
+        env:
+          SKIP_CREDENTIALS: 1
+        run: |
+          bash hack/exec.sh '' 'ls -la'
+
+  pre-commit:
+    name: "Pre-commit hooks"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~1.9.0"
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v5
+      - name: Setup terraform-docs
+        uses: jaxxstorm/action-install-gh-release@v2.1.0
+        with:
+          repo: terraform-docs/terraform-docs
+      - name: Yarn install
+        run: |
+          yarn install
+      - uses: pre-commit/action@v3.0.1
+
+  terraform-validate:
+    name: "Validate Terraform"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~1.9.0"
+      - run: |
+          bash hack/validate-terraform.sh
+
+  semantic-pr:
+    name: Semantic Pull Request
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            new
+            update
+            fix
+            chore
+            feat
+            docs
+
+  content-label:
+    name: Check for content label
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for content label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = context.payload.pull_request.labels;
+            const hasContentLabel = labels.some(label => label.name.startsWith('content/'));
+
+            if (!hasContentLabel) {
+              core.setFailed('This pull request must have a label that starts with "content/"');
+            } else {
+              console.log('Pull request has a valid content label');
+            }

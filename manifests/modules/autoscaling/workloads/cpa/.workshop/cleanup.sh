@@ -2,6 +2,8 @@
 
 set -e
 
-echo "Resetting CoreDNS replicas..."
+uninstall-helm-chart cluster-proportional-autoscaler kube-system
 
-kubectl -n kube-system scale deployment/coredns --replicas=2 > /dev/null
+logmessage "Resetting CoreDNS replicas..."
+
+kubectl -n kube-system scale deployment/coredns --replicas=2

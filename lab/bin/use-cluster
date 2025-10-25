@@ -35,7 +35,7 @@ EKS_IP_FAMILY=ipv4
 set +a
 EOT
 
-aws eks update-kubeconfig --name $cluster_name > /dev/null 2>&1
+aws eks update-kubeconfig --name $cluster_name
 
 if [[ -v C9_USER ]]; then
   echo "Granting C9_USER access to the cluster via the AWS Console ${C9_USER}"

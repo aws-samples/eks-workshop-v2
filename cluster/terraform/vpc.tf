@@ -10,7 +10,7 @@ data "aws_availability_zones" "available" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.1"
+  version = "~> 6.0"
 
   name = var.cluster_name
   cidr = var.vpc_cidr
@@ -34,11 +34,12 @@ module "vpc" {
   manage_default_security_group = true
   default_security_group_tags   = { Name = "${var.cluster_name}-default" }
 
-  public_subnet_tags  = merge(local.tags, {
+  public_subnet_tags = merge(local.tags, {
     "kubernetes.io/role/elb" = "1"
   })
   private_subnet_tags = merge(local.tags, {
-    "karpenter.sh/discovery" = var.cluster_name
+    "karpenter.sh/discovery"          = var.cluster_name
+    "kubernetes.io/role/internal-elb" = "1"
   })
 
   tags = local.tags

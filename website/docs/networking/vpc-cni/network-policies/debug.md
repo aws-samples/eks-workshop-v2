@@ -7,11 +7,12 @@ Till now, we were able to apply network policies without issues or errors. But w
 
 Amazon VPC CNI provides logs that can be used to debug issues while implementing networking policies. In addition, you can monitor these logs through services such as Amazon CloudWatch, where you can leverage CloudWatch Container Insights that can help you provide insights on your usage related to NetworkPolicy.
 
-Now, let us try implementing an ingress network policy that will restrict access to the orders' service component from 'ui' component only, similar to what we did earlier with the 'catalog' service component..
+Now, let us try implementing an ingress network policy that will restrict access to the orders' service component from 'ui' component only, similar to what we did earlier with the 'catalog' service component.
 
-```file
-manifests/modules/networking/network-policies/apply-network-policies/allow-order-ingress-fail-debug.yaml
-```
+::yaml{file="manifests/modules/networking/network-policies/apply-network-policies/allow-order-ingress-fail-debug.yaml" paths="spec.podSelector,spec.ingress.0.from.0"}
+
+1. The `podSelector` targets pods with labels `app.kubernetes.io/name: orders` and `app.kubernetes.io/component: service`
+2. The `ingress.from` allows inbound connections only from pods with the label `app.kubernetes.io/name: ui`
 
 Lets apply this policy:
 
@@ -64,8 +65,8 @@ $ kubectl exec deployment/ui -n ui -- curl -v orders.orders/orders --connect-tim
 > Host: orders.orders
 > User-Agent: curl/7.88.1
 > Accept: */*
-> 
-< HTTP/1.1 200 
+>
+< HTTP/1.1 200
 ...
 ```
 

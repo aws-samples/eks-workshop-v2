@@ -1,0 +1,110 @@
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: adot-container-ci-deploy
+  namespace: other
+spec:
+  image: public.ecr.aws/aws-observability/aws-otel-collector:v0.40.0
+  mode: deployment
+  serviceAccount: adot-collector-ci
+  config:
+    receivers:
+      prometheus:
+        config:
+          global:
+            scrape_interval: 60s
+            scrape_timeout: 15s
+            external_labels:
+              cluster: ${EKS_CLUSTER_NAME}
+              account_id: ${AWS_ACCOUNT_ID}
+              region: ${AWS_REGION}
+          scrape_configs:
+            - job_name: "kubernetes-pods"
+              honor_labels: true
+
+              kubernetes_sd_configs:
+                - role: pod
+              relabel_configs:
+                - source_labels:
+                    [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+                  action: keep
+                  regex: true
+                - source_labels:
+                    [__meta_kubernetes_pod_annotation_prometheus_io_scrape_slow]
+                  action: drop
+                  regex: true
+                - source_labels:
+                    [__meta_kubernetes_pod_annotation_prometheus_io_scheme]
+                  action: replace
+                  regex: (https?)
+                  target_label: __scheme__
+                - source_labels:
+                    [__meta_kubernetes_pod_annotation_prometheus_io_path]
+                  action: replace
+                  target_label: __metrics_path__
+                  regex: (.+)
+                - action: labelmap
+                  regex: __meta_kubernetes_pod_annotation_prometheus_io_param_(.+)
+                  replacement: __param_$$1
+                - action: labelmap
+                  regex: __meta_kubernetes_pod_label_(.+)
+                - source_labels: [__meta_kubernetes_namespace]
+                  action: replace
+                  target_label: namespace
+                - source_labels: [__meta_kubernetes_pod_name]
+                  action: replace
+                  target_label: pod
+                - source_labels: [__meta_kubernetes_pod_phase]
+                  regex: Pending|Succeeded|Failed|Completed
+                  action: drop
+
+    processors:
+      batch/metrics:
+        timeout: 60s
+
+    exporters:
+      awsemf/prometheus:
+        namespace: ContainerInsights/Prometheus
+        log_group_name: "/aws/containerinsights/${EKS_CLUSTER_NAME}/prometheus"
+        log_stream_name: "${K8S_POD_NAME}"
+        region: ${AWS_REGION}
+        resource_to_telemetry_conversion:
+          enabled: true
+        dimension_rollup_option: NoDimensionRollup
+        metric_declarations:
+          - dimensions: [[pod, productId]]
+            metric_name_selectors:
+              - "^watch_orders_total$"
+
+    extensions:
+      health_check: {}
+
+    service:
+      pipelines:
+        metrics:
+          receivers: [prometheus]
+          processors: [batch/metrics]
+          exporters: [awsemf/prometheus]
+      extensions: [health_check]
+
+  env:
+    - name: K8S_NODE_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+    - name: HOST_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.hostIP
+    - name: HOST_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+    - name: K8S_NAMESPACE
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.namespace
+    - name: "K8S_POD_NAME"
+      valueFrom:
+        fieldRef:
+          fieldPath: "metadata.name"

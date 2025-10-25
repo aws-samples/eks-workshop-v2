@@ -1,0 +1,154 @@
+Version: "2012-10-17"
+Statement:
+  - Effect: Allow
+    Action:
+      - aps:CreateWorkspace
+      - aps:TagResource
+    Resource: ["*"]
+    Condition:
+      StringLike:
+        aws:RequestTag/env:
+          - ${Env}*
+  - Effect: Allow
+    Action:
+      - aps:DeleteWorkspace
+      - aps:Describe*
+      - aps:List*
+      - aps:QueryMetrics
+    Resource: ["*"]
+    Condition:
+      StringLike:
+        aws:ResourceTag/env:
+          - ${Env}*
+  - Effect: Allow
+    Action:
+      - dynamodb:ListTables
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - dynamodb:CreateTable
+      - dynamodb:DeleteTable
+      - dynamodb:DescribeTable
+      - dynamodb:DescribeContinuousBackups
+      - dynamodb:ListTagsOfResource
+      - dynamodb:DescribeTimeToLive
+      - dynamodb:Scan
+      - dynamodb:TagResource
+    Resource:
+      - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${Env}*
+  - Effect: Allow
+    Action:
+      - secretsmanager:ListSecrets
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - secretsmanager:CreateSecret
+      - secretsmanager:DeleteSecret
+      - secretsmanager:DescribeSecret
+      - secretsmanager:GetResourcePolicy
+      - secretsmanager:GetSecretValue
+      - secretsmanager:TagResource
+      - secretsmanager:UntagResource
+      - secretsmanager:PutSecretValue
+    Resource:
+      - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${Env}*
+  - Effect: Allow
+    Action:
+      - secretsmanager:ListSecrets
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - sqs:CreateQueue
+      - sqs:DeleteQueue
+      - sqs:GetQueueAttributes
+      - sqs:SetQueueAttributes
+      - sqs:TagQueue
+      - sqs:ListQueueTags
+    Resource:
+      - !Sub arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${Env}*
+  - Effect: Allow
+    Action:
+      - rds:DescribeDBInstances
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - rds:CreateDBInstance
+      - rds:CreateTenantDatabase
+      - rds:DeleteDBInstance
+      - rds:DeleteTenantDatabase
+      - rds:DescribeDBInstances
+      - rds:AddTagsToResource
+      - rds:ListTagsForResource
+    Resource:
+      - !Sub arn:aws:rds:${AWS::Region}:${AWS::AccountId}:db:${Env}*
+  - Effect: Allow
+    Action:
+      - rds:CreateDBInstance
+      - rds:CreateDBSubnetGroup
+      - rds:DeleteDBSubnetGroup
+      - rds:DescribeDBSubnetGroups
+      - rds:AddTagsToResource
+      - rds:ListTagsForResource
+    Resource:
+      - !Sub arn:aws:rds:${AWS::Region}:${AWS::AccountId}:subgrp:${Env}*
+  - Effect: Allow
+    Action:
+      - lambda:AddPermission
+      - lambda:CreateFunction
+      - lambda:DeleteFunction
+      - lambda:GetFunction
+      - lambda:GetFunctionCodeSigningConfig
+      - lambda:GetPolicy
+      - lambda:GetRuntimeManagementConfig
+      - lambda:ListVersionsByFunction
+      - lambda:RemovePermission
+      - lambda:TagResource
+    Resource:
+      - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${Env}*
+  - Effect: Allow
+    Action:
+      - lambda:GetLayerVersion
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - es:CreateDomain
+      - es:DeleteDomain
+      - es:DescribeDomain
+      - es:DescribeDomainConfig
+      - es:GetCompatibleVersions
+      - es:ListTags
+      - es:AddTags
+    Resource:
+      - !Sub arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${Env}*
+  - Effect: Allow
+    Action:
+      - elasticloadbalancing:Describe*
+      - elasticloadbalancing:Get*
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - cloudwatch:DeleteDashboards
+      - cloudwatch:GetDashboard
+      - cloudwatch:PutDashboard
+    Resource:
+      - !Sub arn:aws:cloudwatch::${AWS::AccountId}:dashboard/*
+  - Effect: Allow
+    Action:
+      - cloudwatch:GetMetricData
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - ecr:CreateRepository
+      - ecr:DeleteRepository
+      - ecr:DescribeRepositories
+      - ecr:ListTagsForResource
+      - ecr:TagResource
+    Resource:
+      - !Sub arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/retail-store-sample*
+      - !Sub arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${Env}*
+  - Effect: Allow
+    Action:
+      - guardduty:CreateDetector
+      - guardduty:DeleteDetector
+      - guardduty:ListDetectors
+    Resource: ["*"]

@@ -1,23 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: assets
+  name: ui
 spec:
   replicas: 2
   template:
     spec:
-      initContainers:
-       - name: copy
-         image: "public.ecr.aws/aws-containers/retail-store-sample-assets:0.4.0"
-         command: ["/bin/sh", "-c", "cp -R /usr/share/nginx/html/assets/* /fsxnvolume"]
-         volumeMounts:
-         - name: fsxnvolume
-           mountPath: /fsxnvolume
       containers:
-      - name: assets
-        volumeMounts:
-        - name: fsxnvolume
-          mountPath: /usr/share/nginx/html/assets
+        - name: ui
+          volumeMounts:
+            - name: fsxnvolume
+              mountPath: /fsxn
+          env:
+            - name: RETAIL_UI_PRODUCT_IMAGES_PATH
+              value: /fsxn
       volumes:
         - name: fsxnvolume
           persistentVolumeClaim:

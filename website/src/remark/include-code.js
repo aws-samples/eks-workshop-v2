@@ -1,52 +1,56 @@
-const visit = require('unist-util-visit');
-const fs = require('fs/promises');
-var path = require('path');
+import { visit } from "unist-util-visit";
+import { promises as fs } from "fs";
+import * as path from "path";
 
 const regex = /(\w+)=([^\s]+)/g;
 
 const plugin = (options) => {
-  const manifestsDir = options.manifestsDir
+  const manifestsDir = options.manifestsDir;
 
   const transformer = async (ast, vfile) => {
     const promises = [];
-    visit(ast, 'code', (node) => {
-      if(node.lang === 'file') {
-        value = node.value
+    visit(ast, "code", (node) => {
+      if (node.lang === "file") {
+        const value = node.value;
 
-        hidePath = false
+        let hidePath = false;
+        var m;
 
-        if(node.meta) {
-          while((m = regex.exec(node.meta)) !== null) {
-            key = m[1]
-            metaValue = m[2]
+        if (node.meta) {
+          while ((m = regex.exec(node.meta)) !== null) {
+            const key = m[1];
+            const metaValue = m[2];
 
-            switch(key) {
-              case 'hidePath':
-                hidePath = (metaValue === 'true')
+            switch (key) {
+              case "hidePath":
+                hidePath = metaValue === "true";
                 break;
             }
           }
-        } 
-
-        normalizedPath = `${path.normalize(`${value}`)}`
-
-        title = `/eks-workshop/${normalizedPath}`
-
-        if(normalizedPath.startsWith('manifests/')) {
-          title = `${normalizedPath}`.replace('manifests', '~/environment/eks-workshop')
         }
 
-        const filePath = `${manifestsDir}/${value}`
-        const extension = path.extname(filePath).slice(1)
+        const normalizedPath = `${path.normalize(`${value}`)}`;
 
-        node.lang = extension
+        let title = `/eks-workshop/${normalizedPath}`;
 
-        if(!hidePath) {
-          node.meta = `title="${title}"`
+        if (normalizedPath.startsWith("manifests/")) {
+          title = `${normalizedPath}`.replace(
+            "manifests",
+            "~/environment/eks-workshop",
+          );
         }
 
-        const p = fs.readFile(filePath, { encoding: 'utf8' }).then(res => {
-          node.value = res
+        const filePath = `${manifestsDir}/${value}`;
+        const extension = path.extname(filePath).slice(1);
+
+        node.lang = extension;
+
+        if (!hidePath) {
+          node.meta = `title="${title}"`;
+        }
+
+        const p = fs.readFile(filePath, { encoding: "utf8" }).then((res) => {
+          node.value = res;
         });
         promises.push(p);
       }
@@ -56,4 +60,4 @@ const plugin = (options) => {
   return transformer;
 };
 
-module.exports = plugin;
+export default plugin;

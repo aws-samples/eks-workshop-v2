@@ -1,0 +1,79 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":rebaseStalePrs",
+    ":automergeStableNonMajor"
+  ],
+  "schedule": ["* * 7-14 * *"],
+  "enabledManagers": ["custom.regex", "github-actions", "terraform", "npm"],
+  "labels": ["content/other"],
+  "packageRules": [
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions"
+    },
+    {
+      "matchManagers": ["terraform"],
+      "groupName": "Terraform"
+    },
+    {
+      "matchDepTypes": ["required_version"],
+      "enabled": false
+    },
+    {
+      "matchDepNames": ["kubernetes/kubernetes"],
+      "allowedVersions": "/^v1.33.[0-9]+$/"
+    },
+    {
+      "matchDepNames": ["kubernetes/autoscaler"],
+      "extractVersion": "^cluster-autoscaler-(?<version>.*)$",
+      "allowedVersions": "/^1.33.[0-9]+$/"
+    },
+    {
+      "automerge": true,
+      "matchCurrentVersion": ">= 1.0.0",
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchManagers": ["custom.regex"]
+    },
+    {
+      "matchPackagePatterns": ["^@docusaurus"],
+      "enabled": false
+    },
+    {
+      "matchFileNames": ["lab/scripts/installer.sh"],
+      "groupName": "IDE binaries",
+      "matchUpdateTypes": ["minor", "patch"]
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["lab/scripts/installer.sh"],
+      "matchStrings": [
+        "depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?_version='(?<currentValue>.*)'\\s"
+      ],
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["vars\\.tf$"],
+      "matchStrings": [
+        "#\\s*renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?(?: extractVersion=(?<extractVersion>.*?))?\\s*default\\s*=\\s*\"(?<currentValue>.*)\""
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{/if}}"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["vars\\.tf$"],
+      "matchStrings": [
+        "#\\s*renovate-helm: depName=(?<depName>.*?)( registryUrl=(?<registryUrl>.*?))?( versioning=(?<versioning>.*?))?(?: extractVersion=(?<extractVersion>.*?))?\\s*default\\s*=\\s*\"(?<currentValue>.*)\""
+      ],
+      "datasourceTemplate": "helm",
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{/if}}",
+      "registryUrlTemplate": "{{#if registryUrl}}{{{registryUrl}}}{{else}}https://aws.github.io/eks-charts{{/if}}"
+    }
+  ],
+  "ignoreDeps": ["github.com/aws-ia/terraform-aws-eks-blueprints"]
+}

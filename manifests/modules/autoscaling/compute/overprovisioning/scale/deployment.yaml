@@ -3,4 +3,4 @@ kind: Deployment
 metadata:
   name: all
 spec:
-  replicas: 5
+  replicas: 7

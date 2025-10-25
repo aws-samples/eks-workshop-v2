@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       clusterId:
-        description: 'Cluster ID'
+        description: "Cluster ID"
         required: true
 
 permissions:
@@ -16,47 +16,25 @@ jobs:
     name: cleanup
     runs-on: ubuntu-latest
     steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '17'
-    - name: Install utilities
-      run: |
-        sudo apt install -y gettext
-
-        mkdir -p ${HOME}/.local/bin
-        wget https://github.com/jckuester/awsweeper/releases/download/v0.12.0/awsweeper_0.12.0_linux_amd64.tar.gz
-        tar zxf awsweeper_0.12.0_linux_amd64.tar.gz
-        mv awsweeper_0.12.0_linux_amd64/awsweeper ${HOME}/.local/bin
-
-        wget https://github.com/eksctl-io/eksctl/releases/download/v0.164.0/eksctl_Linux_amd64.tar.gz
-        tar zxf eksctl_Linux_amd64.tar.gz
-        mv eksctl ${HOME}/.local/bin
-
-        chmod +x ${HOME}/.local/bin/*
-
-        echo "${HOME}/.local/bin" >> $GITHUB_PATH
-    - name: Get AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1.6.1
-      with:
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-        role-duration-seconds: 3600
-        aws-region: ${{ secrets.AWS_REGION }}
-        role-session-name: GithubActionsSession
-    - name: Cleanup environment
-      timeout-minutes: 60
-      env:
-        CLUSTER_ID: ${{ github.event.inputs.clusterId }}
-        AWS_REGION: "${{ secrets.AWS_REGION }}"
-      run: |
-        export CLEANUP_ENVIRONMENT_NAME="$CLUSTER_ID"
-        export AWS_DEFAULT_REGION="$AWS_REGION"
-        
-        envsubst < hack/lib/filter.yml > filter.yml
-
-        cat filter.yml
-
-        awsweeper --force filter.yml
-
-        make destroy-infrastructure environment="$CLUSTER_ID"
+      - name: Check out code
+        uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "17"
+      - name: Install utilities
+        run: |
+          sudo apt install -y gettext
+      - name: Get AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4.3.1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-duration-seconds: 3600
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GithubActionsSession
+      - name: Cleanup environment
+        timeout-minutes: 60
+        env:
+          CLUSTER_ID: ${{ github.event.inputs.clusterId }}
+          AWS_REGION: "${{ secrets.AWS_REGION }}"
+        run: |
+          make destroy-infrastructure environment="$CLUSTER_ID"

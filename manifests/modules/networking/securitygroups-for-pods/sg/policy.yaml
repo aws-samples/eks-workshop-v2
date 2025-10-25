@@ -9,4 +9,4 @@ spec:
       app.kubernetes.io/component: service
   securityGroups:
     groupIds:
-    - ${CATALOG_SG_ID}
+      - ${CATALOG_SG_ID}

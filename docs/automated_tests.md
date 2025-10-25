@@ -10,8 +10,10 @@ This section documents running the tests locally as well as via PRs.
 
 You should run the tests locally before raising a PR, this can be done with some convenience scripts.
 
-To use this utility you must:
-- Have some AWS credentials available in your current shell session (ie. you `aws` CLI must work)
+To use this utility make sure you have:
+
+- Run `make create-infrastructure` as outlined [here](./authoring_content.md#creating-the-infrastructure)
+- Run `make shell` as outlined [here](./authoring_content.md#simulating-the-workshop-environment)
 
 First, ensure you have the workshop infrastructure running in your AWS account:
 
@@ -29,7 +31,7 @@ Building container images...
 sha256:62fb5cc6e348d854a59a5e00429554eab770adc24150753df2e810355e678899
 sha256:a6b3c8675c79804587b5e4d5b8dfc5cfd6d01b40c89ee181ad662902e0cb650d
 Running test suite...
-Added new context arn:aws:eks:us-west-2:111111111:cluster/eksw-env-cluster-eks to /root/.kube/config
+Added new context arn:aws:eks:us-west-2:111111111:cluster/eks-workshop to /root/.kube/config
 ✔ Generating test cases
 ✔ Building Mocha suites
 
@@ -99,24 +101,6 @@ Finally, once you are done if needed you can destroy the infrastructure:
 ```
 make destroy-infrastructure
 ```
-
-### Pull Requests
-
-**Note:** This section is for repository maintainers
-
-By default the end-to-end tests will not run against a PR because:
-- The PR should be reviewed first
-- Tests take time to execute so only selective modules should be run
-
-The first thing to do is to assess which top-level modules should be tested, which are the directories contained in `website/docs` (`observability`, `autoscaling` etc). Each of the top level modules has a corresponding label which can be applied to PRs, for example if you want to test the Security module there is a label `content/security`, Observability has the label `content/observability` and so on.
-
-If you do not apply any content labels then only the Introduction and Cleanup modules will be run, which can be useful for just testing Terraform changes. Note: The Introduction and Cleanup modules will **always** be run.
-
-Once you have added the required `content/*` labels to the PR then apply the label `automation/e2e-tests`. This label is what triggers the tests to run against the PR, and it will detect all of the content labels previously added to determine what tests to run.
-
-The test suite will generally take **at least** 30 minutes to complete but will generally be more.
-
-As long as the `automation/e2e-tests` label is applied the test suite will re-run any time there is a push to the branch associated with the PR. Removing the label will stop this behavior.
 
 ## Writing tests
 
@@ -226,14 +210,13 @@ $ sleep 150
 
 Here is a complete list of the available annotations:
 
-| Annotation  | Description  | Default |
-|-------------|--------------|---------|
-| test        | This script block should be executed as a test                                                                                                                                        | true    |
-| timeout     | Time limit in seconds before the script block will be marked as failed                                                                                                                | 120     |
-| hook        | Name of the hook to execute for this script section                                                                                                                                   |         |
-| hookTimeout | Time limit in seconds for the hooks to complete before the script block will be marked as failed                                                                                      | 300     |
-| expectError | Ignore any errors that occur when the script block is executed                                                                                                                        | false   |
-
+| Annotation  | Description                                                                                      | Default |
+| ----------- | ------------------------------------------------------------------------------------------------ | ------- |
+| test        | This script block should be executed as a test                                                   | true    |
+| timeout     | Time limit in seconds before the script block will be marked as failed                           | 120     |
+| hook        | Name of the hook to execute for this script section                                              |         |
+| hookTimeout | Time limit in seconds for the hooks to complete before the script block will be marked as failed | 300     |
+| expectError | Ignore any errors that occur when the script block is executed                                   | false   |
 
 ### What if my module can't be tested?
 

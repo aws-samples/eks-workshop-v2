@@ -3,27 +3,47 @@ title: "Introduction"
 sidebar_position: 10
 ---
 
-We can confirm our microservices are only accessible internally by taking a look at the current Service resources in the cluster:
+First lets install the AWS Load Balancer controller using helm:
+
+```bash wait=10
+$ helm repo add eks-charts https://aws.github.io/eks-charts
+$ helm upgrade --install aws-load-balancer-controller eks-charts/aws-load-balancer-controller \
+  --version "${LBC_CHART_VERSION}" \
+  --namespace "kube-system" \
+  --set "clusterName=${EKS_CLUSTER_NAME}" \
+  --set "serviceAccount.name=aws-load-balancer-controller-sa" \
+  --set "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"="$LBC_ROLE_ARN" \
+  --wait
+Release "aws-load-balancer-controller" does not exist. Installing it now.
+NAME: aws-load-balancer-controller
+LAST DEPLOYED: [...]
+NAMESPACE: kube-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+AWS Load Balancer controller installed!
+```
+
+We can confirm our microservices are only accessible internally by taking a look at the current `Service` resources in the cluster:
 
 ```bash
 $ kubectl get svc -l app.kubernetes.io/created-by=eks-workshop -A
-NAMESPACE   NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                                 AGE
-assets      assets           ClusterIP   172.20.119.246   <none>        80/TCP                                  1h
-carts       carts            ClusterIP   172.20.180.149   <none>        80/TCP                                  1h
-carts       carts-dynamodb   ClusterIP   172.20.92.137    <none>        8000/TCP                                1h
-catalog     catalog          ClusterIP   172.20.83.84     <none>        80/TCP                                  1h
-catalog     catalog-mysql    ClusterIP   172.20.181.252   <none>        3306/TCP                                1h
-checkout    checkout         ClusterIP   172.20.77.176    <none>        80/TCP                                  1h
-checkout    checkout-redis   ClusterIP   172.20.32.208    <none>        6379/TCP                                1h
-orders      orders           ClusterIP   172.20.146.72    <none>        80/TCP                                  1h
-orders      orders-mysql     ClusterIP   172.20.54.235    <none>        3306/TCP                                1h
-rabbitmq    rabbitmq         ClusterIP   172.20.107.54    <none>        5672/TCP,4369/TCP,25672/TCP,15672/TCP   1h
-ui          ui               ClusterIP   172.20.62.119    <none>        80/TCP                                  1h
+NAMESPACE   NAME               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                                 AGE
+carts       carts              ClusterIP   172.20.180.149   <none>        80/TCP                                  1h
+carts       carts-dynamodb     ClusterIP   172.20.92.137    <none>        8000/TCP                                1h
+catalog     catalog            ClusterIP   172.20.83.84     <none>        80/TCP                                  1h
+catalog     catalog-mysql      ClusterIP   172.20.181.252   <none>        3306/TCP                                1h
+checkout    checkout           ClusterIP   172.20.77.176    <none>        80/TCP                                  1h
+checkout    checkout-redis     ClusterIP   172.20.32.208    <none>        6379/TCP                                1h
+orders      orders             ClusterIP   172.20.146.72    <none>        80/TCP                                  1h
+orders      orders-postgresql  ClusterIP   172.20.54.235    <none>        3306/TCP                                1h
+ui          ui                 ClusterIP   172.20.62.119    <none>        80/TCP                                  1h
 ```
 
-All of our application components are currently using `ClusterIP` services, which only allows access to other workloads in the same Kubernetes cluster. In order for users to access our application we need to expose the `ui` application, and in this example we'll do so using a Kubernetes Service of type `LoadBalancer`.
+All of our application components are currently using `ClusterIP` services, which only allows access to other workloads in the same Kubernetes cluster. In order for users to access our application we need to expose the `ui` application, and in this example we'll do so using a Kubernetes service of type `LoadBalancer`.
 
-First, lets take a closer look at the current specification of the Service for the `ui` component:
+Lets take a closer look at the current specification of the service for the `ui` component:
 
 ```bash
 $ kubectl -n ui describe service ui
@@ -49,4 +69,4 @@ Session Affinity:  None
 Events:            <none>
 ```
 
-As we saw earlier this is currently using a type `ClusterIP` and our task in this module to is change this so that the retail store user interface is accessible over the public Internet.
+As we saw earlier this is currently using a type `ClusterIP` and our task in this module is to change this so that the retail store user interface is accessible over the public Internet.

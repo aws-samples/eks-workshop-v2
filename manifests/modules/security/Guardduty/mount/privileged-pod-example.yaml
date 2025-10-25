@@ -4,17 +4,17 @@ metadata:
   name: ubuntu-privileged
 spec:
   containers:
-  - name: ubuntu-privileged
-    image: ubuntu
-    ports:
-    - containerPort: 22
-    securityContext:
-      privileged: true
-    volumeMounts:
-    - mountPath: /host-etc
-      name: host-etc
+    - name: ubuntu-privileged
+      image: ubuntu
+      ports:
+        - containerPort: 22
+      securityContext:
+        privileged: true
+      volumeMounts:
+        - mountPath: /host-etc
+          name: host-etc
   volumes:
-  - name: host-etc
-    hostPath:
-      path: /etc
+    - name: host-etc
+      hostPath:
+        path: /etc
   restartPolicy: Never

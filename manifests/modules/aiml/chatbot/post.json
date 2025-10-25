@@ -1,0 +1,6 @@
+{
+  "model": "/models/mistral-7b-v0.3",
+  "prompt": "The names of the colors in the rainbow are: ",
+  "max_tokens": 100,
+  "temperature": 0
+}

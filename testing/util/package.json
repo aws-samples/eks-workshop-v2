@@ -1,0 +1,48 @@
+{
+  "name": "framework",
+  "version": "0.0.1",
+  "main": "cli.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "type": "module",
+  "scripts": {
+    "clean": "shx rm -rf node_modules",
+    "build": "shx rm -rf dist && tsc --project tsconfig.build.json",
+    "exec": "npm run build && node ./dist/cli.js",
+    "test": "ts-mocha -n loader=ts-node/esm -p tsconfig.json tests/**/*.test.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "devDependencies": {
+    "@types/chai": "^5.0.0",
+    "@types/glob-to-regexp": "^0.4.4",
+    "@types/mdast": "^4.0.4",
+    "@types/mocha": "^10.0.7",
+    "@types/mock-fs": "^4.13.4",
+    "@types/node": "^22.0.0",
+    "@types/sinon": "^17.0.3",
+    "@types/unist": "^3.0.2",
+    "@types/yargs": "^17.0.32",
+    "mock-fs": "^5.1.4",
+    "shx": "^0.4.0",
+    "sinon": "^21.0.0",
+    "ts-mocha": "^11.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "chai": "^6.0.0",
+    "commander": "^14.0.0",
+    "glob-to-regexp": "^0.4.1",
+    "mocha": "^11.0.0",
+    "mocha-multi": "^1.1.7",
+    "mochawesome": "^7.0.1",
+    "remark": "^15.0.0",
+    "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-parse": "^11.0.0",
+    "unified": "^11.0.5",
+    "yaml": "^2.5.0"
+  }
+}

@@ -2,12 +2,12 @@
 
 set -e
 
-echo "Deleting Karpenter NodePool and EC2NodeClass..."
+logmessage "Deleting Karpenter NodePool and EC2NodeClass..."
 
-kubectl delete nodepool --all > /dev/null
-kubectl delete ec2nodeclass --all > /dev/null
+delete-all-if-crd-exists nodepools.karpenter.sh
+delete-all-if-crd-exists ec2nodeclasses.karpenter.k8s.aws
 
-echo "Waiting for Karpenter nodes to be removed..."
+logmessage "Waiting for Karpenter nodes to be removed..."
 
 EXIT_CODE=0
 
@@ -17,5 +17,7 @@ timeout --foreground -s TERM 30 bash -c \
     done' || EXIT_CODE=$?
 
 if [ $EXIT_CODE -ne 0 ]; then
-  echo "Warning: Karpenter nodes did not clean up"
+  logmessage "Warning: Karpenter nodes did not clean up"
 fi
+
+uninstall-helm-chart karpenter karpenter

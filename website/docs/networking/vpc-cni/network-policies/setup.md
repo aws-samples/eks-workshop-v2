@@ -5,7 +5,7 @@ sidebar_position: 60
 
 In this lab, we are going to implement network policies for the sample application deployed in the lab cluster. The sample application component architecture is shown below.
 
-<img src={require('@site/static/img/sample-app-screens/architecture.png').default}/>
+<img src={require('@site/static/img/sample-app-screens/architecture.webp').default}/>
 
 Each component in the sample application is implemented in its own namespace. For example, the **'ui'** component is deployed in the **'ui'** namespace, whereas the **'catalog'** web service and **'catalog'** MySQL database are deployed in the **'catalog'** namespace.
 

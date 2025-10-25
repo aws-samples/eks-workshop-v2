@@ -1,8 +1,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- ../../../../base-application/catalog
-- nlb.yaml
+  - ../../../../base-application/catalog
+  - secrets.yaml
+  - nlb.yaml
 patches:
-- path: catalog-configMap.yaml
-- path: secrets.yaml
+  - path: catalog-configMap.yaml
+  - path: deployment.yaml

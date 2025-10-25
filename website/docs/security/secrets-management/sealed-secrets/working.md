@@ -1,12 +1,12 @@
 ---
 title: "Sealed Secrets for Kubernetes"
-sidebar_position: 71
+sidebar_position: 431
 ---
 
 Sealed Secrets is composed of two parts:
 
-* A cluster-side controller
-* A client-side CLI called `kubeseal`
+- A cluster-side controller
+- A client-side CLI called `kubeseal`
 
 Once the controller starts up, it looks for a cluster-wide private/public key pair, and generates a new 4096 bit RSA key pair if not found. The private key is persisted in a Secret object in the same namespace as that of the controller (by default kube-system). The public key portion of this is made publicly available to anyone wanting to use SealedSecrets with this cluster.
 
@@ -19,6 +19,6 @@ The companion CLI tool, kubeseal, is used for creating a SealedSecret custom res
 
 The SealedSecrets can have the following three scopes:
 
-* **strict (default)** : The secret must be sealed with exactly the same name and namespace. These attributes become part of the encrypted data and thus changing name and/or namespace would lead to "decryption error".
-* **namespace-wide** : The sealed secret can be freely renamed the within a given namespace.
-* **cluster-wide** : The secret can be unsealed in any namespace and can be given any name.
+- **strict (default)** : The secret must be sealed with exactly the same name and namespace. These attributes become part of the encrypted data and thus changing name and/or namespace would lead to "decryption error".
+- **namespace-wide** : The sealed secret can be freely renamed the within a given namespace.
+- **cluster-wide** : The secret can be unsealed in any namespace and can be given any name.

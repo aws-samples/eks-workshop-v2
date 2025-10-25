@@ -5,11 +5,11 @@ metadata:
   name: allow-orders-ingress-webservice
 spec:
   podSelector:
-    matchLabels: 
+    matchLabels:
       app.kubernetes.io/name: orders
       app.kubernetes.io/component: service
   ingress:
     - from:
-      - podSelector:
-          matchLabels:
-            app.kubernetes.io/name: ui
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ui

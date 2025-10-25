@@ -6,15 +6,16 @@ metadata:
   labels:
     role: inference
 spec:
+  nodeSelector:
+    node.kubernetes.io/instance-type: inf2.xlarge
   containers:
-  - command:
-    - sh
-    - -c
-    - sleep infinity
-    image: ${AIML_DL_IMAGE}
-    name: inference
-    resources:
-      limits:
-      # HIGHLIGHT
-        aws.amazon.com/neuron: 1
+    - command:
+        - sh
+        - -c
+        - sleep infinity
+      image: ${AIML_DL_INF_IMAGE}
+      name: inference
+      resources:
+        limits:
+          aws.amazon.com/neuron: 1
   serviceAccountName: inference

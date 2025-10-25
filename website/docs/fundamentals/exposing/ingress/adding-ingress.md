@@ -3,13 +3,14 @@ title: "Creating the Ingress"
 sidebar_position: 20
 ---
 
-Let's create an Ingress resource with the following manifest:
+Let's create an Ingress resource with the following configuration:
 
-```file
-manifests/modules/exposing/ingress/creating-ingress/ingress.yaml
-```
+::yaml{file="manifests/modules/exposing/ingress/creating-ingress/ingress.yaml" paths="kind,spec.rules.0"}
 
-This will cause the AWS Load Balancer Controller to provision an Application Load Balancer and configure it to route traffic to the Pods for the `ui` application.
+1. Use an `Ingress` kind
+2. The rules section is used to express how the ALB should route traffic. In this example we route all HTTP requests where the path starts with `/` to the Kubernetes service called `ui` on port 80
+
+Apply this configuration:
 
 ```bash timeout=180 hook=add-ingress hookTimeout=430
 $ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/creating-ingress
@@ -68,8 +69,8 @@ $ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalance
 
 What does this tell us?
 
-* The ALB is accessible over the public internet
-* It uses the public subnets in our VPC
+- The ALB is accessible over the public internet
+- It uses the public subnets in our VPC
 
 Inspect the targets in the target group that was created by the controller:
 
@@ -98,23 +99,25 @@ Since we specified using IP mode in our Ingress object, the target is registered
 
 You can also inspect the ALB and its target groups in the console by clicking this link:
 
-https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=ui/ui;sort=loadBalancerName
+<ConsoleButton url="https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=ui/ui;sort=loadBalancerName" service="ec2" label="Open EC2 console"/>
 
 Get the URL from the Ingress resource:
 
 ```bash
-$ kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
-k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
+$ ADDRESS=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+$ echo "http://${ADDRESS}"
+http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
 
 To wait until the load balancer has finished provisioning you can run this command:
 
 ```bash
-$ wait-for-lb $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
+  -k $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 ```
 
 And access it in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
 
-<browser url="http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com">
-<img src={require('@site/static/img/sample-app-screens/home.png').default}/>
-</browser>
+<Browser url="http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com">
+<img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
+</Browser>

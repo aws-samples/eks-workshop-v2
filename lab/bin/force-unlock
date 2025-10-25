@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+
+echo "Deleting Terraform lease..."
+
+kubectl delete lease -n kube-system lock-tfstate-default-state --ignore-not-found
+
+echo "DONE!"

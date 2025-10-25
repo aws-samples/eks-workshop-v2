@@ -2,16 +2,16 @@ terraform_context='terraform'
 module='-'
 environment=''
 shell_command=''
+shell_simple_command=''
 glob='-'
-
 
 .PHONY: install
 install:
-	cd website; npm install
+	yarn install
 
 .PHONY: serve
 serve: install
-	bash hack/serve.sh
+	yarn serve
 
 .PHONY: tf-fmt
 tf-fmt:
@@ -23,7 +23,11 @@ test:
 
 .PHONY: shell
 shell:
-	bash hack/shell.sh $(environment) $(shell_command)
+	bash hack/shell.sh $(environment)
+
+.PHONY: ide
+ide:
+	bash hack/shell.sh $(environment) ide
 
 .PHONY: reset-environment
 reset-environment:
@@ -33,14 +37,6 @@ reset-environment:
 delete-environment:
 	bash hack/shell.sh $(environment) delete-environment
 
-.PHONY: update-helm-versions
-update-helm-versions:
-	bash hack/update-helm-versions.sh
-
-.PHONY: verify-helm-metadata
-verify-helm-metadata:
-	bash hack/verify-helm-metadata.sh
-
 .PHONY: create-infrastructure
 create-infrastructure:
 	bash hack/create-infrastructure.sh $(environment)
@@ -49,6 +45,14 @@ create-infrastructure:
 destroy-infrastructure:
 	bash hack/destroy-infrastructure.sh $(environment)
 
-.PHONY: lint-markdown
-lint-markdown:
-	bash hack/markdownlint.sh
+.PHONY: deploy-ide
+deploy-ide:
+	bash hack/deploy-ide-cfn.sh $(environment)
+
+.PHONY: destroy-ide
+destroy-ide:
+	bash hack/destroy-ide-cfn.sh $(environment)
+
+.PHONY: lint
+lint:
+	yarn lint

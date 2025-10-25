@@ -9,8 +9,8 @@ Security at AWS is the highest priority, and is a shared responsibility between 
 
 In this chapter, we'll explore various aspects of Amazon EKS related to security. To learn more about security with EKS refer to the [EKS Best Practices Guide](https://aws.github.io/aws-eks-best-practices/security/docs/).
 
-![Shared Responsibility](assets/managed-nodegroups.png)
+![Shared Responsibility](assets/managed-nodegroups.webp)
 
 ---
 
-![Shared Responsibility](assets/selfmanaged-nodegroups.png)
+![Shared Responsibility](assets/selfmanaged-nodegroups.webp)

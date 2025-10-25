@@ -1,15 +1,16 @@
 ---
 title: "Installing Sealed Secrets"
-sidebar_position: 72
+sidebar_position: 432
 ---
 
-The `kubeseal` CLI is used to interact with the sealed secrets controller, and has already been installed in Cloud9.
+The `kubeseal` CLI is used to interact with the sealed secrets controller, and has already been installed in your IDE.
 
 The first thing we'll do is install the sealed secrets controller in the EKS cluster:
 
 ```bash
 $ kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.18.0/controller.yaml
-$ kubectl wait --for=condition=Ready --timeout=30s pods -l name=sealed-secrets-controller -n kube-system
+$ kubectl wait --for=condition=Ready --timeout=30s \
+  pods -l name=sealed-secrets-controller -n kube-system
 ```
 
 Now we'll check the status of the pod
@@ -27,7 +28,7 @@ controller version: 0.18.0
 2022/10/18 09:17:01 Starting sealed-secrets controller version: 0.18.0
 2022/10/18 09:17:01 Searching for existing private keys
 2022/10/18 09:17:02 New key written to kube-system/sealed-secrets-keyvkl9w
-2022/10/18 09:17:02 Certificate is 
+2022/10/18 09:17:02 Certificate is
 -----BEGIN CERTIFICATE-----
 MIIEzTCCArWgAwIBAgIRAPsk+UrW9GlPu4gXN1qKqGswDQYJKoZIhvcNAQELBQAw
 ADAeFw0yMjEwMTgwOTE3MDJaFw0zMjEwMTUwOTE3MDJaMAAwggIiMA0GCSqGSIb3
@@ -41,7 +42,8 @@ q5P11EvxPBfIt9xDx5Jz4JWp5M7wWawGaeBqTmTDbSkc
 We can view the contents of the Secret which contains the sealing key as a public/private key pair in YAML format as follows:
 
 ```bash
-$ kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key -o yaml
+$ kubectl get secret -n kube-system \
+  -l sealedsecrets.bitnami.com/sealed-secrets-key -o yaml
 apiVersion: v1
 items:
 - apiVersion: v1

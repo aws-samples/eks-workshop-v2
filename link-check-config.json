@@ -1,0 +1,29 @@
+{
+  "replacementPatterns": [
+    {
+      "pattern": "https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF",
+      "replacement": "{{BASEURL}}"
+    },
+    {
+      "pattern": "^/img",
+      "replacement": "{{BASEURL}}/website/static/img"
+    }
+  ],
+  "ignorePatterns": [
+    {
+      "pattern": "^/docs"
+    },
+    {
+      "pattern": "^./"
+    },
+    {
+      "pattern": "^../"
+    },
+    {
+      "pattern": "require\\("
+    },
+    {
+      "pattern": "^#"
+    }
+  ]
+}

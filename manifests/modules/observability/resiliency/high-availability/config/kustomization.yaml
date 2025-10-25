@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../../../../../manifests/base-application/ui
+
+patches:
+  - path: scale_and_affinity_patch.yaml

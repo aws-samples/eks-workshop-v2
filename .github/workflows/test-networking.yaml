@@ -3,7 +3,7 @@ name: Test - Networking
 on:
   workflow_dispatch:
   schedule:
-  - cron: '0 7 * * 3'
+    - cron: "0 7 * * 3"
 
 permissions:
   id-token: write
@@ -13,5 +13,10 @@ jobs:
   test-module:
     uses: ./.github/workflows/module-test.yaml
     with:
-      module: networking
+      glob: networking/vpc-cni**
+    secrets: inherit
+  test-lattice:
+    uses: ./.github/workflows/module-test.yaml
+    with:
+      module: networking/vpc-lattice
     secrets: inherit

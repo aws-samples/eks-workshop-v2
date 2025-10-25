@@ -1,65 +1,79 @@
-const visit = require('unist-util-visit');
-const fs = require('fs');
-const yamljs = require('yamljs');
-const path = require("path");
-const { globSync } = require("glob");
-const readingTime = require('reading-time');
-const { parsePairs } = require('parse-pairs')
+import { visit } from "unist-util-visit";
+const fs = require("fs");
+import * as yamljs from "yamljs";
+import * as path from "path";
+import { globSync } from "glob";
+import getReadingTime from "reading-time";
 
-const timingDataString = fs.readFileSync(`./lab-timing-data.json`,
-      { encoding: 'utf8', flag: 'r' });
+const timingDataString = fs.readFileSync(`./test-durations.json`, {
+  encoding: "utf8",
+  flag: "r",
+});
 
-      timingData = JSON.parse(timingDataString);
+const timingData = JSON.parse(timingDataString);
 
 const plugin = (options) => {
-
-  const enabled = options.enabled
-  const factor = options.factor
+  const enabled = options.enabled;
+  const factor = options.factor;
 
   const transformer = async (ast, vfile) => {
+    visit(ast, "leafDirective", (node, index, parent) => {
+      if (node.name !== "required-time") return;
 
-    visit(ast, 'text', (node) => {
-      const regex = /{{% required-time(.*?) %}}/;
-
-      if ((m = regex.exec(node.value)) !== null) {
-        if(!enabled) {
-          node.value = '';
-          return;
-        }
-
-        let attributes = {estimatedLabExecutionTimeMinutes: 0};
-
-        if(m.length > 1) {
-          let attributeString = m[1];
-
-          if(attributeString) {
-            let parsed = parsePairs(m[1]);
-
-            Object.keys(parsed).forEach(key => {
-              switch(key) {
-                case 'estimatedLabExecutionTimeMinutes':
-                  attributes.estimatedLabExecutionTimeMinutes = parseInt(parsed[key])
-                  break;
-              }
-            });
-          }
-        }
-
-        const filePath = vfile.history[0]
-        const relativePath = path.relative(`${vfile.cwd}/docs`, filePath)
-
-        if(attributes.estimatedLabExecutionTimeMinutes == 0) {
-          attributes.estimatedLabExecutionTimeMinutes = calculateLabExecutionTime(relativePath, timingData)
-        }
-
-        let totalTime = Math.ceil(((calculateReadingTime(filePath) + attributes.estimatedLabExecutionTimeMinutes) * factor) / 5) * 5;
-
-        node.type = 'jsx'
-        
-        node.value= `<p><b>Estimated time required:</b> ${totalTime} minutes</p>`
-
-        delete node.lang
+      if (!enabled) {
+        parent.children.splice(index, 1);
+        return;
       }
+
+      let defaultAttributes = { estimatedLabExecutionTimeMinutes: "0" };
+
+      let attributes = { ...defaultAttributes, ...node.attributes };
+
+      const filePath = vfile.history[0];
+      const relativePath = path.relative(`${vfile.cwd}/docs`, filePath);
+
+      if (attributes.estimatedLabExecutionTimeMinutes === "0") {
+        attributes.estimatedLabExecutionTimeMinutes = calculateLabExecutionTime(
+          path.dirname(relativePath),
+          timingData,
+        );
+      }
+
+      let totalTime =
+        Math.ceil(
+          ((calculateReadingTime(filePath) +
+            parseInt(attributes.estimatedLabExecutionTimeMinutes)) *
+            factor) /
+            5,
+        ) * 5;
+
+      const jsxNode = {
+        type: "mdxJsxFlowElement",
+        name: "p",
+        attributes: [],
+        children: [
+          {
+            type: "mdxJsxTextElement",
+            name: "b",
+            attributes: [],
+            children: [
+              {
+                type: "text",
+                value: "⏱️  Estimated time required:",
+              },
+            ],
+            data: {
+              _mdxExplicitJsx: true,
+            },
+          },
+          {
+            type: "text",
+            value: ` ${totalTime} minutes`,
+          },
+        ],
+      };
+
+      parent.children.splice(index, 1, jsxNode);
     });
   };
   return transformer;
@@ -68,16 +82,18 @@ const plugin = (options) => {
 function calculateReadingTime(filePath) {
   const directory = path.dirname(filePath);
 
-  const mdFiles = globSync('**/*.{md,mdx}', { cwd: directory })
+  const mdFiles = globSync("**/*.{md,mdx}", { cwd: directory });
 
   let totalReadingTime = 0;
 
-  for(let i = 0; i < mdFiles.length; i++) {
+  for (let i = 0; i < mdFiles.length; i++) {
     const filename = mdFiles[i];
 
-    const fileData = fs.readFileSync(path.join(directory, filename),
-      { encoding: 'utf8', flag: 'r' });
-    const stats = readingTime(fileData);
+    const fileData = fs.readFileSync(path.join(directory, filename), {
+      encoding: "utf8",
+      flag: "r",
+    });
+    const stats = getReadingTime(fileData);
 
     totalReadingTime += stats.minutes;
   }
@@ -86,22 +102,27 @@ function calculateReadingTime(filePath) {
 }
 
 function calculateLabExecutionTime(relativePath, timingData) {
-  let labExecutionTime = 0;
+  const testDuration = sumFieldsWithPrefix(timingData, `/${relativePath}`);
 
-  timingDataEntry = timingData[relativePath];
-
-  if(timingDataEntry) {
-    labExecutionTime = timingDataEntry.executionTimeSeconds / 60
-  }
-  else {
-    console.log(`Failed to find ${relativePath}`)
+  if (testDuration > 0) {
+    return Math.round(testDuration / 1000 / 60);
   }
 
-  if(labExecutionTime === 0) {
-    throw new Error(`Got 0 lab execution time for ${relativePath}`)
-  }
-
-  return labExecutionTime;
+  throw new Error(`No test duration found for ${relativePath}`);
 }
 
-module.exports = plugin;
+function sumFieldsWithPrefix(obj, prefix) {
+  return Object.keys(obj)
+    .filter((key) => key.startsWith(prefix))
+    .reduce((sum, key) => {
+      const value = obj[key];
+      if (typeof value === "number") {
+        return sum + value;
+      } else if (typeof value === "object" && value !== null) {
+        return sum + sumFieldsWithPrefix(value, prefix);
+      }
+      return sum;
+    }, 0);
+}
+
+export default plugin;

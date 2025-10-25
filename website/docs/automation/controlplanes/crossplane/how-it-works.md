@@ -3,12 +3,12 @@ title: "How it works"
 sidebar_position: 5
 ---
 
-Running Crossplane in a cluster consists of two main parts:
+Crossplane operates within a cluster using two primary components:
 
-1. The Crossplane controller which provides the core components
-2. One or more Crossplane providers which each provide a controller and Custom Resource Definitions to integrate with a particular provider, such as AWS
+1. The Crossplane controller, which provides the core functionality
+2. One or more Crossplane providers, each offering a controller and Custom Resource Definitions to integrate with a specific provider, such as AWS
 
-The Crossplane controller, Upbound AWS provider and  have been pre-installed in our EKS cluster, each running as a deployment in the `crossplane-system` namespace along with the `crossplane-rbac-manager`:
+In our EKS cluster, we've pre-installed the Crossplane controller, the Upbound AWS provider, and the necessary components. These run as deployments in the `crossplane-system` namespace, alongside the `crossplane-rbac-manager`:
 
 ```bash
 $ kubectl get deployment -n crossplane-system
@@ -19,8 +19,10 @@ upbound-aws-provider-dynamodb-23a48a51e223   1/1     1            1           3h
 upbound-provider-family-aws-1ac09674120f     1/1     1            1           21h
 ```
 
-Here, `upbound-provider-family-aws` represents Crossplane provider for Amazon Web Services (AWS) developed and supported by Upbound. `upbound-aws-provider-dynamodb` is a subset of the prior dedicated to deploy DynamoDB via Crossplane.
+Here, `upbound-provider-family-aws` represents the Crossplane provider for Amazon Web Services (AWS), developed and supported by Upbound. The `upbound-aws-provider-dynamodb` is a subset dedicated to deploying DynamoDB via Crossplane.
 
-Crossplane provides a simplified interface for developers to request infrastructure resources via Kubernetes manifests called claims. As shown in this diagram, claims are the only namespace-scoped Crossplane resources, serving as the developer interface and abstracting away implementation details. When a claim is deployed to the cluster, it creates a Composite Resource (XR), a Kubernetes custom resource representing one or more cloud resources defined through templates called Compositions. The Composite Resource creates one or more Managed Resources which interact with the AWS API to request the creation of the desired infrastructure resources.
+Crossplane simplifies the process for developers to request infrastructure resources using Kubernetes manifests called claims. As illustrated in the diagram below, claims are the only namespace-scoped Crossplane resources, serving as the developer interface and abstracting implementation details. When a claim is deployed to the cluster, it creates a Composite Resource (XR), a Kubernetes custom resource representing one or more cloud resources defined through templates called Compositions. The Composite Resource then creates one or more Managed Resources, which interact with the AWS API to request the creation of the desired infrastructure resources.
 
-![Crossplane claim](./assets/claim-architecture-drawing.png)
+![Crossplane claim](./assets/claim-architecture-drawing.webp)
+
+This architecture allows for a clear separation of concerns between developers, who work with high-level abstractions (claims), and platform teams, who define the underlying infrastructure implementations (Compositions and Managed Resources).

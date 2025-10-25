@@ -1,6 +1,6 @@
 ---
 title: "Using DynamoDB"
-sidebar_position: 20
+sidebar_position: 22
 ---
 
 The first step in this process is to re-configure the `carts` service to use a DynamoDB table that has already been created for us. The application loads most of its confirmation from a ConfigMap, lets take look at it:
@@ -11,16 +11,17 @@ apiVersion: v1
 data:
   AWS_ACCESS_KEY_ID: key
   AWS_SECRET_ACCESS_KEY: secret
-  CARTS_DYNAMODB_CREATETABLE: true
-  CARTS_DYNAMODB_ENDPOINT: http://carts-dynamodb:8000
-  CARTS_DYNAMODB_TABLENAME: Items
+  RETAIL_CART_PERSISTENCE_DYNAMODB_CREATE_TABLE: "true"
+  RETAIL_CART_PERSISTENCE_DYNAMODB_ENDPOINT: http://carts-dynamodb:8000
+  RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME: Items
+  RETAIL_CART_PERSISTENCE_PROVIDER: dynamodb
 kind: ConfigMap
 metadata:
   name: carts
   namespace: carts
 ```
 
-The following kustomization overwrites the ConfigMap, removing the DynamoDB endpoint configuration which tells the SDK to default to the real DynamoDB service instead of our test Pod. We've also provided it with the name of the DynamoDB table thats been created already for us which is being pulled from the environment variable `CARTS_DYNAMODB_TABLENAME`.
+The following kustomization overwrites the ConfigMap, removing the DynamoDB endpoint configuration which tells the SDK to default to the real DynamoDB service instead of our test Pod. We've also provided it with the name of the DynamoDB table thats been created already for us which is being pulled from the environment variable `RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME`.
 
 ```kustomization
 modules/security/irsa/dynamo/kustomization.yaml
@@ -42,7 +43,8 @@ This will overwrite our ConfigMap with new values:
 $ kubectl get -n carts cm carts -o yaml
 apiVersion: v1
 data:
-  CARTS_DYNAMODB_TABLENAME: eks-workshop-carts
+  RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME: eks-workshop-carts
+  RETAIL_CART_PERSISTENCE_PROVIDER: dynamodb
 kind: ConfigMap
 metadata:
   labels:
@@ -53,22 +55,22 @@ metadata:
 
 Now we need to recycle all the carts Pods to pick up our new ConfigMap contents:
 
-```bash hook=enable-dynamo hookTimeout=430
+```bash expectError=true hook=enable-dynamo
 $ kubectl rollout restart -n carts deployment/carts
 deployment.apps/carts restarted
-$ kubectl rollout status -n carts deployment/carts
+$ kubectl rollout status -n carts deployment/carts --timeout=20s
+Waiting for deployment "carts" rollout to finish: 1 old replicas are pending termination...
+error: timed out waiting for the condition
 ```
 
-Let us try to access our application using the browser. A `LoadBalancer` type service named `ui-nlb` is provisioned in the `ui` namespace from which the application's UI can be accessed.
+It looks like our change failed to deploy properly, we can confirm this by looking at the Pods:
 
 ```bash
-$ kubectl get service -n ui ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}'
-k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
+$ kubectl -n carts get pod
+NAME                              READY   STATUS             RESTARTS        AGE
+carts-5d486d7cf7-8qxf9            1/1     Running            0               5m49s
+carts-df76875ff-7jkhr             0/1     CrashLoopBackOff   3 (36s ago)     2m2s
+carts-dynamodb-698674dcc6-hw2bg   1/1     Running            0               20m
 ```
-So now our application should be using DynamoDB right? Load it up in the browser using the output of the above command and navigate to the shopping cart:
 
-<browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/cart">
-<img src={require('@site/static/img/sample-app-screens/error-500.png').default}/>
-</browser>
-
-The shopping cart page is not accessible! What's gone wrong?
+What's gone wrong?

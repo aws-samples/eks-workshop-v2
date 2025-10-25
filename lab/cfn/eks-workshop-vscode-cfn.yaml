@@ -1,0 +1,597 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Creates a code-server IDE for the EKS workshop
+Parameters:
+  InstanceVolumeSize:
+    Type: Number
+    Description: The Size in GB of the Cloud9 Instance Volume.
+    Default: 30
+  RepositoryOwner:
+    Type: String
+    Description: The owner of the GitHub repository to be used to bootstrap Cloud9
+    Default: "aws-samples"
+  RepositoryName:
+    Type: String
+    Description: The name of the GitHub repository to be used to bootstrap Cloud9
+    Default: "eks-workshop-v2"
+  RepositoryRef:
+    Type: String
+    Description: The Git reference to be used to bootstrap Cloud9
+    Default: "main"
+  ResourcesPrecreated:
+    Type: String
+    Description: Whether lab infrastructure has been pre-provisioned
+    Default: "false"
+    AllowedValues:
+      - "false"
+      - "true"
+  AnalyticsEndpoint:
+    Type: String
+    Description: Analytics endpoint used for AWS events
+    Default: ""
+  CodeServerVersion:
+    Type: String
+    Description: Default code-server version to use
+    Default: "4.104.2"
+  AmiParameterStoreName:
+    Type: "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>"
+    Default: "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64"
+  Environment:
+    Type: String
+    Description: For testing purposes only
+    Default: ""
+
+Mappings:
+  PrefixListID:
+    ap-northeast-1:
+      PrefixList: pl-58a04531
+    ap-northeast-2:
+      PrefixList: pl-22a6434b
+    ap-south-1:
+      PrefixList: pl-9aa247f3
+    ap-southeast-1:
+      PrefixList: pl-31a34658
+    ap-southeast-2:
+      PrefixList: pl-b8a742d1
+    ca-central-1:
+      PrefixList: pl-38a64351
+    eu-central-1:
+      PrefixList: pl-a3a144ca
+    eu-north-1:
+      PrefixList: pl-fab65393
+    eu-west-1:
+      PrefixList: pl-4fa04526
+    eu-west-2:
+      PrefixList: pl-93a247fa
+    eu-west-3:
+      PrefixList: pl-75b1541c
+    sa-east-1:
+      PrefixList: pl-5da64334
+    us-east-1:
+      PrefixList: pl-3b927c52
+    us-east-2:
+      PrefixList: pl-b6a144df
+    us-west-1:
+      PrefixList: pl-4ea04527
+    us-west-2:
+      PrefixList: pl-82a045eb
+
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/24
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+
+  GatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.0.0/24
+      VpcId: !Ref VPC
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Select [0, !GetAZs ""]
+
+  PublicSubnetRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+
+  PublicSubnetRoute:
+    Type: AWS::EC2::Route
+    DependsOn: GatewayAttachment
+    Properties:
+      RouteTableId: !Ref PublicSubnetRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnetRouteTableAssoc:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicSubnetRouteTable
+      SubnetId: !Ref PublicSubnet
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: SG for IDE
+      SecurityGroupIngress:
+        - Description: Allow HTTP from CloudFront
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          SourcePrefixListId:
+            !FindInMap [PrefixListID, !Ref "AWS::Region", PrefixList]
+      SecurityGroupEgress:
+        - Description: Allow all outbound traffic
+          IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+      VpcId: !Ref VPC
+
+  EksWorkshopIdeLambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName:
+            Fn::Join:
+              - ""
+              - - EksWorkshopIdeLambdaPolicy-
+                - Ref: AWS::Region
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:*:*:*
+              - Effect: Allow
+                Action:
+                  - iam:PassRole
+                  - ssm:SendCommand
+                  - ssm:GetCommandInvocation
+                Resource: "*"
+
+  EksWorkshopIdeBootstrapInstanceLambda:
+    Type: Custom::EksWorkshopIdeBootstrapInstanceLambda
+    DependsOn:
+      - EksWorkshopIdeLambdaExecutionRole
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - EksWorkshopIdeBootstrapInstanceLambdaFunction
+          - Arn
+      REGION:
+        Ref: AWS::Region
+      InstanceId:
+        Ref: EksWorkshopIdeInstance
+      SsmDocument:
+        Ref: EksWorkshopIdeSSMDocument
+
+  EksWorkshopIdeBootstrapInstanceLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: index.lambda_handler
+      Role:
+        Fn::GetAtt:
+          - EksWorkshopIdeLambdaExecutionRole
+          - Arn
+      Runtime: python3.12
+      Environment:
+        Variables:
+          DiskSize:
+            Ref: InstanceVolumeSize
+      MemorySize: 256
+      Timeout: "900"
+      Code:
+        ZipFile: |
+          from __future__ import print_function
+          import boto3
+          import json
+          import os
+          import time
+          import traceback
+          import cfnresponse
+          import logging
+          logger = logging.getLogger(__name__)
+
+          def lambda_handler(event, context):
+              print(event.values())
+              print('context: {}'.format(context))
+              responseData = {}
+
+              status = cfnresponse.SUCCESS
+              
+              if event['RequestType'] == 'Delete':
+                  responseData = {'Success': 'Custom Resource removed'}
+                  cfnresponse.send(event, context, status, responseData, 'CustomResourcePhysicalID')              
+              else:
+                  try:
+                      # Open AWS clients
+                      #ec2 = boto3.client('ec2')
+                      ssm = boto3.client('ssm')
+
+                      instance_id = event['ResourceProperties']['InstanceId']
+
+                      ssm_document = event['ResourceProperties']['SsmDocument']
+
+                      print('Sending SSM command...')
+
+                      response = ssm.send_command(
+                        InstanceIds=[instance_id],
+                        DocumentName=ssm_document)
+
+                      command_id = response['Command']['CommandId']
+
+                      waiter = ssm.get_waiter('command_executed')
+
+                      waiter.wait(
+                        CommandId=command_id,
+                        InstanceId=instance_id,
+                        WaiterConfig={
+                          'Delay': 10,
+                          'MaxAttempts': 60
+                        }
+                      )
+
+                      responseData = {'Success': 'Started bootstrapping for instance: '+instance_id}
+                      cfnresponse.send(event, context, status, responseData, 'CustomResourcePhysicalID')
+                      
+                  except Exception as e:
+                      status = cfnresponse.FAILED
+                      print(traceback.format_exc())
+                      responseData = {'Error': traceback.format_exc(e)}
+                  finally:
+                      cfnresponse.send(event, context, status, responseData, 'CustomResourcePhysicalID')
+
+  EksWorkshopIdeSSMDocument:
+    Type: AWS::SSM::Document
+    Properties:
+      DocumentType: Command
+      DocumentFormat: YAML
+      Content:
+        schemaVersion: "2.2"
+        description: Bootstrap Cloud9 Instance
+        mainSteps:
+          - action: aws:runShellScript
+            name: EksWorkshopIdebootstrap
+            inputs:
+              runCommand:
+                - !Sub |
+                  set -e
+
+                  yum install -y git tar gzip vim nodejs npm make gcc g++ argon2
+
+                  export environment="${Environment}"
+
+                  source <(curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/hack/lib/common-env.sh)
+
+                  dnf copr enable -y @caddy/caddy epel-9-x86_64
+                  dnf install -y caddy
+                  systemctl enable --now caddy
+
+                  tee /etc/caddy/Caddyfile <<EOF
+                  http://${EksWorkshopIdeCloudFrontDistribution.DomainName} {
+                    reverse_proxy 127.0.0.1:8889
+                  }
+                  EOF
+
+                  systemctl restart caddy
+
+                  tee /etc/profile.d/custom_prompt.sh <<EOF
+                  #!/bin/sh
+
+                  export PROMPT_COMMAND='export PS1="\u:\w:$ "'
+                  EOF
+
+                  export AWS_REGION="${AWS::Region}"
+                  export REPOSITORY_OWNER="${RepositoryOwner}"
+                  export REPOSITORY_NAME="${RepositoryName}"
+                  export REPOSITORY_REF="${RepositoryRef}"
+                  export RESOURCES_PRECREATED="${ResourcesPrecreated}"
+                  export ANALYTICS_ENDPOINT="${AnalyticsEndpoint}"
+
+                  curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/installer.sh | bash
+
+                  cat <<"EOT" | sudo -E -H -u ec2-user bash
+                  set -e
+
+                  mkdir -p ~/environment
+
+                  codeServer=$(dnf list installed code-server | wc -l)
+                  if [ "$codeServer" -eq "0" ]; then
+                    curl -Ls -o /tmp/coder.rpm https://github.com/coder/code-server/releases/download/v${CodeServerVersion}/code-server-${CodeServerVersion}-amd64.rpm
+                    sudo rpm -U "/tmp/coder.rpm"
+
+                    sudo systemctl enable --now code-server@ec2-user
+                  fi
+
+                  PASSWORD_SECRET_VALUE=$(aws secretsmanager get-secret-value --secret-id "${EksWorkshopIdePassword.Id}" --query 'SecretString' --output text)
+                  IDE_PASSWORD=$(echo "$PASSWORD_SECRET_VALUE" | jq -r '.password')
+                  HASHED_PASSWORD=$(echo -n "$IDE_PASSWORD" | argon2 saltItWithSalt -l 32 -e)
+
+                  mkdir -p ~/.config/code-server
+                  touch ~/.config/code-server/config.yaml
+                  tee ~/.config/code-server/config.yaml <<EOF
+                  cert: false
+                  auth: password
+                  hashed-password: "$HASHED_PASSWORD"
+                  bind-addr: 127.0.0.1:8889
+                  EOF
+
+                  curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/setup.sh | bash
+
+                  curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/setup-ide.sh | bash
+
+                  curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/banner.sh | bash
+
+                  EOT
+
+                  systemctl restart code-server@ec2-user
+
+  EksWorkshopIdeRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+                - ssm.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: ide-password
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetResourcePolicy
+                  - secretsmanager:GetSecretValue
+                  - secretsmanager:DescribeSecret
+                  - secretsmanager:ListSecretVersionIds
+                Resource:
+                  - !Ref EksWorkshopIdePassword
+              - Effect: Allow
+                Action: secretsmanager:ListSecrets
+                Resource: "*"
+
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      Path: "/"
+
+  EksWorkshopIamPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-iam
+      PolicyDocument:
+        file: ./iam/policies/iam.yaml
+
+  EksWorkshopBasePolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-base
+      PolicyDocument:
+        file: ./iam/policies/base.yaml
+
+  EksWorkshopEc2Policy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-ec2
+      PolicyDocument:
+        file: ./iam/policies/ec2.yaml
+
+  EksWorkshopLabsPolicy1:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-labs1
+      PolicyDocument:
+        file: ./iam/policies/labs1.yaml
+
+  EksWorkshopLabsPolicy2:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-labs2
+      PolicyDocument:
+        file: ./iam/policies/labs2.yaml
+
+  EksWorkshopLabsPolicy3:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-labs3
+      PolicyDocument:
+        file: ./iam/policies/labs3.yaml
+
+  EksWorkshopLabsPolicy4:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-labs4
+      PolicyDocument:
+        file: ./iam/policies/labs4.yaml
+
+  EksWorkshopTroubleshootPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-troubleshoot
+      PolicyDocument:
+        file: ./iam/policies/troubleshoot.yaml
+
+  EksWorkshopSsmPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-ssm
+      PolicyDocument:
+        file: ./iam/policies/ssm.yaml
+
+  EksWorkshopIdeInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - Ref: EksWorkshopIdeRole
+
+  EksWorkshopIdeInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref AmiParameterStoreName
+      InstanceType: t3.medium
+      BlockDeviceMappings:
+        - Ebs:
+            VolumeSize: !Ref InstanceVolumeSize
+            VolumeType: gp3
+            DeleteOnTermination: true
+            Encrypted: true
+          DeviceName: /dev/xvda
+      SubnetId: !Ref PublicSubnet
+      SecurityGroupIds:
+        - !Ref SecurityGroup
+      IamInstanceProfile: !Ref EksWorkshopIdeInstanceProfile
+      Tags:
+        - Key: type
+          Value: eksworkshop-ide
+
+  EksWorkshopIdePassword:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Sub ${AWS::StackName}-password
+      GenerateSecretString:
+        ExcludeCharacters: "\"@/\\"
+        ExcludePunctuation: true
+        GenerateStringKey: password
+        IncludeSpace: false
+        PasswordLength: 32
+        SecretStringTemplate: '{"password":""}'
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+
+  EksWorkshopIdeCachePolicy:
+    Type: AWS::CloudFront::CachePolicy
+    Properties:
+      CachePolicyConfig:
+        DefaultTTL: 86400
+        MaxTTL: 31536000
+        MinTTL: 1
+        Name: !Ref AWS::StackName
+        ParametersInCacheKeyAndForwardedToOrigin:
+          CookiesConfig:
+            CookieBehavior: all
+          EnableAcceptEncodingGzip: False
+          HeadersConfig:
+            HeaderBehavior: whitelist
+            Headers:
+              - Accept-Charset
+              - Authorization
+              - Origin
+              - Accept
+              - Referer
+              - Host
+              - Accept-Language
+              - Accept-Encoding
+              - Accept-Datetime
+          QueryStringsConfig:
+            QueryStringBehavior: all
+
+  EksWorkshopIdeCloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: True
+        HttpVersion: http2
+        CacheBehaviors:
+          - AllowedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
+              - PUT
+              - PATCH
+              - POST
+              - DELETE
+            CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+            Compress: False
+            OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3
+            TargetOriginId: !Sub CloudFront-${AWS::StackName}
+            ViewerProtocolPolicy: allow-all
+            PathPattern: "/proxy/*"
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+            - PUT
+            - PATCH
+            - POST
+            - DELETE
+          CachePolicyId: !Ref EksWorkshopIdeCachePolicy
+          OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3
+          TargetOriginId: !Sub CloudFront-${AWS::StackName}
+          ViewerProtocolPolicy: allow-all
+        Origins:
+          - DomainName: !GetAtt EksWorkshopIdeInstance.PublicDnsName
+            Id: !Sub CloudFront-${AWS::StackName}
+            CustomOriginConfig:
+              OriginProtocolPolicy: http-only
+
+Outputs:
+  IdeUrl:
+    Value: !Sub https://${EksWorkshopIdeCloudFrontDistribution.DomainName}
+
+  IdePasswordSecret:
+    Value: !Sub
+      - https://console.aws.amazon.com/secretsmanager/secret?name=${SecretName}
+      - SecretName: !Sub ${AWS::StackName}-password
+
+  IdePasswordSecretName:
+    Value: !Sub ${AWS::StackName}-password
+
+  IdeRole:
+    Value: !Sub ${EksWorkshopIdeRole.Arn}

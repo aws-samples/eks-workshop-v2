@@ -3,7 +3,7 @@ name: Test - Observability
 on:
   workflow_dispatch:
   schedule:
-  - cron: '0 7 * * 4'
+    - cron: "0 7 * * 4"
 
 permissions:
   id-token: write
@@ -15,6 +15,11 @@ jobs:
     with:
       glob: observability/{container-insights,kubecost,logging,open-source-metrics,resource-view}**
     secrets: inherit
+  #test-ha:
+  #  uses: ./.github/workflows/module-test.yaml
+  #  with:
+  #    module: observability/high-availability
+  #  secrets: inherit
   test-opensearch:
     uses: ./.github/workflows/module-test.yaml
     with:

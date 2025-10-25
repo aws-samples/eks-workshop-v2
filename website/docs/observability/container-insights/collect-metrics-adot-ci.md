@@ -1,17 +1,44 @@
 ---
-title: "Enabling Container Insights Using AWS Distro for OpenTelemetry"
+title: "Cluster metrics"
 sidebar_position: 10
 ---
 
-In this lab exercise, we'll explore how to enable CloudWatch Container Insights metrics with the ADOT Collector for an EKS cluster.
+We're going to explore how to enable CloudWatch Container Insights metrics for an EKS cluster with the ADOT Collector. The first thing we'll need to do is create a collector in our cluster to gather metrics related to various aspects of the cluster such as nodes, pods and containers.
 
-Now, let's create resources to allow the ADOT collector the permissions it needed. We'll start with the ClusterRole that gives the collector permissions to access the Kubernetes API:
+You can view the full collector manifest below, then we'll break it down.
 
-```file
-manifests/modules/observability/container-insights/adot/clusterrole.yaml
-```
+<details>
+  <summary>Expand for full collector manifest</summary>
 
-We'll use the managed IAM policy `CloudWatchAgentServerPolicy` to provide the collector with the IAM permissions it needs via IAM Roles for Service Accounts:
+::yaml{file="manifests/modules/observability/container-insights/adot/opentelemetrycollector.yaml"}
+
+</details>
+
+We can review this in several parts to make better sense of it.
+
+::yaml{file="manifests/modules/observability/container-insights/adot/opentelemetrycollector.yaml" zoomPath="spec.image" zoomAfter="1"}
+
+The OpenTelemetry collector can run in several different modes depending on the telemetry it is collecting. In this case we'll run it as a DaemonSet so that a pod runs on each node in the EKS cluster. This allows us to collect telemetry from the node and container runtime.
+
+Next we can start to break down the collector configuration itself.
+
+::yaml{file="manifests/modules/observability/container-insights/adot/opentelemetrycollector.yaml" zoomPath="spec.config.receivers.awscontainerinsightreceiver" zoomBefore="2"}
+
+First we'll configure the [AWS Container Insights Receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/9da7fea0097b991b771e0999bc4cd930edb221e2/receiver/awscontainerinsightreceiver/README.md) to collect metrics from the node.
+
+::yaml{file="manifests/modules/observability/container-insights/adot/opentelemetrycollector.yaml" zoomPath="spec.config.processors"}
+
+Next we'll use a batch processor to reduce the number of API calls to CloudWatch by flushing metrics buffered over at most 60 seconds.
+
+::yaml{file="manifests/modules/observability/container-insights/adot/opentelemetrycollector.yaml" zoomPath="spec.config.exporters.awsemf/performance.namespace" zoomBefore="2" zoomAfter="1"}
+
+And now we'll use the [AWS CloudWatch EMF Exporter for OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/awsemfexporter/README.md) to convert the OpenTelemetry metrics to [AWS CloudWatch Embedded Metric Format (EMF)](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Specification.html) and then send them directly to CloudWatch Logs using the [PutLogEvents](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutLogEvents.html) API. The log entries will be sent to the CloudWatch Logs log group shown and use the metrics will appear in the `ContainerInsights` namespace. This rest of this section is too long to view in full but see the complete manifest above.
+
+::yaml{file="manifests/modules/observability/container-insights/adot/opentelemetrycollector.yaml" zoomPath="spec.config.service.pipelines"}
+
+Finally we need to use an OpenTelemetry pipeline to combine our receiver, processor and exporter.
+
+We'll use the managed IAM policy `CloudWatchAgentServerPolicy` to provide the collector with the IAM permissions it needs via IAM Roles for Service Accounts to send the metrics to CloudWatch:
 
 ```bash
 $ aws iam list-attached-role-policies \
@@ -32,48 +59,36 @@ This IAM role will be added to the ServiceAccount for the collector:
 manifests/modules/observability/container-insights/adot/serviceaccount.yaml
 ```
 
-Create the resources:
+Create the resources we've explored above:
 
 ```bash
 $ kubectl kustomize ~/environment/eks-workshop/modules/observability/container-insights/adot \
-  | envsubst | kubectl apply -f-
+  | envsubst | kubectl apply -f- && sleep 5
 $ kubectl rollout status -n other daemonset/adot-container-ci-collector --timeout=120s
 ```
 
-The specification for the collector is too long to show here, but you can view it like so:
+We can confirm that our collector is running by inspecting the Pods created by the DaemonSet:
 
-```bash
-$ kubectl -n other get opentelemetrycollector adot-container-ci
-```
-
-Let's break this down in to sections to get a better understanding of what has been deployed. This is the OpenTelemetry collector configuration:
-
-```bash
-$ kubectl -n other get opentelemetrycollector adot-container-ci -o jsonpath='{.spec.config}'
-```
-
-This is configuring an OpenTelemetry pipeline with the following structure:
-
-* Receivers
-  - [Container Insights receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/awscontainerinsightreceiver/README.md) designed to collect performance log events using the Embedded Metric Format
-* Processors
-  - Batch the metrics in to 60 second intervals
-* Exporters
-  - [CloudWatch EMF exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/awsemfexporter/README.md) which sends metrics to the CloudWatch API
-
-This collector is also configured to run as a DaemonSet with a collector agent running on each node:
-
-```bash
-$ kubectl -n other get opentelemetrycollector adot-container-ci -o jsonpath='{.spec.mode}{"\n"}'
-```
-
-We can confirm that by inspecting the ADOT collector Pods collecting Container Insights metrics that are running:
-
-```bash
-$ kubectl get pods -n other
+```bash hook=metrics
+$ kubectl get pod -n other -l app.kubernetes.io/name=adot-container-ci-collector
 NAME                               READY   STATUS    RESTARTS   AGE
 adot-container-ci-collector-5lp5g  1/1     Running   0          15s
 adot-container-ci-collector-ctvgs  1/1     Running   0          15s
+adot-container-ci-collector-w4vqs  1/1     Running   0          15s
 ```
 
-If the output of this command includes multiple pods in the `Running` state as shown (above), the collector is running and collecting metrics from the cluster. The collector creates a log group named *aws/containerinsights/**cluster-name**/performance* and sends the metric data as performance log events in EMF format.
+This shows the collector is running and collecting metrics from the cluster. To view metrics first open the CloudWatch console and navigate to Container Insights:
+
+:::tip
+Please note that:
+
+1. It may take a few minutes for data to start appearing in CloudWatch
+2. It is expected that some metrics are missing since they are provided by the [CloudWatch agent with enhanced observability](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-EKS-agent.html)
+
+:::
+
+<ConsoleButton url="https://console.aws.amazon.com/cloudwatch/home#container-insights:performance/EKS:Cluster?~(query~(controls~(CW*3a*3aEKS.cluster~(~'eks-workshop)))~context~())" service="cloudwatch" label="Open CloudWatch console"/>
+
+![ContainerInsightsConsole](./assets/container-insights-metrics-console.webp)
+
+You can take some time to explore around the console to see the various ways that metrics are presented such as by cluster, namespace or pod.

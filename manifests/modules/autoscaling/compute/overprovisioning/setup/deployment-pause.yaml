@@ -15,8 +15,8 @@ spec:
     spec:
       priorityClassName: pause-pods
       containers:
-      - name: reserve-resources
-        image: registry.k8s.io/pause
-        resources:
-          requests:
-            memory: "6.5Gi"
+        - name: reserve-resources
+          image: registry.k8s.io/pause
+          resources:
+            requests:
+              memory: "6.5Gi"

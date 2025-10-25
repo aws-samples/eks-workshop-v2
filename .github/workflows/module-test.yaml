@@ -5,10 +5,14 @@ on:
     inputs:
       module:
         type: string
-        default: '-'
+        default: "-"
       glob:
         type: string
-        default: '-'
+        default: "-"
+    outputs:
+      durations-artifact:
+        description: "The artifact ID of the test durations file"
+        value: ${{ jobs.run-tests.outputs.durations-artifact }}
 
 permissions:
   id-token: write
@@ -19,103 +23,98 @@ jobs:
     if: github.repository == 'aws-samples/eks-workshop-v2'
     name: run-tests
     runs-on: ubuntu-latest
+    outputs:
+      durations-artifact: ${{ steps.upload-durations.outputs.artifact-id }}
     steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-    - name: Install utilities
-      run: |
-        sudo apt install -y gettext
+      - name: Check out code
+        uses: actions/checkout@v5
+      - name: Install utilities
+        run: |
+          sudo apt install -y gettext
 
-        mkdir -p ${HOME}/.local/bin
-        wget -q https://github.com/jckuester/awsweeper/releases/download/v0.12.0/awsweeper_0.12.0_linux_amd64.tar.gz
-        tar zxf awsweeper_0.12.0_linux_amd64.tar.gz
-        mv awsweeper_0.12.0_linux_amd64/awsweeper ${HOME}/.local/bin
+          mkdir -p ${HOME}/.local/bin
+          wget -q https://github.com/jckuester/awsweeper/releases/download/v0.12.0/awsweeper_0.12.0_linux_amd64.tar.gz
+          tar zxf awsweeper_0.12.0_linux_amd64.tar.gz
+          mv awsweeper_0.12.0_linux_amd64/awsweeper ${HOME}/.local/bin
 
-        wget -q https://github.com/eksctl-io/eksctl/releases/download/v0.164.0/eksctl_Linux_amd64.tar.gz
-        tar zxf eksctl_Linux_amd64.tar.gz
-        mv eksctl ${HOME}/.local/bin
+          chmod +x ${HOME}/.local/bin/*
 
-        chmod +x ${HOME}/.local/bin/*
-
-        echo "${HOME}/.local/bin" >> $GITHUB_PATH
-    - name: Set cluster ID
-      env:
-        RUN_ID: "${{ github.job }}"
-        AWS_REGION: "${{ secrets.AWS_REGION }}"
-      run: |
-        CLUSTER_ID=$(echo $RANDOM | md5sum | head -c 8)
-        echo "Using cluster ID ${CLUSTER_ID}"
-        echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
-    - name: Get AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1.6.1
-      with:
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-        role-duration-seconds: 3600
-        aws-region: ${{ secrets.AWS_REGION }}
-        role-session-name: GithubActionsSession-${{ env.CLUSTER_ID }}
-    - name: Create infrastructure
-      id: create-infrastructure
-      env:
-        AWS_REGION: "${{ secrets.AWS_REGION }}"
-      run: |
-        make create-infrastructure environment="$CLUSTER_ID"
-    - name: Refresh AWS credentials
-      if: always()
-      uses: aws-actions/configure-aws-credentials@v1.6.1
-      with:
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-        role-duration-seconds: 3600
-        aws-region: ${{ secrets.AWS_REGION }}
-        role-session-name: GithubActionsSession-${{ env.CLUSTER_ID }}
-    - name: Run tests - Module
-      env:
-        DOCKER_BUILDKIT: 1
-        DEV_MODE: 1
-        MODULE: ${{ inputs.module }}
-        GLOB: ${{ inputs.glob }}
-        AWS_REGION: "${{ secrets.AWS_REGION }}"
-        ASSUME_ROLE: "${{ secrets.AWS_ROLE_ARN }}"
-      run: |
-        export AWS_DEFAULT_REGION="$AWS_REGION"
-        make test environment="$CLUSTER_ID" module="$MODULE" glob="$GLOB"
-    - name: Refresh AWS credentials
-      if: always()
-      uses: aws-actions/configure-aws-credentials@v1.6.1
-      with:
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-        role-duration-seconds: 3600
-        aws-region: ${{ secrets.AWS_REGION }}
-        role-session-name: GithubActionsSession-${{ env.CLUSTER_ID }}
-    - name: Run tests - Cleanup
-      if: always()
-      env:
-        DOCKER_BUILDKIT: 1
-        DEV_MODE: 1
-        AWS_REGION: "${{ secrets.AWS_REGION }}"
-        ASSUME_ROLE: "${{ secrets.AWS_ROLE_ARN }}"
-      run: |
-        export AWS_DEFAULT_REGION="$AWS_REGION"
-        make test environment="$CLUSTER_ID" module="cleanup"
-    - name: Refresh AWS credentials
-      if: always()
-      uses: aws-actions/configure-aws-credentials@v1.6.1
-      with:
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-        role-duration-seconds: 3600
-        aws-region: ${{ secrets.AWS_REGION }}
-        role-session-name: GithubActionsSession-${{ env.CLUSTER_ID }}
-    - name: Cleanup environment
-      if: always()
-      env:
-        AWS_REGION: "${{ secrets.AWS_REGION }}"
-      run: |
-        export CLEANUP_ENVIRONMENT_NAME="$CLUSTER_ID"
-        export AWS_DEFAULT_REGION="$AWS_REGION"
-        
-        envsubst < hack/lib/filter.yml > filter.yml
-
-        cat filter.yml
-
-        awsweeper --force filter.yml
-
-        make destroy-infrastructure environment="$CLUSTER_ID"
+          echo "${HOME}/.local/bin" >> $GITHUB_PATH
+      - name: Set cluster ID
+        env:
+          RUN_ID: "${{ github.job }}"
+          AWS_REGION: "${{ secrets.AWS_REGION }}"
+        run: |
+          CLUSTER_ID=$(echo $RANDOM | md5sum | head -c 8)
+          echo "Using cluster ID ${CLUSTER_ID}"
+          echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
+      - name: Get AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4.3.1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-duration-seconds: 3600
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GithubActionsSession-${{ env.CLUSTER_ID }}
+      - name: Create infrastructure
+        id: create-infrastructure
+        env:
+          AWS_REGION: "${{ secrets.AWS_REGION }}"
+        run: |
+          make create-infrastructure environment="$CLUSTER_ID"
+      - name: Refresh AWS credentials
+        if: always()
+        uses: aws-actions/configure-aws-credentials@v4.3.1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-duration-seconds: 3600
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GithubActionsSession-${{ env.CLUSTER_ID }}
+      - name: Run tests - Module
+        env:
+          DOCKER_BUILDKIT: 1
+          DEV_MODE: 1
+          GENERATE_TIMINGS: 1
+          TEST_REPORT: /tmp/test-output.json
+          MODULE: ${{ inputs.module }}
+          GLOB: ${{ inputs.glob }}
+          AWS_REGION: "${{ secrets.AWS_REGION }}"
+          DOCKER_DNS_OVERRIDE: "8.8.8.8"
+        run: |
+          export AWS_DEFAULT_REGION="$AWS_REGION"
+          bash hack/run-tests.sh "$CLUSTER_ID" "$MODULE" "$GLOB"
+      - uses: actions/upload-artifact@v4
+        id: upload-durations
+        with:
+          name: test-durations-${{ env.CLUSTER_ID }}
+          path: website/test-durations.json
+      - name: Refresh AWS credentials
+        if: always()
+        uses: aws-actions/configure-aws-credentials@v4.3.1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-duration-seconds: 3600
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GithubActionsSession-${{ env.CLUSTER_ID }}
+      - name: Run tests - Cleanup
+        if: always()
+        env:
+          DOCKER_BUILDKIT: 1
+          DEV_MODE: 1
+          AWS_REGION: "${{ secrets.AWS_REGION }}"
+        run: |
+          export AWS_DEFAULT_REGION="$AWS_REGION"
+          make test environment="$CLUSTER_ID" module="cleanup"
+      - name: Refresh AWS credentials
+        if: always()
+        uses: aws-actions/configure-aws-credentials@v4.3.1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-duration-seconds: 3600
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GithubActionsSession-${{ env.CLUSTER_ID }}
+      - name: Cleanup environment
+        if: always()
+        env:
+          AWS_REGION: "${{ secrets.AWS_REGION }}"
+        run: |
+          make destroy-infrastructure environment="$CLUSTER_ID"

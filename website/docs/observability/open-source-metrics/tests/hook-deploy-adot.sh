@@ -5,9 +5,14 @@ before() {
 }
 
 after() {
-  sleep 20
+  sleep 80
 
-  kubectl wait --for=condition=Ready --timeout=30s pods -l app.kubernetes.io/component=opentelemetry-collector -n other
+  check=$(awscurl -X POST --region ${AWS_REGION} --service aps "${AMP_ENDPOINT}api/v1/query?query=up" | jq '.data.result[] | select(.metric.namespace=="carts")')
+
+  if [ -z "$check" ]; then
+    echo "Error: Did not find metrics in AMP"
+    exit 1
+  fi
 }
 
 "$@"

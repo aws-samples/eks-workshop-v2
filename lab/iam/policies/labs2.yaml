@@ -1,0 +1,129 @@
+Version: "2012-10-17"
+Statement:
+  - Effect: Allow
+    Action:
+      - logs:DescribeLogGroups
+      - logs:ListTagsForResource
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - logs:CreateLogGroup
+      - logs:DeleteLogGroup
+      - logs:DeleteSubscriptionFilter
+      - logs:PutRetentionPolicy
+      - logs:PutSubscriptionFilter
+      - logs:TagResource
+      - logs:TagLogGroup
+      - logs:Get*
+      - logs:Describe*
+      - logs:List*
+    Resource:
+      - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${Env}*
+      - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/${Env}*
+      - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/eks/${Env}*
+  - Effect: Allow
+    Action:
+      - events:DeleteRule
+      - events:DescribeRule
+      - events:ListTagsForResource
+      - events:ListTargetsByRule
+      - events:PutRule
+      - events:PutTargets
+      - events:RemoveTargets
+      - events:TagResource
+    Resource:
+      - !Sub arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/${Env}*
+      - !Sub arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/eks-workshop*
+      - !Sub arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/Karpenter*
+  - Effect: Allow
+    Action:
+      - vpc-lattice:List*
+      - vpc-lattice:Get*
+      - vpc-lattice:DeleteServiceNetwork
+      - vpc-lattice:DeleteServiceNetworkVpcAssociation
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - elasticfilesystem:CreateFileSystem
+      - elasticfilesystem:CreateMountTarget
+      - elasticfilesystem:DeleteFileSystem
+      - elasticfilesystem:DeleteMountTarget
+      - elasticfilesystem:DescribeLifecycleConfiguration
+      - elasticfilesystem:DescribeMountTargetSecurityGroups
+      - elasticfilesystem:DescribeMountTargets
+      - elasticfilesystem:CreateTags
+      - elasticfilesystem:TagResource
+      - elasticfilesystem:DescribeFileSystems
+    Resource:
+      - !Sub arn:aws:elasticfilesystem:${AWS::Region}:${AWS::AccountId}:file-system/*
+  - Effect: Allow
+    Action:
+      - fsx:Describe*
+      - fsx:ListTagsForResource
+    Resource:
+      - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:file-system/*
+  - Effect: Allow
+    Action:
+      - ssm:DescribeParameters
+      - ssm:ListTagsForResource
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - ssm:PutParameter
+      - ssm:GetParameter
+      - ssm:GetParameters
+      - ssm:DeleteParameter
+      - ssm:AddTagsToResource
+    Resource:
+      - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${Env}*
+      - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/eksworkshop/${Env}*
+  - Effect: Allow
+    Action:
+      - ssm:GetParameter
+    Resource:
+      - !Sub arn:aws:ssm:${AWS::Region}::parameter/aws/service/eks/optimized-ami/*
+  - Effect: Allow
+    Action:
+      - s3:CreateBucket
+      - s3:DeleteBucket
+      - s3:List*
+      - s3:Get*
+      - s3:PutBucketPublicAccessBlock
+      - s3:PutBucketTagging
+      - s3:DeleteObject
+      - s3:DeleteObjectVersion
+    Resource:
+      - arn:aws:s3:::${Env}*
+      - arn:aws:s3:::${Env}*/*
+  - Effect: Allow
+    Action:
+      - s3:ListAllMyBuckets
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - codecommit:CreateRepository
+      - codecommit:GetRepository
+      - codecommit:DeleteRepository
+      - codecommit:TagResource
+      - codecommit:ListTagsForResource
+    Resource:
+      - !Sub arn:aws:codecommit:${AWS::Region}:${AWS::AccountId}:${Env}*
+  - Effect: Allow
+    Action:
+      - codebuild:CreateProject
+      - codebuild:DeleteProject
+      - codebuild:BatchGetProjects
+    Resource:
+      - !Sub arn:aws:codebuild:${AWS::Region}:${AWS::AccountId}:project/${Env}*
+  - Effect: Allow
+    Action:
+      - codepipeline:CreatePipeline
+      - codepipeline:UpdatePipeline
+      - codepipeline:DeletePipeline
+      - codepipeline:GetPipeline
+      - codepipeline:GetPipelineState
+      - codepipeline:ListPipelineExecutions
+      - codepipeline:ListTagsForResource
+      - codepipeline:TagResource
+    Resource:
+      - !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${Env}*

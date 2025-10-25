@@ -1,0 +1,92 @@
+Version: "2012-10-17"
+Statement:
+  - Effect: Allow
+    Action:
+      - eks:*
+      - ec2:CreateLaunchTemplate
+      - ec2:DeleteLaunchTemplate
+      - sts:GetCallerIdentity
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - cloudformation:CreateStack
+    Resource:
+      - !Sub arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/eksctl-${Env}*
+    Condition:
+      "Null":
+        cloudformation:RoleARN: "true"
+  - Effect: Allow
+    Action:
+      - cloudformation:DeleteStack
+    Resource:
+      - !Sub arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/eksctl-${Env}*
+    Condition:
+      "Null":
+        cloudformation:RoleARN: "true"
+  - Effect: Allow
+    Action:
+      - cloudformation:Get*
+      - cloudformation:Describe*
+      - cloudformation:List*
+      - cloudformation:TagResource
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - autoscaling:UpdateAutoScalingGroup
+    Resource: ["*"]
+    Condition:
+      StringLike:
+        aws:ResourceTag/eks:cluster-name:
+          - ${Env}
+  - Effect: Allow
+    Action:
+      - autoscaling:Get*
+      - autoscaling:Describe*
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - ecr-public:GetAuthorizationToken
+      - sts:GetServiceBearerToken
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - kms:CreateKey
+      - kms:TagResource
+      - kms:ScheduleKeyDeletion
+      - kms:CreateGrant
+      - kms:EnableKeyRotation
+      - kms:GetKeyPolicy
+      - kms:GetKeyRotationStatus
+      - kms:ListResourceTags
+      - kms:PutKeyPolicy
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - kms:Decrypt
+      - kms:DescribeKey
+      - kms:EnableKeyRotation
+      - kms:Encrypt
+      - kms:GenerateDataKey
+      - kms:GenerateDataKeyWithoutPlaintext
+    Resource: ["*"]
+    Condition:
+      StringLike:
+        kms:RequestAlias: ["alias/${Env}*", "alias/eks/${Env}*"]
+  - Effect: Allow
+    Action:
+      - kms:CreateAlias
+      - kms:DeleteAlias
+    Resource:
+      - !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:alias/${Env}*
+      - !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:alias/eks/${Env}*
+      - !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*
+  - Effect: Allow
+    Action:
+      - kms:List*
+      - kms:Get*
+      - kms:Describe*
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - ssm:GetParameter
+    Resource: !Sub arn:aws:ssm:${AWS::Region}::parameter/aws/service/*

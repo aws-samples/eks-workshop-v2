@@ -37,3 +37,19 @@ node_modules
 test-output
 
 terraform-resources
+
+package-lock.json
+
+# Yarn files
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv

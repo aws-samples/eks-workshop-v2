@@ -5,17 +5,17 @@ metadata:
   name: allow-ui-egress
 spec:
   podSelector:
-    matchLabels: 
+    matchLabels:
       app.kubernetes.io/name: ui
   policyTypes:
     - Egress
   egress:
     - to:
-        - namespaceSelector: 
+        - namespaceSelector:
             matchLabels:
           podSelector:
-            matchLabels: 
+            matchLabels:
               app.kubernetes.io/component: service
-        - namespaceSelector: 
+        - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: kube-system

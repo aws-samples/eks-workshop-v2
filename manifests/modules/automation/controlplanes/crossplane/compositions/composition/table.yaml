@@ -45,7 +45,7 @@ spec:
             writeConnectionSecretToRef:
               name: cartsdynamo
               namespace: crossplane-system
-            region: ''
+            region: ""
           providerConfigRef:
             name: aws-provider-config
       patches:
@@ -75,7 +75,7 @@ spec:
           toFieldPath: spec.forProvider.rangeKey
         - type: FromCompositeFieldPath
           fromFieldPath: spec.dynamoConfig.readCapacity
-          toFieldPath: spec.forProvider.readCapacity 
+          toFieldPath: spec.forProvider.readCapacity
         - type: FromCompositeFieldPath
           fromFieldPath: spec.dynamoConfig.writeCapacity
           toFieldPath: spec.forProvider.writeCapacity
@@ -87,7 +87,7 @@ spec:
           toFieldPath: spec.forProvider.globalSecondaryIndex[0].hashKey
         - type: FromCompositeFieldPath
           fromFieldPath: spec.dynamoConfig.globalSecondaryIndex[0].projectionType
-          toFieldPath: spec.forProvider.globalSecondaryIndex[0].projectionType  
+          toFieldPath: spec.forProvider.globalSecondaryIndex[0].projectionType
           policy:
             mergeOptions:
               keepMapValues: true

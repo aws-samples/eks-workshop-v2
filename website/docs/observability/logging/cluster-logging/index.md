@@ -1,10 +1,11 @@
 ---
 title: "Control plane logs"
 sidebar_position: 10
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
+description: "Capture and analyze Amazon Elastic Kubernetes Service control plane logs for auditing and diagnostics."
 ---
 
-{{% required-time %}}
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:
@@ -23,8 +24,8 @@ When you use Amazon EKS control plane logging, you're charged standard Amazon EK
 
 The following cluster control plane log types are available. Each log type corresponds to a component of the Kubernetes control plane. To learn more about these components, see Kubernetes Components in the [Kubernetes documentation](https://kubernetes.io/docs/concepts/overview/components/)
 
-- **Kubernetes API server component logs (api)** – Your cluster's API server is the control plane component that exposes the Kubernetes API. 
-- **Audit (audit)** – Kubernetes audit logs provide a record of the individual users, administrators, or system components that have affected your cluster. 
-- **Authenticator (authenticator)** – Authenticator logs are unique to Amazon EKS. These logs represent the control plane component that Amazon EKS uses for Kubernetes [Role Based Access Control](https://kubernetes.io/docs/admin/authorization/rbac/) (RBAC) authentication using IAM credentials. 
-- **Controller manager (controllerManager)** – The controller manager manages the core control loops that are shipped with Kubernetes. 
-- **Scheduler (scheduler)** – The scheduler component manages when and where to run pods in your cluster. 
+- **Kubernetes API server component logs (api)** – Your cluster's API server is the control plane component that exposes the Kubernetes API.
+- **Audit (audit)** – Kubernetes audit logs provide a record of the individual users, administrators, or system components that have affected your cluster.
+- **Authenticator (authenticator)** – Authenticator logs are unique to Amazon EKS. These logs represent the control plane component that Amazon EKS uses for Kubernetes [Role Based Access Control](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) (RBAC) authentication using IAM credentials.
+- **Controller manager (controllerManager)** – The controller manager manages the core control loops that are shipped with Kubernetes.
+- **Scheduler (scheduler)** – The scheduler component manages when and where to run pods in your cluster.

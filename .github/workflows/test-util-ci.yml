@@ -1,36 +1,37 @@
-name: Test Utility CI
+name: Pull Request (Test Utility)
 
 on:
   workflow_dispatch:
   pull_request:
     branches:
-    - main
+      - main
     paths:
-    - test/util/**
+      - testing/util/**
 
 jobs:
   test:
+    name: Test Utility CI
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - name: Use Node.js ${{ env.node_version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ env.node_version }}
-        registry-url: 'https://registry.npmjs.org'
-    - name: Install NPM packages
-      working-directory: test/util
-      run: npm ci
-    - name: Build
-      working-directory: test/util
-      run: npm run build
-    - name: Run unit tests
-      working-directory: test/util
-      run: |
-        npm test
-    - name: Run test content
-      working-directory: test/util
-      run: |
-        npm run exec -- test ./test-content
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Use Node.js ${{ env.node_version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node_version }}
+          registry-url: "https://registry.npmjs.org"
+      - name: Install NPM packages
+        working-directory: testing/util
+        run: npm ci
+      - name: Build
+        working-directory: testing/util
+        run: npm run build
+      - name: Run unit tests
+        working-directory: testing/util
+        run: |
+          npm test
+      - name: Run test content
+        working-directory: testing/util
+        run: |
+          npm run exec -- test ./test-content

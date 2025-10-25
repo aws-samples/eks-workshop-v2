@@ -32,47 +32,19 @@ spec:
           env:
             - name: JAVA_OPTS
               value: -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
-            - name: SPRING_DATASOURCE_WRITER_URL
-              valueFrom:
-                secretKeyRef:
-                  name: orders-db
-                  key: url
-            - name: SPRING_DATASOURCE_WRITER_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: orders-db
-                  key: username
-            - name: SPRING_DATASOURCE_WRITER_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: orders-db
-                  key: password
-            - name: SPRING_DATASOURCE_READER_URL
-              valueFrom:
-                secretKeyRef:
-                  name: orders-db
-                  key: url
-            - name: SPRING_DATASOURCE_READER_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: orders-db
-                  key: username
-            - name: SPRING_DATASOURCE_READER_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: orders-db
-                  key: password
           envFrom:
+            - secretRef:
+                name: orders-db
             - configMapRef:
                 name: orders
           securityContext:
             capabilities:
               drop:
-              - ALL
+                - ALL
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 1000
-          image: "public.ecr.aws/aws-containers/retail-store-sample-orders:0.4.0"
+          image: "public.ecr.aws/aws-containers/retail-store-sample-orders:1.2.1"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

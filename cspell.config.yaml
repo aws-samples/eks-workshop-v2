@@ -1,0 +1,22 @@
+patterns:
+  - name: markdown_code_block
+    pattern: "/^```[\\s\\S]*?^\\s*```/gm"
+  - name: markdown_code_snippet
+    pattern: "/`(.*)`/g"
+  - name: browser_block
+    pattern: "/<Browser.*>[\\s\\S]*?^\\s*<\\/Browser>/gm"
+  - name: yaml_block
+    pattern: "/::yaml.*/g"
+languageSettings:
+  - languageId: markdown
+    ignoreRegExpList:
+      - markdown_code_block
+      - markdown_code_snippet
+      - browser_block
+      - yaml_block
+dictionaries:
+  - custom-words
+dictionaryDefinitions:
+  - name: custom-words
+    path: "./.spelling"
+    addWords: true

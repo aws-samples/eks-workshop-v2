@@ -32,8 +32,8 @@ spec:
                     deletionPolicy:
                       description: Defaults to Delete
                       enum:
-                      - Delete
-                      - Orphan
+                        - Delete
+                        - Orphan
                       type: string
                     name:
                       type: string
@@ -42,14 +42,14 @@ spec:
                       default: aws-provider-config
                     region:
                       type: string
-                      default: ''
+                      default: ""
                     tags:
                       additionalProperties:
                         type: string
                       description: Key-value map of resource tags.
                       type: object
                   required:
-                  - region                    
+                    - region
                   type: object
                 dynamoConfig:
                   properties:
@@ -60,13 +60,13 @@ spec:
                             type: string
                           type:
                             enum:
-                            - B #binary
-                            - N #number
-                            - S #string
+                              - B #binary
+                              - N #number
+                              - S #string
                             type: string
                         required:
-                        - name
-                        - type
+                          - name
+                          - type
                         type: object
                       type: array
                     hashKey:
@@ -79,14 +79,14 @@ spec:
                     readCapacity:
                       type: number
                     writeCapacity:
-                      type: number              
+                      type: number
                     globalSecondaryIndex:
                       items:
                         properties:
                           hashKey:
                             type: string
                           name:
-                            type: string  
+                            type: string
                           rangeKey:
                             type: string
                           readCapacity:
@@ -108,7 +108,7 @@ spec:
                       items:
                         properties:
                           name:
-                            type: string  
+                            type: string
                           rangeKey:
                             type: string
                           projectionType:
@@ -125,10 +125,10 @@ spec:
                           - nonKeyAttributes
                       type: array
                   required:
-                  - attribute
+                    - attribute
                   type: object
               required:
-              - dynamoConfig    
+                - dynamoConfig
             status:
               type: object
               description: TableStatus defines the observed state of Table
@@ -140,4 +140,4 @@ spec:
                   description: Indicates this table's Name
                   type: string
           required:
-          - spec
+            - spec

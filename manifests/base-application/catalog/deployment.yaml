@@ -29,28 +29,19 @@ spec:
         fsGroup: 1000
       containers:
         - name: catalog
-          env:
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: catalog-db
-                  key: username
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: catalog-db
-                  key: password
           envFrom:
             - configMapRef:
                 name: catalog
+            - secretRef:
+                name: catalog-db
           securityContext:
             capabilities:
               drop:
-              - ALL
+                - ALL
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 1000
-          image: "public.ecr.aws/aws-containers/retail-store-sample-catalog:0.4.0"
+          image: "public.ecr.aws/aws-containers/retail-store-sample-catalog:1.2.1"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

@@ -1,0 +1,105 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Creates an IAM role for the EKS workshop IDE
+Resources:
+  EksWorkshopIdeRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ${Env}-ide-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action:
+              - sts:AssumeRole
+
+  EksWorkshopIamPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${Env}-ide-iam
+      PolicyDocument:
+        file: ./iam/policies/iam.yaml
+
+  EksWorkshopBasePolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${Env}-ide-base
+      PolicyDocument:
+        file: ./iam/policies/base.yaml
+
+  EksWorkshopEc2Policy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${Env}-ide-ec2
+      PolicyDocument:
+        file: ./iam/policies/ec2.yaml
+
+  EksWorkshopSsmPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${Env}-ide-ssm
+      PolicyDocument:
+        file: ./iam/policies/ssm.yaml
+
+  EksWorkshopLabsPolicy1:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${Env}-ide-labs1
+      PolicyDocument:
+        file: ./iam/policies/labs1.yaml
+
+  EksWorkshopLabsPolicy2:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${Env}-ide-labs2
+      PolicyDocument:
+        file: ./iam/policies/labs2.yaml
+  EksWorkshopLabsPolicy3:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${Env}-ide-labs3
+      PolicyDocument:
+        file: ./iam/policies/labs3.yaml
+
+  EksWorkshopLabsPolicy4:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${Env}-ide-labs4
+      PolicyDocument:
+        file: ./iam/policies/labs4.yaml
+
+  EksWorkshopTroubleshootPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${Env}-ide-troubleshoot
+      PolicyDocument:
+        file: ./iam/policies/troubleshoot.yaml

@@ -1,0 +1,50 @@
+name: Test - CloudFormation
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  test:
+    if: github.repository == 'aws-samples/eks-workshop-v2'
+    name: run-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+      - name: Set cluster ID
+        env:
+          RUN_ID: "${{ github.job }}"
+          AWS_REGION: "${{ secrets.AWS_REGION }}"
+        run: |
+          CLUSTER_ID=$(echo $RANDOM | md5sum | head -c 8)
+          echo "Using cluster ID ${CLUSTER_ID}"
+          echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
+      - name: Set branch name
+        run: echo "TEST_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
+      - name: Get AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4.3.1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-duration-seconds: 3600
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GithubActionsSession-${{ env.CLUSTER_ID }}
+      - name: Deploy
+        id: deploy
+        env:
+          AWS_REGION: "${{ secrets.AWS_REGION }}"
+          CLUSTER_ID: "${{ env.CLUSTER_ID }}"
+        run: |
+          make deploy-ide environment="${CLUSTER_ID}"
+      - name: Cleanup
+        if: always()
+        env:
+          AWS_REGION: "${{ secrets.AWS_REGION }}"
+          CLUSTER_ID: "${{ env.CLUSTER_ID }}"
+        run: |
+          make destroy-ide environment="${CLUSTER_ID}"

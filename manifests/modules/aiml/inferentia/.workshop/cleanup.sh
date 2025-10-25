@@ -2,24 +2,16 @@
 
 set -e
 
-echo "Deleting AIML resources..."
+logmessage "Deleting inferentia namespaces..."
 
-kubectl delete namespace aiml > /dev/null
+kubectl delete namespace aiml --ignore-not-found
 
-echo "Deleting Karpenter NodePool and EC2NodeClass..."
+logmessage "Deleting Neuron Device Plugin..."
 
-kubectl delete nodepool --all > /dev/null
-kubectl delete ec2nodeclass --all > /dev/null
+kubectl delete -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.20.0/src/k8/k8s-neuron-device-plugin-rbac.yml --ignore-not-found
+kubectl delete -f https://raw.githubusercontent.com/aws-neuron/aws-neuron-sdk/v2.20.0/src/k8/k8s-neuron-device-plugin.yml --ignore-not-found
 
-echo "Waiting for Karpenter nodes to be removed..."
+logmessage "Deleting Karpenter resources..."
 
-EXIT_CODE=0
-
-timeout --foreground -s TERM 30 bash -c \
-    'while [[ $(kubectl get nodes --selector=type=karpenter -o json | jq -r ".items | length") -gt 0 ]];\
-    do sleep 5;\
-    done' || EXIT_CODE=$?
-
-if [ $EXIT_CODE -ne 0 ]; then
-  echo "Warning: Karpenter nodes did not clean up"
-fi
+delete-all-if-crd-exists nodepools.karpenter.sh
+delete-all-if-crd-exists ec2nodeclasses.karpenter.k8s.aws

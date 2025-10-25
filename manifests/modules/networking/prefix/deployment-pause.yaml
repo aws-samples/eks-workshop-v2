@@ -14,5 +14,5 @@ spec:
         run: pause-pods-prefix
     spec:
       containers:
-      - name: reserve-resources
-        image: registry.k8s.io/pause
+        - name: reserve-resources
+          image: registry.k8s.io/pause

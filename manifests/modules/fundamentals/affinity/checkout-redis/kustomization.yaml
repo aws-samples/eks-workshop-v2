@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- ../checkout
+  - ../checkout
 patches:
-- path: checkout-redis.yaml
-- path: checkout.yaml
+  - path: checkout-redis.yaml
+  - path: checkout.yaml

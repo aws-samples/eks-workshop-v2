@@ -1,0 +1,5 @@
+podAnnotations:
+  my-annotation: my-value
+
+app:
+  theme: orange

@@ -1,0 +1,48 @@
+name: Publish Content
+
+on:
+  push:
+    branches:
+      - stable
+  workflow_dispatch: {}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    name: publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Get kubectl version
+        run: |
+          source hack/lib/kubectl-version.sh
+          echo "Using kubectl ${KUBECTL_VERSION}"
+          echo "KUBECTL_VERSION=$KUBECTL_VERSION" >> $GITHUB_ENV
+      - uses: azure/setup-kubectl@v4
+        with:
+          version: "${{ env.KUBECTL_VERSION }}"
+        id: install
+      - name: Get AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4.3.1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-duration-seconds: 900
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GithubActionsSession-publish
+      - name: Run publish
+        env:
+          CONTENT_BUCKET: "${{ secrets.CONTENT_BUCKET }}"
+          CONTENT_CLOUDFRONT: "${{ secrets.CONTENT_CLOUDFRONT }}"
+          BRANCH: stable
+          ENABLE_INDEX: 1
+          SHOW_NOTIFICATION: 1
+        run: |
+          bash hack/publish-content.sh

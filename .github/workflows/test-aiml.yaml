@@ -3,15 +3,20 @@ name: Test - AIML
 on:
   workflow_dispatch:
   schedule:
-  - cron: '0 7 * * 3'
+    - cron: "0 7 * * 3"
 
 permissions:
   id-token: write
   contents: read
 
 jobs:
-  test-module:
+  test-inferentia:
     uses: ./.github/workflows/module-test.yaml
     with:
-      module: aiml
+      glob: aiml/inferentia
+    secrets: inherit
+  test-llm:
+    uses: ./.github/workflows/module-test.yaml
+    with:
+      glob: aiml/chatbot
     secrets: inherit

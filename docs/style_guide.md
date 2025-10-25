@@ -2,6 +2,134 @@
 
 This document provides a style guide that should be used when creating or modifying content for the workshop in order to maintain a consistent experience throughout the content.
 
+## General content
+
+### Web IDE
+
+The users of the content will be interacting with it through a web IDE, such as VSCode. Any references to this IDE should ALWAYS use "web IDE" or "IDE" and never specific terminology such as VSCode, Cloud9 or code-server.
+
+### Use admonitions
+
+Use appropriate [Docusaurus admonitions](https://docusaurus.io/docs/markdown-features/admonitions) to call out relevant information.
+
+```markdown
+:::info
+
+Use info blocks for additional information
+
+:::
+
+:::caution
+
+Caution blocks also available
+
+:::
+
+:::note
+
+Note blocks are available
+
+:::
+```
+
+### Badges
+
+To mark your module as an independent module that users can begin with, place the following in the header of your markdown file:
+
+```
+---
+...
+sidebar_custom_props: {"module": true}
+---
+```
+
+To mark your module as informational, with no actionable steps, place the following in the header of your markdown file:
+
+```
+---
+...
+sidebar_custom_props: {"info": true}
+---
+```
+
+To mark your module as external content, which at the moment is only used for other AWS workshops, place the following in the header of your markdown file:
+
+```
+---
+...
+sidebar_custom_props:
+  {
+    "explore": "https://<external link here>"
+  }
+---
+```
+
+To mark your module as optional:
+```
+---
+...
+sidebar_custom_props:  { "optional": "true" }
+---
+```
+
+### Navigating the AWS console
+
+There are instances where the user needs to navigate to specific screens in the AWS console. It is preferable to provide a link to the exact screen if possible, or a close as can be done.
+
+For example to link to the EKS console you can use a link like this:
+
+```
+https://console.aws.amazon.com/eks/home#/clusters
+```
+
+> Note that this has had the region information removed, the link as shown in the browser would be: `https://us-west-2.console.aws.amazon.com/eks/home?region=us-west-2#/clusters`. The region must be removed to allow the content to be portable.
+
+These links should be displayed to the user with the [Console button component](./ui_components.md) for consistency.
+
+### Screenshots
+
+Use of screenshots should be limited to only wherever necessary. Where possible command-line output should be used as it is more maintainable and testable. When screenshots are necessary only the relevant section of the screen should be included as it reduces image size and makes the images more legible, especially for users with limited screen resolution. Screenshots should be cropped to display only the necessary details.
+
+## Technical Terminology
+
+Any references to command line tools should always use inline code fence to reference the name when used in paragraphs or sentences. For example `aws`, `kubectl` or `eksctl`. If the technology is being referred to more abstracted then use that name is it usually appears.
+
+For example:
+
+Abstract: "We'll be using Terraform to manage our infrastructure automation"
+
+Command-line: "Lets run the `terraform` tool to create our infrastructure"
+
+### Containers Terminology
+
+Containers images should be referred to using this term. Any references to "Docker image" should instead use "container image".
+
+### Kubernetes Terminology
+
+Kubernetes uses the word resource to refer to API resources. For example, the URL path `/apis/apps/v1/namespaces/default/deployments/my-app` represents a Deployment named "my-app" in the "default" namespace. In HTTP jargon, namespace is a resource - the same way that all web URLs identify a resource.
+
+Kubernetes documentation also uses "resource" to talk about CPU and memory requests and limits. It's very often a good idea to refer to API resources as "API resources"; that helps to avoid confusion with CPU and memory resources, or with other kinds of resource.
+
+The different Kubernetes API terminologies are:
+
+- API kinds: the name used in the API URL (such as pods, namespaces). API kinds are sometimes also called resource types.
+- API resource: a single instance of an API kind (such as pod, secret).
+- Object: a resource that serves as a "record of intent". An object is a desired state for a specific part of your cluster, which the Kubernetes control plane tries to maintain. All objects in the Kubernetes API are also resources.
+
+For clarity, you can add "resource" or "object" when referring to an API resource in Kubernetes documentation. An example: write "a Secret object" instead of "a Secret". If it is clear just from the capitalization, you don't need to add the extra word.
+
+Consider rephrasing when that change helps avoid misunderstandings. A common situation is when you want to start a sentence with an API kind, such as “Secret”; because English and other languages capitalize at the start of sentences, readers cannot tell whether you mean the API kind or the general concept. Rewording can help.
+
+Always format API resource names using UpperCamelCase, also known as PascalCase. Do not write API kinds with code formatting.
+
+Don't split an API object name into separate words. For example, use PodTemplateList, not Pod Template List.
+
+For example:
+
+- Use "Pod" not "pod"
+- Use "StatefulSet" not "statefulset" or "stateful set"
+- Use "PodDisruptionBudget" or "PDB" not "Pod Disruption Budget"
+
 ## Scripts/Commands
 
 This section provides guidelines related to the commands and scripts learners are instructed to use during the workshop content.
@@ -122,7 +250,7 @@ $ kubectl exec -it deployment/example -- bash
 [root@b32a35acd6b6 /]$ curl localhost:8080
 Hello!
 [root@b32a35acd6b6 /]$ exit
-$ 
+$
 ```
 
 It is preferable to use this:
@@ -140,7 +268,6 @@ Sometimes it is tempting to execute a long-running command in one window and ins
 1. It can be confusing for the learner to switch between multiple windows
 2. Contextual information like environment variables can get lost in new windows
 3. It is more difficult to test
-
 
 ### Referencing external manifests or components
 
@@ -165,6 +292,7 @@ Notice we changed from referring to `master` to referring to the tag `v0.0.86`.
 ### Referencing existing AWS infrastructure in content
 
 It is common in workshop content to reference various AWS infrastructure that has been build by the Terraform configuration provided. Some examples of this include:
+
 - Getting the cluster name to reference in a Kubernetes manifest
 - Modifying EKS managed node group configuration by name
 
@@ -176,36 +304,4 @@ An example of using this would look like so:
 
 ```
 $ aws eks describe-cluster --name $EKS_CLUSTER_NAME
-```
-
-### Info and Caution Blocks
-
-:::Info
-Use info blocks for additional information
-:::
-
-:::Caution
-Caution blocks also available
-:::
-
-:::Note
-Note blocks are available
-:::
-
-### Badges
-
-To mark your module as an independent module that users can begin with, place the following in the header of your markdown file:
-```
----
-...
-sidebar_custom_props: {"module": true}
----
-```
-
-To mark your module as informational, with no actionable steps, place the following in the header of your markdown file:
-```
----
-...
-sidebar_custom_props: {"info": true}
----
 ```

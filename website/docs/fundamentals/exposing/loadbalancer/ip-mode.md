@@ -7,7 +7,21 @@ As mentioned previously, the NLB we have created is operating in "instance mode"
 
 The AWS Load Balancer Controller also supports creating NLBs operating in "IP mode". In this mode, the AWS NLB sends traffic directly to the Kubernetes pods behind the service, eliminating the need for an extra network hop through the worker nodes in the Kubernetes cluster. IP target mode supports pods running on both AWS EC2 instances and AWS Fargate.
 
-![IP mode](./assets/ip-mode.png)
+![IP mode](./assets/ip-mode.webp)
+
+The previous diagram explains how application traffic flows differently when the target group mode is instance and IP.
+
+When the target group mode is instance, the traffic flows via a node port created for a service on each node. In this mode, `kube-proxy` routes the traffic to the pod running this service. The service pod could be running in a different node than the node that received the traffic from the load balancer. ServiceA (green) and ServiceB (pink) are configured to operate in "instance mode".
+
+Alternatively, when the target group mode is IP, the traffic flows directly to the service pods from the load balancer. In this mode, we bypass a network hop of `kube-proxy`. ServiceC (blue) is configured to operate in "IP mode".
+
+The numbers in the previous diagram represents the following things.
+
+1. The EKS cluster where the services are deployed
+2. The ELB instance exposing the service
+3. The target group mode configuration that can be either instance or IP
+4. The listener protocols configured for the load balancer on which the service is exposed
+5. The target group rule configuration used to determine the service destination
 
 There are several reasons why we might want to configure the NLB to operate in IP target mode:
 
@@ -129,5 +143,6 @@ As expected we now have 3 targets, matching the number of replicas in the ui Dep
 If you want to wait to make sure the application still functions the same, run the following command. Otherwise you can proceed to the next module.
 
 ```bash timeout=240
-$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
+  -k $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 ```

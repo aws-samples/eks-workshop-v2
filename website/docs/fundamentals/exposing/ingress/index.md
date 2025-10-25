@@ -2,10 +2,11 @@
 title: "Ingress"
 chapter: true
 sidebar_position: 40
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
+description: "Expose HTTP and HTTPS routes to the outside world using Ingress API on Amazon Elastic Kubernetes Service."
 ---
 
-{{% required-time %}}
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:
@@ -15,7 +16,10 @@ $ prepare-environment exposing/ingress
 ```
 
 This will make the following changes to your lab environment:
-- Install the AWS Load Balancer Controller in the Amazon EKS cluster
+
+- Create an IAM role required by the AWS Load Balancer Controller
+- Create an IAM role required by ExternalDNS
+- Create an AWS Route 53 private hosted zone
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/exposing/ingress/.workshop/terraform).
 

@@ -1,15 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: assets
+  name: pss
 spec:
   template:
     spec:
       containers:
-        - name: assets
-          securityContext:   
+        - name: pss
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
             runAsNonRoot: true
-            runAsUser: 999
+            runAsUser: 1000
             allowPrivilegeEscalation: false
             seccompProfile:
               type: RuntimeDefault

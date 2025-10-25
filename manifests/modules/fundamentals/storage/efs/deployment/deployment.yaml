@@ -1,23 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: assets
+  name: ui
 spec:
   replicas: 2
   template:
     spec:
-      initContainers:
-       - name: copy
-         image: "public.ecr.aws/aws-containers/retail-store-sample-assets:0.4.0"
-         command: ["/bin/sh", "-c", "cp -R /usr/share/nginx/html/assets/* /efsvolume"]
-         volumeMounts:
-         - name: efsvolume
-           mountPath: /efsvolume
       containers:
-      - name: assets
-        volumeMounts:
-        - name: efsvolume
-          mountPath: /usr/share/nginx/html/assets
+        - name: ui
+          volumeMounts:
+            - name: efsvolume
+              mountPath: /efs
+          env:
+            - name: RETAIL_UI_PRODUCT_IMAGES_PATH
+              value: /efs
       volumes:
         - name: efsvolume
           persistentVolumeClaim:

@@ -3,9 +3,10 @@ title: "Inference with AWS Inferentia"
 sidebar_position: 10
 chapter: true
 sidebar_custom_props: { "module": true }
+description: "Use AWS Inferentia to accelerate deep learning inference workloads on Amazon Elastic Kubernetes Service."
 ---
 
-{{% required-time estimatedLabExecutionTimeMinutes="15" %}}
+::required-time
 
 :::tip Before you start
 Prepare your environment for this section:
@@ -25,18 +26,19 @@ You can view the Terraform that applies these changes [here](https://github.com/
 
 :::
 
-[AWS Inferentia](https://aws.amazon.com/machine-learning/inferentia/?nc1=h_ls) is the purpose-built accelerator designed to accelerate deep learning workloads.
+AWS [Trainium](https://aws.amazon.com/machine-learning/trainium/) and [Inferentia](https://aws.amazon.com/machine-learning/inferentia/) are custom-built machine learning accelerators designed by Amazon to accelerate and optimize AI model training and inference tasks, respectively, in cloud computing environments.
 
-Inferentia has processing cores called Neuron Cores, which have high-speed access to models stored in on-chip memory.
+AWS Neuron is the software development kit (SDK) and runtime that enables developers to optimize and run machine learning models on both Trainium and Inferentia chips. Neuron provides a unified software interface for these custom AI accelerators, allowing developers to take advantage of their performance benefits without having to rewrite their code for each specific chip architecture.
 
-You can easily use the accelerator on EKS. The Neuron device plugin exposes Neuron cores and devices to Kubernetes as a resource. When your workloads require Neuron cores, the Kubernetes scheduler can assign the Inferentia node to the workloads. You can even provision the node automatically using Karpenter.
+The Neuron device plugin exposes Neuron cores and devices to Kubernetes as a resource. When your workloads require Neuron cores, the Kubernetes scheduler can assign the appropriate node to the workloads. You can even provision the node automatically using Karpenter.
 
 This lab provides a tutorial on how to use Inferentia to accelerate deep learning inference workloads on EKS.
+
 In this lab we will:
 
-1. Compile a ResNet-50 pre-trained model for use with AWS Inferentia
-2. Upload this model to an S3 Bucket for later use
-3. Create a Karpenter NodePool to provision Inferentia EC2 instances
+1. Create a Karpenter node pool to provision Inferentia and Trainium EC2 instances
+2. Compile a ResNet-50 pre-trained model for use with AWS Inferentia using a Trainium instance
+3. Upload this model to an S3 Bucket for later use
 4. Launch an inference Pod that uses our previous model to run our inference against
 
 Let's get started.

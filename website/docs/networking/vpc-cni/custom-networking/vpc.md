@@ -5,7 +5,7 @@ sidebar_position: 5
 
 We can start by inspecting the VPC that has been set up. For example describe the VPC:
 
-```bash wait=30
+```bash
 $ aws ec2 describe-vpcs --vpc-ids $VPC_ID
 {
     "Vpcs": [
@@ -59,11 +59,11 @@ Here we see there are two CIDR ranges associated with the VPC:
 
 You can also view this in the AWS console:
 
-https://console.aws.amazon.com/vpc/home#vpcs:tag:created-by=eks-workshop-v2
+<ConsoleButton url="https://console.aws.amazon.com/vpc/home#vpcs:tag:created-by=eks-workshop-v2" service="vpc" label="Open VPC console"/>
 
 Describing the subnets associated with the VPC will show 9 subnets:
 
-```bash wait=30
+```bash
 $ aws ec2 describe-subnets --filters "Name=tag:created-by,Values=eks-workshop-v2" \
   --query "Subnets[*].CidrBlock"
 [
@@ -85,10 +85,10 @@ These are split between:
 - Private subnets: One for each availability zones using a CIDR block from the primary CIDR range
 - Secondary private subnets: One for each availability zones using a CIDR block from the **secondary** CIDR range
 
-![VPC subnet architecture](./assets/vpc-secondary-networking.png)
+![VPC subnet architecture](./assets/vpc-secondary-networking.webp)
 
 You can view these subnets in the AWS console:
 
-https://console.aws.amazon.com/vpc/home#subnets:tag:created-by=eks-workshop-v2;sort=desc:CidrBlock
+<ConsoleButton url="https://console.aws.amazon.com/vpc/home#subnets:tag:created-by=eks-workshop-v2;sort=desc:CidrBlock" service="vpc" label="Open VPC console"/>
 
 Currently our pods are leveraging the private subnets `10.42.96.0/19`, `10.42.128.0/19` and `10.42.160.0/19`. In this lab exercise, we'll move them to consume IP addresses from the `100.64` subnets.

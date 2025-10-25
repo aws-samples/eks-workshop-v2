@@ -2,11 +2,10 @@
 
 set -e
 
-echo "Deleting Security Group policies..."
+logmessage "Deleting Security Group policies..."
 
-kubectl delete SecurityGroupPolicy --all -A > /dev/null
+kubectl delete SecurityGroupPolicy --all -A
 
-sleep 5
+sleep 30
 
-# Clear the catalog pods so the SG can be deleted
-kubectl rollout restart -n catalog deployment/catalog > /dev/null
+kubectl delete namespace catalog

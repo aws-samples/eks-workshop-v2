@@ -8,16 +8,6 @@ set -Eeuo pipefail
 # You can run script with finch like CONTAINER_CLI=finch ./shell.sh <terraform_context> <shell_command>
 CONTAINER_CLI=${CONTAINER_CLI:-docker}
 
-# Right now the container images are only designed for amd64
-export DOCKER_DEFAULT_PLATFORM=linux/amd64
-
-AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-""}
-
-if [ ! -z "$AWS_DEFAULT_REGION" ]; then
-  echo "Error: AWS_DEFAULT_REGION must be set"
-  exit 1
-fi
-
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 source $SCRIPT_DIR/lib/common-env.sh
@@ -28,22 +18,28 @@ container_image='eks-workshop-environment'
 
 (cd $SCRIPT_DIR/../lab && $CONTAINER_CLI build -q -t $container_image .)
 
-aws_credential_args=""
+source $SCRIPT_DIR/lib/generate-aws-creds.sh
 
-ASSUME_ROLE=${ASSUME_ROLE:-""}
+interactive_args=""
 
-if [ ! -z "$ASSUME_ROLE" ]; then
-  source $SCRIPT_DIR/lib/generate-aws-creds.sh
-
-  aws_credential_args="-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN"
+if [ -z "$shell_command" ]; then
+  echo "Starting shell in container..."
+  interactive_args="-it"
+else
+  echo "Executing command in container..."
 fi
 
-command_args=""
+dns_args=""
 
-echo "Starting shell in container..."
+DOCKER_DNS_OVERRIDE=${DOCKER_DNS_OVERRIDE:-""}
 
-$CONTAINER_CLI run --rm -it \
-  -v $SCRIPT_DIR/../manifests:/manifests \
+if [ ! -z "$DOCKER_DNS_OVERRIDE" ]; then
+  dns_args="--dns=$DOCKER_DNS_OVERRIDE"
+fi
+
+$CONTAINER_CLI run --rm $interactive_args $dns_args \
+  -v $SCRIPT_DIR/../manifests:/eks-workshop/manifests \
   -v $SCRIPT_DIR/../cluster:/cluster \
-  -e 'EKS_CLUSTER_NAME' -e 'AWS_REGION' \
+  -e 'EKS_CLUSTER_NAME' -e 'EKS_CLUSTER_AUTO_NAME' -e 'AWS_REGION' \
+  -p 8889:8889 \
   $aws_credential_args $container_image $shell_command

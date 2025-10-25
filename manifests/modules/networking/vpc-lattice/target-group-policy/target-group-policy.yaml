@@ -1,0 +1,23 @@
+apiVersion: application-networking.k8s.aws/v1alpha1
+kind: TargetGroupPolicy
+metadata:
+  name: checkout-policy
+  namespace: checkout
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: checkout
+  protocol: HTTP
+  protocolVersion: HTTP1
+  healthCheck:
+    enabled: true
+    intervalSeconds: 10
+    timeoutSeconds: 1
+    healthyThresholdCount: 3
+    unhealthyThresholdCount: 2
+    path: "/health"
+    port: 8080
+    protocol: HTTP
+    protocolVersion: HTTP1
+    statusMatch: "200"

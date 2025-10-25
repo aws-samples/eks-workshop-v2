@@ -1,0 +1,86 @@
+Version: "2012-10-17"
+Statement:
+  - Effect: Allow
+    Action:
+      - iam:CreateRole
+      - iam:GetRolePolicy
+      - iam:DetachRolePolicy
+      - iam:AttachRolePolicy
+      - iam:PutRolePolicy
+      - iam:DeleteRolePolicy
+      - iam:DeleteRole
+      - iam:ListInstanceProfilesForRole
+      - iam:ListAttachedRolePolicies
+      - iam:ListRolePolicies
+      - iam:TagRole
+      - iam:PassRole
+      - sts:AssumeRole
+      - iam:DeleteServiceLinkedRole
+      - iam:GetServiceLinkedRoleDeletionStatus
+    Resource:
+      - !Sub arn:aws:iam::${AWS::AccountId}:role/${Env}*
+      - !Sub arn:aws:iam::${AWS::AccountId}:role/eksctl-${Env}*
+      - !Sub arn:aws:iam::${AWS::AccountId}:role/aws-service-role/fis*
+  - Effect: Allow
+    Action:
+      - iam:CreatePolicy
+      - iam:DeletePolicy
+      - iam:GetPolicyVersion
+      - iam:DeletePolicyVersion
+      - iam:ListPolicyVersions
+      - iam:TagPolicy
+      - iam:GetPolicy
+    Resource:
+      - !Sub arn:aws:iam::${AWS::AccountId}:policy/${Env}*
+      - !Sub arn:aws:iam::${AWS::AccountId}:policy/eksctl-${Env}*
+  - Effect: Allow
+    Action:
+      - iam:CreateInstanceProfile
+      - iam:DeleteInstanceProfile
+      - iam:GetInstanceProfile
+      - iam:TagInstanceProfile
+      - iam:RemoveRoleFromInstanceProfile
+      - iam:AddRoleToInstanceProfile
+    Resource:
+      - !Sub arn:aws:iam::${AWS::AccountId}:instance-profile/${Env}*
+      - !Sub arn:aws:iam::${AWS::AccountId}:instance-profile/eksctl-${Env}*
+      - !Sub arn:aws:iam::${AWS::AccountId}:instance-profile/eks-*
+  - Effect: Allow
+    Action:
+      - iam:CreateUser
+      - iam:DeleteUser
+      - iam:TagUser
+      - iam:GetUser
+      - iam:ListGroupsForUser
+      - iam:AttachUserPolicy
+      - iam:DetachUserPolicy
+      - iam:ListAttachedUserPolicies
+      - iam:*SSHPublicKey
+    Resource:
+      - !Sub arn:aws:iam::${AWS::AccountId}:user/${Env}*
+  - Effect: Allow
+    Action:
+      - iam:ListOpenIDConnectProviders
+      - iam:CreateOpenIDConnectProvider
+      - iam:DeleteOpenIDConnectProvider
+      - iam:TagOpenIDConnectProvider
+      - iam:GetOpenIDConnectProvider
+      - iam:GetRole
+      - iam:ListPolicies
+      - iam:ListRoles
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - iam:CreateServiceLinkedRole
+    Resource: ["*"]
+    Condition:
+      StringEquals:
+        iam:AWSServiceName:
+          - eks.amazonaws.com
+          - eks-nodegroup.amazonaws.com
+          - eks-fargate.amazonaws.com
+          - guardduty.amazonaws.com
+          - spot.amazonaws.com
+          - fis.amazonaws.com
+          - transitgateway.amazonaws.com
+          - fsx.amazonaws.com

@@ -13,7 +13,7 @@ body:
         - Workshop Studio
     validations:
       required: true
-      
+
   - type: textarea
     id: problem
     attributes:

@@ -1,15 +1,15 @@
 apiVersion: trident.netapp.io/v1
 kind: TridentBackendConfig
 metadata:
-  name: backend-fsxn-ontap-nas
+  name: backend-tbc-ontap-nas
   namespace: trident
 spec:
   version: 1
-  backendName: backend-fsxn-ontap-
   storageDriverName: ontap-nas
-  managementLIF: ${FSXN_IP}
-  svm: fsxnsvm
-  autoExportPolicy: true
-  autoExportCIDRs: ["10.42.0.0/16","100.64.0.0/16"]
+  backendName: tbc-ontap-nas
+  svm: ${EKS_CLUSTER_NAME}-svm
+  aws:
+    fsxFilesystemID: ${FSXN_ID}
   credentials:
-    name: backend-fsxn-ontap-nas-secret
+    name: "${FSXN_SECRET_ARN}"
+    type: awsarn
