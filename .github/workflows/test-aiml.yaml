@@ -15,8 +15,8 @@ jobs:
     with:
       glob: aiml/inferentia
     secrets: inherit
-  test-chatbot:
+  test-llm:
     uses: ./.github/workflows/module-test.yaml
     with:
-      module: aiml/chatbot
+      glob: aiml/chatbot
     secrets: inherit

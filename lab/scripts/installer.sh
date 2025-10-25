@@ -3,33 +3,33 @@
 set -e
 
 # renovate: depName=kubernetes/kubernetes
-kubectl_version='1.30.6'
+kubectl_version='1.33.5'
 
 # renovate: depName=helm/helm
-helm_version='3.16.2'
+helm_version='3.19.0'
 
 # renovate: depName=eksctl-io/eksctl
-eksctl_version='0.190.0'
+eksctl_version='0.215.0'
 
 kubeseal_version='0.18.4'
 
 # renovate: depName=mikefarah/yq
-yq_version='4.44.3'
+yq_version='4.48.1'
 
 # renovate: depName=fluxcd/flux2
-flux_version='2.4.0'
+flux_version='2.7.2'
 
 # renovate: depName=argoproj/argo-cd
-argocd_version='2.12.6'
+argocd_version='2.14.20'
 
 # renovate: depName=hashicorp/terraform
-terraform_version='1.9.8'
+terraform_version='1.13.3'
 
 # renovate: depName=aws/amazon-ec2-instance-selector
-ec2_instance_selector_version='2.4.1'
+ec2_instance_selector_version='3.1.2'
 
 # renovate: depName=hatoo/oha
-oha_version='1.4.7'
+oha_version='1.10.0'
 
 download () {
   url=$1
@@ -87,7 +87,7 @@ mv ./linux-${arch_name}/helm /usr/local/bin
 rm -rf linux-${arch_name}/ helm.tar.gz
 
 # eksctl
-download "https://github.com/weaveworks/eksctl/releases/download/v$eksctl_version/eksctl_Linux_${arch_name}.tar.gz" "eksctl.tar.gz"
+download "https://github.com/eksctl-io/eksctl/releases/download/v${eksctl_version}/eksctl_Linux_${arch_name}.tar.gz" "eksctl.tar.gz"
 tar zxf eksctl.tar.gz
 chmod +x eksctl
 mv ./eksctl /usr/local/bin
@@ -117,6 +117,9 @@ tar zxf flux.tar.gz
 chmod +x flux
 mv ./flux /usr/local/bin
 rm -rf flux.tar.gz
+
+# git-remote
+pip install git-remote-s3
 
 # terraform
 download "https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_${arch_name}.zip" "terraform.zip"

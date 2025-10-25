@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+        - name: ui
+          volumeMounts:
+            - name: mountpoint-s3
+              mountPath: /mountpoint-s3
+          env:
+            - name: RETAIL_UI_PRODUCT_IMAGES_PATH
+              value: /mountpoint-s3
+      volumes:
+        - name: mountpoint-s3
+          persistentVolumeClaim:
+            claimName: s3-claim

@@ -31,7 +31,7 @@ Parameters:
   CodeServerVersion:
     Type: String
     Description: Default code-server version to use
-    Default: "4.91.1"
+    Default: "4.104.2"
   AmiParameterStoreName:
     Type: "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>"
     Default: "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64"
@@ -186,8 +186,6 @@ Resources:
         Ref: EksWorkshopIdeInstance
       SsmDocument:
         Ref: EksWorkshopIdeSSMDocument
-      #UpdateTrigger:
-      #  Ref: UpdateTrigger
 
   EksWorkshopIdeBootstrapInstanceLambdaFunction:
     Type: AWS::Lambda::Function
@@ -281,7 +279,7 @@ Resources:
                 - !Sub |
                   set -e
 
-                  yum install -y git tar gzip vim nodejs npm make gcc g++
+                  yum install -y git tar gzip vim nodejs npm make gcc g++ argon2
 
                   export environment="${Environment}"
 
@@ -329,7 +327,7 @@ Resources:
 
                   PASSWORD_SECRET_VALUE=$(aws secretsmanager get-secret-value --secret-id "${EksWorkshopIdePassword.Id}" --query 'SecretString' --output text)
                   IDE_PASSWORD=$(echo "$PASSWORD_SECRET_VALUE" | jq -r '.password')
-                  HASHED_PASSWORD=$(echo -n "$IDE_PASSWORD" | npx argon2-cli -e)
+                  HASHED_PASSWORD=$(echo -n "$IDE_PASSWORD" | argon2 saltItWithSalt -l 32 -e)
 
                   mkdir -p ~/.config/code-server
                   touch ~/.config/code-server/config.yaml
@@ -340,36 +338,11 @@ Resources:
                   bind-addr: 127.0.0.1:8889
                   EOF
 
-                  mkdir -p ~/.local/share/code-server/User
-                  touch ~/.local/share/code-server/User/settings.json
-                  tee ~/.local/share/code-server/User/settings.json <<EOF
-                  {
-                    "extensions.autoUpdate": false,
-                    "extensions.autoCheckUpdates": false,
-                    "security.workspace.trust.enabled": false,
-                    "task.allowAutomaticTasks": "on",
-                    "telemetry.telemetryLevel": "off",
-                    "workbench.startupEditor": "terminal"
-                  }
-                  EOF
-
-                  mkdir -p ~/environment/.vscode
-                  tee ~/environment/.vscode/settings.json <<EOF
-                  {
-                    "files.exclude": {
-                      "**/.*": true
-                    }
-                  }
-                  EOF
-
-                  echo '{ "query": { "folder": "/home/ec2-user/environment" } }' > ~/.local/share/code-server/coder.json
-
                   curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/setup.sh | bash
 
-                  curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/banner.sh | bash
+                  curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/setup-ide.sh | bash
 
-                  code-server --install-extension ms-kubernetes-tools.vscode-kubernetes-tools --force
-                  code-server --install-extension redhat.vscode-yaml --force
+                  curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/banner.sh | bash
 
                   EOT
 
@@ -457,6 +430,48 @@ Resources:
       ManagedPolicyName: !Sub ${AWS::StackName}-labs2
       PolicyDocument:
         file: ./iam/policies/labs2.yaml
+
+  EksWorkshopLabsPolicy3:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-labs3
+      PolicyDocument:
+        file: ./iam/policies/labs3.yaml
+
+  EksWorkshopLabsPolicy4:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-labs4
+      PolicyDocument:
+        file: ./iam/policies/labs4.yaml
+
+  EksWorkshopTroubleshootPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-troubleshoot
+      PolicyDocument:
+        file: ./iam/policies/troubleshoot.yaml
+
+  EksWorkshopSsmPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-ssm
+      PolicyDocument:
+        file: ./iam/policies/ssm.yaml
 
   EksWorkshopIdeInstanceProfile:
     Type: AWS::IAM::InstanceProfile
@@ -574,6 +589,9 @@ Outputs:
     Value: !Sub
       - https://console.aws.amazon.com/secretsmanager/secret?name=${SecretName}
       - SecretName: !Sub ${AWS::StackName}-password
+
+  IdePasswordSecretName:
+    Value: !Sub ${AWS::StackName}-password
 
   IdeRole:
     Value: !Sub ${EksWorkshopIdeRole.Arn}

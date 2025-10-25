@@ -41,6 +41,15 @@ Resources:
       PolicyDocument:
         file: ./iam/policies/ec2.yaml
 
+  EksWorkshopSsmPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${Env}-ide-ssm
+      PolicyDocument:
+        file: ./iam/policies/ssm.yaml
+
   EksWorkshopLabsPolicy1:
     Type: AWS::IAM::ManagedPolicy
     DependsOn:
@@ -72,3 +81,25 @@ Resources:
       ManagedPolicyName: ${Env}-ide-labs3
       PolicyDocument:
         file: ./iam/policies/labs3.yaml
+
+  EksWorkshopLabsPolicy4:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${Env}-ide-labs4
+      PolicyDocument:
+        file: ./iam/policies/labs4.yaml
+
+  EksWorkshopTroubleshootPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: ${Env}-ide-troubleshoot
+      PolicyDocument:
+        file: ./iam/policies/troubleshoot.yaml

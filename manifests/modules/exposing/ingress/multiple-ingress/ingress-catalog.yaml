@@ -1,11 +1,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: catalog
+  name: catalog-multi
   namespace: catalog
   labels:
     app.kubernetes.io/created-by: eks-workshop
   annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/healthcheck-path: /health
     # HIGHLIGHT
@@ -15,7 +16,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /catalogue
+          - path: /catalog
             pathType: Prefix
             backend:
               service:

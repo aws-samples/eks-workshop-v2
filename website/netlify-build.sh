@@ -2,7 +2,7 @@
 
 set -e
 
-source ../hack/lib/kubectl-version.sh
+source ./hack/lib/kubectl-version.sh
 
 wget -q https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl
 chmod +x ./kubectl
@@ -18,6 +18,6 @@ if [[ $BRANCH = build-* ]]; then
   export LAB_TIMES_ENABLED='true'
 fi
 
-npm install
-npm run clear
-npm run build
+yarn install --immutable
+yarn workspace website clear
+yarn workspace website build

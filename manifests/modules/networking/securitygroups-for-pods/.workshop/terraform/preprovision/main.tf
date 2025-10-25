@@ -19,7 +19,7 @@ data "aws_subnets" "private_sg_rds" {
 
 module "catalog_mysql" {
   source  = "terraform-aws-modules/rds/aws"
-  version = "6.9.0"
+  version = "6.13.0"
 
   identifier = "${var.eks_cluster_id}-catalog"
 
@@ -48,6 +48,7 @@ module "catalog_mysql" {
   maintenance_window = "Mon:00:00-Mon:03:00"
   backup_window      = "03:00-06:00"
 
+  skip_final_snapshot     = true
   backup_retention_period = 0
 
   tags = var.tags
@@ -60,7 +61,7 @@ resource "random_string" "catalog_db_master" {
 
 module "catalog_rds_ingress" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "5.2.0"
+  version = "5.3.0"
 
   name        = "${var.eks_cluster_id}-catalog-rds"
   description = "Catalog RDS security group"

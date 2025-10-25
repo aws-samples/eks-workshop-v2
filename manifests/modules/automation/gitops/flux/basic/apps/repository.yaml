@@ -1,0 +1,9 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: retail-store
+  namespace: flux-system
+spec:
+  url: oci://public.ecr.aws/aws-containers
+  type: "oci"
+  interval: 5m0s

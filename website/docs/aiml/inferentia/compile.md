@@ -1,5 +1,5 @@
 ---
-title: "Compile a pre-trained model with AWS Trainium"
+title: "Compile a pre-trained model"
 sidebar_position: 30
 ---
 
@@ -17,7 +17,7 @@ We will deploy the Pod on the EKS cluster and compile a sample model for use wit
 
 ### Install the Device Plugin
 
-In order for our DLC to use the Neuron cores they need to be exposed. The [Neuron device plugin Kubernetes manifest files](https://github.com/aws-neuron/aws-neuron-sdk/tree/master/src/k8) expose the Neuron cores to the DLC. These manifest files have been pre-installed into the EKS Cluster.
+In order for our DLC to use the Neuron cores, they need to be exposed. The [Neuron device plugin Kubernetes manifest files](https://github.com/aws-neuron/aws-neuron-sdk/tree/master/src/k8) expose the Neuron cores to the DLC. These manifest files have been pre-installed into the EKS Cluster.
 
 When a Pod requires the exposed Neuron cores, the Kubernetes scheduler can provision an Inferentia or Trainium node to schedule the Pod to.
 
@@ -77,14 +77,14 @@ $ kubectl logs -l app.kubernetes.io/instance=karpenter -n kube-system -f | jq
 }
 ```
 
-The Pod should be scheduled on the node provisioned by Karpenter. Check if the Pod is in it's ready state:
+The Pod should be scheduled on the node provisioned by Karpenter. Check if the Pod is in its ready state:
 
 ```bash timeout=600
 $ kubectl -n aiml wait --for=condition=Ready --timeout=10m pod/compiler
 ```
 
 :::warning
-This command can take up to 10 min.
+This command can take up to 10 minutes.
 :::
 
 Next, copy the code for compiling a model on to the Pod and run it:

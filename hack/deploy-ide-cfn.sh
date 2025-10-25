@@ -10,5 +10,5 @@ outfile=$(mktemp)
 
 bash $SCRIPT_DIR/build-ide-cfn.sh $outfile
 
-aws cloudformation deploy --stack-name eks-workshop-ide1 \
+aws cloudformation deploy --stack-name "$EKS_CLUSTER_NAME-ide" \
   --capabilities CAPABILITY_NAMED_IAM --disable-rollback --template-file $outfile

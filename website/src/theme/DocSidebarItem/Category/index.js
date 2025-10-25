@@ -164,7 +164,9 @@ export default function DocSidebarItemCategory({
           aria-current={isCurrentPage ? "page" : undefined}
           role={collapsible && !href ? "button" : undefined}
           aria-expanded={collapsible && !href ? !collapsed : undefined}
-          href={collapsible ? hrefWithSSRFallback ?? "#" : hrefWithSSRFallback}
+          href={
+            collapsible ? (hrefWithSSRFallback ?? "#") : hrefWithSSRFallback
+          }
           {...props}
         >
           <div className="category-wrapper">
@@ -182,6 +184,11 @@ export default function DocSidebarItemCategory({
               )}
               {item.customProps?.explore ? (
                 <span className="badge explore">EXPLORE</span>
+              ) : (
+                <span></span>
+              )}
+              {item.customProps?.optional ? (
+                <span className="badge optional">OPTIONAL</span>
               ) : (
                 <span></span>
               )}

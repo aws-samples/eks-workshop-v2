@@ -1,0 +1,31 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ui
+  namespace: flux-system
+spec:
+  interval: 10m
+  timeout: 5m
+  chart:
+    spec:
+      chart: retail-store-sample-ui-chart
+      version: "1.2.1"
+      sourceRef:
+        kind: HelmRepository
+        name: retail-store
+      interval: 5m
+  releaseName: ui
+  install:
+    createNamespace: true
+  targetNamespace: ui
+  values:
+    ingress:
+      enabled: true
+      className: alb
+      annotations:
+        alb.ingress.kubernetes.io/scheme: internet-facing
+        alb.ingress.kubernetes.io/target-type: ip
+        alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/liveness
+    image:
+      repository: public.ecr.aws/aws-containers/retail-store-sample-ui # {"$imagepolicy": "flux-system:ui:name"}
+      tag: 1.2.1 # {"$imagepolicy": "flux-system:ui:tag"}

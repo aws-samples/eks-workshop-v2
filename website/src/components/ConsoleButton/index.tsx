@@ -1,10 +1,7 @@
 import React, { type ReactNode } from "react";
-import clsx from "clsx";
 
 import styles from "./styles.module.css";
 import useBaseUrl from "@docusaurus/useBaseUrl";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   service: string;
@@ -17,7 +14,7 @@ export default function ConsoleButton({
   url = "http://localhost:3000",
   label = "Launch",
 }: Props): JSX.Element {
-  let serviceIcon = service || "console";
+  const serviceIcon = service || "console";
   return (
     <a className={styles.button} href={url} target="_blank">
       <img

@@ -4,21 +4,31 @@ This document provides a style guide that should be used when creating or modify
 
 ## General content
 
+### Web IDE
+
+The users of the content will be interacting with it through a web IDE, such as VSCode. Any references to this IDE should ALWAYS use "web IDE" or "IDE" and never specific terminology such as VSCode, Cloud9 or code-server.
+
 ### Use admonitions
 
 Use appropriate [Docusaurus admonitions](https://docusaurus.io/docs/markdown-features/admonitions) to call out relevant information.
 
 ```markdown
 :::info
+
 Use info blocks for additional information
+
 :::
 
 :::caution
+
 Caution blocks also available
+
 :::
 
 :::note
+
 Note blocks are available
+
 :::
 ```
 
@@ -54,6 +64,14 @@ sidebar_custom_props:
 ---
 ```
 
+To mark your module as optional:
+```
+---
+...
+sidebar_custom_props:  { "optional": "true" }
+---
+```
+
 ### Navigating the AWS console
 
 There are instances where the user needs to navigate to specific screens in the AWS console. It is preferable to provide a link to the exact screen if possible, or a close as can be done.
@@ -71,6 +89,46 @@ These links should be displayed to the user with the [Console button component](
 ### Screenshots
 
 Use of screenshots should be limited to only wherever necessary. Where possible command-line output should be used as it is more maintainable and testable. When screenshots are necessary only the relevant section of the screen should be included as it reduces image size and makes the images more legible, especially for users with limited screen resolution. Screenshots should be cropped to display only the necessary details.
+
+## Technical Terminology
+
+Any references to command line tools should always use inline code fence to reference the name when used in paragraphs or sentences. For example `aws`, `kubectl` or `eksctl`. If the technology is being referred to more abstracted then use that name is it usually appears.
+
+For example:
+
+Abstract: "We'll be using Terraform to manage our infrastructure automation"
+
+Command-line: "Lets run the `terraform` tool to create our infrastructure"
+
+### Containers Terminology
+
+Containers images should be referred to using this term. Any references to "Docker image" should instead use "container image".
+
+### Kubernetes Terminology
+
+Kubernetes uses the word resource to refer to API resources. For example, the URL path `/apis/apps/v1/namespaces/default/deployments/my-app` represents a Deployment named "my-app" in the "default" namespace. In HTTP jargon, namespace is a resource - the same way that all web URLs identify a resource.
+
+Kubernetes documentation also uses "resource" to talk about CPU and memory requests and limits. It's very often a good idea to refer to API resources as "API resources"; that helps to avoid confusion with CPU and memory resources, or with other kinds of resource.
+
+The different Kubernetes API terminologies are:
+
+- API kinds: the name used in the API URL (such as pods, namespaces). API kinds are sometimes also called resource types.
+- API resource: a single instance of an API kind (such as pod, secret).
+- Object: a resource that serves as a "record of intent". An object is a desired state for a specific part of your cluster, which the Kubernetes control plane tries to maintain. All objects in the Kubernetes API are also resources.
+
+For clarity, you can add "resource" or "object" when referring to an API resource in Kubernetes documentation. An example: write "a Secret object" instead of "a Secret". If it is clear just from the capitalization, you don't need to add the extra word.
+
+Consider rephrasing when that change helps avoid misunderstandings. A common situation is when you want to start a sentence with an API kind, such as “Secret”; because English and other languages capitalize at the start of sentences, readers cannot tell whether you mean the API kind or the general concept. Rewording can help.
+
+Always format API resource names using UpperCamelCase, also known as PascalCase. Do not write API kinds with code formatting.
+
+Don't split an API object name into separate words. For example, use PodTemplateList, not Pod Template List.
+
+For example:
+
+- Use "Pod" not "pod"
+- Use "StatefulSet" not "statefulset" or "stateful set"
+- Use "PodDisruptionBudget" or "PDB" not "Pod Disruption Budget"
 
 ## Scripts/Commands
 

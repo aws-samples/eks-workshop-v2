@@ -22,7 +22,7 @@ manifests/modules/observability/resiliency/scripts/pod-failure.sh
 
 ## Running the Experiment
 
-## Step 1: Check Initial Pod Status
+### Step 1: Check Initial Pod Status
 
 First, let's check the initial status of the pods in the `ui` namespace:
 

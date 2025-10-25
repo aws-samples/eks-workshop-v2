@@ -14,9 +14,9 @@ else
   outfile=$output_path
 fi
 
-cd lab
-
 export Env="${EKS_CLUSTER_NAME}"
+
+cd  $SCRIPT_DIR/../lab
 
 cat cfn/eks-workshop-vscode-cfn.yaml | yq '(.. | select(has("file"))) |= (load(.file))' | envsubst '$Env' > $outfile
 

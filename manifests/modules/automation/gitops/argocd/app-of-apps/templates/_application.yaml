@@ -9,15 +9,20 @@ metadata:
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  labels:
+    app.kubernetes.io/created-by: eks-workshop
 spec:
   project: default
   destination:
     server: {{ $root.Values.spec.destination.server }}
+    namespace: {{  $application.name }}
   source:
     repoURL: {{ $root.Values.spec.source.repoURL }}
     targetRevision: {{ $root.Values.spec.source.targetRevision }}
-    path: apps-kustomization/{{  $application.name }}
+    path: {{  $application.name }}
   syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
     automated:
       prune: true
       selfHeal: true

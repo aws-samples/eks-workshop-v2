@@ -1,1 +1,1 @@
-export KUBECTL_VERSION='v1.30.2'
+export KUBECTL_VERSION='v1.33.2'

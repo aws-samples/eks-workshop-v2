@@ -16,7 +16,7 @@ const plugin = (options) => {
 
       const normalizedPath = `${path.normalize(`${attributes.file}`)}`;
 
-      let title = `/eks-workshop/${normalizedPath}`;
+      let title = attributes.title || `/eks-workshop/${normalizedPath}`;
 
       if (normalizedPath.startsWith("manifests/")) {
         title = `${normalizedPath}`.replace(
@@ -26,7 +26,6 @@ const plugin = (options) => {
       }
 
       const filePath = `${manifestsDir}/${attributes.file}`;
-      const extension = path.extname(filePath).slice(1);
 
       // TODO check extension is yaml
 
@@ -191,13 +190,20 @@ function getLinesForPath(inputString, lookup) {
   const tokens = parser.parse(inputString);
 
   const docs = new YAML.Composer().compose(tokens);
+  const docsArray = Array.from(docs);
 
-  const doc = Array.from(docs)[0];
+  // Support document index prefix (e.g., "1.spec.controller" for second document)
+  let docIndex = 0;
+  let pathElements = lookup.split(".").map((e) => e.trim());
+  
+  if (pathElements.length > 0 && isInt(pathElements[0])) {
+    docIndex = parseInt(pathElements[0]);
+    pathElements = pathElements.slice(1);
+  }
 
-  const target = findByPath(
-    doc.contents,
-    lookup.split(".").map((e) => e.trim()),
-  );
+  const doc = docsArray[docIndex];
+
+  const target = findByPath(doc.contents, pathElements);
 
   const startLine = lineCounter.linePos(target.start).line;
   const endLine = lineCounter.linePos(target.end).line;

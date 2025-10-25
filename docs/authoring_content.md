@@ -2,8 +2,6 @@
 
 This guide outlines how to author content for the workshop, whether adding new content or modifying existing content.
 
-<!-- toc -->
-
 1. [Pre-requisites](#pre-requisites)
 1. [Create a work branch](#create-a-work-branch)
 1. [Environment setup](#environment-setup)
@@ -13,7 +11,6 @@ This guide outlines how to author content for the workshop, whether adding new c
 1. [Cleaning up your lab](#cleaning-up-your-lab)
 1. [Testing](#testing)
 1. [Tear down AWS resources](#raising-a-pull-request)
-<!-- tocstop -->
 
 ## Pre-requisites
 
@@ -24,8 +21,11 @@ The following pre-requisites are necessary to work on the content:
   - Docker
   - `make`
   - `jq`
-  - `npm`
+  - `yq`
+  - Node.js + `yarn`
   - `kubectl`
+
+Double-check the version of `yq` installed in your environment. Many package managers will automatically install a version of yq that is incompatible with this workshop as a pre-requisite when installing `jq`. The latest version of `yq` can be downloaded here [https://github.com/mikefarah/yq](https://github.com/mikefarah/yq)
 
 ## Create a work branch
 
@@ -42,13 +42,13 @@ To start developing you'll need to run some initial commands.
 
 First install the dependencies by running the following command in the root of the repository.
 
-```
+```bash
 make install
 ```
 
 Once this is complete you can run the following command to start the development server:
 
-```
+```bash
 make serve
 ```
 
@@ -76,32 +76,52 @@ Many of the convenience scripts we'll use will make calls to AWS APIs so will ne
 
 You can then use the following convenience command to create the infrastructure:
 
-```
+```bash
 make create-infrastructure
 ```
 
 Once you're finished with the test environment you can delete all of the infrastructure using the following convenience command:
 
-```
+```bash
 make destroy-infrastructure
 ```
 
 ### Simulating the workshop environment
 
-When in the process of creating the content its likely you'll need to be fairly interactive in testing commands etc. During a real workshop users would do this on the Cloud9 IDE, but for our purposes for developing content quickly this is a poor experience because it is designed to refresh content automatically from GitHub. As a result it is recommended to _NOT use the Cloud9 IDE_ created by the Cloud Formation in this repository and instead use the flow below.
+When in the process of creating the content its likely you'll need to be fairly interactive in testing commands etc. During a real workshop users would do this on the cloud IDE, but for our purposes for developing content quickly this is a poor experience because it is designed to refresh content automatically from GitHub. As a result it is recommended to _NOT use the code-server IDE_ created by the Cloud Formation in this repository and instead use the flow below.
 
-The repository provides a mechanism to easily create an interactive shell with access to the EKS cluster created by `make create-infrastructure`. This shell will automatically pick up changes to the content on your local machine and mirrors the Cloud9 used in a real workshop in terms of tools and setup. As such to use this utility you must have already run `make create-infrastructure`.
+The repository provides a mechanism to easily create an interactive shell with access to the EKS cluster created by `make create-infrastructure`. This environment will automatically pick up changes to the content on your local machine and mirrors the Cloud9 used in a real workshop in terms of tools and setup. As such to use this utility you must have already run `make create-infrastructure`.
 
-The shell session created will have AWS credentials injected, so you will immediately be able to use the `aws` CLI and `kubectl` commands with no further configuration.
+The environment created will also have AWS credentials injected, so you will immediately be able to use the `aws` CLI and `kubectl` commands with no further configuration.
 
 > [!NOTE]
-> If using [finch CLI](https://github.com/runfinch/finch) instead of `docker` CLI you need to set two environment variable `CONTAINER_CLI` or run `make` with the variable set like `CONTAINER_CLI=finch make shell` here how to set the variable in the terminal session for every command.
+> If using [finch CLI](https://github.com/runfinch/finch) instead of `docker` CLI you need to set two environment variable `CONTAINER_CLI` or run `make` with the variable set like `CONTAINER_CLI=finch make ide` here how to set the variable in the terminal session for every command.
 >
 > ```bash
 > export CONTAINER_CLI=finch
 > ```
 
-Run `make shell`:
+Running `make ide` will launch the same code-server IDE that is created in Cloud Formation but running in a local container. This is accessible in your browser at `http://localhost:8889`. You will be prompted for a password, this is auto-generated each time and you can find it the in command output (see below):
+
+```text
+[...]
+Installing extensions...
+Installing extension 'redhat.vscode-yaml'...
+Extension 'redhat.vscode-yaml' v1.18.0 was successfully installed.
+Installing extensions...
+Installing extension 'ms-kubernetes-tools.vscode-kubernetes-tools'...
+Extension 'ms-kubernetes-tools.vscode-kubernetes-tools' v1.3.25 was successfully installed.
+Added new context arn:aws:eks:us-west-2:1234567890:cluster/eks-workshop to /home/ec2-user/.kube/config
+--------------------------------------------------------
+Starting IDE with password GpkmEJXpzE1Is4m2
+--------------------------------------------------------
+[2025-07-10T23:33:58.011Z] info  code-server 4.101.2 aff005e19626ac6802223713fa569e743c125725
+[2025-07-10T23:33:58.014Z] info  Using user-data-dir /home/ec2-user/.local/share/code-server
+[2025-07-10T23:33:58.022Z] info  Using config file /home/ec2-user/.config/code-server/config.yaml
+[2025-07-10T23:33:58.022Z] info  HTTP server listening on http://0.0.0.0:8889/
+```
+
+Alternatively if you want a simpler shell experience you can run `make shell`. This has the same primary features as `make ide` but it does not provide the web IDE:
 
 ```bash
 ➜  eks-workshop-v2 git:(main) ✗ make shell
@@ -230,6 +250,18 @@ There is an automated testing capability provided with the workshop that allows 
 **Your content must be able to be tested in an automated manner. If this is not possible then the content will be rejected due to maintenance burden.**
 
 See this [doc](./automated_tests.md) for more information on automated tests.
+
+## Before your Pull Request
+
+The last step is to ensure that your submission passes all of the linting checks. These are in place to keep the codebase consistent and avoid issues such as basic spelling mistakes.
+
+```bash
+make lint
+```
+
+If you need to add a new word to the dictionary see the file `.spelling`.
+
+You can resolve prettier formatting problems using `yarn format:fix`.
 
 ## Raising a Pull Request
 

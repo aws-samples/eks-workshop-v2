@@ -11,8 +11,6 @@ import remarkIncludeKustomization from "./src/remark/include-kustomization.js";
 import remarkParameters from "./src/remark/parameters.js";
 import remarkIncludeYaml from "./src/remark/include-yaml.js";
 
-//require("dotenv").config({ path: ".kustomize-env" });
-
 const rootDir = path.dirname(require.resolve("./package.json"));
 const manifestsDir = `${rootDir}/..`;
 const kustomizationsDir = `${manifestsDir}/manifests`;
@@ -28,7 +26,7 @@ const baseUrl = process.env.BASE_URL || "";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "KUB307: Fundamentals to scale Kubernetes across your organization",
+  title: "Amazon EKS Workshop",
   tagline:
     "Practical exercises to learn about Amazon Elastic Kubernetes Service",
   url: "https://www.eksworkshop.com",
@@ -37,6 +35,32 @@ const config = {
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.png",
   noIndex: process.env.ENABLE_INDEX !== "1",
+  customFields: {
+    showNotification: process.env.SHOW_NOTIFICATION === "1",
+    secondaryNav: {
+      eksGroup: {
+        label: 'Amazon EKS',
+        items: [
+          { to: '/docs/introduction', label: 'Intro' },
+          { to: '/docs/fundamentals', label: 'Fundamentals' },
+          { to: '/docs/observability', label: 'Observability' },
+          { to: '/docs/security', label: 'Security' },
+          { to: '/docs/networking', label: 'Networking' },
+          { to: '/docs/automation', label: 'Automation' },
+          { to: '/docs/aiml', label: 'AI/ML' },
+          { to: '/docs/troubleshooting', label: 'Troubleshooting' },
+        ],
+      },
+      autoModeGroup: {
+        label: 'Amazon EKS Auto Mode',
+        items: [
+          { to: '/docs/fastpaths/setup', label: 'Intro' },
+          { to: '/docs/fastpaths/developer', label: 'Developer' },
+          { to: '/docs/fastpaths/operator', label: 'Operator' },
+        ],
+      },
+    },
+  },
 
   organizationName: "aws-samples",
   projectName: "eks-workshop-v2",
@@ -73,8 +97,8 @@ const config = {
                   MANIFESTS_REF: manifestsRef,
                   MANIFESTS_OWNER: manifestsOwner,
                   MANIFESTS_REPOSITORY: manifestsRepository,
-                  KUBERNETES_VERSION: "1.30",
-                  KUBERNETES_NODE_VERSION: "1.30-eks-036c24b",
+                  KUBERNETES_VERSION: "1.33",
+                  KUBERNETES_NODE_VERSION: "1.33-eks-036c24b",
                 },
               },
             ],
@@ -84,10 +108,7 @@ const config = {
           ],
           editUrl:
             "https://github.com/aws-samples/eks-workshop-v2/tree/main/website",
-          exclude: [
-            "security/guardduty/runtime-monitoring/reverse-shell.md",
-            "fundamentals/storage/fsx-for-netapp-ontap",
-          ],
+          exclude: ["automation/continuousdelivery"],
         },
         theme: {
           customCss: require.resolve("./src/css/custom.scss"),
@@ -111,7 +132,11 @@ const config = {
       ],
       image: "img/meta.jpg",
       navbar: {
+<<<<<<< HEAD
         title: "KUB307: EKS Workshop",
+=======
+        title: "Amazon EKS Workshop",
+>>>>>>> reinvent
         logo: {
           alt: "Amazon Web Services",
           src: "img/logo.svg",
@@ -128,12 +153,6 @@ const config = {
             docId: "fundamentals/index",
             position: "left",
             label: "Fundamentals",
-          },
-          {
-            type: "doc",
-            docId: "autoscaling/index",
-            position: "left",
-            label: "Autoscaling",
           },
           {
             type: "doc",
@@ -166,10 +185,10 @@ const config = {
             label: "AI/ML",
           },
           {
-            href: "https://github.com/aws-samples/eks-workshop-v2",
-            position: "right",
-            className: "header-github-link",
-            "aria-label": "GitHub repository",
+            type: "doc",
+            docId: "troubleshooting/index",
+            position: "left",
+            label: "Troubleshooting",
           },
         ],
       },

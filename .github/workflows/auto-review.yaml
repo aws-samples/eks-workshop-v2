@@ -1,0 +1,60 @@
+name: Auto Review
+
+on:
+  workflow_dispatch:
+    inputs:
+      directory:
+        description: "Directory to review relative to website/docs"
+        required: true
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  review:
+    name: review
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v5
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Get AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4.3.1
+        with:
+          role-to-assume: ${{ secrets.INFERENCE_AWS_ROLE_ARN }}
+          role-duration-seconds: 1800
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GithubActionsSession-review
+      - name: Run review
+        env:
+          REVIEW_DIRECTORY: ${{ github.event.inputs.directory }}
+        run: |
+          target_directory="./website/docs/${REVIEW_DIRECTORY}"
+
+          if [ ! -d "$target_directory" ]; then
+            echo "Directory $target_directory does not exist."
+            exit 1
+          fi
+
+          yarn install
+
+          yarn toolkit-md review --write --summary-path /tmp/summary.md "$target_directory"
+
+          echo "\n\nFormatting..."
+
+          yarn prettier --write "$target_directory"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          title: "chore: Automated review of ${{ github.event.inputs.directory }}"
+          branch: "automated-review/${{ github.event.inputs.directory }}"
+          body-path: /tmp/summary.md
+          delete-branch: true
+          add-paths: |
+            website/docs/**/*.md

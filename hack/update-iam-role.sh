@@ -20,4 +20,5 @@ cat iam/iam-role-cfn.yaml | yq '(.. | select(has("file"))) |= (load(.file))' | e
 aws cloudformation deploy \
     --stack-name ${EKS_CLUSTER_NAME}-ide-role \
     --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
-    --template-file $outfile
+    --template-file $outfile \
+    --region $AWS_REGION

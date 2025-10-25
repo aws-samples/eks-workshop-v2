@@ -5,11 +5,10 @@ sidebar_position: 20
 
 Let's create an Ingress resource with the following configuration:
 
-::yaml{file="manifests/modules/exposing/ingress/creating-ingress/ingress.yaml" paths="kind,metadata.annotations,spec.rules.0"}
+::yaml{file="manifests/modules/exposing/ingress/creating-ingress/ingress.yaml" paths="kind,spec.rules.0"}
 
 1. Use an `Ingress` kind
-2. We can use annotations to configure various behavior of the ALB thats created such as the health checks it performs on the target pods
-3. The rules section is used to express how the ALB should route traffic. In this example we route all HTTP requests where the path starts with `/` to the Kubernetes service called `ui` on port 80
+2. The rules section is used to express how the ALB should route traffic. In this example we route all HTTP requests where the path starts with `/` to the Kubernetes service called `ui` on port 80
 
 Apply this configuration:
 
@@ -105,14 +104,16 @@ You can also inspect the ALB and its target groups in the console by clicking th
 Get the URL from the Ingress resource:
 
 ```bash
-$ kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
-k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com
+$ ADDRESS=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+$ echo "http://${ADDRESS}"
+http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
 
 To wait until the load balancer has finished provisioning you can run this command:
 
 ```bash
-$ wait-for-lb $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+$ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
+  -k $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 ```
 
 And access it in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.

@@ -2,6 +2,13 @@ name: Pull Request
 
 on:
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
+      - labeled
+      - unlabeled
     branches:
       - main
 
@@ -14,11 +21,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
       - name: Get kubectl version
         run: |
           source hack/lib/kubectl-version.sh
@@ -29,18 +36,17 @@ jobs:
           version: "${{ env.KUBECTL_VERSION }}"
         id: install
       - name: Run website build
-        working-directory: website
         run: |
           export LAB_TIMES_ENABLED='true'
-          npm install
-          npm run build
+          yarn install
+          yarn workspace website build
 
   build-lab:
     name: "Build lab"
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Make shell
         env:
           SKIP_CREDENTIALS: 1
@@ -51,33 +57,31 @@ jobs:
     name: "Pre-commit hooks"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-      - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v4
-      - name: Setup terraform-docs
-        uses: jaxxstorm/action-install-gh-release@v1.12.0
-        with:
-          repo: terraform-docs/terraform-docs
-      - uses: pre-commit/action@v3.0.1
-
-  spell-check:
-    name: "Spell checker"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-      - run: |
-          npx cspell lint "website/docs/**/*.md"
+          node-version: 22
+      - uses: actions/setup-python@v5
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "~1.9.0"
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v5
+      - name: Setup terraform-docs
+        uses: jaxxstorm/action-install-gh-release@v2.1.0
+        with:
+          repo: terraform-docs/terraform-docs
+      - name: Yarn install
+        run: |
+          yarn install
+      - uses: pre-commit/action@v3.0.1
 
   terraform-validate:
     name: "Validate Terraform"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "~1.9.0"
@@ -88,7 +92,7 @@ jobs:
     name: Semantic Pull Request
     runs-on: ubuntu-latest
     steps:
-      - uses: amannn/action-semantic-pull-request@v5
+      - uses: amannn/action-semantic-pull-request@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -105,7 +109,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check for content label
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const labels = context.payload.pull_request.labels;

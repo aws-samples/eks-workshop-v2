@@ -24,7 +24,7 @@ data "aws_ecrpublic_authorization_token" "token" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.16.3"
+  version = "1.22.0"
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
@@ -42,6 +42,8 @@ module "eks_blueprints_addons" {
   cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint
   cluster_version   = var.eks_cluster_version
   oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
+
+  observability_tag = null
 }
 
 data "aws_subnets" "private" {
@@ -69,11 +71,10 @@ resource "aws_eks_addon" "pod_identity" {
 
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "20.24"
+  version = "21.4"
 
-  cluster_name          = var.addon_context.eks_cluster_id
-  enable_v1_permissions = true
-  namespace             = local.namespace
+  cluster_name = var.addon_context.eks_cluster_id
+  namespace    = local.namespace
 
   iam_role_name                   = "${var.addon_context.eks_cluster_id}-karpenter-controller"
   iam_role_use_name_prefix        = false
@@ -102,7 +103,7 @@ resource "helm_release" "karpenter" {
   repository_password = data.aws_ecrpublic_authorization_token.token.password
   chart               = "karpenter"
   # renovate: datasource=github-releases depName=aws/karpenter-provider-aws
-  version = "1.0.2"
+  version = "1.8.1"
   wait    = true
 
   values = [
@@ -121,5 +122,36 @@ resource "helm_release" "karpenter" {
     ignore_changes = [
       repository_password
     ]
+  }
+}
+
+resource "kubernetes_manifest" "ui_nlb" {
+  depends_on = [module.eks_blueprints_addons]
+
+  manifest = {
+    "apiVersion" = "v1"
+    "kind"       = "Service"
+    "metadata" = {
+      "name"      = "ui-nlb"
+      "namespace" = "ui"
+      "annotations" = {
+        "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
+        "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
+        "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "instance"
+      }
+    }
+    "spec" = {
+      "type" = "LoadBalancer"
+      "ports" = [{
+        "port"       = 80
+        "targetPort" = 8080
+        "name"       = "http"
+      }]
+      "selector" = {
+        "app.kubernetes.io/name"      = "ui"
+        "app.kubernetes.io/instance"  = "ui"
+        "app.kubernetes.io/component" = "service"
+      }
+    }
   }
 }

@@ -1,0 +1,100 @@
+Version: "2012-10-17"
+Statement:
+  - Effect: Allow
+    Action:
+      - iam:CreatePolicy
+      - iam:CreateRole
+      - iam:GetPolicy
+      - iam:GetRole
+      - iam:AttachRolePolicy
+      - iam:DetachRolePolicy
+      - iam:ListAttachedRolePolicies
+      - iam:TagPolicy
+      - iam:TagRole
+      - iam:GetPolicyVersion
+      - iam:ListRolePolicies
+      - iam:ListPolicyVersions
+      - iam:ListInstanceProfilesForRole
+      - iam:DeletePolicy
+      - iam:DeleteRole
+    Resource:
+      - !Sub arn:aws:iam::${AWS::AccountId}:policy/alb-controller-*
+      - !Sub arn:aws:iam::${AWS::AccountId}:policy/eksworkshopissue
+      - !Sub arn:aws:iam::${AWS::AccountId}:policy/aws-efs-csi-driver-*
+      - !Sub arn:aws:iam::${AWS::AccountId}:role/alb-controller-*
+      - !Sub arn:aws:iam::${AWS::AccountId}:role/aws-efs-csi-driver-*
+      - !Sub arn:aws:iam::${AWS::AccountId}:role/eksworkshop-aws-load-balancer-controller
+      - !Sub arn:aws:iam::${AWS::AccountId}:role/new_nodegroup_3
+      - !Sub arn:aws:iam::${AWS::AccountId}:role/${Env}-ecr-ec2-role       
+
+  - Effect: Allow
+    Action:
+      - ec2:DeleteSecurityGroup
+      - ec2:DescribeSecurityGroups
+    Resource: !Sub arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:security-group/*
+    Condition:
+      StringEquals:
+        'aws:ResourceTag/env': ${var.eks_cluster_id}
+
+  - Effect: Allow
+    Action:
+      - iam:PassRole
+    Resource:
+      - !Sub arn:aws:iam::${AWS::AccountId}:role/new_nodegroup_3
+    Condition:
+      StringEquals:
+        iam:PassedToService:
+          - ec2.amazonaws.com
+          - eks.amazonaws.com
+
+  - Effect: Allow
+    Action:
+      - ecr:CreateRepository
+      - ecr:DeleteRepository
+      - ecr:TagResource
+      - ecr:DescribeRepositories
+      - ecr:ListTagsForResource
+      - ecr:SetRepositoryPolicy
+      - ecr:GetRepositoryPolicy
+      - ecr:DeleteRepositoryPolicy
+      - ecr:DescribeImages
+    Resource:
+      - !Sub arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/retail-sample-app-ui
+      - !Sub arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/retail-store-sample*
+
+  - Effect: Allow
+    Action:
+      - kms:CreateKey
+      - kms:PutKeyPolicy
+      - kms:TagResource
+    Resource: ["*"]
+
+  - Effect: Allow
+    Action:
+      - kms:CreateAlias
+      - kms:DeleteAlias
+      - kms:DescribeKey
+      - kms:ListAliases
+    Resource:
+      - !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*
+      - !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:alias/new_kms_key_alias_*
+
+  - Effect: Allow
+    Action:
+      - ec2:TerminateInstances
+      - ec2:DescribeInstances
+    Resource: !Sub arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:instance/*
+    Condition:
+      StringEquals:
+        aws:ResourceTag/eks:nodegroup-name: "new_nodegroup_3"
+
+  - Effect: Allow
+    Action:
+      - cloudformation:CreateStack
+      - cloudformation:UpdateStack
+      - cloudformation:DeleteStack
+      - cloudformation:DescribeStacks
+      - cloudformation:DescribeStackEvents
+      - cloudformation:DescribeStackResources
+      - cloudformation:GetTemplate
+    Resource: !Sub arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/eks-workshop-*/*

@@ -4,7 +4,7 @@ data "aws_partition" "current" {}
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.16.3"
+  version = "1.22.0"
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
@@ -17,6 +17,8 @@ module "eks_blueprints_addons" {
   cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint
   cluster_version   = var.eks_cluster_version
   oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
+
+  observability_tag = null
 }
 
 resource "time_sleep" "wait" {
@@ -90,7 +92,7 @@ resource "aws_dynamodb_table" "carts" {
 
 module "iam_assumable_role_carts" {
   source                  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
-  version                 = "5.44.0"
+  version                 = "5.60.0"
   create_role             = true
   role_requires_mfa       = false
   role_name               = "${var.addon_context.eks_cluster_id}-carts-dynamo"

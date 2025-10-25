@@ -4,7 +4,7 @@ sidebar_position: 40
 hide_table_of_contents: true
 ---
 
-In order for our catalog Pod to successfully connect to the RDS instance we'll need to use the correct security group. Although this security group could be applied to the EKS worker nodes themselves, this would result in any workload in our cluster having network access to the RDS instance. Instead we'll apply Security Groups for Pods to specifically allow our catalog Pods access to the RDS instance.
+In order for our catalog Pod to successfully connect to the RDS instance, we'll need to use the correct security group. Although this security group could be applied to the EKS worker nodes themselves, this would result in any workload in our cluster having network access to the RDS instance. Instead, we'll apply Security Groups for Pods to specifically allow our catalog Pods access to the RDS instance.
 
 A security group which allows access to the RDS database has already been set up for you, and we can view it like so:
 
@@ -63,11 +63,12 @@ This security group:
 - Allows all egress traffic
 - Will be allowed to access the RDS database as we saw earlier
 
-In order for our Pod to use this security group we need to use the `SecurityGroupPolicy` CRD to tell EKS which security group is to be mapped to a specific set of Pods. This is what we'll configure:
+In order for our Pod to use this security group, we need to use the `SecurityGroupPolicy` CRD to tell EKS which security group is to be mapped to a specific set of Pods. This is what we'll configure:
 
-```file
-manifests/modules/networking/securitygroups-for-pods/sg/policy.yaml
-```
+::yaml{file="manifests/modules/networking/securitygroups-for-pods/sg/policy.yaml" paths="spec.podSelector,spec.securityGroups.groupIds"}
+
+1. The `podSelector` targets pods with label `app.kubernetes.io/component: service`
+2. The `CATALOG_SG_ID` environment variable we exported above contains the security group ID that will be mapped to the matching pods 
 
 Apply this to the cluster then recycle the catalog Pods once again:
 
@@ -92,12 +93,11 @@ $ kubectl rollout status -n catalog deployment/catalog --timeout 30s
 deployment "catalog" successfully rolled out
 ```
 
-This time the catalog Pod will start and the rollout will succeed. You can check the logs to confirm its connecting to the RDS database:
+This time the catalog Pod will start and the rollout will succeed. You can check the logs to confirm it's connecting to the RDS database:
 
 ```bash
-$ kubectl -n catalog logs deployment/catalog | grep Connect
-2022/12/20 20:52:10 Connecting to catalog_user:xxxxxxxxxx@tcp(eks-workshop-catalog.cjkatqd1cnrz.us-west-2.rds.amazonaws.com:3306)/catalog?timeout=5s
-2022/12/20 20:52:10 Connected
-2022/12/20 20:52:10 Connecting to catalog_user:xxxxxxxxxx@tcp(eks-workshop-catalog.cjkatqd1cnrz.us-west-2.rds.amazonaws.com:3306)/catalog?timeout=5s
-2022/12/20 20:52:10 Connected
+$ kubectl -n catalog logs deployment/catalog
+Using mysql database eks-workshop-catalog.cjkatqd1cnrz.us-west-2.rds.amazonaws.com:3306
+Running database migration...
+Database migration complete
 ```
