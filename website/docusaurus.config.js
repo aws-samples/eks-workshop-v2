@@ -132,11 +132,7 @@ const config = {
       ],
       image: "img/meta.jpg",
       navbar: {
-<<<<<<< HEAD
-        title: "KUB307: EKS Workshop",
-=======
-        title: "Amazon EKS Workshop",
->>>>>>> reinvent
+        title: "CNS201: Fundamentals to scale Kubernetes across your organization",
         logo: {
           alt: "Amazon Web Services",
           src: "img/logo.svg",
