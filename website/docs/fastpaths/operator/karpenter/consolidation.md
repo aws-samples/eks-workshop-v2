@@ -26,7 +26,7 @@ Disruption is configured through the `disruption` block in a `NodePool`. You can
 You can see the NodePool configuration using the following command and check out the disruption configuration.
 
 ```bash
-$ kubectl get nodepools general-purpose -o yaml
+$ kubectl get nodepools general-purpose -o yaml | yq .
 ```
 
 The `consolidationPolicy` can also be set to `WhenEmpty`, which restricts disruption only to nodes that contain no workload pods. Learn more about Disruption on the [Karpenter docs](https://karpenter.sh/docs/concepts/disruption/#consolidation).
@@ -66,7 +66,7 @@ $ kubectl scale -n other deployment/inflate --replicas 5
 We can check the Karpenter events to get an idea of what actions it took in response to our scaling in the deployment. Wait about 5-10 seconds before running the following command:
 
 ```bash hook=grep
-$ kubectl get events | grep -i 'disruption'
+$ kubectl events | grep -i 'disruption'
 
 3m39s       Normal    DisruptionBlocked                nodeclaim/general-purpose-5c74h   Node is nominated for a pending pod
 3m42s       Normal    DisruptionLaunching              nodeclaim/general-purpose-l6dpl   Launching NodeClaim: Underutilized
@@ -109,7 +109,7 @@ $ kubectl scale -n other deployment/inflate --replicas 1
 We can check the Karpenter logs and see what actions the controller took in response:
 
 ```bash test=false
-$ kubectl get events | grep -i 'disruption'
+$ kubectl events | grep -i 'disruption'
 ```
 
 The output will show Karpenter consolidating the workloads by removing underutilized nodes in the NodePool.

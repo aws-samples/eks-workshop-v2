@@ -7,6 +7,8 @@ module "preprovision" {
   }
 
   eks_cluster_id      = var.eks_cluster_id
+  eks_cluster_version = var.eks_cluster_version
   eks_cluster_auto_id = var.eks_cluster_auto_id
   tags                = var.tags
+  addon_context       = var.addon_context
 }

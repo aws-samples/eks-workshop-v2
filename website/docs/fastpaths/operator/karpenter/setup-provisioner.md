@@ -10,7 +10,7 @@ One of the main objectives of Karpenter is to simplify the management of capacit
 We'll start by inspecting the existing resources used by Karpenter. First we'll check out the default `NodePool` that defines general capacity requirements:
 
 ```bash 
-$ kubectl get nodepools general-purpose -o yaml
+$ kubectl get nodepools general-purpose -o yaml | yq .
 
 apiVersion: karpenter.sh/v1
 kind: NodePool
@@ -72,7 +72,7 @@ In addition to this default `NodePool` resource, you may also create your custom
 In addition to `NodePool`, Karpenter also has one more important resource, a `NodeClass`. You can see a `NodeClass` referenced in the previous `NodePool` configuration under `nodeClassRef`. This `NodeClass` is also pre-provisioned by EKS Auto Mode. Here is the configuration of the same.
 
 ```bash
-$ kubectl get nodeclass default -o yaml
+$ kubectl get nodeclass default -o yaml | yq .
 
 apiVersion: eks.amazonaws.com/v1
 kind: NodeClass

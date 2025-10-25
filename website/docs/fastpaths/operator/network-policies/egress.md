@@ -63,7 +63,7 @@ OK
 As you can see from the outputs, we can now connect to the 'catalog' service but not the database since it does not have the `app.kubernetes.io/component: service` label:
 
 ```bash expectError=true
-$ kubectl exec deployment/ui -n ui -- curl -v telnet://catalog-mysql.catalog:3306 --connect-timeout 5
+$ kubectl exec deployment/ui -n ui -- curl -v catalog-mysql.catalog:3306 --connect-timeout 5
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:--  0:00:05 --:--:--     0

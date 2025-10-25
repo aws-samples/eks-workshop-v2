@@ -16,3 +16,9 @@ variable "eks_cluster_auto_id" {
   type        = string
   default     = "eks-workshop-auto"
 }
+
+# tflint-ignore: terraform_unused_declarations
+variable "eks_cluster_version" {
+  description = "EKS cluster version"
+  type        = string
+}

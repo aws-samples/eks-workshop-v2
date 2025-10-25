@@ -97,7 +97,7 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/networking/network-policie
 Let us validate the network policy by confirming we cannot connect to the 'catalog' database from the 'orders' component:
 
 ```bash expectError=true
-$ kubectl exec deployment/orders -n orders -- curl -v telnet://catalog-mysql.catalog:3306 --connect-timeout 5
+$ kubectl exec deployment/orders -n orders -- curl -v catalog-mysql.catalog:3306 --connect-timeout 5
 *   Trying XXX.XXX.XXX.XXX:3306...
 * ipv4 connect timeout after 4999ms, move on!
 * Failed to connect to catalog-mysql.catalog port 3306 after 5001 ms: Timeout was reached
