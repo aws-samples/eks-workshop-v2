@@ -3,6 +3,9 @@ kind: Ingress
 metadata:
   name: ui
   namespace: ui
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
 spec:
   ingressClassName: eks-auto-alb
   rules:

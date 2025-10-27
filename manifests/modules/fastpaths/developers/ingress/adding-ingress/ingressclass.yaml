@@ -17,4 +17,3 @@ metadata:
   name: eks-auto-alb
 spec:
   scheme: internet-facing
-  targetType: ip

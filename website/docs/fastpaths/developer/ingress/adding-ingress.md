@@ -5,21 +5,15 @@ sidebar_position: 20
 
 With Amazon EKS Auto Mode, we need to configure an IngressClass and IngressClassParams:
 
-::yaml{file="manifests/modules/exposing/ingress/creating-ingress/ingressclass.yaml" paths="0.spec.controller,0.spec.parameters,1.spec"}
+::yaml{file="manifests/modules/fastpaths/developers/ingress/adding-ingress/ingressclass.yaml" paths="0.spec.controller,0.spec.parameters,1.spec"}
 
 1. The `controller` field must be set to `eks.amazonaws.com/alb` to target the Auto Mode ALB capability
 2. The `parameters` section references an IngressClassParams resource with `apiGroup: eks.amazonaws.com`
 3. The IngressClassParams defines AWS-specific configuration like the load balancer scheme and target type
 
-Apply the configuration:
+Using this IngressClass we will configure an Ingress:
 
-```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/creating-ingress
-```
-
-Now let's create an Ingress resource:
-
-::yaml{file="manifests/modules/exposing/ingress/creating-ingress/ingress.yaml" paths="kind,spec.ingressClassName,spec.rules"}
+::yaml{file="manifests/modules/fastpaths/developers/ingress/adding-ingress/ingress.yaml" paths="kind,spec.ingressClassName,spec.rules"}
 
 1. Use an `Ingress` kind
 2. The `ingressClassName` references our Auto Mode IngressClass
@@ -27,10 +21,10 @@ Now let's create an Ingress resource:
 
 Note: With EKS Auto Mode, annotations are not supported on Ingress resources. All ALB configuration must be done in the IngressClassParams.
 
-Apply the Ingress:
+Let's apply those configurations
 
 ```bash timeout=180 hook=add-ingress hookTimeout=430
-$ kubectl apply -f ~/environment/eks-workshop/modules/exposing/ingress/ingress.networking.k8s.io/ui created
+$ kubectl apply -k ~/environment/eks-workshop/modules/fastpaths/developers/ingress/adding-ingress/
 ```
 
 Let's inspect the Ingress object created:
@@ -38,20 +32,20 @@ Let's inspect the Ingress object created:
 ```bash
 $ kubectl get ingress ui -n ui
 NAME   CLASS          HOSTS   ADDRESS                                                     PORTS   AGE
-ui     eks-auto-alb   *       k8s-ui-ui-6cd0ef095e-78768930.us-west-2.elb.amazonaws.com   80      5s
+ui     eks-auto-alb   *       k8s-ui-uinlb-6cd0ef095e-78768930.us-west-2.elb.amazonaws.com   80      5s
 ```
 
 The ALB will take several minutes to provision and register its targets so take some time to take a closer look at the ALB provisioned for this Ingress to see how its configured:
 
 ```bash
-$ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-ui`) == `true`]'
+$ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`]'
 [
     {
-        "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:1234567890:loadbalancer/app/k8s-ui-ui-cb8129ddff/f62a7bc03db28e7c",
-        "DNSName": "k8s-ui-ui-cb8129ddff-1888909706.us-west-2.elb.amazonaws.com",
+        "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:1234567890:loadbalancer/app/k8s-ui-uinlb-cb8129ddff/f62a7bc03db28e7c",
+        "DNSName": "k8s-ui-uinlb-cb8129ddff-1888909706.us-west-2.elb.amazonaws.com",
         "CanonicalHostedZoneId": "Z1H1FL5HABSF5",
         "CreatedTime": "2022-09-30T03:40:00.950000+00:00",
-        "LoadBalancerName": "k8s-ui-ui-cb8129ddff",
+        "LoadBalancerName": "k8s-ui-uinlb-cb8129ddff",
         "Scheme": "internet-facing",
         "VpcId": "vpc-0851f873025a2ece5",
         "State": {
@@ -92,7 +86,7 @@ What does this tell us?
 Inspect the targets in the target group that was created by the controller:
 
 ```bash
-$ ALB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-ui`) == `true`].LoadBalancerArn' | jq -r '.[0]')
+$ ALB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`].LoadBalancerArn' | jq -r '.[0]')
 $ TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --load-balancer-arn $ALB_ARN | jq -r '.TargetGroups[0].TargetGroupArn')
 $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 {
@@ -123,7 +117,7 @@ Get the URL from the Ingress resource:
 ```bash
 $ ADDRESS=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 $ echo "http://${ADDRESS}"
-http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com
+http://k8s-ui-uinlb-cb8129ddff-1888909706.us-west-2.elb.amazonaws.com
 ```
 
 To wait until the load balancer has finished provisioning you can run this command:
@@ -135,6 +129,6 @@ $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-ti
 
 And access it in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
 
-<Browser url="http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com">
+<Browser url="http://k8s-ui-uinlb-cb8129ddff-1888909706.us-west-2.elb.amazonaws.com">
 <img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
 </Browser>
