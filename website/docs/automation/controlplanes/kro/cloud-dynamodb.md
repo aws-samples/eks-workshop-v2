@@ -16,11 +16,11 @@ Let's examine the ResourceGraphDefinition template that defines the reusable Web
 
 This ResourceGraphDefinition:
 1. Creates a custom `WebApplicationDynamoDB` API that composes the WebApplication RGD
-2. Adds DynamoDB table provisioning with ACK
+2. Provisions a DynamoDB table with ACK
 3. Creates IAM roles and policies for DynamoDB access
-4. Configures EKS Pod Identity for secure AWS access
+4. Configures EKS Pod Identity for secure access from application pods
 
-To learn more about EKS Pod Identity, refer to [official documentation](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html).
+To learn more about EKS Pod Identity, refer to the [official documentation](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html).
 
 :::info
 Notice how this RGD includes the WebApplication RGD in its resources section. By referencing `webApplication`, this template reuses all the Kubernetes resources defined in the base WebApplication RGD while adding DynamoDB, IAM, and Pod Identity resources.

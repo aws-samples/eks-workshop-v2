@@ -46,7 +46,7 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/automation/controlplanes/k
 resourcegraphdefinition.kro.run/web-application created
 ```
 
-This registers the WebApplication API. Verify the Custom Resource Definition (CRD):
+This registers the WebApplication API. kro automatically creates the Custom Resource Definition (CRD) based on the RGD schema. Verify the CRD:
 
 ```bash
 $ kubectl get crd webapplications.kro.run
@@ -99,10 +99,6 @@ NAME                               DESIRED   CURRENT   READY   AGE
 replicaset.apps/carts-7d58cfb7c9   1         1         1       30s
 ```
 
-Perfect! kro has successfully orchestrated the deployment of all Kubernetes resources required by the carts application as a single unit.
-
-:::info
-By using kro, we've transformed what would typically require applying multiple YAML files into a single, declarative API call. This demonstrates kro's power in simplifying complex resource orchestration.
-:::
+kro has successfully orchestrated the deployment of all Kubernetes resources required by the carts application as a single unit. By using kro, we've transformed what would typically require applying multiple YAML files into a single, declarative API call. This demonstrates kro's power in simplifying complex resource orchestration.
 
 In the next section, we'll replace the in-memory database that is currently being used by carts with an Amazon DynamoDB table.
