@@ -7,6 +7,9 @@ environment=$1
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 terraform_dir="$(mktemp -d)"
+echo $terraform_dir
+sleep 5;
+
 manifests_dir="${SCRIPT_DIR}/../manifests"
 
 conf_dir="$terraform_dir/conf"
@@ -27,6 +30,7 @@ module "gen-$target" {
   source = "./$target"
   providers = {
     helm.auto_mode = helm.auto_mode
+    kubernetes.auto_mode = kubernetes.auto_mode
   }
 
   eks_cluster_id            = local.eks_cluster_id

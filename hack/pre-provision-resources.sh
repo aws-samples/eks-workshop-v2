@@ -47,6 +47,7 @@ module "gen-$target" {
   source = "./$target"
   providers = {
     helm.auto_mode = helm.auto_mode
+    kubernetes.auto_mode = kubernetes.auto_mode
   }
 
   eks_cluster_id = local.eks_cluster_id
