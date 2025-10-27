@@ -7,7 +7,7 @@ hide_table_of_contents: true
 With Amazon EKS Auto Mode, the EKS Pod Identity Agent is already included and managed by AWS in the control plane. You can verify Pod Identity is available by checking for existing pod identity associations:
 
 ```bash
-$ aws eks list-pod-identity-associations --cluster-name $EKS_CLUSTER_NAME
+$ aws eks list-pod-identity-associations --cluster-name $EKS_CLUSTER_AUTO_NAME
 {
     "associations": []
 }
@@ -19,7 +19,7 @@ An IAM role, which provides the required permissions for the `carts` service to 
 $ aws iam get-policy-version \
   --version-id v1 --policy-arn \
   --query 'PolicyVersion.Document' \
-  arn:aws:iam::${AWS_ACCOUNT_ID}:policy/${EKS_CLUSTER_NAME}-carts-dynamo | jq .
+  arn:aws:iam::${AWS_ACCOUNT_ID}:policy/${EKS_CLUSTER_AUTO_NAME}-carts-dynamo | jq .
 {
   "Statement": [
     {
@@ -62,8 +62,8 @@ $ aws iam get-role \
 Next, we will use Amazon EKS Pod Identity feature to associate an AWS IAM role with the Kubernetes Service Account that will be used by our deployment. To create the association, run the following command:
 
 ```bash wait=30
-$ aws eks create-pod-identity-association --cluster-name ${EKS_CLUSTER_NAME} \
-  --role-arn arn:aws:iam::${AWS_ACCOUNT_ID}:role/${EKS_CLUSTER_NAME}-carts-dynamo \
+$ aws eks create-pod-identity-association --cluster-name ${EKS_CLUSTER_AUTO_NAME} \
+  --role-arn arn:aws:iam::${AWS_ACCOUNT_ID}:role/${EKS_CLUSTER_AUTO_NAME}-carts-dynamo \
   --namespace carts --service-account carts
 {
     "association": {

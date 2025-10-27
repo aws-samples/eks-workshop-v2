@@ -24,14 +24,14 @@ metadata:
 The following kustomization overwrites the ConfigMap removing the DynamoDB endpoint configuration. It tells the SDK to use the real DynamoDB service instead of our test Pod. We've also configured the DynamoDB table name that's already been created for us. The table name is being pulled from the environment variable `RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME`.
 
 ```kustomization
-modules/security/eks-pod-identity/dynamo/kustomization.yaml
+modules/fastpaths/operators/eks-pod-identity/dynamo/kustomization.yaml
 ConfigMap/carts
 ```
 
 Let's set the DynamoDB table name and run Kustomize to use the real DynamoDB service:
 
 ```bash
-$ export CARTS_DYNAMODB_TABLENAME=${EKS_CLUSTER_NAME}-carts && echo $CARTS_DYNAMODB_TABLENAME
+$ export CARTS_DYNAMODB_TABLENAME=${EKS_CLUSTER_AUTO_NAME}-carts && echo $CARTS_DYNAMODB_TABLENAME
 eks-workshop-auto-carts
 $ kubectl kustomize ~/environment/eks-workshop/modules/security/eks-pod-identity/dynamo \
   | envsubst | kubectl apply -f-
