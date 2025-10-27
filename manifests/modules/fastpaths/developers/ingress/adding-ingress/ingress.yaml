@@ -4,6 +4,7 @@ metadata:
   name: ui
   namespace: ui
 spec:
+  ingressClassName: eks-auto-alb
   rules:
     - http:
         paths:

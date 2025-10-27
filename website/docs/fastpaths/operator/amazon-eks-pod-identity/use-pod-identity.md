@@ -7,7 +7,7 @@ hide_table_of_contents: true
 With Amazon EKS Auto Mode, the EKS Pod Identity Agent is already included and managed by AWS in the control plane. You can verify Pod Identity is available by checking for existing pod identity associations:
 
 ```bash
-$ aws eks list-pod-identity-associations --cluster-name $EKS_CLUSTER_AUTO_NAME
+$ aws eks list-pod-identity-associations --cluster-name $EKS_CLUSTER_AUTO_NAME --namespace carts
 {
     "associations": []
 }
@@ -41,7 +41,7 @@ The role has also been configured with the appropriate trust relationship, which
 ```bash
 $ aws iam get-role \
   --query 'Role.AssumeRolePolicyDocument' \
-  --role-name ${EKS_CLUSTER_NAME}-carts-dynamo | jq .
+  --role-name ${EKS_CLUSTER_AUTO_NAME}-carts-dynamo | jq .
 {
     "Version": "2012-10-17",
     "Statement": [
