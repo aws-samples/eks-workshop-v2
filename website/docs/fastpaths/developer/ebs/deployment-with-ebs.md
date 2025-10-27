@@ -68,7 +68,7 @@ Volume Claims:
   Access Modes:  [ReadWriteOnce]
 ```
 
-List all PVCs:
+Examine the Persistent Volucmes Claims(PVC) that was created:
 
 ```bash
 $ kubectl get pvc -n catalog
@@ -94,9 +94,9 @@ VolumeMode:    Filesystem
 Used By:       catalog-mysql-0
 ```
 
-The PVC is bound to a PV, provisioned using **ebs.csi.aws.com** with 30Gi capacity.
+The PVC is bound to a Persitent Volume (PV), provisioned using **ebs.csi.aws.com** with 30Gi capacity.
 
-## Inspect the PersistentVolume
+## Inspect the PersistentVolume (PV)
 
 ```bash
 $ kubectl describe pv $(kubectl get pvc -n catalog data-catalog-mysql-0 -o jsonpath="{.spec.volumeName}")
