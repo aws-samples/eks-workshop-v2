@@ -6,7 +6,7 @@ variable "keda_chart_version" {
 }
 
 resource "aws_iam_role" "keda_auto" {
-  name_prefix = "${var.eks_cluster_auto_id}-keda"
+  name = "${var.eks_cluster_auto_id}-keda"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
