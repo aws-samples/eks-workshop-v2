@@ -39,12 +39,13 @@ resource "aws_eks_pod_identity_association" "keda_auto" {
 }
 
 resource "kubernetes_manifest" "ui_alb" {
+  count = 0 # Created in exposing workloads with Ingress
   provider = kubernetes.auto_mode
   manifest = {
     "apiVersion" = "networking.k8s.io/v1"
     "kind"       = "Ingress"
     "metadata" = {
-      "name"      = "ui"
+      "name"      = "ui_keda"
       "namespace" = "ui"
       "annotations" = {
         "alb.ingress.kubernetes.io/scheme"           = "internet-facing"
