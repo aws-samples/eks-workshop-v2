@@ -20,7 +20,7 @@ const manifestsOwner = process.env.MANIFESTS_OWNER || "aws-samples";
 const manifestsRepository =
   process.env.MANIFESTS_REPOSITORY || "eks-workshop-v2";
 
-const labTimesEnabled = process.env.LAB_TIMES_ENABLED || false;
+const labTimesEnabled = false;
 
 const baseUrl = process.env.BASE_URL || "";
 
@@ -54,7 +54,7 @@ const config = {
 
   i18n: {
     defaultLocale: "en",
-    locales: ["en"],
+    locales: ["en", "ja"],
   },
 
   presets: [
@@ -162,6 +162,10 @@ const config = {
             docId: "troubleshooting/index",
             position: "left",
             label: "Troubleshooting",
+          },
+          {
+            type: "localeDropdown",
+            position: "right",
           },
           {
             href: "https://github.com/aws-samples/eks-workshop-v2",
