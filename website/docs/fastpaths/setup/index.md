@@ -12,16 +12,16 @@ Powered by Amazon EKS Auto Mode, these paths minimize infrastructure setup and m
 ## Choose Your Setup Method
 
 <div style={{display: 'flex', gap: '2rem', marginTop: '2rem', flexWrap: 'wrap'}}>
-  <a href="/docs/fastpaths/setup/aws-event" style={{textDecoration: 'none', color: 'inherit', flex: '1', minWidth: '280px', maxWidth: '400px'}}>
+  <a href="/docs/fastpaths/developer" style={{textDecoration: 'none', color: 'inherit', flex: '1', minWidth: '280px', maxWidth: '400px'}}>
     <div style={{border: '2px solid #ddd', borderRadius: '8px', padding: '2rem', height: '100%', cursor: 'pointer'}}>
-      <h3 style={{marginTop: 0}}>AWS Event</h3>
-      <p>Attending an AWS workshop or event? Use a pre-configured environment.</p>
+      <h3 style={{marginTop: 0}}>Developer Essentials</h3>
+      <p>Learn essential EKS features for deploying and managing containerized applications.</p>
     </div>
   </a>
-  <a href="/docs/fastpaths/setup/self-paced" style={{textDecoration: 'none', color: 'inherit', flex: '1', minWidth: '280px', maxWidth: '400px'}}>
+    <a href="/docs/fastpaths/operator" style={{textDecoration: 'none', color: 'inherit', flex: '1', minWidth: '280px', maxWidth: '400px'}}>
     <div style={{border: '2px solid #ddd', borderRadius: '8px', padding: '2rem', height: '100%', cursor: 'pointer'}}>
-      <h3 style={{marginTop: 0}}>Self-Paced</h3>
-      <p>Setting up in your own AWS account? Create your own EKS Auto Mode cluster.</p>
+      <h3 style={{marginTop: 0}}>Operator Essentials</h3>
+      <p>Learn essential EKS features for managing a container platform.</p>
     </div>
   </a>
 </div>
