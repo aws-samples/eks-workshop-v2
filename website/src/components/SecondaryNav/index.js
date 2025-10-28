@@ -51,7 +51,7 @@ export default function SecondaryNav() {
           })}
         </div>
         <div className={styles.contextSwitcher}>
-          <Link to={getTargetPage('autoMode')}>Switch to Auto Mode →</Link>
+          <Link to={getTargetPage('autoMode')}>Switch to Essentials →</Link>
         </div>
       </div>
     );
@@ -69,7 +69,7 @@ export default function SecondaryNav() {
           })}
         </div>
         <div className={styles.contextSwitcher}>
-          <Link to={getTargetPage('traditional')}>Switch to Amazon EKS →</Link>
+          <Link to={getTargetPage('traditional')}>Switch to Modular →</Link>
         </div>
       </div>
     );

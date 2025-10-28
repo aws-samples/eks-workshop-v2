@@ -39,7 +39,7 @@ const config = {
     showNotification: process.env.SHOW_NOTIFICATION === "1",
     secondaryNav: {
       eksGroup: {
-        label: 'Amazon EKS',
+        label: 'Choose your own adventure',
         items: [
           { to: '/docs/introduction', label: 'Intro' },
           { to: '/docs/fundamentals', label: 'Fundamentals' },
@@ -52,7 +52,7 @@ const config = {
         ],
       },
       autoModeGroup: {
-        label: 'Amazon EKS Auto Mode',
+        label: 'Amazon EKS Essentials',
         items: [
           { to: '/docs/fastpaths/setup', label: 'Intro' },
           { to: '/docs/fastpaths/basics', label: 'Basics' },

@@ -18,13 +18,13 @@ function HomepageHeader() {
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.pathSelection}>
           <div className={styles.pathCard}>
-            <h3>Amazon EKS Auto Mode <span className={styles.newBadge}>New</span></h3>
+            <h3>Amazon EKS Essentials<span className={styles.newBadge}>New</span></h3>
             <p>Streamlined learning paths powered by Amazon EKS Auto Mode</p>
             <Link
-              className="button button--secondary button--lg"
+              className="button button--primary button--lg"
               to="/docs/fastpaths/setup"
             >
-              Get Started
+              Start here
             </Link>
             <div className={styles.moduleLinks}>
               {siteConfig.customFields.secondaryNav.autoModeGroup.items.map((item, i) => (
@@ -33,13 +33,13 @@ function HomepageHeader() {
             </div>
           </div>
           <div className={styles.pathCard}>
-            <h3>Amazon EKS</h3>
-            <p>Comprehensive learning path covering critical Amazon EKS features and integrations</p>
+            <h3>Amazon EKS - Modular</h3>
+            <p>Comprehensive modules covering critical Amazon EKS features and integrations</p>
             <Link
-              className="button button--primary button--lg"
+              className="button button--secondary button--lg"
               to="/docs/introduction"
             >
-              Get Started
+              Explore
             </Link>
             <div className={styles.moduleLinks}>
               {siteConfig.customFields.secondaryNav.eksGroup.items.map((item, i) => (
