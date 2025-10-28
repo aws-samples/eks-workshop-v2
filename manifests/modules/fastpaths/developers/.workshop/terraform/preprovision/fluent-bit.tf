@@ -113,6 +113,10 @@ resource "helm_release" "aws_for_fluent_bit" {
     name  = "kinesis.enabled"
     value = "false"
   }
+  set {
+    name  = "image.tag"
+    value = "2.32.5.20250327"
+  }
 
   depends_on = [
     aws_cloudwatch_log_group.fluentbit,
