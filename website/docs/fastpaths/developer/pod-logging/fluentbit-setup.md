@@ -18,7 +18,7 @@ In the following section, we will see how to validate Fluent Bit agent is alread
 First, we can validate the resources created for Fluent Bit by entering the following command. Each node should have one Pod:
 
 ```bash hook=get-all
-$ kubectl get all -n kube-system -l app.kubernetes.io/name=aws-for-fluent-bit
+$ kubectl get all -n amazon-cloudwatch -l app.kubernetes.io/name=aws-for-fluent-bit
 NAME                           READY   STATUS    RESTARTS   AGE
 pod/aws-for-fluent-bit-jg4jr   1/1     Running   0          94s
 pod/aws-for-fluent-bit-lvp9f   1/1     Running   0          95s
@@ -34,7 +34,7 @@ daemonset.apps/aws-for-fluent-bit   3         3         3       3            3  
 The ConfigMap for `aws-for-fluent-bit` is configured to stream the contents of files in the directory `/var/log/containers/*.log` from each node to the CloudWatch log group `/eks-workshop/worker-fluentbit-logs`.
 
 ```bash hook=desc-cm
-$ kubectl describe configmap -n kube-system -l app.kubernetes.io/name=aws-for-fluent-bit
+$ kubectl describe configmap -n amazon-cloudwatch -l app.kubernetes.io/name=aws-for-fluent-bit
 Name:         aws-for-fluent-bit
 Namespace:    kube-system
 Labels:       app.kubernetes.io/instance=aws-for-fluent-bit
@@ -90,7 +90,7 @@ fluent-bit.conf:
 Use the `kubectl logs` command to check the Fluent Bit Pod logs, where you will observe new CloudWatch Log groups and streams are created for the services.
 
 ```bash hook=pods-log
-$ kubectl logs daemonset.apps/aws-for-fluent-bit -n kube-system
+$ kubectl logs daemonset.apps/aws-for-fluent-bit -n amazon-cloudwatch
 
 Found 3 pods, using pod/aws-for-fluent-bit-4mnbw
 AWS for Fluent Bit Container Image Version 2.28.4

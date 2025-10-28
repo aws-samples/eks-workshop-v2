@@ -70,7 +70,7 @@ resource "aws_iam_role_policy_attachment" "auto_fluentbit_cloudwatch" {
 resource "aws_eks_pod_identity_association" "fluentbit" {
   cluster_name    = var.eks_cluster_auto_id
   namespace       = "amazon-cloudwatch"
-  service_account = "fluent-bit"
+  service_account = "aws-for-fluent-bit"
   role_arn        = aws_iam_role.auto_fluentbit.arn
 
   depends_on = [
