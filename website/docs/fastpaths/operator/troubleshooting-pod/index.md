@@ -1,6 +1,7 @@
 ---
 title: "Troubleshooting Pod issues"
 sidebar_position: 50
+sidebar_class_name: hidden
 description: "Troubleshoot common pod issues in Amazon EKS clusters"
 ---
 
