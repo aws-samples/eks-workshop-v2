@@ -28,9 +28,11 @@ touch ~/.bashrc.d/workshop-env.bash
 
 cat << EOT > /home/ec2-user/.bashrc.d/aliases.bash
 function prepare-environment() {
+  start_time=$(date +%s)
   bash /usr/local/bin/reset-environment \$1
   exit_code=\$?
   source ~/.bashrc.d/workshop-env.bash
+  echo "Execution time: $(($(date +%s) - start_time)) seconds"
   return \$exit_code
 }
 
