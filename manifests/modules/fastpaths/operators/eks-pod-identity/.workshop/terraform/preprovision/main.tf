@@ -12,6 +12,20 @@ terraform {
   }
 }
 
+resource "kubernetes_manifest" "ui_ns" {
+  provider = kubernetes.auto_mode
+
+  manifest = {
+    "apiVersion" = "v1"
+    "kind"       = "Namespace"
+    "metadata"   = {
+      "name"      = "ui"
+      "labels"      = {
+        "app.kubernetes.io/created-by" = "eks-workshop"
+      }
+    }
+  }
+}
 
 resource "kubernetes_manifest" "ui_nlb" {
   provider = kubernetes.auto_mode
@@ -20,7 +34,7 @@ resource "kubernetes_manifest" "ui_nlb" {
     "apiVersion" = "v1"
     "kind"       = "Service"
     "metadata" = {
-      "name"      = "ui-nlb"
+      "name"      = "ui-nlb-auto"
       "namespace" = "ui"
       "annotations" = {
         "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
@@ -42,6 +56,7 @@ resource "kubernetes_manifest" "ui_nlb" {
       }
     }
   }
+  depends_on = [kubernetes_manifest.ui_ns]
 }
 
 resource "aws_dynamodb_table" "carts" {
