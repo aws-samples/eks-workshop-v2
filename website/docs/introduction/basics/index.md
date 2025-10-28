@@ -7,7 +7,7 @@ description: "Learn fundamental Kubernetes concepts, kubectl CLI, and package ma
 
 # Kubernetes Fundamentals
 
-This section provides hands-on experience with essential Kubernetes concepts and tools you'll use throughout the EKS workshop. You'll learn to interact with clusters, manage workloads, and deploy applications using industry-standard tools.
+Kubernetes is the industry-standard platform for running containerized applications at scale. It automates deployment, scaling, and operations, letting you focus on your applications instead of infrastructure. In this lab, we’ll cover the core concepts of Kubernetes—pods, deployments, services, and more—so you can confidently build and manage cloud-native applications on Amazon EKS.
 
 :::tip Before you start
 Prepare your environment for this section:
@@ -18,27 +18,12 @@ $ prepare-environment introduction/basics
 
 :::
 
-## What You'll Learn
-
-In this section, you'll gain practical experience with the fundamental concepts and tools that power Kubernetes and Amazon EKS. Through hands-on labs, you'll build the skills needed for the rest of the workshop.
-
-### [Architecture](./architecture)
-**Start here** - Understand how Kubernetes and Amazon EKS work under the hood, including control plane components, worker nodes, and the shared responsibility model.
-
-### [Interacting with Kubernetes](./interacting)
-Learn how to configure access and interact with Kubernetes clusters using kubeconfig and kubectl.
-
-### Core Kubernetes Resources
-Explore the fundamental building blocks:
-- **[Namespaces](./namespaces)** - Logical resource separation and organization
-- **[Pods](./pods)** - The smallest deployable units
-- **[Workload Management](./workload-management)** - Deployments, StatefulSets, and Jobs
-- **[Services](./services)** - Network access and service discovery  
-- **[Configuration](./configuration)** - ConfigMaps and Secrets
-
-### [Package Management](./package-management)
-Understand the tools for managing complex Kubernetes applications:
-- **Kustomize** - Declarative configuration management
-- **Helm** - Package manager and templating engine
-
-This progression takes you from **understanding the architecture** → **learning how to interact** → **exploring core resources** → **managing complex deployments**. These concepts and tools will be essential as you progress through the workshop.
+You'll be learning the following fundamental concepts in this lab:
+- **[Architecture](./architecture)** - Understand how Kubernetes and Amazon EKS work under the hood
+- **[Cluster Access](./access)** - Configure access and interact with clusters using kubectl and kubeconfig
+- **[Namespaces](./namespaces)** - Organize and isolate resources
+- **[Pods](./pods)** - The smallest deployable units in Kubernetes
+- **[Workload Management](./workload-management)** - Deployments, StatefulSets, DaemonSets, and Jobs
+- **[Services](./services)** - Enable network access and service discovery
+- **[Configuration](./configuration)** - ConfigMaps and Secrets for application settings
+- **[Package Management](./package-management)** - Kustomize and Helm for managing application
