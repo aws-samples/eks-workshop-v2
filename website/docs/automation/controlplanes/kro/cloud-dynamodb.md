@@ -41,7 +41,7 @@ NAME                               CREATED AT
 webapplicationdynamodbs.kro.run    2024-01-15T10:35:00Z
 ```
 
-Now let's examine the carts-ddb.yaml file that will use the WebApplicationDynamoDB API to create an instance of the carts application:
+Now let's examine the carts-ddb.yaml file that will use the WebApplicationDynamoDB API to create an instance of the **Carts** component:
 
 ::yaml{file="manifests/modules/automation/controlplanes/kro/app/carts-ddb.yaml" paths="kind,metadata,spec.appName,spec.replicas,spec.image,spec.port,spec.dynamodb,spec.env,spec.aws"}
 
@@ -55,14 +55,14 @@ Now let's examine the carts-ddb.yaml file that will use the WebApplicationDynamo
 8. Sets environment variables to enable DynamoDB persistence mode
 9. Provides AWS account ID and region for IAM and Pod Identity configuration
 
-First, let's delete the existing carts application:
+First, let's delete the existing **Carts** component:
 
 ```bash
 $ kubectl delete webapplication.kro.run/carts -n carts
 webapplication.kro.run "carts" deleted
 ```
 
-Next, let's deploy the updated application leveraging the carts-ddb.yaml file:
+Next, let's deploy the updated component leveraging the carts-ddb.yaml file:
 
 ```bash wait=10
 $ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/kro/app \
@@ -99,9 +99,9 @@ $ aws dynamodb list-tables
 }
 ```
 
-Perfect! Our DynamoDB table and application have been successfully created using kro's composable approach.
+Perfect! Our DynamoDB table and component have been successfully created using kro's composable approach.
 
-To verify that the application is working with the new DynamoDB table, we can interact with it through a browser. An NLB has been created to expose the sample application for testing:
+To verify that the component is working with the new DynamoDB table, we can interact with it through a browser. An NLB has been created to expose the sample application for testing:
 
 ```bash
 $ LB_HOSTNAME=$(kubectl -n ui get service ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}')

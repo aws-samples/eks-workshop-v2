@@ -3,7 +3,7 @@ title: "Provisioning resources with kro"
 sidebar_position: 5
 ---
 
-Now that kro has been installed, we will deploy the **Carts** application using a kro WebApplication ResourceGraphDefinitions. First, let's examine the ResourceGraphDefinition template that defines the reusable WebApplication API:
+Now that kro has been installed, we will deploy the **Carts** component using a kro WebApplication ResourceGraphDefinitions. First, let's examine the ResourceGraphDefinition template that defines the reusable WebApplication API:
 
 <details>
   <summary>Expand for full RGD manifest</summary>
@@ -27,7 +27,7 @@ The schema provides sensible defaults while allowing customization of key parame
 Notice how the schema uses default values and type definitions to create a developer-friendly API that hides the underlying Kubernetes complexity.
 :::
 
-We will use this WebApplication ResourceGraphDefinition to create an instance of the Carts service which uses an in-memory database. To do this, let's first clean up the existing carts deployment:
+We will use this WebApplication ResourceGraphDefinition to create an instance of the **Carts** component which uses an in-memory database. To do this, let's first clean up the existing carts deployment:
 
 ```bash
 $ kubectl delete all --all -n carts
@@ -54,7 +54,7 @@ NAME                       CREATED AT
 webapplications.kro.run    2024-01-15T10:30:00Z
 ```
 
-Now let's examine the `carts.yaml` file that will use the WebApplication API to create an instance of the carts application:
+Now let's examine the `carts.yaml` file that will use the WebApplication API to create an instance of the **Carts** component:
 
 ::yaml{file="manifests/modules/automation/controlplanes/kro/app/carts.yaml" paths="kind,metadata,spec.appName,spec.replicas,spec.image,spec.port,spec.env,spec.service"}
 
@@ -99,6 +99,6 @@ NAME                               DESIRED   CURRENT   READY   AGE
 replicaset.apps/carts-7d58cfb7c9   1         1         1       30s
 ```
 
-kro has successfully orchestrated the deployment of all Kubernetes resources required by the carts application as a single unit. By using kro, we've transformed what would typically require applying multiple YAML files into a single, declarative API call. This demonstrates kro's power in simplifying complex resource orchestration.
+kro has successfully orchestrated the deployment of all Kubernetes resources required by the **Carts** component as a single unit. By using kro, we've transformed what would typically require applying multiple YAML files into a single, declarative API call. This demonstrates kro's power in simplifying complex resource orchestration.
 
 In the next section, we'll replace the in-memory database that is currently being used by carts with an Amazon DynamoDB table.
