@@ -27,7 +27,7 @@ resource "aws_iam_role" "keda_auto" {
 
 resource "aws_iam_role_policy_attachment" "keda_auto" {
   policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/CloudWatchReadOnlyAccess"
-  role = aws_iam_role.keda_auto.name
+  role       = aws_iam_role.keda_auto.name
 }
 
 # EKS Pod Identity Association for FluentBit
@@ -39,7 +39,7 @@ resource "aws_eks_pod_identity_association" "keda_auto" {
 }
 
 resource "kubernetes_manifest" "ui_alb" {
-  count = 0 # Created in exposing workloads with Ingress
+  count    = 0 # Created in exposing workloads with Ingress
   provider = kubernetes.auto_mode
   manifest = {
     "apiVersion" = "networking.k8s.io/v1"

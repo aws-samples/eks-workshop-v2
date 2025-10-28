@@ -66,4 +66,4 @@ You can expand one of the log entries to see the full JSON payload:
 
 ![Pod logs](./assets/logs.webp)
 
-This concludes the EKS workshop's fast path for developers. 
+This concludes the EKS workshop's fast path for developers.
