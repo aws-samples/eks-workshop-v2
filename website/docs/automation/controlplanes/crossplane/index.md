@@ -2,6 +2,7 @@
 title: "Crossplane"
 sidebar_position: 1
 sidebar_custom_props: { "module": true }
+sidebar_class_name: hidden
 description: "Build a cloud native control plane with Crossplane on Amazon Elastic Kubernetes Service."
 ---
 

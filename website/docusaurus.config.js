@@ -55,6 +55,7 @@ const config = {
         label: 'Amazon EKS Auto Mode',
         items: [
           { to: '/docs/fastpaths/setup', label: 'Intro' },
+          { to: '/docs/fastpaths/basics', label: 'Basics' },
           { to: '/docs/fastpaths/developer', label: 'Developer' },
           { to: '/docs/fastpaths/operator', label: 'Operator' },
         ],
