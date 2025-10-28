@@ -84,7 +84,7 @@ resource "helm_release" "aws_for_fluent_bit" {
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-for-fluent-bit"
   namespace  = "amazon-cloudwatch"
-  version    = "0.1.32"
+  version    = "0.1.35"
   provider   = helm.auto_mode
 
   create_namespace = true
