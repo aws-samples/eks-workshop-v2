@@ -6,8 +6,8 @@ resource "aws_iam_role_policy_attachment" "fsx_full_access" {
 
 # Add after the policy attachment
 resource "time_sleep" "wait_for_policy_propagation" {
-  depends_on = [aws_iam_role_policy_attachment.fsx_full_access]
-  create_duration = "5s"  # reduce to minimum amount possible
+  depends_on      = [aws_iam_role_policy_attachment.fsx_full_access]
+  create_duration = "10s" # reduce to minimum amount possible
 }
 
 # Add Service_Linked_Role inline policy
@@ -106,16 +106,17 @@ resource "aws_s3_bucket" "s3_data" {
 }
 
 resource "aws_fsx_lustre_file_system" "fsx_lustre" {
-  depends_on = [time_sleep.wait_for_policy_propagation]
-
-  storage_capacity = 1200
-  subnet_ids       = [data.aws_subnets.private_fsx.ids[1]]
-  security_group_ids = [aws_security_group.fsx_lustre.id] 
+  depends_on         = [time_sleep.wait_for_policy_propagation]
+  import_path        = "s3://${aws_s3_bucket.s3_data.bucket}"
+  storage_capacity   = 1200
+  subnet_ids         = [data.aws_subnets.private_fsx.ids[1]]
+  auto_import_policy = "NEW_CHANGED"
+  security_group_ids = [aws_security_group.fsx_lustre.id]
 
   # Additional recommended settings
   file_system_type_version = "2.12"
-  deployment_type = "SCRATCH_2"
-  storage_type = "SSD"
+  deployment_type          = "SCRATCH_2"
+  storage_type             = "SSD"
 }
 
 resource "aws_iam_role_policy" "eks_workshop_ide_s3_put_access" {
@@ -138,10 +139,10 @@ resource "aws_iam_role_policy" "eks_workshop_ide_s3_put_access" {
 
 # Create FSx CSI Driver IAM Role and associated policy
 module "fsx_lustre_csi_driver_irsa" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "5.39.1"
 
-  role_name_prefix = "${var.addon_context.eks_cluster_id}-fsx-lustre-csi-"
+  role_name_prefix   = "${var.addon_context.eks_cluster_id}-fsx-lustre-csi-"
   policy_name_prefix = "${var.addon_context.eks_cluster_id}-fsx-lustre-csi-"
 
   # IAM policy to attach to driver
