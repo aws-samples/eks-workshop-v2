@@ -11,7 +11,7 @@ With Amazon EKS Auto Mode, we'll use EKS Pod Identity instead of IRSA. Let's cre
 $ export KEDA_ROLE_ARN=arn:aws:iam::${AWS_ACCOUNT_ID}:role/${EKS_CLUSTER_AUTO_NAME}-keda
 $ aws eks create-pod-identity-association --cluster-name ${EKS_CLUSTER_AUTO_NAME} \
   --role-arn ${KEDA_ROLE_ARN} \
-  --namespace keda --service-account keda-operator
+  --namespace keda --service-account keda-operator | jq .
 ```
 
 Now install KEDA:

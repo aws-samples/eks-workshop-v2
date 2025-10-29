@@ -12,7 +12,7 @@ The command below will run the load generator with:
 - Running for a maximum of 10 minutes
 
 ```bash hook=keda-pod-scaleout hookTimeout=330
-$ export ALB_HOSTNAME=$(kubectl get ingress ui -n ui -o yaml | yq .status.loadBalancer.ingress[0].hostname)
+$ export ALB_HOSTNAME=$(kubectl get ingress ui-auto -n ui -o yaml | yq .status.loadBalancer.ingress[0].hostname)
 $ kubectl run load-generator \
   --image=williamyeh/hey:latest \
   --restart=Never -- -c 3 -q 5 -z 10m http://$ALB_HOSTNAME/home

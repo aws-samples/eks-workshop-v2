@@ -3,7 +3,18 @@ title: "Creating the Ingress"
 sidebar_position: 20
 ---
 
-With Amazon EKS Auto Mode, we need to configure an IngressClass and IngressClassParams:
+:::info AWS Load Balancer Controller
+The AWS Load Balancer Controller is included with Amazon EKS Auto Mode and runs in the control plane. It will automatically provision AWS load balancers when you create Ingress resources.
+:::
+
+Currently there are no Ingress resources in our cluster, which you can check with the following command:
+
+```bash expectError=true
+$ kubectl get ingress -n ui
+No resources found in ui namespace.
+```
+
+First, we need to configure an IngressClass and IngressClassParams:
 
 ::yaml{file="manifests/modules/fastpaths/developers/ingress/adding-ingress/ingressclass.yaml" paths="0.spec.controller,0.spec.parameters,1.spec"}
 
@@ -32,16 +43,16 @@ Let's inspect the Ingress object created:
 ```bash
 $ kubectl get ingress ui-auto -n ui
 NAME   CLASS          HOSTS   ADDRESS                                                     PORTS   AGE
-ui-auto     eks-auto-alb   *       k8s-ui-ui-auto-6cd0ef095e-78768930.us-west-2.elb.amazonaws.com   80      5s
+ui-auto     eks-auto-alb   *       k8s-ui-uiauto-6cd0ef095e-78768930.us-west-2.elb.amazonaws.com   80      5s
 ```
 
 The ALB will take several minutes to provision and register its targets so take some time to take a closer look at the ALB provisioned for this Ingress to see how its configured:
 
 ```bash
-$ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-ui-auto`) == `true`]'
+$ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uiauto`) == `true`]'
 [
     {
-        "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:1234567890:loadbalancer/app/k8s-ui-ui-auto-cb8129ddff/f62a7bc03db28e7c",
+        "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:1234567890:loadbalancer/app/k8s-ui-uiauto-cb8129ddff/f62a7bc03db28e7c",
         "DNSName": "k8s-ui-ui-cb8129ddff-1888909706.us-west-2.elb.amazonaws.com",
         "CanonicalHostedZoneId": "Z1H1FL5HABSF5",
         "CreatedTime": "2022-09-30T03:40:00.950000+00:00",
@@ -86,7 +97,7 @@ What does this tell us?
 Inspect the targets in the target group that was created by the controller:
 
 ```bash
-$ ALB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-ui-auto`) == `true`].LoadBalancerArn' | jq -r '.[0]')
+$ ALB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uiauto`) == `true`].LoadBalancerArn' | jq -r '.[0]')
 $ TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --load-balancer-arn $ALB_ARN | jq -r '.TargetGroups[0].TargetGroupArn')
 $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 {
@@ -115,9 +126,9 @@ You can also inspect the ALB and its target groups in the console by clicking th
 Get the URL from the Ingress resource:
 
 ```bash
-$ ADDRESS=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+$ ADDRESS=$(kubectl get ingress -n ui ui-auto -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 $ echo "http://${ADDRESS}"
-http://k8s-ui-ui-auto-cb8129ddff-1888909706.us-west-2.elb.amazonaws.com
+http://k8s-ui-uiauto-cb8129ddff-1888909706.us-west-2.elb.amazonaws.com
 ```
 
 To wait until the load balancer has finished provisioning you can run this command:
@@ -129,6 +140,6 @@ $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-ti
 
 And access it in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
 
-<Browser url="http://k8s-ui-ui-auto-cb8129ddff-1888909706.us-west-2.elb.amazonaws.com">
+<Browser url="http://k8s-ui-uiauto-cb8129ddff-1888909706.us-west-2.elb.amazonaws.com">
 <img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
 </Browser>

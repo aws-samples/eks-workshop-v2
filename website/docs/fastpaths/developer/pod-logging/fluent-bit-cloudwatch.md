@@ -58,7 +58,7 @@ Filter for **fluentbit-cloudwatch** to find the log groups created by Fluent Bit
 
 ![CloudWatch Log Group](./assets/log-group.webp)
 
-Select `/eks-workshop-auto/fluentbit-cloudwatch/workload/ui` to view the log streams, each one corresponds to an individual pod:
+Select `/eks-workshop-auto/worker-fluentbit-logs-*` to view the log streams, each one corresponds to an individual pod:
 
 ![CloudWatch Log Stream](./assets/log-streams.webp)
 

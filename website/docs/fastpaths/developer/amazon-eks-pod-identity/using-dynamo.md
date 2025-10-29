@@ -6,7 +6,7 @@ sidebar_position: 32
 The first step in this process is to re-configure the carts service to use a DynamoDB table that has already been created for us. The application loads most of its configurations from a ConfigMap. Let's take look at it:
 
 ```bash
-$ kubectl -n carts get -o yaml cm carts
+$ kubectl -n carts get -o yaml cm carts | yq
 apiVersion: v1
 data:
   AWS_ACCESS_KEY_ID: key
@@ -31,7 +31,7 @@ ConfigMap/carts
 Let's set the DynamoDB table name and run Kustomize to use the real DynamoDB service:
 
 ```bash
-$ export CARTS_DYNAMODB_TABLENAME=${EKS_CLUSTER_NAME}-carts && echo $CARTS_DYNAMODB_TABLENAME
+$ export CARTS_DYNAMODB_TABLENAME=${EKS_CLUSTER_AUTO_NAME}-carts && echo $CARTS_DYNAMODB_TABLENAME
 eks-workshop-auto-carts
 $ kubectl kustomize ~/environment/eks-workshop/modules/security/eks-pod-identity/dynamo \
   | envsubst | kubectl apply -f-
@@ -40,7 +40,7 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/security/eks-pod-identity
 This will overwrite our ConfigMap with new values:
 
 ```bash
-$ kubectl -n carts get cm carts -o yaml
+$ kubectl -n carts get cm carts -o yaml | yq
 apiVersion: v1
 data:
   AWS_REGION: us-west-2

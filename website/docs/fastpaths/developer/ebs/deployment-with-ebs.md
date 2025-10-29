@@ -38,10 +38,11 @@ Now recreate it with persistent storage enabled. The updated StatefulSet include
 2. The `accessModes` specifies ReadWriteOnce, allowing the volume to be mounted by a single node
 3. We are requesting a 30GB EBS volume
 
-Apply the configuration:
+Apply the configuration, and restart the catalog pod to ensure initialization of the database:
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/fastpaths/developers/ebs
+$ kubectl rollout status deployment/catalog -n catalog --timeout=2m
 ```
 
 ## Verify the PersistentVolumeClaim
@@ -135,7 +136,7 @@ $ echo "EBS Volume ID: $MYSQL_EBS_VOL_ID"
 Display the EBS volume details:
 
 ```bash
-$ aws ec2 describe-volumes --volume-ids $MYSQL_EBS_VOL_ID
+$ aws ec2 describe-volumes --volume-ids $MYSQL_EBS_VOL_ID | jq .
 ```
 
 The volume uses gp3 storage with encryption enabled.
