@@ -36,3 +36,6 @@ config:
         password: bbb
         hosts:
           - ccc
+
+image:
+  repository: bitnamilegacy/kubernetes-event-exporter

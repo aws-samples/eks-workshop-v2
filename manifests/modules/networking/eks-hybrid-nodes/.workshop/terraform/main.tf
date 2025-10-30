@@ -162,7 +162,7 @@ resource "aws_security_group" "hybrid_nodes" {
 module "hybrid_node" {
   depends_on = [aws_ec2_transit_gateway.tgw, aws_internet_gateway.remote]
   source     = "terraform-aws-modules/ec2-instance/aws"
-  version    = "6.1.1"
+  version    = "6.1.2"
 
   metadata_options = {
     "http_tokens" : "required"
@@ -336,7 +336,7 @@ resource "aws_route" "remote_route_to_pod" {
 
 module "eks_hybrid_node_role" {
   source      = "terraform-aws-modules/eks/aws//modules/hybrid-node-role"
-  version     = "21.1.5"
+  version     = "21.4.0"
   name        = "${var.eks_cluster_id}-hybrid-node-role"
   policy_name = "${var.eks_cluster_id}-hybrid-node-policy"
   tags        = var.tags

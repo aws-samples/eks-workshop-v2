@@ -85,7 +85,7 @@ const config = {
           ],
           editUrl:
             "https://github.com/aws-samples/eks-workshop-v2/tree/main/website",
-          exclude: ["security/guardduty/runtime-monitoring/reverse-shell.md"],
+          exclude: ["automation/continuousdelivery"],
         },
         theme: {
           customCss: require.resolve("./src/css/custom.scss"),
