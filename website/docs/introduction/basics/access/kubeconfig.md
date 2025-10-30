@@ -201,5 +201,3 @@ $ kubectl cluster-info
 - **Contexts** combine cluster + user + optional namespace for easy switching
 - **Multiple clusters** can be managed from a single kubeconfig file
 - **Default namespace** can be set per context to avoid repetitive `-n` flags
-
-Now that you understand how kubectl connects to clusters, let's explore the core Kubernetes resources, starting with [Namespaces](../../namespaces) for organizing your resources, then [Pods](../../pods) - the smallest deployable units in Kubernetes.

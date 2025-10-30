@@ -135,5 +135,3 @@ Throughout this workshop, you'll frequently use these kubectl commands:
 - **Declarative approach**: Use `kubectl apply -f` for production deployments
 - **Namespace awareness**: Always specify `-n <namespace>` or use `-A` for all namespaces
 - **Essential commands**: `get`, `describe`, `logs`, `apply`, `port-forward` cover most daily tasks
-
-Now that you understand kubectl commands, you can learn more about [how kubectl connects to clusters](../cluster-access), or jump ahead to explore the core Kubernetes resources, starting with [Namespaces](../../namespaces) for organizing your resources.
