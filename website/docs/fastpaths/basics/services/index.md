@@ -212,7 +212,7 @@ You'll now see multiple pod IPs listed as endpoints - the service automatically 
 **Test load balancing:**
 ```bash
 # Make multiple requests to see load balancing in action (single line)
-$ for i in $(seq 1 5); do printf "Request %d:" "$i"; kubectl exec test-pod -- curl -s http://ui.ui.svc.cluster.local/actuator/info; echo; sleep 1; done
+$ for i in $(seq 1 5); do printf "Request %d:" "$i"; kubectl exec test-pod -- curl -s http://ui.ui.svc.cluster.local/actuator/info | jq -c; echo; sleep 1; done
 Request 1:{"pod":{"name":"ui-6db5f6bd84-xgpf4"}}
 Request 2:{"pod":{"name":"ui-6db5f6bd84-cx4mg"}}
 Request 3:{"pod":{"name":"ui-6db5f6bd84-7bq8w"}}

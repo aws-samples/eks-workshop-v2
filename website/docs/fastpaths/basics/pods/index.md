@@ -150,7 +150,7 @@ Picked up JAVA_TOOL_OPTIONS:
 
 Execute a command inside the pod:
 ```bash hook=ready
-$ kubectl exec -n ui ui-pod -- curl -s localhost:8080/actuator/health
+$ kubectl exec -n ui ui-pod -- curl -s localhost:8080/actuator/health | jq
 {"status":"UP","groups":["liveness","readiness"]}
 ```
 This should return the status of the application.

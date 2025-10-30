@@ -63,7 +63,7 @@ This shows:
 
 Notice that the actual values are not displayed for security reasons. To see the base64 encoded data:
 ```bash
-$ kubectl get secret catalog-db -n catalog -o yaml
+$ kubectl get secret catalog-db -n catalog -o yaml | yq
 apiVersion: v1
 data:
   RETAIL_CATALOG_PERSISTENCE_PASSWORD: ZFltTmZXVjR1RXZUem9GdQ==
@@ -83,7 +83,7 @@ type: Opaque
 
 You'll see the data is base64 encoded. To decode a value:
 ```bash
-$ kubectl get secret catalog-db -n catalog -o jsonpath='{.data.RETAIL_CATALOG_PERSISTENCE_USER}' | base64 --decode
+$ kubectl get secret catalog-db -n catalog -o jsonpath='{.data.RETAIL_CATALOG_PERSISTENCE_USER}' | base64 --decode | yq
 catalog
 ```
 

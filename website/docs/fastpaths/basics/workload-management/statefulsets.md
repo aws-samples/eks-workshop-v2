@@ -44,10 +44,11 @@ catalog-mysql   1/1     2m
 View the pods created:
 ```bash
 $ kubectl get pods -n catalog
-NAME              READY   STATUS    RESTARTS   AGE
-catalog-mysql-0   1/1     Running   0          2m
+NAME                      READY   STATUS    RESTARTS        AGE
+catalog-5fdcc8c65-jzskc   1/1     Running   3 (4m25s ago)   4m47s
+catalog-mysql-0           1/1     Running   0               4m47s
 ```
-> Notice the predictable pod name with a number suffix
+> Notice the predictable pod name with a number suffix for the pod from the statefulset
 
 Get detailed information about the StatefulSet:
 ```bash

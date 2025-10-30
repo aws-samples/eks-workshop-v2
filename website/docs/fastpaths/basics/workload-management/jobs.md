@@ -238,7 +238,7 @@ catalog-cleanup-29328193   Complete   1/1           8s         14s
 
 You can also check the job's owner reference to see which CronJob created it:
 ```bash
-$ kubectl get job manual-cleanup -n catalog -o yaml | grep -A 5 ownerReferences
+$ kubectl get job manual-cleanup -n catalog -o yaml | grep -A 5 ownerReferences | yq
   ownerReferences:
   - apiVersion: batch/v1
     controller: true
