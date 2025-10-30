@@ -42,7 +42,7 @@ Apply the configuration, and restart the catalog pod to ensure initialization of
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/fastpaths/developers/ebs
-$ kubectl rollout status deployment/catalog -n catalog --timeout=2m
+$ kubectl rollout restart deployment/catalog -n catalog --timeout=2m # Force catalog to push the DB structure
 ```
 
 ## Verify the PersistentVolumeClaim

@@ -30,7 +30,7 @@ Using this IngressClass we will configure an Ingress:
 2. The `ingressClassName` references our Auto Mode IngressClass
 3. The rules section routes all HTTP requests where the path starts with `/` to the Kubernetes service called `ui` on port 80
 
-Note: With EKS Auto Mode, annotations are not supported on Ingress resources. All ALB configuration must be done in the IngressClassParams.
+Note: With EKS Auto Mode, annotations are not supported on IngressClass resources. All ALB configuration must be done in the IngressClassParams.
 
 Let's apply those configurations
 
@@ -135,7 +135,7 @@ To wait until the load balancer has finished provisioning you can run this comma
 
 ```bash
 $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
-  -k $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+  -k $(kubectl get ingress -n ui ui-auto -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 ```
 
 And access it in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
