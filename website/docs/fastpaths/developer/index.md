@@ -1,6 +1,6 @@
 ---
 title: "Developer Essentials"
-sidebar_position: 30
+sidebar_position: 40
 sidebar_custom_props: { "module": true }
 ---
 

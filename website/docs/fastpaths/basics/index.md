@@ -1,6 +1,6 @@
 ---
 title: Kubernetes Basics
-sidebar_position: 20
+sidebar_position: 30
 sidebar_custom_props: { "optional": true }
 description: "Learn fundamental Kubernetes concepts including architecture, Helm, and Kustomize."
 ---
