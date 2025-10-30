@@ -77,14 +77,14 @@ Let's examine the contents of the mounted Secret inside the Pod:
 
 ```bash
 $ kubectl -n catalog exec deployment/catalog -- ls /etc/catalog-secret/
-eks-workshop-catalog-secret-WDD8yS
+eks-workshop-auto-catalog-secret-WDD8yS
 password
 username
-$ kubectl -n catalog exec deployment/catalog -- cat /etc/catalog-secret/${SECRET_NAME}
+$ kubectl -n catalog exec deployment/catalog -- cat /etc/catalog-secret/${SECRET_NAME} | jq
 {"username":"catalog", "password":"dYmNfWV4uEvTzoFu"}
-$ kubectl -n catalog exec deployment/catalog -- cat /etc/catalog-secret/username
+$ kubectl -n catalog exec deployment/catalog -- cat /etc/catalog-secret/username | yq
 catalog
-$ kubectl -n catalog exec deployment/catalog -- cat /etc/catalog-secret/password
+$ kubectl -n catalog exec deployment/catalog -- cat /etc/catalog-secret/password | yq
 dYmNfWV4uEvTzoFu
 ```
 
@@ -93,7 +93,8 @@ When mounting secrets from AWS Secrets Manager using the CSI driver, three files
 
 1. A file with the name of your AWS secret containing the complete JSON value
 2. Individual files for each key extracted via jmesPath expressions as defined in the SecretProviderClass
-   :::
+
+:::
 
 The environment variables are now sourced from the newly created `catalog-secret`, which was automatically created by the SecretProviderClass via the CSI Secret Store driver:
 

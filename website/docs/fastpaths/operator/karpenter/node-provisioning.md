@@ -65,10 +65,10 @@ $ kubectl rollout status -n other deployment/inflate --timeout=180s
 Let's now check the action taken by Karpenter listing those events. Wait for 5-10 seconds to see the events getting listed.
 
 ```bash
-$ kubectl get events | grep 'nodeclaim' 
+$ kubectl events | grep -i 'NodeClaim'
 ```
 
-You should see the output showing a new node is launched. 
+You should see the output showing a new node is launched.
 
 ```
 2m55s       Normal    Launched                  nodeclaim/general-purpose-5c74h   Status condition transitioned, Type: Launched, Status: Unknown -> True, Reason: Launched
@@ -101,5 +101,15 @@ i-0a78dba9f62f5e0e4   Ready    <none>   60m   v1.33.4-eks-e386d34   m5a.large   
 ```
 
 You can see that the last node added to the pool is as per the `NodePool` configuration table shown earlier in this page.
+
+Karpenter keep track of it's node through Kubernetes native object called a NodeClaim. It's an object so you can check the configuration as well:
+
+```bash
+$ kubectl get nodeclaims.karpenter.sh  -o wide
+NAME                    TYPE        CAPACITY    ZONE         NODE                  READY   AGE     IMAGEID                 ID                                      NODEPOOL          NODECLASS   DRIFTED
+general-purpose-dh59z   m5a.large   on-demand   us-west-2b   i-0d3ed392f96f22793   True    5m58s   ami-00e71b7a43dd16dec   aws:///us-west-2b/i-0d3ed392f96f22793   general-purpose   default
+general-purpose-mw4sf   c6a.large   on-demand   us-west-2a   i-0078b61779fc13053   True    30h     ami-00e71b7a43dd16dec   aws:///us-west-2a/i-0078b61779fc13053   general-purpose   default
+general-purpose-wp7wg   c6a.large   on-demand   us-west-2c   i-0c1ceaeeb6ed1bfb6   True    8m5s    ami-00e71b7a43dd16dec   aws:///us-west-2c/i-0c1ceaeeb6ed1bfb6   general-purpose   default
+```
 
 This simple examples illustrates the fact that Karpenter can dynamically select the right instance type based on the resource requirements of the workloads that require compute capacity. This differs fundamentally from a model oriented around node pools, such as Cluster Autoscaler, where the instance types within a single node group must have consistent CPU and memory characteristics.

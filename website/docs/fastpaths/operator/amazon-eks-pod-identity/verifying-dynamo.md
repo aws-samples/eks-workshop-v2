@@ -6,9 +6,9 @@ sidebar_position: 35
 Now, with the `carts` Service Account associated with the authorized IAM role, the `carts` Pod has permission to access the DynamoDB table. Access the web store again and navigate to the shopping cart.
 
 ```bash
-$ ALB_HOSTNAME=$(kubectl get ingress ui -n ui -o yaml | yq .status.loadBalancer.ingress[0].hostname)
-$ echo "http://$ALB_HOSTNAME"
-http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com
+$ LB_HOSTNAME=$(kubectl get svc ui-nlb-auto -n ui -o yaml | yq .status.loadBalancer.ingress[0].hostname)
+$ echo "http://$LB_HOSTNAME"
+http://k8s-ui-uinlbaut-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
 
 The `carts` Pod is able to reach the DynamoDB service and the shopping cart is now accessible!

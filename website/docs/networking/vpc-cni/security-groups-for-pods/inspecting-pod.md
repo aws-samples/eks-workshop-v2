@@ -22,7 +22,7 @@ The `vpc.amazonaws.com/pod-eni` annotation shows metadata regarding the branch E
 The Kubernetes events will also show the VPC resource controller taking action in response to the configuration we added:
 
 ```bash
-$ kubectl get events -n catalog | grep SecurityGroupRequested
+$ kubectl events -n catalog | grep -i SecurityGroupRequested
 5m         Normal    SecurityGroupRequested   pod/catalog-6ccc6b5575-w2fvm    Pod will get the following Security Groups [sg-037ec36e968f1f5e7]
 ```
 

@@ -97,7 +97,7 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/networking/network-policie
 Let us validate the network policy by confirming we cannot connect to the 'catalog' database from the 'orders' component:
 
 ```bash expectError=true
-$ kubectl exec deployment/orders -n orders -- curl -v telnet://catalog-mysql.catalog:3306 --connect-timeout 5
+$ kubectl exec deployment/orders -n orders -- curl -v catalog-mysql.catalog:3306 --connect-timeout 5
 *   Trying XXX.XXX.XXX.XXX:3306...
 * ipv4 connect timeout after 4999ms, move on!
 * Failed to connect to catalog-mysql.catalog port 3306 after 5001 ms: Timeout was reached
@@ -107,7 +107,7 @@ command terminated with exit code 28
 ...
 ```
 
-But if we restart the 'catalog' pod it can still connect:
+It's important to note, that the Network Policy doesn't rely on IP address. You can play with restarting the 'catalog' pod and confirms that you can still connect:
 
 ```bash
 $ kubectl rollout restart deployment/catalog -n catalog

@@ -32,7 +32,7 @@ command terminated with exit code 28
 On execution of the curl command, the output displayed should have the below statement, which shows that the 'ui' component now cannot directly communicate with the 'catalog' component.
 
 ```text
-curl: (28) Resolving timed out after 3000 milliseconds
+curl: (28) Resolving timed out after 5000 milliseconds
 ```
 
 Implementing the above policy will also cause the sample application to no longer function properly as 'ui' component requires access to the 'catalog' service and other service components. To define an effective egress policy for 'ui' component requires understanding the network dependencies for the component.
@@ -56,7 +56,7 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/fastpaths/operators/networ
 Now, we can test to see if we can connect to 'catalog' service:
 
 ```bash
-$ kubectl exec deployment/ui -n ui -- curl http://catalog.catalog/health
+$ kubectl exec deployment/ui -n ui -- curl -s http://catalog.catalog/health | yq
 OK
 ```
 

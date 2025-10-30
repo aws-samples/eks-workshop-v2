@@ -6,7 +6,7 @@ sidebar_position: 32
 The first step in this process is to re-configure the carts service to use a DynamoDB table that has already been created for us. The application loads most of its configurations from a ConfigMap. Let's take look at it:
 
 ```bash
-$ kubectl -n carts get -o yaml cm carts
+$ kubectl -n carts get -o yaml cm carts | yq
 apiVersion: v1
 data:
   AWS_ACCESS_KEY_ID: key
@@ -24,7 +24,7 @@ metadata:
 The following kustomization overwrites the ConfigMap removing the DynamoDB endpoint configuration. It tells the SDK to use the real DynamoDB service instead of our test Pod. We've also configured the DynamoDB table name that's already been created for us. The table name is being pulled from the environment variable `RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME`.
 
 ```kustomization
-modules/fastpaths/operators/eks-pod-identity/dynamo/kustomization.yaml
+modules/security/eks-pod-identity/dynamo/kustomization.yaml
 ConfigMap/carts
 ```
 
@@ -40,7 +40,7 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/security/eks-pod-identity
 This will overwrite our ConfigMap with new values:
 
 ```bash
-$ kubectl -n carts get cm carts -o yaml
+$ kubectl -n carts get cm carts -o yaml | yq
 apiVersion: v1
 data:
   AWS_REGION: us-west-2

@@ -7,9 +7,9 @@ Let's begin by creating a secret in AWS Secrets Manager using the AWS CLI. We'll
 
 ```bash
 $ export SECRET_SUFFIX=$(openssl rand -hex 4)
-$ export SECRET_NAME="$EKS_CLUSTER_NAME-catalog-secret-${SECRET_SUFFIX}"
+$ export SECRET_NAME="$EKS_CLUSTER_AUTO_NAME-catalog-secret-${SECRET_SUFFIX}"
 $ aws secretsmanager create-secret --name "$SECRET_NAME" \
-  --secret-string '{"username":"catalog", "password":"dYmNfWV4uEvTzoFu"}' --region $AWS_REGION
+  --secret-string '{"username":"catalog", "password":"dYmNfWV4uEvTzoFu"}' --region $AWS_REGION | jq
 {
     "ARN": "arn:aws:secretsmanager:us-west-2:1234567890:secret:eks-workshop-catalog-secret-WDD8yS",
     "Name": "eks-workshop-catalog-secret-WDD8yS",
@@ -24,7 +24,7 @@ We're generating a unique suffix for our secret name using `openssl` to ensure i
 You can verify that the secret was created successfully by checking either the [AWS Secrets Manager Console](https://console.aws.amazon.com/secretsmanager/listsecrets) or using the AWS CLI. Let's use the CLI to examine the secret's metadata:
 
 ```bash
-$ aws secretsmanager describe-secret --secret-id "$SECRET_NAME"
+$ aws secretsmanager describe-secret --secret-id "$SECRET_NAME" | jq
 {
     "ARN": "arn:aws:secretsmanager:us-west-2:1234567890:secret:eks-workshop-catalog-secret-WDD8yS",
     "Name": "eks-workshop-catalog-secret-WDD8yS",

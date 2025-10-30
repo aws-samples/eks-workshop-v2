@@ -58,7 +58,7 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/networking/network-policie
 Now check that the 'ui' can connect:
 
 ```bash
-$ kubectl exec deployment/ui -n ui -- curl -v orders.orders/orders --connect-timeout 5
+$ kubectl exec deployment/ui -n ui -- curl -v orders.orders/orders --connect-timeout 5 | jq
 *   Trying XXX.XXX.XXX.XXX:80...
 * Connected to orders.orders (172.20.248.36) port 80 (#0)
 > GET /orders HTTP/1.1

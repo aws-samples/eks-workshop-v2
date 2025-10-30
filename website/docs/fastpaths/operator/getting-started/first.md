@@ -23,18 +23,21 @@ Before we do anything lets inspect the current Namespaces in our EKS cluster:
 
 ```bash
 $ kubectl get namespaces
-NAME                            STATUS   AGE
-default                         Active   1h
-kube-node-lease                 Active   1h
-kube-public                     Active   1h
-kube-system                     Active   1h
+NAME                STATUS   AGE
+amazon-cloudwatch   Active   30h
+default             Active   30h
+external-secrets    Active   30h
+kube-node-lease     Active   30h
+kube-public         Active   30h
+kube-system         Active   30h
+ui                  Active   30h
 ```
 
-All of the entries listed are Namespaces for system components that were pre-installed for us. We'll ignore these by using [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) to filter the Namespaces down to only those we've created:
+All of the entries listed are Namespaces for system components that were pre-installed for us. We'll ignore most of these by using [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) to filter the Namespaces down to only those we've created:
 
 ```bash
 $ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
-No resources found
+ui         Active   21h
 ```
 
 The first thing we'll do is deploy the catalog component by itself. The manifests for this component can be found in `~/environment/eks-workshop/base-application/catalog`.
@@ -88,18 +91,7 @@ statefulset.apps/catalog-mysql created
 When you deploy workloads to Amazon EKS Auto Mode, the cluster automatically provisions EC2 instances to run your Pods. Let's observe this process in real-time.
 :::
 
-Watch as EKS Auto Mode provisions a node for your workload. This command will continuously monitor until a node appears:
 
-```bash test=false
-$ kubectl get nodes --watch
-...
-NAME                  STATUS     ROLES    AGE   VERSION
-i-082b0e8be0994671a   NotReady   <none>   1s    v1.33.4-eks-e386d34
-...
-i-082b0e8be0994671a   Ready      <none>   2s    v1.33.4-eks-e386d34
-```
-
-Press `Ctrl+C` to stop watching once you see the node appear. The Pods will now be running:
 
 ```bash
 $ kubectl get pod -n catalog

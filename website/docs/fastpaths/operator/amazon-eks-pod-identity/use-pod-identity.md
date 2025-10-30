@@ -64,7 +64,7 @@ Next, we will use Amazon EKS Pod Identity feature to associate an AWS IAM role w
 ```bash wait=30
 $ aws eks create-pod-identity-association --cluster-name ${EKS_CLUSTER_AUTO_NAME} \
   --role-arn arn:aws:iam::${AWS_ACCOUNT_ID}:role/${EKS_CLUSTER_AUTO_NAME}-carts-dynamo \
-  --namespace carts --service-account carts
+  --namespace carts --service-account carts | jq .
 {
     "association": {
         "clusterName": "eks-workshop-auto",
