@@ -45,21 +45,15 @@ $ prepare-environment fundamentals/storage/ebs
 $ prepare-environment networking/securitygroups-for-pods
 ```
 
-### Reset Entire Environment
-```
-# Resets everything back to base state
-$ prepare-environment
-```
-
-
 :::caution
 You should start each lab from the page indicated by "BEFORE YOU START" badge. Starting in the middle of a lab will cause unpredictable behavior.
 :::
 
-## Resetting Your Cluster
+## Resetting Your Cluster (Modular Section Only)
+
 In the event that you accidentally configure your cluster or module in a way that is not functioning you have been provided with a mechanism to reset your EKS cluster as best we can which can be run at any time. Simply run the command prepare-environment and wait until it completes. This may take several minutes depending on the state of your cluster when it is run.
 
-```bash test=false
+```bash
 $ prepare-environment
 ```
 
