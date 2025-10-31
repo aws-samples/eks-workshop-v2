@@ -26,10 +26,10 @@ Disruption is configured through the `disruption` block in a `NodePool`. You can
 You can see the NodePool configuration using the following command and check out the disruption configuration.
 
 ```bash
-$ kubectl get nodepools general-purpose -o yaml | yq
+$ kubectl get nodepools general-purpose -o yaml | yq .spec.disruption
 ```
 
-The `consolidationPolicy` can also be set to `WhenEmpty`, which restricts disruption only to nodes that contain no workload pods. Learn more about Disruption on the [Karpenter docs](https://karpenter.sh/docs/concepts/disruption/#consolidation).
+The `consolidationPolicy` value of `WhenEmptyOrUnderutilized` will consolidate nodes to optimize packing after `consolidateAfter` (30s here) with a budget that allow to replace 10% of the node at a time. There is other values possible, for example `consolidationPolicy` can also be set to `WhenEmpty`, which restricts disruptions only to nodes that contain no workload pods. Learn more about Disruption on the [Karpenter docs](https://karpenter.sh/docs/concepts/disruption/#consolidation).
 
 Scaling out infrastructure is only one side of the equation for operating compute infrastructure in a cost-effective manner. We also need to be able to optimize on an on-going basis such that, for example, workloads running on under-utilized compute instances are compacted to fewer instances. This improves the overall efficiency of how we run workloads on the compute, resulting in less overhead and lower costs.
 

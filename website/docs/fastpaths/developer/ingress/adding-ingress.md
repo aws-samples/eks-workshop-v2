@@ -30,7 +30,7 @@ Using this IngressClass we will configure an Ingress:
 2. The `ingressClassName` references our Auto Mode IngressClass
 3. The rules section routes all HTTP requests where the path starts with `/` to the Kubernetes service called `ui` on port 80
 
-Note: With EKS Auto Mode, annotations are not supported on IngressClass resources. All ALB configuration must be done in the IngressClassParams.
+Note: With EKS Auto Mode, ALB configuration via annotations is not supported. Configuration must be done in the IngressClassParams.
 
 Let's apply those configurations
 
