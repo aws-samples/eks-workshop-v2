@@ -9,7 +9,7 @@ Karpenter automatically discovers nodes that are eligible for disruption and spi
 - **Drift**: Karpenter detects changes in configuration (such as the `NodePool` or `NodeClass`) to apply necessary changes
 - **Consolidation**: A critical feature for operating compute in a cost-effective manner, Karpenter will optimize our cluster's compute on an on-going basis. For example, if workloads are running on under-utilized compute instances, it will consolidate them to fewer instances.
 
-Disruption is configured through the `disruption` block in a `NodePool`. You can see below the portion of the `general-purpose` NodePool configuration policy that is already configured in our EKS Auto Mode cluster.
+Disruption is configured through the `disruption` block in a `NodePool`. You can see below the portion of the `general-purpose` NodePool configuration policy that Auto Mode has configured for you.
 
 ```json
   disruption:
@@ -114,4 +114,4 @@ $ kubectl events | grep -i 'disruption'
 
 The output will show Karpenter consolidating the workloads by removing underutilized nodes in the NodePool.
 
-This concludes the introduction to Karpenter that is integrated with EKS Auto Mode. Though we used the default NodePool and NodeClass configuration that come with EKS Auto Mode in this module, you may also configure custom NodePool, and NodeClass resources in your cluster to fit your specific needs.
+This concludes the introduction to EKS Auto Mode's autoscaling capabilities. Though we used the default NodePool and NodeClass configuration that Auto Mode provides, you may also configure custom NodePool and NodeClass resources in your cluster to fit your specific needs.

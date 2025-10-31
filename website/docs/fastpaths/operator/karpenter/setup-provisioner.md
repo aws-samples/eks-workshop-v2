@@ -3,7 +3,7 @@ title: "Inspect Karpenter configuration"
 sidebar_position: 30
 ---
 
-Karpenter is an out-of-the-box functionality in EKS Auto Mode clusters. Karpenter configuration comes in the form of a `NodePool` CRD (Custom Resource Definition). A single Karpenter `NodePool` is capable of handling many different pod shapes. Karpenter makes scheduling and provisioning decisions based on pod attributes such as labels and affinity. A cluster may have more than one `NodePool`, but for the moment we'll use the default one that comes by configured with EKS Auto Mode clusters.
+EKS Auto Mode provides fully-managed Karpenter as an out-of-the-box functionality. Karpenter configuration comes in the form of a `NodePool` CRD (Custom Resource Definition). A single Karpenter `NodePool` is capable of handling many different pod shapes. Karpenter makes scheduling and provisioning decisions based on pod attributes such as labels and affinity. A cluster may have more than one `NodePool`, but for the moment we'll use the default node pools that Auto Mode configures for you.
 
 One of the main objectives of Karpenter is to simplify the management of capacity. If you're familiar with other auto scaling solutions, you may have noticed that Karpenter takes a different approach, referred to as **group-less auto scaling**. Other solutions have traditionally used the concept of a **node group** as the element of control that defines the characteristics of the capacity provided (i.e: On-Demand, EC2 Spot, GPU Nodes, etc) and that controls the desired scale of the group in the cluster. In AWS the implementation of a node group matches with [Auto Scaling groups](https://docs.aws.amazon.com/autoscaling/ec2/userguide/AutoScalingGroup.html). Karpenter allows us to avoid complexity that arises from managing multiple types of applications with different compute needs.
 
@@ -108,6 +108,6 @@ spec:
 2. The `subnetSelectorTerms` can be used to look up the subnets where Karpenter should launch the EC2 instances. 
 3. The `securityGroupSelectorTerms` accomplishes the same function for the security group that will be attached to the EC2 instances.
 
-With all these resources pre-configured in EKS Auto Mode cluster, we've Karpenter with the basic requirements in needs to start provisioning capacity for our cluster.
+With all these resources managed by EKS Auto Mode, Karpenter has the basic requirements it needs to start provisioning capacity for our cluster.
 
 Let's do some hands-on to see how it works.

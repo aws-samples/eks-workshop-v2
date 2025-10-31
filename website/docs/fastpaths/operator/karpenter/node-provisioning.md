@@ -13,7 +13,7 @@ The NodePool inspected in the previous section expressed specific instance famil
 
 This broad configuration provide a wide range of choices to Karpenter for selecting a right-sized instance based on the requirements.
 
-Let's create some Pods and see how Karpenter adapts. Currently there should a couple of nodes available that are managed by Karpenter:
+Let's create some Pods and see how Auto Mode's Karpenter-based autoscaling adapts. Currently there should be a couple of nodes available that are managed by Karpenter:
 
 ```bash
 $ kubectl get node -l karpenter.sh/nodepool=general-purpose
@@ -112,4 +112,4 @@ general-purpose-mw4sf   c6a.large   on-demand   us-west-2a   i-0078b61779fc13053
 general-purpose-wp7wg   c6a.large   on-demand   us-west-2c   i-0c1ceaeeb6ed1bfb6   True    8m5s    ami-00e71b7a43dd16dec   aws:///us-west-2c/i-0c1ceaeeb6ed1bfb6   general-purpose   default
 ```
 
-This simple examples illustrates the fact that Karpenter can dynamically select the right instance type based on the resource requirements of the workloads that require compute capacity. This differs fundamentally from a model oriented around node pools, such as Cluster Autoscaler, where the instance types within a single node group must have consistent CPU and memory characteristics.
+This simple example illustrates how EKS Auto Mode's Karpenter-based autoscaling can dynamically select the right instance type based on the resource requirements of the workloads that require compute capacity. This differs fundamentally from a model oriented around node pools, such as Cluster Autoscaler, where the instance types within a single node group must have consistent CPU and memory characteristics.
