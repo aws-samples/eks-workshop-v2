@@ -85,6 +85,7 @@
   "/fundamentals/storage/efs/deployments.md": 5420,
   "/fundamentals/storage/efs/efs-csi-driver.md": 85771,
   "/fundamentals/storage/efs/index.md": 125877,
+  "/fundamentals/storage/fsx-for-lustre/index.md": 0,
   "/fundamentals/storage/index.md": 0,
   "/fundamentals/storage/mountpoint-s3/10-ephemeral-container-storage.md": 4992,
   "/fundamentals/storage/mountpoint-s3/20-introduction-to-mountpoint-for-amazon-s3.md": 45869,
