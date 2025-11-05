@@ -8,12 +8,12 @@ metadata:
     app.kubernetes.io/team: database
 spec:
   replicas: 1
+  serviceName: catalog-mysql-ebs
   selector:
     matchLabels:
       app.kubernetes.io/name: catalog
       app.kubernetes.io/instance: catalog
       app.kubernetes.io/component: mysql-ebs
-  serviceName: mysql
   template:
     metadata:
       labels:
@@ -30,26 +30,28 @@ spec:
           env:
             - name: MYSQL_ROOT_PASSWORD
               value: my-secret-pw
+            - name: MYSQL_DATABASE
+              value: catalog
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
                   name: catalog-db
-                  key: username
+                  key: RETAIL_CATALOG_PERSISTENCE_USER
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: catalog-db
-                  key: password
-            - name: MYSQL_DATABASE
-              value: catalog
+                  key: RETAIL_CATALOG_PERSISTENCE_PASSWORD
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
           ports:
             - name: mysql
               containerPort: 3306
               protocol: TCP
-          volumeMounts:
-            - name: data
-              mountPath: /var/lib/mysql
-  # HIGHLIGHT
+      volumes:
+        - name: data
+          emptyDir: {}
   volumeClaimTemplates:
     - metadata:
         name: data

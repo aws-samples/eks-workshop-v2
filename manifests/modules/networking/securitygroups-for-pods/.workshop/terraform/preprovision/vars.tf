@@ -14,5 +14,5 @@ variable "rds_engine_version" {
   description = "The MySQL engine version of RDS to use"
   type        = string
   # renovate: datasource=endoflife-date depName=amazon-rds-mysql
-  default = "8.4.5"
+  default = "8.4.6"
 }

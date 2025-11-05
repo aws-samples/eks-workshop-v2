@@ -31,7 +31,8 @@ kind: Service
 metadata:
   name: search-svc # the name of our service
 spec:
-  type: loadBalancer
+# HIGHLIGHT
+  type: LoadBalancer
   selector:
     app: SearchApp # pods are deployed with the label app=SearchApp
   ports:

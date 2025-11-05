@@ -1,6 +1,6 @@
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.21.1"
+  version = "1.22.0"
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {

@@ -17,13 +17,13 @@ Example output:
 
 ::yaml{file="manifests/modules/troubleshooting/alb/files/iam_issue_service_account_role.yaml" paths="items.0.metadata.annotations"}
 
-1. `eks.amazonaws.com/role-arn`: This tag references AIM role that needs the correct permissions.
+1. `eks.amazonaws.com/role-arn`: This tag references IAM role that needs the correct permissions.
 
 ### Step 2: Check Controller Logs
 
 Let's examine the Load Balancer Controller logs to understand the permission issues:
 
-```bash wait=15
+```bash wait=25  expectError=true
 $ kubectl logs -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller
 ```
 
@@ -37,7 +37,9 @@ The error indicates the IAM role lacks the `elasticloadbalancing:CreateLoadBalan
 
 ### Step 3: Fix the IAM Policy
 
-To resolve this, we need to update the IAM role with the correct permissions. For this workshop, we've pre-created the correct policy. We'll:
+To resolve this, we need to update the IAM role with the correct permissions. For this workshop, we've pre-created the correct policy with the necessary IAM policy permissions based on the [installation guide](https://docs.aws.amazon.com/eks/latest/userguide/lbc-helm.html) for the AWS Load Balancer Controller:
+
+Now we'll:
 
 #### 3.1. Attach the correct policy
 
@@ -53,6 +55,14 @@ $ aws iam attach-role-policy \
 $ aws iam detach-role-policy \
     --role-name ${LOAD_BALANCER_CONTROLLER_ROLE_NAME} \
     --policy-arn ${LOAD_BALANCER_CONTROLLER_POLICY_ARN_ISSUE}
+```
+
+#### 3.3. Restart the Load Balancer Controller to pick up the new subnet configuration
+
+```bash
+$ kubectl -n kube-system rollout restart deploy aws-load-balancer-controller
+deployment.apps/aws-load-balancer-controller restarted
+$ kubectl -n kube-system wait --for=condition=available deployment/aws-load-balancer-controller
 ```
 
 ### Step 4: Verify the Fix
@@ -73,4 +83,4 @@ k8s-ui-ui-5ddc3ba496-1208241872.us-west-2.elb.amazonaws.com
 
 :::
 
-For reference, the complete set of permissions required for the AWS Load Balancer Controller can be found in the [official documentation](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/deploy/installation/#setup-iam-manually).
+For reference, the complete set of permissions required for the AWS Load Balancer Controller can be found in the [official documentation](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/deploy/installation/#setup-iam-manually).

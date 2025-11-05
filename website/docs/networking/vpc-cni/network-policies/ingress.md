@@ -15,7 +15,7 @@ Before applying the policy, the 'catalog' service can be accessed by both the 'u
 $ kubectl exec deployment/ui -n ui -- curl -v catalog.catalog/health --connect-timeout 5
    Trying XXX.XXX.XXX.XXX:80...
 * Connected to catalog.catalog (XXX.XXX.XXX.XXX) port 80 (#0)
-> GET /catalogue HTTP/1.1
+> GET /health HTTP/1.1
 > Host: catalog.catalog
 > User-Agent: curl/7.88.1
 > Accept: */*
@@ -30,7 +30,7 @@ As well as the 'orders' component:
 $ kubectl exec deployment/orders -n orders -- curl -v catalog.catalog/health --connect-timeout 5
    Trying XXX.XXX.XXX.XXX:80...
 * Connected to catalog.catalog (XXX.XXX.XXX.XXX) port 80 (#0)
-> GET /catalogue HTTP/1.1
+> GET /health HTTP/1.1
 > Host: catalog.catalog
 > User-Agent: curl/7.88.1
 > Accept: */*
@@ -41,9 +41,10 @@ $ kubectl exec deployment/orders -n orders -- curl -v catalog.catalog/health --c
 
 Now, we'll define a network policy that will allow traffic to the 'catalog' service component only from the 'ui' component:
 
-```file
-manifests/modules/networking/network-policies/apply-network-policies/allow-catalog-ingress-webservice.yaml
-```
+::yaml{file="manifests/modules/networking/network-policies/apply-network-policies/allow-catalog-ingress-webservice.yaml" paths="spec.podSelector,spec.ingress.0.from.0"}
+
+1. The `podSelector` targets pods with labels `app.kubernetes.io/name: catalog` and `app.kubernetes.io/component: service`
+2. This `ingress.from` configuration allows inbound connections only from pods running in the `ui` namespace identified by `kubernetes.io/metadata.name: ui` with label `app.kubernetes.io/name: ui` 
 
 Lets apply the policy:
 
@@ -57,7 +58,7 @@ Now, we can validate the policy by confirming that we can still access the 'cata
 $ kubectl exec deployment/ui -n ui -- curl -v catalog.catalog/health --connect-timeout 5
   Trying XXX.XXX.XXX.XXX:80...
 * Connected to catalog.catalog (XXX.XXX.XXX.XXX) port 80 (#0)
-> GET /catalogue HTTP/1.1
+> GET /health HTTP/1.1
 > Host: catalog.catalog
 > User-Agent: curl/7.88.1
 > Accept: */*
@@ -82,9 +83,10 @@ As you could see from the above outputs, only the 'ui' component is able to comm
 
 But this still leaves the 'catalog' database component open, so let us implement a network policy to ensure only the 'catalog' service component alone can communicate with the 'catalog' database component.
 
-```file
-manifests/modules/networking/network-policies/apply-network-policies/allow-catalog-ingress-db.yaml
-```
+::yaml{file="manifests/modules/networking/network-policies/apply-network-policies/allow-catalog-ingress-db.yaml" paths="spec.podSelector,spec.ingress.0.from.0"}
+
+1. The `podSelector` targets pods with labels `app.kubernetes.io/name: catalog` and `app.kubernetes.io/component: mysql`
+2. The `ingress.from` allows inbound connections only from pods with labels `app.kubernetes.io/name: catalog` and `app.kubernetes.io/component: service`
 
 Lets apply the policy:
 

@@ -31,7 +31,7 @@ Parameters:
   CodeServerVersion:
     Type: String
     Description: Default code-server version to use
-    Default: "4.91.1"
+    Default: "4.104.2"
   AmiParameterStoreName:
     Type: "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>"
     Default: "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64"
@@ -338,36 +338,11 @@ Resources:
                   bind-addr: 127.0.0.1:8889
                   EOF
 
-                  mkdir -p ~/.local/share/code-server/User
-                  touch ~/.local/share/code-server/User/settings.json
-                  tee ~/.local/share/code-server/User/settings.json <<EOF
-                  {
-                    "extensions.autoUpdate": false,
-                    "extensions.autoCheckUpdates": false,
-                    "security.workspace.trust.enabled": false,
-                    "task.allowAutomaticTasks": "on",
-                    "telemetry.telemetryLevel": "off",
-                    "workbench.startupEditor": "terminal"
-                  }
-                  EOF
-
-                  mkdir -p ~/environment/.vscode
-                  tee ~/environment/.vscode/settings.json <<EOF
-                  {
-                    "files.exclude": {
-                      "**/.*": true
-                    }
-                  }
-                  EOF
-
-                  echo '{ "query": { "folder": "/home/ec2-user/environment" } }' > ~/.local/share/code-server/coder.json
-
                   curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/setup.sh | bash
 
-                  curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/banner.sh | bash
+                  curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/setup-ide.sh | bash
 
-                  code-server --install-extension ms-kubernetes-tools.vscode-kubernetes-tools --force || true
-                  code-server --install-extension redhat.vscode-yaml --force || true
+                  curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/banner.sh | bash
 
                   EOT
 
@@ -466,7 +441,7 @@ Resources:
       ManagedPolicyName: !Sub ${AWS::StackName}-labs3
       PolicyDocument:
         file: ./iam/policies/labs3.yaml
-  
+
   EksWorkshopLabsPolicy4:
     Type: AWS::IAM::ManagedPolicy
     DependsOn:

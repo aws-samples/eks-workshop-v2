@@ -72,7 +72,7 @@ Once the load balancer is provisioned, you can access it by pasting the URL in y
 
 To verify that the **Carts** module is indeed using the DynamoDB table we just provisioned, try adding a few items to the cart.
 
-![Cart screenshot](./assets/cart-items-present.webp)
+<img src={require('@site/static/img/sample-app-screens/shopping-cart-items.webp').default}/>
 
 To confirm that these items are also in the DynamoDB table, run:
 

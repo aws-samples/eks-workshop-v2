@@ -68,7 +68,6 @@ $ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/comp
 $ kubectl delete pod --grace-period=0 --force -n carts -l app.kubernetes.io/component=dynamodb
 $ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/component=service
 $ kubectl delete pod --grace-period=0 --force -n checkout -l app.kubernetes.io/component=redis
-$ kubectl delete pod --grace-period=0 --force -n assets -l app.kubernetes.io/component=service
 $ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/component=service
 $ kubectl delete pod --grace-period=0 --force -n orders -l app.kubernetes.io/component=mysql
 $ kubectl delete pod --grace-period=0 --force -n ui -l app.kubernetes.io/component=service

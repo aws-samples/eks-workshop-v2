@@ -8,13 +8,16 @@ spec:
     spec:
       containers:
         - name: catalog
+          envFrom:
+            - configMapRef:
+                name: catalog
           env:
-            - name: DB_USER
+            - name: RETAIL_CATALOG_PERSISTENCE_USER
               valueFrom:
                 secretKeyRef:
                   name: catalog-secret
                   key: username
-            - name: DB_PASSWORD
+            - name: RETAIL_CATALOG_PERSISTENCE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: catalog-secret

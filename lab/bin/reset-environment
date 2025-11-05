@@ -94,7 +94,7 @@ if [ ! -z "$module" ]; then
   fi
 fi
 
-logmessage "🎓 ${PURPLE}Tip:${NC} Read the rest of the lab introduction while you wait!"
+logmessage "🎓 ${PURPLE}Tip:${NC} Read the rest of the lab introduction while you wait!\n"
 
 if [ -f "/eks-workshop/hooks/cleanup.sh" ]; then
   bash /eks-workshop/hooks/cleanup.sh

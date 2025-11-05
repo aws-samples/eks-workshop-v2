@@ -33,43 +33,19 @@ pod/secrets-store-csi-driver-provider-aws-djtf5   1/1     Running   0          2
 pod/secrets-store-csi-driver-provider-aws-dzg9r   1/1     Running   0          2m2s
 ```
 
-To provide access to secrets stored in AWS Secrets Manager via the CSI driver, you'll need a _SecretProviderClass_ - a namespaced custom resource that provides driver configurations and specific parameters matching the information in AWS Secrets Manager.
+To provide access to secrets stored in AWS Secrets Manager via the CSI driver, you'll need a `SecretProviderClass` - a namespaced custom resource that provides driver configurations and parameters matching the information in AWS Secrets Manager.
 
-```file
-manifests/modules/security/secrets-manager/secret-provider-class.yaml
-```
+::yaml{file="manifests/modules/security/secrets-manager/secret-provider-class.yaml" paths="spec.provider,spec.parameters.objects,spec.secretObjects.0"}
 
-Let's create this resource and examine its two main configuration sections:
+1. `provider: aws` specifies AWS Secrets Store CSI driver
+2. `parameters.objects` defines the AWS `secretsmanager` source secret named `$SECRET_NAME` and uses [jmesPath](https://jmespath.org/) to extract specific `username` and `password` fields into named aliases for Kubernetes consumption
+3. `secretObjects` creates a standard `Opaque` Kubernetes secret named `catalog-secret` that maps the extracted `username` and `password` fields to secret keys
+
+Let's create this resource:
 
 ```bash
 $ cat ~/environment/eks-workshop/modules/security/secrets-manager/secret-provider-class.yaml \
   | envsubst | kubectl apply -f -
 ```
 
-First, the _objects_ parameter points to a secret named `eks-workshop/catalog-secret` that we'll store in AWS Secrets Manager in the next step. Note that we're using [jmesPath](https://jmespath.org/) to extract specific key-value pairs from the JSON-formatted secret:
-
-```bash
-$ kubectl get secretproviderclass -n catalog catalog-spc -o yaml | yq '.spec.parameters.objects'
-
-- objectName: "eks-workshop/catalog-secret"
-  objectType: "secretsmanager"
-  jmesPath:
-    - path: username
-      objectAlias: username
-    - path: password
-      objectAlias: password
-```
-
-Second, the _secretObjects_ section defines how to create and sync a Kubernetes secret with data from the AWS Secrets Manager secret. When mounted to a Pod, the SecretProviderClass will create a Kubernetes Secret (if it doesn't exist) named `catalog-secret` and sync the values from AWS Secrets Manager:
-
-```bash
-$ kubectl get secretproviderclass -n catalog catalog-spc -o yaml | yq '.spec.secretObjects'
-
-- data:
-    - key: username
-      objectName: username
-    - key: password
-      objectName: password
-  secretName: catalog-secret
-  type: Opaque
-```
+The Secret Store CSI Driver acts as an intermediary between Kubernetes and external secrets providers like AWS Secrets Manager. When configured with a SecretProviderClass, it can both mount secrets as files in Pod volumes and create synchronized Kubernetes Secret objects, providing flexibility in how applications consume these secrets.

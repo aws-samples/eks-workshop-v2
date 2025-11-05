@@ -16,7 +16,7 @@ The first step is to create an IDE with the provided CloudFormation templates. U
 
 | Region           | Link                                                                                                                                                                                                                                                                                                                              |
 | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `us-west-2`       | [Launch](https://us-west-2.console.aws.amazon.com/cloudformation/home#/stacks/quickcreate?templateUrl=https://ws-assets-prod-iad-r-pdx-f3b3f9f1a7d6a3d0.s3.us-west-2.amazonaws.com/39146514-f6d5-41cb-86ef-359f9d2f7265/eks-workshop-vscode-cfn.yaml&stackName=eks-workshop-ide&param_RepositoryRef=VAR::MANIFESTS_REF)           |
+| `us-west-2`      | [Launch](https://us-west-2.console.aws.amazon.com/cloudformation/home#/stacks/quickcreate?templateUrl=https://ws-assets-prod-iad-r-pdx-f3b3f9f1a7d6a3d0.s3.us-west-2.amazonaws.com/39146514-f6d5-41cb-86ef-359f9d2f7265/eks-workshop-vscode-cfn.yaml&stackName=eks-workshop-ide&param_RepositoryRef=VAR::MANIFESTS_REF)           |
 | `eu-west-1`      | [Launch](https://eu-west-1.console.aws.amazon.com/cloudformation/home#/stacks/quickcreate?templateUrl=https://ws-assets-prod-iad-r-dub-85e3be25bd827406.s3.eu-west-1.amazonaws.com/39146514-f6d5-41cb-86ef-359f9d2f7265/eks-workshop-vscode-cfn.yaml&stackName=eks-workshop-ide&param_RepositoryRef=VAR::MANIFESTS_REF)           |
 | `ap-southeast-1` | [Launch](https://ap-southeast-1.console.aws.amazon.com/cloudformation/home#/stacks/quickcreate?templateUrl=https://ws-assets-prod-iad-r-sin-694a125e41645312.s3.ap-southeast-1.amazonaws.com/39146514-f6d5-41cb-86ef-359f9d2f7265/eks-workshop-vscode-cfn.yaml&stackName=eks-workshop-ide&param_RepositoryRef=VAR::MANIFESTS_REF) |
 
@@ -42,23 +42,23 @@ The CloudFormation stack will take roughly 5 minutes to deploy, and once complet
 
 ![cloudformation outputs](./assets/vscode-outputs.webp)
 
-The `IdeUrl` output contains the URL to enter in your browser to access the IDE. The `IdePasswordSecret` contains a link to an AWS Secrets Manger secret that contains a generated password for the IDE.
+The `IdeUrl` output contains the URL to enter in your browser to access the IDE. The `IdePasswordSecret` contains a link to an AWS Secrets Manager secret that contains a generated password for the IDE.
 
-To retrieve the password open that URL and click the **Retrieve** button:
+To retrieve the password open the `IdePasswordSecret` URL and click the **Retrieve** button:
 
 ![secretsmanager retrieve](./assets/vscode-password-retrieve.webp)
 
 The password will then be available for you to copy:
 
-![cloudformation outputs](./assets/vscode-password-visible.webp)
+![password in Secrets Manager](./assets/vscode-password-visible.webp)
 
 Open the IDE URL provided and you will be prompted for the password:
 
-![cloudformation outputs](./assets/vscode-password.webp)
+![IDE password prompt](./assets/vscode-password.webp)
 
-After submitting your password you will be presented with the initial VSCode screen:
+After submitting your password you will be presented with the initial IDE screen:
 
-![cloudformation outputs](./assets/vscode-splash.webp)
+![IDE initial screen](./assets/vscode-splash.webp)
 
 The next step is to create an EKS cluster to perform the lab exercises in. Please follow one of the guides below to provision a cluster that meets the requirements for these labs:
 

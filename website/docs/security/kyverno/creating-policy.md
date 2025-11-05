@@ -3,24 +3,18 @@ title: "Creating a Simple Policy"
 sidebar_position: 71
 ---
 
-To gain an understanding of Kyverno Policies, we'll start our lab with a simple Pod Label requirement. As you may know, Labels in Kubernetes are used to tag objects and resources in the cluster.
+Kyverno has two kinds of Policy resources: **ClusterPolicy** used for Cluster-Wide Resources and **Policy** used for Namespaced Resources. To gain an understanding of Kyverno policies, we'll start our lab with a simple Pod label requirement. As you may know, labels in Kubernetes are used to tag resources in the cluster.
 
-Below is a sample policy requiring a Label `CostCenter`:
+Below is a sample `ClusterPolicy` which will block any Pod creation that doesn't have the label `CostCenter`:
 
-```file
-manifests/modules/security/kyverno/simple-policy/require-labels-policy.yaml
-```
+::yaml{file="manifests/modules/security/kyverno/simple-policy/require-labels-policy.yaml" paths="spec.validationFailureAction,spec.rules,spec.rules.0.match,spec.rules.0.validate,spec.rules.0.validate.message,spec.rules.0.validate.pattern"}
 
-Kyverno has two kinds of Policy resources: **ClusterPolicy** used for Cluster-Wide Resources and **Policy** used for Namespaced Resources. The example above shows a ClusterPolicy. Take some time to examine the following details in the configuration:
-
-- Under the `spec` section of the Policy, there's an attribute `validationFailureAction`. It tells Kyverno if the resource being validated should be allowed but reported (`Audit`) or blocked (`Enforce`). The default is `Audit`, but our example is set to `Enforce`.
-- The `rules` section contains one or more rules to be validated.
-- The `match` statement sets the scope of what will be checked. In this case, it's any `Pod` resource.
-- The `validate` statement attempts to positively check what is defined. If the statement, when compared with the requested resource, is true, it's allowed. If false, it's blocked.
-- The `message` is what gets displayed to a user if this rule fails validation.
-- The `pattern` object defines what pattern will be checked in the resource. In this case, it's looking for `metadata.labels` with `CostCenter`.
-
-This example Policy will block any Pod creation that doesn't have the label `CostCenter`.
+1. `spec.validationFailureAction` tells Kyverno if the resource being validated should be allowed but reported (`Audit`) or blocked (`Enforce`). The default is `Audit`, but in our example it is set to `Enforce`
+2. The `rules` section contains one or more rules to be validated
+3. The `match` statement sets the scope of what will be checked. In this case, it's any Pod resource
+4. The `validate` statement attempts to positively check what is defined. If the statement, when compared with the requested resource, is true, it's allowed. If false, it's blocked
+5. The `message` is what gets displayed to a user if this rule fails validation
+6. The `pattern` object defines what pattern will be checked in the resource. In this case, it's looking for `metadata.labels` with `CostCenter`
 
 Create the policy using the following command:
 
@@ -49,7 +43,7 @@ $ kubectl -n ui get pods
 No resources found in ui namespace.
 ```
 
-As mentioned, the Pod was not recreated. Try to force a rollout of the `ui` deployment:
+As mentioned, the Pod was not recreated. Try to force a rollout of the `ui` Deployment:
 
 ```bash expectError=true
 $ kubectl -n ui rollout restart deployment/ui
@@ -64,7 +58,7 @@ require-labels:
 
 The rollout failed with the admission webhook denying the request due to the `require-labels` Kyverno Policy.
 
-You can also check this `error` message by describing the `ui` deployment or viewing the `events` in the `ui` Namespace:
+You can also check this `error` message by describing the `ui` Deployment or viewing the `events` in the `ui` Namespace:
 
 ```bash
 $ kubectl -n ui describe deployment ui
@@ -106,13 +100,12 @@ As you can see, the admission webhook successfully validated the Policy and the 
 
 In the above examples, you checked how Validation Policies work in their default behavior defined in `validationFailureAction`. However, Kyverno can also be used to manage Mutating rules within the Policy, to modify any API Requests to satisfy or enforce the specified requirements on the Kubernetes resources. The resource mutation occurs before validation, so the validation rules will not contradict the changes performed by the mutation section.
 
-Below is a sample Policy with a mutation rule defined, which will be used to automatically add our label `CostCenter=IT` as default to any `Pod`:
+Below is a sample Policy with a mutation rule defined:
 
-```file
-manifests/modules/security/kyverno/simple-policy/add-labels-mutation-policy.yaml
-```
+::yaml{file="manifests/modules/security/kyverno/simple-policy/add-labels-mutation-policy.yaml" paths="spec.rules.0.match,spec.rules.0.mutate"}
 
-Notice the `mutate` section under the ClusterPolicy `spec`.
+1. `match.any.resources.kinds: [Pod]` targets this `ClusterPolicy` to all Pod resources cluster-wide
+2.  `mutate` modifies resources during creation (vs. validate which blocks/allows). `patchStrategicMerge.metadata.labels.CostCenter: IT` automatically adds `CostCenter: IT` label to every Pod
 
 Go ahead and create the above Policy using the following command:
 
@@ -122,21 +115,21 @@ $ kubectl apply -f  ~/environment/eks-workshop/modules/security/kyverno/simple-p
 clusterpolicy.kyverno.io/add-labels created
 ```
 
-To validate the Mutation Webhook, let's roll out the `assets` Deployment without explicitly adding a label:
+To validate the Mutation Webhook, let's roll out the `carts` Deployment without explicitly adding a label:
 
 ```bash
-$ kubectl -n assets rollout restart deployment/assets
-deployment.apps/assets restarted
-$ kubectl -n assets rollout status deployment/assets
-deployment "assets" successfully rolled out
+$ kubectl -n carts rollout restart deployment/carts
+deployment.apps/carts restarted
+$ kubectl -n carts rollout status deployment/carts
+deployment "carts" successfully rolled out
 ```
 
 Validate that the label `CostCenter=IT` was automatically added to the Pod to meet the policy requirements, resulting in a successful Pod creation even though the Deployment didn't have the label specified:
 
 ```bash
-$ kubectl -n assets get pods --show-labels
+$ kubectl -n carts get pods --show-labels
 NAME                     READY   STATUS    RESTARTS   AGE   LABELS
-assets-bb88b4789-kmk62   1/1     Running   0          25s   CostCenter=IT,app.kubernetes.io/component=service,app.kubernetes.io/created-by=eks-workshop,app.kubernetes.io/instance=assets,app.kubernetes.io/name=assets,pod-template-hash=bb88b4789
+carts-bb88b4789-kmk62   1/1     Running   0          25s   CostCenter=IT,app.kubernetes.io/component=service,app.kubernetes.io/created-by=eks-workshop,app.kubernetes.io/instance=carts,app.kubernetes.io/name=carts,pod-template-hash=bb88b4789
 ```
 
 It's also possible to mutate existing resources in your Amazon EKS Clusters with Kyverno Policies using `patchStrategicMerge` and `patchesJson6902` parameters in your Kyverno Policy.

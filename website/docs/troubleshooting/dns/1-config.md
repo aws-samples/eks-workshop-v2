@@ -5,7 +5,7 @@ sidebar_position: 51
 
 DNS resolution in a cluster can be affected by multiple configuration options, which may disrupt service communications. In this module, we'll simulate common DNS-related issues frequently encountered in EKS clusters.
 
-### Step 1 - Execute configuration script 
+### Step 1 - Execute configuration script
 
 Let's introduce the issues for this module by running the following script:
 
@@ -27,7 +27,6 @@ Wait for all pods to be recreated, then check the application status. You'll not
 ```bash timeout=30 expectError=true
 $ kubectl get pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernetes.io/component=service -A
 NAMESPACE   NAME                              READY   STATUS             RESTARTS      AGE
-assets      assets-784b5f5656-gtgcg           1/1     Running            0             110s
 carts       carts-5475469b7c-gm7kw            0/1     Running            2 (40s ago)   110s
 catalog     catalog-5578f9649b-bbrjp          0/1     CrashLoopBackOff   3 (42s ago)   110s
 checkout    checkout-84c6769ddd-rvwnv         1/1     Running            0             110s

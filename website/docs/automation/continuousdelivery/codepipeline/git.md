@@ -53,8 +53,8 @@ $ git -C ~/environment/codepipeline remote add \
   origin s3+zip://${EKS_CLUSTER_NAME}-${AWS_ACCOUNT_ID}-retail-store-sample-ui/my-repo
 $ cp -R ~/environment/eks-workshop/modules/automation/continuousdelivery/codepipeline/repo/* \
   ~/environment/codepipeline
-$ helm pull oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart:0.8.5 \
+$ helm pull oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart:1.2.1 \
   -d /tmp
-$ tar zxf /tmp/retail-store-sample-ui-chart-0.8.5.tgz \
+$ tar zxf /tmp/retail-store-sample-ui-chart-1.2.1.tgz \
   -C ~/environment/codepipeline/chart --strip-components=1
 ```
