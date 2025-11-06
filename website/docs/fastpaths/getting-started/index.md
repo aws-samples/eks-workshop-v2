@@ -1,6 +1,6 @@
 ---
 title: Getting started
-sidebar_position: 10
+sidebar_position: 30
 description: "Learn the basics of running workloads on Amazon Elastic Kubernetes Service."
 ---
 

@@ -90,3 +90,22 @@ catalog     service/catalog-mysql       ClusterIP   172.20.4.209     <none>     
 ```
 
 The sample application is now deployed and ready to provide a foundation for us to use in the rest of the labs in this workshop!
+
+## Next Steps
+
+Now that we have deployed our sample application, pick one of the two options to define your learning journey.
+
+<div style={{display: 'flex', gap: '2rem', marginTop: '2rem', flexWrap: 'wrap'}}>
+  <a href="../developer" style={{textDecoration: 'none', color: 'inherit', flex: '1', minWidth: '280px', maxWidth: '400px'}}>
+    <div style={{border: '2px solid #ddd', borderRadius: '8px', padding: '2rem', height: '100%', cursor: 'pointer'}}>
+      <h3 style={{marginTop: 0}}>Developer Essentials</h3>
+      <p>Learn essential EKS features for deploying and managing containerized applications.</p>
+    </div>
+  </a>
+    <a href="../operator" style={{textDecoration: 'none', color: 'inherit', flex: '1', minWidth: '280px', maxWidth: '400px'}}>
+    <div style={{border: '2px solid #ddd', borderRadius: '8px', padding: '2rem', height: '100%', cursor: 'pointer'}}>
+      <h3 style={{marginTop: 0}}>Operator Essentials</h3>
+      <p>Learn essential EKS features for managing a container platform.</p>
+    </div>
+  </a>
+</div>

@@ -93,6 +93,33 @@ Fri Aug 30 12:26:58 MDT 2024
 
 In this case you can either copy each command individually or copy all of the commands using the clipboard icon in the top right of the terminal window. Give it a shot!
 
+### Using Kustomize
+
+[Kustomize](https://kustomize.io/) allows you to manage Kubernetes manifest files using declarative "kustomization" files. It provides the ability to express "base" manifests for your Kubernetes resources and then apply changes using composition, customization and easily making cross-cutting changes across many resources.
+
+In this workshop, you will see the following two types of commands involving Kustomize.
+
+1. `kubectl kustomize some-deployment.yaml` - This command **generates** the customized version of the yaml using Kustomize configuration. It does not deploy the resource.
+
+1. `kubectl apply -k some-deployment.yaml` - This command directly **applies** the customized version of the yaml using Kustomize configuration and deploys the resource.
+
+You can learn more about Kustomize at https://kustomize.io/.
+
 ## Next Steps
 
-Now that you're familiar with the format of this workshop, head to the [Application Overview](/docs/introduction/application-overview) to learn about the sample application, then proceed to [Getting Started](/docs/introduction/getting-started) lab or skip ahead to any module in the workshop with the top navigation bar.
+Now that you're familiar with the format of this workshop, pick one of the two options to define your learning journey.
+
+<div style={{display: 'flex', gap: '2rem', marginTop: '2rem', flexWrap: 'wrap'}}>
+  <a href="./basics" style={{textDecoration: 'none', color: 'inherit', flex: '1', minWidth: '280px', maxWidth: '400px'}}>
+    <div style={{border: '2px solid #ddd', borderRadius: '8px', padding: '2rem', height: '100%', cursor: 'pointer'}}>
+      <h3 style={{marginTop: 0}}>Kubernetes Basics</h3>
+      <p>Learn Kubernetes basics before diving deeper into EKS.</p>
+    </div>
+  </a>
+    <a href="./getting-started" style={{textDecoration: 'none', color: 'inherit', flex: '1', minWidth: '280px', maxWidth: '400px'}}>
+    <div style={{border: '2px solid #ddd', borderRadius: '8px', padding: '2rem', height: '100%', cursor: 'pointer'}}>
+      <h3 style={{marginTop: 0}}>Developer/Operator Essentials</h3>
+      <p>Learn essential EKS features for either being a developer or an operator.</p>
+    </div>
+  </a>
+</div>
