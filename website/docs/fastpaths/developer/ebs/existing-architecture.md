@@ -30,4 +30,4 @@ The StatefulSet currently uses an [EmptyDir volume](https://kubernetes.io/docs/c
 - The database starts fresh with each pod restart
 - There's no data persistence across pod lifecycle events
 
-This is not suitable for a production database. In the next section, we'll configure persistent storage using Amazon EBS to ensure our database data survives pod restarts and failures.
+This is not suitable for a production database. In the next section, we'll configure persistent storage using Amazon EBS to ensure our database data survive Pod restarts and failures.
