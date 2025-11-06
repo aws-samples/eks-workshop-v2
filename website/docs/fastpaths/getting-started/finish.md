@@ -36,9 +36,9 @@ i-082b0e8be0994671a   NotReady   <none>   1s    v1.33.4-eks-e386d34
 i-082b0e8be0994671a   Ready      <none>   2s    v1.33.4-eks-e386d34
 ```
 
-Press `Ctrl+C` to stop watching once you see the node appear. The Pods will now be running:
+Depending on when you run the previous command, you may see a node in either `NotReady` or `Ready` status. However, you should see the new node with the lowest age in any case. Press `Ctrl+C` to stop watching once you see the node appear. The Pods will now be running:
 
-Kubernetes uses labels for many purposes, for example the nodes have a label that indicates their nodepool, you can inspect them via this command:
+Kubernetes uses labels for many purposes, for example the nodes have a label that indicates their NodePool, you can inspect them via this command:
 ```bash
 $ kubectl get nodes -o json | jq -c '.items[] | {name: .metadata.name, nodepool: .metadata.labels."karpenter.sh/nodepool"}'
 {"name":"i-082b0e8be0994671a","nodepool":"general-purpose"}
@@ -46,7 +46,7 @@ $ kubectl get nodes -o json | jq -c '.items[] | {name: .metadata.name, nodepool:
 ```
 
 
-After this is complete we can use `kubectl wait` to make sure all the components have started before we proceed:
+After this is complete, we can use `kubectl wait` to make sure all the components have started before we proceed:
 
 ```bash timeout=200
 $ kubectl wait --for=condition=Ready --timeout=180s pods \

@@ -30,9 +30,11 @@ Using this IngressClass we will configure an Ingress:
 2. The `ingressClassName` references our Auto Mode IngressClass
 3. The rules section routes all HTTP requests where the path starts with `/` to the Kubernetes service called `ui` on port 80
 
-Note: With EKS Auto Mode, ALB configuration via annotations is not supported. Configuration must be done in the IngressClassParams.
+:::info
+With EKS Auto Mode, ALB configuration via annotations is not supported. Configuration must be done in the IngressClassParams.
+:::
 
-Let's apply those configurations
+Let's apply those configurations:
 
 ```bash timeout=180 hook=add-ingress hookTimeout=430
 $ kubectl apply -k ~/environment/eks-workshop/modules/fastpaths/developers/ingress/adding-ingress/
@@ -46,7 +48,7 @@ NAME   CLASS          HOSTS   ADDRESS                                           
 ui-auto     eks-auto-alb   *       k8s-ui-uiauto-6cd0ef095e-78768930.us-west-2.elb.amazonaws.com   80      5s
 ```
 
-The ALB will take several minutes to provision and register its targets so take some time to take a closer look at the ALB provisioned for this Ingress to see how its configured:
+The ALB will take several minutes to provision and register its targets so take some time to take a closer look at the ALB provisioned for this Ingress to see how it's configured:
 
 ```bash
 $ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uiauto`) == `true`]'
@@ -121,7 +123,11 @@ Since we specified using IP mode in our Ingress object, the target is registered
 
 You can also inspect the ALB and its target groups in the console by clicking this link:
 
-<ConsoleButton url="https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=ui/ui-auto;sort=loadBalancerName" service="ec2" label="Open EC2 console"/>
+<ConsoleButton url="https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.eks.amazonaws.com/stack=ui/ui-auto;sort=loadBalancerName" service="ec2" label="Open EC2 console"/>
+
+:::caution
+If you face issues opening the console using this button, you might not have an active session for the AWS console. To fix this, please go to the home page of the workshop and click on the link named `Open AWS console` under `AWS account access` section of the left navigation menu. 
+:::
 
 Get the URL from the Ingress resource:
 

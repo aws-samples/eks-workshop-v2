@@ -3,7 +3,7 @@ title: "Installing KEDA"
 sidebar_position: 5
 ---
 
-First lets install KEDA using Helm. An IAM role with permissions to access metric data within CloudWatch was created when the Auto Mode cluster was set up.
+First let's install KEDA using Helm. An IAM role with permissions to access metric data within CloudWatch was created when the Auto Mode cluster was set up.
 
 With Amazon EKS Auto Mode, we'll use EKS Pod Identity instead of IRSA. Let's create the Pod Identity association:
 
