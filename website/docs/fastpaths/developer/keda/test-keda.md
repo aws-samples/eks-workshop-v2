@@ -49,13 +49,14 @@ You can also view the load test results in the CloudWatch console:
 
 <ConsoleButton url="https://console.aws.amazon.com/cloudwatch/home#metricsV2:graph=~();namespace=~'AWS*2fApplicationELB" service="cloudwatch" label="Open CloudWatch console"/>
 
-Once in the console:
-1. Under **Metrics**, ensure you're in the same region as your cluster.
-1. Click on **ApplicationELB** under the Metrics section
-1. Select **TargetGroup** to view per-target metrics
-1. Find and select the target group for your load balancer
-1. Choose the `RequestCountPerTarget` metric to see how requests are distributed
+To reproduce this graph in your account, from the cloudwatch metrics console, you'll need to add 2 metrics and configure accordingly the graph:
 
-From the results you can see that initially all of the load was handled by a single pod, but as KEDA begins to scale the workload the requests are distributed across the additional pods added to the workload. If you let the load-generator pod run for the full 10 minutes, you'll see results similar to this.
+1. Under **Metrics**, ensure you're in the same region as your cluster.
+1. Under **ApplicationELB > Per AppELB Metrics, per TG Metrics**, select `RequestCount` and `RequestCountPerTarget`
+1. Click on the **Graphed Metrics (2)** tab, for each metrics
+    1. Change **Statistic** from `Average` to `Sum`
+    1. Change **Period** from `5 minutes` to `1 minute`
+
+From the results you can see that initially all of the load was handled by a single pod, but as KEDA begins to scale the workload the requests are distributed across the additional pods added to the workload as they become valid target in the load balancer target group. If you let the load-generator pod run for the full 10 minutes, you'll see results similar to this.
 
 ![Insights](/img/keda/keda-cloudwatch.png)
