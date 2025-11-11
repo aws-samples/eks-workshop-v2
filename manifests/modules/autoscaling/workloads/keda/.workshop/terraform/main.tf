@@ -31,6 +31,8 @@ module "iam_assumable_role_keda" {
 }
 
 resource "kubernetes_manifest" "ui_alb" {
+  depends_on = [module.eks_blueprints_addons]
+
   manifest = {
     "apiVersion" = "networking.k8s.io/v1"
     "kind"       = "Ingress"
