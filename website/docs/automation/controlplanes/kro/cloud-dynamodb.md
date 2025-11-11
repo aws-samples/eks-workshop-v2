@@ -1,11 +1,25 @@
 ---
-title: "Updating the application"
+title: "Provisioning cloud resources"
 sidebar_position: 6
 ---
 
 In this section, we will replace the in-memory database being used by carts with DynamoDB. We will do this by composing a WebApplicationDynamoDB ResourceGraphDefinition that builds on the base WebApplication template.
 
-Let's examine the ResourceGraphDefinition template that defines the reusable WebApplicationDynamoDB API:
+First, let's delete the kro instance we created in the previous section:
+
+```bash
+$ kubectl delete webapplication.kro.run/carts -n carts
+webapplication.kro.run "carts" deleted
+```
+
+This will clean up all the associated resources:
+
+```bash
+$ kubectl get all -n carts
+No resources found in carts namespace.
+```
+
+Now let's examine the ResourceGraphDefinition template that defines the reusable WebApplicationDynamoDB API:
 
 <details>
   <summary>Expand for full RGD manifest</summary>
@@ -15,6 +29,7 @@ Let's examine the ResourceGraphDefinition template that defines the reusable Web
 </details>
 
 This ResourceGraphDefinition:
+
 1. Creates a custom `WebApplicationDynamoDB` API that composes the WebApplication RGD
 2. Provisions a DynamoDB table with ACK
 3. Creates IAM roles and policies for DynamoDB access
@@ -55,13 +70,6 @@ Now let's examine the carts-ddb.yaml file that will use the WebApplicationDynamo
 8. Sets environment variables to enable DynamoDB persistence mode
 9. Provides AWS account ID and region for IAM and Pod Identity configuration
 
-First, let's delete the existing **Carts** component:
-
-```bash
-$ kubectl delete webapplication.kro.run/carts -n carts
-webapplication.kro.run "carts" deleted
-```
-
 Next, let's deploy the updated component leveraging the carts-ddb.yaml file:
 
 ```bash wait=10
@@ -74,8 +82,15 @@ kro will process this custom resource and create all the underlying resources in
 
 ```bash
 $ kubectl get webapplicationdynamodb -n carts
-NAME    AGE
-carts   30s
+NAME    STATE         SYNCED   AGE
+carts   IN_PROGRESS   False    16s
+```
+
+Now we can wait until the instance has reached a "synced" state:
+
+```bash
+$ kubectl wait -o yaml webapplicationdynamodb/carts -n carts \
+  --for=condition=InstanceSynced=True --timeout=120s
 ```
 
 To verify that the DynamoDB table has been created, we can check the generated ACK resource:
@@ -99,29 +114,30 @@ $ aws dynamodb list-tables
 }
 ```
 
-Perfect! Our DynamoDB table and component have been successfully created using kro's composable approach.
+Our DynamoDB table and component have been successfully created using kro's composable approach.
 
 To verify that the component is working with the new DynamoDB table, we can interact with it through a browser. An NLB has been created to expose the sample application for testing:
 
 ```bash
-$ LB_HOSTNAME=$(kubectl -n ui get service ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}')
-$ echo "http://$LB_HOSTNAME"
-http://k8s-ui-uinlb-fe4dc7c11e-a362df3b7254c797.elb.us-west-2.amazonaws.com
+$ ADDRESS=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+$ echo "http://${ADDRESS}"
+http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
 
 :::info
 Please note that the actual endpoint will be different when you run this command as a new Network Load Balancer endpoint will be provisioned.
 :::
 
-To wait until the load balancer has finished provisioning, you can run this command:
+To make sure the load balancer has finished provisioning, you can run this command:
 
 ```bash timeout=610
-$ wait-for-lb $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}")
+curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
+  -k $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 ```
 
 Once the load balancer is provisioned, you can access it by pasting the URL in your web browser. You'll see the UI from the web store displayed and will be able to navigate around the site as a user.
 
-<Browser url="http://k8s-ui-uinlb-fe4dc7c11e-a362df3b7254c797.elb.us-west-2.amazonaws.com/">
+<Browser url="http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com/">
 <img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
 </Browser>
 
@@ -132,8 +148,7 @@ To verify that the **Carts** module is indeed using the DynamoDB table we just p
 To confirm that these items are also in the DynamoDB table, run:
 
 ```bash
-$ aws dynamodb scan --table-name "eks-workshop-carts-kro"
+$ aws dynamodb scan --table-name "${EKS_CLUSTER_NAME}-carts-kro"
 ```
 
 Congratulations! We have successfully demonstrated kro's composability by building on the base WebApplication template to add DynamoDB storage.
-

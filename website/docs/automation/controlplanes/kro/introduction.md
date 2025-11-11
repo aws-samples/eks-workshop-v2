@@ -36,10 +36,7 @@ $ kubectl get crd | grep kro
 resourcegraphdefinitions.kro.run          2025-10-15T22:34:13Z
 ```
 
-
-## ResourceGraphDefinition Workflow
-
-When you create a ResourceGraphDefinition, kro:
+When you create a ResourceGraphDefinition kro performs the following:
 
 1. **Registers a new Custom API** - Based on the schema defined in the RGD, kro automatically creates a new Kubernetes CRD that developers can use
 2. **Processes resource instances** - When developers create instances of the custom API, kro processes the request using the defined template

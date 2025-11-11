@@ -1,5 +1,5 @@
 ---
-title: "Provisioning resources with kro"
+title: "Creating resources with kro"
 sidebar_position: 5
 ---
 
@@ -13,6 +13,7 @@ Now that kro has been installed, we will deploy the **Carts** component using a 
 </details>
 
 This ResourceGraphDefinition creates a custom `WebApplication` API that abstracts the complexity of deploying:
+
 - ServiceAccount
 - ConfigMap
 - Deployment
@@ -78,11 +79,18 @@ kro will process this custom resource and create all the underlying Kubernetes r
 
 ```bash
 $ kubectl get webapplication -n carts
-NAME    AGE
-carts   30s
+NAME    STATE         SYNCED   AGE
+carts   IN_PROGRESS   False    16s
 ```
 
-Next, verify the deployment:
+Now we can wait until the instance has reached a "synced" state:
+
+```bash
+$ kubectl wait -o yaml webapplication/carts -n carts \
+  --for=condition=InstanceSynced=True --timeout=120s
+```
+
+Next, verify the components of the RGD are running:
 
 ```bash
 $ kubectl get all -n carts

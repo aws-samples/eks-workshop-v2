@@ -54,14 +54,41 @@ resource "time_sleep" "blueprints_addons_sleep" {
   destroy_duration = "15s"
 }
 
-resource "kubectl_manifest" "nlb" {
-  yaml_body = templatefile("${path.module}/templates/nlb.yaml", {
-
-  })
-
-  wait = true
-
+resource "kubernetes_manifest" "ui_alb" {
   depends_on = [time_sleep.blueprints_addons_sleep]
+
+  manifest = {
+    "apiVersion" = "networking.k8s.io/v1"
+    "kind"       = "Ingress"
+    "metadata" = {
+      "name"      = "ui"
+      "namespace" = "ui"
+      "annotations" = {
+        "alb.ingress.kubernetes.io/scheme"           = "internet-facing"
+        "alb.ingress.kubernetes.io/target-type"      = "ip"
+        "alb.ingress.kubernetes.io/healthcheck-path" = "/actuator/health/liveness"
+      }
+    }
+    "spec" = {
+      ingressClassName = "alb",
+      "rules" = [{
+        "http" = {
+          paths = [{
+            path     = "/"
+            pathType = "Prefix"
+            "backend" = {
+              service = {
+                name = "ui"
+                port = {
+                  number = 80
+                }
+              }
+            }
+          }]
+        }
+      }]
+    }
+  }
 }
 
 module "eks_ack_addons" {
@@ -77,9 +104,9 @@ module "eks_ack_addons" {
   ecrpublic_token    = data.aws_ecrpublic_authorization_token.token.password
 
   # Controllers to enable
-  enable_dynamodb               = true
-  enable_iam                    = true
-  enable_eks                    = true
+  enable_dynamodb = true
+  enable_iam      = true
+  enable_eks      = true
   dynamodb = {
     wait        = true
     role_name   = "${var.addon_context.eks_cluster_id}-ack-dynamo"
@@ -97,7 +124,7 @@ module "eks_ack_addons" {
     role_name   = "${var.addon_context.eks_cluster_id}-ack-eks"
     policy_name = "${var.addon_context.eks_cluster_id}-ack-eks"
   }
-    
+
   tags = var.tags
 
 }
