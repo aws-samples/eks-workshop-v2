@@ -57,10 +57,8 @@ jobs:
           git config user.email 'github-actions[bot]@users.noreply.github.com'
       - name: Update stable branch
         run: |
-          git checkout stable
-          git pull
-          git merge --no-ff main -m "Publish to stable"
-          git push
+          git checkout -B stable main
+          git push -f origin stable
       - name: Run publish (stable)
         env:
           CONTENT_BUCKET: "${{ secrets.CONTENT_BUCKET }}"
