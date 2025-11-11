@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: catalog-cleanup
+  namespace: catalog
+  labels:
+    app.kubernetes.io/name: catalog-cleanup
+    app.kubernetes.io/created-by: eks-workshop
+spec:
+  schedule: "*/1 * * * *"  # Every 1 minute for demo purposes
+  timeZone: "UTC"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: catalog-cleanup
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: cleanup
+            image: busybox:1.36
+            command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Starting cleanup job at $(date)"
+              echo "Checking for temporary files..."
+              
+              # Simulate finding and cleaning up files
+              echo "Found 3 temporary files to clean up:"
+              echo "  - /tmp/cache_file_1.tmp"
+              echo "  - /tmp/cache_file_2.tmp" 
+              echo "  - /tmp/old_log.log"
+              
+              # Simulate cleanup process
+              sleep 3
+              echo "Cleaning up temporary files..."
+              sleep 2
+              echo "Temporary files removed successfully"
+              
+              echo "Cleanup completed at $(date)"
+              echo "Next cleanup scheduled in 1 minute"
+            resources:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                cpu: 100m
+                memory: 128Mi
