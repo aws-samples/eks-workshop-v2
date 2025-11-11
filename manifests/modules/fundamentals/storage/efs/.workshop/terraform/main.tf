@@ -51,7 +51,7 @@ resource "time_sleep" "wait" {
 }
 
 resource "kubernetes_manifest" "ui_nlb" {
-  depends_on = [module.eks_blueprints_addons]
+  depends_on = [time_sleep.wait]
 
   manifest = {
     "apiVersion" = "v1"
