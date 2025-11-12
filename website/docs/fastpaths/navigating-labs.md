@@ -30,39 +30,19 @@ $ prepare-environment $MODULE_NAME
 $ prepare-environment $MODULE_NAME/$LAB
 ```
 
-**Examples**
-```
-# For the getting started lab
-$ prepare-environment introduction/getting-started
-
-# For Karpenter autoscaling
-$ prepare-environment autoscaling/compute/karpenter
-
-# For storage with EBS
-$ prepare-environment fundamentals/storage/ebs
-
-# For networking security groups
-$ prepare-environment networking/securitygroups-for-pods
-```
-
 :::caution
 You should start each lab from the page indicated by "BEFORE YOU START" badge. Starting in the middle of a lab will cause unpredictable behavior.
 :::
 
-## Resetting Your Cluster (Modular Section Only)
-
-In the event that you accidentally configure your cluster or module in a way that is not functioning you have been provided with a mechanism to reset your EKS cluster as best we can which can be run at any time. Simply run the command prepare-environment and wait until it completes. This may take several minutes depending on the state of your cluster when it is run.
-
-```bash
-$ prepare-environment
-```
-
 ## Tips
 
 ### Copy/Paste Permission
-Depending on your browser the first time you copy/paste content in to the VSCode terminal you may be presented with a prompt that looks like this:
+Depending on your browser the first time you copy/paste content in to the Code Server terminal you may be presented with a prompt that looks like this:
 
-![VSCode copy/paste](../introduction/assets/vscode-copy-paste.webp)
+![Code Server copy/paste](../introduction/assets/vscode-copy-paste.webp)
+
+Click **Allow** button to enable this functionality.
+
 ### Terminal commands
 
 Most of the interaction you will do in this workshop will be done with terminal commands, which you can either manually type or copy/paste to the IDE terminal. You will see this terminal commands displayed like this:
@@ -91,8 +71,35 @@ $ date
 Fri Aug 30 12:26:58 MDT 2024
 ```
 
-In this case you can either copy each command individually or copy all of the commands using the clipboard icon in the top right of the terminal window. Give it a shot!
+In this case you can either copy each command individually or copy all of the commands using the clipboard icon in the top right corner of the terminal window. Give it a shot!
+
+### Using Kustomize
+
+[Kustomize](https://kustomize.io/) allows you to manage Kubernetes manifest files using declarative "kustomization" files. It provides the ability to express "base" manifests for your Kubernetes resources and then apply changes using composition, customization and easily making cross-cutting changes across many resources.
+
+In this workshop, you will see the following two types of commands involving Kustomize.
+
+1. `kubectl kustomize some-deployment.yaml` - This command **generates** the customized version of the yaml using Kustomize configuration. It does not deploy the resource.
+
+1. `kubectl apply -k some-deployment.yaml` - This command directly **applies** the customized version of the yaml using Kustomize configuration and deploys the resource.
+
+You can learn more about Kustomize at https://kustomize.io/.
 
 ## Next Steps
 
-Now that you're familiar with the format of this workshop, head to the [Application Overview](/docs/introduction/application-overview) to learn about the sample application, then proceed to [Getting Started](/docs/introduction/getting-started) lab or skip ahead to any module in the workshop with the top navigation bar.
+Now that you're familiar with the format of this workshop, pick one of the two options to define your learning journey.
+
+<div style={{display: 'flex', gap: '2rem', marginTop: '2rem', flexWrap: 'wrap'}}>
+  <a href="./basics" style={{textDecoration: 'none', color: 'inherit', flex: '1', minWidth: '280px', maxWidth: '400px'}}>
+    <div style={{border: '2px solid #ddd', borderRadius: '8px', padding: '2rem', height: '100%', cursor: 'pointer'}}>
+      <h3 style={{marginTop: 0}}>Kubernetes Basics</h3>
+      <p>Learn Kubernetes basics before diving deeper into EKS.</p>
+    </div>
+  </a>
+    <a href="./getting-started" style={{textDecoration: 'none', color: 'inherit', flex: '1', minWidth: '280px', maxWidth: '400px'}}>
+    <div style={{border: '2px solid #ddd', borderRadius: '8px', padding: '2rem', height: '100%', cursor: 'pointer'}}>
+      <h3 style={{marginTop: 0}}>Developer/Operator Essentials</h3>
+      <p>Learn essential EKS features for either being a developer or an operator.</p>
+    </div>
+  </a>
+</div>

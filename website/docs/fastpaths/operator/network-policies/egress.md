@@ -37,17 +37,21 @@ curl: (28) Resolving timed out after 5000 milliseconds
 
 Implementing the above policy will also cause the sample application to no longer function properly as 'ui' component requires access to the 'catalog' service and other service components. To define an effective egress policy for 'ui' component requires understanding the network dependencies for the component.
 
-In the case of the 'ui' component, it needs to communicate with all the other service components, such as 'catalog', 'orders, etc. Apart from this, 'ui' will also need to be able to communicate with components in the cluster system namespaces. For example, for the 'ui' component to work, it needs to be able to perform DNS lookups, which requires it to communicate with the CoreDNS service in the `kube-system` namespace.
+The 'ui' service will need the following three egress network connectivity to function properly.
+
+1. Ability to communicate with all the other services, such as 'catalog', 'orders', etc. 
+2. Ability to access cluster-wide common tools in the cluster system namespaces like `kube-system`. 
+3. Ability to access the kube-dns service to resolve DNS name. For your EKS Auto Mode clusters, this IP is `172.20.0.10/32`. The following configuration enables this connectivity.
 
 The network policy below was designed with the above requirements in mind.
 
 ::yaml{file="manifests/modules/fastpaths/operators/network-policies/allow-ui-egress.yaml" paths="spec.egress.0.to.0,spec.egress.0.to.1,spec.egress.0.to.2"}
 
 1. The first egress rule focuses on allowing egress traffic to DNS server for domain name resolution of internal services.  
-2. The first egress rule focuses on allowing egress traffic to all `service` components such as 'catalog', 'orders' etc. (without providing access to the database components), along with the `namespaceSelector` which allows for egress traffic to any namespace as long as the pod labels match `app.kubernetes.io/component: service`
-3. The second egress rule focuses on allowing egress traffic to all components in the `kube-system` namespace, which enables other key communications with the components in the system namespace
+2. The first egress rule focuses on allowing egress traffic to all `service` components such as 'catalog', 'orders' etc. (without providing access to the database components), along with the `namespaceSelector`, which allows for egress traffic to any namespace as long as the pod labels match `app.kubernetes.io/component: service`.
+3. The second egress rule focuses on allowing egress traffic to all components in the `kube-system` namespace, which enables other key communications with the components in the system namespace.
 
-Lets apply this additional policy:
+Let's apply this additional policy:
 
 ```bash wait=30
 $ kubectl apply -f ~/environment/eks-workshop/modules/fastpaths/operators/network-policies/allow-ui-egress.yaml

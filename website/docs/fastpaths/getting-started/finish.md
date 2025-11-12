@@ -36,9 +36,9 @@ i-082b0e8be0994671a   NotReady   <none>   1s    v1.33.4-eks-e386d34
 i-082b0e8be0994671a   Ready      <none>   2s    v1.33.4-eks-e386d34
 ```
 
-Press `Ctrl+C` to stop watching once you see the node appear. The Pods will now be running:
+Depending on when you run the previous command, you may see a node in either `NotReady` or `Ready` status. However, you should see the new node with the lowest age in any case. Press `Ctrl+C` to stop watching once you see the node appear. The Pods will now be running:
 
-Kubernetes uses labels for many purposes, for example the nodes have a label that indicates their nodepool, you can inspect them via this command:
+Kubernetes uses labels for many purposes, for example the nodes have a label that indicates their NodePool, you can inspect them via this command:
 ```bash
 $ kubectl get nodes -o json | jq -c '.items[] | {name: .metadata.name, nodepool: .metadata.labels."karpenter.sh/nodepool"}'
 {"name":"i-082b0e8be0994671a","nodepool":"general-purpose"}
@@ -46,7 +46,7 @@ $ kubectl get nodes -o json | jq -c '.items[] | {name: .metadata.name, nodepool:
 ```
 
 
-After this is complete we can use `kubectl wait` to make sure all the components have started before we proceed:
+After this is complete, we can use `kubectl wait` to make sure all the components have started before we proceed:
 
 ```bash timeout=200
 $ kubectl wait --for=condition=Ready --timeout=180s pods \
@@ -90,3 +90,22 @@ catalog     service/catalog-mysql       ClusterIP   172.20.4.209     <none>     
 ```
 
 The sample application is now deployed and ready to provide a foundation for us to use in the rest of the labs in this workshop!
+
+## Next Steps
+
+Now that we have deployed our sample application, pick one of the two options to define your learning journey.
+
+<div style={{display: 'flex', gap: '2rem', marginTop: '2rem', flexWrap: 'wrap'}}>
+  <a href="../developer" style={{textDecoration: 'none', color: 'inherit', flex: '1', minWidth: '280px', maxWidth: '400px'}}>
+    <div style={{border: '2px solid #ddd', borderRadius: '8px', padding: '2rem', height: '100%', cursor: 'pointer'}}>
+      <h3 style={{marginTop: 0}}>Developer Essentials</h3>
+      <p>Learn essential EKS features for deploying and managing containerized applications.</p>
+    </div>
+  </a>
+    <a href="../operator" style={{textDecoration: 'none', color: 'inherit', flex: '1', minWidth: '280px', maxWidth: '400px'}}>
+    <div style={{border: '2px solid #ddd', borderRadius: '8px', padding: '2rem', height: '100%', cursor: 'pointer'}}>
+      <h3 style={{marginTop: 0}}>Operator Essentials</h3>
+      <p>Learn essential EKS features for managing a container platform.</p>
+    </div>
+  </a>
+</div>

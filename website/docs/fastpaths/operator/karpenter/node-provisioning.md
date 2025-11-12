@@ -82,7 +82,7 @@ You should see the output showing a new node is launched.
 Karpenter will find the most suitable instance type that is big enough to accommodate all to-be-scheduled Pods and lower in cost at the same time. 
 
 :::info
-There are certain cases where a different instance type might be selected other than the lowest price, for example if that cheapest instance type has no remaining capacity available in the region you're working in
+There are certain cases where a different instance type might be selected other than the lowest price, for example if that cheapest instance type has no remaining capacity available in the region you're working in.
 :::
 
 Let's again list all the available nodes in the cluster.
@@ -102,7 +102,7 @@ i-0a78dba9f62f5e0e4   Ready    <none>   60m   v1.33.4-eks-e386d34   m5a.large   
 
 You can see that the last node added to the pool is as per the `NodePool` configuration table shown earlier in this page.
 
-Karpenter keep track of it's node through Kubernetes native object called a NodeClaim. It's an object so you can check the configuration as well:
+Karpenter keep track of its node through Kubernetes native object called a NodeClaim. It's an object, so you can check the configuration as well:
 
 ```bash
 $ kubectl get nodeclaims.karpenter.sh  -o wide

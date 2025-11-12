@@ -34,8 +34,8 @@ Now recreate it with persistent storage enabled. The updated StatefulSet include
 
 ::yaml{file="manifests/modules/fastpaths/developers/ebs/statefulset-mysql.yaml" paths="spec.volumeClaimTemplates.0.spec.storageClassName,spec.volumeClaimTemplates.0.spec.accessModes,spec.volumeClaimTemplates.0.spec.resources"}
 
-1. The `storageClassName` specifies the ebs-sc StorageClass for dynamic provisioning
-2. The `accessModes` specifies ReadWriteOnce, allowing the volume to be mounted by a single node
+1. The `accessModes` specifies ReadWriteOnce, allowing the volume to be mounted by a single node
+2. The `storageClassName` specifies the ebs-sc StorageClass for dynamic provisioning
 3. We are requesting a 30GB EBS volume
 
 Apply the configuration, and restart the catalog pod to ensure initialization of the database:
