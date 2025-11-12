@@ -13,7 +13,20 @@ Currently, there are no network policies that are defined, and any component in 
 
 ```bash
 $ kubectl exec deployment/catalog -n catalog -- curl -s http://checkout.checkout/health | jq
-{"status":"ok","info":{"chaos":{"status":"up"}},"error":{},"details":{"chaos":{"status":"up"}}}
+{
+  "status": "ok",
+  "info": {
+    "chaos": {
+      "status": "up"
+    }
+  },
+  "error": {},
+  "details": {
+    "chaos": {
+      "status": "up"
+    }
+  }
+}
 ```
 
 Let us make required configuration changes in our EKS Auto Mode cluster to enable network policies. For that, create a ConfigMap for VPC container network interface (CNI) that provides networking for the cluster.
@@ -28,4 +41,4 @@ Apply this configuration:
 $ kubectl apply -f ~/environment/eks-workshop/modules/fastpaths/operators/network-policies/vpc-cni-policies.yaml
 ```
 
-Let's now implement some network rules so we can better control the follow of traffic for the sample application.
+Let's now implement some network rules so we can better control the network traffic flow for the sample application.

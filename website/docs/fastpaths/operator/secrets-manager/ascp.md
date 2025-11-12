@@ -3,7 +3,7 @@ title: "AWS Secrets and Configuration Provider (ASCP)"
 sidebar_position: 422
 ---
 
-The EKS auto mode cluster has already been configured with the AWS Secrets and Configuration Provider (ASCP) for the Kubernetes Secrets Store CSI Driver required for this lab.
+For this workshop, we pre-configured the AWS Secrets and Configuration Provider (ASCP) into your EKS cluster. 
 
 Let's validate that the addons were deployed correctly.
 

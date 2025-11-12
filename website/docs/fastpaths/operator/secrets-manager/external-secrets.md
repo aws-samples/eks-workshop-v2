@@ -19,7 +19,7 @@ external-secrets-sa   0         7m
 
 The operator uses a ServiceAccount named `external-secrets-sa` which is tied to an IAM role via [EKS Pod Identities](../amazon-eks-pod-identity/), providing access to AWS Secrets Manager for retrieving secrets:
 
-We need to create a `ClusterSecretStore` resource - this is a cluster-wide SecretStore that can be referenced by ExternalSecrets from any namespace. Lets inspect the file we will use to create this `ClusterSecretStore`:
+We need to create a `ClusterSecretStore` resource - this is a cluster-wide SecretStore that can be referenced by ExternalSecrets from any namespace. Let's inspect the file we will use to create this `ClusterSecretStore`:
 
 ::yaml{file="manifests/modules/fastpaths/operators/external-secrets/cluster-secret-store.yaml" paths="spec.provider.aws.service,spec.provider.aws.region"}
 
@@ -30,7 +30,7 @@ We need to create a `ClusterSecretStore` resource - this is a cluster-wide Secre
 With EKS Pod Identites there is no need for the auth section here as the ServiceAccount authenticate via the Pod Identity Association linking the service account `external-secrets-sa` to an IAM role with AWS Secrets Manager permissions
 :::
 
-Lets use this file to create the ClusterSecretStore resource.
+Let's use this file to create the ClusterSecretStore resource.
 
 ```bash
 $ cat ~/environment/eks-workshop/modules/fastpaths/operators/external-secrets/cluster-secret-store.yaml \

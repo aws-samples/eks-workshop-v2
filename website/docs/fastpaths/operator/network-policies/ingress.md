@@ -46,7 +46,7 @@ Now, we'll define a network policy that will allow traffic to the 'catalog' serv
 1. The `podSelector` targets pods with labels `app.kubernetes.io/name: catalog` and `app.kubernetes.io/component: service`
 2. This `ingress.from` configuration allows inbound connections only from pods running in the `ui` namespace identified by `kubernetes.io/metadata.name: ui` with label `app.kubernetes.io/name: ui` 
 
-Lets apply the policy:
+Let's apply the policy:
 
 ```bash wait=30
 $ kubectl apply -f ~/environment/eks-workshop/modules/networking/network-policies/apply-network-policies/allow-catalog-ingress-webservice.yaml
@@ -81,7 +81,7 @@ curl: (28) Failed to connect to catalog.catalog port 80 after 5001 ms: Timeout w
 
 As you could see from the above outputs, only the 'ui' component is able to communicate with the 'catalog' service component, and the 'orders' service component is not able to.
 
-But this still leaves the 'catalog' database component open, so let us implement a network policy to ensure only the 'catalog' service component alone can communicate with the 'catalog' database component.
+But this still leaves the 'catalog' database component open, so let us implement a network policy to ensure only the 'catalog' service component can communicate with the 'catalog' database component.
 
 ::yaml{file="manifests/modules/networking/network-policies/apply-network-policies/allow-catalog-ingress-db.yaml" paths="spec.podSelector,spec.ingress.0.from.0"}
 
@@ -114,6 +114,29 @@ $ kubectl rollout restart deployment/catalog -n catalog
 $ kubectl rollout status deployment/catalog -n catalog --timeout=2m
 ```
 
+Now, let's check if we can connect to the 'catalog-mysql' database from a 'catalog' pod. 
+
+```bash
+$ kubectl exec deployment/catalog -n catalog -- curl -v catalog-mysql.catalog:3306 --connect-timeout 5 --http0.9
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host catalog-mysql.catalog:3306 was resolved.
+* IPv6: (none)
+* IPv4: 172.20.233.240
+*   Trying 172.20.233.240:3306...
+* Connected to catalog-mysql.catalog (172.20.233.240) port 3306
+* using HTTP/1.x
+> GET / HTTP/1.1
+> Host: catalog-mysql.catalog:3306
+> User-Agent: curl/8.11.1
+> Accept: */*
+> 
+* Request completely sent off
+{ [5 bytes data]
+100   115    0   115    0     0  20901      0 --:--:-- --:--:-- --:--:-- 23000
+* shutting down connection #0
+```
+
 As you could see from the above outputs, only the 'catalog' service component alone is able to communicate with the 'catalog' database component.
 
-Now that we have implemented an effective ingress policy for the 'catalog' namespace, we extend the same logic to other namespaces and components in the sample application, thereby greatly reducing the attack surface for the sample application and increasing network security.
+Now that we have implemented an effective ingress policy for the 'catalog' namespace, we extend the same logic to other namespaces and components in the sample application, thereby greatly reducing the attack surface for the sample application and increasing network security. 

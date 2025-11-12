@@ -30,39 +30,19 @@ $ prepare-environment $MODULE_NAME
 $ prepare-environment $MODULE_NAME/$LAB
 ```
 
-**Examples**
-```
-# For the getting started lab
-$ prepare-environment introduction/getting-started
-
-# For Karpenter autoscaling
-$ prepare-environment autoscaling/compute/karpenter
-
-# For storage with EBS
-$ prepare-environment fundamentals/storage/ebs
-
-# For networking security groups
-$ prepare-environment networking/securitygroups-for-pods
-```
-
 :::caution
 You should start each lab from the page indicated by "BEFORE YOU START" badge. Starting in the middle of a lab will cause unpredictable behavior.
 :::
 
-## Resetting Your Cluster (Modular Section Only)
-
-In the event that you accidentally configure your cluster or module in a way that is not functioning you have been provided with a mechanism to reset your EKS cluster as best we can which can be run at any time. Simply run the command prepare-environment and wait until it completes. This may take several minutes depending on the state of your cluster when it is run.
-
-```bash
-$ prepare-environment
-```
-
 ## Tips
 
 ### Copy/Paste Permission
-Depending on your browser the first time you copy/paste content in to the VSCode terminal you may be presented with a prompt that looks like this:
+Depending on your browser the first time you copy/paste content in to the Code Server terminal you may be presented with a prompt that looks like this:
 
-![VSCode copy/paste](../introduction/assets/vscode-copy-paste.webp)
+![Code Server copy/paste](../introduction/assets/vscode-copy-paste.webp)
+
+Click **Allow** button to enable this functionality.
+
 ### Terminal commands
 
 Most of the interaction you will do in this workshop will be done with terminal commands, which you can either manually type or copy/paste to the IDE terminal. You will see this terminal commands displayed like this:
@@ -91,7 +71,7 @@ $ date
 Fri Aug 30 12:26:58 MDT 2024
 ```
 
-In this case you can either copy each command individually or copy all of the commands using the clipboard icon in the top right of the terminal window. Give it a shot!
+In this case you can either copy each command individually or copy all of the commands using the clipboard icon in the top right corner of the terminal window. Give it a shot!
 
 ### Using Kustomize
 
