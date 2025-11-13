@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: assets
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+        - name: assets
+          volumeMounts:
+            - name: fsx-lustre
+              mountPath: /fsx-lustre
+      volumes:
+        - name: fsx-lustre
+          persistentVolumeClaim:
+            claimName: fsx-claim
