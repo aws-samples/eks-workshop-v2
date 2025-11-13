@@ -31,5 +31,5 @@ $CONTAINER_CLI run --rm \
   -v $SCRIPT_DIR/../manifests:/manifests \
   -v $SCRIPT_DIR/../cluster:/cluster \
   --entrypoint /bin/bash \
-  -e 'EKS_CLUSTER_NAME' -e 'AWS_REGION' -e 'AWS_CONTAINER_CREDENTIALS_RELATIVE_URI' \
+  -e 'EKS_CLUSTER_NAME' -e 'EKS_CLUSTER_AUTO_NAME'  -e 'AWS_REGION' -e 'AWS_CONTAINER_CREDENTIALS_RELATIVE_URI' -e RESOURCE_CODEBUILD_ROLE_ARN \
   $aws_credential_args $container_image -c "$shell_command"

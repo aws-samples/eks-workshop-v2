@@ -3,6 +3,7 @@ title: "Inference with AWS Inferentia"
 sidebar_position: 10
 chapter: true
 sidebar_custom_props: { "module": true }
+sidebar_class_name: hidden
 description: "Use AWS Inferentia to accelerate deep learning inference workloads on Amazon Elastic Kubernetes Service."
 ---
 

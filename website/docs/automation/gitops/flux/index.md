@@ -2,6 +2,7 @@
 title: "Flux"
 sidebar_position: 2
 sidebar_custom_props: { "module": true }
+sidebar_class_name: hidden
 description: "Implement continuous and progressive delivery with Flux on Amazon Elastic Kubernetes Service."
 ---
 
