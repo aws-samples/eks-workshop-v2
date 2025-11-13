@@ -30,7 +30,15 @@ module "iam_assumable_role_keda" {
   tags = var.tags
 }
 
+resource "time_sleep" "wait" {
+  depends_on = [module.eks_blueprints_addons]
+
+  create_duration = "20s"
+}
+
 resource "kubernetes_manifest" "ui_alb" {
+  depends_on = [time_sleep.wait]
+
   manifest = {
     "apiVersion" = "networking.k8s.io/v1"
     "kind"       = "Ingress"

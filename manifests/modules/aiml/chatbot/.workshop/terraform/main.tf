@@ -125,8 +125,14 @@ resource "helm_release" "karpenter" {
   }
 }
 
-resource "kubernetes_manifest" "ui_nlb" {
+resource "time_sleep" "wait" {
   depends_on = [module.eks_blueprints_addons]
+
+  create_duration = "10s"
+}
+
+resource "kubernetes_manifest" "ui_nlb" {
+  depends_on = [time_sleep.wait]
 
   manifest = {
     "apiVersion" = "v1"
