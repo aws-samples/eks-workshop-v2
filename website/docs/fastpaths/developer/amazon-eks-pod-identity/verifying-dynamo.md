@@ -15,6 +15,10 @@ The `carts` Pod is able to reach the DynamoDB service and the shopping cart is n
 
 ![Cart](/img/sample-app-screens/shopping-cart.webp)
 
+:::caution
+If you see an error loading the application, make sure you have restarted `carts` Pods at the end of the [previous section](./use-pod-identity.md).
+:::
+
 After the AWS IAM role is associated with the Service Account, any newly created Pods using that Service Account will be intercepted by the [EKS Pod Identity webhook](https://github.com/aws/amazon-eks-pod-identity-webhook). This webhook runs on the Amazon EKS cluster's control plane and is fully managed by AWS. Take a closer look at the new `carts` Pod to see the new environment variables:
 
 ```bash

@@ -93,6 +93,10 @@ With the Service Account verified, let's recycle the `carts` Pods:
 ```bash hook=enable-pod-identity hookTimeout=430
 $ kubectl -n carts rollout restart deployment/carts
 deployment.apps/carts restarted
+```
+Let's check the status of the Pods to check if they are successfully rolled out:
+
+```bash
 $ kubectl -n carts rollout status deployment/carts
 Waiting for deployment "carts" rollout to finish: 1 old replicas are pending termination...
 deployment "carts" successfully rolled out
