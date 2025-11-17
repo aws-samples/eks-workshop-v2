@@ -9,9 +9,7 @@ sidebar_custom_props: { "module": true }
 ::required-time
 
 :::tip Before you start
-This fast path uses a dedicated Amazon EKS Auto Mode cluster. Amazon EKS Auto Mode extends AWS management of Kubernetes clusters beyond the cluster itself, managing infrastructure that enables smooth operation of your workloads including compute autoscaling, networking, load balancing, DNS, and block storage.
-
-Switch to the Auto Mode cluster:
+Apply required lab configurations:
 
 ```bash
 $ prepare-environment fastpaths/developer
@@ -20,7 +18,7 @@ $ prepare-environment fastpaths/developer
 
 Welcome to the EKS Workshop Developer Essentials! This is a collection of labs optimized for developers to learn the features of Amazon EKS most commonly required when deploying workloads.
 
-Throughout this series of exercises you'll learn:
+In this learning path, you'll learn:
 
 - How to deploy and manage containerized applications on EKS
 - Working with persistent storage using Amazon EBS

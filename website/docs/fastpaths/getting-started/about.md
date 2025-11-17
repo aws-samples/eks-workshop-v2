@@ -21,7 +21,7 @@ The application has several components and dependencies:
 | Checkout | API to orchestrate the checkout process |
 | Orders | API to receive and process customer orders |
 
-Initially we'll deploy the application in a manner that is self-contained in the Amazon EKS cluster, without using any AWS services like load balancers or a managed database. Over the course of the labs we'll leverage different features of EKS to take advantage of broader AWS services and features for our retail store.
+Initially, we'll deploy the application in a manner that is self-contained in the Amazon EKS cluster, without using any AWS services like load balancers or a managed database. Over the course of the labs we'll leverage different features of EKS to take advantage of broader AWS services and features for our retail store.
 
 You can find the full source code for the sample application on [GitHub](https://github.com/aws-containers/retail-store-sample-app).
 
