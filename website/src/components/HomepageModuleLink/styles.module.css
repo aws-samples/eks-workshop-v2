@@ -1,10 +1,24 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
+.features {
+  display: flex;
+  align-items: center;
+  padding: 2rem 0;
+  width: 100%;
+  background-color: white;
+  color: rgb(28, 30, 33);
+}
+
+[data-theme="dark"] .features {
+  background-color: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+}
+
+.featureSvg {
+  height: 200px;
+  width: 200px;
+}
 
 .heroBanner {
-  padding: 0;
+  padding: 0 0 4rem 0;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -15,12 +29,6 @@
   .heroBanner {
     padding: 2rem;
   }
-}
-
-.buttons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .pathSelection {
@@ -101,4 +109,8 @@
 .moduleLink:hover {
   color: white;
   text-decoration: underline;
+}
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
