@@ -7,6 +7,8 @@ description: "Learn fundamental Kubernetes concepts including architecture, Helm
 
 # Kubernetes Concepts
 
+This modules is ***optional***, if you have basic familiarity with Kubernetes, you can learn by doing in one of the learning paths.
+
 Before diving into hands-on labs, it's important to understand **how Kubernetes works** and **the tools you'll use** throughout this workshop. This section introduces the core architecture, key components, and deployment tools that form the foundation of your EKS learning journey.
 
 :::tip Before you start
