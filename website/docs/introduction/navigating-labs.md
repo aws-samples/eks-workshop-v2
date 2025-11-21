@@ -30,21 +30,25 @@ You should start each lab from the page indicated by this badge. Starting in the
 ### Copy/Paste Permission
 Depending on your browser, you may need to copy/paste content differently in to the Code Server terminal. 
 
-#### Google Chrome
-When you try to paste content for the first time, you may be presented with a prompt that looks like this:
+<Tabs>
+  <TabItem value="Google Chrome" label="Google Chrome (Recommended)" default>
+    First time when you try to paste content in the terminal, you will see a browser pop-up that looks like this:
 
-![Chrome copy/paste](../introduction/assets/vscode-copy-paste.webp)
+    ![Chrome copy/paste](../introduction/assets/vscode-copy-paste.webp)
 
-Click **Allow** button to enable this functionality. After this, the subsequent copy/paste will be straight forward. For this workshop, we recommend using Google Chrome if possible.
+    Click **Allow** button to enable this functionality. After this, the subsequent copy/paste will be straight forward. For this workshop, we recommend using Google Chrome if possible.
+  </TabItem>
+  <TabItem value="Firefox/Safari" label="Firefox/Safari">
+    Every time when you try to paste content in the terminal, you will see a small button as shown in the following screenshot adjacent to your mouse pointer. You will need to click on it to actually paste the copied content. 
 
-#### Firefox and Safari
-Every time when you try to paste content in the terminal, you will see a small button as shown in the following screenshot adjacent to your mouse pointer. You will need to click on it to actually paste the copied content. 
+    ![Firefox/Safari copy/paste](../introduction/assets/paste-in-firefox-safari.png)
 
-![Firefox/Safari copy/paste](../introduction/assets/paste-in-firefox-safari.png)
+    Additionally, you may also see the following pop-up box on the bottom-right corner of your editor window, which you may close and ignore. 
 
-Additionally, you may also see the following pop-up box on the bottom-right corner of your editor window, which you may close and ignore. 
+    ![Firefox/Safari copy/paste](../introduction/assets/paste-warning-in-firefox-safari.png)
+  </TabItem>
+</Tabs>
 
-![Firefox/Safari copy/paste](../introduction/assets/paste-warning-in-firefox-safari.png)
 
 ## Terminal commands
 
