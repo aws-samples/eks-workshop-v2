@@ -1,6 +1,7 @@
 ---
 title: "Verifying DynamoDB access"
 sidebar_position: 35
+pagination_next: fastpaths/explore/index
 ---
 
 Now, with the `carts` Service Account associated with the authorized IAM role, the `carts` Pod has permission to access the DynamoDB table. Access the web store again and navigate to the shopping cart.

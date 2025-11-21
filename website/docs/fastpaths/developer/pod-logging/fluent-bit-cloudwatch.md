@@ -1,6 +1,7 @@
 ---
 title: "Verifying the logs in CloudWatch"
 sidebar_position: 40
+pagination_next: fastpaths/explore/index
 ---
 
 In this lab exercise, we'll see how to check the Kubernetes pod logs forwarded by the Fluent Bit agent deployed on each node to Amazon CloudWatch Logs. The deployed application components write logs to `stdout`, which are saved in the `/var/log/containers/*.log` path on each node.
