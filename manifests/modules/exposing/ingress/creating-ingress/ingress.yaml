@@ -3,7 +3,12 @@ kind: Ingress
 metadata:
   name: ui
   namespace: ui
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/liveness
 spec:
+  ingressClassName: alb
   rules:
     - http:
         paths:
