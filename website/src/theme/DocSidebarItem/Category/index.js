@@ -187,6 +187,11 @@ export default function DocSidebarItemCategory({
               ) : (
                 <span></span>
               )}
+              {item.customProps?.optional ? (
+                <span className="badge optional">OPTIONAL</span>
+              ) : (
+                <span></span>
+              )}
             </div>
           </div>
         </Link>

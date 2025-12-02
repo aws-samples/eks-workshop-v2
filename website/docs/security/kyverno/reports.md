@@ -56,7 +56,7 @@ As we worked with ClusterPolicies, you can see in the above output that Reports 
 As mentioned earlier, blocked actions are recorded in the Namespace events. Let's examine those using the following command:
 
 ```bash
-$ kubectl get events | grep block
+$ kubectl events | grep -i block
 8m         Warning   PolicyViolation   clusterpolicy/restrict-image-registries   Pod default/nginx-public: [validate-registries] fail (blocked); validation error: Unknown Image registry. rule validate-registries failed at path /spec/containers/0/image/
 3m         Warning   PolicyViolation   clusterpolicy/restrict-image-registries   Pod default/nginx-public: [validate-registries] fail (blocked); validation error: Unknown Image registry. rule validate-registries failed at path /spec/containers/0/image/
 ```
