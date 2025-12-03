@@ -17,6 +17,12 @@ The content of this workshop is made up of:
 
 The lab exercises are designed in a way that you can run any modules as a self-contained exercise. Lab exercises will be displayed in the sidebar to the left and are designated by the `LAB` icon.
 
+## Opening the IDE
+
+If you haven't done so yet, you can open the IDE from the *Event outputs* section at the bottom of the start page.
+
+ ![Event Outputs copy/paste](../fastpaths/assets/ide-open.png)
+
 ## Prepare Environment
 
 The `prepare-environment` tool helps you set up and configure your lab environment for each section. Simply run:
