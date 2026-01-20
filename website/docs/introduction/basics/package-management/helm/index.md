@@ -1,29 +1,40 @@
 ---
 title: Helm
-sidebar_custom_props: { "module": true }
-sidebar_position: 80
+sidebar_position: 20
+description: "Learn Kubernetes package management and templating with Helm charts."
 ---
 
-::required-time
-
-:::tip Before you start
-Prepare your environment for this section:
-
-```bash timeout=600 wait=10
-$ prepare-environment introduction/helm
-```
-
-:::
-
-Although we will primarily be interacting with Kustomize in this workshop, there will be situations where Helm will be used to install certain packages in the EKS cluster. In this lab we give a brief introduction to Helm, and we'll demonstrate how to use it to install a pre-packaged application.
-
-:::info
-
-This lab does not cover the authoring of Helm charts for your own workloads. For more information on this topic see this [guide](https://helm.sh/docs/chart_template_guide/).
-
-:::
+# Helm
 
 [Helm](https://helm.sh) is a package manager for Kubernetes that helps you define, install, and upgrade Kubernetes applications. It uses a packaging format called charts, which contain all the necessary Kubernetes resource definitions to run an application. Helm simplifies the deployment and management of applications on Kubernetes clusters.
+
+While Kustomize excels at declarative configuration management, Helm takes a different approach focused on **templating** and **package management**. Helm is particularly valuable when you need to:
+
+- **Share applications** across teams and organizations
+- **Handle complex configurations** with conditional logic
+- **Manage application lifecycles** (install, upgrade, rollback)
+- **Leverage existing ecosystem** of pre-built charts
+
+## Core Concepts
+
+### Charts
+Helm uses a packaging format called charts. A chart is a collection of files that describe a related set of Kubernetes resources. A single chart might be used to deploy something simple, like a memcached pod, or something complex, like a full web app stack with HTTP servers, databases, caches, and so on.
+
+A Helm package containing:
+- `Chart.yaml` - metadata about the chart
+- `values.yaml` - default configuration values
+- `templates/` - Kubernetes manifest templates
+- Optional dependencies and documentation
+
+### Releases
+A **release** is an instance of a chart running in a Kubernetes cluster. You can install the same chart multiple times with different configurations.
+
+### Values
+**Values** are the configuration parameters that customize how a chart behaves when installed.
+
+:::info
+This lab focuses on using Helm charts rather than authoring them. For chart development, see the [official guide](https://helm.sh/docs/chart_template_guide/).
+:::
 
 ## Helm CLI
 
@@ -91,7 +102,7 @@ There are two common ways to provide values to charts during installation:
 Let's combine these methods to update our UI release. We'll use this `values.yaml` file:
 
 ```file
-manifests/modules/introduction/helm/values.yaml
+manifests/modules/introduction/basics/helm/values.yaml
 ```
 
 This adds several custom Kubernetes annotations to the Pods, as well as overriding the UI theme.
@@ -110,7 +121,7 @@ $ helm upgrade ui \
   --version 1.2.1 \
   --create-namespace --namespace ui \
   --set replicaCount=3 \
-  --values ~/environment/eks-workshop/modules/introduction/helm/values.yaml \
+  --values ~/environment/eks-workshop/modules/introduction/basics/helm/values.yaml \
   --wait
 ```
 
@@ -161,113 +172,25 @@ $ helm uninstall ui --namespace ui --wait
 
 This will delete all the resources created by the chart for that release from our EKS cluster.
 
-## Deploying Applications with Helm
+## When to Use Helm
 
-Now let's see how Helm can be used to deploy our retail store application. While the workshop primarily uses Kustomize, understanding Helm is valuable as many third-party applications are distributed as Helm charts.
+**Helm is ideal when:**
+- You need complex templating and conditional logic
+- You're distributing applications to multiple teams
+- You want sophisticated release management
+- You're leveraging existing charts from the ecosystem
+- You need to support many different configuration scenarios
 
-### Creating a Simple Chart for the Catalog Service
+## Key Takeaways
 
-Let's create a basic Helm chart for our catalog service to understand how applications can be packaged and deployed with Helm:
+- **Templating power**: Helm's Go templates enable complex, conditional configurations
+- **Release management**: Built-in support for upgrades, rollbacks, and release history
+- **Package ecosystem**: Large repository of pre-built charts for common applications
+- **Values-driven**: Configuration through structured values files and command-line overrides
+- **Lifecycle management**: Complete application lifecycle from install to uninstall
 
-```bash
-$ helm create retail-catalog
-```
+Helm provides a powerful templating and package management solution for Kubernetes applications. It's particularly valuable when you need to distribute applications widely or handle complex configuration scenarios.
 
-This creates a basic chart structure. Let's examine what was created:
+Both Helm and Kustomize have their place in the Kubernetes ecosystem, and many teams use both tools for different use cases. Understanding both approaches will help you choose the right tool for each situation.
 
-```bash
-$ ls -la retail-catalog/
-total 8
-drwxr-xr-x  4 user user  128 Nov 15 10:30 .
-drwxr-xr-x  3 user user   96 Nov 15 10:30 ..
--rw-r--r--  1 user user 1141 Nov 15 10:30 Chart.yaml
-drwxr-xr-x  2 user user   64 Nov 15 10:30 charts
-drwxr-xr-x  3 user user   96 Nov 15 10:30 templates
--rw-r--r--  1 user user 1862 Nov 15 10:30 values.yaml
-```
-
-### Customizing the Chart
-
-Let's modify the default values to deploy our catalog service. Update the `values.yaml` file:
-
-```bash
-$ cat > retail-catalog/values.yaml << 'EOF'
-replicaCount: 2
-
-image:
-  repository: public.ecr.aws/aws-containers/retail-store-sample-catalog
-  tag: "0.4.0"
-  pullPolicy: IfNotPresent
-
-service:
-  type: ClusterIP
-  port: 80
-  targetPort: 8080
-
-resources:
-  requests:
-    cpu: 128m
-    memory: 512Mi
-  limits:
-    cpu: 256m
-    memory: 512Mi
-
-nameOverride: "catalog"
-fullnameOverride: "catalog"
-EOF
-```
-
-### Installing the Chart
-
-Now let's install our catalog service using the Helm chart:
-
-```bash
-$ helm install catalog ./retail-catalog --namespace catalog --create-namespace
-```
-
-Verify the deployment:
-
-```bash
-$ helm list -n catalog
-NAME     NAMESPACE  REVISION  UPDATED                                  STATUS    CHART               APP VERSION
-catalog  catalog    1         2024-11-15 10:35:42.123456789 +0000 UTC  deployed  retail-catalog-0.1.0  1.16.0
-```
-
-Check the running pods:
-
-```bash
-$ kubectl get pods -n catalog
-NAME                       READY   STATUS    RESTARTS   AGE
-catalog-7d4b8c9f8d-abc12   1/1     Running   0          2m
-catalog-7d4b8c9f8d-def34   1/1     Running   0          2m
-```
-
-### Upgrading the Release
-
-One of Helm's strengths is managing application upgrades. Let's scale our application by updating the replica count:
-
-```bash
-$ helm upgrade catalog ./retail-catalog \
-  --namespace catalog \
-  --set replicaCount=3
-```
-
-### Rolling Back
-
-If something goes wrong, Helm makes it easy to rollback:
-
-```bash
-$ helm rollback catalog 1 -n catalog
-```
-
-### Cleaning Up
-
-Remove the Helm release:
-
-```bash
-$ helm uninstall catalog -n catalog
-```
-
-This example shows how Helm provides a higher-level abstraction for deploying applications, with built-in support for upgrades, rollbacks, and configuration management.
-
-Now that you understand how Helm works, you can proceed to [Kustomize](../kustomize) to learn about declarative configuration management, or jump ahead to the [Fundamentals module](/docs/fundamentals).
+Next, you can explore the [Fundamentals module](/docs/fundamentals) to dive deeper into EKS-specific concepts and advanced Kubernetes patterns.
