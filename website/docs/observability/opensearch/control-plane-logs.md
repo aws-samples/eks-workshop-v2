@@ -162,6 +162,22 @@ Depending on the level of the EKS cluster activity, some of the control plane lo
 
 The scheduler logs are shown at the end of the page. Notice that the scheduler log messages indicates `Unable to schedule pod; no fit; waiting` for `scenario-c`. This schedule log message from the control plane logs is similar to the Kubernetes event we saw for `scenario-c` on the previous page.
 
+:::tip
+If for some reason you don't see any logs for the scheduler, it is because there are no new logs. To generate new logs just re-start the scenarios as follow:
+
+```bash
+$ kubectl rollout restart deployment/scenario-a -n test
+deployment.apps/scenario-a restarted
+
+$ kubectl rollout restart deployment/scenario-b -n test
+deployment.apps/scenario-b restarted
+
+$ kubectl rollout restart deployment/scenario-c -n test
+deployment.apps/scenario-c restarted
+```
+
+:::
+
 ![Control plane logs detail](./assets/eks-control-plane-logs-scheduler.webp)
 
 Expanding the row allows us to drill down and view details as a table or in JSON format.
