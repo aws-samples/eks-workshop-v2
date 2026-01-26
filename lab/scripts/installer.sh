@@ -3,32 +3,32 @@
 set -e
 
 # renovate: depName=kubernetes/kubernetes
-kubectl_version='1.33.5'
+kubectl_version='1.33.7'
 
 # renovate: depName=helm/helm
-helm_version='3.19.0'
+helm_version='3.20.0'
 
 # renovate: depName=eksctl-io/eksctl
-eksctl_version='0.215.0'
+eksctl_version='0.221.0'
 
 kubeseal_version='0.18.4'
 
 # renovate: depName=mikefarah/yq
-yq_version='4.48.1'
+yq_version='4.50.1'
 
 # renovate: depName=fluxcd/flux2
-flux_version='2.7.2'
+flux_version='2.7.5'
 
 # renovate: depName=argoproj/argo-cd
-argocd_version='2.14.20'
+argocd_version='2.14.21'
 
 # renovate: depName=hashicorp/terraform
-terraform_version='1.13.3'
+terraform_version='1.14.3'
 
 ec2_instance_selector_version='3.1.1'
 
 # renovate: depName=hatoo/oha
-oha_version='1.10.0'
+oha_version='1.12.1'
 
 download () {
   url=$1
