@@ -1,0 +1,622 @@
+bash hack/run-tests.sh '' troubleshooting/alb '-'
+Building container images...
+sha256:a6b162cf8bd3946ebd4cbd5915f3e8cc71c4d1158caf63eb9a1d4cb420b23849
+sha256:653c919514214d95df217ffa30b57f552600453f42fffd1d1b4fd7fca9ea5557
+Generating temporary AWS credentials...
+Assuming role arn:aws:iam::522412052657:role/eks-workshop-ide-role
+Resolved source IP address: 100.50.246.103
+Inbound CIDRs: 100.50.246.103/32
+Running test suite...
+Added new context arn:aws:eks:us-west-2:522412052657:cluster/eks-workshop-auto to /home/ec2-user/.kube/config
+Added new context arn:aws:eks:us-west-2:522412052657:cluster/eks-workshop to /home/ec2-user/.kube/config
+
+
+  EKS Workshop
+    Troubleshooting Scenarios
+      ALB Controller
+Calling suite before hook at /content/troubleshooting/alb/tests/hook-suite.sh
+Completed suite before hook
+Executing shell:
+  Command prepare-environment troubleshooting/alb
+  Timeout 600
+  
+🚀 We're preparing your environment for the next lab, sit tight!
+🎓 [1;35mTip:[0m Read the rest of the lab introduction while you wait!
+
+
+⏳ Waiting for application to become ready...
+
+🔃 Cleaning up previous lab infrastructure...
+
+🚧 Creating infrastructure for next lab...
+
+✅ Environment is [1;32mready[0m!
+Execution time: 197 seconds
+
+Executing shell:
+  Command kubectl get svc -n ui
+  Timeout 120
+  
+NAME   TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+ui     ClusterIP   172.16.131.29   <none>        80/TCP    3m13s
+
+Executing shell:
+  Command kubectl get ingress -n ui
+  Timeout 120
+  
+NAME   CLASS   HOSTS   ADDRESS   PORTS   AGE
+ui     alb     *                 80      42s
+
+Executing shell:
+  Command aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-ui`) == `true`]'
+  Timeout 120
+  
+[]
+
+        ✔ ALB Controller (209510ms)
+Executing shell:
+  Command kubectl get pod -n ui
+  Timeout 120
+  
+NAME                  READY   STATUS    RESTARTS   AGE
+ui-5989474687-9wds8   1/1     Running   0          37s
+
+Executing shell:
+  Command kubectl get ingress/ui -n ui
+  Timeout 120
+  
+NAME   CLASS   HOSTS   ADDRESS   PORTS   AGE
+ui     alb     *                 80      45s
+
+Executing shell:
+  Command kubectl describe ingress/ui -n ui
+  Timeout 120
+  
+Name:             ui
+Labels:           <none>
+Namespace:        ui
+Address:          
+Ingress Class:    alb
+Default backend:  <default>
+Rules:
+  Host        Path  Backends
+  ----        ----  --------
+  *           
+              /   service-ui:80 (<error: services "service-ui" not found>)
+Annotations:  alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/liveness
+              alb.ingress.kubernetes.io/inbound-cidrs: 100.50.246.103/32,35.81.19.109/32,35.167.74.252/32
+              alb.ingress.kubernetes.io/scheme: internet-facing
+              alb.ingress.kubernetes.io/target-type: ip
+Events:
+  Type     Reason            Age                From     Message
+  ----     ------            ----               ----     -------
+  Warning  FailedBuildModel  3s (x14 over 45s)  ingress  Failed build model due to couldn't auto-discover subnets: unable to resolve at least one subnet (0 match VPC and tags: [kubernetes.io/role/elb])
+
+Executing shell:
+  Command aws ec2 describe-subnets --filters "Name=tag:alpha.eksctl.io/cluster-name,Values=${EKS_CLUSTER_NAME}" --query 'Subnets[].SubnetId[]'
+  Timeout 120
+  
+[
+    "subnet-0ffe80c79cafe25e2",
+    "subnet-09ba79065e8a2aafa",
+    "subnet-03877416c3df012f8",
+    "subnet-078bf293ec7acc123",
+    "subnet-0de643b116f78ca17",
+    "subnet-065d7fc2d4075dc6a"
+]
+
+Executing shell:
+  Command for subnet_id in $(aws ec2 describe-subnets --filters "Name=tag:alpha.eksctl.io/cluster-name,Values=${EKS_CLUSTER_NAME}" --query 'Subnets[].SubnetId[]' --output text); do \
+    echo "Subnet: ${subnet_id}"; \
+    aws ec2 describe-route-tables --filters "Name=association.subnet-id,Values=${subnet_id}" \
+      --query 'RouteTables[].Routes[].[DestinationCidrBlock,GatewayId]' --output text; \
+done
+  Timeout 120
+  
+Subnet: subnet-0ffe80c79cafe25e2
+10.42.0.0/16	local
+0.0.0.0/0	igw-034414cb0fec0d445
+Subnet: subnet-09ba79065e8a2aafa
+10.42.0.0/16	local
+0.0.0.0/0	igw-034414cb0fec0d445
+Subnet: subnet-03877416c3df012f8
+10.42.0.0/16	local
+0.0.0.0/0	None
+Subnet: subnet-078bf293ec7acc123
+10.42.0.0/16	local
+0.0.0.0/0	igw-034414cb0fec0d445
+Subnet: subnet-0de643b116f78ca17
+10.42.0.0/16	local
+0.0.0.0/0	None
+Subnet: subnet-065d7fc2d4075dc6a
+10.42.0.0/16	local
+0.0.0.0/0	None
+
+Executing shell:
+  Command aws ec2 describe-subnets --filters 'Name=tag:kubernetes.io/role/elb,Values=1' 'Name=tag:alpha.eksctl.io/cluster-name,Values='${EKS_CLUSTER_NAME} --query 'Subnets[].SubnetId'
+  Timeout 120
+  
+[]
+
+Executing shell:
+  Command aws ec2 create-tags --resources $PUBLIC_SUBNET_1 $PUBLIC_SUBNET_2 $PUBLIC_SUBNET_3 \
+      --tags 'Key="kubernetes.io/role/elb",Value=1'
+  Timeout 120
+  
+
+Executing shell:
+  Command aws ec2 describe-subnets --filters 'Name=tag:kubernetes.io/role/elb,Values=1' 'Name=tag:alpha.eksctl.io/cluster-name,Values='${EKS_CLUSTER_NAME} --query 'Subnets[].SubnetId'
+  Timeout 120
+  
+[
+    "subnet-0ffe80c79cafe25e2",
+    "subnet-09ba79065e8a2aafa",
+    "subnet-078bf293ec7acc123"
+]
+
+Executing shell:
+  Command kubectl -n kube-system rollout restart deploy aws-load-balancer-controller
+  Timeout 120
+  
+deployment.apps/aws-load-balancer-controller restarted
+
+Executing shell:
+  Command kubectl describe ingress/ui -n ui
+  Timeout 120
+  
+Name:             ui
+Labels:           <none>
+Namespace:        ui
+Address:          
+Ingress Class:    alb
+Default backend:  <default>
+Rules:
+  Host        Path  Backends
+  ----        ----  --------
+  *           
+              /   service-ui:80 (<error: services "service-ui" not found>)
+Annotations:  alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/liveness
+              alb.ingress.kubernetes.io/inbound-cidrs: 100.50.246.103/32,35.81.19.109/32,35.167.74.252/32
+              alb.ingress.kubernetes.io/scheme: internet-facing
+              alb.ingress.kubernetes.io/target-type: ip
+Events:
+  Type     Reason            Age                 From     Message
+  ----     ------            ----                ----     -------
+  Warning  FailedBuildModel  17s (x14 over 59s)  ingress  Failed build model due to couldn't auto-discover subnets: unable to resolve at least one subnet (0 match VPC and tags: [kubernetes.io/role/elb])
+
+        ✔ ALB Not Creating (17156ms)
+Executing shell:
+  Command kubectl get serviceaccounts -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller -o yaml
+  Timeout 120
+  
+apiVersion: v1
+items:
+- apiVersion: v1
+  automountServiceAccountToken: true
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::522412052657:role/alb-controller-20260519233403384400000003
+      meta.helm.sh/release-name: aws-load-balancer-controller
+      meta.helm.sh/release-namespace: kube-system
+    creationTimestamp: "2026-05-19T23:34:08Z"
+    labels:
+      app.kubernetes.io/instance: aws-load-balancer-controller
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: aws-load-balancer-controller
+      app.kubernetes.io/version: v2.7.1
+      helm.sh/chart: aws-load-balancer-controller-1.7.1
+    name: aws-load-balancer-controller-sa
+    namespace: kube-system
+    resourceVersion: "65304"
+    uid: 86e4a2d4-9068-43d7-b350-69349bbab618
+kind: List
+metadata:
+  resourceVersion: ""
+
+Executing shell:
+  Command kubectl logs -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller
+  Timeout 120
+  
+{"level":"info","ts":"2026-05-19T23:35:41Z","logger":"controller-runtime.webhook","msg":"Registering webhook","path":"/validate-elbv2-k8s-aws-v1beta1-targetgroupbinding"}
+{"level":"info","ts":"2026-05-19T23:35:41Z","logger":"controller-runtime.webhook","msg":"Registering webhook","path":"/validate-networking-v1-ingress"}
+{"level":"info","ts":"2026-05-19T23:35:41Z","logger":"setup","msg":"starting podInfo repo"}
+{"level":"info","ts":"2026-05-19T23:35:43Z","logger":"controller-runtime.webhook.webhooks","msg":"Starting webhook server"}
+{"level":"info","ts":"2026-05-19T23:35:43Z","logger":"controller-runtime.certwatcher","msg":"Updated current TLS certificate"}
+{"level":"info","ts":"2026-05-19T23:35:43Z","msg":"Starting server","path":"/metrics","kind":"metrics","addr":"[::]:8080"}
+{"level":"info","ts":"2026-05-19T23:35:43Z","msg":"Starting server","kind":"health probe","addr":"[::]:61779"}
+{"level":"info","ts":"2026-05-19T23:35:43Z","logger":"controller-runtime.webhook","msg":"Serving webhook server","host":"","port":9443}
+{"level":"info","ts":"2026-05-19T23:35:43Z","logger":"controller-runtime.certwatcher","msg":"Starting certificate watcher"}
+I0519 23:35:43.269850       1 leaderelection.go:248] attempting to acquire leader lease kube-system/aws-load-balancer-controller-leader...
+{"level":"error","ts":"2026-05-19T23:34:42Z","msg":"Reconciler error","controller":"ingress","object":{"name":"ui","namespace":"ui"},"namespace":"ui","name":"ui","reconcileID":"342205ae-f6cd-4359-b758-4eeb34949099","error":"couldn't auto-discover subnets: unable to resolve at least one subnet (0 match VPC and tags: [kubernetes.io/role/elb])"}
+{"level":"error","ts":"2026-05-19T23:34:42Z","msg":"Reconciler error","controller":"ingress","object":{"name":"ui","namespace":"ui"},"namespace":"ui","name":"ui","reconcileID":"6f8c9a37-c209-4583-9f04-3003aa106503","error":"couldn't auto-discover subnets: unable to resolve at least one subnet (0 match VPC and tags: [kubernetes.io/role/elb])"}
+{"level":"error","ts":"2026-05-19T23:34:43Z","msg":"Reconciler error","controller":"ingress","object":{"name":"ui","namespace":"ui"},"namespace":"ui","name":"ui","reconcileID":"91f1cc13-874c-4016-a591-25266040d29b","error":"couldn't auto-discover subnets: unable to resolve at least one subnet (0 match VPC and tags: [kubernetes.io/role/elb])"}
+{"level":"error","ts":"2026-05-19T23:34:43Z","msg":"Reconciler error","controller":"ingress","object":{"name":"ui","namespace":"ui"},"namespace":"ui","name":"ui","reconcileID":"327fb9c8-c9aa-41da-8185-d68f4f43e3bb","error":"couldn't auto-discover subnets: unable to resolve at least one subnet (0 match VPC and tags: [kubernetes.io/role/elb])"}
+{"level":"error","ts":"2026-05-19T23:34:44Z","msg":"Reconciler error","controller":"ingress","object":{"name":"ui","namespace":"ui"},"namespace":"ui","name":"ui","reconcileID":"42351295-00ea-471d-9f72-8b88a279556e","error":"couldn't auto-discover subnets: unable to resolve at least one subnet (0 match VPC and tags: [kubernetes.io/role/elb])"}
+{"level":"error","ts":"2026-05-19T23:34:45Z","msg":"Reconciler error","controller":"ingress","object":{"name":"ui","namespace":"ui"},"namespace":"ui","name":"ui","reconcileID":"79ba7f00-b037-49b9-a63c-f3293d8ce4c0","error":"couldn't auto-discover subnets: unable to resolve at least one subnet (0 match VPC and tags: [kubernetes.io/role/elb])"}
+{"level":"error","ts":"2026-05-19T23:34:48Z","msg":"Reconciler error","controller":"ingress","object":{"name":"ui","namespace":"ui"},"namespace":"ui","name":"ui","reconcileID":"e7a1764b-1bf5-412d-8e16-78775d6b4de0","error":"couldn't auto-discover subnets: unable to resolve at least one subnet (0 match VPC and tags: [kubernetes.io/role/elb])"}
+{"level":"error","ts":"2026-05-19T23:34:53Z","msg":"Reconciler error","controller":"ingress","object":{"name":"ui","namespace":"ui"},"namespace":"ui","name":"ui","reconcileID":"66b0b33c-4cc7-4491-9b7a-18fd43a75dbc","error":"couldn't auto-discover subnets: unable to resolve at least one subnet (0 match VPC and tags: [kubernetes.io/role/elb])"}
+{"level":"error","ts":"2026-05-19T23:35:03Z","msg":"Reconciler error","controller":"ingress","object":{"name":"ui","namespace":"ui"},"namespace":"ui","name":"ui","reconcileID":"64f90da4-e828-4028-ac55-ec838d41d2b0","error":"couldn't auto-discover subnets: unable to resolve at least one subnet (0 match VPC and tags: [kubernetes.io/role/elb])"}
+{"level":"error","ts":"2026-05-19T23:35:24Z","msg":"Reconciler error","controller":"ingress","object":{"name":"ui","namespace":"ui"},"namespace":"ui","name":"ui","reconcileID":"a4c3b28f-81bc-47cb-a197-453aaf6ed928","error":"couldn't auto-discover subnets: unable to resolve at least one subnet (0 match VPC and tags: [kubernetes.io/role/elb])"}
+{"level":"info","ts":"2026-05-19T23:34:09Z","logger":"controller-runtime.webhook","msg":"Registering webhook","path":"/validate-elbv2-k8s-aws-v1beta1-targetgroupbinding"}
+{"level":"info","ts":"2026-05-19T23:34:09Z","logger":"controller-runtime.webhook","msg":"Registering webhook","path":"/validate-networking-v1-ingress"}
+{"level":"info","ts":"2026-05-19T23:34:09Z","logger":"setup","msg":"starting podInfo repo"}
+{"level":"info","ts":"2026-05-19T23:34:11Z","logger":"controller-runtime.webhook.webhooks","msg":"Starting webhook server"}
+{"level":"info","ts":"2026-05-19T23:34:11Z","msg":"Starting server","kind":"health probe","addr":"[::]:61779"}
+{"level":"info","ts":"2026-05-19T23:34:11Z","msg":"Starting server","path":"/metrics","kind":"metrics","addr":"[::]:8080"}
+{"level":"info","ts":"2026-05-19T23:34:11Z","logger":"controller-runtime.certwatcher","msg":"Updated current TLS certificate"}
+{"level":"info","ts":"2026-05-19T23:34:11Z","logger":"controller-runtime.webhook","msg":"Serving webhook server","host":"","port":9443}
+{"level":"info","ts":"2026-05-19T23:34:11Z","logger":"controller-runtime.certwatcher","msg":"Starting certificate watcher"}
+I0519 23:34:11.477246       1 leaderelection.go:248] attempting to acquire leader lease kube-system/aws-load-balancer-controller-leader...
+
+Executing shell:
+  Command aws iam attach-role-policy \
+    --role-name ${LOAD_BALANCER_CONTROLLER_ROLE_NAME} \
+    --policy-arn ${LOAD_BALANCER_CONTROLLER_POLICY_ARN_FIX}
+  Timeout 120
+  
+
+Executing shell:
+  Command aws iam detach-role-policy \
+    --role-name ${LOAD_BALANCER_CONTROLLER_ROLE_NAME} \
+    --policy-arn ${LOAD_BALANCER_CONTROLLER_POLICY_ARN_ISSUE}
+  Timeout 120
+  
+
+Executing shell:
+  Command kubectl -n kube-system rollout restart deploy aws-load-balancer-controller
+kubectl -n kube-system wait --for=condition=available deployment/aws-load-balancer-controller
+  Timeout 120
+  
+deployment.apps/aws-load-balancer-controller restarted
+deployment.apps/aws-load-balancer-controller condition met
+
+Calling before hook fix-5
+Executing shell:
+  Command bash /content/troubleshooting/alb/tests/hook-fix-5.sh before
+  Timeout 600
+  
+noop
+
+Completed before hook fix-5
+Executing shell:
+  Command kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}{'\n'}"
+  Timeout 600
+  
+
+
+Calling after hook fix-5
+Executing shell:
+  Command bash /content/troubleshooting/alb/tests/hook-fix-5.sh after
+  Timeout 600
+  
+
+Completed after hook fix-5
+Executing shell:
+  Command aws elbv2 describe-load-balancers \
+  --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-ui`)].{Name:LoadBalancerName,State:State.Code,DNS:DNSName}' \
+  --output table
+  Timeout 120
+  
+-------------------------------------------------------------------------
+|                         DescribeLoadBalancers                         |
++-------+---------------------------------------------------------------+
+|  DNS  |  k8s-ui-ui-5ddc3ba496-250456595.us-west-2.elb.amazonaws.com   |
+|  Name |  k8s-ui-ui-5ddc3ba496                                         |
+|  State|  provisioning                                                 |
++-------+---------------------------------------------------------------+
+
+        ✔ IAM Policy Issue (153434ms)
+Executing shell:
+  Command kubectl -n ui get service/ui -o yaml
+  Timeout 120
+  
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app.kubernetes.io/component":"service","app.kubernetes.io/created-by":"eks-workshop","app.kubernetes.io/instance":"ui","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"ui","helm.sh/chart":"ui-0.0.1"},"name":"ui","namespace":"ui"},"spec":{"ports":[{"name":"http","port":80,"protocol":"TCP","targetPort":"http"}],"selector":{"app.kubernetes.io/component":"service","app.kubernetes.io/instance":"ui","app.kubernetes.io/name":"ui-app"},"type":"ClusterIP"}}
+  creationTimestamp: "2026-05-19T23:32:09Z"
+  labels:
+    app.kubernetes.io/component: service
+    app.kubernetes.io/created-by: eks-workshop
+    app.kubernetes.io/instance: ui
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ui
+    helm.sh/chart: ui-0.0.1
+  name: ui
+  namespace: ui
+  resourceVersion: "65491"
+  uid: 31bccff3-5f45-4126-9087-981d05f09eac
+spec:
+  clusterIP: 172.16.131.29
+  clusterIPs:
+  - 172.16.131.29
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+  selector:
+    app.kubernetes.io/component: service
+    app.kubernetes.io/instance: ui
+    app.kubernetes.io/name: ui-app
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+
+Executing shell:
+  Command kubectl get ingress/ui -n ui -o yaml
+  Timeout 120
+  
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/liveness
+    alb.ingress.kubernetes.io/inbound-cidrs: 100.50.246.103/32,35.81.19.109/32,35.167.74.252/32
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"networking.k8s.io/v1","kind":"Ingress","metadata":{"annotations":{"alb.ingress.kubernetes.io/healthcheck-path":"/actuator/health/liveness","alb.ingress.kubernetes.io/inbound-cidrs":"100.50.246.103/32,35.81.19.109/32,35.167.74.252/32","alb.ingress.kubernetes.io/scheme":"internet-facing","alb.ingress.kubernetes.io/target-type":"ip"},"name":"ui","namespace":"ui"},"spec":{"ingressClassName":"alb","rules":[{"http":{"paths":[{"backend":{"service":{"name":"service-ui","port":{"number":80}}},"path":"/","pathType":"Prefix"}]}}]}}
+  creationTimestamp: "2026-05-19T23:34:41Z"
+  finalizers:
+  - ingress.k8s.aws/resources
+  generation: 1
+  name: ui
+  namespace: ui
+  resourceVersion: "66305"
+  uid: d21dc561-3759-46b6-82cf-23257223bcb2
+spec:
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: service-ui
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+status:
+  loadBalancer:
+    ingress:
+    - hostname: k8s-ui-ui-5ddc3ba496-250456595.us-west-2.elb.amazonaws.com
+
+Executing shell:
+  Command kubectl kustomize ~/environment/eks-workshop/modules/troubleshooting/alb/creating-alb/fix_ingress | envsubst | kubectl apply -f -
+  Timeout 120
+  
+ingress.networking.k8s.io/ui configured
+
+Executing shell:
+  Command kubectl -n ui get endpoints ui
+  Timeout 120
+  
+NAME   ENDPOINTS   AGE
+ui     <none>      6m10s
+
+Executing shell:
+  Command kubectl -n ui get deploy/ui -o yaml
+  Timeout 120
+  
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app.kubernetes.io/created-by":"eks-workshop","app.kubernetes.io/type":"app"},"name":"ui","namespace":"ui"},"spec":{"replicas":1,"selector":{"matchLabels":{"app.kubernetes.io/component":"service","app.kubernetes.io/instance":"ui","app.kubernetes.io/name":"ui"}},"template":{"metadata":{"annotations":{"prometheus.io/path":"/actuator/prometheus","prometheus.io/port":"8080","prometheus.io/scrape":"true"},"labels":{"app.kubernetes.io/component":"service","app.kubernetes.io/created-by":"eks-workshop","app.kubernetes.io/instance":"ui","app.kubernetes.io/name":"ui"}},"spec":{"containers":[{"env":[{"name":"JAVA_OPTS","value":"-XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom"},{"name":"METADATA_KUBERNETES_POD_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.name"}}},{"name":"METADATA_KUBERNETES_NAMESPACE","valueFrom":{"fieldRef":{"fieldPath":"metadata.namespace"}}},{"name":"METADATA_KUBERNETES_NODE_NAME","valueFrom":{"fieldRef":{"fieldPath":"spec.nodeName"}}}],"envFrom":[{"configMapRef":{"name":"ui"}}],"image":"public.ecr.aws/aws-containers/retail-store-sample-ui:1.2.1","imagePullPolicy":"IfNotPresent","livenessProbe":{"httpGet":{"path":"/actuator/health/liveness","port":8080},"initialDelaySeconds":45,"periodSeconds":20},"name":"ui","ports":[{"containerPort":8080,"name":"http","protocol":"TCP"}],"resources":{"limits":{"memory":"1.5Gi"},"requests":{"cpu":"250m","memory":"1.5Gi"}},"securityContext":{"capabilities":{"add":["NET_BIND_SERVICE"],"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":1000},"volumeMounts":[{"mountPath":"/tmp","name":"tmp-volume"}]}],"securityContext":{"fsGroup":1000},"serviceAccountName":"ui","volumes":[{"emptyDir":{"medium":"Memory"},"name":"tmp-volume"}]}}}}
+  creationTimestamp: "2026-05-19T23:32:11Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/created-by: eks-workshop
+    app.kubernetes.io/type: app
+  name: ui
+  namespace: ui
+  resourceVersion: "65659"
+  uid: 7b955902-91b1-43b8-a866-97417c4a8246
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: service
+      app.kubernetes.io/instance: ui
+      app.kubernetes.io/name: ui
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: /actuator/prometheus
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/component: service
+        app.kubernetes.io/created-by: eks-workshop
+        app.kubernetes.io/instance: ui
+        app.kubernetes.io/name: ui
+    spec:
+      containers:
+      - env:
+        - name: JAVA_OPTS
+          value: -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
+        - name: METADATA_KUBERNETES_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: METADATA_KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: METADATA_KUBERNETES_NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        envFrom:
+        - configMapRef:
+            name: ui
+        image: public.ecr.aws/aws-containers/retail-store-sample-ui:1.2.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 45
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: ui
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            memory: 1536Mi
+          requests:
+            cpu: 250m
+            memory: 1536Mi
+        securityContext:
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1000
+      serviceAccount: ui
+      serviceAccountName: ui
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: tmp-volume
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2026-05-19T23:32:11Z"
+    lastUpdateTime: "2026-05-19T23:32:12Z"
+    message: ReplicaSet "ui-5989474687" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2026-05-19T23:34:50Z"
+    lastUpdateTime: "2026-05-19T23:34:50Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
+
+Executing shell:
+  Command kubectl -n ui get svc ui -o yaml
+  Timeout 120
+  
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app.kubernetes.io/component":"service","app.kubernetes.io/created-by":"eks-workshop","app.kubernetes.io/instance":"ui","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"ui","helm.sh/chart":"ui-0.0.1"},"name":"ui","namespace":"ui"},"spec":{"ports":[{"name":"http","port":80,"protocol":"TCP","targetPort":"http"}],"selector":{"app.kubernetes.io/component":"service","app.kubernetes.io/instance":"ui","app.kubernetes.io/name":"ui-app"},"type":"ClusterIP"}}
+  creationTimestamp: "2026-05-19T23:32:09Z"
+  labels:
+    app.kubernetes.io/component: service
+    app.kubernetes.io/created-by: eks-workshop
+    app.kubernetes.io/instance: ui
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ui
+    helm.sh/chart: ui-0.0.1
+  name: ui
+  namespace: ui
+  resourceVersion: "65491"
+  uid: 31bccff3-5f45-4126-9087-981d05f09eac
+spec:
+  clusterIP: 172.16.131.29
+  clusterIPs:
+  - 172.16.131.29
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+  selector:
+    app.kubernetes.io/component: service
+    app.kubernetes.io/instance: ui
+    app.kubernetes.io/name: ui-app
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+
+Calling before hook fix-7
+Executing shell:
+  Command bash /content/troubleshooting/alb/tests/hook-fix-7.sh before
+  Timeout 960
+  
+noop
+
+Completed before hook fix-7
+Executing shell:
+  Command kubectl apply -k ~/environment/eks-workshop/modules/troubleshooting/alb/creating-alb/fix_ui
+  Timeout 960
+  
+namespace/ui unchanged
+serviceaccount/ui unchanged
+configmap/ui unchanged
+service/ui configured
+deployment.apps/ui configured
+
+Calling after hook fix-7
+Executing shell:
+  Command bash /content/troubleshooting/alb/tests/hook-fix-7.sh after
+  Timeout 960
+  
+Validating endpoint: k8s-ui-ui-5ddc3ba496-250456595.us-west-2.elb.amazonaws.com
+Current HTTP response code: 200
+Success! Endpoint is now available.
+
+Completed after hook fix-7
+        ✔ Service Not Registering Endpoints (190268ms)
+Calling suite after hook at /content/troubleshooting/alb/tests/hook-suite.sh
+Completed suite after hook
+
+
+  4 passing (12m)
+

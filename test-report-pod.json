@@ -1,0 +1,90 @@
+{
+  "stats": {
+    "suites": 3,
+    "tests": 4,
+    "passes": 4,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-05-20T00:27:50.291Z",
+    "end": "2026-05-20T00:49:01.297Z",
+    "duration": 1271006
+  },
+  "tests": [
+    {
+      "title": "Pod Issues",
+      "fullTitle": "EKS Workshop Troubleshooting Scenarios Pod Issues Pod Issues",
+      "file": "/content/troubleshooting/pod/index.md",
+      "duration": 491298,
+      "currentRetry": 0,
+      "speed": "slow",
+      "err": {}
+    },
+    {
+      "title": "ImagePullBackOff - ECR Private Image",
+      "fullTitle": "EKS Workshop Troubleshooting Scenarios Pod Issues ImagePullBackOff - ECR Private Image",
+      "file": "/content/troubleshooting/pod/private_image.md",
+      "duration": 213120,
+      "currentRetry": 0,
+      "speed": "slow",
+      "err": {}
+    },
+    {
+      "title": "ImagePullBackOff - Public Image",
+      "fullTitle": "EKS Workshop Troubleshooting Scenarios Pod Issues ImagePullBackOff - Public Image",
+      "file": "/content/troubleshooting/pod/public_image.md",
+      "duration": 147479,
+      "currentRetry": 0,
+      "speed": "slow",
+      "err": {}
+    },
+    {
+      "title": "PodStuck - ContainerCreating",
+      "fullTitle": "EKS Workshop Troubleshooting Scenarios Pod Issues PodStuck - ContainerCreating",
+      "file": "/content/troubleshooting/pod/container_creating.md",
+      "duration": 262233,
+      "currentRetry": 0,
+      "speed": "slow",
+      "err": {}
+    }
+  ],
+  "pending": [],
+  "failures": [],
+  "passes": [
+    {
+      "title": "Pod Issues",
+      "fullTitle": "EKS Workshop Troubleshooting Scenarios Pod Issues Pod Issues",
+      "file": "/content/troubleshooting/pod/index.md",
+      "duration": 491298,
+      "currentRetry": 0,
+      "speed": "slow",
+      "err": {}
+    },
+    {
+      "title": "ImagePullBackOff - ECR Private Image",
+      "fullTitle": "EKS Workshop Troubleshooting Scenarios Pod Issues ImagePullBackOff - ECR Private Image",
+      "file": "/content/troubleshooting/pod/private_image.md",
+      "duration": 213120,
+      "currentRetry": 0,
+      "speed": "slow",
+      "err": {}
+    },
+    {
+      "title": "ImagePullBackOff - Public Image",
+      "fullTitle": "EKS Workshop Troubleshooting Scenarios Pod Issues ImagePullBackOff - Public Image",
+      "file": "/content/troubleshooting/pod/public_image.md",
+      "duration": 147479,
+      "currentRetry": 0,
+      "speed": "slow",
+      "err": {}
+    },
+    {
+      "title": "PodStuck - ContainerCreating",
+      "fullTitle": "EKS Workshop Troubleshooting Scenarios Pod Issues PodStuck - ContainerCreating",
+      "file": "/content/troubleshooting/pod/container_creating.md",
+      "duration": 262233,
+      "currentRetry": 0,
+      "speed": "slow",
+      "err": {}
+    }
+  ]
+}

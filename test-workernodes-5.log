@@ -1,0 +1,652 @@
+bash hack/run-tests.sh '' troubleshooting/workernodes '-'
+Building container images...
+sha256:a6b162cf8bd3946ebd4cbd5915f3e8cc71c4d1158caf63eb9a1d4cb420b23849
+sha256:653c919514214d95df217ffa30b57f552600453f42fffd1d1b4fd7fca9ea5557
+Generating temporary AWS credentials...
+Assuming role arn:aws:iam::522412052657:role/eks-workshop-ide-role
+Resolved source IP address: 100.50.246.103
+Inbound CIDRs: 100.50.246.103/32
+Running test suite...
+Added new context arn:aws:eks:us-west-2:522412052657:cluster/eks-workshop-auto to /home/ec2-user/.kube/config
+Added new context arn:aws:eks:us-west-2:522412052657:cluster/eks-workshop to /home/ec2-user/.kube/config
+
+
+  EKS Workshop
+    Troubleshooting Scenarios
+      Worker Nodes
+Calling suite before hook at /content/troubleshooting/workernodes/tests/hook-suite.sh
+Completed suite before hook
+Executing shell:
+  Command prepare-environment troubleshooting/workernodes
+  Timeout 1800
+  
+🚀 We're preparing your environment for the next lab, sit tight!
+🎓 [1;35mTip:[0m Read the rest of the lab introduction while you wait!
+
+
+⏳ Waiting for application to become ready...
+
+🔃 Cleaning up previous lab infrastructure...
+
+🚧 Creating infrastructure for next lab...
+
+✅ Environment is [1;32mready[0m!
+Execution time: 180 seconds
+
+        ✔ Worker Nodes (479725ms)
+Calling before hook fix-1-1
+Executing shell:
+  Command bash /content/troubleshooting/workernodes/tests/hook-fix-1-1.sh before
+  Timeout 120
+  
+noop
+
+Completed before hook fix-1-1
+Executing shell:
+  Command kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_1
+  Timeout 60
+  
+
+Calling after hook fix-1-1
+Executing shell:
+  Command bash /content/troubleshooting/workernodes/tests/hook-fix-1-1.sh after
+  Timeout 120
+  
+Success: No nodes found in nodegroup new_nodegroup_1 as expected
+
+Completed after hook fix-1-1
+Executing shell:
+  Command aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_1
+  Timeout 120
+  
+{
+    "nodegroup": {
+        "nodegroupName": "new_nodegroup_1",
+        "nodegroupArn": "arn:aws:eks:us-west-2:522412052657:nodegroup/eks-workshop/new_nodegroup_1/5acf238d-c438-e8b4-6f00-8f7d830b6841",
+        "clusterName": "eks-workshop",
+        "version": "1.33",
+        "releaseVersion": "1.33.0-20250704",
+        "createdAt": "2026-05-20T20:37:29.117000+00:00",
+        "modifiedAt": "2026-05-20T20:38:19.461000+00:00",
+        "status": "ACTIVE",
+        "capacityType": "ON_DEMAND",
+        "scalingConfig": {
+            "minSize": 0,
+            "maxSize": 1,
+            "desiredSize": 1
+        },
+        "subnets": [
+            "subnet-065d7fc2d4075dc6a",
+            "subnet-03877416c3df012f8",
+            "subnet-0de643b116f78ca17"
+        ],
+        "amiType": "AL2023_x86_64_STANDARD",
+        "nodeRole": "arn:aws:iam::522412052657:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-grpMyStxN1mk",
+        "labels": {},
+        "resources": {
+            "autoScalingGroups": [
+                {
+                    "name": "eks-new_nodegroup_1-5acf238d-c438-e8b4-6f00-8f7d830b6841"
+                }
+            ]
+        },
+        "health": {
+            "issues": []
+        },
+        "updateConfig": {
+            "maxUnavailable": 1
+        },
+        "launchTemplate": {
+            "name": "new_nodegroup_1",
+            "version": "1",
+            "id": "lt-00b896ad1d6193f65"
+        },
+        "tags": {
+            "env": "eks-workshop",
+            "created-by": "eks-workshop-v2"
+        }
+    }
+}
+
+Executing shell:
+  Command aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_1 --query 'nodegroup.{NodegroupName:nodegroupName,Status:status,ScalingConfig:scalingConfig,AutoScalingGroups:resources.autoScalingGroups,Health:health}'
+  Timeout 120
+  
+{
+    "NodegroupName": "new_nodegroup_1",
+    "Status": "ACTIVE",
+    "ScalingConfig": {
+        "minSize": 0,
+        "maxSize": 1,
+        "desiredSize": 1
+    },
+    "AutoScalingGroups": [
+        {
+            "name": "eks-new_nodegroup_1-5acf238d-c438-e8b4-6f00-8f7d830b6841"
+        }
+    ],
+    "Health": {
+        "issues": []
+    }
+}
+
+Executing shell:
+  Command NEW_NODEGROUP_1_ASG_NAME=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_1 --query 'nodegroup.resources.autoScalingGroups[0].name' --output text)
+echo $NEW_NODEGROUP_1_ASG_NAME
+  Timeout 120
+  
+eks-new_nodegroup_1-5acf238d-c438-e8b4-6f00-8f7d830b6841
+
+Executing shell:
+  Command NEW_NODEGROUP_1_ASG_NAME=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_1 --query 'nodegroup.resources.autoScalingGroups[0].name' --output text)
+aws autoscaling describe-scaling-activities --auto-scaling-group-name ${NEW_NODEGROUP_1_ASG_NAME}
+  Timeout 120
+  
+{
+    "Activities": [
+        {
+            "ActivityId": "8e46791c-7e89-564f-d54d-e0186e8daa5e",
+            "AutoScalingGroupName": "eks-new_nodegroup_1-5acf238d-c438-e8b4-6f00-8f7d830b6841",
+            "Description": "Launching a new EC2 instance: i-0cd79026470bcc8db.  Status Reason: Instance became unhealthy while waiting for instance to be in InService state. Termination Reason: Client.InvalidKMSKey.InvalidState: The KMS key provided is in an incorrect state",
+            "Cause": "At 2026-05-20T20:41:53Z an instance was started in response to a difference between desired and actual capacity, increasing the capacity from 0 to 1.",
+            "StartTime": "2026-05-20T20:41:56.053000+00:00",
+            "EndTime": "2026-05-20T20:42:04+00:00",
+            "StatusCode": "Cancelled",
+            "StatusMessage": "Instance became unhealthy while waiting for instance to be in InService state. Termination Reason: Client.InvalidKMSKey.InvalidState: The KMS key provided is in an incorrect state",
+            "Progress": 100,
+            "Details": "{\"Availability Zone ID\":\"usw2-az1\",\"Subnet ID\":\"subnet-065d7fc2d4075dc6a\",\"Availability Zone\":\"us-west-2b\"}",
+            "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:522412052657:autoScalingGroup:906938de-9a24-481e-bdb6-73efa7c1d1cc:autoScalingGroupName/eks-new_nodegroup_1-5acf238d-c438-e8b4-6f00-8f7d830b6841"
+        },
+        {
+            "ActivityId": "ba36791c-76a0-5db9-1079-899e4257b5ac",
+            "AutoScalingGroupName": "eks-new_nodegroup_1-5acf238d-c438-e8b4-6f00-8f7d830b6841",
+            "Description": "Launching a new EC2 instance: i-09643b4ee98c90274.  Status Reason: Instance became unhealthy while waiting for instance to be in InService state. Termination Reason: Client.InvalidKMSKey.InvalidState: The KMS key provided is in an incorrect state",
+            "Cause": "At 2026-05-20T20:39:44Z an instance was started in response to a difference between desired and actual capacity, increasing the capacity from 0 to 1.",
+            "StartTime": "2026-05-20T20:39:46.455000+00:00",
+            "EndTime": "2026-05-20T20:39:55+00:00",
+            "StatusCode": "Cancelled",
+            "StatusMessage": "Instance became unhealthy while waiting for instance to be in InService state. Termination Reason: Client.InvalidKMSKey.InvalidState: The KMS key provided is in an incorrect state",
+            "Progress": 100,
+            "Details": "{\"Availability Zone ID\":\"usw2-az2\",\"Subnet ID\":\"subnet-0de643b116f78ca17\",\"Availability Zone\":\"us-west-2a\"}",
+            "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:522412052657:autoScalingGroup:906938de-9a24-481e-bdb6-73efa7c1d1cc:autoScalingGroupName/eks-new_nodegroup_1-5acf238d-c438-e8b4-6f00-8f7d830b6841"
+        },
+        {
+            "ActivityId": "2396791c-71fd-e7df-8110-973d29a8a4cc",
+            "AutoScalingGroupName": "eks-new_nodegroup_1-5acf238d-c438-e8b4-6f00-8f7d830b6841",
+            "Description": "Launching a new EC2 instance: i-021a861a0b1f1cede.  Status Reason: Instance became unhealthy while waiting for instance to be in InService state. Termination Reason: Client.InvalidKMSKey.InvalidState: The KMS key provided is in an incorrect state",
+            "Cause": "At 2026-05-20T20:38:18Z a user request update of AutoScalingGroup constraints to min: 0, max: 1, desired: 1 changing the desired capacity from 0 to 1.  At 2026-05-20T20:38:28Z an instance was started in response to a difference between desired and actual capacity, increasing the capacity from 0 to 1.",
+            "StartTime": "2026-05-20T20:38:30.521000+00:00",
+            "EndTime": "2026-05-20T20:38:39+00:00",
+            "StatusCode": "Cancelled",
+            "StatusMessage": "Instance became unhealthy while waiting for instance to be in InService state. Termination Reason: Client.InvalidKMSKey.InvalidState: The KMS key provided is in an incorrect state",
+            "Progress": 100,
+            "Details": "{\"Availability Zone ID\":\"usw2-az1\",\"Subnet ID\":\"subnet-065d7fc2d4075dc6a\",\"Availability Zone\":\"us-west-2b\"}",
+            "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:522412052657:autoScalingGroup:906938de-9a24-481e-bdb6-73efa7c1d1cc:autoScalingGroupName/eks-new_nodegroup_1-5acf238d-c438-e8b4-6f00-8f7d830b6841"
+        }
+    ]
+}
+
+Executing shell:
+  Command NEW_NODEGROUP_1_ASG_NAME=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_1 --query 'nodegroup.resources.autoScalingGroups[0].name' --output text)
+aws autoscaling describe-auto-scaling-groups \
+--auto-scaling-group-names ${NEW_NODEGROUP_1_ASG_NAME} \
+--query 'AutoScalingGroups[0].MixedInstancesPolicy.LaunchTemplate.LaunchTemplateSpecification.LaunchTemplateId' \
+--output text
+  Timeout 120
+  
+lt-0fed1a680cdbdfd16
+
+Executing shell:
+  Command NEW_NODEGROUP_1_LT_ID=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_1 --query 'nodegroup.launchTemplate.id' --output text)
+aws ec2 describe-launch-template-versions --launch-template-id ${NEW_NODEGROUP_1_LT_ID} --query 'LaunchTemplateVersions[].{LaunchTemplateId:LaunchTemplateId,DefaultVersion:DefaultVersion,BlockDeviceMappings:LaunchTemplateData.BlockDeviceMappings}'
+  Timeout 120
+  
+[
+    {
+        "LaunchTemplateId": "lt-00b896ad1d6193f65",
+        "DefaultVersion": true,
+        "BlockDeviceMappings": [
+            {
+                "DeviceName": "/dev/xvda",
+                "Ebs": {
+                    "Encrypted": true,
+                    "KmsKeyId": "arn:aws:kms:us-west-2:522412052657:key/adbafd92-3051-40ea-b212-70f233363859",
+                    "VolumeSize": 20,
+                    "VolumeType": "gp2"
+                }
+            }
+        ]
+    }
+]
+
+Executing shell:
+  Command NEW_KMS_KEY_ID=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_1 --query 'nodegroup.launchTemplate.id' --output text | xargs -I{} aws ec2 describe-launch-template-versions --launch-template-id {} --query 'LaunchTemplateVersions[0].LaunchTemplateData.BlockDeviceMappings[0].Ebs.KmsKeyId' --output text | awk -F'/' '{print $NF}')
+aws kms describe-key --key-id ${NEW_KMS_KEY_ID} --query 'KeyMetadata.{KeyId:KeyId,Enabled:Enabled,KeyUsage:KeyUsage,KeyState:KeyState,KeyManager:KeyManager}'
+  Timeout 120
+  
+{
+    "KeyId": "adbafd92-3051-40ea-b212-70f233363859",
+    "Enabled": true,
+    "KeyUsage": "ENCRYPT_DECRYPT",
+    "KeyState": "Enabled",
+    "KeyManager": "CUSTOMER"
+}
+
+Executing shell:
+  Command NEW_KMS_KEY_ID=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_1 --query 'nodegroup.launchTemplate.id' --output text | xargs -I{} aws ec2 describe-launch-template-versions --launch-template-id {} --query 'LaunchTemplateVersions[0].LaunchTemplateData.BlockDeviceMappings[0].Ebs.KmsKeyId' --output text | awk -F'/' '{print $NF}')
+aws kms get-key-policy --key-id ${NEW_KMS_KEY_ID} | jq -r '.Policy | fromjson'
+  Timeout 120
+  
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Enable IAM User Permissions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::522412052657:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    }
+  ]
+}
+
+Executing shell:
+  Command NEW_KMS_KEY_ID=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_1 --query 'nodegroup.launchTemplate.id' --output text | xargs -I{} aws ec2 describe-launch-template-versions --launch-template-id {} --query 'LaunchTemplateVersions[0].LaunchTemplateData.BlockDeviceMappings[0].Ebs.KmsKeyId' --output text | awk -F'/' '{print $NF}')
+NEW_POLICY=$(echo '{"Version":"2012-10-17","Id":"default","Statement":[{"Sid":"EnableIAMUserPermissions","Effect":"Allow","Principal":{"AWS":"arn:aws:iam::'"$AWS_ACCOUNT_ID"':root"},"Action":"kms:*","Resource":"*"},{"Sid":"AllowAutoScalingServiceRole","Effect":"Allow","Principal":{"AWS":"arn:aws:iam::'"$AWS_ACCOUNT_ID"':role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"},"Action":["kms:Encrypt","kms:Decrypt","kms:ReEncrypt*","kms:GenerateDataKey*","kms:DescribeKey"],"Resource":"*"},{"Sid":"AllowAttachmentOfPersistentResources","Effect":"Allow","Principal":{"AWS":"arn:aws:iam::'"$AWS_ACCOUNT_ID"':role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"},"Action":"kms:CreateGrant","Resource":"*","Condition":{"Bool":{"kms:GrantIsForAWSResource":"true"}}}]}') && aws kms put-key-policy --key-id "$NEW_KMS_KEY_ID" --policy-name default --policy "$NEW_POLICY" && aws kms get-key-policy --key-id "$NEW_KMS_KEY_ID" --policy-name default | jq -r '.Policy | fromjson'
+  Timeout 120
+  
+{
+  "Version": "2012-10-17",
+  "Id": "default",
+  "Statement": [
+    {
+      "Sid": "EnableIAMUserPermissions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::522412052657:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAutoScalingServiceRole",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::522412052657:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+      },
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAttachmentOfPersistentResources",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::522412052657:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+      },
+      "Action": "kms:CreateGrant",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    }
+  ]
+}
+
+Executing shell:
+  Command aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_1 --scaling-config desiredSize=0 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_1 && aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_1 --scaling-config desiredSize=1 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_1
+  Timeout 120
+  
+{
+    "update": {
+        "id": "0de1dfe5-73ae-3efa-8eb6-d8fe522f83c1",
+        "status": "InProgress",
+        "type": "ConfigUpdate",
+        "params": [
+            {
+                "type": "DesiredSize",
+                "value": "0"
+            }
+        ],
+        "createdAt": "2026-05-20T20:44:39.735000+00:00",
+        "errors": []
+    }
+}
+{
+    "update": {
+        "id": "63c9cac8-f4c5-34d5-9437-6d39358a30a2",
+        "status": "InProgress",
+        "type": "ConfigUpdate",
+        "params": [
+            {
+                "type": "DesiredSize",
+                "value": "1"
+            }
+        ],
+        "createdAt": "2026-05-20T20:45:11.859000+00:00",
+        "errors": []
+    }
+}
+
+Executing shell:
+  Command aws eks describe-nodegroup --cluster-name ${EKS_CLUSTER_NAME} --nodegroup-name new_nodegroup_1 --query 'nodegroup.status' --output text
+  Timeout 100
+  
+ACTIVE
+
+Executing shell:
+  Command kubectl wait --for=condition=ready nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_1
+kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_1
+  Timeout 100
+  
+node/ip-10-42-131-100.us-west-2.compute.internal condition met
+NAME                                          STATUS   ROLES    AGE     VERSION
+ip-10-42-131-100.us-west-2.compute.internal   Ready    <none>   2m43s   v1.33.0-eks-802817d
+
+        ✔ Missing Worker Nodes (265455ms)
+Calling before hook fix-2-1
+Executing shell:
+  Command bash /content/troubleshooting/workernodes/tests/hook-fix-2-1.sh before
+  Timeout 30
+  
+noop
+
+Completed before hook fix-2-1
+Executing shell:
+  Command kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_2
+  Timeout 30
+  
+
+Calling after hook fix-2-1
+Executing shell:
+  Command bash /content/troubleshooting/workernodes/tests/hook-fix-2-1.sh after
+  Timeout 30
+  
+Success: No nodes found in nodegroup new_nodegroup_2 as expected
+
+Completed after hook fix-2-1
+Executing shell:
+  Command aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_2 --query 'nodegroup.{nodegroupName:nodegroupName,nodegroupArn:nodegroupArn,clusterName:clusterName,status:status,capacityType:capacityType,scalingConfig:scalingConfig,health:{issues:health.issues}}'
+  Timeout 120
+  
+{
+    "nodegroupName": "new_nodegroup_2",
+    "nodegroupArn": "arn:aws:eks:us-west-2:522412052657:nodegroup/eks-workshop/new_nodegroup_2/06cf238d-b23b-8139-61da-1be87c1d1f84",
+    "clusterName": "eks-workshop",
+    "status": "ACTIVE",
+    "capacityType": "ON_DEMAND",
+    "scalingConfig": {
+        "minSize": 0,
+        "maxSize": 1,
+        "desiredSize": 1
+    },
+    "health": {
+        "issues": []
+    }
+}
+
+Executing shell:
+  Command NEW_NODEGROUP_2_ASG_NAME=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_2 --query 'nodegroup.resources.autoScalingGroups[0].name' --output text)
+echo $NEW_NODEGROUP_2_ASG_NAME
+  Timeout 120
+  
+eks-new_nodegroup_2-06cf238d-b23b-8139-61da-1be87c1d1f84
+
+Executing shell:
+  Command NEW_NODEGROUP_2_ASG_NAME=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_2 --query 'nodegroup.resources.autoScalingGroups[0].name' --output text)
+aws autoscaling describe-scaling-activities --auto-scaling-group-name ${NEW_NODEGROUP_2_ASG_NAME} --query 'Activities[*].{AutoScalingGroupName:AutoScalingGroupName,Description:Description,Cause:Cause,StatusCode:StatusCode}'
+  Timeout 120
+  
+[
+    {
+        "AutoScalingGroupName": "eks-new_nodegroup_2-06cf238d-b23b-8139-61da-1be87c1d1f84",
+        "Description": "Launching a new EC2 instance: i-08b3d6f60ba9cc379",
+        "Cause": "At 2026-05-20T20:38:09Z a user request update of AutoScalingGroup constraints to min: 0, max: 1, desired: 1 changing the desired capacity from 0 to 1.  At 2026-05-20T20:38:17Z an instance was started in response to a difference between desired and actual capacity, increasing the capacity from 0 to 1.",
+        "StatusCode": "Successful"
+    }
+]
+
+Executing shell:
+  Command NEW_NODEGROUP_2_ASG_NAME=$(aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name new_nodegroup_2 --query 'nodegroup.resources.autoScalingGroups[0].name' --output text)
+NEW_NODEGROUP_2_INSTANCE_ID=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names $NEW_NODEGROUP_2_ASG_NAME --query 'AutoScalingGroups[0].Instances[0].InstanceId' --output text)
+aws ec2 describe-instances --instance-ids $NEW_NODEGROUP_2_INSTANCE_ID --query 'Reservations[*].Instances[*].{InstanceState: State.Name, SubnetId: SubnetId, VpcId: VpcId, InstanceProfile: IamInstanceProfile, SecurityGroups: SecurityGroups}' --output json
+  Timeout 120
+  
+[
+    [
+        {
+            "InstanceState": "running",
+            "SubnetId": "subnet-04e3602ebc2a09c4f",
+            "VpcId": "vpc-0ba25e608f52a1bd2",
+            "InstanceProfile": {
+                "Arn": "arn:aws:iam::522412052657:instance-profile/eks-06cf238d-b23b-8139-61da-1be87c1d1f84",
+                "Id": "AIPAXTIRPKCYTLJ7ZZY6X"
+            },
+            "SecurityGroups": [
+                {
+                    "GroupId": "sg-0dd0b5d678cac2ecb",
+                    "GroupName": "eks-cluster-sg-eks-workshop-332659399"
+                }
+            ]
+        }
+    ]
+]
+
+Executing shell:
+  Command aws ec2 describe-subnets --subnet-ids $NEW_NODEGROUP_2_SUBNET_ID --query 'Subnets[*].{AvailabilityZone: AvailabilityZone, AvailableIpAddressCount: AvailableIpAddressCount, CidrBlock: CidrBlock, State: State}'
+  Timeout 120
+  
+[
+    {
+        "AvailabilityZone": "us-west-2a",
+        "AvailableIpAddressCount": 8186,
+        "CidrBlock": "10.42.192.0/19",
+        "State": "available"
+    }
+]
+
+Executing shell:
+  Command aws ec2 describe-route-tables \
+  --filters "Name=association.subnet-id,Values=$NEW_NODEGROUP_2_SUBNET_ID" \
+  --query "RouteTables[*].{RouteTableId:RouteTableId,AssociatedSubnets:Associations[*].SubnetId}"
+  Timeout 120
+  
+[
+    {
+        "RouteTableId": "rtb-0cccc4bd821242a77",
+        "AssociatedSubnets": [
+            "subnet-04e3602ebc2a09c4f"
+        ]
+    }
+]
+
+Calling before hook fix-2-2
+Executing shell:
+  Command bash /content/troubleshooting/workernodes/tests/hook-fix-2-2.sh before
+  Timeout 20
+  
+noop
+
+Completed before hook fix-2-2
+Executing shell:
+  Command NEW_NODEGROUP_2_ROUTETABLE_ID=$(aws ec2 describe-route-tables --filters "Name=association.subnet-id,Values=$(aws ec2 describe-subnets --filters "Name=tag:Name,Values=*NewPrivateSubnet*" --query 'Subnets[0].SubnetId' --output text)" --query 'RouteTables[0].RouteTableId' --output text)
+aws ec2 describe-route-tables --route-table-ids $NEW_NODEGROUP_2_ROUTETABLE_ID --query 'RouteTables[0].Routes'
+  Timeout 15
+  
+[
+    {
+        "DestinationCidrBlock": "10.42.0.0/16",
+        "GatewayId": "local",
+        "Origin": "CreateRouteTable",
+        "State": "active"
+    }
+]
+
+Calling after hook fix-2-2
+Executing shell:
+  Command bash /content/troubleshooting/workernodes/tests/hook-fix-2-2.sh after
+  Timeout 20
+  
+
+Completed after hook fix-2-2
+Executing shell:
+  Command NEW_NODEGROUP_2_ROUTETABLE_ID=$(aws ec2 describe-route-tables --filters "Name=association.subnet-id,Values=$(aws ec2 describe-subnets --filters "Name=tag:Name,Values=*NewPrivateSubnet*" --query 'Subnets[0].SubnetId' --output text)" --query 'RouteTables[0].RouteTableId' --output text)
+DEFAULT_NODEGROUP_NATGATEWAY_ID=$(aws ec2 describe-nat-gateways --filter "Name=tag:created-by,Values=eks-workshop-v2" "Name=state,Values=available" --query 'NatGateways[0].NatGatewayId' --output text)
+aws ec2 create-route --route-table-id $NEW_NODEGROUP_2_ROUTETABLE_ID --destination-cidr-block 0.0.0.0/0 --nat-gateway-id $DEFAULT_NODEGROUP_NATGATEWAY_ID
+  Timeout 120
+  
+{
+    "Return": true
+}
+
+Executing shell:
+  Command NEW_NODEGROUP_2_ROUTETABLE_ID=$(aws ec2 describe-route-tables --filters "Name=association.subnet-id,Values=$(aws ec2 describe-subnets --filters "Name=tag:Name,Values=*NewPrivateSubnet*" --query 'Subnets[0].SubnetId' --output text)" --query 'RouteTables[0].RouteTableId' --output text)
+aws ec2 describe-route-tables --route-table-ids $NEW_NODEGROUP_2_ROUTETABLE_ID --query 'RouteTables[*].{RouteTableId:RouteTableId,VpcId:VpcId,Routes:Routes}'
+  Timeout 120
+  
+[
+    {
+        "RouteTableId": "rtb-0cccc4bd821242a77",
+        "VpcId": "vpc-0ba25e608f52a1bd2",
+        "Routes": [
+            {
+                "DestinationCidrBlock": "10.42.0.0/16",
+                "GatewayId": "local",
+                "Origin": "CreateRouteTable",
+                "State": "active"
+            },
+            {
+                "DestinationCidrBlock": "0.0.0.0/0",
+                "NatGatewayId": "nat-0666714e1d6df4a00",
+                "Origin": "CreateRoute",
+                "State": "active"
+            }
+        ]
+    }
+]
+
+Executing shell:
+  Command aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_2 --scaling-config desiredSize=0 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_2 && aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_2 --scaling-config desiredSize=1 && aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_2
+  Timeout 120
+  
+{
+    "update": {
+        "id": "9aad1b2a-9ee2-3e6a-917e-5afdcf3c889e",
+        "status": "InProgress",
+        "type": "ConfigUpdate",
+        "params": [
+            {
+                "type": "DesiredSize",
+                "value": "0"
+            }
+        ],
+        "createdAt": "2026-05-20T20:49:18.667000+00:00",
+        "errors": []
+    }
+}
+{
+    "update": {
+        "id": "9075b475-50dd-30d9-9a9c-9425682d1f8b",
+        "status": "InProgress",
+        "type": "ConfigUpdate",
+        "params": [
+            {
+                "type": "DesiredSize",
+                "value": "1"
+            }
+        ],
+        "createdAt": "2026-05-20T20:49:50.775000+00:00",
+        "errors": []
+    }
+}
+
+Executing shell:
+  Command kubectl delete node -l eks.amazonaws.com/nodegroup=new_nodegroup_2 --ignore-not-found
+  Timeout 120
+  
+node "ip-10-42-197-170.us-west-2.compute.internal" deleted
+
+Calling before hook fix-2-3
+Executing shell:
+  Command bash /content/troubleshooting/workernodes/tests/hook-fix-2-3.sh before
+  Timeout 130
+  
+noop
+
+Completed before hook fix-2-3
+Executing shell:
+  Command kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_2
+  Timeout 100
+  
+
+Calling after hook fix-2-3
+Executing shell:
+  Command bash /content/troubleshooting/workernodes/tests/hook-fix-2-3.sh after
+  Timeout 130
+  
+Error running 'after' hook at /content/troubleshooting/workernodes/tests/hook-fix-2-3.sh
+Command returned error code 1
+output: 
+,,No resources found
+Did not find any nodes when expecting a node
+
+        1) Node Join Failure
+Calling before hook fix-3-1
+Executing shell:
+  Command bash /content/troubleshooting/workernodes/tests/hook-fix-3-1.sh before
+  Timeout 60
+  
+noop
+
+Completed before hook fix-3-1
+Executing shell:
+  Command kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_3
+  Timeout 40
+  
+
+Calling after hook fix-3-1
+Executing shell:
+  Command bash /content/troubleshooting/workernodes/tests/hook-fix-3-1.sh after
+  Timeout 60
+  
+Error running 'after' hook at /content/troubleshooting/workernodes/tests/hook-fix-3-1.sh
+Command returned error code 1
+output: 
+,No nodes found in nodegroup new_nodegroup_3
+,
+        2) Node in Not-Ready state
+Calling suite after hook at /content/troubleshooting/workernodes/tests/hook-suite.sh
+Completed suite after hook
+
+
+  2 passing (21m)
+  2 failing
+
+  1) EKS Workshop
+       Troubleshooting Scenarios
+         Worker Nodes
+           Node Join Failure:
+     AssertionError: Script exit with an error code
+      at Context.<anonymous> (file:///app/dist/lib/markdownsh.js:204:36)
+
+  2) EKS Workshop
+       Troubleshooting Scenarios
+         Worker Nodes
+           Node in Not-Ready state:
+     AssertionError: Script exit with an error code
+      at Context.<anonymous> (file:///app/dist/lib/markdownsh.js:204:36)
+      at processTicksAndRejections (node:internal/process/task_queues:96:5)
+
+
+
+Error running tests: undefined
+make: *** [Makefile:35: test] Error 1

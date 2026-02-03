@@ -1,0 +1,51 @@
+bash hack/shell.sh '' ide
+Building container images...
+sha256:a6b162cf8bd3946ebd4cbd5915f3e8cc71c4d1158caf63eb9a1d4cb420b23849
+Generating temporary AWS credentials...
+Assuming role arn:aws:iam::522412052657:role/eks-workshop-ide-role
+Executing command in container...
+Resolved source IP address: 100.50.246.103
+Inbound CIDRs: 100.50.246.103/32
+Added new context arn:aws:eks:us-west-2:522412052657:cluster/eks-workshop-auto to /home/ec2-user/.kube/config
+Added new context arn:aws:eks:us-west-2:522412052657:cluster/eks-workshop to /home/ec2-user/.kube/config
+[2026-05-22T17:21:01.384Z] info  Wrote default config file to /home/ec2-user/.config/code-server/config.yaml
+Installing extensions...
+Installing extension 'redhat.vscode-yaml'...
+Extension 'redhat.vscode-yaml' v1.23.0 was successfully installed.
+Installing extensions...
+Installing extension 'ms-kubernetes-tools.vscode-kubernetes-tools'...
+Extension 'ms-kubernetes-tools.vscode-kubernetes-tools' v1.3.25 was successfully installed.
+--------------------------------------------------------
+Starting IDE with password 3KnVhTJgTrp1Xbun
+--------------------------------------------------------
+[2026-05-22T17:21:04.826Z] info  code-server 4.101.2 aff005e19626ac6802223713fa569e743c125725
+[2026-05-22T17:21:04.827Z] info  Using user-data-dir /home/ec2-user/.local/share/code-server
+[2026-05-22T17:21:04.837Z] info  Using config file /home/ec2-user/.config/code-server/config.yaml
+[2026-05-22T17:21:04.837Z] info  HTTP server listening on http://0.0.0.0:8889/
+[2026-05-22T17:21:04.837Z] info    - Authentication is enabled
+[2026-05-22T17:21:04.837Z] info      - Using password from $PASSWORD
+[2026-05-22T17:21:04.837Z] info    - Not serving HTTPS
+[2026-05-22T17:21:04.837Z] info  Session server listening on /home/ec2-user/.local/share/code-server/code-server-ipc.sock
+[17:21:40] 
+
+
+
+
+[17:21:40] Extension host agent started.
+File not found: /usr/local/code-server-4.101.2/lib/vscode/node_modules/vsda/rust/web/vsda_bg.wasm
+File not found: /usr/local/code-server-4.101.2/lib/vscode/node_modules/vsda/rust/web/vsda.js
+[17:21:45] [172.17.0.1][5f116360][ManagementConnection] New connection established.
+[17:21:45] ComputeTargetPlatform: linux-x64
+[17:21:45] [172.17.0.1][6eaa604d][ExtensionHostConnection] New connection established.
+[17:21:46] [172.17.0.1][6eaa604d][ExtensionHostConnection] <1339> Launched Extension Host Process.
+[17:22:10] [172.17.0.1][5f116360][ManagementConnection] The client has disconnected gracefully, so the connection will be disposed.
+[17:22:10] [172.17.0.1][6eaa604d][ExtensionHostConnection] <1339> Extension Host Process exited with code: 0, signal: null.
+File not found: /usr/local/code-server-4.101.2/lib/vscode/node_modules/vsda/rust/web/vsda_bg.wasm
+File not found: /usr/local/code-server-4.101.2/lib/vscode/node_modules/vsda/rust/web/vsda.js
+[17:22:11] [172.17.0.1][60c97e4e][ManagementConnection] New connection established.
+[17:22:11] [172.17.0.1][c3805b84][ExtensionHostConnection] New connection established.
+[17:22:11] [172.17.0.1][c3805b84][ExtensionHostConnection] <3087> Launched Extension Host Process.
+[17:52:14] [172.17.0.1][60c97e4e][ManagementConnection] The client has disconnected gracefully, so the connection will be disposed.
+[17:52:14] [172.17.0.1][c3805b84][ExtensionHostConnection] <3087> Extension Host Process exited with code: 0, signal: null.
+a socket was left hanging
+a socket was left hanging

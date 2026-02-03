@@ -1,0 +1,405 @@
+bash hack/run-tests.sh '' troubleshooting/pod '-'
+Building container images...
+sha256:a6b162cf8bd3946ebd4cbd5915f3e8cc71c4d1158caf63eb9a1d4cb420b23849
+sha256:653c919514214d95df217ffa30b57f552600453f42fffd1d1b4fd7fca9ea5557
+Generating temporary AWS credentials...
+Assuming role arn:aws:iam::522412052657:role/eks-workshop-ide-role
+Resolved source IP address: 100.50.246.103
+Inbound CIDRs: 100.50.246.103/32
+Running test suite...
+Added new context arn:aws:eks:us-west-2:522412052657:cluster/eks-workshop-auto to /home/ec2-user/.kube/config
+Added new context arn:aws:eks:us-west-2:522412052657:cluster/eks-workshop to /home/ec2-user/.kube/config
+
+
+  EKS Workshop
+    Troubleshooting Scenarios
+      Pod Issues
+Calling suite before hook at /content/troubleshooting/pod/tests/hook-suite.sh
+Completed suite before hook
+Executing shell:
+  Command prepare-environment troubleshooting/pod
+  Timeout 600
+  
+🚀 We're preparing your environment for the next lab, sit tight!
+🎓 [1;35mTip:[0m Read the rest of the lab introduction while you wait!
+
+
+⏳ Waiting for application to become ready...
+
+🔃 Cleaning up previous lab infrastructure...
+
+🚧 Creating infrastructure for next lab...
+
+✅ Environment is [1;32mready[0m!
+Execution time: 191 seconds
+
+        ✔ Pod Issues (491298ms)
+Executing shell:
+  Command kubectl get deploy ui-private -n default
+  Timeout 120
+  
+NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+ui-private   0/1     1            0           6m38s
+
+Executing shell:
+  Command kubectl get pods -l app=app-private
+  Timeout 120
+  
+NAME                          READY   STATUS             RESTARTS   AGE
+ui-private-66c997979d-ns96c   0/1     ImagePullBackOff   0          6m39s
+
+Executing shell:
+  Command POD=`kubectl get pods -l app=app-private -o jsonpath='{.items[*].metadata.name}'`
+kubectl describe pod $POD | awk '/Events:/,/^$/'
+  Timeout 120
+  
+Events:
+  Type     Reason     Age                    From               Message
+  ----     ------     ----                   ----               -------
+  Normal   Scheduled  6m40s                  default-scheduler  Successfully assigned default/ui-private-66c997979d-ns96c to ip-10-42-112-75.us-west-2.compute.internal
+  Normal   Pulling    3m52s (x5 over 6m40s)  kubelet            Pulling image "522412052657.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.2.1"
+  Warning  Failed     3m52s (x5 over 6m40s)  kubelet            Failed to pull image "522412052657.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.2.1": failed to pull and unpack image "522412052657.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.2.1": failed to resolve reference "522412052657.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.2.1": unexpected status from HEAD request to https://522412052657.dkr.ecr.us-west-2.amazonaws.com/v2/retail-sample-app-ui/manifests/1.2.1: 403 Forbidden
+  Warning  Failed     3m52s (x5 over 6m40s)  kubelet            Error: ErrImagePull
+  Normal   BackOff    96s (x21 over 6m40s)   kubelet            Back-off pulling image "522412052657.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.2.1"
+  Warning  Failed     96s (x21 over 6m40s)   kubelet            Error: ImagePullBackOff
+
+Executing shell:
+  Command kubectl get deploy ui-private -o jsonpath='{.spec.template.spec.containers[*].image}'
+  Timeout 120
+  
+522412052657.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.2.1
+Executing shell:
+  Command aws ecr describe-images --repository-name retail-sample-app-ui --image-ids imageTag=1.2.1
+  Timeout 120
+  
+{
+    "imageDetails": [
+        {
+            "registryId": "522412052657",
+            "repositoryName": "retail-sample-app-ui",
+            "imageDigest": "sha256:71beef358d49922baa9f6087c7b31576e02c15b0e4fef93adc579bf7e4e59980",
+            "imageTags": [
+                "1.2.1"
+            ],
+            "imageSizeInBytes": 325206786,
+            "imagePushedAt": "2026-05-20T00:30:04.539000+00:00",
+            "imageManifestMediaType": "application/vnd.oci.image.index.v1+json",
+            "imageStatus": "ACTIVE"
+        }
+    ]
+}
+
+Executing shell:
+  Command ROLE_NAME=`aws eks describe-nodegroup --cluster-name $EKS_CLUSTER_NAME --nodegroup-name default --query 'nodegroup.nodeRole' --output text | cut -d'/' -f2`
+aws iam list-attached-role-policies --role-name $ROLE_NAME
+  Timeout 120
+  
+{
+    "AttachedPolicies": [
+        {
+            "PolicyName": "AmazonSSMManagedInstanceCore",
+            "PolicyArn": "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+        },
+        {
+            "PolicyName": "AmazonEKSWorkerNodePolicy",
+            "PolicyArn": "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+        },
+        {
+            "PolicyName": "AmazonEC2ContainerRegistryPullOnly",
+            "PolicyArn": "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPullOnly"
+        }
+    ]
+}
+
+Executing shell:
+  Command aws ecr get-repository-policy --repository-name retail-sample-app-ui --query policyText --output text | jq .
+  Timeout 120
+  
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "new policy",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::522412052657:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-grpMyStxN1mk"
+      },
+      "Action": [
+        "ecr:UploadLayerPart",
+        "ecr:SetRepositoryPolicy",
+        "ecr:PutImage",
+        "ecr:ListImages",
+        "ecr:InitiateLayerUpload",
+        "ecr:GetRepositoryPolicy",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:DescribeRepositories",
+        "ecr:DeleteRepositoryPolicy",
+        "ecr:DeleteRepository",
+        "ecr:CompleteLayerUpload",
+        "ecr:BatchGetImage",
+        "ecr:BatchDeleteImage",
+        "ecr:BatchCheckLayerAvailability"
+      ]
+    }
+  ]
+}
+
+Executing shell:
+  Command export ROLE_ARN=`aws eks describe-nodegroup --cluster-name ${EKS_CLUSTER_NAME} --nodegroup-name default --query 'nodegroup.nodeRole'`
+echo '{"Version":"2012-10-17","Statement":[{"Sid":"new policy","Effect":"Allow","Principal":{"AWS":'${ROLE_ARN}'},"Action":["ecr:BatchCheckLayerAvailability","ecr:BatchDeleteImage","ecr:BatchGetImage","ecr:CompleteLayerUpload","ecr:DeleteRepository","ecr:DeleteRepositoryPolicy","ecr:DescribeRepositories","ecr:GetDownloadUrlForLayer","ecr:GetRepositoryPolicy","ecr:InitiateLayerUpload","ecr:ListImages","ecr:PutImage","ecr:SetRepositoryPolicy","ecr:UploadLayerPart"]}]}' > ~/ecr-policy.json
+aws ecr set-repository-policy --repository-name retail-sample-app-ui --policy-text file://~/ecr-policy.json
+  Timeout 120
+  
+{
+    "registryId": "522412052657",
+    "repositoryName": "retail-sample-app-ui",
+    "policyText": "{\n  \"Version\" : \"2012-10-17\",\n  \"Statement\" : [ {\n    \"Sid\" : \"new policy\",\n    \"Effect\" : \"Allow\",\n    \"Principal\" : {\n      \"AWS\" : \"arn:aws:iam::522412052657:role/eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-grpMyStxN1mk\"\n    },\n    \"Action\" : [ \"ecr:BatchCheckLayerAvailability\", \"ecr:BatchDeleteImage\", \"ecr:BatchGetImage\", \"ecr:CompleteLayerUpload\", \"ecr:DeleteRepository\", \"ecr:DeleteRepositoryPolicy\", \"ecr:DescribeRepositories\", \"ecr:GetDownloadUrlForLayer\", \"ecr:GetRepositoryPolicy\", \"ecr:InitiateLayerUpload\", \"ecr:ListImages\", \"ecr:PutImage\", \"ecr:SetRepositoryPolicy\", \"ecr:UploadLayerPart\" ]\n  } ]\n}"
+}
+
+Calling before hook fix-2
+Executing shell:
+  Command bash /content/troubleshooting/pod/tests/hook-fix-2.sh before
+  Timeout 600
+  
+noop
+
+Completed before hook fix-2
+Executing shell:
+  Command kubectl rollout restart deploy ui-private
+kubectl get pods -l app=app-private
+  Timeout 180
+  
+deployment.apps/ui-private restarted
+NAME                          READY   STATUS              RESTARTS   AGE
+ui-private-66c997979d-ns96c   0/1     ImagePullBackOff    0          6m49s
+ui-private-7875977f7c-64lj7   0/1     ContainerCreating   0          1s
+
+Calling after hook fix-2
+Executing shell:
+  Command bash /content/troubleshooting/pod/tests/hook-fix-2.sh after
+  Timeout 600
+  
+Success: The pod is now in running state
+
+Completed after hook fix-2
+        ✔ ImagePullBackOff - ECR Private Image (213120ms)
+Executing shell:
+  Command kubectl get deployment ui-new -n default
+  Timeout 120
+  
+NAME     READY   UP-TO-DATE   AVAILABLE   AGE
+ui-new   0/1     1            0           10m
+
+Executing shell:
+  Command kubectl get pods -l app=app-new
+  Timeout 120
+  
+NAME                     READY   STATUS             RESTARTS   AGE
+ui-new-8bfd9cc99-mf6jt   0/1     ImagePullBackOff   0          10m
+
+Executing shell:
+  Command POD=`kubectl get pods -l app=app-new -o jsonpath='{.items[*].metadata.name}'`
+kubectl describe pod $POD | awk '/Events:/,/^$/'
+  Timeout 20
+  
+Events:
+  Type     Reason     Age                  From               Message
+  ----     ------     ----                 ----               -------
+  Normal   Scheduled  10m                  default-scheduler  Successfully assigned default/ui-new-8bfd9cc99-mf6jt to ip-10-42-136-75.us-west-2.compute.internal
+  Normal   Pulling    7m27s (x5 over 10m)  kubelet            Pulling image "public.ecr.aws/aws-containers/retailing-store-sample-ui:1.2.1"
+  Warning  Failed     7m27s (x5 over 10m)  kubelet            Failed to pull image "public.ecr.aws/aws-containers/retailing-store-sample-ui:1.2.1": rpc error: code = NotFound desc = failed to pull and unpack image "public.ecr.aws/aws-containers/retailing-store-sample-ui:1.2.1": failed to resolve reference "public.ecr.aws/aws-containers/retailing-store-sample-ui:1.2.1": public.ecr.aws/aws-containers/retailing-store-sample-ui:1.2.1: not found
+  Warning  Failed     7m27s (x5 over 10m)  kubelet            Error: ErrImagePull
+  Normal   BackOff    27s (x42 over 10m)   kubelet            Back-off pulling image "public.ecr.aws/aws-containers/retailing-store-sample-ui:1.2.1"
+  Warning  Failed     27s (x42 over 10m)   kubelet            Error: ImagePullBackOff
+
+Executing shell:
+  Command kubectl get pod $POD -o jsonpath='{.spec.containers[*].image}'
+  Timeout 120
+  
+
+Executing shell:
+  Command kubectl patch deployment ui-new --patch '{"spec": {"template": {"spec": {"containers": [{"name": "ui", "image": "public.ecr.aws/aws-containers/retail-store-sample-ui:1.2.1"}]}}}}'
+  Timeout 120
+  
+deployment.apps/ui-new patched
+
+Calling before hook fix-1
+Executing shell:
+  Command bash /content/troubleshooting/pod/tests/hook-fix-1.sh before
+  Timeout 600
+  
+noop
+
+Completed before hook fix-1
+Executing shell:
+  Command kubectl get pods -l app=app-new
+  Timeout 180
+  
+NAME                      READY   STATUS        RESTARTS   AGE
+ui-new-74c65b7675-xfhqk   1/1     Running       0          1s
+ui-new-8bfd9cc99-mf6jt    0/1     Terminating   0          10m
+
+Calling after hook fix-1
+Executing shell:
+  Command bash /content/troubleshooting/pod/tests/hook-fix-1.sh after
+  Timeout 600
+  
+Success: The pod is now in running state
+
+Completed after hook fix-1
+        ✔ ImagePullBackOff - Public Image (147479ms)
+Executing shell:
+  Command kubectl get deploy efs-app -n default
+  Timeout 120
+  
+NAME      READY   UP-TO-DATE   AVAILABLE   AGE
+efs-app   0/1     1            0           12m
+
+Executing shell:
+  Command kubectl get pods -l app=efs-app
+  Timeout 120
+  
+NAME                      READY   STATUS              RESTARTS   AGE
+efs-app-8c98d69fd-9l55b   0/1     ContainerCreating   0          12m
+
+Executing shell:
+  Command export POD=`kubectl get pods -l app=efs-app -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | grep efs`
+kubectl describe pod $POD | awk '/Events:/,/^$/'
+  Timeout 120
+  
+Events:
+  Type     Reason            Age                From               Message
+  ----     ------            ----               ----               -------
+  Warning  FailedScheduling  12m                default-scheduler  0/3 nodes are available: pod has unbound immediate PersistentVolumeClaims. preemption: 0/3 nodes are available: 3 Preemption is not helpful for scheduling.
+  Warning  FailedScheduling  12m (x3 over 12m)  default-scheduler  0/3 nodes are available: pod has unbound immediate PersistentVolumeClaims. preemption: 0/3 nodes are available: 3 Preemption is not helpful for scheduling.
+  Normal   Scheduled         12m                default-scheduler  Successfully assigned default/efs-app-8c98d69fd-9l55b to ip-10-42-136-75.us-west-2.compute.internal
+  Warning  FailedMount       11m (x6 over 12m)  kubelet            MountVolume.SetUp failed for volume "pvc-ea39bd64-977e-419d-a6b9-f7e01bfd6283" : rpc error: code = Internal desc = Could not mount "fs-039ca31748d369194:/" at "/var/lib/kubelet/pods/3bab9581-dd91-4d27-9a00-0d0ff56ff2b7/volumes/kubernetes.io~csi/pvc-ea39bd64-977e-419d-a6b9-f7e01bfd6283/mount": mount failed: exit status 1
+Mounting command: mount
+Mounting arguments: -t efs -o accesspoint=fsap-06f48e64d53588529,tls fs-039ca31748d369194:/ /var/lib/kubelet/pods/3bab9581-dd91-4d27-9a00-0d0ff56ff2b7/volumes/kubernetes.io~csi/pvc-ea39bd64-977e-419d-a6b9-f7e01bfd6283/mount
+Output: Failed to resolve "fs-039ca31748d369194.efs.us-west-2.amazonaws.com". The file system mount target ip address cannot be found, please pass mount target ip address via mount options. 
+No mount target created for the file system fs-039ca31748d369194 is in available state yet, please retry in 5 minutes.
+Warning: config file does not have fips_mode_enabled item in section mount.. You should be able to find a new config file in the same folder as current config file /etc/amazon/efs/efs-utils.conf. Consider update the new config file to latest config file. Use the default value [fips_mode_enabled = False].Warning: config file does not have fips_mode_enabled item in section mount.. You should be able to find a new config file in the same folder as current config file /etc/amazon/efs/efs-utils.conf. Consider update the new config file to latest config file. Use the default value [fips_mode_enabled = False].
+  Warning  FailedMount  7m25s (x4 over 11m)  kubelet  MountVolume.SetUp failed for volume "pvc-ea39bd64-977e-419d-a6b9-f7e01bfd6283" : rpc error: code = Internal desc = Could not mount "fs-039ca31748d369194:/" at "/var/lib/kubelet/pods/3bab9581-dd91-4d27-9a00-0d0ff56ff2b7/volumes/kubernetes.io~csi/pvc-ea39bd64-977e-419d-a6b9-f7e01bfd6283/mount": mount failed: exit status 1
+Mounting command: mount
+Mounting arguments: -t efs -o accesspoint=fsap-06f48e64d53588529,tls fs-039ca31748d369194:/ /var/lib/kubelet/pods/3bab9581-dd91-4d27-9a00-0d0ff56ff2b7/volumes/kubernetes.io~csi/pvc-ea39bd64-977e-419d-a6b9-f7e01bfd6283/mount
+Output: Failed to resolve "fs-039ca31748d369194.efs.us-west-2.amazonaws.com". Cannot connect to file system mount target ip address 10.42.35.188. 
+Connection to the mount target IP address 10.42.35.188 timeout. Please retry in 5 minutes if the mount target is newly created. Otherwise check your VPC and security group configuration to ensure your file system is reachable via TCP port 2049 from your instance.
+Warning: config file does not have fips_mode_enabled item in section mount.. You should be able to find a new config file in the same folder as current config file /etc/amazon/efs/efs-utils.conf. Consider update the new config file to latest config file. Use the default value [fips_mode_enabled = False].Warning: config file does not have fips_mode_enabled item in section mount.. You should be able to find a new config file in the same folder as current config file /etc/amazon/efs/efs-utils.conf. Consider update the new config file to latest config file. Use the default value [fips_mode_enabled = False].
+  Warning  FailedMount  3m23s  kubelet  MountVolume.SetUp failed for volume "pvc-ea39bd64-977e-419d-a6b9-f7e01bfd6283" : rpc error: code = DeadlineExceeded desc = context deadline exceeded
+
+Executing shell:
+  Command export NODE=`kubectl get pod $POD -o jsonpath='{.spec.nodeName}'`
+export INSTANCE=`kubectl get node $NODE -o jsonpath='{.spec.providerID}' | cut -d'/' -f5`
+export SG=`aws ec2 describe-instances --instance-ids $INSTANCE --query "Reservations[].Instances[].SecurityGroups[].GroupId" --output text`
+aws ec2 describe-security-groups --group-ids $SG --query "SecurityGroups[].IpPermissionsEgress[]"
+  Timeout 120
+  
+[
+    {
+        "IpProtocol": "-1",
+        "UserIdGroupPairs": [
+            {
+                "Description": "Allows EFA traffic, which is not matched by CIDR rules.",
+                "UserId": "522412052657",
+                "GroupId": "sg-0dd0b5d678cac2ecb"
+            }
+        ],
+        "IpRanges": [
+            {
+                "CidrIp": "0.0.0.0/0"
+            }
+        ],
+        "Ipv6Ranges": [],
+        "PrefixListIds": []
+    }
+]
+
+Executing shell:
+  Command export AZ=`aws ec2 describe-instances --instance-ids $INSTANCE --query "Reservations[*].Instances[*].[Placement.AvailabilityZone]" --output text`
+export EFS=`kubectl get pv $(kubectl get pvc efs-claim -o jsonpath='{.spec.volumeName}') -o jsonpath='{.spec.csi.volumeHandle}' | cut -d':' -f1`
+export MT_ENI=`aws efs describe-mount-targets --file-system-id $EFS --query "MountTargets[*].[NetworkInterfaceId]" --output text`
+export MT_SG=`aws ec2 describe-network-interfaces --network-interface-ids $MT_ENI --query "NetworkInterfaces[*].[Groups[*].GroupId]" --output text`
+export MT_SG_UNIQUE=$(echo $MT_SG | xargs -n1 | sort -u | xargs)
+aws ec2 describe-security-groups --group-ids $MT_SG_UNIQUE --query "SecurityGroups[].IpPermissions[]"
+  Timeout 120
+  
+[
+    {
+        "IpProtocol": "tcp",
+        "FromPort": 80,
+        "ToPort": 80,
+        "UserIdGroupPairs": [],
+        "IpRanges": [
+            {
+                "CidrIp": "10.42.0.0/16"
+            }
+        ],
+        "Ipv6Ranges": [],
+        "PrefixListIds": []
+    }
+]
+
+Executing shell:
+  Command export VPC_ID=`aws eks describe-cluster --name ${EKS_CLUSTER_NAME} --query "cluster.resourcesVpcConfig.vpcId" --output text`
+export CIDR=`aws ec2 describe-vpcs --vpc-ids $VPC_ID --query "Vpcs[*].CidrBlock" --output text`
+for sg_id in $MT_SG_UNIQUE; do
+   echo "Adding ingress rule to security group: $sg_id"
+   aws ec2 authorize-security-group-ingress --group-id "$sg_id" --protocol tcp --port 2049 --cidr "$CIDR"
+ done
+  Timeout 120
+  
+Adding ingress rule to security group: sg-0b31e991983b2d6f3
+{
+    "Return": true,
+    "SecurityGroupRules": [
+        {
+            "SecurityGroupRuleId": "sgr-0ee292ec16eff00e6",
+            "GroupId": "sg-0b31e991983b2d6f3",
+            "GroupOwnerId": "522412052657",
+            "IsEgress": false,
+            "IpProtocol": "tcp",
+            "FromPort": 2049,
+            "ToPort": 2049,
+            "CidrIpv4": "10.42.0.0/16",
+            "SecurityGroupRuleArn": "arn:aws:ec2:us-west-2:522412052657:security-group-rule/sgr-0ee292ec16eff00e6"
+        }
+    ]
+}
+
+Calling before hook fix-3
+Executing shell:
+  Command bash /content/troubleshooting/pod/tests/hook-fix-3.sh before
+  Timeout 600
+  
+noop
+
+Completed before hook fix-3
+Executing shell:
+  Command kubectl rollout restart deploy/efs-app
+sleep 120
+kubectl get pods -l app=efs-app
+  Timeout 600
+  
+deployment.apps/efs-app restarted
+NAME                       READY   STATUS    RESTARTS   AGE
+efs-app-58c6d5d4dd-f7l5v   1/1     Running   0          114s
+
+Calling after hook fix-3
+Executing shell:
+  Command bash /content/troubleshooting/pod/tests/hook-fix-3.sh after
+  Timeout 600
+  
+Attempt 1 of 10: Checking if at least 1 pod is running...
+NAME                       READY   STATUS    RESTARTS   AGE
+efs-app-58c6d5d4dd-f7l5v   1/1     Running   0          2m55s
++++++++
+efs-app-58c6d5d4dd-f7l5vSuccess: Found 1 pod(s) with selector 'app=efs-app' in running state
+
+Completed after hook fix-3
+        ✔ PodStuck - ContainerCreating (262233ms)
+Calling suite after hook at /content/troubleshooting/pod/tests/hook-suite.sh
+Completed suite after hook
+
+
+  4 passing (21m)
+
