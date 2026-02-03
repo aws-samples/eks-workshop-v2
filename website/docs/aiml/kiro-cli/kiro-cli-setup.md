@@ -3,39 +3,40 @@ title: "Setup"
 sidebar_position: 20
 ---
 
-In this section we will configure Amazon Q CLI along with the [MCP server for Amazon EKS](https://awslabs.github.io/mcp/servers/eks-mcp-server/) to work with the EKS cluster using natural language commands.
+In this section we will configure Kiro CLI along with the [MCP server for Amazon EKS](https://awslabs.github.io/mcp/servers/eks-mcp-server/) to work with the EKS cluster using natural language commands.
 
 :::info
-Amazon Q CLI is leverages generative AI capabilities for common development and operations tasks. Its capabilities can be enhanced by adding purpose-built MCP servers for specialized knowledge. We'll use the Amazon EKS MCP server with Amazon Q CLI in this section. You can find a catalog of AWS-provided MCP servers [here](https://awslabs.github.io/mcp/), which can be used with Amazon Q CLI in a similar way.
+Kiro CLI is leverages generative AI capabilities for common development and operations tasks. Its capabilities can be enhanced by adding purpose-built MCP servers for specialized knowledge. We'll use the Amazon EKS MCP server with Kiro CLI in this section. You can find a catalog of AWS-provided MCP servers [here](https://awslabs.github.io/mcp/), which can be used with Kiro CLI in a similar way.
 :::
 
-First, download the Amazon Q CLI release for your operating system and CPU architecture:
+First, download the Kiro CLI release for your operating system and CPU architecture:
 
 ```bash
 $ ARCH=$(arch)
+$ mkdir $HOME/tmp
 $ curl --proto '=https' --tlsv1.2 \
-  -sSf https://desktop-release.q.us-east-1.amazonaws.com/1.12.4/q-${ARCH}-linux.zip \
-  -o /tmp/q.zip
+  -sSf https://desktop-release.q.us-east-1.amazonaws.com/1.21.0/kirocli-${ARCH}-linux.zip \
+  -o $HOME/tmp/kirocli.zip
 ```
 
-Install Amazon Q CLI:
+Install Kiro CLI:
 
 ```bash
-$ unzip /tmp/q.zip -d /tmp
-$ sudo Q_INSTALL_GLOBAL=true /tmp/q/install.sh --no-confirm
+$ unzip $HOME/tmp/kirocli.zip -d $HOME/tmp
+$ bash $HOME/tmp/kirocli/install.sh --no-confirm
 ```
 
 Verify the installation:
 
 ```bash
-$ q --version
-q 1.12.4
+$ kiro-cli version
+kiro-cli 1.21.0
 ```
 
-Next, we'll configure Amazon Q CLI with the Amazon EKS MCP server. Here is the configuration we'll use:
+Next, we'll configure Kiro CLI with the Amazon EKS MCP server. Here is the configuration we'll use:
 
 ```file
-manifests/modules/aiml/q-cli/setup/eks-mcp.json
+manifests/modules/aiml/kiro-cli/setup/eks-mcp.json
 ```
 
 Configure the MCP server and install the required `uvx` tool:
@@ -45,22 +46,22 @@ Configure the MCP server and install the required `uvx` tool:
 :::
 
 ```bash
-$ mkdir -p $HOME/.aws/amazonq
-$ cp ~/environment/eks-workshop/modules/aiml/q-cli/setup/eks-mcp.json $HOME/.aws/amazonq/mcp.json
-$ curl -LsSf https://astral.sh/uv/0.8.9/install.sh | sh
+$ mkdir -p $HOME/.kiro/settings
+$ cp ~/environment/eks-workshop/modules/aiml/kiro-cli/setup/eks-mcp.json $HOME/.kiro/settings/mcp.json
+$ curl -LsSf https://astral.sh/uv/0.9.28/install.sh | sh
 ```
 
-To use Amazon Q CLI, you'll need to authenticate using either an AWS Builder ID or a Pro license subscription.
+To use Kiro CLI, you'll need to authenticate using either an AWS Builder ID or a Pro license subscription.
 
 :::tip
-You can create a free AWS Builder ID by following [these instructions](https://docs.aws.amazon.com/signin/latest/userguide/create-aws_builder_id.html). This Builder ID can also be used for personal use of Amazon Q CLI.
+You can create a free AWS Builder ID by following [these instructions](https://docs.aws.amazon.com/signin/latest/userguide/create-aws_builder_id.html). This Builder ID can also be used for personal use of Kiro CLI.
 :::
 
 ```bash test=false
-$ q login
+$ kiro-cli login --use-device-flow
 ? Select login method >
-> Use for Free with Builder ID
-  Use with Pro license
+> Use with Builder ID
+  Use with IDC Account
 ```
 
 Select your preferred option and follow the prompts to complete the login process. You'll be redirected to a webpage to either login and/or authorize Amazon Q Developer to use your account. For additional guidance, refer to:
@@ -71,7 +72,7 @@ Select your preferred option and follow the prompts to complete the login proces
 Let's verify that the MCP server is available by initializing a session:
 
 ```bash test=false
-$ q
+$ kiro-cli chat
 0 of 1 mcp servers initialized. Servers still loading:
  - awslabseks_mcp_server
 ```
@@ -88,14 +89,14 @@ You should see output similar to this:
 
 The output shows:
 
-1. The default large language model (LLM) selected by Amazon Q (can be changed using the `/model` command)
+1. The default large language model (LLM) selected by Kiro CLI (can be changed using the `/model` command)
 2. The list of tools offered by the EKS MCP server
-3. The default permissions Amazon Q CLI has for each tool
+3. The default permissions Kiro CLI has for each tool
 
 :::info
-When a tool is marked as `not trusted`, Amazon Q CLI will request your permission before using it. This is a safety measure, particularly for tools that can create, update, or delete resources. Since LLMs can make mistakes, this gives you an opportunity to review potentially disruptive actions before they're executed.
+When a tool is marked as `not trusted`, Kiro CLI will request your permission before using it. This is a safety measure, particularly for tools that can create, update, or delete resources. Since LLMs can make mistakes, this gives you an opportunity to review potentially disruptive actions before they're executed.
 :::
 
 You can follow the same procedure to add other [MCP servers from AWS Labs](https://awslabs.github.io/mcp/) for additional capabilities. For this lab, we'll only need the EKS MCP server we've configured.
 
-In the next section, we'll use Amazon Q CLI to retrieve information about our EKS cluster.
+In the next section, we'll use Kiro CLI to retrieve information about our EKS cluster.
