@@ -3,6 +3,8 @@
     "awslabs.eks-mcp-server": {
       "command": "uvx",
       "args": [
+        "--with",      
+        "mcp==1.18.0",
         "awslabs.eks-mcp-server@0.1.13",
         "--allow-write",
         "--allow-sensitive-data-access"
