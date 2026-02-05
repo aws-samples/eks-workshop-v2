@@ -64,6 +64,14 @@ sidebar_custom_props:
 ---
 ```
 
+To mark your module as optional:
+```
+---
+...
+sidebar_custom_props:  { "optional": "true" }
+---
+```
+
 ### Navigating the AWS console
 
 There are instances where the user needs to navigate to specific screens in the AWS console. It is preferable to provide a link to the exact screen if possible, or a close as can be done.
