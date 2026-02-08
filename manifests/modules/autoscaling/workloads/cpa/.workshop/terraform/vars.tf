@@ -38,7 +38,7 @@ variable "cluster_proportional_autoscaler_version" {
   description = "The version of cluster-proportional-autoscaler to use"
   type        = string
   # renovate: datasource=github-releases depName=kubernetes-sigs/cluster-proportional-autoscaler
-  default = "1.9.0"
+  default = "1.10.3"
 }
 
 variable "cluster_proportional_autoscaler_chart_version" {
