@@ -13,11 +13,11 @@ jobs:
     name: Test Utility CI
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Use Node.js ${{ env.node_version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.node_version }}
           registry-url: "https://registry.npmjs.org"
