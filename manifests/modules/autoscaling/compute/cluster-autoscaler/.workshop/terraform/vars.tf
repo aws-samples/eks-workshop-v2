@@ -45,5 +45,5 @@ variable "cluster_autoscaler_chart_version" {
   description = "The chart version of cluster-autoscaler to use"
   type        = string
   # renovate-helm: depName=cluster-autoscaler registryUrl=https://kubernetes.github.io/autoscaler
-  default = "9.51.0"
+  default = "9.55.0"
 }
