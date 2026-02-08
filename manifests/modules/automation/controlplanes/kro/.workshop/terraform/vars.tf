@@ -45,5 +45,5 @@ variable "kro_version" {
   description = "The version of Kro to use"
   type        = string
   # renovate: datasource=github-releases depName=kro-run/kro
-  default = "0.4.1"
+  default = "0.8.4"
 }
