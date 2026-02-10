@@ -9,7 +9,7 @@ The [Amazon Elastic File System Container Storage Interface (CSI) Driver](https:
 
 The following architecture diagram illustrates how we will use EFS as persistent storage for our EKS pods:
 
-![Assets with EFS](./assets/efs-storage.webp)
+![Assets with EFS](/docs/fundamentals/storage/efs/efs-storage.webp)
 
 To utilize Amazon EFS with dynamic provisioning on our EKS cluster, we first need to confirm that we have the EFS CSI Driver installed. The driver implements the CSI specification which allows container orchestrators to manage Amazon EFS file systems throughout their lifecycle.
 

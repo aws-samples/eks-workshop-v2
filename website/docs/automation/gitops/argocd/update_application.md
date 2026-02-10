@@ -42,7 +42,7 @@ $ argocd app wait ui --timeout 120
 
 After synchronization completes, the UI deployment should now have 3 pods running:
 
-![argocd-update-application](assets/argocd-update-application.webp)
+![argocd-update-application](/docs/automation/gitops/argocd/argocd-update-application.webp)
 
 To verify that our update was successful, let's check the deployment and pod status:
 

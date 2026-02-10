@@ -110,10 +110,10 @@ In Kubernetes, an Admission Controller is a piece of code that intercepts reques
 
 In the flow below, [mutating and validating dynamic admission controllers](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/), a.k.a. admission webhooks, are integrated to the Kubernetes API server request flow, via webhooks. These webhooks call out to services, configured to respond to certain types of API server requests. For example, you can use webhooks to configure dynamic admission controllers to validate that containers in a Pod are running as non-root users, or containers are sourced from trusted registries.
 
-![Kubernetes admission controllers](assets/k8s-admission-controllers.webp)
+![Kubernetes admission controllers](/docs/security/pod-security-standards/k8s-admission-controllers.webp)
 
 ### Using PSA and PSS
 
 PSA enforces the policies outlined in PSS, and the PSS policies define a set of Pod security profiles. In the diagram below, we outline how PSA and PSS work together, with Pods and Namespaces, to define Pod security profiles and apply admission control based on those profiles. As seen in the diagram below, the PSA enforcement modes and PSS policies are defined as labels in the target Namespaces.
 
-![PSS and PSA](assets/using-pss-psa.webp)
+![PSS and PSA](/docs/security/pod-security-standards/using-pss-psa.webp)

@@ -20,7 +20,7 @@ Whether you're using On-demand or Spot instances, AWS offers 3 processor types f
 
 Graviton-based instances can be identified by the letter `g` in the Processor family section of the [Instance type naming convention](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#instance-type-names).
 
-![Instance type naming convention](assets/instance-type-name.webp)
+![Instance type naming convention](/docs/fundamentals/compute/managed-node-groups/graviton/instance-type-name.webp)
 
 AWS Graviton processors are built on the [AWS Nitro System](https://aws.amazon.com/ec2/nitro/?p=pm&pd=graviton&z=3). AWS built the AWS Nitro System to deliver practically all of the compute and memory resources of the host hardware to your instances. This is achieved by breaking apart the hypervisor functions and management capabilities from the hosts and offloading them to dedicated hardware and software. This results in better overall performance, unlike traditional virtualization platforms that run the hypervisor software on the same physical host as the virtual machines which means the virtual machines cannot utilize 100% of the host’s resources. AWS Nitro System are supported by popular Linux operating systems along with many popular applications and services from AWS and Independent Software Vendors.
 
@@ -34,7 +34,7 @@ Graviton processors enhance the EKS experience for managed node groups with inst
 
 Adding Graviton-based instances to your EKS managed node group introduces a multi-architecture infrastructure and the need for your application to run on different CPUs. This means your application code needs to be available in different Instruction Set Architecture (ISA) implementations. There are various resources to help teams plan and port applications to Graviton-based instances. Check out [Graviton adoption plan](https://pages.awscloud.com/rs/112-TZM-766/images/Graviton%20Challenge%20Plan.pdf) and [Porting Advisor for Graviton](https://github.com/aws/porting-advisor-for-graviton) for useful resources.
 
-![EKS Managed Node Group with Graviton Processor](assets/eks-graviton.webp)
+![EKS Managed Node Group with Graviton Processor](/docs/fundamentals/compute/managed-node-groups/graviton/eks-graviton.webp)
 
 :::tip
 The [retail store sample web application](https://github.com/aws-containers/retail-store-sample-app/tree/main#application-architecture) architecture contains [pre-built container images for both x86-64 and ARM64 CPU architectures](https://gallery.ecr.aws/aws-containers/retail-store-sample-ui).

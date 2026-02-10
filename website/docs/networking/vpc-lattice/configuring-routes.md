@@ -79,7 +79,7 @@ Kind:         HTTPRoute
 ```
 
 Now you can see the associated Service created in the [VPC Lattice console](https://console.aws.amazon.com/vpc/home#Services) under the Lattice resources.
-![CheckoutRoute Service](assets/checkoutroute.webp)
+![CheckoutRoute Service](/docs/networking/vpc-lattice/checkoutroute.webp)
 
 :::tip Traffic is now handled by Amazon VPC Lattice
 Amazon VPC Lattice can now automatically redirect traffic to this service from any source, including different VPCs! You can also take full advantage of other VPC Lattice [features](https://aws.amazon.com/vpc/lattice/features/).

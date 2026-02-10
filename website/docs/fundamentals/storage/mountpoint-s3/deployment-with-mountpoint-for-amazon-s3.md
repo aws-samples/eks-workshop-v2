@@ -200,7 +200,7 @@ http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/asse
 Visit the URL in your browser:
 
 <Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96b...">
-<img src={require('./assets/placeholder.jpg').default}/>
+<img src={require('@site/static/docs/fundamentals/storage/mountpoint-s3/placeholder.jpg').default}/>
 </Browser>
 
 With that, we've successfully demonstrated how we can use Mountpoint for Amazon S3 for persistent shared storage for workloads running on EKS.

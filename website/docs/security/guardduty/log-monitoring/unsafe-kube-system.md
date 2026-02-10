@@ -24,19 +24,19 @@ $ kubectl -n kube-system exec nginx -- pwd
 
 Within a few minutes we'll see the finding `Execution:Kubernetes/ExecInKubeSystemPod` in the [GuardDuty Findings console](https://console.aws.amazon.com/guardduty/home#/findings)
 
-![Exec finding](assets/exec-finding.webp)
+![Exec finding](/docs/security/guardduty/log-monitoring/exec-finding.webp)
 
 If you click on the finding, it will open a tab in the right side of the screen, with the finding details, and a brief explanation about it.
 
-![Finding details](assets/finding-details.webp)
+![Finding details](/docs/security/guardduty/log-monitoring/finding-details.webp)
 
 It also gives you the option to investigate the finding using Amazon Detective.
 
-![Investigate finding](assets/investigate.webp)
+![Investigate finding](/docs/security/guardduty/log-monitoring/investigate.webp)
 
 Check the **Action** of the finding, where we can see that is related to a `KUBERNETES_API_CALL`.
 
-![Finding action](assets/finding-action.webp)
+![Finding action](/docs/security/guardduty/log-monitoring/finding-action.webp)
 
 Clean up the offending Pod we used to generate the finding:
 

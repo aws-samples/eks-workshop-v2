@@ -36,7 +36,7 @@ kubernetes-dashboard        LoadBalancer   172.20.218.132   ad0fbc5914a2c4d1baa8
 
 If you go back to the [GuardDuty Findings console](https://console.aws.amazon.com/guardduty/home#/findings), you will see the finding `Policy:Kubernetes/ExposedDashboard`. Again use sometime to analyze the Finding details, Action, and Detective Investigation.
 
-![Exposed dashboard finding](assets/exposed-dashboard.webp)
+![Exposed dashboard finding](/docs/security/guardduty/log-monitoring/exposed-dashboard.webp)
 
 Uninstall the Kubernetes dashboard components running the following command:
 

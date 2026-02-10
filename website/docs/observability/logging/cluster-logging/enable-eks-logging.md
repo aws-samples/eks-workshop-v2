@@ -11,12 +11,12 @@ Let's take a look this configuration in the EKS console:
 
 The **Logging** tab shows the current configuration for control plane logs for the cluster:
 
-![EKS Console Observability Tab](./assets/logging-cluster-observability-tab.webp)
-![EKS Console Control Plane Tab](./assets/logging-cluster-control-plane-logging-tab.webp)
+![EKS Console Observability Tab](/docs/observability/logging/cluster-logging/logging-cluster-observability-tab.webp)
+![EKS Console Control Plane Tab](/docs/observability/logging/cluster-logging/logging-cluster-control-plane-logging-tab.webp)
 
 You can alter the logging configuration by clicking the **Manage** button:
 
-![Enable Logging](./assets/logging-cluster-enable-control-plane-logging.webp)
+![Enable Logging](/docs/observability/logging/cluster-logging/logging-cluster-enable-control-plane-logging.webp)
 
 You can also enable EKS control plane logs on a per-cluster basis through the EKS API. This will often be configured using Terraform or CloudFormation, but in this lab we can use the AWS CLI to enable the functionality:
 
@@ -52,11 +52,11 @@ Let's take a look this configuration in the EKS console:
 
 The **Logging** tab shows the current configuration for control plane logs for the cluster:
 
-![EKS Console Logging Tab](./assets/logging-cluster-logging-tab.webp)
+![EKS Console Logging Tab](/docs/observability/logging/cluster-logging/logging-cluster-logging-tab.webp)
 
 You can alter the logging configuration by clicking the **Manage** button:
 
-![Enable Logging](./assets/logging-cluster-enable-logging.webp)
+![Enable Logging](/docs/observability/logging/cluster-logging/logging-cluster-enable-logging.webp)
 
 :::info
 If you are using the CDK Observability Accelerator then check out the [CDK Observability Builder](https://aws-quickstart.github.io/cdk-eks-blueprints/builders/observability-builder/#supported-methods) which supports enabling all control plane logging features for EKS clusters and storing them in CloudWatch.

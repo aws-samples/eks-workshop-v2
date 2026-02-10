@@ -9,7 +9,7 @@ The [Amazon FSx for OpenZFS Container Storage Interface (CSI) Driver](https://gi
 
 The following architecture diagram illustrates how we will use FSx for OpenZFS as persistent storage for our EKS pods:
 
-![Assets with FSx for OpenZFS](./assets/fsxz-storage.webp)
+![Assets with FSx for OpenZFS](/docs/fundamentals/storage/fsx-for-openzfs/fsxz-storage.webp)
 
 To utilize Amazon FSx for OpenZFS with dynamic provisioning on our EKS cluster, we first need to confirm that we have the FSx for OpenZFS CSI Driver installed. The driver implements the CSI specification which allows container orchestrators to manage Amazon FSx for OpenZFS file systems and volumes throughout their lifecycle.
 

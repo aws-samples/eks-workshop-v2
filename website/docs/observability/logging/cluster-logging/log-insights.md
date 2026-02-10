@@ -11,7 +11,7 @@ In this lab exercise, we'll take a look at an example of using CloudWatch Log In
 
 You will be presented with a screen that looks like this:
 
-![log insights initial](./assets/log-insights-initial.webp)
+![log insights initial](/docs/observability/logging/cluster-logging/log-insights-initial.webp)
 
 A common use-case for CloudWatch Log Insights is to identify component within an EKS cluster that are making a high volume of requests to the Kubernetes API server. One way to do this is with the following query:
 
@@ -24,11 +24,11 @@ fields userAgent, requestURI, @timestamp, @message
 
 This query checks the Kubernetes audit logs and counts the number of API requests made grouped by `userAgent` and sorted them in descending order. In the Log Insights console select the log group for your EKS cluster:
 
-![log insights group](./assets/log-insights-group.webp)
+![log insights group](/docs/observability/logging/cluster-logging/log-insights-group.webp)
 
 Copy the query to the console and press **Run query**, which will return results:
 
-![log insights query](./assets/log-insights-query.webp)
+![log insights query](/docs/observability/logging/cluster-logging/log-insights-query.webp)
 
 This information can be invaluable to understand what components are sending requests to the API server.
 
