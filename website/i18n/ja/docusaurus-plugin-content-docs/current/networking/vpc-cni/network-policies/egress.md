@@ -1,7 +1,7 @@
 ---
 title: "出力コントロールの実装"
 sidebar_position: 70
-kiteTranslationSourceHash: d9e838177ba7cc164677650a914986e9
+tmdTranslationSourceHash: d9e838177ba7cc164677650a914986e9
 ---
 
 <img src={require('@site/static/img/sample-app-screens/architecture.webp').default}/>

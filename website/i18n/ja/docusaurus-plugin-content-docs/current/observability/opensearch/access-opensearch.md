@@ -1,12 +1,12 @@
 ---
 title: "OpenSearch へのアクセス"
 sidebar_position: 10
-kiteTranslationSourceHash: dda8fcb1a6f852aacc82c98eb76eada5
+tmdTranslationSourceHash: '61f8fdf6c627b4aa973c64ba2bba29bd'
 ---
 
-このセクションでは、AWS Systems Manager パラメータストアから OpenSearch の認証情報を取得し、Kubernetes イベントとポッドログ用の事前作成された OpenSearch ダッシュボードを読み込み、OpenSearch へのアクセスを確認します。
+このセクションでは、AWS Systems Manager Parameter Store から OpenSearch の認証情報を取得し、Kubernetes イベントとポッドログ用の事前作成された OpenSearch ダッシュボードを読み込み、OpenSearch へのアクセスを確認します。
 
-OpenSearch ドメインの認証情報はプロビジョニングプロセス中に AWS Systems Manager パラメータストアに保存されています。この情報を取得し、必要な環境変数を設定します。
+OpenSearch ドメインの認証情報はプロビジョニングプロセス中に AWS Systems Manager Parameter Store に保存されています。この情報を取得し、必要な環境変数を設定します。
 
 ```bash
 $ export OPENSEARCH_HOST=$(aws ssm get-parameter \
@@ -21,7 +21,7 @@ $ export OPENSEARCH_PASSWORD=$(aws ssm get-parameter \
 $ export OPENSEARCH_DASHBOARD_FILE=~/environment/eks-workshop/modules/observability/opensearch/opensearch-dashboards.ndjson
 ```
 
-Kubernetes イベントとポッドログを表示するための事前作成された OpenSearch ダッシュボードを読み込みます。ダッシュボードは[こちらのファイル](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/opensearch-dashboards.ndjson)で利用可能で、Kubernetes イベントとポッドログ用の OpenSearch インデックスパターン、視覚化、ダッシュボードが含まれています。
+Kubernetes イベントとポッドログを表示するための事前作成された OpenSearch ダッシュボードを読み込みます。ダッシュボードは[このファイル](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/opensearch-dashboards.ndjson)で利用可能で、Kubernetes イベントとポッドログ用の OpenSearch インデックスパターン、視覚化、ダッシュボードが含まれています。
 
 ```bash
 $ curl -s https://$OPENSEARCH_HOST/_dashboards/auth/login \
@@ -74,13 +74,12 @@ Password: <password>
 
 上記の OpenSearch ダッシュボード URL にブラウザでアクセスし、認証情報を使用してログインします。
 
-![OpenSearch ログイン](./assets/opensearch-login.webp)
+![OpenSearch ログイン](/docs/observability/opensearch/opensearch-login.webp)
 
 以下のように Global テナントを選択します。OpenSearch のテナントは、インデックスパターン、視覚化、ダッシュボードなどのリソースを安全に共有するために使用できます。
 
-![OpenSearch ログイン確認](./assets/opensearch-confirm-2.webp)
+![OpenSearch ログイン確認](/docs/observability/opensearch/opensearch-confirm-2.webp)
 
-先ほどのステップで読み込まれた 2 つのダッシュボード（Kubernetes イベントとポッドログ用）が表示されるはずです。現時点では OpenSearch にデータがないため、ダッシュボードは空になっています。このブラウザタブを開いたままにするか、ダッシュボードの URL を保存してください。次のセクションでダッシュボードに戻ります。
+先ほどのステップで読み込まれた 2 つのダッシュボード(Kubernetes イベントとポッドログ用)が表示されるはずです。現時点では OpenSearch にデータがないため、ダッシュボードは空になっています。このブラウザタブを開いたままにするか、ダッシュボードの URL を保存してください。次のセクションでダッシュボードに戻ります。
 
-![OpenSearch ログイン確認](./assets/opensearch-dashboard-launch.webp)
-
+![OpenSearch ログイン確認](/docs/observability/opensearch/opensearch-dashboard-launch.webp)

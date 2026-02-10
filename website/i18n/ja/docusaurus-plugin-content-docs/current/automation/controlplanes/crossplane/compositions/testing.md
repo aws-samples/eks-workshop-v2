@@ -1,7 +1,7 @@
 ---
 title: "アプリケーションのテスト"
 sidebar_position: 40
-kiteTranslationSourceHash: 411ce978a57e7a45fb64223d34c44059
+tmdTranslationSourceHash: 411ce978a57e7a45fb64223d34c44059
 ---
 
 Crossplane Compositionsを使用してDynamoDBテーブルをプロビジョニングしたので、アプリケーションが新しいテーブルで正しく動作することを確認するためにテストを行いましょう。
@@ -22,7 +22,7 @@ $ echo "http://$LB_HOSTNAME"
 http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 ```
 
-このURLをWebブラウザにコピーしてアプリケーションにアクセスできるようになりました。ユーザーのように、Webストアのユーザーインターフェイスを見ることができます。
+このURLをWebブラウザにコピーしてアプリケーションにアクセスできるようになりました。Webストアのユーザーインターフェイスが表示され、ユーザーとしてサイトを閲覧できます。
 
 <Browser url="http://k8s-ui-uinlb-a9797f0f61.elb.us-west-2.amazonaws.com">
 <img src={require('@site/static/img/sample-app-screens/home.webp').default}/>

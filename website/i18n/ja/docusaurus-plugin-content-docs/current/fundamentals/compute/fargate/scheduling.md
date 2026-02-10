@@ -1,7 +1,7 @@
 ---
 title: Fargate でのスケジューリング
 sidebar_position: 12
-kiteTranslationSourceHash: 8326843c164fc6ba07cea47a038eb4b5
+tmdTranslationSourceHash: 8326843c164fc6ba07cea47a038eb4b5
 ---
 
 なぜ `checkout` サービスはまだ Fargate で実行されていないのでしょうか？そのラベルを確認してみましょう：
@@ -70,4 +70,3 @@ Labels:             beta.kubernetes.io/arch=amd64
 - ラベル `eks.amazonaws.com/compute-type` は、Fargate インスタンスがプロビジョニングされたことを確認しています
 - 別のラベル `topology.kubernetes.io/zone` は、Pod が実行されているアベイラビリティーゾーンを指定しています
 - `System Info` セクション（上記には表示されていません）では、インスタンスが Amazon Linux 2 を実行していること、および `container`、`kubelet`、`kube-proxy` などのシステムコンポーネントのバージョン情報を確認できます
-

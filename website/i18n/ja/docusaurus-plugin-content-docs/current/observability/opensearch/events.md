@@ -1,12 +1,12 @@
 ---
 title: "Kubernetes events"
 sidebar_position: 20
-kiteTranslationSourceHash: 31fdbe8ec415e4602c4eb82163955c8e
+tmdTranslationSourceHash: de16c946bdfd80806217ce9be94d04da
 ---
 
 このセクションでは、Kubernetes イベントを OpenSearch にエクスポートし、OpenSearch を使用して EKS クラスターの可観測性を向上させる方法を示します。Kubernetes [events exporter](https://github.com/resmoio/kubernetes-event-exporter) をデプロイして OpenSearch にイベントを転送し、テストワークロードを作成して追加の Kubernetes イベントを生成し、OpenSearch Kubernetes イベントダッシュボードを探索して問題を特定し、オプションで Kubernetes クラスター内のイベントを調査します。
 
-[Kubernetes Events](https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1/) は、アプリケーションとクラスターの状態を監視し、障害に対応し、診断を実行するために使用できる豊富な情報源を提供します。イベントは一般的に何らかの状態変化を示します。例えば、ポッドの作成、レプリカの追加、リソースのスケジューリングなどです。各イベントには `type` フィールドが含まれており、成功または失敗を示すために Normal または Warning に設定されています。
+[Kubernetes Events](https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1/) は、アプリケーションとクラスターの状態を監視し、障害に対応し、診断を実行するために使用できる豊富な情報源を提供します。イベントは一般的に何らかの状態変化を示します。例えば、Pod の作成、レプリカの追加、リソースのスケジューリングなどです。各イベントには `type` フィールドが含まれており、成功または失敗を示すために Normal または Warning に設定されています。
 
 リソースに対して `kubectl describe` を実行したことがあれば、既に Kubernetes イベントを扱ったことがあります。以下に示すように、`kubectl describe` の出力の最後のセクションには、リソースに関連する Kubernetes イベントが表示されます。
 
@@ -25,11 +25,11 @@ Events:
 
 Kubernetes イベントは継続的に生成されますが、クラスター内に保持されるのは1時間のみです。この保持期間は、Kubernetes アップストリームのデフォルトイベント存続時間（TTL）60分と一致しています。OpenSearch は、これらのイベントの収集、分析、視覚化を簡素化する永続的なストアを提供します。
 
-次の図は、このセクションのセットアップの概要を示しています。`kubernetes-events-exporter` は `opensearch-exporter` 名前空間にデプロイされ、OpenSearch ドメインにイベントを転送するように構成されます。イベントは OpenSearch の `eks-kubernetes-events` インデックスに保存されます。以前にロードした OpenSearch ダッシュボードを使用してイベントを視覚化します。
+次の図は、このセクションのセットアップの概要を示しています。`kubernetes-events-exporter` は `opensearch-exporter` Namespace にデプロイされ、OpenSearch ドメインにイベントを転送するように構成されます。イベントは OpenSearch の `eks-kubernetes-events` インデックスに保存されます。以前にロードした OpenSearch ダッシュボードを使用してイベントを視覚化します。
 
-![Kubernetes events to OpenSearch](./assets/eks-events-overview.webp)
+![Kubernetes events to OpenSearch](/docs/observability/opensearch/eks-events-overview.webp)
 
-Kubernetes イベントエクスポーターをデプロイし、OpenSearch ドメインにイベントを送信するように構成します。基本構成は[こちら](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/config/events-exporter-values.yaml)で入手できます。以前に取得した OpenSearch 認証情報を使用してエクスポーターを構成します。2番目のコマンドは、Kubernetes イベントポッドが実行されていることを確認します。
+Kubernetes イベントエクスポーターをデプロイし、OpenSearch ドメインにイベントを送信するように構成します。基本構成は[こちら](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/config/events-exporter-values.yaml)で入手できます。以前に取得した OpenSearch 認証情報を使用してエクスポーターを構成します。2番目のコマンドは、Kubernetes イベント Pod が実行されていることを確認します。
 
 ```bash timeout=120 wait=30
 $ helm install events-to-opensearch \
@@ -51,7 +51,7 @@ NAME                                                              READY   STATUS
 events-to-opensearch-kubernetes-event-exporter-67fc698978-2f9wc   1/1     Running   0             10s
 ```
 
-次に、`scenario-a, scenario-b および scenario-c` というラベル付けされた3つのデプロイメントを `test` 名前空間内で起動して、`Normal` および `Warning` イベントを示すための追加の Kubernetes イベントを生成します。各デプロイメントには意図的にエラーが含まれています。
+次に、`scenario-a, scenario-b および scenario-c` というラベル付けされた3つの Deployment を `test` Namespace 内で起動して、`Normal` および `Warning` イベントを示すための追加の Kubernetes イベントを生成します。各 Deployment には意図的にエラーが含まれています。
 
 ```bash
 $ kubectl apply -k ~/environment/eks-workshop/modules/observability/opensearch/scenarios/events/base
@@ -86,42 +86,42 @@ Password: <password>
 2. [上部セクション] イベントの日付ヒストグラム（Normal と Warning イベントに分けられています）
 3. [中央セクション] Kubernetes イベントは、イベントの総数（Normal と Warning）を表示します
 4. [中央セクション] 選択した時間間隔で見られた Warning イベント
-5. [中央セクション] 名前空間別に分類された警告。この例ではすべての警告が `test` 名前空間にあります
+5. [中央セクション] Namespace 別に分類された警告。この例ではすべての警告が `test` Namespace にあります
 6. [下部セクション] 最新のイベントを最初に表示した詳細なイベントとメッセージ
 
-![Kubernetes Events dashboard](./assets/events-dashboard.webp)
+![Kubernetes Events dashboard](/docs/observability/opensearch/events-dashboard.webp)
 
 次の画像は、イベントの詳細を含む下部セクションに焦点を当てています：
 
 1. イベントの最終タイムスタンプ
 1. イベントタイプ（normal または warning）。フィールドの上にマウスを置くと、その値でフィルタリングできるようになります（例：Warning イベントでフィルタリング）
-1. Kubernetes リソースの名前（オブジェクトタイプと名前空間を含む）
+1. Kubernetes リソースの名前（オブジェクトタイプと Namespace を含む）
 1. 人間が読みやすいメッセージ
 
-![Kubernetes Events debugging](./assets/events-debug.webp)
+![Kubernetes Events debugging](/docs/observability/opensearch/events-debug.webp)
 
 以下の画像のように、イベントの全詳細を掘り下げることができます：
 
 1. 各イベントの横にある '>' をクリックすると、新しいセクションが開きます
-1. 完全なイベントドキュメントは、テーブルまたはJSON形式で表示できます
+1. 完全なイベントドキュメントは、テーブルまたは JSON 形式で表示できます
 
 Kubernetes イベント内のデータフィールドの説明は、[kubernetes.io](https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1)で見つけるか、`kubectl explain events` を実行することで確認できます。
 
-![Kubernetes Events detail](./assets/events-detail.webp)
+![Kubernetes Events detail](/docs/observability/opensearch/events-detail.webp)
 
-Kubernetes イベントダッシュボードを使用して、3つのデプロイメント（`scenario-a, scenario-b および scenario-c`）が問題を経験している理由を特定できます。以前にデプロイしたすべてのポッドは `test` 名前空間にあります。
+Kubernetes イベントダッシュボードを使用して、3つの Deployment（`scenario-a, scenario-b および scenario-c`）が問題を経験している理由を特定できます。以前にデプロイしたすべての Pod は `test` Namespace にあります。
 
-**scenario-a:** ダッシュボードから、`scenario-a` には `FailedMount` の理由があり、メッセージは `MountVolume.SetUp failed for volume "secret-volume" : secret "misspelt-secret-name" not found` です。ポッドは存在しないシークレットをマウントしようとしています。
+**scenario-a:** ダッシュボードから、`scenario-a` には `FailedMount` の理由があり、メッセージは `MountVolume.SetUp failed for volume "secret-volume" : secret "misspelt-secret-name" not found` です。Pod は存在しない Secret をマウントしようとしています。
 
-![Answer for scenario-a](./assets/scenario-a.webp)
+![Answer for scenario-a](/docs/observability/opensearch/scenario-a.webp)
 
-**scenario-b:** `scenario-b` は `Failed to pull image "wrong-image": rpc error: code = Unknown desc = failed to pull and unpack image "docker.io/library/wrong-image:latest": failed to resolve reference "docker.io/library/wrong-image:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed.` というメッセージで失敗しています。ポッドは存在しないイメージを参照しているため作成されていません。
+**scenario-b:** `scenario-b` は `Failed to pull image "wrong-image": rpc error: code = Unknown desc = failed to pull and unpack image "docker.io/library/wrong-image:latest": failed to resolve reference "docker.io/library/wrong-image:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed.` というメッセージで失敗しています。Pod は存在しないイメージを参照しているため作成されていません。
 
-![Answer for scenario-b](./assets/scenario-b.webp)
+![Answer for scenario-b](/docs/observability/opensearch/scenario-b.webp)
 
-**scenario-c:** ダッシュボードには `FailedScheduling` の理由があり、メッセージは `0/3 nodes are available: 3 Insufficient cpu. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.` です。このデプロイメントは、現在のクラスターノードが提供できる以上の CPU を要求しています。（EKS ワークショップのこのモジュールではクラスターオートスケーリング機能が有効になっていません。）
+**scenario-c:** ダッシュボードには `FailedScheduling` の理由があり、メッセージは `0/3 nodes are available: 3 Insufficient cpu. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.` です。この Deployment は、現在のクラスターノードが提供できる以上の CPU を要求しています。（EKS ワークショップのこのモジュールではクラスターオートスケーリング機能が有効になっていません。）
 
-![Answer for scenario-c](./assets/scenario-c.webp)
+![Answer for scenario-c](/docs/observability/opensearch/scenario-c.webp)
 
 問題を修正し、OpenSearch ダッシュボードを再訪して変更を確認します。
 
@@ -134,10 +134,10 @@ deployment.apps/scenario-b configured
 deployment.apps/scenario-c configured
 ```
 
-OpenSearch ダッシュボードに戻り、以前の問題が解決されたことを確認します。更新されたデプロイメントは成功する新しいポッドを起動し、以前に作成されたポッド（エラーあり）は削除されます。
+OpenSearch ダッシュボードに戻り、以前の問題が解決されたことを確認します。更新された Deployment は成功する新しい Pod を起動し、以前に作成された Pod（エラーあり）は削除されます。
 
 :::tip
-問題が修正されると、新しい一連の Normal Kubernetes イベントが生成されます。以前のイベント（Normal または Warning）は履歴の一部として残ります。したがって、Normal と Warning イベントの数は常に_増加_します。
+問題が修正されると、新しい一連の Normal Kubernetes イベントが生成されます。以前のイベント（Normal または Warning）は履歴の一部として残ります。したがって、Normal と Warning イベントの数は常に*増加*します。
 :::
 
 オプションで、EKS クラスター内から Kubernetes イベントを調査できます。OpenSearch ダッシュボード内で調査していたイベントは、クラスター内で利用できる情報を反映しています。
@@ -165,7 +165,7 @@ test        6m28s       Warning   Failed             pod/scenario-b-cff56c84-xn9
 
 ```
 
-最新のイベント（すべての名前空間にわたる）をJSON形式で確認します。出力が OpenSearch インデックス内で見つかった詳細と非常に似ていることに注目してください。（OpenSearch ドキュメントには、OpenSearch 内のインデックス作成を容易にするための追加フィールドがあります）。
+最新のイベント（すべての Namespace にわたる）を JSON 形式で確認します。出力が OpenSearch インデックス内で見つかった詳細と非常に似ていることに注目してください。（OpenSearch ドキュメントには、OpenSearch 内のインデックス作成を容易にするための追加フィールドがあります）。
 
 ```bash
 $ kubectl get events --sort-by='.lastTimestamp' -o json -A | jq '.items[-1]'
@@ -201,4 +201,3 @@ $ kubectl get events --sort-by='.lastTimestamp' -o json -A | jq '.items[-1]'
   "type": "Normal"
 }
 ```
-

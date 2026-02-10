@@ -1,7 +1,7 @@
 ---
 title: "高度なトラブルシューティング"
 sidebar_position: 23
-kiteTranslationSourceHash: b2128fa90940138d820b4fbf911c468c
+tmdTranslationSourceHash: b2128fa90940138d820b4fbf911c468c
 ---
 
 このセクションでは、Amazon Q CLIと[Amazon EKS用のMCPサーバー](https://awslabs.github.io/mcp/servers/eks-mcp-server/)を使用して、Kubernetes、EKS、その他のAWSサービスの知識がなければ解決が困難なEKSクラスターの複雑な問題をトラブルシューティングします。
@@ -154,4 +154,3 @@ carts-dynamodb-698fcb695f-zvzf5   1/1     Running   0          2d1h
 ```
 
 これでAmazon Q CLIの紹介を終了します。この強力なツールが、EKS用のMCPサーバーと組み合わせることで、EKSクラスターの複雑な問題を診断し解決するのにどのように役立つかを確認しました。
-

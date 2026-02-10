@@ -1,7 +1,7 @@
 ---
 title: eksctlを使用する
 sidebar_position: 20
-kiteTranslationSourceHash: 64bca6c359b7e98745bbfb3b91d91197
+tmdTranslationSourceHash: 64bca6c359b7e98745bbfb3b91d91197
 ---
 
 このセクションでは、[eksctlツール](https://eksctl.io/)を使用してラボ演習用のクラスターを構築する方法を説明します。これは開始するための最も簡単な方法であり、ほとんどの学習者におすすめです。

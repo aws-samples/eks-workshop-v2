@@ -3,7 +3,7 @@ title: "コントロールプレーンログ"
 sidebar_position: 10
 sidebar_custom_props: { "module": true }
 description: "監査と診断のために Amazon Elastic Kubernetes Service コントロールプレーンログをキャプチャし分析します。"
-kiteTranslationSourceHash: 8fb3e741f3feb886f47f3087641060bf
+tmdTranslationSourceHash: 8fb3e741f3feb886f47f3087641060bf
 ---
 
 ::required-time
@@ -30,4 +30,3 @@ Amazon EKSコントロールプレーンロギングを使用すると、実行�
 - **認証機能（authenticator）** – 認証機能ログはAmazon EKSに固有のものです。これらのログは、Amazon EKSがIAM認証情報を使用してKubernetes [ロールベースアクセス制御](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)（RBAC）認証に使用するコントロールプレーンコンポーネントを表します。
 - **コントローラーマネージャー（controllerManager）** – コントローラーマネージャーはKubernetesに付属するコアコントロールループを管理します。
 - **スケジューラー（scheduler）** – スケジューラーコンポーネントは、クラスター内のポッドがいつどこで実行されるかを管理します。
-

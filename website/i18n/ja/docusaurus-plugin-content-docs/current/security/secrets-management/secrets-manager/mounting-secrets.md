@@ -1,7 +1,7 @@
 ---
 title: "AWS Secrets Manager のシークレットを Kubernetes Pod にマウントする"
 sidebar_position: 423
-kiteTranslationSourceHash: 0b07d0bd4408ba68fee8d10501569a50
+tmdTranslationSourceHash: 0b07d0bd4408ba68fee8d10501569a50
 ---
 
 AWS Secrets Manager のシークレットを保存し、Kubernetes のシークレットと同期したので、そのシークレットを Pod の中にマウントしてみましょう。まず、`catalog` デプロイメントと `catalog` 名前空間に存在するシークレットを確認しましょう。
@@ -94,7 +94,7 @@ CSI ドライバーを使用して AWS Secrets Manager からシークレット�
 
 1. AWS シークレットの名前を持つファイルで、完全な JSON 値が含まれます
 2. SecretProviderClass で定義された jmesPath 式を通じて抽出された各キーの個別ファイル
-:::
+   :::
 
 環境変数は、CSI Secret Store ドライバーを介して SecretProviderClass によって自動的に作成された `catalog-secret` から取得されるようになりました：
 
@@ -128,4 +128,3 @@ RETAIL_CATALOG_PERSISTENCE_USER=catalog
 ```
 
 これで AWS Secrets Manager と完全に統合された Kubernetes シークレットがあり、シークレット管理のベストプラクティスであるシークレットのローテーションを活用できます。AWS Secrets Manager でシークレットがローテーションまたは更新されると、デプロイメントの新しいバージョンをロールアウトして、CSI Secret Store ドライバーが Kubernetes シークレットの内容を更新された値と同期できるようにすることができます。
-

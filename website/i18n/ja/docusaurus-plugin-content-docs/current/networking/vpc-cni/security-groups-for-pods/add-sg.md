@@ -2,7 +2,7 @@
 title: "セキュリティグループの適用"
 sidebar_position: 40
 hide_table_of_contents: true
-kiteTranslationSourceHash: 2752d62a54e6d0a42b309d5b63b025c2
+tmdTranslationSourceHash: 2752d62a54e6d0a42b309d5b63b025c2
 ---
 
 カタログPodがRDSインスタンスに正常に接続するためには、正しいセキュリティグループを使用する必要があります。このセキュリティグループはEKSワーカーノード自体に適用することもできますが、これによりクラスター内のどのワークロードでもRDSインスタンスへのネットワークアクセスが可能になってしまいます。代わりに、Podのセキュリティグループを使用して、特定のカタログPodのみがRDSインスタンスにアクセスできるようにします。

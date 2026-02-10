@@ -1,12 +1,12 @@
 ---
 title: "ACKリソースのプロビジョニング"
 sidebar_position: 5
-kiteTranslationSourceHash: bb50816c222887d853906f58febc41e8
+tmdTranslationSourceHash: 0aa3b23424b499ac70a2cbc57fa49081
 ---
 
 デフォルトでは、サンプルアプリケーションの**Carts**コンポーネントは、EKSクラスター内でポッドとして実行されている`carts-dynamodb`というDynamoDBローカルインスタンスを使用しています。このセクションでは、Kubernetesカスタムリソースを使用してアプリケーション用のAmazon DynamoDBクラウドベーステーブルをプロビジョニングし、**Carts**デプロイメントをローカルコピーの代わりにこの新しくプロビジョニングされたDynamoDBテーブルを使用するように構成します。
 
-![ACK reconciler concept](./assets/ack-desired-current-ddb.webp)
+![ACK reconciler concept](/docs/automation/controlplanes/ack/ack-desired-current-ddb.webp)
 
 Kubernetesマニフェストを使用してDynamoDBテーブルを作成する方法を見てみましょう：
 

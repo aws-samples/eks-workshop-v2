@@ -1,7 +1,7 @@
 ---
 title: "ImagePullBackOff - ECRプライベートイメージ"
 sidebar_position: 71
-kiteTranslationSourceHash: b5a2b92141292b8a19d14b5994f180d1
+tmdTranslationSourceHash: b5a2b92141292b8a19d14b5994f180d1
 ---
 
 このセクションでは、ECRプライベートイメージに対するポッドのImagePullBackOffエラーをトラブルシューティングする方法を学びます。まず、デプロイメントが作成されたことを確認して、トラブルシューティングのシナリオを開始できるようにしましょう。

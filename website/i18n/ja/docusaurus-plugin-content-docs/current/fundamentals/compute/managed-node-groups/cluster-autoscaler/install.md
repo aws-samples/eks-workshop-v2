@@ -1,7 +1,7 @@
 ---
 title: "インストール"
 sidebar_position: 30
-kiteTranslationSourceHash: c490f55b166c1d32c68dfd6236322cb1
+tmdTranslationSourceHash: c490f55b166c1d32c68dfd6236322cb1
 ---
 
 まず、クラスターにcluster-autoscalerをインストールします。ラボの準備として、cluster-autoscalerが適切なAWS APIを呼び出すためのIAMロールがすでに作成されています。

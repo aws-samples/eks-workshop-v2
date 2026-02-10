@@ -1,7 +1,7 @@
 ---
 title: "ロードバランサーの作成"
 sidebar_position: 20
-kiteTranslationSourceHash: 10d2bea65be51068244e993bee3c0d60
+tmdTranslationSourceHash: 10d2bea65be51068244e993bee3c0d60
 ---
 
 以下の設定でロードバランサーをプロビジョニングする追加のServiceを作成しましょう：

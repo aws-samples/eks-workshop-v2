@@ -1,7 +1,7 @@
 ---
 title: EBS CSI ドライバー
 sidebar_position: 20
-kiteTranslationSourceHash: 3c32323a8b3db48e3736c40ecaef5fd5
+tmdTranslationSourceHash: 3c32323a8b3db48e3736c40ecaef5fd5
 ---
 
 このセクションに入る前に、[ストレージ](../index.md)のメインセクションで紹介されたKubernetesのストレージオブジェクト（ボリューム、永続ボリューム（PV）、永続ボリューム要求（PVC）、動的プロビジョニング、一時ストレージ）について理解しておいてください。

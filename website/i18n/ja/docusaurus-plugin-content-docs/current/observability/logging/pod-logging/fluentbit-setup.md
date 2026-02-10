@@ -1,22 +1,22 @@
 ---
 title: "Fluent Bitの使用"
 sidebar_position: 30
-kiteTranslationSourceHash: 4ba3eb49c0143e9ee930496bed33c9e6
+tmdTranslationSourceHash: 97df5abbfec6a9f9822044e8d381f7b2
 ---
 
-Kubernetes クラスターコンポーネントのうち、ポッドで実行されるものは、デフォルトのロギングメカニズムをバイパスして `/var/log` ディレクトリ内のファイルに書き込みます。Fluent Bit などのノードレベルのロギングエージェントをDaemonSetとして各ノードにデプロイすることで、ポッドレベルのロギングを実装できます。
+Kubernetesクラスターコンポーネントのうち、Podで実行されるものは、デフォルトのロギングメカニズムをバイパスして `/var/log` ディレクトリ内のファイルに書き込みます。Fluent BitなどのノードレベルのロギングエージェントをDaemonSetとして各ノードにデプロイすることで、Podレベルのロギングを実装できます。
 
-[Fluent Bit](https://fluentbit.io/) は、軽量なログプロセッサおよびフォワーダーであり、さまざまなソースからデータとログを収集し、フィルターで強化してCloudWatch、Kinesis Data Firehose、Kinesis Data Streams、Amazon OpenSearch Serviceなど複数の宛先に送信することができます。
+[Fluent Bit](https://fluentbit.io/)は、軽量なログプロセッサおよびフォワーダーであり、さまざまなソースからデータとログを収集し、フィルターで強化してCloudWatch、Kinesis Data Firehose、Kinesis Data Streams、Amazon OpenSearch Serviceなど複数の宛先に送信することができます。
 
 AWSはCloudWatch LogsとKinesis Data Firehose用のプラグインを備えたFluent Bitイメージを提供しています。[AWS for Fluent Bit](https://github.com/aws/aws-for-fluent-bit)イメージは[Amazon ECR Public Gallery](https://gallery.ecr.aws/aws-observability/aws-for-fluent-bit)で入手できます。
 
 Fluent Bitは様々な宛先にログを送信するために使用できます。ただし、このラボでは、コンテナログをCloudWatchに送信するためにどのように活用されているかを見ていきます。
 
-![Fluent-bit アーキテクチャ](./assets/fluentbit-architecture.webp)
+![Fluent-bitアーキテクチャ](/docs/observability/logging/pod-logging/fluentbit-architecture.webp)
 
-以下のセクションでは、Fluent BitエージェントがすでにDaemonSetとして実行され、コンテナ/ポッドログをCloudWatch Logsに送信していることを検証する方法を説明します。[コンテナからCloudWatch Logsにログを送信するためにFluent Bitをデプロイする方法](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-logs-FluentBit.html#Container-Insights-FluentBit-troubleshoot)についての詳細をご覧ください。
+以下のセクションでは、Fluent BitエージェントがすでにDaemonSetとして実行され、コンテナ/PodログをCloudWatch Logsに送信していることを検証する方法を説明します。[コンテナからCloudWatch LogsにログヹSUを送信するためにFluent Bitをデプロイする方法](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-logs-FluentBit.html#Container-Insights-FluentBit-troubleshoot)についての詳細をご覧ください。
 
-まず、次のコマンドを入力して、Fluent Bit用に作成されたリソースを検証できます。各ノードには1つのポッドが必要です：
+まず、次のコマンドを入力して、Fluent Bit用に作成されたリソースを検証できます。各ノードには1つのPodが必要です：
 
 ```bash hook=get-all
 $ kubectl get all -n kube-system -l app.kubernetes.io/name=aws-for-fluent-bit
@@ -32,7 +32,7 @@ NAME                                DESIRED   CURRENT   READY   UP-TO-DATE   AVA
 daemonset.apps/aws-for-fluent-bit   3         3         3       3            3           <none>          96s
 ```
 
-aws-for-fluent-bitのConfigMapは、各ノードから`/var/log/containers/*.log`ディレクトリ内のファイルの内容をCloudWatchロググループ`/eks-workshop/worker-fluentbit-logs`にストリーミングするように設定されています：
+aws-for-fluent-bitのConfigMapは、各ノードから `/var/log/containers/*.log` ディレクトリ内のファイルの内容をCloudWatchロググループ `/eks-workshop/worker-fluentbit-logs` にストリーミングするように設定されています：
 
 ```bash hook=desc-cm
 $ kubectl describe configmap -n kube-system -l app.kubernetes.io/name=aws-for-fluent-bit
@@ -88,7 +88,7 @@ fluent-bit.conf:
 ...
 ```
 
-`kubectl logs`コマンドを使用してFluent BitポッドのログをチェックしてみましょU。サービスの新しいCloudWatchロググループとストリームが作成されるのが確認できます。
+`kubectl logs`コマンドを使用してFluent BitのPodログをチェックしてみましょう。サービスの新しいCloudWatchロググループとストリームが作成されるのが確認できます。
 
 ```bash hook=pods-log
 $ kubectl logs daemonset.apps/aws-for-fluent-bit -n kube-system

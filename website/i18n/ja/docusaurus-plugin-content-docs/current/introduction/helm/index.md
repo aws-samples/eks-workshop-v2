@@ -2,7 +2,7 @@
 title: Helm
 sidebar_custom_props: { "module": true }
 sidebar_position: 50
-kiteTranslationSourceHash: 5f7ef990a504bc7200491f65c8407b7a
+tmdTranslationSourceHash: 5f7ef990a504bc7200491f65c8407b7a
 ---
 
 ::required-time

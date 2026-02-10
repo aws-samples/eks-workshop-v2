@@ -1,7 +1,7 @@
 ---
 title: "はじめに"
 sidebar_position: 3
-kiteTranslationSourceHash: c50b1ee6030afba367dfa41a583f4641
+tmdTranslationSourceHash: c50b1ee6030afba367dfa41a583f4641
 ---
 
 各ACKサービスコントローラーは、個々のACKサービスコントローラーに対応するパブリックリポジトリで公開される別々のコンテナイメージにパッケージ化されています。プロビジョニングしたいAWSサービスごとに、対応するコントローラーのリソースをAmazon EKSクラスターにインストールする必要があります。ACKのHelm chartと公式コンテナイメージは[こちら](https://gallery.ecr.aws/aws-controllers-k8s)で入手できます。

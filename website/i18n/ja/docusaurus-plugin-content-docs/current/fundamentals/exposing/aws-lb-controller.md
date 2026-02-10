@@ -1,7 +1,7 @@
 ---
 title: "AWS Load Balancer Controller"
 sidebar_position: 20
-kiteTranslationSourceHash: 9f5f52ecf3d2d9d1653908f4b905b48e
+tmdTranslationSourceHash: 9f5f52ecf3d2d9d1653908f4b905b48e
 ---
 
 **AWS Load Balancer Controller**は、Kubernetesクラスターの Elastic Load Balancer を管理するための[コントローラー](https://kubernetes.io/docs/concepts/architecture/controller/)です。

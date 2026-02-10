@@ -1,7 +1,7 @@
 ---
 title: "Pod Security Standardsの強制"
 sidebar_position: 72
-kiteTranslationSourceHash: c73e1c6640a88b0b608c828cae171b40
+tmdTranslationSourceHash: c73e1c6640a88b0b608c828cae171b40
 ---
 
 [Pod Security Standards (PSS)](../pod-security-standards/)セクションの導入で説明したように、事前定義されたポリシーレベルには**Privileged**、**Baseline**、**Restricted**の3つがあります。Restrictedなポリシーの実装が推奨されますが、適切に構成されていないとアプリケーションレベルで意図しない動作を引き起こす可能性があります。まずは、コンテナがHostProcess、HostPath、HostPortsへのアクセスや、トラフィックスヌーピングの許可など、既知の特権昇格を防ぐBaselineポリシーを設定することをお勧めします。その後、これらの特権アクセスを制限または禁止するための個別のポリシーを設定できます。

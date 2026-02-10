@@ -2,7 +2,7 @@
 title: "FISを使用した部分的なノード障害のシミュレーション"
 sidebar_position: 150
 description: "AWS Fault Injection Simulatorを使用してKubernetes環境における部分的なノード障害をシミュレーションし、アプリケーションの回復力をテストします。"
-kiteTranslationSourceHash: 29b302119a2fce9ed4e46d69454d37ed
+tmdTranslationSourceHash: 29b302119a2fce9ed4e46d69454d37ed
 ---
 
 ## AWS Fault Injection Simulator (FIS) の概要

@@ -3,7 +3,7 @@ title: "IAM Roles for Service Accounts"
 sidebar_position: 20
 sidebar_custom_props: { "module": true }
 description: "Manage AWS credentials for your applications running on Amazon Elastic Kubernetes Service with IAM Roles for Service Accounts."
-kiteTranslationSourceHash: 315131c1bce2a477ebe6a119db922ace
+tmdTranslationSourceHash: 315131c1bce2a477ebe6a119db922ace
 ---
 
 ::required-time
@@ -28,4 +28,3 @@ $ prepare-environment security/irsa
 ポッド内のコンテナ内のアプリケーションは、AWS SDKまたはAWS CLIを使用して、AWS Identity and Access Management（IAM）権限を使用してAWSサービスにAPIリクエストを行うことができます。例えば、アプリケーションがS3バケットにファイルをアップロードしたり、DynamoDBテーブルをクエリしたりする必要がある場合があります。そのためには、アプリケーションはAWS認証情報を使ってAWS APIリクエストに署名する必要があります。[IAM Roles for Service Accounts](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html)（IRSA）は、IAMインスタンスプロファイルがAmazon EC2インスタンスに認証情報を提供するのと同様の方法で、アプリケーションの認証情報を管理する機能を提供します。AWS認証情報をコンテナに作成して配布したり、Amazon EC2インスタンスプロファイルに認証を依存したりする代わりに、KubernetesのServiceAccountにIAMロールを関連付け、ポッドがそのServiceAccountを使用するように設定します。
 
 この章では、サンプルアプリケーションのコンポーネントの1つを再構成して、AWS APIを活用し、適切な認証を提供します。
-

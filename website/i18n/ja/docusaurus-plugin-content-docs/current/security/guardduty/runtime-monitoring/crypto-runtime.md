@@ -1,7 +1,7 @@
 ---
 title: "暗号通貨ランタイム"
 sidebar_position: 531
-kiteTranslationSourceHash: d669f7caadd0fcaed8dab2e0dfbe2f51
+tmdTranslationSourceHash: 5a2c9673ac514386bbd593190b43b96d
 ---
 
 この検出結果は、コンテナがPod内で暗号マイニングを試みたことを示しています。
@@ -31,11 +31,10 @@ $ kubectl exec crypto -n other -- bash -c 'curl -s -o /dev/null http://us-east.e
 
 1つ目は`Execution:Runtime/NewBinaryExecuted`で、APTツールを介してインストールされた`curl`パッケージに関連しています。
 
-![バイナリ実行の検出結果](assets/binary-execution.webp)
+![バイナリ実行の検出結果](/docs/security/guardduty/runtime-monitoring/binary-execution.webp)
 
 この検出結果の詳細をよく見ると、GuardDutyランタイムモニタリングに関連しているため、ランタイム、コンテキスト、およびプロセスに関する特定の情報が表示されています。
 
 2つ目と3つ目は`CryptoCurrency:Runtime/BitcoinTool.B!DNS`検出結果に関連しています。検出結果の詳細には異なる情報が含まれていることに注意してください。今回は`DNS_REQUEST`アクションと**脅威インテリジェンスの証拠**が表示されています。
 
-![暗号ランタイムの検出結果](assets/crypto-runtime.webp)
-
+![暗号ランタイムの検出結果](/docs/security/guardduty/runtime-monitoring/crypto-runtime.webp)

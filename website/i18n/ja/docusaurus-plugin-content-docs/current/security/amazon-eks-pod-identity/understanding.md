@@ -1,7 +1,7 @@
 ---
 title: "Pod IAMの理解"
 sidebar_position: 23
-kiteTranslationSourceHash: 8fc870acc614f97786463eea6ee471a4
+tmdTranslationSourceHash: 8fc870acc614f97786463eea6ee471a4
 ---
 
 問題を探るまず最初の場所は、`carts`サービスのログです：

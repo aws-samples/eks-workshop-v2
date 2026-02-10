@@ -1,7 +1,7 @@
 ---
 title: 既存のアーキテクチャ
 sidebar_position: 10
-kiteTranslationSourceHash: 20faf3f0be007f2779faaab56eac26bf
+tmdTranslationSourceHash: 20faf3f0be007f2779faaab56eac26bf
 ---
 
 このセクションでは、シンプルな画像ホスティングの例を使用して、Kubernetesデプロイメントでのストレージの扱い方について探ります。サンプルストアアプリケーションの既存のデプロイメントから始め、それを画像ホストとして機能するように変更します。UIコンポーネントはステートレスなマイクロサービスであり、Podの**水平スケーリング**と**宣言的状態管理**を可能にするため、デプロイメントを実証する優れた例です。

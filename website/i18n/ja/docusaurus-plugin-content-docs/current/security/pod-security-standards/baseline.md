@@ -1,7 +1,7 @@
 ---
 title: "ベースライン PSS プロファイル"
 sidebar_position: 62
-kiteTranslationSourceHash: f15af985f33897c78496d07dceda1259
+tmdTranslationSourceHash: f15af985f33897c78496d07dceda1259
 ---
 
 もしPodが要求できる権限を制限したい場合はどうすればよいでしょうか？例えば、前のセクションで「pss」Podに提供した`privileged`権限は危険で、攻撃者がコンテナ外のホストリソースにアクセスすることを許可してしまいます。

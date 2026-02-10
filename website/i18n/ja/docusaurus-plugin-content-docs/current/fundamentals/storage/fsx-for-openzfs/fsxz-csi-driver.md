@@ -1,16 +1,16 @@
 ---
 title: FSx for OpenZFS CSI Driver
 sidebar_position: 20
-kiteTranslationSourceHash: 6c2d1950dd9d1ee1db1a40d62a19753e
+tmdTranslationSourceHash: 42b5d289881ac60bdd73a62ac3e2f2d4
 ---
 
 このセクションに入る前に、メインの[ストレージ](../index.md)セクションで紹介されたKubernetesストレージオブジェクト（ボリューム、永続ボリューム（PV）、永続ボリューム要求（PVC）、動的プロビジョニング、一時ストレージ）に精通しているべきです。
 
 [Amazon FSx for OpenZFS Container Storage Interface (CSI) Driver](https://github.com/kubernetes-sigs/aws-fsx-openzfs-csi-driver)を使用すると、CSIインターフェースを提供することで、AWSで実行されているKubernetesクラスターがAmazon FSx for OpenZFSファイルシステムとボリュームのライフサイクルを管理できるようになり、ステートフルなコンテナ化アプリケーションを実行できます。
 
-以下のアーキテクチャ図は、FSx for OpenZFSをEKSポッドの永続ストレージとして使用する方法を示しています：
+以下のアーキテクチャ図は、FSx for OpenZFSをEKS Podの永続ストレージとして使用する方法を示しています：
 
-![FSx for OpenZFSを使用したアセット](./assets/fsxz-storage.webp)
+![FSx for OpenZFSを使用したアセット](/docs/fundamentals/storage/fsx-for-openzfs/fsxz-storage.webp)
 
 EKSクラスターで動的プロビジョニングを使用してAmazon FSx for OpenZFSを利用するには、まずFSx for OpenZFS CSI Driverがインストールされていることを確認する必要があります。このドライバーはCSI仕様を実装しており、コンテナオーケストレーターがAmazon FSx for OpenZFSファイルシステムとボリュームのライフサイクル全体を管理できるようにします。
 
@@ -27,7 +27,7 @@ $ helm upgrade --install aws-fsx-openzfs-csi-driver \
     aws-fsx-openzfs-csi-driver/aws-fsx-openzfs-csi-driver
 ```
 
-チャートがEKSクラスターに何を作成したか見てみましょう。例えば、クラスター内の各ノードでポッドを実行するDaemonSetがあります：
+チャートがEKSクラスターに何を作成したか見てみましょう。例えば、クラスター内の各ノードでPodを実行するDaemonSetがあります：
 
 ```bash
 $ kubectl get daemonset fsx-openzfs-csi-node -n kube-system
@@ -35,7 +35,7 @@ NAME                   DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE
 fsx-openzfs-csi-node   3         3         3       3            3           kubernetes.io/os=linux        52s
 ```
 
-FSx for OpenZFS CSIドライバーは、動的プロビジョニングと静的プロビジョニングの両方をサポートしています。動的プロビジョニングでは、ドライバーはFSx for OpenZFSファイルシステムと既存のファイルシステム上のボリュームの両方を作成できます。静的プロビジョニングでは、事前に作成されたFSx for OpenZFSファイルシステムまたはボリュームをKubernetes内で使用するためのPersistentVolume（PV）に関連付けることができます。また、ドライバーはNFSマウントオプション、ボリュームスナップショット、ボリュームのサイズ変更もサポートしています。
+FSx for OpenZFS CSIドライバーは、動的プロビジョニングと静的プロビジョニングの両方をサポートしています。動的プロビジョニングでは、ドライバーはFSx for OpenZFSファイルシステムと既存のファイルシステム上のボリュームの両方を作成できます。静的プロビジョニングでは、事前に作成されたFSx for OpenZFSファイルシステムまたはボリュームをKubernetes内で使用するためのPersistentVolume（PV）に関連付けることができます。また、ドライバーはNFSマウントオプションの作成、ボリュームスナップショット、ボリュームのサイズ変更もサポートしています。
 
 ラボの準備の一環として、FSx for OpenZFSファイルシステムは既にあなたの使用のために作成されています。このラボでは、FSx for OpenZFSボリュームをデプロイするように設定された[StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/)オブジェクトを作成して、動的プロビジョニングを使用します。
 

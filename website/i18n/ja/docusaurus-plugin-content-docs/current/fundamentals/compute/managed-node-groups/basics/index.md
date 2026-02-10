@@ -3,7 +3,7 @@ title: MNG の基本
 sidebar_position: 10
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes Service のマネージドノードグループの基本を学びます。"
-kiteTranslationSourceHash: 3917d0b8357b8a5a37722a603ced394a
+tmdTranslationSourceHash: 3917d0b8357b8a5a37722a603ced394a
 ---
 
 ::required-time
@@ -42,4 +42,3 @@ $ kubectl get nodes -o wide --label-columns topology.kubernetes.io/zone
 - ノードは高可用性を提供するために、複数のサブネットと様々なアベイラビリティーゾーンに分散しています
 
 このモジュールの過程で、MNG の基本的な機能を示すためにこのノードグループに変更を加えます。
-

@@ -2,7 +2,7 @@
 title: "スケーリングのトリガー"
 date: 2022-07-21T00:00:00-03:00
 sidebar_position: 3
-kiteTranslationSourceHash: be868c3a133b355f49a3c6cc792b5a76
+tmdTranslationSourceHash: be868c3a133b355f49a3c6cc792b5a76
 ---
 
 前のセクションでインストールした Cluster Proportional Autoscaler (CPA) をテストしてみましょう。現在、3ノードのクラスタを実行しています：
@@ -66,4 +66,3 @@ I0801 15:02:45.330328       1 k8sclient.go:273] Replicas are not as expected : u
 ```
 
 ログから、CPA がクラスタサイズの変化を検出し、それに応じて CoreDNS レプリカの数を調整したことが確認できます。
-

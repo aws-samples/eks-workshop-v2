@@ -3,7 +3,7 @@ title: "ハイブリッドノードへのトラフィックのルーティング
 sidebar_position: 10
 sidebar_custom_props: { "module": false }
 weight: 25 # used by test framework
-kiteTranslationSourceHash: 6788556a7a4a9439c02c3c9fc4d89018
+tmdTranslationSourceHash: 6788556a7a4a9439c02c3c9fc4d89018
 ---
 
 これで、ハイブリッドノードインスタンスがクラスターに接続されたので、
@@ -11,7 +11,7 @@ kiteTranslationSourceHash: 6788556a7a4a9439c02c3c9fc4d89018
 
 ::yaml{file="manifests/modules/networking/eks-hybrid-nodes/kustomize/deployment.yaml" paths="spec.template.spec.affinity.nodeAffinity"}
 
-1. `nodeAffinity`ルールを使用して、Kubernetesスケジューラーに`eks.amazonaws.com/compute-type=hybrid`ラベルと値を持つクラスターノードを_優先_するように指示します。
+1. `nodeAffinity`ルールを使用して、Kubernetesスケジューラーに`eks.amazonaws.com/compute-type=hybrid`ラベルと値を持つクラスターノードを*優先*するように指示します。
 
 ::yaml{file="manifests/modules/networking/eks-hybrid-nodes/kustomize/ingress.yaml" paths="spec.ingressClassName"}
 

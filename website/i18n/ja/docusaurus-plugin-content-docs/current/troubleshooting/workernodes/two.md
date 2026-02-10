@@ -2,7 +2,7 @@
 title: "Node Join Failure"
 sidebar_position: 72
 chapter: true
-kiteTranslationSourceHash: 20a9891970448c4c286fc5ecf6946e52
+tmdTranslationSourceHash: 20a9891970448c4c286fc5ecf6946e52
 ---
 
 ::required-time
@@ -376,4 +376,3 @@ ip-10-42-108-252.us-west-2.compute.internal   Ready    <none>   3m9s   v1.30.0-e
 :::tip
 EKSネットワーキングに関する総合的な理解については、[EKSネットワーキングドキュメント](https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html)を確認してください。トラブルシューティングガイドについては、[ナレッジセンターの記事](https://repost.aws/knowledge-center/eks-worker-nodes-cluster)を確認してください。
 :::
-

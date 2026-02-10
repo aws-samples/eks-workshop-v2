@@ -1,7 +1,7 @@
 ---
 title: "はじめに"
 sidebar_position: 10
-kiteTranslationSourceHash: 89f042d87495980d35d5b04b0326cfea
+tmdTranslationSourceHash: 89f042d87495980d35d5b04b0326cfea
 ---
 
 まず、helmを使用してAWS Load Balancerコントローラをインストールしましょう：

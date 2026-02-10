@@ -1,7 +1,7 @@
 ---
 title: "追加のプレフィックスを消費する"
 sidebar_position: 40
-kiteTranslationSourceHash: 22035f7491caa38d7039b931d8b3c95f
+tmdTranslationSourceHash: 22035f7491caa38d7039b931d8b3c95f
 ---
 
 ワーカーノードに追加のプレフィックスを追加するVPC CNIの動作を実証するために、現在割り当てられているIPアドレスよりも多くのIPアドレスを使用するpauseポッドをデプロイします。多数のこれらのポッドを使用して、デプロイメントやスケーリング操作を通じてクラスターにアプリケーションポッドを追加することをシミュレートします。
@@ -35,4 +35,3 @@ $ aws ec2 describe-instances --filters "Name=tag-key,Values=eks:cluster-name" "N
 ```
 
 これは、より多くのポッドが特定のノードにスケジュールされると、VPC CNIが動的に`/28`プレフィックスをENI(s)にプロビジョニングして接続する方法を示しています。
-

@@ -1,18 +1,18 @@
 ---
-title: Amazon S3による永続的オブジェクトストレージ
+title: S3による永続的オブジェクトストレージ
 sidebar_position: 30
-kiteTranslationSourceHash: d7385ad60dad5d5d7c40e080061ec874
+tmdTranslationSourceHash: a2905c137570577f1a4417aa32e22e51
 ---
 
-前のステップでは、イメージオブジェクト用のステージングディレクトリを作成し、画像アセットをダウンロードしてS3バケットにアップロードすることで環境を準備しました。また、Mountpoint for Amazon S3 CSIドライバーをインストールして設定しました。ここでは、Mountpoint for Amazon S3 CSIドライバーが提供する永続ボリューム（PV）を使用するようにポッドを接続することで、Amazon S3によって**水平スケーリング**と**永続ストレージ**を備えた画像ホストアプリケーションを作成するという目標を完成させます。
+前のステップでは、イメージオブジェクト用のステージングディレクトリを作成し、画像アセットをダウンロードしてS3バケットにアップロードすることで環境を準備しました。また、Mountpoint for Amazon S3 CSIドライバーをインストールして設定しました。ここでは、Mountpoint for Amazon S3 CSIドライバーが提供するPersistent Volume（PV）を使用するようにPodを接続することで、Amazon S3によって**水平スケーリング**と**永続ストレージ**を備えた画像ホストアプリケーションを作成するという目標を完成させます。
 
-まず、[永続ボリューム](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)を作成し、デプロイメント内の`ui`コンテナがこのボリュームをマウントするように変更しましょう。
+まず、[Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)を作成し、デプロイメント内の`ui`コンテナがこのボリュームをマウントするように変更しましょう。
 
 最初に、`s3pvclaim.yaml`ファイルを調べて、そのパラメータと設定を理解しましょう：
 
 ::yaml{file="manifests/modules/fundamentals/storage/s3/deployment/s3pvclaim.yaml" paths="spec.accessModes,spec.mountOptions,spec.csi.volumeAttributes.bucketName"}
 
-1. `ReadWriteMany`：同じS3バケットを複数のポッドに読み書き用としてマウントすることを許可します
+1. `ReadWriteMany`：同じS3バケットを複数のPodに読み書き用としてマウントすることを許可します
 2. `allow-delete`：マウントされたバケットからオブジェクトを削除することをユーザーに許可します  
    `allow-other`：所有者以外のユーザーがマウントされたバケットにアクセスすることを許可します  
    `uid=`：マウントされたバケット内のファイル/ディレクトリのユーザーID（UID）を設定します  
@@ -56,7 +56,7 @@ $ kubectl get deployment -n ui -o yaml | yq '.items[].spec.template.spec.contain
   name: tmp-volume
 ```
 
-次に、新しく作成された永続ボリュームを調べましょう：
+次に、新しく作成されたPersistentVolumeを調べましょう：
 
 ```bash
 $ kubectl get pv
@@ -64,7 +64,7 @@ NAME    CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM             ST
 s3-pv   1Gi        RWX            Retain           Bound    ui/s3-claim                      <unset>                          2m31s
 ```
 
-永続ボリューム要求（PVC）の詳細を確認しましょう：
+PersistentVolumeClaimの詳細を確認しましょう：
 
 ```bash
 $ kubectl describe pvc -n ui
@@ -84,7 +84,7 @@ Used By:       ui-9fbbbcd6f-c74vv
 Events:        <none>
 ```
 
-実行中のポッドを確認しましょう：
+実行中のPodを確認しましょう：
 
 ```bash
 $ kubectl get pods -n ui
@@ -126,7 +126,7 @@ Namespace:              ui
 [...]
 ```
 
-ここで、共有ストレージ機能をデモンストレーションしましょう。まず、UIコンポーネントのポッドの1つを通じて`/mountpoint-s3`内の現在のファイルをリストアップします：
+ここで、共有ストレージ機能をデモンストレーションしましょう。まず、UIコンポーネントのPodの1つを通じて`/mountpoint-s3`内の現在のファイルをリストアップします：
 
 ```bash hook=sample-images
 $ export POD_1=$(kubectl -n ui get pods -o jsonpath='{.items[0].metadata.name}')
@@ -145,13 +145,13 @@ d4edfedb-dbe9-4dd9-aae8-009489394955.jpg
 d77f9ae6-e9a8-4a3e-86bd-b72af75cbc49.jpg
 ```
 
-このリストが先ほどS3バケットにアップロードした画像と一致していることがわかります。次に、`placeholder.jpg`という新しい画像を生成し、同じポッドを通じてS3バケットに追加しましょう：
+このリストが先ほどS3バケットにアップロードした画像と一致していることがわかります。次に、`placeholder.jpg`という新しい画像を生成し、同じPodを通じてS3バケットに追加しましょう：
 
 ```bash
 $ kubectl exec --stdin $POD_1 -n ui -- bash -c 'curl -sS -o /mountpoint-s3/placeholder.jpg https://placehold.co/600x400/jpg?text=EKS+Workshop\\nPlaceholder'
 ```
 
-ストレージレイヤーの永続性と共有を確認するために、2番目のUIポッドを使用して、作成したファイルを確認しましょう：
+ストレージレイヤーの永続性と共有を確認するために、2番目のUIPodを使用して、作成したファイルを確認しましょう：
 
 ```bash
 $ export POD_2=$(kubectl -n ui get pods -o jsonpath='{.items[1].metadata.name}')
@@ -201,7 +201,7 @@ http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/asse
 ブラウザでURLにアクセスしてください：
 
 <Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96b...">
-<img src={require('./assets/placeholder.jpg').default}/>
+<img src={require('@site/static/docs/fundamentals/storage/mountpoint-s3/placeholder.jpg').default}/>
 </Browser>
 
 これで、Mountpoint for Amazon S3をEKSで実行されるワークロードの永続的な共有ストレージとして使用する方法を正常に実証しました。

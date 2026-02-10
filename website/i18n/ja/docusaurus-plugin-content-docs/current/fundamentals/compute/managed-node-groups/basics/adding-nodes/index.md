@@ -1,7 +1,7 @@
 ---
 title: ノードの追加
 sidebar_position: 10
-kiteTranslationSourceHash: 6128417944a3f4ead27341932c0ec793
+tmdTranslationSourceHash: 6128417944a3f4ead27341932c0ec793
 ---
 
 クラスターでの作業中に、ワークロードのニーズをサポートするために追加のノードを追加するためにマネージドノードグループの設定を更新する必要がある場合があります。ノードグループをスケーリングするには多くの方法がありますが、ここでは `aws eks update-nodegroup-config` コマンドを使用します。
@@ -43,4 +43,3 @@ ip-10-42-182-134.us-west-2.compute.internal   Ready      <none>   3h   vVAR::KUB
 4つのノードが表示されたら、`Ctrl+C` を使用して監視を終了できます。
 
 ノードが `NotReady` ステータスを示している場合があります。これは、新しいノードがまだクラスターに参加する過程にあるときに発生します。
-

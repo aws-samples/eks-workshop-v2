@@ -3,7 +3,7 @@ title: "Pod Issues"
 sidebar_position: 70
 description: "Amazon EKSクラスターでのPodに関する一般的な問題のトラブルシューティング"
 sidebar_custom_props: { "module": true }
-kiteTranslationSourceHash: cc02606a7744b93a170d26c503247f1c
+tmdTranslationSourceHash: cc02606a7744b93a170d26c503247f1c
 ---
 
 ::required-time
@@ -30,4 +30,3 @@ $ prepare-environment troubleshooting/pod
 - defaultネームスペースにefs-claimという名前の永続ボリューム要求を使用して、EFSを永続ボリュームとして活用するefs-appという名前のデプロイメントを作成します。
 
 :::
-

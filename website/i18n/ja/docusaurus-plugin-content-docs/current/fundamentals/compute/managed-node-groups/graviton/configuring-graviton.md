@@ -1,7 +1,7 @@
 ---
 title: Gravitonノードの作成
 sidebar_position: 10
-kiteTranslationSourceHash: 796beaca8412816af0badbdbcfedf8b1
+tmdTranslationSourceHash: 796beaca8412816af0badbdbcfedf8b1
 ---
 
 この演習では、Gravitonベースのインスタンスを持つ別のマネージドノードグループをプロビジョニングし、それにTaintを適用します。

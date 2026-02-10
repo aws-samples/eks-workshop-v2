@@ -1,7 +1,7 @@
 ---
 title: "さらなるスケーリング"
 sidebar_position: 50
-kiteTranslationSourceHash: 860ea9f5106b50857abe6239ba4ce69e
+tmdTranslationSourceHash: 860ea9f5106b50857abe6239ba4ce69e
 ---
 
 このラボ演習では、以前のCluster Autoscalerセクションよりもさらに大きく、アプリケーションアーキテクチャ全体をスケールアップし、応答性の違いを観察します。
@@ -31,4 +31,3 @@ pause-pods-5556d545f7-k5vj7   0/1     Pending   0          16m
 この退避プロセスにより、ワークロードポッドはより迅速に`ContainerCreating`および`Running`状態に移行でき、クラスターオーバープロビジョニングのメリットを示しています。
 
 しかし、これらのポッドが保留状態になっているのはなぜでしょうか？Cluster Autoscalerが追加のノードをプロビジョニングすべきではないでしょうか？答えは、クラスター用に設定されているManaged Node Groupの最大サイズが`6`であるため、ラボクラスターのインスタンス数の上限に達したということです。
-

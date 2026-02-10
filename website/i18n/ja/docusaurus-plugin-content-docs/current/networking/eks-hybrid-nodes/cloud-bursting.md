@@ -3,18 +3,18 @@ title: "クラウドバースティング"
 sidebar_position: 20
 sidebar_custom_props: { "module": false }
 weight: 30 # used by test framework
-kiteTranslationSourceHash: 90c208a2d82f217beae9075819d3cc65
+tmdTranslationSourceHash: 90c208a2d82f217beae9075819d3cc65
 ---
 
 前回のデプロイを基に、「クラウドバースティング」のユースケースをシミュレートするシナリオを探ってみましょう。これにより、EKSハイブリッドノードで実行されているワークロードがピーク需要時に弾力的なクラウドキャパシティを活用して、EC2ノードに「バースト」する方法を実証します。
 
-前回の例と同様に、`nodeAffinity`を使用してハイブリッドノードを優先する新しいワークロードをデプロイします。`preferredDuringSchedulingIgnoredDuringExecution`戦略は、スケジューリング時にはハイブリッドノードを_優先_するが、実行中は_無視_するようKubernetesに指示します。
+前回の例と同様に、`nodeAffinity`を使用してハイブリッドノードを優先する新しいワークロードをデプロイします。`preferredDuringSchedulingIgnoredDuringExecution`戦略は、スケジューリング時にはハイブリッドノードを*優先*するが、実行中は*無視*するようKubernetesに指示します。
 これは、単一のハイブリッドノードに空きがなくなった場合、これらのポッドはクラスタ内の他の場所、つまりEC2インスタンスに自由にスケジュールされることを意味します。これは素晴らしいことです！これにより、私たちが望んでいたクラウドバースティングが実現されます。しかし、
-_IgnoredDuringExecution_の部分は、スケールダウン時にKubernetesがランダムにポッドを削除し、それが実行されている場所を気にしないことを意味します。これは_実行中は無視される_からです。一般的に、Kubernetesは古いポッドから削除します。これは最初にハイブリッドノード上で実行されているポッドになります。私たちはそれを望みません！
+*IgnoredDuringExecution*の部分は、スケールダウン時にKubernetesがランダムにポッドを削除し、それが実行されている場所を気にしないことを意味します。これは*実行中は無視される*からです。一般的に、Kubernetesは古いポッドから削除します。これは最初にハイブリッドノード上で実行されているポッドになります。私たちはそれを望みません！
 
 Kubernetesのポリシーエンジンである[Kyverno](https://kyverno.io/)をデプロイします。Kyvernoは、ハイブリッドノード（`eks.amazonaws.com/compute-type: hybrid`というラベルが付けられている）にスケジュールされるポッドを監視し、実行中のポッドにアノテーションを追加するポリシーを設定します。
 [controller.kubernetes.io/pod-deletion-cost](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#pod-deletion-cost)
-アノテーションは、Kubernetesに対して、最初に_コスト_の低いポッドを削除するように指示します。
+アノテーションは、Kubernetesに対して、最初に*コスト*の低いポッドを削除するように指示します。
 
 さっそく取り組んでみましょう。Helmを使用してKyvernoをインストールし、以下に含まれるポリシーをデプロイします：
 
@@ -67,7 +67,7 @@ nginx-deployment-7474978d4f-k2sjd   mi-0ebe45e33a53e04f2   map[controller.kubern
 $ kubectl scale deployment nginx-deployment --replicas 15
 ```
 
-ここで、カスタム列を使用して`kubectl get pods`を実行すると、追加のポッドがワークショップEKSクラスタに接続されたEC2インスタンスにデプロイされていることがわかります。Kyvernoは、ハイブリッドノードに配置されたすべてのポッドに`pod-deletion-cost`アノテーションを適用し、EC2に配置されたすべてのポッドにはそれを適用していません。スケールダウンすると、Kubernetesはまず_コスト_が低い、つまりアノテーションのないポッドをすべて削除します。その後、Kubernetesは他のすべてのポッドを同等と見なし、通常の削除ロジックが適用されます。それでは実際に見てみましょう：
+ここで、カスタム列を使用して`kubectl get pods`を実行すると、追加のポッドがワークショップEKSクラスタに接続されたEC2インスタンスにデプロイされていることがわかります。Kyvernoは、ハイブリッドノードに配置されたすべてのポッドに`pod-deletion-cost`アノテーションを適用し、EC2に配置されたすべてのポッドにはそれを適用していません。スケールダウンすると、Kubernetesはまず*コスト*が低い、つまりアノテーションのないポッドをすべて削除します。その後、Kubernetesは他のすべてのポッドを同等と見なし、通常の削除ロジックが適用されます。それでは実際に見てみましょう：
 
 ```bash timeout=300 wait=30
 $ kubectl get pods  -o=custom-columns='NAME:.metadata.name,NODE:.spec.nodeName,ANNOTATIONS:.metadata.annotations'

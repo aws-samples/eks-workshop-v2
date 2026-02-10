@@ -4,7 +4,7 @@ sidebar_position: 40
 weight: 10
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes ServiceでのAmazon VPC Latticeによるサービス間接続、セキュリティ、モニタリングの簡素化。"
-kiteTranslationSourceHash: 268962070511a411953a40e32e3814a5
+tmdTranslationSourceHash: f84f9d92b7355003e2ef753ad8c7d433
 ---
 
 ::required-time
@@ -31,7 +31,7 @@ $ prepare-environment networking/vpc-lattice
 
 :::
 
-[Amazon VPC Lattice](https://aws.amazon.com/vpc/lattice/)は、ネットワークの専門知識がなくても、サービス間通信の接続、保護、監視を一貫した方法で行うことができるアプリケーション層のネットワーキングサービスです。VPC Latticeを使用すると、Kubernetesクラスターを含む基盤となるコンピュートタイプに関係なく、VPC間やアカウント間でのサービス間通信を可能にするネットワークアクセス、トラフィック管理、ネットワークモニタリングを一貫して設定できます。
+[Amazon VPC Lattice](https://aws.amazon.com/vpc/lattice/)は、ネットワークの専門知識がなくても、サービス間通信の接続、保護、監視を一貫した方法で行うことができるアプリケーション層のネットワーキングサービスです。VPC Latticeを使用すると、Kubernetesクラスターを含む基盤となるコンピューティングタイプに関係なく、VPC間やアカウント間でのサービス間通信を可能にするネットワークアクセス、トラフィック管理、ネットワークモニタリングを一貫して設定できます。
 
 Amazon VPC Latticeは、コンポーネントの検出、個々のワークロード間のトラフィックルーティング、アクセス認可などの一般的なネットワーキングタスクを処理し、開発者が追加のソフトウェアやコードを通じてこれらを自分で行う必要性を排除します。数回のクリックまたはAPIコールで、開発者はネットワークの専門知識がなくても、アプリケーションがどのように通信すべきかを定義するポリシーを設定できます。
 
@@ -56,4 +56,5 @@ Amazon VPC Latticeの[コンポーネント](https://docs.aws.amazon.com/vpc-lat
 - **セキュリティポリシー**：
   サービスがどのように通信することを許可されるかを決定する宣言型ポリシー。これらはサービスレベルまたはサービスネットワークレベルで定義できます。
 
-![Amazon VPC Latticeのコンポーネント](assets/vpc_lattice_building_blocks.webp)
+![Amazon VPC Latticeのコンポーネント](/docs/networking/vpc-lattice/vpc_lattice_building_blocks.webp)
+

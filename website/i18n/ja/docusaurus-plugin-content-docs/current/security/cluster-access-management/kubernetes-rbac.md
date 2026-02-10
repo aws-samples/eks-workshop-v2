@@ -1,7 +1,7 @@
 ---
 title: "Kubernetes RBACとの統合"
 sidebar_position: 14
-kiteTranslationSourceHash: 0ac86d001c5ec50d2f31c060afddc908
+tmdTranslationSourceHash: 0ac86d001c5ec50d2f31c060afddc908
 ---
 
 前述したように、クラスターアクセス管理コントロールおよび関連APIは、Amazon EKSの既存のRBACオーソライザーを置き換えるものではありません。代わりに、Amazon EKSアクセスエントリはRBACオーソライザーと組み合わせて使用することで、AWS IAMプリンシパルにクラスターアクセスを付与しながら、Kubernetes RBACに依存して目的の権限を適用することができます。

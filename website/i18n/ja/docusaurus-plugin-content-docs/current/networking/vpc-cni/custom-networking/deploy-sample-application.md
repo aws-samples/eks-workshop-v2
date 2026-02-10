@@ -1,7 +1,7 @@
 ---
 title: "ワークロードの再デプロイ"
 sidebar_position: 25
-kiteTranslationSourceHash: 29da9c8a35ecfcb980663189e5f273c0
+tmdTranslationSourceHash: 29da9c8a35ecfcb980663189e5f273c0
 ---
 
 これまでに行ったカスタムネットワーキングの更新をテストするために、前のステップでプロビジョニングした新しいノードで `checkout` デプロイメントのポッドを実行するように更新しましょう。
@@ -30,4 +30,3 @@ checkout-redis-6cfd7d8787-8n99n   1/1     Running   0          49m   10.42.12.33
 ```
 
 `checkout` ポッドがVPCに追加された `100.64.0.0` CIDRブロックからIPアドレスを割り当てられていることがわかります。まだ再デプロイされていないポッドは、元々VPCに関連付けられていた唯一のCIDRブロックであった `10.42.0.0` CIDRブロックからアドレスを割り当てられたままです。この例では、`checkout-redis` ポッドはまだこの範囲からのアドレスを持っています。
-

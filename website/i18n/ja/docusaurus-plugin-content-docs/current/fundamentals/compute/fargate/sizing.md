@@ -1,7 +1,7 @@
 ---
 title: リソース割り当て
 sidebar_position: 20
-kiteTranslationSourceHash: 5fc8ef93035d670c6eb30eb4380101ec
+tmdTranslationSourceHash: 5fc8ef93035d670c6eb30eb4380101ec
 ---
 
 [Fargate の料金](https://aws.amazon.com/fargate/pricing/)の主な要素は CPU とメモリに基づいており、Fargate インスタンスに割り当てられるリソース量は Pod で指定されるリソースリクエストに依存します。Fargate には[ドキュメント化された](https://docs.aws.amazon.com/eks/latest/userguide/fargate-pod-configuration.html#fargate-cpu-and-memory)有効な CPU とメモリの組み合わせがあり、ワークロードが Fargate に適しているかを評価する際に考慮する必要があります。

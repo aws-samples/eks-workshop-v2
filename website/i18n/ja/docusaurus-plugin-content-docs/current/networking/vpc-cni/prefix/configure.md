@@ -1,7 +1,7 @@
 ---
 title: "Amazon VPC CNIの設定"
 sidebar_position: 30
-kiteTranslationSourceHash: 56b9f4225bbc6731fdf0e409e0917f64
+tmdTranslationSourceHash: 56b9f4225bbc6731fdf0e409e0917f64
 ---
 
 始める前に、VPC CNIがインストールされ実行されているか確認しましょう。

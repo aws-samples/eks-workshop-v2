@@ -1,7 +1,7 @@
 ---
 title: "サービスがエンドポイントを登録していない問題"
 sidebar_position: 32
-kiteTranslationSourceHash: b4ae4e4f0eddd47b2e6b8ae11682057c
+tmdTranslationSourceHash: fc331a5ef68d4afb716ae012b9f5dd05
 ---
 
 このセクションでは、Application Load Balancer (ALB) が Kubernetes サービスのエンドポイントを正しく登録しない理由についてトラブルシューティングを行います。ALB が正常に作成されたにもかかわらず、バックエンドサービスの設定に問題があるためアプリケーションにアクセスできません。
@@ -10,7 +10,7 @@ kiteTranslationSourceHash: b4ae4e4f0eddd47b2e6b8ae11682057c
 
 ALB を通じてアプリケーションにアクセスすると、「Backend service does not exist（バックエンドサービスが存在しません）」というエラーが表示されます：
 
-![ALb-Backend-DoesNotExist](./assets/alb-does-not-exist.webp)
+![ALb-Backend-DoesNotExist](/docs/troubleshooting/alb/alb-does-not-exist.webp)
 
 イングレスは正常に作成されたため、これは Kubernetes イングレスとサービス間の通信に問題があることを示唆しています。
 
@@ -122,7 +122,7 @@ spec:
 
 サービス名を修正した後も、まだ 503 エラーが表示されます：
 
-![ALb-503-ERROR](./assets/alb-503.webp)
+![ALb-503-ERROR](/docs/troubleshooting/alb/alb-503.webp)
 
 これは、サービスのバックエンドエンドポイントに問題があることを示唆しています。エンドポイントを確認してみましょう：
 
@@ -244,7 +244,7 @@ $ kubectl apply -k ~/environment/eks-workshop/modules/troubleshooting/alb/creati
 
 修正を適用した後、ブラウザを更新してください。これでUI アプリケーションが表示されるはずです：
 
-![ALB-UI-APP](./assets/alb-working.webp)
+![ALB-UI-APP](/docs/troubleshooting/alb/alb-working.webp)
 
 :::tip
 サービスと Pod の接続をトラブルシューティングする際は：
@@ -256,4 +256,3 @@ $ kubectl apply -k ~/environment/eks-workshop/modules/troubleshooting/alb/creati
 :::
 
 サービス設定の問題を修正し、ALB のトラブルシューティング演習を完了しました！お疲れ様でした。
-

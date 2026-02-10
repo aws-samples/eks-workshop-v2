@@ -1,7 +1,7 @@
 ---
 title: Gravitonでポッドを実行する
 sidebar_position: 20
-kiteTranslationSourceHash: 375c541b385540f699ead3b7a4a1bf03
+tmdTranslationSourceHash: 375c541b385540f699ead3b7a4a1bf03
 ---
 
 Gravitonノードグループをtaintで設定したので、このアプリケーションを活用するように設定する必要があります。そのために、`ui`マイクロサービスをGravitonベースのマネージドノードグループの一部であるノードにのみデプロイするようにアプリケーションを構成します。
@@ -39,6 +39,7 @@ taintされたマネージドノードグループにポッドをバインドす
 modules/fundamentals/mng/graviton/nodeselector-wo-toleration/deployment.yaml
 Deployment/ui
 ```
+
 上記のマニフェストでは、`nodeSelector`は`kubernetes.io/arch: arm64`というラベルを持つノードにのみポッドをスケジュールするように指定しています。この`nodeSelector`は、UIポッドがARM64アーキテクチャノード（Gravitonノード）でのみ実行されるように効果的に制限します。
 
 Kustomizeの変更を適用するには、次のコマンドを実行します：
@@ -98,7 +99,9 @@ Events:
 modules/fundamentals/mng/graviton/nodeselector-w-toleration/deployment.yaml
 Deployment/ui
 ```
+
 このYAMLは前の構成に基づいてtolerationを追加しています。`tolerations`セクションは、以下のように説明されている`frontend` taintを持つノードにポッドをスケジュールすることを許可します：
+
 - `key: "frontend"`は許容するtaintキーを指定します。
 - `operator: "Exists"`は、その値に関係なくポッドがtaintを許容することを意味します。
 - `effect: "NoExecute"`はtaintの効果と一致し、このtaintを持つノードでポッドが実行できるようにします。

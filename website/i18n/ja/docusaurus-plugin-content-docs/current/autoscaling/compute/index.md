@@ -1,7 +1,7 @@
 ---
 title: "コンピュート"
 sidebar_position: 10
-kiteTranslationSourceHash: ce6048aabb965ebf98f9ee1a130bf85e
+tmdTranslationSourceHash: ce6048aabb965ebf98f9ee1a130bf85e
 ---
 
 Kubernetesにおいて、最初に自動スケーリングを確保したい側面は、ポッドの実行に使用されるEC2コンピュートインフラストラクチャです。これにより、ポッドが追加または削除されるにつれて、EKSクラスターのワーカーノードとして利用可能なEC2インスタンスの数が動的に調整されます。

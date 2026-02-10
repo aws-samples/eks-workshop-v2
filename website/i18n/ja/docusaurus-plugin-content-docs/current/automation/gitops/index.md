@@ -2,7 +2,7 @@
 title: "GitOps"
 sidebar_position: 2
 weight: 20
-kiteTranslationSourceHash: bffd2f294faa49e347acd006bd1b4256
+tmdTranslationSourceHash: bffd2f294faa49e347acd006bd1b4256
 ---
 
 企業は迅速に進みたいと考えています。より頻繁に、より確実に、そして可能であればより少ないオーバーヘッドでデプロイする必要があります。GitOpsは、開発者がKubernetesで実行されている複雑なアプリケーションとインフラストラクチャを管理および更新するための迅速で安全な方法です。
@@ -14,3 +14,4 @@ GitOpsとは何でしょうか？Weaveworks CEOのAlexis Richardsonによって�
 GitOpsセクションのビデオウォークスルーを、モジュールメンテナの一人であるCarlos Santana（AWS）とともにご覧ください：
 
 <ReactPlayer controls src="https://www.youtube-nocookie.com/embed/dONzzCc0oHo" width={640} height={360} /> <br />
+

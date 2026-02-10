@@ -1,7 +1,7 @@
 ---
 title: "KEDAの設定"
 sidebar_position: 10
-kiteTranslationSourceHash: '093255d067fa7fc75b91cdf4a8f48834'
+tmdTranslationSourceHash: "093255d067fa7fc75b91cdf4a8f48834"
 ---
 
 KEDAがインストールされると、複数のカスタムリソースが作成されます。これらのリソースの1つである`ScaledObject`を使用すると、外部イベントソースをDeploymentまたはStatefulSetにマッピングしてスケーリングできます。このラボでは、`ui` Deploymentをターゲットとする`ScaledObject`を作成し、CloudWatchの`RequestCountPerTarget`メトリクスに基づいてこのワークロードをスケールします。

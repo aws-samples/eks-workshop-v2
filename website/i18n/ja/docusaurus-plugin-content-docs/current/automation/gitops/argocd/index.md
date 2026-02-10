@@ -3,7 +3,7 @@ title: "Argo CD"
 sidebar_position: 3
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes ServiceでのArgo CDを使用した宣言的なGitOps継続的デリバリー。"
-kiteTranslationSourceHash: 917f480cca3b58b603a5220f1d863e71
+tmdTranslationSourceHash: 917f480cca3b58b603a5220f1d863e71
 ---
 
 ::required-time

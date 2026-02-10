@@ -4,7 +4,7 @@ sidebar_position: 10
 chapter: true
 sidebar_custom_props: { "module": true }
 description: "Amazon Q CLI と Amazon EKS MCP サーバーを使用して Amazon EKS クラスターを管理します。"
-kiteTranslationSourceHash: 00741618a8bafac98d4dc03bcc51a8df
+tmdTranslationSourceHash: 00741618a8bafac98d4dc03bcc51a8df
 ---
 
 :::tip 始める前に
@@ -37,4 +37,3 @@ $ prepare-environment aiml/q-cli
 :::caution プレビュー
 このモジュールは現在プレビュー中です。問題が発生した場合は[報告](https://github.com/aws-samples/eks-workshop-v2/issues)してください。
 :::
-

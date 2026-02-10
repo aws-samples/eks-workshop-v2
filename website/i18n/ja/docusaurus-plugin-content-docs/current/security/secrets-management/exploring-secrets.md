@@ -1,7 +1,7 @@
 ---
 title: "シークレットの探索"
 sidebar_position: 41
-kiteTranslationSourceHash: 7d847c17384f27a8edfe40c26afe31f6
+tmdTranslationSourceHash: 7d847c17384f27a8edfe40c26afe31f6
 ---
 
 Kubernetesのシークレットは、環境変数やボリュームなど、さまざまな方法でポッドに公開することができます。
@@ -66,4 +66,3 @@ spec:
 
 - database-credentialsシークレットのusernameキーの値は、ポッド内の`/etc/data/DATABASE_USER`ファイルに格納されます
 - passwordキーの値は、`/etc/data/DATABASE_PASSWORD`ファイルに格納されます
-

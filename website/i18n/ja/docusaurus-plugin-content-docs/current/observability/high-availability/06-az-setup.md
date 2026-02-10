@@ -2,7 +2,7 @@
 title: "AZ失敗実験のセットアップ"
 sidebar_position: 190
 description: "アプリケーションを2つのインスタンスにスケーリングし、AZ障害シミュレーション実験の準備をします。"
-kiteTranslationSourceHash: 175dc039089ca3b0b9258482053ccd3b
+tmdTranslationSourceHash: 175dc039089ca3b0b9258482053ccd3b
 ---
 
 ### インスタンスのスケーリング
@@ -103,4 +103,3 @@ $ timeout 10s ~/$SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 これにより、1分ごとにアプリケーションの健全性をチェックするカナリアと、成功率が95％を下回ると発報するCloudWatchアラームが設定されます。
 
 これらの手順を完了すると、アプリケーションはAZ全体に2つのインスタンスにスケーリングされ、今後のAZ障害シミュレーション実験に必要なモニタリングが設定されました。
-

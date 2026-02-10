@@ -3,7 +3,7 @@ title: "AWS Controllers for Kubernetes (ACK)"
 sidebar_position: 1
 sidebar_custom_props: { "module": true }
 description: "Directly manage AWS services from Amazon Elastic Kubernetes Service with AWS Controllers for Kubernetes."
-kiteTranslationSourceHash: 9f3508a2fddadfdd5fa4f43c9b98579e
+tmdTranslationSourceHash: 631c04d31582052f4c23f1864087ceda
 ---
 
 ::required-time
@@ -33,4 +33,4 @@ ACKを使用すると、データベース（[RDS](https://aws-controllers-k8s.g
 
 学習目的のために、ACKコントローラーのインストールにはhelmを使用しています。もう一つの選択肢は、クラスターへのAWSサービスコントローラーの迅速なデプロイを可能にするTerraformを使用することです。詳細については、[ACK Terraformモジュールのドキュメント](https://registry.terraform.io/modules/aws-ia/eks-ack-addons/aws/latest#module_dynamodb)をご覧ください。
 
-![EKS with DynamoDB](./assets/eks-workshop-ddb.webp)
+![EKS with DynamoDB](/docs/automation/controlplanes/ack/eks-workshop-ddb.webp)

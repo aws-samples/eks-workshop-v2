@@ -1,7 +1,7 @@
 ---
 title: "Gitea のセットアップ"
 sidebar_position: 5
-kiteTranslationSourceHash: 65f16f55be12d2b448d3eac30d9a4841
+tmdTranslationSourceHash: 65f16f55be12d2b448d3eac30d9a4841
 ---
 
 GitHub や GitLab の代わりに、迅速で簡単な代替手段として [Gitea](https://gitea.com) を使用します。Gitea は軽量な自己ホスト型 Git サービスで、ユーザーフレンドリーなウェブインターフェースを提供し、独自の Git リポジトリを迅速にセットアップおよび管理することができます。これは、Argo CD で探索する GitOps ワークフローに不可欠な Kubernetes マニフェストの保存とバージョン管理のための信頼できるソースとして機能します。
@@ -67,4 +67,3 @@ $ git -C ~/environment/argocd add .
 $ git -C ~/environment/argocd commit -am "Initial commit"
 $ git -C ~/environment/argocd push --set-upstream origin main
 ```
-

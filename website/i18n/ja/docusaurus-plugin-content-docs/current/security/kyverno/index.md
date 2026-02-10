@@ -3,7 +3,7 @@ title: "Kyvernoによるポリシー管理"
 sidebar_position: 70
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes ServiceでKyvernoを使用してポリシーアズコードを適用します。"
-kiteTranslationSourceHash: "b264e3684754edb036971caec4e468da"
+tmdTranslationSourceHash: "c8cf471bf2d764dfe4483759cb665cbb"
 ---
 
 ::required-time
@@ -28,13 +28,13 @@ $ prepare-environment security/kyverno
 
 コンテナが本番環境でますます採用されるにつれて、DevOps、セキュリティ、プラットフォームチームは、ガバナンスと[ポリシーアズコード（PaC）](https://aws.github.io/aws-eks-best-practices/security/docs/pods/#policy-as-code-pac)を協力して管理するための効果的なソリューションを必要としています。これにより、すべてのチームがセキュリティに関する同じ真実の源を共有し、個々のニーズを説明する際に一貫したベースラインの「言語」を使用することができます。
 
-Kubernetesは、その性質上、ツールを構築し、オーケストレーションするためのツールとして設計されており、最初からガードレールが定義されていません。ビルダーにセキュリティを制御する方法を提供するために、Kubernetesはバージョン1.23から[Pod Security Admission（PSA）](https://kubernetes.io/docs/concepts/security/pod-security-admission/)を提供しています。PSAは[Pod Security Standards（PSS）](https://kubernetes.io/docs/concepts/security/pod-security-standards/)で概説されているセキュリティコントロールを実装した組み込みのアドミッションコントローラであり、Amazon Elastic Kubernetes Service（EKS）ではデフォルトで有効になっています。
+Kubernetesは、その性質上、構築とオーケストレーションのためのツールとして設計されており、最初から定義されたガードレールがありません。ビルダーにセキュリティを制御する方法を提供するために、Kubernetesはバージョン1.23から[Pod Security Admission（PSA）](https://kubernetes.io/docs/concepts/security/pod-security-admission/)を提供しています。PSAは[Pod Security Standards（PSS）](https://kubernetes.io/docs/concepts/security/pod-security-standards/)で概説されているセキュリティコントロールを実装した組み込みのアドミッションコントローラであり、Amazon Elastic Kubernetes Service（EKS）ではデフォルトで有効になっています。
 
 ### Kyvernoとは何か？
 
 [Kyverno](https://kyverno.io/)（ギリシャ語で「統治する」）は、Kubernetes専用に設計されたポリシーエンジンです。これはCloud Native Computing Foundation（CNCF）のプロジェクトであり、チームが協力してポリシーアズコードを実施することを可能にします。
 
-Kyvernoポリシーエンジンは、[動的アドミッションコントローラ](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/)としてKubernetes APIサーバーと統合され、インバウンドのKubernetes APIリクエストを**変更**および**検証**するポリシーを可能にします。これにより、データがクラスタに永続化され適用される前に、定義されたルールへの準拠が確保されます。
+Kyvernoポリシーエンジンは、[Dynamic Admission Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/)としてKubernetes APIサーバーと統合され、インバウンドのKubernetes APIリクエストを**変更**および**検証**するポリシーを可能にします。これにより、データがクラスタに永続化され適用される前に、定義されたルールへの準拠が確保されます。
 
 KyvernoはYAMLで記述された宣言的なKubernetesリソースを使用し、新しいポリシー言語を学ぶ必要がありません。結果はKubernetesリソースとイベントとして利用可能です。
 
@@ -46,7 +46,7 @@ Kyvernoは、Kubernetesクラスタで動的アドミッションコントロー
 
 以下の図は、Kyvernoの高レベルの論理アーキテクチャを示しています：
 
-![KyvernoArchitecture](assets/ky-arch.webp)
+![KyvernoArchitecture](/docs/security/kyverno/ky-arch.webp)
 
 主要なコンポーネントは、Webhookサーバーとウェブフックコントローラーの2つです。**Webhookサーバー**は、Kubernetes APIサーバーから受信したAdmissionReviewリクエストを処理し、処理のためにエンジンに送信します。これは**Webhookコントローラー**によって動的に構成され、このコントローラーはインストールされたポリシーを監視し、それらのポリシーに一致するリソースのみをリクエストするようにWebhookを修正します。
 

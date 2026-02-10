@@ -1,7 +1,7 @@
 ---
 title: "サービスネットワーク"
 sidebar_position: 20
-kiteTranslationSourceHash: a9518c88e95116f4b23e26708b8fc0c3
+tmdTranslationSourceHash: 77a0c2e01a564b5ed3915581bc649046
 ---
 
 Gateway API コントローラーは、VPC Lattice サービスネットワークを自動的に作成し、Kubernetes クラスター VPC と関連付けるように構成されています。サービスネットワークは、サービスディスカバリと接続性を自動的に実装するために使用される論理的な境界であり、一連のサービスにアクセスと可観測性のポリシーを適用します。VPC 内で HTTP、HTTPS、gRPC プロトコルを介したアプリケーション間の接続を提供します。現在、コントローラーは HTTP と HTTPS をサポートしています。
@@ -23,7 +23,7 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/networking/vpc-lattice/con
 
 ::yaml{file="manifests/modules/networking/vpc-lattice/controller/eks-workshop-gw.yaml" paths="metadata.name,spec.gatewayClassName,spec.listeners.0"}
 
-1. `metadata.name` を `EKS_CLUSTER_NAME` 環境変数に設定して、EKS クラスター名をゲートウェイ識別子として設定します
+1. `metadata.name` を `EKS_CLUSTER_NAME` 環境変数に設定して、EKS クラスター名を Gateway 識別子として設定します
 2. 先に定義した VPC Lattice GatewayClass を参照するために `gatewayClassName` を `amazon-vpc-lattice` に設定します
 3. この設定では、`listener` がポート `80` で `HTTP` トラフィックを受け入れることを指定しています
 
@@ -34,7 +34,7 @@ $ cat ~/environment/eks-workshop/modules/networking/vpc-lattice/controller/eks-w
   | envsubst | kubectl apply -f -
 ```
 
-`eks-workshop` ゲートウェイが作成されたことを確認します：
+`eks-workshop` gateway が作成されたことを確認します：
 
 ```bash
 $ kubectl get gateway -n checkout
@@ -42,7 +42,7 @@ NAME                CLASS                ADDRESS   PROGRAMMED   AGE
 eks-workshop        amazon-vpc-lattice             True         29s
 ```
 
-ゲートウェイが作成されたら、VPC Lattice サービスネットワークを見つけます。ステータスが `Reconciled` になるまで待ちます（これには約5分かかる場合があります）。
+gateway が作成されたら、VPC Lattice サービスネットワークを見つけます。ステータスが `Reconciled` になるまで待ちます（これには約5分かかる場合があります）。
 
 ```bash
 $ kubectl describe gateway ${EKS_CLUSTER_NAME} -n checkout
@@ -59,4 +59,4 @@ $ kubectl wait --for=condition=Programmed gateway/${EKS_CLUSTER_NAME} -n checkou
 
 これで、[AWS コンソール](https://console.aws.amazon.com/vpc/home#ServiceNetworks)の Lattice リソースの下で作成された関連 **サービスネットワーク** を確認できます。
 
-![Checkout Service Network](assets/servicenetwork.webp)
+![Checkout Service Network](/docs/networking/vpc-lattice/servicenetwork.webp)

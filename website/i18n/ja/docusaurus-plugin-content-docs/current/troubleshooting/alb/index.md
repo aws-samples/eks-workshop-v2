@@ -3,7 +3,7 @@ title: "ALB Controller"
 chapter: true
 sidebar_position: 40
 sidebar_custom_props: { "module": true }
-kiteTranslationSourceHash: b36bbab8cf13755387c757ff2b77d0d3
+tmdTranslationSourceHash: b36bbab8cf13755387c757ff2b77d0d3
 ---
 
 ::required-time
@@ -16,12 +16,12 @@ kiteTranslationSourceHash: b36bbab8cf13755387c757ff2b77d0d3
 ```bash timeout=600 wait=10
 $ prepare-environment troubleshooting/alb
 ```
+
 これらの変更を適用するTerraformは[こちら](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/troubleshooting/alb/.workshop/terraform)で確認できます。
 :::
 :::info
 
 ラボの準備には数分かかることがあり、以下の変更がラボ環境に適用されます：
-
 
 - サンプルUIアプリケーションのデプロイ
 - イングレスリソースの設定
@@ -93,4 +93,3 @@ $ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalance
 
 :::
 それでは、Application Load Balancerが作成されない理由を調査していきましょう！
-

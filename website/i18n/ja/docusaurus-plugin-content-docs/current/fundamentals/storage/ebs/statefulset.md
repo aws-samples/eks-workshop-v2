@@ -1,7 +1,7 @@
 ---
 title: StatefulSets
 sidebar_position: 10
-kiteTranslationSourceHash: 0c1804e1d98f512ffc48094401702cae
+tmdTranslationSourceHash: 29ae0d08e36a7abcf762a90da75bf1fa
 ---
 
 Deploymentと同様に、[StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/)は同一のコンテナスペックに基づいたPodを管理します。Deploymentとは異なり、StatefulSetは各Podに固有のIDを維持します。これらのPodは同じ仕様から作成されますが、互換性がなく、それぞれが再スケジューリングイベントの間も維持される永続的な識別子を持っています。
@@ -45,9 +45,9 @@ Volume Claims:  <none>
 
 StatefulSetの[`Volumes`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example)セクションを見ると、「Podのライフタイムを共有する」[EmptyDirボリュームタイプ](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir)のみを使用していることがわかります。
 
-![MySQL with emptyDir](./assets/mysql-emptydir.webp)
+![MySQL with emptyDir](/docs/fundamentals/storage/ebs/mysql-emptydir.webp)
 
-`emptyDir`ボリュームは、Podがノードにアサインされたときに最初に作成され、そのPodがそのノードで実行されている限り存在します。名前が示すように、emptyDirボリュームは最初は空です。Podのすべてのコンテナは、同じemptyDirボリュームの同じファイルを読み書きできますが、そのボリュームは各コンテナで同じまたは異なるパスにマウントできます。**Podが何らかの理由でノードから削除されると、emptyDirのデータは永久に削除されます。**したがって、EmptyDirは私たちのMySQLデータベースには適していません。
+`emptyDir`ボリュームは、Podがノードに割り当てられたときに最初に作成され、そのPodがそのノードで実行されている限り存在します。名前が示すように、emptyDirボリュームは最初は空です。Podのすべてのコンテナは、同じemptyDirボリュームの同じファイルを読み書きできますが、そのボリュームは各コンテナで同じまたは異なるパスにマウントできます。**Podが何らかの理由でノードから削除されると、emptyDirのデータは永久に削除されます。**したがって、EmptyDirは私たちのMySQLデータベースには適していません。
 
 これを実証するために、MySQLコンテナ内でシェルセッションを開始してテストファイルを作成してみましょう。その後、StatefulSetで実行されているPodを削除します。Podが永続ボリューム（PV）ではなくemptyDirを使用しているため、ファイルはPodの再起動後に残りません。まず、MySQLコンテナ内でemptyDir `/var/lib/mysql`パス（MySQLがデータベースファイルを保存する場所）にファイルを作成するコマンドを実行しましょう：
 
@@ -88,6 +88,7 @@ cat: /var/lib/mysql/test.txt: No such file or directory
 command terminated with exit code 1
 ```
 
-ご覧のとおり、`emptyDir`ボリュームは一時的なものであるため、`test.txt`ファイルはもう存在しません。次のセクションでは、同じ実験を行い、永続ボリューム（PV）が`test.txt`ファイルを保持し、Podの再起動や障害を乗り越えて存続することを実証します。
+ご覧のとおり、`emptyDir`ボリュームは一時的なものであるため、`test.txt`ファイルはもう存在しません。今後のセクションでは、同じ実験を行い、永続ボリューム（PV）が`test.txt`ファイルを保持し、Podの再起動や障害を乗り越えて存続することを実証します。
 
 次のページでは、KubernetesのストレージとAWSクラウドエコシステムとの統合に関する主要な概念について理解を深めます。
+

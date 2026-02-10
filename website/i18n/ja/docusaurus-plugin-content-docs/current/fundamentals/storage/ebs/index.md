@@ -3,7 +3,7 @@ title: Amazon EBS
 sidebar_position: 30
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Block Store による Amazon Elastic Kubernetes Service 上のワークロード向けの高性能ブロックストレージ。"
-kiteTranslationSourceHash: 51097ba837433f254d6682043e2d4996
+tmdTranslationSourceHash: 51097ba837433f254d6682043e2d4996
 ---
 
 ::required-time
@@ -30,4 +30,3 @@ $ prepare-environment fundamentals/storage/ebs
 - Kubernetes StatefulSets
 - EBS CSIドライバー
 - EBSボリュームを使用したStatefulSet
-

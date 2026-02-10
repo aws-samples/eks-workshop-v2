@@ -1,7 +1,7 @@
 ---
 title: "仕組み"
 sidebar_position: 30
-kiteTranslationSourceHash: 94ac3fa1cc182af13143ffc3e7df7f71
+tmdTranslationSourceHash: 94ac3fa1cc182af13143ffc3e7df7f71
 ---
 
 Kubernetesでは、他のPodに対する相対的な優先度をPodに割り当てることができます。Kubernetesスケジューラはこれらの優先度を使用して、より優先度の高いPodを収容するために優先度の低いPodを先取りします。これは`PriorityClass`リソースを通じて実現され、Podに割り当てることができる優先度値を定義します。さらに、デフォルトの`PriorityClass`をネームスペースに割り当てることができます。

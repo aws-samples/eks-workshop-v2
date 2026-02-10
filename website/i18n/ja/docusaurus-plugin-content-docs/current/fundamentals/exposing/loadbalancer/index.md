@@ -4,7 +4,7 @@ chapter: true
 sidebar_position: 30
 sidebar_custom_props: { "module": true }
 description: "AWSロードバランサーを管理して、Amazon Elastic Kubernetes Serviceのワークロードにトラフィックをルーティングします。"
-kiteTranslationSourceHash: 0cd27926f8b21560495db5c706fe4ec6
+tmdTranslationSourceHash: 566ba28a30cf59e7225d14d2c00ed04d
 ---
 
 ::required-time
@@ -40,9 +40,9 @@ spec:
     - port: 80
 ```
 
-アプリケーションの前にロードバランサーを配置する方法がシンプルなため、これは素晴らしいことです。サービス仕様は長年にわたってアノテーションと追加設定で拡張されてきました。もう1つの選択肢は、イングレスルールとイングレスコントローラーを使用して、外部トラフィックをKubernetesポッドにルーティングすることです。
+アプリケーションの前にロードバランサーを配置する方法がシンプルなため、これは素晴らしいことです。サービス仕様は長年にわたってアノテーションと追加設定で拡張されてきました。もう1つの選択肢は、Ingressルールとイングレスコントローラーを使用して、外部トラフィックをKubernetes Podにルーティングすることです。
 
-![IP モード](./assets/ui-nlb-instance.webp)
+![IP mode](/docs/fundamentals/exposing/loadbalancer/ui-nlb-instance.webp)
 
-このチャプターでは、レイヤー4ネットワークロードバランサーを使用して、EKSクラスターで実行されているアプリケーションをインターネットに公開する方法を紹介します。
+このチャプターでは、レイヤー4 Network Load Balancerを使用して、EKSクラスターで実行されているアプリケーションをインターネットに公開する方法を紹介します。
 

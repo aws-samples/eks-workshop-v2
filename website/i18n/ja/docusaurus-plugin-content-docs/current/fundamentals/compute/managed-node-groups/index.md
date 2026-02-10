@@ -1,23 +1,24 @@
 ---
 title: マネージドノードグループ
 sidebar_position: 10
-kiteTranslationSourceHash: b702281ad9210287f7862bdbaaf4c262
+tmdTranslationSourceHash: 164445147875a1ed08f67c28502a8175
 ---
 
-EKSクラスターには、Podがスケジュールされる1つ以上のEC2ノードが含まれています。EKSノードはAWSアカウント内で実行され、クラスターAPIサーバーエンドポイントを通じてクラスターのコントロールプレーンに接続します。ノードグループに1つ以上のノードをデプロイします。ノードグループは、EC2 Auto Scalingグループにデプロイされる1つ以上のEC2インスタンスです。
+EKS クラスターには、Pod がスケジュールされる 1 つ以上の EC2 ノードが含まれています。EKS ノードは AWS アカウント内で実行され、クラスター API サーバーエンドポイントを通じてクラスターのコントロールプレーンに接続します。ノードグループに 1 つ以上のノードをデプロイします。ノードグループは、EC2 Auto Scaling グループにデプロイされる 1 つ以上の EC2 インスタンスです。
 
-EKSノードは標準的なAmazon EC2インスタンスです。EC2の価格に基づいて課金されます。詳細は、[Amazon EC2の料金](https://aws.amazon.com/ec2/pricing/)を参照してください。
+EKS ノードは標準的な Amazon EC2 インスタンスです。EC2 の料金に基づいて課金されます。詳細については、[Amazon EC2 の料金](https://aws.amazon.com/ec2/pricing/)を参照してください。
 
-[Amazon EKSマネージドノードグループ](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html)は、Amazon EKSクラスター用のノードのプロビジョニングとライフサイクル管理を自動化します。これにより、新しいAMIやKubernetesバージョンのデプロイメントのローリングアップデートなどの運用アクティビティが大幅に簡素化されます。
+[Amazon EKS マネージドノードグループ](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html)は、Amazon EKS クラスター用のノードのプロビジョニングとライフサイクル管理を自動化します。これにより、新しい AMI や Kubernetes バージョンのデプロイメントのローリングアップデートなどの運用アクティビティが大幅に簡素化されます。
 
-![マネージドノードグループ](./assets/managed-node-groups.webp)
+![Managed Node Groups](/docs/fundamentals/compute/managed-node-groups/managed-node-groups.webp)
 
-Amazon EKSマネージドノードグループの利点には以下が含まれます：
+Amazon EKS マネージドノードグループを実行する利点には以下が含まれます：
 
-- Amazon EKSコンソール、`eksctl`、AWS CLI、AWS API、またはAWS CloudFormationとTerraformなどのインフラストラクチャアズコードツールを使用して、1つの操作でノードの作成、自動更新、または終了が可能
-- プロビジョニングされたノードは最新のAmazon EKS最適化AMIを使用して実行
-- MNGの一部としてプロビジョニングされたノードは、アベイラビリティーゾーン、CPU アーキテクチャ、インスタンスタイプなどのメタデータで自動的にタグ付けされる
-- ノードの更新と終了は自動的かつ丁寧にノードをドレインし、アプリケーションが利用可能な状態を維持することを保証
-- Amazon EKSマネージドノードグループの使用に追加料金はなく、プロビジョニングされたAWSリソースに対してのみ支払う
+- Amazon EKS コンソール、`eksctl`、AWS CLI、AWS API、または AWS CloudFormation や Terraform などのインフラストラクチャアズコードツールを使用して、1 つの操作でノードの作成、自動更新、または終了が可能
+- プロビジョニングされたノードは最新の Amazon EKS 最適化 AMI を使用して実行される
+- MNG の一部としてプロビジョニングされたノードは、アベイラビリティーゾーン、CPU アーキテクチャ、インスタンスタイプなどのメタデータで自動的にタグ付けされる
+- ノードの更新と終了は自動的かつ適切にノードをドレインし、アプリケーションが利用可能な状態を維持することを保証する
+- Amazon EKS マネージドノードグループの使用に追加料金はなく、プロビジョニングされた AWS リソースに対してのみ支払う
 
-このセクションのラボでは、EKSマネージドノードグループを使用してクラスターにコンピューティング能力を提供するさまざまな方法について説明します。
+このセクションのラボでは、EKS マネージドノードグループを使用してクラスターにコンピューティング容量を提供するさまざまな方法について説明します。
+

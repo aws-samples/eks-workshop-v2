@@ -3,7 +3,7 @@ title: "Amazon GuardDuty for EKS"
 sidebar_position: 50
 sidebar_custom_props: { "module": true }
 description: "Detect potentially suspicious activity in Amazon Elastic Kubernetes Service clusters with Amazon GuardDuty."
-kiteTranslationSourceHash: 1e21a74b10c998bd34364bedd021d9eb
+tmdTranslationSourceHash: 1e21a74b10c998bd34364bedd021d9eb
 ---
 
 ::required-time{estimatedLabExecutionTimeMinutes="20"}

@@ -3,7 +3,7 @@ title: "Cluster Access Management API"
 sidebar_position: 10
 sidebar_custom_props: { "module": true }
 description: "IAMエンティティを使用してAWS認証情報を管理し、ユーザーとグループにAmazon Elastic Kubernetes Serviceへのアクセスを提供します。"
-kiteTranslationSourceHash: 8bdc151830673a1edfa62df4bf11ebfe
+tmdTranslationSourceHash: 8bdc151830673a1edfa62df4bf11ebfe
 ---
 
 ::required-time

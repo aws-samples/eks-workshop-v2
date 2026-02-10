@@ -1,7 +1,7 @@
 ---
 title: "クラスターアクセスの管理"
 sidebar_position: 12
-kiteTranslationSourceHash: 47ef58479d59d40fc0b2c0f1c8e64c12
+tmdTranslationSourceHash: 47ef58479d59d40fc0b2c0f1c8e64c12
 ---
 
 Cluster Access Management APIの基本を理解したところで、実践的な活動を始めましょう。まず最初に、Cluster Access Management APIが利用可能になる前は、Amazon EKSは`aws-auth` ConfigMapを使用してクラスターへの認証とアクセス提供を行っていたことを知っておくことが重要です。Amazon EKSは現在、3つの異なる認証モードを提供しています：

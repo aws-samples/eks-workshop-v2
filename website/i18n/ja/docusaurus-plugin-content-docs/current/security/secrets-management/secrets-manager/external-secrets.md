@@ -1,7 +1,7 @@
 ---
 title: "External Secrets Operator"
 sidebar_position: 424
-kiteTranslationSourceHash: a83e79135004db35c75e04bc4266b948
+tmdTranslationSourceHash: a83e79135004db35c75e04bc4266b948
 ---
 
 次に、External Secrets operatorを使用したAWS Secrets Managerとの統合を探ってみましょう。これは既にEKSクラスタにインストールされています：

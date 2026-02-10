@@ -3,7 +3,7 @@ title: "クラスタオートスケーラー (CA)"
 sidebar_position: 10
 sidebar_custom_props: { "module": true }
 description: "クラスタオートスケーラーでAmazon Elastic Kubernetes Serviceのコンピュートを自動的に管理します。"
-kiteTranslationSourceHash: 52a7905108794621ca7ad7829dd71081
+tmdTranslationSourceHash: 52a7905108794621ca7ad7829dd71081
 ---
 
 ::required-time

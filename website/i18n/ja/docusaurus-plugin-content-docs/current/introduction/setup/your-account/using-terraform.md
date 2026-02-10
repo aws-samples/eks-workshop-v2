@@ -1,7 +1,7 @@
 ---
 title: Terraformを使用する
 sidebar_position: 30
-kiteTranslationSourceHash: 0e3724e9afa0ee9b592cd183d26f5329
+tmdTranslationSourceHash: 0e3724e9afa0ee9b592cd183d26f5329
 ---
 
 :::warning

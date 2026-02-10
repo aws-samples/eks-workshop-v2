@@ -1,7 +1,7 @@
 ---
 title: "紹介"
 sidebar_position: 21
-kiteTranslationSourceHash: f891bd52e91f7dbf2c8700666e52da5e
+tmdTranslationSourceHash: f891bd52e91f7dbf2c8700666e52da5e
 ---
 
 アーキテクチャの `carts` コンポーネントはストレージバックエンドとしてAmazon DynamoDBを使用しています。これは、Amazon EKSとの非リレーショナルデータベース統合でよく見られるユースケースです。現在デプロイされているcarts APIの方法では、EKSクラスタ内でコンテナとして実行されている[Amazon DynamoDBの軽量バージョン](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html)を使用しています。

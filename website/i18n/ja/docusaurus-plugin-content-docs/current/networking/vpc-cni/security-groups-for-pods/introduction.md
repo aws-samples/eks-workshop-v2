@@ -1,7 +1,7 @@
 ---
 title: "Introduction"
 sidebar_position: 10
-kiteTranslationSourceHash: 5d5cdf0aa50b19d179ab2651fb0e3e11
+tmdTranslationSourceHash: 5d5cdf0aa50b19d179ab2651fb0e3e11
 ---
 
 アーキテクチャの `catalog` コンポーネントは、ストレージバックエンドとしてMySQL データベースを使用しています。現在、カタログAPIはEKSクラスター内でPodとして実行されているデータベースとともにデプロイされています。

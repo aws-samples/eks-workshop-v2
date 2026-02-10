@@ -3,7 +3,7 @@ title: Amazon EFS
 sidebar_position: 30
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes Serviceのワークロード向けのサーバーレスで完全弾力的なファイルストレージをAmazon Elastic File Systemで実現。"
-kiteTranslationSourceHash: 9933fa49f44d9f120280c54b2bb9af48
+tmdTranslationSourceHash: 9933fa49f44d9f120280c54b2bb9af48
 ---
 
 ::required-time
@@ -33,4 +33,3 @@ $ prepare-environment fundamentals/storage/efs
 - KubernetesデプロイメントでEFSを使用した動的プロビジョニングを実装
 
 この実践的な体験を通じて、スケーラブルで永続的なストレージソリューションのためにAmazon EFSをAmazon EKSで効果的に使用する方法を学びます。
-

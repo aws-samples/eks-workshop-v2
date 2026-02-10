@@ -1,7 +1,7 @@
 ---
 title: "はじめに"
 sidebar_position: 10
-kiteTranslationSourceHash: 00133c10eccca5df1d8bbb396dac7ac9
+tmdTranslationSourceHash: ae393634b2df08c97fb378b53a9b884c
 ---
 
 最初に行うことは、クラスターにKubecostをインストールすることです。ラボの準備の一環として、AWS Load Balancer ControllerとEBS CSIドライバーが事前にインストールされ、Kubecostにイングレスとストレージを提供します。
@@ -71,6 +71,6 @@ Accept-Ranges: bytes
 ブラウザでURLを開いてKubecostにアクセスします：
 
 <Browser url='http://k8s-kubecost-kubecost-e83ecf8fc1-fc26f5c92767520f.elb.us-west-2.amazonaws.com:9090'>
-<img src={require('./assets/overview.webp').default}/>
+<img src={require('@site/static/docs/observability/kubecost/overview.webp').default}/>
 </Browser>
 

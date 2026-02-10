@@ -3,7 +3,7 @@ title: "EKSコンソールを表示"
 sidebar_position: 20
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes Serviceコンソールでのクラスターリソースの可視性を獲得する。"
-kiteTranslationSourceHash: 92d2125af80b7f62d4fa9165aa0849a4
+tmdTranslationSourceHash: 92d2125af80b7f62d4fa9165aa0849a4
 ---
 
 ::required-time
@@ -22,4 +22,3 @@ $ prepare-environment
 サンプルアプリケーションによって作成されたリソースを表示します。環境の準備中に作成された[RBACアクセス権限](https://docs.aws.amazon.com/eks/latest/userguide/view-kubernetes-resources.html#view-kubernetes-resources-permissions)を持つリソースのみが表示されることに注意してください。
 
 ![インサイト](/img/resource-view/eks-overview.jpg)
-

@@ -1,7 +1,7 @@
 ---
 title: "クラスターオーバープロビジョニング"
 sidebar_position: 50
-kiteTranslationSourceHash: d62623f459247d11cec4ad17320371d7
+tmdTranslationSourceHash: d62623f459247d11cec4ad17320371d7
 ---
 
 Kubernetes の [AWS 向けクラスターオートスケーラー (CA)](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md) は、[EKS ノードグループ](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html)の [AWS EC2 Auto Scaling グループ (ASG)](https://docs.aws.amazon.com/autoscaling/ec2/userguide/auto-scaling-groups.html) を設定し、スケジューリング保留中のポッドがある場合にクラスター内のノードをスケールします。

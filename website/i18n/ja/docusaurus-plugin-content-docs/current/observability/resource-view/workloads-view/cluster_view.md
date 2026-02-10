@@ -1,7 +1,7 @@
 ---
 title: "クラスター"
 sidebar_position: 10
-kiteTranslationSourceHash: b8bf92d069a536552d0a94d548469cc8
+tmdTranslationSourceHash: b8bf92d069a536552d0a94d548469cc8
 ---
 
 Kubernetesクラスターリソースを表示するには、<i>リソース</i>タブをクリックしてください。<i>クラスター</i>セクションを展開すると、クラスターの一部である複数のKubernetes APIリソースタイプを表示できます。クラスタービューでは、ワークロードを実行するノード、名前空間、APIサービスなどのクラスターアーキテクチャのすべてのコンポーネントの詳細が表示されます。
@@ -18,4 +18,3 @@ Kubernetesは、コンテナをポッドに配置することでワークロー�
 <strong>[名前空間](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces)</strong>は、異なるチームやプロジェクトがKubernetesクラスターを共有する場合に非常に役立つクラスターを整理するためのメカニズムです。サンプルアプリケーションでは、carts、checkout、catalog、assetsなどのマイクロサービスがすべて名前空間構造を使用して同じクラスターを共有しています。
 
 ![インサイト](/img/resource-view/cluster-ns.jpg)
-

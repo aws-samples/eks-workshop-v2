@@ -1,7 +1,7 @@
 ---
 title: "VPC設定の確認"
 sidebar_position: 54
-kiteTranslationSourceHash: 5f4c4f4a7ac5696ae2dc32d68169e2e8
+tmdTranslationSourceHash: 060991295af7b0ad6fa97095b2ec7e96
 ---
 
 アプリケーションポッド、kube-dnsサービス、CoreDNSポッド間のDNSトラフィックは、多くの場合、複数のノードやVPCサブネットを通過します。VPCレベルでDNSトラフィックが自由に流れることができることを確認する必要があります。
@@ -9,18 +9,18 @@ kiteTranslationSourceHash: 5f4c4f4a7ac5696ae2dc32d68169e2e8
 :::info
 ネットワークトラフィックをフィルタリングする2つの主なVPCコンポーネント：
 
-- セキュリティグループ
-- ネットワークACL
+- Security Groups
+- Network ACL
 
 :::
 
-ワーカーノードのセキュリティグループとサブネットのネットワークACLの両方が、DNSトラフィック（ポート53 UDP/TCP）を双方向で許可していることを確認する必要があります。
+ワーカーノードのSecurity GroupsとサブネットのNetwork ACLの両方が、DNSトラフィック（ポート53 UDP/TCP）を双方向で許可していることを確認する必要があります。
 
-### ステップ1 - ワーカーノードのセキュリティグループを特定する
+### ステップ1 - ワーカーノードのSecurity Groupsを特定する
 
-まず、クラスターワーカーノードに関連付けられているセキュリティグループを特定しましょう。
+まず、クラスターワーカーノードに関連付けられているSecurity Groupsを特定しましょう。
 
-クラスター作成時、EKSはクラスターエンドポイントと全てのマネージドノードの両方に関連付けられるクラスターセキュリティグループを作成します。追加のセキュリティグループが構成されていない場合、これがワーカーノードのトラフィックを制御する唯一のセキュリティグループです。
+クラスター作成時、EKSはクラスターエンドポイントと全てのManaged Nodesの両方に関連付けられるクラスターSecurity Groupを作成します。追加のSecurity Groupsが構成されていない場合、これがワーカーノードのトラフィックを制御する唯一のSecurity Groupです。
 
 ```bash timeout=30
 $ export CLUSTER_SG_ID=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --region $AWS_REGION --query "cluster.resourcesVpcConfig.clusterSecurityGroupId" --output text)
@@ -28,7 +28,7 @@ $ echo $CLUSTER_SG_ID
 sg-xxxxbbda9848bxxxx
 ```
 
-次に、ワーカーノードに設定されている追加のセキュリティグループがあるか確認します：
+次に、ワーカーノードに設定されている追加のSecurity Groupsがあるか確認します：
 
 ```bash timeout=30
 $ aws ec2 describe-instances \
@@ -46,50 +46,55 @@ $ aws ec2 describe-instances \
 +------------------------+
 ```
 
-ワーカーノードは`sg-xxxxbbda9848bxxxx`というクラスターセキュリティグループのみを使用していることがわかります。
+ワーカーノードは`sg-xxxxbbda9848bxxxx`というクラスターSecurity Groupのみを使用していることがわかります。
 
-### ステップ2 - ワーカーノードのセキュリティグループルールを確認する
+### ステップ2 - ワーカーノードのSecurity Groupルールを確認する
 
-ワーカーノードのセキュリティグループルールを調べてみましょう：
+ワーカーノードのSecurity Groupルールを調べてみましょう：
 
 ```bash timeout=30
 $ aws ec2 describe-security-group-rules \
     --filters Name=group-id,Values=$CLUSTER_SG_ID \
     --query 'SecurityGroupRules[*].{IsEgressRule:IsEgress,Protocol:IpProtocol,FromPort:FromPort,ToPort:ToPort,CidrIpv4:CidrIpv4,SourceSG:ReferencedGroupInfo.GroupId}' \
     --output table
------------------------------------------------------------------------------------------
-|                              DescribeSecurityGroupRules                               |
-+-----------+-----------+---------------+-----------+------------------------+----------+
-| CidrIpv4  | FromPort  | IsEgressRule  | Protocol  |       SourceSG         | ToPort   |
-+-----------+-----------+---------------+-----------+------------------------+----------+
-|  0.0.0.0/0|  -1       |  True         |  -1       |  None                  |  -1      |
-|  None     |  10250    |  False        |  tcp      |  sg-0fcabbda9848b346e  |  10250   |
-|  None     |  -1       |  False        |  -1       |  sg-09eca28cacae05248  |  -1      |
-|  None     |  443      |  False        |  tcp      |  sg-0fcabbda9848b346e  |  443     |
-+-----------+-----------+---------------+-----------+------------------------+----------+
+
+--------------------------------------------------------------------------------------------
+|                                DescribeSecurityGroupRules                                |
++--------------+-----------+---------------+-----------+------------------------+----------+
+|   CidrIpv4   | FromPort  | IsEgressRule  | Protocol  |       SourceSG         | ToPort   |
++--------------+-----------+---------------+-----------+------------------------+----------+
+|  None        |  -1       |  False        |  -1       |  sg-085fea48222262c24  |  -1      |
+|  10.52.0.0/16|  443      |  False        |  tcp      |  None                  |  443     |
+|  10.53.0.0/16|  443      |  False        |  tcp      |  None                  |  443     |
+|  0.0.0.0/0   |  -1       |  True         |  -1       |  None                  |  -1      |
+|  None        |  -1       |  False        |  -1       |  sg-094406793b2c02fb3  |  -1      |
+|  None        |  -1       |  True         |  -1       |  sg-085fea48222262c24  |  -1      |
++--------------+-----------+---------------+-----------+------------------------+----------+
+
 ```
 
 :::info
-3つのインバウンドルールと1つのアウトバウンドルールが存在します：
+4つのIngressルールと2つのEgressルールが存在し、以下の詳細があります：
 
-- すべてのIPアドレス（0.0.0.0/0）へのすべてのプロトコルとポートのアウトバウンド - IsEgressRuleの列の値がTrueであることに注目してください。
-- このセキュリティグループ内（sg-0fcabbda9848b346e）からのTCPポート10250へのインバウンド
-- このセキュリティグループ内（sg-0fcabbda9848b346e）からのTCPポート443へのインバウンド
-- ワーカーノードに関連付けられていない別のセキュリティグループ（sg-09eca28cacae05248）からのすべてのプロトコルとポートへのインバウンド
-
-:::
+- すべてのIPアドレス（0.0.0.0/0）へのすべてのプロトコルとポートのEgress - IsEgressRuleの列の値がTrueであることに注目してください。
+- Security Group（sg-085fea48222262c24）へのすべてのプロトコルとポートのEgress
+- Security Group（sg-085fea48222262c24）からのすべてのプロトコルとポートのIngress
+- CIDRブロック10.52.0.0/16からのTCPポート443へのIngress
+- CIDRブロック10.53.0.0/16からのTCPポート443へのIngress
+- Security Group（sg-094406793b2c02fb3）からのすべてのプロトコルとポートのIngress
+  :::
 
 注目すべき点として、DNSトラフィック（UDP/TCPポート53）を許可するルールが存在せず、これがDNS解決の失敗の原因です。
 
 ### 根本原因
 
-クラスターのセキュリティを強化する際、ユーザーがクラスターセキュリティグループのルールを過度に制限してしまうことがあります。クラスターの適切な操作のために、DNSトラフィックはクラスターセキュリティグループを通じて、またはワーカーノードに接続された別のセキュリティグループを通じて許可される必要があります。
+クラスターのセキュリティを強化する際、ユーザーがクラスターSecurity Groupのルールを過度に制限してしまうことがあります。クラスターの適切な操作のために、DNSトラフィックはクラスターSecurity Groupを通じて、またはワーカーノードに接続された別のSecurity Groupを通じて許可される必要があります。
 
-この場合、クラスターセキュリティグループはポート443と10250のみを許可し、DNSトラフィックをブロックしているため、名前解決のタイムアウトが発生しています。
+この場合、クラスターSecurity Groupはポート443と10250のみを許可し、DNSトラフィックをブロックしているため、名前解決のタイムアウトが発生しています。
 
 ### 解決策
 
-[EKSセキュリティグループの要件](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html)に従って、クラスターセキュリティグループ内のすべてのトラフィックを許可します：
+[EKSセキュリティグループの要件](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html)に従って、クラスターSecurity Group内のすべてのトラフィックを許可します：
 
 ```bash timeout=30 wait=5
 $ aws ec2 authorize-security-group-ingress --group-id $CLUSTER_SG_ID --protocol -1 --port -1 --source-group $CLUSTER_SG_ID
@@ -121,8 +126,8 @@ ui          ui-5f4d85f85f-xnh8q                  1/1     Running   0          50
 詳細については、[Amazon EKSセキュリティグループの要件](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html)を参照してください。
 :::
 
-:::info ネットワークACL
-このラボではセキュリティグループに焦点を当てていますが、ネットワークACLもEKSクラスターのトラフィックフローに影響を与える可能性があります。ネットワークACLの詳細については、[ネットワークアクセスコントロールリストでサブネットトラフィックを制御する](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html)を参照してください。
+:::info Network ACL
+このラボではSecurity Groupsに焦点を当てていますが、Network ACLもEKSクラスターのトラフィックフローに影響を与える可能性があります。Network ACLの詳細については、[ネットワークアクセスコントロールリストでサブネットトラフィックを制御する](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html)を参照してください。
 :::
 
 ### 結論
@@ -132,7 +137,7 @@ ui          ui-5f4d85f85f-xnh8q                  1/1     Running   0          50
 このラボでは、以下のことを行いました：
 
 1. EKSクラスターのDNS解決に影響する複数の問題を特定
-2. 各問題を診断するために体系的なトラブルシューティングアプローチをとる
+2. 各問題を診断するために体系的なトラブルシューティングアプローチに従う
 3. DNS機能を復元するために必要な修正を適用
 4. すべてのアプリケーションポッドが適切に動作していることを確認
 

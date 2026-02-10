@@ -1,7 +1,7 @@
 ---
 title: "AMPによるメトリクスの保存"
 sidebar_position: 20
-kiteTranslationSourceHash: 8b85f9cbd055ba79e7ffc2992392b609
+tmdTranslationSourceHash: 8b85f9cbd055ba79e7ffc2992392b609
 ---
 
 Amazon Managed Service for Prometheusワークスペースは既に作成されています。コンソールで確認することができます：
@@ -48,4 +48,3 @@ $ awscurl -X POST --region $AWS_REGION --service aps "${AMP_ENDPOINT}api/v1/quer
   ]
 }
 ```
-

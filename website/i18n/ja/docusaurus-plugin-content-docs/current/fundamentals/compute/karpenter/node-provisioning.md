@@ -1,7 +1,7 @@
 ---
 title: "自動ノードプロビジョニング"
 sidebar_position: 40
-kiteTranslationSourceHash: a5d1f58dfb782facf8b68b3bfbaee988
+tmdTranslationSourceHash: a5d1f58dfb782facf8b68b3bfbaee988
 ---
 
 スケジュールできないポッドのニーズに応じて、Karpenterが適切なサイズのEC2インスタンスを動的にプロビジョニングする方法を確認していきましょう。これにより、EKSクラスター内の未使用のコンピュートリソースを削減することができます。

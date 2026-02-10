@@ -1,10 +1,8 @@
 ---
 title: "アプリケーションメトリクス"
 sidebar_position: 50
-kiteTranslationSourceHash: 934ca84689ea0251dc4a747720a25fc7
+tmdTranslationSourceHash: d0902eea5e06ee6c0776e4e666b31ea3
 ---
-
-import dashboard from './assets/cw-dashboard.webp';
 
 このセクションでは、ワークロードによって公開されているメトリクスの洞察を得て、Amazon CloudWatch Insights Prometheusを使用してこれらのメトリクスを可視化する方法を見ていきます。これらのメトリクスの例としては以下のようなものがあります：
 
@@ -46,7 +44,7 @@ nodejs_heap_size_total_bytes 48668672
 [...]
 ```
 
-すでに展開したコレクターはDaemonSetであり、すべてのノードで実行されていることを思い出してください。クラスター内のPodからメトリクスをスクレイピングする場合、これは重複したメトリクスが発生するため望ましくありません。今回は、単一のレプリカを持つDeploymentとして実行される2番目のコレクターを展開します。
+すでにデプロイしたコレクターはDaemonSetであり、すべてのノードで実行されていることを思い出してください。クラスター内のPodからメトリクスをスクレイピングする場合、これは重複したメトリクスが発生するため望ましくありません。今回は、単一のレプリカを持つDeploymentとして実行される2番目のコレクターをデプロイします。
 
 <details>
   <summary>完全なコレクターマニフェストを展開</summary>
@@ -139,13 +137,13 @@ CloudWatchコンソールを開いて、ダッシュボードセクションに�
 
 ダッシュボード**Order-Service-Metrics**を選択して、ダッシュボード内のパネルを確認します：
 
-![アプリケーションメトリクス](./assets/dashboard-metrics.webp)
+![Application Metrics](/docs/observability/container-insights/dashboard-metrics.webp)
 
-「Orders by Product」パネルのタイトルにカーソルを合わせ、「編集」ボタンをクリックすることで、このダッシュボードがCloudWatchでどのようにクエリを行うように構成されているかを確認できます：
+「Orders by Product」パネルのタイトルにカーソルを合わせて「Edit」ボタンをクリックすることで、ダッシュボードがCloudWatchをクエリするように構成されている方法を確認できます：
 
-![パネル編集](./assets/dashboard-edit-metrics.webp)
+![Edit Panel](/docs/observability/container-insights/dashboard-edit-metrics.webp)
 
-このパネルを作成するために使用されたクエリはページの下部に表示されています：
+このパネルを作成するために使用されたクエリはページの下部に表示されます：
 
 ```text
 SELECT COUNT(watch_orders_total) FROM "ContainerInsights/Prometheus" WHERE productId != '*' GROUP BY productId

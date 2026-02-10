@@ -1,7 +1,7 @@
 ---
 title: "セットアップ"
 sidebar_position: 50
-kiteTranslationSourceHash: 6f6483fb0c8bfdb3081d5416c314963a
+tmdTranslationSourceHash: eb35c190aa687bbad32f257a72d48394
 ---
 
 Helmチャートを使用してDRY（Don't Repeat Yourself）アプローチでArgo CDアプリケーションのテンプレートを作成します：
@@ -64,6 +64,6 @@ $ argocd app wait apps --timeout 120
 
 Argo CD UIを開いて、メインの「Applications」ページに移動します。私たちのApp of Apps構成はデプロイされ同期されていますが、UIコンポーネントを除くすべてのワークロードアプリは「Unknown」とマークされています。
 
-![argocd-ui-apps.png](assets/argocd-ui-apps-unknown.webp)
+![argocd-ui-apps.png](/docs/automation/gitops/argocd/app-of-apps/argocd-ui-apps-unknown.webp)
 
-次のステップで、ワークロードの構成をデプロイします。
+次のステップでワークロードの構成をデプロイします。

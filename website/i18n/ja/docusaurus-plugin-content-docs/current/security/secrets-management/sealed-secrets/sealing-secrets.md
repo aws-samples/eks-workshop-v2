@@ -1,7 +1,7 @@
 ---
 title: "シークレットのシール"
 sidebar_position: 433
-kiteTranslationSourceHash: 0d58a7c004d07480c7b8c02ef63cf83c
+tmdTranslationSourceHash: 0d58a7c004d07480c7b8c02ef63cf83c
 ---
 
 ### カタログPodの探索
@@ -115,4 +115,3 @@ $ kubectl rollout status -n catalog deployment/catalog --timeout 30s
 ```
 
 SealedSecretリソースである**catalog-sealed-db**は、クラスターにデプロイされた他のKubernetesリソース（DaemonSet、Deployment、ConfigMapなど）に関するYAMLマニフェストとともにGitリポジトリに安全に保存できます。その後、GitOpsワークフローを使用して、これらのリソースをクラスターにデプロイする管理ができます。
-

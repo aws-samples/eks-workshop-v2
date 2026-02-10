@@ -1,7 +1,7 @@
 ---
 title: "PodStuck - ContainerCreating"
 sidebar_position: 73
-kiteTranslationSourceHash: ca6702af7a03ccc3060495f71996fd4e
+tmdTranslationSourceHash: ca6702af7a03ccc3060495f71996fd4e
 ---
 
 このセクションでは、ContainerCreating状態で停止しているポッドのトラブルシューティング方法について学びます。まず、デプロイメントが作成されているかを確認して、トラブルシューティングのシナリオを開始しましょう。

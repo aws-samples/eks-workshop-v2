@@ -1,7 +1,7 @@
 ---
 title: "Compositions"
 sidebar_position: 30
-kiteTranslationSourceHash: 37595511877026b26658b23b9abddbbf
+tmdTranslationSourceHash: 37595511877026b26658b23b9abddbbf
 ---
 
 Crossplaneは個々のクラウドリソースのプロビジョニングに加えて、Compositionsと呼ばれるより高いレベルの抽象化を提供します。Compositionsを使用することで、ユーザーはクラウドリソースをデプロイするための独自のテンプレートを作成できます。この機能は、インフラストラクチャ全体で特定の要件を適用する必要がある組織にとって特に有用です。例えば：

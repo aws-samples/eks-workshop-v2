@@ -1,7 +1,7 @@
 ---
 title: "aws-auth アイデンティティマッピングからの移行"
 sidebar_position: 20
-kiteTranslationSourceHash: '27e2f94a480c0774ad93f80a8b436f68'
+tmdTranslationSourceHash: "27e2f94a480c0774ad93f80a8b436f68"
 ---
 
 Amazon EKS を既に使用しているお客様は、クラスターへの IAM プリンシパルアクセスを管理するための `aws-auth` ConfigMap メカニズムに慣れているかもしれません。このセクションでは、この古いメカニズムからクラスターアクセスエントリを使用する方法への移行方法を示します。
@@ -88,4 +88,3 @@ carts-dynamodb-d9f9f48b-k5v99   1/1     Running   0          15d
 ```
 
 これらの手順に従うことで、IAM ロールを `aws-auth` ConfigMap から、Amazon EKS クラスターへのアクセスをより合理的に管理する新しいクラスターアクセス管理 API の使用に正常に移行しました。
-

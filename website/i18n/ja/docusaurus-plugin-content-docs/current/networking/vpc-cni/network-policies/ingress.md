@@ -1,7 +1,7 @@
 ---
 title: "Implementing Ingress Controls"
 sidebar_position: 80
-kiteTranslationSourceHash: 5e7b8c2d4eeeec35a7ce285e35982319
+tmdTranslationSourceHash: 5e7b8c2d4eeeec35a7ce285e35982319
 ---
 
 <img src={require('@site/static/img/sample-app-screens/architecture.webp').default}/>

@@ -3,7 +3,7 @@ title: FSx for NetApp ONTAP
 sidebar_position: 50
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes Service上のワークロードのためにAmazon FSx for NetApp ONTAPによる完全管理型共有ストレージ。"
-kiteTranslationSourceHash: d91a0fa0e676536bceca6c2b324434de
+tmdTranslationSourceHash: d91a0fa0e676536bceca6c2b324434de
 ---
 
 ::required-time{estimatedLabExecutionTimeMinutes="60"}

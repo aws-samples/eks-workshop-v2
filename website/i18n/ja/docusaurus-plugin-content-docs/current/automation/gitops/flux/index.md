@@ -3,7 +3,7 @@ title: "Flux"
 sidebar_position: 2
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes Serviceでのフラックスを使用した継続的かつ段階的なデリバリーを実装します。"
-kiteTranslationSourceHash: 1d05d9460507fed9d11255be1c07ee97
+tmdTranslationSourceHash: 1d05d9460507fed9d11255be1c07ee97
 ---
 
 ::required-time

@@ -1,7 +1,7 @@
 ---
 title: "はじめに"
 sidebar_position: 10
-kiteTranslationSourceHash: d6b9b2ee6767fc60ab0e6e1591e31905
+tmdTranslationSourceHash: d6b9b2ee6767fc60ab0e6e1591e31905
 ---
 
 まずはhelmを使ってAWS Load Balancer controllerをインストールしましょう：
@@ -40,4 +40,3 @@ $ kubectl get svc -n ui
 NAME   TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
 ui     ClusterIP   10.100.221.103   <none>        80/TCP    29m
 ```
-

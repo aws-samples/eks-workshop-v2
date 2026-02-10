@@ -1,7 +1,7 @@
 ---
 title: "CAによるスケーリング"
 sidebar_position: 40
-kiteTranslationSourceHash: '88e30a6e724cb75c453a0a55ad3c9524'
+tmdTranslationSourceHash: "88e30a6e724cb75c453a0a55ad3c9524"
 ---
 
 このセクションでは、アプリケーションコンポーネントのすべてのレプリカ数を4に増やします。これにより、クラスターで利用可能なリソースよりも多くのリソースが消費され、より多くのコンピュートリソースのプロビジョニングがトリガーされます。

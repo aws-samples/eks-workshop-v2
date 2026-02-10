@@ -1,7 +1,7 @@
 ---
 title: "シナリオのセットアップ"
 sidebar_position: 51
-kiteTranslationSourceHash: 3ec9b4414036461ebd38ff6e6e06b60c
+tmdTranslationSourceHash: 3ec9b4414036461ebd38ff6e6e06b60c
 ---
 
 クラスター内のDNS解決は、複数の構成オプションの影響を受ける可能性があり、サービス通信を妨げることがあります。このモジュールでは、EKSクラスターでよく遭遇するDNS関連の問題をシミュレートします。

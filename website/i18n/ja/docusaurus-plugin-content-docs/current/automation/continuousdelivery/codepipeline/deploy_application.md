@@ -1,7 +1,7 @@
 ---
 title: "アプリケーションのデプロイ"
 sidebar_position: 30
-kiteTranslationSourceHash: 188c192eaffaf1cc76dac73f858d8fc9
+tmdTranslationSourceHash: 48138a90920964475bfb4a0cd93f4fc2
 ---
 
 アプリケーションをデプロイする前に、既存のUIコンポーネントを削除し、名前空間を再作成しましょう：
@@ -28,7 +28,7 @@ $ while [[ "$(aws codepipeline list-pipeline-executions --pipeline-name ${EKS_CL
 
 完了すると、パイプラインのステージが成功したことが表示されます。
 
-![パイプライン完了](./assets/pipeline-complete.webp)
+![パイプライン完了](/docs/automation/continuousdelivery/codepipeline/pipeline-complete.webp)
 
 それでは、パイプラインによって行われた変更を確認しましょう。まず、ECRリポジトリを確認できます：
 
@@ -40,7 +40,7 @@ $ while [[ "$(aws codepipeline list-pipeline-executions --pipeline-name ${EKS_CL
 
 リポジトリ `retail-store-sample-ui` を開き、プッシュされたイメージを確認します。
 
-![イメージ 1](assets/ecr_image.webp)
+![イメージ 1](/docs/automation/continuousdelivery/codepipeline/ecr_image.webp)
 
 また、クラスターにHelmリリースがインストールされていることも確認できます：
 
@@ -77,7 +77,6 @@ $ kubectl get deployment -n ui ui -o json | jq -r '.spec.template.spec.container
 
 また、`deploy_eks` アクションをクリックして、ログなどの詳細情報を表示することもできます：
 
-![パイプラインデプロイ詳細](assets/pipeline-deploy-detail.webp)
+![パイプラインデプロイ詳細](/docs/automation/continuousdelivery/codepipeline/pipeline-deploy-detail.webp)
 
 これで、アプリケーションコンテナイメージをビルドし、Helmチャートを使用してEKSクラスターにデプロイするパイプラインを正常に作成しました。
-

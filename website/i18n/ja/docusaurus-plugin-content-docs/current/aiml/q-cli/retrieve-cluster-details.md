@@ -1,7 +1,7 @@
 ---
 title: "クラスターの詳細を取得する"
 sidebar_position: 21
-kiteTranslationSourceHash: 536f30458507e29f7a4335e4d4f8394c
+tmdTranslationSourceHash: 536f30458507e29f7a4335e4d4f8394c
 ---
 
 このセクションでは、Amazon Q CLIと[Amazon EKS用MCPサーバー](https://awslabs.github.io/mcp/servers/eks-mcp-server/)を使用して、自然言語コマンドでEKSクラスターの詳細を取得します。
@@ -230,4 +230,3 @@ Q CLIセッションを終了するには、次のように入力します：
 ```
 
 次のセクションでは、クラスターのトラブルシューティングにAmazon Q CLIを使用する方法を探ります。
-

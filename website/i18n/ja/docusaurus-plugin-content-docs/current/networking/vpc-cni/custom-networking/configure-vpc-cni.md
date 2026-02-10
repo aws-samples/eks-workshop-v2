@@ -1,7 +1,7 @@
 ---
 title: "Amazon VPC CNIの設定"
 sidebar_position: 10
-kiteTranslationSourceHash: e96a86fc4472ec29b1d77c88fbef5105
+tmdTranslationSourceHash: e96a86fc4472ec29b1d77c88fbef5105
 ---
 
 まずはAmazon VPC CNIを設定していきましょう。私たちのVPCは、`100.64.0.0/16`範囲のセカンダリCIDRを追加して再構成されています：
@@ -34,7 +34,7 @@ $ echo "The secondary subnet in AZ $SUBNET_AZ_2 is $SECONDARY_SUBNET_2"
 $ echo "The secondary subnet in AZ $SUBNET_AZ_3 is $SECONDARY_SUBNET_3"
 ```
 
-カスタムネットワーキングを有効にするには、aws-node DaemonSetの`AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG`環境変数を_true_に設定する必要があります。
+カスタムネットワーキングを有効にするには、aws-node DaemonSetの`AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG`環境変数を*true*に設定する必要があります。
 
 ```bash wait=60
 $ kubectl set env daemonset aws-node -n kube-system AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG=true

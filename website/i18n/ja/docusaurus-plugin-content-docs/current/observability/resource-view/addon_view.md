@@ -1,7 +1,7 @@
 ---
 title: "アドオン"
 sidebar_position: 20
-kiteTranslationSourceHash: e8980a5b478431de18d3b9ead0981b91
+tmdTranslationSourceHash: e8980a5b478431de18d3b9ead0981b91
 ---
 
 EKSアドオンを使用すると、Kubernetesアプリケーションをサポートする主要な機能を提供する運用ソフトウェア、つまりアドオンの設定、デプロイ、更新を行うことができます。これらのアドオンには、Amazon VPC CNIなどのクラスターネットワーク用の重要なツールや、オブザーバビリティ、管理、スケーリング、セキュリティのための運用ソフトウェアが含まれます。アドオンは基本的に、Kubernetesアプリケーションの運用をサポートするソフトウェアであり、アプリケーション自体に特化したものではありません。

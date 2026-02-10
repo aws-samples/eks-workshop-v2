@@ -4,7 +4,7 @@ chapter: true
 sidebar_position: 40
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes Service で Ingress API を使用して、外部世界に HTTP および HTTPS ルートを公開します。"
-kiteTranslationSourceHash: 72d939af908c33198aba9c59be5e701d
+tmdTranslationSourceHash: 72d939af908c33198aba9c59be5e701d
 ---
 
 ::required-time
@@ -29,4 +29,3 @@ $ prepare-environment exposing/ingress
 Kubernetes Ingress は、クラスターで実行されている Kubernetes サービスへの外部または内部 HTTP(S) アクセスを管理できる API リソースです。Amazon Elastic Load Balancing Application Load Balancer (ALB) は、アプリケーション層（レイヤー 7）でリージョン内の複数のターゲット（Amazon EC2 インスタンスなど）間で受信トラフィックをロードバランスする一般的な AWS サービスです。ALB は、ホストまたはパスベースのルーティング、TLS（Transport Layer Security）ターミネーション、WebSockets、HTTP/2、AWS WAF（Web Application Firewall）統合、統合されたアクセスログ、およびヘルスチェックなど、複数の機能をサポートしています。
 
 この演習では、Kubernetes ingress モデルを使用して ALB でサンプルアプリケーションを公開します。
-

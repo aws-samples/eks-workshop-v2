@@ -1,7 +1,7 @@
 ---
 title: "HPAの設定"
 sidebar_position: 10
-kiteTranslationSourceHash: 7b21bff45ccd701d11889828ddeb5995
+tmdTranslationSourceHash: 7b21bff45ccd701d11889828ddeb5995
 ---
 
 現在、クラスターには水平ポッド自動スケーリングを可能にするリソースはなく、以下のコマンドで確認できます：

@@ -1,7 +1,7 @@
 ---
 title: "インスタンスタイプの多様化"
 sidebar_position: 10
-kiteTranslationSourceHash: 1d7430c7f901a6a3774860c8be3d1e05
+tmdTranslationSourceHash: 1d7430c7f901a6a3774860c8be3d1e05
 ---
 
 [Amazon EC2 Spot Instances](https://aws.amazon.com/ec2/spot/)は、AWS クラウドで利用可能な余剰コンピューティング容量をオンデマンド価格と比較して大幅な割引で提供します。EC2 が容量を必要とする場合、EC2 は2分間の通知でSpot インスタンスを中断することがあります。さまざまな耐障害性と柔軟性のあるアプリケーションにSpot インスタンスを使用できます。例としては、分析、コンテナ化されたワークロード、高性能コンピューティング(HPC)、ステートレスなウェブサーバー、レンダリング、CI/CD、その他のテストや開発ワークロードなどがあります。

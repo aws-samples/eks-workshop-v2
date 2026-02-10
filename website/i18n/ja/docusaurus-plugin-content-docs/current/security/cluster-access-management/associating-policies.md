@@ -1,7 +1,7 @@
 ---
 title: "アクセスポリシーの関連付け"
 sidebar_position: 13
-kiteTranslationSourceHash: ba70c54bd69ec0917ba9964b493675fa
+tmdTranslationSourceHash: ba70c54bd69ec0917ba9964b493675fa
 ---
 
 `STANDARD`タイプのアクセスエントリに対して、1つまたは複数のアクセスポリシーを割り当てることができます。Amazon EKSは、他のタイプのアクセスエントリに対して、クラスター内で正常に機能するために必要な権限を自動的に付与します。Amazon EKSアクセスポリシーには、IAM権限ではなく、Kubernetes権限が含まれています。アクセスポリシーをアクセスエントリに関連付ける前に、各アクセスポリシーに含まれるKubernetes権限を十分に理解しておいてください。

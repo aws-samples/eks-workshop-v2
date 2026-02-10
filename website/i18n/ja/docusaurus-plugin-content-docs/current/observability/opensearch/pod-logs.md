@@ -1,7 +1,7 @@
 ---
 title: "Podログ記録"
 sidebar_position: 30
-kiteTranslationSourceHash: fb5cf62de87f74cff880c49677db03d5
+tmdTranslationSourceHash: 46344f2c19983ecbad56db9c77b46649
 ---
 
 このセクションでは、Podログをどのように OpenSearch にエクスポートするかを示します。[AWS for Fluent Bit](https://github.com/aws/aws-for-fluent-bit) をデプロイしてPodログを OpenSearch にエクスポートし、ログエントリを生成して OpenSearch Pod ログダッシュボードを探索します。
@@ -24,7 +24,7 @@ Kubernetes 自体は、ログを収集して保存するためのネイティブ
 
 以下の図は、このセクションのセットアップの概要を示しています。Fluent Bit は `opensearch-exporter` ネームスペースにデプロイされ、Pod ログを OpenSearch ドメインに転送するように設定されます。Pod ログは OpenSearch の `eks-pod-logs` インデックスに保存されます。以前に読み込んだ OpenSearch ダッシュボードを使用して Pod ログを検査します。
 
-![Pod logs to OpenSearch](./assets/eks-pod-logs-overview.webp)
+![Pod logs to OpenSearch](/docs/observability/opensearch/eks-pod-logs-overview.webp)
 
 Fluent Bit を [Daemon Set](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) としてデプロイし、OpenSearch ドメインにPodログを送信するように設定します。基本的な設定は [こちら](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/config/fluentbit-values.yaml) で入手できます。以前に取得した OpenSearch の認証情報を使用して Fluent Bit を設定します。最後のコマンドは、Fluent Bit が3つのクラスタノードのそれぞれに1つの Pod で実行されていることを確認します。
 
@@ -100,7 +100,7 @@ Password: <password>
 4. [下部セクション] 最新のメッセージが最初に表示されるデータテーブル。ストリーム名（`stdout` と `stderr`）は、Pod 名などの詳細と共に表示されます。デモンストレーションのため、このセクションはフィルタリングされて `ui` ネームスペースからのログのみを表示しています
 5. [下部セクション] 個々のポッドから収集されたログメッセージ。この例では、表示されている最新のログメッセージは `2023-11-07T02:05:10.616Z  INFO 1 --- [           main] c.a.s.u.UiApplication                    : Started UiApplication in 5.917 seconds (process running for 7.541)` であり、これは前のステップで `kubectl logs -n ui deployment/ui` を実行した際の出力の最後の行と一致します
 
-![Pod logging dashboard](./assets/pod-logging-dashboard.webp)
+![Pod logging dashboard](/docs/observability/opensearch/pod-logging-dashboard.webp)
 
 ログエントリをドリルダウンして完全なJSON ペイロードを確認できます：
 
@@ -109,5 +109,4 @@ Password: <password>
 3. `log` 属性には、ポッドによって生成されたログメッセージが含まれています
 4. Pod名、ネームスペース、Podラベルを含むログメッセージに関するメタデータが含まれています
 
-![Pod logging detail](./assets/pod-logging-detail.webp)
-
+![Pod logging detail](/docs/observability/opensearch/pod-logging-detail.webp)

@@ -1,7 +1,7 @@
 ---
-title: "Karpenter Setup"
+title: "コンピューティングのプロビジョニング"
 sidebar_position: 20
-kiteTranslationSourceHash: d3e1d9c36ab01eadff0094018559d3b2
+tmdTranslationSourceHash: d9edd002353264f2076e74e0beb7b296
 ---
 
 このセクションでは、Inferentiaおよび Trainium EC2インスタンスの作成を可能にするようにKarpenterを構成します。Karpenterはinf2またはtrn1インスタンスを必要とする保留中のPodを検出できます。その後、Karpenterは必要なインスタンスを起動してPodをスケジュールします。
@@ -10,7 +10,7 @@ kiteTranslationSourceHash: d3e1d9c36ab01eadff0094018559d3b2
 Karpenterの詳細については、このワークショップで提供されている[Karpenterモジュール](../../fundamentals/compute/karpenter/index.md)で学ぶことができます。
 :::
 
-KarpenterはEKSクラスターにインストールされており、デプロイメントとして実行されています：
+KarpenterはEKSクラスターにインストールされており、Deploymentとして実行されています：
 
 ```bash
 $ kubectl get deployment -n kube-system
@@ -34,3 +34,4 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/nodepool 
 ```
 
 これでNodePoolがトレーニングとインフェレンスPodの作成準備が整いました。
+

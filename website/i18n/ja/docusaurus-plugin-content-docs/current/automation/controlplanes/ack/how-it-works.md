@@ -1,7 +1,7 @@
 ---
 title: "ACKの仕組み"
 sidebar_position: 5
-kiteTranslationSourceHash: dab1dfb1b518410df47bf95ab800501e
+tmdTranslationSourceHash: dab1dfb1b518410df47bf95ab800501e
 ---
 
 :::info
@@ -17,4 +17,3 @@ $ kubectl get crd
 ```
 
 このコマンドは、ACKやDynamoDBに関連するものを含め、クラスター内のすべてのカスタムリソース定義（CRD）を表示します。
-

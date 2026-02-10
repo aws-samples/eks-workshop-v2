@@ -1,7 +1,7 @@
 ---
 title: "External DNS"
 sidebar_position: 30
-kiteTranslationSourceHash: b7f399a9ad32bbe99ece1082753fcd42
+tmdTranslationSourceHash: b7f399a9ad32bbe99ece1082753fcd42
 ---
 
 [ExternalDNS](https://github.com/kubernetes-sigs/external-dns)はKubernetesコントローラーで、クラスターのサービスとイングレス用のDNSレコードを自動的に管理します。KubernetesリソースとAWS Route 53などのDNSプロバイダーとの間の橋渡しとして機能し、DNSレコードがクラスターの状態と同期されるようにします。ロードバランサーにDNSエントリを使用することで、自動生成されたホスト名の代わりに人間が読みやすく、覚えやすいアドレスを提供し、組織のブランディングに合わせたドメイン名でサービスを簡単にアクセスおよび認識できるようにします。

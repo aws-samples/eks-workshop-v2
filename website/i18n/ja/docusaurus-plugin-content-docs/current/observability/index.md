@@ -2,7 +2,7 @@
 title: "Observability"
 sidebar_position: 10
 weight: 10
-kiteTranslationSourceHash: 9d1b63560b16ed9866fe858b2c3e3a31
+tmdTranslationSourceHash: '0fb3e01c3e769a70ad6db087581e176d'
 ---
 
 オブザーバビリティは、適切に設計されたEKS環境の基本的な要素です。AWSはEKS環境のモニタリング、ロギング、アラーミングのためのネイティブ（CloudWatch）およびオープンソースのマネージドソリューション（Amazon Managed Service for Prometheus、Amazon Managed Grafana、AWS Distro for OpenTelemetry）を提供しています。
@@ -26,7 +26,6 @@ AWSオブザーバビリティ機能についてさらに詳しく知りたい�
 AWS環境のオブザーバビリティをセットアップするための意見を持ったインフラストラクチャーアズコード（IaC）モジュール群については、[AWS Observability Accelerator for CDK](https://aws-observability.github.io/cdk-aws-observability-accelerator/)および[AWS Observability Accelerator for Terraform](https://aws-observability.github.io/terraform-aws-observability-accelerator/)をご覧ください。これらのモジュールはAmazon CloudWatchなどのAWSネイティブサービスや、Amazon Managed Service for Prometheus、Amazon Managed Grafana、AWS Distro for OpenTelemetry（ADOT）などのAWSマネージドオブザーバビリティサービスと連携します。
 :::
 
-![AWS Native Observability](./assets/cloud-native-architecture.webp)
+![AWS Native Observability](/docs/observability/cloud-native-architecture.webp)
 
-![Open Source Managed Observability ](./assets/oss-architecture.webp)
-
+![Open Source Managed Observability ](/docs/observability/oss-architecture.webp)

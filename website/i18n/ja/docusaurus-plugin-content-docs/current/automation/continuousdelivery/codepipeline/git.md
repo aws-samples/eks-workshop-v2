@@ -1,11 +1,11 @@
 ---
 title: "Gitリポジトリ"
 sidebar_position: 10
-kiteTranslationSourceHash: c62b494fcd4d8e73bd06482e73ffc5cd
+tmdTranslationSourceHash: c62b494fcd4d8e73bd06482e73ffc5cd
 ---
 
 :::note
-CodePipelineは、AWS CodeConnectionsを通じてGitHubやGitLab、Bitbucketなどのソースをサポートしています。実際のアプリケーションでは、これらのソースを使用するべきです。しかし、このラボでは簡単にするためにS3をソースリポジトリとして使用します。
+CodePipelineはAWS CodeConnectionsを通じてGitHub、GitLab、およびBitbucketをGitベースのソースとしてサポートしています。実際のアプリケーションでは、これらのソースを使用するべきです。しかし、このラボでは簡単にするためにS3をソースリポジトリとして使用します。
 :::
 
 このモジュールではS3をソースアクションとして使用し、[git-remote-s3](https://github.com/awslabs/git-remote-s3?tab=readme-ov-file#repo-as-s3-source-for-aws-codepipeline)ライブラリを使用して、Web IDE内の`git`を通じてそのバケットにデータを取り込みます。

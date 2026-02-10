@@ -3,7 +3,7 @@ title: スポットインスタンス
 sidebar_position: 30
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes Serviceで Amazon EC2 スポットインスタンスの割引を活用しましょう。"
-kiteTranslationSourceHash: e90f38c68730f3a44396b0fccc001b71
+tmdTranslationSourceHash: e90f38c68730f3a44396b0fccc001b71
 ---
 
 ::required-time
