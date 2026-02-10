@@ -2,7 +2,7 @@
 title: "Argo CD"
 sidebar_position: 3
 sidebar_custom_props: { "module": true }
-description: "Declarative, GitOps continuous delivery with ArgoCD on Amazon Elastic Kubernetes Service."
+description: "Declarative, GitOps continuous delivery with Argo CD on Amazon Elastic Kubernetes Service."
 ---
 
 ::required-time
@@ -16,8 +16,8 @@ $ prepare-environment automation/gitops/argocd
 
 This will make the following changes to your lab environment:
 
-- Create an AWS CodeCommit repository
-- Create an IAM user and SSH key to authenticate to the repository
+- Install the AWS Load Balancer controller in the Amazon EKS cluster
+- Install the EKS managed addon for the EBS CSI driver
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/automation/gitops/argocd/.workshop/terraform).
 

@@ -38,12 +38,12 @@ variable "load_balancer_controller_chart_version" {
   description = "The chart version of aws-load-balancer-controller to use"
   type        = string
   # renovate-helm: depName=aws-load-balancer-controller
-  default = "1.13.3"
+  default = "1.14.0"
 }
 
 variable "external_dns_chart_version" {
   description = "The chart version of external-dns to use"
   type        = string
-  # renovate-helm: depName=external-dns
-  default = "1.16.1"
+  # renovate-helm: depName=external-dns registryUrl=https://kubernetes-sigs.github.io/external-dns
+  default = "1.19.0"
 }

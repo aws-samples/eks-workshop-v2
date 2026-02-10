@@ -40,18 +40,18 @@ Events:
   Type     Reason     Age                    From               Message
   ----     ------     ----                   ----               -------
   Normal   Scheduled  5m15s                  default-scheduler  Successfully assigned default/ui-private-7655bf59b9-jprrj to ip-10-42-33-232.us-west-2.compute.internal
-  Normal   Pulling    3m53s (x4 over 5m15s)  kubelet            Pulling image "1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.0.0"
-  Warning  Failed     3m53s (x4 over 5m14s)  kubelet            Failed to pull image "1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.0.0": failed to pull and unpack image "1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.0.0": failed to resolve reference "1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.0.0": unexpected status from HEAD request to https:/"1234567890.dkr.ecr.us-west-2.amazonaws.com/v2/retail-sample-app-ui/manifests/1.0.0: 403 Forbidden
+  Normal   Pulling    3m53s (x4 over 5m15s)  kubelet            Pulling image "1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.2.1"
+  Warning  Failed     3m53s (x4 over 5m14s)  kubelet            Failed to pull image "1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.2.1": failed to pull and unpack image "1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.2.1": failed to resolve reference "1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.2.1": unexpected status from HEAD request to https:/"1234567890.dkr.ecr.us-west-2.amazonaws.com/v2/retail-sample-app-ui/manifests/1.2.1: 403 Forbidden
   Warning  Failed     3m53s (x4 over 5m14s)  kubelet            Error: ErrImagePull
   Warning  Failed     3m27s (x6 over 5m14s)  kubelet            Error: ImagePullBackOff
-  Normal   BackOff    4s (x21 over 5m14s)    kubelet            Back-off pulling image "1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.0.0"
+  Normal   BackOff    4s (x21 over 5m14s)    kubelet            Back-off pulling image "1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.2.1"
 ```
 
 From the events of the pod, we can see the 'Failed to pull image' warning, with cause as 403 Forbidden. This indicates that the kubelet faced access denied while trying to pull the image used in the deployment. Let's get the URI of the image used in the deployment.
 
 ```bash
 $ kubectl get deploy ui-private -o jsonpath='{.spec.template.spec.containers[*].image}'
-"1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.0.0"
+"1234567890.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.2.1"
 ```
 
 ### Step 3: Check the image reference
@@ -59,7 +59,7 @@ $ kubectl get deploy ui-private -o jsonpath='{.spec.template.spec.containers[*].
 From the image URI, the image is referenced from the account where our EKS cluster is in. Let's check the ECR repository to see if any such image exists.
 
 ```bash
-$ aws ecr describe-images --repository-name retail-sample-app-ui --image-ids imageTag=1.0.0
+$ aws ecr describe-images --repository-name retail-sample-app-ui --image-ids imageTag=1.2.1
 {
     "imageDetails": [
         {
@@ -67,7 +67,7 @@ $ aws ecr describe-images --repository-name retail-sample-app-ui --image-ids ima
             "repositoryName": "retail-sample-app-ui",
             "imageDigest": "sha256:b338785abbf5a5d7e0f6ebeb8b8fc66e2ef08c05b2b48e5dfe89d03710eec2c1",
             "imageTags": [
-                "1.0.0"
+                "1.2.1"
             ],
             "imageSizeInBytes": 268443135,
             "imagePushedAt": "2024-10-11T14:03:01.207000+00:00",
@@ -78,10 +78,10 @@ $ aws ecr describe-images --repository-name retail-sample-app-ui --image-ids ima
 }
 ```
 
-The image path we have in deployment i.e. account_id.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.0.0 have a valid registryId i.e. account-number, valid repositoryName i.e. "retail-sample-app-ui" and valid imageTag i.e. "1.0.0". Which confirms the path of the image is correct and is not a wrong reference.
+The image path we have in deployment i.e. account_id.dkr.ecr.us-west-2.amazonaws.com/retail-sample-app-ui:1.2.1 have a valid registryId i.e. account-number, valid repositoryName i.e. "retail-sample-app-ui" and valid imageTag i.e. "1.2.1". Which confirms the path of the image is correct and is not a wrong reference.
 
 :::info
-Alternatively, you can also check from the ECR console. Click the button below to open the ECR Console. Then click on retail-sample-app-ui repository and the image tag 1.0.0.
+Alternatively, you can also check from the ECR console. Click the button below to open the ECR Console. Then click on retail-sample-app-ui repository and the image tag 1.2.1.
 <ConsoleButton
   url="https://us-west-2.console.aws.amazon.com/ecr/private-registry/repositories?region=us-west-2"
   service="ecr"

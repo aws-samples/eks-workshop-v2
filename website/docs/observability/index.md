@@ -15,7 +15,7 @@ In this chapter, we'll cover how you can use AWS observability solutions integra
 
 Watch a video walk-through of the observability module with one of the module maintainers, Nirmal Mehta (AWS) here:
 
-<ReactPlayer controls url="https://www.youtube-nocookie.com/embed/ajPe7HVypxg" /> <br />
+<ReactPlayer controls src="https://www.youtube-nocookie.com/embed/ajPe7HVypxg" width={640} height={360} /> <br />
 
 :::info
 To dive deeper into AWS Observability features take a look at the [One Observability Workshop](https://catalog.workshops.aws/observability/en-US)

@@ -3,24 +3,18 @@ title: "Creating a Simple Policy"
 sidebar_position: 71
 ---
 
-To gain an understanding of Kyverno policies, we'll start our lab with a simple Pod label requirement. As you may know, labels in Kubernetes are used to tag resources in the cluster.
+Kyverno has two kinds of Policy resources: **ClusterPolicy** used for Cluster-Wide Resources and **Policy** used for Namespaced Resources. To gain an understanding of Kyverno policies, we'll start our lab with a simple Pod label requirement. As you may know, labels in Kubernetes are used to tag resources in the cluster.
 
-Below is a sample policy requiring a Label `CostCenter`:
+Below is a sample `ClusterPolicy` which will block any Pod creation that doesn't have the label `CostCenter`:
 
-```file
-manifests/modules/security/kyverno/simple-policy/require-labels-policy.yaml
-```
+::yaml{file="manifests/modules/security/kyverno/simple-policy/require-labels-policy.yaml" paths="spec.validationFailureAction,spec.rules,spec.rules.0.match,spec.rules.0.validate,spec.rules.0.validate.message,spec.rules.0.validate.pattern"}
 
-Kyverno has two kinds of Policy resources: **ClusterPolicy** used for Cluster-Wide Resources and **Policy** used for Namespaced Resources. The example above shows a ClusterPolicy. Take some time to examine the following details in the configuration:
-
-- Under the `spec` section of the Policy, there's an attribute `validationFailureAction`. It tells Kyverno if the resource being validated should be allowed but reported (`Audit`) or blocked (`Enforce`). The default is `Audit`, but our example is set to `Enforce`.
-- The `rules` section contains one or more rules to be validated.
-- The `match` statement sets the scope of what will be checked. In this case, it's any `Pod` resource.
-- The `validate` statement attempts to positively check what is defined. If the statement, when compared with the requested resource, is true, it's allowed. If false, it's blocked.
-- The `message` is what gets displayed to a user if this rule fails validation.
-- The `pattern` object defines what pattern will be checked in the resource. In this case, it's looking for `metadata.labels` with `CostCenter`.
-
-This example policy will block any Pod creation that doesn't have the label `CostCenter`.
+1. `spec.validationFailureAction` tells Kyverno if the resource being validated should be allowed but reported (`Audit`) or blocked (`Enforce`). The default is `Audit`, but in our example it is set to `Enforce`
+2. The `rules` section contains one or more rules to be validated
+3. The `match` statement sets the scope of what will be checked. In this case, it's any Pod resource
+4. The `validate` statement attempts to positively check what is defined. If the statement, when compared with the requested resource, is true, it's allowed. If false, it's blocked
+5. The `message` is what gets displayed to a user if this rule fails validation
+6. The `pattern` object defines what pattern will be checked in the resource. In this case, it's looking for `metadata.labels` with `CostCenter`
 
 Create the policy using the following command:
 
@@ -106,13 +100,12 @@ As you can see, the admission webhook successfully validated the Policy and the 
 
 In the above examples, you checked how Validation Policies work in their default behavior defined in `validationFailureAction`. However, Kyverno can also be used to manage Mutating rules within the Policy, to modify any API Requests to satisfy or enforce the specified requirements on the Kubernetes resources. The resource mutation occurs before validation, so the validation rules will not contradict the changes performed by the mutation section.
 
-Below is a sample Policy with a mutation rule defined, which will be used to automatically add our label `CostCenter=IT` as default to any `Pod`:
+Below is a sample Policy with a mutation rule defined:
 
-```file
-manifests/modules/security/kyverno/simple-policy/add-labels-mutation-policy.yaml
-```
+::yaml{file="manifests/modules/security/kyverno/simple-policy/add-labels-mutation-policy.yaml" paths="spec.rules.0.match,spec.rules.0.mutate"}
 
-Notice the `mutate` section under the ClusterPolicy `spec`.
+1. `match.any.resources.kinds: [Pod]` targets this `ClusterPolicy` to all Pod resources cluster-wide
+2.  `mutate` modifies resources during creation (vs. validate which blocks/allows). `patchStrategicMerge.metadata.labels.CostCenter: IT` automatically adds `CostCenter: IT` label to every Pod
 
 Go ahead and create the above Policy using the following command:
 

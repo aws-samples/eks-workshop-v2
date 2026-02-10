@@ -11,8 +11,6 @@ import remarkIncludeKustomization from "./src/remark/include-kustomization.js";
 import remarkParameters from "./src/remark/parameters.js";
 import remarkIncludeYaml from "./src/remark/include-yaml.js";
 
-//require("dotenv").config({ path: ".kustomize-env" });
-
 const rootDir = path.dirname(require.resolve("./package.json"));
 const manifestsDir = `${rootDir}/..`;
 const kustomizationsDir = `${manifestsDir}/manifests`;
@@ -87,9 +85,7 @@ const config = {
           ],
           editUrl:
             "https://github.com/aws-samples/eks-workshop-v2/tree/main/website",
-          exclude: [
-            "security/guardduty/runtime-monitoring/reverse-shell.md"
-          ],
+          exclude: ["automation/continuousdelivery"],
         },
         theme: {
           customCss: require.resolve("./src/css/custom.scss"),
@@ -130,12 +126,6 @@ const config = {
             docId: "fundamentals/index",
             position: "left",
             label: "Fundamentals",
-          },
-          {
-            type: "doc",
-            docId: "autoscaling/index",
-            position: "left",
-            label: "Autoscaling",
           },
           {
             type: "doc",

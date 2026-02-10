@@ -38,6 +38,6 @@ variable "load_balancer_controller_chart_version" {
   description = "The chart version of aws-load-balancer-controller to use"
   type        = string
   # renovate-helm: depName=aws-load-balancer-controller
-  default = "1.13.3"
+  default = "1.14.0"
 }
 

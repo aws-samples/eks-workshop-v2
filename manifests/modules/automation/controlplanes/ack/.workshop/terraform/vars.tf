@@ -38,5 +38,5 @@ variable "dynamo_ack_version" {
   description = "The version of Dynamo ACK to use"
   type        = string
   # renovate: datasource=github-releases depName=aws-controllers-k8s/dynamodb-controller
-  default = "1.4.10"
+  default = "1.5.2"
 }

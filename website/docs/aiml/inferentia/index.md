@@ -3,7 +3,7 @@ title: "Inference with AWS Inferentia"
 sidebar_position: 10
 chapter: true
 sidebar_custom_props: { "module": true }
-description: "Use Inferentia to accelerate deep learning inference workloads on Amazon Elastic Kubernetes Service."
+description: "Use AWS Inferentia to accelerate deep learning inference workloads on Amazon Elastic Kubernetes Service."
 ---
 
 ::required-time
@@ -33,6 +33,7 @@ AWS Neuron is the software development kit (SDK) and runtime that enables develo
 The Neuron device plugin exposes Neuron cores and devices to Kubernetes as a resource. When your workloads require Neuron cores, the Kubernetes scheduler can assign the appropriate node to the workloads. You can even provision the node automatically using Karpenter.
 
 This lab provides a tutorial on how to use Inferentia to accelerate deep learning inference workloads on EKS.
+
 In this lab we will:
 
 1. Create a Karpenter node pool to provision Inferentia and Trainium EC2 instances

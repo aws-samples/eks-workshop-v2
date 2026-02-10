@@ -40,10 +40,10 @@ Events:
   Type     Reason     Age                From               Message
   ----     ------     ----               ----               -------
   Normal   Scheduled  48s                default-scheduler  Successfully assigned default/ui-new-5654dd8969-7w98k to ip-10-42-33-232.us-west-2.compute.internal
-  Normal   BackOff    23s (x2 over 47s)  kubelet            Back-off pulling image "public.ecr.aws/aws-containers/retailing-store-sample-ui:1.0.0"
+  Normal   BackOff    23s (x2 over 47s)  kubelet            Back-off pulling image "public.ecr.aws/aws-containers/retailing-store-sample-ui:1.2.1"
   Warning  Failed     23s (x2 over 47s)  kubelet            Error: ImagePullBackOff
-  Normal   Pulling    12s (x3 over 47s)  kubelet            Pulling image "public.ecr.aws/aws-containers/retailing-store-sample-ui:1.0.0"
-  Warning  Failed     12s (x3 over 47s)  kubelet            Failed to pull image "public.ecr.aws/aws-containers/retailing-store-sample-ui:1.0.0": rpc error: code = NotFound desc = failed to pull and unpack image "public.ecr.aws/aws-containers/retailing-store-sample-ui:1.0.0": failed to resolve reference "public.ecr.aws/aws-containers/retailing-store-sample-ui:1.0.0": public.ecr.aws/aws-containers/retailing-store-sample-ui:1.0.0: not found
+  Normal   Pulling    12s (x3 over 47s)  kubelet            Pulling image "public.ecr.aws/aws-containers/retailing-store-sample-ui:1.2.1"
+  Warning  Failed     12s (x3 over 47s)  kubelet            Failed to pull image "public.ecr.aws/aws-containers/retailing-store-sample-ui:1.2.1": rpc error: code = NotFound desc = failed to pull and unpack image "public.ecr.aws/aws-containers/retailing-store-sample-ui:1.2.1": failed to resolve reference "public.ecr.aws/aws-containers/retailing-store-sample-ui:1.2.1": public.ecr.aws/aws-containers/retailing-store-sample-ui:1.2.1: not found
   Warning  Failed     12s (x3 over 47s)  kubelet            Error: ErrImagePull
 ```
 
@@ -55,31 +55,31 @@ Let's check the image used by the pod.
 
 ```bash
 $ kubectl get pod $POD -o jsonpath='{.spec.containers[*].image}'
-public.ecr.aws/aws-containers/retailing-store-sample-ui:1.0.0
+public.ecr.aws/aws-containers/retailing-store-sample-ui:1.2.1
 ```
 
 From the image URI, we can see that the image is referenced from public ECR repository of AWS.
 
 ### Step 4: Verify image existence
 
-Let's check if image named retailing-store-sample-ui with tag 1.0.0 exists at [aws-containers ECR](https://gallery.ecr.aws/aws-containers). Search for the "retailing-store-sample-ui" and you will notice that no such image repository shows up. You can also easily verify the image existence in public ECR by using the image URI in a browser. In our case [image-uri](https://gallery.ecr.aws/aws-containers/retailing-store-sample-ui) will show a "Repository not found" message.
+Let's check if image named retailing-store-sample-ui with tag 1.2.1 exists at [aws-containers ECR](https://gallery.ecr.aws/aws-containers). Search for the "retailing-store-sample-ui" and you will notice that no such image repository shows up. You can also easily verify the image existence in public ECR by using the image URI in a browser. In our case [image-uri](https://gallery.ecr.aws/aws-containers/retailing-store-sample-ui) will show a "Repository not found" message.
 
 ![RepoDoesNotExist](assets/rep-not-found.webp)
 
 ### Step 5: Update the deployment with the correct image
 
-To resolve the issue, we will have to update the deployment/pod spec with correct image reference. In our case it is public.ecr.aws/aws-containers/retail-store-sample-ui:1.0.0.
+To resolve the issue, we will have to update the deployment/pod spec with correct image reference. In our case it is public.ecr.aws/aws-containers/retail-store-sample-ui:1.2.1.
 
 #### 5.1. Verify if image exists
 
-Before we update the deployment, let's verify if this image exists using above mentioned method i.e. by visiting the [image-uri](https://gallery.ecr.aws/aws-containers/retail-store-sample-ui). You should be able to see the retail-store-sample-ui image with multiple tags available, including 1.0.0.
+Before we update the deployment, let's verify if this image exists using above mentioned method i.e. by visiting the [image-uri](https://gallery.ecr.aws/aws-containers/retail-store-sample-ui). You should be able to see the retail-store-sample-ui image with multiple tags available, including 1.2.1.
 
 ![RepoExist](assets/repo-found.webp)
 
 #### 5.1. Update image in the deployment with correct reference
 
 ```bash
-$ kubectl patch deployment ui-new --patch '{"spec": {"template": {"spec": {"containers": [{"name": "ui", "image": "public.ecr.aws/aws-containers/retail-store-sample-ui:1.0.0"}]}}}}'
+$ kubectl patch deployment ui-new --patch '{"spec": {"template": {"spec": {"containers": [{"name": "ui", "image": "public.ecr.aws/aws-containers/retail-store-sample-ui:1.2.1"}]}}}}'
 deployment.apps/ui-new patched
 ```
 

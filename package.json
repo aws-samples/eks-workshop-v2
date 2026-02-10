@@ -24,7 +24,7 @@
     "@aws/toolkit-md": "^0.1.5",
     "cspell": "^9.0.0",
     "lint-staged": "^16.0.0",
-    "markdown-link-check": "3.13.7",
+    "markdown-link-check": "3.14.1",
     "markdownlint-cli2": "^0.18.0",
     "npm-run-all2": "^8.0.0",
     "prettier": "^3.2.5",
@@ -44,11 +44,5 @@
       "markdownlint-cli2"
     ]
   },
-  "packageManager": "yarn@4.9.2",
-  "dependencies": {
-    "@docusaurus/core": "^3.7.0",
-    "@docusaurus/module-type-aliases": "^3.7.0",
-    "@docusaurus/preset-classic": "^3.7.0",
-    "@docusaurus/types": "^3.7.0"
-  }
+  "packageManager": "yarn@4.10.3"
 }

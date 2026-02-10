@@ -15,9 +15,9 @@ jobs:
       fail-fast: false
       matrix:
         module:
-          - fundamentals/managed-node-groups**
-          - fundamentals/fargate**
-          - fundamentals/exposing**
+          - fundamentals/compute/managed-node-groups**
+          - fundamentals/compute/{fargate,karpenter}**
+          - fundamentals/{exposing,workloads}**
           - fundamentals/storage/{efs,ebs,mountpoint}**
     uses: ./.github/workflows/module-test.yaml
     with:

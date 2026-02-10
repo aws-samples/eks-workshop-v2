@@ -22,11 +22,12 @@ To prevent such escalated privileged capabilities and avoid unauthorized use of 
 
 The baseline profile of the Pod Security Standards is a collection of the most fundamental and crucial steps that can be taken to secure Pods. Starting from Kyverno 1.8, an entire profile can be assigned to the cluster through a single rule. To learn more about the privileges blocked by the Baseline Profile, please refer to the [Kyverno documentation](https://kyverno.io/policies/#:~:text=Baseline%20Pod%20Security%20Standards,cluster%20through%20a%20single%20rule).
 
-```file
-manifests/modules/security/kyverno/baseline-policy/baseline-policy.yaml
-```
+::yaml{file="manifests/modules/security/kyverno/baseline-policy/baseline-policy.yaml" paths="spec.background,spec.validationFailureAction,spec.rules.0.match,spec.rules.0.validate"}
 
-Note that the above policy is in `Enforce` mode and will block any requests to create privileged Pods.
+1. `background: true` applies the policy to existing resources in addition to new ones
+2. `validationFailureAction: Enforce` blocks non-compliant Pods from being created
+3. `match.any.resources.kinds: [Pod]` applies the policy to all Pod resources cluster-wide
+4. `validate.podSecurity` enforces Kubernetes Pod Security Standards at the `baseline` level with moderate security restrictions using the `latest` standards version
 
 Go ahead and apply the Baseline Policy:
 
