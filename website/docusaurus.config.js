@@ -20,7 +20,7 @@ const manifestsOwner = process.env.MANIFESTS_OWNER || "aws-samples";
 const manifestsRepository =
   process.env.MANIFESTS_REPOSITORY || "eks-workshop-v2";
 
-const labTimesEnabled = false;
+const labTimesEnabled = process.env.LAB_TIMES_ENABLED || false;
 
 const baseUrl = process.env.BASE_URL || "";
 
