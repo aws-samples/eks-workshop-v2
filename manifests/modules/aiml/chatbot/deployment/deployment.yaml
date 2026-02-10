@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui
+spec:
+  template:
+    spec:
+      containers:
+        - name: ui
+          env:
+            - name: RETAIL_UI_CHAT_ENABLED
+              value: "true"
+            - name: RETAIL_UI_CHAT_PROVIDER
+              value: "openai"
+            - name: RETAIL_UI_CHAT_MODEL
+              value: "/models/mistral-7b-v0.3"
+            - name: RETAIL_UI_CHAT_OPENAI_BASE_URL
+              value: "http://mistral.vllm:8080"

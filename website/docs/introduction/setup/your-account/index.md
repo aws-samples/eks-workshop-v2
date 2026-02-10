@@ -44,7 +44,7 @@ The CloudFormation stack will take roughly 5 minutes to deploy, and once complet
 
 The `IdeUrl` output contains the URL to enter in your browser to access the IDE. The `IdePasswordSecret` contains a link to an AWS Secrets Manager secret that contains a generated password for the IDE.
 
-To retrieve the password open that URL and click the **Retrieve** button:
+To retrieve the password open the `IdePasswordSecret` URL and click the **Retrieve** button:
 
 ![secretsmanager retrieve](./assets/vscode-password-retrieve.webp)
 

@@ -4,7 +4,7 @@ data "aws_region" "current" {}
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.21.1"
+  version = "1.22.0"
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
@@ -28,7 +28,7 @@ resource "time_sleep" "wait" {
 }
 
 resource "kubernetes_manifest" "ui_nlb" {
-  depends_on = [module.eks_blueprints_addons]
+  depends_on = [time_sleep.wait]
 
   manifest = {
     "apiVersion" = "v1"
@@ -92,7 +92,7 @@ resource "aws_dynamodb_table" "carts" {
 
 module "iam_assumable_role_carts" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "5.59.0"
+  version                       = "5.60.0"
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-carts-dynamo"
   provider_url                  = var.addon_context.eks_oidc_issuer_url

@@ -22,11 +22,13 @@ NAME                                          STATUS     ROLES    AGE     VERSIO
 ip-10-42-180-244.us-west-2.compute.internal   NotReady   <none>   15m     v1.27.1-eks-2f008fe
 ```
 
-:::info
-**Note:** For your convenience, we have added the node name as the environment variable $NODE_NAME.
-:::
+### Step 2: Export Node Name
 
-### Step 2: Check System Pod Status
+```bash
+$ NODE_NAME=$(kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_3 --no-headers | awk '{print $1}' | head -1)
+```
+
+### Step 3: Check System Pod Status
 
 Let's examine the status of kube-system pods on the affected node to identify any system-level issues:
 
@@ -36,7 +38,7 @@ $ kubectl get pods -n kube-system -o wide --field-selector spec.nodeName=$NODE_N
 
 This command will show us all kube-system pods running on the affected node, helping us identify any potential issues of the node caused by these. You should note that all the pods are in running state.
 
-### Step 3: Examine Node Conditions
+### Step 4: Examine Node Conditions
 
 Let's examine the node's describe output to understand the cause of the _NotReady_ state.
 
@@ -85,7 +87,7 @@ The node has the following taints:
 The node conditions show that the kubelet has stopped posting status updates, which can typically indicate severe resource constraints or system instability.
 :::
 
-### Step 4: CloudWatch Metrics Investigation
+### Step 5: CloudWatch Metrics Investigation
 
 Since Metrics Server isn't providing data, let's use CloudWatch to check EC2 instance metrics:
 
@@ -129,11 +131,11 @@ The CloudWatch metrics reveal:
 
 :::
 
-### Step 5: Mitigate Impact
+### Step 6: Mitigate Impact
 
 Let's check deployment details and implement immediate changes to stabilize the node:
 
-#### 5.1. Check the deployment resource configurations
+#### 6.1. Check the deployment resource configurations
 
 ```bash
 $ kubectl get pods -n prod -o custom-columns="NAME:.metadata.name,CPU_REQUEST:.spec.containers[*].resources.requests.cpu,MEM_REQUEST:.spec.containers[*].resources.requests.memory,CPU_LIMIT:.spec.containers[*].resources.limits.cpu,MEM_LIMIT:.spec.containers[*].resources.limits.memory"
@@ -150,13 +152,13 @@ prod-ds-558sx               100m          128Mi         <none>      <none>
 Notice that neither the deployment nor the DaemonSet has resource limits configured, which allowed unconstrained resource consumption.
 :::
 
-#### 5.2. Let's scale down the deployment and stop the resource overload
+#### 6.2. Let's scale down the deployment and stop the resource overload
 
 ```bash bash timeout=40 wait=25
 $ kubectl scale deployment/prod-app -n prod --replicas=0 && kubectl delete pod -n prod -l app=prod-app --force --grace-period=0 && kubectl wait --for=delete pod -n prod -l app=prod-app
 ```
 
-#### 5.3. Recycle the node on the nodegroup
+#### 6.3. Recycle the node on the nodegroup
 
 ```bash timeout=120 wait=95
 $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=0 && \
@@ -173,7 +175,7 @@ for i in {1..12}; do NODE_NAME_2=$(kubectl get nodes --selector=eks.amazonaws.co
 This can take up to a little over 1 minute. The script will store the new node name as NODE_NAME_2.
 :::
 
-#### 5.4. Verify node status
+#### 6.4. Verify node status
 
 ```bash test=false
 $ kubectl get nodes --selector=kubernetes.io/hostname=$NODE_NAME_2
@@ -181,39 +183,39 @@ NAME                                          STATUS   ROLES    AGE     VERSION
 ip-10-42-180-24.us-west-2.compute.internal    Ready    <none>   0h43m   v1.30.8-eks-aeac579
 ```
 
-### Step 6: Implementing Long-term Solutions
+### Step 7: Implementing Long-term Solutions
 
 The Dev team has identified and fixed a memory leak in the application. Let's implement the fix and establish proper resource management:
 
-#### 6.1. Apply the updated application configuration
+#### 7.1. Apply the updated application configuration
 
 ```bash timeout=10 wait=5
 $ kubectl apply -f /home/ec2-user/environment/eks-workshop/modules/troubleshooting/workernodes/yaml/configmaps-new.yaml
 ```
 
-#### 6.2. Set resource limits for the deployment (cpu: 500m, memory: 512Mi)
+#### 7.2. Set resource limits for the deployment (cpu: 500m, memory: 512Mi)
 
 ```bash timeout=10 wait=5
 $ kubectl patch deployment prod-app -n prod --patch '{"spec":{"template":{"spec":{"containers":[{"name":"prod-app","resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"256Mi"}}}]}}}}'
 ```
 
-#### 6.3. Set resource limits for the DaemonSet (cpu: 500m, memory: 512Mi)
+#### 7.3. Set resource limits for the DaemonSet (cpu: 500m, memory: 512Mi)
 
 ```bash timeout=10 wait=5
 $ kubectl patch daemonset prod-ds -n prod --patch '{"spec":{"template":{"spec":{"containers":[{"name":"prod-ds","resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"256Mi"}}}]}}}}'
 ```
 
-#### 6.4. Perform rolling updates and scale back to desired state
+#### 7.4. Perform rolling updates and scale back to desired state
 
 ```bash timeout=20 wait=10
 $ kubectl rollout restart deployment/prod-app -n prod && kubectl rollout restart daemonset/prod-ds -n prod && kubectl scale deployment prod-app -n prod --replicas=6
 ```
 
-### Step 7: Verification
+### Step 8: Verification
 
 Let's verify our fixes have resolved the issues:
 
-#### 7.1 Check pod creations
+#### 8.1 Check pod creations
 
 ```bash test=false
 $ kubectl get pods -n prod
@@ -227,7 +229,7 @@ prod-app-666f8f7bd5-zm8lx   1/1     Running   0          1m
 prod-ds-ll4lv               1/1     Running   0          1m
 ```
 
-#### 7.2. Check pod limits
+#### 8.2. Check pod limits
 ```bash
 $ kubectl get pods -n prod -o custom-columns="NAME:.metadata.name,CPU_REQUEST:.spec.containers[*].resources.requests.cpu,MEM_REQUEST:.spec.containers[*].resources.requests.memory,CPU_LIMIT:.spec.containers[*].resources.limits.cpu,MEM_LIMIT:.spec.containers[*].resources.limits.memory"
 NAME                        CPU_REQUEST   MEM_REQUEST   CPU_LIMIT   MEM_LIMIT
@@ -240,7 +242,7 @@ prod-app-6d67889dc8-rf478   250m          256Mi         500m        512Mi
 prod-ds-srdqx               250m          256Mi         500m        512Mi
 ```
 
-#### 7.3 Check node CPU resource
+#### 8.3 Check node CPU resource
 ```bash wait=300 test=false
 $ INSTANCE_ID=$(kubectl get node ${NODE_NAME_2} -o jsonpath='{.spec.providerID}' | cut -d '/' -f5) && aws cloudwatch get-metric-data --region $AWS_REGION --start-time $(date -u -d '1 hour ago' +"%Y-%m-%dT%H:%M:%SZ") --end-time $(date -u +"%Y-%m-%dT%H:%M:%SZ") --metric-data-queries '[{"Id":"cpu","MetricStat":{"Metric":{"Namespace":"AWS/EC2","MetricName":"CPUUtilization","Dimensions":[{"Name":"InstanceId","Value":"'$INSTANCE_ID'"}]},"Period":60,"Stat":"Average"}}]'
 {
@@ -265,7 +267,7 @@ $ INSTANCE_ID=$(kubectl get node ${NODE_NAME_2} -o jsonpath='{.spec.providerID}'
 :::info
 Check that CPU is not over utilized. 
 :::
-#### 7.4. Check node status
+#### 8.4. Check node status
 
 ```bash
 $ kubectl get node --selector=kubernetes.io/hostname=$NODE_NAME_2

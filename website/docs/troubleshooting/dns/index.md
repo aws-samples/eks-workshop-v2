@@ -13,13 +13,12 @@ In this lab, we will investigate a scenario where service communication is disru
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=600 wait=5
+```bash timeout=900 wait=10
 $ prepare-environment troubleshooting/dns
 ```
+
 The prepare-environment script for this module resets the workshop environment.
 :::
-
-
 
 ### DNS resolution in EKS
 

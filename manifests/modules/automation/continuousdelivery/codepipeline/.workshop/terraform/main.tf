@@ -70,6 +70,8 @@ resource "aws_cloudwatch_event_rule" "s3_trigger_pipeline" {
 // Terraform does not support all the parameters needed for this pipeline
 // So use CloudFormation instead
 resource "aws_cloudformation_stack" "eks_workshop_pipeline" {
+  depends_on = [time_sleep.wait]
+
   name          = "${var.addon_context.eks_cluster_id}-pipeline-stack"
   template_body = file("${path.module}/pipeline.yaml")
 
@@ -162,6 +164,12 @@ resource "aws_iam_role" "codepipeline_role" {
   assume_role_policy = data.aws_iam_policy_document.codepipeline_assume_role.json
 }
 
+resource "time_sleep" "wait" {
+  depends_on = [aws_iam_role.codepipeline_role]
+
+  create_duration = "15s"
+}
+
 data "aws_iam_policy_document" "codepipeline_policy" {
   statement {
     effect = "Allow"
@@ -248,7 +256,7 @@ resource "aws_kms_key" "artifact_encryption_key" {
 
 module "iam_assumable_role_ui" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "5.59.0"
+  version                       = "5.60.0"
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-ecr-ui"
   provider_url                  = var.addon_context.eks_oidc_issuer_url
@@ -278,7 +286,7 @@ EOF
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.21.1"
+  version = "1.22.0"
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {

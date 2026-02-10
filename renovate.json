@@ -5,7 +5,7 @@
     ":rebaseStalePrs",
     ":automergeStableNonMajor"
   ],
-  "schedule": ["* * 1-10 * *"],
+  "schedule": ["* * 7-14 * *"],
   "enabledManagers": ["custom.regex", "github-actions", "terraform", "npm"],
   "labels": ["content/other"],
   "packageRules": [

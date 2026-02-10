@@ -5,7 +5,7 @@ description: "Bring worker nodes in an Amazon EKS Managed Nodegroup back to heal
 sidebar_custom_props: { "module": true }
 ---
 
-In the following scenarios for worker nodes we will learn how to troubleshoot various AWS EKS worker node issues. The different scenarios will walk through what is causing nodes fail to join the cluster or stay in 'Not Ready' status, then fixing with a solution. Before you begin, if you want to learn more about how worker nodes are deployed as part of managed node groups see [Fundamentals module](/docs/fundamentals/managed-node-groups).
+In the following scenarios for worker nodes we will learn how to troubleshoot various AWS EKS worker node issues. The different scenarios will walk through what is causing nodes fail to join the cluster or stay in 'Not Ready' status, then fixing with a solution. Before you begin, if you want to learn more about how worker nodes are deployed as part of managed node groups see [Fundamentals module](/docs/fundamentals/compute/managed-node-groups).
 
 :::tip Before you start
 Prepare your environment for this section:

@@ -19,11 +19,14 @@ namespace "other" deleted
 namespace "ui" deleted
 ```
 
-Now we'll populate our Git repository with a simple Helm chart:
+Now we'll populate our Git repository with a simple Helm chart which wraps the published chart for the UI component by using it as a Helm dependency:
 
-::yaml{file="manifests/modules/automation/gitops/argocd/Chart.yaml"}
+::yaml{file="manifests/modules/automation/gitops/argocd/Chart.yaml" paths="name,type,version,dependencies.0"}
 
-This chart wraps the published chart for the UI component by using it as a Helm dependency.
+1. The name of the wrapper Helm chart
+2. Indicates this chart deploys an application
+3. Specify a version for the chart
+4. Specify the name, alias and version of the retail store UI component from AWS's public OCI registry as the dependency of the wrapper Helm chart
 
 Let's copy this file to our Git directory:
 
@@ -52,7 +55,7 @@ $ git -C ~/environment/argocd push
 Next, let's create an Argo CD Application configured to use our Git repository:
 
 ```bash
-$ argocd app create ui --repo $GITOPS_REPO_URL_ARGOCD \
+$ argocd app create ui --repo ssh://git@${GITEA_SSH_HOSTNAME}:2222/workshop-user/argocd.git \
   --path ui --dest-server https://kubernetes.default.svc \
   --dest-namespace ui --sync-option CreateNamespace=true
 application 'ui' created
@@ -68,7 +71,7 @@ argocd/ui    https://kubernetes.default.svc  ui         default  OutOfSync  Miss
 
 This application is now visible in the Argo CD UI:
 
-![Application in the ArgoCD UI](assets/argocd-ui-outofsync.webp)
+![Application in the Argo CD UI](assets/argocd-ui-outofsync.webp)
 
 Alternatively, we can also interact with Argo CD objects directly using the `kubectl` command:
 
@@ -80,7 +83,7 @@ apps   OutOfSync     Missing
 
 If you open the Argo CD UI and navigate to the `apps` application, you'll see:
 
-![Application in the ArgoCD UI](assets/argocd-ui-outofsync-apps.webp)
+![Application in the Argo CD UI](assets/argocd-ui-outofsync-apps.webp)
 
 In Argo CD, "out of sync" indicates that the desired state defined in your Git repository doesn't match the actual state in your Kubernetes cluster. Although Argo CD is capable of automated synchronization, for now we'll manually trigger this process:
 

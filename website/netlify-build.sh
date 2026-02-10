@@ -18,6 +18,6 @@ if [[ $BRANCH = build-* ]]; then
   export LAB_TIMES_ENABLED='true'
 fi
 
-yarn install
+yarn install --immutable
 yarn workspace website clear
 yarn workspace website build

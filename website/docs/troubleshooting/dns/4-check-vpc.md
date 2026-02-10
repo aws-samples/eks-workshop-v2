@@ -56,26 +56,31 @@ $ aws ec2 describe-security-group-rules \
     --filters Name=group-id,Values=$CLUSTER_SG_ID \
     --query 'SecurityGroupRules[*].{IsEgressRule:IsEgress,Protocol:IpProtocol,FromPort:FromPort,ToPort:ToPort,CidrIpv4:CidrIpv4,SourceSG:ReferencedGroupInfo.GroupId}' \
     --output table
------------------------------------------------------------------------------------------
-|                              DescribeSecurityGroupRules                               |
-+-----------+-----------+---------------+-----------+------------------------+----------+
-| CidrIpv4  | FromPort  | IsEgressRule  | Protocol  |       SourceSG         | ToPort   |
-+-----------+-----------+---------------+-----------+------------------------+----------+
-|  0.0.0.0/0|  -1       |  True         |  -1       |  None                  |  -1      |
-|  None     |  10250    |  False        |  tcp      |  sg-0fcabbda9848b346e  |  10250   |
-|  None     |  -1       |  False        |  -1       |  sg-09eca28cacae05248  |  -1      |
-|  None     |  443      |  False        |  tcp      |  sg-0fcabbda9848b346e  |  443     |
-+-----------+-----------+---------------+-----------+------------------------+----------+
+
+--------------------------------------------------------------------------------------------
+|                                DescribeSecurityGroupRules                                |
++--------------+-----------+---------------+-----------+------------------------+----------+
+|   CidrIpv4   | FromPort  | IsEgressRule  | Protocol  |       SourceSG         | ToPort   |
++--------------+-----------+---------------+-----------+------------------------+----------+
+|  None        |  -1       |  False        |  -1       |  sg-085fea48222262c24  |  -1      |
+|  10.52.0.0/16|  443      |  False        |  tcp      |  None                  |  443     |
+|  10.53.0.0/16|  443      |  False        |  tcp      |  None                  |  443     |
+|  0.0.0.0/0   |  -1       |  True         |  -1       |  None                  |  -1      |
+|  None        |  -1       |  False        |  -1       |  sg-094406793b2c02fb3  |  -1      |
+|  None        |  -1       |  True         |  -1       |  sg-085fea48222262c24  |  -1      |
++--------------+-----------+---------------+-----------+------------------------+----------+
+
 ```
 
 :::info
-There are 3 Ingress rules and 1 Egress rule with the following details:
+There are 4 Ingress rules and 2 Egress rules with the following details:
 
-- Egress all protocols and ports to all IP addresses (0.0.0.0/0) - Note the value True in column IsEgressRule.
-- Ingress TCP port 10250 from within this same security group (sg-0fcabbda9848b346e)
-- Ingress TCP port 443 from within this same security group (sg-0fcabbda9848b346e)
-- Ingress all protocols and ports from another security group (sg-09eca28cacae05248), which is not associated with worker nodes.
-
+- Egress all protocols/ports to anywhere (0.0.0.0/0) - Note the value True in column IsEgressRule.
+- Egress all protocols/ports to security group (sg-085fea48222262c24)
+- Ingress all protocols/ports from security group (sg-085fea48222262c24)
+- Ingress TCP port 443 from CIDR block 10.52.0.0/16 
+- Ingress TCP port 443 from CIDR block 10.53.0.0/16
+- Ingress all protocols/ports from security group (sg-094406793b2c02fb3)
   :::
 
 Notably absent are rules allowing DNS traffic (UDP/TCP port 53), explaining our DNS resolution failures.
@@ -126,7 +131,7 @@ While this lab focuses on Security Groups, Network ACLs can also affect traffic 
 
 ### Conclusions
 
-Throughout the multiple sections of this lab, we investigated and root caused different issues that affect DNS resolution in EKS clusters, and performed the needed steps to fix them.
+Throughout the multiple sections of this lab, we investigated and identified the root cause of different issues that affect DNS resolution in EKS clusters, and performed the needed steps to fix them.
 
 In this lab, we've:
 

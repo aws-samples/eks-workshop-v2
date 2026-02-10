@@ -1,0 +1,22 @@
+apiVersion: kro.run/v1alpha1
+kind: WebApplicationDynamoDB
+metadata:
+  name: carts
+  namespace: carts
+spec:
+  # Basic types
+  appName: carts
+  replicas: 1
+  image: "public.ecr.aws/aws-containers/retail-store-sample-cart:1.2.1"
+  port: 8080
+
+  dynamodb:
+    tableName: "eks-workshop-carts-kro"
+
+  env:
+    RETAIL_CART_PERSISTENCE_PROVIDER: "dynamodb"
+    RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME: "eks-workshop-carts-kro"
+
+  aws:
+    accountID: ${AWS_ACCOUNT_ID}
+    region: ${AWS_REGION}

@@ -1,0 +1,31 @@
+---
+title: "kro - Kube Resource Orchestrator"
+sidebar_position: 1
+sidebar_custom_props: { "module": true }
+description: "Compose and manage complex Kubernetes resource graphs with kro on Amazon Elastic Kubernetes Service."
+---
+
+::required-time
+
+:::tip Before you start
+Prepare your environment for this section:
+
+```bash timeout=300 wait=30
+$ prepare-environment automation/controlplanes/kro
+```
+
+This will make the following changes to your lab environment:
+
+- Install the AWS Controllers for Kubernetes controllers for EKS, IAM and DynamoDB
+- Install the AWS Load Balancer Controller
+- Create an Ingress resource for the UI workload
+
+You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/automation/controlplanes/kro/.workshop/terraform).
+
+:::
+
+[kro (Kube Resource Orchestrator)](https://kro.run/) is an open-source Kubernetes operator that enables you to define custom APIs for creating groups of related Kubernetes resources. With kro, you create ResourceGraphDefinitions (RGDs) that use CEL (Common Expression Language) expressions to define relationships between resources and automatically determine their creation order.
+
+kro allows you to compose multiple Kubernetes resources into higher-level abstractions with intelligent dependency handling - it automatically determines the correct order to deploy resources by analyzing how they reference each other. You can pass values between resources using CEL expressions, include conditional logic, and define default values to simplify the user experience.
+
+In this lab, we'll explore kro's capabilities by first deploying the complete **Carts** component with an in-memory database using a WebApplication ResourceGraphDefinition. We'll then enhance this by composing a WebApplicationDynamoDB ResourceGraphDefinition that builds on the base WebApplication template to add Amazon DynamoDB storage.
