@@ -45,7 +45,7 @@ Kyverno operates as a Dynamic Admission Controller in a Kubernetes Cluster. It r
 
 The diagram below illustrates the high-level logical architecture of Kyverno:
 
-![KyvernoArchitecture](assets/ky-arch.webp)
+![KyvernoArchitecture](/docs/security/kyverno/ky-arch.webp)
 
 The two major components are the Webhook Server and the Webhook Controller. The **Webhook Server** handles incoming AdmissionReview requests from the Kubernetes API server and sends them to the Engine for processing. It is dynamically configured by the **Webhook Controller**, which monitors installed policies and modifies the webhooks to request only the resources matched by those policies.
 

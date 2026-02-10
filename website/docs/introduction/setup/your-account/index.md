@@ -32,33 +32,33 @@ We are continuously working to optimize the IAM permissions. Please raise a [Git
 
 Scroll to the bottom of the screen and acknowledge the IAM notice:
 
-![acknowledge IAM](./assets/acknowledge-iam.webp)
+![acknowledge IAM](/docs/introduction/setup/your-account/acknowledge-iam.webp)
 
 Then click the **Create stack** button:
 
-![Create Stack](./assets/create-stack.webp)
+![Create Stack](/docs/introduction/setup/your-account/create-stack.webp)
 
 The CloudFormation stack will take roughly 5 minutes to deploy, and once completed you can retrieve information required to continue from the **Outputs** tab:
 
-![cloudformation outputs](./assets/vscode-outputs.webp)
+![cloudformation outputs](/docs/introduction/setup/your-account/vscode-outputs.webp)
 
 The `IdeUrl` output contains the URL to enter in your browser to access the IDE. The `IdePasswordSecret` contains a link to an AWS Secrets Manager secret that contains a generated password for the IDE.
 
 To retrieve the password open the `IdePasswordSecret` URL and click the **Retrieve** button:
 
-![secretsmanager retrieve](./assets/vscode-password-retrieve.webp)
+![secretsmanager retrieve](/docs/introduction/setup/your-account/vscode-password-retrieve.webp)
 
 The password will then be available for you to copy:
 
-![password in Secrets Manager](./assets/vscode-password-visible.webp)
+![password in Secrets Manager](/docs/introduction/setup/your-account/vscode-password-visible.webp)
 
 Open the IDE URL provided and you will be prompted for the password:
 
-![IDE password prompt](./assets/vscode-password.webp)
+![IDE password prompt](/docs/introduction/setup/your-account/vscode-password.webp)
 
 After submitting your password you will be presented with the initial IDE screen:
 
-![IDE initial screen](./assets/vscode-splash.webp)
+![IDE initial screen](/docs/introduction/setup/your-account/vscode-splash.webp)
 
 The next step is to create an EKS cluster to perform the lab exercises in. Please follow one of the guides below to provision a cluster that meets the requirements for these labs:
 

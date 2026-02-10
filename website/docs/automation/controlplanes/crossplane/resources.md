@@ -5,7 +5,7 @@ sidebar_position: 20
 
 By default, the **Carts** component in the sample application uses a DynamoDB local instance running as a pod in the EKS cluster called `carts-dynamodb`. In this section of the lab, we'll provision an Amazon DynamoDB cloud-based table for our application using Crossplane managed resources and configure the **Carts** deployment to use the newly provisioned DynamoDB table instead of the local copy.
 
-![Crossplane reconciler concept](./assets/Crossplane-desired-current-ddb.webp)
+![Crossplane reconciler concept](/docs/automation/controlplanes/crossplane/Crossplane-desired-current-ddb.webp)
 
 Let's explore how we'll create the DynamoDB table via a Crossplane managed resource manifest:
 

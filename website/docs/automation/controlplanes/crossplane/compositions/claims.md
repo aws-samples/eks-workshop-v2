@@ -41,7 +41,7 @@ eks-workshop-carts-crossplane-bt28w-lnb4r   True   True      eks-workshop-carts-
 
 Now, let's understand how the DynamoDB table is deployed using this claim:
 
-![Crossplane reconciler concept](../assets/ddb-claim-architecture.webp)
+![Crossplane reconciler concept](/docs/automation/controlplanes/crossplane/ddb-claim-architecture.webp)
 
 When querying the claim `DynamoDBTable` deployed in the carts namespace, we can observe that it points to and creates a Composite Resource (XR) `XDynamoDBTable`:
 

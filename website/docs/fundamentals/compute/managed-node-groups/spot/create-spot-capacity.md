@@ -34,7 +34,7 @@ ip-10-42-12-235.us-east-2.compute.internal   Ready    <none>   4h34m   vVAR::KUB
 
 In the below diagram, there are two separate "node groups" representing the managed node groups within the cluster. The first Node Group box represents the node group containing On-Demand instances while the second represents the node group containing Spot instances. Both are associated with the specified EKS cluster.
 
-![spot arch](./assets/managed-spot-arch.webp)
+![spot arch](/docs/fundamentals/compute/managed-node-groups/spot/managed-spot-arch.webp)
 
 Let's create a node group with Spot instances. The following command creates a new node group `managed-spot`.
 

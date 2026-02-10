@@ -9,7 +9,7 @@ The [Mountpoint for Amazon S3 Container Storage Interface (CSI) Driver](https://
 
 The following architecture diagram illustrates how we will use Mountpoint for Amazon S3 as persistent storage for our Pods:
 
-![Assets with S3](./assets/s3-storage.webp)
+![Assets with S3](/docs/fundamentals/storage/mountpoint-s3/s3-storage.webp)
 
 Let's begin by creating a staging directory for the images needed by our image hosting web application:
 

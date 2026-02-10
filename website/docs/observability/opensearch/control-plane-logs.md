@@ -22,7 +22,7 @@ The following diagram provides an overview of the setup for this section. From l
 3. The Lambda function writes the control plane logs to an OpenSearch index
 4. A single OpenSearch index named `eks-control-plane-logs` stores all the control plane logs. Later in the lab we will see how we can filter the different log types within the OpenSearch dashboard
 
-![EKS Control Plane Logs to OpenSearch](./assets/eks-control-plane-logs-overview.webp)
+![EKS Control Plane Logs to OpenSearch](/docs/observability/opensearch/eks-control-plane-logs-overview.webp)
 
 EKS control plane logs are enabled on a per-cluster basis through the EKS API. This will often be configured using Terraform or CloudFormation, but in this lab we'll use the AWS CLI to enable the functionality. As you can see we can enable each of the cluster log types individually, and in this lab we're enabling everything.
 
@@ -158,12 +158,12 @@ Depending on the level of the EKS cluster activity, some of the control plane lo
 
 :::
 
-![Control plane logs detail](./assets/eks-control-plane-logs-dashboard.webp)
+![Control plane logs detail](/docs/observability/opensearch/eks-control-plane-logs-dashboard.webp)
 
 The scheduler logs are shown at the end of the page. Notice that the scheduler log messages indicates `Unable to schedule pod; no fit; waiting` for `scenario-c`. This schedule log message from the control plane logs is similar to the Kubernetes event we saw for `scenario-c` on the previous page.
 
-![Control plane logs detail](./assets/eks-control-plane-logs-scheduler.webp)
+![Control plane logs detail](/docs/observability/opensearch/eks-control-plane-logs-scheduler.webp)
 
 Expanding the row allows us to drill down and view details as a table or in JSON format.
 
-![Control plane logs detail](./assets/eks-control-plane-logs-detail.webp)
+![Control plane logs detail](/docs/observability/opensearch/eks-control-plane-logs-detail.webp)

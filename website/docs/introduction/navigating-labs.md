@@ -17,7 +17,7 @@ The content of this workshop is made up of:
 
 The lab exercises are designed in a way that you can run any modules as a self-contained exercise. Lab exercises will be displayed in the sidebar to the left and are designated by the icon shown here:
 
-![Lab icon example](./assets/lab-icon.webp)
+![Lab icon example](/docs/introduction/lab-icon.webp)
 
 This module contains a single lab named **Getting started** which will be visible on the left side of your screen.
 
@@ -27,7 +27,7 @@ You should start each lab from the page indicated by this badge. Starting in the
 
 Depending on your browser the first time you copy/paste content in to the VSCode terminal you may be presented with a prompt that looks like this:
 
-![VSCode copy/paste](./assets/vscode-copy-paste.webp)
+![VSCode copy/paste](/docs/introduction/vscode-copy-paste.webp)
 
 ## Terminal commands
 

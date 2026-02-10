@@ -68,13 +68,13 @@ http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 A "Chat" button will be visible in the bottom-right corner of the screen:
 
 <Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com">
-<img src={require('./assets/home-chat.webp').default}/>
+<img src={require('@site/static/docs/aiml/chatbot/home-chat.webp').default}/>
 </Browser>
 
 Clicking this button will display a chat window which you can use to send messages to the retail store assistant:
 
 <Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com">
-<img src={require('./assets/chat-bot.webp').default}/>
+<img src={require('@site/static/docs/aiml/chatbot/chat-bot.webp').default}/>
 </Browser>
 
 ## Conclusion

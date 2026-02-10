@@ -32,4 +32,4 @@ In this lab, we'll use ACK to provision these services and create secrets and co
 
 For learning purposes, we're using helm to install the ACK controller. Another option is to use Terraform that allows for rapid deployment of AWS Service Controllers to your cluster. For more information, see the [ACK Terraform module documentation](https://registry.terraform.io/modules/aws-ia/eks-ack-addons/aws/latest#module_dynamodb).
 
-![EKS with DynamoDB](./assets/eks-workshop-ddb.webp)
+![EKS with DynamoDB](/docs/automation/controlplanes/ack/eks-workshop-ddb.webp)

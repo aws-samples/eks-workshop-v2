@@ -5,15 +5,13 @@ sidebar_position: 30
 
 Now that we understand the FSx for NetApp ONTAP storage class for Kubernetes, let's create a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and modify the UI component to mount this volume.
 
-
 First, let's examine the `fsxnpvclaim.yaml` file:
 
 ::yaml{file="manifests/modules/fundamentals/storage/fsxn/deployment/fsxnpvclaim.yaml" paths="kind,spec.storageClassName,spec.resources.requests.storage"}
 
 1. The resource being defined is a PersistentVolumeClaim
 2. This refers to the `fsxn-sc-nfs` storage class we created earlier
-3. We are requesting 5GB of storage 
-
+3. We are requesting 5GB of storage
 
 Now we'll update the UI component to reference the FSx for NetApp ONTAP PVC:
 
@@ -156,7 +154,7 @@ http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/asse
 Visit the URL in your browser:
 
 <Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96b...">
-<img src={require('./assets/placeholder.jpg').default}/>
+<img src={require('@site/static/docs/fundamentals/storage/fsx-for-netapp-ontap/placeholder.jpg').default}/>
 </Browser>
 
 We've successfully demonstrated how Amazon FSx for NetApp ONTAP provides persistent shared storage for workloads running on Amazon EKS. This solution allows multiple pods to read from and write to the same storage volume simultaneously, making it ideal for shared content hosting and other use cases requiring distributed file system access with enterprise-grade features and performance.
