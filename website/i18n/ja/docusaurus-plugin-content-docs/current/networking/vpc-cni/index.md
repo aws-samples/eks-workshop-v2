@@ -3,7 +3,7 @@ title: "Amazon VPC CNI"
 sidebar_position: 3
 chapter: true
 weight: 20
-kiteTranslationSourceHash: ba7a4eda2f22a760ef6a61b4def4fae1
+tmdTranslationSourceHash: ba7a4eda2f22a760ef6a61b4def4fae1
 ---
 
 Pod ネットワーキング、またはクラスターネットワーキングは、Kubernetes ネットワーキングの中心です。Kubernetes はクラスターネットワーキングに Container Network Interface (CNI) プラグインをサポートしています。

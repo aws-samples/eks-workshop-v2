@@ -1,7 +1,7 @@
 ---
 title: Setup
 sidebar_position: 20
-kiteTranslationSourceHash: 533c0316e871767a7636fe216f13f19d
+tmdTranslationSourceHash: 533c0316e871767a7636fe216f13f19d
 ---
 
 このセクションでは、ワークショップのラボを実行するための環境のセットアップ方法について説明します。

@@ -2,7 +2,7 @@
 title: "FISを使用した完全なノード障害のシミュレーション"
 sidebar_position: 170
 description: "AWSフォルト・インジェクション・シミュレーター（FIS）を使用して、Kubernetes環境における完全なノード障害の影響を実証します。"
-kiteTranslationSourceHash: 54b49f6f0bbfaaaf81aaea50ea19b29e
+tmdTranslationSourceHash: 54b49f6f0bbfaaaf81aaea50ea19b29e
 ---
 
 ## 概要
@@ -110,4 +110,3 @@ You can now access http://k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws
 - 極端なシナリオの定期的なテストの重要性。
 
 FISをこのようなテストに使用することで、破滅的な障害を安全にシミュレーションし、回復手順を検証し、重要な依存関係を特定し、回復時間を測定することができます。これにより、災害復旧計画の改良とシステム全体の回復力の向上に役立ちます。
-

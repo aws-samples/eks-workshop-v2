@@ -2,7 +2,7 @@
 title: "EKS Podアイデンティティの使用"
 sidebar_position: 34
 hide_table_of_contents: true
-kiteTranslationSourceHash: cd634a113e19b4c86057e0ea79176751
+tmdTranslationSourceHash: cd634a113e19b4c86057e0ea79176751
 ---
 
 クラスターでEKS Podアイデンティティを使用するには、`EKS Pod Identity Agent`アドオンをEKSクラスターにインストールする必要があります。次のコマンドを使用してインストールしましょう：

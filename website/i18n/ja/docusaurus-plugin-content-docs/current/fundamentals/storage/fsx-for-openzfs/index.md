@@ -3,7 +3,7 @@ title: Amazon FSx for OpenZFS
 sidebar_position: 40
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes Serviceのワークロード用の、Amazon FSx for OpenZFSによる完全マネージド型の高性能で伸縮自在なファイルストレージ。"
-kiteTranslationSourceHash: 456aff728bf007f40feada9eef333db7
+tmdTranslationSourceHash: 456aff728bf007f40feada9eef333db7
 ---
 
 ::required-time

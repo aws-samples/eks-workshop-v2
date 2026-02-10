@@ -1,7 +1,7 @@
 ---
 title: "Gitea のセットアップ"
 sidebar_position: 5
-kiteTranslationSourceHash: 81a4c85f3ba8bb568bde3044b3cdfecc
+tmdTranslationSourceHash: 81a4c85f3ba8bb568bde3044b3cdfecc
 ---
 
 GitHubやGitLabの代わりとして、迅速かつ簡単な方法として[Gitea](https://gitea.com)を使用します。Giteaは軽量な自己ホスト型Gitサービスで、ユーザーフレンドリーなウェブインターフェースを提供し、独自のGitリポジトリを迅速に設定および管理することができます。これは、Fluxで探索するGitOpsワークフローに不可欠なKubernetesマニフェストを保存およびバージョン管理するための信頼できるソースとして機能します。

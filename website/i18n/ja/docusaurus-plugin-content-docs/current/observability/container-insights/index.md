@@ -3,7 +3,7 @@ title: "Container Insights on EKS"
 sidebar_position: 50
 sidebar_custom_props: { "module": true }
 description: "Container Insights を使用して Amazon Elastic Kubernetes Service のワークロードからメトリクスとログを収集、集約、要約します。"
-kiteTranslationSourceHash: deebb201c602a62cd9b2f89cde17a862
+tmdTranslationSourceHash: deebb201c602a62cd9b2f89cde17a862
 ---
 
 ::required-time
@@ -33,4 +33,3 @@ Container Insights が収集するメトリクスは CloudWatch の自動ダッ�
 運用データは、パフォーマンスログイベントとして収集されます。これらのエントリは構造化された JSON スキーマを使用し、高カーディナリティデータの大規模な取り込みと保存を可能にします。このデータから、CloudWatch はクラスター、ノード、ポッド、タスク、サービスレベルの集計メトリクスを CloudWatch メトリクスとして作成します。
 
 [AWS Distro for OpenTelemetry コレクター](https://aws-otel.github.io/)を使用して Amazon EKS クラスターからメトリクスを収集するように Container Insights を設定します。
-

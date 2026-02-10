@@ -1,7 +1,7 @@
 ---
 title: "リソース"
 sidebar_position: 10
-kiteTranslationSourceHash: a285d022a99b6f6a086ddc039767f22a
+tmdTranslationSourceHash: a285d022a99b6f6a086ddc039767f22a
 ---
 
 Kubernetesリソースを表示するには、<i>リソース</i>タブをクリックします。<i>ワークロード</i>セクションにドリルダウンすると、ワークロードの一部であるKubernetes APIリソースタイプをいくつか表示できます。ワークロードには、クラスター内で実行されているコンテナが含まれ、Pod、ReplicaSet、Deployment、DaemonSetなどが含まれます。これらはコンテナをクラスターで実行するための基本的な構成要素です。
@@ -32,4 +32,3 @@ replicaset <i>orders-d6b4566fc</i>をクリックして構成を確認してく�
 ![Insights](/img/resource-view/daemonset.jpg)
 
 daemonset <i>kube-proxy</i>をクリックして構成を確認してください。情報セクション、各ノードで実行されているポッド、ラベル、アノテーションの構成が表示されます。
-

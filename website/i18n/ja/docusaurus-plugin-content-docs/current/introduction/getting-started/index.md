@@ -3,7 +3,7 @@ title: はじめに
 sidebar_position: 30
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes Serviceでワークロードを実行する基本を学びましょう。"
-kiteTranslationSourceHash: 7cdfb6c9bfdda46e240ba735baaedb14
+tmdTranslationSourceHash: 7cdfb6c9bfdda46e240ba735baaedb14
 ---
 
 ::required-time
@@ -24,4 +24,3 @@ $ prepare-environment introduction/getting-started
 
 1. EKSクラスターを初期状態にリセットする
 2. 次のラボ演習に必要な追加コンポーネントをクラスターにインストールする
-

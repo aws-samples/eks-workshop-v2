@@ -1,23 +1,23 @@
 ---
 title: StatefulSet with EBS Volume
 sidebar_position: 30
-kiteTranslationSourceHash: e43457b8076032b69afbf1c4187fdce0
+tmdTranslationSourceHash: b5376f2fdd3fe277c0128a3de2a6be09
 ---
 
 [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/)と[Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)を理解したので、Catalogマイクロサービスの MySQL DBを変更して、データベースファイルを永続的に保存するための新しいEBSボリュームをプロビジョニングしましょう。
 
-![MySQL with EBS](./assets/mysql-ebs.webp)
+![MySQL with EBS](/docs/fundamentals/storage/ebs/mysql-ebs.webp)
 
 Kustomizeを使用して、次の2つのことを行います：
 
-- カタログコンポーネントで使用されるMySQLデータベース用のEBSボリュームを使用する新しいStatefulSetを作成する
+- catalogコンポーネントで使用されるMySQLデータベース用のEBSボリュームを使用する新しいStatefulSetを作成する
 - `catalog`コンポーネントを更新して、このデータベースの新しいバージョンを使用する
 
 :::info
 なぜ既存のStatefulSetを更新しないのですか？更新する必要のあるフィールドは変更不可であり、変更できないためです。
 :::
 
-こちらが新しいカタログデータベースStatefulSetです：
+こちらが新しいcatalogデータベースStatefulSetです：
 
 ::yaml{file="manifests/modules/fundamentals/storage/ebs/statefulset-mysql.yaml" paths="spec.volumeClaimTemplates,spec.volumeClaimTemplates.0.spec.storageClassName,spec.volumeClaimTemplates.0.spec.resources.requests.storage"}
 
@@ -97,9 +97,9 @@ $ aws ec2 describe-volumes \
 
 [AWSコンソール](https://console.aws.amazon.com/ec2/home#Volumes)で確認することもできます。キー`kubernetes.io/created-for/pvc/name`と値`data-catalog-mysql-ebs-0`のタグを持つEBSボリュームを探します：
 
-![EBS Volume AWS Console Screenshot](./assets/ebsVolumeScrenshot.webp)
+![EBS Volume AWS Console Screenshot](/docs/fundamentals/storage/ebs/ebsVolumeScrenshot.webp)
 
-`catalog-mysql-ebs`コンテナのシェルを検査して、LinuxOSに接続された新しいEBSボリュームを確認したい場合は、次の手順を実行してください。マウントされているファイルシステムを検査します：
+コンテナのシェルを検査して、LinuxOSに接続された新しいEBSボリュームを確認したい場合は、次の手順を実行して`catalog-mysql-ebs`コンテナにシェルコマンドを実行してください。マウントされているファイルシステムを検査します：
 
 ```bash
 $ kubectl exec --stdin catalog-mysql-ebs-0  -n catalog -- bash -c "df -h"

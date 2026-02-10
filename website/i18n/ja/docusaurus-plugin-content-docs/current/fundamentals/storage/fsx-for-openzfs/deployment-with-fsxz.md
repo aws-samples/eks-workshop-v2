@@ -1,7 +1,7 @@
 ---
 title: FSx for OpenZFSを使用した動的プロビジョニング
 sidebar_position: 30
-kiteTranslationSourceHash: 9b71528fa598199bd4cbbf3e50776991
+tmdTranslationSourceHash: 53fcfdb5bdb801647660e1719940d4c5
 ---
 
 FSx for OpenZFSのKubernetes用ストレージクラスについて理解したところで、[永続ボリューム](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)を作成し、UIコンポーネントを変更してこのボリュームをマウントしましょう。
@@ -45,7 +45,7 @@ $ kubectl get deployment -n ui \
   name: tmp-volume
 ```
 
-PersistentVolumeClaimを満たすために、PersistentVolume（PV）が自動的に作成されました：
+PersistentVolumeClaim（PVC）を満たすために、PersistentVolume（PV）が自動的に作成されました：
 
 ```bash
 $ kubectl get pv
@@ -155,7 +155,8 @@ http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/asse
 ブラウザでURLにアクセスしてください：
 
 <Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96b...">
-<img src={require('./assets/placeholder.jpg').default}/>
+<img src={require('@site/static/docs/fundamentals/storage/fsx-for-openzfs/placeholder.jpg').default}/>
 </Browser>
 
-Amazon FSx for OpenZFSがAmazon EKSで実行されるワークロードに永続的な共有ストレージを提供する方法を正常に実証しました。このソリューションにより、複数のポッドが同時に同じストレージボリュームから読み取りおよび書き込みを行うことができ、共有コンテンツホスティングやハイパフォーマンスでエンタープライズ機能を備えた分散ファイルシステムアクセスを必要とする他のユースケースに最適です。
+Amazon FSx for OpenZFSがAmazon EKSで実行されるワークロードに永続的な共有ストレージを提供する方法を正常に実証しました。このソリューションにより、複数のPodが同時に同じストレージボリュームから読み取りおよび書き込みを行うことができ、共有コンテンツホスティングやハイパフォーマンスでエンタープライズ機能を備えた分散ファイルシステムアクセスを必要とする他のユースケースに最適です。
+

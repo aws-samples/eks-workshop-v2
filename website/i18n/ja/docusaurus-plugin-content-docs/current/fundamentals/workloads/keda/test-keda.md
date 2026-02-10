@@ -1,7 +1,7 @@
 ---
 title: "負荷を生成する"
 sidebar_position: 20
-kiteTranslationSourceHash: e085aa43a13cb6286b93f128a2e2a2aa
+tmdTranslationSourceHash: e085aa43a13cb6286b93f128a2e2a2aa
 ---
 
 KEDA `ScaledObject` の設定に応じてデプロイメントのスケーリングを観察するために、アプリケーションに負荷をかける必要があります。[hey](https://github.com/rakyll/hey) を使ってワークロードのホームページを呼び出すことで負荷をかけます。
@@ -49,4 +49,3 @@ $ kubectl delete pod load-generator
 CloudWatchコンソールで負荷テストの結果を確認することもできます。メトリクスセクションに移動し、作成されたロードバランサーとターゲットグループの`RequestCount`と`RequestCountPerTarget`メトリクスを見つけてください。結果から、最初はすべての負荷が1つのPodによって処理されていましたが、KEDAがワークロードのスケーリングを開始すると、リクエストがワークロードに追加された追加のPod全体に分散されていることがわかります。load-generatorポッドを10分間実行すると、以下のような結果が表示されます。
 
 ![インサイト](/img/keda/keda-cloudwatch.png)
-

@@ -1,7 +1,7 @@
 ---
 title: "アプリケーションの更新"
 sidebar_position: 25
-kiteTranslationSourceHash: 9fc4419f2ed8a6c543ef6ff5f14ad1dd
+tmdTranslationSourceHash: 9fc4419f2ed8a6c543ef6ff5f14ad1dd
 ---
 
 新しいリソースが作成または更新されると、アプリケーション設定はこれらの新しいリソースを利用するように調整する必要があることがよくあります。環境変数はアプリケーション開発者が設定を保存するために人気のある選択肢であり、Kubernetesでは、デプロイメントを作成する際に`container` [仕様](https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/)の`env`フィールドを通じてコンテナに環境変数を渡すことができます。

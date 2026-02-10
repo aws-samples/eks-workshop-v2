@@ -1,7 +1,7 @@
 ---
 title: "コンピュート"
 sidebar_position: 40
-kiteTranslationSourceHash: 649b365d517f1c1b841e97b3b5967531
+tmdTranslationSourceHash: 649b365d517f1c1b841e97b3b5967531
 ---
 
 [EKSのコンピュート](https://docs.aws.amazon.com/eks/latest/userguide/eks-compute.html)は、コンテナ化されたワークロードを実行するための複数のオプションを提供しており、それぞれが異なるユースケースや運用要件に合わせて設計されています。

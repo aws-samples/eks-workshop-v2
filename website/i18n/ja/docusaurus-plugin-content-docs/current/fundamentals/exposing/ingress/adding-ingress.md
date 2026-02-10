@@ -1,7 +1,7 @@
 ---
 title: "Ingressの作成"
 sidebar_position: 20
-kiteTranslationSourceHash: 55ba2d304b8961fd6c8455b49eb75f66
+tmdTranslationSourceHash: 55ba2d304b8961fd6c8455b49eb75f66
 ---
 
 以下の構成で Ingress リソースを作成しましょう：

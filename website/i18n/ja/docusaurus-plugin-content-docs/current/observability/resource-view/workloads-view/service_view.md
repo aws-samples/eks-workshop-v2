@@ -1,7 +1,7 @@
 ---
 title: "サービスとエンドポイント"
 sidebar_position: 20
-kiteTranslationSourceHash: a11c44ee0945ad6873bae46672cfbdb7
+tmdTranslationSourceHash: a11c44ee0945ad6873bae46672cfbdb7
 ---
 
 Kubernetes のサービスとネットワークリソースを表示するには、<i>リソース</i>タブをクリックします。<i>サービスとネットワーク</i>セクションにドリルダウンすると、サービスとネットワークの一部である Kubernetes API リソースタイプをいくつか表示できます。このラボ演習では、Pod のセットで実行されているアプリケーションを Service、Endpoints および Ingress として公開する方法について詳しく説明します。
@@ -16,4 +16,3 @@ Kubernetes のサービスとネットワークリソースを表示するには
 ![Insights](/img/resource-view/service-endpoint.png)
 
 このサンプルアプリケーションでは、<i>Endpoints</i> をクリックして、Info、Labels および Annotations セクションとともにエンドポイントに関連付けられている IP アドレスとポートの詳細を確認します。
-

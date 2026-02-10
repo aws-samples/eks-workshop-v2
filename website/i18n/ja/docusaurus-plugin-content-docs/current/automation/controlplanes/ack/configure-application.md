@@ -1,7 +1,7 @@
 ---
 title: "アプリケーションの更新"
 sidebar_position: 10
-kiteTranslationSourceHash: 7785ef73c09264f95a4afeb8b2cb2c96
+tmdTranslationSourceHash: 7785ef73c09264f95a4afeb8b2cb2c96
 ---
 
 新しいリソースが作成または更新されると、アプリケーション設定はこれらの新しいリソースを利用するために調整する必要があることがよくあります。Kubernetesでは、環境変数は設定を保存するための一般的な選択肢であり、デプロイメントを作成する際に`container` [spec](https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/)の`env`フィールドを通じてコンテナに渡すことができます。
@@ -14,14 +14,14 @@ kiteTranslationSourceHash: 7785ef73c09264f95a4afeb8b2cb2c96
 
 ACK `FieldExport` [カスタムリソース](https://aws-controllers-k8s.github.io/community/docs/user-docs/field-export/)は、ACKリソースのコントロールプレーンの管理と、それらのリソースの_プロパティ_をアプリケーションで使用することの間のギャップを埋めるように設計されています。ACKリソースから任意の`spec`または`status`フィールドをKubernetes ConfigMapまたはSecretにエクスポートするようにACKコントローラを設定します。これらのフィールドは、値が変更されると自動的に更新され、ConfigMapまたはSecretをKubernetesポッドに環境変数としてマウントできます。
 
-このラボでは、カートコンポーネントのConfigMapを直接更新します。ローカルDynamoDBを指すように設定を削除し、ACKによって作成されたDynamoDBテーブルの名前を使用します：
+このラボでは、cartsコンポーネントのConfigMapを直接更新します。ローカルDynamoDBを指すように設定を削除し、ACKによって作成されたDynamoDBテーブルの名前を使用します：
 
 ```kustomization
 modules/automation/controlplanes/ack/app/kustomization.yaml
 ConfigMap/carts
 ```
 
-また、カートPodにDynamoDBサービスにアクセスするための適切なIAM権限を提供する必要があります。IAMロールはすでに作成されており、IAM Roles for Service Accounts（IRSA）を使用してこれをカートPodsに適用します：
+また、cartsポッドにDynamoDBサービスにアクセスするための適切なIAM権限を提供する必要があります。IAMロールはすでに作成されており、IAM Roles for Service Accounts（IRSA）を使用してこれをcartsポッドに適用します：
 
 ```kustomization
 modules/automation/controlplanes/ack/app/carts-serviceAccount.yaml
@@ -56,7 +56,7 @@ http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 ```
 
 :::info
-このコマンドを実行すると、新しいネットワークロードバランサーエンドポイントがプロビジョニングされるため、実際のエンドポイントは異なります。
+このコマンドを実行すると、新しいNetwork Load Balancerエンドポイントがプロビジョニングされるため、実際のエンドポイントは異なります。
 :::
 
 ロードバランサーのプロビジョニングが完了するまで待つには、次のコマンドを実行できます：
@@ -82,4 +82,3 @@ $ aws dynamodb scan --table-name "${EKS_CLUSTER_NAME}-carts-ack"
 ```
 
 おめでとうございます！KubernetesのAPIを離れることなく、AWSリソースの作成に成功しました！
-

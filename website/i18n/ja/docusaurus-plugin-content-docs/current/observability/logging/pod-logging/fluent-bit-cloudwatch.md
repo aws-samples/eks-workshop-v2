@@ -1,12 +1,12 @@
 ---
 title: "CloudWatch でのログの確認"
 sidebar_position: 40
-kiteTranslationSourceHash: 99102dee83b20e4e922f4c5078bbce92
+tmdTranslationSourceHash: "85cb81e77b59ccece01f916ef782d84c"
 ---
 
-この実習では、Fluent Bit エージェントが各ノードから Amazon CloudWatch Logs に転送した Kubernetes ポッドログを確認する方法を見ていきます。デプロイされたアプリケーションコンポーネントは `stdout` にログを書き込み、これらは各ノードの `/var/log/containers/*.log` パスに保存されます。
+この実習では、各ノードにデプロイされた Fluent Bit エージェントが Amazon CloudWatch Logs に転送した Kubernetes Pod のログを確認する方法を見ていきます。デプロイされたアプリケーションコンポーネントは `stdout` にログを書き込み、これらは各ノードの `/var/log/containers/*.log` パスに保存されます。
 
-まず、Fluent Bit を有効にしてから新しいログが書き込まれることを確認するために、`ui` コンポーネントのポッドをリサイクルしましょう：
+まず、Fluent Bit を有効にしてから新しいログが書き込まれることを確認するために、`ui` コンポーネントの Pod をリサイクルしましょう：
 
 ```bash
 $ kubectl delete pod -n ui --all
@@ -57,13 +57,12 @@ CloudWatch Logs コンソールを開いて、これらのログが表示され�
 
 **fluentbit-cloudwatch** でフィルタリングして、Fluent Bit によって作成されたロググループを見つけます：
 
-![CloudWatch Log Group](./assets/log-group.webp)
+![CloudWatch Log Group](/docs/observability/logging/pod-logging/log-group.webp)
 
-`/aws/eks/fluentbit-cloudwatch/workload/ui` を選択して、ログストリームを表示します。各ストリームは個々のポッドに対応しています：
+`/aws/eks/fluentbit-cloudwatch/workload/ui` を選択してログストリームを表示します。各ストリームは個々の Pod に対応しています：
 
-![CloudWatch Log Stream](./assets/log-streams.webp)
+![CloudWatch Log Stream](/docs/observability/logging/pod-logging/log-streams.webp)
 
-ログエントリの1つを展開して、完全なJSONペイロードを確認できます：
+ログエントリの1つを展開して、完全な JSON ペイロードを確認できます：
 
-![Pod logs](./assets/logs.webp)
-
+![Pod logs](/docs/observability/logging/pod-logging/logs.webp)

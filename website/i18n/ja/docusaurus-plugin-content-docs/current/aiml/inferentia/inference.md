@@ -1,14 +1,14 @@
 ---
-title: "Run inference on AWS Inferentia"
+title: "AWS Inferentiaで推論を実行"
 sidebar_position: 40
-kiteTranslationSourceHash: 746c46624480464b838f7ec910adf306
+tmdTranslationSourceHash: 5c206bfaf5b41e4e71978ecc45f2a279
 ---
 
 これで、コンパイルされたモデルを使用して、AWS Inferentiaノード上で推論ワークロードを実行することができます。
 
-### 推論用のポッドを作成する
+### 推論用のPodを作成する
 
-推論を実行する画像を確認しましょう：
+推論を実行するイメージを確認しましょう：
 
 ```bash
 $ echo $AIML_DL_INF_IMAGE
@@ -16,19 +16,19 @@ $ echo $AIML_DL_INF_IMAGE
 
 これはトレーニングに使用したものとは異なるイメージで、推論用に最適化されています。
 
-これで推論用のポッドをデプロイすることができます。これが推論ポッドを実行するためのマニフェストファイルです：
+これで推論用のPodをデプロイすることができます。これが推論Podを実行するためのマニフェストファイルです：
 
 ::yaml{file="manifests/modules/aiml/inferentia/inference/inference.yaml" paths="spec.nodeSelector,spec.containers.0.resources.limits"}
 
 1. 推論では、`nodeSelector`セクションでinf2インスタンスタイプを指定しています。
-2. `resources`の`limits`セクションでは、このポッドを実行するために再びニューロンコアが必要であることを指定し、APIを公開します。
+2. `resources`の`limits`セクションでは、このPodを実行するために再度ニューロンコアが必要であることを指定し、APIを公開します。
 
 ```bash
 $ kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/inference \
   | envsubst | kubectl apply -f-
 ```
 
-再びKarpenterは、今回はニューロンコアが必要なinf2インスタンスが必要な保留中のポッドを検出します。そのため、KarpenterはInferentiaチップを搭載したinf2インスタンスを起動します。以下のコマンドを使用して、インスタンスのプロビジョニングを監視できます：
+再びKarpenterは、今回はニューロンコアが必要なinf2インスタンスが必要な保留中のPodを検出します。そのため、KarpenterはInferentiaチップを搭載したinf2インスタンスを起動します。以下のコマンドを使用して、インスタンスのプロビジョニングを監視できます：
 
 ```bash test=false
 $ kubectl logs -l app.kubernetes.io/instance=karpenter -n kube-system -f | jq
@@ -64,17 +64,17 @@ $ kubectl logs -l app.kubernetes.io/instance=karpenter -n kube-system -f | jq
 ...
 ```
 
-推論ポッドはKarpenterによってプロビジョニングされたノードにスケジュールされるはずです。ポッドが準備完了の状態になっているか確認します：
+推論PodはKarpenterによってプロビジョニングされたノードにスケジュールされるはずです。Podが準備完了の状態になっているか確認します：
 
 :::note
-ノードをプロビジョニングし、EKSクラスターに追加してポッドを起動するまでに最大12分かかる場合があります。
+ノードをプロビジョニングし、EKSクラスターに追加してPodを起動するまでに最大12分かかる場合があります。
 :::
 
 ```bash timeout=600
 $ kubectl -n aiml wait --for=condition=Ready --timeout=12m pod/inference
 ```
 
-以下のコマンドを使用して、ポッドをスケジュールするためにプロビジョニングされたノードに関する詳細情報を取得できます：
+以下のコマンドを使用して、Podをスケジュールするためにプロビジョニングされたノードに関する詳細情報を取得できます：
 
 ```bash
 $ kubectl get node -l karpenter.sh/nodepool=aiml -o jsonpath='{.items[0].status.capacity}' | jq .
@@ -97,7 +97,7 @@ $ kubectl get node -l karpenter.sh/nodepool=aiml -o jsonpath='{.items[0].status.
 }
 ```
 
-このノードには`aws.amazon.com/neuron`が1あることがわかります。Karpenterはポッドが要求したニューロンの数だけのノードをプロビジョニングしました。
+このノードには`aws.amazon.com/neuron`が1つあることがわかります。KarpenterはPodが要求したニューロンコアの数に応じて、このノードをプロビジョニングしました。
 
 ### 推論を実行する
 
@@ -116,11 +116,11 @@ manifests/modules/aiml/inferentia/inference/inference.py
 5. 子猫の画像に対して予測を実行します。
 6. 予測から上位5つの結果を取得し、コマンドラインに出力します。
 
-このコードをポッドにコピーし、以前にアップロードしたモデルをダウンロードして、次のコマンドを実行します：
+このコードをPodにコピーし、以前にアップロードしたモデルをダウンロードして、次のコマンドを実行します：
 
 ```bash
 $ kubectl -n aiml cp ~/environment/eks-workshop/modules/aiml/inferentia/inference/inference.py inference:/
-$ kubectl -n aiml exec inference -- pip install --upgrade boto3 botocore
+$ kubectl -n aiml exec inference -- pip install --upgrade boto3==1.40.16 botocore==1.40.16
 $ kubectl -n aiml exec inference -- aws s3 cp s3://$AIML_NEURON_BUCKET_NAME/resnet50_neuron.pt ./
 $ kubectl -n aiml exec inference -- python /inference.py
 

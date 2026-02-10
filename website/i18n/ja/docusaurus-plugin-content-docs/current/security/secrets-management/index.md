@@ -1,7 +1,7 @@
 ---
 title: "シークレット管理"
 sidebar_position: 40
-kiteTranslationSourceHash: 597d45e341c83e4eb22c3b224aaa55a2
+tmdTranslationSourceHash: 597d45e341c83e4eb22c3b224aaa55a2
 ---
 
 [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/)は、クラスターオペレーターがパスワード、OAuthトークン、sshキーなどの機密情報のデプロイを管理するのに役立つリソースです。これらのシークレットは、Podのコンテナにデータボリュームとしてマウントするか、環境変数として公開することができ、Podのデプロイと、Pod内のコンテナ化されたアプリケーションが必要とする機密データの管理を切り離すことができます。

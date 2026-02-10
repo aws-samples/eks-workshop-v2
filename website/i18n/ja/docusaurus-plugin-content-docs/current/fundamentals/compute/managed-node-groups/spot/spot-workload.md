@@ -1,7 +1,7 @@
 ---
 title: "スポットでワークロードを実行する"
 sidebar_position: 30
-kiteTranslationSourceHash: 385939ef1c0b700b043d44ac206d57e2
+tmdTranslationSourceHash: 385939ef1c0b700b043d44ac206d57e2
 ---
 
 次に、サンプル小売店アプリケーションを変更して、カタログコンポーネントを新しく作成したスポットインスタンスで実行してみましょう。そのためには、Kustomizeを使用して`catalog`デプロイメントにパッチを適用し、`nodeSelector`フィールドに`eks.amazonaws.com/capacityType: SPOT`を追加します。
@@ -50,4 +50,3 @@ ip-10-42-99-254.us-east-2.compute.internal    Ready    <none>   16m   vVAR::KUBE
 最初のコマンドは、カタログポッドがノード`ip-10-42-99-254.us-east-2.compute.internal`で実行されていることを示しています。2番目のコマンドの出力と照合すると、これがスポットインスタンスであることが確認できます。
 
 このラボでは、スポットインスタンスを作成するマネージドノードグループをデプロイし、`catalog`デプロイメントを変更して新しく作成されたスポットインスタンス上で実行するようにしました。このプロセスに従って、クラスター内で実行中の任意のデプロイメントを、上記のKustomizationパッチで指定されている`nodeSelector`パラメータを追加することで変更することができます。
-

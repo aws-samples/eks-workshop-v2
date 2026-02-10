@@ -2,7 +2,7 @@
 title: "ワーカーノードの欠落"
 sidebar_position: 71
 chapter: true
-kiteTranslationSourceHash: 7aa0a10141a53516bcaae8956ebf3223
+tmdTranslationSourceHash: 7aa0a10141a53516bcaae8956ebf3223
 ---
 
 ::required-time
@@ -18,7 +18,7 @@ kiteTranslationSourceHash: 7aa0a10141a53516bcaae8956ebf3223
 - EKS最適化AMIの使用
 - Kubernetesの監査の有効化
 
-Kubernetes経験はあるものの、EKSに関しては新人のエンジニアSamは、これらの要件を実装するために_new_nodegroup_1_という名前の新しいマネージドノードグループを作成しました。しかし、ノードグループの作成は成功したように見えるものの、新しいノードがクラスターに参加していません。EKSクラスターのステータス、ノードグループの構成、Kubernetesイベントの初期チェックでは、明らかな問題は見つかりませんでした。
+Kubernetes経験はあるものの、EKSに関しては新人のエンジニアSamは、これらの要件を実装するために*new_nodegroup_1*という名前の新しいマネージドノードグループを作成しました。しかし、ノードグループの作成は成功したように見えるものの、新しいノードがクラスターに参加していません。EKSクラスターのステータス、ノードグループの構成、Kubernetesイベントの初期チェックでは、明らかな問題は見つかりませんでした。
 
 ### ステップ1：ノードステータスの確認
 
@@ -213,7 +213,7 @@ $ aws kms describe-key --key-id ${NEW_KMS_KEY_ID} --query 'KeyMetadata.{KeyId:Ke
 ```
 
 :::info
-この情報はKMSコンソールでも確認できます。キーには_new_kms_key_alias_の後に5つのランダムな文字列（例：_new_kms_key_alias_123ab_）が付いたエイリアスがあります：
+この情報はKMSコンソールでも確認できます。キーには*new_kms_key_alias*の後に5つのランダムな文字列（例：_new_kms_key_alias_123ab_）が付いたエイリアスがあります：
 
 <ConsoleButton
   url="https://us-west-2.console.aws.amazon.com/kms/home?region=us-west-2#/kms/keys"

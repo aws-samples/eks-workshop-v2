@@ -1,7 +1,7 @@
 ---
-title: "AWS Trainiumを使用した事前学習済みモデルのコンパイル"
+title: "事前学習済みモデルのコンパイル"
 sidebar_position: 30
-kiteTranslationSourceHash: e3bf740a462a3be5bc472ed74ca5d96f
+tmdTranslationSourceHash: a2378b389bd03104b94889bfbb008551
 ---
 
 AWS Inferentiaを活用するモデルを使用するには、AWS Neuron SDKを使用してAWS Inferentia用にコンパイルする必要があります。
@@ -12,15 +12,15 @@ AWS Inferentiaを活用するモデルを使用するには、AWS Neuron SDKを�
 manifests/modules/aiml/inferentia/compiler/trace.py
 ```
 
-このコードは事前学習済みのResNet-50モデルを読み込み、評価モードに設定します。ここではモデルにトレーニングデータを追加していないことに注意してください。その後、AWS Neuron SDKを使用してモデルを保存します。
+このコードは事前学習済みのResNet-50モデルを読み込み、評価モードに設定します。ここではモデルに追加のトレーニングデータを追加していないことに注意してください。その後、AWS Neuron SDKを使用してモデルを保存します。
 
 EKSクラスタにPodをデプロイし、AWS Inferentia用のサンプルモデルをコンパイルします。AWS Inferentia用のモデルをコンパイルするには、[AWS Neuron SDK](https://aws.amazon.com/machine-learning/neuron/)が必要です。このSDKはAWSが提供する[Deep Learning Containers (DLCs)](https://github.com/aws/deep-learning-containers/blob/v8.12-tf-1.15.5-tr-gpu-py37/available_images.md#neuron-inference-containers)に含まれています。
 
-### デバイスプラグインのインストール
+### Device Pluginのインストール
 
-DLCがNeuronコアを使用するためには、それらを公開する必要があります。[Neuronデバイスプラグインのkubernetesマニフェストファイル](https://github.com/aws-neuron/aws-neuron-sdk/tree/master/src/k8)はNeuronコアをDLCに公開します。これらのマニフェストファイルはEKSクラスタに事前にインストールされています。
+DLCがNeuronコアを使用するためには、それらを公開する必要があります。[Neuron device pluginのKubernetesマニフェストファイル](https://github.com/aws-neuron/aws-neuron-sdk/tree/master/src/k8)はNeuronコアをDLCに公開します。これらのマニフェストファイルはEKSクラスタに事前にインストールされています。
 
-Podが公開されたNeuronコアを必要とする場合、Kubernetesスケジューラは、Podをスケジュールするために、InferentiaまたはTrainiumノードをプロビジョニングできます。
+PodがNeuronコアを必要とする場合、KubernetesスケジューラーはPodをスケジュールするために、InferentiaまたはTrainiumノードをプロビジョニングできます。
 
 実行する予定のイメージを確認します：
 
@@ -35,7 +35,7 @@ $ echo $AIML_DL_TRN_IMAGE
 ::yaml{file="manifests/modules/aiml/inferentia/compiler/compiler.yaml" paths="spec.nodeSelector,spec.containers.0.resources.limits"}
 
 1. `nodeSelector`セクションでは、このPodを実行したいインスタンスタイプを指定しています。この場合はtrn1インスタンスです。
-2. `resources`の`limits`セクションでは、このPodを実行するためにneuronコアが必要であることを指定しています。これによりNeuronデバイスプラグインはPodにneuron APIを公開するように指示します。
+2. `resources`の`limits`セクションでは、このPodを実行するためにneuronコアが必要であることを指定しています。これによりNeuron Device PluginはPodにneuron APIを公開するように指示します。
 
 次のコマンドを実行してPodを作成します：
 
@@ -108,3 +108,4 @@ $ kubectl -n aiml exec compiler -- aws s3 cp ./resnet50_neuron.pt s3://$AIML_NEU
 
 upload: ./resnet50_neuron.pt to s3://eksworkshop-inference20230511204343601500000001/resnet50_neuron.pt
 ```
+

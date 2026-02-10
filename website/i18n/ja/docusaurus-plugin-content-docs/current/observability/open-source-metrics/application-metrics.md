@@ -1,17 +1,17 @@
 ---
 title: "アプリケーションメトリクス"
 sidebar_position: 50
-kiteTranslationSourceHash: ea14852a65ae839911c43006a96cb779
+tmdTranslationSourceHash: dc55c16ffd550a3b1bb2421e3c4c2b6e
 ---
 
-この章では、ワークロードによって公開されるメトリクスの洞察を得る方法を検討します。例としては以下のようなものがあります：
+このセクションでは、ワークロードによって公開されるメトリクスへの洞察を得る方法を見ていきます。例としては以下のようなものがあります：
 
-- Javaヒープメトリクスやデータベース接続プールのステータスなどのシステムメトリクス
-- ビジネスKPIに関連するアプリケーションメトリクス
+- Java ヒープメトリクスやデータベース接続プールのステータスなどのシステムメトリクス
+- ビジネス KPI に関連するアプリケーションメトリクス
 
-AWS Distro for OpenTelemetryを使用してアプリケーションメトリクスを取り込み、Grafanaを使用してメトリクスを可視化する方法を見てみましょう。
+AWS Distro for OpenTelemetry を使用してアプリケーションメトリクスを取り込み、Grafana を使用してメトリクスを可視化する方法を見てみましょう。
 
-このワークショップの各コンポーネントは、特定のプログラミング言語やフレームワークに関連するライブラリを使用してPrometheusメトリクスを提供するように計装されています。以下のように注文サービスからのメトリクスの例を見ることができます：
+このワークショップの各コンポーネントは、特定のプログラミング言語やフレームワークに関連するライブラリを使用して Prometheus メトリクスを提供するように計装されています。以下のように orders サービスからこれらのメトリクスの例を見ることができます：
 
 ```bash
 $ kubectl -n orders exec deployment/orders -- curl http://localhost:8080/actuator/prometheus
@@ -31,10 +31,10 @@ watch_orders_total{productId="6d62d909-f957-430e-8689-b5129c0bb75e",} 1.0
 
 このコマンドの出力は冗長なので、上記の例では以下を示すために整理されています：
 
-- システムメトリクス - アイドル状態のJDBC接続の数
+- システムメトリクス - アイドル状態の JDBC 接続の数
 - アプリケーションメトリクス - 小売店を通じて注文された数
 
-チェックアウトサービスなど、他のコンポーネントに対して同様のリクエストを実行できます：
+checkout サービスなど、他のコンポーネントに対して同様のリクエストを実行できます：
 
 ```bash
 $ kubectl -n checkout exec deployment/checkout -- curl http://localhost:8080/metrics
@@ -45,7 +45,7 @@ nodejs_heap_size_total_bytes 48668672
 [...]
 ```
 
-このラボでは、ADOTを活用してすべてのコンポーネントのメトリクスを取り込み、注文された数を表示するダッシュボードを探索します。アプリケーションポッドからメトリクスをスクレイピングするために使用されるOpenTelemetry設定、特にこのセクションを見てみましょう：
+このラボでは、ADOT を活用してすべてのコンポーネントのメトリクスを取り込み、注文された数を表示するダッシュボードを探索します。アプリケーション Pod からメトリクスをスクレイピングするために使用される OpenTelemetry 設定、特にこのセクションを見てみましょう：
 
 ```bash
 $ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.config}' \
@@ -85,9 +85,9 @@ relabel_configs:
     action: drop
 ```
 
-この設定は、Prometheusの[Kubernetes サービスディスカバリ](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config)メカニズムを活用して、特定のアノテーションを持つすべてのポッドを自動的に検出します。この特定の設定は、アノテーション`prometheus.io/scrape`を持つすべてのポッドを検出し、スクレイピングするメトリクスに名前空間やポッド名などのKubernetesメタデータを追加します。
+この設定は、Prometheus の [Kubernetes サービスディスカバリ](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config)メカニズムを活用して、特定のアノテーションを持つすべての Pod を自動的に検出します。この特定の設定は、アノテーション `prometheus.io/scrape` を持つすべての Pod を検出し、スクレイピングするメトリクスに namespace や Pod 名などの Kubernetes メタデータで強化します。
 
-orders コンポーネントのポッドのアノテーションを確認できます：
+order コンポーネントの Pod のアノテーションを確認できます：
 
 ```bash
 $ kubectl get -o yaml -n orders deployment/orders | yq '.spec.template.metadata.annotations'
@@ -96,7 +96,7 @@ prometheus.io/port: "8080"
 prometheus.io/scrape: "true"
 ```
 
-クラスターメトリクスのセクションで見たように、これらのポッドメトリクスも同じOpenTelemetryエクスポーターを使用してAMPに送信されます。
+クラスターメトリクスのセクションで見たように、これらの Pod メトリクスも同じ OpenTelemetry エクスポーターを使用して AMP に送信されます。
 
 次に、以下のスクリプトを使用してロードジェネレーターを実行し、ストアを通じて注文を行い、アプリケーションメトリクスを生成します：
 
@@ -136,21 +136,21 @@ spec:
 EOF
 ```
 
-前のセクションで行ったようにGrafanaを開きます：
+前のセクションで行ったように Grafana を開きます：
 
-![Grafanaダッシュボード](./assets/order-service-metrics-dashboard.webp)
+![Grafana ダッシュボード](/docs/observability/open-source-metrics/order-service-metrics-dashboard.webp)
 
-ダッシュボードページに移動し、**Order Service Metrics**ダッシュボードをクリックして、ダッシュボード内のパネルを確認します：
+ダッシュボードページに移動し、**Order Service Metrics** ダッシュボードをクリックして、ダッシュボード内のパネルを確認します：
 
-![ビジネスメトリクス](./assets/retailMetrics.webp)
+![ビジネスメトリクス](/docs/observability/open-source-metrics/retailMetrics.webp)
 
-「Orders by Product」パネルのタイトルにカーソルを合わせ、「Edit」ボタンをクリックすることで、ダッシュボードがAMPをクエリするように設定されている方法を確認できます：
+「Orders by Product」パネルのタイトルにカーソルを合わせ、「Edit」ボタンをクリックすることで、ダッシュボードが AMP をクエリするように設定されている方法を確認できます：
 
-![パネルの編集](./assets/editPanel.webp)
+![パネルの編集](/docs/observability/open-source-metrics/editPanel.webp)
 
-このパネルの作成に使用されたPromQLクエリはページの下部に表示されます：
+このパネルの作成に使用された PromQL クエリはページの下部に表示されます：
 
-![PromQLクエリ](./assets/promqlQuery.webp)
+![PromQL クエリ](/docs/observability/open-source-metrics/promqlQuery.webp)
 
 この場合、次のクエリを使用しています：
 
@@ -160,9 +160,9 @@ sum by(productId) (watch_orders_total{productId!="*"})
 
 これは以下のことを行っています：
 
-- `watch_orders_total`メトリクスをクエリする
-- `productId`の値が`*`のメトリクスを無視する
-- これらのメトリクスを合計し、`productId`でグループ化する
+- `watch_orders_total` メトリクスをクエリする
+- `productId` の値が `*` のメトリクスを無視する
+- これらのメトリクスを合計し、`productId` でグループ化する
 
 同様に他のパネルを探索して、それらがどのように作成されたかを理解できます。
 

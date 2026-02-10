@@ -2,7 +2,7 @@
 title: "Argo CDのインストール"
 sidebar_position: 10
 weight: 10
-kiteTranslationSourceHash: 3277ee0a12a2f4f178dae74cab4a10c9
+tmdTranslationSourceHash: d56c4f4c50af1ff2a7b63644e2d44aeb
 ---
 
 まずはクラスターにArgo CDをインストールしましょう：
@@ -58,7 +58,7 @@ $ echo "Argo CD admin password: $ARGOCD_PWD"
 
 取得したURLと認証情報を使用してArgo CDのUIにログインします。以下のようなインターフェースが表示されます：
 
-![argocd-ui](assets/argocd-ui.webp)
+![argocd-ui](/docs/automation/gitops/argocd/argocd-ui.webp)
 
 UIに加えて、Argo CDはアプリケーションを管理するための強力なCLIツール `argocd` を提供しています。
 
@@ -83,4 +83,3 @@ $ argocd repo add ssh://git@${GITEA_SSH_HOSTNAME}:2222/workshop-user/argocd.git 
   --insecure-ignore-host-key --upsert --name git-repo
 Repository 'ssh://...' added
 ```
-

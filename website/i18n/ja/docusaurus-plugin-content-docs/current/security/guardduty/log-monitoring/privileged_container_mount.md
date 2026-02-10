@@ -1,10 +1,10 @@
 ---
 title: "特権コンテナと機密マウント"
 sidebar_position: 524
-kiteTranslationSourceHash: 305f30f48f19974a0c4ae81644165d6c
+tmdTranslationSourceHash: 9b420628aa96bc5e40cccf3d77c855f1
 ---
 
-このラボでは、EKSクラスタの`default`ネームスペースにroot権限を持つ`privileged`セキュリティコンテキストを持つコンテナを作成します。この特権コンテナはホストからの機密ディレクトリをマウントし、コンテナ内でボリュームとしてアクセスできるようになります。
+このラボでは、EKSクラスタの`default` Namespaceにroot権限を持つ`privileged` Security Contextを持つコンテナを作成します。この特権コンテナはホストからの機密ディレクトリをマウントし、コンテナ内でボリュームとしてアクセスできるようになります。
 
 この演習では、2つの異なる検出結果が生成されます。`PrivilegeEscalation:Kubernetes/PrivilegedContainer`は特権権限でコンテナが起動されたことを示し、`Persistence:Kubernetes/ContainerWithSensitiveMount`はコンテナ内に機密性の高い外部ホストパスがマウントされていることを示します。
 
@@ -28,9 +28,9 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/security/Guardduty/mount/p
 
 数分以内に、[GuardDuty検出結果コンソール](https://console.aws.amazon.com/guardduty/home#/findings)で`PrivilegeEscalation:Kubernetes/PrivilegedContainer`と`Persistence:Kubernetes/ContainerWithSensitiveMount`の2つの検出結果が表示されます。
 
-![特権コンテナの検出結果](assets/privileged-container.webp)
+![特権コンテナの検出結果](/docs/security/guardduty/log-monitoring/privileged-container.webp)
 
-![機密マウントの検出結果](assets/sensitive-mount.webp)
+![機密マウントの検出結果](/docs/security/guardduty/log-monitoring/sensitive-mount.webp)
 
 ここでも、検出結果の詳細、アクション、Detective調査を分析する時間を取りましょう。
 
@@ -39,4 +39,3 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/security/Guardduty/mount/p
 ```bash
 $ kubectl delete -f ~/environment/eks-workshop/modules/security/Guardduty/mount/privileged-pod-example.yaml
 ```
-

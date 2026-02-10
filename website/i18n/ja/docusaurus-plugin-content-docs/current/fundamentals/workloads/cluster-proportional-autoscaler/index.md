@@ -3,7 +3,7 @@ title: "Cluster Proportional Autoscaler"
 sidebar_position: 15
 sidebar_custom_props: { "module": true }
 description: "Cluster Proportional Autoscalerを使用して、Amazon Elastic Kubernetes Serviceクラスターのサイズに比例してワークロードをスケールします。"
-kiteTranslationSourceHash: 4301d7b1fadfed60fc25e4c4ac61c23a
+tmdTranslationSourceHash: fe1dc05aeb82228068bee57790e9b8ef
 ---
 
 ::required-time
@@ -23,7 +23,7 @@ Cluster Proportional Autoscaler（CPA）は、クラスター内のノード数�
 
 CPAは、Pod内でGolang APIクライアントを実行し、APIサーバーに接続してクラスター内のノードとコアの数をポーリングします。スケーリングパラメータとデータポイントはConfigMapを通じて自動スケーラーに提供され、ポーリング間隔ごとにパラメータテーブルを更新して最新の希望するスケーリングパラメータを使用します。他の自動スケーラーとは異なり、CPAはMetrics APIに依存せず、Metrics Serverも必要としません。
 
-![CPA](./assets/cpa.webp)
+![CPA](/docs/fundamentals/workloads/cluster-proportional-autoscaler/cpa.webp)
 
 CPAの主な使用例には以下が含まれます：
 

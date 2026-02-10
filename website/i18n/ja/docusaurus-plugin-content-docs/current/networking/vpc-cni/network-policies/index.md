@@ -3,7 +3,7 @@ title: "ネットワークポリシー"
 sidebar_position: 10
 sidebar_custom_props: { "module": true }
 description: "ネットワークポリシーを使用してAmazon Elastic Kubernetes Serviceのポッド間のネットワークトラフィックを制限します。"
-kiteTranslationSourceHash: 2431e68bee7e383213ec838021213041
+tmdTranslationSourceHash: 2431e68bee7e383213ec838021213041
 ---
 
 ::required-time

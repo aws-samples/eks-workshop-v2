@@ -1,7 +1,7 @@
 ---
 title: ストレージ
 sidebar_position: 20
-kiteTranslationSourceHash: 7c5e65e15040162b68a4e81ed20e58ba
+tmdTranslationSourceHash: 7c5e65e15040162b68a4e81ed20e58ba
 ---
 
 [EKS上のストレージ](https://docs.aws.amazon.com/eks/latest/userguide/storage.html)では、EKSクラスターと2つのAWSストレージサービスを統合する方法の概要を説明します。

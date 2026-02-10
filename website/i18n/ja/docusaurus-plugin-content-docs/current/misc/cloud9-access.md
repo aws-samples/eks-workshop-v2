@@ -1,12 +1,12 @@
 ---
 title: Cloud9 Access
-kiteTranslationSourceHash: a228f1916fcd99d3bc0b41ea9bf7c112
+tmdTranslationSourceHash: 531af73488b9730348b586ec9ebd39ba
 ---
 
 Terraformスクリプトを実行した後に**eks-workshop**という名前のCloud9インスタンスが表示されない場合は、以下を実行してください：
 
 環境ドロップダウンを変更して**All account environments**を表示します。
-![環境ドロップダウンを変更して**All account environments**を表示します](./assets/cloud9-environments.webp)
+![環境ドロップダウンを変更して**All account environments**を表示します](/docs/misc/cloud9-environments.webp)
 **Cloud9 IDE**の下にある**Open**をクリックします。
 
 Openリンクが機能しない場合は、ユーザーにCloud9インスタンスへのアクセス権を付与する必要があります。
@@ -23,7 +23,7 @@ aws cloud9 create-environment-membership --environment-id environment_id_from_ar
 arn:aws:sts::1234567890:assumed-role/Admin/somerole
 ```
 
-上記のarnは、Cloud9インスタンスへのアクセスが必要なユーザーまたはロールのarnに置き換える必要があります。
+上記のarnは、Cloud9インスタンスへのアクセスが必要なユーザーまたは IAM role のarnに置き換える必要があります。
 
 ```text
 environment_id_from_arn
@@ -31,7 +31,7 @@ environment_id_from_arn
 
 environment_id_from_arnは、管理したいインスタンスのarnから環境IDに置き換える必要があります。arnはインスタンス名をクリックすると確認できます。arnの最後のコロン以降がすべて環境IDです。
 
-![cloud9-arn](./assets/cloud9-arn.webp)
+![cloud9-arn](/docs/misc/cloud9-arn.webp)
 
 置換したテキストを含むコードをCLIに入力すると、Cloud9インスタンスにアクセスできるようになります。
 
@@ -47,3 +47,4 @@ $ aws cloud9 create-environment-membership --environment-id environment_id_from_
 
 }
 ```
+

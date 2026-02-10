@@ -3,7 +3,7 @@ title: "EKS オープンソース可観測性"
 sidebar_position: 40
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes Service で Prometheus や Grafana のようなオープンソースの可観測性ソリューションを活用します。"
-kiteTranslationSourceHash: a6f25e31488b01fd4aa341767fd59b0f
+tmdTranslationSourceHash: a6f25e31488b01fd4aa341767fd59b0f
 ---
 
 ::required-time
@@ -33,4 +33,3 @@ Amazon Managed Service for Prometheus は、オープンソースの Prometheus 
 :::info
 CDK Observability Accelerator を使用している場合は、[ADOT コレクター](https://aws-observability.github.io/cdk-aws-observability-accelerator/patterns/existing-eks-observability-accelerators/existing-eks-adotmetrics-collection-observability/)や[Nvidia DCGM を使用した GPU モニタリング](https://aws-observability.github.io/cdk-aws-observability-accelerator/patterns/single-new-eks-observability-accelerators/single-new-eks-gpu-opensource-observability/)など、幅広いユースケースをカバーするオープンソース可観測性パターンのコレクションをチェックしてください。
 :::
-

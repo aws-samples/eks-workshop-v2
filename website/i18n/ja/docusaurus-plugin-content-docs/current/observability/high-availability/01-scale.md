@@ -1,17 +1,17 @@
 ---
-title: "ラボセットアップ：カオスメッシュ、スケーリング、Podアフィニティ"
+title: "ラボセットアップ：Chaos Mesh、スケーリング、Podアフィニティ"
 sidebar_position: 90
 description: "ポッドのスケーリング方法、Podアンチアフィニティ設定の追加、およびアベイラビリティーゾーン間でのポッド分布を視覚化するヘルパースクリプトの使用方法を学びます。"
-kiteTranslationSourceHash: d3d859ae70dfae80e4cfb99adaca9630
+tmdTranslationSourceHash: 6c950c3616333240e58e52096390f35a
 ---
 
-このガイドでは、高可用性のプラクティスを実装してUIサービスの回復力を強化するための手順を説明します。ヘルムのインストール、UIサービスのスケーリング、Podアンチアフィニティの実装、およびアベイラビリティーゾーン間のポッド分布を視覚化するヘルパースクリプトの使用方法について説明します。
+このガイドでは、高可用性のプラクティスを実装してUIサービスの回復力を強化するための手順を説明します。helmのインストール、UIサービスのスケーリング、Podアンチアフィニティの実装、およびアベイラビリティーゾーン間のポッド分布を視覚化するヘルパースクリプトの使用方法について説明します。
 
-## カオスメッシュのインストール
+## Chaos Meshのインストール
 
-クラスターの回復力テスト能力を強化するために、カオスメッシュをインストールします。カオスメッシュはKubernetes環境向けの強力なカオスエンジニアリングツールです。さまざまな障害シナリオをシミュレートし、アプリケーションがどのように応答するかをテストすることができます。
+クラスターの回復力テスト能力を強化するために、Chaos Meshをインストールします。Chaos MeshはKubernetes環境向けの強力なカオスエンジニアリングツールです。さまざまな障害シナリオをシミュレートし、アプリケーションがどのように応答するかをテストすることができます。
 
-ヘルムを使用して、クラスターにカオスメッシュをインストールしましょう：
+Helmを使用して、クラスターにChaos Meshをインストールしましょう：
 
 ```bash timeout=240
 $ helm repo add chaos-mesh https://charts.chaos-mesh.org
@@ -69,7 +69,7 @@ You can now access http://k8s-ui-ui-5ddc3ba496-721427594.us-west-2.elb.amazonaws
 
 ## ヘルパースクリプト：AZごとのポッドの取得
 
-`get-pods-by-az.sh`スクリプトは、ターミナルで異なるアベイラビリティゾーンにわたるKubernetesポッドの分布を視覚化するのに役立ちます。スクリプトファイルはgithubで[こちら](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/resiliency/scripts/get-pods-by-az.sh)で確認できます。
+`get-pods-by-az.sh`スクリプトは、ターミナルで異なるアベイラビリティゾーンにわたるKubernetesポッドの分布を視覚化するのに役立ちます。スクリプトファイルはGitHubで[こちら](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/resiliency/scripts/get-pods-by-az.sh)で確認できます。
 
 ### スクリプトの実行
 
@@ -97,7 +97,7 @@ $ timeout 10s ~/$SCRIPT_DIR/get-pods-by-az.sh | head -n 30
 :::info
 これらの変更の詳細については、次のセクションをご覧ください：
 
-- [カオスメッシュ](https://chaos-mesh.org/)
+- [Chaos Mesh](https://chaos-mesh.org/)
 - [Podアフィニティとアンチアフィニティ](../../fundamentals/compute/managed-node-groups/basics/affinity/)
 
 :::

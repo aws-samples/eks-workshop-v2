@@ -2,7 +2,7 @@
 title: "FISを使用せずにノード障害をシミュレートする"
 sidebar_position: 130
 description: "AWS FISを使用せずに、アプリケーションの回復力をテストするためにKubernetes環境でノード障害を手動でシミュレートします。"
-kiteTranslationSourceHash: d9a8781c19acbe227ff341dee4df27dd
+tmdTranslationSourceHash: d9a8781c19acbe227ff341dee4df27dd
 ---
 
 ## 概要
@@ -128,4 +128,3 @@ $ wait-for-lb $(kubectl get ingress -n ui -o jsonpath='{.items[0].status.loadBal
 - アプリケーションのアーキテクチャまたはデプロイ戦略における潜在的な弱点を特定する。
 - 予期しないインフラストラクチャの問題に対処するシステムの能力に自信を持つ。
 - インシデント対応手順と自動化を改良する。
-

@@ -1,7 +1,7 @@
 ---
 title: "仕組み"
 sidebar_position: 5
-kiteTranslationSourceHash: 8d1ce38391fb1bd8aa33f2a7bb627189
+tmdTranslationSourceHash: 318ab5fd6c8856bb1f1e75f36368450c
 ---
 
 Crossplaneはクラスター内で主に2つのコンポーネントを使用して動作します：
@@ -24,6 +24,6 @@ upbound-provider-family-aws-1ac09674120f     1/1     1            1           21
 
 Crossplaneは、開発者がKubernetesマニフェスト（クレームと呼ばれる）を使用してインフラストラクチャリソースをリクエストするプロセスを簡素化します。下図に示すように、クレームは名前空間スコープの唯一のCrossplaneリソースであり、開発者インターフェースとして機能し、実装の詳細を抽象化します。クレームがクラスターにデプロイされると、コンポジットリソース（XR）が作成されます。これはKubernetesカスタムリソースで、コンポジションと呼ばれるテンプレートを通じて定義された1つ以上のクラウドリソースを表します。コンポジットリソースは次に1つ以上のマネージドリソースを作成し、これらがAWS APIと対話して目的のインフラストラクチャリソースの作成をリクエストします。
 
-![Crossplane claim](./assets/claim-architecture-drawing.webp)
+![Crossplane claim](/docs/automation/controlplanes/crossplane/claim-architecture-drawing.webp)
 
 このアーキテクチャにより、高レベルの抽象化（クレーム）を扱う開発者と、基盤となるインフラストラクチャの実装（コンポジションとマネージドリソース）を定義するプラットフォームチームの間で、明確な関心の分離が可能になります。

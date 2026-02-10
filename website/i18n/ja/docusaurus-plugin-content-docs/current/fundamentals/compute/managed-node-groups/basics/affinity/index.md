@@ -1,7 +1,7 @@
 ---
 title: Pod Affinity と Anti-Affinity
 sidebar_position: 30
-kiteTranslationSourceHash: 439beab5149c47c5e73f707f562b78c3
+tmdTranslationSourceHash: 439beab5149c47c5e73f707f562b78c3
 ---
 
 Podは特定のノードや特定の状況下で実行されるよう制約をかけることができます。これには、ノードごとに1つのアプリケーションPodのみを実行したい場合や、複数のPodをノード上でペアリングしたい場合などが含まれます。さらに、ノードアフィニティを使用する場合、Podには優先的または必須の制約を設定できます。
@@ -40,14 +40,17 @@ checkout-redis-6cfd7d8787-kxs8r ip-10-42-10-225.us-west-2.compute.internal
 modules/fundamentals/affinity/checkout/checkout.yaml
 Deployment/checkout
 ```
+
 上記のマニフェストでは、`podAffinity`セクションが次のことを保証します：
-   - CheckoutのPodはRedisのPodが実行されているノードでのみスケジュールされます。
-   - これは`app.kubernetes.io/component: redis`というラベルを持つPodとマッチングすることで実施されます。
-   - `topologyKey: kubernetes.io/hostname`はこのルールがノードレベルで適用されることを保証します。
+
+- CheckoutのPodはRedisのPodが実行されているノードでのみスケジュールされます。
+- これは`app.kubernetes.io/component: redis`というラベルを持つPodとマッチングすることで実施されます。
+- `topologyKey: kubernetes.io/hostname`はこのルールがノードレベルで適用されることを保証します。
 
 `podAntiAffinity`セクションは次のことを保証します：
-   - ノードごとに1つのcheckout Podのみが実行されます。
-   - これは`app.kubernetes.io/component: service`と`app.kubernetes.io/instance: checkout`のラベルを持つPodが同じノード上で実行されないようにすることで実現されます。
+
+- ノードごとに1つのcheckout Podのみが実行されます。
+- これは`app.kubernetes.io/component: service`と`app.kubernetes.io/instance: checkout`のラベルを持つPodが同じノード上で実行されないようにすることで実現されます。
 
 変更を適用するために、次のコマンドを実行してクラスター内の**checkout**デプロイメントを変更します：
 
@@ -89,10 +92,12 @@ checkout-redis-6cfd7d8787-gw59j ip-10-42-10-120.us-west-2.compute.internal
 modules/fundamentals/affinity/checkout-redis/checkout-redis.yaml
 Deployment/checkout-redis
 ```
+
 上記のマニフェストでは、`podAntiAffinity`セクションが次のことを保証します：
-   - RedisのPodは異なるノードに分散されます。
-   - これは`app.kubernetes.io/component: redis`というラベルを持つ複数のPodが同じノード上で実行されないようにすることで実施されます。
-   - `topologyKey: kubernetes.io/hostname`はこのルールがノードレベルで適用されることを保証します。
+
+- RedisのPodは異なるノードに分散されます。
+- これは`app.kubernetes.io/component: redis`というラベルを持つ複数のPodが同じノード上で実行されないようにすることで実施されます。
+- `topologyKey: kubernetes.io/hostname`はこのルールがノードレベルで適用されることを保証します。
 
 次のコマンドでそれを適用します：
 

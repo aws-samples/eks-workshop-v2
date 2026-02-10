@@ -1,7 +1,7 @@
 ---
 title: "デバッグ"
 sidebar_position: 90
-kiteTranslationSourceHash: b00096fd2aa50adedce64127337b1173
+tmdTranslationSourceHash: b00096fd2aa50adedce64127337b1173
 ---
 
 これまでは、ネットワークポリシーを問題やエラーなしに適用することができました。しかし、エラーや問題が発生した場合はどうなるでしょうか？これらの問題をどのようにデバッグするのでしょうか？

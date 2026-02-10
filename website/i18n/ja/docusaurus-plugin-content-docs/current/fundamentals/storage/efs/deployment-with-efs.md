@@ -1,10 +1,10 @@
 ---
-title: Dynamic provisioning using EFS
+title: EFSを使用した動的プロビジョニング
 sidebar_position: 30
-kiteTranslationSourceHash: a8a98c88b4517b1cb20411160dceed1b
+tmdTranslationSourceHash: 3ebb6d789f8ef01214bb12b1eca28f1e
 ---
 
-EFS用のKubernetesストレージクラスについて理解したので、[永続ボリューム](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)を作成し、UIコンポーネントを変更してこのボリュームをマウントしましょう。
+EFS用のKubernetesストレージクラスについて理解したので、[Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)を作成し、UIコンポーネントを変更してこのボリュームをマウントしましょう。
 
 まず、`efspvclaim.yaml`ファイルを確認しましょう：
 
@@ -45,7 +45,7 @@ $ kubectl get deployment -n ui \
   name: tmp-volume
 ```
 
-PersistentVolumeClaimを満たすためにPersistentVolume（PV）が自動的に作成されました：
+PersistentVolumeClaim（PVC）を満たすためにPersistentVolume（PV）が自動的に作成されました：
 
 ```bash
 $ kubectl get pv
@@ -96,7 +96,7 @@ $ kubectl wait --for=condition=complete -n ui \
   job/populate-images --timeout=300s
 ```
 
-UIコンポーネントのPodの一つを通して、`/efs`内の現在のファイルをリストして、共有ストレージ機能を実証しましょう：
+UIコンポーネントのPodの1つを通じて、`/efs`内の現在のファイルをリストして、共有ストレージ機能を実証しましょう：
 
 ```bash
 $ POD_1=$(kubectl -n ui get pods -l app.kubernetes.io/instance=ui -o jsonpath='{.items[0].metadata.name}')
@@ -122,7 +122,7 @@ $ POD_1=$(kubectl -n ui get pods -l app.kubernetes.io/instance=ui -o jsonpath='{
 $ kubectl exec --stdin $POD_1 -n ui -- bash -c 'curl -sS -o /efs/placeholder.jpg https://placehold.co/600x400/jpg?text=EKS+Workshop\\nPlaceholder'
 ```
 
-次に、2番目のUIポッドがこの新しく作成されたファイルにアクセスできることを確認し、EFSストレージの共有特性を実証します：
+次に、2番目のUIPodがこの新しく作成されたファイルにアクセスできることを確認し、EFSストレージの共有特性を実証します：
 
 ```bash hook=sample-images
 $ POD_2=$(kubectl -n ui get pods -o jsonpath='{.items[1].metadata.name}')
@@ -142,7 +142,7 @@ d77f9ae6-e9a8-4a3e-86bd-b72af75cbc49.jpg
 placeholder.jpg      <----------------
 ```
 
-ご覧の通り、最初のPodを通じてファイルを作成したにもかかわらず、2番目のPodは同じ共有EFSファイルシステムにアクセスしているため、すぐにアクセスできます。
+ご覧のとおり、最初のPodを通じてファイルを作成したにもかかわらず、2番目のPodは同じ共有EFSファイルシステムにアクセスしているため、すぐにアクセスできます。
 
 最後に、UIサービスを通じて画像にアクセスできることを確認しましょう：
 
@@ -155,7 +155,7 @@ http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/asse
 ブラウザでURLにアクセスしてください：
 
 <Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96b...">
-<img src={require('./assets/placeholder.jpg').default}/>
+<img src={require('@site/static/docs/fundamentals/storage/efs/placeholder.jpg').default}/>
 </Browser>
 
 Amazon EFSがAmazon EKS上で実行されるワークロードに永続的な共有ストレージを提供する方法を正常に実証しました。このソリューションにより、複数のPodが同時に同じストレージボリュームから読み取りや書き込みを行うことができ、共有コンテンツホスティングや分散ファイルシステムアクセスを必要とする他のユースケースに最適です。

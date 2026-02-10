@@ -3,7 +3,7 @@ title: "EKSを使用したカオスエンジニアリング"
 sidebar_position: 70
 sidebar_custom_props: { "module": true }
 description: Amazon EKSクラスターの回復力を確認するための様々な障害シナリオのシミュレーション。"
-kiteTranslationSourceHash: f4f02238c6bb6f8894fe29117ebc3102
+tmdTranslationSourceHash: f4f02238c6bb6f8894fe29117ebc3102
 ---
 
 ::required-time
@@ -52,7 +52,6 @@ Amazon EKSはマネージドKubernetesプラットフォームを提供してい
 
 1. **ポッド障害**: ChaosMeshを使用して、個々のポッド障害に対するアプリケーションの回復力をテスト。
 2. **ノード障害**: Kubernetesの自己修復能力を観察するためのノード障害シミュレーション。
-
    - AWS Fault Injection Simulatorなし: Kubernetesの自己修復能力を観察するための手動ノード障害シミュレーション。
    - AWS Fault Injection Simulatorあり: 部分的および完全なノード障害シナリオのためのAWS Fault Injection Simulatorの活用。
 

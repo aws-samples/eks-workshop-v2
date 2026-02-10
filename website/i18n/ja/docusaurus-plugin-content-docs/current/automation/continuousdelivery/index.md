@@ -2,7 +2,7 @@
 title: "継続的デリバリー"
 sidebar_position: 4
 weight: 40
-kiteTranslationSourceHash: 20adbea91ebfae803b31ee55dd416209
+tmdTranslationSourceHash: 20adbea91ebfae803b31ee55dd416209
 ---
 
 継続的デリバリーとは、コードの変更が自動的にビルドされ、テストされ、本番環境へのリリースに向けて準備されるソフトウェア開発の手法です。

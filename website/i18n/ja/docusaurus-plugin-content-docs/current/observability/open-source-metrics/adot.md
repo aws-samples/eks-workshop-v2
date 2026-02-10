@@ -1,7 +1,7 @@
 ---
 title: "AWS Distro for OpenTelemetry を使用したメトリクスのスクレイピング"
 sidebar_position: 10
-kiteTranslationSourceHash: 6aa970c5e4f2721d7454114bf1c8dcc1
+tmdTranslationSourceHash: 6aa970c5e4f2721d7454114bf1c8dcc1
 ---
 
 このラボでは、すでに作成されている Amazon Managed Service for Prometheus ワークスペースにメトリクスを保存します。コンソールで確認することができます：
@@ -86,4 +86,3 @@ $ kubectl get pods -n other
 NAME                              READY   STATUS    RESTARTS   AGE
 adot-collector-6f6b8867f6-lpjb7   1/1     Running   2          11d
 ```
-

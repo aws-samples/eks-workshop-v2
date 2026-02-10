@@ -1,7 +1,7 @@
 ---
 title: "クラスターブートストラップ"
 sidebar_position: 15
-kiteTranslationSourceHash: 8817bad0efc303d4114e617ba7ee4a6d
+tmdTranslationSourceHash: 8817bad0efc303d4114e617ba7ee4a6d
 ---
 
 ブートストラッププロセスでは、クラスターにFluxコンポーネントをインストールし、GitOpsを使用したクラスターオブジェクトの管理に関連するファイルをリポジトリに作成します。
@@ -48,4 +48,3 @@ flux-system    main@sha1:6e6ae1d   False        True    Applied revision: main@s
 ```
 
 これにより、Fluxが基本的なkustomizationを作成し、クラスターと同期していることが示されます。
-

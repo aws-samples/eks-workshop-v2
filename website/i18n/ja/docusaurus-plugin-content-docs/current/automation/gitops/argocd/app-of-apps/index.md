@@ -2,7 +2,7 @@
 title: "App of Apps"
 chapter: true
 sidebar_position: 100
-kiteTranslationSourceHash: afa8682a9129645531018e1f09d075f9
+tmdTranslationSourceHash: afa8682a9129645531018e1f09d075f9
 ---
 
 複数のマイクロサービスで構成される複雑なアプリケーションスタックを管理する場合、個々のArgo CDアプリケーションを手動で作成・維持することは運用上の課題となります。App of Appsパターンは、単一の親アプリケーションを通じて複数のアプリケーションを管理できるようにすることで、この複雑さに対処します。

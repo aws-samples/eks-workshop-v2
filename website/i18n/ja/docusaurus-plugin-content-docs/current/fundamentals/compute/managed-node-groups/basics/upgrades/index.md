@@ -1,7 +1,7 @@
 ---
 title: AMIのアップグレード
 sidebar_position: 60
-kiteTranslationSourceHash: 3788124dc0896536b1da6028aa4bd63b
+tmdTranslationSourceHash: 3788124dc0896536b1da6028aa4bd63b
 ---
 
 [Amazon EKS最適化Amazon Linux AMI](https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-amis.html)はAmazon Linux 2をベースに構築され、Amazon EKSノードのベースイメージとして機能するように構成されています。EKSクラスターにノードを追加する際には、最新バージョンのEKS最適化AMIを使用することがベストプラクティスとされています。新しいリリースにはKubernetesのパッチやセキュリティアップデートが含まれているためです。また、EKSクラスターにすでにプロビジョニングされている既存のノードもアップグレードすることが重要です。

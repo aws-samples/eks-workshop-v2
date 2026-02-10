@@ -1,7 +1,7 @@
 ---
 title: "KEDAのインストール"
 sidebar_position: 5
-kiteTranslationSourceHash: 5370e0b7bace72b2768788d3047bda59
+tmdTranslationSourceHash: 5370e0b7bace72b2768788d3047bda59
 ---
 
 まず、Helmを使用してKEDAをインストールしましょう。ラボの準備段階で作成された前提条件が1つあります。CloudWatch内のメトリックデータにアクセスするための権限を持つIAMロールが作成されました。
@@ -43,4 +43,3 @@ keda-operator-metrics-apiserver   1/1     1            1           105s
 3. アドミッションWebhooks（keda-admission-webhooks） - リソース設定を検証して設定ミスを防止します（例：同じワークロードをターゲットにする複数のScaledObjects）
 
 これでワークロードをスケーリングするためのKEDAの設定に進むことができます。
-

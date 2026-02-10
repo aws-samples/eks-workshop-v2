@@ -2,7 +2,7 @@
 title: Kustomize
 sidebar_custom_props: { "module": true }
 sidebar_position: 40
-kiteTranslationSourceHash: 80ad63a289b3caa54d84f83fab6555e6
+tmdTranslationSourceHash: 80ad63a289b3caa54d84f83fab6555e6
 ---
 
 ::required-time
@@ -98,4 +98,3 @@ $ kubectl kustomize ~/environment/eks-workshop/base-application \
 Kustomizeの仕組みを理解したので、[Helmモジュール](/docs/introduction/helm)に進むか、直接[基礎モジュール](/docs/fundamentals)に進むことができます。
 
 Kustomizeについて詳しく知るには、公式Kubernetesの[ドキュメント](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/)を参照してください。
-

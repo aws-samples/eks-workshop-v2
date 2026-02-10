@@ -1,7 +1,7 @@
 ---
 title: "シーリングキーの管理"
 sidebar_position: 434
-kiteTranslationSourceHash: a072117fa3ec03e6c678452d1cc60a39
+tmdTranslationSourceHash: a072117fa3ec03e6c678452d1cc60a39
 ---
 
 SealedSecret内の暗号化データを復号する唯一の方法は、コントローラーが管理するシーリングキーを使用することです。災害後にクラスターの元の状態を復元しようとする場合や、GitOpsワークフローを活用してSealedSecretを含むKubernetesリソースをGitリポジトリからデプロイし、新しいEKSクラスターを作成したい場合など、様々な状況が考えられます。新しいEKSクラスターにデプロイされたコントローラーは、SealedSecretsを復号できるよう同じシーリングキーを使用する必要があります。

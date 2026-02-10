@@ -1,7 +1,7 @@
 ---
 title: "新しいノードグループのプロビジョニング"
 sidebar_position: 20
-kiteTranslationSourceHash: "973e02ea92db1a8a09f9aa26b1d1fe67"
+tmdTranslationSourceHash: "973e02ea92db1a8a09f9aa26b1d1fe67"
 ---
 
 EKSマネージドノードグループを作成します：

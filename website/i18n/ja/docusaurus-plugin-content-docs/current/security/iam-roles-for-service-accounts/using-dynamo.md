@@ -1,7 +1,7 @@
 ---
 title: "DynamoDBの使用"
 sidebar_position: 22
-kiteTranslationSourceHash: f432af3be771b49e4e4aea89fde6edf4
+tmdTranslationSourceHash: f432af3be771b49e4e4aea89fde6edf4
 ---
 
 このプロセスの最初のステップは、`carts`サービスを再設定して、すでに作成されているDynamoDBテーブルを使用することです。アプリケーションは設定情報のほとんどをConfigMapから読み込みます。確認してみましょう：

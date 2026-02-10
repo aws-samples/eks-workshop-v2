@@ -1,7 +1,7 @@
 ---
 title: ラボのナビゲーション
 sidebar_position: 25
-kiteTranslationSourceHash: cc63ae943c6fae9a6745232e11400670
+tmdTranslationSourceHash: 3ef210656bc2a09d2ad75d89542ca72f
 ---
 
 import Tabs from '@theme/Tabs';
@@ -18,7 +18,7 @@ import TabItem from '@theme/TabItem';
 
 ラボ演習は、自己完結型の演習としてどのモジュールも実行できるように設計されています。ラボ演習は左側のサイドバーに表示され、ここに示すアイコンで指定されます：
 
-![ラボアイコンの例](./assets/lab-icon.webp)
+![ラボアイコンの例](/docs/introduction/lab-icon.webp)
 
 このモジュールには、画面の左側に表示される**はじめに**という名前の単一のラボが含まれています。
 
@@ -28,7 +28,7 @@ import TabItem from '@theme/TabItem';
 
 ブラウザによっては、初めてVSCodeターミナルにコンテンツをコピー/ペーストする際に、次のようなプロンプトが表示されることがあります：
 
-![VSCodeコピー/ペースト](./assets/vscode-copy-paste.webp)
+![VSCodeコピー/ペースト](/docs/introduction/vscode-copy-paste.webp)
 
 ## ターミナルコマンド
 

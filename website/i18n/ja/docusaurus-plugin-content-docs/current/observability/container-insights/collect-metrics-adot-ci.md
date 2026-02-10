@@ -1,7 +1,7 @@
 ---
 title: "クラスターメトリクス"
 sidebar_position: 10
-kiteTranslationSourceHash: 4f2304a5a266af684645c661d937a903
+tmdTranslationSourceHash: 2c66fe48c70c4039dd8856f2d14ddfd6
 ---
 
 EKSクラスター用のCloudWatch Container InsightsメトリクスをADOTコレクターで有効にする方法を調査します。最初に必要なことは、クラスター内にコレクターを作成して、ノード、ポッド、コンテナなどのクラスターのさまざまな側面に関するメトリクスを収集することです。
@@ -84,12 +84,12 @@ adot-container-ci-collector-w4vqs  1/1     Running   0          15s
 以下の点に注意してください：
 
 1. CloudWatchにデータが表示され始めるまで数分かかることがあります
-2. [拡張観測性を備えたCloudWatchエージェント](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-EKS-agent.html)によって提供される一部のメトリクスが欠落している可能性があります
+2. [拡張観測性を備えたCloudWatchエージェント](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-EKS-agent.html)によって提供される一部のメトリクスが欠落していることが予想されます
 
 :::
 
 <ConsoleButton url="https://console.aws.amazon.com/cloudwatch/home#container-insights:performance/EKS:Cluster?~(query~(controls~(CW*3a*3aEKS.cluster~(~'eks-workshop)))~context~())" service="cloudwatch" label="CloudWatchコンソールを開く"/>
 
-![ContainerInsightsConsole](./assets/container-insights-metrics-console.webp)
+![ContainerInsightsConsole](/docs/observability/container-insights/container-insights-metrics-console.webp)
 
 コンソールを探索して、クラスター、名前空間、ポッドなど、メトリクスが表示されるさまざまな方法を確認することができます。

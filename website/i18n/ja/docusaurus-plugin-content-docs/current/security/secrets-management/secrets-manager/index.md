@@ -3,7 +3,7 @@ title: "AWS Secrets Managerを使用したシークレット管理"
 sidebar_position: 420
 sidebar_custom_props: { "module": true }
 description: "AWS Secrets Managerを使用して、Amazon Elastic Kubernetes Serviceで実行されるアプリケーションに認証情報などの機密設定を提供します。"
-kiteTranslationSourceHash: c8dc2ea96764fae14ed1aee14eef493c
+tmdTranslationSourceHash: c8dc2ea96764fae14ed1aee14eef493c
 ---
 
 ::required-time

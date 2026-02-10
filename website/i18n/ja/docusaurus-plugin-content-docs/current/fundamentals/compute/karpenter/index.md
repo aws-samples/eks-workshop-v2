@@ -3,7 +3,7 @@ title: "Karpenter"
 sidebar_position: 20
 sidebar_custom_props: { "module": true }
 description: "Karpenterを使用してAmazon Elastic Kubernetes Serviceのコンピュートを自動的に管理します。"
-kiteTranslationSourceHash: c5d4445b2f78173127deee5cc458dd9d
+tmdTranslationSourceHash: 6f927d12193cafc42102d5e204835a9e
 ---
 
 ::required-time
@@ -25,7 +25,7 @@ $ prepare-environment autoscaling/compute/karpenter
 
 このラボでは、Kubernetesのためのオープンソースの自動スケーリングプロジェクトである[Karpenter](https://github.com/aws/karpenter)について見ていきます。Karpenterは、スケジュールできないポッドの集約リソースリクエストを監視し、スケジューリングの遅延を最小限に抑えるためにノードの起動と終了を決定することで、アプリケーションのニーズに合った適切なコンピュートリソースを数分ではなく数秒で提供するように設計されています。
 
-<img src={require('./assets/karpenter-diagram.webp').default}/>
+<img src={require('@site/static/docs/fundamentals/compute/karpenter/karpenter-diagram.webp').default}/>
 
 Karpenterの目標は、Kubernetesクラスター上で実行されるワークロードの効率性とコストを改善することです。Karpenterは以下のように動作します：
 
@@ -34,4 +34,3 @@ Karpenterの目標は、Kubernetesクラスター上で実行されるワーク�
 - ポッドの要件を満たすノードをプロビジョニングします
 - 新しいノードにポッドをスケジュールします
 - ノードが不要になった場合は削除します
-

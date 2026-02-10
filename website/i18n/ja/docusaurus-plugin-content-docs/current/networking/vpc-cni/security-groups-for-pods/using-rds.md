@@ -1,7 +1,7 @@
 ---
 title: "Amazon RDSの使用"
 sidebar_position: 20
-kiteTranslationSourceHash: 27caca5707cf17c38fa3f60553a150be
+tmdTranslationSourceHash: 27caca5707cf17c38fa3f60553a150be
 ---
 
 私たちのアカウントにRDSデータベースが作成されています。後で使用するためにそのエンドポイントとパスワードを取得しましょう：
@@ -127,4 +127,3 @@ AWSコンソールからもRDSインスタンスのセキュリティグルー�
 <ConsoleButton url="https://console.aws.amazon.com/rds/home#database:id=eks-workshop-catalog;is-cluster=false" service="rds" label="RDSコンソールを開く"/>
 
 このセキュリティグループは、特定のセキュリティグループ（上記の例では`sg-037ec36e968f1f5e7`）を持つソースからのトラフィックのみが、ポート`3306`でRDSデータベースにアクセスすることを許可しています。
-

@@ -1,7 +1,7 @@
 ---
 title: "Amazon DynamoDB の使用"
 sidebar_position: 32
-kiteTranslationSourceHash: 513c401e03117c6fbba61dec1d1d081f
+tmdTranslationSourceHash: 513c401e03117c6fbba61dec1d1d081f
 ---
 
 このプロセスの最初のステップは、carts サービスを再設定して、すでに作成されている DynamoDB テーブルを使用することです。アプリケーションは、ほとんどの設定を ConfigMap から読み込んでいます。確認してみましょう：
@@ -86,4 +86,3 @@ carts-dynamodb-698674dcc6-hw2bg   1/1     Running            0               20m
 ```
 
 何が問題なのでしょうか？
-

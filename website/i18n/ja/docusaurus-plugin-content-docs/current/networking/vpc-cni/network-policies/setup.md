@@ -1,7 +1,7 @@
 ---
 title: "ラボセットアップ"
 sidebar_position: 60
-kiteTranslationSourceHash: 3a59d7db40ecf70a19c6ecceb2cf55c4
+tmdTranslationSourceHash: 3a59d7db40ecf70a19c6ecceb2cf55c4
 ---
 
 このラボでは、ラボクラスターにデプロイされたサンプルアプリケーションのネットワークポリシーを実装します。サンプルアプリケーションのコンポーネントアーキテクチャは以下のとおりです。

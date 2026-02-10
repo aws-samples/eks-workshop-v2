@@ -1,7 +1,7 @@
 ---
 title: "EKSでのロギング"
 sidebar_position: 30
-kiteTranslationSourceHash: 9a892a9e18bd9045ee4b850c00e4abb7
+tmdTranslationSourceHash: 9a892a9e18bd9045ee4b850c00e4abb7
 ---
 
 Kubernetesのロギングは、コントロールプレーンのロギング、ノードロギング、アプリケーションロギングに分けることができます。[Kubernetesコントロールプレーン](https://kubernetes.io/docs/concepts/overview/components/#control-plane-components)は、Kubernetesクラスターを管理し、監査と診断目的のためのログを生成するコンポーネントの集合です。Amazon EKSでは、異なるコントロールプレーンコンポーネントのログを有効にし、Amazon CloudWatchに送信することができます。
@@ -12,4 +12,3 @@ Kubernetesのロギングは、コントロールプレーンのロギング、�
 
 - EKSコントロールプレーンログを有効にし、Amazon CloudWatchで確認する方法
 - ロギングエージェント（Fluent Bit）を設定してPodログをAmazon CloudWatchにストリーミングする方法
-

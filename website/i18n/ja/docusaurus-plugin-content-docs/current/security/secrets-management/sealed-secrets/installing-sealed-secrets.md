@@ -1,7 +1,7 @@
 ---
 title: "Sealed Secretsをインストールする"
 sidebar_position: 432
-kiteTranslationSourceHash: 246ad1cfd01b66427b3cb86d7aa5badf
+tmdTranslationSourceHash: 246ad1cfd01b66427b3cb86d7aa5badf
 ---
 
 `kubeseal` CLIはシールドシークレットコントローラとやり取りするために使用され、あなたのIDE内にすでにインストールされています。

@@ -1,7 +1,7 @@
 ---
 title: "AWS Secrets and Configuration Provider (ASCP)"
 sidebar_position: 422
-kiteTranslationSourceHash: ea479b4d3aff83a8f822a98785b759ca
+tmdTranslationSourceHash: ea479b4d3aff83a8f822a98785b759ca
 ---
 
 [前のステップ](./index.md)で実行した`prepare-environment`スクリプトは、このラボに必要なKubernetes Secrets Store CSIドライバー用のAWS Secrets and Configuration Provider (ASCP)をすでにインストールしています。
@@ -50,4 +50,3 @@ $ cat ~/environment/eks-workshop/modules/security/secrets-manager/secret-provide
 ```
 
 Secret Store CSIドライバーはKubernetesとAWS Secrets Managerなどの外部シークレットプロバイダー間の仲介者として機能します。SecretProviderClassで構成すると、Podボリュームのファイルとしてシークレットをマウントし、同期されたKubernetes Secretオブジェクトを作成でき、アプリケーションがこれらのシークレットを消費する方法に柔軟性を提供します。
-

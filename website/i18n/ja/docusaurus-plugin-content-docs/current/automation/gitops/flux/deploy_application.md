@@ -1,7 +1,7 @@
 ---
 title: "アプリケーションのデプロイ"
 sidebar_position: 15
-kiteTranslationSourceHash: adf046743d7e3a4089ea63df04395056
+tmdTranslationSourceHash: adf046743d7e3a4089ea63df04395056
 ---
 
 クラスターにFluxを正常にブートストラップしたので、アプリケーションをデプロイできるようになりました。GitOpsベースのアプリケーションデリバリーと他の方法との違いを示すために、現在`kubectl apply -k`アプローチを使用しているサンプルアプリケーションのUIコンポーネントを新しいFluxデプロイメントアプローチに移行します。

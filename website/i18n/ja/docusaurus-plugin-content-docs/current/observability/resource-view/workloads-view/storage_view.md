@@ -1,7 +1,7 @@
 ---
 title: "Storage"
 sidebar_position: 40
-kiteTranslationSourceHash: 93d12c43499d46c34c149ebaf65d1917
+tmdTranslationSourceHash: 93d12c43499d46c34c149ebaf65d1917
 ---
 
 Kubernetes ストレージリソースを表示するには、<i>Resources</i> タブをクリックしてください。<i>Storage</i> セクションに進むと、次のようなクラスタの一部である Kubernetes API リソースタイプを表示できます：
@@ -25,4 +25,3 @@ Kubernetes ストレージリソースを表示するには、<i>Resources</i> �
 
 [Container Storage Interface (CSI)](https://kubernetes.io/docs/concepts/storage/volumes/#csi) は、Kubernetes が任意のストレージシステムをコンテナワークロードに公開するための標準インターフェイスを定義します。
 Container Storage Interface (CSI) ノードプラグインは、ディスクデバイスのスキャンやファイルシステムのマウントなど、さまざまな特権操作を実行する必要があります。これらの操作は各ホストオペレーティングシステムによって異なります。Linux ワーカーノードでは、コンテナ化された CSI ノードプラグインは通常、特権コンテナとしてデプロイされます。Windows ワーカーノードでは、コンテナ化された CSI ノードプラグインの特権操作は、各 Windows ノードに事前インストールする必要があるコミュニティ管理のスタンドアロンバイナリである [csi-proxy](https://github.com/kubernetes-csi/csi-proxy) を使用してサポートされています。
-

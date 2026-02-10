@@ -1,7 +1,7 @@
 ---
 title: "ノードプールの設定"
 sidebar_position: 30
-kiteTranslationSourceHash: fd22bceabe4a17094247eeb8c77db36a
+tmdTranslationSourceHash: fd22bceabe4a17094247eeb8c77db36a
 ---
 
 Karpenterの設定は`NodePool` CRD（Custom Resource Definition）の形式で提供されます。単一のKarpenter `NodePool`は、さまざまな形状のポッドを処理することができます。Karpenterは、ラベルやアフィニティなどのポッド属性に基づいてスケジューリングとプロビジョニングの決定を行います。クラスターには複数の`NodePool`を設定できますが、ここではまず基本的なものを宣言します。
@@ -38,4 +38,3 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/autoscaling/compute/karpe
 ```bash
 $ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter | jq '.'
 ```
-

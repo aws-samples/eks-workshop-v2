@@ -1,7 +1,7 @@
 ---
 title: "AWS Secrets Manager へのシークレットの格納"
 sidebar_position: 421
-kiteTranslationSourceHash: 79c2f7e05f509c4c927aa053c5ff1043
+tmdTranslationSourceHash: 79c2f7e05f509c4c927aa053c5ff1043
 ---
 
 AWS CLI を使用して、AWS Secrets Manager にシークレットを作成することから始めましょう。ユーザー名とパスワードの値を含む JSON エンコードされた認証情報を含むシークレットを作成します：
@@ -40,4 +40,3 @@ $ aws secretsmanager describe-secret --secret-id "$SECRET_NAME"
 ```
 
 AWS Secrets Manager にシークレットを正常に作成したので、次のセクションでこれを Kubernetes アプリケーションで使用します。
-

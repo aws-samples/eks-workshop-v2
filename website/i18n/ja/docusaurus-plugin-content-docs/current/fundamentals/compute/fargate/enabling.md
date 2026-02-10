@@ -1,7 +1,7 @@
 ---
 title: Fargate の有効化
 sidebar_position: 10
-kiteTranslationSourceHash: 14271fb060885fe2bc8ef31b0d6211b0
+tmdTranslationSourceHash: 14271fb060885fe2bc8ef31b0d6211b0
 ---
 
 クラスター内の Fargate で Pod をスケジュールする前に、起動時に Fargate を使用する Pod を指定する Fargate プロファイルを少なくとも 1 つ定義する必要があります。

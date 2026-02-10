@@ -1,7 +1,7 @@
 ---
 title: "複数のIngressパターン"
 sidebar_position: 30
-kiteTranslationSourceHash: 2e75c3dcc5a0600975e14bd41effa2a4
+tmdTranslationSourceHash: 2e75c3dcc5a0600975e14bd41effa2a4
 ---
 
 同じEKSクラスター内で複数のIngressオブジェクトを活用することは一般的です。例えば、複数の異なるワークロードを公開するためなどです。デフォルトでは、各IngressはそれぞれALBの作成につながりますが、IngressGroup機能を活用することで複数のIngressリソースをグループ化できます。コントローラーはIngressGroup内のすべてのIngressのルールを自動的に統合し、1つのALBでそれらをサポートします。さらに、Ingressで定義されたほとんどのアノテーションは、そのIngressによって定義されたパスにのみ適用されます。
@@ -14,7 +14,6 @@ kiteTranslationSourceHash: 2e75c3dcc5a0600975e14bd41effa2a4
 
 1. アノテーション`alb.ingress.kubernetes.io/group.name`を追加してIngressGroupを`retail-app-group`に設定します
 2. rulesセクションは、ALBがトラフィックをどのようにルーティングすべきかを表現するために使用されます。`ui`コンポーネントでは、パス`/`で始まるすべてのHTTPリクエストをポート80のKubernetesサービス`ui`にルーティングします
-
 
 次に、`catalog`コンポーネント用に別のIngressを作成します：
 

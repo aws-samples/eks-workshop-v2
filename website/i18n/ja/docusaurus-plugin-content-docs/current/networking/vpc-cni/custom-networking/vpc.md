@@ -1,7 +1,7 @@
 ---
-title: "VPC architecture"
+title: "VPCアーキテクチャ"
 sidebar_position: 5
-kiteTranslationSourceHash: 17b7519b5d616b5da983bb97d4df1450
+tmdTranslationSourceHash: 1a409175355dbb7f49a653cd96fc2366
 ---
 
 セットアップされたVPCを調査することから始めましょう。例えば、VPCについて詳しく見てみましょう：
@@ -60,7 +60,7 @@ $ aws ec2 describe-vpcs --vpc-ids $VPC_ID
 
 AWSコンソールでも確認できます：
 
-<ConsoleButton url="https://console.aws.amazon.com/vpc/home#vpcs:tag:created-by=eks-workshop-v2" service="vpc" label="Open VPC console"/>
+<ConsoleButton url="https://console.aws.amazon.com/vpc/home#vpcs:tag:created-by=eks-workshop-v2" service="vpc" label="VPCコンソールを開く"/>
 
 VPCに関連付けられたサブネットを記述すると、9つのサブネットが表示されます：
 
@@ -86,10 +86,10 @@ $ aws ec2 describe-subnets --filters "Name=tag:created-by,Values=eks-workshop-v2
 - プライベートサブネット：プライマリCIDR範囲からのCIDRブロックを使用する各アベイラビリティゾーンに1つずつ
 - セカンダリプライベートサブネット：**セカンダリ**CIDR範囲からのCIDRブロックを使用する各アベイラビリティゾーンに1つずつ
 
-![VPC subnet architecture](./assets/vpc-secondary-networking.webp)
+![VPCサブネットアーキテクチャ](/docs/networking/vpc-cni/custom-networking/vpc-secondary-networking.webp)
 
 これらのサブネットはAWSコンソールで確認できます：
 
-<ConsoleButton url="https://console.aws.amazon.com/vpc/home#subnets:tag:created-by=eks-workshop-v2;sort=desc:CidrBlock" service="vpc" label="Open VPC console"/>
+<ConsoleButton url="https://console.aws.amazon.com/vpc/home#subnets:tag:created-by=eks-workshop-v2;sort=desc:CidrBlock" service="vpc" label="VPCコンソールを開く"/>
 
-現在、ポッドはプライベートサブネット`10.42.96.0/19`、`10.42.128.0/19`、`10.42.160.0/19`を利用しています。この実習では、それらを`100.64`サブネットからIPアドレスを消費するように移行します。
+現在、Podはプライベートサブネット`10.42.96.0/19`、`10.42.128.0/19`、`10.42.160.0/19`を利用しています。この実習では、それらを`100.64`サブネットからIPアドレスを消費するように移行します。

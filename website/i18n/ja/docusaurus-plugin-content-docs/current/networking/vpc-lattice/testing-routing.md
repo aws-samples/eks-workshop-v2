@@ -1,7 +1,7 @@
 ---
 title: "トラフィックルーティングのテスト"
 sidebar_position: 40
-kiteTranslationSourceHash: 9392441bd76246cb0c6147c42d9aa959
+tmdTranslationSourceHash: b2448e7873e3d3d002a0fb5f392da6c5
 ---
 
 実際の環境では、カナリアデプロイメントは定期的に一部のユーザーに機能をリリースするために使用されます。このシナリオでは、人為的にトラフィックの75%を新しいバージョンのチェックアウトサービスにルーティングしています。カートに異なるオブジェクトを入れて複数回チェックアウト手順を完了すると、ユーザーに2つのバージョンのアプリケーションが表示されるはずです。
@@ -46,9 +46,9 @@ k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 
 ブラウザでこのURLにアクセスし、複数回チェックアウトを試してみてください（カートに異なるアイテムを入れてみてください）：
 
-![チェックアウト例](assets/examplecheckout.webp)
+![チェックアウト例](/docs/networking/vpc-lattice/examplecheckout.webp)
 
 チェックアウト時に「Lattice checkout」ポッドが約75%の確率で使用されていることに気づくでしょう：
 
-![Latticeチェックアウト](assets/latticecheckout.webp)
+![Latticeチェックアウト](/docs/networking/vpc-lattice/latticecheckout.webp)
 

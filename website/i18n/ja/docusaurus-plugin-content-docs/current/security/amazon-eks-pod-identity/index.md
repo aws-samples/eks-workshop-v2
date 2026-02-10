@@ -3,7 +3,7 @@ title: "Amazon EKS Pod Identity"
 sidebar_position: 30
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes ServiceでEKS Pod Identityを使用してアプリケーションのAWS認証情報を管理します。"
-kiteTranslationSourceHash: eb2653bc6911d2ddc5130a39bfbf6fa2
+tmdTranslationSourceHash: eb2653bc6911d2ddc5130a39bfbf6fa2
 ---
 
 ::required-time
@@ -28,4 +28,3 @@ $ prepare-environment security/eks-pod-identity
 PodのコンテナにあるアプリケーションはサポートされているAWS SDKまたはAWS CLIを使用して、AWS Identity and Access Management（IAM）権限を使用してAWSサービスにAPIリクエストを行うことができます。例えば、アプリケーションはS3バケットにファイルをアップロードしたり、DynamoDBテーブルを照会したりする必要があるかもしれません。そのためにはAWS APIリクエストにAWS認証情報で署名する必要があります。[EKS Pod Identities](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html)は、Amazon EC2インスタンスプロファイルがインスタンスに認証情報を提供するのと同様の方法で、アプリケーションの認証情報を管理する機能を提供します。AWS認証情報を作成してコンテナに配布したり、Amazon EC2インスタンスのロールを使用したりする代わりに、IAMロールをKubernetesのサービスアカウントに関連付け、Podがそれを使用するように設定できます。サポートされているSDKバージョンの正確なリストについては、[EKSドキュメント](https://docs.aws.amazon.com/eks/latest/userguide/pod-id-minimum-sdk.html)をご確認ください。
 
 このモジュールでは、サンプルアプリケーションコンポーネントの1つを再構成して、AWS APIを活用し、適切な権限を提供します。
-

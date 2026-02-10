@@ -1,7 +1,7 @@
 ---
 title: "コントローラーのデプロイ"
 sidebar_position: 10
-kiteTranslationSourceHash: 91a3b9cd6266ae94a91ade2df0c27182
+tmdTranslationSourceHash: 91a3b9cd6266ae94a91ade2df0c27182
 ---
 
 クラスターを作成してAWS Gateway API Controllerをデプロイするには、以下の手順に従ってください。

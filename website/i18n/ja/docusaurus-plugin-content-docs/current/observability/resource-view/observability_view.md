@@ -1,7 +1,7 @@
 ---
 title: "Observability"
 sidebar_position: 30
-kiteTranslationSourceHash: 4864a8b132bce526aab8be8bd4718917
+tmdTranslationSourceHash: 4864a8b132bce526aab8be8bd4718917
 ---
 
 アプリケーション、ネットワーク、インフラストラクチャを注意深く監視することは、最適なパフォーマンスを確保し、ボトルネックを特定し、問題を迅速に解決するために不可欠です。
@@ -14,4 +14,3 @@ Prometheusは、スクレイピングと呼ばれるプルベースのモデル�
 CloudWatch Observabilityアドオンを通じて、クラスターでCloudWatch Observabilityを有効にすることができます。アドオンタブに移動し、CloudWatch Observabilityアドオンをインストールして、CloudWatch Application SignalsとContainer Insightsを有効にし、テレメトリをCloudWatchに取り込み始めます。
 
 ![Insights](/img/resource-view/observability-view.jpg)
-

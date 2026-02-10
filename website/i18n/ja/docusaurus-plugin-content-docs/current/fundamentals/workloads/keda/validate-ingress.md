@@ -1,7 +1,7 @@
 ---
 title: "Ingress の検証"
 sidebar_position: 15
-kiteTranslationSourceHash: 8a28d3742a419e199682562031c057ff
+tmdTranslationSourceHash: 8a28d3742a419e199682562031c057ff
 ---
 
 ラボの前提条件の一部として、Ingress リソースが作成され、AWS Load Balancer Controller は Ingress 設定に基づいて対応する ALB を作成しました。ALB がプロビジョニングされ、そのターゲットを登録するには数分かかります。続行する前に Ingress リソースと ALB を検証しましょう。

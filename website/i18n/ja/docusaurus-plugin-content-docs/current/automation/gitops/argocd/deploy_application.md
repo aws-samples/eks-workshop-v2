@@ -1,7 +1,7 @@
 ---
 title: "アプリケーションのデプロイ"
 sidebar_position: 30
-kiteTranslationSourceHash: 3fd9aa30e85dcc8ec0ef8bd7bb93b45a
+tmdTranslationSourceHash: 'f2ab388708b4751ac24fbc2d1dddc667'
 ---
 
 Argo CDをクラスターに正常に設定したので、アプリケーションをデプロイしましょう。GitOpsベースの配信アプローチと従来のデプロイ方法の違いを示すために、サンプルアプリケーションのUIコンポーネントを`kubectl apply -k`アプローチからArgo CD管理のデプロイに移行します。
@@ -72,7 +72,7 @@ argocd/ui    https://kubernetes.default.svc  ui         default  OutOfSync  Miss
 
 このアプリケーションはArgo CD UIで確認できます：
 
-![Argo CD UIでのアプリケーション](assets/argocd-ui-outofsync.webp)
+![Argo CD UIでのアプリケーション](/docs/automation/gitops/argocd/argocd-ui-outofsync.webp)
 
 あるいは、`kubectl`コマンドを使用してArgo CDオブジェクトを直接操作することもできます：
 
@@ -84,7 +84,7 @@ apps   OutOfSync     Missing
 
 Argo CD UIを開いて`apps`アプリケーションに移動すると、以下のように表示されます：
 
-![Argo CD UIでのアプリケーション](assets/argocd-ui-outofsync-apps.webp)
+![Argo CD UIでのアプリケーション](/docs/automation/gitops/argocd/argocd-ui-outofsync-apps.webp)
 
 Argo CDでは、「out of sync」（同期していない）は、Gitリポジトリで定義された望ましい状態がKubernetesクラスター内の実際の状態と一致していないことを示します。Argo CDは自動同期が可能ですが、今は手動でこのプロセスをトリガーします：
 
@@ -95,7 +95,7 @@ $ argocd app wait ui --timeout 120
 
 しばらくすると、アプリケーションは`Synced`状態に到達し、すべてのリソースがデプロイされます。UIは次のようになります：
 
-![argocd-deploy-application](assets/argocd-deploy-application.webp)
+![argocd-deploy-application](/docs/automation/gitops/argocd/argocd-deploy-application.webp)
 
 これにより、Argo CDがHelmチャートを正常にインストールし、クラスターと同期していることが確認されました。
 

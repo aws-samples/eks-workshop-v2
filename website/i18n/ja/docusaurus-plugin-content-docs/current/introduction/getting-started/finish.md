@@ -1,7 +1,7 @@
 ---
 title: 他のコンポーネント
 sidebar_position: 50
-kiteTranslationSourceHash: 2b121f2c62f5ef803e4d6ed1ed186a8c
+tmdTranslationSourceHash: 2b121f2c62f5ef803e4d6ed1ed186a8c
 ---
 
 この実習では、Kustomizeのパワーを活用してサンプルアプリケーションの残りの部分を効率的にデプロイします。次のkustomizationファイルは、他のkustomizationを参照して複数のコンポーネントを一緒にデプロイする方法を示しています：

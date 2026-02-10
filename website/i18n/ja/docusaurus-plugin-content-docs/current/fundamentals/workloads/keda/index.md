@@ -4,7 +4,7 @@ chapter: true
 sidebar_position: 40
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes Serviceのワークロードを自動でKEDAでスケーリングする"
-kiteTranslationSourceHash: 7e242b2451442e01ef5ea9951d4742fa
+tmdTranslationSourceHash: 7e242b2451442e01ef5ea9951d4742fa
 ---
 
 ::required-time
@@ -30,4 +30,3 @@ $ prepare-environment autoscaling/workloads/keda
 このラボでは、[Kubernetes Event-Driven Autoscaler (KEDA)](https://keda.sh/)を使用してデプロイメント内のポッドをスケールする方法を見ていきます。前回のHorizontal Pod Autoscaler (HPA)のラボでは、HPAリソースを使用して平均CPU使用率に基づいてデプロイメント内のポッドを水平方向にスケールする方法を学びました。しかし、ワークロードによっては外部イベントやメトリクスに基づいてスケールする必要があります。KEDAは、Amazon SQSのキューの長さやCloudWatchの他のメトリクスなど、様々なイベントソースからのイベントに基づいてワークロードをスケールする機能を提供します。KEDAは60以上の[スケーラー](https://keda.sh/docs/scalers/)を各種メトリクスシステム、データベース、メッセージングシステムなど多様なソースに対応しています。
 
 KEDAは、Helmチャートを使用してKubernetesクラスターにデプロイできる軽量なワークロードです。KEDAは、Horizontal Pod Autoscalerのような標準的なKubernetesコンポーネントと連携して、DeploymentやStatefulSetをスケールします。KEDAを使用すると、これらの様々なイベントソースで選択的にスケールしたいワークロードを選ぶことができます。
-

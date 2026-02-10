@@ -1,7 +1,7 @@
 ---
 title: "スポットキャパシティの作成"
 sidebar_position: 20
-kiteTranslationSourceHash: b77364e211e73e5e63c185424782e09c
+tmdTranslationSourceHash: ddb385af0a0fff6e267d4c4f1b54846b
 ---
 
 スポットインスタンスを作成するマネージドノードグループをデプロイし、その後、アプリケーションの既存の `catalog` コンポーネントを新しく作成したスポットインスタンス上で実行するように変更しましょう。
@@ -35,7 +35,7 @@ ip-10-42-12-235.us-east-2.compute.internal   Ready    <none>   4h34m   vVAR::KUB
 
 以下の図では、クラスタ内のマネージドノードグループを表す2つの別個の「ノードグループ」があります。最初のノードグループボックスは、オンデマンドインスタンスを含むノードグループを表し、2番目はスポットインスタンスを含むノードグループを表します。どちらも指定されたEKSクラスタに関連付けられています。
 
-![spot arch](./assets/managed-spot-arch.webp)
+![spot arch](/docs/fundamentals/compute/managed-node-groups/spot/managed-spot-arch.webp)
 
 スポットインスタンスを持つノードグループを作成しましょう。次のコマンドは、新しいノードグループ `managed-spot` を作成します。
 
@@ -78,4 +78,3 @@ ip-10-42-97-19.us-east-2.compute.internal     Ready    <none>   104s    vVAR::KU
 ```
 
 出力は、ノードグループ `managed-spot` の下に2つの追加ノードがプロビジョニングされ、キャパシティタイプが `SPOT` であることを示しています。
-

@@ -1,7 +1,7 @@
 ---
 title: "DynamoDBのアクセス検証"
 sidebar_position: 25
-kiteTranslationSourceHash: 90eb06acc2de6b787b58060553698681
+tmdTranslationSourceHash: 90eb06acc2de6b787b58060553698681
 ---
 
 今、`carts` サービスアカウントが承認されたIAMロールで注釈付けされたので、`carts` Podは DynamoDBテーブルにアクセスする権限を持っています。Web ストアに再度アクセスして、ショッピングカートに移動してみましょう。

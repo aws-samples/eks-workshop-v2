@@ -1,7 +1,7 @@
 ---
 title: "モデルのテスト"
 sidebar_position: 70
-kiteTranslationSourceHash: 516338b2f62fd7d74433fc23b352b2f3
+tmdTranslationSourceHash: af0040001c87c5506ca861b7bb118e59
 ---
 
 現時点で、Mistral-7Bモデルは利用可能か、または利用可能になる直前のはずです。以下のコマンドを実行して確認できます。このコマンドはモデルがまだ実行されていない場合、実行されるまでブロックします：
@@ -69,13 +69,13 @@ http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 画面の右下に「Chat」ボタンが表示されます：
 
 <Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com">
-<img src={require('./assets/home-chat.webp').default}/>
+<img src={require('@site/static/docs/aiml/chatbot/home-chat.webp').default}/>
 </Browser>
 
 このボタンをクリックすると、小売店アシスタントにメッセージを送信できるチャットウィンドウが表示されます：
 
 <Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com">
-<img src={require('./assets/chat-bot.webp').default}/>
+<img src={require('@site/static/docs/aiml/chatbot/chat-bot.webp').default}/>
 </Browser>
 
 ## 結論
@@ -83,3 +83,4 @@ http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 これで、vLLMを使用してTrainiumインスタンスでAmazon EKSで推論を実行し、さまざまなアプリケーションで消費できるモデルエンドポイントを提供する方法を正常にデモンストレーションできました。このアーキテクチャは、目的に合わせて構築されたMLアクセラレーターの能力とKubernetesの柔軟性とスケーラビリティを組み合わせて、アプリケーションのためのコスト効率の良いAI機能を可能にします。
 
 vLLMが提供するOpenAI互換APIにより、このソリューションを既存のアプリケーションやフレームワークと簡単に統合でき、独自のインフラストラクチャ内で大規模言語モデルを活用することができます。
+

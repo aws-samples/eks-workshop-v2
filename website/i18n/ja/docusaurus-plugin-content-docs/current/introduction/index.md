@@ -2,7 +2,7 @@
 title: はじめに
 sidebar_position: 10
 weight: 5
-kiteTranslationSourceHash: 61b50d02213aefa1774e875922ded5f9
+tmdTranslationSourceHash: 61b50d02213aefa1774e875922ded5f9
 ---
 
 **AWS Elastic Kubernetes Service (EKS) ワークショップ**へようこそ！

@@ -1,7 +1,7 @@
 ---
 title: "より多くのワークロードの追加"
 sidebar_position: 60
-kiteTranslationSourceHash: 8465e3b90a349dbbf6a2427b69fc0696
+tmdTranslationSourceHash: 47bf999b2ab55006d4340855848db799
 ---
 
 App of Appsパターンの基盤を設定したので、追加のワークロードHelmチャートをGitリポジトリに追加することができます。
@@ -48,7 +48,7 @@ $ argocd app wait -l app.kubernetes.io/created-by=eks-workshop
 
 Argo CDがプロセスを完了すると、すべてのアプリケーションはArgo CDのUI上で`Synced`状態になります：
 
-![argocd-ui-apps.png](assets/argocd-ui-apps-synced.webp)
+![argocd-ui-apps.png](/docs/automation/gitops/argocd/app-of-apps/argocd-ui-apps-synced.webp)
 
 各アプリケーションコンポーネントがデプロイされた新しい名前空間のセットが表示されるはずです：
 

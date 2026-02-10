@@ -1,7 +1,7 @@
 ---
 title: "オーバープロビジョニングの設定"
 sidebar_position: 35
-kiteTranslationSourceHash: c3d3a0fcb9b4afc81fd1b6078f840900
+tmdTranslationSourceHash: c3d3a0fcb9b4afc81fd1b6078f840900
 ---
 
 オーバープロビジョニングを効果的に実装するには、アプリケーション用に適切な `PriorityClass` リソースを作成することがベストプラクティスと考えられています。まず、`globalDefault: true` フィールドを使用してグローバルデフォルトのプライオリティクラスを作成しましょう。このデフォルトの `PriorityClass` は、`PriorityClassName` を指定していないポッドとデプロイメントに割り当てられます。

@@ -1,7 +1,7 @@
 ---
 title: "モデルの提供"
 sidebar_position: 40
-kiteTranslationSourceHash: 19c1062b963727f2866b6dc90cfc71bd
+tmdTranslationSourceHash: 19c1062b963727f2866b6dc90cfc71bd
 ---
 
 [vLLM](https://github.com/vllm-project/vllm)は、効率的なメモリ管理を通じて大規模言語モデル（LLM）のパフォーマンスを最適化するために特別に設計されたオープンソースの推論・サービングエンジンです。MLコミュニティで人気のある推論ソリューションとして、vLLMはいくつかの主要な利点を提供します：
@@ -99,4 +99,3 @@ INFO:     10.42.114.242:50134 - "GET /health HTTP/1.1" 200 OK
 ```
 
 これらのステップを完了したか、モデルの初期化中に次に進むことを決めたら、次のタスクに進むことができます。
-

@@ -3,7 +3,7 @@ title: "Podロギング"
 sidebar_position: 10
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes Serviceで実行されているPodからのワークロードログをキャプチャします。"
-kiteTranslationSourceHash: 676f52319b1751dd8b4cb6f85ffdaf46
+tmdTranslationSourceHash: 676f52319b1751dd8b4cb6f85ffdaf46
 ---
 
 ::required-time

@@ -1,7 +1,7 @@
 ---
 title: "Creating a Simple Policy"
 sidebar_position: 71
-kiteTranslationSourceHash: 74cb17b16ab41b8584daae33b69a8d71
+tmdTranslationSourceHash: 74cb17b16ab41b8584daae33b69a8d71
 ---
 
 Kyvernoには2種類のポリシーリソースがあります：クラスター全体のリソースに使用される**ClusterPolicy**と、名前空間付きリソースに使用される**Policy**です。Kyvernoポリシーの理解を深めるために、まずはシンプルなPodラベル要件から始めましょう。ご存知の通り、Kubernetesではラベルがクラスター内のリソースにタグ付けするために使用されます。

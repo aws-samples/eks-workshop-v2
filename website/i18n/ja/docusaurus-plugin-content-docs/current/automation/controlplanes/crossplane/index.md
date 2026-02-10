@@ -3,7 +3,7 @@ title: "Crossplane"
 sidebar_position: 1
 sidebar_custom_props: { "module": true }
 description: "Build a cloud native control plane with Crossplane on Amazon Elastic Kubernetes Service."
-kiteTranslationSourceHash: b4dbc4d2a8c400bd794b460eb7c14349
+tmdTranslationSourceHash: f6d69f91180d666646e4baf1d121461e
 ---
 
 ::required-time
@@ -27,7 +27,7 @@ $ prepare-environment automation/controlplanes/crossplane
 
 Crossplaneは、あらゆるインフラストラクチャやマネージドサービスをオーケストレーションするためにKubernetesクラスタを拡張します。お気に入りのツールと既存のプロセスを使用して、バージョン管理、管理、デプロイ、消費できる高レベルの抽象化にCrossplaneの細かいリソースを構成できます。
 
-![EKS with Dynamodb](./assets/eks-workshop-crossplane.webp)
+![EKS with Dynamodb](/docs/automation/controlplanes/crossplane/eks-workshop-crossplane.webp)
 
 Crossplaneを使用すると、次のことが可能です：
 
@@ -37,4 +37,3 @@ Crossplaneを使用すると、次のことが可能です：
 4. 複数のクラウドプロバイダー間で一貫したポリシーとガバナンスを実装する
 
 このモジュールでは、AWSリソースを管理するためにCrossplaneを使用する方法を探り、特にサンプルアプリケーション用のDynamoDBテーブルのプロビジョニングと構成に焦点を当てます。
-

@@ -1,7 +1,7 @@
 ---
 title: "CodePipelineの機能"
 sidebar_position: 40
-kiteTranslationSourceHash: 0b42ba05fadc4739a6b9682cc69d0547
+tmdTranslationSourceHash: 0b42ba05fadc4739a6b9682cc69d0547
 ---
 
 ### CodePipelineのEKSアクションのその他の機能

@@ -1,7 +1,7 @@
 ---
 title: "Sealed Secrets for Kubernetes"
 sidebar_position: 431
-kiteTranslationSourceHash: c9aa36b3e9d4014b051bd5e6b2d0f753
+tmdTranslationSourceHash: c9aa36b3e9d4014b051bd5e6b2d0f753
 ---
 
 Sealed Secretsは2つの部分で構成されています：
@@ -23,4 +23,3 @@ SealedSecretsは以下の3つのスコープを持つことができます：
 - **strict（デフォルト）**：正確に同じ名前と名前空間でシールする必要があります。これらの属性は暗号化されたデータの一部となるため、名前や名前空間を変更すると「復号化エラー」が発生します。
 - **namespace-wide**：指定された名前空間内であれば、シールされたシークレットの名前を自由に変更できます。
 - **cluster-wide**：任意の名前空間で暗号を解除でき、任意の名前を付けることができます。
-

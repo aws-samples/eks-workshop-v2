@@ -1,7 +1,7 @@
 ---
 title: "CoreDNS ポッドの確認"
 sidebar_position: 52
-kiteTranslationSourceHash: 49b317983e950e56300ddbf081a229fa
+tmdTranslationSourceHash: 49b317983e950e56300ddbf081a229fa
 ---
 
 EKSクラスターでは、CoreDNSポッドがDNS解決を処理します。これらのポッドが正しく実行されていることを確認しましょう。

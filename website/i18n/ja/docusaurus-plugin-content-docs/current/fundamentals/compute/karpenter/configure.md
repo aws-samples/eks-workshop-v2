@@ -1,7 +1,7 @@
 ---
 title: "Karpenter のインストール"
 sidebar_position: 20
-kiteTranslationSourceHash: 8e2cb771899be3e5d53f0a6f56cad924
+tmdTranslationSourceHash: 8e2cb771899be3e5d53f0a6f56cad924
 ---
 
 まず最初に、クラスタに Karpenter をインストールします。ラボ準備段階で様々な前提条件が作成されており、それには以下が含まれています：
@@ -48,4 +48,3 @@ karpenter   1/1     1            1           105s
 ```
 
 これで、Karpenter が Pod のためのインフラストラクチャをプロビジョニングできるように設定を進めることができます。
-

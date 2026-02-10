@@ -1,7 +1,7 @@
 ---
 title: "Podの検査"
 sidebar_position: 50
-kiteTranslationSourceHash: 30800eaa2f30899dfc6709dc0747f890
+tmdTranslationSourceHash: 30800eaa2f30899dfc6709dc0747f890
 ---
 
 catalogポッドが実行され、Amazon RDSデータベースを正常に使用している今、そのポッドをより詳しく調べて、セキュリティグループforポッドに関連する信号を確認してみましょう。
@@ -36,4 +36,3 @@ AWSコンソールでVPCリソースコントローラーによって管理さ�
 <ConsoleButton url="https://console.aws.amazon.com/ec2/home#NIC:v=3;tag:eks:eni:owner=eks-vpc-resource-controller;tag:vpcresources.k8s.aws/trunk-eni-id=:eni" service="ec2" label="EC2コンソールを開く"/>
 
 これにより、割り当てられたセキュリティグループなど、ブランチENIに関する情報を確認できます。これらのブランチENIはトランクインターフェースに関連付けられ、特定のポッドに専用であり、ポッドレベルでの細かいネットワークセキュリティ制御を可能にします。
-

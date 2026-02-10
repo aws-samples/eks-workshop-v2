@@ -1,7 +1,7 @@
 ---
 title: "チャットボットの設定"
 sidebar_position: 60
-kiteTranslationSourceHash: b928d52fd7b5a0df33f46847cca1ea37
+tmdTranslationSourceHash: b928d52fd7b5a0df33f46847cca1ea37
 ---
 
 サンプル小売アプリケーションには、お客様が自然言語を使用して店舗とやり取りできる組み込みのチャットインターフェースが含まれています。この機能は、お客様が商品を見つけたり、おすすめを受け取ったり、店舗ポリシーについての質問に答えたりするのに役立ちます。このモジュールでは、このチャットコンポーネントを設定して、vLLMを通じて提供されるMistral-7Bモデルを使用します。

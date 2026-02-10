@@ -1,7 +1,7 @@
 ---
 title: "Disruption (Consolidation)"
 sidebar_position: 50
-kiteTranslationSourceHash: c9be6fd2ae61e4dc79f9e05f66ecdc31
+tmdTranslationSourceHash: c9be6fd2ae61e4dc79f9e05f66ecdc31
 ---
 
 Karpenterは、中断（Disruption）の対象となるノードを自動的に検出し、必要に応じて代替ノードをスピンアップします。これは3つの異なる理由で発生します：
@@ -110,4 +110,3 @@ $ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter -f | jq '.'
 $ kubectl get nodes -l type=karpenter -o jsonpath="{range .items[*]}{.metadata.labels.node\.kubernetes\.io/instance-type}{'\n'}{end}"
 c5.large
 ```
-

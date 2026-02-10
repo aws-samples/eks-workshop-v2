@@ -1,7 +1,7 @@
 ---
 title: "ConfigMaps と Secrets"
 sidebar_position: 30
-kiteTranslationSourceHash: b1254c86302c66178939b8a0b8f02af3
+tmdTranslationSourceHash: b1254c86302c66178939b8a0b8f02af3
 ---
 
 [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/) は、キーバリュー形式で設定データを保存するための Kubernetes リソースオブジェクトです。ConfigMapsは、Pod にデプロイされたアプリケーションがアクセスできる環境変数、コマンドライン引数、アプリケーション設定を保存するのに便利です。ConfigMapsはボリューム内の設定ファイルとして保存することもできます。これにより、設定データをアプリケーションコードから分離することができます。
@@ -19,4 +19,3 @@ Secrets のドリルダウンをクリックすると、クラスターのすべ
 ![Insights](/img/resource-view/config-secrets.jpg)
 
 Secrets の <i>checkout-config</i> をクリックすると、それに関連付けられた Secrets が表示されます。この場合、エンコードされた <i>token</i> に注目してください。<i>decode</i> トグルボタンを使用してデコードされた値も確認できます。
-

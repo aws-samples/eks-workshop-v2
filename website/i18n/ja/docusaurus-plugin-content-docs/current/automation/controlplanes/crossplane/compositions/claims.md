@@ -1,7 +1,7 @@
 ---
 title: "クレーム"
 sidebar_position: 20
-kiteTranslationSourceHash: f8cf7316dabe0adda876e1130c9ae84b
+tmdTranslationSourceHash: e2242d07ab73cb3b3449da39419dc89c
 ---
 
 Crossplaneに新しいXRの詳細を設定した後、直接作成するか、クレームを使用することができます。通常、Crossplaneの構成を担当するチーム（多くの場合、プラットフォームチームまたはSREチーム）のみがXRを直接作成する権限を持っています。その他の人は、Composite Resource Claim（略してクレーム）と呼ばれる軽量のプロキシリソースを通じてXRを管理します。
@@ -42,7 +42,7 @@ eks-workshop-carts-crossplane-bt28w-lnb4r   True   True      eks-workshop-carts-
 
 では、このクレームを使用してDynamoDBテーブルがどのようにデプロイされるかを理解しましょう：
 
-![Crossplane reconciler concept](../assets/ddb-claim-architecture.webp)
+![Crossplane reconciler concept](/docs/automation/controlplanes/crossplane/ddb-claim-architecture.webp)
 
 カートネームスペースにデプロイされたクレーム`DynamoDBTable`を照会すると、Composite Resource（XR）`XDynamoDBTable`を指し、作成することがわかります：
 

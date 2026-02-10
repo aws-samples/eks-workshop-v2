@@ -2,7 +2,7 @@
 title: "AZ障害のシミュレーション"
 sidebar_position: 210
 description: "この実験は、AWS EKSでホストされているKubernetes環境のレジリエンスをテストするために、アベイラビリティゾーンの障害をシミュレートします。"
-kiteTranslationSourceHash: 4edf61e00926b1f0b2ee4b6fdbf4c633
+tmdTranslationSourceHash: 4edf61e00926b1f0b2ee4b6fdbf4c633
 ---
 
 ## 概要

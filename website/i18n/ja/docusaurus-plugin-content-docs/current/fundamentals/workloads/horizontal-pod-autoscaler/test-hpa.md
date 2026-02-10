@@ -1,7 +1,7 @@
 ---
 title: "負荷の生成"
 sidebar_position: 20
-kiteTranslationSourceHash: 5b60ea8540356c021bac58ab2e00ee3b
+tmdTranslationSourceHash: 5b60ea8540356c021bac58ab2e00ee3b
 ---
 
 HPAが設定したポリシーに応じてスケールアウトする様子を観察するために、アプリケーションに負荷をかける必要があります。[hey](https://github.com/rakyll/hey)を使用してワークロードのホームページを呼び出すことで負荷を生成します。
@@ -38,4 +38,3 @@ $ kubectl delete pod load-generator
 ```
 
 負荷ジェネレータが終了すると、HPAは設定に基づいてレプリカ数をゆっくりと最小数まで減らしていきます。
-

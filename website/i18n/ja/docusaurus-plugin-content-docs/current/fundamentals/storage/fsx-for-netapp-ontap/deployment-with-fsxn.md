@@ -1,11 +1,10 @@
 ---
 title: FSx for NetApp ONTAPを使用した動的プロビジョニング
 sidebar_position: 30
-kiteTranslationSourceHash: 5befad2e6e8f420248d8cae49b6f22c0
+tmdTranslationSourceHash: 1df089c045bca99d2bcbd3e5e077148c
 ---
 
-これでFSx for NetApp ONTAPストレージクラスの理解が深まったところで、[Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)を作成し、UIコンポーネントを変更してこのボリュームをマウントしましょう。
-
+これでKubernetes用のFSx for NetApp ONTAPストレージクラスの理解が深まったところで、[Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)を作成し、UIコンポーネントを変更してこのボリュームをマウントしましょう。
 
 まず、`fsxnpvclaim.yaml`ファイルを確認しましょう：
 
@@ -14,7 +13,6 @@ kiteTranslationSourceHash: 5befad2e6e8f420248d8cae49b6f22c0
 1. 定義しているリソースはPersistentVolumeClaimです
 2. これは先ほど作成した`fsxn-sc-nfs`ストレージクラスを参照しています
 3. 5GBのストレージを要求しています
-
 
 次に、UIコンポーネントを更新してFSx for NetApp ONTAP PVCを参照するようにします：
 
@@ -89,7 +87,7 @@ $ POD_1=$(kubectl -n ui get pods -l app.kubernetes.io/instance=ui -o jsonpath='{
 $ kubectl exec --stdin $POD_1 -n ui -- bash -c 'ls /fsxn/'
 ```
 
-[Kubernetesジョブ](https://kubernetes.io/docs/concepts/workloads/controllers/job/)を使用して、FSx for NetApp ONTAPボリュームに画像を追加しましょう：
+[Kubernetes Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/)を使用して、FSx for NetApp ONTAPボリュームに画像を追加しましょう：
 
 ```bash
 $ export PVC_NAME="fsxn-nfs-claim"
@@ -98,7 +96,7 @@ $ kubectl wait --for=condition=complete -n ui \
   job/populate-images --timeout=300s
 ```
 
-UIコンポーネントのPodの一つを通じて`/fsxn`の現在のファイルをリストすることで、共有ストレージ機能を実証してみましょう：
+次に、UIコンポーネントのPodの一つを通じて`/fsxn`の現在のファイルをリストすることで、共有ストレージ機能を実証してみましょう：
 
 ```bash
 $ POD_1=$(kubectl -n ui get pods -l app.kubernetes.io/instance=ui -o jsonpath='{.items[0].metadata.name}')
@@ -157,7 +155,7 @@ http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/asse
 ブラウザでURLにアクセスしてみましょう：
 
 <Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96b...">
-<img src={require('./assets/placeholder.jpg').default}/>
+<img src={require('@site/static/docs/fundamentals/storage/fsx-for-netapp-ontap/placeholder.jpg').default}/>
 </Browser>
 
 Amazon FSx for NetApp ONTAPがAmazon EKSで実行されるワークロードに永続的な共有ストレージを提供する方法を成功裏に実証しました。このソリューションにより、複数のPodが同時に同じストレージボリュームから読み書きすることができ、共有コンテンツホスティングやエンタープライズグレードの機能とパフォーマンスを備えた分散ファイルシステムアクセスを必要とする他のユースケースに最適です。

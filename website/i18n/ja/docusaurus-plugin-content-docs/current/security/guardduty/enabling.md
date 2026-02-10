@@ -1,7 +1,7 @@
 ---
 title: "GuardDuty保護をEKSで有効化する"
 sidebar_position: 51
-kiteTranslationSourceHash: e0a82f3995da6f5ebcfe1be2a078658d
+tmdTranslationSourceHash: 560a907e12e478a5feec8577419271bb
 ---
 
 このラボでは、Amazon GuardDuty EKS保護を有効にします。これにより、EKS監査ログモニタリングとEKSランタイムモニタリングの脅威検出カバレッジが提供され、クラスターを保護するのに役立ちます。
@@ -10,7 +10,7 @@ EKS監査ログモニタリングは、Kubernetes監査ログを使用して、�
 
 EKSランタイムモニタリングは、オペレーティングシステムレベルのイベントを使用して、Amazon EKSノードとコンテナでの潜在的な脅威を検出するのに役立ちます。
 
-AWS CLIを使用してGuardDutyを有効にしましょう：
+AWS CLIを使用してGuardDutyを有効にしましょう:
 
 ```bash test=false
 $ aws guardduty create-detector --enable --features '[{"Name" : "EKS_AUDIT_LOGS", "Status" : "ENABLED"}, {"Name" : "EKS_RUNTIME_MONITORING", "Status" : "ENABLED", "AdditionalConfiguration" : [{"Name" : "EKS_ADDON_MANAGEMENT", "Status" : "ENABLED"}]}]'
@@ -19,7 +19,7 @@ $ aws guardduty create-detector --enable --features '[{"Name" : "EKS_AUDIT_LOGS"
 }
 ```
 
-数分後、EKSクラスターでの`aws-guardduty-agent` Podのデプロイメントを確認します。
+数分後、EKSクラスター内の`aws-guardduty-agent` Podのデプロイを確認します。
 
 ```bash test=false
 $ kubectl -n amazon-guardduty get pods
@@ -29,11 +29,10 @@ aws-guardduty-agent-hgbsg   1/1     Running   0          58s
 aws-guardduty-agent-k7x2b   1/1     Running   0          58s
 ```
 
-その後、GuardDutyコンソールの**検出結果**セクションに移動します：
+その後、GuardDutyコンソールの**検出結果**セクションに移動します:
 
 <ConsoleButton url="https://console.aws.amazon.com/guardduty/home#/findings?macros=current" service="guardduty" label="GuardDutyコンソールを開く"/>
 
 まだ検出結果がないことを確認できるはずです。
 
-![GuardDuty検出結果](assets/findings.webp)
-
+![GuardDuty検出結果](/docs/security/guardduty/findings.webp)

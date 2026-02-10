@@ -2,7 +2,7 @@
 title: "ノードがNot-Ready状態"
 sidebar_position: 73
 chapter: true
-kiteTranslationSourceHash: 09464da5ad3fd035147d80e84aa037dc
+tmdTranslationSourceHash: 09464da5ad3fd035147d80e84aa037dc
 ---
 
 ::required-time
@@ -41,7 +41,7 @@ $ kubectl get pods -n kube-system -o wide --field-selector spec.nodeName=$NODE_N
 
 ### ステップ4: ノードの状態を調べる
 
-_NotReady_状態の原因を理解するために、ノードのdescribe出力を調べてみましょう。
+*NotReady*状態の原因を理解するために、ノードのdescribe出力を調べてみましょう。
 
 ```bash
 $ kubectl describe node $NODE_NAME | sed -n '/^Taints:/,/^[A-Z]/p;/^Conditions:/,/^[A-Z]/p;/^Events:/,$p'
@@ -77,7 +77,7 @@ Events:
   Normal   NodeNotReady             52s                    node-controller          Node ip-10-42-180-244.us-west-2.compute.internal status is now: NodeNotReady
 ```
 
-ここでは、ノードのkubeletが_Unknown_状態にあり、到達できないことがわかります。このステータスについては、[Kubernetesドキュメント](https://kubernetes.io/docs/reference/node/node-status/#condition)で詳細を確認できます。
+ここでは、ノードのkubeletが*Unknown*状態にあり、到達できないことがわかります。このステータスについては、[Kubernetesドキュメント](https://kubernetes.io/docs/reference/node/node-status/#condition)で詳細を確認できます。
 
 :::note ノードステータス情報
 ノードには次のtaintsがあります：
@@ -231,6 +231,7 @@ prod-ds-ll4lv               1/1     Running   0          1m
 ```
 
 #### 8.2. Pod制限を確認する
+
 ```bash
 $ kubectl get pods -n prod -o custom-columns="NAME:.metadata.name,CPU_REQUEST:.spec.containers[*].resources.requests.cpu,MEM_REQUEST:.spec.containers[*].resources.requests.memory,CPU_LIMIT:.spec.containers[*].resources.limits.cpu,MEM_LIMIT:.spec.containers[*].resources.limits.memory"
 NAME                        CPU_REQUEST   MEM_REQUEST   CPU_LIMIT   MEM_LIMIT
@@ -244,6 +245,7 @@ prod-ds-srdqx               250m          256Mi         500m        512Mi
 ```
 
 #### 8.3 ノードCPUリソースを確認する
+
 ```bash wait=300 test=false
 $ INSTANCE_ID=$(kubectl get node ${NODE_NAME_2} -o jsonpath='{.spec.providerID}' | cut -d '/' -f5) && aws cloudwatch get-metric-data --region $AWS_REGION --start-time $(date -u -d '1 hour ago' +"%Y-%m-%dT%H:%M:%SZ") --end-time $(date -u +"%Y-%m-%dT%H:%M:%SZ") --metric-data-queries '[{"Id":"cpu","MetricStat":{"Metric":{"Namespace":"AWS/EC2","MetricName":"CPUUtilization","Dimensions":[{"Name":"InstanceId","Value":"'$INSTANCE_ID'"}]},"Period":60,"Stat":"Average"}}]'
 {
@@ -265,9 +267,11 @@ $ INSTANCE_ID=$(kubectl get node ${NODE_NAME_2} -o jsonpath='{.spec.providerID}'
     "Messages": []
 }
 ```
+
 :::info
 CPUが過剰に使用されていないことを確認してください。
 :::
+
 #### 8.4. ノードのステータスを確認する
 
 ```bash
@@ -304,4 +308,3 @@ ip-10-42-180-24.us-west-2.compute.internal    Ready    <none>   1h35m   v1.30.8-
 - [EKSベストプラクティス](https://aws.github.io/aws-eks-best-practices/)
 - [Container Insights](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-metrics-EKS.html)
 - [Knowledge Centerガイド](https://repost.aws/knowledge-center/eks-node-status-ready)
-

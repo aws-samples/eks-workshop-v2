@@ -3,7 +3,7 @@ title: "ハイブリッドノードの接続"
 sidebar_position: 10
 sidebar_custom_props: { "module": false }
 weight: 20 # used by test framework
-kiteTranslationSourceHash: a169f0cedba0153cc344d6f6e644aefa
+tmdTranslationSourceHash: a169f0cedba0153cc344d6f6e644aefa
 ---
 
 Amazon EKS ハイブリッドノードは、AWS SSM ハイブリッドアクティベーションまたは AWS IAM Roles Anywhere によって提供される一時的な IAM 認証情報を使用して Amazon EKS クラスターで認証を行います。このワークショップでは、SSM ハイブリッドアクティベーションを使用します。

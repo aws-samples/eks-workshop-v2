@@ -1,7 +1,7 @@
 ---
 title: "kube-dnsサービスの確認"
 sidebar_position: 53
-kiteTranslationSourceHash: ac41b853a5d83893ed638b730b903e72
+tmdTranslationSourceHash: ac41b853a5d83893ed638b730b903e72
 ---
 
 Kubernetesでは、ポッドはDNS解決のために設定されたネームサーバーを使用します。ネームサーバーの設定は`/etc/resolv.conf`に保存され、デフォルトではKubernetesがすべてのポッドに対してkube-dnsサービスのClusterIPをネームサーバーとして設定します。

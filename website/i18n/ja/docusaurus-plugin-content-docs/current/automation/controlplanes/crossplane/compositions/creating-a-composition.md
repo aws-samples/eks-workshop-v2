@@ -1,7 +1,7 @@
 ---
 title: "コンポジションの作成"
 sidebar_position: 10
-kiteTranslationSourceHash: 641c30bbbdebb13b80074aaf46243eb8
+tmdTranslationSourceHash: 641c30bbbdebb13b80074aaf46243eb8
 ---
 
 `CompositeResourceDefinition`（XRD）は、コンポジットリソース（XR）のタイプとスキーマを定義します。これはCrossplaneに対して、望ましいXRとそのフィールドについて通知します。XRDはCustomResourceDefinition（CRD）に似ていますが、より規範的な構造を持っています。XRDを作成する主なステップは、OpenAPI ["構造的スキーマ"](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/)を指定することです。

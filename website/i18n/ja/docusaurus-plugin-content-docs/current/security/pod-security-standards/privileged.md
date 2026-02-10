@@ -1,7 +1,7 @@
 ---
 title: "Privileged PSS profile"
 sidebar_position: 61
-kiteTranslationSourceHash: 260e8ab341719985f9ce028e79bddcd1
+tmdTranslationSourceHash: 260e8ab341719985f9ce028e79bddcd1
 ---
 
 最初に、最も許容的で既知の権限昇格を許可するPrivilegedプロファイルを調査することからPSSの調査を始めましょう。

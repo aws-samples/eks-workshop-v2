@@ -3,7 +3,7 @@ title: Amazon S3用マウントポイント
 sidebar_position: 30
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes Service上のワークロード向けのサーバーレスオブジェクトストレージをAmazon S3で提供します。"
-kiteTranslationSourceHash: 1f3a8f50d3c93f1191e94ec6e7a85a61
+tmdTranslationSourceHash: 1f3a8f50d3c93f1191e94ec6e7a85a61
 ---
 
 ::required-time
@@ -29,4 +29,3 @@ $ prepare-environment fundamentals/storage/s3
 [Amazon S3用マウントポイント](https://github.com/awslabs/mountpoint-s3)は、[Amazon S3バケットをローカルファイルシステムとしてマウントすることを可能にする](https://aws.amazon.com/blogs/storage/the-inside-story-on-mountpoint-for-amazon-s3-a-high-performance-open-source-file-client/)高スループットのファイルクライアントです。Amazon S3用マウントポイントを使用すると、アプリケーションはopenやreadなどの標準的なファイル操作を通じてAmazon S3に保存されているオブジェクトにアクセスできます。Amazon S3用マウントポイントは、これらの操作をS3オブジェクトAPIコールに透過的に変換し、アプリケーションに馴染みのあるファイルインターフェースを通じてAmazon S3の弾力的なストレージとスループットへのアクセスを提供します。
 
 このラボでは、イメージを保存するためのAmazon S3バケットを作成し、そのバケットをAmazon S3用マウントポイントを使用してマウントし、EKSクラスター用の永続的な共有ストレージを提供します。
-

@@ -1,7 +1,7 @@
 ---
 title: "基本的なトラブルシューティング"
 sidebar_position: 22
-kiteTranslationSourceHash: 644742bac63161796f45e2a3b85b3e12
+tmdTranslationSourceHash: 03ee20963e11dce2e6077f5b777cc5d3
 ---
 
 このセクションでは、Amazon Q CLIと[Amazon EKS用のMCPサーバー](https://awslabs.github.io/mcp/servers/eks-mcp-server/)を使用して、EKSクラスタの問題をトラブルシューティングします。
@@ -79,6 +79,12 @@ Q CLIセッションを終了するには、次のコマンドを入力します
 
 ```text
 /quit
+```
+
+次に、失敗したPodを削除します：
+
+```bash
+$ kubectl delete -f ~/environment/eks-workshop/modules/aiml/q-cli/troubleshoot/failing-pod.yaml --ignore-not-found
 ```
 
 次のセクションでは、より複雑なトラブルシューティングのシナリオを探ります。

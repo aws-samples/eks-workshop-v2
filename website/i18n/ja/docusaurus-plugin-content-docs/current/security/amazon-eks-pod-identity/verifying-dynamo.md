@@ -1,7 +1,7 @@
 ---
 title: "DynamoDBアクセスの検証"
 sidebar_position: 35
-kiteTranslationSourceHash: 4130a6ea94698da1a24cf632242194ac
+tmdTranslationSourceHash: 4130a6ea94698da1a24cf632242194ac
 ---
 
 これで、`carts` ServiceAccountが認可されたIAMロールに関連付けられたため、`carts` PodはDynamoDBテーブルにアクセスする権限を持ちました。再度Webストアにアクセスし、ショッピングカートに移動しましょう。

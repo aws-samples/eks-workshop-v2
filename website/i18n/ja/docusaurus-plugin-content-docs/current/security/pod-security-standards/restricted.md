@@ -1,7 +1,7 @@
 ---
 title: "制限的な PSS プロファイル"
 sidebar_position: 63
-kiteTranslationSourceHash: b318b5d3cd34989c6d33d2a6558d0c68
+tmdTranslationSourceHash: b318b5d3cd34989c6d33d2a6558d0c68
 ---
 
 最後に、最も厳しく制限された現在のポッドのセキュリティベストプラクティスに従ったポリシーである制限的なプロファイルを見てみましょう。`pss` 名前空間に制限的な PSS プロファイルのすべての PSA モードを有効にするラベルを追加します：

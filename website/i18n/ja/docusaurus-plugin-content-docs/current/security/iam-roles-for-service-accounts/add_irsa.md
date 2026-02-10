@@ -2,7 +2,7 @@
 title: "IRSAの適用"
 sidebar_position: 24
 hide_table_of_contents: true
-kiteTranslationSourceHash: d6a1889dc93495b99970bbbd9307c18a
+tmdTranslationSourceHash: d6a1889dc93495b99970bbbd9307c18a
 ---
 
 クラスター内でサービスアカウント用のIAMロールを使用するには、`IAM OIDC Identity Provider`を作成してクラスターに関連付ける必要があります。OIDCはすでにプロビジョニングされ、EKSクラスターに関連付けられています：

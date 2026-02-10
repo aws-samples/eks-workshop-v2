@@ -2,7 +2,7 @@
 title: 基本
 sidebar_position: 8
 weight: 8
-kiteTranslationSourceHash: 01c5d2c1a81fa30e265d32d8cc493b29
+tmdTranslationSourceHash: 01c5d2c1a81fa30e265d32d8cc493b29
 ---
 
 この章では、以下のタスクを実行することで、EKSクラスターでの作業の基本を学びます：

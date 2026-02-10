@@ -3,7 +3,7 @@ title: "Kubecostによるコスト可視化"
 sidebar_position: 60
 sidebar_custom_props: { "module": true }
 description: "KubecostによりAmazon Elastic Kubernetes Serviceを使用するチームのコスト可視性とインサイトを獲得します。"
-kiteTranslationSourceHash: e20f9e5f9b5d9256c23c154ba9c78128
+tmdTranslationSourceHash: e20f9e5f9b5d9256c23c154ba9c78128
 ---
 
 ::required-time

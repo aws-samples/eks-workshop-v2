@@ -1,12 +1,12 @@
 ---
 title: "Managed Resources"
 sidebar_position: 20
-kiteTranslationSourceHash: 03e3d2eeed31babc8a55ebff6ea17a61
+tmdTranslationSourceHash: b87b841cd6de246ccbdc2b50c39813bf
 ---
 
 デフォルトでは、サンプルアプリケーションの**Carts**コンポーネントは、EKSクラスタ内でポッドとして実行されている`carts-dynamodb`という名前のDynamoDB localインスタンスを使用しています。このラボのセクションでは、Crossplaneマネージドリソースを使用してアプリケーション用のAmazon DynamoDBクラウドベースのテーブルをプロビジョニングし、**Carts**デプロイメントを設定して、ローカルコピーの代わりに新しくプロビジョニングされたDynamoDBテーブルを使用するようにします。
 
-![Crossplane reconciler concept](./assets/Crossplane-desired-current-ddb.webp)
+![Crossplane reconciler concept](/docs/automation/controlplanes/crossplane/Crossplane-desired-current-ddb.webp)
 
 Crossplaneマネージドリソースマニフェストを使用してDynamoDBテーブルを作成する方法を見てみましょう：
 

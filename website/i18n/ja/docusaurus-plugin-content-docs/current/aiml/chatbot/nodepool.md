@@ -1,7 +1,7 @@
 ---
 title: "コンピュートのプロビジョニング"
 sidebar_position: 30
-kiteTranslationSourceHash: 13f766113a1438b0acc552e45a497040
+tmdTranslationSourceHash: 13f766113a1438b0acc552e45a497040
 ---
 
 このラボでは、Karpenterを使用して、加速された機械学習推論用に特別に設計されたAWS Trainiumノードをプロビジョニングします。TrainiumはAWSの専用ML高速化プロセッサーで、Mistral-7Bモデルのような推論ワークロードを実行する際の高性能とコスト効率性を提供します。

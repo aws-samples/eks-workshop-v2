@@ -1,7 +1,7 @@
 ---
 title: "認証と認可"
 sidebar_position: 50
-kiteTranslationSourceHash: 7158d65ea5b747af19da43c993b3941f
+tmdTranslationSourceHash: 7158d65ea5b747af19da43c993b3941f
 ---
 
 **<i>認証</i>**タブをクリックして<i>ServiceAccounts</i>セクションに移動すると、名前空間ごとにKubernetesのサービスアカウントリソースを表示できます。
@@ -42,4 +42,3 @@ EKSでは、リクエストが<i>認可</i>（アクセス許可の付与）さ�
 **[ClusterRoleBinding](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding)**は**_ClusterRoles_**をユーザーのセットに接続します。これらはクラスターにスコープされ、**_Roles_**や**_RoleBindings_**のように名前空間にバインドされません。
 
 ![Insights](/img/resource-view/authz-crolebinding.jpg)
-

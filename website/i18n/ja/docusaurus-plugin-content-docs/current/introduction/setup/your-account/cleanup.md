@@ -1,7 +1,7 @@
 ---
 title: クリーンアップ
 sidebar_position: 90
-kiteTranslationSourceHash: b50eea77a7ff66e51772b8b1062a1d97
+tmdTranslationSourceHash: b50eea77a7ff66e51772b8b1062a1d97
 ---
 
 :::caution
@@ -26,4 +26,3 @@ $ aws cloudformation delete-stack --stack-name eks-workshop-ide
 ```
 
 スタックが削除されると、IDEに関連するすべてのリソースがAWSアカウントから削除され、それ以上の料金が発生することはありません。
-

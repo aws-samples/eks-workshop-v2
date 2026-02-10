@@ -1,16 +1,15 @@
 ---
 title: "クラスターダッシュボード"
 sidebar_position: 40
-kiteTranslationSourceHash: 75a4c91cf8952354e0636b8824b0eb23
+tmdTranslationSourceHash: 624c947a2ca8773ce46a8dbbc4348463
 ---
 
-AWSディストリビューションforOpenTelemetryによって収集されたEKSクラスターメトリクスを視覚化するために、ダッシュボードセクションに移動しましょう。
+AWS Distro for OpenTelemetryによって収集されたEKSクラスターメトリクスを視覚化するために、ダッシュボードセクションに移動しましょう。
 
-![Grafanaダッシュボード](./assets/dashboard.webp)
+![Grafanaダッシュボード](/docs/observability/open-source-metrics/dashboard.webp)
 
 ダッシュボード**Kubernetes Cluster Monitoring**をクリックして、ダッシュボード内のパネルを確認しましょう。
 
 Total Usageパネルは、CPU、メモリ、ファイルシステムの使用率に関するクラスター全体の利用状況を示しています。
 
-![Total Usage](./assets/totalusage.webp)
-
+![Total Usage](/docs/observability/open-source-metrics/totalusage.webp)

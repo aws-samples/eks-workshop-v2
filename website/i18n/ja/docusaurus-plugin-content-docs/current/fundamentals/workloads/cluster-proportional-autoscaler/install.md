@@ -2,7 +2,7 @@
 title: "CoreDNSのオートスケーリング"
 date: 2022-07-21T00:00:00-03:00
 sidebar_position: 2
-kiteTranslationSourceHash: 43f85cae9190a6925d7ae670d98ded21
+tmdTranslationSourceHash: 43f85cae9190a6925d7ae670d98ded21
 ---
 
 CoreDNSはKubernetesのデフォルトのDNSサービスであり、`k8s-app=kube-dns`というラベルを持つPodで実行されています。このラボ演習では、クラスターのスケジュール可能なノードとコアの数に基づいてCoreDNSをスケールします。Cluster Proportional AutoscalerがCoreDNSのレプリカ数を調整します。
@@ -55,4 +55,3 @@ $ kubectl get deployment cluster-proportional-autoscaler -n kube-system
 NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
 cluster-proportional-autoscaler   1/1     1            1           92s
 ```
-

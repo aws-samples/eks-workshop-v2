@@ -1,7 +1,7 @@
 ---
 title: "Pod IAMの理解"
 sidebar_position: 23
-kiteTranslationSourceHash: 921036b29d3f3d09674d38d5fde46585
+tmdTranslationSourceHash: 921036b29d3f3d09674d38d5fde46585
 ---
 
 この問題の調査で最初に見るべき場所は、`carts`サービスのログです：
@@ -28,4 +28,3 @@ Check that the DynamoDB table has been created and your IAM credentials are conf
 アプリケーションはDynamoDBにアクセスするために使用しているIAMロールに必要な権限がないことを示すエラーを生成しています。これは、Podに紐付けられたIAMロールやポリシーがない場合、デフォルトでPodが実行されているEC2インスタンスに割り当てられたインスタンスプロファイルに関連付けられたIAMロールを使用するためです。この場合、そのロールにはDynamoDBへのアクセスを許可するIAMポリシーがありません。
 
 この問題を解決する一つの方法は、EC2ワーカーノードのIAM権限を拡張することですが、これによりそのノード上で実行されるすべてのPodがDynamoDBテーブルにアクセスできるようになります。しかし、これはセキュリティのベストプラクティスを反映していません。代わりに、IAM Roles for Service Accounts（IRSA）を使用して、`carts`サービス内のPodに特定のアクセス権を付与します。
-

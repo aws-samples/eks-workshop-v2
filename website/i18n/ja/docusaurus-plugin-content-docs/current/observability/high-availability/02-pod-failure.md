@@ -2,7 +2,7 @@
 title: "Pod障害のシミュレーション"
 sidebar_position: 110
 description: "ChaosMeshを使用して環境内でPod障害をシミュレーションし、アプリケーションの回復力をテストします。"
-kiteTranslationSourceHash: 3fe01b7fd1a8c473e211b22fd0decc5a
+tmdTranslationSourceHash: 3fe01b7fd1a8c473e211b22fd0decc5a
 ---
 
 ## 概要

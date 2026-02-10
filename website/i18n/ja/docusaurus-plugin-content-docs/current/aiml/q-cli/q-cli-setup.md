@@ -1,7 +1,7 @@
 ---
 title: "セットアップ"
 sidebar_position: 20
-kiteTranslationSourceHash: a752e824e226a5e99a092014e9428250
+tmdTranslationSourceHash: 8e17bb41e212ab90f60a7e3f8916cf3e
 ---
 
 このセクションでは、自然言語コマンドを使ってEKSクラスターと連携するために、Amazon Q CLIと[Amazon EKS用MCPサーバー](https://awslabs.github.io/mcp/servers/eks-mcp-server/)を設定します。
@@ -42,7 +42,7 @@ manifests/modules/aiml/q-cli/setup/eks-mcp.json
 MCPサーバーを設定し、必要な`uvx`ツールをインストールします：
 
 :::info
-`uvxはuvパッケージマネージャーに付属するPythonパッケージランナーツールです。グローバルにインストールせずに、直接Pythonパッケージを実行します。Node.jsの`npx`に似ていますが、Pythonパッケージ用に、分離された環境でPythonツールをダウンロードして実行します。
+`uvx`はuvパッケージマネージャーに付属するPythonパッケージランナーツールです。グローバルにインストールせずに、直接Pythonパッケージを実行します。Node.jsの`npx`に似ていますが、Pythonパッケージ用に、分離された環境でPythonツールをダウンロードして実行します。
 :::
 
 ```bash
@@ -64,7 +64,7 @@ $ q login
   Use with Pro license
 ```
 
-好みのオプションを選択し、プロンプトに従ってログインプロセスを完了してください。アカウントを使用してAmazon Q Developerの認可や、ログインするためのウェブページにリダイレクトされます。詳細なガイダンスについては、以下を参照してください：
+好みのオプションを選択し、プロンプトに従ってログインプロセスを完了してください。アカウントを使用してAmazon Q Developerの認可を行うため、または、ログインするためのウェブページにリダイレクトされます。詳細なガイダンスについては、以下を参照してください：
 
 - [AWS Builder IDでのサインイン](https://docs.aws.amazon.com/signin/latest/userguide/sign-in-aws_builder_id.html)
 - [Amazon Q Developer Proサブスクリプションでのサインイン](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/q-admin-setup-subscribe-general.html)
@@ -85,7 +85,7 @@ EKS MCPサーバーが提供するツールを確認するには、次のコマ�
 
 以下のような出力が表示されるはずです：
 
-![list-mcp-tools](./assets/list-mcp-tools.jpg)
+![list-mcp-tools](/docs/aiml/q-cli/list-mcp-tools.jpg)
 
 この出力は次の内容を示しています：
 
@@ -100,3 +100,4 @@ EKS MCPサーバーが提供するツールを確認するには、次のコマ�
 同じ手順で[AWS Labsの他のMCPサーバー](https://awslabs.github.io/mcp/)を追加し、追加機能を使用することもできます。このラボでは、設定したEKS MCPサーバーのみが必要です。
 
 次のセクションでは、Amazon Q CLIを使用してEKSクラスターに関する情報を取得します。
+

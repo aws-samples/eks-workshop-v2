@@ -1,7 +1,7 @@
 ---
 title: ワークロードのスケーリング
 sidebar_position: 30
-kiteTranslationSourceHash: 6c2730f893e1af352a91566144abe7b7
+tmdTranslationSourceHash: 6c2730f893e1af352a91566144abe7b7
 ---
 
 Fargateのもう一つの利点は、簡素化された水平スケーリングモデルです。EC2をコンピュートとして使用する場合、Podのスケーリングでは、Podだけでなく基盤となるコンピュートがどのようにスケールするかも考慮する必要があります。Fargateは基盤となるコンピュートを抽象化するため、Pod自体のスケーリングのみを考慮すればよいのです。
@@ -32,4 +32,3 @@ checkout-585c9b45c7-xmx2t   1/1     Running   0          40m
 ```
 
 これらのPodはそれぞれ別々のFargateインスタンスにスケジュールされています。以前と同様のステップに従って、特定のPodのノードを識別することでこれを確認できます。
-
