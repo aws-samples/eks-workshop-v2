@@ -268,3 +268,63 @@
 .navbar__search-input {
   max-width: 150px; /* Set a maximum width for the search input */
 }
+
+/* Fastpath navbar item styling */
+.navbar-fastpath {
+  position: relative;
+  font-weight: 600;
+  background: linear-gradient(135deg, #ff9900 0%, #ffb84d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: fastpath-pulse 2s ease-in-out infinite;
+  margin-right: 1.5rem;
+  padding: 0 0.5rem;
+}
+
+.navbar-fastpath:hover {
+  background: linear-gradient(135deg, #ffb84d 0%, #ffd699 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes fastpath-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+/* Add a subtle glow effect on hover */
+.navbar-fastpath::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff9900, transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.navbar-fastpath:hover::after {
+  opacity: 1;
+}
+
+[data-theme="dark"] .navbar-fastpath {
+  background: linear-gradient(135deg, #ffb84d 0%, #ffd699 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+[data-theme="dark"] .navbar-fastpath:hover {
+  background: linear-gradient(135deg, #ffd699 0%, #ffe6b3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

@@ -164,6 +164,13 @@ const config = {
             label: "Troubleshooting",
           },
           {
+            type: "doc",
+            docId: "fastpaths/developer/index",
+            position: "right",
+            label: "⚡ Fastpath",
+            className: "navbar-fastpath",
+          },
+          {
             href: "https://github.com/aws-samples/eks-workshop-v2",
             position: "right",
             className: "header-github-link",
