@@ -21,7 +21,7 @@ module "eks_blueprints_addons" {
 resource "time_sleep" "wait" {
   depends_on = [module.eks_blueprints_addons]
 
-  create_duration = "10s"
+  create_duration = "15s"
 }
 
 # ALB creation
