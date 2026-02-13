@@ -1,0 +1,182 @@
+name: Auto Translate
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  # Setup phase - prepare the translation branch with latest content
+  setup-branch:
+    name: setup-translation-branch
+    runs-on: ubuntu-latest
+    outputs:
+      branch-exists: ${{ steps.check-branch.outputs.exists }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      
+      - name: Check if translation branch exists
+        id: check-branch
+        run: |
+          if git ls-remote --exit-code --heads origin automated-translations; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Setup and rebase translation branch
+        run: |
+          if [ "${{ steps.check-branch.outputs.exists }}" = "true" ]; then
+            echo "Branch exists, checking out and rebasing on main"
+            git checkout -b automated-translations origin/automated-translations
+            
+            # Rebase on main to get latest content
+            git rebase origin/main
+            
+            # Push the rebased branch
+            git push --force-with-lease origin automated-translations
+          else
+            echo "Branch doesn't exist, creating new branch from main"
+            git checkout -b automated-translations
+            git push origin automated-translations
+          fi
+
+  # Fork phase - parallel translation jobs (now working from rebased content)
+  translate-matrix:
+    name: translate-${{ matrix.language }}
+    runs-on: ubuntu-latest
+    needs: setup-branch
+    strategy:
+      matrix:
+        language: [ja]  # Add more languages here as needed
+
+    steps:
+      - name: Check out rebased translation branch
+        uses: actions/checkout@v4
+        with:
+          ref: automated-translations
+      
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      
+      - name: Get AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4.2.1
+        with:
+          role-to-assume: ${{ secrets.INFERENCE_AWS_ROLE_ARN }}
+          role-duration-seconds: 1800
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GithubActionsSession-translate-${{ matrix.language }}
+      
+      - name: Install dependencies
+        run: yarn install
+      
+      - name: Run translate for ${{ matrix.language }}
+        run: |
+          yarn toolkit-md translate \
+            --translation-dir website/i18n/${{ matrix.translation_dir }}/docusaurus-plugin-content-docs/current \
+            --to ${{ matrix.language }} \
+            --write ./website/docs
+      
+      - name: Upload translation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: translations-${{ matrix.language }}
+          path: website/i18n/${{ matrix.language }}/
+          retention-days: 1
+
+  # Join phase - collect all translations and create PR
+  collect-and-pr:
+    name: collect-translations-and-pr
+    runs-on: ubuntu-latest
+    needs: [setup-branch, translate-matrix]
+    steps:
+      - name: Check out translation branch
+        uses: actions/checkout@v4
+        with:
+          ref: automated-translations
+      
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      
+      - name: Download all translation artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+      
+      - name: Apply all translations
+        run: |
+          # Copy all translation files from artifacts
+          for lang_dir in artifacts/translations-*/; do
+            if [ -d "$lang_dir" ]; then
+              lang=$(basename "$lang_dir" | sed 's/translations-//')
+              echo "Applying translations for language: $lang"
+              
+              # Create target directory if it doesn't exist
+              mkdir -p "website/i18n/$lang"
+              
+              # Copy translation files
+              cp -r "$lang_dir"* "website/i18n/$lang/"
+            fi
+          done
+      
+      - name: Commit changes
+        run: |
+          git add website/i18n/
+          if git diff --staged --quiet; then
+            echo "No translation changes to commit"
+            echo "has_changes=false" >> $GITHUB_ENV
+          else
+            git commit -m "Automated translation updates
+            
+            - Updated translations for: $(ls artifacts/ | sed 's/translations-//g' | tr '\n' ' ')
+            - Generated from commit: ${{ github.sha }}
+            - Workflow run: ${{ github.run_id }}"
+            echo "has_changes=true" >> $GITHUB_ENV
+          fi
+      
+      - name: Push translation branch
+        if: env.has_changes == 'true'
+        run: |
+          git push origin automated-translations
+      
+      - name: Create Pull Request
+        if: env.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          title: "Automated translation updates"
+          branch: "automated-translations"
+          delete-branch: false
+          labels: |
+            content/other
+          add-paths: |
+            website/i18n/**/*.md
+          body: |
+            ## Automated Translation Updates
+            
+            This PR contains automated translation updates generated from the latest changes in `main`.
+            
+            ### Changes
+            - Branch was rebased on latest `main` before translation
+            - Translations generated from latest content
+            - Previous translation work preserved through rebase
+            
+            Please review the translations before merging.

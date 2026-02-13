@@ -21,7 +21,7 @@
   "author": "",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@aws/toolkit-md": "^0.1.5",
+    "@aws/toolkit-md": "^0.1.6",
     "cspell": "^9.0.0",
     "lint-staged": "^16.0.0",
     "markdown-link-check": "3.14.2",
