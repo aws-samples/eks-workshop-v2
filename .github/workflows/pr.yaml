@@ -21,11 +21,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
       - name: Get kubectl version
         run: |
           source hack/lib/kubectl-version.sh
@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Make shell
         env:
           SKIP_CREDENTIALS: 1
@@ -57,17 +57,17 @@ jobs:
     name: "Pre-commit hooks"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
-      - uses: actions/setup-python@v5
+          node-version: 24
+      - uses: actions/setup-python@v6
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "~1.9.0"
       - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v5
+        uses: terraform-linters/setup-tflint@v6
       - name: Setup terraform-docs
         uses: jaxxstorm/action-install-gh-release@v2.1.0
         with:
@@ -81,7 +81,7 @@ jobs:
     name: "Validate Terraform"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "~1.9.0"
@@ -109,7 +109,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check for content label
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const labels = context.payload.pull_request.labels;
