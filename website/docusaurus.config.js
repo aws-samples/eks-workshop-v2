@@ -54,7 +54,7 @@ const config = {
 
   i18n: {
     defaultLocale: "en",
-    locales: ["en"],
+    locales: ["en", "ja"],
   },
 
   presets: [
@@ -162,6 +162,10 @@ const config = {
             docId: "troubleshooting/index",
             position: "left",
             label: "Troubleshooting",
+          },
+          {
+            type: "localeDropdown",
+            position: "right",
           },
           {
             href: "https://github.com/aws-samples/eks-workshop-v2",

@@ -1,14 +1,16 @@
 import { visit } from "unist-util-visit";
 const fs = require("fs");
-import * as yamljs from "yamljs";
 import * as path from "path";
 import { globSync } from "glob";
 import getReadingTime from "reading-time";
 
-const timingDataString = fs.readFileSync(`./test-durations.json`, {
-  encoding: "utf8",
-  flag: "r",
-});
+const timingDataString = fs.readFileSync(
+  `${process.cwd()}/test-durations.json`,
+  {
+    encoding: "utf8",
+    flag: "r",
+  },
+);
 
 const timingData = JSON.parse(timingDataString);
 
@@ -25,9 +27,9 @@ const plugin = (options) => {
         return;
       }
 
-      let defaultAttributes = { estimatedLabExecutionTimeMinutes: "0" };
+      const defaultAttributes = { estimatedLabExecutionTimeMinutes: "0" };
 
-      let attributes = { ...defaultAttributes, ...node.attributes };
+      const attributes = { ...defaultAttributes, ...node.attributes };
 
       const filePath = vfile.history[0];
       const relativePath = path.relative(`${vfile.cwd}/docs`, filePath);
@@ -39,7 +41,7 @@ const plugin = (options) => {
         );
       }
 
-      let totalTime =
+      const totalTime =
         Math.ceil(
           ((calculateReadingTime(filePath) +
             parseInt(attributes.estimatedLabExecutionTimeMinutes)) *

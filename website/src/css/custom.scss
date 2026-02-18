@@ -250,8 +250,11 @@
   padding: 0 0px;
   font-size: clamp(0.8em, 1.2vw, 1em);
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.navbar__items--right .dropdown--right {
+  padding: 0 10px;
 }
 
 /* docusaurus switches to mobile view at 996px */
