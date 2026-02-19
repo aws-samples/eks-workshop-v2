@@ -61,6 +61,11 @@ export default function DocSidebarItemLink({
             ) : (
               <span></span>
             )}
+            {item.customProps?.optional ? (
+              <span className="badge optional">OPTIONAL</span>
+            ) : (
+              <span></span>
+            )}
           </div>
         </div>
         {!isInternalLink && <IconExternalLink />}

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 environment=$1
 module=$2
