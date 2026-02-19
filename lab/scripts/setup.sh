@@ -21,6 +21,7 @@ export AWS_PAGER=""
 export AWS_REGION="${AWS_REGION}"
 export AWS_ACCOUNT_ID="${AWS_ACCOUNT_ID}"
 export EKS_CLUSTER_NAME="${EKS_CLUSTER_NAME}"
+export EKS_CLUSTER_AUTO_NAME="${EKS_CLUSTER_AUTO_NAME}"
 export EKS_DEFAULT_MNG_NAME="default"
 export EKS_DEFAULT_MNG_MIN=3
 export EKS_DEFAULT_MNG_MAX=6
@@ -30,15 +31,18 @@ EOT
 touch ~/.bashrc.d/workshop-env.bash
 
 cat << EOT > /home/ec2-user/.bashrc.d/aliases.bash
-function prepare-environment() { 
+function prepare-environment() {
+  start_time=\$(date +%s)
   bash /usr/local/bin/reset-environment \$1
   exit_code=\$?
   source ~/.bashrc.d/workshop-env.bash
+  echo "Execution time: \$((\$(date +%s) - start_time)) seconds"
   return \$exit_code
 }
 
 function use-cluster() { bash /usr/local/bin/use-cluster \$1; source ~/.bashrc.d/env.bash; }
 function create-cluster() { URL=https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/refs/heads/${REPOSITORY_REF}/cluster/eksctl/cluster.yaml; echo "Creating cluster with eksctl from $URL"; curl -fsSL $URL | envsubst | eksctl create cluster -f -; }
+function create-cluster-auto() { URL=https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/refs/heads/${REPOSITORY_REF}/cluster/eksctl/cluster-auto.yaml; echo "Creating cluster with eksctl from $URL"; curl -fsSL $URL | envsubst | eksctl create cluster -f -; }
 EOT
 
 REPOSITORY_OWNER=${REPOSITORY_OWNER:-"aws-samples"}

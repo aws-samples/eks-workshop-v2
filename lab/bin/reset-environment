@@ -92,6 +92,11 @@ if [ ! -z "$module" ]; then
   if [ $module = "introduction/getting-started" ]; then
     exit
   fi
+
+  if [[ "$module" = "fastpaths/"* ]]; then
+    kubectl config use-context eks-workshop-auto
+    exit
+  fi
 fi
 
 logmessage "🎓 ${PURPLE}Tip:${NC} Read the rest of the lab introduction while you wait!\n"
@@ -106,24 +111,29 @@ kubectl delete pod load-generator --ignore-not-found
 
 kubectl delete namespace other --ignore-not-found
 
-kubectl apply -k $base_path --prune --all \
-  --prune-allowlist=autoscaling/v1/HorizontalPodAutoscaler \
-  --prune-allowlist=core/v1/Service \
-  --prune-allowlist=core/v1/ConfigMap \
-  --prune-allowlist=apps/v1/Deployment \
-  --prune-allowlist=apps/v1/StatefulSet \
-  --prune-allowlist=core/v1/ServiceAccount \
-  --prune-allowlist=core/v1/Secret \
-  --prune-allowlist=core/v1/PersistentVolumeClaim \
-  --prune-allowlist=scheduling.k8s.io/v1/PriorityClass \
-  --prune-allowlist=networking.k8s.io/v1/Ingress
+if [[ $module != introduction/basics* ]]; then    
+    kubectl apply -k $base_path --prune --all \
+      --prune-allowlist=autoscaling/v1/HorizontalPodAutoscaler \
+      --prune-allowlist=core/v1/Service \
+      --prune-allowlist=core/v1/ConfigMap \
+      --prune-allowlist=apps/v1/Deployment \
+      --prune-allowlist=apps/v1/StatefulSet \
+      --prune-allowlist=core/v1/ServiceAccount \
+      --prune-allowlist=core/v1/Secret \
+      --prune-allowlist=core/v1/PersistentVolumeClaim \
+      --prune-allowlist=scheduling.k8s.io/v1/PriorityClass \
+      --prune-allowlist=networking.k8s.io/v1/Ingress
 
-logmessage "\n⏳ Waiting for application to become ready..."
+    logmessage "\n⏳ Waiting for application to become ready..."
 
-sleep 10
+    sleep 10
 
-kubectl wait --for=condition=available --timeout=240s deployments -l app.kubernetes.io/created-by=eks-workshop -A
-kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
+    kubectl wait --for=condition=available --timeout=240s deployments -l app.kubernetes.io/created-by=eks-workshop -A
+    kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
+
+else
+    kubectl delete -k $base_path --ignore-not-found
+fi
 
 # Addons
 rm -rf /eks-workshop/terraform
@@ -238,10 +248,12 @@ if [ $EXIT_CODE -ne 0 ]; then
 fi
 
 # Recycle workload pods in case stateful pods got restarted
-kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernetes.io/component=service -A
+kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernetes.io/component=service -A --ignore-not-found
 
 # Wait for the workload pods previously recycled
-kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
+if kubectl get pods -A -l app.kubernetes.io/created-by=eks-workshop 2>/dev/null | grep -q .; then
+  kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
+fi
 
 # Finished
 logmessage "\n✅ Environment is ${GREEN}ready${NC}!"
