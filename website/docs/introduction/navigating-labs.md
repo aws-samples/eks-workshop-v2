@@ -101,4 +101,4 @@ In this case you can either copy each command individually or copy all of the co
 
 ## Next Steps
 
-Now that you're familiar with the format of this workshop, head to the [Application Overview](/docs/introduction/application-overview) to learn about the sample application, then proceed to [Getting Started](/docs/introduction/getting-started) lab or skip ahead to any module in the workshop with the top navigation bar.
+Now that you're familiar with the format of this workshop, head to the [Application Overview](/docs/introduction/getting-started/about) to learn about the sample application, then proceed to [Getting Started](/docs/introduction/getting-started) lab or skip ahead to any module in the workshop with the top navigation bar.
