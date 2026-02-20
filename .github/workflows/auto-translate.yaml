@@ -90,7 +90,7 @@ jobs:
       - name: Run translate for ${{ matrix.language }}
         run: |
           yarn toolkit-md translate \
-            --translation-dir website/i18n/${{ matrix.translation_dir }}/docusaurus-plugin-content-docs/current \
+            --translation-dir website/i18n/${{ matrix.language }}/docusaurus-plugin-content-docs/current \
             --to ${{ matrix.language }} \
             --write ./website/docs
       
