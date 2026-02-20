@@ -65,7 +65,7 @@ mistral-6889d675c5-2l6x2   0/1     Pending   0          30s
 mistral-6889d675c5-2l6x2   0/1     Pending   0          38s
 mistral-6889d675c5-2l6x2   0/1     Pending   0          50s
 mistral-6889d675c5-2l6x2   0/1     Init:0/1   0          50s
-# Podがinit状態に達したら終了
+# Exit once the Pod reaches the Init state
 ```
 
 モデルをダウンロードしているinitコンテナのログを確認できます（Ctrl + Cで終了）：
@@ -79,7 +79,7 @@ Downloading 'weights/tp1_sharded_checkpoint.safetensors' to '/models/mistral-7b-
 Download complete. Moving file to /models/mistral-7b-v0.3/weights/tp1_sharded_checkpoint.safetensors
 
 Model download is complete.
-# ログがここまで到達したら終了
+# Exit once the logs reach this point
 ```
 
 initコンテナが完了したら、vLLMコンテナの起動時のログを監視できます（Ctrl + Cで終了）：
@@ -95,7 +95,7 @@ INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     10.42.114.242:38674 - "GET /health HTTP/1.1" 200 OK
 INFO:     10.42.114.242:50134 - "GET /health HTTP/1.1" 200 OK
-# ログがここまで到達したら終了
+# Exit once the logs reach this point
 ```
 
 これらのステップを完了したか、モデルの初期化中に次に進むことを決めたら、次のタスクに進むことができます。

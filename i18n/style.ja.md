@@ -16,15 +16,22 @@ ALWAYS keep these technical terms in the origin English instead of translation t
 
 - VS Code Terminal
 - Terraform state
+- Prefix Delegation
+- Mountpoint for Amazon S3
+- Kube Resource Orchestrator
+- Elastic
 
 There are some technical terms that should be translated, for example:
 
 - Port forwarding: ポートフォワーディング
+- logging: ロギング
+- observability: 可観測性
 
 ALWAYS keep AWS service names in the original English instead of translating to Japanese. This also includes AWS and EKS technical terms like:
 
 - Elastic IP or EIP
 - IAM role
+- Elastic Network Interface or ENI
 
 ALWAYS keep Kubernetes terminology in the original English instead of translating to Japanese:
 
