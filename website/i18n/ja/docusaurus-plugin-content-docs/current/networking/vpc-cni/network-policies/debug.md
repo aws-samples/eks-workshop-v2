@@ -40,7 +40,7 @@ curl: (28) Failed to connect to orders.orders port 80 after 5000 ms: Timeout was
 ```bash test=false
 $ POD_HOSTIP_1=$(kubectl get po --selector app.kubernetes.io/component=service -n orders -o json | jq -r '.items[0].spec.nodeName')
 $ kubectl debug node/$POD_HOSTIP_1 -it --image=ubuntu
-# ポッド内でこれらのコマンドを実行
+# Run these commands inside the pod
 $ grep DENY /host/var/log/aws-routed-eni/network-policy-agent.log | tail -5
 {"level":"info","timestamp":"2023-11-03T23:02:17.916Z","logger":"ebpf-client","msg":"Flow Info:  ","Src IP":"10.42.190.65","Src Port":55986,"Dest IP":"10.42.117.209","Dest Port":8080,"Proto":"TCP","Verdict":"DENY"}
 {"level":"info","timestamp":"2023-11-03T23:02:18.920Z","logger":"ebpf-client","msg":"Flow Info:  ","Src IP":"10.42.190.65","Src Port":55986,"Dest IP":"10.42.117.209","Dest Port":8080,"Proto":"TCP","Verdict":"DENY"}
