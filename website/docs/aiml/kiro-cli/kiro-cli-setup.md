@@ -85,7 +85,7 @@ To see the tools offered by the EKS MCP server, run:
 
 You should see output similar to this:
 
-![list-mcp-tools](./assets/list-mcp-tools.jpg)
+![list-mcp-tools](/docs/aiml/kiro-cli/list-mcp-tools.jpg)
 
 The output shows:
 
