@@ -18,9 +18,9 @@ resource "kubernetes_manifest" "ui_ns" {
   manifest = {
     "apiVersion" = "v1"
     "kind"       = "Namespace"
-    "metadata"   = {
-      "name"      = "ui"
-      "labels"      = {
+    "metadata" = {
+      "name" = "ui"
+      "labels" = {
         "app.kubernetes.io/created-by" = "eks-workshop"
       }
     }
