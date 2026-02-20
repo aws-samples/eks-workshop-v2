@@ -9,7 +9,7 @@ Streamlined, role-based learning experiences that get you hands-on with Amazon E
 
 ## Choose Your Journey
 
-![Fast Path Options](../assets/fast-path-options.png)
+![Fast Path Options](/img/fastpaths/fast-path-options.png)
 
 As you can see in the picture, you can choose your learning journey for this workshop as per the following steps:
 
