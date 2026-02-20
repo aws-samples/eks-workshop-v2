@@ -1,0 +1,55 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-processor
+  namespace: catalog
+  labels:
+    app.kubernetes.io/name: data-processor
+    app.kubernetes.io/created-by: eks-workshop
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: data-processor
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: processor
+        image: busybox:1.36
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Starting data processing job..."
+          echo "Processing catalog data files..."
+          
+          # Simulate processing multiple files
+          for i in $(seq 1 5); do
+            echo "Processing file $i/5..."
+            sleep 2
+            echo "File $i processed successfully"
+          done
+          
+          echo "Generating summary report..."
+          cat > /tmp/processing-report.txt << EOF
+          Data Processing Report
+          =====================
+          Job: data-processor
+          Date: $(date)
+          Files processed: 5
+          Status: Completed successfully
+          EOF
+          
+          echo "Report generated:"
+          cat /tmp/processing-report.txt
+          echo "Data processing job completed successfully!"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi

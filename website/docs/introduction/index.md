@@ -8,7 +8,7 @@ Welcome to the **AWS Elastic Kubernetes Service (EKS) workshop**!
 
 This workshop guides you through a set of hands-on lab exercises to learn and explore the various features provided by EKS and how it integrates with the broader set of services offered by AWS. The labs are grouped across a number of areas:
 
-- **Introduction** - Learn the format and structure of this workshop
+- **Introduction** - Get Started with the workshop’s format and structure, provision EKS cluster, Kubernetes basics and familiarize yourself with the sample application.
 - **Fundamentals** - Familiarize yourself with basic EKS concepts such as managed node groups, Fargate, exposing your applications and utilizing storage
 - **Autoscaling** - Understand how to automatically scale your applications and clusters horizontally and vertically
 - **Observability** - Monitoring is a critical factor getting a workload to production
