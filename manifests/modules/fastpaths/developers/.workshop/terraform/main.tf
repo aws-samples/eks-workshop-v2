@@ -3,7 +3,8 @@ module "preprovision" {
   count  = var.resources_precreated ? 0 : 1
 
   providers = {
-    helm.auto_mode = helm.auto_mode
+    helm.auto_mode       = helm.auto_mode
+    kubernetes.auto_mode = kubernetes.auto_mode
   }
 
   eks_cluster_id      = var.eks_cluster_id
