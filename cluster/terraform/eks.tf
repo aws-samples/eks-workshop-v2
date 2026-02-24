@@ -28,6 +28,12 @@ module "eks" {
         enableNetworkPolicy = "true"
       })
     }
+    coredns = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
   }
 
   vpc_id     = module.vpc.vpc_id
