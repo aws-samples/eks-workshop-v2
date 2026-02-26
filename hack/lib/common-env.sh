@@ -18,6 +18,7 @@ fi
 
 SKIP_CREDENTIALS=${SKIP_CREDENTIALS:-""}
 USE_CURRENT_USER=${USE_CURRENT_USER:-""}
+AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-""} # We check the access key
 
 if [ -z "$SKIP_CREDENTIALS" ]; then
   ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)

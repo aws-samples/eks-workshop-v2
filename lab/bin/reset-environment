@@ -109,7 +109,22 @@ fi
 
 kubectl delete pod load-generator --ignore-not-found
 
-kubectl delete namespace other --ignore-not-found
+# Delete namespace with timeout and handle metrics-server discovery failures
+kubectl delete namespace other --ignore-not-found --timeout=60s || {
+  logmessage "⚠️  ${RED}Warning:${NC} Namespace deletion timed out or failed, forcing cleanup..."
+  
+  # Remove finalizers to force deletion
+  kubectl get namespace other -o json 2>/dev/null | \
+    jq '.spec.finalizers = []' | \
+    kubectl replace --raw "/api/v1/namespaces/other/finalize" -f - 2>/dev/null || \
+    kubectl patch namespace other -p '{"metadata":{"finalizers":[]}}' --type=merge 2>/dev/null || true
+  
+  # Wait a bit and verify deletion
+  sleep 5
+  if kubectl get namespace other &>/dev/null; then
+    logmessage "⚠️  ${RED}Warning:${NC} Namespace 'other' still exists but continuing..."
+  fi
+}
 
 if [[ $module != introduction/basics* ]]; then    
     kubectl apply -k $base_path --prune --all \
