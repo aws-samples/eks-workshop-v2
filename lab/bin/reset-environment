@@ -39,7 +39,9 @@ if [ -z "$EKS_DEFAULT_MNG_MIN" ]; then
 fi
 
 rm -f /home/ec2-user/.kube/config
+EKS_CLUSTER_AUTO_NAME=${EKS_CLUSTER_AUTO_NAME:-"eks-workshop-auto"}
 
+aws eks update-kubeconfig --name $EKS_CLUSTER_AUTO_NAME --alias eks-workshop-auto
 aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --alias default --user-alias default
 
 module=$1
@@ -89,10 +91,6 @@ if [ ! -z "$module" ]; then
     curl --get -s --data-urlencode "lab=$module" --data-urlencode "account_id=$AWS_ACCOUNT_ID" $ANALYTICS_ENDPOINT || true
   fi
 
-  if [ $module = "introduction/getting-started" ]; then
-    exit
-  fi
-
   if [[ "$module" = "fastpaths/"* ]]; then
     kubectl config use-context eks-workshop-auto
     exit
@@ -126,7 +124,9 @@ kubectl delete namespace other --ignore-not-found --timeout=60s || {
   fi
 }
 
-if [[ $module != introduction/basics* ]]; then    
+if [[ $module = introduction/basics* || $module = introduction/getting-started* ]]; then
+  kubectl delete -k $base_path --ignore-not-found
+else
     kubectl apply -k $base_path --prune --all \
       --prune-allowlist=autoscaling/v1/HorizontalPodAutoscaler \
       --prune-allowlist=core/v1/Service \
@@ -146,8 +146,6 @@ if [[ $module != introduction/basics* ]]; then
     kubectl wait --for=condition=available --timeout=240s deployments -l app.kubernetes.io/created-by=eks-workshop -A
     kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
 
-else
-    kubectl delete -k $base_path --ignore-not-found
 fi
 
 # Addons
@@ -173,7 +171,14 @@ terraform -chdir="$tf_dir" destroy --auto-approve
 
 rm -rf /eks-workshop/hooks
 
+# Cleanup done, let's install the right item
+
 if [ ! -z "$module" ]; then
+  if [ $module = "introduction/getting-started" ]; then
+    # This module doesn't need anything installed
+    exit
+  fi
+
   module_path="$manifests_path/modules/$module"
 
   if [ -f "$module_path/.workshop/cleanup.sh" ]; then
