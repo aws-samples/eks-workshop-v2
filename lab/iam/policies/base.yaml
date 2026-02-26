@@ -10,16 +10,9 @@ Statement:
   - Effect: Allow
     Action:
       - cloudformation:CreateStack
-    Resource:
-      - !Sub arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/eksctl-${Env}*
-    Condition:
-      "Null":
-        cloudformation:RoleARN: "true"
-  - Effect: Allow
-    Action:
+      - cloudformation:CreateChangeSet
       - cloudformation:UpdateTerminationProtection
       - cloudformation:DeleteStack
-      - cloudformation:UpdateTerminationProtection
     Resource:
       - !Sub arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/eksctl-${Env}*
     Condition:
