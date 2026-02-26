@@ -6,6 +6,11 @@ bash /tmp/setup.sh
 
 ln -s /eks-workshop/manifests /home/ec2-user/environment/eks-workshop
 
+# We do auto mode first so we default to standard
+if [ ! -z "$EKS_CLUSTER_AUTO_NAME" ]; then
+  aws eks update-kubeconfig --name $EKS_CLUSTER_AUTO_NAME
+fi
+
 if [ ! -z "$EKS_CLUSTER_NAME" ]; then
   aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
 fi
