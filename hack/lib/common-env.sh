@@ -17,6 +17,7 @@ if [ -z "$AWS_REGION" ]; then
 fi
 
 SKIP_CREDENTIALS=${SKIP_CREDENTIALS:-""}
+USE_CURRENT_USER=${USE_CURRENT_USER:-""}
 
 if [ -z "$SKIP_CREDENTIALS" ]; then
   ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)

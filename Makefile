@@ -4,6 +4,7 @@ environment=''
 shell_command=''
 shell_simple_command=''
 glob='-'
+cluster='all'
 
 .PHONY: install
 install:
@@ -39,11 +40,11 @@ delete-environment:
 
 .PHONY: create-infrastructure
 create-infrastructure:
-	bash hack/create-infrastructure.sh $(environment)
+	bash hack/create-infrastructure.sh $(environment) $(cluster)
 
 .PHONY: destroy-infrastructure
 destroy-infrastructure:
-	bash hack/destroy-infrastructure.sh $(environment)
+	bash hack/destroy-infrastructure.sh $(environment) $(cluster)
 
 .PHONY: deploy-ide
 deploy-ide:

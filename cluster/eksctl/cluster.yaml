@@ -41,3 +41,12 @@ remoteNetworkConfig:
     - cidrs: ["10.52.0.0/16"]
   remotePodNetworks:
     - cidrs: ["10.53.0.0/16"]
+accessConfig:
+  authenticationMode: API
+  bootstrapClusterCreatorAdminPermissions: true
+  accessEntries:
+   - principalARN: ${RESOURCE_CODEBUILD_ROLE_ARN}
+     accessPolicies:
+       - policyARN: "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+         accessScope:
+          type: cluster
