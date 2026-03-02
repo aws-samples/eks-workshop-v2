@@ -33,6 +33,7 @@ Depending on your browser the first time you copy/paste content in to the VSCode
 
 Most of the interaction you will do in this workshop will be done with terminal commands, which you can either manually type or copy/paste to the IDE terminal. You will see this terminal commands displayed like this:
 
+<!-- DO NOT TRANSLATE THE BELOW CODE BLOCK -->
 ```bash test=false
 $ echo "This is an example command"
 ```

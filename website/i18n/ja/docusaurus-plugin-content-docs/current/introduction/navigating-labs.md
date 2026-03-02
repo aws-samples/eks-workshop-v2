@@ -35,10 +35,10 @@ import TabItem from '@theme/TabItem';
 このワークショップでの操作のほとんどは、IDEターミナルに手動で入力するか、コピー/ペーストするターミナルコマンドで行われます。これらのターミナルコマンドは次のように表示されます：
 
 ```bash test=false
-$ echo "これはサンプルコマンドです"
+$ echo "This is an example command"
 ```
 
-マウスを`echo "これはサンプルコマンドです"`の上にホバーし、クリックするとそのコマンドがクリップボードにコピーされます。
+マウスを`echo "This is an example command"`の上にホバーし、クリックするとそのコマンドがクリップボードにコピーされます。
 
 また、次のようなサンプル出力を含むコマンドも表示されます：
 
@@ -52,8 +52,8 @@ Fri Aug 30 12:25:58 MDT 2024
 コンテンツで使用されるもう一つのパターンは、単一のターミナルで複数のコマンドを表示することです：
 
 ```bash test=false
-$ echo "これはサンプルコマンドです"
-これはサンプルコマンドです
+$ echo "This is an example command"
+This is an example command
 $ date
 Fri Aug 30 12:26:58 MDT 2024
 ```

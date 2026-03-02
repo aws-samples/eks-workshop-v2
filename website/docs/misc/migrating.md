@@ -14,6 +14,7 @@ $ delete-environment
 
 Next you should delete the AWS resources that were provisioned by Terraform. From the Git repository you initially cloned (for example on your local machine) run the following commands:
 
+<!-- DO NOT TRANSLATE THE BELOW CODE BLOCK -->
 ```bash test=false
 $ cd terraform
 $ terraform destroy -target=module.cluster.module.eks_blueprints_kubernetes_addons --auto-approve

@@ -36,6 +36,7 @@ As you can see from the outputs, something went wrong here. The call from 'ui' c
 
 Network policy agent logs are available in the file `/var/log/aws-routed-eni/network-policy-agent.log` on each worker node. Lets see if there are any `DENY` statements being logged in that file:
 
+<!-- DO NOT TRANSLATE THE BELOW CODE BLOCK -->
 ```bash test=false
 $ POD_HOSTIP_1=$(kubectl get po --selector app.kubernetes.io/component=service -n orders -o json | jq -r '.items[0].spec.nodeName')
 $ kubectl debug node/$POD_HOSTIP_1 -it --image=ubuntu

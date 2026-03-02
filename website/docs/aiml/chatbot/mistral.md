@@ -54,6 +54,7 @@ You can either monitor the status of the Pod as it progresses through these stag
 
 If you choose to wait, you can watch the Pod transition to the Init state (press Ctrl + C to exit):
 
+<!-- DO NOT TRANSLATE THE BELOW CODE BLOCK -->
 ```bash test=false
 $ kubectl get pod -n vllm --watch
 NAME                       READY   STATUS    RESTARTS   AGE

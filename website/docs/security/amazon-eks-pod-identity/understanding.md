@@ -5,6 +5,7 @@ sidebar_position: 33
 
 The first place to look for the issue is the logs of the `carts` service:
 
+<!-- DO NOT TRANSLATE THE BELOW CODE BLOCK -->
 ```bash hook=pod-logs
 $ LATEST_POD=$(kubectl get pods -n carts --sort-by=.metadata.creationTimestamp -o jsonpath='{.items[-1:].metadata.name}')
 $ kubectl logs -n carts -p $LATEST_POD
