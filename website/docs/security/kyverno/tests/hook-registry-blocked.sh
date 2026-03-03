@@ -5,14 +5,15 @@ before() {
 }
 
 after() {
-  # TEST_OUTPUT contains the output of the kubectl run command from the markdown block
+  # TEST_OUTPUT contains the output of the kubectl create deployment command from the markdown block.
+  # The Deployment references a non-ECR image and should be blocked by restrict-image-registries.
   if [[ "$TEST_OUTPUT" != *"validate.kyverno.svc-fail"* ]]; then
-    >&2 echo "Expected pod to be blocked by Kyverno admission webhook, but got: $TEST_OUTPUT"
+    >&2 echo "Expected Deployment to be blocked by Kyverno admission webhook, but got: $TEST_OUTPUT"
     exit 1
   fi
 
   if [[ "$TEST_OUTPUT" != *"restrict-image-registries"* ]]; then
-    >&2 echo "Expected pod to be blocked by restrict-image-registries policy, but got: $TEST_OUTPUT"
+    >&2 echo "Expected Deployment to be blocked by restrict-image-registries policy, but got: $TEST_OUTPUT"
     exit 1
   fi
 
