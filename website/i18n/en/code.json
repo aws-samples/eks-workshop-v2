@@ -6,5 +6,13 @@
   "terminal.copyAllCommands": {
     "message": "Copy all commands",
     "description": "The button on terminal component to copy all commands"
+  },
+  "time.estimatedTimeRequired": {
+    "message": "Estimated time required",
+    "description": "Text for 'Estimated time required'"
+  },
+  "time.minutes": {
+    "message": "minutes",
+    "description": "Text for 'minutes'"
   }
 }

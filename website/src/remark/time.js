@@ -62,26 +62,12 @@ const plugin = (options) => {
 
       const jsxNode = {
         type: "mdxJsxFlowElement",
-        name: "p",
-        attributes: [],
-        children: [
+        name: "RequiredTime",
+        attributes: [
           {
-            type: "mdxJsxTextElement",
-            name: "b",
-            attributes: [],
-            children: [
-              {
-                type: "text",
-                value: "⏱️  Estimated time required:",
-              },
-            ],
-            data: {
-              _mdxExplicitJsx: true,
-            },
-          },
-          {
-            type: "text",
-            value: ` ${totalTime} minutes`,
+            type: "mdxJsxAttribute",
+            name: "totalTime",
+            value: totalTime,
           },
         ],
       };

@@ -9,6 +9,7 @@ import LaunchButton from "@site/src/components/LaunchButton";
 import YamlFile, { YamlAnnotation } from "@site/src/components/YamlFile";
 import ReactPlayer from "react-player";
 import ConsoleButton from "@site/src/components/ConsoleButton";
+import RequiredTime from "@site/src/components/RequiredTime";
 
 export default {
   // Re-use the default mapping
@@ -23,4 +24,5 @@ export default {
   YamlFile: YamlFile,
   YamlAnnotation: YamlAnnotation,
   ConsoleButton: ConsoleButton,
+  RequiredTime: RequiredTime,
 };

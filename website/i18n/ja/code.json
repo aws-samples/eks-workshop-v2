@@ -329,5 +329,13 @@
   "theme.unlistedContent.message": {
     "message": "このページは非公開です。 検索対象外となり、このページのリンクに直接アクセスできるユーザーのみに公開されます。",
     "description": "The unlisted content banner message"
+  },
+  "time.estimatedTimeRequired": {
+    "message": "所要時間",
+    "description": "Text for 'Estimated time required'"
+  },
+  "time.minutes": {
+    "message": "分",
+    "description": "Text for 'minutes'"
   }
 }
