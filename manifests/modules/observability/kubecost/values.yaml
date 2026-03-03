@@ -1,5 +1,7 @@
 global:
   clusterId: eks-workshop
+kubecost:
+  clusterId: eks-workshop
 service:
   type: LoadBalancer
   annotations:
