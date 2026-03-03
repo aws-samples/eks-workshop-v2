@@ -27,12 +27,23 @@ const plugin = (options) => {
         return;
       }
 
+      const locale = process.env.DOCUSAURUS_CURRENT_LOCALE;
+
       const defaultAttributes = { estimatedLabExecutionTimeMinutes: "0" };
 
       const attributes = { ...defaultAttributes, ...node.attributes };
 
       const filePath = vfile.history[0];
-      const relativePath = path.relative(`${vfile.cwd}/docs`, filePath);
+      let relativePath;
+
+      if (locale === "en") {
+        relativePath = path.relative(`${vfile.cwd}/docs`, filePath);
+      } else {
+        relativePath = path.relative(
+          `${vfile.cwd}/i18n/${locale}/docusaurus-plugin-content-docs/current`,
+          filePath,
+        );
+      }
 
       if (attributes.estimatedLabExecutionTimeMinutes === "0") {
         attributes.estimatedLabExecutionTimeMinutes = calculateLabExecutionTime(
