@@ -21,7 +21,7 @@ aws eks describe-cluster --name "${EKS_CLUSTER_NAME}" &> /dev/null || cluster_ex
 
 if [ $cluster_exists -ne 0 ] && [[ "$cluster" == "standard" || "$cluster" == "all" ]]; then
   echo "Creating cluster ${EKS_CLUSTER_NAME}"
-  bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster.yaml | envsubst | eksctl create cluster -f -'&
+  bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster.yaml /cluster/eksctl/access-entries.yaml | envsubst | eksctl create cluster -f -'&
 else
   echo "Cluster ${EKS_CLUSTER_NAME} already exists"
 fi
@@ -31,7 +31,7 @@ aws eks describe-cluster --name "${EKS_CLUSTER_AUTO_NAME}" &> /dev/null || auto_
 
 if [ $auto_cluster_exists -ne 0 ] && [[ "$cluster" == "standard" || "$cluster" == "all" ]]; then
   echo "Creating auto mode cluster ${EKS_CLUSTER_AUTO_NAME}"
-  bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster-auto.yaml | envsubst | eksctl create cluster -f -'&
+  bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster-auto.yaml /cluster/eksctl/access-entries.yaml | envsubst | eksctl create cluster -f -'&
 else
   echo "Auto mode cluster ${EKS_CLUSTER_AUTO_NAME} already exists"
 fi

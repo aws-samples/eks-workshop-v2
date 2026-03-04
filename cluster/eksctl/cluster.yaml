@@ -44,9 +44,3 @@ remoteNetworkConfig:
 accessConfig:
   authenticationMode: API
   bootstrapClusterCreatorAdminPermissions: true
-  accessEntries:
-   - principalARN: ${RESOURCE_CODEBUILD_ROLE_ARN}
-     accessPolicies:
-       - policyARN: "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-         accessScope:
-          type: cluster
