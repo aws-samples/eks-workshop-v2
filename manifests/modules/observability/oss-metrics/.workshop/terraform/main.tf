@@ -145,7 +145,7 @@ module "grafana" {
 
   description      = "Grafana"
   chart            = "grafana"
-  chart_version    = "6.43.1"
+  chart_version    = var.grafana_chart_version
   namespace        = kubernetes_namespace.grafana.metadata[0].name
   create_namespace = false
   repository       = "https://grafana.github.io/helm-charts"
