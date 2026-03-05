@@ -208,7 +208,7 @@ jobs:
               const { data: pr } = await github.rest.pulls.create({
                 owner,
                 repo,
-                title: 'Automated translation updates',
+                title: 'chore: Automated translation updates',
                 head,
                 base,
                 body,
