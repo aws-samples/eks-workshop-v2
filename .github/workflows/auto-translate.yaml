@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch: {}
 
+concurrency:
+  group: auto-translate
+  cancel-in-progress: false
+
 permissions:
   id-token: write
   contents: write
