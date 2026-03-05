@@ -167,6 +167,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           title: "Automated translation updates"
+          base: "main"
           branch: "automated-translations"
           delete-branch: false
           labels: |
