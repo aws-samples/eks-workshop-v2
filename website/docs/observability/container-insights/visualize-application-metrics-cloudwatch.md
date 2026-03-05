@@ -3,6 +3,8 @@ title: "Application Metrics"
 sidebar_position: 50
 ---
 
+import dashboard from '@site/static/docs/observability/container-insights/cw-dashboard.webp';
+
 In this section we'll look at gaining insight into metrics exposed by our workloads and visualizing those metrics using Amazon CloudWatch Insights Prometheus. Some examples of these metrics could be:
 
 - System metrics such as Java heap metrics or database connection pool status

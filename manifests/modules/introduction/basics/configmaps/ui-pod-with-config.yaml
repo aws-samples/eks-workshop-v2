@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ui-pod
+  namespace: ui
+  labels:
+    app.kubernetes.io/name: ui
+    app.kubernetes.io/component: service
+    app.kubernetes.io/created-by: eks-workshop
+spec:
+  containers:
+  - name: ui
+    image: public.ecr.aws/aws-containers/retail-store-sample-ui:0.4.0
+    ports:
+    - containerPort: 8080
+    envFrom:
+    - configMapRef:
+        name: ui
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"

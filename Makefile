@@ -4,6 +4,7 @@ environment=''
 shell_command=''
 shell_simple_command=''
 glob='-'
+cluster='all'
 
 .PHONY: install
 install:
@@ -39,11 +40,11 @@ delete-environment:
 
 .PHONY: create-infrastructure
 create-infrastructure:
-	bash hack/create-infrastructure.sh $(environment)
+	bash hack/create-infrastructure.sh $(environment) $(cluster)
 
 .PHONY: destroy-infrastructure
 destroy-infrastructure:
-	bash hack/destroy-infrastructure.sh $(environment)
+	bash hack/destroy-infrastructure.sh $(environment) $(cluster)
 
 .PHONY: deploy-ide
 deploy-ide:
@@ -56,3 +57,11 @@ destroy-ide:
 .PHONY: lint
 lint:
 	yarn lint
+
+.PHONY: check-broken-links
+check-broken-links:
+	node hack/check-broken-links.js
+
+.PHONY: check-broken-links-v2
+check-broken-links-v2:
+	node hack/check-broken-links-v2.js

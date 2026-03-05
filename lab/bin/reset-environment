@@ -39,7 +39,9 @@ if [ -z "$EKS_DEFAULT_MNG_MIN" ]; then
 fi
 
 rm -f /home/ec2-user/.kube/config
+EKS_CLUSTER_AUTO_NAME=${EKS_CLUSTER_AUTO_NAME:-"eks-workshop-auto"}
 
+aws eks update-kubeconfig --name $EKS_CLUSTER_AUTO_NAME --alias eks-workshop-auto
 aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --alias default --user-alias default
 
 module=$1
@@ -89,7 +91,8 @@ if [ ! -z "$module" ]; then
     curl --get -s --data-urlencode "lab=$module" --data-urlencode "account_id=$AWS_ACCOUNT_ID" $ANALYTICS_ENDPOINT || true
   fi
 
-  if [ $module = "introduction/getting-started" ]; then
+  if [[ "$module" = "fastpaths/"* ]]; then
+    kubectl config use-context eks-workshop-auto
     exit
   fi
 fi
@@ -104,26 +107,46 @@ fi
 
 kubectl delete pod load-generator --ignore-not-found
 
-kubectl delete namespace other --ignore-not-found
+# Delete namespace with timeout and handle metrics-server discovery failures
+kubectl delete namespace other --ignore-not-found --timeout=60s || {
+  logmessage "⚠️  ${RED}Warning:${NC} Namespace deletion timed out or failed, forcing cleanup..."
+  
+  # Remove finalizers to force deletion
+  kubectl get namespace other -o json 2>/dev/null | \
+    jq '.spec.finalizers = []' | \
+    kubectl replace --raw "/api/v1/namespaces/other/finalize" -f - 2>/dev/null || \
+    kubectl patch namespace other -p '{"metadata":{"finalizers":[]}}' --type=merge 2>/dev/null || true
+  
+  # Wait a bit and verify deletion
+  sleep 5
+  if kubectl get namespace other &>/dev/null; then
+    logmessage "⚠️  ${RED}Warning:${NC} Namespace 'other' still exists but continuing..."
+  fi
+}
 
-kubectl apply -k $base_path --prune --all \
-  --prune-allowlist=autoscaling/v1/HorizontalPodAutoscaler \
-  --prune-allowlist=core/v1/Service \
-  --prune-allowlist=core/v1/ConfigMap \
-  --prune-allowlist=apps/v1/Deployment \
-  --prune-allowlist=apps/v1/StatefulSet \
-  --prune-allowlist=core/v1/ServiceAccount \
-  --prune-allowlist=core/v1/Secret \
-  --prune-allowlist=core/v1/PersistentVolumeClaim \
-  --prune-allowlist=scheduling.k8s.io/v1/PriorityClass \
-  --prune-allowlist=networking.k8s.io/v1/Ingress
+if [[ $module = introduction/basics* || $module = introduction/getting-started* ]]; then
+  kubectl delete -k $base_path --ignore-not-found
+else
+    kubectl apply -k $base_path --prune --all \
+      --prune-allowlist=autoscaling/v1/HorizontalPodAutoscaler \
+      --prune-allowlist=core/v1/Service \
+      --prune-allowlist=core/v1/ConfigMap \
+      --prune-allowlist=apps/v1/Deployment \
+      --prune-allowlist=apps/v1/StatefulSet \
+      --prune-allowlist=core/v1/ServiceAccount \
+      --prune-allowlist=core/v1/Secret \
+      --prune-allowlist=core/v1/PersistentVolumeClaim \
+      --prune-allowlist=scheduling.k8s.io/v1/PriorityClass \
+      --prune-allowlist=networking.k8s.io/v1/Ingress
 
-logmessage "\n⏳ Waiting for application to become ready..."
+    logmessage "\n⏳ Waiting for application to become ready..."
 
-sleep 10
+    sleep 10
 
-kubectl wait --for=condition=available --timeout=240s deployments -l app.kubernetes.io/created-by=eks-workshop -A
-kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
+    kubectl wait --for=condition=available --timeout=240s deployments -l app.kubernetes.io/created-by=eks-workshop -A
+    kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
+
+fi
 
 # Addons
 rm -rf /eks-workshop/terraform
@@ -148,7 +171,14 @@ terraform -chdir="$tf_dir" destroy --auto-approve
 
 rm -rf /eks-workshop/hooks
 
+# Cleanup done, let's install the right item
+
 if [ ! -z "$module" ]; then
+  if [ $module = "introduction/getting-started" ]; then
+    # This module doesn't need anything installed
+    exit
+  fi
+
   module_path="$manifests_path/modules/$module"
 
   if [ -f "$module_path/.workshop/cleanup.sh" ]; then
@@ -238,10 +268,12 @@ if [ $EXIT_CODE -ne 0 ]; then
 fi
 
 # Recycle workload pods in case stateful pods got restarted
-kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernetes.io/component=service -A
+kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernetes.io/component=service -A --ignore-not-found
 
 # Wait for the workload pods previously recycled
-kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
+if kubectl get pods -A -l app.kubernetes.io/created-by=eks-workshop 2>/dev/null | grep -q .; then
+  kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
+fi
 
 # Finished
 logmessage "\n✅ Environment is ${GREEN}ready${NC}!"

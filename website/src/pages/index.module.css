@@ -4,7 +4,7 @@
  */
 
 .heroBanner {
-  padding: 4rem 0;
+  padding: 0;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -21,4 +21,84 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.pathSelection {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.pathCard {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 400px;
+  flex: 1;
+  min-width: 300px;
+  transition: transform 0.2s, border-color 0.2s, background 0.2s;
+}
+
+[data-theme="dark"] .pathCard {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.pathCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="dark"] .pathCard:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.pathCard h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.pathCard p {
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+.newBadge {
+  display: inline-block;
+  background: #ff9900;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+.moduleLinks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.moduleLink {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.moduleLink:hover {
+  color: white;
+  text-decoration: underline;
 }

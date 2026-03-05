@@ -4,11 +4,29 @@ set -e
 
 source ./hack/lib/kubectl-version.sh
 
-wget -q https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl
-chmod +x ./kubectl
+# Check if kubectl already exists in ~/bin
+if [ ! -f ~/bin/kubectl ]; then
+  echo "Downloading kubectl..."
+  
+  # Detect OS and architecture
+  OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+  ARCH=$(uname -m)
 
-mkdir ~/bin
-mv ./kubectl ~/bin
+  # Map architecture names
+  if [ "$ARCH" = "x86_64" ]; then
+    ARCH="amd64"
+  elif [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then
+    ARCH="arm64"
+  fi
+
+  wget -q https://dl.k8s.io/release/$KUBECTL_VERSION/bin/$OS/$ARCH/kubectl
+  chmod +x ./kubectl
+
+  mkdir -p ~/bin
+  mv ./kubectl ~/bin
+else
+  echo "kubectl already exists in ~/bin, skipping download"
+fi
 
 export PATH="$PATH:$HOME/bin"
 
