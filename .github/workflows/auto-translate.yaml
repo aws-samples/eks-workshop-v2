@@ -95,7 +95,7 @@ jobs:
         run: |
           yarn toolkit-md translate \
             --translation-dir website/i18n/${{ matrix.language }}/docusaurus-plugin-content-docs/current \
-            --to ${{ matrix.language }} \
+            --to ${{ matrix.language }} --skip-file-suffix \
             --write .
 
       - name: Upload translation artifacts
