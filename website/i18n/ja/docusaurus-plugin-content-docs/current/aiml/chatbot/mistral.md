@@ -1,7 +1,7 @@
 ---
 title: "モデルの提供"
 sidebar_position: 40
-tmdTranslationSourceHash: '19c1062b963727f2866b6dc90cfc71bd'
+tmdTranslationSourceHash: '8be737eefe98f295a58cdb1a8ad5c77b'
 ---
 
 [vLLM](https://github.com/vllm-project/vllm)は、効率的なメモリ管理を通じて大規模言語モデル(LLM)のパフォーマンスを最適化するために特別に設計されたオープンソースの推論および提供エンジンです。MLコミュニティで人気のある推論ソリューションとして、vLLMはいくつかの重要な利点を提供します:
@@ -18,7 +18,7 @@ AWS Neuron専用として、vLLMは以下を提供します:
 - 効率的なスケーリングのための継続的なモデルローディング
 - AWS Neuronプロファイリングツールとの統合
 
-このラボでは、`neuronx-distributed-inference`フレームワークでコンパイルされた[Mistral-7B-v0.3モデル](https://mistral.ai/news/announcing-mistral-7b)を使用します。このモデルは、機能とリソース要件の間で良好なバランスを提供し、Trainiumを搭載したEKSクラスターへのデプロイに適しています。
+このラボでは、`neuronx-distributed-inference`フレームワークでコンパイルされた[Mistral-7B-v0.3モデル](https://mistral.ai/news/announcing-mistral-7b)を使用します。このモデルは、機能とリソース要件の間で良好なバランスを提供し、Neuronを搭載したEKSクラスターへのデプロイに適しています。
 
 モデルをデプロイするために、vLLMベースのコンテナイメージを使用してモデルと重みをロードする標準のKubernetes Deploymentを使用します:
 
@@ -44,7 +44,7 @@ mistral   ClusterIP   172.16.149.89   <none>        8080/TCP   33m
 
 モデルの初期化プロセスは完了するまでに数分かかります。vLLM Podは以下の段階を経ます:
 
-1. KarpenterがTrainiumインスタンスをプロビジョニングするまでPending状態のまま
+1. KarpenterがNeuronインスタンスをプロビジョニングするまでPending状態のまま
 2. initコンテナを使用してHugging Faceからホストファイルシステムパスにモデルをダウンロード
 3. vLLMコンテナイメージ(約10GB)をダウンロード
 4. vLLMサービスを起動
@@ -99,3 +99,4 @@ INFO:     10.42.114.242:50134 - "GET /health HTTP/1.1" 200 OK
 ```
 
 これらのステップを完了するか、モデルの初期化中に先に進むことを決定した後、次のタスクに進むことができます。
+
