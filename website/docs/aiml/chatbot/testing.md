@@ -60,25 +60,25 @@ In this example, we sent the prompt `The names of the colors in the rainbow are:
 For a more interactive experience, we can access the demo web store and use the integrated chat interface:
 
 ```bash
-$ LB_HOSTNAME=$(kubectl -n ui get service ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}')
+$ LB_HOSTNAME=$(kubectl -n ui get ingress ui -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}')
 $ echo "http://$LB_HOSTNAME"
-http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
+http://k8s-ui-ui-5ddc3ba496-1812344516.us-west-2.elb.amazonaws.com
 ```
 
 A "Chat" button will be visible in the bottom-right corner of the screen:
 
-<Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com">
+<Browser url="http://k8s-ui-ui-5ddc3ba496-1812344516.us-west-2.elb.amazonaws.com">
 <img src={require('@site/static/docs/aiml/chatbot/home-chat.webp').default}/>
 </Browser>
 
 Clicking this button will display a chat window which you can use to send messages to the retail store assistant:
 
-<Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com">
+<Browser url="http://k8s-ui-ui-5ddc3ba496-1812344516.us-west-2.elb.amazonaws.com">
 <img src={require('@site/static/docs/aiml/chatbot/chat-bot.webp').default}/>
 </Browser>
 
 ## Conclusion
 
-We've now successfully demonstrated how to use vLLM to perform inference on Amazon EKS with Trainium instances, and serve a model endpoint that can be consumed by various applications. This architecture combines the power of purpose-built ML accelerators with the flexibility and scalability of Kubernetes, enabling cost-effective AI capabilities for your applications.
+We've now successfully demonstrated how to use vLLM to perform inference on Amazon EKS with Neuron instances, and serve a model endpoint that can be consumed by various applications. This architecture combines the power of purpose-built ML accelerators with the flexibility and scalability of Kubernetes, enabling cost-effective AI capabilities for your applications.
 
 The OpenAI-compatible API provided by vLLM makes it straightforward to integrate this solution with existing applications and frameworks, allowing you to leverage large language models within your own infrastructure.
