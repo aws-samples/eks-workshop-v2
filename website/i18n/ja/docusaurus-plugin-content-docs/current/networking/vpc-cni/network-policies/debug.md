@@ -8,12 +8,12 @@ tmdTranslationSourceHash: b00096fd2aa50adedce64127337b1173
 
 Amazon VPC CNIは、ネットワークポリシーを実装する際の問題をデバッグするために使用できるログを提供します。さらに、Amazon CloudWatchなどのサービスを通じてこれらのログをモニタリングでき、CloudWatch Container Insightsを活用してNetworkPolicyの使用に関する洞察を提供することができます。
 
-では、「ui」コンポーネントからのみ「orders」サービスコンポーネントへのアクセスを制限する入力ネットワークポリシーを実装してみましょう。これは以前に「catalog」サービスコンポーネントで行ったことと同様です。
+では、「ui」コンポーネントからのみordersサービスコンポーネントへのアクセスを制限する入力ネットワークポリシーを実装してみましょう。これは以前にcatalogサービスコンポーネントで行ったことと同様です。
 
 ::yaml{file="manifests/modules/networking/network-policies/apply-network-policies/allow-order-ingress-fail-debug.yaml" paths="spec.podSelector,spec.ingress.0.from.0"}
 
-1. `podSelector`は、ラベル`app.kubernetes.io/name: orders`と`app.kubernetes.io/component: service`を持つポッドをターゲットにします
-2. `ingress.from`は、ラベル`app.kubernetes.io/name: ui`を持つポッドからの着信接続のみを許可します
+1. `podSelector`は、ラベル`app.kubernetes.io/name: orders`と`app.kubernetes.io/component: service`を持つPodをターゲットにします
+2. `ingress.from`は、ラベル`app.kubernetes.io/name: ui`を持つPodからの着信接続のみを許可します
 
 このポリシーを適用してみましょう：
 
@@ -48,7 +48,7 @@ $ grep DENY /host/var/log/aws-routed-eni/network-policy-agent.log | tail -5
 $ exit
 ```
 
-出力から分かるように、「ui」コンポーネントからの呼び出しが拒否されています。さらに分析すると、ネットワークポリシーの入力セクションには、podSelectorのみがあり、namespaceSelectorがないことが分かります。namespaceSelectorが空の場合、デフォルトでネットワークポリシーの名前空間（この場合は「orders」）になります。したがって、ポリシーは「orders」名前空間からラベル「app.kubernetes.io/name: ui」に一致するポッドのみを許可するものとして解釈され、「ui」コンポーネントからのトラフィックが拒否される結果となります。
+出力から分かるように、「ui」コンポーネントからの呼び出しが拒否されています。さらに分析すると、ネットワークポリシーの入力セクションには、podSelectorのみがあり、namespaceSelectorがないことが分かります。namespaceSelectorが空の場合、デフォルトでネットワークポリシーの名前空間（この場合はorders）になります。したがって、ポリシーはorders名前空間からラベル「app.kubernetes.io/name: ui」に一致するPodのみを許可するものとして解釈され、「ui」コンポーネントからのトラフィックが拒否される結果となります。
 
 ネットワークポリシーを修正して再試行しましょう。
 
@@ -71,4 +71,4 @@ $ kubectl exec deployment/ui -n ui -- curl -v orders.orders/orders --connect-tim
 ...
 ```
 
-出力から分かるように、「ui」コンポーネントは「orders」サービスコンポーネントを呼び出すことができるようになり、問題は解決しました。
+出力から分かるように、「ui」コンポーネントはordersサービスコンポーネントを呼び出すことができるようになり、問題は解決しました。
