@@ -11,8 +11,9 @@ spec:
         any:
           - resources:
               kinds:
-                - Pod
+                - Deployment
       validate:
+        allowExistingViolations: false
         podSecurity:
           level: baseline
           version: latest

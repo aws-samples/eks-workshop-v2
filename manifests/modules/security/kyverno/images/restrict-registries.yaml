@@ -11,10 +11,13 @@ spec:
         any:
           - resources:
               kinds:
-                - Pod
+                - Deployment
       validate:
+        allowExistingViolations: false
         message: "Unknown Image registry."
         pattern:
           spec:
-            containers:
-              - image: "public.ecr.aws/*"
+            template:
+              spec:
+                containers:
+                  - image: "public.ecr.aws/*"

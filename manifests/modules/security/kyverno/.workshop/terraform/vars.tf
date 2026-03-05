@@ -33,3 +33,10 @@ variable "resources_precreated" {
   description = "Have expensive resources been created already"
   type        = bool
 }
+
+variable "kyverno_chart_version" {
+  description = "The chart version of kyverno to use"
+  type        = string
+  # renovate-helm: depName=kyverno registryUrl=https://kyverno.github.io/kyverno/
+  default = "3.3.4"
+}
