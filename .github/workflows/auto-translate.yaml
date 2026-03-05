@@ -162,26 +162,63 @@ jobs:
         run: |
           git push origin automated-translations
 
-      - name: Create Pull Request
+      - name: Create or Update Pull Request
         if: env.has_changes == 'true'
-        uses: peter-evans/create-pull-request@v7
+        uses: actions/github-script@v8
         with:
-          title: "Automated translation updates"
-          base: "main"
-          branch: "automated-translations"
-          delete-branch: false
-          labels: |
-            content/other
-          add-paths: |
-            website/i18n/**/*.md
-          body: |
-            ## Automated Translation Updates
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const head = 'automated-translations';
+            const base = 'main';
 
-            This PR contains automated translation updates generated from the latest changes in `main`.
+            const body = `## Automated Translation Updates
+
+            This PR contains automated translation updates generated from the latest changes in \`main\`.
 
             ### Changes
-            - Branch was rebased on latest `main` before translation
+            - Branch was rebased on latest \`main\` before translation
             - Translations generated from latest content
             - Previous translation work preserved through rebase
+            - Generated from commit: ${context.sha}
+            - Workflow run: ${context.runId}
 
-            Please review the translations before merging.
+            Please review the translations before merging.`;
+
+            // Check for existing open PR
+            const { data: pulls } = await github.rest.pulls.list({
+              owner,
+              repo,
+              head: `${owner}:${head}`,
+              base,
+              state: 'open',
+            });
+
+            if (pulls.length > 0) {
+              const prNumber = pulls[0].number;
+              console.log(`PR #${prNumber} already exists, updating body`);
+              await github.rest.pulls.update({
+                owner,
+                repo,
+                pull_number: prNumber,
+                body,
+              });
+            } else {
+              console.log('Creating new PR');
+              const { data: pr } = await github.rest.pulls.create({
+                owner,
+                repo,
+                title: 'Automated translation updates',
+                head,
+                base,
+                body,
+              });
+              // Add label after creation
+              await github.rest.issues.addLabels({
+                owner,
+                repo,
+                issue_number: pr.number,
+                labels: ['content/other'],
+              });
+              console.log(`Created PR #${pr.number}`);
+            }
