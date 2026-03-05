@@ -20,7 +20,7 @@ karpenter   2/2     2            2           11m
 
 Trainiumインスタンスをプロビジョニングするために使用するKarpenter NodePoolの設定を確認しましょう：
 
-::yaml{file="manifests/modules/aiml/chatbot/nodepool-trn1.yaml" paths="spec.template.metadata.labels,spec.template.spec.requirements,spec.template.spec.taints,spec.limits"}
+::yaml{file="manifests/modules/aiml/chatbot/nodepool.yaml" paths="spec.template.metadata.labels,spec.template.spec.requirements,spec.template.spec.taints,spec.limits"}
 
 1. このNodePoolは、デモンストレーションの目的でPodを特定のターゲットにするために、すべての新しいノードに`provisionerType: Karpenter`というKubernetesラベルを付けるよう設定されています。Karpenterによって複数のノードが自動スケーリングされるため、`instanceType: trn1.2xlarge`のような追加のラベルも追加され、このKarpenterノードが`trainium-trn1`プールに割り当てられるべきことを示しています。
 2. [NodePool CRD](https://karpenter.sh/docs/concepts/nodepools/)はインスタンスタイプやゾーンなどのノードプロパティを定義することをサポートしています。この例では、`karpenter.sh/capacity-type`を最初にKarpenterがオンデマンドインスタンスのみをプロビジョニングするように制限し、また`karpenter.k8s.aws/instance-type`で特定のインスタンスタイプのサブセットに限定しています。他にどのようなプロパティが[利用可能かはこちら](https://karpenter.sh/docs/concepts/scheduling/#selecting-nodes)で確認できます。
@@ -30,7 +30,7 @@ Trainiumインスタンスをプロビジョニングするために使用する
 NodePoolを作成しましょう：
 
 ```bash
-$ cat ~/environment/eks-workshop/modules/aiml/chatbot/nodepool-trn1.yaml \
+$ cat ~/environment/eks-workshop/modules/aiml/chatbot/nodepool.yaml \
   | envsubst | kubectl apply -f-
 ec2nodeclass.karpenter.k8s.aws/trainium-trn1 created
 nodepool.karpenter.sh/trainium-trn1 created
