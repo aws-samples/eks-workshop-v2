@@ -1,7 +1,7 @@
 ---
 title: "モデルのテスト"
 sidebar_position: 70
-tmdTranslationSourceHash: af0040001c87c5506ca861b7bb118e59
+tmdTranslationSourceHash: ed526e73ddd313e6ade14a3384c2caac
 ---
 
 現時点で、Mistral-7Bモデルは利用可能か、または利用可能になる直前のはずです。以下のコマンドを実行して確認できます。このコマンドはモデルがまだ実行されていない場合、実行されるまでブロックします：
@@ -61,26 +61,25 @@ $ kubectl run curl-test --image=curlimages/curl \
 より対話的な体験のために、デモウェブストアにアクセスして統合されたチャットインターフェースを使用できます：
 
 ```bash
-$ LB_HOSTNAME=$(kubectl -n ui get service ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}')
+$ LB_HOSTNAME=$(kubectl -n ui get ingress ui -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}')
 $ echo "http://$LB_HOSTNAME"
-http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
+http://k8s-ui-ui-5ddc3ba496-1812344516.us-west-2.elb.amazonaws.com
 ```
 
 画面の右下に「Chat」ボタンが表示されます：
 
-<Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com">
+<Browser url="http://k8s-ui-ui-5ddc3ba496-1812344516.us-west-2.elb.amazonaws.com">
 <img src={require('@site/static/docs/aiml/chatbot/home-chat.webp').default}/>
 </Browser>
 
 このボタンをクリックすると、小売店アシスタントにメッセージを送信できるチャットウィンドウが表示されます：
 
-<Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com">
+<Browser url="http://k8s-ui-ui-5ddc3ba496-1812344516.us-west-2.elb.amazonaws.com">
 <img src={require('@site/static/docs/aiml/chatbot/chat-bot.webp').default}/>
 </Browser>
 
 ## 結論
 
-これで、vLLMを使用してTrainiumインスタンスでAmazon EKSで推論を実行し、さまざまなアプリケーションで消費できるモデルエンドポイントを提供する方法を正常にデモンストレーションできました。このアーキテクチャは、目的に合わせて構築されたMLアクセラレーターの能力とKubernetesの柔軟性とスケーラビリティを組み合わせて、アプリケーションのためのコスト効率の良いAI機能を可能にします。
+これで、vLLMを使用してNeuronインスタンスでAmazon EKSで推論を実行し、さまざまなアプリケーションで消費できるモデルエンドポイントを提供する方法を正常にデモンストレーションできました。このアーキテクチャは、目的に合わせて構築されたMLアクセラレーターの能力とKubernetesの柔軟性とスケーラビリティを組み合わせて、アプリケーションのためのコスト効率の良いAI機能を可能にします。
 
 vLLMが提供するOpenAI互換APIにより、このソリューションを既存のアプリケーションやフレームワークと簡単に統合でき、独自のインフラストラクチャ内で大規模言語モデルを活用することができます。
-
