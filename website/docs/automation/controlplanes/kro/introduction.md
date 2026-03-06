@@ -15,7 +15,7 @@ kro simplifies complex resource management by allowing platform teams to define 
 Let us first install kro to the Kubernetes cluster by using a Helm chart:
 
 ```bash wait=60
-$ helm install oci://registry.k8s.io/kro/charts/kro \
+$ helm install kro oci://registry.k8s.io/kro/charts/kro \
   --version=${KRO_VERSION} \
   --namespace kro-system --create-namespace \
   --wait
