@@ -27,7 +27,7 @@ jobs:
       branch-exists: ${{ steps.check-branch.outputs.exists }}
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -73,17 +73,17 @@ jobs:
 
     steps:
       - name: Check out rebased translation branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: automated-translations
 
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Get AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4.2.1
+        uses: aws-actions/configure-aws-credentials@v6.0.0
         with:
           role-to-assume: ${{ secrets.INFERENCE_AWS_ROLE_ARN }}
           role-duration-seconds: 1800
@@ -101,7 +101,7 @@ jobs:
             --write .
 
       - name: Upload translation artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: translations-${{ matrix.language }}
           path: website/i18n/${{ matrix.language }}/
@@ -114,7 +114,7 @@ jobs:
     needs: [setup-branch, translate-matrix]
     steps:
       - name: Check out translation branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: automated-translations
 
@@ -124,7 +124,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Download all translation artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: artifacts/
 
