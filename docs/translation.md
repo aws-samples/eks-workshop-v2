@@ -5,8 +5,9 @@ To make the content more accessible, EKS Workshop is translated to multiple lang
 Currently supported languages:
 
 - Japanese (`ja`)
+- Korean (`ko`)
 
-Planned languages include French, Spanish, Portuguese, and Korean.
+Planned languages include French, Spanish, and Portuguese.
 
 ## How it works
 
