@@ -5,14 +5,16 @@ locals {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "21.0.9"
+  version = "~> 21.0"
 
-  cluster_name                             = var.cluster_name
-  cluster_version                          = var.cluster_version
-  cluster_endpoint_public_access           = true
+  name                                     = var.cluster_name
+  kubernetes_version                       = var.cluster_version
+  endpoint_public_access                   = true
   enable_cluster_creator_admin_permissions = true
 
-  cluster_addons = {
+  addons = {
+    coredns    = {}
+    kube-proxy = {}
     vpc-cni = {
       before_compute = true
       most_recent    = true
@@ -33,9 +35,9 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  create_cluster_security_group = false
-  create_node_security_group    = false
-  cluster_security_group_additional_rules = {
+  create_security_group      = false
+  create_node_security_group = false
+  security_group_additional_rules = {
     hybrid-node = {
       cidr_blocks = [local.remote_node_cidr]
       description = "Allow all traffic from remote node/pod network"
@@ -76,7 +78,7 @@ module "eks" {
   }
 
 
-  cluster_remote_network_config = {
+  remote_network_config = {
     remote_node_networks = {
       cidrs = [local.remote_node_cidr]
     }
