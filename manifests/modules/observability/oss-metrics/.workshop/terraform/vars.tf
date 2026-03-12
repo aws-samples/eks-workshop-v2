@@ -38,7 +38,7 @@ variable "operator_chart_version" {
   description = "The chart version of opentelemetry-operator to use"
   type        = string
   # renovate-helm: depName=opentelemetry-operator registryUrl=https://open-telemetry.github.io/opentelemetry-helm-charts
-  default = "0.68.1"
+  default = "0.105.1"
 }
 
 variable "grafana_chart_version" {
