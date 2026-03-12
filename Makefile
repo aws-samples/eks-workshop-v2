@@ -11,7 +11,11 @@ install:
 
 .PHONY: serve
 serve: install
+ifdef locale
+	yarn workspace website start --locale $(locale)
+else
 	yarn serve
+endif
 
 .PHONY: tf-fmt
 tf-fmt:
