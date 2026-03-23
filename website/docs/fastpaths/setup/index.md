@@ -1,22 +1,17 @@
 ---
-title: "Introduction"
-sidebar_position: 10
+title: Setup
+sidebar_position: 20
 ---
 
-# Learn with Amazon EKS Auto Mode
+This section outlines how to set up the environment to run the labs in the workshop.
 
-Streamlined, role-based learning experiences that get you hands-on with Amazon EKS quickly. Unlike the comprehensive workshop that covers all EKS features, Auto Mode Paths focus on the most essential capabilities for specific roles like developers and operators.
+You have two options for accessing the workshop environment:
 
-## Choose Your Journey
+1. [At an AWS event](./aws-event.md) - For participants attending an AWS-hosted workshop event
+2. [In your own account](./your-account/index.md) - For running the workshop in your personal AWS account
 
-![Fast Path Options](/img/fastpaths/fast-path-options.png)
+:::info
+Each option provides detailed instructions for getting access to the required resources and tools for completing the workshop exercises.
+:::
 
-As you can see in the picture, you can choose your learning journey for this workshop as per the following steps:
-
-1. Learn how to navigate the instructions in the lab using _Navigating the Labs_ module to begin with. 
-2. If you are new to Kubernetes, we recommend that you start with _Kubernetes Basics_ module to build a knowledge foundation.
-3. Based on your role and interest, either choose the EKS developer or the EKS operator path for further learning.
-
-Powered by Amazon EKS Auto Mode, these paths minimize infrastructure setup and management, letting you focus on learning core EKS concepts and deploying workloads faster. Perfect for workshops, events, or self-paced learning when you want immediate hands-on experience.
-
-Let's understand how to navigate this workshop and the lab instructions now.
+Choose the option that best matches your situation to proceed with setting up your environment.

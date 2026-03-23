@@ -1,6 +1,6 @@
 ---
 title: Navigating the Labs
-sidebar_position: 20
+sidebar_position: 30
 ---
 
 import Tabs from '@theme/Tabs';
@@ -120,19 +120,4 @@ You can learn more about Kustomize at https://kustomize.io/.
 
 ## Next Steps
 
-Now that you're familiar with the format of this workshop, pick one of the two options to define your learning journey.
-
-<div style={{display: 'flex', gap: '2rem', marginTop: '2rem', flexWrap: 'wrap'}}>
-  <a href="./basics" style={{textDecoration: 'none', color: 'inherit', flex: '1', minWidth: '280px', maxWidth: '400px'}}>
-    <div style={{border: '2px solid #ddd', borderRadius: '8px', padding: '2rem', height: '100%', cursor: 'pointer'}}>
-      <h3 style={{marginTop: 0}}>Kubernetes Basics</h3>
-      <p>Learn Kubernetes basics before diving deeper into EKS.</p>
-    </div>
-  </a>
-    <a href="./getting-started" style={{textDecoration: 'none', color: 'inherit', flex: '1', minWidth: '280px', maxWidth: '400px'}}>
-    <div style={{border: '2px solid #ddd', borderRadius: '8px', padding: '2rem', height: '100%', cursor: 'pointer'}}>
-      <h3 style={{marginTop: 0}}>Developer/Operator Essentials</h3>
-      <p>Learn essential EKS features for either being a developer or an operator.</p>
-    </div>
-  </a>
-</div>
+Now that you're familiar with the format of this workshop, head over to Getting started

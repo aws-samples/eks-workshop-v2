@@ -30,9 +30,28 @@ EOT
 
 touch ~/.bashrc.d/workshop-env.bash
 
+REPOSITORY_OWNER=${REPOSITORY_OWNER:-"aws-samples"}
+REPOSITORY_NAME=${REPOSITORY_NAME:-"eks-workshop-v2"}
+REPOSITORY_REF=${REPOSITORY_REF:-"main"}
+
 cat << EOT > /home/ec2-user/.bashrc.d/aliases.bash
 function prepare-environment() {
   start_time=\$(date +%s)
+
+  if [[ "\$1" == fastpaths/* ]]; then
+    cluster_name="\$EKS_CLUSTER_AUTO_NAME"
+    create_cmd="create-cluster-auto"
+  else
+    cluster_name="\$EKS_CLUSTER_NAME"
+    create_cmd="create-cluster"
+  fi
+
+  if ! aws eks describe-cluster --name "\$cluster_name" --no-cli-pager &>/dev/null; then
+    echo "Error: EKS cluster '\$cluster_name' does not exist."
+    echo "Please create it first by running: \$create_cmd"
+    return 1
+  fi
+
   bash /usr/local/bin/reset-environment \$1
   exit_code=\$?
   source ~/.bashrc.d/workshop-env.bash
@@ -41,12 +60,11 @@ function prepare-environment() {
 }
 
 function use-cluster() { bash /usr/local/bin/use-cluster \$1; source ~/.bashrc.d/env.bash; }
-function create-cluster() { URL=https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/refs/heads/${REPOSITORY_REF}/cluster/eksctl/cluster.yaml; echo "Creating cluster with eksctl from $URL"; curl -fsSL $URL | envsubst | eksctl create cluster -f -; }
-function create-cluster-auto() { URL=https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/refs/heads/${REPOSITORY_REF}/cluster/eksctl/cluster-auto.yaml; echo "Creating cluster with eksctl from $URL"; curl -fsSL $URL | envsubst | eksctl create cluster -f -; }
+function create-cluster() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster.yaml; echo "Creating cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl create cluster -f -; }
+function create-cluster-auto() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster-auto.yaml; echo "Creating cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl create cluster -f -; }
+function delete-cluster() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster.yaml; echo "Creating cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl delete cluster -f -; }
+function delete-cluster-auto() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster-auto.yaml; echo "Creating cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl delete cluster -f -; }
 EOT
-
-REPOSITORY_OWNER=${REPOSITORY_OWNER:-"aws-samples"}
-REPOSITORY_NAME=${REPOSITORY_NAME:-"eks-workshop-v2"}
 
 if [ ! -z "$REPOSITORY_REF" ]; then
   cat << EOT > ~/.bashrc.d/repository.bash

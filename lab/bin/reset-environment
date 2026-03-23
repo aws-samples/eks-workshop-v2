@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 GREEN='\033[1;32m'
 RED='\033[1;31m'
 PURPLE='\033[1;35m'
@@ -41,8 +43,8 @@ fi
 rm -f /home/ec2-user/.kube/config
 EKS_CLUSTER_AUTO_NAME=${EKS_CLUSTER_AUTO_NAME:-"eks-workshop-auto"}
 
-aws eks update-kubeconfig --name $EKS_CLUSTER_AUTO_NAME --alias eks-workshop-auto
-aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --alias default --user-alias default
+aws eks update-kubeconfig --name $EKS_CLUSTER_AUTO_NAME --alias eks-workshop-auto 2>/dev/null || true
+aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --alias default --user-alias default 2>/dev/null || true
 
 module=$1
 
@@ -66,10 +68,13 @@ mkdir -p /eks-workshop
 logmessage "🚀 We're preparing your environment for the next lab, sit tight!"
 
 REPOSITORY_REF=${REPOSITORY_REF:-""}
+RESET_NO_DELETE=${RESET_NO_DELETE:-""}
 
 if [ ! -z "${REPOSITORY_REF}" ]; then
   rm -f /home/ec2-user/environment/eks-workshop
-  rm -rf $manifests_path
+  if [ -z "${RESET_NO_DELETE}" ]; then
+    rm -rf $manifests_path
+  fi
   rm -rf $repository_path
 
   logmessage "📦 Refreshing copy of workshop repository from GitHub..."
@@ -78,7 +83,12 @@ if [ ! -z "${REPOSITORY_REF}" ]; then
   
   logmessage ""
 
-  cp -R $repository_path/manifests $manifests_path
+  # In containers we cannot delete the base path so we need to copy inside
+  for dir in $repository_path/manifests/*/  $repository_path/manifests/.*/; do
+    [ -d "$dir" ] || continue
+    [[ "$dir" == */. || "$dir" == */.. ]] && continue
+    cp -R "$dir" $manifests_path/
+  done
 
   ln -s $manifests_path /home/ec2-user/environment/eks-workshop
 fi

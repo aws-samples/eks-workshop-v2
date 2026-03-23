@@ -17,7 +17,7 @@ export default function HomepageModuleLink(props) {
             <p>Streamlined learning paths powered by Amazon EKS Auto Mode</p>
             <Link
               className="button button--primary button--lg"
-              to="/docs/fastpaths/setup"
+              to="/docs/fastpaths/"
             >
               Start here
             </Link>

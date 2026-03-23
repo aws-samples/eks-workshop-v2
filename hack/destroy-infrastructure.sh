@@ -39,4 +39,5 @@ wait
 # Only delete ide-role if all clusters are deleted
 if [ "$cluster" == "all" ]; then
   aws cloudformation delete-stack --stack-name ${EKS_CLUSTER_NAME}-ide-role || true
+  echo "Deleted role"
 fi
