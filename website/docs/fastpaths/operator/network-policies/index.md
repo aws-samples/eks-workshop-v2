@@ -4,8 +4,6 @@ sidebar_position: 30
 description: "Restrict network traffic to and from pods in Amazon Elastic Kubernetes Service with network policies."
 ---
 
-::required-time
-
 By default, Kubernetes allows all pods to freely communicate with each other with no restrictions. Kubernetes Network Policies enable you to define and enforce rules on the flow of traffic between pods, namespaces, and IP blocks (CIDR ranges). They act as a virtual firewall, allowing you to segment and secure your cluster by specifying ingress (incoming) and egress (outgoing) network traffic rules based on various criteria such as pod labels, namespaces, IP addresses, and ports.
 
 Below is an example network policy with an explanation of some key elements:

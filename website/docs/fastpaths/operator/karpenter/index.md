@@ -4,8 +4,6 @@ sidebar_position: 20
 description: "Automatically manage compute for Amazon Elastic Kubernetes Service with EKS Auto Mode."
 ---
 
-::required-time
-
 :::tip What's been set up for you
 Your Amazon EKS Auto Mode cluster includes fully-managed autoscaling powered by **Karpenter**, which enables automatic compute scaling out of the box.
 :::

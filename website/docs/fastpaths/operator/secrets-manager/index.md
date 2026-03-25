@@ -4,8 +4,6 @@ sidebar_position: 40
 description: "Provide sensitive configuration like credentials to applications running on Amazon Elastic Kubernetes Service with AWS Secrets Manager."
 ---
 
-::required-time
-
 :::tip What's been set up for you
 Your Amazon EKS Auto Mode cluster is configured with the following components.
 
