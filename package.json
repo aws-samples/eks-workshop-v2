@@ -12,8 +12,6 @@
     "serve": "yarn workspace website start",
     "spelling:check": "yarn cspell 'website/docs/**/*.md'",
     "links:check": "markdown-link-check -q -c link-check-config.json website/docs/**/*.md",
-    "check-broken-links": "node hack/check-broken-links.js",
-    "check-broken-links-v2": "node hack/check-broken-links-v2.js",
     "format:check": "prettier -c .",
     "format:fix": "prettier -w .",
     "markdown:check": "markdownlint-cli2 'website/docs/**/*.md'",

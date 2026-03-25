@@ -58,10 +58,3 @@ destroy-ide:
 lint:
 	yarn lint
 
-.PHONY: check-broken-links
-check-broken-links:
-	node hack/check-broken-links.js
-
-.PHONY: check-broken-links-v2
-check-broken-links-v2:
-	node hack/check-broken-links-v2.js
