@@ -11,7 +11,7 @@ AWS provides a Fluent Bit image with plugins for both CloudWatch Logs and Kinesi
 
 Fluent Bit can be used to ship logs to various destinations. However, in this lab, we will see how it is leveraged to ship the container logs to CloudWatch.
 
-![Fluent-bit Architecture](./assets/fluentbit-architecture.png)
+![Fluent-bit Architecture](/img/fastpaths/developer/pod-logging/fluentbit-architecture.png)
 
 In the following section, we will see how to validate Fluent Bit agent is already running as a DaemonSet to send the containers / Pods logs to CloudWatch Logs. Read more about how to [deploy Fluent Bit to send logs from containers to CloudWatch Logs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-logs-FluentBit.html#Container-Insights-FluentBit-troubleshoot).
 

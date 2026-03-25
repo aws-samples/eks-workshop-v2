@@ -21,7 +21,7 @@ The lab exercises are designed in a way that you can run any modules as a self-c
 
 If you haven't done so yet, you can open the IDE from the *Event outputs* section at the bottom of the start page.
 
- ![Event Outputs copy/paste](../fastpaths/assets/ide-open.png)
+ ![Event Outputs copy/paste](/img/fastpaths/ide-open.png)
 
 ## Prepare Environment
 
@@ -49,18 +49,18 @@ Depending on your browser, you may need to copy/paste content differently in to 
   <TabItem value="Google Chrome" label="Google Chrome (Recommended)" default>
     First time when you try to paste content in the terminal, you will see a browser pop-up that looks like this:
 
-    ![Chrome copy/paste](../introduction/assets/vscode-copy-paste.webp)
+    ![Chrome copy/paste](/docs/introduction/vscode-copy-paste.webp)
 
     Click **Allow** button to enable this functionality. After this, the subsequent copy/paste will be straight forward. For this workshop, we recommend using Google Chrome if possible.
   </TabItem>
   <TabItem value="Firefox/Safari" label="Firefox/Safari">
     Every time when you try to paste content in the terminal, you will see a small button as shown in the following screenshot adjacent to your mouse pointer. You will need to click on it to actually paste the copied content. 
 
-    ![Firefox/Safari copy/paste](../introduction/assets/paste-in-firefox-safari.png)
+    ![Firefox/Safari copy/paste](/img/fastpaths/introduction/paste-in-firefox-safari.png)
 
     Additionally, you may also see the following pop-up box on the bottom-right corner of your editor window, which you may close and ignore. 
 
-    ![Firefox/Safari copy/paste](../introduction/assets/paste-warning-in-firefox-safari.png)
+    ![Firefox/Safari copy/paste](/img/fastpaths/introduction/paste-warning-in-firefox-safari.png)
   </TabItem>
 </Tabs>
 

@@ -7,17 +7,17 @@ The sample application is composed of a set of Kubernetes manifests organized in
 
 The easiest way to browse the YAML manifests for the sample application and the modules in this workshop is using the file browser in the IDE:
 
-![IDE files](./assets/ide-initial.webp)
+![IDE files](/img/fastpaths/getting-started/ide-initial.webp)
 
 Expanding the `eks-workshop` and then `base-application` items will allow you to browse the manifests that make up the initial state of the sample application:
 
-![IDE files base](./assets/ide-base.webp)
+![IDE files base](/img/fastpaths/getting-started/ide-base.webp)
 
 The structure consists of a directory for each application component that was outlined in the **Sample application** section.
 
 The `modules` directory contains sets of manifests that we will apply to the cluster throughout the subsequent lab exercises:
 
-![IDE files modules](./assets/ide-modules.webp)
+![IDE files modules](/img/fastpaths/getting-started/ide-modules.webp)
 
 Before we do anything, let's inspect the current Namespaces in our EKS cluster:
 

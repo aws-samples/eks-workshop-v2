@@ -21,7 +21,7 @@ The lab exercises are designed in a way that you can run any modules as a self-c
 
 If you haven't done so yet, you can open the IDE from the *Event outputs* section at the bottom of the start page.
 
- ![Event Outputs copy/paste](../fastpaths/assets/ide-open.png)
+ ![Event Outputs copy/paste](/img/fastpaths/ide-open.png)
 
 ## Prepare Environment
 
@@ -68,7 +68,7 @@ $ prepare-environment
 ### Copy/Paste Permission
 Depending on your browser the first time you copy/paste content in to the VSCode terminal you may be presented with a prompt that looks like this:
 
-![VSCode copy/paste](./assets/vscode-copy-paste.webp)
+![VSCode copy/paste](/docs/introduction/vscode-copy-paste.webp)
 ### Terminal commands
 
 Most of the interaction you will do in this workshop will be done with terminal commands, which you can either manually type or copy/paste to the IDE terminal. You will see this terminal commands displayed like this:

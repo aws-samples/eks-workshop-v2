@@ -189,6 +189,7 @@ function getLinesForPath(inputString, lookup) {
   const parser = new YAML.Parser(lineCounter.addNewLine);
   const tokens = parser.parse(inputString);
 
+  const docs = new YAML.Composer().compose(tokens);
   const docsArray = Array.from(docs);
 
   // Support document index prefix (e.g., "1.spec.controller" for second document)

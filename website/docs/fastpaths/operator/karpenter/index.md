@@ -12,7 +12,7 @@ Your Amazon EKS Auto Mode cluster includes fully-managed autoscaling powered by 
 
 In this lab, we'll explore how EKS Auto Mode provides automatic compute scaling for your cluster. Auto Mode includes fully-managed [Karpenter](https://github.com/aws/karpenter) functionality as part of a comprehensive suite of managed features that minimize operational burden. The autoscaling capability is designed to provide the right compute resources to match your application's needs in seconds, not minutes, by observing the aggregate resource requests of unschedulable pods and making decisions to launch and terminate nodes to minimize scheduling latencies.
 
-<img src={require('./assets/karpenter-diagram.webp').default}/>
+<img src={require('@site/static/img/fastpaths/operator/karpenter/karpenter-diagram.webp').default}/>
 
 EKS Auto Mode's autoscaling works by:
 
