@@ -56,7 +56,7 @@ const config = {
         items: [
           { to: '/docs/fastpaths/', label: 'Intro' },
           { to: '/docs/fastpaths/setup', label: 'Setup' },
-          { to: '/docs/fastpaths/navigating', label: 'Navigating the labs' },
+          { to: '/docs/fastpaths/navigating-labs', label: 'Navigating the labs' },
           { to: '/docs/fastpaths/developer', label: 'Developer' },
           { to: '/docs/fastpaths/operator', label: 'Operator' },
         ],
