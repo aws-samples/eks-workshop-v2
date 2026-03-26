@@ -74,6 +74,7 @@ if [ ! -z "${REPOSITORY_REF}" ]; then
   rm -f /home/ec2-user/environment/eks-workshop
   if [ -z "${RESET_NO_DELETE}" ]; then
     rm -rf $manifests_path
+    mkdir -p $manifests_path
   fi
   rm -rf $repository_path
 
