@@ -10,9 +10,21 @@ cluster='all'
 install:
 	yarn install
 
+.PHONY: build
+build: install
+	yarn build
+
+.PHONY: warning
+warning:
+	@echo "Note: 'make serve' now does a full static build. For dev mode, use 'make start' instead."
+
 .PHONY: serve
-serve: install
+serve: warning build
 	yarn serve
+
+.PHONY: start
+start: install
+	yarn start
 
 .PHONY: tf-fmt
 tf-fmt:
