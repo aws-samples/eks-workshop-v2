@@ -279,6 +279,11 @@
   display: none;
 }
 
+/* Keep the locale dropdown and GitHub link visible on desktop */
+.navbar__items--right .navbar__item {
+  display: flex;
+}
+
 /* Show navbar items only in mobile sidebar */
 .navbar-sidebar .navbar__item {
   display: block;
