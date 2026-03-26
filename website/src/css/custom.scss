@@ -276,12 +276,12 @@
 
 /* Hide navbar items on desktop - they're in secondary nav */
 .navbar__item {
-  flex-grow: 1;
-  flex-shrink: 1;
-  padding: 0 0px;
-  font-size: clamp(0.8em, 1.2vw, 1em);
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  display: none;
+}
+
+/* Show navbar items only in mobile sidebar */
+.navbar-sidebar .navbar__item {
+  display: block;
 }
 
 .navbar__items--right .dropdown--right {
