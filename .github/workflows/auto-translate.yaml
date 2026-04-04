@@ -69,7 +69,7 @@ jobs:
     needs: setup-branch
     strategy:
       matrix:
-        language: [ja] # Add more languages here as needed
+        language: [ja, ko] # Add more languages here as needed
 
     steps:
       - name: Check out rebased translation branch
