@@ -22,7 +22,7 @@ else
   echo "Cluster ${EKS_CLUSTER_NAME} does not exist or skipped"
 fi
 
-export EKS_CLUSTER_AUTO_NAME="${EKS_CLUSTER_NAME}-auto"
+export EKS_CLUSTER_AUTO_NAME="${EKS_CLUSTER_AUTO_NAME}"
 auto_cluster_exists=0
 aws eks describe-cluster --name "${EKS_CLUSTER_AUTO_NAME}" &> /dev/null || auto_cluster_exists=$?
 

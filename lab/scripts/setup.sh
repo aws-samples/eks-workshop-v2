@@ -62,8 +62,8 @@ function prepare-environment() {
 function use-cluster() { bash /usr/local/bin/use-cluster \$1; source ~/.bashrc.d/env.bash; }
 function create-cluster() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster.yaml; echo "Creating cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl create cluster -f -; }
 function create-cluster-auto() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster-auto.yaml; echo "Creating cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl create cluster -f -; }
-function delete-cluster() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster.yaml; echo "Creating cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl delete cluster -f -; }
-function delete-cluster-auto() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster-auto.yaml; echo "Creating cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl delete cluster -f -; }
+function delete-cluster() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster.yaml; echo "Deleting cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl delete cluster -f -; }
+function delete-cluster-auto() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster-auto.yaml; echo "Deleting cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl delete cluster -f -; }
 EOT
 
 if [ ! -z "$REPOSITORY_REF" ]; then

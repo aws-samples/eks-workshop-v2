@@ -44,7 +44,16 @@ export default function SecondaryNav() {
       <div className={styles.secondaryNavContainer}>
         <div className={styles.navSection}>
           {eksGroup.items.map((item, i) => {
-            const isActive = location.pathname.startsWith(item.to);
+            const normalizedTo = item.to.replace(/\/+$/, '');
+            const normalizedPath = location.pathname.replace(/\/+$/, '');
+            const isActive = normalizedPath === normalizedTo || 
+              (normalizedPath.startsWith(normalizedTo + '/') && 
+               !eksGroup.items.some(other => {
+                 const otherTo = other.to.replace(/\/+$/, '');
+                 return otherTo !== normalizedTo && 
+                        otherTo.startsWith(normalizedTo + '/') && 
+                        normalizedPath.startsWith(otherTo);
+               }));
             return (
               <Link key={i} to={item.to} className={isActive ? styles.activeLink : ''}>{item.label}</Link>
             );
@@ -62,7 +71,16 @@ export default function SecondaryNav() {
       <div className={styles.secondaryNavContainer}>
         <div className={styles.navSection}>
           {autoModeGroup.items.map((item, i) => {
-            const isActive = location.pathname.startsWith(item.to);
+            const normalizedTo = item.to.replace(/\/+$/, '');
+            const normalizedPath = location.pathname.replace(/\/+$/, '');
+            const isActive = normalizedPath === normalizedTo || 
+              (normalizedPath.startsWith(normalizedTo + '/') && 
+               !autoModeGroup.items.some(other => {
+                 const otherTo = other.to.replace(/\/+$/, '');
+                 return otherTo !== normalizedTo && 
+                        otherTo.startsWith(normalizedTo + '/') && 
+                        normalizedPath.startsWith(otherTo);
+               }));
             return (
               <Link key={i} to={item.to} className={isActive ? styles.activeLink : ''}>{item.label}</Link>
             );

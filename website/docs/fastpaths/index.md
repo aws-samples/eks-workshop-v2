@@ -13,10 +13,10 @@ Streamlined, role-based learning experiences that get you hands-on with Amazon E
 
 As you can see in the picture, you can choose your learning journey for this workshop as per the following steps:
 
-1. Learn how to navigate the instructions in the lab using _Navigating the Labs_ module to begin with.
-2. [Skip if you're at an AWS Event] : Setup an EKS Auto Mode cluster to use the learning paths.
+1. **[Setup](/docs/fastpaths/setup)** your environment — whether you're at an AWS event or running this in your own account, follow the setup guide to get your IDE and cluster ready.
+2. Learn how to navigate the instructions in the lab using the [Navigating the Labs](/docs/fastpaths/navigating-labs) module.
 3. Based on your role and interest, either choose the EKS developer or the EKS operator path for further learning.
 
 Powered by Amazon EKS Auto Mode, these paths minimize infrastructure setup and management, letting you focus on learning core EKS concepts and deploying workloads faster. Perfect for workshops, events, or self-paced learning when you want immediate hands-on experience.
 
-Let's understand how to navigate this workshop and the lab instructions now.
+Let's get your environment set up!

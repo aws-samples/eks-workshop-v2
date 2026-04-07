@@ -68,7 +68,7 @@ $ prepare-environment
 ### Copy/Paste Permission
 Depending on your browser the first time you copy/paste content in to the VSCode terminal you may be presented with a prompt that looks like this:
 
-![VSCode copy/paste](/docs/introduction/vscode-copy-paste.webp)
+<img src="/docs/introduction/vscode-copy-paste.webp" alt="VSCode copy/paste" width="480" />
 ### Terminal commands
 
 Most of the interaction you will do in this workshop will be done with terminal commands, which you can either manually type or copy/paste to the IDE terminal. You will see this terminal commands displayed like this:

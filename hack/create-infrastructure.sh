@@ -29,7 +29,7 @@ fi
 auto_cluster_exists=0
 aws eks describe-cluster --name "${EKS_CLUSTER_AUTO_NAME}" &> /dev/null || auto_cluster_exists=$?
 
-if [ $auto_cluster_exists -ne 0 ] && [[ "$cluster" == "standard" || "$cluster" == "all" ]]; then
+if [ $auto_cluster_exists -ne 0 ] && [[ "$cluster" == "auto" || "$cluster" == "all" ]]; then
   echo "Creating auto mode cluster ${EKS_CLUSTER_AUTO_NAME}"
   bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster-auto.yaml /cluster/eksctl/access-entries.yaml | envsubst | eksctl create cluster -f -'&
 else

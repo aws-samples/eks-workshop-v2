@@ -23,21 +23,10 @@ If you haven't done so yet, you can open the IDE from the *Event outputs* sectio
 
  ![Event Outputs copy/paste](/img/fastpaths/ide-open.png)
 
-## Prepare Environment
-
-The `prepare-environment` tool helps you set up and configure your lab environment for each section. Simply run:
-
-```
-$ prepare-environment $MODULE_NAME
-```
-
-### Basic Usage Patterns
-```
-$ prepare-environment $MODULE_NAME/$LAB
-```
+## Starting a Lab
 
 :::caution
-You should start each lab from the page indicated by "BEFORE YOU START" badge. Starting in the middle of a lab will cause unpredictable behavior.
+Each lab has a "BEFORE YOU START" section with a `prepare-environment` command you need to run first. Always start from that page — jumping into the middle of a lab will cause unpredictable behavior.
 :::
 
 ## Tips
@@ -49,18 +38,18 @@ Depending on your browser, you may need to copy/paste content differently in to 
   <TabItem value="Google Chrome" label="Google Chrome (Recommended)" default>
     First time when you try to paste content in the terminal, you will see a browser pop-up that looks like this:
 
-    ![Chrome copy/paste](/docs/introduction/vscode-copy-paste.webp)
+    <img src="/docs/introduction/vscode-copy-paste.webp" alt="Chrome copy/paste" width="480" />
 
     Click **Allow** button to enable this functionality. After this, the subsequent copy/paste will be straight forward. For this workshop, we recommend using Google Chrome if possible.
   </TabItem>
   <TabItem value="Firefox/Safari" label="Firefox/Safari">
     Every time when you try to paste content in the terminal, you will see a small button as shown in the following screenshot adjacent to your mouse pointer. You will need to click on it to actually paste the copied content. 
 
-    ![Firefox/Safari copy/paste](/img/fastpaths/introduction/paste-in-firefox-safari.png)
+    <img src="/img/fastpaths/introduction/paste-in-firefox-safari.png" alt="Firefox/Safari copy/paste" width="480" />
 
     Additionally, you may also see the following pop-up box on the bottom-right corner of your editor window, which you may close and ignore. 
 
-    ![Firefox/Safari copy/paste](/img/fastpaths/introduction/paste-warning-in-firefox-safari.png)
+    <img src="/img/fastpaths/introduction/paste-warning-in-firefox-safari.png" alt="Firefox/Safari copy/paste" width="480" />
   </TabItem>
 </Tabs>
 
@@ -93,18 +82,6 @@ Fri Aug 30 12:26:58 MDT 2024
 ```
 
 In this case you can either copy each command individually or copy all of the commands using the clipboard icon in the top right corner of the terminal window. Give it a shot!
-
-### Using Kustomize
-
-[Kustomize](https://kustomize.io/) allows you to manage Kubernetes manifest files using declarative "kustomization" files. It provides the ability to express "base" manifests for your Kubernetes resources and then apply changes using composition, customization and easily making cross-cutting changes across many resources.
-
-In this workshop, you will see the following two types of commands involving Kustomize.
-
-1. `kubectl kustomize some-deployment.yaml` - This command **generates** the customized version of the yaml using Kustomize configuration. It does not deploy the resource.
-
-1. `kubectl apply -k some-deployment.yaml` - This command directly **applies** the customized version of the yaml using Kustomize configuration and deploys the resource.
-
-You can learn more about Kustomize at https://kustomize.io/.
 
 ### Using Kustomize
 

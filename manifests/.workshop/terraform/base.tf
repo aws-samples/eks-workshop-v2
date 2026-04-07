@@ -56,6 +56,8 @@ data "aws_partition" "current" {}
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
+data "aws_eks_clusters" "available" {}
+
 data "aws_eks_cluster" "eks_cluster" {
   name = var.eks_cluster_id
 }
@@ -64,11 +66,17 @@ data "aws_eks_cluster_auth" "this" {
   name = var.eks_cluster_id
 }
 
+locals {
+  auto_cluster_exists = contains(data.aws_eks_clusters.available.names, var.eks_cluster_auto_id)
+}
+
 data "aws_eks_cluster" "eks_cluster_auto" {
-  name = var.eks_cluster_auto_id
+  count = local.auto_cluster_exists ? 1 : 0
+  name  = var.eks_cluster_auto_id
 }
 data "aws_eks_cluster_auth" "this_auto" {
-  name = var.eks_cluster_auto_id
+  count = local.auto_cluster_exists ? 1 : 0
+  name  = var.eks_cluster_auto_id
 }
 
 provider "aws" {
@@ -85,9 +93,9 @@ provider "kubernetes" {
 
 provider "kubernetes" {
   alias                  = "auto_mode"
-  host                   = data.aws_eks_cluster.eks_cluster_auto.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_cluster_auto.certificate_authority[0].data)
-  token                  = data.aws_eks_cluster_auth.this_auto.token
+  host                   = try(data.aws_eks_cluster.eks_cluster_auto[0].endpoint, "https://localhost")
+  cluster_ca_certificate = try(base64decode(data.aws_eks_cluster.eks_cluster_auto[0].certificate_authority[0].data), "")
+  token                  = try(data.aws_eks_cluster_auth.this_auto[0].token, "")
 }
 
 provider "helm" {
@@ -101,9 +109,9 @@ provider "helm" {
 provider "helm" {
   alias = "auto_mode"
   kubernetes {
-    host                   = data.aws_eks_cluster.eks_cluster_auto.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_cluster_auto.certificate_authority[0].data)
-    token                  = data.aws_eks_cluster_auth.this_auto.token
+    host                   = try(data.aws_eks_cluster.eks_cluster_auto[0].endpoint, "https://localhost")
+    cluster_ca_certificate = try(base64decode(data.aws_eks_cluster.eks_cluster_auto[0].certificate_authority[0].data), "")
+    token                  = try(data.aws_eks_cluster_auth.this_auto[0].token, "")
   }
 }
 
