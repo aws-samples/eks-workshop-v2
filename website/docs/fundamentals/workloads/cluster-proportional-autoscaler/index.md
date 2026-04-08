@@ -22,7 +22,7 @@ Cluster Proportional Autoscaler (CPA) is a horizontal pod autoscaler that scales
 
 CPA works by running Golang API clients inside pods that connect to the API Server and poll the number of nodes and cores in the cluster. The scaling parameters and data points are provided via a ConfigMap to the autoscaler, which refreshes its parameters table every poll interval to use the latest desired scaling parameters. Unlike other autoscalers, CPA does not rely on the Metrics API and does not require the Metrics Server.
 
-![CPA](./assets/cpa.webp)
+![CPA](/docs/fundamentals/workloads/cluster-proportional-autoscaler/cpa.webp)
 
 Some of the main use cases for CPA include:
 

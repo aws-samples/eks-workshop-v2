@@ -164,7 +164,7 @@ resource "null_resource" "kustomize_app2" {
 ###======PodStuck - ContainerCreating
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.22.0"
+  version = "1.23.0"
 
   enable_aws_efs_csi_driver = true
   aws_efs_csi_driver = {

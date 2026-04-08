@@ -11,7 +11,7 @@ Let's install the Neuron device plugin using the official [Neuron device plugin 
 
 ```bash
 $ helm upgrade --install neuron-helm-chart oci://public.ecr.aws/neuron/neuron-helm-chart \
-  --namespace kube-system --version 1.3.0 \
+  --namespace kube-system --version 1.5.0 \
   --values ~/environment/eks-workshop/modules/aiml/chatbot/neuron-values.yaml \
   --wait
 ```
@@ -24,4 +24,4 @@ NAME                   DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE
 neuron-device-plugin   0         0         0       0            0           <none>          10s
 ```
 
-Since we don't have any compute nodes in our cluster that provide Neuron devices yet, no Pods are currently running. Once we provision Trainium instances in the next section, the DaemonSet will automatically deploy the device plugin to those nodes, making the Neuron devices available to our workloads.
+Since we don't have any compute nodes in our cluster that provide Neuron devices yet, no Pods are currently running. Once we provision Neuron instances in the next section, the DaemonSet will automatically deploy the device plugin to those nodes, making the Neuron devices available to our workloads.

@@ -9,7 +9,7 @@ In this section, we'll troubleshoot why the Application Load Balancer (ALB) is n
 
 When accessing the application through the ALB, you'll see an error stating "Backend service does not exist":
 
-![ALb-Backend-DoesNotExist](./assets/alb-does-not-exist.webp)
+![ALb-Backend-DoesNotExist](/docs/troubleshooting/alb/alb-does-not-exist.webp)
 
 Since the ingress was created successfully, this suggests an issue with the communication between the Kubernetes ingress and the service.
 
@@ -121,7 +121,7 @@ spec:
 
 After fixing the service name, we still see a 503 error:
 
-![ALb-503-ERROR](./assets/alb-503.webp)
+![ALb-503-ERROR](/docs/troubleshooting/alb/alb-503.webp)
 
 This suggests an issue with the service's backend endpoints. Let's check the endpoints:
 
@@ -243,7 +243,7 @@ $ kubectl apply -k ~/environment/eks-workshop/modules/troubleshooting/alb/creati
 
 After applying the fix, refresh your browser. You should now see the UI application:
 
-![ALB-UI-APP](./assets/alb-working.webp)
+![ALB-UI-APP](/docs/troubleshooting/alb/alb-working.webp)
 
 :::tip
 When troubleshooting service-to-pod connectivity:

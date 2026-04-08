@@ -137,19 +137,19 @@ EOF
 
 Open the Grafana as we did in the previous section:
 
-![Grafana dashboard](./assets/order-service-metrics-dashboard.webp)
+![Grafana dashboard](/docs/observability/open-source-metrics/order-service-metrics-dashboard.webp)
 
 Go to the dashboard page and click on the dashboard **Order Service Metrics** to review the panels within the dashboard:
 
-![Business Metrics](./assets/retailMetrics.webp)
+![Business Metrics](/docs/observability/open-source-metrics/retailMetrics.webp)
 
 We can see how the dashboard was configured to query AMP by hovering over the title of the "Orders by Product" panel and clicking the "Edit" button:
 
-![Edit Panel](./assets/editPanel.webp)
+![Edit Panel](/docs/observability/open-source-metrics/editPanel.webp)
 
 The PromQL query used to create this panel is displayed at the bottom of the page:
 
-![PromQL query](./assets/promqlQuery.webp)
+![PromQL query](/docs/observability/open-source-metrics/promqlQuery.webp)
 
 In this case we are using the query:
 

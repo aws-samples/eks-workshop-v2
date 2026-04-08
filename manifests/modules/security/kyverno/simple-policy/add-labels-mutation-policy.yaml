@@ -9,9 +9,11 @@ spec:
         any:
           - resources:
               kinds:
-                - Pod
+                - Deployment
       mutate:
         patchStrategicMerge:
-          metadata:
-            labels:
-              CostCenter: IT
+          spec:
+            template:
+              metadata:
+                labels:
+                  CostCenter: IT

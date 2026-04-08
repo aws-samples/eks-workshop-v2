@@ -11,7 +11,7 @@ First, let's examine the `efspvclaim.yaml` file:
 
 1. The resource being defined is a PersistentVolumeClaim
 2. This refers to the `efs-sc` storage class we created earlier
-3. We are requesting 5GB of storage 
+3. We are requesting 5GB of storage
 
 Now we'll update the UI component to reference the EFS PVC:
 
@@ -154,7 +154,7 @@ http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/asse
 Visit the URL in your browser:
 
 <Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96b...">
-<img src={require('./assets/placeholder.jpg').default}/>
+<img src={require('@site/static/docs/fundamentals/storage/efs/placeholder.jpg').default}/>
 </Browser>
 
 We've successfully demonstrated how Amazon EFS provides persistent shared storage for workloads running on Amazon EKS. This solution allows multiple pods to read from and write to the same storage volume simultaneously, making it ideal for shared content hosting and other use cases requiring distributed file system access.

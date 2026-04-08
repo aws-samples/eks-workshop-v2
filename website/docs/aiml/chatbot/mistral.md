@@ -17,7 +17,7 @@ For AWS Neuron specifically, vLLM provides:
 - Continuous model loading for efficient scaling
 - Integration with AWS Neuron profiling tools
 
-For this lab, we will use the [Mistral-7B-v0.3 model](https://mistral.ai/news/announcing-mistral-7b) compiled with the `neuronx-distributed-inference` framework. This model provides a good balance between capabilities and resource requirements, making it suitable for deployment on our Trainium-powered EKS cluster.
+For this lab, we will use the [Mistral-7B-v0.3 model](https://mistral.ai/news/announcing-mistral-7b) compiled with the `neuronx-distributed-inference` framework. This model provides a good balance between capabilities and resource requirements, making it suitable for deployment on our Neuron-powered EKS cluster.
 
 To deploy the model, we'll use a standard Kubernetes Deployment that will use a vLLM-based container image to load the model and weights:
 
@@ -43,7 +43,7 @@ mistral   ClusterIP   172.16.149.89   <none>        8080/TCP   33m
 
 The model initialization process takes several minutes to complete. The vLLM Pod will go through the following stages:
 
-1. Remain in a Pending state until Karpenter provisions the Trainium instance
+1. Remain in a Pending state until Karpenter provisions the Neuron instance
 2. Use an init container to download the model from Hugging Face to a host file system path
 3. Download the vLLM container image (approximately 10GB)
 4. Start the vLLM service

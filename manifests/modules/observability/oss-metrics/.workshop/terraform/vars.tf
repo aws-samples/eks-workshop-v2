@@ -40,3 +40,10 @@ variable "operator_chart_version" {
   # renovate-helm: depName=opentelemetry-operator registryUrl=https://open-telemetry.github.io/opentelemetry-helm-charts
   default = "0.68.1"
 }
+
+variable "grafana_chart_version" {
+  description = "The chart version of grafana to use"
+  type        = string
+  # renovate-helm: depName=grafana registryUrl=https://grafana.github.io/helm-charts
+  default = "8.15.0"
+}

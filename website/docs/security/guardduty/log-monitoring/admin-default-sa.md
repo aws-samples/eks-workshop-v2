@@ -13,7 +13,7 @@ $ kubectl -n default create rolebinding sa-default-admin --clusterrole cluster-a
 
 Within a few minutes you'll see the finding `Policy:Kubernetes/AdminAccessToDefaultServiceAccount` in the [GuardDuty Findings console](https://console.aws.amazon.com/guardduty/home#/findings). Take sometime to analyze the Finding details, Action, and Detective Investigation.
 
-![Admin access finding](assets/admin-access-sa.webp)
+![Admin access finding](/docs/security/guardduty/log-monitoring/admin-access-sa.webp)
 
 Delete the offending Role Binding by running the following command.
 

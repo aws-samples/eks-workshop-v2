@@ -21,7 +21,7 @@ module "ebs_csi_driver_irsa" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.22.0"
+  version = "1.23.0"
 
   cluster_name      = var.addon_context.eks_cluster_id
   cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint
@@ -145,7 +145,7 @@ module "grafana" {
 
   description      = "Grafana"
   chart            = "grafana"
-  chart_version    = "6.43.1"
+  chart_version    = var.grafana_chart_version
   namespace        = kubernetes_namespace.grafana.metadata[0].name
   create_namespace = false
   repository       = "https://grafana.github.io/helm-charts"

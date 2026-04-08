@@ -17,7 +17,7 @@ $ aws eks associate-access-policy --cluster-name ${EKS_CLUSTER_NAME} \
 
 Let's explore the CodePipeline that was set up for us, and refer to the CloudFormation that was used to create it.
 
-![Pipeline overview](./assets/pipeline.webp)
+![Pipeline overview](/docs/automation/continuousdelivery/codepipeline/pipeline.webp)
 
 You can use the button below to navigate to the pipeline in the console:
 

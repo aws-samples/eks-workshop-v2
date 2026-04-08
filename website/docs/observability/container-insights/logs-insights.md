@@ -21,7 +21,7 @@ STATS avg(node_cpu_utilization) as avg_node_cpu_utilization by NodeName
 | SORT avg_node_cpu_utilization DESC
 ```
 
-![Query1](./assets/query1.webp)
+![Query1](/docs/observability/container-insights/query1.webp)
 
 This query shows a list of nodes, sorted by average node CPU utilization.
 
@@ -32,7 +32,7 @@ STATS avg(number_of_container_restarts) as avg_number_of_container_restarts by P
 | SORT avg_number_of_container_restarts DESC
 ```
 
-![Query2](./assets/query2.webp)
+![Query2](/docs/observability/container-insights/query2.webp)
 
 This query displays a list of your pods, sorted by average number of container restarts.
 

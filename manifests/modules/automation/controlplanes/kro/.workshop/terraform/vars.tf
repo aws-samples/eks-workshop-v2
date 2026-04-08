@@ -38,12 +38,12 @@ variable "dynamo_ack_version" {
   description = "The version of Dynamo ACK to use"
   type        = string
   # renovate: datasource=github-releases depName=aws-controllers-k8s/dynamodb-controller
-  default = "1.5.2"
+  default = "1.7.1"
 }
 
 variable "kro_version" {
   description = "The version of Kro to use"
   type        = string
   # renovate: datasource=github-releases depName=kro-run/kro
-  default = "0.4.1"
+  default = "0.8.4"
 }

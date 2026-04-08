@@ -5,7 +5,7 @@ sidebar_position: 5
 
 By default, the **Carts** component in the sample application uses a DynamoDB local instance running as a pod in the EKS cluster called `carts-dynamodb`. In this section of the lab, we'll provision an Amazon DynamoDB cloud-based table for our application using Kubernetes custom resources and configure the **Carts** deployment to use this newly provisioned DynamoDB table instead of the local copy.
 
-![ACK reconciler concept](./assets/ack-desired-current-ddb.webp)
+![ACK reconciler concept](/docs/automation/controlplanes/ack/ack-desired-current-ddb.webp)
 
 Let's examine how we can create the DynamoDB Table using a Kubernetes manifest:
 

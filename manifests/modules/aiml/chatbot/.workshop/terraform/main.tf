@@ -24,7 +24,7 @@ data "aws_ecrpublic_authorization_token" "token" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.22.0"
+  version = "1.23.0"
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
@@ -71,7 +71,7 @@ resource "aws_eks_addon" "pod_identity" {
 
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "21.4"
+  version = "21.15"
 
   cluster_name = var.addon_context.eks_cluster_id
   namespace    = local.namespace
@@ -103,7 +103,7 @@ resource "helm_release" "karpenter" {
   repository_password = data.aws_ecrpublic_authorization_token.token.password
   chart               = "karpenter"
   # renovate: datasource=github-releases depName=aws/karpenter-provider-aws
-  version = "1.8.1"
+  version = "1.9.0"
   wait    = true
 
   values = [
@@ -131,33 +131,42 @@ resource "time_sleep" "wait" {
   create_duration = "10s"
 }
 
-resource "kubernetes_manifest" "ui_nlb" {
+resource "kubernetes_manifest" "ui_ingress" {
   depends_on = [time_sleep.wait]
 
   manifest = {
-    "apiVersion" = "v1"
-    "kind"       = "Service"
+    "apiVersion" = "networking.k8s.io/v1"
+    "kind"       = "Ingress"
     "metadata" = {
-      "name"      = "ui-nlb"
+      "name"      = "ui"
       "namespace" = "ui"
       "annotations" = {
-        "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
-        "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
-        "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "instance"
+        "alb.ingress.kubernetes.io/scheme"           = "internet-facing"
+        "alb.ingress.kubernetes.io/target-type"      = "ip"
+        "alb.ingress.kubernetes.io/healthcheck-path" = "/actuator/health/liveness"
       }
     }
     "spec" = {
-      "type" = "LoadBalancer"
-      "ports" = [{
-        "port"       = 80
-        "targetPort" = 8080
-        "name"       = "http"
-      }]
-      "selector" = {
-        "app.kubernetes.io/name"      = "ui"
-        "app.kubernetes.io/instance"  = "ui"
-        "app.kubernetes.io/component" = "service"
-      }
+      "rules" = [
+        {
+          "http" = {
+            "paths" = [
+              {
+                "path"     = "/"
+                "pathType" = "Prefix"
+                "backend" = {
+                  "service" = {
+                    "name" = "ui"
+                    "port" = {
+                      "number" = 80
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
     }
   }
 }

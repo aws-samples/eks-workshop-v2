@@ -5,7 +5,7 @@ title: Cloud9 Access
 If after running the Terraform script you do not see the Cloud9 instance named **eks-workshop** do the following:
 
 Change the Environments dropdown to show **All account environments**.
-![Change the Environments dropdown to show **All account environments**](./assets/cloud9-environments.webp)
+![Change the Environments dropdown to show **All account environments**](/docs/misc/cloud9-environments.webp)
 Under **Cloud9 IDE** Click **Open**.
 
 If the Open link does not work, you will need to grant your user access to the Cloud9 instance.
@@ -30,7 +30,7 @@ environment_id_from_arn
 
 The environment_id_from_arn should be replaced with the environment-id from the arn of the instance you want to manage. The arn can be found by clicking on the instance name. Everything after the last colon in the arn is the environment-id.
 
-![cloud9-arn](./assets/cloud9-arn.webp)
+![cloud9-arn](/docs/misc/cloud9-arn.webp)
 
 After entering the code with the replaced text in the CLI you should now be able to access the Cloud9 Instance.
 

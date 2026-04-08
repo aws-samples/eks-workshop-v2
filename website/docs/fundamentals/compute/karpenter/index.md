@@ -24,7 +24,7 @@ You can view the Terraform that applies these changes [here](https://github.com/
 
 In this lab, we'll look at [Karpenter](https://github.com/aws/karpenter), an open-source autoscaling project built for Kubernetes. Karpenter is designed to provide the right compute resources to match your application’s needs in seconds, not minutes, by observing the aggregate resource requests of unschedulable pods and making decisions to launch and terminate nodes to minimize scheduling latencies.
 
-<img src={require('./assets/karpenter-diagram.webp').default}/>
+<img src={require('@site/static/docs/fundamentals/compute/karpenter/karpenter-diagram.webp').default}/>
 
 Karpenter's goal is to improve the efficiency and cost of running workloads on Kubernetes clusters. Karpenter works by:
 

@@ -63,6 +63,6 @@ $ argocd app wait apps --timeout 120
 
 Open the Argo CD UI and navigate to the main "Applications" page. Our App of Apps configuration has been deployed and synced, but except for the UI component, all of the workload apps are marked as "Unknown".
 
-![argocd-ui-apps.png](assets/argocd-ui-apps-unknown.webp)
+![argocd-ui-apps.png](/docs/automation/gitops/argocd/app-of-apps/argocd-ui-apps-unknown.webp)
 
 We will deploy the configurations for the workloads in the next step.

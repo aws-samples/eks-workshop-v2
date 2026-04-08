@@ -27,7 +27,7 @@ $ while [[ "$(aws codepipeline list-pipeline-executions --pipeline-name ${EKS_CL
 
 Once complete the pipeline will show the stages have succeeded.
 
-![Pipeline complete](./assets/pipeline-complete.webp)
+![Pipeline complete](/docs/automation/continuousdelivery/codepipeline/pipeline-complete.webp)
 
 Now we can review the changes that have been made by the pipeline. First we can check the ECR repository:
 
@@ -39,7 +39,7 @@ Now we can review the changes that have been made by the pipeline. First we can 
 
 Open the repository `retail-store-sample-ui` and inspect the image that has been pushed.
 
-![Image 1](assets/ecr_image.webp)
+![Image 1](/docs/automation/continuousdelivery/codepipeline/ecr_image.webp)
 
 We can also verify that a Helm release has been installed in the cluster:
 
@@ -76,6 +76,6 @@ $ kubectl get deployment -n ui ui -o json | jq -r '.spec.template.spec.container
 
 We can also click the `deploy_eks` action to view more details such as the logs:
 
-![Pipeline deploy detail](assets/pipeline-deploy-detail.webp)
+![Pipeline deploy detail](/docs/automation/continuousdelivery/codepipeline/pipeline-deploy-detail.webp)
 
 With that we have successfully create a pipeline that builds our application container image and deploys it to an EKS cluster using a Helm chart.

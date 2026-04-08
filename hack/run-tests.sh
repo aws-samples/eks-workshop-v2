@@ -91,11 +91,11 @@ $CONTAINER_CLI run $background_args $dns_args \
 
 if [ $exit_code -eq 0 ]; then
   if [ ! -z "$TEST_REPORT" ]; then
-    docker cp $container_name:/tmp/test-report.json $TEST_REPORT > /dev/null
+    $CONTAINER_CLI cp $container_name:/tmp/test-report.json $TEST_REPORT > /dev/null
   fi
 fi
 
-docker rm $container_name > /dev/null
+$CONTAINER_CLI rm $container_name > /dev/null
 
 if [ $exit_code -ne 0 ]; then
     exit $exit_code

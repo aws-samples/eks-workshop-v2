@@ -38,7 +38,6 @@ spec:
         model: mistral7b
     spec:
       nodeSelector:
-        instanceType: trn1.2xlarge
         neuron.amazonaws.com/neuron-device: "true"
       tolerations:
         - effect: NoSchedule
@@ -77,12 +76,11 @@ spec:
               name: http
           resources:
             requests:
-              cpu: 4
-              memory: 24Gi
+              cpu: 3
+              memory: 12Gi
               aws.amazon.com/neuron: 1
             limits:
-              cpu: 4
-              memory: 24Gi
+              memory: 12Gi
               aws.amazon.com/neuron: 1
           volumeMounts:
             - name: dshm
@@ -114,6 +112,4 @@ spec:
           emptyDir:
             medium: Memory
         - name: local-storage
-          hostPath:
-            path: /mnt/k8s-disks/0
-            type: Directory
+          emptyDir: {}

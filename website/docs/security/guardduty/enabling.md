@@ -34,4 +34,4 @@ Then navigate to **Findings** section of the GuardDuty console:
 
 You should find that there are no findings available yet.
 
-![GuardDuty findings](assets/findings.webp)
+![GuardDuty findings](/docs/security/guardduty/findings.webp)

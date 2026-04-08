@@ -47,7 +47,7 @@ $ argocd app wait -l app.kubernetes.io/created-by=eks-workshop
 
 When Argo CD completes the process, all our applications will be in the `Synced` state as shown in the Argo CD UI:
 
-![argocd-ui-apps.png](assets/argocd-ui-apps-synced.webp)
+![argocd-ui-apps.png](/docs/automation/gitops/argocd/app-of-apps/argocd-ui-apps-synced.webp)
 
 We should now see a set of new namespaces with each application component deployed:
 

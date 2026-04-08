@@ -17,6 +17,7 @@ Statement:
         cloudformation:RoleARN: "true"
   - Effect: Allow
     Action:
+      - cloudformation:UpdateTerminationProtection
       - cloudformation:DeleteStack
     Resource:
       - !Sub arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/eksctl-${Env}*

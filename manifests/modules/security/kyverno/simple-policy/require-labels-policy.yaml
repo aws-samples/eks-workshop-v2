@@ -10,10 +10,13 @@ spec:
         any:
           - resources:
               kinds:
-                - Pod
+                - Deployment
       validate:
-        message: "Label 'CostCenter' is required to deploy the Pod"
+        allowExistingViolations: false
+        message: "Label 'CostCenter' is required on the Deployment pod template"
         pattern:
-          metadata:
-            labels:
-              CostCenter: "?*"
+          spec:
+            template:
+              metadata:
+                labels:
+                  CostCenter: "?*"

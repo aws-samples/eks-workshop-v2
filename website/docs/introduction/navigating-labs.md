@@ -17,7 +17,7 @@ The content of this workshop is made up of:
 
 The lab exercises are designed in a way that you can run any modules as a self-contained exercise. Lab exercises will be displayed in the sidebar to the left and are designated by the icon shown here:
 
-![Lab icon example](./assets/lab-icon.webp)
+![Lab icon example](/docs/introduction/lab-icon.webp)
 
 This module contains a single lab named **Getting started** which will be visible on the left side of your screen.
 
@@ -28,27 +28,29 @@ You should start each lab from the page indicated by this badge. Starting in the
 ## Tips
 
 ### Copy/Paste Permission
-Depending on your browser, you may need to copy/paste content differently in to the Code Server terminal. 
+
+Depending on your browser, you may need to copy/paste content differently in to the Code Server terminal.
 
 <Tabs>
   <TabItem value="Google Chrome" label="Google Chrome (Recommended)" default>
     First time when you try to paste content in the terminal, you will see a browser pop-up that looks like this:
 
-    ![Chrome copy/paste](../introduction/assets/vscode-copy-paste.webp)
+    ![Chrome copy/paste](/docs/introduction/vscode-copy-paste.webp)
 
     Click **Allow** button to enable this functionality. After this, the subsequent copy/paste will be straight forward. For this workshop, we recommend using Google Chrome if possible.
+
   </TabItem>
   <TabItem value="Firefox/Safari" label="Firefox/Safari">
-    Every time when you try to paste content in the terminal, you will see a small button as shown in the following screenshot adjacent to your mouse pointer. You will need to click on it to actually paste the copied content. 
+    Every time when you try to paste content in the terminal, you will see a small button as shown in the following screenshot adjacent to your mouse pointer. You will need to click on it to actually paste the copied content.
 
-    ![Firefox/Safari copy/paste](../introduction/assets/paste-in-firefox-safari.png)
+    ![Firefox/Safari copy/paste](/docs/introduction/paste-in-firefox-safari.png)
 
-    Additionally, you may also see the following pop-up box on the bottom-right corner of your editor window, which you may close and ignore. 
+    Additionally, you may also see the following pop-up box on the bottom-right corner of your editor window, which you may close and ignore.
 
-    ![Firefox/Safari copy/paste](../introduction/assets/paste-warning-in-firefox-safari.png)
+    ![Firefox/Safari copy/paste](/docs/introduction/paste-warning-in-firefox-safari.png)
+
   </TabItem>
 </Tabs>
-
 
 ## Terminal commands
 

@@ -9,12 +9,12 @@ kubectl_version='1.33.7'
 helm_version='3.20.0'
 
 # renovate: depName=eksctl-io/eksctl
-eksctl_version='0.221.0'
+eksctl_version='0.222.0'
 
 kubeseal_version='0.18.4'
 
 # renovate: depName=mikefarah/yq
-yq_version='4.50.1'
+yq_version='4.52.2'
 
 # renovate: depName=fluxcd/flux2
 flux_version='2.7.5'
@@ -23,12 +23,12 @@ flux_version='2.7.5'
 argocd_version='2.14.21'
 
 # renovate: depName=hashicorp/terraform
-terraform_version='1.14.3'
+terraform_version='1.14.4'
 
 ec2_instance_selector_version='3.1.1'
 
 # renovate: depName=hatoo/oha
-oha_version='1.12.1'
+oha_version='1.13.0'
 
 download () {
   url=$1

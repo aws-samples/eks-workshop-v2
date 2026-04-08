@@ -11,4 +11,4 @@ In this lab, we'll look at the Horizontal Pod Autoscaler (HPA) to scale pods in 
 
 The Kubernetes Metrics Server is a scalable and efficient aggregator of resource usage data in your cluster. It provides container metrics that are required by the Horizontal Pod Autoscaler. The metrics server is not deployed by default in Amazon EKS clusters.
 
-<img src={require('./assets/hpa.webp').default}/>
+<img src={require('@site/static/docs/fundamentals/workloads/horizontal-pod-autoscaler/hpa.webp').default}/>

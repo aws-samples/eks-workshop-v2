@@ -108,7 +108,7 @@ resource "aws_route_table_association" "remote_public" {
 
 module "key_pair" {
   source  = "terraform-aws-modules/key-pair/aws"
-  version = "2.1.0"
+  version = "2.1.1"
 
   key_name           = "hybrid-node"
   create_private_key = true
@@ -162,7 +162,7 @@ resource "aws_security_group" "hybrid_nodes" {
 module "hybrid_node" {
   depends_on = [aws_ec2_transit_gateway.tgw, aws_internet_gateway.remote]
   source     = "terraform-aws-modules/ec2-instance/aws"
-  version    = "6.1.2"
+  version    = "6.2.0"
 
   metadata_options = {
     "http_tokens" : "required"
@@ -336,7 +336,7 @@ resource "aws_route" "remote_route_to_pod" {
 
 module "eks_hybrid_node_role" {
   source      = "terraform-aws-modules/eks/aws//modules/hybrid-node-role"
-  version     = "21.4.0"
+  version     = "21.15.1"
   name        = "${var.eks_cluster_id}-hybrid-node-role"
   policy_name = "${var.eks_cluster_id}-hybrid-node-policy"
   tags        = var.tags
@@ -368,7 +368,7 @@ resource "aws_vpc_security_group_ingress_rule" "node_from_remote_pod" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.22.0"
+  version = "1.23.0"
 
   cluster_name      = var.addon_context.eks_cluster_id
   cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint

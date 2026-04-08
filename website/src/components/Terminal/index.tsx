@@ -4,21 +4,30 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard } from "@fortawesome/free-solid-svg-icons";
 
 import styles from "./styles.module.css";
+import { translate } from "@docusaurus/Translate";
+
+const copyCommand = translate({
+  id: "terminal.copyCommand",
+});
+
+const copyAllCommands = translate({
+  id: "terminal.copyAllCommands",
+});
 
 interface Props {
   output: string;
 }
 
 export default function Terminal({ output }: Props): JSX.Element {
-  let decodedOutput = atob(output);
+  const decodedOutput = atob(output);
 
   const outputParts = decodedOutput.split("\n");
 
-  let sections: Array<TerminalSection> = [];
+  const sections: Array<TerminalSection> = [];
 
   let section = new TerminalSection(0);
 
-  let appendNext = false;
+  const appendNext = false;
 
   let allCommands = "";
 
@@ -58,7 +67,7 @@ export default function Terminal({ output }: Props): JSX.Element {
               onClick={handler}
               data-tooltip-id={`copy-all`}
             />
-            <ReactTooltip id="copy-all" content="Copy all commands" />
+            <ReactTooltip id="copy-all" content={copyAllCommands} />
           </div>
         </div>
       </div>
@@ -68,7 +77,7 @@ export default function Terminal({ output }: Props): JSX.Element {
           return element.render();
         })}
       </div>
-      <ReactTooltip id="copy-command" content="Copy command" />
+      <ReactTooltip id="copy-command" content={copyCommand} />
     </div>
   );
 }
@@ -206,7 +215,7 @@ class TerminalCommand extends TerminalContext {
   }
 
   renderCommand(command: string, indent: boolean) {
-    let output = command;
+    const output = command;
 
     return <span className={styles.terminalPromptCommand}>{output}</span>;
   }

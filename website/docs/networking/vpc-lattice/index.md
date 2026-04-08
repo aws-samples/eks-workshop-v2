@@ -55,4 +55,4 @@ The [components](https://docs.aws.amazon.com/vpc-lattice/latest/ug/what-is-vpc-s
 - **Security policies**:
   A declarative policy that determines how Services are permitted to communicate. These can be defined at the Service level or the Service Network level.
 
-![Amazon VPC Lattice Components](assets/vpc_lattice_building_blocks.webp)
+![Amazon VPC Lattice Components](/docs/networking/vpc-lattice/vpc_lattice_building_blocks.webp)

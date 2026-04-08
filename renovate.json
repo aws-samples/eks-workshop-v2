@@ -8,6 +8,9 @@
   "schedule": ["* * 7-14 * *"],
   "enabledManagers": ["custom.regex", "github-actions", "terraform", "npm"],
   "labels": ["content/other"],
+  "minimumReleaseAge": "28 days",
+  "internalChecksFilter": "strict",
+  "prCreation": "not-pending",
   "packageRules": [
     {
       "matchManagers": ["github-actions"],

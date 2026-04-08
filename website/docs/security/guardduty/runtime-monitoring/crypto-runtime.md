@@ -30,10 +30,10 @@ These commands will trigger three different findings in the [GuardDuty Findings 
 
 The first one is `Execution:Runtime/NewBinaryExecuted` which is related to the `curl` package installed via the APT tool.
 
-![Binary execution finding](assets/binary-execution.webp)
+![Binary execution finding](/docs/security/guardduty/runtime-monitoring/binary-execution.webp)
 
 Take a closer look to the details of this finding, which because they are related to the GuardDuty runtime monitoring show specific information regarding the runtime, context, and processes.
 
 The second and third ones are related to `CryptoCurrency:Runtime/BitcoinTool.B!DNS` findings. Notice again that the finding details brings different information, this time showing the `DNS_REQUEST` action, and the **Threat intelligence Evidences**.
 
-![Crypto runtime finding](assets/crypto-runtime.webp)
+![Crypto runtime finding](/docs/security/guardduty/runtime-monitoring/crypto-runtime.webp)

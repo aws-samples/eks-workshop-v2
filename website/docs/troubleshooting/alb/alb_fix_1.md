@@ -5,7 +5,7 @@ sidebar_position: 30
 
 In this troubleshooting scenario, you'll investigate why the AWS Load Balancer Controller isn't creating an Application Load Balancer (ALB) for your ingress resource. By the end of this exercise, you'll be able to access the UI application through an ALB ingress as shown in the image below.
 
-![ingress](./assets/ingress.webp)
+![ingress](/docs/troubleshooting/alb/ingress.webp)
 
 ## Let's start troubleshooting
 

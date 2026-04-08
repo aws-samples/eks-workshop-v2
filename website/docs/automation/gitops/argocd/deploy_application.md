@@ -71,7 +71,7 @@ argocd/ui    https://kubernetes.default.svc  ui         default  OutOfSync  Miss
 
 This application is now visible in the Argo CD UI:
 
-![Application in the Argo CD UI](assets/argocd-ui-outofsync.webp)
+![Application in the Argo CD UI](/docs/automation/gitops/argocd/argocd-ui-outofsync.webp)
 
 Alternatively, we can also interact with Argo CD objects directly using the `kubectl` command:
 
@@ -83,7 +83,7 @@ apps   OutOfSync     Missing
 
 If you open the Argo CD UI and navigate to the `apps` application, you'll see:
 
-![Application in the Argo CD UI](assets/argocd-ui-outofsync-apps.webp)
+![Application in the Argo CD UI](/docs/automation/gitops/argocd/argocd-ui-outofsync-apps.webp)
 
 In Argo CD, "out of sync" indicates that the desired state defined in your Git repository doesn't match the actual state in your Kubernetes cluster. Although Argo CD is capable of automated synchronization, for now we'll manually trigger this process:
 
@@ -94,7 +94,7 @@ $ argocd app wait ui --timeout 120
 
 After a short period, the application should reach the `Synced` state, with all resources deployed. The UI should look like this:
 
-![argocd-deploy-application](assets/argocd-deploy-application.webp)
+![argocd-deploy-application](/docs/automation/gitops/argocd/argocd-deploy-application.webp)
 
 This confirms that Argo CD has successfully installed the Helm chart and it's now in sync with the cluster.
 

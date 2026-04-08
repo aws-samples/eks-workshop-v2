@@ -31,4 +31,4 @@ Custom networking is one solution to this problem.
 
 Custom networking addresses the IP exhaustion issue by assigning the Pod IPs from secondary VPC address spaces (CIDR). Custom networking support supports ENIConfig custom resource. The ENIConfig includes an alternate subnet CIDR range (carved from a secondary VPC CIDR), along with the security group(s) that the Pods will belong to. When custom networking is enabled, the VPC CNI creates secondary ENIs in the subnet defined under ENIConfig. The CNI assigns Pods an IP addresses from a CIDR range defined in a ENIConfig CRD.
 
-![Insights](./assets/custom-networking-intro.webp)
+![Insights](/docs/networking/vpc-cni/custom-networking/custom-networking-intro.webp)

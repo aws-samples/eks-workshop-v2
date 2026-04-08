@@ -85,7 +85,7 @@ These are split between:
 - Private subnets: One for each availability zones using a CIDR block from the primary CIDR range
 - Secondary private subnets: One for each availability zones using a CIDR block from the **secondary** CIDR range
 
-![VPC subnet architecture](./assets/vpc-secondary-networking.webp)
+![VPC subnet architecture](/docs/networking/vpc-cni/custom-networking/vpc-secondary-networking.webp)
 
 You can view these subnets in the AWS console:
 

@@ -10,7 +10,7 @@ Originally conceived as a successor to the well-known Ingress API, the benefits 
 At AWS, we implement the Gateway API to integrate with Amazon VPC Lattice with the AWS Gateway API Controller. When
 installed in your cluster, the controller watches for the creation of Gateway API resources such as gateways and routes and provisions corresponding Amazon VPC Lattice objects according to the mapping in the image below. The AWS Gateway API Controller is an open-source project and fully supported by Amazon.
 
-![Kubernetes Gateway API Objects and VPC Lattice Components](assets/fundamentals-mapping.webp)
+![Kubernetes Gateway API Objects and VPC Lattice Components](/docs/networking/vpc-lattice/fundamentals-mapping.webp)
 
 As shown in the figure, there are different personas associated with different levels of control in the Kubernetes Gateway API:
 

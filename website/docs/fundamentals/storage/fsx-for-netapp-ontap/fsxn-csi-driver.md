@@ -9,7 +9,7 @@ The [Amazon FSx for NetApp ONTAP Container Storage Interface (CSI) Driver](https
 
 The following architecture diagram illustrates how we will use FSx for NetApp ONTAP as persistent storage for our EKS pods:
 
-![Assets with FSx for NetApp ONTAP](./assets/fsxn-storage.webp)
+![Assets with FSx for NetApp ONTAP](/docs/fundamentals/storage/fsx-for-netapp-ontap/fsxn-storage.webp)
 
 To utilize Amazon FSx for NetApp ONTAP with dynamic provisioning on our EKS cluster, we first need to confirm that we have the FSx for NetApp ONTAP CSI Driver installed. The driver implements the CSI specification which allows container orchestrators to manage Amazon FSx for NetApp ONTAP file systems throughout their lifecycle.
 

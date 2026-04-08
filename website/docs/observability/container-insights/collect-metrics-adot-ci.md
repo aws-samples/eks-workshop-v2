@@ -89,6 +89,6 @@ Please note that:
 
 <ConsoleButton url="https://console.aws.amazon.com/cloudwatch/home#container-insights:performance/EKS:Cluster?~(query~(controls~(CW*3a*3aEKS.cluster~(~'eks-workshop)))~context~())" service="cloudwatch" label="Open CloudWatch console"/>
 
-![ContainerInsightsConsole](./assets/container-insights-metrics-console.webp)
+![ContainerInsightsConsole](/docs/observability/container-insights/container-insights-metrics-console.webp)
 
 You can take some time to explore around the console to see the various ways that metrics are presented such as by cluster, namespace or pod.

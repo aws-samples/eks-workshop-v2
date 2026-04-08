@@ -45,8 +45,8 @@ k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 
 Access this in your browser and try to checkout multiple times (with different items in the cart):
 
-![Example Checkout](assets/examplecheckout.webp)
+![Example Checkout](/docs/networking/vpc-lattice/examplecheckout.webp)
 
 You'll notice that the checkout now uses the "Lattice checkout" pods about 75% of the time:
 
-![Lattice Checkout](assets/latticecheckout.webp)
+![Lattice Checkout](/docs/networking/vpc-lattice/latticecheckout.webp)

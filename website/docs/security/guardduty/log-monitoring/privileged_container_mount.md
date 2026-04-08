@@ -12,7 +12,7 @@ To simulate the finding you'll be using a pre-configure manifest with some speci
 ::yaml{file="manifests/modules/security/Guardduty/mount/privileged-pod-example.yaml" paths="spec.containers.0.securityContext,spec.containers.0.volumeMounts.0.mountPath,spec.volumes.0.hostPath.path"}
 
 1. Setting `SecurityContext: privileged: true` grants full root privileges to the Pod
-2. `mountPath: /host-etc` specifies that the mapped host volume will be accessible inside the container at `/host-etc` 
+2. `mountPath: /host-etc` specifies that the mapped host volume will be accessible inside the container at `/host-etc`
 3. `path: /etc` specifies that `/etc` directory from the host system will be the source directory for the mount
 
 Apply the manifest shown above with the following command:
@@ -27,9 +27,9 @@ This Pod will just run once, until it reaches the State `Completed`
 
 Within a few minutes we'll see the two finding `PrivilegeEscalation:Kubernetes/PrivilegedContainer` and `Persistence:Kubernetes/ContainerWithSensitiveMount` in the [GuardDuty Findings console](https://console.aws.amazon.com/guardduty/home#/findings).
 
-![Privileged container finding](assets/privileged-container.webp)
+![Privileged container finding](/docs/security/guardduty/log-monitoring/privileged-container.webp)
 
-![Sensitive mount finding](assets/sensitive-mount.webp)
+![Sensitive mount finding](/docs/security/guardduty/log-monitoring/sensitive-mount.webp)
 
 Once again take sometime to analyze the Finding details, Action, and Detective Investigation.
 

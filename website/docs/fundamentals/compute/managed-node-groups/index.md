@@ -9,7 +9,7 @@ EKS nodes are standard Amazon EC2 instances. You're billed for them based on EC2
 
 [Amazon EKS managed node groups](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html) automate the provisioning and lifecycle management of nodes for Amazon EKS clusters. This greatly simplifies operational activities such as rolling updates for new AMIs or Kubernetes version deployments.
 
-![Managed Node Groups](./assets/managed-node-groups.webp)
+![Managed Node Groups](/docs/fundamentals/compute/managed-node-groups/managed-node-groups.webp)
 
 Advantages of running Amazon EKS managed node groups include:
 

@@ -9,10 +9,10 @@ Let's take a look at the logs in the CloudWatch Logs console:
 
 Filter for **/aws/eks** prefix and select the cluster you want verify the logs:
 
-![Cluster log group](./assets/logging-cluster-cw-loggroup.webp)
+![Cluster log group](/docs/observability/logging/cluster-logging/logging-cluster-cw-loggroup.webp)
 
 You will be presented with a number of log streams in the group:
 
-![Log stream](./assets/logging-cluster-cw-logstream.webp)
+![Log stream](/docs/observability/logging/cluster-logging/logging-cluster-cw-logstream.webp)
 
 Select any of these log streams to view the entries being sent to CloudWatch Logs by the EKS control plane.

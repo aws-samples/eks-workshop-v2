@@ -26,7 +26,7 @@ Kubernetes events are continuously generated but retained within the cluster for
 
 The following diagram provides an overview of the setup for this section. `kubernetes-events-exporter` will be deployed in the `opensearch-exporter` namespace to forward events to the OpenSearch domain. Events are stored in the `eks-kubernetes-events` index in OpenSearch. An OpenSearch dashboard that we loaded earlier is used to visualize the events.
 
-![Kubernetes events to OpenSearch](./assets/eks-events-overview.webp)
+![Kubernetes events to OpenSearch](/docs/observability/opensearch/eks-events-overview.webp)
 
 Deploy Kubernetes events exporter and configure it to send events to our OpenSearch domain. The base configuration is available [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/opensearch/config/events-exporter-values.yaml). The OpenSearch credentials we retrieved earlier are being used to configure the exporter. The second command verifies that the Kubernetes events pod is running.
 
@@ -88,7 +88,7 @@ The live dashboard should look similar to the image below but the numbers and me
 5. [Middle section] Warnings broken out by namespace. All the warnings are in the `test` namespace in this example
 6. [Bottom section] Detailed events and messages with most recent event first
 
-![Kubernetes Events dashboard](./assets/events-dashboard.webp)
+![Kubernetes Events dashboard](/docs/observability/opensearch/events-dashboard.webp)
 
 The next image focuses on the bottom section with event details including:
 
@@ -97,7 +97,7 @@ The next image focuses on the bottom section with event details including:
 1. Name of Kubernetes resource (along with the object type and namespace)
 1. Human readable message
 
-![Kubernetes Events debugging](./assets/events-debug.webp)
+![Kubernetes Events debugging](/docs/observability/opensearch/events-debug.webp)
 
 We can drill down into the full event details as shown in the following image:
 
@@ -106,21 +106,21 @@ We can drill down into the full event details as shown in the following image:
 
 An explanation of data fields within Kubernetes events can be found on [kubernetes.io](https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1) or by running `kubectl explain events`.
 
-![Kubernetes Events detail](./assets/events-detail.webp)
+![Kubernetes Events detail](/docs/observability/opensearch/events-detail.webp)
 
 We can use the Kubernetes events dashboard to identify why the three deployments (`scenario-a, scenario-b and scenario-c`) are experiencing issues. All the pods we deployed earlier are in the `test` namespace.
 
 **scenario-a:** From the dashboard we can see that `scenario-a` has a reason of `FailedMount` and the message `MountVolume.SetUp failed for volume "secret-volume" : secret "misspelt-secret-name" not found`. The pod is attempting to mount a secret that does not exist.
 
-![Answer for scenario-a](./assets/scenario-a.webp)
+![Answer for scenario-a](/docs/observability/opensearch/scenario-a.webp)
 
 **scenario-b:** `scenario-b` has failed with a message `Failed to pull image "wrong-image": rpc error: code = Unknown desc = failed to pull and unpack image "docker.io/library/wrong-image:latest": failed to resolve reference "docker.io/library/wrong-image:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed.` The pod is not getting created because it references a non-existent image.
 
-![Answer for scenario-b](./assets/scenario-b.webp)
+![Answer for scenario-b](/docs/observability/opensearch/scenario-b.webp)
 
 **scenario-c:** The dashboard shows a reason of `FailedScheduling` and the message `0/3 nodes are available: 3 Insufficient cpu. preemption: 0/3 nodes are available: 3 No preemption victims found for incoming pod.` This deployment is requesting CPU that exceeds what any of the current cluster nodes can provide. (We do not have any of the cluster autoscaling capabilities enabled within this module of EKS workshop.)
 
-![Answer for scenario-c](./assets/scenario-c.webp)
+![Answer for scenario-c](/docs/observability/opensearch/scenario-c.webp)
 
 Fix the issues and revisit OpenSearch dashboard to see changes
 

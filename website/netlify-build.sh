@@ -7,7 +7,7 @@ source ./hack/lib/kubectl-version.sh
 wget -q https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 
-mkdir ~/bin
+mkdir -p ~/bin
 mv ./kubectl ~/bin
 
 export PATH="$PATH:$HOME/bin"

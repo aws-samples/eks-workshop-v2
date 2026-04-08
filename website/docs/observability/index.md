@@ -25,6 +25,6 @@ To dive deeper into AWS Observability features take a look at the [One Observabi
 Explore a set of opinionated Infrastructure as Code (IaC) modules to help you set up observability for your AWS environments in our [AWS Observability Accelerator for CDK](https://aws-observability.github.io/cdk-aws-observability-accelerator/) and [AWS Observability Accelerator for Terraform](https://aws-observability.github.io/terraform-aws-observability-accelerator/). These modules work with AWS Native services like Amazon CloudWatch and AWS managed observability services such as Amazon Managed Service for Prometheus, Amazon Managed Grafana and AWS Distro for OpenTelemetry (ADOT).
 :::
 
-![AWS Native Observability](./assets/cloud-native-architecture.webp)
+![AWS Native Observability](/docs/observability/cloud-native-architecture.webp)
 
-![Open Source Managed Observability ](./assets/oss-architecture.webp)
+![Open Source Managed Observability ](/docs/observability/oss-architecture.webp)

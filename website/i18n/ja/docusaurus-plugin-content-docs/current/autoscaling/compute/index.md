@@ -1,0 +1,14 @@
+---
+title: "コンピュート"
+sidebar_position: 10
+tmdTranslationSourceHash: ce6048aabb965ebf98f9ee1a130bf85e
+---
+
+Kubernetesにおいて、最初に自動スケーリングを確保したい側面は、ポッドの実行に使用されるEC2コンピュートインフラストラクチャです。これにより、ポッドが追加または削除されるにつれて、EKSクラスターのワーカーノードとして利用可能なEC2インスタンスの数が動的に調整されます。
+
+Kubernetesでコンピュートの自動スケーリングを実装する方法はいくつかありますが、AWSでは主に以下の2つのメカニズムが利用可能です：
+
+- Kubernetes Cluster Autoscalerツール
+- Karpenter
+
+この章では、AWSにおけるKubernetesのコンピュート自動スケーリングを実現するための異なる方法として、Kubernetes Cluster Autoscalerツールとカーペンター（Karpenter）のメカニズムについて探ります。
