@@ -55,7 +55,7 @@ metadata:
   namespace: carts
 ```
 
-You can see that `RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME` attribute now points to an actual DynamoDB table in your account instead of the table within this EKS cluster. 
+You can see that `RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME` attribute now points to an actual DynamoDB table in your account instead of the table within this EKS cluster.
 
 :::tip
 You should be able to see this DynamoDB table in your account using console under `DynamodDB > Tables` menu.
@@ -63,7 +63,7 @@ You should be able to see this DynamoDB table in your account using console unde
 
 Now, let's redeploy the carts deployment to pick up the new ConfigMap contents:
 
-```bash expectError=true hook=enable-dynamo
+```bash expectError=true
 $ kubectl rollout restart -n carts deployment/carts
 deployment.apps/carts restarted
 $ kubectl rollout status -n carts deployment/carts --timeout=20s
@@ -107,10 +107,10 @@ Follow the suggestions offered by Kiro CLI to solve this issue. In an ideal scen
 ```text
 Perfect! The issue is resolved. Here's what I found and fixed:
 
-Problem: The pod carts-774d75898c-pgbl2 was in CrashLoopBackOff because the IAM role eks-workshop-carts-dynamo had a policy pointing to the wrong DynamoDB table name (wrong-table-name instead of 
+Problem: The pod carts-774d75898c-pgbl2 was in CrashLoopBackOff because the IAM role eks-workshop-carts-dynamo had a policy pointing to the wrong DynamoDB table name (wrong-table-name instead of
 eks-workshop-carts). The application couldn't query the DynamoDB table index and crashed on startup.
 
-Solution: I added an inline IAM policy with the correct permissions to access the eks-workshop-carts DynamoDB table and its indexes. After deleting the crashing pod, Kubernetes created a new pod that 
+Solution: I added an inline IAM policy with the correct permissions to access the eks-workshop-carts DynamoDB table and its indexes. After deleting the crashing pod, Kubernetes created a new pod that
 successfully started with the corrected permissions.
 
 Result: The new pod carts-774d75898c-mr8fc is now running successfully with 0 restarts.
