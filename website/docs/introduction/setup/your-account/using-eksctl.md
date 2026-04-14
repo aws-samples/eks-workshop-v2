@@ -15,10 +15,13 @@ The `eksctl` utility has been pre-installed in your IDE environment, so we can i
 4. Add a managed node group named `default`
 5. Configure the VPC CNI to use prefix delegation
 
+Before creating the cluster, set the region to match the one you used when deploying the CloudFormation stack in the previous step. The supported regions are `us-west-2`, `eu-west-1`, and `ap-southeast-1`.
+
 Apply the configuration file like so:
 
 ```bash
 $ export EKS_CLUSTER_NAME=eks-workshop
+$ export AWS_REGION=us-west-2 # Change this to match your CloudFormation stack region
 $ curl -fsSL https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/cluster/eksctl/cluster.yaml | \
 envsubst | eksctl create cluster -f -
 ```
