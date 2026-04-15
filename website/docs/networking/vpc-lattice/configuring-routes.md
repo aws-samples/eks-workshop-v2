@@ -8,7 +8,7 @@ In this section we will show how to use Amazon VPC Lattice for advanced traffic 
 Let's deploy a modified version of the `checkout` microservice with an added prefix _"Lattice"_ in the shipping options. Let's deploy this new version in a new namespace (`checkoutv2`) using Kustomize.
 
 ```bash
-$ kustomize build ~/environment/eks-workshop/modules/networking/vpc-lattice/abtesting/ | envsubst | kubectl apply -f -
+$ kubectl kustomize ~/environment/eks-workshop/modules/networking/vpc-lattice/abtesting/ | envsubst | kubectl apply -f -
 $ kubectl rollout status deployment/checkout -n checkoutv2
 ```
 

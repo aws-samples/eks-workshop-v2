@@ -15,7 +15,7 @@ Let's create an additional Service that provisions a load balancer with the foll
 Apply this configuration:
 
 ```bash timeout=180 hook=add-lb hookTimeout=430
-$ kustomize build ~/environment/eks-workshop/modules/exposing/load-balancer/nlb | envsubst | kubectl apply -f -
+$ kubectl kustomize ~/environment/eks-workshop/modules/exposing/load-balancer/nlb | envsubst | kubectl apply -f -
 ```
 
 Let's inspect the Service resources for the `ui` application again:

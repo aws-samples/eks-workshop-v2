@@ -42,7 +42,7 @@ Now let's update our previous Ingress resource with DNS configuration:
 Apply this configuration:
 
 ```bash
-$ kustomize build ~/environment/eks-workshop/modules/exposing/ingress/external-dns | envsubst | kubectl apply -f -
+$ kubectl kustomize ~/environment/eks-workshop/modules/exposing/ingress/external-dns | envsubst | kubectl apply -f -
 ```
 
 Let's inspect the Ingress object created with host name:

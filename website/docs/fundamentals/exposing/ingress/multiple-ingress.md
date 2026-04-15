@@ -24,7 +24,7 @@ Then we'll create a separate Ingress for the `catalog` component:
 Apply these manifests to the cluster:
 
 ```bash wait=60
-$ kustomize build ~/environment/eks-workshop/modules/exposing/ingress/multiple-ingress | envsubst | kubectl apply -f -
+$ kubectl kustomize ~/environment/eks-workshop/modules/exposing/ingress/multiple-ingress | envsubst | kubectl apply -f -
 ```
 
 We'll now have two additional Ingress objects in our cluster that end with `-multi`:

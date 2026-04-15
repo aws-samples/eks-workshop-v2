@@ -14,7 +14,7 @@ Let's create an Ingress resource with the following configuration:
 Apply this configuration:
 
 ```bash timeout=180 hook=add-ingress hookTimeout=430
-$ kustomize build ~/environment/eks-workshop/modules/exposing/ingress/creating-ingress | envsubst | kubectl apply -f -
+$ kubectl kustomize ~/environment/eks-workshop/modules/exposing/ingress/creating-ingress | envsubst | kubectl apply -f -
 ```
 
 Let's inspect the Ingress object created:
