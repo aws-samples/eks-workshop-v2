@@ -30,6 +30,7 @@ module "gen-$target" {
   addon_context             = local.addon_context
   tags                      = local.tags
   resources_precreated      = var.resources_precreated
+  inbound_cidrs             = "0.0.0.0/0"
 }
 EOF
 done
