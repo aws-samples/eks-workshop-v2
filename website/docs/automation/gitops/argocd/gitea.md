@@ -11,7 +11,9 @@ Let's install Gitea in our EKS cluster with Helm:
 $ helm upgrade --install gitea oci://docker.gitea.com/charts/gitea \
   --version "$GITEA_CHART_VERSION" \
   --namespace gitea --create-namespace \
-  --values <(envsubst < ~/environment/eks-workshop/modules/automation/gitops/argocd/gitea/values.yaml) \
+  --values ~/environment/eks-workshop/modules/automation/gitops/argocd/gitea/values.yaml \
+  --set "service.http.annotations.service\\.beta\\.kubernetes\\.io/load-balancer-source-ranges"="$INBOUND_CIDRS" \
+  --set "service.ssh.annotations.service\\.beta\\.kubernetes\\.io/load-balancer-source-ranges"="$INBOUND_CIDRS" \
   --set "gitea.admin.password=${GITEA_PASSWORD}" \
   --wait
 ```

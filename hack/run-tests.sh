@@ -74,8 +74,7 @@ fi
 
 RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-""}
 
-INBOUND_CIDRS="${INBOUND_IP_ADDRESS:+${INBOUND_IP_ADDRESS}/32}"
-INBOUND_CIDRS="${INBOUND_CIDRS:-0.0.0.0/0}"
+source $SCRIPT_DIR/lib/resolve-source-ip.sh
 
 echo "Running test suite..."
 

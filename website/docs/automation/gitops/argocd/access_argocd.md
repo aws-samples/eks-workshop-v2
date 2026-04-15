@@ -10,7 +10,8 @@ Let's begin by installing Argo CD in our cluster:
 $ helm repo add argo-cd https://argoproj.github.io/argo-helm
 $ helm upgrade --install argocd argo-cd/argo-cd --version "${ARGOCD_CHART_VERSION}" \
   --namespace "argocd" --create-namespace \
-  --values <(envsubst < ~/environment/eks-workshop/modules/automation/gitops/argocd/values.yaml) \
+  --values ~/environment/eks-workshop/modules/automation/gitops/argocd/values.yaml \
+  --set "server.service.annotations.service\\.beta\\.kubernetes\\.io/load-balancer-source-ranges"="$INBOUND_CIDRS" \
   --wait
 NAME: argocd
 LAST DEPLOYED: [...]

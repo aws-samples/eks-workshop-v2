@@ -37,8 +37,7 @@ if [ ! -z "$DOCKER_DNS_OVERRIDE" ]; then
   dns_args="--dns=$DOCKER_DNS_OVERRIDE"
 fi
 
-INBOUND_CIDRS="${INBOUND_IP_ADDRESS:+${INBOUND_IP_ADDRESS}/32}"
-export INBOUND_CIDRS="${INBOUND_CIDRS:-0.0.0.0/0}"
+source $SCRIPT_DIR/lib/resolve-source-ip.sh
 
 $CONTAINER_CLI run --rm $interactive_args $dns_args \
   -v $SCRIPT_DIR/../manifests:/eks-workshop/manifests \
