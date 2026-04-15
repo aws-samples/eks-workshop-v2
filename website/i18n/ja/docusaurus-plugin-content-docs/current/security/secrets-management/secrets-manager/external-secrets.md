@@ -1,7 +1,7 @@
 ---
 title: "External Secrets Operator"
 sidebar_position: 424
-tmdTranslationSourceHash: a83e79135004db35c75e04bc4266b948
+tmdTranslationSourceHash: cd7bf6b9c2b6b39e75b441f72c42579b
 ---
 
 次に、External Secrets operatorを使用したAWS Secrets Managerとの統合を探ってみましょう。これは既にEKSクラスタにインストールされています：
@@ -18,7 +18,7 @@ default               0         7m
 external-secrets-sa   0         7m
 ```
 
-オペレーターは`external-secrets-sa`という名前のServiceAccountを使用しており、これは[IRSA](../../iam-roles-for-service-accounts/)を介してIAMロールに関連付けられ、AWS Secrets Managerへのアクセス権を提供しています：
+オペレーターは`external-secrets-sa`という名前のServiceAccountを使用しており、これは[IRSA](../../iam-roles-for-service-accounts/)を介してIAMロールに関連付けられ、シークレットを取得するためのAWS Secrets Managerへのアクセス権を提供しています：
 
 ```bash
 $ kubectl -n external-secrets describe sa external-secrets-sa | grep Annotations
@@ -31,7 +31,7 @@ Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::1234567890:role/ek
 
 1. シークレットソースとしてAWS Secrets Managerを使用するために`service: SecretsManager`を設定
 2. シークレットが保存されているAWSリージョンを指定するために`$AWS_REGION`環境変数を使用
-3. `auth.jwt`はIRSAを使用して`external-secrets`名前空間の`external-secrets-sa`サービスアカウントで認証し、これはAWS Secrets Managerへのアクセス権を持つIAMロールにリンクされています
+3. `auth.jwt`はIRSAを使用して`external-secrets`名前空間の`external-secrets-sa`サービスアカウント経由で認証し、これはAWS Secrets Managerの権限を持つIAMロールにリンクされています
 
 このファイルを使用してClusterSecretStoreリソースを作成しましょう。
 
@@ -40,7 +40,15 @@ $ cat ~/environment/eks-workshop/modules/security/secrets-manager/cluster-secret
   | envsubst | kubectl apply -f -
 ```
 
-次に、AWS Secrets Managerからどのデータを取得し、それをKubernetesシークレットにどのように変換するかを定義する`ExternalSecret`を作成します。その後、これらの認証情報を使用するように`catalog`デプロイメントを更新します：
+次に、AWS Secrets Managerからどのデータを取得し、それをKubernetesシークレットにどのように変換するかを定義する`ExternalSecret`を作成します。
+
+適用される`ExternalSecret`マニフェストを確認してみましょう：
+
+::yaml{file="manifests/modules/security/secrets-manager/external-secrets/external-secret.yaml"}
+
+これはExternal Secrets Operatorに対して、`ClusterSecretStore`から`$SECRET_NAME`で識別されるシークレットを取得し、1時間ごとに`catalog`名前空間に同期するように指示します。
+
+また、これらの認証情報を使用するように`catalog` Deploymentを更新します：
 
 ```kustomization
 modules/security/secrets-manager/external-secrets/kustomization.yaml
@@ -104,7 +112,7 @@ $ kubectl -n catalog get secret catalog-external-secret -o yaml | yq '.metadata.
   uid: b8710001-366c-44c2-8e8d-462d85b1b8d7
 ```
 
-私たちの`catalog`ポッドが新しいシークレット値を使用していることを確認できます：
+私たちの`catalog` Podが新しいシークレット値を使用していることを確認できます：
 
 ```bash
 $ kubectl -n catalog get pods
@@ -126,7 +134,7 @@ $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.co
 
 ### まとめ
 
-**AWS Secrets and Configuration Provider（ASCP）**と**External Secrets Operator（ESO）**の間には、AWS Secrets Managerのシークレットを管理するための「最良」な選択肢はありません。
+AWS Secrets Managerのシークレットを管理するための、**AWS Secrets and Configuration Provider（ASCP）**と**External Secrets Operator（ESO）**の間には、単一の「最良」な選択肢はありません。
 
 それぞれのツールには異なる利点があります：
 
