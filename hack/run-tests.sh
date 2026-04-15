@@ -74,6 +74,9 @@ fi
 
 RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-""}
 
+INBOUND_CIDRS="${INBOUND_IP_ADDRESS:+${INBOUND_IP_ADDRESS}/32}"
+INBOUND_CIDRS="${INBOUND_CIDRS:-0.0.0.0/0}"
+
 echo "Running test suite..."
 
 # get current IDs
@@ -86,7 +89,7 @@ $CONTAINER_CLI run $background_args $dns_args \
   --name $container_name \
   -v $SCRIPT_DIR/../website/docs:/content \
   -v $SCRIPT_DIR/../manifests:/eks-workshop/manifests \
-  -e 'EKS_CLUSTER_NAME' -e 'AWS_REGION' -e 'RESOURCES_PRECREATED' \
+  -e 'EKS_CLUSTER_NAME' -e 'AWS_REGION' -e 'RESOURCES_PRECREATED' -e 'INBOUND_CIDRS' \
   $aws_credential_args $container_image -g "${actual_glob}" --hook-timeout 3600 --timeout 3600 $output_args ${AWS_EKS_WORKSHOP_TEST_FLAGS} || exit_code=$?
 
 if [ $exit_code -eq 0 ]; then

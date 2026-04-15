@@ -45,6 +45,13 @@ variable "resources_precreated" {
   default     = false
 }
 
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
+  type        = string
+  default     = "0.0.0.0/0"
+}
+
 data "aws_partition" "current" {}
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}

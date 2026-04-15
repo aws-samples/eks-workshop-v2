@@ -5,16 +5,17 @@ sidebar_position: 20
 
 Let's create an additional Service that provisions a load balancer with the following configuration:
 
-::yaml{file="manifests/modules/exposing/load-balancer/nlb/nlb.yaml" paths="spec.type,spec.ports,spec.selector"}
+::yaml{file="manifests/modules/exposing/load-balancer/nlb/nlb.yaml" paths="metadata.annotations,spec.type,spec.ports,spec.selector"}
 
-1. This `Service` will create a Network Load Balancer
-2. The NLB will listens on port 80 and forwards connections to the `ui` Pods on port 8080
-3. Here we express which pods should be added as target for this service using labels on the pods
+1. Annotations configure the AWS Load Balancer Controller to provision an internet-facing NLB. The `load-balancer-source-ranges` annotation restricts inbound traffic to specific CIDR ranges
+2. This `Service` will create a Network Load Balancer
+3. The NLB will listens on port 80 and forwards connections to the `ui` Pods on port 8080
+4. Here we express which pods should be added as target for this service using labels on the pods
 
 Apply this configuration:
 
 ```bash timeout=180 hook=add-lb hookTimeout=430
-$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/load-balancer/nlb
+$ kustomize build ~/environment/eks-workshop/modules/exposing/load-balancer/nlb | envsubst | kubectl apply -f -
 ```
 
 Let's inspect the Service resources for the `ui` application again:

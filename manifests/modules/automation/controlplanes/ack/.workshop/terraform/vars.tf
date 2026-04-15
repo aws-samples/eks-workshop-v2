@@ -40,3 +40,8 @@ variable "dynamo_ack_version" {
   # renovate: datasource=github-releases depName=aws-controllers-k8s/dynamodb-controller
   default = "1.7.1"
 }
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
+  type        = string
+}

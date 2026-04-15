@@ -43,7 +43,7 @@ deployment.apps "carts-dynamodb" deleted
 Next, apply the ResourceGraphDefinition to register the WebApplication API:
 
 ```bash wait=10
-$ kubectl apply -f ~/environment/eks-workshop/modules/automation/controlplanes/kro/rgds/webapp-rgd.yaml
+$ cat ~/environment/eks-workshop/modules/automation/controlplanes/kro/rgds/webapp-rgd.yaml | envsubst | kubectl apply -f -
 resourcegraphdefinition.kro.run/web-application created
 ```
 

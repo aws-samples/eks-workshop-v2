@@ -69,6 +69,9 @@ jobs:
           role-duration-seconds: 3600
           aws-region: ${{ secrets.AWS_REGION }}
           role-session-name: GithubActionsSession-${{ env.CLUSTER_ID }}
+      - name: Get runner IP
+        id: runner-ip
+        run: echo "ip=$(curl -s https://checkip.amazonaws.com)" >> "$GITHUB_OUTPUT"
       - name: Run tests - Module
         env:
           DOCKER_BUILDKIT: 1
@@ -79,6 +82,7 @@ jobs:
           GLOB: ${{ inputs.glob }}
           AWS_REGION: "${{ secrets.AWS_REGION }}"
           DOCKER_DNS_OVERRIDE: "8.8.8.8"
+          INBOUND_IP_ADDRESS: "${{ steps.runner-ip.outputs.ip }}"
         run: |
           export AWS_DEFAULT_REGION="$AWS_REGION"
           bash hack/run-tests.sh "$CLUSTER_ID" "$MODULE" "$GLOB"

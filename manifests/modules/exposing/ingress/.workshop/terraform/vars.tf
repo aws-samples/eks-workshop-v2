@@ -47,3 +47,9 @@ variable "external_dns_chart_version" {
   # renovate-helm: depName=external-dns registryUrl=https://kubernetes-sigs.github.io/external-dns
   default = "1.20.0"
 }
+
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
+  type        = string
+}

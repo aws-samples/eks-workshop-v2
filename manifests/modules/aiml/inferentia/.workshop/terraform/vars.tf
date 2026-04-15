@@ -40,3 +40,8 @@ variable "karpenter_version" {
   # renovate: datasource=github-releases depName=aws/karpenter-provider-aws
   default = "1.9.0"
 }
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
+  type        = string
+}

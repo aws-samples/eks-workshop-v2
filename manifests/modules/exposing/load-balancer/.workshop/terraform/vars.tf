@@ -41,3 +41,9 @@ variable "load_balancer_controller_chart_version" {
   default = "1.17.1"
 }
 
+
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
+  type        = string
+}

@@ -10,7 +10,7 @@ Let's begin by installing Argo CD in our cluster:
 $ helm repo add argo-cd https://argoproj.github.io/argo-helm
 $ helm upgrade --install argocd argo-cd/argo-cd --version "${ARGOCD_CHART_VERSION}" \
   --namespace "argocd" --create-namespace \
-  --values ~/environment/eks-workshop/modules/automation/gitops/argocd/values.yaml \
+  --values <(envsubst < ~/environment/eks-workshop/modules/automation/gitops/argocd/values.yaml) \
   --wait
 NAME: argocd
 LAST DEPLOYED: [...]

@@ -7,6 +7,7 @@ module "lab" {
   addon_context             = local.addon_context
   tags                      = local.tags
   resources_precreated      = var.resources_precreated
+  inbound_cidrs             = var.inbound_cidrs
 }
 
 locals {

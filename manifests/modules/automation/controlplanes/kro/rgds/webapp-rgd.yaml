@@ -30,151 +30,152 @@ spec:
         groupname: string | default="eks-workshop"
 
   resources:
-  - id: serviceAccount
-    template:
-      apiVersion: v1
-      kind: ServiceAccount
-      metadata:
-        name: ${schema.spec.appName}
-        namespace: ${schema.spec.appName}
+    - id: serviceAccount
+      template:
+        apiVersion: v1
+        kind: ServiceAccount
+        metadata:
+          name: ${schema.spec.appName}
+          namespace: ${schema.spec.appName}
 
-  - id: configMap
-    template:
-      apiVersion: v1
-      kind: ConfigMap
-      metadata:
-        name: ${schema.spec.appName}
-        namespace: ${schema.spec.appName}
-      data: ${schema.spec.env}
+    - id: configMap
+      template:
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: ${schema.spec.appName}
+          namespace: ${schema.spec.appName}
+        data: ${schema.spec.env}
 
-  - id: deployment
-    template:
-      apiVersion: apps/v1
-      kind: Deployment
-      metadata:
-        name: ${schema.spec.appName}
-        namespace: ${schema.spec.appName}
-        labels:
-          app.kubernetes.io/created-by: "eks-workshop"
-          app.kubernetes.io/type: app
-      spec:
-        replicas: ${schema.spec.replicas}
-        revisionHistoryLimit: 3
-        selector:
-          matchLabels:
-            app.kubernetes.io/name: ${schema.spec.appName}
-            app.kubernetes.io/instance: ${schema.spec.appName}
-            app.kubernetes.io/component: service
-        template:
-          metadata:
-            annotations:
-              prometheus.io/path: /actuator/prometheus
-              prometheus.io/port: "8080"
-              prometheus.io/scrape: "true"
-            labels:
+    - id: deployment
+      template:
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: ${schema.spec.appName}
+          namespace: ${schema.spec.appName}
+          labels:
+            app.kubernetes.io/created-by: "eks-workshop"
+            app.kubernetes.io/type: app
+        spec:
+          replicas: ${schema.spec.replicas}
+          revisionHistoryLimit: 3
+          selector:
+            matchLabels:
               app.kubernetes.io/name: ${schema.spec.appName}
               app.kubernetes.io/instance: ${schema.spec.appName}
               app.kubernetes.io/component: service
-              app.kubernetes.io/created-by: eks-workshop
-          spec:
-            serviceAccountName: ${schema.spec.appName}
-            securityContext:
-              fsGroup: 1000
-            containers:
-            - name: ${schema.spec.appName}
-              env:
-              - name: JAVA_OPTS
-                value: -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
-              envFrom:
-              - configMapRef:
-                  name: ${schema.spec.appName}
+          template:
+            metadata:
+              annotations:
+                prometheus.io/path: /actuator/prometheus
+                prometheus.io/port: "8080"
+                prometheus.io/scrape: "true"
+              labels:
+                app.kubernetes.io/name: ${schema.spec.appName}
+                app.kubernetes.io/instance: ${schema.spec.appName}
+                app.kubernetes.io/component: service
+                app.kubernetes.io/created-by: eks-workshop
+            spec:
+              serviceAccountName: ${schema.spec.appName}
               securityContext:
-                capabilities:
-                  drop:
-                  - ALL
-                readOnlyRootFilesystem: true
-                runAsNonRoot: true
-                runAsUser: 1000
-              image: ${schema.spec.image}
-              imagePullPolicy: IfNotPresent
-              ports:
-              - name: http
-                containerPort: ${schema.spec.port}
-                protocol: TCP
-              readinessProbe:
-                httpGet:
-                  path: ${schema.spec.healthcheck.readinessPath}
-                  port: ${schema.spec.healthcheck.readinessPort}
-                initialDelaySeconds: 15
-                periodSeconds: 3
-              livenessProbe:
-                httpGet:
-                  path: ${schema.spec.healthcheck.livenessPath}
-                  port: ${schema.spec.healthcheck.livenessPort}
-                initialDelaySeconds: 45
-                periodSeconds: 3
-              resources:
-                limits:
-                  memory: 1Gi
-                requests:
-                  cpu: 250m
-                  memory: 1Gi
-              volumeMounts:
-              - mountPath: /tmp
-                name: tmp-volume
-            volumes:
-            - name: tmp-volume
-              emptyDir:
-                medium: Memory
+                fsGroup: 1000
+              containers:
+                - name: ${schema.spec.appName}
+                  env:
+                    - name: JAVA_OPTS
+                      value: -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/urandom
+                  envFrom:
+                    - configMapRef:
+                        name: ${schema.spec.appName}
+                  securityContext:
+                    capabilities:
+                      drop:
+                        - ALL
+                    readOnlyRootFilesystem: true
+                    runAsNonRoot: true
+                    runAsUser: 1000
+                  image: ${schema.spec.image}
+                  imagePullPolicy: IfNotPresent
+                  ports:
+                    - name: http
+                      containerPort: ${schema.spec.port}
+                      protocol: TCP
+                  readinessProbe:
+                    httpGet:
+                      path: ${schema.spec.healthcheck.readinessPath}
+                      port: ${schema.spec.healthcheck.readinessPort}
+                    initialDelaySeconds: 15
+                    periodSeconds: 3
+                  livenessProbe:
+                    httpGet:
+                      path: ${schema.spec.healthcheck.livenessPath}
+                      port: ${schema.spec.healthcheck.livenessPort}
+                    initialDelaySeconds: 45
+                    periodSeconds: 3
+                  resources:
+                    limits:
+                      memory: 1Gi
+                    requests:
+                      cpu: 250m
+                      memory: 1Gi
+                  volumeMounts:
+                    - mountPath: /tmp
+                      name: tmp-volume
+              volumes:
+                - name: tmp-volume
+                  emptyDir:
+                    medium: Memory
 
-  - id: service
-    template:
-      apiVersion: v1
-      kind: Service
-      metadata:
-        name: ${schema.spec.appName}
-        namespace: ${schema.spec.appName}
-        labels:
-          app.kubernetes.io/created-by: eks-workshop
-      spec:
-        type: ClusterIP
-        ports:
-        - port: 80
-          targetPort: http
-          protocol: TCP
-          name: http
-        selector:
-          app.kubernetes.io/name: ${schema.spec.appName}
-          app.kubernetes.io/instance: ${schema.spec.appName}
-          app.kubernetes.io/component: service
-    includeWhen:
-    - ${schema.spec.service.enabled}
+    - id: service
+      template:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: ${schema.spec.appName}
+          namespace: ${schema.spec.appName}
+          labels:
+            app.kubernetes.io/created-by: eks-workshop
+        spec:
+          type: ClusterIP
+          ports:
+            - port: 80
+              targetPort: http
+              protocol: TCP
+              name: http
+          selector:
+            app.kubernetes.io/name: ${schema.spec.appName}
+            app.kubernetes.io/instance: ${schema.spec.appName}
+            app.kubernetes.io/component: service
+      includeWhen:
+        - ${schema.spec.service.enabled}
 
-  - id: ingress
-    template:
-      apiVersion: networking.k8s.io/v1
-      kind: Ingress
-      metadata:
-        name: ${schema.spec.appName}
-        namespace: ${schema.spec.appName}
-        labels:
-          app.kubernetes.io/created-by: eks-workshop
-        annotations:
-          alb.ingress.kubernetes.io/scheme: internet-facing
-          alb.ingress.kubernetes.io/target-type: ip
-          alb.ingress.kubernetes.io/healthcheck-path: ${schema.spec.ingress.healthcheckPath}
-          alb.ingress.kubernetes.io/group.name: ${schema.spec.ingress.groupname}
-      spec:
-        ingressClassName: alb
-        rules:
-        - http:
-            paths:
-            - path: ${schema.spec.ingress.path}
-              pathType: Prefix
-              backend:
-                service:
-                  name: ${schema.spec.appName}
-                  port:
-                    number: 80
-    includeWhen:
-    - ${schema.spec.ingress.enabled}
+    - id: ingress
+      template:
+        apiVersion: networking.k8s.io/v1
+        kind: Ingress
+        metadata:
+          name: ${schema.spec.appName}
+          namespace: ${schema.spec.appName}
+          labels:
+            app.kubernetes.io/created-by: eks-workshop
+          annotations:
+            alb.ingress.kubernetes.io/scheme: internet-facing
+            alb.ingress.kubernetes.io/target-type: ip
+            alb.ingress.kubernetes.io/healthcheck-path: ${schema.spec.ingress.healthcheckPath}
+            alb.ingress.kubernetes.io/group.name: ${schema.spec.ingress.groupname}
+            alb.ingress.kubernetes.io/inbound-cidrs: $INBOUND_CIDRS
+        spec:
+          ingressClassName: alb
+          rules:
+            - http:
+                paths:
+                  - path: ${schema.spec.ingress.path}
+                    pathType: Prefix
+                    backend:
+                      service:
+                        name: ${schema.spec.appName}
+                        port:
+                          number: 80
+      includeWhen:
+        - ${schema.spec.ingress.enabled}

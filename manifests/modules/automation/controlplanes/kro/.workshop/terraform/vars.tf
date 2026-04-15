@@ -47,3 +47,8 @@ variable "kro_version" {
   # renovate: datasource=github-releases depName=kro-run/kro
   default = "0.8.4"
 }
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
+  type        = string
+}

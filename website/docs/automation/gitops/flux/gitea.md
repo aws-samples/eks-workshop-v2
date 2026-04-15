@@ -11,7 +11,7 @@ Let's install Gitea in our EKS cluster with Helm:
 $ helm upgrade --install gitea oci://docker.gitea.com/charts/gitea \
   --version "$GITEA_CHART_VERSION" \
   --namespace gitea --create-namespace \
-  --values ~/environment/eks-workshop/modules/automation/gitops/flux/gitea/values.yaml \
+  --values <(envsubst < ~/environment/eks-workshop/modules/automation/gitops/flux/gitea/values.yaml) \
   --set "gitea.admin.password=${GITEA_PASSWORD}" \
   --wait
 ```

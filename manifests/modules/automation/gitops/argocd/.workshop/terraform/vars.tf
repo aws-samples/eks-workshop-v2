@@ -46,3 +46,9 @@ variable "gitea_chart_version" {
   type        = string
   default     = "12.1.3"
 }
+
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
+  type        = string
+}

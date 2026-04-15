@@ -47,3 +47,8 @@ variable "script_dir" {
   type        = string
   default     = "environment/eks-workshop/modules/observability/resiliency/scripts"
 }
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
+  type        = string
+}

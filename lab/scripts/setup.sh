@@ -58,6 +58,8 @@ echo "export RESOURCES_PRECREATED='${RESOURCES_PRECREATED}'" > ~/.bashrc.d/infra
 
 echo "export ANALYTICS_ENDPOINT='${ANALYTICS_ENDPOINT}'" > ~/.bashrc.d/analytics.bash
 
+echo "export INBOUND_CIDRS='${INBOUND_CIDRS}'" > ~/.bashrc.d/inbound-cidr.bash
+
 /usr/local/bin/kubectl completion bash >  ~/.bashrc.d/kubectl_completion.bash
 echo "alias k=kubectl" >> ~/.bashrc.d/kubectl_completion.bash
 echo "complete -F __start_kubectl k" >> ~/.bashrc.d/kubectl_completion.bash

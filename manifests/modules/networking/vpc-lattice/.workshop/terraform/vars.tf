@@ -40,3 +40,8 @@ variable "lattice_controller_version" {
   # renovate: datasource=github-releases depName=aws/aws-application-networking-k8s
   default = "1.1.7"
 }
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
+  type        = string
+}

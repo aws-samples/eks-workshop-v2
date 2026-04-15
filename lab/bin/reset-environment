@@ -136,6 +136,7 @@ mkdir -p /eks-workshop/terraform-data
 export TF_DATA_DIR="/eks-workshop/terraform-data"
 
 export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
+export TF_VAR_inbound_cidrs="${INBOUND_CIDRS:-0.0.0.0/0}"
 
 RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-"false"}
 

@@ -47,3 +47,9 @@ variable "cluster_autoscaler_chart_version" {
   # renovate-helm: depName=cluster-autoscaler registryUrl=https://kubernetes.github.io/autoscaler
   default = "9.55.0"
 }
+
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
+  type        = string
+}
