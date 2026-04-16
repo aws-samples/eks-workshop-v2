@@ -2,7 +2,7 @@
 title: "Observability"
 sidebar_position: 10
 weight: 10
-tmdTranslationSourceHash: '0fb3e01c3e769a70ad6db087581e176d'
+tmdTranslationSourceHash: "0fb3e01c3e769a70ad6db087581e176d"
 ---
 
 オブザーバビリティは、適切に設計されたEKS環境の基本的な要素です。AWSはEKS環境のモニタリング、ロギング、アラーミングのためのネイティブ（CloudWatch）およびオープンソースのマネージドソリューション（Amazon Managed Service for Prometheus、Amazon Managed Grafana、AWS Distro for OpenTelemetry）を提供しています。

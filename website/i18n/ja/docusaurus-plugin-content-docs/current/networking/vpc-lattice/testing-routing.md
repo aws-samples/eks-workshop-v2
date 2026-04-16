@@ -51,4 +51,3 @@ k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
 チェックアウト時に「Lattice checkout」ポッドが約75%の確率で使用されていることに気づくでしょう：
 
 ![Latticeチェックアウト](/docs/networking/vpc-lattice/latticecheckout.webp)
-

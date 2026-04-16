@@ -13,7 +13,7 @@ Let's explore how we'll create the DynamoDB table via a Crossplane managed resou
 
 1. Uses Upbound's AWS DynamoDB provider
 2. Creates a DynamoDB table resource
-3. Specify Kubernetes object with cluster-prefixed name and external name annotation 
+3. Specify Kubernetes object with cluster-prefixed name and external name annotation
 4. Defines `id` and `customerId` as string (`S`) type attributes
 5. Sets `id` as the primary partition key
 6. Specifies the On-demand pricing model

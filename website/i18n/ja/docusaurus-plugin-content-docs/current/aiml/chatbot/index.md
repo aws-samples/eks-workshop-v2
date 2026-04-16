@@ -37,4 +37,3 @@ $ prepare-environment aiml/chatbot
 モデル推論を加速するために、[Trn1](https://aws.amazon.com/ai/machine-learning/trainium/)インスタンスファミリーを通じてAWS Trainiumを活用します。これらの目的に合わせて構築されたアクセラレーターは、ディープラーニングワークロード向けに最適化されており、標準的なCPUベースのソリューションと比較してモデル推論に大幅なパフォーマンス向上を提供します。
 
 私たちの推論アーキテクチャは、LLM向けに特別に設計された高スループットかつメモリ効率の良い推論エンジンである[vLLM](https://github.com/vllm-project/vllm)を活用します。vLLMはOpenAI互換のAPIエンドポイントを提供し、既存のアプリケーションとの統合を容易にします。
-

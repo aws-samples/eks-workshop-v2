@@ -171,4 +171,3 @@ sum by(productId) (watch_orders_total{productId!="*"})
 ```bash timeout=180 test=false
 $ kubectl delete pod load-generator -n other
 ```
-

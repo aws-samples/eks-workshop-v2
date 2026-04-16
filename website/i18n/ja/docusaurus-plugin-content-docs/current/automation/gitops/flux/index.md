@@ -25,4 +25,3 @@ $ prepare-environment automation/gitops/flux
 :::
 
 Fluxは、Gitリポジトリなどのソースコントロールのもとにある設定とKubernetesクラスタを同期させ、デプロイする新しいコードがある場合に、その設定の更新を自動化します。KubernetesのAPI拡張サーバーを使用して構築されており、PrometheusやKubernetesエコシステムの他のコアコンポーネントと統合できます。Fluxはマルチテナンシーをサポートし、任意の数のGitリポジトリを同期させます。
-

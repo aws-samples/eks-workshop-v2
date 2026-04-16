@@ -143,4 +143,3 @@ $ kubectl -n catalog exec -i \
 ```
 
 製品情報を含むJSONペイロードが返されるはずです。おめでとうございます、KubernetesとEKSに最初のマイクロサービスをデプロイしました！
-

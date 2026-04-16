@@ -79,4 +79,3 @@ Events:                <none>
 ```
 
 これでEFS StorageClassとEFS CSI driverの仕組みが理解できました。次のステップでは、UIコンポーネントを変更して、Kubernetesの動的ボリュームプロビジョニングとEFS `StorageClass`を使用して、製品画像を保存するためのPersistentVolumeを使用します。
-

@@ -68,4 +68,3 @@ tmdTranslationSourceHash: da8a1b55bbd61a86d95fa2ea810b3e43
 </Browser>
 
 Kubecostには、Savings、Health、Reports、Alertsなど他にも多くの機能があります。さまざまなリンクを自由に試してみてください。
-

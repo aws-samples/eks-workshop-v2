@@ -125,4 +125,3 @@ $ kubectl -n carts get deployment carts -o jsonpath='{.spec.template.metadata.la
 ラベルは`carts`のDeploymentのPodテンプレートに自動的に注入されました。Kyvernoポリシーで`patchStrategicMerge`および`patchesJson6902`パラメータを使用して、Amazon EKSクラスター内の既存のリソースを変更することも可能です。
 
 これはKyvernoを使用してDeploymentを検証および変更するシンプルな例でした。今後のラボでは、Pod Security Standardsの適用やコンテナイメージレジストリの制限など、より高度なユースケースを探索します。
-

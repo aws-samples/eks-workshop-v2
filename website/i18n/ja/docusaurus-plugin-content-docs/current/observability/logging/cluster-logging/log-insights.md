@@ -36,4 +36,3 @@ fields userAgent, requestURI, @timestamp, @message
 :::info
 CDK Observability Acceleratorを使用している場合は、[CloudWatch Insights Add-on](https://aws-quickstart.github.io/cdk-eks-blueprints/addons/aws-cloudwatch-insights/)をチェックしてください。このアドオンは、EKSのコンテナ化されたアプリケーションとマイクロサービスからメトリクスとログを収集、集約、要約します。
 :::
-

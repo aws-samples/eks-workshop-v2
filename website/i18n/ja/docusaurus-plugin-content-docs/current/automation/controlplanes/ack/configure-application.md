@@ -12,7 +12,7 @@ tmdTranslationSourceHash: 7785ef73c09264f95a4afeb8b2cb2c96
 
 2. **Secrets**：これはConfigmapsに似ていますが、機密情報を扱うことを意図しています。Secretsはデフォルトでは暗号化されていないことに注意してください。
 
-ACK `FieldExport` [カスタムリソース](https://aws-controllers-k8s.github.io/community/docs/user-docs/field-export/)は、ACKリソースのコントロールプレーンの管理と、それらのリソースの_プロパティ_をアプリケーションで使用することの間のギャップを埋めるように設計されています。ACKリソースから任意の`spec`または`status`フィールドをKubernetes ConfigMapまたはSecretにエクスポートするようにACKコントローラを設定します。これらのフィールドは、値が変更されると自動的に更新され、ConfigMapまたはSecretをKubernetesポッドに環境変数としてマウントできます。
+ACK `FieldExport` [カスタムリソース](https://aws-controllers-k8s.github.io/community/docs/user-docs/field-export/)は、ACKリソースのコントロールプレーンの管理と、それらのリソースの*プロパティ*をアプリケーションで使用することの間のギャップを埋めるように設計されています。ACKリソースから任意の`spec`または`status`フィールドをKubernetes ConfigMapまたはSecretにエクスポートするようにACKコントローラを設定します。これらのフィールドは、値が変更されると自動的に更新され、ConfigMapまたはSecretをKubernetesポッドに環境変数としてマウントできます。
 
 このラボでは、cartsコンポーネントのConfigMapを直接更新します。ローカルDynamoDBを指すように設定を削除し、ACKによって作成されたDynamoDBテーブルの名前を使用します：
 

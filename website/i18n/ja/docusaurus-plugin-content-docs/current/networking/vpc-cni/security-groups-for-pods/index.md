@@ -36,4 +36,3 @@ VPC CNIの`ENABLE_POD_ENI=true`を設定することで、Security Groups for Po
 ![Insights](/docs/networking/vpc-cni/security-groups-for-pods/overview.webp)
 
 この章では、サンプルアプリケーションコンポーネントの1つを再構成して、外部ネットワークリソースにアクセスするためにSecurity Groups for Podsを活用します。
-

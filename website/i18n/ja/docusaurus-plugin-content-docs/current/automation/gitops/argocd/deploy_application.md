@@ -1,7 +1,7 @@
 ---
 title: "アプリケーションのデプロイ"
 sidebar_position: 30
-tmdTranslationSourceHash: 'f2ab388708b4751ac24fbc2d1dddc667'
+tmdTranslationSourceHash: "f2ab388708b4751ac24fbc2d1dddc667"
 ---
 
 Argo CDをクラスターに正常に設定したので、アプリケーションをデプロイしましょう。GitOpsベースの配信アプローチと従来のデプロイ方法の違いを示すために、サンプルアプリケーションのUIコンポーネントを`kubectl apply -k`アプローチからArgo CD管理のデプロイに移行します。

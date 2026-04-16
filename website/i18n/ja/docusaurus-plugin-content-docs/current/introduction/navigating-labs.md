@@ -1,7 +1,7 @@
 ---
 title: ラボのナビゲーション
 sidebar_position: 25
-tmdTranslationSourceHash: '3ef210656bc2a09d2ad75d89542ca72f'
+tmdTranslationSourceHash: "3ef210656bc2a09d2ad75d89542ca72f"
 ---
 
 import Tabs from '@theme/Tabs';

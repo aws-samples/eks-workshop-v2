@@ -49,7 +49,6 @@ Next, we'll create a [StorageClass](https://kubernetes.io/docs/concepts/storage/
 1. Set the `provisioner` parameter to `efs.csi.aws.com` for the EFS CSI provisioner
 2. Inject `EFS_ID` environment variable into the `filesystemid` parameter
 
-
 Apply the kustomization:
 
 ```bash

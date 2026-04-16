@@ -30,4 +30,3 @@ Amazon VPC CNIは[Amazon EC2ネットワークインターフェース](https://
 ![プレフィックスフロー](/docs/networking/vpc-cni/prefix/prefix_flow.webp)
 
 VPC CNIをプレフィックスモードで使用するための推奨事項のリストについては、[EKSベストプラクティスガイド](https://aws.github.io/aws-eks-best-practices/networking/prefix-mode/index_linux/)をご覧ください。
-

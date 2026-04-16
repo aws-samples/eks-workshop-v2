@@ -27,4 +27,3 @@ $ prepare-environment troubleshooting/workernodes
 - Kubernetesリソース（deployment、daemonset、namespace、configmaps、priority-class）をデプロイします
 
 :::
-

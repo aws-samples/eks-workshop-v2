@@ -52,6 +52,7 @@ $ kubectl get events | grep block
 > Note: The output may vary.
 
 Each event corresponds to a policy violation from earlier in this lab:
+
 - `baseline-policy` blocked the `privileged-deploy` Deployment when we patched it to add `privileged: true`
 - `require-labels` blocked the `ui` Deployment rollout restart because its pod template was missing the `CostCenter` label
 - `restrict-image-registries` blocked `nginx-blocked` because its image came from an untrusted registry

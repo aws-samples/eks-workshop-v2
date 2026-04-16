@@ -30,4 +30,3 @@ $ prepare-environment automation/controlplanes/kro
 kro を使用すると、インテリジェントな依存関係処理を備えた高レベルの抽象化に複数の Kubernetes リソースを構成できます - リソースがどのように相互に参照しているかを分析することで、リソースをデプロイする正しい順序を自動的に決定します。CEL 式を使用してリソース間で値を渡したり、条件付きロジックを含めたり、ユーザーエクスペリエンスを簡素化するためのデフォルト値を定義したりすることができます。
 
 このラボでは、まず WebApplication ResourceGraphDefinition を使用してインメモリデータベースを持つ完全な **Carts** コンポーネントをデプロイすることで、kro の機能を探ります。次に、ベースの WebApplication テンプレートを拡張して Amazon DynamoDB ストレージを追加する WebApplicationDynamoDB ResourceGraphDefinition を構成することでこれを強化します。
-

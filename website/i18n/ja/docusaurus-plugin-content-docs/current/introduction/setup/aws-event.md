@@ -43,4 +43,3 @@ tmdTranslationSourceHash: 8e0477719793dd52863d7f0be3b23fa7
 ![Get Started](/docs/introduction/setup/workshop-event-page.webp)
 
 これで[ラボのナビゲーションセクション](/docs/introduction/navigating-labs)に進むことができます。
-

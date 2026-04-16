@@ -73,4 +73,3 @@ Accept-Ranges: bytes
 <Browser url='http://k8s-kubecost-kubecost-e83ecf8fc1-fc26f5c92767520f.elb.us-west-2.amazonaws.com:9090'>
 <img src={require('@site/static/docs/observability/kubecost/overview.webp').default}/>
 </Browser>
-

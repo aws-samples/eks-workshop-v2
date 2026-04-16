@@ -1,7 +1,7 @@
 ---
 title: "OpenSearch へのアクセス"
 sidebar_position: 10
-tmdTranslationSourceHash: '61f8fdf6c627b4aa973c64ba2bba29bd'
+tmdTranslationSourceHash: "61f8fdf6c627b4aa973c64ba2bba29bd"
 ---
 
 このセクションでは、AWS Systems Manager Parameter Store から OpenSearch の認証情報を取得し、Kubernetes イベントとポッドログ用の事前作成された OpenSearch ダッシュボードを読み込み、OpenSearch へのアクセスを確認します。

@@ -47,4 +47,3 @@ $ aws cloud9 create-environment-membership --environment-id environment_id_from_
 
 }
 ```
-

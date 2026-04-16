@@ -34,4 +34,3 @@ $ prepare-environment networking/eks-hybrid-nodes
 以下のアーキテクチャ図は、私たちが構築するものの高レベルな例です。AWS Transit Gatewayを介してEKSクラスターをシミュレートされた「リモート」ネットワークに接続します。本番環境では、リモートネットワークは通常、AWS Direct ConnectまたはAWS Site-to-Site VPNを介して接続されます。これらの接続は、クラスターVPCのTransit Gatewayに接続されます。「リモート」ネットワークには、ラボ目的でEKS Hybrid Nodeとして使用される単一のEC2ノードが実行されます。このノードでは、IDEからSSHを介してコマンドを実行します。EC2上でのEKS Hybrid Nodesの実行は**サポートされていない**ことに注意することが重要です。ここではデモ目的でのみ行っています。
 
 ![アーキテクチャ図](/docs/networking/eks-hybrid-nodes/lab_environment.png)
-

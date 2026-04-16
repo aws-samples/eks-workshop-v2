@@ -13,4 +13,3 @@ tmdTranslationSourceHash: fa2252b7e780d07180e66fb2144b655c
 Kubernetes Metrics Serverは、クラスター内のリソース使用データのスケーラブルかつ効率的なアグリゲーターです。Horizontal Pod Autoscalerが必要とするコンテナメトリクスを提供します。メトリクスサーバーは、Amazon EKSクラスターにデフォルトではデプロイされていません。
 
 <img src={require('@site/static/docs/fundamentals/workloads/horizontal-pod-autoscaler/hpa.webp').default}/>
-

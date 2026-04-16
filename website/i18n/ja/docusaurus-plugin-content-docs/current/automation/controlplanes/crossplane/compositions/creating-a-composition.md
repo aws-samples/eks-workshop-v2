@@ -64,7 +64,6 @@ DynamoDBテーブル名の指定が必要なセクションは以下の通りで
 
 ::yaml{file="manifests/modules/automation/controlplanes/crossplane/compositions/composition/table.yaml" zoomPath="spec.resources.0.patches.11.toFieldPath" zoomBefore="2"}
 
-
 この設定をEKSクラスターに適用してみましょう：
 
 ```bash

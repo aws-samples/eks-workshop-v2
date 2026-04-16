@@ -1,7 +1,7 @@
 ---
 title: "パイプラインのセットアップ"
 sidebar_position: 20
-tmdTranslationSourceHash: 'dae07d466d20246cd56915cb867dd8af'
+tmdTranslationSourceHash: "dae07d466d20246cd56915cb867dd8af"
 ---
 
 パイプラインを実行する前に、CodePipelineがクラスターにデプロイできるようにクラスターを構成しましょう。CodePipelineはクラスター上で操作（`kubectl`や`helm`）を実行するための権限が必要です。この操作を成功させるには、codepipelineパイプラインサービスロールをクラスターのアクセスエントリとして追加する必要があります：

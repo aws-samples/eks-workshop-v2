@@ -4,7 +4,7 @@ sidebar_position: 74
 tmdTranslationSourceHash: db98a354c23b018a8031ee4bd6e8843d
 ---
 
-Kyvernoには、Kubernetes Policy Working Groupによって定義されたオープンフォーマットを使用する[ポリシーレポート](https://kyverno.io/docs/policy-reports/)ツールが含まれています。これらのレポートはクラスター内にカスタムリソースとしてデプロイされます。Kyvernoは、クラスター内で_CREATE_、_UPDATE_、_DELETE_などのアドミッションアクションが実行されると、これらのレポートを生成します。また、既存のリソースに対してポリシーを検証するバックグラウンドスキャンの結果としてもレポートが生成されます。
+Kyvernoには、Kubernetes Policy Working Groupによって定義されたオープンフォーマットを使用する[ポリシーレポート](https://kyverno.io/docs/policy-reports/)ツールが含まれています。これらのレポートはクラスター内にカスタムリソースとしてデプロイされます。Kyvernoは、クラスター内で*CREATE*、_UPDATE_、*DELETE*などのアドミッションアクションが実行されると、これらのレポートを生成します。また、既存のリソースに対してポリシーを検証するバックグラウンドスキャンの結果としてもレポートが生成されます。
 
 このワークショップを通じて、私たちは特定のルールを持ついくつかのポリシーを作成しました。リソースがポリシー定義に従って1つ以上のルールに一致し、それらのいずれかに違反すると、違反ごとにレポートにエントリが作成されます。同じリソースが複数のルールに一致して違反する場合、複数のエントリが作成される可能性があります。リソースが削除されると、そのエントリもレポートから削除されます。つまり、Kyvernoレポートは常にクラスターの現在の状態を表し、履歴情報は記録しません。
 
@@ -53,6 +53,7 @@ $ kubectl get events | grep block
 > 注：出力は異なる場合があります。
 
 各イベントは、このラボの前半でのポリシー違反に対応しています：
+
 - `baseline-policy`は、`privileged: true`を追加するためにパッチを適用したときに`privileged-deploy` Deploymentをブロックしました
 - `require-labels`は、podテンプレートに`CostCenter`ラベルがなかったため、`ui` Deploymentのrollout restartをブロックしました
 - `restrict-image-registries`は、画像が信頼されていないレジストリから来ていたため、`nginx-blocked`をブロックしました

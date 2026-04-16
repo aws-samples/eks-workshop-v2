@@ -32,7 +32,7 @@ kind: Service
 metadata:
   name: search-svc # サービスの名前
 spec:
-# HIGHLIGHT
+  # HIGHLIGHT
   type: LoadBalancer
   selector:
     app: SearchApp # ポッドはapp=SearchAppというラベルでデプロイされています
@@ -45,4 +45,3 @@ spec:
 ![IP mode](/docs/fundamentals/exposing/loadbalancer/ui-nlb-instance.webp)
 
 このチャプターでは、レイヤー4 Network Load Balancerを使用して、EKSクラスターで実行されているアプリケーションをインターネットに公開する方法を紹介します。
-

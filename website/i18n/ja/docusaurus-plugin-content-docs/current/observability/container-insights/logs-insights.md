@@ -2,7 +2,7 @@
 title: "CloudWatch Logs Insightsの使用"
 sidebar_position: 30
 weight: 5
-tmdTranslationSourceHash: '8340e8f3f96af28c2b8fe65a1d697038'
+tmdTranslationSourceHash: "8340e8f3f96af28c2b8fe65a1d697038"
 ---
 
 Container Insightsは、CloudWatch Logsに保存されている[Embedded Metric Format](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format.html)を使用したパフォーマンスログイベントによってメトリクスを収集します。CloudWatchはログから複数のメトリクスを自動的に生成し、CloudWatchコンソールで確認することができます。また、CloudWatch Logs Insightsクエリを使用して、収集されたパフォーマンスデータのより深い分析を行うこともできます。
@@ -38,4 +38,3 @@ STATS avg(number_of_container_restarts) as avg_number_of_container_restarts by P
 このクエリは、コンテナの再起動の平均回数でソートされたPodのリストを表示します。
 
 別のクエリを試したい場合は、画面右側のフィールドリストを使用できます。クエリ構文の詳細については、[CloudWatch Logs Insightsクエリ構文](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html)を参照してください。
-

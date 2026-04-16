@@ -82,4 +82,3 @@ replicaset.apps/kyverno-background-controller-6fbcb79d89   1         1         1
 replicaset.apps/kyverno-cleanup-controller-549855c6d8      1         1         1       97s
 replicaset.apps/kyverno-reports-controller-668c67d758      1         1         1       97s
 ```
-

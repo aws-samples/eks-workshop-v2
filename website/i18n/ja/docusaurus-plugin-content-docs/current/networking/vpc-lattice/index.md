@@ -57,4 +57,3 @@ Amazon VPC Latticeの[コンポーネント](https://docs.aws.amazon.com/vpc-lat
   サービスがどのように通信することを許可されるかを決定する宣言型ポリシー。これらはサービスレベルまたはサービスネットワークレベルで定義できます。
 
 ![Amazon VPC Latticeのコンポーネント](/docs/networking/vpc-lattice/vpc_lattice_building_blocks.webp)
-

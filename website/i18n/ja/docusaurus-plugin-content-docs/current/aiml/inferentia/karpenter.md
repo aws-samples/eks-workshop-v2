@@ -34,4 +34,3 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/aiml/inferentia/nodepool 
 ```
 
 これでNodePoolがトレーニングとインフェレンスPodの作成準備が整いました。
-

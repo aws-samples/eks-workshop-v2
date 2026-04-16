@@ -24,7 +24,7 @@ Now let's demonstrate how weighted routing works by creating `HTTPRoute` resourc
 
 ::yaml{file="manifests/modules/networking/vpc-lattice/target-group-policy/target-group-policy.yaml" paths="spec.targetRef,spec.healthCheck,spec.healthCheck.intervalSeconds,spec.healthCheck.timeoutSeconds,spec.healthCheck.healthyThresholdCount,spec.healthCheck.unhealthyThresholdCount,spec.healthCheck.path,spec.healthCheck.port,spec.healthCheck.protocol,spec.healthCheck.statusMatch"}
 
-1. `targetRef` applies this policy to the `checkout` Service  
+1. `targetRef` applies this policy to the `checkout` Service
 2. The settings in the `healthCheck` section defines how VPC Lattice monitors service health
 3. `intervalSeconds: 10` : Check every 10 seconds
 4. `timeoutSeconds: 1` : 1-second timeout per check
@@ -34,7 +34,6 @@ Now let's demonstrate how weighted routing works by creating `HTTPRoute` resourc
 8. `port: 8080` : Health check endpoint port
 9. `protocol: HTTP` : Health check endpoint protocol
 10. `statusMatch: "200"` : Expects HTTP 200 response
-
 
 Apply this resource:
 

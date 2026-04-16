@@ -70,4 +70,3 @@ Clean up the Deployment:
 $ kubectl delete deployment privileged-deploy --ignore-not-found=true
 deployment.apps "privileged-deploy" deleted
 ```
-
