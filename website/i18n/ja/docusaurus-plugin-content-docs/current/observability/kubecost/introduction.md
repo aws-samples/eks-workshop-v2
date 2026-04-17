@@ -1,7 +1,7 @@
 ---
 title: "はじめに"
 sidebar_position: 10
-tmdTranslationSourceHash: ae393634b2df08c97fb378b53a9b884c
+tmdTranslationSourceHash: 61f5bf2d85600327cb722066881fe363
 ---
 
 最初に行うことは、クラスターにKubecostをインストールすることです。ラボの準備の一環として、AWS Load Balancer ControllerとEBS CSIドライバーが事前にインストールされ、Kubecostにイングレスとストレージを提供します。
@@ -18,6 +18,7 @@ $ helm upgrade --install kubecost oci://public.ecr.aws/kubecost/cost-analyzer \
   --namespace "kubecost" --create-namespace \
   --values https://raw.githubusercontent.com/kubecost/cost-analyzer-helm-chart/v${KUBECOST_CHART_VERSION}/cost-analyzer/values-eks-cost-monitoring.yaml \
   --values ~/environment/eks-workshop/modules/observability/kubecost/values.yaml \
+  --set "service.annotations.service\\.beta\\.kubernetes\\.io/load-balancer-source-ranges"="$INBOUND_CIDRS" \
   --wait
 NAME: kubecost
 LAST DEPLOYED: Thu Jun 13 17:48:55 2024

@@ -1,21 +1,22 @@
 ---
 title: "ロードバランサーの作成"
 sidebar_position: 20
-tmdTranslationSourceHash: 10d2bea65be51068244e993bee3c0d60
+tmdTranslationSourceHash: e841c90e78e7e9a022ea9cda90de035c
 ---
 
 以下の設定でロードバランサーをプロビジョニングする追加のServiceを作成しましょう：
 
-::yaml{file="manifests/modules/exposing/load-balancer/nlb/nlb.yaml" paths="spec.type,spec.ports,spec.selector"}
+::yaml{file="manifests/modules/exposing/load-balancer/nlb/nlb.yaml" paths="metadata.annotations,spec.type,spec.ports,spec.selector"}
 
-1. この`Service`はネットワークロードバランサーを作成します
-2. NLBはポート80でリッスンし、`ui` Podsのポート8080に接続を転送します
-3. ここでは、ポッド上のラベルを使用して、このサービスのターゲットに追加するポッドを指定します
+1. AnnotationsはAWS Load Balancer Controllerがインターネット向けNLBをプロビジョニングするように設定します。`load-balancer-source-ranges`アノテーションはインバウンドトラフィックを特定のCIDR範囲に制限します
+2. この`Service`はネットワークロードバランサーを作成します
+3. NLBはポート80でリッスンし、`ui` Podsのポート8080に接続を転送します
+4. ここでは、ポッド上のラベルを使用して、このサービスのターゲットに追加するポッドを指定します
 
 この設定を適用します：
 
 ```bash timeout=180 hook=add-lb hookTimeout=430
-$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/load-balancer/nlb
+$ kubectl kustomize ~/environment/eks-workshop/modules/exposing/load-balancer/nlb | envsubst | kubectl apply -f -
 ```
 
 `ui`アプリケーションのService リソースを再度確認してみましょう：

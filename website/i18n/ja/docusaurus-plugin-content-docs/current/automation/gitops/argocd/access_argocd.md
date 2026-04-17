@@ -2,7 +2,7 @@
 title: "Argo CDのインストール"
 sidebar_position: 10
 weight: 10
-tmdTranslationSourceHash: d56c4f4c50af1ff2a7b63644e2d44aeb
+tmdTranslationSourceHash: a732381699805dc3451f19017ace3eef
 ---
 
 まずはクラスターにArgo CDをインストールしましょう：
@@ -12,6 +12,7 @@ $ helm repo add argo-cd https://argoproj.github.io/argo-helm
 $ helm upgrade --install argocd argo-cd/argo-cd --version "${ARGOCD_CHART_VERSION}" \
   --namespace "argocd" --create-namespace \
   --values ~/environment/eks-workshop/modules/automation/gitops/argocd/values.yaml \
+  --set "server.service.annotations.service\\.beta\\.kubernetes\\.io/load-balancer-source-ranges"="$INBOUND_CIDRS" \
   --wait
 NAME: argocd
 LAST DEPLOYED: [...]

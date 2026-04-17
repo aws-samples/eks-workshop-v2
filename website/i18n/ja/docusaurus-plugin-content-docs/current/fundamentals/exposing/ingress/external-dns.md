@@ -1,14 +1,14 @@
 ---
 title: "External DNS"
 sidebar_position: 30
-tmdTranslationSourceHash: b7f399a9ad32bbe99ece1082753fcd42
+tmdTranslationSourceHash: 9f9eabb2ce6f39f3e5e9524956100e15
 ---
 
 [ExternalDNS](https://github.com/kubernetes-sigs/external-dns)はKubernetesコントローラーで、クラスターのサービスとイングレス用のDNSレコードを自動的に管理します。KubernetesリソースとAWS Route 53などのDNSプロバイダーとの間の橋渡しとして機能し、DNSレコードがクラスターの状態と同期されるようにします。ロードバランサーにDNSエントリを使用することで、自動生成されたホスト名の代わりに人間が読みやすく、覚えやすいアドレスを提供し、組織のブランディングに合わせたドメイン名でサービスを簡単にアクセスおよび認識できるようにします。
 
-このラボでは、ExternalDNSとAWS Route 53を使用して、KubernetesのイングレスリソースのDNS管理を自動化します。
+このラボでは、ExternalDNSとAWS Route 53を使用して、KubernetesのIngressリソースのDNS管理を自動化します。
 
-まず、環境変数として提供されているIAMロールARNとHelmチャートバージョンを使用して、HelmでExternalDNSをインストールしましょう：
+まず、環境変数として提供されているIAM roleのARNとHelmチャートバージョンを使用して、HelmでExternalDNSをインストールしましょう：
 
 ```bash
 $ helm repo add external-dns https://kubernetes-sigs.github.io/external-dns/
@@ -33,20 +33,20 @@ NAME                                READY   STATUS    RESTARTS   AGE
 external-dns-5bdb4478b-fl48s        1/1     Running   0          2m
 ```
 
-次に、DNS設定を追加して以前のイングレスリソースを更新しましょう：
+次に、DNS設定を追加して以前のIngressリソースを更新しましょう：
 
 ::yaml{file="manifests/modules/exposing/ingress/external-dns/ingress.yaml" paths="metadata.annotations,spec.rules.0.host"}
 
-1. `external-dns.alpha.kubernetes.io/hostname`アノテーションは、ExternalDNSにイングレス用に作成および管理するDNS名を指定し、アプリのホスト名とロードバランサーのマッピングを自動化します。
-2. `spec.rules.host`は、イングレスが待ち受けるドメイン名を定義し、ExternalDNSはこれを使って関連するロードバランサーの一致するDNSレコードを作成します。
+1. `external-dns.alpha.kubernetes.io/hostname`アノテーションは、ExternalDNSにIngress用に作成および管理するDNS名を指定し、アプリのホスト名とロードバランサーのマッピングを自動化します。
+2. `spec.rules.host`は、Ingressが待ち受けるドメイン名を定義し、ExternalDNSはこれを使って関連するロードバランサーの一致するDNSレコードを作成します。
 
 この設定を適用しましょう：
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/external-dns
+$ kubectl kustomize ~/environment/eks-workshop/modules/exposing/ingress/external-dns | envsubst | kubectl apply -f -
 ```
 
-ホスト名を使用して作成されたイングレスオブジェクトを確認しましょう：
+ホスト名を使用して作成されたIngressオブジェクトを確認しましょう：
 
 ```bash wait=120
 $ kubectl get ingress ui   -n ui
@@ -89,3 +89,4 @@ Set-Cookie: SESSIONID=c3f13e02-4ff3-40ba-866e-c777f7450997
 
 {"status":"UP"}
 ```
+

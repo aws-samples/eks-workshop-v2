@@ -1,7 +1,7 @@
 ---
 title: "Gitea のセットアップ"
 sidebar_position: 5
-tmdTranslationSourceHash: 81a4c85f3ba8bb568bde3044b3cdfecc
+tmdTranslationSourceHash: 3cb2d3f98584b410d0712934d5902c5d
 ---
 
 GitHubやGitLabの代わりとして、迅速かつ簡単な方法として[Gitea](https://gitea.com)を使用します。Giteaは軽量な自己ホスト型Gitサービスで、ユーザーフレンドリーなウェブインターフェースを提供し、独自のGitリポジトリを迅速に設定および管理することができます。これは、Fluxで探索するGitOpsワークフローに不可欠なKubernetesマニフェストを保存およびバージョン管理するための信頼できるソースとして機能します。
@@ -13,6 +13,8 @@ $ helm upgrade --install gitea oci://docker.gitea.com/charts/gitea \
   --version "$GITEA_CHART_VERSION" \
   --namespace gitea --create-namespace \
   --values ~/environment/eks-workshop/modules/automation/gitops/flux/gitea/values.yaml \
+  --set "service.http.annotations.service\\.beta\\.kubernetes\\.io/load-balancer-source-ranges"="$INBOUND_CIDRS" \
+  --set "service.ssh.annotations.service\\.beta\\.kubernetes\\.io/load-balancer-source-ranges"="$INBOUND_CIDRS" \
   --set "gitea.admin.password=${GITEA_PASSWORD}" \
   --wait
 ```
@@ -54,3 +56,4 @@ $ git config --global user.name "Your Name"
 $ git config --global init.defaultBranch main
 $ git config --global core.sshCommand 'ssh -i ~/.ssh/gitops_ssh.pem'
 ```
+
