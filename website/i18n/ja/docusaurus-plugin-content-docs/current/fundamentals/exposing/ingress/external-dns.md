@@ -1,14 +1,14 @@
 ---
 title: "External DNS"
 sidebar_position: 30
-tmdTranslationSourceHash: 9f9eabb2ce6f39f3e5e9524956100e15
+tmdTranslationSourceHash: 019f0b1b461fa8b8569fd792821c987d
 ---
 
-[ExternalDNS](https://github.com/kubernetes-sigs/external-dns)はKubernetesコントローラーで、クラスターのサービスとイングレス用のDNSレコードを自動的に管理します。KubernetesリソースとAWS Route 53などのDNSプロバイダーとの間の橋渡しとして機能し、DNSレコードがクラスターの状態と同期されるようにします。ロードバランサーにDNSエントリを使用することで、自動生成されたホスト名の代わりに人間が読みやすく、覚えやすいアドレスを提供し、組織のブランディングに合わせたドメイン名でサービスを簡単にアクセスおよび認識できるようにします。
+[ExternalDNS](https://github.com/kubernetes-sigs/external-dns)はKubernetesコントローラーで、クラスターのサービスとIngressのDNSレコードを自動的に管理します。KubernetesリソースとAWS Route 53などのDNSプロバイダー間の橋渡しとして機能し、DNSレコードがクラスターの状態と同期されるようにします。ロードバランサーにDNSエントリを使用することで、自動生成されたホスト名の代わりに人間が読みやすく記憶しやすいアドレスを提供し、組織のブランディングに合ったドメイン名でサービスを簡単にアクセス可能かつ認識可能にします。
 
-このラボでは、ExternalDNSとAWS Route 53を使用して、KubernetesのIngressリソースのDNS管理を自動化します。
+このラボでは、ExternalDNSとAWS Route 53を使用してKubernetes IngressリソースのDNS管理を自動化します。
 
-まず、環境変数として提供されているIAM roleのARNとHelmチャートバージョンを使用して、HelmでExternalDNSをインストールしましょう：
+まず、環境変数として提供されているIAM role ARNとHelmチャートバージョンを使用して、HelmでExternalDNSをインストールしましょう：
 
 ```bash
 $ helm repo add external-dns https://kubernetes-sigs.github.io/external-dns/
@@ -25,7 +25,7 @@ $ helm upgrade --install external-dns external-dns/external-dns --version "${DNS
     --wait
 ```
 
-ExternalDNSポッドが実行されていることを確認しましょう：
+ExternalDNS Podが実行されていることを確認します：
 
 ```bash
 $ kubectl -n external-dns get pods
@@ -33,20 +33,20 @@ NAME                                READY   STATUS    RESTARTS   AGE
 external-dns-5bdb4478b-fl48s        1/1     Running   0          2m
 ```
 
-次に、DNS設定を追加して以前のIngressリソースを更新しましょう：
+次に、DNS設定を含めて以前のIngressリソースを更新しましょう：
 
 ::yaml{file="manifests/modules/exposing/ingress/external-dns/ingress.yaml" paths="metadata.annotations,spec.rules.0.host"}
 
-1. `external-dns.alpha.kubernetes.io/hostname`アノテーションは、ExternalDNSにIngress用に作成および管理するDNS名を指定し、アプリのホスト名とロードバランサーのマッピングを自動化します。
-2. `spec.rules.host`は、Ingressが待ち受けるドメイン名を定義し、ExternalDNSはこれを使って関連するロードバランサーの一致するDNSレコードを作成します。
+1. アノテーション`external-dns.alpha.kubernetes.io/hostname`は、ExternalDNSにIngress用に作成および管理するDNS名を指定し、アプリのホスト名とロードバランサーのマッピングを自動化します。
+2. `spec.rules.host`は、Ingressが待ち受けるドメイン名を定義し、ExternalDNSはこれを使用して関連するロードバランサーに対応するDNSレコードを作成します。
 
-この設定を適用しましょう：
+この設定を適用します：
 
 ```bash
 $ kubectl kustomize ~/environment/eks-workshop/modules/exposing/ingress/external-dns | envsubst | kubectl apply -f -
 ```
 
-ホスト名を使用して作成されたIngressオブジェクトを確認しましょう：
+ホスト名が設定されたIngressオブジェクトを確認しましょう：
 
 ```bash wait=120
 $ kubectl get ingress ui   -n ui
@@ -54,7 +54,7 @@ NAME     CLASS   HOSTS                    ADDRESS                               
 ui       alb     ui.retailstore.com       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com   80      4m15s
 ```
 
-DNSレコードの作成を確認します。ExternalDNSは`retailstore.com`のRoute 53プライベートホストゾーンにDNSレコードを自動的に作成します。
+DNSレコードの作成を確認します。ExternalDNSは`retailstore.com` Route 53プライベートホストゾーンにDNSレコードを自動的に作成します。
 
 :::note
 
@@ -74,10 +74,10 @@ Desired change: CREATE ui.retailstore.com A
 
 <ConsoleButton url="https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones" service="route53" label="Route53コンソールを開く"/>
 
-Route 53のプライベートホストゾーンは、関連付けられたVPC（この場合はEKSクラスターVPC）からのみアクセス可能です。DNSエントリをテストするために、ポッド内から`curl`を使用します：
+Route 53プライベートホストゾーンは関連付けられたVPC（この場合はEKSクラスターVPC）からのみアクセス可能です。DNSエントリをテストするために、Pod内から`curl`を使用します：
 
 ```bash hook=dns-curl
-$ kubectl -n ui exec -it \
+$ kubectl -n ui exec \
   deployment/ui -- bash -c "curl -i http://ui.retailstore.com/actuator/health/liveness; echo"
 
 HTTP/1.1 200 OK
@@ -89,4 +89,3 @@ Set-Cookie: SESSIONID=c3f13e02-4ff3-40ba-866e-c777f7450997
 
 {"status":"UP"}
 ```
-
