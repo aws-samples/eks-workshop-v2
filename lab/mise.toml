@@ -1,0 +1,17 @@
+[tools]
+# Tools with registered short names — full Renovate support via mise manager
+kubectl   = "1.33.7"
+helm      = "3.20.0"
+eksctl    = "0.222.0"
+yq        = "4.52.2"
+flux2     = "2.7.5"
+argocd    = "2.14.21"
+terraform = "1.14.4"
+
+# Tools via github: backend — require extractVersion overrides in renovate.json
+# because their release tags use a v-prefix that is not stripped automatically.
+# kubeseal and ec2-instance-selector have no Renovate tracking in the previous
+# installer.sh; this is the first time they will receive automated updates.
+"github:hatoo/oha"                          = "1.13.0"
+"github:bitnami-labs/sealed-secrets"        = "0.18.4"
+"github:aws/amazon-ec2-instance-selector"   = "3.1.1"
