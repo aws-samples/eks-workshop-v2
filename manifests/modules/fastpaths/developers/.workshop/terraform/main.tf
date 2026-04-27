@@ -10,4 +10,5 @@ module "preprovision" {
   eks_cluster_id      = var.eks_cluster_id
   eks_cluster_auto_id = var.eks_cluster_auto_id
   tags                = var.tags
+  inbound_cidrs       = var.inbound_cidrs
 }

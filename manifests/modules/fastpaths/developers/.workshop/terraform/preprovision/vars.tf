@@ -16,3 +16,10 @@ variable "eks_cluster_auto_id" {
   type        = string
   default     = "eks-workshop-auto"
 }
+
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
+  type        = string
+  default     = "0.0.0.0/0"
+}

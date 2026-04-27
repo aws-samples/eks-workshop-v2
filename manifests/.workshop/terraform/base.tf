@@ -46,7 +46,6 @@ variable "resources_precreated" {
 }
 
 # tflint-ignore: terraform_unused_declarations
-# tflint-ignore: terraform_unused_declarations
 variable "eks_cluster_auto_id" {
   description = "EKS Auto Mode cluster name"
   type        = string
@@ -85,6 +84,7 @@ data "aws_eks_cluster" "eks_cluster_auto" {
   count = local.auto_cluster_exists ? 1 : 0
   name  = var.eks_cluster_auto_id
 }
+
 data "aws_eks_cluster_auth" "this_auto" {
   count = local.auto_cluster_exists ? 1 : 0
   name  = var.eks_cluster_auto_id
