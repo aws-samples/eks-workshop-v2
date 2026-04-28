@@ -71,7 +71,7 @@ logmessage "🚀 We're preparing your environment for the next lab, sit tight!"
 REPOSITORY_REF=${REPOSITORY_REF:-""}
 RESET_NO_DELETE=${RESET_NO_DELETE:-""}
 
-if [ ! -z "${REPOSITORY_REF}" ]; then
+if [ ! -z "${REPOSITORY_REF}" ] && [ -z "${RESET_NO_DELETE}" ]; then
   rm -f /home/ec2-user/environment/eks-workshop
   if [ -z "${RESET_NO_DELETE}" ]; then
     rm -rf $manifests_path
