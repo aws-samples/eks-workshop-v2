@@ -50,6 +50,10 @@ reset-environment:
 delete-environment:
 	bash hack/shell.sh $(environment) delete-environment
 
+.PHONY: pre-provision
+pre-provision:
+	bash hack/pre-provision-resources.sh $(environment) $(action)
+
 .PHONY: create-infrastructure
 create-infrastructure:
 	bash hack/create-infrastructure.sh $(environment) $(cluster)
