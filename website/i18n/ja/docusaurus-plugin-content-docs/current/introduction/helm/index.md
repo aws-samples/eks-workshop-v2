@@ -1,8 +1,8 @@
 ---
 title: Helm
 sidebar_custom_props: { "module": true }
-sidebar_position: 50
-tmdTranslationSourceHash: 5f7ef990a504bc7200491f65c8407b7a
+sidebar_position: 80
+tmdTranslationSourceHash: 2cfda63d9839d159ccdaecf95773c388
 ---
 
 ::required-time
@@ -162,4 +162,113 @@ $ helm uninstall ui --namespace ui --wait
 
 これにより、そのリリース用にチャートによって作成されたすべてのリソースがEKSクラスターから削除されます。
 
-Helmの仕組みを理解したので、[Fundamentalsモジュール](/docs/fundamentals)に進みましょう。
+## Helmを使用したアプリケーションのデプロイ
+
+それでは、Helmを使用してリテールストアアプリケーションをデプロイする方法を見てみましょう。ワークショップでは主にKustomizeを使用しますが、多くのサードパーティアプリケーションがHelmチャートとして配布されているため、Helmを理解することは価値があります。
+
+### Catalogサービス用のシンプルなチャートの作成
+
+Helmでアプリケーションをパッケージ化してデプロイする方法を理解するために、catalogサービス用の基本的なHelmチャートを作成してみましょう：
+
+```bash
+$ helm create retail-catalog
+```
+
+これにより、基本的なチャート構造が作成されます。作成されたものを見てみましょう：
+
+```bash
+$ ls -la retail-catalog/
+total 8
+drwxr-xr-x  4 user user  128 Nov 15 10:30 .
+drwxr-xr-x  3 user user   96 Nov 15 10:30 ..
+-rw-r--r--  1 user user 1141 Nov 15 10:30 Chart.yaml
+drwxr-xr-x  2 user user   64 Nov 15 10:30 charts
+drwxr-xr-x  3 user user   96 Nov 15 10:30 templates
+-rw-r--r--  1 user user 1862 Nov 15 10:30 values.yaml
+```
+
+### チャートのカスタマイズ
+
+catalogサービスをデプロイするためにデフォルトの値を変更しましょう。`values.yaml`ファイルを更新します：
+
+```bash
+$ cat > retail-catalog/values.yaml << 'EOF'
+replicaCount: 2
+
+image:
+  repository: public.ecr.aws/aws-containers/retail-store-sample-catalog
+  tag: "0.4.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+resources:
+  requests:
+    cpu: 128m
+    memory: 512Mi
+  limits:
+    cpu: 256m
+    memory: 512Mi
+
+nameOverride: "catalog"
+fullnameOverride: "catalog"
+EOF
+```
+
+### チャートのインストール
+
+それでは、Helmチャートを使用してcatalogサービスをインストールしましょう：
+
+```bash
+$ helm install catalog ./retail-catalog --namespace catalog --create-namespace
+```
+
+デプロイを確認します：
+
+```bash
+$ helm list -n catalog
+NAME     NAMESPACE  REVISION  UPDATED                                  STATUS    CHART               APP VERSION
+catalog  catalog    1         2024-11-15 10:35:42.123456789 +0000 UTC  deployed  retail-catalog-0.1.0  1.16.0
+```
+
+実行中のPodを確認します：
+
+```bash
+$ kubectl get pods -n catalog
+NAME                       READY   STATUS    RESTARTS   AGE
+catalog-7d4b8c9f8d-abc12   1/1     Running   0          2m
+catalog-7d4b8c9f8d-def34   1/1     Running   0          2m
+```
+
+### リリースのアップグレード
+
+Helmの強みの1つはアプリケーションのアップグレード管理です。レプリカ数を更新してアプリケーションをスケールしてみましょう：
+
+```bash
+$ helm upgrade catalog ./retail-catalog \
+  --namespace catalog \
+  --set replicaCount=3
+```
+
+### ロールバック
+
+何か問題が発生した場合、Helmを使用すると簡単にロールバックできます：
+
+```bash
+$ helm rollback catalog 1 -n catalog
+```
+
+### クリーンアップ
+
+Helmリリースを削除します：
+
+```bash
+$ helm uninstall catalog -n catalog
+```
+
+この例は、Helmがアプリケーションのデプロイに高レベルの抽象化を提供し、アップグレード、ロールバック、構成管理のサポートが組み込まれていることを示しています。
+
+Helmの仕組みを理解したので、宣言的な構成管理について学ぶために[Kustomize](../kustomize)に進むか、[Fundamentalsモジュール](/docs/fundamentals)に進むことができます。
