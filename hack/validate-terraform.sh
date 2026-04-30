@@ -43,6 +43,12 @@ module "gen-$target" {
 EOF
 done
 
+cleanup() {
+  echo ""
+  echo "Terraform directory: ${conf_dir}"
+}
+trap cleanup EXIT
+
 terraform -chdir="${conf_dir}" init -backend=false
 
 echo ""
