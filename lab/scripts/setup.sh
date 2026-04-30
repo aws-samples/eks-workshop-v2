@@ -80,6 +80,14 @@ echo "export RESOURCES_PRECREATED='${RESOURCES_PRECREATED}'" > ~/.bashrc.d/infra
 
 echo "export ANALYTICS_ENDPOINT='${ANALYTICS_ENDPOINT}'" > ~/.bashrc.d/analytics.bash
 
+NAT_GW_IP=$(aws ec2 describe-nat-gateways \
+  --filter "Name=tag:created-by,Values=eks-workshop-v2" "Name=tag:env,Values=${EKS_CLUSTER_NAME}" \
+  --query "NatGateways[0].NatGatewayAddresses[0].PublicIp" --output text)
+
+if [ "$NAT_GW_IP" != "None" ] && [ ! -z "$NAT_GW_IP" ]; then
+  INBOUND_CIDRS="${INBOUND_CIDRS:+${INBOUND_CIDRS},}${NAT_GW_IP}/32"
+fi
+
 echo "export INBOUND_CIDRS='${INBOUND_CIDRS}'" > ~/.bashrc.d/inbound-cidr.bash
 
 /usr/local/bin/kubectl completion bash >  ~/.bashrc.d/kubectl_completion.bash

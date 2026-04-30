@@ -26,7 +26,9 @@ cat << EOF > ~/.local/share/code-server/User/settings.json
   "security.workspace.trust.enabled": false,
   "task.allowAutomaticTasks": "on",
   "telemetry.telemetryLevel": "off",
-  "workbench.startupEditor": "terminal"
+  "workbench.startupEditor": "terminal",
+  "workbench.secondarySideBar.defaultVisibility": "hidden",
+  "chat.disableAIFeatures": true
 }
 EOF
 

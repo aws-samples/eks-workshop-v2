@@ -36,31 +36,31 @@ Note blocks are available
 
 To mark your module as an independent module that users can begin with, place the following in the header of your markdown file:
 
-```
+```markdown
 ---
+
 ...
-sidebar_custom_props: {"module": true}
+sidebar_custom_props: { "module": true }
 ---
 ```
 
 To mark your module as informational, with no actionable steps, place the following in the header of your markdown file:
 
-```
+```markdown
 ---
+
 ...
-sidebar_custom_props: {"info": true}
+sidebar_custom_props: { "info": true }
 ---
 ```
 
 To mark your module as external content, which at the moment is only used for other AWS workshops, place the following in the header of your markdown file:
 
-```
+```markdown
 ---
+
 ...
-sidebar_custom_props:
-  {
-    "explore": "https://<external link here>"
-  }
+sidebar_custom_props: { "explore": "https://<external link here>" }
 ---
 ```
 
@@ -78,7 +78,7 @@ There are instances where the user needs to navigate to specific screens in the 
 
 For example to link to the EKS console you can use a link like this:
 
-```
+```text
 https://console.aws.amazon.com/eks/home#/clusters
 ```
 
@@ -140,7 +140,7 @@ All commands to the executed by the user should be contained within a Markdown `
 
 For example instead of this:
 
-````
+````markdown
 ```
 $ kubectl get pods
 ```
@@ -148,17 +148,19 @@ $ kubectl get pods
 
 It is preferable to use this:
 
-````
+````markdown
 ```bash
 $ kubectl get pods
 ```
 ````
 
+<!-- markdownlint-disable MD038 -->
+
 Enter the command exactly as it should be run by the learner, prefixed with `$ `.
 
 For example instead of this:
 
-````
+````markdown
 ```bash
 [root@b32a35acd6b6 /]$ kubectl get pods
 ```
@@ -166,7 +168,7 @@ For example instead of this:
 
 You should do this:
 
-````
+````markdown
 ```bash
 $ kubectl get pods
 ```
@@ -174,7 +176,7 @@ $ kubectl get pods
 
 Expected output from a command the learner runs can be displayed under the command, do not prefix it with anything:
 
-````
+````markdown
 Please run this command:
 
 ```bash
@@ -283,7 +285,7 @@ $ kubectl apply -f https://raw.githubusercontent.com/aws/eks-charts/master/stabl
 
 It is preferable to use this:
 
-```
+```bash
 $ kubectl apply -f https://raw.githubusercontent.com/aws/eks-charts/v0.0.86/stable/aws-load-balancer-controller/crds/crds.yaml
 ```
 
@@ -302,6 +304,152 @@ The recommendation is to use the EKS cluster name where possible, and this is pr
 
 An example of using this would look like so:
 
-```
+```bash
 $ aws eks describe-cluster --name $EKS_CLUSTER_NAME
+```
+
+### Securing ingress traffic
+
+Many labs require an endpoints for particular workloads be exposed to the public Internet, such as the retail sample application or system components like ArgoCD. Its common for organizations to flag endpoints on the public Internet for security reasons, so it is necessary to provide an option to restrict access to these endpoints.
+
+There is a `InboundCIDR` configuration setting available to workshop users through the CloudFormation template used to deploy the IDE, which defaults to `0.0.0.0/0`. This can be used to provide a custom CIDR that should be applied to any public-facing endpoint creating in workshop material.
+
+This is made available in the IDE via the `INBOUND_CIDRS` environment variable, which is a comma-separated list of CIDR ranges that includes:
+
+1. The `InboundCIDR` value
+2. The public IP address of the IDE
+3. The public IP address of the NAT gateway in the EKS cluster VPC
+
+This value is also made available in Terraform modules for labs via the `inbound_cidrs` TF variable.
+
+There are several common patterns to apply this.
+
+#### Creating an Ingress resource via YAML
+
+Use the `alb.ingress.kubernetes.io/inbound-cidrs` annotation:
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ui
+  namespace: ui
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/liveness
+    alb.ingress.kubernetes.io/inbound-cidrs: $INBOUND_CIDRS
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ui
+                port: 80
+```
+
+Ensure that the value is populated with `envsubst` in the instructions to the user:
+
+```bash
+$ cat ingress.yaml | envsubst | kubectl apply -f -
+```
+
+#### Creating a LoadBalancer service resource via YAML
+
+Use the `service.beta.kubernetes.io/load-balancer-source-ranges` annotation:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui-nlb
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: instance
+    service.beta.kubernetes.io/load-balancer-source-ranges: $INBOUND_CIDRS
+  namespace: ui
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8080
+      name: http
+  selector:
+    app.kubernetes.io/name: ui
+    app.kubernetes.io/instance: ui
+    app.kubernetes.io/component: service
+```
+
+Ensure that the value is populated with `envsubst` in the instructions to the user:
+
+```bash
+$ cat service.yaml | envsubst | kubectl apply -f -
+```
+
+#### Creating a load balancer via lab Terraform
+
+For labs where provisioning the load balancer is done in the initial setup this can be done in Terraform by using the appropriate annotation mentioned above and combining it with the `inbound_cidrs` variable which will be populated automatically:
+
+```hcl
+resource "kubernetes_manifest" "ui_nlb" {
+  manifest = {
+    "apiVersion" = "v1"
+    "kind"       = "Service"
+    "metadata" = {
+      "name"      = "ui-nlb"
+      "namespace" = "ui"
+      "annotations" = {
+        "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
+        "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
+        "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "instance"
+        "service.beta.kubernetes.io/load-balancer-source-ranges"       = var.inbound_cidrs
+      }
+    }
+    "spec" = {
+      "type" = "LoadBalancer"
+      "ports" = [{
+        "port"       = 80
+        "targetPort" = 8080
+        "name"       = "http"
+      }]
+      "selector" = {
+        "app.kubernetes.io/name"      = "ui"
+        "app.kubernetes.io/instance"  = "ui"
+        "app.kubernetes.io/component" = "service"
+      }
+    }
+  }
+}
+```
+
+#### Creating a load balancer via a Helm chart
+
+Components like ArgoCD are installed with their Helm charts, and if a public load balancer is required can be configured appropriately via the `values.yaml` and `--set` flags. The `INBOUND_CIDRS` environment variable MUST be escaped first.
+
+For example:
+
+```bash
+$ ESCAPED_CIDRS="${INBOUND_CIDRS//,/\\,}"
+$ helm upgrade --install argocd argo-cd/argo-cd --version "${ARGOCD_CHART_VERSION}" \
+  --namespace "argocd" --create-namespace \
+  --values ~/environment/eks-workshop/modules/automation/gitops/argocd/values.yaml \
+  --set "server.service.annotations.service\\.beta\\.kubernetes\\.io/load-balancer-source-ranges=$ESCAPED_CIDRS" \
+  --wait
+```
+
+Where the `values.yaml` file contains the rest of the load balancer configuration:
+
+```yaml
+server:
+  service:
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: external
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: instance
 ```

@@ -489,6 +489,7 @@ ingress:
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/inbound-cidrs: ${var.inbound_cidrs}
   ingressClassName: alb
 
 datasources:

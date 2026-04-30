@@ -12,12 +12,13 @@ $ aws ecr-public get-login-password \
   --region us-east-1 | helm registry login \
   --username AWS \
   --password-stdin public.ecr.aws
+$ ESCAPED_CIDRS="${INBOUND_CIDRS//,/\\,}"
 $ helm upgrade --install kubecost oci://public.ecr.aws/kubecost/cost-analyzer \
   --version "${KUBECOST_CHART_VERSION}" \
   --namespace "kubecost" --create-namespace \
   --values https://raw.githubusercontent.com/kubecost/cost-analyzer-helm-chart/v${KUBECOST_CHART_VERSION}/cost-analyzer/values-eks-cost-monitoring.yaml \
   --values ~/environment/eks-workshop/modules/observability/kubecost/values.yaml \
-  --set "service.annotations.service\\.beta\\.kubernetes\\.io/load-balancer-source-ranges"="$INBOUND_CIDRS" \
+  --set "service.annotations.service\\.beta\\.kubernetes\\.io/load-balancer-source-ranges"="$ESCAPED_CIDRS" \
   --wait
 NAME: kubecost
 LAST DEPLOYED: Thu Jun 13 17:48:55 2024
