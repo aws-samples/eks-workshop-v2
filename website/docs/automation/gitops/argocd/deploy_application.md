@@ -55,7 +55,7 @@ $ git -C ~/environment/argocd push
 Next, let's create an Argo CD Application configured to use our Git repository:
 
 ```bash
-$ argocd app create ui --repo ssh://git@${GITEA_SSH_HOSTNAME}:2222/workshop-user/argocd.git \
+$ argocd app create ui --repo $GITOPS_REPO_URL_ARGOCD \
   --path ui --dest-server https://kubernetes.default.svc \
   --dest-namespace ui --sync-option CreateNamespace=true
 application 'ui' created

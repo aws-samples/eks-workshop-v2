@@ -78,8 +78,7 @@ Context 'acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com'
 Finally, register the Git repository with Argo CD to provide access:
 
 ```bash
-$ export GITEA_SSH_HOSTNAME=$(kubectl get svc -n gitea gitea-ssh -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
-$ argocd repo add ssh://git@${GITEA_SSH_HOSTNAME}:2222/workshop-user/argocd.git \
+$ argocd repo add $GITOPS_REPO_URL_ARGOCD \
   --ssh-private-key-path ${HOME}/.ssh/gitops_ssh.pem \
   --insecure-ignore-host-key --upsert --name git-repo
 Repository 'ssh://...' added

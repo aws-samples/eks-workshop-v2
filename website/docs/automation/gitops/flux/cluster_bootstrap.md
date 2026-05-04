@@ -14,12 +14,11 @@ $ flux check --pre
 > prerequisites checks passed
 ```
 
-Now we can bootstrap Flux on our EKS cluster using a Gitea repository:
+Now we can bootstrap Flux on our EKS cluster using our CodeCommit repository:
 
 ```bash
-$ export GITEA_SSH_HOSTNAME=$(kubectl get svc -n gitea gitea-ssh -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 $ flux bootstrap git \
-   --url=ssh://git@${GITEA_SSH_HOSTNAME}:2222/workshop-user/flux.git \
+   --url=$GITOPS_REPO_URL_FLUX \
    --branch=main \
    --private-key-file=${HOME}/.ssh/gitops_ssh.pem \
    --network-policy=false --silent

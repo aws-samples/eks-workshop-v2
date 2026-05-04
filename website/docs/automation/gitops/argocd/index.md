@@ -16,6 +16,7 @@ $ prepare-environment automation/gitops/argocd
 
 This will make the following changes to your lab environment:
 
+- Create an AWS CodeCommit repository
 - Install the AWS Load Balancer controller in the Amazon EKS cluster
 - Install the EKS managed addon for the EBS CSI driver
 

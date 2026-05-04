@@ -12,8 +12,4 @@ uninstall-helm-chart argocd argocd
 
 kubectl delete namespace argocd --ignore-not-found=true
 
-logmessage "Uninstalling Gitea"
-
-uninstall-helm-chart gitea gitea
-
-kubectl delete namespace gitea --ignore-not-found=true
+kubectl delete namespace -l app.kubernetes.io/created-by=eks-workshop

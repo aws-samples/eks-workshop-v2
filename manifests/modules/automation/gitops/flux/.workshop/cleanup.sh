@@ -10,8 +10,4 @@ kubectl delete namespace ui --ignore-not-found=true
 
 rm -rf ~/environment/flux
 
-logmessage "Uninstalling Gitea"
-
-uninstall-helm-chart gitea gitea
-
-kubectl delete namespace gitea --ignore-not-found=true
+kubectl delete namespace -l app.kubernetes.io/created-by=eks-workshop

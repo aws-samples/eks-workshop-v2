@@ -35,7 +35,6 @@ The `values.yaml` file specifies a list of components for which Argo CD applicat
 First, let's copy this foundational App of Apps configuration to our Git directory:
 
 ```bash
-$ export GITOPS_REPO_URL_ARGOCD="ssh://git@${GITEA_SSH_HOSTNAME}:2222/workshop-user/argocd.git"
 $ cp -R ~/environment/eks-workshop/modules/automation/gitops/argocd/app-of-apps ~/environment/argocd/
 $ yq -i ".spec.source.repoURL = env(GITOPS_REPO_URL_ARGOCD)" ~/environment/argocd/app-of-apps/values.yaml
 ```
@@ -51,7 +50,7 @@ $ git -C ~/environment/argocd push
 Next, we need to create a new Argo CD Application to implement the App of Apps pattern. While doing this, we'll enable Argo CD to automatically [synchronize](https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/) the state in the cluster with the configuration in the Git repository using the `--sync-policy automated` flag:
 
 ```bash
-$ argocd app create apps --repo ssh://git@${GITEA_SSH_HOSTNAME}:2222/workshop-user/argocd.git \
+$ argocd app create apps --repo $GITOPS_REPO_URL_ARGOCD \
   --dest-server https://kubernetes.default.svc \
   --sync-policy automated --self-heal --auto-prune \
   --set-finalizer \

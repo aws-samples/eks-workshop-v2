@@ -59,7 +59,6 @@ carts             Active   28s
 catalog           Active   28s
 checkout          Active   28s
 default           Active   8h
-gitea             Active   19m
 kube-node-lease   Active   8h
 kube-public       Active   8h
 kube-system       Active   8h
