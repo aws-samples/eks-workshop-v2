@@ -1,7 +1,7 @@
 ---
 title: "アプリケーションのデプロイ"
 sidebar_position: 15
-tmdTranslationSourceHash: adf046743d7e3a4089ea63df04395056
+tmdTranslationSourceHash: dc1b6c590868176fdd5c2e9bc63bc94c
 ---
 
 クラスターにFluxを正常にブートストラップしたので、アプリケーションをデプロイできるようになりました。GitOpsベースのアプリケーションデリバリーと他の方法との違いを示すために、現在`kubectl apply -k`アプローチを使用しているサンプルアプリケーションのUIコンポーネントを新しいFluxデプロイメントアプローチに移行します。
@@ -14,8 +14,8 @@ $ kubectl delete namespace ui
 
 次に、前のセクションでFluxをブートストラップするために使用したリポジトリをクローンします：
 
-```bash hook=clone
-$ git clone ssh://git@${GITEA_SSH_HOSTNAME}:2222/workshop-user/flux.git
+```bash
+$ git clone $GITOPS_REPO_URL_FLUX ~/environment/flux
 ```
 
 次に、「apps」ディレクトリを作成してFluxリポジトリの構築を始めましょう。このディレクトリは、各アプリケーションコンポーネントのサブディレクトリを含むように設計されています：
@@ -63,7 +63,7 @@ $ cp ~/environment/eks-workshop/modules/automation/gitops/flux/basic/apps/reposi
 1. HelmReleaseリソースの名前
 2. 上記で指定したHelmリポジトリを参照するチャートの名前とバージョン
 3. 名前空間が存在しない場合は作成します
-4. この場合はイングレスを有効にするなど、`values`を使用してチャートを構成します
+4. この場合はIngressを有効にするなど、`values`を使用してチャートを構成します
 
 適切なファイルをGitリポジトリディレクトリにコピーします：
 
@@ -125,7 +125,7 @@ NAME                  READY   STATUS    RESTARTS   AGE
 ui-54ff78779b-qnrrc   1/1     Running   0          5m
 ```
 
-Ingressリソースからのアドレスを取得します：
+IngressリソースからURLを取得します：
 
 ```bash
 $ ADDRESS=$(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")

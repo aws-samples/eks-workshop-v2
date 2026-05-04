@@ -2,8 +2,8 @@
 title: "Flux"
 sidebar_position: 2
 sidebar_custom_props: { "module": true }
-description: "Amazon Elastic Kubernetes Serviceでのフラックスを使用した継続的かつ段階的なデリバリーを実装します。"
-tmdTranslationSourceHash: 1d05d9460507fed9d11255be1c07ee97
+description: "Amazon Elastic Kubernetes ServiceでFluxを使用した継続的かつプログレッシブなデリバリーを実装します。"
+tmdTranslationSourceHash: 323b14b06c3889c7d661e328aee82bcd
 ---
 
 ::required-time
@@ -17,6 +17,7 @@ $ prepare-environment automation/gitops/flux
 
 これにより、ラボ環境に以下の変更が適用されます：
 
+- AWS CodeCommitリポジトリを作成する
 - Amazon EKSクラスタにAWS Load Balancerコントローラをインストールする
 - EBS CSIドライバ用のEKSマネージドアドオンをインストールする
 
@@ -24,5 +25,5 @@ $ prepare-environment automation/gitops/flux
 
 :::
 
-Fluxは、Gitリポジトリなどのソースコントロールのもとにある設定とKubernetesクラスタを同期させ、デプロイする新しいコードがある場合に、その設定の更新を自動化します。KubernetesのAPI拡張サーバーを使用して構築されており、PrometheusやKubernetesエコシステムの他のコアコンポーネントと統合できます。Fluxはマルチテナンシーをサポートし、任意の数のGitリポジトリを同期させます。
+Fluxは、GitOpsの方法論をKubernetesに適用し、Gitリポジトリなどのソースコントロール下に保管された設定を信頼できる唯一の情報源として使用します。Fluxは、クラスタをGitに保存された設定と同期させ、プッシュされた変更を自動的に調整します。KubernetesのAPI拡張サーバーを使用して構築されており、PrometheusやKubernetesエコシステムの他のコアコンポーネントと統合できます。Fluxはマルチテナンシーをサポートし、任意の数のGitリポジトリを同期できます。
 

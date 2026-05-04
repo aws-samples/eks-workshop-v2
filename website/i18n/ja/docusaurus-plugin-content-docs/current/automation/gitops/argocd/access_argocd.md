@@ -2,7 +2,7 @@
 title: "Argo CDのインストール"
 sidebar_position: 10
 weight: 10
-tmdTranslationSourceHash: f21fde74f48eca3eff8ecc25c4231f6e
+tmdTranslationSourceHash: 5a9e54e73eb1c40f741fbe272eb9d13a
 ---
 
 まずはクラスターにArgo CDをインストールしましょう：
@@ -79,9 +79,9 @@ Context 'acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com'
 最後に、アクセスを提供するためにGitリポジトリをArgo CDに登録します：
 
 ```bash
-$ export GITEA_SSH_HOSTNAME=$(kubectl get svc -n gitea gitea-ssh -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
-$ argocd repo add ssh://git@${GITEA_SSH_HOSTNAME}:2222/workshop-user/argocd.git \
+$ argocd repo add $GITOPS_REPO_URL_ARGOCD \
   --ssh-private-key-path ${HOME}/.ssh/gitops_ssh.pem \
   --insecure-ignore-host-key --upsert --name git-repo
 Repository 'ssh://...' added
 ```
+
