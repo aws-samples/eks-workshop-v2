@@ -1,7 +1,7 @@
 ---
 title: "kroによるリソースの作成"
 sidebar_position: 5
-tmdTranslationSourceHash: 352f766cfce2da86190272b1db3df91b
+tmdTranslationSourceHash: 77b30a74781cb7a9982b7329e6e5e2d2
 ---
 
 kroをインストールしたので、kro WebApplication ResourceGraphDefinitionsを使用して**Carts**コンポーネントをデプロイします。まず、再利用可能なWebApplication APIを定義するResourceGraphDefinitionテンプレートを確認しましょう：
@@ -48,7 +48,7 @@ $ cat ~/environment/eks-workshop/modules/automation/controlplanes/kro/rgds/webap
 resourcegraphdefinition.kro.run/web-application created
 ```
 
-これによりWebApplication APIが登録されます。kroは自動的にRGDスキーマに基づいてカスタムリソース定義（CRD）を作成します。CRDを確認しましょう：
+これによりWebApplication APIが登録されます。kroは自動的にRGDスキーマに基づいてCustom Resource Definition（CRD）を作成します。CRDを確認しましょう：
 
 ```bash
 $ kubectl get crd webapplications.kro.run
@@ -88,7 +88,7 @@ carts   IN_PROGRESS   False    16s
 
 ```bash
 $ kubectl wait -o yaml webapplication/carts -n carts \
-  --for=condition=InstanceSynced=True --timeout=120s
+  --for=condition=ResourcesReady=True --timeout=120s
 ```
 
 次に、RGDのコンポーネントが実行中であることを確認します：

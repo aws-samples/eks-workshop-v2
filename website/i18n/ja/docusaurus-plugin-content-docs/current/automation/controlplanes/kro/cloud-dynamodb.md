@@ -1,7 +1,7 @@
 ---
 title: "クラウドリソースのプロビジョニング"
 sidebar_position: 6
-tmdTranslationSourceHash: 17f0d5b57c14688e84d2e0e3989a323b
+tmdTranslationSourceHash: 14aa0a06a6577684447440694dfb8ddd
 ---
 
 このセクションでは、カートが使用しているインメモリデータベースをDynamoDBに置き換えます。WebApplicationのベーステンプレートを拡張してWebApplicationDynamoDB ResourceGraphDefinitionを構成することで実現します。
@@ -39,7 +39,7 @@ No resources found in carts namespace.
 EKS Pod Identityの詳細については、[公式ドキュメント](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html)を参照してください。
 
 :::info
-このRGDのresourceセクションにWebApplication RGDが含まれていることに注目してください。`webApplication`を参照することで、このテンプレートはベースのWebApplication RGDで定義されたすべてのKubernetesリソースを再利用し、DynamoDB、IAM、およびPod Identityリソースを追加します。
+このRGDのresourcesセクションにWebApplication RGDが含まれていることに注目してください。`webApplication`を参照することで、このテンプレートはベースのWebApplication RGDで定義されたすべてのKubernetesリソースを再利用しながら、DynamoDB、IAM、およびPod Identityリソースを追加します。
 :::
 
 ResourceGraphDefinitionを適用してWebApplicationDynamoDB APIを登録しましょう：
@@ -91,7 +91,7 @@ carts   IN_PROGRESS   False    16s
 
 ```bash
 $ kubectl wait -o yaml webapplicationdynamodb/carts -n carts \
-  --for=condition=InstanceSynced=True --timeout=120s
+  --for=condition=ResourcesReady=True --timeout=120s
 ```
 
 DynamoDBテーブルが作成されたことを確認するために、生成されたACKリソースをチェックできます：
