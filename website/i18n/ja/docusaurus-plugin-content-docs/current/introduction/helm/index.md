@@ -2,7 +2,7 @@
 title: Helm
 sidebar_custom_props: { "module": true }
 sidebar_position: 80
-tmdTranslationSourceHash: 2cfda63d9839d159ccdaecf95773c388
+tmdTranslationSourceHash: 9225a9fafd70ac2c086e8584ce39a4ac
 ---
 
 ::required-time
@@ -24,11 +24,11 @@ $ prepare-environment introduction/helm
 
 :::
 
-[Helm](https://helm.sh)はKubernetes用のパッケージマネージャーであり、Kubernetesアプリケーションの定義、インストール、アップグレードを支援します。Helmはチャートと呼ばれるパッケージングフォーマットを使用し、アプリケーションの実行に必要なKubernetesリソース定義がすべて含まれています。Helmを使用することで、Kubernetesクラスター上でのアプリケーションのデプロイと管理が簡素化されます。
+[Helm](https://helm.sh)はKubernetes用のパッケージマネージャーであり、Kubernetesアプリケーションの定義、インストール、アップグレードを支援します。Helmはチャートと呼ばれるパッケージングフォーマットを使用し、アプリケーションの実行に必要なすべてのKubernetesリソース定義が含まれています。Helmを使用することで、Kubernetesクラスター上でのアプリケーションのデプロイと管理が簡素化されます。
 
 ## Helm CLI
 
-`helm` CLIツールは通常、Kubernetesクラスターと組み合わせて使用され、アプリケーションのデプロイとライフサイクルを管理します。これにより、異なる環境間でのアプリケーションデプロイの自動化と標準化が容易になります。
+`helm` CLIツールは通常、Kubernetesクラスターと組み合わせて使用され、アプリケーションのデプロイとライフサイクルを管理します。これにより、Kubernetes上でのアプリケーションデプロイの一貫性と再現性のあるパッケージ化、インストール、管理が容易になり、異なる環境間でのアプリケーションデプロイの自動化と標準化が容易になります。
 
 CLIはすでに私たちのIDEにインストールされています：
 
@@ -95,7 +95,7 @@ ui-55fbd7f494-zplwx      1/1     Running   0          119s
 manifests/modules/introduction/helm/values.yaml
 ```
 
-これにより、Podにいくつかのカスタムのkubernetes注釈が追加され、UIテーマが上書きされます。
+これにより、Podにいくつかのカスタムkubernetes注釈が追加され、UIテーマが上書きされます。
 
 :::tip[どの値を使用すればよいかわからない場合]
 
@@ -192,7 +192,7 @@ drwxr-xr-x  3 user user   96 Nov 15 10:30 templates
 catalogサービスをデプロイするためにデフォルトの値を変更しましょう。`values.yaml`ファイルを更新します：
 
 ```bash
-$ cat > retail-catalog/values.yaml << 'EOF'
+$ cat > retail-catalog/values.yaml <<EOF
 replicaCount: 2
 
 image:
@@ -200,10 +200,22 @@ image:
   tag: "0.4.0"
   pullPolicy: IfNotPresent
 
+serviceAccount:
+  create: true
+
 service:
   type: ClusterIP
   port: 80
   targetPort: 8080
+
+ingress:
+  enabled: false
+
+httpRoute:
+  enabled: false
+
+autoscaling:
+  enabled: false
 
 resources:
   requests:
@@ -219,6 +231,12 @@ EOF
 ```
 
 ### チャートのインストール
+
+まず、Kustomizeでインストールされた既存のcatalogデプロイを削除しましょう：
+
+```bash
+$ kubectl delete namespace catalog
+```
 
 それでは、Helmチャートを使用してcatalogサービスをインストールしましょう：
 
