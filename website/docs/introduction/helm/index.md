@@ -191,7 +191,7 @@ drwxr-xr-x  3 user user   96 Nov 15 10:30 templates
 Let's modify the default values to deploy our catalog service. Update the `values.yaml` file:
 
 ```bash
-$ cat > retail-catalog/values.yaml << 'EOF'
+$ cat > retail-catalog/values.yaml <<EOF
 replicaCount: 2
 
 image:
@@ -199,10 +199,22 @@ image:
   tag: "0.4.0"
   pullPolicy: IfNotPresent
 
+serviceAccount:
+  create: true
+
 service:
   type: ClusterIP
   port: 80
   targetPort: 8080
+
+ingress:
+  enabled: false
+
+httpRoute:
+  enabled: false
+
+autoscaling:
+  enabled: false
 
 resources:
   requests:
@@ -218,6 +230,12 @@ EOF
 ```
 
 ### Installing the Chart
+
+First, let's remove the existing catalog deployment that was installed with Kustomize:
+
+```bash
+$ kubectl delete namespace catalog
+```
 
 Now let's install our catalog service using the Helm chart:
 
