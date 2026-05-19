@@ -40,6 +40,8 @@ else
   echo "Auto mode cluster ${EKS_CLUSTER_AUTO_NAME} already exists"
 fi
 
-for pid in "${pids[@]}"; do
-  wait "$pid" || exit 1
-done
+if [ ${#pids[@]} -gt 0 ]; then
+  for pid in "${pids[@]}"; do
+    wait "$pid" || exit 1
+  done
+fi

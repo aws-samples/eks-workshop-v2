@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-v2
+  namespace: ui
+  labels:
+    app.kubernetes.io/name: ui
+    app.kubernetes.io/version: v2
+    app.kubernetes.io/component: service
+    app.kubernetes.io/created-by: eks-workshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ui
+      app.kubernetes.io/version: v2
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ui
+        app.kubernetes.io/version: v2
+    spec:
+      containers:
+        - name: ui
+          image: public.ecr.aws/aws-containers/retail-store-sample-ui:1.2.1
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: RETAIL_UI_THEME
+              value: "orange"
