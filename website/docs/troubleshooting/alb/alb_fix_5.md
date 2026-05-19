@@ -81,6 +81,15 @@ k8s-ui-ui-5ddc3ba496-1208241872.us-west-2.elb.amazonaws.com
 2. Monitoring the controller logs for successful creation messages
 3. Watching the ingress resource for the ALB DNS name to appear
 
+Alternatively, you can check the ALB provisioning state directly with the AWS CLI:
+
+```bash
+$ aws elbv2 describe-load-balancers \
+  --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-ui`)].{Name:LoadBalancerName,State:State.Code,DNS:DNSName}' \
+  --output table
+```
+
+The `State` will transition from `provisioning` to `active` once the ALB is ready to serve traffic.
 :::
 
 For reference, the complete set of permissions required for the AWS Load Balancer Controller can be found in the [official documentation](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/deploy/installation/#setup-iam-manually).

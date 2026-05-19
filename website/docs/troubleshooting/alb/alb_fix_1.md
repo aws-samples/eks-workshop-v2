@@ -116,7 +116,7 @@ A public subnet will have a route `0.0.0.0/0` pointing to an Internet Gateway (i
 #### 4.3. Verify current ELB tag status
 
 ```bash
-$ aws ec2 describe-subnets --filters 'Name=tag:kubernetes.io/role/elb,Values=1' --query 'Subnets[].SubnetId'
+$ aws ec2 describe-subnets --filters 'Name=tag:kubernetes.io/role/elb,Values=1' 'Name=tag:alpha.eksctl.io/cluster-name,Values='${EKS_CLUSTER_NAME} --query 'Subnets[].SubnetId'
 []
 ```
 
@@ -130,7 +130,7 @@ $ aws ec2 create-tags --resources $PUBLIC_SUBNET_1 $PUBLIC_SUBNET_2 $PUBLIC_SUBN
 #### 4.5. Verify the tags were applied
 
 ```bash
-$ aws ec2 describe-subnets --filters 'Name=tag:kubernetes.io/role/elb,Values=1' --query 'Subnets[].SubnetId'
+$ aws ec2 describe-subnets --filters 'Name=tag:kubernetes.io/role/elb,Values=1' 'Name=tag:alpha.eksctl.io/cluster-name,Values='${EKS_CLUSTER_NAME} --query 'Subnets[].SubnetId'
 ```
 
 #### 4.6. Restart the Load Balancer Controller to pick up the new subnet configuration
