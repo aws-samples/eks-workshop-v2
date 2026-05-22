@@ -1,7 +1,7 @@
 ---
 title: "複数のIngressパターン"
 sidebar_position: 30
-tmdTranslationSourceHash: 2e75c3dcc5a0600975e14bd41effa2a4
+tmdTranslationSourceHash: d8bc8cb629e5535cec646d8b0d73ad9e
 ---
 
 同じEKSクラスター内で複数のIngressオブジェクトを活用することは一般的です。例えば、複数の異なるワークロードを公開するためなどです。デフォルトでは、各IngressはそれぞれALBの作成につながりますが、IngressGroup機能を活用することで複数のIngressリソースをグループ化できます。コントローラーはIngressGroup内のすべてのIngressのルールを自動的に統合し、1つのALBでそれらをサポートします。さらに、Ingressで定義されたほとんどのアノテーションは、そのIngressによって定義されたパスにのみ適用されます。
@@ -25,7 +25,7 @@ tmdTranslationSourceHash: 2e75c3dcc5a0600975e14bd41effa2a4
 これらのマニフェストをクラスターに適用します：
 
 ```bash wait=60
-$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/multiple-ingress
+$ kubectl kustomize ~/environment/eks-workshop/modules/exposing/ingress/multiple-ingress | envsubst | kubectl apply -f -
 ```
 
 これで、`-multi`で終わる2つの追加のIngressオブジェクトがクラスターに作成されます：
@@ -54,7 +54,7 @@ $ aws elbv2 describe-rules --listener-arn $LISTENER_ARN
 - それ以外はuiサービスのターゲットグループに送信されます
 - デフォルトのバックアップとして、漏れたリクエストのために404があります
 
-AWS consoleで新しいALB設定も確認できます：
+AWSコンソールで新しいALB設定も確認できます：
 
 <ConsoleButton url="https://console.aws.amazon.com/ec2/home#LoadBalancers:tag:ingress.k8s.aws/stack=retail-app-group;sort=loadBalancerName" service="ec2" label="EC2コンソールを開く"/>
 
