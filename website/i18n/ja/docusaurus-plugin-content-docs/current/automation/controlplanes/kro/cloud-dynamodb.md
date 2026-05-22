@@ -1,7 +1,7 @@
 ---
 title: "クラウドリソースのプロビジョニング"
 sidebar_position: 6
-tmdTranslationSourceHash: 14aa0a06a6577684447440694dfb8ddd
+tmdTranslationSourceHash: f478f189f68179b54c1919d629ea6ec3
 ---
 
 このセクションでは、カートが使用しているインメモリデータベースをDynamoDBに置き換えます。WebApplicationのベーステンプレートを拡張してWebApplicationDynamoDB ResourceGraphDefinitionを構成することで実現します。
@@ -132,7 +132,7 @@ http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com
 ロードバランサーがプロビジョニングを完了したことを確認するには、次のコマンドを実行できます：
 
 ```bash timeout=610
-curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
+$ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
   -k $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 ```
 
