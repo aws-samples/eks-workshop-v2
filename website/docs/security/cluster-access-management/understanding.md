@@ -24,7 +24,7 @@ The Cluster Access Management API relies on two basic concepts:
 | AmazonEKSViewPolicy         | `view`          | Grants access to list/view most Kubernetes resources, usually scoped to a Namespace                          |
 | AmazonEMRJobPolicy          | N/A             | Custom access to run Amazon EMR Jobs on Amazon EKS Clusters                                                  |
 
-To check the list of available access policies in your account, run the following command:
+The table above shows a subset of commonly used access policies. AWS adds new policies over time (for example, for EKS Auto Mode, ArgoCD, KRO, SageMaker HyperPod, and others). To see the complete and up-to-date list of policies available in your account, run:
 
 ```bash
 $ aws eks list-access-policies
