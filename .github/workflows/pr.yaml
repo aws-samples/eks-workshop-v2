@@ -21,17 +21,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
       - name: Get kubectl version
         run: |
           source hack/lib/kubectl-version.sh
           echo "Using kubectl ${KUBECTL_VERSION}"
           echo "KUBECTL_VERSION=$KUBECTL_VERSION" >> $GITHUB_ENV
-      - uses: azure/setup-kubectl@v4
+      - uses: azure/setup-kubectl@v5
         with:
           version: "${{ env.KUBECTL_VERSION }}"
         id: install
@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Make shell
         env:
           SKIP_CREDENTIALS: 1
@@ -57,19 +57,19 @@ jobs:
     name: "Pre-commit hooks"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
-      - uses: actions/setup-python@v5
-      - uses: hashicorp/setup-terraform@v3
+          node-version: 24
+      - uses: actions/setup-python@v6
+      - uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: "~1.9.0"
       - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v5
+        uses: terraform-linters/setup-tflint@v6
       - name: Setup terraform-docs
-        uses: jaxxstorm/action-install-gh-release@v2.1.0
+        uses: jaxxstorm/action-install-gh-release@v3.0.0
         with:
           repo: terraform-docs/terraform-docs
       - name: Yarn install
@@ -81,8 +81,8 @@ jobs:
     name: "Validate Terraform"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: hashicorp/setup-terraform@v3
+      - uses: actions/checkout@v6
+      - uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: "~1.9.0"
       - run: |
@@ -109,7 +109,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check for content label
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const labels = context.payload.pull_request.labels;
