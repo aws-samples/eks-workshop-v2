@@ -21,7 +21,7 @@ The lab exercises are designed in a way that you can run any modules as a self-c
 
 If you're **at an AWS event**, open the IDE from the *Event Outputs* section at the bottom of the Workshop Studio start page.
 
-<img src="/img/fastpaths/ide-open.png" alt="Event Outputs copy/paste" width="500" />
+<img src={require('@site/static/img/fastpaths/ide-open.png').default} alt="Event Outputs copy/paste" width="500" />
 
 If you're running **in your own account**, find the `IdeUrl` in your CloudFormation stack's Outputs tab — see the [setup guide](/docs/fastpaths/setup/your-account) for details.
 
@@ -40,18 +40,18 @@ Depending on your browser, you may need to copy/paste content differently into t
   <TabItem value="Google Chrome" label="Google Chrome (Recommended)" default>
     The first time you try to paste content in the terminal, you will see a browser pop-up that looks like this:
 
-    <img src="/docs/introduction/vscode-copy-paste.webp" alt="Chrome copy/paste" width="480" />
+    <img src={require('@site/static/docs/introduction/vscode-copy-paste.webp').default} alt="Chrome copy/paste" width="480" />
 
     Click the **Allow** button to enable this functionality. After this, subsequent copy/paste will be straightforward. For this workshop, we recommend using Google Chrome if possible.
   </TabItem>
   <TabItem value="Firefox/Safari" label="Firefox/Safari">
     Every time you try to paste content in the terminal, you will see a small button as shown in the following screenshot adjacent to your mouse pointer. You will need to click on it to actually paste the copied content.
 
-    <img src="/img/fastpaths/introduction/paste-in-firefox-safari.png" alt="Firefox/Safari copy/paste" width="480" />
+    <img src={require('@site/static/img/fastpaths/introduction/paste-in-firefox-safari.png').default} alt="Firefox/Safari copy/paste" width="480" />
 
     Additionally, you may also see the following pop-up box on the bottom-right corner of your editor window, which you may close and ignore. 
 
-    <img src="/img/fastpaths/introduction/paste-warning-in-firefox-safari.png" alt="Firefox/Safari copy/paste" width="480" />
+    <img src={require('@site/static/img/fastpaths/introduction/paste-warning-in-firefox-safari.png').default} alt="Firefox/Safari copy/paste" width="480" />
   </TabItem>
 </Tabs>
 
