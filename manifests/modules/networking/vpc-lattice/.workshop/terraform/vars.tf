@@ -38,7 +38,7 @@ variable "lattice_controller_version" {
   description = "The version of aws-gateway-controller to use"
   type        = string
   # renovate: datasource=github-releases depName=aws/aws-application-networking-k8s
-  default = "1.1.7"
+  default = "2.0.2"
 }
 # tflint-ignore: terraform_unused_declarations
 variable "inbound_cidrs" {
