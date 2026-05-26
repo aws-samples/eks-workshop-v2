@@ -83,6 +83,13 @@ resource "aws_iam_role_policy" "eks_cap_ack_capability_dynamodb" {
           "dynamodb:DeleteTable",
           "dynamodb:UpdateContinuousBackups",
           "dynamodb:DescribeContinuousBackups",
+          "dynamodb:DescribeTimeToLive",
+          "dynamodb:UpdateTimeToLive",
+          "dynamodb:DescribeContributorInsights",
+          "dynamodb:UpdateContributorInsights",
+          "dynamodb:DescribeKinesisStreamingDestination",
+          "dynamodb:EnableKinesisStreamingDestination",
+          "dynamodb:DisableKinesisStreamingDestination",
           "dynamodb:TagResource",
           "dynamodb:UntagResource",
           "dynamodb:ListTagsOfResource",
@@ -94,6 +101,21 @@ resource "aws_iam_role_policy" "eks_cap_ack_capability_dynamodb" {
       }
     ]
   })
+}
+
+# Wait for IAM eventual consistency before EKS validates the role's trust
+# policy. Without this gap, CreateCapability frequently fails with
+# `InvalidParameterException: The trust policy for the provided role is
+# invalid` on a freshly-created role, even though the policy is correct.
+# `reset-environment` runs `terraform destroy` then `apply`, so every
+# preprovision run creates a brand-new role and re-encounters this race.
+resource "time_sleep" "eks_cap_ack_capability_role_propagation" {
+  depends_on = [
+    aws_iam_role.eks_cap_ack_capability,
+    aws_iam_role_policy.eks_cap_ack_capability_dynamodb,
+  ]
+
+  create_duration = "30s"
 }
 
 # Activate the ACK capability via the AWS provider's native resource.
@@ -109,6 +131,8 @@ resource "aws_eks_capability" "ack" {
   depends_on = [
     aws_iam_role_policy.eks_cap_ack_capability_dynamodb,
     null_resource.eks_cap_region_preflight,
+    time_sleep.eks_cap_ack_capability_role_propagation,
+    aws_eks_access_policy_association.ack,
   ]
 }
 
@@ -116,6 +140,21 @@ resource "aws_eks_capability" "ack" {
 # controllers can reconcile inside the cluster (create CRDs, watch resources,
 # etc.). Without this association the capability shows ACTIVE but its
 # controllers cannot talk to the Kubernetes API.
+#
+# An aws_eks_access_entry is required before an aws_eks_access_policy_association
+# can attach a policy to a principal — the entry establishes the principal's
+# identity on the cluster, the association attaches policies to it.
+#
+# Both are created BEFORE aws_eks_capability.ack so the capability's controllers
+# already have cluster API access the first time they reconcile. Without this
+# ordering, the capability sits in CREATING with health
+# `AccessDenied: Unauthorized`.
+resource "aws_eks_access_entry" "ack" {
+  cluster_name  = var.eks_cluster_auto_id
+  principal_arn = aws_iam_role.eks_cap_ack_capability.arn
+  type          = "STANDARD"
+}
+
 resource "aws_eks_access_policy_association" "ack" {
   cluster_name  = var.eks_cluster_auto_id
   policy_arn    = "arn:${data.aws_partition.current.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
@@ -125,7 +164,7 @@ resource "aws_eks_access_policy_association" "ack" {
     type = "cluster"
   }
 
-  depends_on = [aws_eks_capability.ack]
+  depends_on = [aws_eks_access_entry.ack]
 }
 
 # --- Extend the existing carts Pod Identity role -----------------------------

@@ -11,7 +11,7 @@ This fast path uses a dedicated Amazon EKS Auto Mode cluster. The three labs use
 
 Prepare your environment for this fast path:
 
-```bash timeout=900
+```bash timeout=1800
 $ prepare-environment fastpaths/eks-capabilities
 ```
 
