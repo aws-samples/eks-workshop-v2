@@ -26,9 +26,9 @@ table.dynamodb.services.k8s.aws/items created
 
 The capability's DynamoDB controller picks up the new `Table` resource and provisions the corresponding AWS resource. Wait for the `ACK.ResourceSynced` condition — this is how every ACK resource signals it has reconciled successfully:
 
-```bash timeout=300
+```bash timeout=720
 $ kubectl wait table.dynamodb.services.k8s.aws items \
-  -n carts --for=condition=ACK.ResourceSynced --timeout=5m
+  -n carts --for=condition=ACK.ResourceSynced --timeout=10m
 table.dynamodb.services.k8s.aws/items condition met
 ```
 

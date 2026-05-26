@@ -90,6 +90,9 @@ resource "aws_iam_role_policy" "eks_cap_ack_capability_dynamodb" {
           "dynamodb:DescribeKinesisStreamingDestination",
           "dynamodb:EnableKinesisStreamingDestination",
           "dynamodb:DisableKinesisStreamingDestination",
+          "dynamodb:GetResourcePolicy",
+          "dynamodb:PutResourcePolicy",
+          "dynamodb:DeleteResourcePolicy",
           "dynamodb:TagResource",
           "dynamodb:UntagResource",
           "dynamodb:ListTagsOfResource",
@@ -132,7 +135,7 @@ resource "aws_eks_capability" "ack" {
     aws_iam_role_policy.eks_cap_ack_capability_dynamodb,
     null_resource.eks_cap_region_preflight,
     time_sleep.eks_cap_ack_capability_role_propagation,
-    aws_eks_access_policy_association.ack,
+    time_sleep.eks_cap_ack_access_propagation,
   ]
 }
 
@@ -165,6 +168,14 @@ resource "aws_eks_access_policy_association" "ack" {
   }
 
   depends_on = [aws_eks_access_entry.ack]
+}
+
+# Give the access entry + policy association time to propagate inside the
+# cluster before the capability creates and its controllers try to authenticate.
+# Without this gap, the capability frequently sits in CREATING with health
+resource "time_sleep" "eks_cap_ack_access_propagation" {
+  depends_on      = [aws_eks_access_policy_association.ack]
+  create_duration = "60s"
 }
 
 # --- Extend the existing carts Pod Identity role -----------------------------
