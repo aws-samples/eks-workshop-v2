@@ -5,7 +5,7 @@ sidebar_position: 10
 
 In this section we'll create the Gateway API resources needed to expose the UI application through an Application Load Balancer.
 
-## Step 1: Create the GatewayClass
+## Create the GatewayClass
 
 A GatewayClass defines which controller is responsible for managing Gateway resources. We'll create one that uses the AWS Load Balancer Controller:
 
@@ -19,7 +19,7 @@ Apply the GatewayClass:
 $ kubectl apply -f ~/environment/eks-workshop/modules/exposing/gateway-api/exposing-ui/gatewayclass.yaml
 ```
 
-## Step 2: Configure the Load Balancer
+## Configure the Load Balancer
 
 In LBC v3.x with Gateway API, load balancer settings are configured through a `LoadBalancerConfiguration` CRD rather than annotations. This resource defines the ALB scheme:
 
@@ -30,10 +30,11 @@ In LBC v3.x with Gateway API, load balancer settings are configured through a `L
 Apply the LoadBalancerConfiguration:
 
 ```bash
-$ kubectl apply -f ~/environment/eks-workshop/modules/exposing/gateway-api/exposing-ui/loadbalancerconfig.yaml
+$ export SOURCE_RANGES=$(echo $INBOUND_CIDRS | tr ',' '\n' | sed 's/^/    - "/;s/$/"/' )
+$ cat ~/environment/eks-workshop/modules/exposing/gateway-api/exposing-ui/loadbalancerconfig.yaml | envsubst | kubectl apply -f -
 ```
 
-## Step 3: Create the Gateway
+## Create the Gateway
 
 The Gateway resource provisions the actual load balancer infrastructure. It references the GatewayClass and the LoadBalancerConfiguration:
 
@@ -51,7 +52,7 @@ Apply the Gateway:
 $ kubectl apply -f ~/environment/eks-workshop/modules/exposing/gateway-api/exposing-ui/gateway.yaml
 ```
 
-## Step 4: Create the HTTPRoute
+## Create the HTTPRoute
 
 An HTTPRoute defines how traffic arriving at the Gateway should be routed to backend services. We'll route all traffic with path prefix `/` to the UI service:
 
@@ -66,7 +67,7 @@ Apply the HTTPRoute:
 $ kubectl apply -f ~/environment/eks-workshop/modules/exposing/gateway-api/exposing-ui/httproute-ui.yaml
 ```
 
-## Step 5: Verify the resources
+## Verify the resources
 
 Check that all resources have been created successfully:
 
@@ -74,15 +75,9 @@ Check that all resources have been created successfully:
 $ kubectl get gatewayclass
 NAME      CONTROLLER              ACCEPTED   AGE
 aws-alb   gateway.k8s.aws/alb     True       2m
-```
-
-```bash
 $ kubectl get gateway -n ui
 NAME                    CLASS     ADDRESS                                                         PROGRAMMED   AGE
 retail-store-gateway    aws-alb   k8s-ui-retailst-xxxxxxxxxx.us-west-2.elb.amazonaws.com          True         2m
-```
-
-```bash
 $ kubectl get httproute -n ui
 NAME       HOSTNAMES   AGE
 ui-route               2m

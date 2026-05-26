@@ -19,8 +19,6 @@ This will make the following changes to your lab environment:
 - Install Gateway API CRDs (Custom Resource Definitions)
 - Install AWS Load Balancer Controller Gateway API CRDs
 - Create an IAM role for the AWS Load Balancer Controller
-- Create an IAM role for ExternalDNS
-- Create a Route 53 private hosted zone for `retailstore.com`
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/exposing/gateway-api/.workshop/terraform).
 

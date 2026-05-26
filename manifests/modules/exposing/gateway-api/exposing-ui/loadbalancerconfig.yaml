@@ -5,5 +5,5 @@ metadata:
   namespace: ui
 spec:
   scheme: internet-facing
-  #sourceRanges:
-  #  - "xx.xxx.xxx.4/32"
+  sourceRanges:
+$SOURCE_RANGES

@@ -11,8 +11,8 @@ At this point we have a single HTTPRoute (`ui-route`) in the `ui` namespace that
 
 ```bash
 $ kubectl get httproute -n ui
-NAME       HOSTNAMES   PARENTREFS                    AGE
-ui-route               ["retail-store-gateway/ui"]    5m
+NAME       HOSTNAMES   AGE
+ui-route               5m
 ```
 
 All requests to the Gateway ALB currently reach the UI application regardless of path.

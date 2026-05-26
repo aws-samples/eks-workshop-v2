@@ -5,9 +5,9 @@ sidebar_position: 5
 
 Follow these instructions to deploy the AWS Load Balancer Controller with Gateway API support.
 
-The `prepare-environment` step has already installed the Gateway API CRDs and created the necessary IAM roles. Now we'll install the AWS Load Balancer Controller and ExternalDNS using Helm.
+The `prepare-environment` step has already installed the Gateway API CRDs and created the necessary IAM roles. Now we'll install the AWS Load Balancer Controller using Helm.
 
-First, install the AWS Load Balancer Controller with Gateway API support enabled:
+Install the AWS Load Balancer Controller with Gateway API support enabled:
 
 ```bash wait=30
 $ helm repo add eks-charts https://aws.github.io/eks-charts
@@ -36,35 +36,6 @@ The controller will now be running as a deployment:
 $ kubectl get deployment -n kube-system aws-load-balancer-controller
 NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
 aws-load-balancer-controller   2/2     2            2           30s
-```
-
-Next, install ExternalDNS which will automatically create DNS records in our private Route 53 hosted zone when Gateway resources are created:
-
-```bash wait=30
-$ helm repo add external-dns https://kubernetes-sigs.github.io/external-dns
-$ helm upgrade --install external-dns external-dns/external-dns \
-  --version "${DNS_CHART_VERSION}" \
-  --namespace "external-dns" \
-  --create-namespace \
-  --set "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"="$DNS_ROLE_ARN" \
-  --set "domainFilters[0]=retailstore.com" \
-  --set "policy=sync" \
-  --wait
-Release "external-dns" does not exist. Installing it now.
-NAME: external-dns
-LAST DEPLOYED: [...]
-NAMESPACE: external-dns
-STATUS: deployed
-REVISION: 1
-TEST SUITE: None
-```
-
-Verify that ExternalDNS is running:
-
-```bash
-$ kubectl get deployment -n external-dns external-dns
-NAME           READY   UP-TO-DATE   AVAILABLE   AGE
-external-dns   1/1     1            1           30s
 ```
 
 Confirm that the Gateway API CRDs are available in the cluster:

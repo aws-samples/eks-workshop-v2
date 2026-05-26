@@ -7,7 +7,7 @@ Gateway API provides native support for weighted traffic splitting, enabling can
 
 With traditional Kubernetes Ingress, weighted traffic splitting is not natively supported — you would need a service mesh like Istio or App Mesh to achieve this. Gateway API makes it a first-class feature through the `backendRefs` weight field.
 
-## Step 1: Deploy the new UI version
+## Deploy the new UI version
 
 First, we'll deploy a second version of the UI application (`ui-v2`) that uses an orange theme to make it visually distinguishable from the original blue theme:
 
@@ -32,7 +32,7 @@ Wait for the new pods to be ready:
 $ kubectl wait --for=condition=Ready pods -l app.kubernetes.io/version=v2 -n ui --timeout=120s
 ```
 
-## Step 2: Apply the 90/10 canary route
+## Apply the 90/10 canary route
 
 Now we'll replace the existing `ui-route` HTTPRoute with a weighted version that sends 90% of traffic to the original UI and 10% to ui-v2:
 
@@ -46,18 +46,38 @@ Apply the canary HTTPRoute:
 $ kubectl apply -f ~/environment/eks-workshop/modules/exposing/gateway-api/canary/httproute-ui-canary.yaml
 ```
 
-## Step 3: Test the traffic split
+## Test the traffic split
 
 Send multiple requests to the Gateway and observe the distribution. Approximately 10% of responses should come from the orange-themed ui-v2:
 
 ```bash timeout=60
 $ export GATEWAY_URL=$(kubectl get gateway retail-store-gateway -n ui -o jsonpath='{.status.addresses[0].value}')
 $ for i in $(seq 1 20); do curl -s $GATEWAY_URL | grep "theme" ; done
+href="/assets/css/theme-default.css"theme: {
+href="/assets/css/theme-default.css"theme: {
+href="/assets/css/theme-default.css"theme: {
+href="/assets/css/theme-default.css"theme: {
+href="/assets/css/theme-default.css"theme: {
+href="/assets/css/theme-orange.css"theme: {
+href="/assets/css/theme-default.css"theme: {
+href="/assets/css/theme-default.css"theme: {
+href="/assets/css/theme-default.css"theme: {
+href="/assets/css/theme-default.css"theme: {
+href="/assets/css/theme-default.css"theme: {
+href="/assets/css/theme-default.css"theme: {
+href="/assets/css/theme-default.css"theme: {
+href="/assets/css/theme-orange.css"theme: {
+href="/assets/css/theme-default.css"theme: {
+href="/assets/css/theme-orange.css"theme: {
+href="/assets/css/theme-default.css"theme: {
+href="/assets/css/theme-default.css"theme: {
+href="/assets/css/theme-default.css"theme: {
+href="/assets/css/theme-orange.css"theme: {
 ```
 
-You should see that most responses return the default theme while roughly 1-2 out of 20 requests return the orange theme, confirming the 90/10 traffic split is working.
+You should see that most responses return `theme-default` while roughly 1-2 out of 20 requests return `theme-orange`, confirming the 90/10 traffic split is working.
 
-## Step 4: Increase traffic to 50/50
+## Increase traffic to 50/50
 
 Once you're confident the new version is working correctly, increase the canary weight to 50%:
 
@@ -75,7 +95,7 @@ $ for i in $(seq 1 20); do curl -s $GATEWAY_URL | grep "theme" ; done
 
 You should now see roughly half of the responses returning the orange theme.
 
-## Step 5: Complete the rollout
+## Complete the rollout
 
 When you're satisfied with the new version, shift all traffic to ui-v2 by setting the weights to 0/100:
 
@@ -92,6 +112,10 @@ $ for i in $(seq 1 20); do curl -s $GATEWAY_URL | grep "theme" ; done
 ```
 
 All responses should now return the orange theme, confirming the full cutover to ui-v2.
+
+<Browser url="http://k8s-ui-retailst-xxxxxxxxxx.us-west-2.elb.amazonaws.com">
+<img src={require('@site/static/img/sample-app-screens/home-orange.webp').default}/>
+</Browser>
 
 ## Summary
 
