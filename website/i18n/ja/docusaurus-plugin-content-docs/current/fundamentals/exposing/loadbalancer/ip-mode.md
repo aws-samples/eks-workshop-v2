@@ -1,7 +1,7 @@
 ---
 title: "IPモード"
 sidebar_position: 40
-tmdTranslationSourceHash: b67d43544731909d6e1dd70f0bdca966
+tmdTranslationSourceHash: acc5b1f3e6086643730da5f893525689
 ---
 
 前述のように、作成したNLBは「インスタンスモード」で動作しています。インスタンスターゲットモードはAWS EC2インスタンス上で実行されているPodをサポートしています。このモードでは、AWS NLBはインスタンスにトラフィックを送信し、個々のワーカーノード上の`kube-proxy`がKubernetesクラスター内の1つ以上のワーカーノードを介してPodにトラフィックを転送します。
@@ -44,7 +44,7 @@ Service/ui-nlb
 kustomizeでマニフェストを適用します：
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/load-balancer/ip-mode
+$ kubectl kustomize ~/environment/eks-workshop/modules/exposing/load-balancer/ip-mode | envsubst | kubectl apply -f -
 ```
 
 ロードバランサーの構成が更新されるまで数分かかります。以下のコマンドを実行して、アノテーションが更新されたことを確認します：

@@ -1,8 +1,10 @@
 ---
 title: "アプリケーションメトリクス"
 sidebar_position: 50
-tmdTranslationSourceHash: d0902eea5e06ee6c0776e4e666b31ea3
+tmdTranslationSourceHash: 3f49f73bcc8bf808480d0dc139810348
 ---
+
+import dashboard from '@site/static/docs/observability/container-insights/cw-dashboard.webp';
 
 このセクションでは、ワークロードによって公開されているメトリクスの洞察を得て、Amazon CloudWatch Insights Prometheusを使用してこれらのメトリクスを可視化する方法を見ていきます。これらのメトリクスの例としては以下のようなものがあります：
 
@@ -63,7 +65,7 @@ nodejs_heap_size_total_bytes 48668672
 
 ::yaml{file="manifests/modules/observability/container-insights/adot-deployment/opentelemetrycollector.yaml" zoomPath="spec.config.receivers.prometheus" zoomBefore="2"}
 
-AWS Container Insights Receiverではなく、[Prometheusレシーバー](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.md)を使用してEKSクラスター内のすべてのポッドをスクレイプします。
+AWS Container Insights Receiverではなく、[Prometheusレシーバー](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.md)を使用してEKSクラスター内のすべてのPodをスクレイプします。
 
 ::yaml{file="manifests/modules/observability/container-insights/adot-deployment/opentelemetrycollector.yaml" zoomPath="spec.config.processors"}
 

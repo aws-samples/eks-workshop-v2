@@ -1,7 +1,7 @@
 ---
 title: "アプリケーションのデプロイ"
 sidebar_position: 30
-tmdTranslationSourceHash: 'f2ab388708b4751ac24fbc2d1dddc667'
+tmdTranslationSourceHash: 'a4388dc269aa186756e39de2af59f9fd'
 ---
 
 Argo CDをクラスターに正常に設定したので、アプリケーションをデプロイしましょう。GitOpsベースの配信アプローチと従来のデプロイ方法の違いを示すために、サンプルアプリケーションのUIコンポーネントを`kubectl apply -k`アプローチからArgo CD管理のデプロイに移行します。
@@ -56,7 +56,7 @@ $ git -C ~/environment/argocd push
 次に、Gitリポジトリを使用するように構成されたArgo CDアプリケーションを作成します：
 
 ```bash
-$ argocd app create ui --repo ssh://git@${GITEA_SSH_HOSTNAME}:2222/workshop-user/argocd.git \
+$ argocd app create ui --repo $GITOPS_REPO_URL_ARGOCD \
   --path ui --dest-server https://kubernetes.default.svc \
   --dest-namespace ui --sync-option CreateNamespace=true
 application 'ui' created

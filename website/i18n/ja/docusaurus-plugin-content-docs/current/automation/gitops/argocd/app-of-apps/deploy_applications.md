@@ -1,7 +1,7 @@
 ---
 title: "より多くのワークロードの追加"
 sidebar_position: 60
-tmdTranslationSourceHash: 47bf999b2ab55006d4340855848db799
+tmdTranslationSourceHash: 6eb0402859d82d5555e7e2d450ba7503
 ---
 
 App of Appsパターンの基盤を設定したので、追加のワークロードHelmチャートをGitリポジトリに追加することができます。
@@ -60,7 +60,6 @@ carts             Active   28s
 catalog           Active   28s
 checkout          Active   28s
 default           Active   8h
-gitea             Active   19m
 kube-node-lease   Active   8h
 kube-public       Active   8h
 kube-system       Active   8h
@@ -68,7 +67,7 @@ orders            Active   28s
 ui                Active   11m
 ```
 
-デプロイされたワークロードの1つをより詳しく調べてみましょう。例えば、cartsコンポーネントを確認できます：
+デプロイされたワークロードの1つをより詳しく調べてみましょう。例えば、Cartsコンポーネントを確認できます：
 
 ```bash
 $ kubectl get deployment -n carts
@@ -77,3 +76,4 @@ carts   1/1     1            1           46s
 ```
 
 これにより、App of Appsパターンを使用したGitOpsベースのデプロイメントが、すべてのマイクロサービスをクラスターに正常にデプロイしたことが確認されました。
+
