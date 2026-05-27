@@ -30,7 +30,7 @@ In LBC v3.x with Gateway API, load balancer settings are configured through a `L
 Apply the LoadBalancerConfiguration:
 
 ```bash
-$ export SOURCE_RANGES=$(echo $INBOUND_CIDRS | tr ',' '\n' | sed 's/^/    - "/;s/$/"/' )
+$ export SOURCE_RANGES=$(echo $INBOUND_CIDRS | tr ',' '\n' | sed 's/^/    - "/;s/$/"/')
 $ cat ~/environment/eks-workshop/modules/exposing/gateway-api/exposing-ui/loadbalancerconfig.yaml | envsubst | kubectl apply -f -
 ```
 
@@ -48,8 +48,9 @@ Key points:
 
 Apply the Gateway:
 
-```bash timeout=180
+```bash timeout=600
 $ kubectl apply -f ~/environment/eks-workshop/modules/exposing/gateway-api/exposing-ui/gateway.yaml
+$ kubectl wait --for=condition=Programmed gateway/retail-store-gateway -n ui --timeout=600s
 ```
 
 ## Create the HTTPRoute
@@ -83,13 +84,17 @@ NAME       HOSTNAMES   AGE
 ui-route               2m
 ```
 
+<!--
 The ALB will take several minutes to provision and register its targets. Once the Gateway shows an address, you can test connectivity:
+-->
 
+<!--
 ```bash timeout=180
 $ export GATEWAY_URL=$(kubectl get gateway retail-store-gateway -n ui -o jsonpath='{.status.addresses[0].value}')
 $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
   -k $GATEWAY_URL
 ```
+-->
 
 Access the UI through the Gateway ALB:
 

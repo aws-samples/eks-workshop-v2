@@ -74,9 +74,14 @@ Verify that the root path `/` still returns the UI:
 
 ```bash
 $ curl --head -X GET -s $GATEWAY_URL
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 19973
+Connection: keep-alive
+Content-Language: en-US
 ```
 
-The UI continues to respond on `/` while the Catalog API is now accessible on `/catalog` — both served through the same Gateway ALB.
+The `Content-Type: text/html` response confirms the UI service is responding on `/`, while the Catalog API is now accessible on `/catalog` — both served through the same Gateway ALB.
 
 ## Cross-namespace routing
 
