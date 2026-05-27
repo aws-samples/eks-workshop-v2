@@ -23,7 +23,7 @@ resource "helm_release" "secrets_store_csi_driver_provider_aws" {
   repository = "https://aws.github.io/secrets-store-csi-driver-provider-aws"
   chart      = "secrets-store-csi-driver-provider-aws"
   namespace  = "kube-system"
-  version    = "2.1.1"
+  version    = "3.0.1"
   provider   = helm.auto_mode
 
   set {
@@ -42,7 +42,7 @@ resource "helm_release" "external_secrets" {
   repository = "https://charts.external-secrets.io"
   chart      = "external-secrets"
   namespace  = "external-secrets"
-  version    = "0.14.4"
+  version    = "2.4.1"
   provider   = helm.auto_mode
 
   create_namespace = true
