@@ -56,10 +56,12 @@ pre-provision:
 
 .PHONY: create-infrastructure
 create-infrastructure:
+	aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
 	bash hack/create-infrastructure.sh $(environment) $(cluster)
 
 .PHONY: destroy-infrastructure
 destroy-infrastructure:
+	aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
 	bash hack/destroy-infrastructure.sh $(environment) $(cluster)
 
 .PHONY: deploy-ide

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui-v2
+  namespace: ui
+  labels:
+    app.kubernetes.io/name: ui
+    app.kubernetes.io/version: v2
+    app.kubernetes.io/created-by: eks-workshop
+spec:
+  selector:
+    app.kubernetes.io/name: ui
+    app.kubernetes.io/version: v2
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
