@@ -41,13 +41,6 @@ variable "load_balancer_controller_chart_version" {
   default = "3.3.0"
 }
 
-variable "external_dns_chart_version" {
-  description = "The chart version of external-dns to use"
-  type        = string
-  # renovate-helm: depName=external-dns registryUrl=https://kubernetes-sigs.github.io/external-dns
-  default = "1.20.0"
-}
-
 # tflint-ignore: terraform_unused_declarations
 variable "inbound_cidrs" {
   description = "CIDR range to allowlist for inbound traffic"

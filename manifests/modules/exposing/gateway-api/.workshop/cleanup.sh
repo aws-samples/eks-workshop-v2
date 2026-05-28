@@ -31,8 +31,6 @@ kubectl delete gateway --all -A --ignore-not-found 2>/dev/null || true
 kubectl delete gatewayclass --all --ignore-not-found 2>/dev/null || true
 
 # Now uninstall the controllers
-uninstall-helm-chart external-dns external-dns
-
 uninstall-helm-chart aws-load-balancer-controller kube-system
 
 # Clean up CRDs
