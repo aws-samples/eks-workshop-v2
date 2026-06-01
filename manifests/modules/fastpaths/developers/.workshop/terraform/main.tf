@@ -7,8 +7,9 @@ module "preprovision" {
     kubernetes.auto_mode = kubernetes.auto_mode
   }
 
-  eks_cluster_id      = var.eks_cluster_id
-  eks_cluster_auto_id = var.eks_cluster_auto_id
-  tags                = var.tags
-  inbound_cidrs       = var.inbound_cidrs
+  eks_cluster_id        = var.eks_cluster_id
+  eks_cluster_auto_id   = var.eks_cluster_auto_id
+  tags                  = var.tags
+  inbound_cidrs         = var.inbound_cidrs
+  argocd_admin_group_id = var.argocd_admin_group_id
 }

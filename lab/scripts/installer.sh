@@ -120,6 +120,10 @@ rm -rf flux.tar.gz
 # git-remote
 pip install git-remote-s3
 
+# git-remote-codecommit (used by the EKS capabilities Argo CD fast path to clone
+# CodeCommit repos with ambient AWS credentials via the codecommit:: helper)
+pip install git-remote-codecommit==1.17
+
 # terraform
 download "https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_${arch_name}.zip" "terraform.zip"
 unzip -o -q terraform.zip -d /tmp

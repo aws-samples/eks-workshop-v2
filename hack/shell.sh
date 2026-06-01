@@ -44,5 +44,6 @@ $CONTAINER_CLI run --rm $interactive_args $dns_args \
   -v $SCRIPT_DIR/../cluster:/cluster \
   -e "RESET_NO_DELETE=true" \
   -e 'EKS_CLUSTER_NAME' -e 'EKS_CLUSTER_AUTO_NAME' -e 'AWS_REGION' -e 'BASE_INBOUND_CIDRS' \
+  -e 'ARGOCD_ADMIN_GROUP_ID' \
   -p 8889:8889 \
   $aws_credential_args $container_image $shell_command

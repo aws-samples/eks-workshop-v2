@@ -46,3 +46,10 @@ variable "inbound_cidrs" {
   description = "CIDR range to allowlist for inbound traffic"
   type        = string
 }
+
+# tflint-ignore: terraform_unused_declarations
+variable "argocd_admin_group_id" {
+  description = "UUID of an existing IAM Identity Center group mapped to Argo CD ADMIN. Required for the EKS Capabilities fast path. See preprovision/vars.tf."
+  type        = string
+  default     = ""
+}

@@ -59,6 +59,13 @@ variable "inbound_cidrs" {
   default     = "0.0.0.0/0"
 }
 
+# tflint-ignore: terraform_unused_declarations
+variable "argocd_admin_group_id" {
+  description = "UUID of an existing IAM Identity Center group mapped to Argo CD ADMIN. Required by the fastpaths/eks-capabilities path; ignored elsewhere."
+  type        = string
+  default     = ""
+}
+
 data "aws_partition" "current" {}
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
