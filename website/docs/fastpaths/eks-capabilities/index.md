@@ -9,7 +9,7 @@ sidebar_custom_props: { "module": true }
 :::tip Before you start
 This fast path uses a dedicated Amazon EKS Auto Mode cluster. The three labs use the EKS-managed forms of [AWS Controllers for Kubernetes (ACK)](https://aws-controllers-k8s.github.io/community/), [Argo CD](https://argoproj.github.io/cd/), and [kro](https://kro.run/) — the controllers run in the AWS control plane, not on the worker nodes.
 
-**One-time prerequisite (Lab 2 only):** the Argo CD capability authenticates through AWS IAM Identity Center, which requires a real human-facing user with a deliverable email and an MFA device. Walk through the [Identity Center prerequisite](./argocd/setup-idc.md) page first to create the admin group, then export its UUID:
+**One-time prerequisite (Lab 2 only):** the Argo CD capability authenticates through AWS IAM Identity Center, which requires a real human-facing user with a deliverable email and an MFA device. Walk through the [Identity Center prerequisite](./setup-idc.md) page first to create the admin group, then export its UUID:
 
 ```bash test=false
 $ export ARGOCD_ADMIN_GROUP_ID=########-####-####-####-############

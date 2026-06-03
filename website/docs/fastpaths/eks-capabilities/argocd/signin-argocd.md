@@ -17,7 +17,7 @@ $ echo $EKS_CAP_ARGOCD_ADMIN_GROUP_ID
 This lab drives Argo CD entirely through the Kubernetes API so it stays fully testable. Signing in to the Argo CD UI is **optional** and requires an interactive browser flow through Identity Center, so the commands on this page are not run by the automated tests.
 :::
 
-## Exploring the UI (optional)
+## Exploring the UI
 
 The Argo CD UI is reachable at the capability's server URL:
 
@@ -47,26 +47,4 @@ $ aws identitystore create-group-membership \
 ```
 :::
 
-## Driving Argo CD from the shell
-
-This lab uses `kubectl` against the `argoproj.io` custom resources for every scriptable interaction with Argo CD. A few useful examples you can run any time after the next page provisions the `catalog` Application:
-
-```bash test=false
-# List Applications
-$ kubectl get application -A
-
-# Inspect one
-$ kubectl describe application catalog -n argocd
-
-# Force a refresh + sync (re-fetch Git and reconcile right away)
-$ kubectl annotate application catalog -n argocd \
-    argocd.argoproj.io/refresh=hard --overwrite
-```
-
-:::note About `refresh=hard`
-Argo CD polls the source repository on its own schedule (default ~3 minutes). Annotating the `Application` with `argocd.argoproj.io/refresh=hard` tells Argo CD to **re-fetch from Git immediately and reconcile**, skipping the polling wait. Use it whenever you've just pushed a commit and don't want to wait for the next poll cycle. The annotation is functionally equivalent to clicking the **Refresh** → **Hard Refresh** option in the Argo CD UI.
-
-`--overwrite` is required because the annotation key is reused on every refresh. If the source content hasn't changed since the last sync, the operation is a no-op — safe to run any time.
-:::
-
-The next step uses exactly this pattern — declaring the `catalog` Application with `kubectl apply`.
+In the next page, we'll declare the `catalog` Application with `kubectl apply` and let Argo CD reconcile it from the seeded CodeCommit repository.

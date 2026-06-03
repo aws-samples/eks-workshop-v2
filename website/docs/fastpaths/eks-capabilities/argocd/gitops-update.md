@@ -78,6 +78,8 @@ $ kubectl get application catalog -n argocd \
   -o jsonpath='{.status.sync.status}{"/"}{.status.health.status}{"\n"}'
 Synced/Healthy
 ```
+ on Argo CD UI
+![Argo CD UI after Identity Center sign-in](/img/fastpaths/eks-capabilities/argocd/argocd-ui-1.22-app.png) 
 
 :::tip
 Because `selfHeal` is enabled, try editing the Deployment directly — for example `kubectl scale -n catalog deployment/catalog --replicas=3`. Argo CD detects the drift from Git and reverts it, because Git, not the cluster, is the source of truth.
@@ -86,8 +88,6 @@ Because `selfHeal` is enabled, try editing the Deployment directly — for examp
 That's Lab 2 done. You delivered the `catalog` service through a fully managed GitOps pipeline: a push to CodeCommit became a reconciled rollout on the cluster, with no `kubectl apply` and no self-managed Argo CD to operate.
 
 ## Troubleshooting
-
-**`bash: cd: /home/ec2-user/environment/catalog-gitops: No such file or directory`** — the working copy was removed by a prior cleanup hook or you haven't run the clone step yet. Re-run the `git clone` block above; it's idempotent.
 
 **`fatal: unable to auto-detect email address`** — Git needs an identity (`user.email`, `user.name`) in this repository before it will commit. Run the chained `cd ... && git config ... && git commit && git push` block above as one unit so the config and commit happen in the same shell.
 

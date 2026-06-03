@@ -1,10 +1,10 @@
 ---
 title: "Identity Center prerequisite"
-sidebar_position: 10
+sidebar_position: 5
 sidebar_custom_props: { "info": true }
 ---
 
-::required-time
+::required-time{estimatedLabExecutionTimeMinutes="1"}
 
 The Argo CD EKS-managed capability authenticates **only** through AWS IAM Identity Center. There is no local admin user and no auto-generated password — anyone who signs in does so with an Identity Center identity that has been mapped to the Argo CD `ADMIN`, `EDITOR`, or `VIEWER` role.
 
@@ -14,7 +14,7 @@ Before `prepare-environment` can provision the capability, you need:
 2. An Identity Center **user** with a deliverable email and an enrolled MFA device — required because Identity Center forces email activation + MFA enrollment on first sign-in.
 3. An Identity Center **group** containing that user, whose UUID you pass to Terraform via `ARGOCD_ADMIN_GROUP_ID`. The lab maps the group to the Argo CD `ADMIN` role.
 
-Identity Center configuration is intentionally **not** managed by Terraform here. IDC users require real email activation, so a placeholder user created in code can never complete first sign-in. This matches the pattern in the [`sample-platform-engineering-on-eks`](https://github.com/aws-samples/sample-platform-engineering-on-eks) reference workshop and [the AWS Argo CD capability user guide](https://docs.aws.amazon.com/eks/latest/userguide/argocd-create-console.html).
+Identity Center configuration is intentionally **not** managed by Terraform here. IDC users require real email activation, so a placeholder user created in code can never complete first sign-in.
 
 :::info
 This page is run **once per AWS account**. Once `argocd-admins` exists with you in it, you only need to re-export `ARGOCD_ADMIN_GROUP_ID` for new shells.
@@ -64,15 +64,21 @@ $ aws identitystore create-group \
 
 ## 4. Add your user to the group
 
+Replace `<paste-your-username>` below with the username you chose in step 2:
+
 ```bash test=false
-$ MY_USERNAME="your-username-from-step-2"
+$ MY_USERNAME="<paste-your-username>"
 
 $ MY_USER_ID=$(aws identitystore list-users --identity-store-id "$IDS" \
     --query "Users[?UserName=='$MY_USERNAME'].UserId" --output text | head -1)
 $ GROUP_ID=$(aws identitystore list-groups --identity-store-id "$IDS" \
     --query "Groups[?DisplayName=='argocd-admins'].GroupId" --output text | head -1)
 $ echo "User: $MY_USER_ID  Group: $GROUP_ID"
+```
 
+Both `MY_USER_ID` and `GROUP_ID` should print non-empty UUIDs. If `MY_USER_ID` is empty, double-check the `MY_USERNAME` value matches the user you created in step 2 (the **Username**, not the email).
+
+```bash test=false
 $ aws identitystore create-group-membership \
     --identity-store-id "$IDS" \
     --group-id "$GROUP_ID" \
@@ -85,17 +91,21 @@ Confirm the membership:
 $ aws identitystore list-group-memberships \
     --identity-store-id "$IDS" \
     --group-id "$GROUP_ID" \
-    --query 'GroupMemberships[].MemberId'
+    --query "GroupMemberships[?MemberId.UserId=='$MY_USER_ID']"
 ```
 
-You should see one entry — your user ID.
+You should see one entry referencing your user ID.
 
 ## 5. Export the group UUID
 
-This is what Terraform reads:
+This is what Terraform reads. The block re-derives the UUID directly from Identity Center so it works even in a fresh shell:
 
 ```bash test=false
-$ export ARGOCD_ADMIN_GROUP_ID="$GROUP_ID"
+$ export IDS=$(aws sso-admin list-instances \
+    --query 'Instances[0].IdentityStoreId' --output text | head -1)
+$ export ARGOCD_ADMIN_GROUP_ID=$(aws identitystore list-groups \
+    --identity-store-id "$IDS" \
+    --query "Groups[?DisplayName=='argocd-admins'].GroupId" --output text | head -1)
 $ echo "ARGOCD_ADMIN_GROUP_ID=$ARGOCD_ADMIN_GROUP_ID"
 ARGOCD_ADMIN_GROUP_ID=########-####-####-####-############
 ```
@@ -108,7 +118,7 @@ Save the export to your shell profile (`~/.bashrc.d/idc.bash` inside the worksho
 
 Identity Center won't let the user sign in to the Argo CD UI until they've activated the account: verified email, set a permanent password, and enrolled an MFA device. Pick whichever activation flow fits your situation.
 
-### Option A — Email activation (recommended for self-service)
+### Email activation (recommended for self-service)
 
 If the email address you set in step 2 is a real inbox you can receive mail at, just use the activation email Identity Center sent when the user was created.
 
@@ -120,38 +130,20 @@ If the email address you set in step 2 is a real inbox you can receive mail at, 
 
 If the email never arrived, in the [Users console](https://console.aws.amazon.com/singlesignon/identity/home#!/instances/users) click into the user and choose **Send email verification link** — Identity Center re-sends the activation message.
 
-### Option B — One-time password (admin-driven, useful when email isn't reachable)
-
-If you can't receive email at the address (e.g. a test alias), or the activation email expired, an admin can hand out a temporary password directly:
-
-1. Open the [Users console](https://console.aws.amazon.com/singlesignon/identity/home#!/instances/users) and click into the user.
-2. Click **Reset password**.
-3. Choose **"Generate a one-time password and share the password with the user"**.
-4. Click **Reset password**. Identity Center returns a temporary password — copy it.
-5. Open the IDC sign-in portal: `https://${IDS}.awsapps.com/start` (substitute your real `$IDS` value).
-6. Sign in with the username from step 2 and the one-time password from step 4.
-7. Identity Center forces you to set a permanent password and enroll MFA on first sign-in. Complete both.
-
-:::note
-The one-time password expires shortly after generation, so use it right away. If you don't complete the password change + MFA enrollment in one session, regenerate.
-:::
 
 ### Verify activation succeeded
 
-Confirm the user's status is `ENABLED` and that the user appears under the group's members:
+The Identity Store API doesn't expose a per-user "activated" status, so confirm activation by signing in. First, find your account's IDC start portal URL — it's labeled **AWS access portal URL** in the Identity Center console under **Settings**. The URL looks like `https://<alias-or-ds-id>.awsapps.com/start`.
 
 ```bash test=false
-$ aws identitystore describe-user --identity-store-id "$IDS" --user-id "$MY_USER_ID" \
-    --query '{name:UserName,emails:Emails[0].Value}'
+$ aws sso-admin list-instances \
+    --query 'Instances[0].IdentityStoreId' --output text
+d-xxxxxxxxxx
 ```
 
-Then try signing in to the IDC start portal once before continuing — if that works, the Argo CD UI will work too:
+Open the start portal URL in your browser, sign in with the username you set in step 2 and the password you just set, complete the MFA challenge. You should land on a "Your applications" page (it'll be empty until the Argo CD capability registers itself in step 7).
 
-```bash test=false
-$ echo "IDC start portal: https://$IDS.awsapps.com/start"
-```
-
-Open that URL, sign in, complete MFA. You should land on a "Your applications" page (it'll be empty until the Argo CD capability registers itself in step 7).
+If sign-in succeeds, activation is complete. If it fails (e.g. "It's not you, it's us"), revisit Option B above and regenerate the one-time password.
 
 ## 7. Run `prepare-environment`
 

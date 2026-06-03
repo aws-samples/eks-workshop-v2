@@ -85,14 +85,17 @@ $ cat ~/environment/eks-workshop/modules/fastpaths/eks-capabilities/argocd/appli
 application.argoproj.io/catalog created
 ```
 
-Argo CD picks up the new `Application`, pulls the manifests from CodeCommit, creates the `catalog` namespace, and deploys the workloads. Wait for it to report both `Synced` and `Healthy`:
+Argo CD picks up the new `Application`, pulls the manifests from CodeCommit, creates the `catalog` namespace, and deploys the workloads. Trigger an immediate refresh so we don't wait on the default ~3-minute poll, then wait for it to report both `Synced` and `Healthy`:
 
-```bash timeout=300
+```bash timeout=600
+$ kubectl annotate application catalog -n argocd \
+  argocd.argoproj.io/refresh=hard --overwrite
+application.argoproj.io/catalog annotated
 $ kubectl wait --for=jsonpath='{.status.sync.status}'=Synced \
-  application/catalog -n argocd --timeout=180s
+  application/catalog -n argocd --timeout=300s
 application.argoproj.io/catalog condition met
 $ kubectl wait --for=jsonpath='{.status.health.status}'=Healthy \
-  application/catalog -n argocd --timeout=180s
+  application/catalog -n argocd --timeout=300s
 application.argoproj.io/catalog condition met
 ```
 
@@ -106,13 +109,19 @@ Synced/Healthy
 
 Confirm the workloads Argo CD deployed are running:
 
-```bash timeout=180
-$ kubectl rollout status -n catalog deployment/catalog --timeout=150s
+```bash timeout=300
+$ kubectl rollout status -n catalog deployment/catalog --timeout=240s
 deployment "catalog" successfully rolled out
 $ kubectl get pods -n catalog
 NAME                       READY   STATUS    RESTARTS   AGE
 catalog-7d9f4c5b8d-abcde   1/1     Running   0          90s
 catalog-mysql-0            1/1     Running   0          90s
 ```
+
+You can also see it on Argo CD UI
+
+![Argo CD UI after Identity Center sign-in](/img/fastpaths/eks-capabilities/argocd/argocd-ui-signed-in-app.png)
+
+
 
 The `catalog` service is now delivered by GitOps. Any change pushed to the CodeCommit repository will be reconciled to the cluster automatically — which we'll see next.

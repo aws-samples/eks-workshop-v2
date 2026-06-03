@@ -38,7 +38,7 @@ appprojects      appproj,...  argoproj.io/v1alpha1             true         AppP
 Just like the ACK capability, we never installed a Helm chart and there's no `argocd-server` Pod running on your worker nodes. The Argo CD control plane runs in AWS-managed infrastructure outside the cluster — what you see inside the cluster are the CRDs the capability registered, which you'll use to declare Applications.
 :::
 
-The capability is also federated with the Identity Center group (its UUID — see the [setup page](./setup-idc.md)) that grants the Argo CD `ADMIN` role:
+The capability is also federated with the Identity Center group (its UUID — see the [setup page](../setup-idc.md)) that grants the Argo CD `ADMIN` role:
 
 ```bash
 $ echo $EKS_CAP_ARGOCD_ADMIN_GROUP_ID

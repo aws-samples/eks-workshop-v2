@@ -8,7 +8,7 @@ sidebar_position: 20
 :::tip What's been set up for you
 
 - The **Argo CD EKS-managed capability** is `ACTIVE` on the cluster and federated with **AWS IAM Identity Center** for sign-in. There are no local users and no admin password — Identity Center is the only authentication path.
-- The IAM Identity Center group whose UUID you provided as `ARGOCD_ADMIN_GROUP_ID` (see the [Identity Center prerequisite](./setup-idc.md)) is mapped to the Argo CD **ADMIN** role.
+- The IAM Identity Center group whose UUID you provided as `ARGOCD_ADMIN_GROUP_ID` (see the [Identity Center prerequisite](../setup-idc.md)) is mapped to the Argo CD **ADMIN** role.
 - An **AWS CodeCommit repository** (`${EKS_CAP_CODECOMMIT_REPO}`) is pre-provisioned and seeded with the `catalog` Kubernetes manifests.
 - An **IAM Capability Role** trusted by the Argo CD capability service principal grants `codecommit:GitPull` on that repository — so the managed Argo CD can read your manifests with no SSH keys and no Git credentials.
 - `git-remote-codecommit` is pre-installed in the web IDE for cloning the repo. The lab drives Argo CD through `kubectl` against the `argoproj.io` custom resources, with the browser UI available for interactive exploration.
