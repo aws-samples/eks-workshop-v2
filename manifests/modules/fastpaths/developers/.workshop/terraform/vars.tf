@@ -48,8 +48,8 @@ variable "inbound_cidrs" {
 }
 
 # tflint-ignore: terraform_unused_declarations
-variable "argocd_admin_group_id" {
-  description = "UUID of an existing IAM Identity Center group mapped to Argo CD ADMIN. Required for the EKS Capabilities fast path. See preprovision/vars.tf."
+variable "argocd_admin_email" {
+  description = "Email attached to the Argo CD workshop admin user (Lab 2). Optional — the OTP-based activation flow ignores it. See preprovision/vars.tf."
   type        = string
   default     = ""
 }

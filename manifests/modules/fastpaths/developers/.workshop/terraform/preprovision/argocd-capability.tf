@@ -32,6 +32,8 @@ locals {
   eks_cap_idc_identitystore = local.eks_cap_idc_present ? tolist(data.aws_ssoadmin_instances.current.identity_store_ids)[0] : ""
 
   eks_cap_argocd_capability_name = "${var.eks_cluster_auto_id}-argocd"
+  eks_cap_argocd_admin_user      = "${var.eks_cluster_auto_id}-argocd-admin"
+  eks_cap_argocd_admin_group     = "${var.eks_cluster_auto_id}-argocd-admins"
   eks_cap_codecommit_repo_name   = "${var.eks_cluster_auto_id}-catalog-gitops"
   eks_cap_codecommit_repo_arn    = "arn:${data.aws_partition.current.partition}:codecommit:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:${local.eks_cap_codecommit_repo_name}"
   eks_cap_codecommit_repo_url    = "https://git-codecommit.${data.aws_region.current.id}.amazonaws.com/v1/repos/${local.eks_cap_codecommit_repo_name}"
@@ -43,20 +45,61 @@ resource "null_resource" "eks_cap_argocd_idc_preflight" {
       condition     = local.eks_cap_idc_present
       error_message = "The Argo CD capability requires AWS IAM Identity Center, but no Identity Center instance was found in ${data.aws_region.current.id}. Enable IAM Identity Center in this region (https://console.aws.amazon.com/singlesignon/home) before running this fast path."
     }
-
-    precondition {
-      condition     = length(var.argocd_admin_group_id) > 0
-      error_message = "var.argocd_admin_group_id is required: provide the UUID of an existing IAM Identity Center group whose members are mapped to Argo CD ADMIN. See website/docs/fastpaths/eks-capabilities/setup-idc.md for the one-time prerequisite walkthrough. The same approach is used by https://github.com/aws-samples/sample-platform-engineering-on-eks."
-    }
   }
 }
 
-# Identity Center user + group lifecycle is intentionally NOT managed here.
-# IDC users require a deliverable email for activation + MFA enrollment, so
-# placeholders cannot complete first sign-in. The learner provisions the group
-# (and a real-email user with MFA) once via the IDC console as a prerequisite,
-# then passes the group's UUID via var.argocd_admin_group_id. Same model as
-# https://github.com/aws-samples/sample-platform-engineering-on-eks.
+# --- Identity Center user + group + membership ------------------------------
+#
+# We create a workshop-scoped admin group and a single user inside the built-in
+# Identity Store, then map the GROUP -> Argo CD ADMIN role in the capability
+# config below.
+#
+# Activation flow (matches saas-on-eks-workshop-capabilities):
+#   1. Admin disables MFA on the IDC instance once (Console only, no API).
+#   2. Admin generates a one-time password for this user via the IDC Console
+#      (Users -> argo-admin -> Reset password -> "Generate a one-time password").
+#   3. Learner signs in to Argo CD with username + OTP, is forced to set a
+#      permanent password, then lands in Argo CD as ADMIN.
+#
+# This is why the email defaults to a non-deliverable placeholder — the OTP
+# flow doesn't use it. To use the email-link activation flow instead, set
+# TF_VAR_argocd_admin_email to a real address.
+#
+# Pattern adopted from:
+#   https://github.com/aws-samples/saas-on-eks-workshop-capabilities/blob/main/assetsSrc/terraform/identity-center.tf
+#   https://github.com/aws-samples/saas-on-eks-workshop-capabilities/blob/main/content/100-introduction/225-argocd-user-management.en.md
+resource "aws_identitystore_user" "argocd_admin" {
+  identity_store_id = local.eks_cap_idc_identitystore
+
+  user_name    = local.eks_cap_argocd_admin_user
+  display_name = "Argo CD Workshop Admin"
+
+  name {
+    given_name  = "Argo CD"
+    family_name = "Workshop Admin"
+  }
+
+  emails {
+    value   = var.argocd_admin_email
+    primary = true
+  }
+
+  depends_on = [null_resource.eks_cap_argocd_idc_preflight]
+}
+
+resource "aws_identitystore_group" "argocd_admins" {
+  identity_store_id = local.eks_cap_idc_identitystore
+  display_name      = local.eks_cap_argocd_admin_group
+  description       = "Argo CD administrators for ${var.eks_cluster_auto_id} (EKS Workshop fast path)"
+
+  depends_on = [null_resource.eks_cap_argocd_idc_preflight]
+}
+
+resource "aws_identitystore_group_membership" "argocd_admin" {
+  identity_store_id = local.eks_cap_idc_identitystore
+  group_id          = aws_identitystore_group.argocd_admins.group_id
+  member_id         = aws_identitystore_user.argocd_admin.user_id
+}
 
 # --- CodeCommit repository, seeded with the catalog manifests ----------------
 #
@@ -185,7 +228,7 @@ resource "aws_eks_capability" "argocd" {
         role = "ADMIN"
 
         identity {
-          id   = var.argocd_admin_group_id
+          id   = aws_identitystore_group.argocd_admins.group_id
           type = "SSO_GROUP"
         }
       }
@@ -196,6 +239,7 @@ resource "aws_eks_capability" "argocd" {
 
   depends_on = [
     aws_iam_role_policy.eks_cap_argocd_codecommit,
+    aws_identitystore_group_membership.argocd_admin,
     null_resource.eks_cap_region_preflight,
     null_resource.eks_cap_argocd_idc_preflight,
     time_sleep.eks_cap_argocd_role_propagation,
@@ -205,12 +249,26 @@ resource "aws_eks_capability" "argocd" {
 # Grant the capability's IAM role permission to deploy into THIS cluster.
 #
 # Unlike the ACK capability, the Argo CD capability AUTOMATICALLY creates the
-# EKS access entry for its Capability Role during creation — but grants it no
-# Kubernetes RBAC. So we do NOT create an aws_eks_access_entry here (that would
-# collide with the auto-created one); we only attach the cluster-admin access
-# policy to the principal AFTER the capability exists. This lets Argo CD sync
-# Applications to the local ("in-cluster") deployment target the learner
-# registers in the lab.
+# EKS access entry for its Capability Role during creation, and AWS auto-attaches
+# AmazonEKSArgoCDPolicy (namespace-scoped to argocd) and AmazonEKSArgoCDClusterPolicy
+# (cluster-wide). Those auto-attached policies are sufficient for the capability
+# to bootstrap itself (create argocd namespace, install CRDs, etc.).
+#
+# We additionally bind AmazonEKSClusterAdminPolicy so the capability's controllers
+# can sync user Applications to the local "in-cluster" deployment target the
+# learner registers in Lab 2.
+#
+# IMPORTANT: do NOT make this depend on aws_eks_capability.argocd reaching ACTIVE.
+# That creates a deadlock: terraform waits for the capability before attaching the
+# admin policy, but the capability sits in CREATING with health
+# `AccessDenied: Unauthorized` for the full 20-min timeout because its controllers
+# can't write user Applications without the admin policy. By letting this resource
+# apply in parallel with the capability create, the admin policy lands shortly
+# after the auto-created access entry appears, and the capability completes its
+# next health check successfully.
+#
+# We also DON'T create an aws_eks_access_entry here — the capability auto-creates
+# one and our explicit declaration would collide (ResourceInUseException).
 resource "aws_eks_access_policy_association" "argocd" {
   cluster_name  = var.eks_cluster_auto_id
   policy_arn    = "arn:${data.aws_partition.current.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
@@ -220,5 +278,12 @@ resource "aws_eks_access_policy_association" "argocd" {
     type = "cluster"
   }
 
-  depends_on = [aws_eks_capability.argocd]
+  # Depend only on the IAM role + 30s propagation, NOT on the capability.
+  # The capability's auto-created access entry is what this association binds
+  # to; that entry exists from the moment the capability starts CREATING, so
+  # we don't need to wait for it to reach ACTIVE.
+  depends_on = [
+    aws_iam_role.eks_cap_argocd_capability,
+    time_sleep.eks_cap_argocd_role_propagation,
+  ]
 }

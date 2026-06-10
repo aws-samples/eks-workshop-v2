@@ -25,18 +25,17 @@ variable "inbound_cidrs" {
 }
 
 # tflint-ignore: terraform_unused_declarations
-variable "argocd_admin_group_id" {
+variable "argocd_admin_email" {
   description = <<-EOT
-    UUID of an existing AWS IAM Identity Center group whose members are mapped
-    to the Argo CD ADMIN role. Must exist in the same Identity Center instance
-    found by the preflight in argocd-capability.tf.
+    Email address attached to the Argo CD workshop admin user record.
+    Defaults to a non-deliverable placeholder because this fast path uses the
+    admin-generated OTP activation path (see setup-idc.md), not the
+    email-link path — so the email value is cosmetic and never needs to
+    receive mail. Override with a real address only if you specifically want
+    to use the email-link activation flow.
 
-    Identity Center users and groups are real human-facing identities (they
-    require a real email for activation + MFA enrollment), so this fast path
-    treats them as a one-time prerequisite the learner sets up in the IDC
-    console rather than creating them in code with placeholder values that
-    cannot complete first sign-in. Same approach as
-    https://github.com/aws-samples/sample-platform-engineering-on-eks.
+    Pattern adopted from https://github.com/aws-samples/saas-on-eks-workshop-capabilities.
   EOT
   type        = string
+  default     = "argocd-admin@example.com"
 }
