@@ -3,7 +3,7 @@ title: "Provision AWS resources with ACK"
 sidebar_position: 10
 ---
 
-::required-time
+::required-time{estimatedLabExecutionTimeMinutes="10"}
 
 :::tip What's been set up for you
 

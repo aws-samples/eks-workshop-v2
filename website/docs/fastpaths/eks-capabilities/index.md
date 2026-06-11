@@ -4,7 +4,7 @@ sidebar_position: 70
 sidebar_custom_props: { "module": true }
 ---
 
-::required-time
+::required-time{estimatedLabExecutionTimeMinutes="25"}
 
 Welcome to the **EKS Capabilities** fast path — a hands-on journey targeted at the platform engineer / DevOps persona, showcasing the capabilities that ship with [Amazon EKS Capabilities](https://aws.amazon.com/about-aws/whats-new/2025/11/amazon-eks-capabilities/) on a single coherent story over the retail sample application.
 
