@@ -87,22 +87,4 @@ Because `selfHeal` is enabled, try editing the Deployment directly — for examp
 
 That's Lab 2 done. You delivered the `catalog` service through a fully managed GitOps pipeline: a push to CodeCommit became a reconciled rollout on the cluster, with no `kubectl apply` and no self-managed Argo CD to operate.
 
-## Troubleshooting
-
-**`fatal: unable to auto-detect email address`** — Git needs an identity (`user.email`, `user.name`) in this repository before it will commit. Run the chained `cd ... && git config ... && git commit && git push` block above as one unit so the config and commit happen in the same shell.
-
-**`nothing to commit, working tree clean`** — the repository is already at the target image tag (e.g. you ran the lab earlier). The `(git diff --cached --quiet || git commit ...)` guard makes this a no-op; the `git push` that follows is also a no-op against an already-up-to-date branch. The lab still verifies the running deployment is on `1.2.2` either way.
-
-**Argo CD UI keeps showing the old image after `git push`** — Argo CD polls Git on its own ~3-minute schedule. The `kubectl annotate ... refresh=hard` step skips that wait. If you don't see the rollout begin within ~30 seconds of the annotation, double-check the Application's `status.sync.revision` matches your latest commit:
-
-```bash test=false
-$ kubectl get application catalog -n argocd \
-    -o jsonpath='{.status.sync.revision}{"\n"}'
-$ aws codecommit get-branch \
-    --repository-name "$EKS_CAP_CODECOMMIT_REPO" --branch-name main \
-    --query 'branch.commitId' --output text
-```
-
-If they don't match, re-run the annotation. If they match but the Deployment image is still old, the rollout is in flight — wait ~30 more seconds.
-
 Next, we'll use the **kro capability** to declare the complete `carts` stack as a single resource graph.
