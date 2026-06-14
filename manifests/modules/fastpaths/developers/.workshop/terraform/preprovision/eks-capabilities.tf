@@ -36,6 +36,13 @@ locals {
   eks_cap_ack_capability_name = "${var.eks_cluster_auto_id}-ack"
   eks_cap_carts_table_name    = "${var.eks_cluster_auto_id}-carts-fastpath"
   eks_cap_carts_table_arn     = "arn:${data.aws_partition.current.partition}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${local.eks_cap_carts_table_name}"
+
+  # Lab 3 (kro) provisions a second carts-* table via an RGD instance. Use a
+  # wildcard ARN so the same carts Pod Identity policy and the same ACK
+  # capability role cover both Lab 1's `${cluster}-carts-fastpath` and any
+  # `${cluster}-carts-*` table a learner names in their CartsStack instance.
+  eks_cap_carts_tables_wildcard_arn = "arn:${data.aws_partition.current.partition}:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.eks_cluster_auto_id}-carts-*"
+  eks_cap_kro_table_name            = "${var.eks_cluster_auto_id}-carts-kro"
 }
 
 # --- IAM Capability Role for ACK --------------------------------------------
@@ -74,7 +81,7 @@ resource "aws_iam_role_policy" "eks_cap_ack_capability_dynamodb" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "ManageCartsFastpathTable"
+        Sid    = "ManageCartsFastpathTables"
         Effect = "Allow"
         Action = [
           "dynamodb:CreateTable",
@@ -98,8 +105,8 @@ resource "aws_iam_role_policy" "eks_cap_ack_capability_dynamodb" {
           "dynamodb:ListTagsOfResource",
         ]
         Resource = [
-          local.eks_cap_carts_table_arn,
-          "${local.eks_cap_carts_table_arn}/index/*",
+          local.eks_cap_carts_tables_wildcard_arn,
+          "${local.eks_cap_carts_tables_wildcard_arn}/index/*",
         ]
       }
     ]
@@ -189,16 +196,20 @@ resource "aws_iam_role_policy" "eks_cap_carts_fastpath_dynamodb" {
   name = "carts-fastpath-dynamodb"
   role = module.iam_assumable_role_carts.iam_role_name
 
+  # Wildcard `${cluster}-carts-*` so the same carts ServiceAccount role
+  # covers both Lab 1's `-carts-fastpath` table and Lab 3's `-carts-kro`
+  # table created by the kro RGD instance. No per-instance policy edits
+  # needed when the learner names a new CartsStack.
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "AllAPIActionsOnCartFastpath"
+        Sid    = "AllAPIActionsOnCartFastpathTables"
         Effect = "Allow"
         Action = "dynamodb:*"
         Resource = [
-          local.eks_cap_carts_table_arn,
-          "${local.eks_cap_carts_table_arn}/index/*",
+          local.eks_cap_carts_tables_wildcard_arn,
+          "${local.eks_cap_carts_tables_wildcard_arn}/index/*",
         ]
       }
     ]

@@ -58,6 +58,9 @@ apis
 versioned
 crds
 argocd
+Argoadmin
+preprovision
+repoint
 dev
 webhooks
 gitops

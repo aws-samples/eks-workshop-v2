@@ -122,6 +122,4 @@ You can also see it on Argo CD UI
 
 ![Argo CD UI after Identity Center sign-in](/img/fastpaths/eks-capabilities/argocd/argocd-ui-signed-in-app.png)
 
-
-
 The `catalog` service is now delivered by GitOps. Any change pushed to the CodeCommit repository will be reconciled to the cluster automatically — which we'll see next.

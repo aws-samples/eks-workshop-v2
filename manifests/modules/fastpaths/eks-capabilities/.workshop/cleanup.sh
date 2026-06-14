@@ -93,3 +93,48 @@ if kubectl get application catalog -n argocd >/dev/null 2>&1; then
   kubectl annotate application catalog -n argocd \
     argocd.argoproj.io/refresh=hard --overwrite >/dev/null 2>&1 || true
 fi
+
+# --- Lab 3 (kro) -------------------------------------------------------------
+
+# Order matters: delete the CartsStack instance first so kro prunes its
+# children (Namespace, ACK Table, ConfigMap, ServiceAccount), then the RGD,
+# then anything kro didn't manage. Without this order the RGD delete
+# orphans the instance and the ACK Table never gets deleted.
+if kubectl get crd cartsstacks.kro.run >/dev/null 2>&1; then
+  if kubectl get cartsstack carts-kro -n default >/dev/null 2>&1; then
+    logmessage "Deleting kro CartsStack instance carts-kro..."
+    # Generous timeout: kro must prune the carts Deployment (Pod terminates),
+    # the ACK Table (controller deletes the AWS DynamoDB table), and the
+    # rest of the namespace's child resources before the instance disappears.
+    kubectl delete cartsstack carts-kro -n default \
+      --cascade=foreground --timeout=480s >/dev/null 2>&1 || true
+  fi
+fi
+
+if kubectl get crd resourcegraphdefinitions.kro.run >/dev/null 2>&1; then
+  if kubectl get rgd cartsstack >/dev/null 2>&1; then
+    logmessage "Deleting kro ResourceGraphDefinition cartsstack..."
+    kubectl delete rgd cartsstack --timeout=120s >/dev/null 2>&1 || true
+  fi
+fi
+
+# Belt-and-braces: if the instance pruning didn't drop the namespace (e.g.
+# kro was in a degraded state), remove it explicitly.
+logmessage "Removing carts-kro namespace if present..."
+kubectl delete ns carts-kro --ignore-not-found --timeout=120s >/dev/null 2>&1 || true
+
+logmessage "Restoring ui Deployment carts endpoint (in case the optional UI demo overrode it)..."
+# `kubectl set env -` removes the env var, restoring the Pod's compiled-in
+# default (carts.carts:80). Idempotent — succeeds whether the override was
+# applied or not.
+kubectl -n ui set env deployment/ui RETAIL_UI_ENDPOINTS_CARTS_URL- >/dev/null 2>&1 || true
+
+logmessage "Removing carts-kro Pod Identity association..."
+for assoc in $(aws eks list-pod-identity-associations \
+  --cluster-name "${EKS_CLUSTER_AUTO_NAME:-eks-workshop-auto}" \
+  --namespace carts-kro --service-account carts \
+  --query 'associations[].associationId' --output text 2>/dev/null); do
+  aws eks delete-pod-identity-association \
+    --cluster-name "${EKS_CLUSTER_AUTO_NAME:-eks-workshop-auto}" \
+    --association-id "$assoc" >/dev/null 2>&1 || true
+done

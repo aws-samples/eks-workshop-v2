@@ -14,5 +14,9 @@ output "environment_variables" {
     EKS_CAP_CODECOMMIT_REPO       = aws_codecommit_repository.catalog_gitops.repository_name
     EKS_CAP_CODECOMMIT_URL        = local.eks_cap_codecommit_repo_url
     EKS_CLUSTER_AUTO_ARN          = data.aws_eks_cluster.eks_cluster_auto.arn
+
+    # kro capability (Lab 3)
+    EKS_CAP_KRO_CAPABILITY = aws_eks_capability.kro.capability_name
+    EKS_CAP_DDB_TABLE_KRO  = local.eks_cap_kro_table_name
   }
 }

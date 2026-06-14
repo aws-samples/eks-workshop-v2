@@ -16,6 +16,7 @@ Each capability is a **fully managed control-plane component** — the controlle
 |---|---|---|
 | **Lab 1** | **ACK** | Provision a real Amazon DynamoDB table from Kubernetes by applying a `Table` custom resource, then migrate the `carts` microservice from its in-cluster mock to the AWS-managed table via EKS Pod Identity. |
 | **Lab 2** | **Argo CD** | Deliver the `catalog` microservice via GitOps from a pre-provisioned AWS CodeCommit repository. Sign in to the managed Argo CD UI through AWS IAM Identity Center, register the cluster as a deployment target, then trigger a real GitOps update by pushing an image-tag bump. |
+| **Lab 3** | **kro** | Compose Lab 1's three apply steps into a single `CartsStack` custom resource. Define a `ResourceGraphDefinition` that bundles a Namespace, an ACK `Table`, a ConfigMap, and a ServiceAccount, then apply one instance and watch kro reconcile the whole graph. |
 
 ## Before you start
 
@@ -63,9 +64,10 @@ By the end of `prepare-environment`, your cluster has:
 
 - **ACK capability** — `ACTIVE`, with the DynamoDB controller's CRDs registered in the cluster.
 - **Argo CD capability** — `ACTIVE`, federated with AWS IAM Identity Center for sign-in, with an admin group/user mapped to the Argo CD `ADMIN` role.
+- **kro capability** — `ACTIVE`, with the `resourcegraphdefinitions.kro.run` CRD registered for use in Lab 3.
 - **CodeCommit repository** — pre-seeded with the `catalog` Kubernetes manifests so Argo CD has something to reconcile from.
 - **IAM Capability Roles** — one per capability, scoped to the AWS APIs each capability legitimately needs.
-- **Pod Identity role for `carts`** — pre-provisioned so Lab 1 can flip the carts service onto the new DynamoDB table without re-deploying.
+- **Pod Identity role for `carts`** — pre-provisioned and wildcard-scoped to `${EKS_CLUSTER_AUTO_NAME}-carts-*`, so the same role covers Lab 1's `-carts-fastpath` table and Lab 3's `-carts-kro` table without changes.
 - **Shared fastpaths add-ons** — KEDA, fluent-bit, External Secrets (carried over from the developer/operator fastpaths preprovision).
 
 Each capability runs in AWS-managed infrastructure outside the cluster — what you see inside the cluster is only the CRDs and any managed namespace each capability registers for you to apply against.

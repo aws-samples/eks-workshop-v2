@@ -78,8 +78,10 @@ $ kubectl get application catalog -n argocd \
   -o jsonpath='{.status.sync.status}{"/"}{.status.health.status}{"\n"}'
 Synced/Healthy
 ```
- on Argo CD UI
-![Argo CD UI after Identity Center sign-in](/img/fastpaths/eks-capabilities/argocd/argocd-ui-1.22-app.png) 
+
+You can also see the rolled-out version on the Argo CD UI:
+
+![Argo CD UI after Identity Center sign-in](/img/fastpaths/eks-capabilities/argocd/argocd-ui-1.22-app.png)
 
 :::tip
 Because `selfHeal` is enabled, try editing the Deployment directly — for example `kubectl scale -n catalog deployment/catalog --replicas=3`. Argo CD detects the drift from Git and reverts it, because Git, not the cluster, is the source of truth.
