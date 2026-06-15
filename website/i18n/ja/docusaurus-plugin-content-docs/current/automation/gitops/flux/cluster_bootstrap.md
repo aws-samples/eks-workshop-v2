@@ -1,10 +1,10 @@
 ---
 title: "クラスターブートストラップ"
 sidebar_position: 15
-tmdTranslationSourceHash: 8817bad0efc303d4114e617ba7ee4a6d
+tmdTranslationSourceHash: af182018ef9b3cc297e421150e6f6101
 ---
 
-ブートストラッププロセスでは、クラスターにFluxコンポーネントをインストールし、GitOpsを使用したクラスターオブジェクトの管理に関連するファイルをリポジトリに作成します。
+ブートストラッププロセスでは、クラスターにFluxコンポーネントをインストールし、Fluxを使用したGitOpsによるクラスターオブジェクトの管理に関連するファイルをリポジトリ内に作成します。
 
 クラスターをブートストラップする前に、Fluxはすべてが正しく設定されていることを確認するためのプリブートストラップチェックを実行することができます。以下のコマンドを実行して、Flux CLIにチェックを実行させましょう：
 
@@ -15,12 +15,11 @@ $ flux check --pre
 > prerequisites checks passed
 ```
 
-これで、Giteaリポジトリを使用してEKSクラスターでFluxをブートストラップできます：
+これで、CodeCommitリポジトリを使用してEKSクラスターでFluxをブートストラップできます：
 
 ```bash
-$ export GITEA_SSH_HOSTNAME=$(kubectl get svc -n gitea gitea-ssh -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 $ flux bootstrap git \
-   --url=ssh://git@${GITEA_SSH_HOSTNAME}:2222/workshop-user/flux.git \
+   --url=$GITOPS_REPO_URL_FLUX \
    --branch=main \
    --private-key-file=${HOME}/.ssh/gitops_ssh.pem \
    --network-policy=false --silent
@@ -48,3 +47,4 @@ flux-system    main@sha1:6e6ae1d   False        True    Applied revision: main@s
 ```
 
 これにより、Fluxが基本的なkustomizationを作成し、クラスターと同期していることが示されます。
+

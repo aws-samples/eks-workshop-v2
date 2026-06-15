@@ -2,14 +2,14 @@
 title: はじめに
 sidebar_position: 10
 weight: 5
-tmdTranslationSourceHash: 61b50d02213aefa1774e875922ded5f9
+tmdTranslationSourceHash: ead142ad2229882977fab2e1aeb46f7d
 ---
 
 **AWS Elastic Kubernetes Service (EKS) ワークショップ**へようこそ！
 
 このワークショップでは、EKSが提供する様々な機能と、AWSが提供する幅広いサービスとの統合について学び、探索するための一連のハンズオンラボ演習をご案内します。ラボは以下のような複数の領域にわたってグループ化されています：
 
-- **はじめに** - このワークショップの形式と構造について学ぶ
+- **はじめに** - ワークショップの形式と構造について学び、EKSクラスターをプロビジョニングし、Kubernetesの基本とサンプルアプリケーションに慣れる
 - **基礎** - マネージドノードグループ、Fargate、アプリケーションの公開、ストレージの活用など、基本的なEKSの概念に慣れる
 - **自動スケーリング** - アプリケーションとクラスターを水平および垂直に自動的にスケールする方法を理解する
 - **可観測性** - モニタリングはワークロードを本番環境に移行する上で重要な要素
@@ -22,3 +22,4 @@ tmdTranslationSourceHash: 61b50d02213aefa1774e875922ded5f9
 Amazon EKSの基本について学ぶには、この短い約10分の動画をご覧ください：
 
 <ReactPlayer controls src="https://www.youtube-nocookie.com/embed/E956xeOt050" width={640} height={360} /> <br />
+

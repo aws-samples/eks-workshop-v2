@@ -1,8 +1,8 @@
 ---
 title: Kustomize
 sidebar_custom_props: { "module": true }
-sidebar_position: 40
-tmdTranslationSourceHash: 80ad63a289b3caa54d84f83fab6555e6
+sidebar_position: 70
+tmdTranslationSourceHash: 785ddb1ac12e1137a75c4433b9b12aa5
 ---
 
 ::required-time
@@ -18,13 +18,56 @@ $ prepare-environment
 
 [Kustomize](https://kustomize.io/)は、宣言的な「kustomization」ファイルを使用してKubernetesマニフェストファイルを管理することができます。これにより、Kubernetesリソースの「ベース」マニフェストを表現し、構成、カスタマイズ、そして多くのリソースにわたる横断的な変更を簡単に適用することが可能になります。
 
-例えば、以下の`checkout`デプロイメントのマニフェストファイルを見てみましょう：
+## 小売ストアアプリケーションのデプロイ
+
+まず、Kustomizeを使用して完全な小売ストアアプリケーションをデプロイしましょう。アプリケーションは連携して動作する複数のマイクロサービスで構成されています：
+
+### ベースアプリケーションのデプロイ
+
+最初に、ベース設定を使用して小売ストアアプリケーション全体をデプロイしましょう：
+
+```bash
+$ kubectl apply -k ~/environment/eks-workshop/base-application
+```
+
+この単一のコマンドで、すべてのマイクロサービスがデプロイされます。何が作成されたか見てみましょう：
+
+```bash
+$ kubectl get pods -A -l app.kubernetes.io/created-by=eks-workshop
+NAME                               READY   STATUS    RESTARTS   AGE
+cart-6d4f8c9b8d-xyz12             1/1     Running   0          2m
+catalog-7b5c9d8e9f-abc34          1/1     Running   0          2m
+checkout-8c6d0e1f2g-def56         1/1     Running   0          2m
+orders-9d7e2f3g4h-ghi78          1/1     Running   0          2m
+ui-0e8f3g4h5i-jkl90              1/1     Running   0          2m
+```
+
+### Kustomizationの構造を理解する
+
+ベースアプリケーションは、すべてのコンポーネントディレクトリを参照する`kustomization.yaml`ファイルを使用しています：
+
+```bash
+$ cat ~/environment/eks-workshop/base-application/kustomization.yaml
+```
+
+各サービスには、Kubernetesマニフェストを含む独自のディレクトリがあります：
+
+```bash
+$ ls ~/environment/eks-workshop/base-application/
+cart/  catalog/  checkout/  orders/  ui/  kustomization.yaml
+```
+
+### オーバーレイによるカスタマイズ
+
+それでは、カスタマイズを作成してKustomizeの力を見てみましょう。例えば、`checkout`サービスの`replicas`フィールドを1から3に更新して水平にスケールしてみましょう。
+
+以下の`checkout` Deploymentのマニフェストファイルを見てみましょう：
 
 ```file
 manifests/base-application/checkout/deployment.yaml
 ```
 
-このファイルは前の[Getting Started](../getting-started)ラボですでに適用されていますが、Kustomizeを使用して`replicas`フィールドを更新することで、このコンポーネントを水平にスケールしたいとします。このYAMLファイルを手動で更新する代わりに、Kustomizeを使用して`spec/replicas`フィールドを1から3に更新します。
+このYAMLファイルを手動で更新する代わりに、Kustomizeを使用して`spec/replicas`フィールドを1から3に更新します。
 
 そのためには、以下のkustomizationを適用します。
 
@@ -95,6 +138,47 @@ $ kubectl kustomize ~/environment/eks-workshop/base-application \
 
 これは`envsubst`を使用して、Kubernetesマニフェストファイル内の環境変数プレースホルダーを、あなたの特定の環境に基づく実際の値に置き換えます。例えば、いくつかのマニフェストでは、EKSクラスター名を`$EKS_CLUSTER_NAME`で、またはAWSリージョンを`$AWS_REGION`で参照する必要があります。
 
-Kustomizeの仕組みを理解したので、[Helmモジュール](/docs/introduction/helm)に進むか、直接[基礎モジュール](/docs/fundamentals)に進むことができます。
+## 高度なKustomizeパターン
+
+### 環境固有の設定
+
+Kustomizeは、異なる環境に対する異なる設定の管理に優れています。例えば：
+
+- **ベース**: すべての環境で共有される共通の設定
+- **開発オーバーレイ**: 低いリソース制限、デバッグロギングを有効化
+- **本番オーバーレイ**: 高いリソース制限、複数のレプリカ、モニタリングを有効化
+
+### 横断的な変更
+
+Kustomizeの強みの1つは、複数のリソースに対して変更を行えることです。例えば：
+
+- すべてのリソースにラベルを追加: `commonLabels`
+- すべてのリソースにアノテーションを追加: `commonAnnotations`
+- すべてのデプロイメントにリソース制限を設定
+- イメージプルポリシーを一貫して設定
+
+### 個別サービスのデプロイ
+
+特定のkustomizationを使用して個別のサービスをデプロイすることもできます：
+
+```bash
+# catalogサービスのみをデプロイ
+$ kubectl apply -k ~/environment/eks-workshop/base-application/catalog
+
+# UIサービスのみをデプロイ
+$ kubectl apply -k ~/environment/eks-workshop/base-application/ui
+```
+
+### 生成されたマニフェストの表示
+
+変更を適用する前に、Kustomizeが生成する内容をプレビューできます：
+
+```bash
+$ kubectl kustomize ~/environment/eks-workshop/base-application/catalog
+```
+
+これにより、クラスターに実際に適用することなく、どのKubernetesリソースが作成されるかを正確に確認できます。
+
+Kustomizeの仕組みを理解したので、[Getting Started](/docs/introduction/getting-started)ハンズオンラボに進むか、直接[基礎モジュール](/docs/fundamentals)に進むことができます。
 
 Kustomizeについて詳しく知るには、公式Kubernetesの[ドキュメント](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/)を参照してください。

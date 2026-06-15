@@ -3,7 +3,7 @@ title: "Argo CD"
 sidebar_position: 3
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes ServiceでのArgo CDを使用した宣言的なGitOps継続的デリバリー。"
-tmdTranslationSourceHash: 917f480cca3b58b603a5220f1d863e71
+tmdTranslationSourceHash: ddc459ea09e6d867884ead2b73df6369
 ---
 
 ::required-time
@@ -17,6 +17,7 @@ $ prepare-environment automation/gitops/argocd
 
 これにより、ラボ環境に以下の変更が適用されます：
 
+- AWS CodeCommitリポジトリを作成
 - Amazon EKSクラスターにAWS Load Balancerコントローラーをインストール
 - EBS CSIドライバー用のEKSマネージドアドオンをインストール
 
