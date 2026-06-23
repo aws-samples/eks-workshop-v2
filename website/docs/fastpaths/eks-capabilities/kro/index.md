@@ -3,7 +3,7 @@ title: "Compose stacks with kro"
 sidebar_position: 30
 ---
 
-::required-time{estimatedLabExecutionTimeMinutes="10"}
+::required-time{estimatedLabExecutionTimeMinutes="4"}
 
 :::tip What's been set up for you
 

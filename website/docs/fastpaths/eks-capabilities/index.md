@@ -4,7 +4,28 @@ sidebar_position: 70
 sidebar_custom_props: { "module": true }
 ---
 
-::required-time{estimatedLabExecutionTimeMinutes="25"}
+::required-time{estimatedLabExecutionTimeMinutes="14"}
+
+:::tip Before you start
+This fast path uses a dedicated Amazon EKS Auto Mode cluster. Amazon EKS Auto Mode extends AWS management of Kubernetes clusters beyond the cluster itself, managing infrastructure that enables smooth operation of your workloads including compute autoscaling, networking, load balancing, DNS, and block storage.
+
+Lab 2 (Argo CD) additionally requires **AWS IAM Identity Center** enabled in this region. Confirm it's present:
+
+```bash test=false
+$ aws sso-admin list-instances --query 'Instances[].InstanceArn' --output text | head -1
+arn:aws:sso:::instance/ssoins-...
+```
+
+If that returns nothing, enable Identity Center once at the [IAM Identity Center console](https://console.aws.amazon.com/singlesignon/home) before continuing. You can skip this if you only plan to do Lab 1.
+
+Prepare your environment for this lab:
+
+```bash timeout=1800
+$ prepare-environment fastpaths/eks-capabilities
+```
+
+This provisions the shared fastpaths infrastructure (KEDA, fluent-bit, External Secrets, Pod Identity for `carts`) plus the three EKS capabilities, IAM Capability Roles, the IAM Identity Center user/group/membership, and a seeded CodeCommit repository. This is the only place `prepare-environment` is invoked — the same provisioning is reused across all three labs.
+:::
 
 Welcome to the **EKS Capabilities** fast path — a hands-on journey targeted at the platform engineer / DevOps persona, showcasing the capabilities that ship with [Amazon EKS Capabilities](https://aws.amazon.com/about-aws/whats-new/2025/11/amazon-eks-capabilities/) on a single coherent story over the retail sample application.
 
@@ -12,17 +33,13 @@ Each capability is a **fully managed control-plane component** — the controlle
 
 ## What you'll build
 
-| Lab | Capability | What you'll do |
-|---|---|---|
-| **Lab 1** | **ACK** | Provision a real Amazon DynamoDB table from Kubernetes by applying a `Table` custom resource, then migrate the `carts` microservice from its in-cluster mock to the AWS-managed table via EKS Pod Identity. |
+| Lab       | Capability  | What you'll do                                                                                                                                                                                                                                                                  |
+| --------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Lab 1** | **ACK**     | Provision a real Amazon DynamoDB table from Kubernetes by applying a `Table` custom resource, then migrate the `carts` microservice from its in-cluster mock to the AWS-managed table via EKS Pod Identity.                                                                     |
 | **Lab 2** | **Argo CD** | Deliver the `catalog` microservice via GitOps from a pre-provisioned AWS CodeCommit repository. Sign in to the managed Argo CD UI through AWS IAM Identity Center, register the cluster as a deployment target, then trigger a real GitOps update by pushing an image-tag bump. |
-| **Lab 3** | **kro** | Compose Lab 1's three apply steps into a single `CartsStack` custom resource. Define a `ResourceGraphDefinition` that bundles a Namespace, an ACK `Table`, a ConfigMap, and a ServiceAccount, then apply one instance and watch kro reconcile the whole graph. |
+| **Lab 3** | **kro**     | Compose Lab 1's three apply steps into a single `CartsStack` custom resource. Define a `ResourceGraphDefinition` that bundles a Namespace, an ACK `Table`, a ConfigMap, and a ServiceAccount, then apply one instance and watch kro reconcile the whole graph.                  |
 
-## Before you start
-
-This fast path uses a dedicated Amazon EKS Auto Mode cluster.
-
-### One-time prerequisite (Lab 2 only)
+## Lab 2 sign-in prerequisite
 
 The Argo CD capability authenticates **only** through AWS IAM Identity Center — there is no local admin user and no auto-generated password. Terraform creates the IDC user, group, and group-membership for you, but you'll do two one-time admin actions in the AWS Console to complete sign-in:
 
@@ -34,29 +51,6 @@ Walk through the [Sign in to Argo CD via Identity Center](./argocd/signin-argocd
 :::caution
 Disabling MFA weakens security for **all** users in the IAM Identity Center instance. Acceptable for a personal/dev/test account; **do not** apply this in a production account or shared organization.
 :::
-
-### Provision the lab infrastructure
-
-#### 1. Confirm Identity Center is enabled in this region
-
-```bash test=false
-$ aws sso-admin list-instances --query 'Instances[].InstanceArn' --output text | head -1
-arn:aws:sso:::instance/ssoins-...
-```
-
-If that returns nothing, enable Identity Center once at the [IAM Identity Center console](https://console.aws.amazon.com/singlesignon/home) and re-run.
-
-#### 2. Run `prepare-environment`
-
-After completing the IDC prerequisite (or skip it if you only plan to do Lab 1):
-
-```bash timeout=1800
-$ prepare-environment fastpaths/eks-capabilities
-```
-
-The first run takes ~10 minutes — it provisions the shared fastpaths infrastructure (KEDA, fluent-bit, External Secrets, Pod Identity for `carts`) plus the EKS capabilities, IAM Capability Roles, the IAM Identity Center user/group/membership, and a seeded CodeCommit repository. Subsequent runs only re-deploy the base application.
-
-This is the only place `prepare-environment` is invoked. The same provisioning is reused across all labs.
 
 ## What's pre-provisioned for you
 

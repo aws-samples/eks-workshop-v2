@@ -40,10 +40,12 @@ after() {
     --namespace carts-kro --service-account carts \
     --query 'associations[].associationId' --output text | grep -q .
 
-  # carts Deployment from the RGD is ready
-  kubectl -n carts-kro rollout status deployment/carts --timeout=60s
+  # carts Deployment from the RGD is ready (Spring Boot startup + readiness
+  # probe takes 30-60s; 120s gives margin for slow image pull or scheduling).
+  kubectl -n carts-kro rollout status deployment/carts --timeout=120s
 
-  # Pod Identity creds are wired into the (post-restart) Pod
+  # Pod Identity creds are wired into the Pod (Pod Identity association was
+  # created BEFORE the CartsStack apply, so the Pod boots with creds already).
   kubectl exec -n carts-kro deployment/carts -- env \
     | grep -q '^AWS_CONTAINER_CREDENTIALS_FULL_URI='
 }
