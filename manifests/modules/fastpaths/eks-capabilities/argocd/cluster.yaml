@@ -2,18 +2,19 @@
 #
 # The managed Argo CD capability does NOT register the local cluster
 # automatically, and it identifies clusters by EKS cluster ARN (the usual
-# https://kubernetes.default.svc is not supported). We name it `in-cluster`
-# for parity with common Argo CD examples.
+# https://kubernetes.default.svc is not supported). We give it the explicit
+# name `eks-workshop` — NOT the open-source Argo CD default `in-cluster`, to
+# make clear the managed capability has no built-in local deployment target.
 #
 # Piped through envsubst before applying so $EKS_CLUSTER_AUTO_ARN is resolved.
 apiVersion: v1
 kind: Secret
 metadata:
-  name: in-cluster
+  name: eks-workshop
   namespace: argocd
   labels:
     argocd.argoproj.io/secret-type: cluster
 stringData:
-  name: in-cluster
+  name: eks-workshop
   server: ${EKS_CLUSTER_AUTO_ARN}
   project: default

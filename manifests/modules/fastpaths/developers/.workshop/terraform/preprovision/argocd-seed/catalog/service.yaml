@@ -5,6 +5,8 @@ metadata:
   namespace: catalog
   labels:
     app.kubernetes.io/created-by: eks-workshop
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   type: ClusterIP
   ports:

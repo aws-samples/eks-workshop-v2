@@ -129,6 +129,12 @@ resource "time_sleep" "eks_cap_ack_capability_role_propagation" {
 }
 
 # Activate the ACK capability via the AWS provider's native resource.
+#
+# The capability auto-creates an EKS access entry for its capability role
+# during creation and AWS auto-attaches the minimum policies it needs to reach
+# ACTIVE — so the capability does NOT depend on the supplemental
+# AmazonEKSClusterAdminPolicy association below. Same pattern as the Argo CD
+# and kro capabilities.
 resource "aws_eks_capability" "ack" {
   cluster_name              = var.eks_cluster_auto_id
   capability_name           = local.eks_cap_ack_capability_name
@@ -142,29 +148,22 @@ resource "aws_eks_capability" "ack" {
     aws_iam_role_policy.eks_cap_ack_capability_dynamodb,
     null_resource.eks_cap_region_preflight,
     time_sleep.eks_cap_ack_capability_role_propagation,
-    time_sleep.eks_cap_ack_access_propagation,
   ]
 }
 
-# Bind the capability's IAM role to the cluster admin access policy so its
-# controllers can reconcile inside the cluster (create CRDs, watch resources,
-# etc.). Without this association the capability shows ACTIVE but its
-# controllers cannot talk to the Kubernetes API.
+# Grant the capability's IAM role cluster-admin so its controllers can
+# reconcile the AWS resources a learner asks for (create CRDs, watch
+# resources, write Table status, etc.). The auto-attached policies on the
+# capability's auto-created access entry are enough to reach ACTIVE, but not
+# to manage user workloads — that's what this association adds.
 #
-# An aws_eks_access_entry is required before an aws_eks_access_policy_association
-# can attach a policy to a principal — the entry establishes the principal's
-# identity on the cluster, the association attaches policies to it.
+# We do NOT declare an aws_eks_access_entry — the capability auto-creates one
+# and an explicit declaration would collide with `ResourceInUseException`.
 #
-# Both are created BEFORE aws_eks_capability.ack so the capability's controllers
-# already have cluster API access the first time they reconcile. Without this
-# ordering, the capability sits in CREATING with health
-# `AccessDenied: Unauthorized`.
-resource "aws_eks_access_entry" "ack" {
-  cluster_name  = var.eks_cluster_auto_id
-  principal_arn = aws_iam_role.eks_cap_ack_capability.arn
-  type          = "STANDARD"
-}
-
+# This depends on the capability resource so the auto-created access entry is
+# guaranteed to exist before AssociateAccessPolicy runs (otherwise EKS returns
+# `ResourceNotFoundException: principalArn could not be found`). Same pattern
+# as the Argo CD and kro capabilities.
 resource "aws_eks_access_policy_association" "ack" {
   cluster_name  = var.eks_cluster_auto_id
   policy_arn    = "arn:${data.aws_partition.current.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
@@ -174,12 +173,11 @@ resource "aws_eks_access_policy_association" "ack" {
     type = "cluster"
   }
 
-  depends_on = [aws_eks_access_entry.ack]
+  depends_on = [aws_eks_capability.ack]
 }
 
-# Give the access entry + policy association time to propagate inside the
-# cluster before the capability creates and its controllers try to authenticate.
-# Without this gap, the capability frequently sits in CREATING with health
+# Give the access policy association time to propagate inside the cluster
+# before any ACK custom resource is applied by the labs.
 resource "time_sleep" "eks_cap_ack_access_propagation" {
   depends_on      = [aws_eks_access_policy_association.ack]
   create_duration = "60s"

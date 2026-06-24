@@ -6,6 +6,8 @@ metadata:
   labels:
     app.kubernetes.io/created-by: eks-workshop
     app.kubernetes.io/type: app
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   replicas: 1
   selector:

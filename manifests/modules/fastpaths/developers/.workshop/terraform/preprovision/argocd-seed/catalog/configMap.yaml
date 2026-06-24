@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: catalog
   namespace: catalog
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 data:
   RETAIL_CATALOG_PERSISTENCE_PROVIDER: mysql
   RETAIL_CATALOG_PERSISTENCE_ENDPOINT: catalog-mysql:3306

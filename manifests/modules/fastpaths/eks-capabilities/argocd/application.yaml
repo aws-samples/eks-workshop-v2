@@ -5,8 +5,8 @@
 # using its IAM Capability Role (codecommit:GitPull), so there is no repository
 # Secret, no SSH key, and no Git credential helper.
 #
-# Destination uses the registered `in-cluster` target. Automated sync with
-# prune + selfHeal turns every push to the repo into a reconciled rollout.
+# Destination uses the registered `eks-workshop` cluster target. Automated sync
+# with prune + selfHeal turns every push to the repo into a reconciled rollout.
 #
 # Piped through envsubst before applying so $EKS_CAP_CODECOMMIT_URL is resolved.
 apiVersion: argoproj.io/v1alpha1
@@ -21,7 +21,7 @@ spec:
     targetRevision: main
     path: catalog
   destination:
-    name: in-cluster
+    name: eks-workshop
     namespace: catalog
   syncPolicy:
     automated:

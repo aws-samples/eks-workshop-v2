@@ -248,27 +248,24 @@ resource "aws_eks_capability" "argocd" {
 
 # Grant the capability's IAM role permission to deploy into THIS cluster.
 #
-# Unlike the ACK capability, the Argo CD capability AUTOMATICALLY creates the
-# EKS access entry for its Capability Role during creation, and AWS auto-attaches
-# AmazonEKSArgoCDPolicy (namespace-scoped to argocd) and AmazonEKSArgoCDClusterPolicy
-# (cluster-wide). Those auto-attached policies are sufficient for the capability
-# to bootstrap itself (create argocd namespace, install CRDs, etc.).
+# The Argo CD capability auto-creates an EKS access entry for its Capability
+# Role during creation, and AWS auto-attaches AmazonEKSArgoCDPolicy
+# (namespace-scoped to argocd) and AmazonEKSArgoCDClusterPolicy (cluster-wide).
+# Those auto-attached policies are the minimum the capability needs to reach
+# ACTIVE on its own — so the capability does NOT depend on this association.
 #
-# We additionally bind AmazonEKSClusterAdminPolicy so the capability's controllers
-# can sync user Applications to the local "in-cluster" deployment target the
-# learner registers in Lab 2.
+# We additionally bind AmazonEKSClusterAdminPolicy so the capability's
+# controllers can sync user Applications to the deployment target the learner
+# registers in Lab 2. That permission is only needed once the capability
+# starts managing user workloads, not to reach ACTIVE.
 #
-# IMPORTANT: do NOT make this depend on aws_eks_capability.argocd reaching ACTIVE.
-# That creates a deadlock: terraform waits for the capability before attaching the
-# admin policy, but the capability sits in CREATING with health
-# `AccessDenied: Unauthorized` for the full 20-min timeout because its controllers
-# can't write user Applications without the admin policy. By letting this resource
-# apply in parallel with the capability create, the admin policy lands shortly
-# after the auto-created access entry appears, and the capability completes its
-# next health check successfully.
+# We do NOT declare an aws_eks_access_entry — the capability auto-creates one
+# and an explicit declaration would collide with `ResourceInUseException`.
 #
-# We also DON'T create an aws_eks_access_entry here — the capability auto-creates
-# one and our explicit declaration would collide (ResourceInUseException).
+# This depends on the capability resource so the auto-created access entry is
+# guaranteed to exist before AssociateAccessPolicy runs (otherwise EKS returns
+# `ResourceNotFoundException: principalArn could not be found`). Same pattern
+# as the ACK and kro capabilities.
 resource "aws_eks_access_policy_association" "argocd" {
   cluster_name  = var.eks_cluster_auto_id
   policy_arn    = "arn:${data.aws_partition.current.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
@@ -278,12 +275,5 @@ resource "aws_eks_access_policy_association" "argocd" {
     type = "cluster"
   }
 
-  # Depend only on the IAM role + 30s propagation, NOT on the capability.
-  # The capability's auto-created access entry is what this association binds
-  # to; that entry exists from the moment the capability starts CREATING, so
-  # we don't need to wait for it to reach ACTIVE.
-  depends_on = [
-    aws_iam_role.eks_cap_argocd_capability,
-    time_sleep.eks_cap_argocd_role_propagation,
-  ]
+  depends_on = [aws_eks_capability.argocd]
 }

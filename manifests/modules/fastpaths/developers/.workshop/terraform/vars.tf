@@ -49,7 +49,7 @@ variable "inbound_cidrs" {
 
 # tflint-ignore: terraform_unused_declarations
 variable "argocd_admin_email" {
-  description = "Email attached to the Argo CD workshop admin user (Lab 2). Optional — the OTP-based activation flow ignores it. See preprovision/vars.tf."
+  description = "Email attached to the Argo CD workshop admin user (Lab 2). Defaults to a non-deliverable placeholder; the OTP-based activation flow ignores it. See preprovision/vars.tf."
   type        = string
-  default     = ""
+  default     = "argocd-admin@example.com"
 }

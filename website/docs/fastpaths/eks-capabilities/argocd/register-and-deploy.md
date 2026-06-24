@@ -7,7 +7,7 @@ The `catalog` service is currently running as part of the base application, appl
 
 ## Register the cluster as a deployment target
 
-The managed Argo CD capability doesn't deploy to the local cluster automatically — you register it explicitly, and it's identified by its **EKS cluster ARN** rather than the usual in-cluster API URL. We register it under the conventional name `in-cluster`.
+The managed Argo CD capability doesn't deploy to the local cluster automatically — you register it explicitly, and it's identified by its **EKS cluster ARN** rather than the usual `https://kubernetes.default.svc` API URL. We give it the explicit name `eks-workshop`. Unlike open-source Argo CD, the managed capability has **no built-in `in-cluster` target** — every destination must be registered, so we avoid that reserved name to prevent confusion.
 
 The capability auto-created an EKS access entry for its IAM Capability Role during `prepare-environment`, and the role is associated with the cluster-admin access policy, so Argo CD already has the Kubernetes permissions it needs to sync.
 
@@ -16,12 +16,12 @@ The capability auto-created an EKS access entry for its IAM Capability Role duri
 apiVersion: v1
 kind: Secret
 metadata:
-  name: in-cluster
+  name: eks-workshop
   namespace: argocd
   labels:
     argocd.argoproj.io/secret-type: cluster
 stringData:
-  name: in-cluster
+  name: eks-workshop
   server: $EKS_CLUSTER_AUTO_ARN
   project: default
 ```
@@ -34,7 +34,7 @@ Apply it, resolving the cluster ARN with `envsubst`:
 ```bash
 $ cat ~/environment/eks-workshop/modules/fastpaths/eks-capabilities/argocd/cluster.yaml \
   | envsubst | kubectl apply -f -
-secret/in-cluster created
+secret/eks-workshop created
 ```
 
 ## Create the catalog Application
@@ -55,7 +55,7 @@ spec:
     targetRevision: main
     path: catalog
   destination:
-    name: in-cluster
+    name: eks-workshop
     namespace: catalog
   syncPolicy:
     automated:
@@ -66,7 +66,7 @@ spec:
 ```
 
 1. `repoURL` is the CodeCommit HTTPS endpoint (`$EKS_CAP_CODECOMMIT_URL`); `path: catalog` selects the manifests directory in the repo.
-2. `destination.name: in-cluster` matches the deployment target we just registered.
+2. `destination.name: eks-workshop` matches the deployment target we just registered.
 3. `syncPolicy.automated` with `prune` and `selfHeal` makes Argo CD continuously reconcile the cluster to match Git.
 
 Before Argo CD adopts `catalog`, remove the copy the base application applied with `kubectl` so there's a single owner of the namespace:

@@ -12,9 +12,8 @@ module "preprovision" {
   tags                = var.tags
   inbound_cidrs       = var.inbound_cidrs
 
-  # Empty string means "use the preprovision module's default placeholder".
-  # The preprovision module's default is a non-deliverable placeholder that's
-  # fine for the OTP activation flow; learners only need to override this if
-  # they prefer the email-link activation flow.
-  argocd_admin_email = var.argocd_admin_email != "" ? var.argocd_admin_email : "argocd-admin@example.com"
+  # Defaults to a non-deliverable placeholder (set in base.tf) that's fine for
+  # the OTP activation flow; learners only override this if they prefer the
+  # email-link activation flow.
+  argocd_admin_email = var.argocd_admin_email
 }

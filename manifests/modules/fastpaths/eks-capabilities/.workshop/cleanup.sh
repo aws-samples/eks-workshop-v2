@@ -38,9 +38,9 @@ if kubectl get crd applications.argoproj.io >/dev/null 2>&1; then
   fi
 
   # Remove the cluster registration Secret the learner created.
-  if kubectl get secret in-cluster -n argocd >/dev/null 2>&1; then
+  if kubectl get secret eks-workshop -n argocd >/dev/null 2>&1; then
     logmessage "Removing Argo CD cluster registration..."
-    kubectl delete secret in-cluster -n argocd >/dev/null 2>&1 || true
+    kubectl delete secret eks-workshop -n argocd >/dev/null 2>&1 || true
   fi
 fi
 

@@ -61,9 +61,9 @@ variable "inbound_cidrs" {
 
 # tflint-ignore: terraform_unused_declarations
 variable "argocd_admin_email" {
-  description = "Optional email for the Argo CD workshop admin user (fastpaths/eks-capabilities Lab 2). The OTP-based activation flow ignores it; only set this if using email-link activation. Ignored elsewhere."
+  description = "Email for the Argo CD workshop admin user (fastpaths/eks-capabilities Lab 2). Defaults to a non-deliverable placeholder because the OTP-based activation flow ignores it; only override with a real address if using email-link activation. Ignored by other fast paths."
   type        = string
-  default     = ""
+  default     = "argocd-admin@example.com"
 }
 
 data "aws_partition" "current" {}
