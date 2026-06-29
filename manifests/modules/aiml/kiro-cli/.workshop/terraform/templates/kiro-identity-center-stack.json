@@ -1,0 +1,448 @@
+{
+ "Resources": {
+  "SSOInstance": {
+   "Type": "AWS::SSO::Instance",
+   "Properties": {
+    "Name": "KiroWorkshop",
+    "Tags": [
+     {
+      "Key": "Purpose",
+      "Value": "EKSTroubleshootingWorkshop"
+     }
+    ]
+   }
+  },
+  "KiroSetupLambdaServiceRoleB6ED07A7": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AdministratorAccess"
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  "KiroSetupLambdaServiceRoleDefaultPolicy2EEBAAFB": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "identitystore:CreateUser",
+        "identitystore:ListUsers",
+        "sso:DescribeInstance",
+        "sso:ListInstances"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "KiroSetupLambdaServiceRoleDefaultPolicy2EEBAAFB",
+    "Roles": [
+     {
+      "Ref": "KiroSetupLambdaServiceRoleB6ED07A7"
+     }
+    ]
+   }
+  },
+  "KiroSetupLambda24EBADCA": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "ZipFile": "\nimport json\nimport boto3\nimport cfnresponse\nimport hashlib\nimport hmac\nfrom datetime import datetime\nimport urllib3\nimport uuid\nimport logging\nimport time\nimport os\n\nlogger = logging.getLogger()\nlogger.setLevel(logging.INFO)\n\nIDC_REGION = os.environ.get('IDC_REGION', 'us-east-1')\n\nid_store_client = boto3.client('identitystore', region_name=IDC_REGION)\n\ndef handler(event, context):\n    logger.info('Lambda handler started')\n    try:\n        if event['RequestType'] in ['Create', 'Update']:\n            identity_store_id = event['ResourceProperties']['IdentityStoreId']\n            instance_arn = event['ResourceProperties']['InstanceArn']\n            logger.info(f'SSO Instance: {instance_arn}, IdentityStore: {identity_store_id}')\n\n            start_url = f\"https://{identity_store_id}.awsapps.com/start#{IDC_REGION}\"\n            password_otp = \"\"\n            user_name = \"kiro\"\n\n            # Create user\n            existing_uid = check_user_exists(identity_store_id, user_name)\n            if existing_uid:\n                logger.info(f'User already exists: {existing_uid}')\n                current_uid = existing_uid\n            else:\n                user_resp = id_store_client.create_user(\n                    IdentityStoreId=identity_store_id,\n                    UserName=user_name,\n                    DisplayName=\"Kiro User\",\n                    Emails=[{\"Value\": \"kiro@example.com\", \"Type\": \"Work\", \"Primary\": True}],\n                    Name={\"GivenName\": \"Kiro\", \"FamilyName\": \"User\"}\n                )\n                current_uid = user_resp[\"UserId\"]\n                logger.info(f'User created: {current_uid}')\n\n            # Generate OTP password\n            try:\n                password = update_password(current_uid)\n                if password:\n                    password_otp = password\n            except Exception as e:\n                logger.error(f\"Failed to set password: {str(e)}\")\n\n            # Disable MFA\n            try:\n                sso_config = {\n                    \"mfaMode\": \"DISABLED\",\n                    \"noMfaSignInBehavior\": \"ALLOWED_WITH_ENROLLMENT\",\n                    \"allowedMfaTypes\": [\"TOTP\", \"WEBAUTHN\"]\n                }\n                update_sso_configuration(instance_arn, \"APP_AUTHENTICATION_CONFIGURATION\", sso_config)\n            except Exception as e:\n                logger.error(f\"Failed to disable MFA: {str(e)}\")\n\n            # Create Kiro profile and subscribe user\n            try:\n                existing_profile = check_codewhisperer_profile_status()\n                if existing_profile:\n                    profile_instance = existing_profile.get('identityDetails', {}).get('ssoIdentityDetails', {}).get('instanceArn')\n                    if profile_instance != instance_arn:\n                        delete_codewhisperer_profile(existing_profile.get('arn', ''))\n                        time.sleep(3)\n                        existing_profile = None\n\n                if not existing_profile:\n                    create_codewhisperer_profile(instance_arn)\n\n                # Poll for profile to become active\n                profile_result = None\n                for i in range(15):\n                    profile_result = check_codewhisperer_profile_status()\n                    if profile_result:\n                        break\n                    logger.info(f'Waiting for profile ({i+1}/15)...')\n                    time.sleep(10)\n\n                if profile_result:\n                    profile_arn = profile_result.get('arn', '')\n                    logger.info(f'Profile active: {profile_arn}')\n                    create_assignment(current_uid, profile_arn)\n                else:\n                    logger.warning('Profile did not become active')\n            except Exception as e:\n                logger.error(f\"Failed to setup Kiro license: {str(e)}\")\n\n            cfnresponse.send(event, context, cfnresponse.SUCCESS, {\n                'StartURL': start_url,\n                'UserName': user_name,\n                'Password': password_otp,\n                'Region': IDC_REGION,\n            }, identity_store_id)\n        else:\n            cfnresponse.send(event, context, cfnresponse.SUCCESS, {})\n    except Exception as e:\n        logger.error(f'Handler failed: {str(e)}')\n        cfnresponse.send(event, context, cfnresponse.FAILED, {'Error': str(e)})\n\ndef check_user_exists(identity_store_id, user_name):\n    try:\n        response = id_store_client.list_users(\n            IdentityStoreId=identity_store_id,\n            Filters=[{'AttributePath': 'UserName', 'AttributeValue': user_name}]\n        )\n        if response['Users']:\n            return response['Users'][0]['UserId']\n        return None\n    except Exception as e:\n        logger.error(f\"Error checking user: {str(e)}\")\n        return None\n\ndef sign(key, msg):\n    return hmac.new(key, msg.encode('utf-8'), hashlib.sha256).digest()\n\ndef get_signature_key(key, date_stamp, region_name, service_name):\n    k_date = sign(('AWS4' + key).encode('utf-8'), date_stamp)\n    k_region = sign(k_date, region_name)\n    k_service = sign(k_region, service_name)\n    k_signing = sign(k_service, 'aws4_request')\n    return k_signing\n\ndef make_sigv4_request(host, service, region, target, payload_dict, canonical_uri='/'):\n    session = boto3.Session()\n    credentials = session.get_credentials()\n    access_key = credentials.access_key\n    secret_key = credentials.secret_key\n    session_token = credentials.token\n\n    payload_json = json.dumps(payload_dict, separators=(',', ':'))\n    t = datetime.utcnow()\n    amz_date = t.strftime('%Y%m%dT%H%M%SZ')\n    date_stamp = t.strftime('%Y%m%d')\n\n    payload_hash = hashlib.sha256(payload_json.encode('utf-8')).hexdigest()\n\n    canonical_headers = f'host:{host}\\n'\n    canonical_headers += f'x-amz-content-sha256:{payload_hash}\\n'\n    canonical_headers += f'x-amz-date:{amz_date}\\n'\n    canonical_headers += f'x-amz-security-token:{session_token}\\n'\n    canonical_headers += f'x-amz-target:{target}\\n'\n    canonical_headers += f'x-amz-user-agent:aws-sdk-js/2.1692.0 promise\\n'\n\n    signed_headers = 'host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-amz-target;x-amz-user-agent'\n\n    canonical_request = f'POST\\n{canonical_uri}\\n\\n{canonical_headers}\\n{signed_headers}\\n{payload_hash}'\n\n    algorithm = 'AWS4-HMAC-SHA256'\n    credential_scope = f'{date_stamp}/{region}/{service}/aws4_request'\n    string_to_sign = f'{algorithm}\\n{amz_date}\\n{credential_scope}\\n{hashlib.sha256(canonical_request.encode(\"utf-8\")).hexdigest()}'\n\n    signing_key = get_signature_key(secret_key, date_stamp, region, service)\n    signature = hmac.new(signing_key, string_to_sign.encode('utf-8'), hashlib.sha256).hexdigest()\n\n    authorization_header = f'{algorithm} Credential={access_key}/{credential_scope}, SignedHeaders={signed_headers}, Signature={signature}'\n\n    content_type = 'application/x-amz-json-1.1' if 'SWBService' in target else 'application/x-amz-json-1.0'\n\n    headers = {\n        'Authorization': authorization_header,\n        'Content-Type': content_type,\n        'X-Amz-Date': amz_date,\n        'X-Amz-Security-Token': session_token,\n        'X-Amz-Target': target,\n        'X-Amz-User-Agent': 'aws-sdk-js/2.1692.0 promise',\n        'X-Amz-Content-Sha256': payload_hash\n    }\n\n    endpoint = f'https://{host}{canonical_uri}'\n    http = urllib3.PoolManager()\n    response = http.request('POST', endpoint, headers=headers, body=payload_json)\n    logger.info(f'{target} -> {response.status}: {response.data.decode(\"utf-8\")[:500]}')\n    return response\n\ndef update_password(user_id):\n    payload = {\"UserId\": user_id, \"PasswordMode\": \"OTP\"}\n    response = make_sigv4_request(\n        host=f'up.sso.{IDC_REGION}.amazonaws.com',\n        service='userpool',\n        region=IDC_REGION,\n        target='SWBUPService.UpdatePassword',\n        payload_dict=payload\n    )\n    if response.status == 200:\n        return json.loads(response.data.decode('utf-8'))[\"Password\"]\n    logger.error(f\"Password update failed: {response.status}\")\n    return None\n\ndef update_sso_configuration(instance_arn, config_type, sso_config):\n    payload = {\n        \"instanceArn\": instance_arn,\n        \"configurationType\": config_type,\n        \"ssoConfiguration\": sso_config\n    }\n    return make_sigv4_request(\n        host=f'sso.{IDC_REGION}.amazonaws.com',\n        service='sso',\n        region=IDC_REGION,\n        target='SWBService.UpdateSsoConfiguration',\n        payload_dict=payload,\n        canonical_uri='/control/'\n    )\n\ndef create_codewhisperer_profile(instance_arn):\n    payload = {\n        \"profileName\": \"QDefaultProfile\",\n        \"referenceTrackerConfiguration\": {\"recommendationsWithReferences\": \"ALLOW\"},\n        \"activeFunctionalities\": [\"ANALYSIS\", \"CONVERSATIONS\", \"TASK_ASSIST\", \"TRANSFORMATIONS\", \"COMPLETIONS\"],\n        \"optInFeatures\": {\"dashboardAnalytics\": {\"toggle\": \"ON\"}},\n        \"identitySource\": {\"ssoIdentitySource\": {\"instanceArn\": instance_arn, \"ssoRegion\": IDC_REGION}},\n        \"clientToken\": str(uuid.uuid4())\n    }\n    return make_sigv4_request(\n        host=f'codewhisperer.{IDC_REGION}.amazonaws.com',\n        service='codewhisperer',\n        region=IDC_REGION,\n        target='AWSCodeWhispererService.CreateProfile',\n        payload_dict=payload\n    )\n\ndef delete_codewhisperer_profile(profile_arn):\n    return make_sigv4_request(\n        host=f'codewhisperer.{IDC_REGION}.amazonaws.com',\n        service='codewhisperer',\n        region=IDC_REGION,\n        target='AWSCodeWhispererService.DeleteProfile',\n        payload_dict={\"profileArn\": profile_arn}\n    )\n\ndef check_codewhisperer_profile_status():\n    response = make_sigv4_request(\n        host=f'codewhisperer.{IDC_REGION}.amazonaws.com',\n        service='codewhisperer',\n        region=IDC_REGION,\n        target='AWSCodeWhispererService.ListProfiles',\n        payload_dict={}\n    )\n    if response.status == 200:\n        data = json.loads(response.data.decode('utf-8'))\n        for profile in data.get('profiles', []):\n            if profile.get('status') == 'ACTIVE':\n                return profile\n    return None\n\ndef create_assignment(user_id, profile_arn=None):\n    payload = {\n        \"principalId\": user_id,\n        \"principalType\": \"USER\",\n        \"subscriptionType\": \"Q_DEVELOPER_STANDALONE_PRO_PLUS\"\n    }\n    if profile_arn:\n        payload[\"profileArn\"] = profile_arn\n    return make_sigv4_request(\n        host=f'codewhisperer.{IDC_REGION}.amazonaws.com',\n        service='q',\n        region=IDC_REGION,\n        target='AmazonQDeveloperService.CreateAssignment',\n        payload_dict=payload\n    )\n"
+    },
+    "Description": "Creates IDC user, disables MFA, creates Kiro profile and assigns Pro+ license",
+    "Environment": {
+     "Variables": {
+      "IDC_REGION": {
+       "Ref": "AWS::Region"
+      }
+     }
+    },
+    "Handler": "index.handler",
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "KiroSetupLambdaServiceRoleB6ED07A7",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.11",
+    "Timeout": 300
+   },
+   "DependsOn": [
+    "KiroSetupLambdaServiceRoleDefaultPolicy2EEBAAFB",
+    "KiroSetupLambdaServiceRoleB6ED07A7"
+   ]
+  },
+  "KiroSetup": {
+   "Type": "AWS::CloudFormation::CustomResource",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "KiroSetupLambda24EBADCA",
+      "Arn"
+     ]
+    },
+    "InstanceArn": {
+     "Fn::GetAtt": [
+      "SSOInstance",
+      "InstanceArn"
+     ]
+    },
+    "IdentityStoreId": {
+     "Fn::GetAtt": [
+      "SSOInstance",
+      "IdentityStoreId"
+     ]
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete"
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02KUQrCMBBEz9L/dK3BGxQEv5R6ANmmKWybbKSbWCTk7lKLIAy8N8No0KcjNBWuUpthrh31kO8RzaxwlUcWCdCOfGGJyMYqh74fEPI5sYkUWLUj/7woQg+5C85u85e34Mi8t7pbKapNEoPvrIS0mP3559cUnykWxWGwMMnhpRvYUk1CVC+JI3kL3c4PrKam/74AAAA="
+   },
+   "Condition": "CDKMetadataAvailable"
+  }
+ },
+ "Outputs": {
+  "KiroStartURL": {
+   "Description": "AWS IAM Identity Center Start URL for Kiro",
+   "Value": {
+    "Fn::GetAtt": [
+     "KiroSetup",
+     "StartURL"
+    ]
+   }
+  },
+  "KiroUser": {
+   "Description": "Kiro workshop user name",
+   "Value": {
+    "Fn::GetAtt": [
+     "KiroSetup",
+     "UserName"
+    ]
+   }
+  },
+  "KiroPassword": {
+   "Description": "Kiro user OTP password",
+   "Value": {
+    "Fn::GetAtt": [
+     "KiroSetup",
+     "Password"
+    ]
+   }
+  },
+  "KiroRegion": {
+   "Description": "AWS Region for Kiro Identity Center",
+   "Value": {
+    "Ref": "AWS::Region"
+   }
+  }
+ },
+ "Conditions": {
+  "CDKMetadataAvailable": {
+   "Fn::Or": [
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "af-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-3"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-4"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-northwest-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-2"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "il-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "sa-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-1"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Equals": [
+      {
+       "Ref": "AWS::Region"
+      },
+      "us-west-2"
+     ]
+    }
+   ]
+  }
+ }
+}

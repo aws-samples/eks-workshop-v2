@@ -3,78 +3,117 @@ title: "Setup"
 sidebar_position: 20
 ---
 
-In this section we will configure Kiro CLI along with the [MCP server for Amazon EKS](https://awslabs.github.io/mcp/servers/eks-mcp-server/) to work with the EKS cluster using natural language commands.
+In this section we will configure Kiro CLI along with the [AWS-Hosted MCP server for Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/eks-mcp-introduction.html) to work with the EKS cluster using natural language commands.
 
 :::info
-Kiro CLI is leverages generative AI capabilities for common development and operations tasks. Its capabilities can be enhanced by adding purpose-built MCP servers for specialized knowledge. We'll use the Amazon EKS MCP server with Kiro CLI in this section. You can find a catalog of AWS-provided MCP servers [here](https://awslabs.github.io/mcp/), which can be used with Kiro CLI in a similar way.
+Kiro CLI leverages generative AI capabilities for common development and operations tasks. Its capabilities can be enhanced by adding purpose-built MCP servers for specialized knowledge. We'll use the AWS-Hosted Amazon EKS MCP server with Kiro CLI in this section. You can find a catalog of AWS-provided MCP servers [here](https://awslabs.github.io/mcp/), which can be used with Kiro CLI in a similar way.
 :::
 
-First, download the Kiro CLI release for your operating system and CPU architecture:
+## Install Kiro CLI
+
+First, install the `uv` package manager (required to run MCP server proxies):
 
 ```bash
-$ ARCH=$(arch)
-$ mkdir $HOME/tmp
-$ curl --proto '=https' --tlsv1.2 \
-  -sSf https://desktop-release.q.us-east-1.amazonaws.com/1.21.0/kirocli-${ARCH}-linux.zip \
-  -o $HOME/tmp/kirocli.zip
+$ curl -LsSf https://astral.sh/uv/install.sh | sh
+$ source $HOME/.local/bin/env
 ```
 
-Install Kiro CLI:
+Next, install Kiro CLI using the official installer:
 
 ```bash
-$ unzip $HOME/tmp/kirocli.zip -d $HOME/tmp
-$ bash $HOME/tmp/kirocli/install.sh --no-confirm
+$ curl -fsSL https://cli.kiro.dev/install | bash
 ```
 
 Verify the installation:
 
-```bash
-$ kiro-cli version
-kiro-cli 1.21.0
+```bash test=false
+$ kiro-cli --version
 ```
 
-Next, we'll configure Kiro CLI with the Amazon EKS MCP server. Here is the configuration we'll use:
+## MCP Server Configuration
 
-```file
-manifests/modules/aiml/kiro-cli/setup/eks-mcp.json
-```
-
-Configure the MCP server and install the required `uvx` tool:
+The `prepare-environment` step has already configured Kiro CLI with the AWS-Hosted EKS MCP server and the AWS MCP server. The configuration is located at `~/.kiro/settings/mcp.json` and connects to the managed MCP endpoints in your region — no local server installation required.
 
 :::info
-`uvx` is a Python package runner tool that comes with the uv package manager. It runs Python packages directly without installing them globally. Then, it downloads and executes Python tools in isolated environments similar to `npx` for Node.js, but for Python packages.
+The AWS-Hosted MCP server uses `mcp-proxy-for-aws` to proxy requests to the managed AWS endpoints (`eks-mcp.<region>.api.aws`). Authentication is handled via your existing AWS credentials and IAM policies. This eliminates the need to manage local MCP server versions.
 :::
+
+## Authenticate Kiro CLI
+
+To use Kiro CLI, you need to authenticate. The `prepare-environment` step provisioned an IAM Identity Center user for you with a Kiro Pro+ license.
+
+Retrieve your Kiro credentials from the environment variables:
 
 ```bash
-$ mkdir -p $HOME/.kiro/settings
-$ cp ~/environment/eks-workshop/modules/aiml/kiro-cli/setup/eks-mcp.json $HOME/.kiro/settings/mcp.json
-$ curl -LsSf https://astral.sh/uv/0.9.28/install.sh | sh
+$ echo "Start URL: $KIRO_START_URL"
+$ echo "Username:  $KIRO_USER"
+$ echo "Password:  $KIRO_PASSWORD"
+$ echo "Region:    $KIRO_REGION"
 ```
 
-To use Kiro CLI, you'll need to authenticate using either an AWS Builder ID or a Pro license subscription.
-
 :::tip
-You can create a free AWS Builder ID by following [these instructions](https://docs.aws.amazon.com/signin/latest/userguide/create-aws_builder_id.html). This Builder ID can also be used for personal use of Kiro CLI.
+Make note of these credentials — you'll need them in the next step.
 :::
+
+Now authenticate Kiro CLI:
 
 ```bash test=false
 $ kiro-cli login --use-device-flow
 ? Select login method >
 > Use with Builder ID
-  Use with IDC Account
+  Use with Google
+  Use with GitHub
+  Use with Your Organization
 ```
 
-Select your preferred option and follow the prompts to complete the login process. You'll be redirected to a webpage to either login and/or authorize Amazon Q Developer to use your account. For additional guidance, refer to:
+Select **"Use with Your Organization"** using the arrow keys and press Enter.
 
-- [Sign-in with AWS Builder ID](https://docs.aws.amazon.com/signin/latest/userguide/sign-in-aws_builder_id.html)
-- [Sign-in with Amazon Q Developer Pro subscriptions](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/q-admin-setup-subscribe-general.html)
+When prompted for the **Start URL**, enter the value from `$KIRO_START_URL` and press Enter.
 
-Let's verify that the MCP server is available by initializing a session:
+When prompted for the **Region**, enter the value from `$KIRO_REGION` (e.g., `us-west-2`) and press Enter.
+
+The CLI will display a confirmation code and a URL to open in your browser:
+
+```text
+Confirm the following code in the browser
+Code: XXXX-XXXX
+
+Open this URL: https://...
+Logging in...
+```
+
+Open the URL in your browser and sign in with:
+- **Username:** the value from `$KIRO_USER` (typically `kiro`)
+- **Password:** the value from `$KIRO_PASSWORD`
+
+:::info
+On first login, you will be asked to set a new password. Choose any password you prefer and click "Set new password" to continue.
+:::
+
+After signing in, confirm the code matches the one displayed in your terminal, then click **"Confirm and continue"** followed by **"Allow access"**.
+
+Return to your terminal — you should see:
+
+```text
+Device authorized
+
+Logged in successfully
+```
+
+Verify authentication:
+
+```bash test=false
+$ kiro-cli whoami
+```
+
+You should see output confirming your IAM Identity Center authentication and profile assignment.
+
+## Verify MCP Server
+
+Let's verify that the MCP servers are available by initializing a session:
 
 ```bash test=false
 $ kiro-cli chat
-0 of 1 mcp servers initialized. Servers still loading:
- - awslabseks_mcp_server
 ```
 
 To see the tools offered by the EKS MCP server, run:
@@ -90,13 +129,17 @@ You should see output similar to this:
 The output shows:
 
 1. The default large language model (LLM) selected by Kiro CLI (can be changed using the `/model` command)
-2. The list of tools offered by the EKS MCP server
+2. The list of tools offered by the EKS MCP server and AWS MCP server
 3. The default permissions Kiro CLI has for each tool
 
 :::info
 When a tool is marked as `not trusted`, Kiro CLI will request your permission before using it. This is a safety measure, particularly for tools that can create, update, or delete resources. Since LLMs can make mistakes, this gives you an opportunity to review potentially disruptive actions before they're executed.
 :::
 
-You can follow the same procedure to add other [MCP servers from AWS Labs](https://awslabs.github.io/mcp/) for additional capabilities. For this lab, we'll only need the EKS MCP server we've configured.
+To exit the session:
+
+```text
+/quit
+```
 
 In the next section, we'll use Kiro CLI to retrieve information about our EKS cluster.
