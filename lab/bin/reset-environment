@@ -146,7 +146,7 @@ if [ ! -z "$module" ]; then
 
     # One-time preprovision: install KEDA, fluent-bit, external-secrets etc.
     TF_PID=""
-    if ! kubectl get configmap fastpaths-provisioned -n kube-system &>/dev/null; then
+    if [ "$RESOURCES_PRECREATED" != "true" ]; then
       logmessage "\n🔧 First time setup: provisioning fastpaths infrastructure (this only runs once)..."
 
       rm -rf /eks-workshop/terraform
@@ -196,7 +196,6 @@ if [ ! -z "$module" ]; then
         logmessage "\n${RED}Error:${NC} Infrastructure provisioning failed"
         exit $TF_EXIT
       fi
-      kubectl create configmap fastpaths-provisioned -n kube-system --from-literal=provisioned=true
       logmessage "\n✅ Fastpaths infrastructure provisioned!"
     fi
 

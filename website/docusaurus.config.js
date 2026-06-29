@@ -39,26 +39,29 @@ const config = {
     showNotification: process.env.SHOW_NOTIFICATION === "1",
     secondaryNav: {
       eksGroup: {
-        label: 'Choose your own adventure',
+        label: "Choose your own adventure",
         items: [
-          { to: '/docs/introduction', label: 'Intro' },
-          { to: '/docs/fundamentals', label: 'Fundamentals' },
-          { to: '/docs/observability', label: 'Observability' },
-          { to: '/docs/security', label: 'Security' },
-          { to: '/docs/networking', label: 'Networking' },
-          { to: '/docs/automation', label: 'Automation' },
-          { to: '/docs/aiml', label: 'AI/ML' },
-          { to: '/docs/troubleshooting', label: 'Troubleshooting' },
+          { to: "/docs/introduction", label: "Intro" },
+          { to: "/docs/fundamentals", label: "Fundamentals" },
+          { to: "/docs/observability", label: "Observability" },
+          { to: "/docs/security", label: "Security" },
+          { to: "/docs/networking", label: "Networking" },
+          { to: "/docs/automation", label: "Automation" },
+          { to: "/docs/aiml", label: "AI/ML" },
+          { to: "/docs/troubleshooting", label: "Troubleshooting" },
         ],
       },
       autoModeGroup: {
-        label: 'Amazon EKS Essentials',
+        label: "Amazon EKS Essentials",
         items: [
-          { to: '/docs/fastpaths/', label: 'Intro' },
-          { to: '/docs/fastpaths/setup', label: 'Setup' },
-          { to: '/docs/fastpaths/navigating-labs', label: 'Navigating the labs' },
-          { to: '/docs/fastpaths/developer', label: 'Developer' },
-          { to: '/docs/fastpaths/operator', label: 'Operator' },
+          { to: "/docs/fastpaths/", label: "Intro" },
+          { to: "/docs/fastpaths/setup", label: "Setup" },
+          {
+            to: "/docs/fastpaths/navigating-labs",
+            label: "Navigating the labs",
+          },
+          { to: "/docs/fastpaths/developer", label: "Developer" },
+          { to: "/docs/fastpaths/operator", label: "Operator" },
         ],
       },
     },
@@ -110,6 +113,7 @@ const config = {
           ],
           editUrl:
             "https://github.com/aws-samples/eks-workshop-v2/tree/main/website",
+          exclude: ["networking/vpc-lattice"],
         },
         theme: {
           customCss: require.resolve("./src/css/custom.scss"),

@@ -1,7 +1,7 @@
 ---
 title: "Gitea のセットアップ"
 sidebar_position: 5
-tmdTranslationSourceHash: 65f16f55be12d2b448d3eac30d9a4841
+tmdTranslationSourceHash: 9a72a1093c545cbb52c730a79ad8fee9
 ---
 
 GitHub や GitLab の代わりに、迅速で簡単な代替手段として [Gitea](https://gitea.com) を使用します。Gitea は軽量な自己ホスト型 Git サービスで、ユーザーフレンドリーなウェブインターフェースを提供し、独自の Git リポジトリを迅速にセットアップおよび管理することができます。これは、Argo CD で探索する GitOps ワークフローに不可欠な Kubernetes マニフェストの保存とバージョン管理のための信頼できるソースとして機能します。
@@ -9,10 +9,13 @@ GitHub や GitLab の代わりに、迅速で簡単な代替手段として [Git
 Helm を使用して Gitea を EKS クラスターにインストールしましょう：
 
 ```bash
+$ ESCAPED_CIDRS="${INBOUND_CIDRS//,/\\,}"
 $ helm upgrade --install gitea oci://docker.gitea.com/charts/gitea \
   --version "$GITEA_CHART_VERSION" \
   --namespace gitea --create-namespace \
   --values ~/environment/eks-workshop/modules/automation/gitops/argocd/gitea/values.yaml \
+  --set "service.http.annotations.service\\.beta\\.kubernetes\\.io/load-balancer-source-ranges=$ESCAPED_CIDRS" \
+  --set "service.ssh.annotations.service\\.beta\\.kubernetes\\.io/load-balancer-source-ranges=$ESCAPED_CIDRS" \
   --set "gitea.admin.password=${GITEA_PASSWORD}" \
   --wait
 ```

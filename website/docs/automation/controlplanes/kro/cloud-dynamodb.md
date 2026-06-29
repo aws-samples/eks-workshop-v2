@@ -131,7 +131,7 @@ Please note that the actual endpoint will be different when you run this command
 To make sure the load balancer has finished provisioning, you can run this command:
 
 ```bash timeout=610
-curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
+$ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
   -k $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 ```
 
