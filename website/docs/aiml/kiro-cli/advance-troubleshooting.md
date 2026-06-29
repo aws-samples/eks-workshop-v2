@@ -1,0 +1,136 @@
+---
+title: "Advanced troubleshooting"
+sidebar_position: 23
+---
+
+In this section, we will use Kiro CLI and the [MCP server for Amazon EKS](https://awslabs.github.io/mcp/servers/eks-mcp-server/) to troubleshoot a complex issue in the EKS cluster that would be difficult to resolve without knowledge of Kubernetes, EKS, and other AWS services.
+
+First, let's reconfigure the carts service to use a DynamoDB table that has been created for us. The application loads most of its configurations from a ConfigMap. Let's examine the current ConfigMap:
+
+```bash
+$ kubectl -n carts get -o yaml cm carts
+apiVersion: v1
+data:
+  AWS_ACCESS_KEY_ID: key
+  AWS_SECRET_ACCESS_KEY: secret
+  RETAIL_CART_PERSISTENCE_DYNAMODB_CREATE_TABLE: "true"
+  RETAIL_CART_PERSISTENCE_DYNAMODB_ENDPOINT: http://carts-dynamodb:8000
+  RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME: Items
+  RETAIL_CART_PERSISTENCE_PROVIDER: dynamodb
+kind: ConfigMap
+metadata:
+  name: carts
+  namespace: carts
+```
+
+We'll use the following kustomization to update the ConfigMap. This removes the DynamoDB endpoint configuration, instructing the SDK to use the real DynamoDB service instead of our test Pod. We've also configured the DynamoDB table name in environment variable `RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME` that's already been created for us:
+
+```kustomization
+modules/aiml/kiro-cli/troubleshoot/dynamo/kustomization.yaml
+ConfigMap/carts
+```
+
+Let's verify the DynamoDB table name and apply the new configuration:
+
+```bash
+$ echo $CARTS_DYNAMODB_TABLENAME
+eks-workshop-carts
+$ kubectl kustomize ~/environment/eks-workshop/modules/aiml/kiro-cli/troubleshoot/dynamo \
+  | envsubst | kubectl apply -f-
+```
+
+Verify the updated ConfigMap:
+
+```bash
+$ kubectl -n carts get cm carts -o yaml
+apiVersion: v1
+data:
+  RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME: eks-workshop-carts
+  RETAIL_CART_PERSISTENCE_PROVIDER: dynamodb
+kind: ConfigMap
+metadata:
+  labels:
+    app: carts
+  name: carts
+  namespace: carts
+```
+
+You can see that `RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME` attribute now points to an actual DynamoDB table in your account instead of the table within this EKS cluster.
+
+:::tip
+You should be able to see this DynamoDB table in your account using console under `DynamodDB > Tables` menu.
+:::
+
+Now, let's redeploy the carts deployment to pick up the new ConfigMap contents:
+
+```bash expectError=true
+$ kubectl rollout restart -n carts deployment/carts
+deployment.apps/carts restarted
+$ kubectl rollout status -n carts deployment/carts --timeout=20s
+Waiting for deployment "carts" rollout to finish: 1 old replicas are pending termination...
+error: timed out waiting for the condition
+```
+
+The deployment appears to have failed. Let's check the Pod status:
+
+```bash
+$ kubectl -n carts get pod
+NAME                              READY   STATUS             RESTARTS        AGE
+carts-5d486d7cf7-8qxf9            1/1     Running            0               5m49s
+carts-df76875ff-7jkhr             0/1     CrashLoopBackOff   3 (36s ago)     2m2s
+carts-dynamodb-698674dcc6-hw2bg   1/1     Running            0               20m
+```
+
+Let's use Kiro CLI to investigate this issue. Start a new Kiro CLI session:
+
+```bash test=false
+$ kiro-cli chat
+```
+
+Ask Kiro CLI to help troubleshoot the issue:
+
+```text
+I have a pod in my eks-workshop cluster that is with status CrashLoopBackOff. Troubleshoot the issue and resolve it for me.
+```
+
+To address the prompt, Kiro CLI will use a variety of tools from the MCP server. In addition to the tools seen in the previous example, it may also:
+
+1. Describe IAM roles and policies in the scope using `get_policies_for_role` tool from EKS MCP server
+2. Fetch further information related to AWS resources with the `use_aws` tools that is built in to Kiro CLI
+3. Take corrective action to solve the problem
+
+Follow the suggestions offered by Kiro CLI to solve this issue. In an ideal scenario, the problem should be fixed. At the end, Kiro CLI will present you a final status summary of the steps it took.
+
+<details>
+  <summary>Expand for sample response</summary>
+
+```text
+Perfect! The issue is resolved. Here's what I found and fixed:
+
+Problem: The pod carts-774d75898c-pgbl2 was in CrashLoopBackOff because the IAM role eks-workshop-carts-dynamo had a policy pointing to the wrong DynamoDB table name (wrong-table-name instead of
+eks-workshop-carts). The application couldn't query the DynamoDB table index and crashed on startup.
+
+Solution: I added an inline IAM policy with the correct permissions to access the eks-workshop-carts DynamoDB table and its indexes. After deleting the crashing pod, Kubernetes created a new pod that
+successfully started with the corrected permissions.
+
+Result: The new pod carts-774d75898c-mr8fc is now running successfully with 0 restarts.
+```
+
+</details>
+
+Once you are done, enter the following command to exit Kiro CLI session.
+
+```text
+/quit
+```
+
+Finally, verify that the pods are now running correctly:
+
+```bash test=false
+$ kubectl -n carts get pod
+NAME                              READY   STATUS    RESTARTS   AGE
+carts-596b6f94df-q4449            1/1     Running   0          9m5s
+carts-dynamodb-698fcb695f-zvzf5   1/1     Running   0          2d1h
+```
+
+This concludes our introduction to Kiro CLI. You've seen how this powerful tool, combined with the MCP server for EKS, can help diagnose and resolve complex issues in your EKS cluster.

@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "eks-mcp": {
+      "command": "uvx",
+      "args": [
+        "mcp-proxy-for-aws@latest",
+        "https://eks-mcp.${aws_region}.api.aws/mcp",
+        "--service", "eks-mcp",
+        "--region", "${aws_region}"
+      ]
+    },
+    "aws-mcp": {
+      "command": "uvx",
+      "args": [
+        "mcp-proxy-for-aws@latest",
+        "https://aws-mcp.${aws_region}.api.aws/mcp",
+        "--metadata", "AWS_REGION=${aws_region}"
+      ]
+    }
+  }
+}

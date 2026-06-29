@@ -59,12 +59,13 @@ Now examine the ingress configuration:
 $ kubectl get ingress/ui -n ui -o yaml
 ```
 
-```yaml {23}
+```yaml {6,23}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
     alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/liveness
+    alb.ingress.kubernetes.io/inbound-cidrs: Aray-Of-IP-PRIVATE-IPS
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     ...
@@ -99,6 +100,10 @@ Let's update the ingress to point to the correct service name:
 ```bash
 $ kubectl kustomize ~/environment/eks-workshop/modules/troubleshooting/alb/creating-alb/fix_ingress | envsubst | kubectl apply -f -
 ```
+
+:::info
+This also updates the `inbound-cidrs` annotation to allow traffic from all sources, since the ALB security group was previously restricted to specific CIDRs for security purposes.
+:::
 
 The corrected configuration should look like this:
 

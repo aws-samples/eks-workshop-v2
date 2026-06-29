@@ -114,8 +114,12 @@ resource "null_resource" "kustomize_app" {
   }
 
   provisioner "local-exec" {
-    command = "kubectl apply -k ~/environment/eks-workshop/modules/troubleshooting/alb/creating-alb"
+    command = "kubectl kustomize ~/environment/eks-workshop/modules/troubleshooting/alb/creating-alb | envsubst | kubectl apply -f -"
     when    = create
+
+    environment = {
+      INBOUND_CIDRS = var.inbound_cidrs
+    }
   }
 
   depends_on = [aws_iam_role_policy_attachment.issue_policy_attachment]

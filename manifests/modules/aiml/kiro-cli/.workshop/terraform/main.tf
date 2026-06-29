@@ -205,6 +205,45 @@ resource "local_file" "rules" {
   content = templatefile("${path.module}/templates/rules.md", {
     aws_region = data.aws_region.current.name
   })
-  filename = "/home/ec2-user/environment/.amazonq/rules/lab.md"
+  filename = "/home/ec2-user/environment/.kiro/steering/lab.md"
+}
+
+resource "local_file" "mcp_config" {
+  content = templatefile("${path.module}/templates/mcp.json", {
+    aws_region = data.aws_region.current.name
+  })
+  filename = "/home/ec2-user/environment/.kiro/settings/mcp.json"
+}
+
+resource "aws_cloudformation_stack" "kiro_idc" {
+  name          = "${var.addon_context.eks_cluster_id}-kiro-idc"
+  template_body = file("${path.module}/templates/kiro-identity-center-stack.json")
+  capabilities  = ["CAPABILITY_IAM"]
+
+  tags = var.tags
+}
+
+resource "aws_iam_policy" "eks_mcp_access" {
+  name        = "${var.addon_context.eks_cluster_id}-eks-mcp-access"
+  path        = "/"
+  description = "IAM permissions for AWS-Hosted EKS MCP Server"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "EKSMCPAccess"
+        Effect = "Allow"
+        Action = [
+          "eks-mcp:InvokeMcp",
+          "eks-mcp:CallReadOnlyTool",
+          "eks-mcp:CallPrivilegedTool"
+        ]
+        Resource = ["*"]
+      }
+    ]
+  })
+
+  tags = var.tags
 }
 

@@ -53,4 +53,6 @@ devenv.local.nix
 
 # direnv
 .direnv
-.kiro/
+
+# Kiro specs and migration plans
+.kiro/specs/
