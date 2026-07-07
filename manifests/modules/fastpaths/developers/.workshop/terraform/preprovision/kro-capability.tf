@@ -1,7 +1,10 @@
 # kro EKS Capability provisioning --------------------------------------------
 #
 # Enables the kro EKS-managed capability on the shared Auto Mode cluster.
-# Used by the `fastpaths/eks-capabilities` Lab 3 (Compose stacks with kro).
+# Used ONLY by the `fastpaths/eks-capabilities` Lab 3 (Compose stacks with kro).
+# Every resource is gated behind local.eks_cap_count
+# (var.enable_eks_capabilities) so it provisions only for the eks-capabilities
+# path — dev/operator apply nothing here.
 #
 # kro is the EKS-managed form of the kro-run/kro project — a Kubernetes
 # resource orchestrator that lets users define a single "schema" CR (e.g.
@@ -21,7 +24,8 @@
 # Data sources (aws_caller_identity, aws_region, aws_partition,
 # aws_eks_cluster.eks_cluster_auto) and the region preflight
 # (null_resource.eks_cap_region_preflight) are declared in eks-auto.tf /
-# eks-capabilities.tf and reused here.
+# eks-capabilities.tf and reused here. local.eks_cap_count is declared in
+# eks-capabilities.tf.
 
 locals {
   eks_cap_kro_capability_name = "${var.eks_cluster_auto_id}-kro"
@@ -35,7 +39,8 @@ locals {
 # being trusted by the EKS capabilities service principal — no AWS data-plane
 # permissions needed.
 resource "aws_iam_role" "eks_cap_kro_capability" {
-  name = "${var.eks_cluster_auto_id}-kro-cap-role"
+  count = local.eks_cap_count
+  name  = "${var.eks_cluster_auto_id}-kro-cap-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -64,6 +69,7 @@ resource "aws_iam_role" "eks_cap_kro_capability" {
 # `apply`, so every preprovision run creates a brand-new role and re-encounters
 # this race.
 resource "time_sleep" "eks_cap_kro_role_propagation" {
+  count           = local.eks_cap_count
   depends_on      = [aws_iam_role.eks_cap_kro_capability]
   create_duration = "30s"
 }
@@ -77,10 +83,11 @@ resource "time_sleep" "eks_cap_kro_role_propagation" {
 # dependency on the supplemental policy below — no deadlock risk, and no
 # need to apply them in parallel.
 resource "aws_eks_capability" "kro" {
+  count                     = local.eks_cap_count
   cluster_name              = var.eks_cluster_auto_id
   capability_name           = local.eks_cap_kro_capability_name
   type                      = "KRO"
-  role_arn                  = aws_iam_role.eks_cap_kro_capability.arn
+  role_arn                  = aws_iam_role.eks_cap_kro_capability[0].arn
   delete_propagation_policy = "RETAIN"
 
   tags = var.tags
@@ -105,16 +112,15 @@ resource "aws_eks_capability" "kro" {
 # one and our explicit declaration would collide with
 # `ResourceInUseException`.
 #
-# Unlike the Argo CD capability (Decision 2), we DO depend on the capability
-# resource here. Reason: kro's capability reaches ACTIVE on its own; the
-# Argo CD deadlock came from Argo CD needing cluster-admin to bootstrap user
-# Applications, which kro doesn't need. Depending on the capability resource
-# guarantees the auto-created access entry exists before AssociateAccessPolicy
-# runs (avoids `ResourceNotFoundException: principalArn could not be found`).
+# Depends on the capability resource so the auto-created access entry is
+# guaranteed to exist before AssociateAccessPolicy runs (avoids
+# `ResourceNotFoundException: principalArn could not be found`). Same pattern
+# as the ACK and Argo CD capabilities.
 resource "aws_eks_access_policy_association" "kro" {
+  count         = local.eks_cap_count
   cluster_name  = var.eks_cluster_auto_id
   policy_arn    = "arn:${data.aws_partition.current.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-  principal_arn = aws_iam_role.eks_cap_kro_capability.arn
+  principal_arn = aws_iam_role.eks_cap_kro_capability[0].arn
 
   access_scope {
     type = "cluster"
@@ -129,6 +135,7 @@ resource "aws_eks_access_policy_association" "kro" {
 # before any RGD/instance gets applied by the lab. Same 60s gap as the ACK
 # capability.
 resource "time_sleep" "eks_cap_kro_access_propagation" {
+  count           = local.eks_cap_count
   depends_on      = [aws_eks_access_policy_association.kro]
   create_duration = "60s"
 }

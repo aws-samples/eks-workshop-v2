@@ -1,8 +1,10 @@
 # Argo CD EKS Capability provisioning ----------------------------------------
 #
-# Enables the Argo CD EKS-managed capability on the shared Auto Mode cluster,
-# federated with AWS IAM Identity Center for sign-in. Used by the
-# `fastpaths/eks-capabilities` Lab 2 (Continuous delivery with Argo CD).
+# Enables the Argo CD EKS-managed capability on the shared Auto Mode cluster.
+# Used ONLY by the `fastpaths/eks-capabilities` Lab 2. Every resource is gated
+# behind local.eks_cap_count (var.enable_eks_capabilities) so it provisions
+# only for the eks-capabilities path — the developer and operator paths never
+# touch Identity Center and never hit the IDC preflight below.
 #
 # Reference pattern: aws-samples/appmod-blueprints + the AWS docs
 #   https://docs.aws.amazon.com/eks/latest/userguide/create-argocd-capability.html
@@ -10,7 +12,8 @@
 # Data sources (aws_caller_identity, aws_region, aws_partition,
 # aws_eks_cluster.eks_cluster_auto) and the region preflight
 # (null_resource.eks_cap_region_preflight) are declared in eks-auto.tf /
-# eks-capabilities.tf and reused here.
+# eks-capabilities.tf and reused here. local.eks_cap_count is declared in
+# eks-capabilities.tf.
 
 # --- IAM Identity Center preflight -------------------------------------------
 #
@@ -18,12 +21,12 @@
 # it is the sole authentication path (no local users, no admin password). We do
 # NOT create an Identity Center instance for the learner: it is an account-wide,
 # largely one-per-org resource. Instead we look it up and fail fast with an
-# actionable message if it is missing, so learners don't wait minutes for an
-# opaque downstream error.
+# actionable message if it is missing.
 #
-# list-instances is a regional API, so this also enforces that Identity Center
-# lives in the same region as the workshop cluster (required because we wire the
-# instance region straight into the capability configuration below).
+# This is a plain data source (a regional list call). It runs on every apply
+# regardless of the gate, but returns [] harmlessly when no instance exists —
+# only the gated preflight below turns a missing instance into an error, and
+# only for the eks-capabilities path.
 data "aws_ssoadmin_instances" "current" {}
 
 locals {
@@ -39,7 +42,12 @@ locals {
   eks_cap_codecommit_repo_url    = "https://git-codecommit.${data.aws_region.current.id}.amazonaws.com/v1/repos/${local.eks_cap_codecommit_repo_name}"
 }
 
+# Only fires for the eks-capabilities path (count = local.eks_cap_count). The
+# developer/operator paths skip this entirely, so a missing Identity Center
+# instance never breaks their apply.
 resource "null_resource" "eks_cap_argocd_idc_preflight" {
+  count = local.eks_cap_count
+
   lifecycle {
     precondition {
       condition     = local.eks_cap_idc_present
@@ -69,6 +77,7 @@ resource "null_resource" "eks_cap_argocd_idc_preflight" {
 #   https://github.com/aws-samples/saas-on-eks-workshop-capabilities/blob/main/assetsSrc/terraform/identity-center.tf
 #   https://github.com/aws-samples/saas-on-eks-workshop-capabilities/blob/main/content/100-introduction/225-argocd-user-management.en.md
 resource "aws_identitystore_user" "argocd_admin" {
+  count             = local.eks_cap_count
   identity_store_id = local.eks_cap_idc_identitystore
 
   user_name    = local.eks_cap_argocd_admin_user
@@ -88,6 +97,7 @@ resource "aws_identitystore_user" "argocd_admin" {
 }
 
 resource "aws_identitystore_group" "argocd_admins" {
+  count             = local.eks_cap_count
   identity_store_id = local.eks_cap_idc_identitystore
   display_name      = local.eks_cap_argocd_admin_group
   description       = "Argo CD administrators for ${var.eks_cluster_auto_id} (EKS Workshop fast path)"
@@ -96,9 +106,10 @@ resource "aws_identitystore_group" "argocd_admins" {
 }
 
 resource "aws_identitystore_group_membership" "argocd_admin" {
+  count             = local.eks_cap_count
   identity_store_id = local.eks_cap_idc_identitystore
-  group_id          = aws_identitystore_group.argocd_admins.group_id
-  member_id         = aws_identitystore_user.argocd_admin.user_id
+  group_id          = aws_identitystore_group.argocd_admins[0].group_id
+  member_id         = aws_identitystore_user.argocd_admin[0].user_id
 }
 
 # --- CodeCommit repository, seeded with the catalog manifests ----------------
@@ -108,6 +119,7 @@ resource "aws_identitystore_group_membership" "argocd_admin" {
 # copy of the catalog stack (deployment, service, mysql, config) so Argo CD can
 # deploy a healthy catalog from scratch.
 resource "aws_codecommit_repository" "catalog_gitops" {
+  count           = local.eks_cap_count
   repository_name = local.eks_cap_codecommit_repo_name
   description     = "Catalog GitOps source for the EKS Workshop Argo CD capability fast path (${var.eks_cluster_auto_id})"
 
@@ -119,8 +131,10 @@ resource "aws_codecommit_repository" "catalog_gitops" {
 # module) recreates the repo, so we always seed on create. The trigger also
 # re-seeds if the local seed manifests change.
 resource "null_resource" "eks_cap_argocd_repo_seed" {
+  count = local.eks_cap_count
+
   triggers = {
-    repository   = aws_codecommit_repository.catalog_gitops.repository_name
+    repository   = aws_codecommit_repository.catalog_gitops[0].repository_name
     region       = data.aws_region.current.id
     content_hash = sha1(join(",", [for f in fileset("${path.module}/argocd-seed/catalog", "**") : filesha1("${path.module}/argocd-seed/catalog/${f}")]))
   }
@@ -130,7 +144,7 @@ resource "null_resource" "eks_cap_argocd_repo_seed" {
     command     = "${path.module}/argocd-seed/seed-repo.sh"
 
     environment = {
-      REPO_NAME  = aws_codecommit_repository.catalog_gitops.repository_name
+      REPO_NAME  = aws_codecommit_repository.catalog_gitops[0].repository_name
       AWS_REGION = data.aws_region.current.id
       SEED_DIR   = "${path.module}/argocd-seed/catalog"
     }
@@ -146,7 +160,8 @@ resource "null_resource" "eks_cap_argocd_repo_seed" {
 # manifests from CodeCommit. Scoped to GitPull on the single seeded repo —
 # no account-wide managed policy.
 resource "aws_iam_role" "eks_cap_argocd_capability" {
-  name = "${var.eks_cluster_auto_id}-argocd-cap-role"
+  count = local.eks_cap_count
+  name  = "${var.eks_cluster_auto_id}-argocd-cap-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -168,8 +183,9 @@ resource "aws_iam_role" "eks_cap_argocd_capability" {
 }
 
 resource "aws_iam_role_policy" "eks_cap_argocd_codecommit" {
-  name = "argocd-capability-codecommit"
-  role = aws_iam_role.eks_cap_argocd_capability.id
+  count = local.eks_cap_count
+  name  = "argocd-capability-codecommit"
+  role  = aws_iam_role.eks_cap_argocd_capability[0].id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -195,6 +211,8 @@ resource "aws_iam_role_policy" "eks_cap_argocd_codecommit" {
 # created role frequently fails CreateCapability with an invalid-trust-policy
 # error without this gap, and reset-environment recreates the role every run.
 resource "time_sleep" "eks_cap_argocd_role_propagation" {
+  count = local.eks_cap_count
+
   depends_on = [
     aws_iam_role.eks_cap_argocd_capability,
     aws_iam_role_policy.eks_cap_argocd_codecommit,
@@ -209,10 +227,11 @@ resource "time_sleep" "eks_cap_argocd_role_propagation" {
 # nested blocks (NOT jsonencode). IAM Identity Center is required — the
 # `aws_idc` block and a role mapping are mandatory for a usable capability.
 resource "aws_eks_capability" "argocd" {
+  count                     = local.eks_cap_count
   cluster_name              = var.eks_cluster_auto_id
   capability_name           = local.eks_cap_argocd_capability_name
   type                      = "ARGOCD"
-  role_arn                  = aws_iam_role.eks_cap_argocd_capability.arn
+  role_arn                  = aws_iam_role.eks_cap_argocd_capability[0].arn
   delete_propagation_policy = "RETAIN"
 
   configuration {
@@ -228,7 +247,7 @@ resource "aws_eks_capability" "argocd" {
         role = "ADMIN"
 
         identity {
-          id   = aws_identitystore_group.argocd_admins.group_id
+          id   = aws_identitystore_group.argocd_admins[0].group_id
           type = "SSO_GROUP"
         }
       }
@@ -267,9 +286,10 @@ resource "aws_eks_capability" "argocd" {
 # `ResourceNotFoundException: principalArn could not be found`). Same pattern
 # as the ACK and kro capabilities.
 resource "aws_eks_access_policy_association" "argocd" {
+  count         = local.eks_cap_count
   cluster_name  = var.eks_cluster_auto_id
   policy_arn    = "arn:${data.aws_partition.current.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-  principal_arn = aws_iam_role.eks_cap_argocd_capability.arn
+  principal_arn = aws_iam_role.eks_cap_argocd_capability[0].arn
 
   access_scope {
     type = "cluster"

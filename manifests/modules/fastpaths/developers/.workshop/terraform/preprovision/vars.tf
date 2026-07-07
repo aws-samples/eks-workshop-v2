@@ -25,6 +25,20 @@ variable "inbound_cidrs" {
 }
 
 # tflint-ignore: terraform_unused_declarations
+variable "enable_eks_capabilities" {
+  description = <<-EOT
+    Gate for the EKS Capabilities fast path resources (ACK, Argo CD, kro
+    capabilities + IAM Identity Center user/group + CodeCommit repo). This
+    preprovision module is shared across all fast paths, but only the
+    `fastpaths/eks-capabilities` path should create these resources. When
+    false (developer/operator paths) nothing capability-related is created,
+    so no IAM Identity Center instance is required.
+  EOT
+  type        = bool
+  default     = false
+}
+
+# tflint-ignore: terraform_unused_declarations
 variable "argocd_admin_email" {
   description = <<-EOT
     Email address attached to the Argo CD workshop admin user record.

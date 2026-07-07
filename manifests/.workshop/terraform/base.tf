@@ -60,6 +60,13 @@ variable "inbound_cidrs" {
 }
 
 # tflint-ignore: terraform_unused_declarations
+variable "enable_eks_capabilities" {
+  description = "Gate for the fastpaths/eks-capabilities resources (ACK/Argo CD/kro capabilities + IAM Identity Center user/group + CodeCommit repo). reset-environment sets this true only for the eks-capabilities path; developer/operator paths leave it false so no capabilities and no IAM Identity Center instance are required."
+  type        = bool
+  default     = false
+}
+
+# tflint-ignore: terraform_unused_declarations
 variable "argocd_admin_email" {
   description = "Email for the Argo CD workshop admin user (fastpaths/eks-capabilities Lab 2). Defaults to a non-deliverable placeholder because the OTP-based activation flow ignores it; only override with a real address if using email-link activation. Ignored by other fast paths."
   type        = string

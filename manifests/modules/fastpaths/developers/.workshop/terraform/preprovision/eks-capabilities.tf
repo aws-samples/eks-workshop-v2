@@ -1,8 +1,12 @@
 # EKS Capabilities provisioning -----------------------------------------------
 #
 # Enables the ACK EKS-managed capability on the shared Auto Mode cluster.
-# Used by the `fastpaths/eks-capabilities` lab. Provisioned alongside the
-# other fastpaths preprovision resources because the cluster is shared.
+# Used ONLY by the `fastpaths/eks-capabilities` lab. Although this file lives in
+# the shared `developers` preprovision module (which reset-environment applies
+# for every fastpath), every resource here is gated behind
+# var.enable_eks_capabilities so it provisions ONLY for the eks-capabilities
+# path — the developer and operator paths never create capabilities and never
+# require an IAM Identity Center instance.
 #
 # Reference pattern: aws-samples/appmod-blueprints
 #   platform/infra/terraform/cluster/main.tf
@@ -21,9 +25,15 @@ locals {
     for prefix in local.eks_cap_unsupported_region_prefixes :
     startswith(data.aws_region.current.id, prefix)
   ])
+
+  # Gate: 1 when the eks-capabilities fast path is active, 0 otherwise. Applied
+  # as `count` on every capability resource so dev/operator apply nothing here.
+  eks_cap_count = var.enable_eks_capabilities ? 1 : 0
 }
 
 resource "null_resource" "eks_cap_region_preflight" {
+  count = local.eks_cap_count
+
   lifecycle {
     precondition {
       condition     = local.eks_cap_region_supported
@@ -52,7 +62,8 @@ locals {
 # the AWS APIs needed to reconcile the Table custom resource.
 
 resource "aws_iam_role" "eks_cap_ack_capability" {
-  name = "${var.eks_cluster_auto_id}-ack-cap-role"
+  count = local.eks_cap_count
+  name  = "${var.eks_cluster_auto_id}-ack-cap-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -74,8 +85,9 @@ resource "aws_iam_role" "eks_cap_ack_capability" {
 }
 
 resource "aws_iam_role_policy" "eks_cap_ack_capability_dynamodb" {
-  name = "ack-capability-dynamodb"
-  role = aws_iam_role.eks_cap_ack_capability.id
+  count = local.eks_cap_count
+  name  = "ack-capability-dynamodb"
+  role  = aws_iam_role.eks_cap_ack_capability[0].id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -120,6 +132,8 @@ resource "aws_iam_role_policy" "eks_cap_ack_capability_dynamodb" {
 # `reset-environment` runs `terraform destroy` then `apply`, so every
 # preprovision run creates a brand-new role and re-encounters this race.
 resource "time_sleep" "eks_cap_ack_capability_role_propagation" {
+  count = local.eks_cap_count
+
   depends_on = [
     aws_iam_role.eks_cap_ack_capability,
     aws_iam_role_policy.eks_cap_ack_capability_dynamodb,
@@ -136,10 +150,11 @@ resource "time_sleep" "eks_cap_ack_capability_role_propagation" {
 # AmazonEKSClusterAdminPolicy association below. Same pattern as the Argo CD
 # and kro capabilities.
 resource "aws_eks_capability" "ack" {
+  count                     = local.eks_cap_count
   cluster_name              = var.eks_cluster_auto_id
   capability_name           = local.eks_cap_ack_capability_name
   type                      = "ACK"
-  role_arn                  = aws_iam_role.eks_cap_ack_capability.arn
+  role_arn                  = aws_iam_role.eks_cap_ack_capability[0].arn
   delete_propagation_policy = "RETAIN"
 
   tags = var.tags
@@ -165,9 +180,10 @@ resource "aws_eks_capability" "ack" {
 # `ResourceNotFoundException: principalArn could not be found`). Same pattern
 # as the Argo CD and kro capabilities.
 resource "aws_eks_access_policy_association" "ack" {
+  count         = local.eks_cap_count
   cluster_name  = var.eks_cluster_auto_id
   policy_arn    = "arn:${data.aws_partition.current.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-  principal_arn = aws_iam_role.eks_cap_ack_capability.arn
+  principal_arn = aws_iam_role.eks_cap_ack_capability[0].arn
 
   access_scope {
     type = "cluster"
@@ -179,6 +195,7 @@ resource "aws_eks_access_policy_association" "ack" {
 # Give the access policy association time to propagate inside the cluster
 # before any ACK custom resource is applied by the labs.
 resource "time_sleep" "eks_cap_ack_access_propagation" {
+  count           = local.eks_cap_count
   depends_on      = [aws_eks_access_policy_association.ack]
   create_duration = "60s"
 }
@@ -191,8 +208,9 @@ resource "time_sleep" "eks_cap_ack_access_propagation" {
 # so the same carts ServiceAccount can read/write it after Lab 1's ConfigMap
 # flip — no new ServiceAccount, no SA annotation patching needed.
 resource "aws_iam_role_policy" "eks_cap_carts_fastpath_dynamodb" {
-  name = "carts-fastpath-dynamodb"
-  role = module.iam_assumable_role_carts.iam_role_name
+  count = local.eks_cap_count
+  name  = "carts-fastpath-dynamodb"
+  role  = module.iam_assumable_role_carts.iam_role_name
 
   # Wildcard `${cluster}-carts-*` so the same carts ServiceAccount role
   # covers both Lab 1's `-carts-fastpath` table and Lab 3's `-carts-kro`
