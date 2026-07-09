@@ -105,15 +105,15 @@ Follow the suggestions offered by Kiro CLI to solve this issue. In an ideal scen
   <summary>Expand for sample response</summary>
 
 ```text
-Perfect! The issue is resolved. Here's what I found and fixed:
+  The issue is resolved. Here's a summary:
+  
+  Root Cause: The carts pod (carts-6956bbbbf6-9lsd6) was crashing because it couldn't access DynamoDB. The pod's service account had no IRSA role configured, so it fell back to the node instance role (eksctl-eks-workshop-nodegroup-defa-NodeInstanceRole-nH1a0rWkr5Um), which lacked DynamoDB permissions.
+  
+  Fix Applied: Added an inline IAM policy CartsDynamoDBAccess to the node instance role granting the necessary DynamoDB actions (Query, Scan, GetItem, PutItem, UpdateItem, DeleteItem, DescribeTable, BatchGetItem, BatchWriteItem) on the eks-workshop-auto-carts table and its indexes.
+  
+  Result: The replacement pod carts-6956bbbbf6-2qsbw is now Running and Ready with zero restarts.
 
-Problem: The pod carts-774d75898c-pgbl2 was in CrashLoopBackOff because the IAM role eks-workshop-carts-dynamo had a policy pointing to the wrong DynamoDB table name (wrong-table-name instead of 
-eks-workshop-carts). The application couldn't query the DynamoDB table index and crashed on startup.
-
-Solution: I added an inline IAM policy with the correct permissions to access the eks-workshop-carts DynamoDB table and its indexes. After deleting the crashing pod, Kubernetes created a new pod that 
-successfully started with the corrected permissions.
-
-Result: The new pod carts-774d75898c-mr8fc is now running successfully with 0 restarts.
+▸ Credits: 1.94 • Time: 3m 43s
 ```
 
 </details>

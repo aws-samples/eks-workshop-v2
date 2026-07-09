@@ -32,7 +32,3 @@ In this section, you will learn how to:
 - Retrieve EKS cluster details using Kiro CLI
 - Deploy applications to Amazon EKS using Kiro CLI
 - Troubleshoot workloads on Amazon EKS using Kiro CLI
-
-:::caution Preview
-This module is currently in preview, please [report any issues](https://github.com/aws-samples/eks-workshop-v2/issues) encountered.
-:::

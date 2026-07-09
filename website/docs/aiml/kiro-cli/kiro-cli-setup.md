@@ -15,7 +15,7 @@ First, download the Kiro CLI release for your operating system and CPU architect
 $ ARCH=$(arch)
 $ mkdir $HOME/tmp
 $ curl --proto '=https' --tlsv1.2 \
-  -sSf https://desktop-release.q.us-east-1.amazonaws.com/1.21.0/kirocli-${ARCH}-linux.zip \
+  -sSf https://desktop-release.q.us-east-1.amazonaws.com/2.10.0/kirocli-${ARCH}-linux.zip \
   -o $HOME/tmp/kirocli.zip
 ```
 
@@ -30,7 +30,7 @@ Verify the installation:
 
 ```bash
 $ kiro-cli version
-kiro-cli 1.21.0
+kiro-cli 2.10.0
 ```
 
 Next, we'll configure Kiro CLI with the Amazon EKS MCP server. Here is the configuration we'll use:
@@ -48,7 +48,7 @@ Configure the MCP server and install the required `uvx` tool:
 ```bash
 $ mkdir -p $HOME/.kiro/settings
 $ cp ~/environment/eks-workshop/modules/aiml/kiro-cli/setup/eks-mcp.json $HOME/.kiro/settings/mcp.json
-$ curl -LsSf https://astral.sh/uv/0.9.28/install.sh | sh
+$ curl -LsSf https://astral.sh/uv/0.11.26/install.sh | sh
 ```
 
 To use Kiro CLI, you'll need to authenticate using either an AWS Builder ID or a Pro license subscription.
@@ -61,20 +61,21 @@ You can create a free AWS Builder ID by following [these instructions](https://d
 $ kiro-cli login --use-device-flow
 ? Select login method >
 > Use with Builder ID
-  Use with IDC Account
+  Use with Google
+  Use with GitHub
+  Use with Your Organization
 ```
 
-Select your preferred option and follow the prompts to complete the login process. You'll be redirected to a webpage to either login and/or authorize Amazon Q Developer to use your account. For additional guidance, refer to:
+Select your preferred login method and follow the prompts to login. If you don't already have a Kiro account, you may create a free-trial account using either your Google or GitHub account. You'll need to open a given URL to use link your Google or GitHub account.
 
-- [Sign-in with AWS Builder ID](https://docs.aws.amazon.com/signin/latest/userguide/sign-in-aws_builder_id.html)
-- [Sign-in with Amazon Q Developer Pro subscriptions](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/q-admin-setup-subscribe-general.html)
+:::tip
+A Kiro free-trial account should give you 50 Kiro credits to begin with. This lab may only need less than 5 credits. So, you may use that account even outside this workshop to continue your Kiro trial for other projects. You may check your used credits using `/usage` command inside a kiro-cli session. No payment details will be required to create a Kiro free-trial account. 
+:::
 
 Let's verify that the MCP server is available by initializing a session:
 
 ```bash test=false
 $ kiro-cli chat
-0 of 1 mcp servers initialized. Servers still loading:
- - awslabseks_mcp_server
 ```
 
 To see the tools offered by the EKS MCP server, run:
@@ -82,19 +83,17 @@ To see the tools offered by the EKS MCP server, run:
 ```text
 /tools
 ```
-
 You should see output similar to this:
 
-![list-mcp-tools](/docs/aiml/kiro-cli/list-mcp-tools.jpg)
+![list-mcp-tools](/img/aiml/kiro-cli/list-mcp-tools.jpg)
 
 The output shows:
 
-1. The default large language model (LLM) selected by Kiro CLI (can be changed using the `/model` command)
+1. The space where you can run Kiro commands like `/tools`. You should see all such commands when you type `/`. Learn more about Kiro commands [here](https://kiro.dev/docs/cli/reference/slash-commands/#available-commands).
 2. The list of tools offered by the EKS MCP server
-3. The default permissions Kiro CLI has for each tool
 
 :::info
-When a tool is marked as `not trusted`, Kiro CLI will request your permission before using it. This is a safety measure, particularly for tools that can create, update, or delete resources. Since LLMs can make mistakes, this gives you an opportunity to review potentially disruptive actions before they're executed.
+When a tool is marked as `approval required`, Kiro CLI will request your permission before using it. This is a safety measure, particularly for tools that can create, update, or delete resources. Since LLMs can make mistakes, this gives you an opportunity to review potentially disruptive actions before they're executed.
 :::
 
 You can follow the same procedure to add other [MCP servers from AWS Labs](https://awslabs.github.io/mcp/) for additional capabilities. For this lab, we'll only need the EKS MCP server we've configured.

@@ -6,7 +6,7 @@ sidebar_position: 21
 In this section we will use Kiro CLI along with the [MCP server for Amazon EKS](https://awslabs.github.io/mcp/servers/eks-mcp-server/) to retrieve details of the EKS cluster using natural language commands.
 
 :::info
-The `>` symbol at the beginning of a command line indicates you have an active Kiro CLI session. You can type or paste the prompt text provided in this lab at this prompt. If you don't see the `>` prompt, restart your Kiro CLI session using the `kiro-cli chat` command.
+The `❯` symbol at the beginning of a command line indicates you have an active Kiro CLI session. You can type or paste the prompt text provided in this lab at this prompt. If you don't see the `❯` prompt, restart your Kiro CLI session using the `kiro-cli chat` command.
 :::
 
 Let's start by getting details about our EKS cluster. Enter the following prompt:
@@ -15,76 +15,105 @@ Let's start by getting details about our EKS cluster. Enter the following prompt
 Summarize the configuration of the eks-workshop EKS cluster.
 ```
 
-Observe how Kiro CLI processes this natural language command. You'll notice it executes various `aws` CLI commands, indicated by the caption `Using tool: use_aws`. For example:
+Observe how Kiro CLI processes this natural language command. It would ask your permission to access `use_aws` MCP tool available to it by default. For example:
 
 ```text
-🛠️  Using tool: use_aws (trusted)
- ⋮
- ● Running aws cli command:
+↓ manage_eks_stacks
+    ╰ operation=describe, cluster_name=eks-workshop
+● use_aws
+    ╰ service_name=eks, operation_name=describe-cluster, region=us-east-1, label=Describe eks-workshop EKS cluster
+  esc to cancel
 
-Service name: eks
-Operation name: describe-cluster
-Parameters:
-- name: "eks-workshop"
-Profile name: default
-Region: us-west-2
-Label: Get detailed configuration of the eks-workshop cluster
- ⋮
- ● Completed in 0.680s
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ manage_eks_stacks requires approval
+   Yes, single permission             
+ ❯ Trust, always allow in this session
+   No (Tab to edit)                   
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ESC to close · ↑↓ to navigate · ↵ to select · Tab to edit
 ```
 
-For this prompt Kiro CLI didn't need to use any tools from the EKS MCP server.
+Select `Yes` or `Trust` to allow Kiro to use the selected tool. For this prompt Kiro CLI didn't need to use any tools from the EKS MCP server.
 
-You should see an EKS cluster summary generated in Markdown format. Expand the section below to see a sample.
+Kiro would run various commands to pull required details and should show an EKS cluster summary generated in Markdown format. Expand the section below to see a sample.
 
 <details>
   <summary>Expand for sample response</summary>
 
 ```text
-Here's a summary of the eks-workshop EKS cluster configuration:
+  Here's a summary of the eks-workshop EKS cluster configuration:
+  
+  Cluster Overview
+  
+  ┌─────────────────────┬──────────────────────────────────┐
+  │ Property            │ Value                            │
+  ├─────────────────────┼──────────────────────────────────┤
+  │ Region              │ us-west-2                        │
+  ├─────────────────────┼──────────────────────────────────┤
+  │ Status              │ ACTIVE                           │
+  ├─────────────────────┼──────────────────────────────────┤
+  │ Kubernetes version  │ 1.33                             │
+  ├─────────────────────┼──────────────────────────────────┤
+  │ Platform version    │ eks.41                           │
+  ├─────────────────────┼──────────────────────────────────┤
+  │ Created             │ 2026-07-01 (today)               │
+  ├─────────────────────┼──────────────────────────────────┤
+  │ Created by          │ eksctl 0.222.0 (eks-workshop-v2) │
+  ├─────────────────────┼──────────────────────────────────┤
+  │ Authentication mode │ API                              │
+  ├─────────────────────┼──────────────────────────────────┤
+  │ Support type        │ EXTENDED                         │
+  ├─────────────────────┼──────────────────────────────────┤
+  │ Control plane tier  │ Standard                         │
+  └─────────────────────┴──────────────────────────────────┘
+  
+  Networking
+  
+  - VPC: vpc-0e572856d73a646b7 (6 subnets)
+  - Service CIDR: 172.16.0.0/16 (IPv4)
+  - API endpoint: Public + Private access (public open to 0.0.0.0/0)
+  - Remote node network: 10.52.0.0/16
+  - Remote pod network: 10.53.0.0/16
+  
+  Node Group: default
+  
+  ┌─────────────────┬───────────────────────────┐
+  │ Property        │ Value                     │
+  ├─────────────────┼───────────────────────────┤
+  │ Instance type   │ m5.large                  │
+  ├─────────────────┼───────────────────────────┤
+  │ AMI             │ AL2023_x86_64_STANDARD    │
+  ├─────────────────┼───────────────────────────┤
+  │ Capacity        │ ON_DEMAND                 │
+  ├─────────────────┼───────────────────────────┤
+  │ Scaling         │ min 3 / desired 3 / max 6 │
+  ├─────────────────┼───────────────────────────┤
+  │ Subnets         │ 3 private subnets         │
+  ├─────────────────┼───────────────────────────┤
+  │ Update strategy │ 50% max unavailable       │
+  └─────────────────┴───────────────────────────┘
+  
+  Addons
+  
+  - coredns
+  - kube-proxy
+  - metrics-server
+  - vpc-cni
+  
+  Logging
+  
+  Control plane logging is disabled (api, audit, authenticator, controllerManager, scheduler all off).
+  
+  Notable Tags
+  
+  - karpenter.sh/discovery: eks-workshop — cluster is tagged for Karpenter discovery
+  - created-by: eks-workshop-v2 — provisioned by the EKS Workshop v2 tooling
 
-Basic Information:
-- Name: eks-workshop
-- Version: 1.33
-- Status: ACTIVE
-- Created: February 2, 2026
-- Platform Version: eks.27
-- Region: us-west-2
-
-Networking:
-- VPC: vpc-0f61f95f5b8afcec2
-- Subnets: 6 subnets across availability zones
-- Service IPv4 CIDR: 172.16.0.0/16
-- Endpoint Access: Both public and private enabled
-- Public Access: Open to 0.0.0.0/0
-- Elastic Load Balancing: Disabled
-
-Remote Network Configuration (Hybrid Nodes):
-- Remote Node Networks: 10.52.0.0/16
-- Remote Pod Networks: 10.53.0.0/16
-
-Security:
-- Cluster Security Group: sg-0cb155bc445c97558
-- Additional Security Group: sg-0f74307591ebddb4d
-- IAM Role: eksctl-eks-workshop-cluster-ServiceRole-UkyEe5uUibmE
-- Authentication Mode: API_AND_CONFIG_MAP
-- OIDC Provider: Enabled
-
-Logging:
-- All control plane logs (api, audit, authenticator, controllerManager, scheduler): Disabled
-
-Other Settings:
-- Control Plane Tier: Standard
-- Deletion Protection: Disabled
-- Support Type: Extended
-- Created by: eksctl (version 0.215.0)
-
-The cluster is configured with hybrid node support, allowing remote nodes and pods from on-premises or other networks to connect to the cluster.
+▸ Credits: 0.59 • Time: 9m 53s
 ```
-
 </details>
 
-:::tip
+:::info
 As per the basic characteristics of GenAI models, it is possible and normal to see the response you may get from Kiro CLI be different from what is shown in this and other Kiro CLI labs for the given prompts. You may get somewhat different responses for the same prompt if you try them more than once.
 :::
 
@@ -97,18 +126,19 @@ List all pods in the carts namespace with their IP addresses along with the host
 If the EKS MCP server is properly configured, you'll see the following line indicating the use of EKS MCP server tools:
 
 ```text
-🛠️ Using tool: list_k8s_resources from mcp server awslabseks_mcp_server
+↓ list_k8s_resources
+    ╰ cluster_name=eks-workshop, kind=Pod, api_version=v1, namespace=carts
+
+──────────────────────────────────────────────────────────────────────────
+ list_k8s_resources requires approval
+ ❯ Yes, single permission             
+   Trust, always allow in this session
+   No (Tab to edit)                   
+──────────────────────────────────────────────────────────────────────────
+ ESC to close · ↑↓ to navigate · ↵ to select · Tab to edit
+
 ```
-
-:::note
-The first time you use an MCP server tool, Kiro CLI will ask for permission:
-
-```text
-Allow this action? Use 't' to trust (always allow) this tool for the session. [y/n/t]:
-```
-
-You can press `t` and then `Enter` to trust this tool for the session, as it performs read-only operations.
-:::
+Select `Yes` or `Trust` to allow Kiro using this tool.
 
 Kiro CLI will likely use several different tools from the EKS MCP server to list the pods and then retrieve more detailed information for each one. It will then provide a summary of the information.
 
@@ -116,14 +146,19 @@ Kiro CLI will likely use several different tools from the EKS MCP server to list
   <summary>Expand for sample response</summary>
 
 ```text
-Here are the pods in the carts namespace with their IP addresses and host names:
+  Here are the pods in the carts namespace:
+  
+  ┌────────────────────────────────┬──────────────┬─────────────────────────────────────────────┬───────────────┐
+  │ Pod                            │ Pod IP       │ Node (Host)                                 │ Host IP       │
+  ├────────────────────────────────┼──────────────┼─────────────────────────────────────────────┼───────────────┤
+  │ carts-68d496fff8-srf6w         │ 10.42.120.84 │ ip-10-42-109-241.us-west-2.compute.internal │ 10.42.109.241 │
+  ├────────────────────────────────┼──────────────┼─────────────────────────────────────────────┼───────────────┤
+  │ carts-dynamodb-995f7768c-mzwgh │ 10.42.135.85 │ ip-10-42-131-80.us-west-2.compute.internal  │ 10.42.131.80  │
+  └────────────────────────────────┴──────────────┴─────────────────────────────────────────────┴───────────────┘
+  
+  Both pods are Running and Ready. The carts service pod and the DynamoDB local pod are scheduled on different nodes.
 
-| Pod Name | Pod IP | Host Name |
-|----------|--------|-----------|
-| carts-dynamodb-995f7768c-tvshj | 10.42.96.16 | ip-10-42-114-20.us-west-2.compute.internal |
-| carts-68d496fff8-jjt8z | 10.42.96.21 | ip-10-42-114-20.us-west-2.compute.internal |
-
-Both pods are running on the same node (ip-10-42-114-20.us-west-2.compute.internal).
+▸ Credits: 0.35 • Time: 5m 24s
 ```
 
 </details>
@@ -134,7 +169,7 @@ Let's perform an even more complex task - deploying a test pod and checking inte
 Deploy a test pod in my cluster and check if it can access internet. If the test is successful, remove the test pod. Otherwise, troubleshoot the issue and suggest solutions.
 ```
 
-This complex task demonstrates several capabilities of Kiro CLI:
+Approve Kiro to use required tools to complete this complex task. You should see the following capabilities of Kiro CLI:
 
 - Processing natural language prompts
 - Creating step-by-step execution plans
@@ -145,43 +180,12 @@ This complex task demonstrates several capabilities of Kiro CLI:
   <summary>Expand for sample response</summary>
 
 ```text
-## Internet Connectivity Test Results ✅
+  Internet connectivity test passed. The test pod successfully reached https://www.google.com and received an HTTP 200 response. The pod has been cleaned up.
+  
+  Your cluster's pods have working outbound internet access, meaning DNS resolution, NAT gateway (or equivalent), and security group/NACL rules are all functioning correctly.
 
-Test Status: SUCCESSFUL
+▸ Credits: 0.40 • Time: 3m 40s
 
-The internet connectivity test completed successfully with the following results:
-
-### Test Results Summary:
-• **DNS Resolution**: ✅ SUCCESS
-  • Successfully resolved google.com to both IPv4 (142.251.33.78) and IPv6 addresses
-  • DNS server: 172.16.0.10 (CoreDNS in cluster)
-
-• **HTTP Connectivity**: ✅ SUCCESS
-  • Successfully connected to http://google.com
-
-• **HTTPS Connectivity**: ✅ SUCCESS
-  • Successfully connected to https://google.com
-
-• **AWS API Connectivity**: ✅ SUCCESS
-  • Successfully connected to https://ec2.us-west-2.amazonaws.com
-
-### Test Pod Details:
-• **Pod Name**: internet-test-pod
-• **Namespace**: default
-• **Node**: ip-10-42-110-8.us-west-2.compute.internal
-• **Pod IP**: 10.42.121.194
-• **Status**: Completed successfully and cleaned up
-
-### Network Configuration Analysis:
-Your EKS cluster has proper internet connectivity because:
-
-1. NAT Gateway/Internet Gateway: The worker nodes are in private subnets with proper NAT Gateway configuration for outbound internet access
-2. DNS Resolution: CoreDNS is working correctly (172.16.0.10)
-3. Security Groups: Allow outbound traffic to the internet
-4. VPC CNI: AWS VPC CNI is properly configured for pod networking
-5. Route Tables: Properly configured to route traffic through NAT Gateway
-
-The test pod has been successfully removed from the cluster. Your EKS cluster has full internet connectivity and is ready for workloads that require external access.
 ```
 
 </details>

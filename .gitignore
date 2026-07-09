@@ -54,3 +54,4 @@ devenv.local.nix
 # direnv
 .direnv
 .kiro/
+.spelling

@@ -49,21 +49,38 @@ Kiro CLI will provide an analysis based on the data it gather from the cluster.
   <summary>Expand for sample response</summary>
 
 ```text
-## Summary
 
-Root Cause: The pod failing-pod is stuck in Pending state because it references a PersistentVolumeClaim named my-pvc that doesn't exist.
+  Diagnosis
+  
+  Pod: failing-pod in the default namespace
+  
+  Root Cause: The pod is unschedulable because it references a PersistentVolumeClaim named my-pvc that does not exist. The scheduler message confirms:
+  
+  │ 0/3 nodes are available: persistentvolumeclaim "my-pvc" not found.
+  
+  I verified that there are zero PVCs in the default namespace, so the claim the pod depends on was never created.
+  
+  Resolution
+  
+  Create the missing PersistentVolumeClaim. Here's an example that would satisfy the pod's volume mount:
+  
+  apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: my-pvc
+    namespace: default
+  spec:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+  
+  Once the PVC is created and bound (EKS Auto Mode or a CSI driver like EBS CSI will dynamically provision the volume if a default StorageClass exists), the scheduler will be able to place the pod on a node and it will transition out of Pending.
+  
+  If you don't have a default StorageClass, you can check with list_k8s_resources for StorageClasses and either set one as default or explicitly specify storageClassName in the PVC. Would you like me to create this PVC for you?
 
-Error Message: persistentvolumeclaim "my-pvc" not found
-
-Approach to Solve:
-
-1. Create the missing PVC - You need to create a PersistentVolumeClaim named my-pvc in the default namespace with appropriate storage class and size requirements
-
-2. Alternative: Update the pod - If the volume isn't actually needed, remove the volume mount and volume definition from the pod spec and recreate it
-
-3. Verify storage class availability - Before creating the PVC, ensure your cluster has a storage class configured (check with kubectl get storageclass)
-
-The pod cannot be scheduled until the PVC exists because Kubernetes needs to ensure the storage is available before placing the pod on a node.
+▸ Credits: 0.66 • Time: 1m 14s
 ```
 
 </details>
