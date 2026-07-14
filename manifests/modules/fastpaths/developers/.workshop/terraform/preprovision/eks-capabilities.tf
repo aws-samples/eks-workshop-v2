@@ -5,7 +5,7 @@
 # the shared `developers` preprovision module (which reset-environment applies
 # for every fastpath), every resource here is gated behind
 # var.enable_eks_capabilities so it provisions ONLY for the eks-capabilities
-# path — the developer and operator paths never create capabilities and never
+# path. The developer and operator paths never create capabilities and never
 # require an IAM Identity Center instance.
 #
 # Reference pattern: aws-samples/appmod-blueprints
@@ -146,7 +146,7 @@ resource "time_sleep" "eks_cap_ack_capability_role_propagation" {
 #
 # The capability auto-creates an EKS access entry for its capability role
 # during creation and AWS auto-attaches the minimum policies it needs to reach
-# ACTIVE — so the capability does NOT depend on the supplemental
+# ACTIVE, so the capability does NOT depend on the supplemental
 # AmazonEKSClusterAdminPolicy association below. Same pattern as the Argo CD
 # and kro capabilities.
 resource "aws_eks_capability" "ack" {
@@ -170,9 +170,9 @@ resource "aws_eks_capability" "ack" {
 # reconcile the AWS resources a learner asks for (create CRDs, watch
 # resources, write Table status, etc.). The auto-attached policies on the
 # capability's auto-created access entry are enough to reach ACTIVE, but not
-# to manage user workloads — that's what this association adds.
+# to manage user workloads, which is what this association adds.
 #
-# We do NOT declare an aws_eks_access_entry — the capability auto-creates one
+# We do NOT declare an aws_eks_access_entry. The capability auto-creates one
 # and an explicit declaration would collide with `ResourceInUseException`.
 #
 # This depends on the capability resource so the auto-created access entry is
@@ -206,7 +206,7 @@ resource "time_sleep" "eks_cap_ack_access_propagation" {
 # association in pod-identity.tf, scoped to the `${cluster}-carts` table.
 # Add an inline policy granting access to the new `-carts-fastpath` table
 # so the same carts ServiceAccount can read/write it after Lab 1's ConfigMap
-# flip — no new ServiceAccount, no SA annotation patching needed.
+# flip, with no new ServiceAccount and no SA annotation patching needed.
 resource "aws_iam_role_policy" "eks_cap_carts_fastpath_dynamodb" {
   count = local.eks_cap_count
   name  = "carts-fastpath-dynamodb"

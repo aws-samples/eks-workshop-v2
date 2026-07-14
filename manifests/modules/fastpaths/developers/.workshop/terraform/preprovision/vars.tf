@@ -43,8 +43,8 @@ variable "argocd_admin_email" {
   description = <<-EOT
     Email address attached to the Argo CD workshop admin user record.
     Defaults to a non-deliverable placeholder because this fast path uses the
-    admin-generated OTP activation path (see setup-idc.md), not the
-    email-link path — so the email value is cosmetic and never needs to
+    admin-generated OTP activation path (see argocd/signin-argocd.md), not the
+    email-link path, so the email value is cosmetic and never needs to
     receive mail. Override with a real address only if you specifically want
     to use the email-link activation flow.
 

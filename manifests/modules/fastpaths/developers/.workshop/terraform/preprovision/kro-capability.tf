@@ -4,9 +4,9 @@
 # Used ONLY by the `fastpaths/eks-capabilities` Lab 3 (Compose stacks with kro).
 # Every resource is gated behind local.eks_cap_count
 # (var.enable_eks_capabilities) so it provisions only for the eks-capabilities
-# path — dev/operator apply nothing here.
+# path, dev/operator apply nothing here.
 #
-# kro is the EKS-managed form of the kro-run/kro project — a Kubernetes
+# kro is the EKS-managed form of the kro-run/kro project, a Kubernetes
 # resource orchestrator that lets users define a single "schema" CR (e.g.
 # `CartsStack`) which kro expands into a graph of underlying resources
 # (Namespace, ACK Table, ConfigMap, ServiceAccount, ...).
@@ -36,7 +36,7 @@ locals {
 # kro itself does NOT call AWS APIs (per AWS docs:
 # https://docs.aws.amazon.com/eks/latest/userguide/kro-permissions.html). It
 # only reconciles Kubernetes resources. So the capability role's only job is
-# being trusted by the EKS capabilities service principal — no AWS data-plane
+# being trusted by the EKS capabilities service principal, no AWS data-plane
 # permissions needed.
 resource "aws_iam_role" "eks_cap_kro_capability" {
   count = local.eks_cap_count
@@ -62,7 +62,7 @@ resource "aws_iam_role" "eks_cap_kro_capability" {
 }
 
 # Wait for IAM eventual consistency before EKS validates the role's trust
-# policy. Mirrors the ACK + Argo CD capability patterns — without this gap a
+# policy. Mirrors the ACK + Argo CD capability patterns, without this gap a
 # freshly-created role frequently fails CreateCapability with an
 # `InvalidParameterException: invalid trust policy` error, even though the
 # policy is correct. `reset-environment` runs `terraform destroy` then
@@ -77,10 +77,10 @@ resource "time_sleep" "eks_cap_kro_role_propagation" {
 # Activate the kro capability via the AWS provider's native resource.
 #
 # Unlike the Argo CD capability, the kro capability does NOT need
-# `AmazonEKSClusterAdminPolicy` to reach ACTIVE — the auto-attached
+# `AmazonEKSClusterAdminPolicy` to reach ACTIVE, the auto-attached
 # `AmazonEKSKROPolicy` is sufficient for kro's bootstrap (managing its own
 # `resourcegraphdefinitions.kro.run` CRD). So the capability create has no
-# dependency on the supplemental policy below — no deadlock risk, and no
+# dependency on the supplemental policy below, no deadlock risk, and no
 # need to apply them in parallel.
 resource "aws_eks_capability" "kro" {
   count                     = local.eks_cap_count
@@ -103,12 +103,12 @@ resource "aws_eks_capability" "kro" {
 # ConfigMaps, ...).
 #
 # The kro capability auto-creates an EKS access entry for its capability
-# role during creation (per AWS docs — same as the Argo CD capability). AWS
+# role during creation (per AWS docs, same as the Argo CD capability). AWS
 # auto-attaches `AmazonEKSKROPolicy` to that auto-created entry, which is
 # sufficient for kro to manage its own CRDs but NOT to create the children
 # those RGDs expand into.
 #
-# We do NOT declare an aws_eks_access_entry — the capability auto-creates
+# We do NOT declare an aws_eks_access_entry, the capability auto-creates
 # one and our explicit declaration would collide with
 # `ResourceInUseException`.
 #

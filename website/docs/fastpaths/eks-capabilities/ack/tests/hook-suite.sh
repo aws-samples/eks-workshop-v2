@@ -1,7 +1,7 @@
 set -Eeuo pipefail
 
 before() {
-  echo "Asserting ACK capability is ACTIVE before running Lab 1 tests..."
+  echo "Asserting ACK capability is ACTIVE before running ACK lab tests..."
   status=$(aws eks describe-capability \
     --cluster-name "$EKS_CLUSTER_AUTO_NAME" \
     --capability-name "$EKS_CAP_ACK_CAPABILITY" \
@@ -15,7 +15,7 @@ before() {
 }
 
 after() {
-  echo "Asserting Lab 1 end state..."
+  echo "Asserting ACK lab end state..."
 
   # Table exists in AWS
   aws dynamodb describe-table --table-name "$EKS_CAP_DDB_TABLE" \

@@ -3,7 +3,7 @@
 # Enables the Argo CD EKS-managed capability on the shared Auto Mode cluster.
 # Used ONLY by the `fastpaths/eks-capabilities` Lab 2. Every resource is gated
 # behind local.eks_cap_count (var.enable_eks_capabilities) so it provisions
-# only for the eks-capabilities path — the developer and operator paths never
+# only for the eks-capabilities path, the developer and operator paths never
 # touch Identity Center and never hit the IDC preflight below.
 #
 # Reference pattern: aws-samples/appmod-blueprints + the AWS docs
@@ -17,14 +17,14 @@
 
 # --- IAM Identity Center preflight -------------------------------------------
 #
-# Argo CD is the ONLY EKS capability that requires AWS IAM Identity Center —
+# Argo CD is the ONLY EKS capability that requires AWS IAM Identity Center,
 # it is the sole authentication path (no local users, no admin password). We do
 # NOT create an Identity Center instance for the learner: it is an account-wide,
 # largely one-per-org resource. Instead we look it up and fail fast with an
 # actionable message if it is missing.
 #
 # This is a plain data source (a regional list call). It runs on every apply
-# regardless of the gate, but returns [] harmlessly when no instance exists —
+# regardless of the gate, but returns [] harmlessly when no instance exists,
 # only the gated preflight below turns a missing instance into an error, and
 # only for the eks-capabilities path.
 data "aws_ssoadmin_instances" "current" {}
@@ -69,7 +69,7 @@ resource "null_resource" "eks_cap_argocd_idc_preflight" {
 #   3. Learner signs in to Argo CD with username + OTP, is forced to set a
 #      permanent password, then lands in Argo CD as ADMIN.
 #
-# This is why the email defaults to a non-deliverable placeholder — the OTP
+# This is why the email defaults to a non-deliverable placeholder, the OTP
 # flow doesn't use it. To use the email-link activation flow instead, set
 # TF_VAR_argocd_admin_email to a real address.
 #
@@ -157,7 +157,7 @@ resource "null_resource" "eks_cap_argocd_repo_seed" {
 #
 # Assumed by the EKS capabilities service principal. The managed Argo CD
 # (running in AWS-owned infrastructure) uses this role to pull the catalog
-# manifests from CodeCommit. Scoped to GitPull on the single seeded repo —
+# manifests from CodeCommit. Scoped to GitPull on the single seeded repo,
 # no account-wide managed policy.
 resource "aws_iam_role" "eks_cap_argocd_capability" {
   count = local.eks_cap_count
@@ -207,7 +207,7 @@ resource "aws_iam_role_policy" "eks_cap_argocd_codecommit" {
 }
 
 # Wait for IAM eventual consistency before EKS validates the role's trust
-# policy. Mirrors the ACK capability pattern in eks-capabilities.tf — a freshly
+# policy. Mirrors the ACK capability pattern in eks-capabilities.tf, a freshly
 # created role frequently fails CreateCapability with an invalid-trust-policy
 # error without this gap, and reset-environment recreates the role every run.
 resource "time_sleep" "eks_cap_argocd_role_propagation" {
@@ -224,7 +224,7 @@ resource "time_sleep" "eks_cap_argocd_role_propagation" {
 # Activate the Argo CD capability, federated with IAM Identity Center.
 #
 # The AWS Terraform provider models the capability configuration as native HCL
-# nested blocks (NOT jsonencode). IAM Identity Center is required — the
+# nested blocks (NOT jsonencode). IAM Identity Center is required, the
 # `aws_idc` block and a role mapping are mandatory for a usable capability.
 resource "aws_eks_capability" "argocd" {
   count                     = local.eks_cap_count
@@ -271,14 +271,14 @@ resource "aws_eks_capability" "argocd" {
 # Role during creation, and AWS auto-attaches AmazonEKSArgoCDPolicy
 # (namespace-scoped to argocd) and AmazonEKSArgoCDClusterPolicy (cluster-wide).
 # Those auto-attached policies are the minimum the capability needs to reach
-# ACTIVE on its own — so the capability does NOT depend on this association.
+# ACTIVE on its own, so the capability does NOT depend on this association.
 #
 # We additionally bind AmazonEKSClusterAdminPolicy so the capability's
 # controllers can sync user Applications to the deployment target the learner
 # registers in Lab 2. That permission is only needed once the capability
 # starts managing user workloads, not to reach ACTIVE.
 #
-# We do NOT declare an aws_eks_access_entry — the capability auto-creates one
+# We do NOT declare an aws_eks_access_entry, the capability auto-creates one
 # and an explicit declaration would collide with `ResourceInUseException`.
 #
 # This depends on the capability resource so the auto-created access entry is

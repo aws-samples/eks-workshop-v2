@@ -64,7 +64,7 @@ const config = {
           { to: "/docs/fastpaths/operator", label: "Operator" },
           {
             to: "/docs/fastpaths/eks-capabilities",
-            label: "EKS Capabilities",
+            label: "Platform Essentials",
           },
         ],
       },

@@ -1,7 +1,7 @@
 set -Eeuo pipefail
 
 before() {
-  echo "Asserting kro capability is ACTIVE before running Lab 3 tests..."
+  echo "Asserting kro capability is ACTIVE before running kro lab tests..."
   status=$(aws eks describe-capability \
     --cluster-name "$EKS_CLUSTER_AUTO_NAME" \
     --capability-name "$EKS_CAP_KRO_CAPABILITY" \
@@ -15,14 +15,14 @@ before() {
 }
 
 after() {
-  echo "Asserting Lab 3 end state..."
+  echo "Asserting kro lab end state..."
 
   # RGD reached Active
   kubectl get rgd cartsstack \
     -o jsonpath='{.status.state}' | grep -q '^Active$'
 
   # Instance reached ACTIVE (kro uses uppercase for instance state, mixed
-  # case for RGD state — confirmed against kro v0.9.2 shipped by the EKS
+  # case for RGD state, confirmed against kro v0.9.2 shipped by the EKS
   # capability).
   kubectl get cartsstack carts-kro \
     -o jsonpath='{.status.state}' | grep -q '^ACTIVE$'

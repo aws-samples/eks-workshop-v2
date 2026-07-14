@@ -18,8 +18,8 @@ metadata:
 spec:
   scheme: internet-facing
   targetType: ip
-  # EKS Auto Mode configures the load balancer from IngressClassParams; the
-  # alb.ingress.kubernetes.io/* annotations are ignored. Without inboundCIDRs
-  # here the ALB security group gets no inbound rule and is unreachable.
+  # Open for this optional, throwaway demo ALB. EKS Auto Mode configures the
+  # load balancer from IngressClassParams (the alb.ingress.kubernetes.io/*
+  # annotations are ignored), so restricting access would go here.
   inboundCIDRs:
     - 0.0.0.0/0

@@ -5,7 +5,7 @@
 # Invoked by null_resource.eks_cap_argocd_repo_seed in argocd-capability.tf.
 # Expects REPO_NAME, AWS_REGION, and SEED_DIR in the environment. Uses
 # git-remote-codecommit (codecommit:: remote helper) so it authenticates with
-# the ambient AWS credentials — no SSH keys, no Git credential helper.
+# the ambient AWS credentials, with no SSH keys and no Git credential helper.
 #
 # Idempotent: clones the (possibly empty) repo, replaces the catalog/ tree with
 # the seed manifests, and pushes only when the content differs. Re-running is a

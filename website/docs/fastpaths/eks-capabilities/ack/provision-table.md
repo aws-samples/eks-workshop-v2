@@ -1,16 +1,17 @@
 ---
 title: "Provision a DynamoDB table"
-sidebar_position: 30
+sidebar_position: 20
 ---
 
 We can now define a real DynamoDB table as a Kubernetes resource. Take a look at the manifest:
 
-::yaml{file="manifests/modules/fastpaths/eks-capabilities/ack/dynamodb/table.yaml" paths="apiVersion,kind,spec.tableName,spec.billingMode,spec.keySchema,spec.attributeDefinitions,spec.globalSecondaryIndexes"}
+::yaml{file="manifests/modules/fastpaths/eks-capabilities/ack/dynamodb/table.yaml" paths="kind,spec.tableName,spec.billingMode,spec.keySchema,spec.globalSecondaryIndexes"}
 
 1. Uses the ACK DynamoDB controller's `Table` custom resource.
 2. Names the table after the cluster (`${EKS_CLUSTER_AUTO_NAME}-carts-fastpath`) so parallel workshop runs don't collide.
 3. Uses on-demand pricing.
-4. Defines the partition key schema and a global secondary index on `customerId` — matching what the `carts` service expects.
+4. Defines the partition key schema, matching what the `carts` service expects.
+5. Adds a global secondary index on `customerId` so the service can query carts by customer.
 
 :::info
 The YAML closely mirrors the [DynamoDB `CreateTable` API](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_CreateTable.html). Anything you can express through the API is expressible here.
@@ -24,7 +25,7 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/fastpaths/eks-capabilitie
 table.dynamodb.services.k8s.aws/items created
 ```
 
-The capability's DynamoDB controller picks up the new `Table` resource and provisions the corresponding AWS resource. Wait for the `ACK.ResourceSynced` condition — this is how every ACK resource signals it has reconciled successfully:
+The capability's DynamoDB controller picks up the new `Table` resource and provisions the corresponding AWS resource. Wait for the `ACK.ResourceSynced` condition, which is how every ACK resource signals it has reconciled successfully:
 
 ```bash timeout=720
 $ kubectl wait table.dynamodb.services.k8s.aws items \

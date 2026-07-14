@@ -1,12 +1,12 @@
 ---
 title: "Migrate the carts service"
-sidebar_position: 40
+sidebar_position: 30
 ---
 
 The DynamoDB table exists, but the `carts` Deployment is still pointed at the in-cluster `carts-dynamodb` Pod. Two changes flip it onto the AWS table:
 
-1. **ConfigMap** — replace `RETAIL_CART_PERSISTENCE_DYNAMODB_ENDPOINT` and remove the `_CREATE_TABLE` flag (the table already exists).
-2. **EKS Pod Identity** — bind the `carts` ServiceAccount to a pre-provisioned IAM role so the Pod can call DynamoDB. The role and its policy are created during `prepare-environment`; we just need to associate it with the ServiceAccount.
+1. **ConfigMap:** replace `RETAIL_CART_PERSISTENCE_DYNAMODB_ENDPOINT` and remove the `_CREATE_TABLE` flag (the table already exists).
+2. **EKS Pod Identity:** bind the `carts` ServiceAccount to a pre-provisioned IAM role so the Pod can call DynamoDB. The role and its policy are created during `prepare-environment`; we just need to associate it with the ServiceAccount.
 
 Inspect the kustomization that patches the ConfigMap:
 
@@ -16,7 +16,7 @@ ConfigMap/carts
 ```
 
 :::note
-The base-application's local `carts-dynamodb` Pod and Service stay in place. We're only flipping the application's pointer at the database — cleanup will restore the original ConfigMap so other labs work normally.
+The base-application's local `carts-dynamodb` Pod and Service stay in place. We're only flipping the application's pointer at the database, and cleanup will restore the original ConfigMap so other labs work normally.
 :::
 
 Apply the kustomization:
@@ -59,6 +59,6 @@ AWS_CONTAINER_CREDENTIALS_FULL_URI=http://...
 
 The `AWS_CONTAINER_CREDENTIALS_FULL_URI` env var being present confirms Pod Identity is wiring the IAM role into the Pod. Every DynamoDB call the carts service makes will use the role's credentials, scoped to only the tables we provisioned.
 
-That's Lab 1 done. The retail app is now backed by a real, AWS-managed DynamoDB table, provisioned and reconciled entirely from the Kubernetes API by an EKS capability.
+That's the ACK lab done. The retail app is now backed by a real, AWS-managed DynamoDB table, provisioned and reconciled entirely from the Kubernetes API by an EKS capability.
 
 Next, we'll deliver the `catalog` service via GitOps using the **Argo CD capability**.

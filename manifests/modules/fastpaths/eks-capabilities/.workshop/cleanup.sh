@@ -53,7 +53,7 @@ kubectl apply -k ~/environment/eks-workshop/base-application/catalog >/dev/null 
 rm -rf ~/environment/catalog-gitops >/dev/null 2>&1 || true
 
 # Reset the CodeCommit repo back to the seeded state so the GitOps update step
-# in Lab 2 always has the same starting tag (1.2.1) — without this, a re-run of
+# in Lab 2 always has the same starting tag (1.2.1). Without this, a re-run of
 # `prepare-environment` finds a learner-pushed `1.2.2` commit still on main and
 # the lab's `sed 1.2.1 → 1.2.2` becomes a no-op.
 #
@@ -123,9 +123,14 @@ fi
 logmessage "Removing carts-kro namespace if present..."
 kubectl delete ns carts-kro --ignore-not-found --timeout=120s >/dev/null 2>&1 || true
 
+logmessage "Removing optional UI demo Ingress (frees the ALB if the demo was run)..."
+# Deleting the Ingress deprovisions the ALB the AWS Load Balancer Controller
+# created. Idempotent, succeeds whether the optional UI demo was run or not.
+kubectl -n ui delete ingress ui-auto --ignore-not-found >/dev/null 2>&1 || true
+
 logmessage "Restoring ui Deployment carts endpoint (in case the optional UI demo overrode it)..."
 # `kubectl set env -` removes the env var, restoring the Pod's compiled-in
-# default (carts.carts:80). Idempotent — succeeds whether the override was
+# default (carts.carts:80). Idempotent, succeeds whether the override was
 # applied or not.
 kubectl -n ui set env deployment/ui RETAIL_UI_ENDPOINTS_CARTS_URL- >/dev/null 2>&1 || true
 

@@ -1,7 +1,7 @@
 set -Eeuo pipefail
 
 before() {
-  echo "Asserting Argo CD capability is ACTIVE before running Lab 2 tests..."
+  echo "Asserting Argo CD capability is ACTIVE before running Argo CD lab tests..."
   status=$(aws eks describe-capability \
     --cluster-name "$EKS_CLUSTER_AUTO_NAME" \
     --capability-name "$EKS_CAP_ARGOCD_CAPABILITY" \
@@ -22,7 +22,7 @@ before() {
 }
 
 after() {
-  echo "Asserting Lab 2 end state..."
+  echo "Asserting Argo CD lab end state..."
 
   # Application exists and is Synced + Healthy
   kubectl wait --for=jsonpath='{.status.sync.status}'=Synced \
@@ -34,19 +34,19 @@ after() {
   kubectl get secret -n argocd \
     -l argocd.argoproj.io/secret-type=cluster -o name | grep -q .
 
-  # The GitOps update rolled out: running Deployment is on the bumped tag.
-  # Poll up to 2 minutes — Argo CD may show Synced+Healthy briefly before the
-  # Deployment's pod template observably reflects the latest revision.
+  # The GitOps update rolled out: running Deployment is scaled to 2 replicas.
+  # Poll up to 2 minutes. Argo CD may show Synced+Healthy briefly before the
+  # Deployment observably reflects the latest revision.
   for i in $(seq 1 24); do
-    image=$(kubectl get deployment catalog -n catalog \
-      -o jsonpath='{.spec.template.spec.containers[0].image}' 2>/dev/null || true)
-    if [[ "$image" == *"retail-store-sample-catalog:1.2.2" ]]; then
+    replicas=$(kubectl get deployment catalog -n catalog \
+      -o jsonpath='{.spec.replicas}' 2>/dev/null || true)
+    if [[ "$replicas" == "2" ]]; then
       return 0
     fi
     sleep 5
   done
 
-  echo "catalog image is '$image', expected the GitOps-updated 1.2.2 tag" >&2
+  echo "catalog replicas is '$replicas', expected the GitOps-updated value of 2" >&2
   exit 1
 }
 

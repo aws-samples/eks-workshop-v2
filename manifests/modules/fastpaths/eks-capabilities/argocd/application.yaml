@@ -1,11 +1,11 @@
 # Argo CD Application that delivers the catalog service via GitOps.
 #
 # The source is the pre-provisioned CodeCommit repository, referenced DIRECTLY
-# by its HTTPS URL — the managed Argo CD capability authenticates to CodeCommit
+# by its HTTPS URL. The managed Argo CD capability authenticates to CodeCommit
 # using its IAM Capability Role (codecommit:GitPull), so there is no repository
 # Secret, no SSH key, and no Git credential helper.
 #
-# Destination uses the registered `eks-workshop` cluster target. Automated sync
+# Destination uses the registered eks-workshop cluster target. Automated sync
 # with prune + selfHeal turns every push to the repo into a reconciled rollout.
 #
 # Piped through envsubst before applying so $EKS_CAP_CODECOMMIT_URL is resolved.
