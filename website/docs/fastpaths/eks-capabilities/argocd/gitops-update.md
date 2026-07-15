@@ -52,9 +52,14 @@ $ kubectl annotate application catalog -n argocd \
 application.argoproj.io/catalog annotated
 ```
 
-Wait for the rollout to complete with the second replica:
+Wait for the rollout to complete with the second replica. Argo CD may still be
+reconciling the change (and Amazon EKS Auto Mode may be scaling up a node for
+the extra replica), so first wait for the `catalog` Deployment to exist, then
+wait for the rollout:
 
 ```bash timeout=300
+$ kubectl wait --for=create -n catalog deployment/catalog --timeout=120s
+deployment.apps/catalog condition met
 $ kubectl rollout status -n catalog deployment/catalog --timeout=180s
 deployment "catalog" successfully rolled out
 ```

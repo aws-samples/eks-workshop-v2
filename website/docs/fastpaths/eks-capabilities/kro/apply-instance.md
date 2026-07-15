@@ -91,9 +91,11 @@ One `CartsStack` apply produced a full namespace of Kubernetes resources plus a 
 
 ## Verify the Pod can reach DynamoDB
 
-The carts Pod has a ServiceAccount, a ConfigMap pointing at the new table, IAM credentials via Pod Identity, and a network path to DynamoDB. Confirm Pod Identity injected the role's credentials at Pod boot:
+The carts Pod has a ServiceAccount, a ConfigMap pointing at the new table, IAM credentials via Pod Identity, and a network path to DynamoDB. Wait for the Deployment to be fully rolled out (Amazon EKS Auto Mode may still be scaling a node for the Pod), then confirm Pod Identity injected the role's credentials at Pod boot:
 
-```bash
+```bash timeout=180
+$ kubectl rollout status -n carts-kro deployment/carts --timeout=150s
+deployment "carts" successfully rolled out
 $ kubectl exec -n carts-kro deployment/carts -- env \
   | grep AWS_CONTAINER_CREDENTIALS_FULL_URI
 AWS_CONTAINER_CREDENTIALS_FULL_URI=http://...

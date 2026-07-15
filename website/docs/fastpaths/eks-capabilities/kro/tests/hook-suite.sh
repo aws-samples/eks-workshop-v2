@@ -40,9 +40,10 @@ after() {
     --namespace carts-kro --service-account carts \
     --query 'associations[].associationId' --output text | grep -q .
 
-  # carts Deployment from the RGD is ready (Spring Boot startup + readiness
-  # probe takes 30-60s; 120s gives margin for slow image pull or scheduling).
-  kubectl -n carts-kro rollout status deployment/carts --timeout=120s
+  # carts Deployment from the RGD is ready. Spring Boot startup + readiness
+  # probe takes 30-60s, and on a cold cluster EKS Auto Mode may need to scale
+  # up a node first, so allow 150s.
+  kubectl -n carts-kro rollout status deployment/carts --timeout=150s
 
   # Pod Identity creds are wired into the Pod (Pod Identity association was
   # created BEFORE the CartsStack apply, so the Pod boots with creds already).
