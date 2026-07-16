@@ -111,10 +111,10 @@ That's the kro lab done. You've defined a higher-level Kubernetes API (`CartsSta
 
 ## Optional: see the kro lab's carts in the retail store UI
 
-By default, the retail store's `ui` Pod talks to `carts.carts.svc.cluster.local`, which is the ACK lab's namespace. Repoint it at the kro-managed carts service in `carts-kro` and restart the UI:
+By default, the retail store's `ui` Pod talks to `carts.carts.svc`, which is the ACK lab's namespace (set by `RETAIL_UI_ENDPOINTS_CARTS` in the base UI ConfigMap). Repoint that same variable at the kro-managed carts service in `carts-kro` and restart the UI:
 
 ```bash test=false
-$ kubectl -n ui set env deployment/ui RETAIL_UI_ENDPOINTS_CARTS_URL=http://carts.carts-kro:80
+$ kubectl -n ui set env deployment/ui RETAIL_UI_ENDPOINTS_CARTS=http://carts.carts-kro:80
 $ kubectl -n ui rollout status deployment/ui --timeout=60s
 deployment "ui" successfully rolled out
 ```
@@ -146,6 +146,6 @@ When you're done, remove the Ingress and revert the UI to the ACK lab's carts na
 
 ```bash test=false
 $ kubectl delete -n ui ingress ui-auto --ignore-not-found
-$ kubectl -n ui set env deployment/ui RETAIL_UI_ENDPOINTS_CARTS_URL-
+$ kubectl -n ui set env deployment/ui RETAIL_UI_ENDPOINTS_CARTS=http://carts.carts.svc:80
 $ kubectl -n ui rollout status deployment/ui --timeout=60s
 ```

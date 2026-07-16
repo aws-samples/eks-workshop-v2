@@ -129,10 +129,12 @@ logmessage "Removing optional UI demo Ingress (frees the ALB if the demo was run
 kubectl -n ui delete ingress ui-auto --ignore-not-found >/dev/null 2>&1 || true
 
 logmessage "Restoring ui Deployment carts endpoint (in case the optional UI demo overrode it)..."
-# `kubectl set env -` removes the env var, restoring the Pod's compiled-in
-# default (carts.carts:80). Idempotent, succeeds whether the override was
-# applied or not.
-kubectl -n ui set env deployment/ui RETAIL_UI_ENDPOINTS_CARTS_URL- >/dev/null 2>&1 || true
+# The optional UI demo repoints RETAIL_UI_ENDPOINTS_CARTS at carts-kro. Reset
+# it to the base value so the ACK-lab carts namespace is the target again.
+# Idempotent — succeeds whether the override was applied or not. (The base
+# ConfigMap re-apply on the next prepare-environment also restores this, but
+# reset it explicitly here so a re-entered lab starts clean.)
+kubectl -n ui set env deployment/ui RETAIL_UI_ENDPOINTS_CARTS=http://carts.carts.svc:80 >/dev/null 2>&1 || true
 
 logmessage "Removing carts-kro Pod Identity association..."
 for assoc in $(aws eks list-pod-identity-associations \
