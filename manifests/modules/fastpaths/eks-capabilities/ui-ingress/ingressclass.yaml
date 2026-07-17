@@ -18,8 +18,9 @@ metadata:
 spec:
   scheme: internet-facing
   targetType: ip
-  # Open for this optional, throwaway demo ALB. EKS Auto Mode configures the
-  # load balancer from IngressClassParams (the alb.ingress.kubernetes.io/*
-  # annotations are ignored), so restricting access would go here.
-  inboundCIDRs:
-    - 0.0.0.0/0
+  # EKS Auto Mode configures the load balancer from IngressClassParams (the
+  # alb.ingress.kubernetes.io/* annotations are ignored), so access is
+  # restricted here. $INBOUND_CIDRS resolves via envsubst to the learner's IP
+  # (or the workshop range); the manifest is applied through envsubst so a
+  # learner in their own account gets a locked-down ALB, not 0.0.0.0/0.
+  inboundCIDRs: [$INBOUND_CIDRS]

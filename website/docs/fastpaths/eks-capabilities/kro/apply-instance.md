@@ -122,7 +122,8 @@ deployment "ui" successfully rolled out
 Expose the UI with an Ingress. Amazon EKS Auto Mode includes the AWS Load Balancer Controller, so applying an `Ingress` provisions a public Application Load Balancer automatically:
 
 ```bash test=false
-$ kubectl apply -k ~/environment/eks-workshop/modules/fastpaths/eks-capabilities/ui-ingress
+$ kubectl kustomize ~/environment/eks-workshop/modules/fastpaths/eks-capabilities/ui-ingress \
+  | envsubst | kubectl apply -f -
 ```
 
 Wait for the load balancer to finish provisioning (this takes a few minutes), then print its URL:
