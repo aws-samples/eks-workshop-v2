@@ -32,7 +32,7 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/
 table.dynamodb.services.k8s.aws/items created
 ```
 
-クラスター内のACKコントローラーはこれらの新しいリソースに応答し、マニフェストで定義されたAWSインフラストラクチャをプロビジョニングします。ACKがテーブルを作成したことを確認するには、次のコマンドを実行します：
+マネージド ACK ケイパビリティはこれらの新しいリソースに応答し、マニフェストで定義された AWS インフラストラクチャをプロビジョニングします。ACK がテーブルを作成したことを確認するには、次のコマンドを実行します：
 
 ```bash timeout=300
 $ kubectl wait table.dynamodb.services.k8s.aws items -n carts --for=condition=ACK.ResourceSynced --timeout=15m

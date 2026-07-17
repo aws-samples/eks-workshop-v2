@@ -3,26 +3,23 @@ title: "Introduction"
 sidebar_position: 3
 ---
 
-Each ACK service controller is packaged into a separate container image that is published in a public repository corresponding to an individual ACK service controller. For each AWS service that we wish to provision, resources for the corresponding controller must be installed in the Amazon EKS cluster. Helm charts and official container images for ACK are available [here](https://gallery.ecr.aws/aws-controllers-k8s).
+Traditionally, to use ACK you would install and operate a service controller yourself for each AWS service, for example by deploying its Helm chart and container image into the cluster and then keeping it patched and upgraded over time. Each ACK service controller is packaged into a separate container image published in a public repository. Helm charts and official container images for ACK are available [here](https://gallery.ecr.aws/aws-controllers-k8s).
 
-In this section, since we'll be working with Amazon DynamoDB ACK, we first need to install that ACK controller by using the Helm chart:
+Instead, this lab uses [Amazon EKS capabilities](https://docs.aws.amazon.com/eks/latest/userguide/capabilities.html) to provide ACK as a fully managed capability. With this approach:
 
-```bash wait=60
-$ aws ecr-public get-login-password --region us-east-1 | \
-  helm registry login --username AWS --password-stdin public.ecr.aws
-$ helm install ack-dynamodb  \
-  oci://public.ecr.aws/aws-controllers-k8s/dynamodb-chart \
-  --version=${DYNAMO_ACK_VERSION} \
-  --namespace ack-system --create-namespace \
-  --set "aws.region=${AWS_REGION}" \
-  --set "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"="$ACK_IAM_ROLE" \
-  --wait
-```
+- The ACK controller runs in AWS-managed infrastructure instead of consuming compute in your cluster
+- AWS handles installation, patching, upgrades and availability of the controller
+- The capability assumes a dedicated IAM capability role, so there is no need to configure IRSA for the controller
+- You continue to use the same ACK custom resources and `kubectl` workflow
 
-The controller will be running as a deployment in the `ack-system` namespace:
+The ACK capability for Amazon DynamoDB was already enabled for you when you prepared your environment, so there is nothing to install. Let's confirm the capability is active:
 
 ```bash
-$ kubectl get deployment -n ack-system
-NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
-ack-dynamodb-dynamodb-chart   1/1     1            1           13s
+$ aws eks describe-capability \
+  --cluster-name $EKS_CLUSTER_NAME \
+  --capability-name ack-dynamodb \
+  --query 'capability.status' --output text
+ACTIVE
 ```
+
+Because the controller is fully managed, no controller deployment runs in your cluster. We'll take a closer look at how it works in the next section.

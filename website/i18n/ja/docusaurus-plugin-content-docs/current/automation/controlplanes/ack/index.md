@@ -11,13 +11,13 @@ tmdTranslationSourceHash: 631c04d31582052f4c23f1864087ceda
 :::tip 開始する前に
 このセクションの環境を準備してください：
 
-```bash timeout=300 wait=30
+```bash timeout=600 wait=30
 $ prepare-environment automation/controlplanes/ack
 ```
 
 これにより、ラボ環境に以下の変更が適用されます：
 
-- Amazon EKSクラスタにDynamoDB用のAWS Controllersをインストールします
+- Amazon EKS ケイパビリティを使用して、Amazon DynamoDB 用の AWS Controllers for Kubernetes (ACK) ケイパビリティを有効化します
 
 これらの変更を適用するTerraformは[こちら](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/automation/controlplanes/ack/.workshop/terraform)で確認できます。
 
@@ -31,6 +31,6 @@ ACKを使用すると、データベース（[RDS](https://aws-controllers-k8s.g
 
 このラボでは、ACKを使用してこれらのサービスをプロビジョニングし、アプリケーションをこれらのAWSマネージドサービスに接続するためのバインディング情報を含むシークレットとコンフィグマップを作成します。
 
-学習目的のために、ACKコントローラーのインストールにはhelmを使用しています。もう一つの選択肢は、クラスターへのAWSサービスコントローラーの迅速なデプロイを可能にするTerraformを使用することです。詳細については、[ACK Terraformモジュールのドキュメント](https://registry.terraform.io/modules/aws-ia/eks-ack-addons/aws/latest#module_dynamodb)をご覧ください。
+このラボでは、フルマネージドのケイパビリティである [Amazon EKS ケイパビリティ](https://docs.aws.amazon.com/eks/latest/userguide/capabilities.html) を通じて ACK を利用します。そのため、ご自身でインストールしたり運用したりするコントローラーはありません。Amazon EKS がお客様に代わって、AWS マネージドインフラストラクチャ上で ACK コントローラーを実行・維持します。
 
 ![EKS with DynamoDB](/docs/automation/controlplanes/ack/eks-workshop-ddb.webp)

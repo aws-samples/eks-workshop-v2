@@ -31,7 +31,7 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/
 table.dynamodb.services.k8s.aws/items created
 ```
 
-The ACK controllers in the cluster will respond to these new resources and provision the AWS infrastructure we've defined in the manifests. To verify that ACK has created the table, run the following command:
+The managed ACK capability will respond to these new resources and provision the AWS infrastructure we've defined in the manifests. To verify that ACK has created the table, run the following command:
 
 ```bash timeout=300
 $ kubectl wait table.dynamodb.services.k8s.aws items -n carts --for=condition=ACK.ResourceSynced --timeout=15m
