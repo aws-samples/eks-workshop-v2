@@ -28,7 +28,7 @@ The `values.yaml` file specifies a list of components for which Argo CD applicat
 
 ::yaml{file="manifests/modules/automation/gitops/argocd/app-of-apps/values.yaml" paths="spec.destination.server,spec.source,applications"}
 
-1. Specifies the Kubernetes API server endpoint where applications will be deployed (local cluster)
+1. Specifies the EKS cluster ARN as the destination — EKS Capability Argo CD identifies clusters by ARN, not by the in-cluster address. This placeholder is replaced with `$CLUSTER_ARN` in the setup step below
 2. Use the `${GITOPS_REPO_URL_ARGOCD}` environment variable to specify the Git repository containing the application manifests, and the Git branch to track (`main`)
 3. The `applications` list specifies the names of the applications to be deployed
 
@@ -36,7 +36,10 @@ First, let's copy this foundational App of Apps configuration to our Git directo
 
 ```bash
 $ cp -R ~/environment/eks-workshop/modules/automation/gitops/argocd/app-of-apps ~/environment/argocd/
+$ export CLUSTER_ARN=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME \
+  --query 'cluster.arn' --output text)
 $ yq -i ".spec.source.repoURL = env(GITOPS_REPO_URL_ARGOCD)" ~/environment/argocd/app-of-apps/values.yaml
+$ yq -i ".spec.destination.server = env(CLUSTER_ARN)" ~/environment/argocd/app-of-apps/values.yaml
 ```
 
 Now, let's commit and push these changes to the Git repository:
@@ -51,7 +54,7 @@ Next, we need to create a new Argo CD Application to implement the App of Apps p
 
 ```bash
 $ argocd app create apps --repo $GITOPS_REPO_URL_ARGOCD \
-  --dest-server https://kubernetes.default.svc \
+  --dest-server $CLUSTER_ARN \
   --sync-policy automated --self-heal --auto-prune \
   --set-finalizer \
   --upsert \

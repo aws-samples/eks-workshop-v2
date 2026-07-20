@@ -42,7 +42,7 @@ Sync the apps application:
 
 ```bash
 $ argocd app sync apps
-$ argocd app wait -l app.kubernetes.io/created-by=eks-workshop
+$ argocd app wait -l app.kubernetes.io/created-by=eks-workshop --timeout 300
 ```
 
 When Argo CD completes the process, all our applications will be in the `Synced` state as shown in the Argo CD UI:
@@ -54,7 +54,6 @@ We should now see a set of new namespaces with each application component deploy
 ```bash hook=deploy
 $ kubectl get namespaces
 NAME              STATUS   AGE
-argocd            Active   18m
 carts             Active   28s
 catalog           Active   28s
 checkout          Active   28s
