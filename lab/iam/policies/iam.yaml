@@ -79,6 +79,8 @@ Statement:
           - eks.amazonaws.com
           - eks-nodegroup.amazonaws.com
           - eks-fargate.amazonaws.com
+          - capabilities.eks.amazonaws.com
+          - sso.amazonaws.com
           - guardduty.amazonaws.com
           - spot.amazonaws.com
           - fis.amazonaws.com

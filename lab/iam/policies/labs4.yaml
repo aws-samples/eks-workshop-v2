@@ -30,3 +30,29 @@ Statement:
       - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:file-system/*
       - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:storage-virtual-machine/*
       - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:volume/*
+  - Effect: Allow
+    Action:
+      - sso:ListInstances
+      - sso:DescribeInstance
+      - sso:CreateInstance
+      - sso:DeleteInstance
+      - sso:CreateApplication
+      - sso:DeleteApplication
+      - sso:UpdateApplication
+      - sso:ListApplications
+      - sso:PutApplicationGrant
+      - sso:PutApplicationAuthenticationMethod
+      - sso:PutApplicationAccessScope
+      - sso:CreateApplicationAssignment
+      - sso:DeleteApplicationAssignment
+      - sso:ListApplicationAssignments
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - identitystore:CreateIdentityStore
+      - identitystore:ListUsers
+      - identitystore:DescribeUser
+      - identitystore:CreateUser
+      - identitystore:DeleteUser
+      - identitystore:GetUserId
+    Resource: ["*"]

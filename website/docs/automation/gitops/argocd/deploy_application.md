@@ -3,7 +3,7 @@ title: "Deploying an application"
 sidebar_position: 30
 ---
 
-Now that we have successfully configured Argo CD on our cluster, let's deploy an application. To demonstrate the difference between a GitOps-based delivery approach and traditional deployment methods, we'll migrate the UI component of our sample application from using the `kubectl apply -k` approach to an Argo CD-managed deployment.
+Now that we have enabled the Amazon EKS Capability for Argo CD, let's deploy an application. To demonstrate the difference between a GitOps-based delivery approach and traditional deployment methods, we'll migrate the UI component of our sample application from using the `kubectl apply -k` approach to an Argo CD-managed deployment.
 
 An Argo CD application is a Custom Resource Definition (CRD) that represents a deployed application instance in an environment. It defines key information such as the application name, Git repository location, and path to the Kubernetes manifests. The application resource also specifies the desired state, target revision, sync policy, and health check policy.
 
@@ -52,11 +52,35 @@ $ git -C ~/environment/argocd commit -am "Adding the UI service"
 $ git -C ~/environment/argocd push
 ```
 
+Argo CD uses **AppProjects** to control which Git repositories, destination clusters, and namespaces applications are permitted to target. Every application must belong to a project. Let's create the `default` project that allows access to all repositories and destinations:
+
+```bash
+$ kubectl apply -f - <<'EOF'
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: default
+  namespace: argocd
+spec:
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  destinations:
+  - namespace: '*'
+    server: '*'
+  sourceRepos:
+  - '*'
+EOF
+appproject.argoproj.io/default created
+```
+
 Next, let's create an Argo CD Application configured to use our Git repository:
 
 ```bash
+$ export CLUSTER_ARN=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME \
+  --query 'cluster.arn' --output text)
 $ argocd app create ui --repo $GITOPS_REPO_URL_ARGOCD \
-  --path ui --dest-server https://kubernetes.default.svc \
+  --path ui --dest-server $CLUSTER_ARN \
   --dest-namespace ui --sync-option CreateNamespace=true
 application 'ui' created
 ```
@@ -65,8 +89,8 @@ We can verify that the application has been created:
 
 ```bash
 $ argocd app list
-NAME         CLUSTER                         NAMESPACE  PROJECT  STATUS     HEALTH   SYNCPOLICY  CONDITIONS
-argocd/ui    https://kubernetes.default.svc  ui         default  OutOfSync  Missing  Manual      <none>
+NAME         CLUSTER                                               NAMESPACE  PROJECT  STATUS     HEALTH   SYNCPOLICY  CONDITIONS
+argocd/ui    arn:aws:eks:us-west-2:1234567890:cluster/eks-workshop  ui         default  OutOfSync  Missing  Manual      <none>
 ```
 
 This application is now visible in the Argo CD UI:
@@ -78,12 +102,8 @@ Alternatively, we can also interact with Argo CD objects directly using the `kub
 ```bash
 $ kubectl get applications.argoproj.io -n argocd
 NAME   SYNC STATUS   HEALTH STATUS
-apps   OutOfSync     Missing
+ui     OutOfSync     Missing
 ```
-
-If you open the Argo CD UI and navigate to the `apps` application, you'll see:
-
-![Application in the Argo CD UI](/docs/automation/gitops/argocd/argocd-ui-outofsync-apps.webp)
 
 In Argo CD, "out of sync" indicates that the desired state defined in your Git repository doesn't match the actual state in your Kubernetes cluster. Although Argo CD is capable of automated synchronization, for now we'll manually trigger this process:
 
