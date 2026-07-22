@@ -10,7 +10,7 @@ sidebar_position: 70
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=10
-$ prepare-environment
+$ prepare-environment introduction/kustomize
 ```
 
 :::
