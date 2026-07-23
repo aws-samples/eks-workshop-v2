@@ -27,7 +27,7 @@ Parameters:
   AnalyticsEndpoint:
     Type: String
     Description: Analytics endpoint used for AWS events
-    Default: "https://www.eksworkshop.com/analytics/track"
+    Default: ""
   CodeServerVersion:
     Type: String
     Description: Default code-server version to use

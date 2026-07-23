@@ -111,7 +111,7 @@ if [ ! -z "$module" ]; then
   ANALYTICS_ENDPOINT=${ANALYTICS_ENDPOINT:-""}
 
   if [ ! -z "$ANALYTICS_ENDPOINT" ]; then
-    curl --get -s --data-urlencode "lab=$module" --data-urlencode "env_id=$WORKSHOP_ENV_ID" --data-urlencode "resources_precreated=$RESOURCES_PRECREATED" $ANALYTICS_ENDPOINT || true
+    curl --get -s -o /dev/null --data-urlencode "ws=$WS" --data-urlencode "build=$BUILD" --data-urlencode "env=$WORKSHOP_ENV_ID" --data-urlencode "lab=$module" $ANALYTICS_ENDPOINT || true
   fi
 
   if [[ "$module" = "fastpaths/"* ]]; then
