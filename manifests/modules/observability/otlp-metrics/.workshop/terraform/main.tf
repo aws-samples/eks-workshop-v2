@@ -105,3 +105,255 @@ resource "time_sleep" "blueprints_addons_sleep" {
 
   create_duration = "15s"
 }
+
+# Grafana setup with CloudWatch OTLP metrics as Prometheus-compatible data source
+
+resource "kubernetes_namespace" "grafana" {
+  metadata {
+    name = "grafana"
+  }
+}
+
+module "grafana" {
+  source  = "aws-ia/eks-blueprints-addon/aws"
+  version = "1.1.1"
+
+  depends_on = [
+    time_sleep.blueprints_addons_sleep,
+    kubernetes_config_map.order_service_metrics_dashboard
+  ]
+
+  description      = "Grafana"
+  chart            = "grafana"
+  chart_version    = var.grafana_chart_version
+  namespace        = kubernetes_namespace.grafana.metadata[0].name
+  create_namespace = false
+  repository       = "https://grafana.github.io/helm-charts"
+  values           = [local.grafana_values]
+  wait             = true
+  set = [{
+    name  = "serviceAccount.name"
+    value = "grafana"
+  }]
+
+  create_role             = true
+  role_name               = "${var.addon_context.eks_cluster_id}-grafana"
+  policy_name             = "${var.addon_context.eks_cluster_id}-grafana"
+  source_policy_documents = [data.aws_iam_policy_document.grafana.json]
+  set_irsa_names = [
+    "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn",
+  ]
+  oidc_providers = {
+    this = {
+      provider_arn    = var.addon_context.eks_oidc_provider_arn
+      service_account = "grafana"
+    }
+  }
+}
+
+resource "kubernetes_config_map" "order_service_metrics_dashboard" {
+  metadata {
+    name      = "order-service-metrics-dashboard"
+    namespace = kubernetes_namespace.grafana.metadata[0].name
+
+    labels = {
+      grafana_dashboard = 1
+    }
+  }
+
+  data = {
+    "order-service-metrics-dashboard.json" = <<EOF
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-amazonprometheus-datasource",
+        "uid": "$${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": []
+        }
+      },
+      "gridPos": { "h": 9, "w": 9, "x": 0, "y": 0 },
+      "id": 2,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "pieType": "pie",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "grafana-amazonprometheus-datasource", "uid": "$${datasource}" },
+          "editorMode": "code",
+          "expr": "sum by(productId) (watch_orders_total{productId!=\"*\"})",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Orders by Product",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-amazonprometheus-datasource",
+        "uid": "$${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        }
+      },
+      "gridPos": { "h": 9, "w": 6, "x": 9, "y": 0 },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "grafana-amazonprometheus-datasource", "uid": "$${datasource}" },
+          "editorMode": "code",
+          "expr": "sum(watch_orders_total{productId=\"*\"}) by (productId)",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Order Count",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-amazonprometheus-datasource",
+        "uid": "$${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "lineWidth": 1,
+            "pointSize": 5,
+            "showPoints": "auto"
+          },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        }
+      },
+      "gridPos": { "h": 8, "w": 15, "x": 0, "y": 9 },
+      "id": 4,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "grafana-amazonprometheus-datasource", "uid": "$${datasource}" },
+          "editorMode": "code",
+          "expr": "sum by (productId)(rate(watch_orders_total{productId=\"*\"}[2m]))",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Order Rate",
+      "type": "timeseries"
+    }
+  ],
+  "schemaVersion": 37,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "label": "Data Source",
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "grafana-amazonprometheus-datasource",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      }
+    ]
+  },
+  "time": { "from": "now-3h", "to": "now" },
+  "title": "Order Service Metrics",
+  "uid": "otlp-orders",
+  "version": 1
+}
+EOF
+  }
+}
+
+data "aws_iam_policy_document" "grafana" {
+  statement {
+    effect    = "Allow"
+    resources = ["*"]
+    actions = [
+      "cloudwatch:DescribeAlarmsForMetric",
+      "cloudwatch:GetMetricData",
+      "cloudwatch:ListMetrics",
+      "cloudwatch:QueryMetrics",
+    ]
+  }
+}
+
+locals {
+  grafana_values = <<EOF
+image:
+  tag: "12.1.7"
+
+env:
+  AWS_SDK_LOAD_CONFIG: true
+  GF_AUTH_SIGV4_AUTH_ENABLED: true
+  GF_INSTALL_PLUGINS: grafana-amazonprometheus-datasource 3.0.0
+
+ingress:
+  enabled: true
+  hosts: []
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/inbound-cidrs: ${var.inbound_cidrs}
+  ingressClassName: alb
+
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+    - name: orders-service
+      orgId: 1
+      folder: "retail-app-metrics"
+      type: file
+      disableDeletion: false
+      editable: false
+      options:
+        path: /var/lib/grafana/dashboards/orders-service
+
+dashboardsConfigMaps:
+  orders-service: "order-service-metrics-dashboard"
+
+sidecar:
+  dashboards:
+    enabled: true
+    searchNamespace: ALL
+    label: app.kubernetes.io/component
+    labelValue: grafana
+EOF
+}

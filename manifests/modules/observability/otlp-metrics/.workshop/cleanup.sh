@@ -4,6 +4,7 @@ set -e
 
 logmessage "Cleaning up OTLP metrics resources..."
 
+kubectl delete amazoncloudwatchagent application-metrics-collector -n amazon-cloudwatch --ignore-not-found
 kubectl delete -n other pod load-generator --ignore-not-found
 
 logmessage "Disabling OTel enrichment..."
