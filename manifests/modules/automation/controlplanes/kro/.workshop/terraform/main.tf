@@ -157,9 +157,11 @@ resource "aws_iam_role_policy" "ack_capability_iam" {
         # Role + inline/attached-policy actions the ACK iam-controller needs to
         # create, reconcile, and delete the Role its RGD defines. Mirrors the
         # role/policy subset of the ACK iam-controller recommended policy
-        # (https://github.com/aws-controllers-k8s/iam-controller). Notably
-        # includes the List/Get/Put/Delete RolePolicy actions the controller
-        # uses when inspecting a role during reconciliation and deletion.
+        # (https://github.com/aws-controllers-k8s/iam-controller), scoped down
+        # to the role names this lab's RGD generates
+        # ("<table-name>-iam-role"). Notably includes the List/Get/Put/Delete
+        # RolePolicy actions the controller uses when inspecting a role during
+        # reconciliation and deletion.
         Sid    = "ManageAckRoles"
         Effect = "Allow"
         Action = [
@@ -177,10 +179,22 @@ resource "aws_iam_role_policy" "ack_capability_iam" {
           "iam:ListRolePolicies",
           "iam:GetRolePolicy",
           "iam:PutRolePolicy",
-          "iam:DeleteRolePolicy",
-          "iam:PassRole"
+          "iam:DeleteRolePolicy"
         ]
-        Resource = "*"
+        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.carts_dynamo_table_name}-*"
+      },
+      {
+        # The RGD-generated role is only ever passed to EKS Pod Identity, so
+        # constrain PassRole to that service in addition to the name scope.
+        Sid      = "PassAckRolesToPodIdentity"
+        Effect   = "Allow"
+        Action   = "iam:PassRole"
+        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.carts_dynamo_table_name}-*"
+        Condition = {
+          StringEquals = {
+            "iam:PassedToService" = "pods.eks.amazonaws.com"
+          }
+        }
       },
       {
         Sid    = "ManageAckPolicies"
@@ -197,7 +211,7 @@ resource "aws_iam_role_policy" "ack_capability_iam" {
           "iam:UntagPolicy",
           "iam:ListPolicyTags"
         ]
-        Resource = "*"
+        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.carts_dynamo_table_name}-*"
       }
     ]
   })
@@ -213,6 +227,7 @@ resource "aws_iam_role_policy" "ack_capability_eks" {
     Version = "2012-10-17"
     Statement = [
       {
+        # Scoped to this lab's cluster and its pod identity associations.
         Sid    = "ManagePodIdentityAssociations"
         Effect = "Allow"
         Action = [
@@ -224,7 +239,10 @@ resource "aws_iam_role_policy" "ack_capability_eks" {
           "eks:TagResource",
           "eks:UntagResource"
         ]
-        Resource = "*"
+        Resource = [
+          "arn:aws:eks:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster/${var.addon_context.eks_cluster_id}",
+          "arn:aws:eks:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:podidentityassociation/${var.addon_context.eks_cluster_id}/*"
+        ]
       }
     ]
   })
