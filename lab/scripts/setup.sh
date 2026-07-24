@@ -78,15 +78,19 @@ RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-"false"}
 
 echo "export RESOURCES_PRECREATED='${RESOURCES_PRECREATED}'" > ~/.bashrc.d/infra.bash
 
-# Analytics: stable per-environment UUID.
-# Generated once per environment.
+# Analytics: stable per-environment id.
+# Use the Workshop Studio team id (ENV) when present (AWS-hosted events);
+# otherwise generate + persist a random per-environment UUID.
 ENV_ID_FILE=~/.workshop-env-id
 if [ ! -s "$ENV_ID_FILE" ]; then
   cat /proc/sys/kernel/random/uuid > "$ENV_ID_FILE"
 fi
+WORKSHOP_ENV_ID="${ENV:-$(cat "$ENV_ID_FILE")}"
 
 echo "export ANALYTICS_ENDPOINT='${ANALYTICS_ENDPOINT}'" > ~/.bashrc.d/analytics.bash
-echo "export WORKSHOP_ENV_ID='$(cat "$ENV_ID_FILE")'" >> ~/.bashrc.d/analytics.bash
+echo "export WORKSHOP_ENV_ID='${WORKSHOP_ENV_ID}'" >> ~/.bashrc.d/analytics.bash
+echo "export WS='${WS}'" >> ~/.bashrc.d/analytics.bash
+echo "export BUILD='${BUILD}'" >> ~/.bashrc.d/analytics.bash
 
 echo "export BASE_INBOUND_CIDRS='${BASE_INBOUND_CIDRS}'" > ~/.bashrc.d/inbound-cidr.bash
 
