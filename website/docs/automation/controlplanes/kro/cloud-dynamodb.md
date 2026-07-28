@@ -116,6 +116,17 @@ $ aws dynamodb list-tables
 
 Our DynamoDB table and component have been successfully created using kro's composable approach.
 
+:::info EKS Pod Identity is eventually consistent
+The `WebApplicationDynamoDB` ResourceGraphDefinition gates the application Deployment on the `PodIdentityAssociation` reaching a synced state (via kro's `readyWhen`), because Pod Identity credentials are only injected when a pod is first admitted. If the `carts` pod ever lands in `CrashLoopBackOff` with a DynamoDB `AccessDenied` error, the association had not fully propagated when the pod started — simply recreate the pod so it picks up the injected credentials:
+
+```bash
+$ kubectl rollout restart deployment/carts -n carts
+$ kubectl rollout status deployment/carts -n carts --timeout=120s
+```
+
+For managing this eventual consistency at scale with automated GitOps tooling, see [How to manage EKS Pod Identities at scale using Argo CD and AWS ACK](https://aws.amazon.com/blogs/containers/how-to-manage-eks-pod-identities-at-scale-using-argo-cd-and-aws-ack/).
+:::
+
 To verify that the component is working with the new DynamoDB table, we can interact with it through a browser. An NLB has been created to expose the sample application for testing:
 
 ```bash

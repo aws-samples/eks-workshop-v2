@@ -38,6 +38,15 @@ spec:
 
   resources:
     - id: podIdentityAssociation
+      # The EKS Pod Identity API is eventually consistent: the association can be
+      # created in ACK before EKS will actually inject credentials for a pod using
+      # this service account. Pod Identity credentials are only injected at pod
+      # admission, so a carts pod admitted before the association is usable would
+      # start with the node role and fail on DynamoDB access. Gate on
+      # ACK.ResourceSynced=True so kro does not create the dependent WebApplication
+      # (and its Deployment) until the association has been reconciled in AWS.
+      readyWhen:
+        - ${podIdentityAssociation.status.conditions.exists(c, c.type == "ACK.ResourceSynced" && c.status == "True")}
       template:
         apiVersion: eks.services.k8s.aws/v1alpha1
         kind: PodIdentityAssociation
