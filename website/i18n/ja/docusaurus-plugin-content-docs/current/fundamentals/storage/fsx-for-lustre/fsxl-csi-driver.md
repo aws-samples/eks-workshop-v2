@@ -1,21 +1,22 @@
 ---
 title: FSx for Lustre CSI Driver
 sidebar_position: 20
+tmdTranslationSourceHash: bd2142bc015c6a4ac13658804585b22d
 ---
 
-Before diving into this section, you should be familiar with the Kubernetes storage objects (volumes, persistent volumes (PV), persistent volume claims (PVC), dynamic provisioning and ephemeral storage) that were introduced in the main [Storage](../index.md) section.
+このセクションに入る前に、メインの [Storage](../index.md) セクションで紹介された Kubernetes ストレージオブジェクト（volumes、persistent volumes (PV)、persistent volume claims (PVC)、dynamic provisioning、ephemeral storage）について理解しておく必要があります。
 
-The [Amazon FSx for Lustre Container Storage Interface (CSI) Driver](https://github.com/kubernetes-sigs/aws-fsx-csi-driver) provides a CSI interface that allows Amazon EKS clusters to manage the lifecycle of Amazon FSx for Lustre file systems. This enables you to run stateful containerized applications that require high-performance parallel file storage.
+[Amazon FSx for Lustre Container Storage Interface (CSI) Driver](https://github.com/kubernetes-sigs/aws-fsx-csi-driver) は、Amazon EKS クラスタが Amazon FSx for Lustre ファイルシステムのライフサイクルを管理できるようにする CSI インターフェースを提供します。これにより、高性能な並列ファイルストレージを必要とするステートフルなコンテナ化されたアプリケーションを実行できます。
 
-The following architecture diagram illustrates how we will use FSx for Lustre as persistent storage for our EKS pods:
+以下のアーキテクチャ図は、EKS Pod の永続ストレージとして FSx for Lustre を使用する方法を示しています：
 
 ![Assets with FSx for Lustre](/docs/fundamentals/storage/fsx-for-lustre/fsxl-storage.webp)
 
-To utilize Amazon FSx for Lustre with dynamic provisioning on our EKS cluster, we need to install the FSx for Lustre CSI Driver. The driver implements the CSI specification which allows container orchestrators to manage Amazon FSx for Lustre file systems throughout their lifecycle.
+EKS クラスタで Amazon FSx for Lustre を利用するには、FSx for Lustre CSI Driver をインストールする必要があります。このドライバーは CSI 仕様を実装しており、コンテナオーケストレーターが Amazon FSx for Lustre ファイルシステムのライフサイクル全体を管理できるようにします。
 
-As part of the lab preparation, an IAM role has already been created for the CSI driver to call the appropriate AWS APIs.
+ラボの準備の一環として、CSI ドライバーが適切な AWS API を呼び出すための IAM role がすでに作成されています。
 
-We'll install the FSx for Lustre CSI driver as an EKS add-on:
+FSx for Lustre CSI ドライバーを EKS アドオンとしてインストールします：
 
 ```bash timeout=300 wait=60
 $ aws eks create-addon --cluster-name $EKS_CLUSTER_NAME \
@@ -26,7 +27,7 @@ $ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME \
     --addon-name aws-fsx-csi-driver
 ```
 
-Let's verify the driver is running in our EKS cluster:
+EKS クラスタでドライバーが実行されていることを確認しましょう：
 
 ```bash
 $ kubectl get daemonset fsx-csi-node -n kube-system
@@ -34,16 +35,16 @@ NAME           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTO
 fsx-csi-node   3         3         3       3            3           kubernetes.io/os=linux   52s
 ```
 
-The FSx for Lustre CSI driver supports dynamic provisioning, which allows you to create an FSx for Lustre file system on demand. When a PersistentVolumeClaim (PVC) is created, the driver automatically provisions a new FSx for Lustre file system and binds it to the PVC.
+FSx for Lustre CSI ドライバーは、dynamic provisioning と static provisioning の両方をサポートしています。dynamic provisioning では、PersistentVolumeClaim (PVC) が作成されるとオンデマンドで新しい FSx for Lustre ファイルシステムがドライバーによって作成されます。static provisioning では、既存の FSx for Lustre ファイルシステムが PersistentVolume (PV) に関連付けられ、Kubernetes 内で使用されます。このラボでは、ラボセットアップの一部として事前にプロビジョニングされたファイルシステムを使用した static provisioning を使用します。
 
-An FSx for Lustre file system has been pre-provisioned for us as part of the lab setup, along with the required security group that allows Lustre traffic. Let's get its ID which we'll need later:
+ラボセットアップの一環として、FSx for Lustre ファイルシステムと Lustre トラフィックを許可する必要なセキュリティグループが事前にプロビジョニングされています。後で必要になるファイルシステム ID を取得しましょう：
 
 ```bash
 $ echo $FSXL_FS_ID
 fs-0123456789abcdef0
 ```
 
-We also need the DNS name and mount name of the file system for our StorageClass:
+StorageClass のために、ファイルシステムの DNS 名とマウント名も必要です：
 
 ```bash
 $ export FSXL_DNS_NAME=$(aws fsx describe-file-systems --file-system-ids $FSXL_FS_ID --query "FileSystems[0].DNSName" --output text)
@@ -52,17 +53,17 @@ $ echo "DNS Name: $FSXL_DNS_NAME"
 $ echo "Mount Name: $FSXL_MOUNT_NAME"
 ```
 
-Next, we'll create a [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) that uses static provisioning with our pre-created FSx for Lustre file system.
+次に、事前に作成された FSx for Lustre ファイルシステムで static provisioning を使用する [StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) を作成します。
 
-Let's examine the `fsxlstorageclass.yaml` file:
+`fsxlstorageclass.yaml` ファイルを見てみましょう：
 
 ::yaml{file="manifests/modules/fundamentals/storage/fsxl/storageclass/fsxlstorageclass.yaml" paths="provisioner,parameters.subnetId,parameters.securityGroupIds"}
 
-1. Set the `provisioner` parameter to `fsx.csi.aws.com` for the FSx for Lustre CSI provisioner
-2. Assign the subnet ID where the file system resides
-3. Assign the security group ID for Lustre traffic
+1. FSx for Lustre CSI プロビジョナーの `provisioner` パラメータを `fsx.csi.aws.com` に設定
+2. ファイルシステムが存在するサブネット ID を割り当て
+3. Lustre トラフィック用のセキュリティグループ ID を割り当て
 
-Apply the kustomization:
+kustomization を適用します：
 
 ```bash
 $ kubectl kustomize ~/environment/eks-workshop/modules/fundamentals/storage/fsxl/storageclass \
@@ -70,7 +71,7 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/fundamentals/storage/fsxl
 storageclass.storage.k8s.io/fsx-lustre-sc created
 ```
 
-Let's examine the StorageClass:
+StorageClass を確認しましょう：
 
 ```bash
 $ kubectl get storageclass fsx-lustre-sc
@@ -78,7 +79,7 @@ NAME            PROVISIONER     RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEE
 fsx-lustre-sc   fsx.csi.aws.com   Delete          Immediate           false                  10s
 ```
 
-Now we'll also create a PersistentVolume and PersistentVolumeClaim that reference our pre-provisioned FSx for Lustre file system:
+次に、事前にプロビジョニングされた FSx for Lustre ファイルシステムを参照する PersistentVolume と PersistentVolumeClaim も作成します：
 
 ```bash
 $ kubectl kustomize ~/environment/eks-workshop/modules/fundamentals/storage/fsxl/pv \
@@ -87,7 +88,7 @@ persistentvolume/fsxl-pv created
 persistentvolumeclaim/fsxl-claim created
 ```
 
-Let's verify the PVC is bound:
+PVC がバインドされていることを確認しましょう：
 
 ```bash
 $ kubectl get pvc -n ui fsxl-claim
@@ -95,4 +96,4 @@ NAME         STATUS   VOLUME    CAPACITY   ACCESS MODES   STORAGECLASS    AGE
 fsxl-claim   Bound    fsxl-pv   1200Gi     RWX            fsx-lustre-sc   10s
 ```
 
-Now that we understand the FSx for Lustre StorageClass and how the FSx for Lustre CSI driver works, we're ready to proceed to the next step where we'll modify the UI component to use the FSx for Lustre volume for storing product images.
+これで FSx for Lustre StorageClass と FSx for Lustre CSI ドライバーの動作について理解できました。次のステップでは、製品画像を保存するために FSx for Lustre ボリュームを使用するよう UI コンポーネントを変更します。
