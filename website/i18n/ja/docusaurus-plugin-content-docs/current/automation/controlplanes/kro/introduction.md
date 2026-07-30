@@ -1,7 +1,7 @@
 ---
 title: "はじめに"
 sidebar_position: 3
-tmdTranslationSourceHash: f9fdd7f9d4f4dd982e2626362769a8c2
+tmdTranslationSourceHash: f3c849c8fc5a753a2d8a986df4480d8a
 ---
 
 kro はクラスター内で2つの主要コンポーネントを使用して動作します：
