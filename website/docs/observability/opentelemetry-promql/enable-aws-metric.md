@@ -15,7 +15,7 @@ Let's enable these two settings. You can use either the AWS Console or the AWS C
 3. In the Resource tags on telemetry section, toggle Enable resource tags for telemetry to On
 4. In the OTel metric ingestion section, toggle Enable OTel metric ingestion to On
 
-![Cloudwatch Settings](/docs/observability/logging/cluster-logging/enabled_otel_resource_tags.webp)
+![Cloudwatch Settings](/docs/observability/opentelemetry-promql/enabled_otel_resource_tags.webp)
 
 
 **Option B: AWS CLI**
