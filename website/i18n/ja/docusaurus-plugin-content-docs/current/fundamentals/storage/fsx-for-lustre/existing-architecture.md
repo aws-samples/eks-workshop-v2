@@ -1,13 +1,14 @@
 ---
-title: Existing architecture
+title: 既存のアーキテクチャ
 sidebar_position: 10
+tmdTranslationSourceHash: dfa8c6b7f2ed9d6283e9acd68e447831
 ---
 
-In this section, we'll explore how to handle storage in Kubernetes deployments using a simple image hosting example. We'll start with an existing deployment from our sample store application and modify it to serve as an image host. The UI component is a stateless microservice, which is an excellent example for demonstrating deployments since they enable **horizontal scaling** and **declarative state management** of Pods.
+このセクションでは、シンプルな画像ホスティングの例を使用して、Kubernetes デプロイメントでストレージを処理する方法を探ります。サンプルストアアプリケーションの既存のデプロイメントから始めて、画像ホストとして機能するように変更します。UI コンポーネントはステートレスなマイクロサービスであり、**水平スケーリング**と Pod の**宣言的な状態管理**を可能にするため、デプロイメントを実演するのに最適な例です。
 
-One of the roles of the UI component is to serve static product images. Currently, these images are bundled into the container during the build process. However, this approach has a significant limitation - we're unable to add new images once the container is deployed. To address this limitation, we'll implement a solution using [Amazon FSx for Lustre](https://docs.aws.amazon.com/fsx/latest/LustreGuide/what-is.html) and Kubernetes [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) to create a shared storage environment. This will allow multiple web server containers to serve assets while scaling dynamically to meet demand.
+UI コンポーネントの役割の1つは、静的な製品画像を提供することです。現在、これらの画像はビルドプロセス中にコンテナにバンドルされています。しかし、このアプローチには重大な制限があります - コンテナがデプロイされた後に新しい画像を追加することができません。この制限に対処するために、[Amazon FSx for Lustre](https://docs.aws.amazon.com/fsx/latest/LustreGuide/what-is.html) と Kubernetes の [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) を使用して共有ストレージ環境を作成するソリューションを実装します。これにより、複数の Web サーバーコンテナが需要に応じて動的にスケールしながらアセットを提供できるようになります。
 
-Let's examine the current Deployment's volume configuration:
+現在の Deployment のボリューム設定を確認してみましょう:
 
 ```bash
 $ kubectl describe deployment -n ui
@@ -35,6 +36,7 @@ Namespace:              ui
 [...]
 ```
 
-Looking at the [`Volumes`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) section, we can see that the Deployment currently uses an [EmptyDir volume type](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) that exists only for the Pod's lifetime. This means that when the Pod is terminated, the data stored in this volume is permanently lost.
+[`Volumes`](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir-configuration-example) セクションを見ると、Deployment は現在 [EmptyDir ボリュームタイプ](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir)を使用しており、これは Pod のライフタイム中のみ存在します。つまり、Pod が終了すると、このボリュームに保存されたデータは永久に失われます。
 
-However, in the case of the UI component, the product images are currently being served as [static web content](https://spring.io/blog/2013/12/19/serving-static-web-content-with-spring-boot) via Spring Boot, so the images are not even present on the filesystem.
+しかし、UI コンポーネントの場合、製品画像は現在 Spring Boot を介して[静的 Web コンテンツ](https://spring.io/blog/2013/12/19/serving-static-web-content-with-spring-boot)として提供されているため、画像はファイルシステム上に存在していません。
+
