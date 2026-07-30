@@ -4,26 +4,23 @@ sidebar_position: 3
 tmdTranslationSourceHash: c50b1ee6030afba367dfa41a583f4641
 ---
 
-各ACKサービスコントローラーは、個々のACKサービスコントローラーに対応するパブリックリポジトリで公開される別々のコンテナイメージにパッケージ化されています。プロビジョニングしたいAWSサービスごとに、対応するコントローラーのリソースをAmazon EKSクラスターにインストールする必要があります。ACKのHelm chartと公式コンテナイメージは[こちら](https://gallery.ecr.aws/aws-controllers-k8s)で入手できます。
+従来、ACK を使用するには、AWS サービスごとにサービスコントローラーをご自身でインストールして運用する必要がありました。たとえば、Helm チャートとコンテナイメージをクラスターにデプロイし、その後継続的にパッチ適用やアップグレードを行います。各 ACK サービスコントローラーは、パブリックリポジトリで公開されている個別のコンテナイメージとしてパッケージ化されています。ACK の Helm チャートと公式コンテナイメージは[こちら](https://gallery.ecr.aws/aws-controllers-k8s)で入手できます。
 
-このセクションでは、Amazon DynamoDB ACKを使用するため、まずHelmチャートを使用してそのACKコントローラーをインストールする必要があります：
+代わりに、このラボでは [Amazon EKS ケイパビリティ](https://docs.aws.amazon.com/eks/latest/userguide/capabilities.html) を使用して、ACK をフルマネージドのケイパビリティとして提供します。このアプローチには次の特徴があります：
 
-```bash wait=60
-$ aws ecr-public get-login-password --region us-east-1 | \
-  helm registry login --username AWS --password-stdin public.ecr.aws
-$ helm install ack-dynamodb  \
-  oci://public.ecr.aws/aws-controllers-k8s/dynamodb-chart \
-  --version=${DYNAMO_ACK_VERSION} \
-  --namespace ack-system --create-namespace \
-  --set "aws.region=${AWS_REGION}" \
-  --set "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"="$ACK_IAM_ROLE" \
-  --wait
-```
+- ACK コントローラーは、クラスターのコンピューティングリソースを消費する代わりに、AWS マネージドインフラストラクチャ上で実行されます
+- AWS がコントローラーのインストール、パッチ適用、アップグレード、可用性を管理します
+- ケイパビリティは専用の IAM ケイパビリティロールを引き受けるため、コントローラー用に IRSA を構成する必要はありません
+- 同じ ACK カスタムリソースと `kubectl` ワークフローを引き続き使用できます
 
-コントローラーは`ack-system`名前空間内のデプロイメントとして実行されます：
+Amazon DynamoDB 用の ACK ケイパビリティは、環境を準備した際にすでに有効化されているため、インストールするものはありません。ケイパビリティがアクティブであることを確認しましょう：
 
 ```bash
-$ kubectl get deployment -n ack-system
-NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
-ack-dynamodb-dynamodb-chart   1/1     1            1           13s
+$ aws eks describe-capability \
+  --cluster-name $EKS_CLUSTER_NAME \
+  --capability-name ack-dynamodb \
+  --query 'capability.status' --output text
+ACTIVE
 ```
+
+コントローラーはフルマネージドであるため、クラスター内にコントローラーのデプロイメントは実行されません。次のセクションでその仕組みを詳しく見ていきます。
