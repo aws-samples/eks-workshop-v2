@@ -1,0 +1,13 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fsx-lustre-sc
+provisioner: fsx.csi.aws.com
+parameters:
+  subnetId: "$FSXL_SUBNET_ID"
+  securityGroupIds: "$FSXL_SG"
+  deploymentType: PERSISTENT_2
+  perUnitStorageThroughput: "125"
+  dataCompressionType: "LZ4"
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
