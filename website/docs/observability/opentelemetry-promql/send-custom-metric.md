@@ -10,91 +10,52 @@ The workshop cluster also runs OTel Container Insights, which collects infrastru
 :::
 
 
-**Two paths, one destination**
+**Prometheus scraping via CRD**
 
+Deploy the CloudWatch Agent CRD to scrape Prometheus metrics from application workloads:
 
-**Petsite on EKS (Prometheus scraping via CRD)**
-
-The petsite service exposes Prometheus metrics at :8080/metrics. Verify the endpoint:
-
-```bash hook=cluster-logging
-$ kubectl run curl-test --image=curlimages/curl --rm -it --restart=Never -n petsite -- curl -s http://service-petsite.petsite.svc.cluster.local:8080/metrics | head -20
+```bash
+export CWA_IMAGE=$(kubectl get daemonset -n amazon-cloudwatch cloudwatch-agent -o jsonpath='{.spec.template.spec.containers[0].image}')
+kubectl kustomize ~/environment/eks-workshop/modules/observability/otlp-metrics/otel | envsubst | kubectl apply -f -
 ```
-You should see metrics like dotnet_gc_heap_size_bytes, petsite_petsearches_total, petsite_pets_waiting_for_adoption, etc.
 
-**Deploy the collector**
+**Generate Application Load**
 
-The CloudWatch Observability add-on includes an operator that manages AmazonCloudWatchAgent custom resources. Create a YAML file for a standalone collector:
+To produce application metrics, deploy the load generator (see [Application Metrics](https://eksworkshop.com/docs/observability/open-source-metrics/application-metrics) for reference):
 
-```bash hook=cluster-logging
-$ REGION=${AWS_REGION:-${AWS_DEFAULT_REGION:-$(aws configure get region)}}
-$ CWA_IMAGE=$(kubectl get daemonset -n amazon-cloudwatch cloudwatch-agent -o jsonpath='{.spec.template.spec.containers[0].image}')
-
-$ cat > /tmp/petsite-collector.yaml << EOF
-apiVersion: cloudwatch.aws.amazon.com/v1alpha1
-kind: AmazonCloudWatchAgent
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
 metadata:
-  name: petsite-metrics-collector
-  namespace: amazon-cloudwatch
+  name: load-generator
+  namespace: other
 spec:
-  mode: deployment
-  replicas: 1
-  image: ${CWA_IMAGE}
-  serviceAccount: cloudwatch-agent
-  config: '{"agent":{"region":"${REGION}"}}'
-  otelConfig: |
-    exporters:
-      otlphttp/cw:
-        auth:
-          authenticator: sigv4auth/cw
-        endpoint: https://monitoring.${REGION}.amazonaws.com:443
-        tls:
-          insecure: false
-    extensions:
-      sigv4auth/cw:
-        region: ${REGION}
-        service: monitoring
-    processors:
-      batch:
-        send_batch_max_size: 500
-        send_batch_size: 500
-        timeout: 10s
-    receivers:
-      prometheus:
-        config:
-          scrape_configs:
-            - job_name: petsite-dotnet
-              scrape_interval: 60s
-              static_configs:
-                - targets: ['service-petsite.petsite.svc.cluster.local:8080']
-    service:
-      extensions: [sigv4auth/cw]
-      pipelines:
-        metrics/petsite:
-          exporters: [otlphttp/cw]
-          processors: [batch]
-          receivers: [prometheus]
+  containers:
+  - name: artillery
+    image: artilleryio/artillery:2.0.0-31
+    args:
+    - "run"
+    - "-t"
+    - "http://ui.ui.svc"
+    - "/scripts/scenario.yml"
+    volumeMounts:
+    - name: scripts
+      mountPath: /scripts
+  initContainers:
+  - name: setup
+    image: public.ecr.aws/aws-containers/retail-store-sample-utils:load-gen.1.2.1
+    command:
+    - bash
+    args:
+    - -c
+    - "cp /artillery/* /scripts"
+    volumeMounts:
+    - name: scripts
+      mountPath: "/scripts"
+  volumes:
+  - name: scripts
+    emptyDir: {}
 EOF
-
-$ echo "File created. Review:"
-$ cat /tmp/petsite-collector.yaml
-
-```
-Apply it:
-
-```bash hook=cluster-logging
-$ kubectl get pods -n amazon-cloudwatch -l app.kubernetes.io/name=petsite-metrics-collector
-
-```
-
-Verify the pod is running:
-
-```bash hook=cluster-logging
-$ kubectl apply -f /tmp/petsite-collector.yaml
-```
-Check the logs:
-
-```bash hook=cluster-logging
-$ kubectl logs -n amazon-cloudwatch -l app.kubernetes.io/name=petsite-metrics-collector --tail=5
 ```
 
