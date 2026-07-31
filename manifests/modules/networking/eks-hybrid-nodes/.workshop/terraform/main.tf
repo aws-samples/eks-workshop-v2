@@ -108,7 +108,7 @@ resource "aws_route_table_association" "remote_public" {
 
 module "key_pair" {
   source  = "terraform-aws-modules/key-pair/aws"
-  version = "2.1.1"
+  version = "3.0.0"
 
   key_name           = "hybrid-node"
   create_private_key = true
