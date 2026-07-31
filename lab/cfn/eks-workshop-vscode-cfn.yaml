@@ -28,6 +28,18 @@ Parameters:
     Type: String
     Description: Analytics endpoint used for AWS events
     Default: ""
+  WS:
+    Type: String
+    Description: Workshop Studio workshop id (empty for self-paced)
+    Default: ""
+  BUILD:
+    Type: String
+    Description: Workshop content build/commit id (empty for self-paced)
+    Default: ""
+  ENV:
+    Type: String
+    Description: Workshop Studio team id (empty for self-paced)
+    Default: ""
   CodeServerVersion:
     Type: String
     Description: Default code-server version to use
@@ -313,6 +325,9 @@ Resources:
                   export REPOSITORY_REF="${RepositoryRef}"
                   export RESOURCES_PRECREATED="${ResourcesPrecreated}"
                   export ANALYTICS_ENDPOINT="${AnalyticsEndpoint}"
+                  export WS="${WS}"
+                  export BUILD="${BUILD}"
+                  export ENV="${ENV}"
                   IMDS_TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
                   IDE_IP=$(curl -s -H "X-aws-ec2-metadata-token: $IMDS_TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4)
                   export BASE_INBOUND_CIDRS="${InboundCIDR},$IDE_IP/32"

@@ -6,35 +6,28 @@ tmdTranslationSourceHash: f9fdd7f9d4f4dd982e2626362769a8c2
 
 kro はクラスター内で2つの主要コンポーネントを使用して動作します：
 
-1. kro コントローラーマネージャー（コアのオーケストレーション機能を提供）
+1. kro コントローラー（コアのオーケストレーション機能を提供）
 2. ResourceGraphDefinitions（RGDs）（関連リソースのグループを作成するためのテンプレートを定義）
 
-kro コントローラーマネージャーは ResourceGraphDefinition カスタムリソースを監視し、テンプレートで定義された基盤となる Kubernetes リソースの作成と管理をオーケストレーションします。
+kro コントローラーは ResourceGraphDefinition カスタムリソースを監視し、テンプレートで定義された基盤となる Kubernetes リソースの作成と管理をオーケストレーションします。
 
 kro は、プラットフォームチームが複数の関連リソースをカプセル化する ResourceGraphDefinitions を定義できるようにすることで、複雑なリソース管理を簡素化します。開発者は RGD スキーマによって定義されたシンプルなカスタム API を操作し、kro が基礎となるリソースの作成と管理の複雑さを処理します。このアーキテクチャにより、ResourceGraphDefinitions を定義するプラットフォームチームと、複雑なリソースグループを作成するためのシンプルなカスタム API を消費するアプリケーション開発者との間に明確な分離が提供されます。
 
-まず、Helm チャートを使用して kro を Kubernetes クラスターにインストールしましょう：
+このラボでは、kro はフルマネージドの [Amazon EKS 機能（Capability）](https://docs.aws.amazon.com/eks/latest/userguide/eks-capabilities.html) として提供され、環境の準備時に有効化されています。Amazon EKS は kro コントローラーを AWS マネージドインフラストラクチャで実行し、kro のカスタムリソース定義をクラスターにインストールするため、コントローラーを自分でインストール、パッチ適用、スケーリングする必要はありません。
 
-```bash wait=60
-$ helm install kro oci://registry.k8s.io/kro/charts/kro \
-  --version=${KRO_VERSION} \
-  --namespace kro-system --create-namespace \
-  --wait
-```
-
-kro コントローラーが実行されていることを確認します：
-
-```bash
-$ kubectl get deployment -n kro-system
-NAME    READY   UP-TO-DATE   AVAILABLE   AGE
-kro     1/1     1            1           13s
-```
-
-また、kro カスタムリソース定義がインストールされていることも確認できます：
+kro のカスタムリソース定義が機能によってインストールされていることを確認します：
 
 ```bash
 $ kubectl get crd | grep kro
+graphrevisions.internal.kro.run           2025-10-15T22:34:13Z
 resourcegraphdefinitions.kro.run          2025-10-15T22:34:13Z
+```
+
+kro はマネージド機能として実行されるため、クラスター内に kro コントローラーのデプロイメントは存在しません：
+
+```bash
+$ kubectl get deployment -n kro-system
+No resources found in kro-system namespace.
 ```
 
 ResourceGraphDefinition を作成すると、kro は以下を実行します：

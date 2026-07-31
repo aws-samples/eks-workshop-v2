@@ -8,6 +8,13 @@ To ingest and query OpenTelemetry metrics in Amazon CloudWatch, there are two ac
 
 Let's enable these two settings. You can use either the AWS Console or the AWS CLI.
 
+
+**Architecture**
+
+Amazon CloudWatch exposes a regional OTLP endpoint that OpenTelemetry-compatible collectors and SDKs can send metrics to directly. Metrics are stored in a high-cardinality metrics store that retains OpenTelemetry metric types including counters, histograms, gauges, and up-down counters without conversion. When enrichment is enabled, CloudWatch automatically tags vended metrics with AWS resource context such as account ID, region, cluster ARN, and resource tags from AWS Resource Explorer. This enrichment requires no manual instrumentation, enabling you to query and filter across AWS accounts, regions, and resource tags using PromQL in Amazon CloudWatch Query Studio or Amazon Managed Grafana.
+
+
+
 **Option A: AWS Console**
 
 1. Open the Amazon CloudWatch console <ConsoleButton url="https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab" service="eks" label="Open EKS console"/>
@@ -40,7 +47,3 @@ Enable OpenTelemetry metrics ingestion for Amazon CloudWatch
 $ aws cloudwatch start-otel-enrichment
 ```
 
-
-:::info
-If you are using the CDK Observability Accelerator then check out the [CDK Observability Builder](https://aws-quickstart.github.io/cdk-eks-blueprints/builders/observability-builder/#supported-methods) which supports enabling all control plane logging features for EKS clusters and storing them in CloudWatch.
-:::

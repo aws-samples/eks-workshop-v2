@@ -16,7 +16,7 @@ $ prepare-environment automation/controlplanes/kro
 
 This will make the following changes to your lab environment:
 
-- Install the AWS Controllers for Kubernetes controllers for EKS, IAM and DynamoDB
+- Enable the fully managed Amazon EKS ACK (AWS Controllers for Kubernetes) capability, which provides the EKS, IAM and DynamoDB controllers
 - Install the AWS Load Balancer Controller
 - Create an Ingress resource for the UI workload
 
