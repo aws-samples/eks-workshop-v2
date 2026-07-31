@@ -1,7 +1,7 @@
 ---
 title: "はじめに"
 sidebar_position: 3
-tmdTranslationSourceHash: c50b1ee6030afba367dfa41a583f4641
+tmdTranslationSourceHash: a4e36c06ec2df2ab20b82a14ec539e28
 ---
 
 従来、ACK を使用するには、AWS サービスごとにサービスコントローラーをご自身でインストールして運用する必要がありました。たとえば、Helm チャートとコンテナイメージをクラスターにデプロイし、その後継続的にパッチ適用やアップグレードを行います。各 ACK サービスコントローラーは、パブリックリポジトリで公開されている個別のコンテナイメージとしてパッケージ化されています。ACK の Helm チャートと公式コンテナイメージは[こちら](https://gallery.ecr.aws/aws-controllers-k8s)で入手できます。
