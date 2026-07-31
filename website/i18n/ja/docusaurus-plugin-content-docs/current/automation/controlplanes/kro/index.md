@@ -17,7 +17,7 @@ $ prepare-environment automation/controlplanes/kro
 
 これにより、ラボ環境に以下の変更が加えられます：
 
-- EKS、IAM、DynamoDB 用の AWS Controllers for Kubernetes コントローラーをインストール
+- EKS、IAM、DynamoDB コントローラーを提供する、フルマネージドの Amazon EKS ACK（AWS Controllers for Kubernetes）機能を有効化
 - AWS Load Balancer Controller をインストール
 - UI ワークロード用の Ingress リソースを作成
 
