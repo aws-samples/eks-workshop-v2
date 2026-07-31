@@ -20,7 +20,7 @@ data "aws_subnet" "private_fsxl" {
 # IAM role for FSx for Lustre CSI driver
 module "iam_assumable_role_fsx_lustre" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "5.60.0"
+  version                       = "6.6.1"
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-fsxl"
   provider_url                  = var.addon_context.eks_oidc_issuer_url
