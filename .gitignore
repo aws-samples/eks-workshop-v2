@@ -53,4 +53,16 @@ devenv.local.nix
 
 # direnv
 .direnv
+
+# Kiro
 .kiro/
+.claude/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+!*.tfvars.example
+.terraform/
+.terraform.lock.hcl

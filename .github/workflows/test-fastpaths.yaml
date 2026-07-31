@@ -66,7 +66,7 @@ jobs:
           DOCKER_DNS_OVERRIDE: "8.8.8.8"
         run: |
           export AWS_DEFAULT_REGION="$AWS_REGION"
-          bash hack/run-tests.sh "$CLUSTER_ID" "-" "{fastpaths/getting-started,fastpaths/getting-started/**,fastpaths/operator,fastpaths/operator/**,fastpaths/developer,fastpaths/developer/**}"
+          bash hack/run-tests.sh "$CLUSTER_ID" "-" "{fastpaths/getting-started,fastpaths/getting-started/**,fastpaths/operator,fastpaths/operator/**,fastpaths/developer,fastpaths/developer/**,fastpaths/eks-capabilities,fastpaths/eks-capabilities/**}"
       - name: Refresh AWS credentials
         if: always()
         uses: aws-actions/configure-aws-credentials@v4.3.1

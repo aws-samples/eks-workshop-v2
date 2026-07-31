@@ -14,6 +14,8 @@ module "lab" {
   tags                      = local.tags
   resources_precreated      = var.resources_precreated
   inbound_cidrs             = var.inbound_cidrs
+  enable_eks_capabilities   = var.enable_eks_capabilities
+  argocd_admin_email        = var.argocd_admin_email
 }
 
 locals {
