@@ -4,19 +4,36 @@ sidebar_position: 35
 pagination_next: fastpaths/explore/index
 ---
 
-Now, with the `carts` Service Account associated with the authorized IAM role, the `carts` Pod has permission to access the DynamoDB table. Access the web store again and navigate to the shopping cart.
+Now, with the `carts` Service Account associated with the authorized IAM role, the `carts` Pod has permission to access the DynamoDB table. Let's verify this by exposing the UI through a Network Load Balancer and accessing the shopping cart.
+
+First, create an NLB service to access the web store externally:
 
 ```bash
-$ LB_HOSTNAME=$(kubectl get svc ui-nlb-auto -n ui -o yaml | yq .status.loadBalancer.ingress[0].hostname)
-$ echo "http://$LB_HOSTNAME"
-http://k8s-ui-uinlbaut-a9797f0f61.elb.us-west-2.amazonaws.com
+$ cat << 'EOF' | kubectl apply -f -
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui-nlb-auto
+  namespace: ui
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: instance
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8080
+      name: http
+  selector:
+    app.kubernetes.io/name: ui
+    app.kubernetes.io/instance: ui
+    app.kubernetes.io/component: service
+EOF
+service/ui-nlb-auto created
 ```
 
-The `carts` Pod is able to reach the DynamoDB service and the shopping cart is now accessible!
-
-![Cart](/img/sample-app-screens/shopping-cart.webp)
-
-After the AWS IAM role is associated with the Service Account, any newly created Pods using that Service Account will be intercepted by the [EKS Pod Identity webhook](https://github.com/aws/amazon-eks-pod-identity-webhook). This webhook runs on the Amazon EKS cluster's control plane and is fully managed by AWS. Take a closer look at the new `carts` Pod to see the new environment variables:
+While we wait for the NLB to come online, let's validate the new environment variables that EKS Pod Identity has injected into the `carts` Pod:
 
 ```bash
 $ kubectl -n carts exec deployment/carts -- env | grep AWS
@@ -32,5 +49,26 @@ Notable points about these environment variables:
 - `AWS_DEFAULT_REGION` - The region is set automatically to the same as our EKS cluster
 - `AWS_STS_REGIONAL_ENDPOINTS` - Regional STS endpoints are configured to avoid putting too much pressure on the global endpoint in `us-east-1`
 - `AWS_CONTAINER_CREDENTIALS_FULL_URI` - This variable tells AWS SDKs how to obtain credentials using the [HTTP credential provider](https://docs.aws.amazon.com/sdkref/latest/guide/feature-container-credentials.html). This means that EKS Pod Identity does not need to inject credentials via something like an `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` pair, and instead the SDKs can have temporary credentials vended to them via the EKS Pod Identity mechanism. You can read more about how this functions in the [AWS documentation](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html).
+
+Now let's wait for the load balancer to finish provisioning:
+
+```bash timeout=610
+$ wait-for-lb $(kubectl get service -n ui ui-nlb-auto -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+
+Waiting for k8s-ui-uinlbaut-a9797f0f61.elb.us-west-2.amazonaws.com...
+You can now access http://k8s-ui-uinlbaut-a9797f0f61.elb.us-west-2.amazonaws.com
+```
+
+Access the web store and navigate to the shopping cart:
+
+```bash
+$ LB_HOSTNAME=$(kubectl get svc ui-nlb-auto -n ui -o yaml | yq .status.loadBalancer.ingress[0].hostname)
+$ echo "http://$LB_HOSTNAME"
+http://k8s-ui-uinlbaut-a9797f0f61.elb.us-west-2.amazonaws.com
+```
+
+The `carts` Pod is able to reach the DynamoDB service and the shopping cart is now accessible!
+
+![Cart](/img/sample-app-screens/shopping-cart.webp)
 
 You have successfully configured Pod Identity in your application.
