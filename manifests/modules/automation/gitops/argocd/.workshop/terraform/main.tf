@@ -1,107 +1,229 @@
-terraform {
-  required_providers {
-    kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = ">= 1.14"
-    }
-  }
+data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
+
+locals {
+  capability_role_name = "${var.addon_context.eks_cluster_id}-argocd-capability"
 }
 
-module "ebs_csi_driver_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.60.0"
+resource "aws_iam_role" "argocd_capability" {
+  name = local.capability_role_name
 
-  role_name_prefix   = "${var.addon_context.eks_cluster_id}-ebs-csi-"
-  policy_name_prefix = "${var.addon_context.eks_cluster_id}-ebs-csi-"
-
-  attach_ebs_csi_policy = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = var.addon_context.eks_oidc_provider_arn
-      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
-    }
-  }
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect    = "Allow"
+      Principal = { Service = "capabilities.eks.amazonaws.com" }
+      Action    = ["sts:AssumeRole", "sts:TagSession"]
+    }]
+  })
 
   tags = var.tags
 }
 
-module "eks_blueprints_addons" {
-  source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.23.0"
+resource "aws_iam_role_policy" "argocd_capability_sso" {
+  name = "ArgocdCapabilitySsoPolicy"
+  role = aws_iam_role.argocd_capability.id
 
-  cluster_name      = var.addon_context.eks_cluster_id
-  cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint
-  cluster_version   = var.eks_cluster_version
-  oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["sts:GetCallerIdentity"]
+      Resource = ["*"]
+    }]
+  })
+}
 
-  eks_addons = {
-    aws-ebs-csi-driver = {
-      most_recent              = true
-      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
-      preserve                 = false
-      configuration_values     = jsonencode({ defaultStorageClass = { enabled = true } })
+# EKS validates the trust policy before IAM propagates globally (~15s).
+resource "time_sleep" "iam_propagation" {
+  depends_on      = [aws_iam_role_policy.argocd_capability_sso]
+  create_duration = "30s"
+}
+
+resource "null_resource" "idc_instance" {
+  triggers = {
+    region = data.aws_region.current.id
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOF
+      set -e
+      REGION="${data.aws_region.current.id}"
+
+      IDC_JSON=$(aws sso-admin list-instances --region $REGION --output json)
+      COUNT=$(echo "$IDC_JSON" | jq '.Instances | length')
+
+      if [ "$COUNT" = "0" ]; then
+        IDC_STATUS="NOTFOUND"
+        IDC_ARN=""
+      else
+        IDC_ARN=$(echo "$IDC_JSON" | jq -r '.Instances[0].InstanceArn')
+        IDC_STATUS=$(echo "$IDC_JSON" | jq -r '.Instances[0].Status')
+      fi
+      echo "IDC status: $IDC_STATUS"
+
+      if [ "$IDC_STATUS" = "ACTIVE" ]; then
+        echo "IDC instance already ACTIVE: $IDC_ARN"
+        exit 0
+      fi
+
+      if [ "$IDC_STATUS" = "CREATE_FAILED" ]; then
+        echo "Removing CREATE_FAILED instance..."
+        aws sso-admin delete-instance --instance-arn "$IDC_ARN" --region $REGION
+        for i in $(seq 1 60); do
+          COUNT=$(aws sso-admin list-instances --region $REGION --output json | jq '.Instances | length')
+          [ "$COUNT" = "0" ] && break
+          sleep 5
+        done
+      fi
+
+      echo "Creating IDC instance..."
+      IDC_ARN=$(aws sso-admin create-instance --name eks-workshop \
+        --region $REGION --output json | jq -r '.InstanceArn')
+      echo "IDC ARN: $IDC_ARN"
+
+      for i in $(seq 1 60); do
+        STATUS=$(aws sso-admin describe-instance --instance-arn "$IDC_ARN" \
+          --region $REGION --output json | jq -r '.Status // "UNKNOWN"')
+        echo "  [$i] IDC status: $STATUS"
+        [ "$STATUS" = "ACTIVE" ] && exit 0
+        [ "$STATUS" = "CREATE_FAILED" ] && echo "IDC CREATE_FAILED" && exit 1
+        sleep 5
+      done
+      echo "Timeout waiting for IDC ACTIVE"
+      exit 1
+    EOF
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<-EOF
+      REGION="${self.triggers.region}"
+      IDC_ARN=$(aws sso-admin list-instances --region $REGION --output json \
+        | jq -r '.Instances[] | select(.Name=="eks-workshop") | .InstanceArn // empty' | head -1)
+      if [ -n "$IDC_ARN" ]; then
+        echo "Deleting IDC instance $IDC_ARN..."
+        aws sso-admin delete-instance --instance-arn "$IDC_ARN" --region $REGION 2>/dev/null || true
+      fi
+    EOF
+  }
+}
+
+data "aws_ssoadmin_instances" "main" {
+  depends_on = [null_resource.idc_instance]
+}
+
+resource "aws_identitystore_user" "argocd_admin" {
+  identity_store_id = tolist(data.aws_ssoadmin_instances.main.identity_store_ids)[0]
+
+  user_name    = "argocd-admin@eksworkshop.com"
+  display_name = "ArgoCD Workshop Admin"
+
+  name {
+    given_name  = "ArgoCD"
+    family_name = "Admin"
+  }
+
+  emails {
+    value   = "argocd-admin@eksworkshop.com"
+    primary = true
+  }
+}
+
+resource "null_resource" "cleanup_stale_access_entry" {
+  depends_on = [time_sleep.iam_propagation]
+
+  triggers = {
+    role_arn     = aws_iam_role.argocd_capability.arn
+    cluster_name = var.addon_context.eks_cluster_id
+    region       = data.aws_region.current.id
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOF
+      aws eks delete-access-entry \
+        --region ${self.triggers.region} \
+        --cluster-name ${self.triggers.cluster_name} \
+        --principal-arn ${self.triggers.role_arn} 2>/dev/null || true
+    EOF
+  }
+}
+
+resource "aws_eks_capability" "argocd" {
+  depends_on = [
+    null_resource.cleanup_stale_access_entry,
+    aws_identitystore_user.argocd_admin,
+  ]
+
+  cluster_name              = var.addon_context.eks_cluster_id
+  capability_name           = "argocd"
+  type                      = "ARGOCD"
+  role_arn                  = aws_iam_role.argocd_capability.arn
+  delete_propagation_policy = "RETAIN"
+
+  configuration {
+    argo_cd {
+      aws_idc {
+        idc_instance_arn = tolist(data.aws_ssoadmin_instances.main.arns)[0]
+        idc_region       = data.aws_region.current.id
+      }
+
+      rbac_role_mapping {
+        role = "ADMIN"
+        identity {
+          id   = aws_identitystore_user.argocd_admin.user_id
+          type = "SSO_USER"
+        }
+      }
     }
   }
+}
 
-  enable_aws_load_balancer_controller = true
-  aws_load_balancer_controller = {
-    wait        = true
-    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
-    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
+resource "null_resource" "argocd_capability_access_entry" {
+  depends_on = [aws_eks_capability.argocd]
+
+  triggers = {
+    role_arn     = aws_iam_role.argocd_capability.arn
+    cluster_name = var.addon_context.eks_cluster_id
+    region       = data.aws_region.current.id
   }
 
-  observability_tag = null
+  provisioner "local-exec" {
+    command = <<-EOF
+      aws eks create-access-entry \
+        --region ${self.triggers.region} \
+        --cluster-name ${self.triggers.cluster_name} \
+        --principal-arn ${self.triggers.role_arn} 2>/dev/null || true
+      aws eks associate-access-policy \
+        --region ${self.triggers.region} \
+        --cluster-name ${self.triggers.cluster_name} \
+        --principal-arn ${self.triggers.role_arn} \
+        --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy \
+        --access-scope type=cluster
+    EOF
+  }
 }
 
-resource "time_sleep" "wait" {
-  depends_on = [
-    module.eks_blueprints_addons
-  ]
+resource "null_resource" "argocd_manager_rbac" {
+  depends_on = [aws_eks_capability.argocd]
 
-  create_duration = "10s"
+  triggers = {
+    cluster_name = var.addon_context.eks_cluster_id
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOF
+      kubectl create clusterrolebinding argocd-manager-cluster-admin \
+        --clusterrole=cluster-admin \
+        --serviceaccount=kube-system:argocd-manager 2>/dev/null || true
+    EOF
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = "kubectl delete clusterrolebinding argocd-manager-cluster-admin 2>/dev/null || true"
+  }
 }
-
-resource "kubectl_manifest" "ingress_class_params" {
-  depends_on = [time_sleep.wait]
-
-  wait = true
-
-  yaml_body = <<-YAML
-    apiVersion: elbv2.k8s.aws/v1beta1
-    kind: IngressClassParams
-    metadata:
-      name: restricted
-    spec:
-      scheme: internet-facing
-      inboundCIDRs: ${jsonencode(split(",", var.inbound_cidrs))}
-  YAML
-}
-
-resource "kubectl_manifest" "ingress_class" {
-  wait = true
-
-  yaml_body = <<-YAML
-    apiVersion: networking.k8s.io/v1
-    kind: IngressClass
-    metadata:
-      name: restricted
-      annotations:
-        ingressclass.kubernetes.io/is-default-class: "true"
-    spec:
-      controller: ingress.k8s.aws/alb
-      parameters:
-        apiGroup: elbv2.k8s.aws
-        kind: IngressClassParams
-        name: restricted
-  YAML
-
-  depends_on = [
-    kubectl_manifest.ingress_class_params
-  ]
-}
-
-data "aws_region" "current" {}
 
 resource "aws_codecommit_repository" "argocd" {
   repository_name = "${var.addon_context.eks_cluster_id}-argocd"
@@ -113,15 +235,15 @@ resource "aws_iam_user" "gitops" {
   path = "/"
 }
 
+resource "tls_private_key" "gitops" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 resource "aws_iam_user_ssh_key" "gitops" {
   username   = aws_iam_user.gitops.name
   encoding   = "SSH"
   public_key = tls_private_key.gitops.public_key_openssh
-}
-
-resource "tls_private_key" "gitops" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
 }
 
 resource "local_file" "ssh_private_key" {
@@ -131,26 +253,23 @@ resource "local_file" "ssh_private_key" {
 }
 
 resource "local_file" "ssh_config" {
-  content         = <<EOF
-Host git-codecommit.*.amazonaws.com
-  User ${aws_iam_user.gitops.unique_id}
-  IdentityFile ~/.ssh/gitops_ssh.pem
-EOF
+  content         = <<-EOF
+    Host git-codecommit.*.amazonaws.com
+      User ${aws_iam_user_ssh_key.gitops.id}
+      IdentityFile ~/.ssh/gitops_ssh.pem
+  EOF
   filename        = "/home/ec2-user/.ssh/config"
   file_permission = "0600"
 }
 
 data "aws_iam_policy_document" "gitops_access" {
   statement {
-    sid = ""
     actions = [
       "codecommit:GitPull",
-      "codecommit:GitPush"
+      "codecommit:GitPush",
     ]
-    effect = "Allow"
-    resources = [
-      aws_codecommit_repository.argocd.arn
-    ]
+    effect    = "Allow"
+    resources = [aws_codecommit_repository.argocd.arn]
   }
 }
 
