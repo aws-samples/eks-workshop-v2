@@ -19,6 +19,7 @@ First, let's confirm the CloudWatch agent is running and collecting metrics from
 $ kubectl get pods -n amazon-cloudwatch
 NAME                                                              READY   STATUS    RESTARTS   AGE
 amazon-cloudwatch-observability-controller-manager-7bf79bbjc8w5   1/1     Running   0          19m
+application-metrics-collector-5bbb4675b8-6zsfb                    1/1     Running   0          2m
 cloudwatch-agent-cluster-scraper-7578f8fccb-8cxjm                 1/1     Running   0          18m
 cloudwatch-agent-pfsvk                                            1/1     Running   0          18m
 cloudwatch-agent-wm6lp                                            1/1     Running   0          18m
@@ -29,7 +30,7 @@ node-exporter-nlkc9                                               1/1     Runnin
 node-exporter-ztqcg                                               1/1     Running   0          19m
 ```
 
-You should see `cloudwatch-agent` pods running on each node (as a DaemonSet), a cluster scraper, kube-state-metrics, and node-exporter pods. These components work together to collect infrastructure and application metrics via OpenTelemetry and send them to CloudWatch.
+You should see `cloudwatch-agent` pods running on each node (as a DaemonSet), a cluster scraper, kube-state-metrics, node-exporter pods, and the `application-metrics-collector` deployment. These components work together to collect infrastructure and application metrics via OpenTelemetry and send them to CloudWatch.
 
 Metrics start appearing in Query Studio within 5 minutes of the pods being ready and you can query them using PromQL or SQL syntax based queries. Go ahead and try running these below sample queries. 
 
@@ -177,23 +178,99 @@ max by(kubernetes_io_hostname) (rate(node_network_receive_errs_total[5m]) + rate
 
 ## Application and service metrics
 
-These queries cover HTTP-level metrics exposed by services running in the cluster.
+To query application-level metrics, we first need to deploy a dedicated CloudWatch Agent collector that scrapes Prometheus endpoints exposed by the workshop services. This collector is configured to scrape the `orders` service (Java/Spring Boot) and the `checkout` service (Node.js).
+
+Deploy the application metrics collector:
+
+```bash
+$ export CWA_IMAGE=$(kubectl get daemonset -n amazon-cloudwatch cloudwatch-agent -o jsonpath='{.spec.template.spec.containers[0].image}')
+$ kubectl kustomize ~/environment/eks-workshop/modules/observability/otlp-metrics/otel \
+  | envsubst | kubectl apply -f -
+amazoncloudwatchagent.cloudwatch.aws.amazon.com/application-metrics-collector created
+```
+
+Next, deploy a load generator to produce application traffic and generate order metrics:
+
+```bash test=false
+$ cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: load-generator
+  namespace: other
+spec:
+  containers:
+  - name: artillery
+    image: artilleryio/artillery:2.0.0-31
+    args:
+    - "run"
+    - "-t"
+    - "http://ui.ui.svc"
+    - "/scripts/scenario.yml"
+    volumeMounts:
+    - name: scripts
+      mountPath: /scripts
+  initContainers:
+  - name: setup
+    image: public.ecr.aws/aws-containers/retail-store-sample-utils:load-gen.1.2.1
+    command:
+    - bash
+    args:
+    - -c
+    - "cp /artillery/* /scripts"
+    volumeMounts:
+    - name: scripts
+      mountPath: "/scripts"
+  volumes:
+  - name: scripts
+    emptyDir: {}
+EOF
+```
+
+Verify the application metrics collector is running:
+
+```bash
+$ kubectl get pods -n amazon-cloudwatch | grep application-metrics
+application-metrics-collector-5bbb4675b8-6zsfb   1/1     Running   0          2m
+```
+
+Wait approximately 5 minutes for application metrics to start appearing in Query Studio, then try the following queries.
+
+**Total order count** — aggregate count of all orders through the retail store:
+
+```text
+sum(watch_orders_total{productId="*"}) by (productId)
+```
+
+**Orders by product** — shows which products are being ordered most frequently:
+
+```text
+sum by(productId) (watch_orders_total{productId!="*"})
+```
+
+**Order rate** — rate of orders being placed over a 2-minute window:
+
+```text
+sum by(productId) (rate(watch_orders_total{productId="*"}[2m]))
+```
+
+**JDBC connection pool status** — shows idle database connections for the catalog/orders services:
+
+```text
+jdbc_connections_idle
+```
+
+**Node.js heap size** — memory usage of the checkout service runtime:
+
+```text
+nodejs_heap_size_total_bytes
+```
 
 **HTTP request rate by namespace** — shows which services are receiving the most traffic:
 
 ```text
-sum by(k8s_namespace_name) (rate(http_requests_total[5m]))
+sum by(Namespace) (rate(http_requests_total[5m]))
 ```
-
-**HTTP request rate across the entire cluster** — overall request throughput:
-
-```text
-sum(rate(http_requests_total[5m]))
-```
-
-:::info
-Custom application metrics (such as business KPIs or framework-specific metrics like JVM heap or Node.js internals) require additional collector configuration to be sent to CloudWatch. The metrics in this section represent what is available out-of-the-box with the CloudWatch Observability addon's OTel Container Insights configuration.
-:::
 
 ## PromQL patterns reference
 
