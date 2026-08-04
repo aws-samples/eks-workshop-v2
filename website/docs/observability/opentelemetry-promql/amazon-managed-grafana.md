@@ -9,14 +9,21 @@ Amazon CloudWatch OpenTelemetry metrics appear as a native data source in Amazon
 Retrieve the Grafana URL and credentials (see [Accessing Grafana](https://eksworkshop.com/docs/observability/open-source-metrics/accessing-grafana)):
 
 ```bash
-kubectl get ingress -n grafana grafana -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}{"\n"}'
-kubectl get -n grafana secrets/grafana -o=jsonpath='{.data.admin-user}' | base64 -d; printf "\n"
-kubectl get -n grafana secrets/grafana -o=jsonpath='{.data.admin-password}' | base64 -d; printf "\n"
+$ kubectl get ingress -n grafana grafana -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}{"\n"}'
+$ kubectl get -n grafana secrets/grafana -o=jsonpath='{.data.admin-user}' | base64 -d; printf "\n"
+$ kubectl get -n grafana secrets/grafana -o=jsonpath='{.data.admin-password}' | base64 -d; printf "\n"
 ```
+Opening this URL in a browser will bring up a login screen.
+
+![Grafana dashboard](/docs/observability/open-source-metrics/grafana-login.webp)
 
 **Configure the AMP Data Source**
 
-After logging into Grafana, manually add the Amazon Managed Service for Prometheus data source:
+After logging into the Grafana console, let's take a look at the datasources section. 
+
+![Amazon Managed Service for CloudWatch PromQL](/docs/observability/open-source-metrics/datasource.webp)
+
+Lets manually add the Amazon Managed Service for Prometheus data source:
 
 1. Go to **Connections** → **Data sources** → **Add data source**
 2. Select **Amazon Managed Service for Prometheus**
@@ -27,11 +34,3 @@ After logging into Grafana, manually add the Amazon Managed Service for Promethe
 7. Click **Save & test**
 
 Refer to the official documentation: [CloudWatch PromQL](https://docs.aws.amazon.com/grafana/latest/userguide/cloudwatch-promql.html)
-
-**Files Modified**
-
-| File | Change |
-|------|--------|
-| `manifests/modules/observability/otlp-metrics/.workshop/terraform/main.tf` | Added Pod Identity agent, IAM role, Pod Identity association, CloudWatch observability add-on (OTLP metrics only), telemetry enrichment, OTel enrichment |
-| `manifests/modules/observability/otlp-metrics/.workshop/cleanup.sh` | Added cleanup for OTel enrichment and telemetry enrichment |
-| `lab/iam/policies/labs1.yaml` | Added `observabilityadmin:StartTelemetryEnrichment`, `cloudwatch:StartOTelEnrichment` permissions |

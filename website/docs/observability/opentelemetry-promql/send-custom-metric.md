@@ -15,7 +15,7 @@ The workshop cluster also runs OTel Container Insights, which collects infrastru
 Deploy the CloudWatch Agent CRD to scrape Prometheus metrics from application workloads:
 
 ```bash
-export CWA_IMAGE=$(kubectl get daemonset -n amazon-cloudwatch cloudwatch-agent -o jsonpath='{.spec.template.spec.containers[0].image}')
+$ export CWA_IMAGE=$(kubectl get daemonset -n amazon-cloudwatch cloudwatch-agent -o jsonpath='{.spec.template.spec.containers[0].image}')
 kubectl kustomize ~/environment/eks-workshop/modules/observability/otlp-metrics/otel | envsubst | kubectl apply -f -
 ```
 
@@ -24,7 +24,7 @@ kubectl kustomize ~/environment/eks-workshop/modules/observability/otlp-metrics/
 To produce application metrics, deploy the load generator (see [Application Metrics](https://eksworkshop.com/docs/observability/open-source-metrics/application-metrics) for reference):
 
 ```bash
-cat <<EOF | kubectl apply -f -
+$ cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
