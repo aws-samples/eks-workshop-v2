@@ -1,14 +1,16 @@
 ---
-title: "Application Metrics"
-sidebar_position: 50
+title: "OpenTelemetry & PromQL"
+sidebar_position: 60
 ---
 
-aaaaa.    In this section we'll look at gaining insight in to metrics exposed by our workloads. Some examples of these could be:
+In this section we'll look at the following:
 
-- System metrics such as Java heap metrics or database connection pool status
-- Application metrics related to business KPIs
+- Enable OTel Enrichment: Enrich existing CloudWatch metrics with AWS resource attributes for unified PromQL querying
+- Send Custom Metrics: Collect application metrics from petsite (.NET on EKS) and petfood (Rust on ECS) using the CloudWatch Agent
+- Query with PromQL: Use Amazon CloudWatch Query Studio to query infrastructure, application, and enriched metrics
+- Amazon Managed Grafana: Connect Amazon Managed Grafana and build a full-stack observability dashboard
 
-Let's look at how to ingest application metrics using AWS Distro for OpenTelemetry and visualize the metrics using Grafana.
+Let's Enable AWS vended metric enrichment.
 
 Each of the components in this workshop have been instrumented to provide Prometheus metrics using libraries relevant to the particular programming language or framework. We can look at an example of these metrics from the orders service like so:
 

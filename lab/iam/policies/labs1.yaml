@@ -135,6 +135,11 @@ Statement:
   - Effect: Allow
     Action:
       - cloudwatch:GetMetricData
+      - cloudwatch:StartOTelEnrichment
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - observabilityadmin:StartTelemetryEnrichment
     Resource: ["*"]
   - Effect: Allow
     Action:
