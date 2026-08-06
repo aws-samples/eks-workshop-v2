@@ -7,11 +7,13 @@ availabilityZones:
 metadata:
   name: ${EKS_CLUSTER_AUTO_NAME}
   region: ${AWS_REGION}
-  version: "1.33"
+  version: latest
   tags:
     karpenter.sh/discovery: ${EKS_CLUSTER_AUTO_NAME}
     created-by: eks-workshop-v2
     env: ${EKS_CLUSTER_AUTO_NAME}
+upgradePolicy:
+  supportType: STANDARD
 vpc:
   cidr: 10.43.0.0/16
   clusterEndpoints:
