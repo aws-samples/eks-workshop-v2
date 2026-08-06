@@ -8,5 +8,5 @@ spec:
       containers:
         - name: checkout
           env:
-            - name: SHIPPING_NAME_PREFIX
+            - name: RETAIL_CHECKOUT_SHIPPING_NAME_PREFIX
               value: "Lattice "
