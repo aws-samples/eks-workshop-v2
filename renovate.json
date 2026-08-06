@@ -6,7 +6,7 @@
     ":automergeStableNonMajor"
   ],
   "schedule": ["* * 7-14 * *"],
-  "enabledManagers": ["custom.regex", "github-actions", "terraform", "npm"],
+  "enabledManagers": ["custom.regex", "github-actions", "terraform", "npm", "mise"],
   "labels": ["content/other"],
   "minimumReleaseAge": "28 days",
   "internalChecksFilter": "strict",
@@ -37,28 +37,31 @@
       "automerge": true,
       "matchCurrentVersion": ">= 1.0.0",
       "matchUpdateTypes": ["minor", "patch"],
-      "matchManagers": ["custom.regex"]
+      "matchManagers": ["custom.regex", "mise"]
     },
     {
       "matchPackagePatterns": ["^@docusaurus"],
       "enabled": false
     },
     {
-      "matchFileNames": ["lab/scripts/installer.sh"],
+      "matchFileNames": ["lab/mise.toml"],
       "groupName": "IDE binaries",
       "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      "matchDepNames": ["github:hatoo/oha"],
+      "extractVersion": "^v(?<version>.+)$"
+    },
+    {
+      "matchDepNames": ["github:bitnami-labs/sealed-secrets"],
+      "extractVersion": "^v(?<version>.+)$"
+    },
+    {
+      "matchDepNames": ["github:aws/amazon-ec2-instance-selector"],
+      "extractVersion": "^v(?<version>.+)$"
     }
   ],
   "customManagers": [
-    {
-      "customType": "regex",
-      "fileMatch": ["lab/scripts/installer.sh"],
-      "matchStrings": [
-        "depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?_version='(?<currentValue>.*)'\\s"
-      ],
-      "datasourceTemplate": "github-releases",
-      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
-    },
     {
       "customType": "regex",
       "fileMatch": ["vars\\.tf$"],
