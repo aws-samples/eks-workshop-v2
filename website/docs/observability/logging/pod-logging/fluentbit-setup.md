@@ -31,7 +31,7 @@ NAME                                DESIRED   CURRENT   READY   UP-TO-DATE   AVA
 daemonset.apps/aws-for-fluent-bit   3         3         3       3            3           <none>          96s
 ```
 
-The ConfigMap for aws-for-fluent-bit is configured to stream the contents of files in the directory `/var/log/containers/*.log` from each node to the CloudWatch log group `/eks-workshop/worker-fluentbit-logs`:
+The ConfigMap for aws-for-fluent-bit is configured to stream the contents of files in the directory `/var/log/containers/*.log` from each node to a CloudWatch log group whose name follows the pattern `/eks-workshop/worker-fluentbit-logs-<random-suffix>`. The exact name was generated at install time, so read it from the `[OUTPUT]` section of the ConfigMap rather than assuming a fixed value:
 
 ```bash hook=desc-cm
 $ kubectl describe configmap -n kube-system -l app.kubernetes.io/name=aws-for-fluent-bit
@@ -86,6 +86,10 @@ fluent-bit.conf:
     log_stream_prefix     fluentbit-
 ...
 ```
+
+:::tip
+The `log_group_name` value above (`/eks-workshop/worker-fluentbit-logs-a1b2c3`) is an example, the random suffix in your environment will differ. Note this value down, you'll use it later to locate the logs in the CloudWatch console. It is also available in your shell as the `CLOUDWATCH_LOG_GROUP_NAME` environment variable:
+:::
 
 Use the `kubectl logs` command to check the Fluent Bit Pod logs, where you will observe new CloudWatch Log groups and streams are created for the services.
 
