@@ -17,7 +17,7 @@ $ prepare-environment observability/container-insights
 This will make the following changes to your lab environment:
 
 - Install the OpenTelemetry operator
-- Create an IAM role for the ADOT collector to access CloudWatch
+- Create an IAM role for the application metrics collector to access CloudWatch
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/container-insights/.workshop/terraform).
 
@@ -27,8 +27,8 @@ In this lab, we'll see how to enable and use [CloudWatch Container Insights](htt
 
 The metrics include utilization for resources such as CPU, memory, disk, and network. Container Insights also provides diagnostic information, such as container restart failures, to help you isolate issues and resolve them quickly. You can also set CloudWatch alarms on metrics that Container Insights collects.
 
-The metrics that Container Insights collects are available in CloudWatch automatic dashboards. You can analyze and troubleshoot container performance and logs data with CloudWatch Logs Insights.
+The metrics that Container Insights collects are available in CloudWatch automatic dashboards. You can analyze and troubleshoot container performance and logs data with CloudWatch Log Analytics (the console experience that includes Logs Insights queries).
 
 Operational data is collected as performance log events. These are entries that use a structured JSON schema that enables high-cardinality data to be ingested and stored at scale. From this data, CloudWatch creates aggregated metrics at the cluster, node, pod, task, and service level as CloudWatch metrics.
 
-We'll set up Container Insights to collect metrics from Amazon EKS cluster by using the [AWS Distro for OpenTelemetry collector](https://aws-otel.github.io/).
+We'll set up Container Insights to collect metrics from Amazon EKS cluster by using the Amazon Cloudwatch Observability EKS add-on: [Quick start: OTel Container Insights on Amazon EKS](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/container-insights-eks-otel-quickstart.html)
