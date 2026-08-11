@@ -35,65 +35,9 @@ In the previous section the Amazon CloudWatch Observability add-on deployed the 
 
 Rather than deploying a separate collector, we'll extend the add-on's configuration with an additional OpenTelemetry pipeline that scrapes our application pods. The add-on runs cluster-wide scraping in a dedicated single-replica Deployment named `cloudwatch-agent-cluster-scraper` (separate from the per-node `cloudwatch-agent` DaemonSet), so the metrics are collected once without duplicates.
 
-Create the configuration file for the add-on:
+The configuration below adds a Prometheus pipeline to the CloudWatch agent. It is available in your environment at `~/environment/eks-workshop/modules/observability/container-insights/cwagent-prometheus/cloudwatch-agent-prometheus.yaml`:
 
-```bash
-$ cat <<'EOF' > ~/environment/cloudwatch-agent-prometheus.yaml
-otelContainerInsights:
-  enabled: true
-agent:
-  otelConfig:
-    receivers:
-      prometheus/appmetrics:
-        config:
-          global:
-            scrape_interval: 30s
-            scrape_timeout: 10s
-          scrape_configs:
-            - job_name: retail-app-pods
-              honor_labels: true
-              kubernetes_sd_configs:
-                - role: pod
-                  namespaces:
-                    names: [orders]
-              relabel_configs:
-                - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
-                  action: keep
-                  regex: true
-                - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
-                  action: replace
-                  target_label: __metrics_path__
-                  regex: (.+)
-                - action: labelmap
-                  regex: __meta_kubernetes_pod_label_(.+)
-                - source_labels: [__meta_kubernetes_namespace]
-                  action: replace
-                  target_label: namespace
-                - source_labels: [__meta_kubernetes_pod_name]
-                  action: replace
-                  target_label: pod
-    processors:
-      batch/appmetrics:
-        timeout: 30s
-    exporters:
-      awsemf/appmetrics:
-        namespace: ContainerInsights/Prometheus
-        log_group_name: /aws/containerinsights/eks-workshop/prometheus
-        dimension_rollup_option: NoDimensionRollup
-        resource_to_telemetry_conversion:
-          enabled: true
-        metric_declarations:
-          - dimensions: [[pod, productId]]
-            metric_name_selectors:
-              - ^watch_orders_total$$
-    service:
-      pipelines:
-        metrics/appmetrics:
-          receivers: [prometheus/appmetrics]
-          processors: [batch/appmetrics]
-          exporters: [awsemf/appmetrics]
-EOF
-```
+::yaml{file="manifests/modules/observability/container-insights/cwagent-prometheus/cloudwatch-agent-prometheus.yaml"}
 
 Let's break down what this configuration does:
 
@@ -111,7 +55,7 @@ Apply the configuration by updating the add-on, then wait for it to become activ
 $ aws eks update-addon \
   --cluster-name $EKS_CLUSTER_NAME \
   --addon-name amazon-cloudwatch-observability \
-  --configuration-values file://$HOME/environment/cloudwatch-agent-prometheus.yaml \
+  --configuration-values file://$HOME/environment/eks-workshop/modules/observability/container-insights/cwagent-prometheus/cloudwatch-agent-prometheus.yaml \
   --resolve-conflicts OVERWRITE
 $ aws eks wait addon-active \
   --cluster-name $EKS_CLUSTER_NAME \
@@ -127,7 +71,7 @@ $ kubectl -n amazon-cloudwatch rollout status deployment/cloudwatch-agent-cluste
 
 Confirm that the scraper has loaded our job:
 
-```bash
+```bash test=false
 $ kubectl -n amazon-cloudwatch logs -l app.kubernetes.io/name=cloudwatch-agent-cluster-scraper --tail=200 | grep retail-app-pods
 ... "msg":"Scrape job added","jobName":"retail-app-pods"
 ```

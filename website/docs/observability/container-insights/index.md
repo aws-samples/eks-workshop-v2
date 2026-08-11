@@ -16,8 +16,8 @@ $ prepare-environment observability/container-insights
 
 This will make the following changes to your lab environment:
 
-- Install the OpenTelemetry operator
-- Create an IAM role for the application metrics collector to access CloudWatch
+- Install the EKS Pod Identity Agent add-on (a prerequisite for granting the CloudWatch agent permissions via EKS Pod Identity)
+- Create a CloudWatch dashboard used later to visualize application metrics
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/container-insights/.workshop/terraform).
 

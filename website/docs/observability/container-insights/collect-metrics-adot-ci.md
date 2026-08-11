@@ -11,31 +11,14 @@ Under the hood the CloudWatch agent is built on [OpenTelemetry](https://opentele
 
 The CloudWatch agent needs IAM permissions to send metrics and logs to CloudWatch. We'll grant them using [Amazon EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html), which lets a Kubernetes service account assume an IAM role without any static credentials.
 
-First ensure the EKS Pod Identity Agent is running on the cluster:
-
-```bash
-$ aws eks create-addon --cluster-name $EKS_CLUSTER_NAME --addon-name eks-pod-identity-agent
-$ aws eks wait addon-active --cluster-name $EKS_CLUSTER_NAME --addon-name eks-pod-identity-agent
-```
+The [EKS Pod Identity Agent](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html) add-on, a prerequisite for Pod Identity, has already been installed on the cluster for you by `prepare-environment`.
 
 Create an IAM role that the CloudWatch agent can assume. The trust policy allows the EKS Pod Identity service principal, and we attach the AWS managed `CloudWatchAgentServerPolicy`:
 
 ```bash
-$ cat <<'EOF' > /tmp/cloudwatch-agent-trust-policy.json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": { "Service": "pods.eks.amazonaws.com" },
-      "Action": ["sts:AssumeRole", "sts:TagSession"]
-    }
-  ]
-}
-EOF
 $ aws iam create-role \
   --role-name $EKS_CLUSTER_NAME-cloudwatch-agent \
-  --assume-role-policy-document file:///tmp/cloudwatch-agent-trust-policy.json
+  --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"pods.eks.amazonaws.com"},"Action":["sts:AssumeRole","sts:TagSession"]}]}'
 $ aws iam attach-role-policy \
   --role-name $EKS_CLUSTER_NAME-cloudwatch-agent \
   --policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
