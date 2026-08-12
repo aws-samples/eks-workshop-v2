@@ -1,5 +1,5 @@
 ---
-title: "Scraping metrics using AWS Distro for OpenTelemetry"
+title: "Collecting metrics with the CloudWatch agent"
 sidebar_position: 10
 ---
 
@@ -9,79 +9,77 @@ In this lab we'll be storing metrics in an Amazon Managed Service for Prometheus
 
 To view the workspace, click on the **All Workspaces** tab on the left control panel. Select the workspace that starts with **eks-workshop** and you can view several tabs under the workspace such as rules management, alert manager etc.
 
-To gather the metrics from the Amazon EKS Cluster, we'll deploy a `OpenTelemetryCollector` custom resource. The ADOT operator running on the EKS cluster detects the presence of or changes of the this resource and for any such changes, the operator performs the following actions:
+To gather metrics from the Amazon EKS cluster we'll use the [Amazon CloudWatch Observability EKS add-on](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Observability-EKS-addon.html), which deploys the CloudWatch agent. The agent runs an embedded OpenTelemetry collector, and because that collector includes the [Prometheus receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.md) and the [Prometheus Remote Write exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusremotewriteexporter), we can point the add-on at Amazon Managed Service for Prometheus instead of CloudWatch.
 
-- Verifies that all the required connections for these creation, update, or deletion requests to the Kubernetes API server are available.
-- Deploys ADOT collector instances in the way the user expressed in the `OpenTelemetryCollector` resource configuration.
+:::info
+There is nothing special about the CloudWatch agent here. Any OpenTelemetry-compatible collector configured with a Prometheus receiver, the `sigv4auth` extension and the Prometheus Remote Write exporter can send metrics to Amazon Managed Service for Prometheus. We use the add-on because it is a managed, supported way to run that collector without deploying and maintaining a collector or operator yourself.
+:::
 
-Now, let's create resources to allow the ADOT collector the permissions it needed. We'll start with the ClusterRole that gives the collector permissions to access the Kubernetes API:
+### Grant the CloudWatch agent permissions
 
-::yaml{file="manifests/modules/observability/oss-metrics/adot/clusterrole.yaml" paths="rules.0,rules.1,rules.2"}
+The CloudWatch agent needs IAM permissions to remote-write metrics to your Amazon Managed Service for Prometheus workspace. We'll grant them using [Amazon EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html), which lets a Kubernetes service account assume an IAM role without any static credentials. The [EKS Pod Identity Agent](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html) add-on, a prerequisite for Pod Identity, has already been installed on the cluster for you by `prepare-environment`.
 
-1. This core API group `""` gives the role permissions to access core Kubernetes resources listed under `resources` using the actions specified under `verbs` for metrics collection
-2. This extensions API group `extensions` gives the role permissions to access ingress resources using the actions specified under `verbs` for network traffic metrics collection
-3. The `nonResourceURLs` gives the role permissions to access the `/metrics` endpoint on the Kubernetes API server using the action specified under `verbs` for cluster-level operational metrics collection
-
-We'll use the managed IAM policy `AmazonPrometheusRemoteWriteAccess` to provide the collector with the IAM permissions it needs via IAM Roles for Service Accounts:
+Create an IAM role that the CloudWatch agent can assume. The trust policy allows the EKS Pod Identity service principal, and we attach the AWS managed `AmazonPrometheusRemoteWriteAccess` policy for AMP ingestion along with `CloudWatchAgentServerPolicy` for the agent's baseline operation:
 
 ```bash
-$ aws iam list-attached-role-policies \
-  --role-name $EKS_CLUSTER_NAME-adot-collector | jq .
-{
-  "AttachedPolicies": [
-    {
-      "PolicyName": "AmazonPrometheusRemoteWriteAccess",
-      "PolicyArn": "arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess"
-    }
-  ]
-}
+$ aws iam create-role \
+  --role-name $EKS_CLUSTER_NAME-cloudwatch-agent \
+  --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"pods.eks.amazonaws.com"},"Action":["sts:AssumeRole","sts:TagSession"]}]}'
+$ aws iam attach-role-policy \
+  --role-name $EKS_CLUSTER_NAME-cloudwatch-agent \
+  --policy-arn arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess
+$ aws iam attach-role-policy \
+  --role-name $EKS_CLUSTER_NAME-cloudwatch-agent \
+  --policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
 ```
 
-This IAM role will be added to the ServiceAccount for the collector:
+Associate the role with the `cloudwatch-agent` service account that the add-on will create in the `amazon-cloudwatch` namespace:
+
+```bash
+$ aws eks create-pod-identity-association \
+  --cluster-name $EKS_CLUSTER_NAME \
+  --namespace amazon-cloudwatch \
+  --service-account cloudwatch-agent \
+  --role-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/$EKS_CLUSTER_NAME-cloudwatch-agent
+```
+
+### Configure the add-on to write to AMP
+
+We provide the add-on with an OpenTelemetry pipeline that scrapes Prometheus metrics from the cluster and remote-writes them to your workspace:
 
 ```file
-manifests/modules/observability/oss-metrics/adot/serviceaccount.yaml
+manifests/modules/observability/oss-metrics/cwagent-amp/cloudwatch-agent-amp.yaml
 ```
 
-Create the resources:
+A few parts of this configuration matter. The `prometheusremotewrite/amp` exporter sends metrics to the AMP workspace's remote-write endpoint, and the `sigv4auth` extension signs those requests with the credentials the agent obtains through Pod Identity. The Prometheus `scrape_configs` collect application metrics from annotated pods (`kubernetes-pods`) and cluster metrics from the `kubelet` and `cadvisor` endpoints on each node.
+
+The pipeline is attached to the `cloudwatch-agent-cluster-scraper` agent, a single-replica Deployment, rather than the global agent configuration. The add-on also runs the CloudWatch agent as a DaemonSet on every node. If we attached the remote-write pipeline globally, every node would scrape and write the same series, and AMP would reject the duplicate samples. Scoping it to the single cluster-scraper means each series is written exactly once.
+
+Install the `amazon-cloudwatch-observability` add-on with this configuration. We use `envsubst` to substitute your workspace endpoint and Region into the file before handing it to the add-on:
 
 ```bash hook=deploy-adot
-$ kubectl kustomize ~/environment/eks-workshop/modules/observability/oss-metrics/adot \
-  | envsubst | kubectl apply -f-
-$ kubectl rollout status -n other deployment/adot-collector --timeout=120s
+$ envsubst '$AMP_ENDPOINT $AWS_REGION' \
+  < ~/environment/eks-workshop/modules/observability/oss-metrics/cwagent-amp/cloudwatch-agent-amp.yaml \
+  > /tmp/cloudwatch-agent-amp.yaml
+$ aws eks create-addon \
+  --cluster-name $EKS_CLUSTER_NAME \
+  --addon-name amazon-cloudwatch-observability \
+  --configuration-values file:///tmp/cloudwatch-agent-amp.yaml
+$ aws eks wait addon-active \
+  --cluster-name $EKS_CLUSTER_NAME \
+  --addon-name amazon-cloudwatch-observability
 ```
 
-The specification for the collector is too long to show here, but you can view it like so:
+The add-on deploys the CloudWatch agent into the `amazon-cloudwatch` namespace. Confirm the pods are running:
 
 ```bash
-$ kubectl -n other get opentelemetrycollector adot -o yaml
+$ kubectl get pods -n amazon-cloudwatch
+NAME                                                READY   STATUS    RESTARTS   AGE
+cloudwatch-agent-8xk2p                              1/1     Running   0          72s
+cloudwatch-agent-df9wz                              1/1     Running   0          72s
+cloudwatch-agent-cluster-scraper-6dfdc8f88-458kl    1/1     Running   0          72s
+fluent-bit-2s7zn                                    1/1     Running   0          72s
+fluent-bit-krl6t                                    1/1     Running   0          72s
 ```
 
-Let's break this down in to sections to get a better understanding of what has been deployed. This is the OpenTelemetry collector configuration:
-
-```bash
-$ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.config}' | jq
-```
-
-This is configuring an OpenTelemetry pipeline with the following structure:
-
-- Receivers
-  - [Prometheus receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.md) designed to scrape metrics from targets that expose a Prometheus endpoint
-- Processors
-  - None in this pipeline
-- Exporters
-  - [Prometheus remote write exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusremotewriteexporter) which sends metrics to a Prometheus remote write endpoint like AMP
-
-This collector is also configured to run as a Deployment with one collector agent running:
-
-```bash
-$ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.mode}{"\n"}'
-```
-
-We can confirm that by inspecting the ADOT collector Pods that are running:
-
-```bash
-$ kubectl get pods -n other
-NAME                              READY   STATUS    RESTARTS   AGE
-adot-collector-6f6b8867f6-lpjb7   1/1     Running   2          11d
-```
+Notice the mix of components the add-on manages for you: the `cloudwatch-agent` DaemonSet, the single `cloudwatch-agent-cluster-scraper` Deployment that runs our AMP pipeline, and the `fluent-bit` DaemonSet, all open source projects packaged and supported as a managed add-on.
