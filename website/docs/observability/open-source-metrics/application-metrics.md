@@ -3,7 +3,7 @@ title: "Application Metrics"
 sidebar_position: 50
 ---
 
-aaaaa.    In this section we'll look at gaining insight in to metrics exposed by our workloads. Some examples of these could be:
+In this section we'll look at gaining insight in to metrics exposed by our workloads. Some examples of these could be:
 
 - System metrics such as Java heap metrics or database connection pool status
 - Application metrics related to business KPIs
