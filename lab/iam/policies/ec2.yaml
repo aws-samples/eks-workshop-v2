@@ -9,6 +9,14 @@ Statement:
       - ec2:ImportKeyPair
       - ec2:DeleteKeyPair
     Resource: ["*"]
+  # ec2:Get* expands to include GetPasswordData, which returns a Windows
+  # administrator password and accepts no useful constraint here. The workshop
+  # runs no Windows instances and never calls it, so deny it outright rather
+  # than enumerate every other ec2:Get* action the labs and tooling rely on.
+  - Effect: Deny
+    Action:
+      - ec2:GetPasswordData
+    Resource: ["*"]
   - Effect: Allow
     Action:
       - ec2:StopInstances

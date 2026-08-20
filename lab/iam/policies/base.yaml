@@ -43,9 +43,15 @@ Statement:
       - ecr-public:GetAuthorizationToken
       - sts:GetServiceBearerToken
     Resource: ["*"]
+  # CreateKey has no key to target yet, so it stays on "*". Everything else
+  # operates on an existing key, whose id is generated, so it is scoped by
+  # resource type.
   - Effect: Allow
     Action:
       - kms:CreateKey
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
       - kms:TagResource
       - kms:ScheduleKeyDeletion
       - kms:CreateGrant
@@ -54,7 +60,8 @@ Statement:
       - kms:GetKeyRotationStatus
       - kms:ListResourceTags
       - kms:PutKeyPolicy
-    Resource: ["*"]
+    Resource:
+      - !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*
   - Effect: Allow
     Action:
       - kms:Decrypt
