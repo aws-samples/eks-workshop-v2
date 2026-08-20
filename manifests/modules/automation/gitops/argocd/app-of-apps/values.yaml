@@ -1,6 +1,6 @@
 spec:
   destination:
-    server: https://kubernetes.default.svc
+    server: ${CLUSTER_ARN}
   source:
     repoURL: ${GITOPS_REPO_URL_ARGOCD}
     targetRevision: main

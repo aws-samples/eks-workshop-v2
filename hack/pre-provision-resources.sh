@@ -5,6 +5,15 @@ set -e
 environment=$1
 action=${2:-"plan"}
 
+# Optional module filter, as a path relative to manifests/modules, for example
+# automation/gitops/argocd. Only preprovision directories under it are staged,
+# which keeps a targeted run from applying every other module's pre-provisioned
+# resources. '-' is the Makefile's "unset" value.
+module_filter=${3:-${PREPROVISION_MODULE:-}}
+if [ "$module_filter" = "-" ]; then
+  module_filter=""
+fi
+
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 source $SCRIPT_DIR/lib/common-env.sh
@@ -41,10 +50,20 @@ fi
 
 cp $manifests_dir/.workshop/terraform/base.tf $conf_dir/base.tf
 
-find $manifests_dir/modules -type d -name "preprovision" -print0 | while read -d $'\0' file
+staged=0
+
+# Read through process substitution rather than a pipe so the counter below is
+# incremented in this shell and not in a subshell.
+while read -d $'\0' file
 do
-  md5=$(echo ${file#"$manifests_dir/modules/"} | md5sum | cut -f1 -d" " | cut -d'/' -f1 | rev)
-  first_path=$(echo ${file#"$manifests_dir/modules/"} | cut -d'/' -f1,2 | tr '/' '_')
+  relative_path=${file#"$manifests_dir/modules/"}
+
+  if [ -n "$module_filter" ] && [[ "$relative_path" != "$module_filter"* ]]; then
+    continue
+  fi
+
+  md5=$(echo $relative_path | md5sum | cut -f1 -d" " | cut -d'/' -f1 | rev)
+  first_path=$(echo $relative_path | cut -d'/' -f1,2 | tr '/' '_')
   target="${first_path}-$md5"
 
   cp -R $file $conf_dir/$target
@@ -61,7 +80,18 @@ module "gen-$target" {
   tags           = local.tags
 }
 EOF
-done
+
+  staged=$((staged + 1))
+done < <(find $manifests_dir/modules -type d -name "preprovision" -print0)
+
+if [ -n "$module_filter" ]; then
+  echo "Staged $staged preprovision directories matching '$module_filter'"
+
+  if [ "$staged" = "0" ]; then
+    echo "Error: no preprovision directory found under manifests/modules/$module_filter" >&2
+    exit 1
+  fi
+fi
 
 ls -la $conf_dir
 

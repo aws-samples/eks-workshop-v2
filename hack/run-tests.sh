@@ -85,6 +85,11 @@ RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-""}
 
 source $SCRIPT_DIR/lib/resolve-source-ip.sh
 
+# Shared with hack/shell.sh so a lab prepared in one is cleaned up by the other.
+# See the comment there for why this cannot live inside the container.
+hooks_dir="$SCRIPT_DIR/../.workshop-state/$EKS_CLUSTER_NAME/hooks"
+mkdir -p "$hooks_dir"
+
 echo "Running test suite..."
 
 exit_code=0
@@ -93,6 +98,7 @@ $CONTAINER_CLI run $background_args $dns_args \
   --name $container_name \
   -v $SCRIPT_DIR/../website/docs:/content \
   -v $SCRIPT_DIR/../manifests:/eks-workshop/manifests \
+  -v $hooks_dir:/eks-workshop/hooks \
   -e 'EKS_CLUSTER_NAME' -e 'EKS_CLUSTER_AUTO_NAME' -e 'AWS_REGION' -e 'RESOURCES_PRECREATED' -e 'BASE_INBOUND_CIDRS' \
   $aws_credential_args $container_image -g "${actual_glob}" --hook-timeout 3600 --timeout 3600 $output_args ${AWS_EKS_WORKSHOP_TEST_FLAGS} || exit_code=$?
 

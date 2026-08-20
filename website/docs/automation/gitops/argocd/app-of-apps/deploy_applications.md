@@ -38,12 +38,18 @@ $ git -C ~/environment/argocd commit -am "Adding apps charts"
 $ git -C ~/environment/argocd push
 ```
 
-Sync the apps application:
+Sync the workload applications:
 
 ```bash
-$ argocd app sync apps
-$ argocd app wait -l app.kubernetes.io/created-by=eks-workshop
+$ argocd app sync -l app.kubernetes.io/created-by=eks-workshop
+$ argocd app wait -l app.kubernetes.io/created-by=eks-workshop --timeout 300
 ```
+
+:::note
+We sync the workload applications directly here, not the parent `apps` application. Syncing the parent would re-apply the same five `Application` resources it already created — nothing in its output changed, because this commit added the workload charts, not the App of Apps configuration.
+
+Each workload application tracks its own path in the repository, so they are the ones that need to notice the new commit. Argo CD polls Git roughly every three minutes, and syncing forces that check immediately rather than waiting for the next poll.
+:::
 
 When Argo CD completes the process, all our applications will be in the `Synced` state as shown in the Argo CD UI:
 
@@ -54,7 +60,6 @@ We should now see a set of new namespaces with each application component deploy
 ```bash hook=deploy
 $ kubectl get namespaces
 NAME              STATUS   AGE
-argocd            Active   18m
 carts             Active   28s
 catalog           Active   28s
 checkout          Active   28s
