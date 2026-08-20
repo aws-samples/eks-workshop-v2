@@ -5,10 +5,19 @@ Statement:
       - ec2:Get*
       - ec2:Describe*
       - ec2:List*
+    Resource: ["*"]
+  # RunInstances authorises against the AMI and any snapshot behind it as well
+  # as the instance, and Amazon-owned AMI ARNs carry an empty account field, so
+  # those need their own patterns alongside the account-scoped one.
+  - Effect: Allow
+    Action:
       - ec2:RunInstances
       - ec2:ImportKeyPair
       - ec2:DeleteKeyPair
-    Resource: ["*"]
+    Resource:
+      - !Sub arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:*/*
+      - !Sub arn:aws:ec2:${AWS::Region}::image/*
+      - !Sub arn:aws:ec2:${AWS::Region}::snapshot/*
   # ec2:Get* expands to include GetPasswordData, which returns a Windows
   # administrator password and accepts no useful constraint here. The workshop
   # runs no Windows instances and never calls it, so deny it outright rather
@@ -72,7 +81,11 @@ Statement:
       - ec2:ImportKeyPair
       - ec2:CreateKeyPair
       - ec2:DeleteKeyPair
-    Resource: ["*"]
+    # Every resource these act on is created by the labs in this account and
+    # region. The ids are generated, so there is no name prefix to match on;
+    # confining them to the account and region is the available constraint.
+    Resource:
+      - !Sub arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:*/*
   - Effect: Allow
     Action:
       - ec2:DeleteVpc
@@ -95,11 +108,17 @@ Statement:
       StringLike:
         aws:ResourceTag/env:
           - ${Env}*
+  # Duplicated from the tag-conditioned statement above without the condition,
+  # because some security groups the labs modify are created by controllers and
+  # carry no env tag. Scope it to security groups and their rules so it is not
+  # an unconstrained grant.
   - Effect: Allow
     Action:
       - ec2:AuthorizeSecurityGroup*
       - ec2:RevokeSecurityGroup*
-    Resource: ["*"]
+    Resource:
+      - !Sub arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:security-group/*
+      - !Sub arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:security-group-rule/*
   - Effect: Allow
     Action:
       - ec2:CreateTags
