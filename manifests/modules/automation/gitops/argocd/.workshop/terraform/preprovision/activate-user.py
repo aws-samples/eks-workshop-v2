@@ -246,12 +246,25 @@ def portal_sign_in(driver, portal_url, user_name, password):
     page.wait_for_load_state("networkidle")
 
     # The submit is asynchronous, so networkidle can land before the next step
-    # renders. Wait for the outcome instead: either the password field goes away, or
-    # the page tells us why it did not.
+    # renders. Wait for the outcome instead. There are three, and all of them have to
+    # be listed here: a signed-in page with no password field, the forced password
+    # change, or an error. Waiting only for the field to disappear would time out on
+    # every successful activation, because the change form is itself made of password
+    # fields.
     try:
         page.wait_for_function(
-            "() => !document.querySelector(\"input[type='password']\")"
-            " || document.querySelector(\"[role='alert']\")",
+            """() => {
+                const pw = document.querySelectorAll("input[type='password']");
+                // Signed straight in: the sign-in form is gone.
+                if (pw.length === 0) return true;
+                // Forced password change: a new/confirm pair replaced the single field.
+                if (pw.length > 1) return true;
+                if (/Set new password|Change password/.test(document.body.innerText)) {
+                    return true;
+                }
+                // Rejected, or a policy hint the caller logs.
+                return !!document.querySelector("[role='alert']");
+            }""",
             timeout=STEP_TIMEOUT_MS,
         )
     except Exception:  # noqa: BLE001 - fall through to the dumps below
