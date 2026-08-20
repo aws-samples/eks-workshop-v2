@@ -15,6 +15,11 @@ Statement:
       - !Sub arn:aws:eks:${AWS::Region}:${AWS::AccountId}:identityproviderconfig/${Env}*
       - !Sub arn:aws:eks:${AWS::Region}:${AWS::AccountId}:access-entry/${Env}*
       - !Sub arn:aws:eks:${AWS::Region}:${AWS::AccountId}:podidentityassociation/${Env}*
+      # Capability ARNs are capability/<cluster>/<name>/<type>/<id>, so the same
+      # prefix covers them. Needed because a learner in their own account creates
+      # the Argo CD capability from the lab; at an AWS event pre-provisioning has
+      # already done it and only Describe below is exercised.
+      - !Sub arn:aws:eks:${AWS::Region}:${AWS::AccountId}:capability/${Env}*
   # Operations that cannot name a resource: listing and describing across the
   # account, and creating or registering a cluster that does not exist yet.
   - Effect: Allow
