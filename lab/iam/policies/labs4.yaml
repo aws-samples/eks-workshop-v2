@@ -30,12 +30,18 @@ Statement:
       - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:file-system/*
       - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:storage-virtual-machine/*
       - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:volume/*
+  # Required by the Amazon EKS Capability for Argo CD, which registers an IAM
+  # Identity Center application to authenticate workshop participants.
+  #
+  # Deliberately excludes sso:CreateInstance, sso:DeleteInstance and
+  # identitystore:CreateIdentityStore. Enabling IAM Identity Center is an
+  # account-wide and effectively irreversible change, so the IDE never does it:
+  # Workshop Studio events get an instance from the pre-provisioning pipeline, and
+  # anyone else enables Identity Center themselves before starting the lab.
   - Effect: Allow
     Action:
       - sso:ListInstances
       - sso:DescribeInstance
-      - sso:CreateInstance
-      - sso:DeleteInstance
       - sso:CreateApplication
       - sso:DeleteApplication
       - sso:UpdateApplication
@@ -47,12 +53,13 @@ Statement:
       - sso:DeleteApplicationAssignment
       - sso:ListApplicationAssignments
     Resource: ["*"]
+  # Read-only on purpose. The identity store may be a directory holding real
+  # identities, so the IDE is not able to create, modify or delete users in it. The
+  # Argo CD workshop user is created by the Workshop Studio pre-provisioning
+  # pipeline, or by whoever set up Identity Center in their own account.
   - Effect: Allow
     Action:
-      - identitystore:CreateIdentityStore
       - identitystore:ListUsers
       - identitystore:DescribeUser
-      - identitystore:CreateUser
-      - identitystore:DeleteUser
       - identitystore:GetUserId
     Resource: ["*"]

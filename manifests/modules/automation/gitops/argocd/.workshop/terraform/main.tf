@@ -40,94 +40,96 @@ resource "time_sleep" "iam_propagation" {
   create_duration = "30s"
 }
 
-resource "null_resource" "idc_instance" {
+# The EKS Capability for Argo CD authenticates users through IAM Identity Center,
+# so the account needs an Identity Center instance holding an Argo CD admin user
+# before the capability can be created.
+#
+# This lab only ever reads from Identity Center. It never creates the instance and
+# never creates the user, because both are writes to an account-wide directory that
+# may hold real identities. Workshop Studio events get them from `preprovision/`,
+# which the Workshop Studio provisioning pipeline applies and `prepare-environment`
+# does not. Everyone else creates them once themselves, as the lab introduction
+# describes.
+data "aws_ssoadmin_instances" "main" {}
+
+locals {
+  idc_instance_arns     = tolist(data.aws_ssoadmin_instances.main.arns)
+  idc_identity_store_id = try(tolist(data.aws_ssoadmin_instances.main.identity_store_ids)[0], "")
+  idc_instance_arn      = try(local.idc_instance_arns[0], "")
+  idc_user_name         = "eks-workshop"
+
+  # Identity Center does not require the sign-in name to be an email address, so the
+  # user name stays short and memorable for participants to type. The directory still
+  # wants a primary email, and nothing ever delivers to it, so use the address range
+  # RFC 2606 reserves for documentation.
+  idc_user_email = "eks-workshop@example.com"
+
+  # The console deep link uses the instance ID without its "ssoins-" prefix.
+  idc_instance_id = trimprefix(try(element(split("/", local.idc_instance_arn), 1), ""), "ssoins-")
+  idc_console_url = "https://${data.aws_region.current.id}.console.aws.amazon.com/singlesignon/home?region=${data.aws_region.current.id}#/instances/${local.idc_instance_id}/users"
+
+  # Empty when the user has not been activated for us, which is the signal the docs
+  # use to send people down the manual one-time password route.
+  idc_password = try(
+    jsondecode(data.aws_secretsmanager_secret_version.argocd_admin[0].secret_string).password,
+    ""
+  )
+}
+
+# Checks the provider cannot express. `aws_ssoadmin_instances` returns only ARNs
+# and identity store IDs, so telling an account instance apart from a shared
+# organization instance, and confirming the workshop user exists, needs API calls
+# the AWS provider does not surface.
+resource "null_resource" "idc_precheck" {
   triggers = {
-    region = data.aws_region.current.id
+    region    = data.aws_region.current.id
+    user_name = local.idc_user_name
   }
 
   provisioner "local-exec" {
-    command = <<-EOF
-      set -e
-      REGION="${data.aws_region.current.id}"
+    command = "bash ${path.module}/idc-precheck.sh"
 
-      IDC_JSON=$(aws sso-admin list-instances --region $REGION --output json)
-      COUNT=$(echo "$IDC_JSON" | jq '.Instances | length')
-
-      if [ "$COUNT" = "0" ]; then
-        IDC_STATUS="NOTFOUND"
-        IDC_ARN=""
-      else
-        IDC_ARN=$(echo "$IDC_JSON" | jq -r '.Instances[0].InstanceArn')
-        IDC_STATUS=$(echo "$IDC_JSON" | jq -r '.Instances[0].Status')
-      fi
-      echo "IDC status: $IDC_STATUS"
-
-      if [ "$IDC_STATUS" = "ACTIVE" ]; then
-        echo "IDC instance already ACTIVE: $IDC_ARN"
-        exit 0
-      fi
-
-      if [ "$IDC_STATUS" = "CREATE_FAILED" ]; then
-        echo "Removing CREATE_FAILED instance..."
-        aws sso-admin delete-instance --instance-arn "$IDC_ARN" --region $REGION
-        for i in $(seq 1 60); do
-          COUNT=$(aws sso-admin list-instances --region $REGION --output json | jq '.Instances | length')
-          [ "$COUNT" = "0" ] && break
-          sleep 5
-        done
-      fi
-
-      echo "Creating IDC instance..."
-      IDC_ARN=$(aws sso-admin create-instance --name eks-workshop \
-        --region $REGION --output json | jq -r '.InstanceArn')
-      echo "IDC ARN: $IDC_ARN"
-
-      for i in $(seq 1 60); do
-        STATUS=$(aws sso-admin describe-instance --instance-arn "$IDC_ARN" \
-          --region $REGION --output json | jq -r '.Status // "UNKNOWN"')
-        echo "  [$i] IDC status: $STATUS"
-        [ "$STATUS" = "ACTIVE" ] && exit 0
-        [ "$STATUS" = "CREATE_FAILED" ] && echo "IDC CREATE_FAILED" && exit 1
-        sleep 5
-      done
-      echo "Timeout waiting for IDC ACTIVE"
-      exit 1
-    EOF
+    environment = {
+      REGION     = data.aws_region.current.id
+      ACCOUNT    = data.aws_caller_identity.current.account_id
+      USER_NAME  = local.idc_user_name
+      USER_EMAIL = local.idc_user_email
+    }
   }
 
-  provisioner "local-exec" {
-    when    = destroy
-    command = <<-EOF
-      REGION="${self.triggers.region}"
-      IDC_ARN=$(aws sso-admin list-instances --region $REGION --output json \
-        | jq -r '.Instances[] | select(.Name=="eks-workshop") | .InstanceArn // empty' | head -1)
-      if [ -n "$IDC_ARN" ]; then
-        echo "Deleting IDC instance $IDC_ARN..."
-        aws sso-admin delete-instance --instance-arn "$IDC_ARN" --region $REGION 2>/dev/null || true
-      fi
-    EOF
+  lifecycle {
+    precondition {
+      condition     = length(local.idc_instance_arns) > 0
+      error_message = "No IAM Identity Center instance found in this account and Region. This lab does not set one up for you. See \"Prerequisites - IAM Identity Center\" in the lab introduction: https://www.eksworkshop.com/docs/automation/gitops/argocd/"
+    }
   }
 }
 
-data "aws_ssoadmin_instances" "main" {
-  depends_on = [null_resource.idc_instance]
+data "aws_identitystore_user" "argocd_admin" {
+  depends_on = [null_resource.idc_precheck]
+
+  identity_store_id = local.idc_identity_store_id
+
+  alternate_identifier {
+    unique_attribute {
+      attribute_path  = "UserName"
+      attribute_value = local.idc_user_name
+    }
+  }
 }
 
-resource "aws_identitystore_user" "argocd_admin" {
-  identity_store_id = tolist(data.aws_ssoadmin_instances.main.identity_store_ids)[0]
+# At an AWS-run event the pre-provisioning pipeline has already activated this user
+# and stored a password it proved works, so participants can be handed a working
+# credential instead of minting a one-time password themselves.
+#
+# Gated on resources_precreated because that is this repo's existing signal for
+# "Workshop Studio pre-provisioned things", and the pre-provisioning is precisely
+# what creates this secret. Anywhere else it does not exist, and the lab falls back
+# to the manual activation the docs describe.
+data "aws_secretsmanager_secret_version" "argocd_admin" {
+  count = var.resources_precreated ? 1 : 0
 
-  user_name    = "argocd-admin@eksworkshop.com"
-  display_name = "ArgoCD Workshop Admin"
-
-  name {
-    given_name  = "ArgoCD"
-    family_name = "Admin"
-  }
-
-  emails {
-    value   = "argocd-admin@eksworkshop.com"
-    primary = true
-  }
+  secret_id = "${var.eks_cluster_id}-argocd-idc"
 }
 
 resource "null_resource" "cleanup_stale_access_entry" {
@@ -152,7 +154,7 @@ resource "null_resource" "cleanup_stale_access_entry" {
 resource "aws_eks_capability" "argocd" {
   depends_on = [
     null_resource.cleanup_stale_access_entry,
-    aws_identitystore_user.argocd_admin,
+    data.aws_identitystore_user.argocd_admin,
   ]
 
   cluster_name              = var.addon_context.eks_cluster_id
@@ -164,14 +166,14 @@ resource "aws_eks_capability" "argocd" {
   configuration {
     argo_cd {
       aws_idc {
-        idc_instance_arn = tolist(data.aws_ssoadmin_instances.main.arns)[0]
+        idc_instance_arn = local.idc_instance_arn
         idc_region       = data.aws_region.current.id
       }
 
       rbac_role_mapping {
         role = "ADMIN"
         identity {
-          id   = aws_identitystore_user.argocd_admin.user_id
+          id   = data.aws_identitystore_user.argocd_admin.user_id
           type = "SSO_USER"
         }
       }
