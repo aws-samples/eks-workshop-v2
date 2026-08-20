@@ -1,5 +1,7 @@
 set -e
 
+hook_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 before() {
   # Ask the capability for its own endpoint instead of expecting it in the
   # environment. At an AWS-run event the capability is pre-provisioned, so it is not
@@ -14,14 +16,16 @@ before() {
     --output text)
   export ARGOCD_SERVER="${ARGOCD_SERVER#https://}"
 
-  # EKS Capability does not support argocd login.
-  # Generate an admin token via the API and authenticate via ARGOCD_AUTH_TOKEN.
-  TOKEN=$(curl -sk -X POST \
-    "https://${ARGOCD_SERVER}/api/v1/session" \
-    -H "Content-Type: application/json" \
-    -d '{"username":"admin","password":""}' \
-    --grpc-web 2>/dev/null | jq -r '.token // empty')
-  export ARGOCD_AUTH_TOKEN="$TOKEN"
+  # The capability authenticates only through IAM Identity Center. It has no local
+  # accounts, so there is no password to post to /api/v1/session, and no EKS API
+  # issues a token. A participant generates one in the Argo CD UI, which a test
+  # cannot do, so mint one by driving the same sign-in headlessly.
+  #
+  # Deliberately not tolerant of failure: without a token every argocd command below
+  # would run unauthenticated and the suite would report confusing downstream errors
+  # instead of the real cause.
+  ARGOCD_AUTH_TOKEN=$(python3 "$hook_dir/argocd-token.py" --server "$ARGOCD_SERVER")
+  export ARGOCD_AUTH_TOKEN
   export ARGOCD_OPTS="--grpc-web"
 
   export CLUSTER_ARN=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME \
