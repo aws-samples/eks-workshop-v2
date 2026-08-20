@@ -124,7 +124,13 @@ resource "null_resource" "idc_instance" {
       # participants are merely asked to enroll an MFA device.
       if ! python3 -c 'import boto3' 2>/dev/null; then
         echo "Installing boto3 to configure MFA enforcement..."
-        python3 -m pip install --quiet --disable-pip-version-check boto3 || true
+        # The retry covers PEP 668: on a GitHub Actions runner the system Python is
+        # marked externally managed and refuses a plain install. Installing into it
+        # anyway is fine because every host that reaches this is disposable.
+        python3 -m pip install --quiet --disable-pip-version-check boto3 \
+          || python3 -m pip install --quiet --disable-pip-version-check \
+               --break-system-packages boto3 \
+          || true
       fi
 
       python3 "${abspath("${path.module}/disable-mfa.py")}" --region "$REGION" \
@@ -263,11 +269,17 @@ resource "null_resource" "idc_user_activation" {
 
       if ! python3 -c 'import playwright' 2>/dev/null; then
         echo "Installing Playwright..."
-        python3 -m pip install --quiet --disable-pip-version-check playwright boto3
+        # The retry covers PEP 668: on a GitHub Actions runner the system Python is
+        # marked externally managed and refuses a plain install. Installing into it
+        # anyway is fine because every host that reaches this is disposable.
+        python3 -m pip install --quiet --disable-pip-version-check playwright boto3 \
+          || python3 -m pip install --quiet --disable-pip-version-check \
+               --break-system-packages playwright boto3
       fi
 
-      # Pulls the system libraries Chromium needs. The pre-provisioning build runs
-      # on an Ubuntu image, so this is apt-based.
+      # Pulls the system libraries Chromium needs. Both places this runs are Debian
+      # based -- the Workshop Studio build image and the GitHub Actions runner -- so
+      # this is apt-based.
       python3 -m playwright install --with-deps chromium
 
       ARGOCD_IDC_CANDIDATE_PASSWORD='${data.aws_secretsmanager_random_password.argocd_admin.random_password}' \
