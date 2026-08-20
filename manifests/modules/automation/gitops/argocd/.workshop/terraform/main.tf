@@ -1,45 +1,6 @@
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
-locals {
-  capability_role_name = "${var.addon_context.eks_cluster_id}-argocd-capability"
-}
-
-resource "aws_iam_role" "argocd_capability" {
-  name = local.capability_role_name
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect    = "Allow"
-      Principal = { Service = "capabilities.eks.amazonaws.com" }
-      Action    = ["sts:AssumeRole", "sts:TagSession"]
-    }]
-  })
-
-  tags = var.tags
-}
-
-resource "aws_iam_role_policy" "argocd_capability_sso" {
-  name = "ArgocdCapabilitySsoPolicy"
-  role = aws_iam_role.argocd_capability.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect   = "Allow"
-      Action   = ["sts:GetCallerIdentity"]
-      Resource = ["*"]
-    }]
-  })
-}
-
-# EKS validates the trust policy before IAM propagates globally (~15s).
-resource "time_sleep" "iam_propagation" {
-  depends_on      = [aws_iam_role_policy.argocd_capability_sso]
-  create_duration = "30s"
-}
-
 # The EKS Capability for Argo CD authenticates users through IAM Identity Center,
 # so the account needs an Identity Center instance holding an Argo CD admin user
 # before the capability can be created.
@@ -132,99 +93,22 @@ data "aws_secretsmanager_secret_version" "argocd_admin" {
   secret_id = "${var.eks_cluster_id}-argocd-idc"
 }
 
-resource "null_resource" "cleanup_stale_access_entry" {
-  depends_on = [time_sleep.iam_propagation]
+# Enabling the capability takes around ten minutes, so at an AWS-run event the
+# pre-provisioning pipeline has already done it and this is skipped. Everywhere else
+# the lab creates it, from the same child module, against the Identity Center
+# instance the account already had.
+#
+# Sourcing it from under `preprovision/` shares the definition without making the
+# rest of that directory reachable: Terraform only loads what a `source` points at,
+# so the Identity Center writes in `preprovision/main.tf` stay out of reach here.
+module "capability" {
+  source = "./preprovision/capability"
+  count  = var.resources_precreated ? 0 : 1
 
-  triggers = {
-    role_arn     = aws_iam_role.argocd_capability.arn
-    cluster_name = var.addon_context.eks_cluster_id
-    region       = data.aws_region.current.id
-  }
-
-  provisioner "local-exec" {
-    command = <<-EOF
-      aws eks delete-access-entry \
-        --region ${self.triggers.region} \
-        --cluster-name ${self.triggers.cluster_name} \
-        --principal-arn ${self.triggers.role_arn} 2>/dev/null || true
-    EOF
-  }
-}
-
-resource "aws_eks_capability" "argocd" {
-  depends_on = [
-    null_resource.cleanup_stale_access_entry,
-    data.aws_identitystore_user.argocd_admin,
-  ]
-
-  cluster_name              = var.addon_context.eks_cluster_id
-  capability_name           = "argocd"
-  type                      = "ARGOCD"
-  role_arn                  = aws_iam_role.argocd_capability.arn
-  delete_propagation_policy = "RETAIN"
-
-  configuration {
-    argo_cd {
-      aws_idc {
-        idc_instance_arn = local.idc_instance_arn
-        idc_region       = data.aws_region.current.id
-      }
-
-      rbac_role_mapping {
-        role = "ADMIN"
-        identity {
-          id   = data.aws_identitystore_user.argocd_admin.user_id
-          type = "SSO_USER"
-        }
-      }
-    }
-  }
-}
-
-resource "null_resource" "argocd_capability_access_entry" {
-  depends_on = [aws_eks_capability.argocd]
-
-  triggers = {
-    role_arn     = aws_iam_role.argocd_capability.arn
-    cluster_name = var.addon_context.eks_cluster_id
-    region       = data.aws_region.current.id
-  }
-
-  provisioner "local-exec" {
-    command = <<-EOF
-      aws eks create-access-entry \
-        --region ${self.triggers.region} \
-        --cluster-name ${self.triggers.cluster_name} \
-        --principal-arn ${self.triggers.role_arn} 2>/dev/null || true
-      aws eks associate-access-policy \
-        --region ${self.triggers.region} \
-        --cluster-name ${self.triggers.cluster_name} \
-        --principal-arn ${self.triggers.role_arn} \
-        --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy \
-        --access-scope type=cluster
-    EOF
-  }
-}
-
-resource "null_resource" "argocd_manager_rbac" {
-  depends_on = [aws_eks_capability.argocd]
-
-  triggers = {
-    cluster_name = var.addon_context.eks_cluster_id
-  }
-
-  provisioner "local-exec" {
-    command = <<-EOF
-      kubectl create clusterrolebinding argocd-manager-cluster-admin \
-        --clusterrole=cluster-admin \
-        --serviceaccount=kube-system:argocd-manager 2>/dev/null || true
-    EOF
-  }
-
-  provisioner "local-exec" {
-    when    = destroy
-    command = "kubectl delete clusterrolebinding argocd-manager-cluster-admin 2>/dev/null || true"
-  }
+  eks_cluster_id   = var.addon_context.eks_cluster_id
+  idc_instance_arn = local.idc_instance_arn
+  idc_user_id      = data.aws_identitystore_user.argocd_admin.user_id
+  tags             = var.tags
 }
 
 resource "aws_codecommit_repository" "argocd" {

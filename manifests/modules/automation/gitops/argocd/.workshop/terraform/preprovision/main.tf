@@ -221,6 +221,22 @@ resource "aws_secretsmanager_secret" "argocd_admin" {
 # fresh browser session. That way the secret either holds a credential that is known
 # to work or holds nothing at all, instead of a plausible-looking password that was
 # never actually set on the user.
+# Enabling the capability takes around ten minutes, so it happens here, while the
+# event is still being provisioned, instead of on the participant's clock during
+# `prepare-environment`. Keeping it in this state rather than the lab's also means
+# moving between labs no longer tears it down and rebuilds it.
+#
+# Independent of the activation below, so Terraform runs the two concurrently and
+# the browser sign-in overlaps the Argo CD rollout.
+module "capability" {
+  source = "./capability"
+
+  eks_cluster_id   = var.eks_cluster_id
+  idc_instance_arn = tolist(data.aws_ssoadmin_instances.main.arns)[0]
+  idc_user_id      = aws_identitystore_user.argocd_admin.user_id
+  tags             = var.tags
+}
+
 resource "null_resource" "idc_user_activation" {
   depends_on = [
     # The user has to exist, and MFA enforcement has to already be relaxed:

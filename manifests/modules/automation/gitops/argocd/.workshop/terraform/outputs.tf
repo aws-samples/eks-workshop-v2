@@ -7,6 +7,5 @@ output "environment_variables" {
     ARGOCD_IDC_USER        = data.aws_identitystore_user.argocd_admin.user_name
     ARGOCD_IDC_CONSOLE_URL = local.idc_console_url
     ARGOCD_IDC_PASSWORD    = local.idc_password
-    ARGOCD_SERVER          = aws_eks_capability.argocd.configuration[0].argo_cd[0].server_url
   }
 }
