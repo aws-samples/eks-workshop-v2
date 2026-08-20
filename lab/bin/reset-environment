@@ -198,8 +198,12 @@ if [ ! -z "$module" ]; then
       logmessage "\n✅ Fastpaths infrastructure provisioned!"
     fi
 
-    # Save cleanup hook for this module's path (developer or operator)
-    rm -rf /eks-workshop/hooks
+    # Save cleanup hook for this module's path (developer or operator).
+    # Empty the directory rather than removing it: local runs bind mount it from
+    # the host so the hook survives container restarts, and a mount point cannot
+    # be unlinked.
+    mkdir -p /eks-workshop/hooks
+    find /eks-workshop/hooks -mindepth 1 -delete
     # Map content path to manifests path (developer->developers, operator->operators)
     fastpaths_top=$(echo "$module" | cut -d'/' -f1-2)
     module_path="$manifests_path/modules/$fastpaths_top"
@@ -291,7 +295,11 @@ tf_dir=$(realpath --relative-to="$PWD" '/eks-workshop/terraform')
 terraform -chdir="$tf_dir" init -upgrade
 terraform -chdir="$tf_dir" destroy --auto-approve
 
-rm -rf /eks-workshop/hooks
+# Empty the directory rather than removing it: local runs bind mount it from the
+# host so the hook survives container restarts, and a mount point cannot be
+# unlinked.
+mkdir -p /eks-workshop/hooks
+find /eks-workshop/hooks -mindepth 1 -delete
 
 # Cleanup done, let's install the right item
 
