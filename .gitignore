@@ -54,3 +54,6 @@ devenv.local.nix
 # direnv
 .direnv
 .kiro/
+
+# Makefile stamp files (e.g. ECR login recency)
+.make/
