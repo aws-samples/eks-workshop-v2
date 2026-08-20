@@ -55,7 +55,7 @@ $ git -C ~/environment/argocd push
 Argo CD uses **AppProjects** to control which Git repositories, destination clusters, and namespaces applications are permitted to target. Every application must belong to a project. Let's create the `default` project that allows access to all repositories and destinations:
 
 ```bash
-$ kubectl apply -f - <<'EOF'
+$ kubectl apply -f - <<EOF
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
