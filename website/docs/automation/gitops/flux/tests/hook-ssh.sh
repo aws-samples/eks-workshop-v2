@@ -1,7 +1,7 @@
 set -Eeuo pipefail
 
 before() {
-  mkdir -p /home/ec2-user/.ssh
+  echo "noop"
 }
 
 after() {
