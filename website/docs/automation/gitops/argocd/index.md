@@ -55,9 +55,9 @@ $ prepare-environment automation/gitops/argocd
 This will make the following changes to your lab environment:
 
 - Create an AWS CodeCommit repository
-- Create an IAM role for the EKS Capability for Argo CD
-- Grant the IAM Identity Center user set up above ADMIN access to Argo CD
-- Deploy the Amazon EKS Capability for Argo CD
+- Deploy the Amazon EKS Capability for Argo CD, with an IAM role for it, and grant the IAM Identity Center user set up above ADMIN access to Argo CD
+
+At an AWS-run event only the CodeCommit repository is created here. Enabling the capability takes several minutes, so the event provisioning has already done it, along with its IAM role and the ADMIN grant.
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/automation/gitops/argocd/.workshop/terraform).
 

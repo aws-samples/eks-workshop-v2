@@ -48,7 +48,13 @@ $ echo "Console: $ARGOCD_IDC_CONSOLE_URL"
 
 Use that one-time password to sign in below. Identity Center will immediately ask you to set a permanent password — choose one and keep it for the rest of the lab.
 
-At an AWS-run event none of this is necessary: the event provisioning activates the user and stores the password, which is why `ARGOCD_IDC_PASSWORD` is already populated.
+At an AWS-run event none of this is necessary: the event provisioning activates the user and stores the password, which is why `ARGOCD_IDC_PASSWORD` is already populated. If it is somehow empty there, read it straight from the secret that provisioning wrote:
+
+```bash test=false
+$ aws secretsmanager get-secret-value \
+  --secret-id $EKS_CLUSTER_NAME-argocd-idc \
+  --query SecretString --output text | jq -r '.password'
+```
 
 </details>
 
@@ -68,15 +74,21 @@ You will see an interface that looks like this:
 
 ## Authenticating the Argo CD CLI
 
-To authenticate the Argo CD CLI, generate an **account token** from the Argo CD UI.
+The capability does not support `argocd login`, so instead of signing in, the CLI authenticates with an **account token** that you generate in the UI:
 
-In the Argo CD UI, navigate to **Settings → Accounts → admin → Generate New Token**, copy the token, then set these environment variables:
+1. In the Argo CD UI you opened above, go to **Settings → Accounts → admin**
+2. Choose **Generate New Token**
+3. Copy the token it shows you, as it is not displayed again
+
+Then set these environment variables, pasting the token in place of the placeholder:
 
 ```bash test=false
 $ export ARGOCD_SERVER=$(echo $ARGOCD_SERVER | sed 's|^https://||')
 $ export ARGOCD_AUTH_TOKEN="<paste-token-here>"
 $ export ARGOCD_OPTS="--grpc-web"
 ```
+
+The capability reports its endpoint as a URL, but the CLI expects a bare host, which is what the first line strips. `--grpc-web` is needed because the capability serves the API over gRPC-Web. With these three set, the CLI works without `argocd login`.
 
 Verify the CLI works:
 
