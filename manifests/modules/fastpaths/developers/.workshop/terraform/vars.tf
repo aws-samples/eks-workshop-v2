@@ -46,3 +46,17 @@ variable "inbound_cidrs" {
   description = "CIDR range to allowlist for inbound traffic"
   type        = string
 }
+
+# tflint-ignore: terraform_unused_declarations
+variable "enable_eks_capabilities" {
+  description = "Gate for the eks-capabilities fast path resources (ACK/Argo CD/kro capabilities + IDC + CodeCommit). Only the eks-capabilities path sets this true; dev/operator leave it false. See preprovision/vars.tf."
+  type        = bool
+  default     = false
+}
+
+# tflint-ignore: terraform_unused_declarations
+variable "argocd_admin_email" {
+  description = "Email attached to the Argo CD workshop admin user (Lab 2). Defaults to a non-deliverable placeholder; the OTP-based activation flow ignores it. See preprovision/vars.tf."
+  type        = string
+  default     = "argocd-admin@example.com"
+}

@@ -17,3 +17,11 @@ metadata:
   name: eks-auto-alb
 spec:
   scheme: internet-facing
+  targetType: ip
+  # EKS Auto Mode configures the load balancer from IngressClassParams; the
+  # alb.ingress.kubernetes.io/* annotations are ignored. $INBOUND_CIDRS
+  # resolves via envsubst to the learner's IP (or the workshop range), so a
+  # learner in their own account gets a locked-down ALB instead of 0.0.0.0/0.
+  # Applied through envsubst, without inboundCIDRs the ALB security group gets
+  # no inbound rule and is unreachable.
+  inboundCIDRs: [$INBOUND_CIDRS]

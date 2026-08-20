@@ -123,10 +123,3 @@ resource "helm_release" "aws_for_fluent_bit" {
     aws_eks_pod_identity_association.fluentbit
   ]
 }
-
-output "environment_variables" {
-  description = "Environment variables to be added to the IDE shell"
-  value = {
-    CLOUDWATCH_LOG_GROUP_NAME = aws_cloudwatch_log_group.fluentbit.name
-  }
-}

@@ -1,0 +1,102 @@
+Version: "2012-10-17"
+Statement:
+  # IAM Identity Center lookup (preprovision data source) and
+  # workshop-scoped user/group lifecycle management for the Argo CD capability
+  # admin group + user the path provisions. The capability itself, when
+  # created, registers an SSO application against the IDC instance, so the
+  # IDE role (the principal calling CreateCapability) needs the application
+  # lifecycle actions too.
+  - Effect: Allow
+    Action:
+      - sso:ListInstances
+      - sso:DescribeInstance
+      - sso:GetApplication
+      - sso:ListApplications
+      - sso:CreateApplication
+      - sso:UpdateApplication
+      - sso:DeleteApplication
+      - sso:PutApplicationGrant
+      - sso:GetApplicationGrant
+      - sso:ListApplicationGrants
+      - sso:DeleteApplicationGrant
+      - sso:PutApplicationAuthenticationMethod
+      - sso:GetApplicationAuthenticationMethod
+      - sso:ListApplicationAuthenticationMethods
+      - sso:DeleteApplicationAuthenticationMethod
+      - sso:PutApplicationAccessScope
+      - sso:GetApplicationAccessScope
+      - sso:ListApplicationAccessScopes
+      - sso:DeleteApplicationAccessScope
+      - sso:PutApplicationAssignmentConfiguration
+      - sso:GetApplicationAssignmentConfiguration
+      - sso:CreateApplicationAssignment
+      - sso:DeleteApplicationAssignment
+      - sso:ListApplicationAssignments
+      - sso:TagResource
+      - sso:UntagResource
+      - sso:ListTagsForResource
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - identitystore:ListUsers
+      - identitystore:ListGroups
+      - identitystore:ListGroupMemberships
+      - identitystore:DescribeUser
+      - identitystore:DescribeGroup
+      - identitystore:DescribeGroupMembership
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - identitystore:CreateUser
+      - identitystore:CreateGroup
+      - identitystore:CreateGroupMembership
+      - identitystore:UpdateUser
+      - identitystore:UpdateGroup
+      - identitystore:DeleteUser
+      - identitystore:DeleteGroup
+      - identitystore:DeleteGroupMembership
+    Resource: ["*"]
+
+  # CodeCommit Git data plane: the lab pages clone, push, and pull against
+  # the seeded repository using git-remote-codecommit. Creation/deletion
+  # is in labs2.yaml; this scope adds the per-commit data ops.
+  - Effect: Allow
+    Action:
+      - codecommit:GitPull
+      - codecommit:GitPush
+      - codecommit:GetBranch
+      - codecommit:GetCommit
+      - codecommit:GetRepository
+      - codecommit:GetFile
+      - codecommit:GetFolder
+      - codecommit:GetReferences
+      - codecommit:ListBranches
+      - codecommit:BatchGetCommits
+      - codecommit:BatchGetRepositories
+      - codecommit:CreateBranch
+      - codecommit:CreateCommit
+      - codecommit:UpdateDefaultBranch
+    Resource:
+      - !Sub arn:aws:codecommit:${AWS::Region}:${AWS::AccountId}:${Env}*
+
+  # EKS Capabilities lifecycle. eks:* in base.yaml is tag-scoped to the
+  # cluster; capability operations work against capability ARNs that don't
+  # carry the same tag at create-time. Granting them explicitly here.
+  - Effect: Allow
+    Action:
+      - eks:CreateCapability
+      - eks:DeleteCapability
+      - eks:DescribeCapability
+      - eks:UpdateCapability
+      - eks:ListCapabilities
+    Resource: ["*"]
+
+  # iam:PassRole for the IAM Capability Roles passed to CreateCapability.
+  - Effect: Allow
+    Action:
+      - iam:PassRole
+    Resource:
+      - !Sub arn:aws:iam::${AWS::AccountId}:role/${Env}*-cap-role
+    Condition:
+      StringEquals:
+        iam:PassedToService: capabilities.eks.amazonaws.com
