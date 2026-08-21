@@ -26,7 +26,7 @@ source $SCRIPT_DIR/lib/common-env.sh
 
 CONTAINER_CLI=${CONTAINER_CLI:-docker}
 
-preprovision_dir="$SCRIPT_DIR/../manifests/modules/automation/gitops/argocd/.workshop/terraform/preprovision"
+preprovision_dir="$SCRIPT_DIR/../manifests/.workshop/terraform/preprovision-base"
 screenshot_dir=${SCREENSHOT_DIR:-/tmp/idc-activation}
 
 # Named by the preprovision Terraform as "${eks_cluster_id}-argocd-idc".

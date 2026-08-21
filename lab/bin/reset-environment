@@ -172,15 +172,6 @@ if [ ! -z "$module" ]; then
       export TF_VAR_enable_eks_capabilities="false"
     fi
 
-    # eks-capabilities fast path (Lab 2) creates an IAM Identity Center user +
-    # group + membership in terraform; this email is attached to the user
-    # record. Only export an override when ARGOCD_ADMIN_EMAIL is set — an
-    # explicit empty string would clobber the non-deliverable placeholder
-    # default declared in terraform (base.tf), and aws_identitystore_user
-    # rejects an empty email.
-    if [ -n "${ARGOCD_ADMIN_EMAIL:-}" ]; then
-      export TF_VAR_argocd_admin_email="${ARGOCD_ADMIN_EMAIL}"
-    fi
 
     tf_dir=$(realpath --relative-to="$PWD" '/eks-workshop/terraform')
 

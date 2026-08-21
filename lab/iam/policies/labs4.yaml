@@ -62,4 +62,12 @@ Statement:
       - identitystore:ListUsers
       - identitystore:DescribeUser
       - identitystore:GetUserId
+      # The capability maps a group to Argo CD's ADMIN role, so the lab resolves the
+      # group and confirms the user is in it. Reads only: the group, like the user, is
+      # created by the pre-provisioning pipeline or by whoever set up Identity Center.
+      - identitystore:ListGroups
+      - identitystore:DescribeGroup
+      - identitystore:GetGroupId
+      - identitystore:ListGroupMemberships
+      - identitystore:GetGroupMembershipId
     Resource: ["*"]

@@ -66,13 +66,6 @@ variable "enable_eks_capabilities" {
   default     = false
 }
 
-# tflint-ignore: terraform_unused_declarations
-variable "argocd_admin_email" {
-  description = "Email for the Argo CD workshop admin user (fastpaths/eks-capabilities Lab 2). Defaults to a non-deliverable placeholder because the OTP-based activation flow ignores it; only override with a real address if using email-link activation. Ignored by other fast paths."
-  type        = string
-  default     = "argocd-admin@example.com"
-}
-
 data "aws_partition" "current" {}
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}

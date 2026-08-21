@@ -28,28 +28,24 @@ variable "inbound_cidrs" {
 variable "enable_eks_capabilities" {
   description = <<-EOT
     Gate for the EKS Capabilities fast path resources (ACK, Argo CD, kro
-    capabilities + IAM Identity Center user/group + CodeCommit repo). This
-    preprovision module is shared across all fast paths, but only the
-    `fastpaths/eks-capabilities` path should create these resources. When
-    false (developer/operator paths) nothing capability-related is created,
-    so no IAM Identity Center instance is required.
+    capabilities + CodeCommit repo). This preprovision module is shared across
+    all fast paths, but at lab time only the `fastpaths/eks-capabilities` path
+    should create these resources: the developer and operator paths would pay
+    for a capability they never use, and the Argo CD one additionally needs an
+    IAM Identity Center instance their apply has no reason to require.
+
+    The default is true because it only takes effect for one of this module's two
+    callers. `hack/pre-provision-resources.sh` generates a wrapper that passes
+    nothing but `eks_cluster_id` and `tags`, so a false default meant every
+    resource in these files was skipped at a Workshop Studio event and the
+    capabilities existed nowhere: pre-provisioning gated them off, and the lab
+    skipped this whole module because `resources_precreated` was true.
+
+    At lab time the value is always explicit -- reset-environment exports
+    TF_VAR_enable_eks_capabilities and ../main.tf passes it through -- so this
+    default never applies there and the dev/operator paths still create nothing.
   EOT
   type        = bool
-  default     = false
+  default     = true
 }
 
-# tflint-ignore: terraform_unused_declarations
-variable "argocd_admin_email" {
-  description = <<-EOT
-    Email address attached to the Argo CD workshop admin user record.
-    Defaults to a non-deliverable placeholder because this fast path uses the
-    admin-generated OTP activation path (see argocd/signin-argocd.md), not the
-    email-link path, so the email value is cosmetic and never needs to
-    receive mail. Override with a real address only if you specifically want
-    to use the email-link activation flow.
-
-    Pattern adopted from https://github.com/aws-samples/saas-on-eks-workshop-capabilities.
-  EOT
-  type        = string
-  default     = "argocd-admin@example.com"
-}

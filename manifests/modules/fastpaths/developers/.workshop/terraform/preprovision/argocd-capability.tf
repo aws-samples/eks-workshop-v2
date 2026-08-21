@@ -35,9 +35,18 @@ locals {
   eks_cap_idc_identitystore = local.eks_cap_idc_present ? tolist(data.aws_ssoadmin_instances.current.identity_store_ids)[0] : ""
 
   eks_cap_argocd_capability_name = "${var.eks_cluster_auto_id}-argocd"
-  eks_cap_argocd_admin_user      = "${var.eks_cluster_auto_id}-argocd-admin"
-  eks_cap_argocd_admin_group     = "${var.eks_cluster_auto_id}-argocd-admins"
-  eks_cap_codecommit_repo_name   = "${var.eks_cluster_auto_id}-catalog-gitops"
+
+  # The user and group belong to the whole environment, not to this cluster, so they
+  # are named after `eks_cluster_id` and created once by
+  # `manifests/.workshop/terraform/preprovision-base`. There is a single Identity
+  # Center instance per account per Region, so a per-cluster user would mean a second
+  # browser activation (see that module's activate-user.py) for the same person.
+  #
+  # Derived by convention rather than passed in: staged preprovision modules share one
+  # Terraform root but have no wiring between them, so this and the Argo CD lab both
+  # reconstruct the same names instead of exchanging outputs.
+  eks_cap_argocd_admin_group   = "${var.eks_cluster_id}-argocd-admins"
+  eks_cap_codecommit_repo_name = "${var.eks_cluster_auto_id}-catalog-gitops"
   eks_cap_codecommit_repo_arn    = "arn:${data.aws_partition.current.partition}:codecommit:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:${local.eks_cap_codecommit_repo_name}"
   eks_cap_codecommit_repo_url    = "https://git-codecommit.${data.aws_region.current.id}.amazonaws.com/v1/repos/${local.eks_cap_codecommit_repo_name}"
 }
@@ -51,65 +60,37 @@ resource "null_resource" "eks_cap_argocd_idc_preflight" {
   lifecycle {
     precondition {
       condition     = local.eks_cap_idc_present
-      error_message = "The Argo CD capability requires AWS IAM Identity Center, but no Identity Center instance was found in ${data.aws_region.current.id}. Enable IAM Identity Center in this region (https://console.aws.amazon.com/singlesignon/home) before running this fast path."
+      error_message = "The Argo CD capability requires AWS IAM Identity Center, but no Identity Center instance was found in ${data.aws_region.current.id}. At an AWS-run event manifests/.workshop/terraform/preprovision-base creates one; everywhere else, enable IAM Identity Center in this Region (https://console.aws.amazon.com/singlesignon/home) and create the ${local.eks_cap_argocd_admin_group} group with a member in it before running this fast path."
     }
   }
 }
 
-# --- Identity Center user + group + membership ------------------------------
+# --- Identity Center group lookup -------------------------------------------
 #
-# We create a workshop-scoped admin group and a single user inside the built-in
-# Identity Store, then map the GROUP -> Argo CD ADMIN role in the capability
-# config below.
+# Read, never written. The group and the user in it are created once per environment
+# by `manifests/.workshop/terraform/preprovision-base`, which only the Workshop Studio
+# pre-provisioning pipeline can reach, and which also completes the one thing no API
+# does: setting the user's password.
 #
-# Activation flow (matches saas-on-eks-workshop-capabilities):
-#   1. Admin disables MFA on the IDC instance once (Console only, no API).
-#   2. Admin generates a one-time password for this user via the IDC Console
-#      (Users -> argo-admin -> Reset password -> "Generate a one-time password").
-#   3. Learner signs in to Argo CD with username + OTP, is forced to set a
-#      permanent password, then lands in Argo CD as ADMIN.
+# That is why this file no longer creates a user, a group or a membership. Writing to
+# Identity Center from here would mean writing to an account-wide directory from a
+# path a learner can run, and it would mint a second user that nobody has activated,
+# so it could not sign in.
 #
-# This is why the email defaults to a non-deliverable placeholder, the OTP
-# flow doesn't use it. To use the email-link activation flow instead, set
-# TF_VAR_argocd_admin_email to a real address.
-#
-# Pattern adopted from:
-#   https://github.com/aws-samples/saas-on-eks-workshop-capabilities/blob/main/assetsSrc/terraform/identity-center.tf
-#   https://github.com/aws-samples/saas-on-eks-workshop-capabilities/blob/main/content/100-introduction/225-argocd-user-management.en.md
-resource "aws_identitystore_user" "argocd_admin" {
+# For a self-service run, the lab introduction covers creating the user and group by
+# hand and generating a one-time password.
+data "aws_identitystore_group" "argocd_admins" {
   count             = local.eks_cap_count
   identity_store_id = local.eks_cap_idc_identitystore
 
-  user_name    = local.eks_cap_argocd_admin_user
-  display_name = "Argo CD Workshop Admin"
-
-  name {
-    given_name  = "Argo CD"
-    family_name = "Workshop Admin"
-  }
-
-  emails {
-    value   = var.argocd_admin_email
-    primary = true
+  alternate_identifier {
+    unique_attribute {
+      attribute_path  = "DisplayName"
+      attribute_value = local.eks_cap_argocd_admin_group
+    }
   }
 
   depends_on = [null_resource.eks_cap_argocd_idc_preflight]
-}
-
-resource "aws_identitystore_group" "argocd_admins" {
-  count             = local.eks_cap_count
-  identity_store_id = local.eks_cap_idc_identitystore
-  display_name      = local.eks_cap_argocd_admin_group
-  description       = "Argo CD administrators for ${var.eks_cluster_auto_id} (EKS Workshop fast path)"
-
-  depends_on = [null_resource.eks_cap_argocd_idc_preflight]
-}
-
-resource "aws_identitystore_group_membership" "argocd_admin" {
-  count             = local.eks_cap_count
-  identity_store_id = local.eks_cap_idc_identitystore
-  group_id          = aws_identitystore_group.argocd_admins[0].group_id
-  member_id         = aws_identitystore_user.argocd_admin[0].user_id
 }
 
 # --- CodeCommit repository, seeded with the catalog manifests ----------------
@@ -247,7 +228,7 @@ resource "aws_eks_capability" "argocd" {
         role = "ADMIN"
 
         identity {
-          id   = aws_identitystore_group.argocd_admins[0].group_id
+          id   = data.aws_identitystore_group.argocd_admins[0].group_id
           type = "SSO_GROUP"
         }
       }
@@ -258,7 +239,7 @@ resource "aws_eks_capability" "argocd" {
 
   depends_on = [
     aws_iam_role_policy.eks_cap_argocd_codecommit,
-    aws_identitystore_group_membership.argocd_admin,
+    data.aws_identitystore_group.argocd_admins,
     null_resource.eks_cap_region_preflight,
     null_resource.eks_cap_argocd_idc_preflight,
     time_sleep.eks_cap_argocd_role_propagation,

@@ -17,13 +17,25 @@ locals {
   idc_instance_arns     = tolist(data.aws_ssoadmin_instances.main.arns)
   idc_identity_store_id = try(tolist(data.aws_ssoadmin_instances.main.identity_store_ids)[0], "")
   idc_instance_arn      = try(local.idc_instance_arns[0], "")
-  idc_user_name         = "eks-workshop"
+
+  # Named after the environment rather than a fixed "eks-workshop", because there is
+  # only one Identity Center instance per account per Region: two environments in one
+  # account share the directory, and a fixed name would make the second one collide
+  # with the first. `eks_cluster_id` is `eks-workshop` at an event and
+  # `eks-workshop-<environment>` elsewhere.
+  #
+  # These are a convention shared with
+  # `manifests/.workshop/terraform/preprovision-base`, which creates them at an event.
+  # Both sides derive the names the same way instead of passing values around, so this
+  # lab reads identically whether they were pre-provisioned or created by hand.
+  idc_user_name  = var.eks_cluster_id
+  idc_group_name = "${var.eks_cluster_id}-argocd-admins"
 
   # Identity Center does not require the sign-in name to be an email address, so the
   # user name stays short and memorable for participants to type. The directory still
   # wants a primary email, and nothing ever delivers to it, so use the address range
   # RFC 2606 reserves for documentation.
-  idc_user_email = "eks-workshop@example.com"
+  idc_user_email = "${var.eks_cluster_id}@example.com"
 
   # The console deep link uses the instance ID without its "ssoins-" prefix.
   idc_instance_id = trimprefix(try(element(split("/", local.idc_instance_arn), 1), ""), "ssoins-")
@@ -55,6 +67,7 @@ resource "null_resource" "idc_precheck" {
       ACCOUNT    = data.aws_caller_identity.current.account_id
       USER_NAME  = local.idc_user_name
       USER_EMAIL = local.idc_user_email
+      GROUP_NAME = local.idc_group_name
     }
   }
 
@@ -62,19 +75,6 @@ resource "null_resource" "idc_precheck" {
     precondition {
       condition     = length(local.idc_instance_arns) > 0
       error_message = "No IAM Identity Center instance found in this account and Region. This lab does not set one up for you. See \"Prerequisites - IAM Identity Center\" in the lab introduction: https://www.eksworkshop.com/docs/automation/gitops/argocd/"
-    }
-  }
-}
-
-data "aws_identitystore_user" "argocd_admin" {
-  depends_on = [null_resource.idc_precheck]
-
-  identity_store_id = local.idc_identity_store_id
-
-  alternate_identifier {
-    unique_attribute {
-      attribute_path  = "UserName"
-      attribute_value = local.idc_user_name
     }
   }
 }
@@ -105,10 +105,11 @@ module "capability" {
   source = "./preprovision/capability"
   count  = var.resources_precreated ? 0 : 1
 
-  eks_cluster_id   = var.addon_context.eks_cluster_id
-  idc_instance_arn = local.idc_instance_arn
-  idc_user_id      = data.aws_identitystore_user.argocd_admin.user_id
-  tags             = var.tags
+  depends_on = [null_resource.idc_precheck]
+
+  eks_cluster_id = var.addon_context.eks_cluster_id
+  idc_group_name = local.idc_group_name
+  tags           = var.tags
 }
 
 resource "aws_codecommit_repository" "argocd" {

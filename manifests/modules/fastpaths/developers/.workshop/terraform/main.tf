@@ -17,8 +17,4 @@ module "preprovision" {
   # (and no IAM Identity Center requirement) is applied.
   enable_eks_capabilities = var.enable_eks_capabilities
 
-  # Defaults to a non-deliverable placeholder (set in base.tf) that's fine for
-  # the OTP activation flow; learners only override this if they prefer the
-  # email-link activation flow.
-  argocd_admin_email = var.argocd_admin_email
 }

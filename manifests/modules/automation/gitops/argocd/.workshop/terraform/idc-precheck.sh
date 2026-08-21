@@ -8,7 +8,7 @@
 # Inline, that buries the message below a screen of shell; as a file, the command
 # is one line and the message is what the participant actually sees.
 #
-# Required environment: REGION, ACCOUNT, USER_NAME, USER_EMAIL.
+# Required environment: REGION, ACCOUNT, USER_NAME, USER_EMAIL, GROUP_NAME.
 
 set -euo pipefail
 
@@ -64,3 +64,39 @@ if ! aws identitystore get-user-id \
 fi
 
 echo "IAM Identity Center user $USER_NAME found"
+
+# The capability maps a group to the Argo CD ADMIN role, not the user directly, so the
+# group has to exist and the user has to be in it. Checked here rather than left to
+# the `aws_identitystore_group` data source in the capability module, which reports a
+# missing group as a bare lookup failure with no hint about what to create.
+GROUP_ALT_ID=$(jq -nc --arg v "$GROUP_NAME" \
+  '{UniqueAttribute:{AttributePath:"DisplayName",AttributeValue:$v}}')
+
+if ! GROUP_ID=$(aws identitystore get-group-id \
+  --identity-store-id "$IDENTITY_STORE_ID" \
+  --alternate-identifier "$GROUP_ALT_ID" \
+  --region "$REGION" --query GroupId --output text 2>/dev/null); then
+  fail "IAM Identity Center group '$GROUP_NAME' does not exist in this directory."
+fi
+
+echo "IAM Identity Center group $GROUP_NAME found"
+
+USER_ID=$(aws identitystore get-user-id \
+  --identity-store-id "$IDENTITY_STORE_ID" \
+  --alternate-identifier "$ALT_ID" \
+  --region "$REGION" --query UserId --output text)
+
+# A group that exists but does not contain the user gives the most confusing failure
+# of the lot: the capability comes up healthy and then refuses the participant's
+# sign-in, because the ADMIN mapping matches a group they are not in.
+MEMBERSHIP=$(jq -nc --arg v "$USER_ID" '{UserId:$v}')
+
+if ! aws identitystore get-group-membership-id \
+  --identity-store-id "$IDENTITY_STORE_ID" \
+  --group-id "$GROUP_ID" \
+  --member-id "$MEMBERSHIP" \
+  --region "$REGION" >/dev/null 2>&1; then
+  fail "IAM Identity Center user '$USER_NAME' is not a member of group '$GROUP_NAME'."
+fi
+
+echo "IAM Identity Center user $USER_NAME is a member of $GROUP_NAME"

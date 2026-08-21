@@ -1,11 +1,14 @@
 Version: "2012-10-17"
 Statement:
-  # IAM Identity Center lookup (preprovision data source) and
-  # workshop-scoped user/group lifecycle management for the Argo CD capability
-  # admin group + user the path provisions. The capability itself, when
-  # created, registers an SSO application against the IDC instance, so the
-  # IDE role (the principal calling CreateCapability) needs the application
-  # lifecycle actions too.
+  # IAM Identity Center lookup for the capability's data sources. The capability
+  # registers an SSO application against the instance when it is created, so the IDE
+  # role (the principal calling CreateCapability) needs the application lifecycle
+  # actions too.
+  #
+  # Deliberately excludes sso:CreateInstance and sso:DeleteInstance. Enabling Identity
+  # Center is an account-wide and effectively irreversible change, so the IDE never
+  # does it: events get an instance from the pre-provisioning pipeline, and anyone else
+  # enables it themselves before starting.
   - Effect: Allow
     Action:
       - sso:ListInstances
@@ -36,6 +39,12 @@ Statement:
       - sso:UntagResource
       - sso:ListTagsForResource
     Resource: ["*"]
+  # Reads only. This fast path used to create the Argo CD user, group and membership
+  # from lab Terraform, which meant a path a learner can run wrote into an
+  # account-wide directory, and minted a user nobody had activated so it could not
+  # sign in. Both now come from manifests/.workshop/terraform/preprovision-base, which
+  # only the pre-provisioning pipeline reaches, so the IDE role no longer needs to
+  # write to Identity Center at all.
   - Effect: Allow
     Action:
       - identitystore:ListUsers
@@ -44,17 +53,9 @@ Statement:
       - identitystore:DescribeUser
       - identitystore:DescribeGroup
       - identitystore:DescribeGroupMembership
-    Resource: ["*"]
-  - Effect: Allow
-    Action:
-      - identitystore:CreateUser
-      - identitystore:CreateGroup
-      - identitystore:CreateGroupMembership
-      - identitystore:UpdateUser
-      - identitystore:UpdateGroup
-      - identitystore:DeleteUser
-      - identitystore:DeleteGroup
-      - identitystore:DeleteGroupMembership
+      - identitystore:GetUserId
+      - identitystore:GetGroupId
+      - identitystore:GetGroupMembershipId
     Resource: ["*"]
 
   # CodeCommit Git data plane: the lab pages clone, push, and pull against

@@ -7,8 +7,21 @@ The managed Argo CD capability authenticates **only** through AWS IAM Identity C
 
 This page walks the **one-time setup** plus the **first sign-in** to the Argo CD UI. After this, you reuse the password you set here for the rest of this lab.
 
+:::info At an AWS-run event, skip to step 4
+The event provisioning already relaxed MFA on the Identity Center instance it created and already completed this user's first sign-in, so there is no one-time password to generate. Your password is in AWS Secrets Manager under `<cluster-name>-argocd-idc`:
+
+```bash test=false
+$ aws secretsmanager get-secret-value --secret-id $EKS_CLUSTER_NAME-argocd-idc \
+  --query SecretString --output text
+```
+
+Steps 2 and 3 are for running this lab in your own account.
+:::
+
 :::caution
 Disabling MFA weakens security for **all** users in the IAM Identity Center instance, not just the workshop user. Acceptable for a personal/dev/test account; **do not** apply this in a production account or shared organization.
+
+The event provisioning applies this only to an instance it created itself. If it finds an instance that already existed, it adopts it and leaves its sign-in policy alone, because another workload's MFA settings are not the workshop's to weaken.
 :::
 
 :::info
@@ -17,15 +30,13 @@ Signing in to the UI is **optional**. It lets you explore the Argo CD dashboard,
 
 ### 1. Identity Center user and group
 
-Terraform pre-created the workshop user and group in AWS Identity Center. They were exported into your shell by `prepare-environment`:
+The workshop user and group are created once per environment and shared by every lab whose capability federates with Identity Center. There is a single Identity Center instance per account and Region, so a per-lab user would mean a separate first sign-in for each one. They were exported into your shell by `prepare-environment`:
 
 ```bash test=false
 $ echo $EKS_CAP_ARGOCD_USER
-eks-workshop-...-argocd-admin
+eks-workshop
 $ echo $EKS_CAP_ARGOCD_ADMIN_GROUP
-eks-workshop-...-argocd-admins
-$ echo $EKS_CAP_ARGOCD_URL
-https://....eks-capabilities.us-west-2.amazonaws.com
+eks-workshop-argocd-admins
 ```
 
 Pre-created user
@@ -66,14 +77,14 @@ First, print the exact username to look for in the console. Terraform named the 
 
 ```bash test=false
 $ echo $EKS_CAP_ARGOCD_USER
-eks-workshop-...-argocd-admin
+eks-workshop
 ```
 
 Open the Identity Center **Users** list:
 
 <ConsoleButton url="https://console.aws.amazon.com/singlesignon/home#!/users" service="console" label="Open Identity Center users"/>
 
-1. Find and select the user matching the name you just printed (for example `eks-workshop-...-argocd-admin`).
+1. Find and select the user matching the name you just printed (for example `eks-workshop`).
 
    ![Select Argoadmin](/img/fastpaths/eks-capabilities/argocd/argoadmin_select.png)
 
@@ -89,10 +100,13 @@ Open the Identity Center **Users** list:
 
 ### 4. First sign-in to Argo CD
 
-Open the Argo CD URL in a new browser tab:
+Open the Argo CD URL in a new browser tab. The capability publishes it, so ask the EKS API for it rather than expecting it in the environment:
 
 ```bash test=false
-$ echo $EKS_CAP_ARGOCD_URL
+$ aws eks describe-capability \
+  --cluster-name $EKS_CLUSTER_AUTO_NAME \
+  --capability-name $EKS_CAP_ARGOCD_CAPABILITY \
+  --query 'capability.configuration.argoCd.serverUrl' --output text
 ```
 
 1. Click **Log in via AWS Identity Center**.
