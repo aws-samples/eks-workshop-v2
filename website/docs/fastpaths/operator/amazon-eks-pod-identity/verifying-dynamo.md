@@ -9,7 +9,7 @@ Now, with the `carts` Service Account associated with the authorized IAM role, t
 First, create an NLB service to access the web store externally:
 
 ```bash
-$ cat << 'EOF' | kubectl apply -f -
+$ cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Service
 metadata:
