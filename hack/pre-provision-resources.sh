@@ -94,8 +94,16 @@ done < <(find $manifests_dir/modules -type d -name "preprovision" -print0)
 #
 # One root also means Terraform is free to reorder, and a module reading Identity
 # Center through a data source could be evaluated before the layer that creates it.
-# Hence the explicit depends_on on every wrapper below. It costs nothing for the
-# modules that do not care, and without it the ordering is luck.
+# Hence the explicit depends_on on the wrappers below -- but only on the modules that
+# declare `.requires-idc`, because it is not free for the ones that do not.
+#
+# A module-level depends_on propagates to every data source inside the module, and a
+# data source that depends on something not yet applied cannot be read during plan.
+# Its result is therefore unknown until apply, which is fatal to any `count` or
+# `for_each` derived from it -- `count = length(data.aws_subnets.<x>.ids)` fails with
+# "Invalid count argument". Applying the depends_on to every wrapper broke unrelated
+# modules that way (the EFS mount targets in fundamentals/storage/efs), so it is
+# scoped to the modules whose ordering actually depends on the shared layer.
 if [ -n "$idc_required" ]; then
   cp -R $idc_base_dir $conf_dir/$idc_base_target
 
@@ -122,7 +130,7 @@ do
   cp -R $file $conf_dir/$target
 
   depends_on_idc=""
-  if [ -n "$idc_required" ]; then
+  if [ -n "$idc_required" ] && [ -f "$file/.requires-idc" ]; then
     depends_on_idc="
   depends_on = [module.gen_idc_base]
 "
