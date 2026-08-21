@@ -47,8 +47,8 @@ locals {
   # reconstruct the same names instead of exchanging outputs.
   eks_cap_argocd_admin_group   = "${var.eks_cluster_id}-argocd-admins"
   eks_cap_codecommit_repo_name = "${var.eks_cluster_auto_id}-catalog-gitops"
-  eks_cap_codecommit_repo_arn    = "arn:${data.aws_partition.current.partition}:codecommit:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:${local.eks_cap_codecommit_repo_name}"
-  eks_cap_codecommit_repo_url    = "https://git-codecommit.${data.aws_region.current.id}.amazonaws.com/v1/repos/${local.eks_cap_codecommit_repo_name}"
+  eks_cap_codecommit_repo_arn  = "arn:${data.aws_partition.current.partition}:codecommit:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:${local.eks_cap_codecommit_repo_name}"
+  eks_cap_codecommit_repo_url  = "https://git-codecommit.${data.aws_region.current.id}.amazonaws.com/v1/repos/${local.eks_cap_codecommit_repo_name}"
 }
 
 # Only fires for the eks-capabilities path (count = local.eks_cap_count). The
