@@ -59,7 +59,7 @@ You should start each lab from the page indicated by "BEFORE YOU START" badge. S
 
 In the event that you accidentally configure your cluster or module in a way that is not functioning you have been provided with a mechanism to reset your EKS cluster as best we can which can be run at any time. Simply run the command prepare-environment and wait until it completes. This may take several minutes depending on the state of your cluster when it is run.
 
-```bash
+```bash test=false
 $ prepare-environment
 ```
 
