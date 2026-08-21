@@ -83,8 +83,8 @@ What does this tell us?
 We can also inspect the targets in the target group that was created by the controller:
 
 ```bash
-$ ALB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`].LoadBalancerArn' | jq -r '.[0]')
-$ TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --load-balancer-arn $ALB_ARN | jq -r '.TargetGroups[0].TargetGroupArn')
+$ NLB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`].LoadBalancerArn' | jq -r '.[0]')
+$ TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --load-balancer-arn $NLB_ARN | jq -r '.TargetGroups[0].TargetGroupArn')
 $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 {
     "TargetHealthDescriptions": [

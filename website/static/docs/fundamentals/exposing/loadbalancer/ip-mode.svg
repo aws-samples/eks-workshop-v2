@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1790" height="980" viewBox="0 0 1790 980" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#495B6B"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5B8A0F"/>
+    </marker>
+  </defs>
+
+  <rect width="1790" height="980" fill="#FFFFFF"/>
+  <text x="895" y="50" text-anchor="middle" font-size="29" font-weight="700" fill="#232F3E">NLB target modes: how traffic reaches the ui Pod</text>
+
+  <!-- ================= LEFT PANEL : INSTANCE MODE ================= -->
+  <rect x="40" y="96" width="830" height="770" rx="12" fill="#FFFFFF" stroke="#B6C2CE" stroke-width="2"/>
+  <rect x="56" y="112" width="798" height="70" rx="8" fill="#FFF4EC" stroke="#ED7100" stroke-width="2"/>
+  <text x="455" y="142" text-anchor="middle" font-size="22" font-weight="700" fill="#B85B00">Instance mode</text>
+  <text x="455" y="167" text-anchor="middle" font-size="15" fill="#8A5010">aws-load-balancer-nlb-target-type: instance</text>
+
+  <rect x="235" y="210" width="440" height="96" rx="9" fill="#F3EBFF" stroke="#8C4FFF" stroke-width="2.4"/>
+  <text x="455" y="245" text-anchor="middle" font-size="18" font-weight="700" fill="#6B2FD9">Network Load Balancer</text>
+  <text x="455" y="275" text-anchor="middle" font-size="14" fill="#4A5B6B">Listener TCP :80 — layer 4, forwards without parsing HTTP</text>
+
+  <rect x="215" y="348" width="480" height="136" rx="9" fill="#F4F6F8" stroke="#5A6B7B" stroke-width="2.2"/>
+  <text x="455" y="378" text-anchor="middle" font-size="16" font-weight="700" fill="#232F3E">Target group — registers EC2 instances</text>
+  <line x1="235" y1="392" x2="675" y2="392" stroke="#C6D0DA" stroke-width="1.5"/>
+  <text x="455" y="418" text-anchor="middle" font-size="14" fill="#4A5B6B">i-0a1b2c3d4e  ·  TCP :30549</text>
+  <text x="455" y="442" text-anchor="middle" font-size="14" fill="#4A5B6B">i-0f5e6d7c8b  ·  TCP :30549</text>
+  <text x="455" y="466" text-anchor="middle" font-size="14" fill="#4A5B6B">i-09a8b7c6d5  ·  TCP :30549</text>
+
+  <rect x="70" y="524" width="770" height="280" rx="10" fill="#FEF4F8" stroke="#E7157B" stroke-width="2.4"/>
+  <rect x="92" y="536" width="26" height="26" rx="5" fill="#E7157B"/>
+  <path d="M 105 541 l 8 4 v 8 l -8 4 l -8 -4 v -8 z" fill="none" stroke="#FFFFFF" stroke-width="1.6"/>
+  <text x="128" y="556" font-size="17" font-weight="700" fill="#E7157B">Amazon EKS cluster</text>
+
+  <rect x="96" y="572" width="718" height="210" rx="9" fill="#FFFFFF" stroke="#5A6B7B" stroke-width="2"/>
+  <text x="116" y="598" font-size="15" font-weight="700" fill="#232F3E">Worker node (EC2)</text>
+
+  <rect x="315" y="606" width="280" height="70" rx="7" fill="#EEF2F6" stroke="#8494A5" stroke-width="1.8"/>
+  <text x="455" y="634" text-anchor="middle" font-size="16" font-weight="700" fill="#232F3E">kube-proxy</text>
+  <text x="455" y="658" text-anchor="middle" font-size="14" fill="#4A5B6B">NodePort :30549 — in the data path</text>
+
+  <rect x="315" y="704" width="280" height="64" rx="7" fill="#FCE8F1" stroke="#E7157B" stroke-width="2"/>
+  <text x="455" y="731" text-anchor="middle" font-size="16" font-weight="700" fill="#B01262">ui Pod</text>
+  <text x="455" y="754" text-anchor="middle" font-size="14" fill="#4A5B6B">:8080</text>
+
+  <text x="455" y="796" text-anchor="middle" font-size="13" font-weight="700" fill="#D13212">No ui Pod on the node that received the connection? kube-proxy adds another hop.</text>
+  <text x="455" y="842" text-anchor="middle" font-size="15" font-weight="700" fill="#232F3E">Two hops: NLB → node, then kube-proxy → Pod. EC2 only.</text>
+
+  <!-- ================= RIGHT PANEL : IP MODE ================= -->
+  <rect x="920" y="96" width="830" height="770" rx="12" fill="#FFFFFF" stroke="#B6C2CE" stroke-width="2"/>
+  <rect x="936" y="112" width="798" height="70" rx="8" fill="#F2F8EA" stroke="#7AA116" stroke-width="2"/>
+  <text x="1335" y="142" text-anchor="middle" font-size="22" font-weight="700" fill="#5B8A0F">IP mode</text>
+  <text x="1335" y="167" text-anchor="middle" font-size="15" fill="#4E6B14">aws-load-balancer-nlb-target-type: ip</text>
+
+  <rect x="1115" y="210" width="440" height="96" rx="9" fill="#F3EBFF" stroke="#8C4FFF" stroke-width="2.4"/>
+  <text x="1335" y="245" text-anchor="middle" font-size="18" font-weight="700" fill="#6B2FD9">Network Load Balancer</text>
+  <text x="1335" y="275" text-anchor="middle" font-size="14" fill="#4A5B6B">Listener TCP :80 — layer 4, forwards without parsing HTTP</text>
+
+  <rect x="1095" y="348" width="480" height="136" rx="9" fill="#F4F6F8" stroke="#5A6B7B" stroke-width="2.2"/>
+  <text x="1335" y="378" text-anchor="middle" font-size="16" font-weight="700" fill="#232F3E">Target group — registers Pod IPs</text>
+  <line x1="1115" y1="392" x2="1555" y2="392" stroke="#C6D0DA" stroke-width="1.5"/>
+  <text x="1335" y="418" text-anchor="middle" font-size="14" fill="#4A5B6B">10.42.140.129  ·  TCP :8080</text>
+  <text x="1335" y="442" text-anchor="middle" font-size="14" fill="#4A5B6B">10.42.105.38  ·  TCP :8080</text>
+  <text x="1335" y="466" text-anchor="middle" font-size="14" fill="#4A5B6B">10.42.180.183  ·  TCP :8080</text>
+
+  <rect x="950" y="524" width="770" height="280" rx="10" fill="#FEF4F8" stroke="#E7157B" stroke-width="2.4"/>
+  <rect x="972" y="536" width="26" height="26" rx="5" fill="#E7157B"/>
+  <path d="M 985 541 l 8 4 v 8 l -8 4 l -8 -4 v -8 z" fill="none" stroke="#FFFFFF" stroke-width="1.6"/>
+  <text x="1008" y="556" font-size="17" font-weight="700" fill="#E7157B">Amazon EKS cluster</text>
+
+  <rect x="976" y="572" width="718" height="210" rx="9" fill="#FFFFFF" stroke="#5A6B7B" stroke-width="2"/>
+  <text x="996" y="598" font-size="15" font-weight="700" fill="#232F3E">Worker node (EC2) or AWS Fargate</text>
+
+  <rect x="1195" y="606" width="280" height="70" rx="7" fill="#F7F9FA" stroke="#C6D0DA" stroke-width="1.8" stroke-dasharray="6 5"/>
+  <text x="1335" y="634" text-anchor="middle" font-size="16" font-weight="700" fill="#A3B0BC">kube-proxy</text>
+  <text x="1335" y="658" text-anchor="middle" font-size="14" fill="#A3B0BC">NodePort not used — bypassed</text>
+
+  <rect x="1195" y="704" width="280" height="64" rx="7" fill="#FCE8F1" stroke="#E7157B" stroke-width="2"/>
+  <text x="1335" y="731" text-anchor="middle" font-size="16" font-weight="700" fill="#B01262">ui Pod</text>
+  <text x="1335" y="754" text-anchor="middle" font-size="14" fill="#4A5B6B">10.42.140.129:8080</text>
+
+  <text x="1335" y="796" text-anchor="middle" font-size="13" font-weight="700" fill="#5B8A0F">Every Pod has a routable VPC IP from the Amazon VPC CNI, so the NLB targets it directly.</text>
+  <text x="1335" y="842" text-anchor="middle" font-size="15" font-weight="700" fill="#232F3E">One hop: NLB → Pod. Works on EC2 and Fargate.</text>
+
+  <!-- ===== connectors drawn last so they sit above the container fills ===== -->
+  <line x1="455" y1="306" x2="455" y2="342" stroke="#495B6B" stroke-width="2.4" marker-end="url(#arrow)"/>
+  <line x1="455" y1="484" x2="455" y2="600" stroke="#495B6B" stroke-width="2.4" marker-end="url(#arrow)"/>
+  <line x1="455" y1="676" x2="455" y2="698" stroke="#495B6B" stroke-width="2.4" marker-end="url(#arrow)"/>
+  <text x="470" y="552" font-size="13" font-weight="700" fill="#4A5B6B">to the NodePort</text>
+  <text x="470" y="694" font-size="13" font-weight="700" fill="#4A5B6B">relays</text>
+
+  <line x1="1335" y1="306" x2="1335" y2="342" stroke="#495B6B" stroke-width="2.4" marker-end="url(#arrow)"/>
+  <path d="M 1335 484 V 506 H 1640 V 736 H 1481" fill="none" stroke="#5B8A0F" stroke-width="2.8" marker-end="url(#arrowGreen)"/>
+  <text x="1626" y="552" text-anchor="end" font-size="13" font-weight="700" fill="#5B8A0F">bypasses kube-proxy</text>
+
+  <!-- ================= FOOTER ================= -->
+  <rect x="40" y="890" width="1710" height="66" rx="9" fill="#F4F6F8" stroke="#C6D0DA" stroke-width="1.8"/>
+  <text x="895" y="917" text-anchor="middle" font-size="15" fill="#232F3E">Only the target group registration changes — the Service, the NLB and the TCP :80 listener are identical in both modes.</text>
+  <text x="895" y="940" text-anchor="middle" font-size="15" fill="#4A5B6B">IP mode removes a hop, drops the need to reason about externalTrafficPolicy, and is required for Pods on Fargate.</text>
+</svg>
