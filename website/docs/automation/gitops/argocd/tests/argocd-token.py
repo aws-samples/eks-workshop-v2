@@ -27,10 +27,12 @@ import importlib.util
 import os
 import sys
 
-# Mounted into the test container at /eks-workshop/manifests.
+# Mounted into the test container at /eks-workshop/manifests. The activation helper
+# lives with the shared Identity Center layer rather than under this lab, because
+# every lab whose capability federates with Identity Center activates the same user.
 DEFAULT_ACTIVATE_USER_PY = (
-    "/eks-workshop/manifests/modules/automation/gitops/argocd"
-    "/.workshop/terraform/preprovision/activate-user.py"
+    "/eks-workshop/manifests/.workshop/terraform"
+    "/preprovision-base/activate-user.py"
 )
 
 # Argo CD stores the JWT it issues after a successful OIDC sign-in under this name.

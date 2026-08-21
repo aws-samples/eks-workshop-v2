@@ -475,6 +475,17 @@ Resources:
       PolicyDocument:
         file: ./iam/policies/labs4.yaml
 
+  EksWorkshopEksCapabilitiesPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-eks-capabilities
+      PolicyDocument:
+        file: ./iam/policies/eks-capabilities.yaml
+
   EksWorkshopTroubleshootPolicy:
     Type: AWS::IAM::ManagedPolicy
     DependsOn:

@@ -3,13 +3,8 @@ variable "eks_cluster_id" {
   type        = string
 }
 
-variable "idc_instance_arn" {
-  description = "ARN of the IAM Identity Center instance that authenticates Argo CD users"
-  type        = string
-}
-
-variable "idc_user_id" {
-  description = "Identity Center user ID to grant the Argo CD ADMIN role"
+variable "idc_group_name" {
+  description = "Display name of the Identity Center group to grant the Argo CD ADMIN role"
   type        = string
 }
 

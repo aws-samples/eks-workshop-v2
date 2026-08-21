@@ -453,6 +453,32 @@ def read_stored_password(client, secret_id):
         return None
 
 
+def generate_password(secrets):
+    """Mint the candidate password here rather than receiving it from Terraform.
+
+    Terraform echoes a provisioner's command string verbatim as it runs it, so a
+    password interpolated into that command ends up in plain text in the
+    pre-provisioning build log. Moving it into the provisioner's `environment` block
+    hides it, but Terraform then suppresses the provisioner's entire output, which
+    takes every log line below with it -- exactly what someone diagnosing a failed
+    activation has to work from.
+
+    Generating it in here keeps the password out of the log and keeps the log. It is
+    the same GetRandomPassword call Terraform's `aws_secretsmanager_random_password`
+    data source made, with the same constraints, so the result is interchangeable.
+    """
+    return secrets.get_random_password(
+        PasswordLength=16,
+        RequireEachIncludedType=True,
+        # Identity Center rejects a password with no symbol, so punctuation stays
+        # enabled. These particular characters are excluded because they break quoting
+        # when the value is passed through a shell or embedded in JSON on its way to
+        # the browser, and because the stored value is later rendered into
+        # single-quoted `export` lines for the IDE shell.
+        ExcludeCharacters="\"@/\\'`",
+    )["RandomPassword"]
+
+
 def main():
     parser = argparse.ArgumentParser(description="Activate an IAM Identity Center user")
     parser.add_argument("--region", required=True)
@@ -482,15 +508,17 @@ def main():
     log(f"portal {portal_url}")
 
     stored_password = read_stored_password(secrets, args.secret_id)
+    # ARGOCD_IDC_CANDIDATE_PASSWORD is an override for the local harness
+    # (hack/activate-idc-user.sh). Nothing sets it during pre-provisioning: the
+    # password is minted below instead, so that it never passes through Terraform.
     candidate = os.environ.get("ARGOCD_IDC_CANDIDATE_PASSWORD", "")
     # Prefer the stored password so a re-apply keeps the credential participants may
     # already be holding, and only fall back to a freshly generated one.
+    if not stored_password and not candidate:
+        candidate = generate_password(secrets)
     target_password = stored_password or candidate
     if not target_password:
-        raise ActivationError(
-            "no password available: the secret is empty and "
-            "ARGOCD_IDC_CANDIDATE_PASSWORD is not set"
-        )
+        raise ActivationError("no password available and none could be generated")
 
     with sync_playwright() as playwright:
         driver = Driver(playwright, args.screenshot_dir, headless=not args.headed)
