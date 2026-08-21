@@ -1,5 +1,5 @@
 ---
-title: "Platform Essentials"
+title: "Capability Essentials"
 sidebar_position: 70
 sidebar_custom_props: { "module": true }
 ---
@@ -18,7 +18,7 @@ $ prepare-environment fastpaths/eks-capabilities
 This provisions three managed capabilities and their supporting infrastructure, so it takes roughly 7 to 10 minutes. It is normal for the command to appear idle while the capabilities activate.
 :::
 
-Welcome to **Platform Essentials**, a hands-on fast path targeted at the platform engineer and DevOps persona. It tells a single coherent story over the retail sample application using the capabilities that ship with [Amazon EKS Capabilities](https://aws.amazon.com/about-aws/whats-new/2025/11/amazon-eks-capabilities/).
+Welcome to **Capability Essentials**, a hands-on fast path targeted at the platform engineer and DevOps persona. It tells a single coherent story over the retail sample application using the capabilities that ship with [Amazon EKS Capabilities](https://aws.amazon.com/about-aws/whats-new/2025/11/amazon-eks-capabilities/).
 
 Each capability is a fully managed control-plane component. The controllers run in AWS-owned infrastructure separate from your cluster, not on your worker nodes, and AWS handles their scaling, patching, and upgrades. There is no Helm install, no controller Deployment to scale, and no Pod-level IRSA for the controllers, because the capability itself assumes an IAM role to do its work.
 
