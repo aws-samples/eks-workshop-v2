@@ -1,3 +1,14 @@
+<!--
+  Icons in this diagram are used unmodified from two official sets:
+    * AWS Architecture Icons, Q3 2026 release (https://aws.amazon.com/architecture/icons/)
+      AWS Cloud, Amazon VPC, Amazon EKS, Amazon EC2, AWS Fargate,
+      Elastic Load Balancing Network Load Balancer, Users
+    * Kubernetes Icons Set (https://github.com/kubernetes/community/tree/main/icons)
+      licensed Apache-2.0 or CC-BY-4.0. Pod, Service, Deployment, k-proxy
+  Category colours follow the AWS sets: Containers #ED7100, Networking and
+  Content Delivery #8C4FFF, AWS Cloud #242F3E. Kubernetes objects use the
+  Kubernetes blue #326CE5.
+-->
 <svg xmlns="http://www.w3.org/2000/svg" width="1790" height="980" viewBox="0 0 1790 980" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -6,6 +17,111 @@
     <marker id="arrowGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#5B8A0F"/>
     </marker>
+  <symbol id="ico-eks" viewBox="0 0 64 64">
+    <g id="ico-eks-Icon-Architecture-48-Arch_Amazon-Elastic-Kubernetes-Service_48" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g id="ico-eks-Icon-Architecture-BG-48-Compute" fill="#ED7100">
+                <rect id="ico-eks-Rectangle" x="0" y="0" width="64" height="64"></rect>
+            </g>
+            <path d="M37.708,25.0004058 L32.65,31.3403171 L37.967,38.0212236 L35.752,38.0212236 L31,32.0003079 L31,38.0002239 L29,38.0002239 L29,25.0004058 L31,25.0004058 L31,30.2413325 L35.463,25.0004058 L37.708,25.0004058 Z M50,36.3822466 L44,33.3822885 L44,25.0004058 C44,24.6374109 43.803,24.3024156 43.485,24.1264181 L35,19.412484 L35,12.7495773 L50,21.5724538 L50,36.3822466 Z M51.507,20.1384739 L34.507,10.1386138 C34.199,9.95761637 33.815,9.95461641 33.504,10.1326139 C33.192,10.3106114 33,10.6416068 33,11.0006018 L33,20.0004758 C33,20.3634707 33.197,20.6984661 33.515,20.8744636 L42,25.5883976 L42,34.0002799 C42,34.3792746 42.214,34.7252697 42.553,34.8952674 L50.553,38.8952114 C50.694,38.9652104 50.847,39.0002099 51,39.0002099 C51.183,39.0002099 51.365,38.9502106 51.525,38.851212 C51.82,38.6682146 52,38.3472191 52,38.0002239 L52,21.0004618 C52,20.6464668 51.812,20.3184714 51.507,20.1384739 L51.507,20.1384739 Z M32,51.8280304 L15,41.4391758 L15,21.5544541 L29,12.8045765 L29,19.4464836 L21.47,24.1524177 C21.178,24.3354152 21,24.6554107 21,25.0004058 L21,38.0002239 C21,38.351219 21.185,38.6772144 21.485,38.8572119 L31.485,44.857128 C31.789,45.0401254 32.167,45.0481253 32.479,44.8781277 L42.988,39.1462079 L48.035,42.0291675 L32,51.8280304 Z M50.496,41.1321801 L43.496,37.1322361 C43.194,36.9592385 42.825,36.9562385 42.521,37.1222362 L32.023,42.8481561 L23,37.4342318 L23,25.5543981 L30.53,20.848464 C30.822,20.6654665 31,20.345471 31,20.0004758 L31,11.0006018 C31,10.6366069 30.803,10.3026115 30.484,10.125614 C30.168,9.9486165 29.778,9.95961634 29.47,10.1526136 L13.47,20.1524737 C13.178,20.3354711 13,20.6554667 13,21.0004618 L13,42.0001679 C13,42.3481631 13.182,42.6711585 13.479,42.854156 L31.479,53.854002 C31.639,53.9510007 31.819,54 32,54 C32.181,54 32.361,53.9510007 32.521,53.854002 L50.521,42.854156 C50.823,42.6691586 51.005,42.3391632 51.0001004,41.9851681 C50.995,41.6321731 50.803,41.3071776 50.496,41.1321801 L50.496,41.1321801 Z" id="ico-eks-Amazon-Elastic-Kubernetes-Service_Icon_48_Squid" fill="#FFFFFF"></path>
+        </g>
+  </symbol>
+  <symbol id="ico-ec2" viewBox="0 0 64 64">
+    <g id="ico-ec2-Icon-Architecture-48-Arch_Amazon-EC2_48" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g id="ico-ec2-Icon-Architecture-BG-48-Compute" fill="#ED7100">
+                <rect id="ico-ec2-Rectangle" x="0" y="0" width="64" height="64"></rect>
+            </g>
+            <path d="M22,41 L41,41 L41,23 L22,23 L22,41 Z M43,23 L46,23 L46,25 L43,25 L43,27 L46,27 L46,29 L43,29 L43,31 L46,31 L46,33 L43,33 L43,36 L46,36 L46,38 L43,38 L43,40 L46,40 L46,42 L42.863,42 C42.608,42.587 42.023,43 41.344,43 L41,43 L41,46 L39,46 L39,43 L37,43 L37,46 L35,46 L35,43 L33,43 L33,46 L31,46 L31,43 L29,43 L29,46 L27,46 L27,43 L24,43 L24,46 L22,46 L22,43 L21.656,43 C20.977,43 20.392,42.587 20.137,42 L18,42 L18,40 L20,40 L20,38 L18,38 L18,36 L20,36 L20,33 L18,33 L18,31 L20,31 L20,29 L18,29 L18,27 L20,27 L20,25 L18,25 L18,23 L20,23 L20,22.656 C20,21.743 20.743,21 21.656,21 L22,21 L22,18 L24,18 L24,21 L27,21 L27,18 L29,18 L29,21 L31,21 L31,18 L33,18 L33,21 L35,21 L35,18 L37,18 L37,21 L39,21 L39,18 L41,18 L41,21 L41.344,21 C42.257,21 43,21.743 43,22.656 L43,23 Z M32,52 L12,52 L12,32 L16,32 L16,30 L11.843,30 C10.826,30 10,30.827 10,31.843 L10,52.157 C10,53.173 10.826,54 11.843,54 L32.157,54 C33.174,54 34,53.173 34,52.157 L34,48 L32,48 L32,52 Z M54,11.843 L54,32.157 C54,33.173 53.174,34 52.157,34 L48,34 L48,32 L52,32 L52,12 L32,12 L32,16 L30,16 L30,11.843 C30,10.827 30.826,10 31.843,10 L52.157,10 C53.174,10 54,10.827 54,11.843 L54,11.843 Z" id="ico-ec2-Amazon-EC2_Icon_48_Squid" fill="#FFFFFF"></path>
+        </g>
+  </symbol>
+  <symbol id="ico-fargate" viewBox="0 0 64 64">
+    <g id="ico-fargate-Icon-Architecture-48-Arch_AWS-Fargate_48" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g id="ico-fargate-Icon-Architecture-BG-48-Compute" fill="#ED7100">
+                <rect id="ico-fargate-Rectangle" x="0" y="0" width="64" height="64"></rect>
+            </g>
+            <path d="M42.4670854,46.382 L42.4670854,42.618 L44.4605025,41.618 L44.4605025,45.382 L42.4670854,46.382 Z M38.4802513,41.618 L40.4736684,42.618 L40.4736684,46.382 L38.4802513,45.382 L38.4802513,41.618 Z M33.4967085,51.382 L33.4967085,47.618 L35.4901256,46.618 L35.4901256,50.382 L33.4967085,51.382 Z M29.5098744,46.618 L31.5032915,47.618 L31.5032915,51.382 L29.5098744,50.382 L29.5098744,46.618 Z M24.5263316,46.382 L24.5263316,42.618 L26.5197487,41.618 L26.5197487,45.382 L24.5263316,46.382 Z M20.5394975,41.618 L22.5329146,42.618 L22.5329146,46.382 L20.5394975,45.382 L20.5394975,41.618 Z M23.5296231,39.118 L25.287817,40 L23.5296231,40.882 L21.7714292,40 L23.5296231,39.118 Z M32.5,44.118 L34.2581939,45 L32.5,45.882 L30.7418061,45 L32.5,44.118 Z M41.4703769,39.118 L43.2285708,40 L41.4703769,40.882 L39.712183,40 L41.4703769,39.118 Z M45.9027398,39.106 L41.9159056,37.106 C41.6358305,36.965 41.3049233,36.965 41.0248482,37.106 L37.038014,39.106 C36.7001298,39.275 36.4868342,39.621 36.4868342,40 L36.4868342,43.882 L32.9455287,42.106 C32.6654536,41.965 32.3345464,41.965 32.0544713,42.106 L28.5131658,43.882 L28.5131658,40 C28.5131658,39.621 28.2998702,39.275 27.961986,39.106 L23.9751518,37.106 C23.6950767,36.965 23.3641695,36.965 23.0840944,37.106 L19.0972602,39.106 C18.759376,39.275 18.5460804,39.621 18.5460804,40 L18.5460804,46 C18.5460804,46.379 18.759376,46.725 19.0972602,46.895 L23.0840944,48.895 C23.2236336,48.965 23.3771267,49 23.5296231,49 C23.6821195,49 23.8356126,48.965 23.9751518,48.895 L27.5164573,47.118 L27.5164573,51 C27.5164573,51.379 27.7297529,51.725 28.0676371,51.895 L32.0544713,53.895 C32.1940105,53.965 32.3475036,54 32.5,54 C32.6524964,54 32.8059895,53.965 32.9455287,53.895 L36.9323629,51.895 C37.2702471,51.725 37.4835427,51.379 37.4835427,51 L37.4835427,47.118 L41.0248482,48.895 C41.1643874,48.965 41.3178805,49 41.4703769,49 C41.6228733,49 41.7763664,48.965 41.9159056,48.895 L45.9027398,46.895 C46.240624,46.725 46.4539196,46.379 46.4539196,46 L46.4539196,40 C46.4539196,39.621 46.240624,39.275 45.9027398,39.106 L45.9027398,39.106 Z M54,28.09 C54,33.193 42.9225812,35.946 32.5,35.946 C22.0774188,35.946 11,33.193 11,28.09 C11,25.629 13.6801493,23.474 18.5470771,22.023 L19.115201,23.94 C15.3386723,25.066 12.9934171,26.656 12.9934171,28.09 C12.9934171,30.854 21.3358676,33.946 32.5,33.946 C43.6641324,33.946 52.0065829,30.854 52.0065829,28.09 C52.0065829,26.656 49.6613277,25.066 45.884799,23.94 L46.4529229,22.023 C51.3198507,23.474 54,25.629 54,28.09 L54,28.09 Z M32.5,12.064 L40.5474248,15 L32.5,17.936 L24.4525752,15 L32.5,12.064 Z M41.3677159,28.648 C39.8118539,29.348 37.2134347,30.164 33.4967085,30.293 L33.4967085,19.701 L42.4670854,16.428 L42.4670854,26.913 C42.4670854,27.667 42.0355106,28.348 41.3677159,28.648 L41.3677159,28.648 Z M22.5329146,26.913 L22.5329146,16.428 L31.5032915,19.701 L31.5032915,30.293 C27.7865653,30.164 25.1881461,29.348 23.6322841,28.648 C22.9644894,28.348 22.5329146,27.667 22.5329146,26.913 L22.5329146,26.913 Z M22.8159798,30.473 C24.6868017,31.315 27.8852394,32.319 32.5,32.319 C37.1147606,32.319 40.3131983,31.315 42.1840202,30.473 C43.5674517,29.851 44.4605025,28.454 44.4605025,26.913 L44.4605025,15 C44.4605025,14.58 44.1983682,14.204 43.8046683,14.06 L32.8408743,10.06 C32.6206017,9.98 32.3793983,9.98 32.1591257,10.06 L21.1953317,14.06 C20.8016318,14.204 20.5394975,14.58 20.5394975,15 L20.5394975,26.913 C20.5394975,28.454 21.4325483,29.851 22.8159798,30.473 L22.8159798,30.473 Z" id="ico-fargate-AWS-Fargate_Icon_48_Squid" fill="#FFFFFF"></path>
+        </g>
+  </symbol>
+  <symbol id="ico-nlb" viewBox="0 0 48 48">
+    <g id="ico-nlb-Icon-Resource-Networking-and-Content-Delivery-Res_Elastic-Load-Balancing_Network-Load-Balancer_48" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M24.0015,44.0029 C12.9725,44.0029 3.9995,35.0299 3.9995,24.0009 C3.9995,12.9729 12.9725,3.9999 24.0015,3.9999 C35.0295,3.9999 44.0025,12.9729 44.0025,24.0009 C44.0025,35.0299 35.0295,44.0029 24.0015,44.0029 L24.0015,44.0029 Z M24.0015,1.9999 C11.8695,1.9999 1.9995,11.8689 1.9995,24.0009 C1.9995,36.1329 11.8695,46.0029 24.0015,46.0029 C36.1335,46.0029 46.0025,36.1329 46.0025,24.0009 C46.0025,11.8689 36.1335,1.9999 24.0015,1.9999 L24.0015,1.9999 Z M29.0835,23.2939 C29.4745,23.6849 29.4745,24.3169 29.0835,24.7079 L26.1405,27.6539 L24.7265,26.2399 L25.9645,25.0009 L18.7505,25.0009 L18.7505,23.0009 L25.9645,23.0009 L24.7265,21.7619 L26.1405,20.3479 L29.0835,23.2939 Z M32.0015,35.2519 L35.2515,35.2519 L35.2515,32.0019 L32.0015,32.0019 L32.0015,35.2519 Z M36.2515,30.0019 L31.0015,30.0019 C30.4485,30.0019 30.0015,30.4489 30.0015,31.0019 L30.0015,36.2519 C30.0015,36.8049 30.4485,37.2519 31.0015,37.2519 L36.2515,37.2519 C36.8045,37.2519 37.2515,36.8049 37.2515,36.2519 L37.2515,31.0019 C37.2515,30.4489 36.8045,30.0019 36.2515,30.0019 L36.2515,30.0019 Z M17.6665,18.7409 L24.9615,14.8909 L23.3945,14.4659 L23.9175,12.5359 L27.9365,13.6249 C28.4695,13.7699 28.7835,14.3179 28.6395,14.8519 L27.5505,18.8729 L25.6205,18.3499 L26.1085,16.5469 L18.6005,20.5109 L17.6665,18.7409 Z M32.0015,16.0009 L35.2515,16.0009 L35.2515,12.7509 L32.0015,12.7509 L32.0015,16.0009 Z M36.2515,10.7509 L31.0015,10.7509 C30.4485,10.7509 30.0015,11.1979 30.0015,11.7509 L30.0015,17.0009 C30.0015,17.5539 30.4485,18.0009 31.0015,18.0009 L36.2515,18.0009 C36.8045,18.0009 37.2515,17.5539 37.2515,17.0009 L37.2515,11.7509 C37.2515,11.1979 36.8045,10.7509 36.2515,10.7509 L36.2515,10.7509 Z M8.3455,27.3469 L15.0355,27.3469 L15.0355,20.6569 L8.3455,20.6569 L8.3455,27.3469 Z M16.0355,18.6559 L7.3455,18.6559 C6.7925,18.6559 6.3455,19.1039 6.3455,19.6559 L6.3455,28.3469 C6.3455,28.8989 6.7925,29.3469 7.3455,29.3469 L16.0355,29.3469 C16.5885,29.3469 17.0355,28.8989 17.0355,28.3469 L17.0355,19.6559 C17.0355,19.1039 16.5885,18.6559 16.0355,18.6559 L16.0355,18.6559 Z M28.6395,33.1499 C28.7835,33.6839 28.4695,34.2319 27.9365,34.3769 L23.9175,35.4669 L23.3945,33.5369 L24.9625,33.1119 L17.6665,29.2619 L18.6005,27.4919 L26.1085,31.4549 L25.6205,29.6519 L27.5505,29.1289 L28.6395,33.1499 Z M32.0015,25.6259 L35.2515,25.6259 L35.2515,22.3759 L32.0015,22.3759 L32.0015,25.6259 Z M36.2515,20.3759 L31.0015,20.3759 C30.4485,20.3759 30.0015,20.8229 30.0015,21.3759 L30.0015,26.6259 C30.0015,27.1789 30.4485,27.6259 31.0015,27.6259 L36.2515,27.6259 C36.8045,27.6259 37.2515,27.1789 37.2515,26.6259 L37.2515,21.3759 C37.2515,20.8229 36.8045,20.3759 36.2515,20.3759 L36.2515,20.3759 Z" id="ico-nlb-AWS-Elastic-Load-Balancing_Network-Load-Balancer_Resource-Icon_light-bg" fill="#8C4FFF"></path>
+        </g>
+  </symbol>
+  <symbol id="ico-pod" viewBox="0 0 18.035334 17.500378">
+    <defs
+         id="ico-pod-defs13820" />
+      <g
+         id="ico-pod-layer1"
+         transform="translate(-0.99262638,-1.174181)">
+        <g
+           id="ico-pod-g70"
+           transform="matrix(1.0148887,0,0,1.0148887,16.902146,-2.698726)">
+          <path
+             id="ico-pod-path3055"
+             d="m -6.8492015,4.2724668 a 1.1191255,1.1099671 0 0 0 -0.4288818,0.1085303 l -5.8524037,2.7963394 a 1.1191255,1.1099671 0 0 0 -0.605524,0.7529759 l -1.443828,6.2812846 a 1.1191255,1.1099671 0 0 0 0.151943,0.851028 1.1191255,1.1099671 0 0 0 0.06362,0.08832 l 4.0508,5.036555 a 1.1191255,1.1099671 0 0 0 0.874979,0.417654 l 6.4961011,-0.0015 a 1.1191255,1.1099671 0 0 0 0.8749788,-0.416906 L 1.3818872,15.149453 A 1.1191255,1.1099671 0 0 0 1.5981986,14.210104 L 0.15212657,7.9288154 A 1.1191255,1.1099671 0 0 0 -0.45339794,7.1758396 L -6.3065496,4.3809971 A 1.1191255,1.1099671 0 0 0 -6.8492015,4.2724668 Z"
+             style="fill:#326ce5;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="ico-pod-path3054-2-9"
+             d="M -6.8523435,3.8176372 A 1.1814304,1.171762 0 0 0 -7.3044284,3.932904 l -6.1787426,2.9512758 a 1.1814304,1.171762 0 0 0 -0.639206,0.794891 l -1.523915,6.6308282 a 1.1814304,1.171762 0 0 0 0.160175,0.89893 1.1814304,1.171762 0 0 0 0.06736,0.09281 l 4.276094,5.317236 a 1.1814304,1.171762 0 0 0 0.92363,0.440858 l 6.8576188,-0.0015 a 1.1814304,1.171762 0 0 0 0.9236308,-0.44011 l 4.2745966,-5.317985 a 1.1814304,1.171762 0 0 0 0.228288,-0.990993 L 0.53894439,7.6775738 A 1.1814304,1.171762 0 0 0 -0.10026101,6.8834313 L -6.2790037,3.9321555 A 1.1814304,1.171762 0 0 0 -6.8523435,3.8176372 Z m 0.00299,0.4550789 a 1.1191255,1.1099671 0 0 1 0.5426517,0.1085303 l 5.85315169,2.7948425 A 1.1191255,1.1099671 0 0 1 0.15197811,7.9290648 L 1.598051,14.21035 a 1.1191255,1.1099671 0 0 1 -0.2163123,0.939348 l -4.0493032,5.037304 a 1.1191255,1.1099671 0 0 1 -0.8749789,0.416906 l -6.4961006,0.0015 a 1.1191255,1.1099671 0 0 1 -0.874979,-0.417652 l -4.0508,-5.036554 a 1.1191255,1.1099671 0 0 1 -0.06362,-0.08832 1.1191255,1.1099671 0 0 1 -0.151942,-0.851028 l 1.443827,-6.2812853 a 1.1191255,1.1099671 0 0 1 0.605524,-0.7529758 l 5.8524036,-2.7963395 a 1.1191255,1.1099671 0 0 1 0.4288819,-0.1085303 z"
+             style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:Sans;-inkscape-font-specification:Sans;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;baseline-shift:baseline;text-anchor:start;display:inline;overflow:visible;visibility:visible;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;marker:none;enable-background:accumulate"
+             />
+        </g>
+        <g
+           id="ico-pod-g3341"
+           transform="translate(0.12766661,0.35147801)">
+          <path
+             style="fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:0.26458332;stroke-linecap:square;stroke-miterlimit:10"
+             d="M 6.2617914,7.036086 9.8826317,5.986087 13.503462,7.036086 9.8826317,8.086087 Z"
+             id="ico-pod-path910" />
+          <path
+             style="fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:0.26458332;stroke-linecap:square;stroke-miterlimit:10"
+             d="m 6.2617914,7.43817 0,3.852778 3.3736103,1.868749 0.0167,-4.713193 z"
+             id="ico-pod-path912" />
+          <path
+             style="fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:0.26458332;stroke-linecap:square;stroke-miterlimit:10"
+             d="m 13.503462,7.43817 0,3.852778 -3.37361,1.868749 -0.0167,-4.713193 z"
+             id="ico-pod-path914" />
+        </g>
+      </g>
+  </symbol>
+  <symbol id="ico-kproxy" viewBox="0 0 18.035334 17.500378">
+    <defs
+         id="ico-kproxy-defs13820" />
+      <g
+         id="ico-kproxy-layer1"
+         transform="translate(-0.99262638,-1.174181)">
+        <g
+           id="ico-kproxy-g70"
+           transform="matrix(1.0148887,0,0,1.0148887,16.902146,-2.698726)">
+          <path
+             id="ico-kproxy-path3055"
+             d="m -6.8492015,4.2724668 a 1.1191255,1.1099671 0 0 0 -0.4288818,0.1085303 l -5.8524037,2.7963394 a 1.1191255,1.1099671 0 0 0 -0.605524,0.7529759 l -1.443828,6.2812846 a 1.1191255,1.1099671 0 0 0 0.151943,0.851028 1.1191255,1.1099671 0 0 0 0.06362,0.08832 l 4.0508,5.036555 a 1.1191255,1.1099671 0 0 0 0.874979,0.417654 l 6.4961011,-0.0015 a 1.1191255,1.1099671 0 0 0 0.8749788,-0.416906 L 1.3818872,15.149453 A 1.1191255,1.1099671 0 0 0 1.5981986,14.210104 L 0.15212657,7.9288154 A 1.1191255,1.1099671 0 0 0 -0.45339794,7.1758396 L -6.3065496,4.3809971 A 1.1191255,1.1099671 0 0 0 -6.8492015,4.2724668 Z"
+             style="fill:#326ce5;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="ico-kproxy-path3054-2-9"
+             d="M -6.8523435,3.8176372 A 1.1814304,1.171762 0 0 0 -7.3044284,3.932904 l -6.1787426,2.9512758 a 1.1814304,1.171762 0 0 0 -0.639206,0.794891 l -1.523915,6.6308282 a 1.1814304,1.171762 0 0 0 0.160175,0.89893 1.1814304,1.171762 0 0 0 0.06736,0.09281 l 4.276094,5.317236 a 1.1814304,1.171762 0 0 0 0.92363,0.440858 l 6.8576188,-0.0015 a 1.1814304,1.171762 0 0 0 0.9236308,-0.44011 l 4.2745966,-5.317985 a 1.1814304,1.171762 0 0 0 0.228288,-0.990993 L 0.53894439,7.6775738 A 1.1814304,1.171762 0 0 0 -0.10026101,6.8834313 L -6.2790037,3.9321555 A 1.1814304,1.171762 0 0 0 -6.8523435,3.8176372 Z m 0.00299,0.4550789 a 1.1191255,1.1099671 0 0 1 0.5426517,0.1085303 l 5.85315169,2.7948425 A 1.1191255,1.1099671 0 0 1 0.15197811,7.9290648 L 1.598051,14.21035 a 1.1191255,1.1099671 0 0 1 -0.2163123,0.939348 l -4.0493032,5.037304 a 1.1191255,1.1099671 0 0 1 -0.8749789,0.416906 l -6.4961006,0.0015 a 1.1191255,1.1099671 0 0 1 -0.874979,-0.417652 l -4.0508,-5.036554 a 1.1191255,1.1099671 0 0 1 -0.06362,-0.08832 1.1191255,1.1099671 0 0 1 -0.151942,-0.851028 l 1.443827,-6.2812853 a 1.1191255,1.1099671 0 0 1 0.605524,-0.7529758 l 5.8524036,-2.7963395 a 1.1191255,1.1099671 0 0 1 0.4288819,-0.1085303 z"
+             style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:Sans;-inkscape-font-specification:Sans;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;baseline-shift:baseline;display:inline;overflow:visible;visibility:visible;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;marker:none;enable-background:accumulate"
+             text-anchor="start"
+             />
+        </g>
+        <text
+           id="ico-kproxy-text2066"
+           y="16.811775"
+           x="9.9289894"
+           style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:6.61458349px;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:center;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332px"
+             text-anchor="middle"
+             y="16.811775"
+             x="9.9289894"
+             id="ico-kproxy-tspan2064"
+            >k-proxy</tspan></text>
+        <path
+           id="ico-kproxy-path1994"
+           d="m 9.9921804,4.0942544 c -0.1383298,-0.0044 -3.9950998,1.8918731 -4.0455299,1.9891191 -0.12117,0.233682 -0.9989,4.2818275 -0.94731,4.3690745 0.03,0.05065 0.66219,0.851861 1.40458,1.780327 l 1.3498201,1.688014 2.2211901,9.31e-4 2.2216403,9.31e-4 1.41321,-1.765731 1.41365,-1.765228 -0.49479,-2.1685764 c -0.2722,-1.1927661 -0.51566,-2.1886141 -0.54053,-2.2126041 -0.0695,-0.06688 -3.92096,-1.9137941 -3.9959306,-1.9162151 z m 0.1961406,0.947753 0.90893,0.2635771 -0.90893,0.263576 -0.9089208,-0.263576 z m -0.9089208,0.36452 0.8511208,0.2532261 -0.004,1.183289 -0.8468108,-0.469347 z m 1.8178508,0 0,0.9671681 -0.84679,0.469347 -0.004,-1.183289 z M 8.8997706,7.0212055 9.8087102,7.2847812 8.8997706,7.5483582 7.9908505,7.2847812 Z m 2.2087004,0 0.90894,0.2635757 -0.90894,0.263577 -0.90893,-0.263577 z m -3.1176205,0.3645197 0.8511202,0.252792 -0.004,1.1832908 -0.8468199,-0.468915 z m 1.8178597,0 0,0.9671678 -0.8468098,0.468915 -0.004,-1.1832908 z m 0.3908308,0 0.85113,0.252792 -0.004,1.1832908 -0.84682,-0.468915 z m 1.81787,0 0,0.9671678 -0.84682,0.468915 -0.004,-1.1832908 z M 8.5677506,8.9007534 c 0.2706299,0.0096 0.0611,0.281909 0.3684101,0.427935 0.3277495,0.1557644 0.3953995,-0.235354 0.6013395,0.06341 0.20599,0.2987664 -0.18339,0.2232394 -0.15443,0.5849568 0.029,0.3617188 0.40165,0.2248588 0.24589,0.5526068 -0.15575,0.327746 -0.28532,-0.04764 -0.5840895,0.158317 -0.2987401,0.205957 0.006,0.460208 -0.35546,0.489192 -0.3617401,0.02898 -0.1015001,-0.270447 -0.42924,-0.426208 -0.32775,-0.155765 -0.3953801,0.234921 -0.6013402,-0.06385 -0.2059599,-0.298767 0.1838299,-0.22281 0.15485,-0.584528 -0.029,-0.3617182 -0.4016499,-0.2248592 -0.24587,-0.5526042 0.1557501,-0.3277494 0.2848801,0.04764 0.5836502,-0.1583204 0.2987898,-0.205956 -0.006,-0.460208 0.3559099,-0.48919 0.022499,-0.0018 0.0424,-0.0023 0.0604,-0.0018 z m 2.3359604,0.362794 c 0.48335,0.01358 0.0146,0.4672184 0.45596,0.6647664 0.44144,0.1975482 0.46714,-0.454103 0.79937,-0.102669 0.33221,0.3514322 -0.31997,0.3406402 -0.14753,0.7924552 0.17243,0.451813 0.65163,0.0092 0.63802,0.49264 -0.0137,0.483411 -0.46723,0.01456 -0.66477,0.455977 -0.19755,0.441412 0.4541,0.467143 0.10266,0.799357 -0.35141,0.332212 -0.34021,-0.319974 -0.79202,-0.147534 -0.45183,0.172437 -0.009,0.65161 -0.49265,0.638019 -0.48339,-0.01358 -0.0146,-0.467216 -0.45596,-0.664764 -0.4414104,-0.197551 -0.4675804,0.454102 -0.7997908,0.102669 -0.3322097,-0.351431 0.3199804,-0.340209 0.14754,-0.792025 -0.17245,-0.451815 -0.6516296,-0.0092 -0.6380295,-0.492642 0.013699,-0.483408 0.4672095,-0.01499 0.6647795,-0.456405 0.1975204,-0.441414 -0.45411,-0.467143 -0.10269,-0.7993572 0.3514505,-0.332214 0.3406505,0.3199712 0.7924608,0.147534 0.45184,-0.17244 0.009,-0.6516114 0.49265,-0.6380214 z M 8.5888904,9.5172028 c -0.2936499,9e-5 -0.5316098,0.238249 -0.5314498,0.5318982 7.99e-5,0.293481 0.2379701,0.531377 0.5314498,0.531467 0.2936602,1.59e-4 0.5318202,-0.23781 0.5319,-0.531467 1.601e-4,-0.2938252 -0.2380699,-0.5320572 -0.5319,-0.5318982 z m 2.2643606,0.4805634 c -0.58689,-1.96e-4 -1.0627108,0.4756148 -1.0625208,1.0625028 5e-5,0.586719 0.4758008,1.062267 1.0625208,1.062071 0.58654,-5.8e-5 1.06201,-0.475531 1.06206,-1.062071 1.9e-4,-0.586708 -0.47535,-1.0624448 -1.06206,-1.0625028 z"
+           style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#eeeeee;stroke-width:0;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:11.23642349;stroke-opacity:1"
+           />
+      </g>
+  </symbol>
   </defs>
 
   <rect width="1790" height="980" fill="#FFFFFF"/>
@@ -13,13 +129,14 @@
 
   <!-- ================= LEFT PANEL : INSTANCE MODE ================= -->
   <rect x="40" y="96" width="830" height="770" rx="12" fill="#FFFFFF" stroke="#B6C2CE" stroke-width="2"/>
-  <rect x="56" y="112" width="798" height="70" rx="8" fill="#FFF4EC" stroke="#ED7100" stroke-width="2"/>
-  <text x="455" y="142" text-anchor="middle" font-size="22" font-weight="700" fill="#B85B00">Instance mode</text>
-  <text x="455" y="167" text-anchor="middle" font-size="15" fill="#8A5010">aws-load-balancer-nlb-target-type: instance</text>
+  <rect x="56" y="112" width="798" height="70" rx="8" fill="#F4F6F8" stroke="#5A6B7B" stroke-width="2"/>
+  <text x="455" y="142" text-anchor="middle" font-size="22" font-weight="700" fill="#232F3E">Instance mode</text>
+  <text x="455" y="167" text-anchor="middle" font-size="15" fill="#4A5B6B">aws-load-balancer-nlb-target-type: instance</text>
 
-  <rect x="235" y="210" width="440" height="96" rx="9" fill="#F3EBFF" stroke="#8C4FFF" stroke-width="2.4"/>
-  <text x="455" y="245" text-anchor="middle" font-size="18" font-weight="700" fill="#6B2FD9">Network Load Balancer</text>
-  <text x="455" y="275" text-anchor="middle" font-size="14" fill="#4A5B6B">Listener TCP :80 — layer 4, forwards without parsing HTTP</text>
+  <rect x="235" y="210" width="440" height="104" rx="9" fill="#F3EBFF" stroke="#8C4FFF" stroke-width="2.4"/>
+  <use href="#ico-nlb" x="436" y="218" width="38" height="38"/>
+  <text x="455" y="276" text-anchor="middle" font-size="17" font-weight="700" fill="#6B2FD9">Network Load Balancer</text>
+  <text x="455" y="300" text-anchor="middle" font-size="13" fill="#4A5B6B">Listener TCP :80 — layer 4, forwards without parsing HTTP</text>
 
   <rect x="215" y="348" width="480" height="136" rx="9" fill="#F4F6F8" stroke="#5A6B7B" stroke-width="2.2"/>
   <text x="455" y="378" text-anchor="middle" font-size="16" font-weight="700" fill="#232F3E">Target group — registers EC2 instances</text>
@@ -28,24 +145,26 @@
   <text x="455" y="442" text-anchor="middle" font-size="14" fill="#4A5B6B">i-0f5e6d7c8b  ·  TCP :30549</text>
   <text x="455" y="466" text-anchor="middle" font-size="14" fill="#4A5B6B">i-09a8b7c6d5  ·  TCP :30549</text>
 
-  <rect x="70" y="524" width="770" height="280" rx="10" fill="#FEF4F8" stroke="#E7157B" stroke-width="2.4"/>
-  <rect x="92" y="536" width="26" height="26" rx="5" fill="#E7157B"/>
-  <path d="M 105 541 l 8 4 v 8 l -8 4 l -8 -4 v -8 z" fill="none" stroke="#FFFFFF" stroke-width="1.6"/>
-  <text x="128" y="556" font-size="17" font-weight="700" fill="#E7157B">Amazon EKS cluster</text>
+  <rect x="70" y="524" width="770" height="280" rx="10" fill="#FFF8F2" stroke="#ED7100" stroke-width="2.4"/>
+  <use href="#ico-eks" x="92" y="534" width="28" height="28"/>
+  <text x="130" y="556" font-size="17" font-weight="700" fill="#B85B00">Amazon EKS cluster</text>
 
   <rect x="96" y="572" width="718" height="210" rx="9" fill="#FFFFFF" stroke="#5A6B7B" stroke-width="2"/>
-  <text x="116" y="598" font-size="15" font-weight="700" fill="#232F3E">Worker node (EC2)</text>
+  <use href="#ico-ec2" x="116" y="580" width="24" height="24"/>
+  <text x="150" y="598" font-size="15" font-weight="700" fill="#232F3E">Worker node (EC2)</text>
 
-  <rect x="315" y="606" width="280" height="70" rx="7" fill="#EEF2F6" stroke="#8494A5" stroke-width="1.8"/>
-  <text x="455" y="634" text-anchor="middle" font-size="16" font-weight="700" fill="#232F3E">kube-proxy</text>
-  <text x="455" y="658" text-anchor="middle" font-size="14" fill="#4A5B6B">NodePort :30549 — in the data path</text>
+  <rect x="315" y="606" width="280" height="76" rx="7" fill="#F0F6FE" stroke="#326CE5" stroke-width="1.8"/>
+  <use href="#ico-kproxy" x="331" y="624" width="40" height="40"/>
+  <text x="383" y="636" font-size="15" font-weight="700" fill="#1A4FB8">kube-proxy</text>
+  <text x="383" y="658" font-size="12" fill="#4A5B6B">NodePort :30549 — in the data path</text>
 
-  <rect x="315" y="704" width="280" height="64" rx="7" fill="#FCE8F1" stroke="#E7157B" stroke-width="2"/>
-  <text x="455" y="731" text-anchor="middle" font-size="16" font-weight="700" fill="#B01262">ui Pod</text>
-  <text x="455" y="754" text-anchor="middle" font-size="14" fill="#4A5B6B">:8080</text>
+  <rect x="315" y="704" width="280" height="76" rx="7" fill="#F0F6FE" stroke="#326CE5" stroke-width="2"/>
+  <use href="#ico-pod" x="333" y="724" width="36" height="36"/>
+  <text x="383" y="734" font-size="16" font-weight="700" fill="#1A4FB8">ui Pod</text>
+  <text x="383" y="756" font-size="12" fill="#4A5B6B">:8080</text>
 
-  <text x="455" y="796" text-anchor="middle" font-size="13" font-weight="700" fill="#D13212">No ui Pod on the node that received the connection? kube-proxy adds another hop.</text>
-  <text x="455" y="842" text-anchor="middle" font-size="15" font-weight="700" fill="#232F3E">Two hops: NLB → node, then kube-proxy → Pod. EC2 only.</text>
+  <text x="455" y="826" text-anchor="middle" font-size="13" font-weight="700" fill="#D13212">No ui Pod on the node that received the connection? kube-proxy adds another hop.</text>
+  <text x="455" y="852" text-anchor="middle" font-size="15" font-weight="700" fill="#232F3E">Two hops: NLB → node, then kube-proxy → Pod. EC2 only.</text>
 
   <!-- ================= RIGHT PANEL : IP MODE ================= -->
   <rect x="920" y="96" width="830" height="770" rx="12" fill="#FFFFFF" stroke="#B6C2CE" stroke-width="2"/>
@@ -53,9 +172,10 @@
   <text x="1335" y="142" text-anchor="middle" font-size="22" font-weight="700" fill="#5B8A0F">IP mode</text>
   <text x="1335" y="167" text-anchor="middle" font-size="15" fill="#4E6B14">aws-load-balancer-nlb-target-type: ip</text>
 
-  <rect x="1115" y="210" width="440" height="96" rx="9" fill="#F3EBFF" stroke="#8C4FFF" stroke-width="2.4"/>
-  <text x="1335" y="245" text-anchor="middle" font-size="18" font-weight="700" fill="#6B2FD9">Network Load Balancer</text>
-  <text x="1335" y="275" text-anchor="middle" font-size="14" fill="#4A5B6B">Listener TCP :80 — layer 4, forwards without parsing HTTP</text>
+  <rect x="1115" y="210" width="440" height="104" rx="9" fill="#F3EBFF" stroke="#8C4FFF" stroke-width="2.4"/>
+  <use href="#ico-nlb" x="1316" y="218" width="38" height="38"/>
+  <text x="1335" y="276" text-anchor="middle" font-size="17" font-weight="700" fill="#6B2FD9">Network Load Balancer</text>
+  <text x="1335" y="300" text-anchor="middle" font-size="13" fill="#4A5B6B">Listener TCP :80 — layer 4, forwards without parsing HTTP</text>
 
   <rect x="1095" y="348" width="480" height="136" rx="9" fill="#F4F6F8" stroke="#5A6B7B" stroke-width="2.2"/>
   <text x="1335" y="378" text-anchor="middle" font-size="16" font-weight="700" fill="#232F3E">Target group — registers Pod IPs</text>
@@ -64,34 +184,36 @@
   <text x="1335" y="442" text-anchor="middle" font-size="14" fill="#4A5B6B">10.42.105.38  ·  TCP :8080</text>
   <text x="1335" y="466" text-anchor="middle" font-size="14" fill="#4A5B6B">10.42.180.183  ·  TCP :8080</text>
 
-  <rect x="950" y="524" width="770" height="280" rx="10" fill="#FEF4F8" stroke="#E7157B" stroke-width="2.4"/>
-  <rect x="972" y="536" width="26" height="26" rx="5" fill="#E7157B"/>
-  <path d="M 985 541 l 8 4 v 8 l -8 4 l -8 -4 v -8 z" fill="none" stroke="#FFFFFF" stroke-width="1.6"/>
-  <text x="1008" y="556" font-size="17" font-weight="700" fill="#E7157B">Amazon EKS cluster</text>
+  <rect x="950" y="524" width="770" height="280" rx="10" fill="#FFF8F2" stroke="#ED7100" stroke-width="2.4"/>
+  <use href="#ico-eks" x="972" y="534" width="28" height="28"/>
+  <text x="1010" y="556" font-size="17" font-weight="700" fill="#B85B00">Amazon EKS cluster</text>
 
   <rect x="976" y="572" width="718" height="210" rx="9" fill="#FFFFFF" stroke="#5A6B7B" stroke-width="2"/>
-  <text x="996" y="598" font-size="15" font-weight="700" fill="#232F3E">Worker node (EC2) or AWS Fargate</text>
+  <use href="#ico-ec2" x="996" y="580" width="24" height="24"/>
+  <use href="#ico-fargate" x="1024" y="580" width="24" height="24"/>
+  <text x="1058" y="598" font-size="15" font-weight="700" fill="#232F3E">Worker node (EC2) or AWS Fargate</text>
 
-  <rect x="1195" y="606" width="280" height="70" rx="7" fill="#F7F9FA" stroke="#C6D0DA" stroke-width="1.8" stroke-dasharray="6 5"/>
-  <text x="1335" y="634" text-anchor="middle" font-size="16" font-weight="700" fill="#A3B0BC">kube-proxy</text>
-  <text x="1335" y="658" text-anchor="middle" font-size="14" fill="#A3B0BC">NodePort not used — bypassed</text>
+  <rect x="1195" y="606" width="280" height="76" rx="7" fill="#F7F9FA" stroke="#C6D0DA" stroke-width="1.8" stroke-dasharray="6 5"/>
+  <use href="#ico-kproxy" x="1211" y="624" width="40" height="40" opacity="0.35"/>
+  <text x="1263" y="636" font-size="15" font-weight="700" fill="#A3B0BC">kube-proxy</text>
+  <text x="1263" y="658" font-size="12" fill="#A3B0BC">NodePort not used — bypassed</text>
 
-  <rect x="1195" y="704" width="280" height="64" rx="7" fill="#FCE8F1" stroke="#E7157B" stroke-width="2"/>
-  <text x="1335" y="731" text-anchor="middle" font-size="16" font-weight="700" fill="#B01262">ui Pod</text>
-  <text x="1335" y="754" text-anchor="middle" font-size="14" fill="#4A5B6B">10.42.140.129:8080</text>
+  <rect x="1195" y="704" width="280" height="76" rx="7" fill="#F0F6FE" stroke="#326CE5" stroke-width="2"/>
+  <use href="#ico-pod" x="1213" y="724" width="36" height="36"/>
+  <text x="1263" y="734" font-size="16" font-weight="700" fill="#1A4FB8">ui Pod</text>
+  <text x="1263" y="756" font-size="12" fill="#4A5B6B">10.42.140.129:8080</text>
 
-  <text x="1335" y="796" text-anchor="middle" font-size="13" font-weight="700" fill="#5B8A0F">Every Pod has a routable VPC IP from the Amazon VPC CNI, so the NLB targets it directly.</text>
-  <text x="1335" y="842" text-anchor="middle" font-size="15" font-weight="700" fill="#232F3E">One hop: NLB → Pod. Works on EC2 and Fargate.</text>
+  <text x="1335" y="826" text-anchor="middle" font-size="13" font-weight="700" fill="#5B8A0F">Every Pod has a routable VPC IP from the Amazon VPC CNI, so the NLB targets it directly.</text>
+  <text x="1335" y="852" text-anchor="middle" font-size="15" font-weight="700" fill="#232F3E">One hop: NLB → Pod. Works on EC2 and Fargate.</text>
 
   <!-- ===== connectors drawn last so they sit above the container fills ===== -->
-  <line x1="455" y1="306" x2="455" y2="342" stroke="#495B6B" stroke-width="2.4" marker-end="url(#arrow)"/>
+  <line x1="455" y1="314" x2="455" y2="342" stroke="#495B6B" stroke-width="2.4" marker-end="url(#arrow)"/>
   <line x1="455" y1="484" x2="455" y2="600" stroke="#495B6B" stroke-width="2.4" marker-end="url(#arrow)"/>
-  <line x1="455" y1="676" x2="455" y2="698" stroke="#495B6B" stroke-width="2.4" marker-end="url(#arrow)"/>
+  <line x1="455" y1="682" x2="455" y2="698" stroke="#495B6B" stroke-width="2.4" marker-end="url(#arrow)"/>
   <text x="470" y="552" font-size="13" font-weight="700" fill="#4A5B6B">to the NodePort</text>
-  <text x="470" y="694" font-size="13" font-weight="700" fill="#4A5B6B">relays</text>
 
-  <line x1="1335" y1="306" x2="1335" y2="342" stroke="#495B6B" stroke-width="2.4" marker-end="url(#arrow)"/>
-  <path d="M 1335 484 V 506 H 1640 V 736 H 1481" fill="none" stroke="#5B8A0F" stroke-width="2.8" marker-end="url(#arrowGreen)"/>
+  <line x1="1335" y1="314" x2="1335" y2="342" stroke="#495B6B" stroke-width="2.4" marker-end="url(#arrow)"/>
+  <path d="M 1335 484 V 506 H 1640 V 742 H 1481" fill="none" stroke="#5B8A0F" stroke-width="2.8" marker-end="url(#arrowGreen)"/>
   <text x="1626" y="552" text-anchor="end" font-size="13" font-weight="700" fill="#5B8A0F">bypasses kube-proxy</text>
 
   <!-- ================= FOOTER ================= -->
