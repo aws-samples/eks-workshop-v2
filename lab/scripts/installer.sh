@@ -3,13 +3,13 @@
 set -e
 
 # renovate: depName=kubernetes/kubernetes
-kubectl_version='1.33.7'
+kubectl_version='1.35.8'
 
 # renovate: depName=helm/helm
 helm_version='3.20.0'
 
 # renovate: depName=eksctl-io/eksctl
-eksctl_version='0.222.0'
+eksctl_version='0.230.0'
 
 kubeseal_version='0.18.4'
 

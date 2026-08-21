@@ -7,7 +7,7 @@ availabilityZones:
 metadata:
   name: ${EKS_CLUSTER_AUTO_NAME}
   region: ${AWS_REGION}
-  version: "1.33"
+  version: "1.35"
   tags:
     karpenter.sh/discovery: ${EKS_CLUSTER_AUTO_NAME}
     created-by: eks-workshop-v2
