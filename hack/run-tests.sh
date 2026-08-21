@@ -89,6 +89,10 @@ source $SCRIPT_DIR/lib/resolve-source-ip.sh
 # See the comment there for why this cannot live inside the container.
 hooks_dir="$SCRIPT_DIR/../.workshop-state/$EKS_CLUSTER_NAME/hooks"
 mkdir -p "$hooks_dir"
+# The container runs as ec2-user, but on a host (e.g. CI) this bind-mounted
+# directory is owned by a different UID, so ec2-user cannot write the cleanup
+# hook into it (breaking fastpaths prepare-environment). Make it world-writable.
+chmod 777 "$hooks_dir"
 
 echo "Running test suite..."
 
