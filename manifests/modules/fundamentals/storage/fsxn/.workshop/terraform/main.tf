@@ -38,7 +38,6 @@ data "aws_secretsmanager_secret" "fsxn_password_secret" {
 resource "aws_eks_addon" "eks-pod-identity-agent" {
   cluster_name                = var.eks_cluster_id
   addon_name                  = "eks-pod-identity-agent"
-  addon_version               = "v1.3.4-eksbuild.1"
   resolve_conflicts_on_update = "OVERWRITE"
 }
 
