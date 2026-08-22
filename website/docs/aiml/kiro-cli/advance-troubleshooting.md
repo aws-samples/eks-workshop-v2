@@ -63,7 +63,7 @@ You should be able to see this DynamoDB table in your account using console unde
 
 Now, let's redeploy the carts deployment to pick up the new ConfigMap contents:
 
-```bash expectError=true hook=enable-dynamo
+```bash expectError=true
 $ kubectl rollout restart -n carts deployment/carts
 deployment.apps/carts restarted
 $ kubectl rollout status -n carts deployment/carts --timeout=20s
