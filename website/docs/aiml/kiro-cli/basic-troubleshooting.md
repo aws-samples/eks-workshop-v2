@@ -3,7 +3,7 @@ title: "Basic troubleshooting"
 sidebar_position: 22
 ---
 
-In this section, we'll use Kiro CLI and the [MCP server for Amazon EKS](https://awslabs.github.io/mcp/servers/eks-mcp-server/) to troubleshoot issues in the EKS cluster.
+In this section, we'll use Kiro CLI and the AWS-hosted [Amazon EKS MCP server](https://docs.aws.amazon.com/eks/latest/userguide/eks-mcp-introduction.html) to troubleshoot issues in the EKS cluster.
 
 Let's start by deploying a failing pod in your cluster, which we'll then troubleshoot using Kiro CLI.
 
@@ -38,10 +38,10 @@ I have a pod stuck in a pending state in my eks-workshop cluster. Find the cause
 To address the prompt Kiro CLI will use a variety of tools from the MCP server. Some of the steps it may take include:
 
 - Identifying the failing pod in the cluster using the `list_k8s_resources` tool
-- Fetch details of a pod using the `manage_k8s_resource` tool
+- Fetch details of a pod using the `read_k8s_resource` tool
 - Inspect Kubernetes event history for the pod using `get_k8s_events` tool
-- Fetch details of related Kubernetes resources using `manage_k8s_resource` tool
-- Pull and refer EKS troubleshooting guide using `search_eks_troubleshoot_guide` tool
+- Fetch details of related Kubernetes resources using `read_k8s_resource` tool
+- Pull and refer EKS troubleshooting guide using `search_eks_troubleshooting_guide` tool
 
 Kiro CLI will provide an analysis based on the data it gather from the cluster.
 

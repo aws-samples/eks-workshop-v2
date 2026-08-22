@@ -1,17 +1,42 @@
 {
   "mcpServers": {
-    "awslabs.eks-mcp-server": {
+    "eks-mcp": {
+      "disabled": false,
+      "type": "stdio",
       "command": "uvx",
       "args": [
-        "awslabs.eks-mcp-server@0.1.32",
-        "--allow-write",
-        "--allow-sensitive-data-access"
+        "mcp-proxy-for-aws@latest",
+        "https://eks-mcp.us-west-2.api.aws/mcp",
+        "--service",
+        "eks-mcp",
+        "--region",
+        "${AWS_REGION}"
+      ]
+    },
+    "aws-mcp": {
+      "disabled": false,
+      "timeout": 100000,
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "mcp-proxy-for-aws@latest",
+        "https://aws-mcp.us-east-1.api.aws/mcp",
+        "--metadata",
+        "AWS_REGION=${AWS_REGION}"
+      ]
+    },
+    "awslabs.aws-documentation-mcp-server": {
+      "disabled": false,
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
       ],
       "env": {
-        "FASTMCP_LOG_LEVEL": "ERROR"
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_DOCUMENTATION_PARTITION": "aws"
       },
-      "autoApprove": [],
-      "disabled": false
+      "autoApprove": []
     }
   }
 }

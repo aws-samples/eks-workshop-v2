@@ -3,7 +3,7 @@ title: "Advanced troubleshooting"
 sidebar_position: 23
 ---
 
-In this section, we will use Kiro CLI and the [MCP server for Amazon EKS](https://awslabs.github.io/mcp/servers/eks-mcp-server/) to troubleshoot a complex issue in the EKS cluster that would be difficult to resolve without knowledge of Kubernetes, EKS, and other AWS services.
+In this section, we will use Kiro CLI and the AWS-hosted [Amazon EKS MCP server](https://docs.aws.amazon.com/eks/latest/userguide/eks-mcp-introduction.html) to troubleshoot a complex issue in the EKS cluster that would be difficult to resolve without knowledge of Kubernetes, EKS, and other AWS services.
 
 First, let's reconfigure the carts service to use a DynamoDB table that has been created for us. The application loads most of its configurations from a ConfigMap. Let's examine the current ConfigMap:
 
