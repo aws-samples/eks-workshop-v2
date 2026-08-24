@@ -1,12 +1,43 @@
 Version: "2012-10-17"
 Statement:
+  # eks:* is kept as a wildcard so newly released EKS APIs keep working, but it
+  # is scoped to the workshop's own clusters and their sub-resources: nodegroups,
+  # addons, access entries and the rest are all named after the cluster, so a
+  # single ${Env}* prefix per resource type covers them.
   - Effect: Allow
     Action:
       - eks:*
-      - ec2:CreateLaunchTemplate
-      - ec2:DeleteLaunchTemplate
+    Resource:
+      - !Sub arn:aws:eks:${AWS::Region}:${AWS::AccountId}:cluster/${Env}*
+      - !Sub arn:aws:eks:${AWS::Region}:${AWS::AccountId}:nodegroup/${Env}*
+      - !Sub arn:aws:eks:${AWS::Region}:${AWS::AccountId}:addon/${Env}*
+      - !Sub arn:aws:eks:${AWS::Region}:${AWS::AccountId}:fargateprofile/${Env}*
+      - !Sub arn:aws:eks:${AWS::Region}:${AWS::AccountId}:identityproviderconfig/${Env}*
+      - !Sub arn:aws:eks:${AWS::Region}:${AWS::AccountId}:access-entry/${Env}*
+      - !Sub arn:aws:eks:${AWS::Region}:${AWS::AccountId}:podidentityassociation/${Env}*
+      # Capability ARNs are capability/<cluster>/<name>/<type>/<id>, so the same
+      # prefix covers them. Needed because a learner in their own account creates
+      # the Argo CD capability from the lab; at an AWS event pre-provisioning has
+      # already done it and only Describe below is exercised.
+      - !Sub arn:aws:eks:${AWS::Region}:${AWS::AccountId}:capability/${Env}*
+  # Operations that cannot name a resource: listing and describing across the
+  # account, and creating or registering a cluster that does not exist yet.
+  - Effect: Allow
+    Action:
+      - eks:List*
+      - eks:Describe*
+      - eks:CreateCluster
+      - eks:RegisterCluster
       - sts:GetCallerIdentity
     Resource: ["*"]
+  # Launch templates are created by eksctl with generated ids, so these are
+  # scoped by resource type.
+  - Effect: Allow
+    Action:
+      - ec2:CreateLaunchTemplate
+      - ec2:DeleteLaunchTemplate
+    Resource:
+      - !Sub arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:launch-template/*
   - Effect: Allow
     Action:
       - cloudformation:CreateStack
@@ -43,9 +74,20 @@ Statement:
       - ecr-public:GetAuthorizationToken
       - sts:GetServiceBearerToken
     Resource: ["*"]
+  # Needed by ec2-instance-selector to fetch On-Demand prices; takes no resource ARN.
+  - Effect: Allow
+    Action:
+      - pricing:GetProducts
+    Resource: ["*"]
+  # CreateKey has no key to target yet, so it stays on "*". Everything else
+  # operates on an existing key, whose id is generated, so it is scoped by
+  # resource type.
   - Effect: Allow
     Action:
       - kms:CreateKey
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
       - kms:TagResource
       - kms:ScheduleKeyDeletion
       - kms:CreateGrant
@@ -54,7 +96,8 @@ Statement:
       - kms:GetKeyRotationStatus
       - kms:ListResourceTags
       - kms:PutKeyPolicy
-    Resource: ["*"]
+    Resource:
+      - !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*
   - Effect: Allow
     Action:
       - kms:Decrypt

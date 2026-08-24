@@ -415,6 +415,17 @@ Resources:
 
   EksWorkshopBasePolicy:
     Type: AWS::IAM::ManagedPolicy
+    Metadata:
+      checkov:
+        skip:
+          - id: CKV_AWS_107
+            comment: >-
+              ecr-public:GetAuthorizationToken accepts no resource ARN, so it can
+              only be granted on "*". The Service Authorization Reference lists no
+              resource type for it, unlike every other ecr-public action. It is
+              required to pull the workshop's container images from public.ecr.aws.
+              Checkov already excludes the equivalent ecr:GetAuthorizationToken
+              from this check for the same reason.
     Properties:
       Roles:
         - !Ref EksWorkshopIdeRole

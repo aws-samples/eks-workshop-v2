@@ -146,9 +146,16 @@ Statement:
     Resource:
       - !Sub arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/retail-store-sample*
       - !Sub arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${Env}*
+  # CreateDetector and ListDetectors act at account scope and accept no
+  # resource ARN, so they must stay on "*". DeleteDetector targets a detector,
+  # whose id is generated, so it is scoped by resource type instead.
   - Effect: Allow
     Action:
       - guardduty:CreateDetector
-      - guardduty:DeleteDetector
       - guardduty:ListDetectors
     Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - guardduty:DeleteDetector
+    Resource:
+      - !Sub arn:aws:guardduty:${AWS::Region}:${AWS::AccountId}:detector/*
