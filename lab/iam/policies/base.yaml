@@ -74,6 +74,11 @@ Statement:
       - ecr-public:GetAuthorizationToken
       - sts:GetServiceBearerToken
     Resource: ["*"]
+  # Needed by ec2-instance-selector to fetch On-Demand prices; takes no resource ARN.
+  - Effect: Allow
+    Action:
+      - pricing:GetProducts
+    Resource: ["*"]
   # CreateKey has no key to target yet, so it stays on "*". Everything else
   # operates on an existing key, whose id is generated, so it is scoped by
   # resource type.
