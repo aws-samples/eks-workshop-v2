@@ -3,7 +3,7 @@ title: "Retrieve cluster details"
 sidebar_position: 21
 ---
 
-In this section we will use Kiro CLI along with the [MCP server for Amazon EKS](https://awslabs.github.io/mcp/servers/eks-mcp-server/) to retrieve details of the EKS cluster using natural language commands.
+In this section we will use Kiro CLI along with the AWS-hosted [Amazon EKS MCP server](https://docs.aws.amazon.com/eks/latest/userguide/eks-mcp-introduction.html) to retrieve details of the EKS cluster using natural language commands.
 
 :::info
 The `❯` symbol at the beginning of a command line indicates you have an active Kiro CLI session. You can type or paste the prompt text provided in this lab at this prompt. If you don't see the `❯` prompt, restart your Kiro CLI session using the `kiro-cli chat` command.

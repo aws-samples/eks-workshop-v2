@@ -38,6 +38,23 @@ Statement:
       - ec2:DeleteLaunchTemplate
     Resource:
       - !Sub arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:launch-template/*
+  # Access to the AWS-hosted Amazon EKS MCP server (used by the aiml/kiro-cli module).
+  # All three actions are required because the lab uses read-only and write (privileged) tools.
+  # The AWS managed policy AmazonEKSMCPReadOnlyAccess covers only InvokeMcp + CallReadOnlyTool.
+  # eks-mcp/aws-mcp actions do not support resource-level scoping, so Resource is "*".
+  - Effect: Allow
+    Action:
+      - eks-mcp:InvokeMcp
+      - eks-mcp:CallReadOnlyTool
+      - eks-mcp:CallPrivilegedTool
+    Resource: ["*"]
+  # Access to the AWS-hosted AWS API MCP server (used by the aiml/kiro-cli module).
+  - Effect: Allow
+    Action:
+      - aws-mcp:InvokeMcp
+      - aws-mcp:CallReadOnlyTool
+      - aws-mcp:CallReadWriteTool
+    Resource: ["*"]
   - Effect: Allow
     Action:
       - cloudformation:CreateStack

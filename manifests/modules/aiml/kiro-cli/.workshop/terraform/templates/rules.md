@@ -8,7 +8,7 @@ Default to AWS region ${aws_region}
 
 Where there are multiple EKS clusters in the region ALWAYS default to the cluster with name starting with "eks-workshop"
 
-ALWAYS use the AWS CLI to access information about an EKS cluster where necessary, don't use the manage stacks tool from the EKS MCP server
+ALWAYS use the AWS CLI to access information about an EKS cluster where necessary, don't use the `manage_eks_stacks` tool from the EKS MCP server
 
 ALWAYS use the EKS MCP server tools instead of running kubectl commands where possible
 
