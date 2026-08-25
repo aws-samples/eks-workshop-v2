@@ -6,7 +6,7 @@
       "command": "uvx",
       "args": [
         "mcp-proxy-for-aws@latest",
-        "https://eks-mcp.us-west-2.api.aws/mcp",
+        "https://eks-mcp.${AWS_REGION}.api.aws/mcp",
         "--service",
         "eks-mcp",
         "--region",
