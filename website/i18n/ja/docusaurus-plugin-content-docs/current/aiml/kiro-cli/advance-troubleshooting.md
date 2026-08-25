@@ -1,10 +1,10 @@
 ---
 title: "高度なトラブルシューティング"
 sidebar_position: 23
-tmdTranslationSourceHash: '6c4206e0e9598d5d32a6a550378ac804'
+tmdTranslationSourceHash: '153f73e1aa2ffc252b0ebfd1f4d6557a'
 ---
 
-このセクションでは、Kiro CLI と [MCP server for Amazon EKS](https://awslabs.github.io/mcp/servers/eks-mcp-server/) を使用して、Kubernetes、EKS、その他の AWS サービスに関する知識がなければ解決が困難な、EKS クラスター内の複雑な問題をトラブルシューティングします。
+このセクションでは、Kiro CLI と AWS がホストする [Amazon EKS MCP server](https://docs.aws.amazon.com/eks/latest/userguide/eks-mcp-introduction.html) を使用して、Kubernetes、EKS、その他の AWS サービスに関する知識がなければ解決が困難な、EKS クラスター内の複雑な問題をトラブルシューティングします。
 
 まず、作成済みの DynamoDB テーブルを使用するように carts サービスを再設定します。アプリケーションは、ほとんどの設定を ConfigMap から読み込みます。現在の ConfigMap を確認してみましょう:
 
@@ -64,7 +64,7 @@ metadata:
 
 それでは、新しい ConfigMap の内容を反映するために carts deployment を再デプロイしましょう:
 
-```bash expectError=true hook=enable-dynamo
+```bash expectError=true
 $ kubectl rollout restart -n carts deployment/carts
 deployment.apps/carts restarted
 $ kubectl rollout status -n carts deployment/carts --timeout=20s
@@ -135,4 +135,3 @@ carts-dynamodb-698fcb695f-zvzf5   1/1     Running   0          2d1h
 ```
 
 これで Kiro CLI の紹介は終了です。この強力なツールが、EKS 用の MCP server と組み合わせることで、EKS クラスター内の複雑な問題の診断と解決にどのように役立つかを見てきました。
-
