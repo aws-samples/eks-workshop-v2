@@ -1,0 +1,3 @@
+# This lab has no manifests or .workshop assets, but its name is still a module:
+# prepare-environment reports it to analytics and reset-environment validates that
+# a directory exists here. Registering it keeps that validation a single rule.

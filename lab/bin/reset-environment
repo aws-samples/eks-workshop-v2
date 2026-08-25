@@ -108,6 +108,34 @@ if [ ! -z "${REPOSITORY_REF}" ] && [ -z "${RESET_NO_DELETE}" ]; then
 fi
 
 if [ ! -z "$module" ]; then
+  # The module directory is the registry of valid module names. reset-environment
+  # derives the manifests, the cleanup hook and the Terraform to apply from this
+  # path, and reports the name to analytics, so a path that does not exist would
+  # otherwise reset the environment, install nothing and still report success.
+  #
+  # Checked here because $manifests_path is only populated by the repository
+  # refresh above, and before anything is torn down so a bad path costs nothing.
+  # Labs with no manifests of their own register an empty directory to be found.
+  module_dir="$manifests_path/modules/$module"
+
+  if [[ "$module" == fastpaths/* ]]; then
+    # fastpaths content addresses a module by its first two path segments, and uses
+    # the singular form where the directory is plural (developer -> developers).
+    fastpaths_dir="$manifests_path/modules/$(echo "$module" | cut -d'/' -f1-2)"
+
+    if [ -d "$fastpaths_dir" ]; then
+      module_dir="$fastpaths_dir"
+    elif [ -d "${fastpaths_dir}s" ]; then
+      module_dir="${fastpaths_dir}s"
+    fi
+  fi
+
+  if [ ! -d "$module_dir" ]; then
+    logmessage "🚨 ${RED}Error:${NC} no module registered at manifests/modules/$module"
+    logmessage "Check the module path in this lab's prepare-environment command."
+    exit 1
+  fi
+
   ANALYTICS_ENDPOINT=${ANALYTICS_ENDPOINT:-""}
 
   if [ ! -z "$ANALYTICS_ENDPOINT" ]; then
