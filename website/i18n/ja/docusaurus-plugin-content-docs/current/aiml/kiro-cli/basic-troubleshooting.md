@@ -1,10 +1,10 @@
 ---
 title: "基本的なトラブルシューティング"
 sidebar_position: 22
-tmdTranslationSourceHash: 'e746980b9c7aafef1b227fd18a9fb80d'
+tmdTranslationSourceHash: 'b6cf187b126659745e2aa00aad5a61a4'
 ---
 
-このセクションでは、Kiro CLI と [MCP server for Amazon EKS](https://awslabs.github.io/mcp/servers/eks-mcp-server/) を使用して、EKS クラスター内の問題をトラブルシューティングします。
+このセクションでは、Kiro CLI と AWS がホストする [Amazon EKS MCP server](https://docs.aws.amazon.com/eks/latest/userguide/eks-mcp-introduction.html) を使用して、EKS クラスター内の問題をトラブルシューティングします。
 
 まず、クラスターに失敗する Pod をデプロイし、その後 Kiro CLI を使用してトラブルシューティングを行います。
 
@@ -39,10 +39,10 @@ I have a pod stuck in a pending state in my eks-workshop cluster. Find the cause
 このプロンプトに対処するために、Kiro CLI は MCP サーバーからさまざまなツールを使用します。実行する可能性のあるステップには以下が含まれます：
 
 - `list_k8s_resources` ツールを使用してクラスター内の失敗している Pod を特定する
-- `manage_k8s_resource` ツールを使用して Pod の詳細を取得する
+- `read_k8s_resource` ツールを使用して Pod の詳細を取得する
 - `get_k8s_events` ツールを使用して Pod の Kubernetes イベント履歴を調査する
-- `manage_k8s_resource` ツールを使用して関連する Kubernetes リソースの詳細を取得する
-- `search_eks_troubleshoot_guide` ツールを使用して EKS トラブルシューティングガイドを取得して参照する
+- `read_k8s_resource` ツールを使用して関連する Kubernetes リソースの詳細を取得する
+- `search_eks_troubleshooting_guide` ツールを使用して EKS トラブルシューティングガイドを取得して参照する
 
 Kiro CLI は、クラスターから収集したデータに基づいて分析を提供します。
 
@@ -99,4 +99,3 @@ $ kubectl delete -f ~/environment/eks-workshop/modules/aiml/kiro-cli/troubleshoo
 ```
 
 次のセクションでは、より複雑なトラブルシューティングシナリオを探ります。
-

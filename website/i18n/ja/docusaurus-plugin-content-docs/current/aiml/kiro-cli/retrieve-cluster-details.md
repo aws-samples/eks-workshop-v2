@@ -1,10 +1,10 @@
 ---
 title: "クラスター詳細の取得"
 sidebar_position: 21
-tmdTranslationSourceHash: '0f706fd9aca9f31ce820a94f8ac1ca57'
+tmdTranslationSourceHash: '828b5f6287f1e9c46e7334c32de6ee9c'
 ---
 
-このセクションでは、Kiro CLI と [MCP server for Amazon EKS](https://awslabs.github.io/mcp/servers/eks-mcp-server/) を使用して、自然言語コマンドで EKS クラスターの詳細を取得します。
+このセクションでは、Kiro CLI と AWS がホストする [Amazon EKS MCP server](https://docs.aws.amazon.com/eks/latest/userguide/eks-mcp-introduction.html) を使用して、自然言語コマンドで EKS クラスターの詳細を取得します。
 
 :::info
 コマンドラインの先頭にある `❯` 記号は、Kiro CLI セッションがアクティブであることを示しています。このラボで提供されるプロンプトテキストを、このプロンプトで入力またはペーストできます。`❯` プロンプトが表示されない場合は、`kiro-cli chat` コマンドを使用して Kiro CLI セッションを再起動してください。
@@ -198,4 +198,3 @@ Kiro CLI セッションを終了するには、以下を入力してくださ�
 ```
 
 次のセクションでは、Kiro CLI をクラスターのトラブルシューティングに使用する方法を探ります。
-
