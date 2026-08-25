@@ -3,7 +3,7 @@ title: "Amazon GuardDuty for EKS"
 sidebar_position: 50
 sidebar_custom_props: { "module": true }
 description: "Detect potentially suspicious activity in Amazon Elastic Kubernetes Service clusters with Amazon GuardDuty."
-tmdTranslationSourceHash: 1e21a74b10c998bd34364bedd021d9eb
+tmdTranslationSourceHash: 1d206693976ed0e56189941dbbbe14da
 ---
 
 ::required-time{estimatedLabExecutionTimeMinutes="20"}
@@ -12,7 +12,7 @@ tmdTranslationSourceHash: 1e21a74b10c998bd34364bedd021d9eb
 このセクションの環境を準備してください：
 
 ```bash timeout=300 wait=30
-$ prepare-environment
+$ prepare-environment security/Guardduty
 ```
 
 :::
@@ -24,6 +24,7 @@ Amazon GuardDutyを使用すると、AWS アカウント、ワークロード、
 GuardDutyにはEKSに対する2つの保護カテゴリがあります：
 
 1. EKS監査ログモニタリングは、Kubernetes監査ログアクティビティを使用してEKSクラスター内の潜在的に疑わしいアクティビティを検出するのに役立ちます
-1. EKSランタイムモニタリングは、AWS環境内のAmazon Elastic Kubernetes Service (Amazon EKS) ノードおよびコンテナのランタイム脅威検出カバレッジを提供します
+2. EKSランタイムモニタリングは、AWS環境内のAmazon Elastic Kubernetes Service (Amazon EKS) ノードおよびコンテナのランタイム脅威検出カバレッジを提供します
 
 このセクションでは、実践的な例を通じて両方の保護タイプを見ていきます。
+
