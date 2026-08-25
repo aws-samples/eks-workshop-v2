@@ -2,7 +2,7 @@
 title: "DynamoDB アクセスの検証"
 sidebar_position: 35
 pagination_next: fastpaths/explore/index
-tmdTranslationSourceHash: '868af2826c7f93d3af8ec600b91ec824'
+tmdTranslationSourceHash: '2c11edc8fa0b86100aa05df752ced57c'
 ---
 
 これで、`carts` Service Account が認可された IAM ロールに関連付けられたため、`carts` Pod は DynamoDB テーブルへのアクセス許可を持つようになりました。Network Load Balancer を通じて UI を公開し、ショッピングカートにアクセスして検証してみましょう。
@@ -10,7 +10,7 @@ tmdTranslationSourceHash: '868af2826c7f93d3af8ec600b91ec824'
 まず、ウェブストアに外部からアクセスするための NLB Service を作成します。
 
 ```bash
-$ cat << 'EOF' | kubectl apply -f -
+$ cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Service
 metadata:
@@ -73,3 +73,4 @@ http://k8s-ui-uinlbaut-a9797f0f61.elb.us-west-2.amazonaws.com
 ![Cart](/img/sample-app-screens/shopping-cart.webp)
 
 アプリケーションで Pod Identity を正常に設定しました。
+
