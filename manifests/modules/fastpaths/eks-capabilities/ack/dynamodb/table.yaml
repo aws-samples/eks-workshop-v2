@@ -1,0 +1,25 @@
+apiVersion: dynamodb.services.k8s.aws/v1alpha1
+kind: Table
+metadata:
+  name: items
+  namespace: carts
+spec:
+  tableName: ${EKS_CLUSTER_AUTO_NAME}-carts-fastpath
+  billingMode: PAY_PER_REQUEST
+  keySchema:
+    - attributeName: id
+      keyType: HASH
+  attributeDefinitions:
+    - attributeName: id
+      attributeType: "S"
+    - attributeName: customerId
+      attributeType: "S"
+  globalSecondaryIndexes:
+    - indexName: idx_global_customerId
+      keySchema:
+        - attributeName: customerId
+          keyType: HASH
+        - attributeName: id
+          keyType: RANGE
+      projection:
+        projectionType: "ALL"

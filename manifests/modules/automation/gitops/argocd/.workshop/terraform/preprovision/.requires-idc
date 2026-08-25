@@ -1,0 +1,8 @@
+This lab's capability authenticates through AWS IAM Identity Center, so
+hack/pre-provision-resources.sh stages manifests/.workshop/terraform/preprovision-base
+(which creates the instance, user and group) before this directory, and orders this
+directory after it.
+
+The presence of this file is the whole signal; its contents are only documentation.
+Remove it and this directory is staged with no Identity Center behind it, so the
+capability fails to find the group it maps to the ADMIN role.

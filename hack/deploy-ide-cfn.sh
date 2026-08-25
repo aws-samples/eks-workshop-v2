@@ -16,6 +16,11 @@ REPOSITORY_REF=${REPOSITORY_REF:-"main"}
 
 source $SCRIPT_DIR/lib/resolve-source-ip.sh
 
+# Events deploy the IDE with this set to "true", which tells labs that the
+# pre-provisioned resources already exist. Default to the self-service value so
+# an unqualified deploy behaves like a learner's own account.
+RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-"false"}
+
 STACK_NAME="$EKS_CLUSTER_NAME-cfn"
 
 aws cloudformation deploy --stack-name "$STACK_NAME" \
@@ -24,6 +29,7 @@ aws cloudformation deploy --stack-name "$STACK_NAME" \
     RepositoryOwner="$REPOSITORY_OWNER" \
     RepositoryName="$REPOSITORY_NAME" \
     RepositoryRef="$REPOSITORY_REF" \
+    ResourcesPrecreated="$RESOURCES_PRECREATED" \
     InboundCIDR="$BASE_INBOUND_CIDRS"
 
 if [ -z "$CI" ]; then

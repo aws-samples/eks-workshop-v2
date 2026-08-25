@@ -1,23 +1,27 @@
 name: Test - Automation
-
 on:
   workflow_dispatch:
   schedule:
     - cron: "0 17 * * 5"
-
 permissions:
   id-token: write
   contents: read
-
 jobs:
   test-module:
     strategy:
       fail-fast: false
       matrix:
-        module:
-          - automation/gitops
-          - automation/controlplanes
+        # Spelled out rather than a plain list of modules so the Argo CD suite can
+        # ask for pre-provisioning. It reads an IAM Identity Center instance and user
+        # that the lab deliberately refuses to create, so without this the module has
+        # no identity to sign in with and cannot be tested at all.
+        include:
+          - module: automation/gitops
+            preprovision: true
+          - module: automation/controlplanes
+            preprovision: false
     uses: ./.github/workflows/module-test.yaml
     with:
       module: ${{ matrix.module }}
+      preprovision: ${{ matrix.preprovision }}
     secrets: inherit

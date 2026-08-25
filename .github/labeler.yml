@@ -1,27 +1,31 @@
 content/introduction:
-  - environment/modules/introduction/**/*
+  - manifests/modules/introduction/**/*
   - website/docs/introduction/**/*
 
 content/fundamentals:
-  - environment/modules/fundamentals/**/*
+  - manifests/modules/fundamentals/**/*
   - website/docs/fundamentals/**/*
 
 content/autoscaling:
-  - environment/modules/autoscaling/**/*
+  - manifests/modules/autoscaling/**/*
   - website/docs/autoscaling/**/*
 
 content/security:
-  - environment/modules/security/**/*
+  - manifests/modules/security/**/*
   - website/docs/security/**/*
 
 content/networking:
-  - environment/modules/networking/**/*
+  - manifests/modules/networking/**/*
   - website/docs/networking/**/*
 
 content/observability:
-  - environment/modules/observability/**/*
+  - manifests/modules/observability/**/*
   - website/docs/observability/**/*
 
 content/cost-optimization:
-  - environment/modules/costoptimization/**/*
+  - manifests/modules/costoptimization/**/*
   - website/docs/costoptimization/**/*
+
+content/fastpaths:
+  - manifests/modules/fastpaths/**/*
+  - website/docs/fastpaths/**/*

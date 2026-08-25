@@ -1,107 +1,116 @@
-terraform {
-  required_providers {
-    kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = ">= 1.14"
-    }
-  }
-}
-
-module "ebs_csi_driver_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.60.0"
-
-  role_name_prefix   = "${var.addon_context.eks_cluster_id}-ebs-csi-"
-  policy_name_prefix = "${var.addon_context.eks_cluster_id}-ebs-csi-"
-
-  attach_ebs_csi_policy = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = var.addon_context.eks_oidc_provider_arn
-      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
-    }
-  }
-
-  tags = var.tags
-}
-
-module "eks_blueprints_addons" {
-  source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.23.0"
-
-  cluster_name      = var.addon_context.eks_cluster_id
-  cluster_endpoint  = var.addon_context.aws_eks_cluster_endpoint
-  cluster_version   = var.eks_cluster_version
-  oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
-
-  eks_addons = {
-    aws-ebs-csi-driver = {
-      most_recent              = true
-      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
-      preserve                 = false
-      configuration_values     = jsonencode({ defaultStorageClass = { enabled = true } })
-    }
-  }
-
-  enable_aws_load_balancer_controller = true
-  aws_load_balancer_controller = {
-    wait        = true
-    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
-    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
-  }
-
-  observability_tag = null
-}
-
-resource "time_sleep" "wait" {
-  depends_on = [
-    module.eks_blueprints_addons
-  ]
-
-  create_duration = "10s"
-}
-
-resource "kubectl_manifest" "ingress_class_params" {
-  depends_on = [time_sleep.wait]
-
-  wait = true
-
-  yaml_body = <<-YAML
-    apiVersion: elbv2.k8s.aws/v1beta1
-    kind: IngressClassParams
-    metadata:
-      name: restricted
-    spec:
-      scheme: internet-facing
-      inboundCIDRs: ${jsonencode(split(",", var.inbound_cidrs))}
-  YAML
-}
-
-resource "kubectl_manifest" "ingress_class" {
-  wait = true
-
-  yaml_body = <<-YAML
-    apiVersion: networking.k8s.io/v1
-    kind: IngressClass
-    metadata:
-      name: restricted
-      annotations:
-        ingressclass.kubernetes.io/is-default-class: "true"
-    spec:
-      controller: ingress.k8s.aws/alb
-      parameters:
-        apiGroup: elbv2.k8s.aws
-        kind: IngressClassParams
-        name: restricted
-  YAML
-
-  depends_on = [
-    kubectl_manifest.ingress_class_params
-  ]
-}
-
 data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
+
+# The EKS Capability for Argo CD authenticates users through IAM Identity Center,
+# so the account needs an Identity Center instance holding an Argo CD admin user
+# before the capability can be created.
+#
+# This lab only ever reads from Identity Center. It never creates the instance and
+# never creates the user, because both are writes to an account-wide directory that
+# may hold real identities. Workshop Studio events get them from `preprovision/`,
+# which the Workshop Studio provisioning pipeline applies and `prepare-environment`
+# does not. Everyone else creates them once themselves, as the lab introduction
+# describes.
+data "aws_ssoadmin_instances" "main" {}
+
+locals {
+  idc_instance_arns     = tolist(data.aws_ssoadmin_instances.main.arns)
+  idc_identity_store_id = try(tolist(data.aws_ssoadmin_instances.main.identity_store_ids)[0], "")
+  idc_instance_arn      = try(local.idc_instance_arns[0], "")
+
+  # Named after the environment rather than a fixed "eks-workshop", because there is
+  # only one Identity Center instance per account per Region: two environments in one
+  # account share the directory, and a fixed name would make the second one collide
+  # with the first. `eks_cluster_id` is `eks-workshop` at an event and
+  # `eks-workshop-<environment>` elsewhere.
+  #
+  # These are a convention shared with
+  # `manifests/.workshop/terraform/preprovision-base`, which creates them at an event.
+  # Both sides derive the names the same way instead of passing values around, so this
+  # lab reads identically whether they were pre-provisioned or created by hand.
+  idc_user_name  = var.eks_cluster_id
+  idc_group_name = "${var.eks_cluster_id}-argocd-admins"
+
+  # Identity Center does not require the sign-in name to be an email address, so the
+  # user name stays short and memorable for participants to type. The directory still
+  # wants a primary email, and nothing ever delivers to it, so use the address range
+  # RFC 2606 reserves for documentation.
+  idc_user_email = "${var.eks_cluster_id}@example.com"
+
+  # The console deep link uses the instance ID without its "ssoins-" prefix.
+  idc_instance_id = trimprefix(try(element(split("/", local.idc_instance_arn), 1), ""), "ssoins-")
+  idc_console_url = "https://${data.aws_region.current.id}.console.aws.amazon.com/singlesignon/home?region=${data.aws_region.current.id}#/instances/${local.idc_instance_id}/users"
+
+  # Empty when the user has not been activated for us, which is the signal the docs
+  # use to send people down the manual one-time password route.
+  idc_password = try(
+    jsondecode(data.aws_secretsmanager_secret_version.argocd_admin[0].secret_string).password,
+    ""
+  )
+}
+
+# Checks the provider cannot express. `aws_ssoadmin_instances` returns only ARNs
+# and identity store IDs, so telling an account instance apart from a shared
+# organization instance, and confirming the workshop user exists, needs API calls
+# the AWS provider does not surface.
+resource "null_resource" "idc_precheck" {
+  triggers = {
+    region    = data.aws_region.current.id
+    user_name = local.idc_user_name
+  }
+
+  provisioner "local-exec" {
+    command = "bash ${path.module}/idc-precheck.sh"
+
+    environment = {
+      REGION     = data.aws_region.current.id
+      ACCOUNT    = data.aws_caller_identity.current.account_id
+      USER_NAME  = local.idc_user_name
+      USER_EMAIL = local.idc_user_email
+      GROUP_NAME = local.idc_group_name
+    }
+  }
+
+  lifecycle {
+    precondition {
+      condition     = length(local.idc_instance_arns) > 0
+      error_message = "No IAM Identity Center instance found in this account and Region. This lab does not set one up for you. See \"Prerequisites - IAM Identity Center\" in the lab introduction: https://www.eksworkshop.com/docs/automation/gitops/argocd/"
+    }
+  }
+}
+
+# At an AWS-run event the pre-provisioning pipeline has already activated this user
+# and stored a password it proved works, so participants can be handed a working
+# credential instead of minting a one-time password themselves.
+#
+# Gated on resources_precreated because that is this repo's existing signal for
+# "Workshop Studio pre-provisioned things", and the pre-provisioning is precisely
+# what creates this secret. Anywhere else it does not exist, and the lab falls back
+# to the manual activation the docs describe.
+data "aws_secretsmanager_secret_version" "argocd_admin" {
+  count = var.resources_precreated ? 1 : 0
+
+  secret_id = "${var.eks_cluster_id}-argocd-idc"
+}
+
+# Enabling the capability takes around ten minutes, so at an AWS-run event the
+# pre-provisioning pipeline has already done it and this is skipped. Everywhere else
+# the lab creates it, from the same child module, against the Identity Center
+# instance the account already had.
+#
+# Sourcing it from under `preprovision/` shares the definition without making the
+# rest of that directory reachable: Terraform only loads what a `source` points at,
+# so the Identity Center writes in `preprovision/main.tf` stay out of reach here.
+module "capability" {
+  source = "./preprovision/capability"
+  count  = var.resources_precreated ? 0 : 1
+
+  depends_on = [null_resource.idc_precheck]
+
+  eks_cluster_id = var.addon_context.eks_cluster_id
+  idc_group_name = local.idc_group_name
+  tags           = var.tags
+}
 
 resource "aws_codecommit_repository" "argocd" {
   repository_name = "${var.addon_context.eks_cluster_id}-argocd"
@@ -113,15 +122,15 @@ resource "aws_iam_user" "gitops" {
   path = "/"
 }
 
+resource "tls_private_key" "gitops" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 resource "aws_iam_user_ssh_key" "gitops" {
   username   = aws_iam_user.gitops.name
   encoding   = "SSH"
   public_key = tls_private_key.gitops.public_key_openssh
-}
-
-resource "tls_private_key" "gitops" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
 }
 
 resource "local_file" "ssh_private_key" {
@@ -131,26 +140,23 @@ resource "local_file" "ssh_private_key" {
 }
 
 resource "local_file" "ssh_config" {
-  content         = <<EOF
-Host git-codecommit.*.amazonaws.com
-  User ${aws_iam_user.gitops.unique_id}
-  IdentityFile ~/.ssh/gitops_ssh.pem
-EOF
+  content         = <<-EOF
+    Host git-codecommit.*.amazonaws.com
+      User ${aws_iam_user_ssh_key.gitops.id}
+      IdentityFile ~/.ssh/gitops_ssh.pem
+  EOF
   filename        = "/home/ec2-user/.ssh/config"
   file_permission = "0600"
 }
 
 data "aws_iam_policy_document" "gitops_access" {
   statement {
-    sid = ""
     actions = [
       "codecommit:GitPull",
-      "codecommit:GitPush"
+      "codecommit:GitPush",
     ]
-    effect = "Allow"
-    resources = [
-      aws_codecommit_repository.argocd.arn
-    ]
+    effect    = "Allow"
+    resources = [aws_codecommit_repository.argocd.arn]
   }
 }
 

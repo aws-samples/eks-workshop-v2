@@ -118,7 +118,12 @@ class TerminalSection {
       processed = true;
     }
 
-    if (currentLine.indexOf("<<EOF") > -1) {
+    // Detect the start of a heredoc. The delimiter may be quoted (<<'EOF' or
+    // <<"EOF") or use the <<- form, none of which contain the literal "<<EOF",
+    // so match the variants rather than a fixed substring. Without this a quoted
+    // delimiter is missed and the whole heredoc body is treated as output, so
+    // "copy" yields only the first line.
+    if (/<<-?\s*['"]?EOF/.test(currentLine)) {
       this.inHeredoc = true;
     } else if (this.inHeredoc) {
       if (currentLine.indexOf("EOF") > -1) {

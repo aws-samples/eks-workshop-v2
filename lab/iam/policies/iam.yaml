@@ -61,14 +61,21 @@ Statement:
   - Effect: Allow
     Action:
       - iam:ListOpenIDConnectProviders
-      - iam:CreateOpenIDConnectProvider
-      - iam:DeleteOpenIDConnectProvider
-      - iam:TagOpenIDConnectProvider
-      - iam:GetOpenIDConnectProvider
       - iam:GetRole
       - iam:ListPolicies
       - iam:ListRoles
     Resource: ["*"]
+  # Every OIDC provider the workshop touches is the cluster's own EKS issuer
+  # (oidc.eks.<region>.amazonaws.com/id/<hash>), so these are scoped to that
+  # prefix rather than to all providers in the account.
+  - Effect: Allow
+    Action:
+      - iam:CreateOpenIDConnectProvider
+      - iam:DeleteOpenIDConnectProvider
+      - iam:TagOpenIDConnectProvider
+      - iam:GetOpenIDConnectProvider
+    Resource:
+      - !Sub arn:aws:iam::${AWS::AccountId}:oidc-provider/oidc.eks.*
   - Effect: Allow
     Action:
       - iam:CreateServiceLinkedRole
@@ -79,6 +86,8 @@ Statement:
           - eks.amazonaws.com
           - eks-nodegroup.amazonaws.com
           - eks-fargate.amazonaws.com
+          - capabilities.eks.amazonaws.com
+          - sso.amazonaws.com
           - guardduty.amazonaws.com
           - spot.amazonaws.com
           - fis.amazonaws.com
