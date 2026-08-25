@@ -37,9 +37,7 @@ module "eks_blueprints_addons" {
   oidc_provider_arn = var.addon_context.eks_oidc_provider_arn
 
   eks_addons = {
-    eks-pod-identity-agent = {
-      addon_version = "v1.1.0-eksbuild.1"
-    }
+    eks-pod-identity-agent = {}
   }
 
   observability_tag = null

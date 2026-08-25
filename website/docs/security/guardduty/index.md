@@ -11,7 +11,7 @@ description: "Detect potentially suspicious activity in Amazon Elastic Kubernete
 Prepare your environment for this section:
 
 ```bash timeout=300 wait=30
-$ prepare-environment
+$ prepare-environment security/Guardduty
 ```
 
 :::

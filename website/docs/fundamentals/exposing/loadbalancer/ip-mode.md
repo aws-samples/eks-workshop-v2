@@ -7,21 +7,13 @@ As mentioned previously, the NLB we have created is operating in "instance mode"
 
 The AWS Load Balancer Controller also supports creating NLBs operating in "IP mode". In this mode, the AWS NLB sends traffic directly to the Kubernetes pods behind the service, eliminating the need for an extra network hop through the worker nodes in the Kubernetes cluster. IP target mode supports pods running on both AWS EC2 instances and AWS Fargate.
 
-![IP mode](/docs/fundamentals/exposing/loadbalancer/ip-mode.webp)
+![A side-by-side comparison of NLB target modes: in instance mode the target group registers EC2 instances on the NodePort and kube-proxy relays the connection to the ui Pod, while in IP mode the target group registers Pod IPs and the load balancer connects to the ui Pod directly](/docs/fundamentals/exposing/loadbalancer/ip-mode.webp)
 
-The previous diagram explains how application traffic flows differently when the target group mode is instance and IP.
+The diagram above compares the two modes side by side. The `Service`, the Network Load Balancer and its TCP listener on port 80 are identical in both — the only thing that changes is what gets registered in the load balancer's target group.
 
-When the target group mode is instance, the traffic flows via a node port created for a service on each node. In this mode, `kube-proxy` routes the traffic to the pod running this service. The service pod could be running in a different node than the node that received the traffic from the load balancer. ServiceA (green) and ServiceB (pink) are configured to operate in "instance mode".
+In **instance mode** the target group registers the EC2 worker nodes on the NodePort that Kubernetes allocated for the `Service`. A connection therefore arrives at a node first, and `kube-proxy` on that node relays it to a ui Pod. If the node that received the connection is not running a ui Pod, `kube-proxy` forwards it on to a node that is, adding a second network hop.
 
-Alternatively, when the target group mode is IP, the traffic flows directly to the service pods from the load balancer. In this mode, we bypass a network hop of `kube-proxy`. ServiceC (blue) is configured to operate in "IP mode".
-
-The numbers in the previous diagram represents the following things.
-
-1. The EKS cluster where the services are deployed
-2. The ELB instance exposing the service
-3. The target group mode configuration that can be either instance or IP
-4. The listener protocols configured for the load balancer on which the service is exposed
-5. The target group rule configuration used to determine the service destination
+In **IP mode** the target group registers the Pod IP addresses instead, so the load balancer opens the connection straight to a ui Pod and `kube-proxy` is not in the data path at all. This works because the Amazon VPC CNI gives every Pod a first-class, routable VPC IP address.
 
 There are several reasons why we might want to configure the NLB to operate in IP target mode:
 
@@ -58,8 +50,8 @@ Annotations:              service.beta.kubernetes.io/aws-load-balancer-nlb-targe
 You should be able to access the application using the same URL as before, with the NLB now using IP mode to expose your application.
 
 ```bash
-$ ALB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`].LoadBalancerArn' | jq -r '.[0]')
-$ TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --load-balancer-arn $ALB_ARN | jq -r '.TargetGroups[0].TargetGroupArn')
+$ NLB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`].LoadBalancerArn' | jq -r '.[0]')
+$ TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --load-balancer-arn $NLB_ARN | jq -r '.TargetGroups[0].TargetGroupArn')
 $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 {
     "TargetHealthDescriptions": [
@@ -92,8 +84,8 @@ $ kubectl wait --for=condition=Ready pod -n ui -l app.kubernetes.io/name=ui --ti
 Now check the load balancer targets again:
 
 ```bash
-$ ALB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`].LoadBalancerArn' | jq -r '.[0]')
-$ TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --load-balancer-arn $ALB_ARN | jq -r '.TargetGroups[0].TargetGroupArn')
+$ NLB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`].LoadBalancerArn' | jq -r '.[0]')
+$ TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --load-balancer-arn $NLB_ARN | jq -r '.TargetGroups[0].TargetGroupArn')
 $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 {
     "TargetHealthDescriptions": [

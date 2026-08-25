@@ -31,7 +31,7 @@ kind: Service
 metadata:
   name: search-svc # the name of our service
 spec:
-# HIGHLIGHT
+  # HIGHLIGHT
   type: LoadBalancer
   selector:
     app: SearchApp # pods are deployed with the label app=SearchApp
@@ -41,6 +41,6 @@ spec:
 
 This is great because of how simple it is to put a load balancer in front of your application. The service spec has been extended over the years with annotations and additional configuration. A second option is to use an ingress rule and an ingress controller to route external traffic into Kubernetes pods.
 
-![IP mode](/docs/fundamentals/exposing/loadbalancer/ui-nlb-instance.webp)
+![An internet-facing Network Load Balancer with a TCP listener on port 80, forwarding to a NodePort on each registered EC2 worker node, where kube-proxy relays the connection to a ui Pod](/docs/fundamentals/exposing/loadbalancer/ui-nlb-instance.webp)
 
 In this chapter we'll demonstrate how to expose an application running in the EKS cluster to the Internet using a layer 4 Network Load Balancer.

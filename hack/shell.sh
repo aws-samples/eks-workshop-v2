@@ -48,6 +48,9 @@ source $SCRIPT_DIR/lib/resolve-source-ip.sh
 # do not share hook state.
 hooks_dir="$SCRIPT_DIR/../.workshop-state/$EKS_CLUSTER_NAME/hooks"
 mkdir -p "$hooks_dir"
+# The container runs as ec2-user; on hosts where this bind-mounted directory is
+# owned by a different UID, ec2-user could not write the cleanup hook into it.
+chmod 777 "$hooks_dir"
 
 $CONTAINER_CLI run --rm $interactive_args $dns_args \
   -v $SCRIPT_DIR/../manifests:/eks-workshop/manifests \
