@@ -5,6 +5,7 @@ sidebar_position: 30
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 Let’s review how to navigate this website and the content provided.
 
@@ -68,7 +69,7 @@ $ prepare-environment
 ### Copy/Paste Permission
 Depending on your browser the first time you copy/paste content in to the VSCode terminal you may be presented with a prompt that looks like this:
 
-<img src="/docs/introduction/vscode-copy-paste.webp" alt="VSCode copy/paste" width="480" />
+<img src={useBaseUrl("/docs/introduction/vscode-copy-paste.webp")} alt="VSCode copy/paste" width="480" />
 ### Terminal commands
 
 Most of the interaction you will do in this workshop will be done with terminal commands, which you can either manually type or copy/paste to the IDE terminal. You will see this terminal commands displayed like this:
