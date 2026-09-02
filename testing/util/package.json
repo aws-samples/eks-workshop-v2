@@ -35,7 +35,7 @@
     "chai": "^6.0.0",
     "commander": "^14.0.0",
     "glob-to-regexp": "^0.4.1",
-    "mocha": "^11.0.0",
+    "mocha": "^11.7.5",
     "mocha-multi": "^1.1.7",
     "mochawesome": "^7.0.1",
     "remark": "^15.0.0",
