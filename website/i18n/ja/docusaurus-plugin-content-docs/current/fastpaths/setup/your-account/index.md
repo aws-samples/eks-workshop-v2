@@ -1,7 +1,7 @@
 ---
 title: あなたのAWSアカウントで
 sidebar_position: 30
-tmdTranslationSourceHash: '816ae7a5604c47cc743c1eddcfcdadec'
+tmdTranslationSourceHash: 'a9ac429d98a155726091877652b40b3a'
 ---
 
 import Tabs from '@theme/Tabs';
@@ -33,37 +33,36 @@ import TabItem from '@theme/TabItem';
 
 画面の下部までスクロールして、IAM通知を承認してください：
 
-<img src="/docs/introduction/setup/your-account/acknowledge-iam.webp" alt="acknowledge IAM" width="600" />
+<img src={require('@site/static/docs/introduction/setup/your-account/acknowledge-iam.webp').default} alt="acknowledge IAM" width="600" />
 
 次に、**Create stack**ボタンをクリックします：
 
-<img src="/docs/introduction/setup/your-account/create-stack.webp" alt="Create Stack" width="600" />
+<img src={require('@site/static/docs/introduction/setup/your-account/create-stack.webp').default} alt="Create Stack" width="600" />
 
 CloudFormationスタックのデプロイには約5分かかります。完了したら、**Outputs**タブから続行に必要な情報を取得できます：
 
-<img src="/docs/introduction/setup/your-account/vscode-outputs.webp" alt="cloudformation outputs" width="600" />
+<img src={require('@site/static/docs/introduction/setup/your-account/vscode-outputs.webp').default} alt="cloudformation outputs" width="600" />
 
 `IdeUrl`出力には、IDEにアクセスするためにブラウザに入力するURLが含まれています。`IdePasswordSecret`には、IDE用に生成されたパスワードを含むAWS Secrets Managerシークレットへのリンクが含まれています。
 
 パスワードを取得するには、`IdePasswordSecret`URLを開き、**Retrieve**ボタンをクリックします：
 
-<img src="/docs/introduction/setup/your-account/vscode-password-retrieve.webp" alt="secretsmanager retrieve" width="600" />
+<img src={require('@site/static/docs/introduction/setup/your-account/vscode-password-retrieve.webp').default} alt="secretsmanager retrieve" width="600" />
 
 その後、パスワードをコピーできるようになります：
 
-<img src="/docs/introduction/setup/your-account/vscode-password-visible.webp" alt="password in Secrets Manager" width="600" />
+<img src={require('@site/static/docs/introduction/setup/your-account/vscode-password-visible.webp').default} alt="password in Secrets Manager" width="600" />
 
 提供されたIDE URLを開くと、パスワードの入力を求められます：
 
-<img src="/docs/introduction/setup/your-account/vscode-password.webp" alt="IDE password prompt" width="600" />
+<img src={require('@site/static/docs/introduction/setup/your-account/vscode-password.webp').default} alt="IDE password prompt" width="600" />
 
 パスワードを送信すると、最初のIDE画面が表示されます：
 
-<img src="/docs/introduction/setup/your-account/vscode-splash.webp" alt="IDE initial screen" width="600" />
+<img src={require('@site/static/docs/introduction/setup/your-account/vscode-splash.webp').default} alt="IDE initial screen" width="600" />
 
 次のステップは、ラボ演習を実行するためのEKSクラスターを作成することです。以下のガイドのいずれかに従って、これらのラボの要件を満たすクラスターをプロビジョニングしてください：
 
 - **(推奨)** [eksctl](./using-eksctl.md)
 - (近日公開予定！) [Terraform](./using-terraform.md)、興味がありますか？ [GitHubリポジトリ](https://github.com/aws-samples/eks-workshop-v2/issues)でお知らせください
 - (近日公開予定！) CDK
-

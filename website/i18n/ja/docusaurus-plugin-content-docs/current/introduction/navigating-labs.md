@@ -1,7 +1,7 @@
 ---
 title: ラボのナビゲーション
 sidebar_position: 30
-tmdTranslationSourceHash: 'ce60b02ae62eb9aa4bbd5a450bd5f448'
+tmdTranslationSourceHash: 'e0dcb7e5a560e35ee420e9ffa404c67a'
 ---
 
 import Tabs from '@theme/Tabs';
@@ -60,14 +60,14 @@ $ prepare-environment networking/securitygroups-for-pods
 
 誤ってクラスターやモジュールを機能しない方法で設定してしまった場合、EKS クラスターをできる限りリセットするメカニズムが提供されており、いつでも実行できます。`prepare-environment` コマンドを実行し、完了するまで待つだけです。これには、実行時のクラスターの状態に応じて数分かかる場合があります。
 
-```bash
+```bash test=false
 $ prepare-environment
 ```
 
 ## ヒント
 
 ### コピー＆ペーストの許可
-ブラウザによっては、VSCode ターミナルにコンテンツを初めてコピー＆ペーストすると、次のようなプロンプトが表示される場合があります：
+ブラウザによっては、VSCode Terminal にコンテンツを初めてコピー＆ペーストすると、次のようなプロンプトが表示される場合があります：
 
 <img src="/docs/introduction/vscode-copy-paste.webp" alt="VSCode copy/paste" width="480" />
 
@@ -104,4 +104,3 @@ Fri Aug 30 12:26:58 MDT 2024
 ## 次のステップ
 
 このワークショップの形式に慣れたら、[Application Overview](/docs/introduction/getting-started/about) に進んでサンプルアプリケーションについて学習し、その後 [Getting Started](/docs/introduction/getting-started) ラボに進むか、上部のナビゲーションバーを使用してワークショップの任意のモジュールにスキップしてください。
-

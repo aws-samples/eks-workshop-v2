@@ -1,82 +1,122 @@
 ---
-title: "Argo CDのインストール"
+title: "Argo CDへのアクセス"
 sidebar_position: 10
 weight: 10
-tmdTranslationSourceHash: 5a9e54e73eb1c40f741fbe272eb9d13a
+tmdTranslationSourceHash: 021b83cb38cbb1d7cf0cf9e297bf7e13
 ---
 
-まずはクラスターにArgo CDをインストールしましょう：
+:::tip セットアップ済みの内容
+**Amazon EKS Capability for Argo CD** がクラスターで有効化されています。Argo CDはAWSコントロールプレーンで実行されており、ワーカーノード上にArgo CDのPodはありません。**AWS IAM Identity Center** のユーザーが作成され、Argo CDへのADMINアクセス権が付与されています。
+:::
+
+Argo CDサーバーのURLを取得しましょう：
 
 ```bash
-$ helm repo add argo-cd https://argoproj.github.io/argo-helm
-$ ESCAPED_CIDRS="${INBOUND_CIDRS//,/\\,}"
-$ helm upgrade --install argocd argo-cd/argo-cd --version "${ARGOCD_CHART_VERSION}" \
-  --namespace "argocd" --create-namespace \
-  --values ~/environment/eks-workshop/modules/automation/gitops/argocd/values.yaml \
-  --set "server.service.annotations.service\\.beta\\.kubernetes\\.io/load-balancer-source-ranges=$ESCAPED_CIDRS" \
-  --wait
-NAME: argocd
-LAST DEPLOYED: [...]
-NAMESPACE: argocd
-STATUS: deployed
-REVISION: 2
-TEST SUITE: None
-NOTES:
-[...]
+$ export ARGOCD_SERVER=$(aws eks describe-capability \
+  --cluster-name $EKS_CLUSTER_NAME \
+  --capability-name argocd \
+  --query 'capability.configuration.argoCd.serverUrl' \
+  --output text)
+$ echo "Argo CD URL: $ARGOCD_SERVER"
+Argo CD URL: https://abcd1234.eks-capabilities.us-west-2.amazonaws.com
 ```
 
-このラボでは、Argo CDサーバーUIがロードバランサーを備えたKubernetesサービスを使用してクラスター外からアクセスできるように構成されています。URLを取得するには、次のコマンドを実行します：
+## Argo CDへのサインイン
+
+Argo CDへのADMINアクセス権を持つIAM Identity Centerユーザーの認証情報を取得します：
 
 ```bash
-$ export ARGOCD_SERVER=$(kubectl get svc argocd-server -n argocd -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname')
-$ echo "Argo CD URL: https://$ARGOCD_SERVER"
-Argo CD URL: https://acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com
+$ echo "User:     $ARGOCD_IDC_USER"
+$ echo "Password: $ARGOCD_IDC_PASSWORD"
 ```
 
-ロードバランサーのプロビジョニングには時間がかかります。このコマンドを使用して、Argo CDが応答するまで待ちましょう：
+パスワードが表示された場合は、そのまま使用できます。次のセクションにスキップしてください。
 
-```bash timeout=600 wait=60
-$ curl --head -X GET --retry 20 --retry-all-errors --retry-delay 15 \
-  --connect-timeout 5 --max-time 10 -k \
-  https://$ARGOCD_SERVER
-curl: (6) Could not resolve host: acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com
-Warning: Problem : timeout. Will retry in 15 seconds. 20 retries left.
-[...]
-HTTP/1.1 200 OK
-Accept-Ranges: bytes
-Content-Length: 788
-Content-Security-Policy: frame-ancestors 'self';
-Content-Type: text/html; charset=utf-8
-X-Frame-Options: sameorigin
-X-Xss-Protection: 1
+<details>
+<summary>パスワードが空の場合は、ここを読んで<strong>ユーザーを自分でアクティベート</strong>してください</summary>
+
+`ARGOCD_IDC_PASSWORD` が空の場合、ユーザーは存在するものの一度もサインインしていないことを意味します。これは、独自のアカウントでIAM Identity Centerをセットアップした場合に該当します。Identity Centerはパスワードなしでユーザーを作成し、パスワードを設定するAPIを提供していないため、最初のパスワードはサインインを通じて確立する必要があります。これは、管理者が新しいチームメンバーをオンボーディングする際と同じプロセスです。
+
+ユーザーのワンタイムパスワードを生成します：
+
+```bash test=false
+$ echo "Console: $ARGOCD_IDC_CONSOLE_URL"
 ```
 
-認証には、デフォルトのユーザー名は `admin` で、パスワードは自動生成されています。次のコマンドでパスワードを取得します：
+1. ブラウザで `$ARGOCD_IDC_CONSOLE_URL` を開き、管理者アクセス権を持つ認証情報を使用します
+2. `$ARGOCD_IDC_USER` ユーザーをクリックします
+3. **Reset password** を選択し、**Generate a one-time password and share the password with the user** を選択してから、表示されたパスワードをコピーします
 
-```bash
-$ export ARGOCD_PWD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
-$ echo "Argo CD admin password: $ARGOCD_PWD"
+そのワンタイムパスワードを使用して以下からサインインします。Identity Centerはすぐに永続的なパスワードの設定を求めます。パスワードを選択し、ラボの残りの部分で使用してください。
+
+AWS主催のイベントでは、これらの手順は不要です。イベントのプロビジョニングがユーザーをアクティベートし、パスワードを保存するため、`ARGOCD_IDC_PASSWORD` はすでに入力されています。何らかの理由で空の場合は、プロビジョニングが書き込んだシークレットから直接読み取ることができます：
+
+```bash test=false
+$ aws secretsmanager get-secret-value \
+  --secret-id $EKS_CLUSTER_NAME-argocd-idc \
+  --query SecretString --output text | jq -r '.password'
 ```
 
-取得したURLと認証情報を使用してArgo CDのUIにログインします。以下のようなインターフェースが表示されます：
+</details>
+
+## Argo CD UIへのアクセス
+
+ブラウザで `$ARGOCD_SERVER` を開き、**Log in via SSO** をクリックしてから、`$ARGOCD_IDC_USER` としてサインインします。
+
+:::note
+IAM Identity Centerを自分でセットアップした場合、この最初のサインイン時にMFAデバイスの登録を求められることがあります。これは新しいユーザーに対するデフォルト設定です。認証アプリでデバイスを登録して続行するか、Identity Centerコンソールの **Settings → Authentication → Multi-factor authentication** でプロンプトをオフにしてください。
+
+AWS主催のイベントではこれは発生しません。Identity Centerインスタンスはイベント用に作成され、プロビジョニング中にMFAプロンプトがオフになっています。ワークショップは、自身が作成したインスタンスに対してのみこれを実行し、既に存在していたインスタンスの設定を変更することはありません。
+:::
+
+以下のようなインターフェースが表示されます：
 
 ![argocd-ui](/docs/automation/gitops/argocd/argocd-ui.webp)
 
-UIに加えて、Argo CDはアプリケーションを管理するための強力なCLIツール `argocd` を提供しています。
+## Argo CD CLIの認証
 
-:::info
-このラボでは、`argocd` CLIはすでにインストールされています。CLIツールのインストールについては、[こちらの手順](https://argo-cd.readthedocs.io/en/stable/cli_installation/)を参照してください。
-:::
+このCapabilityは `argocd login` をサポートしていないため、サインインの代わりに、CLIはUIで生成する **アカウントトークン** で認証します：
 
-CLIを使用してArgo CDと対話するには、Argo CDサーバーで認証する必要があります：
+1. 上で開いたArgo CD UIで、**Settings → Accounts → admin** に移動します
+2. **Generate New Token** を選択します
+3. 表示されたトークンをコピーします（再度表示されません）
 
-```bash
-$ argocd login $ARGOCD_SERVER --username admin --password $ARGOCD_PWD --insecure
-'admin:login' logged in successfully
-Context 'acfac042a61e5467aace45fc66aee1bf-818695545.us-west-2.elb.amazonaws.com' updated
+次に、これらの環境変数を設定し、プレースホルダーの部分にトークンを貼り付けます：
+
+```bash test=false
+$ export ARGOCD_SERVER=$(echo $ARGOCD_SERVER | sed 's|^https://||')
+$ export ARGOCD_AUTH_TOKEN="<paste-token-here>"
+$ export ARGOCD_OPTS="--grpc-web"
 ```
 
-最後に、アクセスを提供するためにGitリポジトリをArgo CDに登録します：
+CapabilityはエンドポイントをURLとして報告しますが、CLIは単なるホストを期待するため、最初の行でそれを削除します。`--grpc-web` が必要なのは、CapabilityがgRPC-Web経由でAPIを提供するためです。これら3つを設定すると、`argocd login` なしでCLIが動作します。
+
+CLIが動作することを確認します：
+
+```bash test=false
+$ argocd app list
+NAME  CLUSTER  NAMESPACE  PROJECT  STATUS  HEALTH  SYNCPOLICY  CONDITIONS
+```
+
+## EKSクラスターの登録
+
+自己管理型のArgo CDインストール（クラスター内で実行され、APIサーバーへの直接アクセスがある）とは異なり、EKS Capabilityはクラスターの外部にあるAWSコントロールプレーンで実行されます。Argo CDがアプリケーションをデプロイする方法を認識できるように、EKSクラスターを明示的に登録する必要があります。
+
+```bash
+$ export CLUSTER_ARN=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME \
+  --query 'cluster.arn' --output text)
+$ argocd cluster add default --aws-cluster-name $CLUSTER_ARN --yes
+INFO[0000] ServiceAccount "argocd-manager" created in namespace "kube-system"
+INFO[0000] ClusterRole "argocd-manager-role" created
+INFO[0000] ClusterRoleBinding "argocd-manager-role-binding" created
+Cluster 'arn:aws:eks:us-west-2:...' added
+```
+
+これにより、Argo CDがクラスター上でアプリケーションリソースをデプロイおよび管理するために使用する `argocd-manager` ServiceAccountが `kube-system` に作成されます。クラスターはそのARNで識別されます。Argo CDアプリケーションを作成する際の宛先サーバーとして `$CLUSTER_ARN` を使用します。
+
+## Gitリポジトリの登録
+
+CodeCommit GitリポジトリをArgo CDに登録します：
 
 ```bash
 $ argocd repo add $GITOPS_REPO_URL_ARGOCD \

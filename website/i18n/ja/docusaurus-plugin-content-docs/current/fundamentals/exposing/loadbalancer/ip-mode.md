@@ -1,33 +1,25 @@
 ---
 title: "IPモード"
 sidebar_position: 40
-tmdTranslationSourceHash: acc5b1f3e6086643730da5f893525689
+tmdTranslationSourceHash: '3b12b3e9dd53801847aa273070a1b9bc'
 ---
 
 前述のように、作成したNLBは「インスタンスモード」で動作しています。インスタンスターゲットモードはAWS EC2インスタンス上で実行されているPodをサポートしています。このモードでは、AWS NLBはインスタンスにトラフィックを送信し、個々のワーカーノード上の`kube-proxy`がKubernetesクラスター内の1つ以上のワーカーノードを介してPodにトラフィックを転送します。
 
 AWS Load Balancer Controllerは、「IPモード」で動作するNLBの作成もサポートしています。このモードでは、AWS NLBはKubernetesクラスター内のワーカーノードを経由する余分なネットワークホップを排除して、Serviceの背後にあるKubernetes Podに直接トラフィックを送信します。IPターゲットモードは、AWS EC2インスタンスとAWS Fargateの両方で実行されているPodをサポートしています。
 
-![IPモード](/docs/fundamentals/exposing/loadbalancer/ip-mode.webp)
+![NLBターゲットモードの並列比較：インスタンスモードではターゲットグループがNodePort上のEC2インスタンスを登録し、kube-proxyがui Podへの接続を中継します。一方、IPモードではターゲットグループがPod IPアドレスを登録し、ロードバランサーがui Podに直接接続します](/docs/fundamentals/exposing/loadbalancer/ip-mode.webp)
 
-前の図は、ターゲットグループモードがインスタンスとIPの場合で、アプリケーショントラフィックの流れがどのように異なるかを説明しています。
+上の図は2つのモードを並べて比較しています。`Service`、Network Load Balancer、およびポート80のTCPリスナーは両方で同一です。変更されるのはロードバランサーのターゲットグループに登録される対象だけです。
 
-ターゲットグループモードがインスタンスの場合、トラフィックは各ノードに作成されたServiceのノードポート経由で流れます。このモードでは、`kube-proxy`がこのServiceを実行しているPodにトラフィックをルーティングします。ServiceのPodは、ロードバランサーからトラフィックを受信したノードとは異なるノードで実行されている可能性があります。ServiceA（緑）とServiceB（ピンク）は「インスタンスモード」で動作するように設定されています。
+**インスタンスモード**では、ターゲットグループはKubernetesが`Service`に割り当てたNodePort上のEC2ワーカーノードを登録します。したがって、接続はまずノードに到達し、そのノード上の`kube-proxy`がui Podに中継します。接続を受信したノードがui Podを実行していない場合、`kube-proxy`は実行しているノードに転送し、2つ目のネットワークホップが追加されます。
 
-一方、ターゲットグループモードがIPの場合、トラフィックはロードバランサーからServiceのPodに直接流れます。このモードでは、`kube-proxy`のネットワークホップをバイパスします。ServiceC（青）は「IPモード」で動作するように設定されています。
-
-前の図の数字は以下を表しています。
-
-1. ServiceがデプロイされているEKSクラスター
-2. Serviceを公開するELBインスタンス
-3. インスタンスまたはIPのいずれかに設定できるターゲットグループモードの設定
-4. Serviceが公開されているロードバランサーに設定されたリスナープロトコル
-5. Serviceの宛先を決定するために使用されるターゲットグループルール設定
+**IPモード**では、ターゲットグループはPod IPアドレスを登録するため、ロードバランサーはui Podに直接接続を開き、`kube-proxy`はデータパスに含まれません。これはAmazon VPC CNIがすべてのPodにファーストクラスでルーティング可能なVPC IPアドレスを付与するため機能します。
 
 NLBをIPターゲットモードで構成したい理由はいくつかあります：
 
 1. 受信接続のためのより効率的なネットワークパスを作成し、EC2ワーカーノード上の`kube-proxy`をバイパスします
-2. `externalTrafficPolicy`や様々な構成オプションのトレードオフなどの側面を考慮する必要がなくなります
+2. `externalTrafficPolicy`やその様々な構成オプションのトレードオフなどの側面を考慮する必要がなくなります
 3. アプリケーションがEC2ではなくFargateで実行されている場合
 
 ### NLBの再構成
@@ -59,8 +51,8 @@ Annotations:              service.beta.kubernetes.io/aws-load-balancer-nlb-targe
 以前と同じURLを使用してアプリケーションにアクセスできるはずですが、NLBは現在IPモードを使用してアプリケーションを公開しています。
 
 ```bash
-$ ALB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`].LoadBalancerArn' | jq -r '.[0]')
-$ TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --load-balancer-arn $ALB_ARN | jq -r '.TargetGroups[0].TargetGroupArn')
+$ NLB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`].LoadBalancerArn' | jq -r '.[0]')
+$ TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --load-balancer-arn $NLB_ARN | jq -r '.TargetGroups[0].TargetGroupArn')
 $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 {
     "TargetHealthDescriptions": [
@@ -93,8 +85,8 @@ $ kubectl wait --for=condition=Ready pod -n ui -l app.kubernetes.io/name=ui --ti
 ロードバランサーのターゲットを再度確認します：
 
 ```bash
-$ ALB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`].LoadBalancerArn' | jq -r '.[0]')
-$ TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --load-balancer-arn $ALB_ARN | jq -r '.TargetGroups[0].TargetGroupArn')
+$ NLB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`].LoadBalancerArn' | jq -r '.[0]')
+$ TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --load-balancer-arn $NLB_ARN | jq -r '.TargetGroups[0].TargetGroupArn')
 $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 {
     "TargetHealthDescriptions": [

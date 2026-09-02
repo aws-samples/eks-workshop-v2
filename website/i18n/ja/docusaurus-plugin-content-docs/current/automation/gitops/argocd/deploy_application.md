@@ -1,10 +1,10 @@
 ---
 title: "アプリケーションのデプロイ"
 sidebar_position: 30
-tmdTranslationSourceHash: 'a4388dc269aa186756e39de2af59f9fd'
+tmdTranslationSourceHash: 'd7f1bfea1499707ed7531420769f54bb'
 ---
 
-Argo CDをクラスターに正常に設定したので、アプリケーションをデプロイしましょう。GitOpsベースの配信アプローチと従来のデプロイ方法の違いを示すために、サンプルアプリケーションのUIコンポーネントを`kubectl apply -k`アプローチからArgo CD管理のデプロイに移行します。
+Amazon EKS Capability for Argo CDを有効化したので、アプリケーションをデプロイしましょう。GitOpsベースの配信アプローチと従来のデプロイ方法の違いを示すために、サンプルアプリケーションのUIコンポーネントを`kubectl apply -k`アプローチからArgo CD管理のデプロイに移行します。
 
 Argo CDアプリケーションは、環境内のデプロイされたアプリケーションインスタンスを表すCustom Resource Definition（CRD）です。アプリケーション名、Gitリポジトリの場所、Kubernetesマニフェストへのパスなどの重要な情報を定義します。アプリケーションリソースはまた、望ましい状態、ターゲットリビジョン、同期ポリシー、およびヘルスチェックポリシーも指定します。
 
@@ -53,11 +53,35 @@ $ git -C ~/environment/argocd commit -am "Adding the UI service"
 $ git -C ~/environment/argocd push
 ```
 
+Argo CDは**AppProjects**を使用して、アプリケーションがターゲットにできるGitリポジトリ、宛先クラスター、namespaceを制御します。すべてのアプリケーションはプロジェクトに属する必要があります。すべてのリポジトリと宛先へのアクセスを許可する`default`プロジェクトを作成しましょう：
+
+```bash
+$ kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: default
+  namespace: argocd
+spec:
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  destinations:
+  - namespace: '*'
+    server: '*'
+  sourceRepos:
+  - '*'
+EOF
+appproject.argoproj.io/default created
+```
+
 次に、Gitリポジトリを使用するように構成されたArgo CDアプリケーションを作成します：
 
 ```bash
+$ export CLUSTER_ARN=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME \
+  --query 'cluster.arn' --output text)
 $ argocd app create ui --repo $GITOPS_REPO_URL_ARGOCD \
-  --path ui --dest-server https://kubernetes.default.svc \
+  --path ui --dest-server $CLUSTER_ARN \
   --dest-namespace ui --sync-option CreateNamespace=true
 application 'ui' created
 ```
@@ -66,8 +90,8 @@ application 'ui' created
 
 ```bash
 $ argocd app list
-NAME         CLUSTER                         NAMESPACE  PROJECT  STATUS     HEALTH   SYNCPOLICY  CONDITIONS
-argocd/ui    https://kubernetes.default.svc  ui         default  OutOfSync  Missing  Manual      <none>
+NAME         CLUSTER                                               NAMESPACE  PROJECT  STATUS     HEALTH   SYNCPOLICY  CONDITIONS
+argocd/ui    arn:aws:eks:us-west-2:1234567890:cluster/eks-workshop  ui         default  OutOfSync  Missing  Manual      <none>
 ```
 
 このアプリケーションはArgo CD UIで確認できます：
@@ -79,12 +103,8 @@ argocd/ui    https://kubernetes.default.svc  ui         default  OutOfSync  Miss
 ```bash
 $ kubectl get applications.argoproj.io -n argocd
 NAME   SYNC STATUS   HEALTH STATUS
-apps   OutOfSync     Missing
+ui     OutOfSync     Missing
 ```
-
-Argo CD UIを開いて`apps`アプリケーションに移動すると、以下のように表示されます：
-
-![Argo CD UIでのアプリケーション](/docs/automation/gitops/argocd/argocd-ui-outofsync-apps.webp)
 
 Argo CDでは、「out of sync」（同期していない）は、Gitリポジトリで定義された望ましい状態がKubernetesクラスター内の実際の状態と一致していないことを示します。Argo CDは自動同期が可能ですが、今は手動でこのプロセスをトリガーします：
 
@@ -111,3 +131,4 @@ $ kubectl get pod -n ui
 NAME                 READY   STATUS   RESTARTS   AGE
 ui-6d5bb7b95-rjfxd   1/1     Running  0          62s
 ```
+

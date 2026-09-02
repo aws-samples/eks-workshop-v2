@@ -1,10 +1,10 @@
 ---
 title: "クラウドリソースのプロビジョニング"
 sidebar_position: 6
-tmdTranslationSourceHash: 14aa0a06a6577684447440694dfb8ddd
+tmdTranslationSourceHash: f2771c88d222cca11f785e07c6b7d54f
 ---
 
-このセクションでは、カートが使用しているインメモリデータベースをDynamoDBに置き換えます。WebApplicationのベーステンプレートを拡張してWebApplicationDynamoDB ResourceGraphDefinitionを構成することで実現します。
+このセクションでは、cartsが使用しているインメモリデータベースをDynamoDBに置き換えます。WebApplicationのベーステンプレートを基に構築するWebApplicationDynamoDB ResourceGraphDefinitionを構成することで実現します。
 
 まず、前のセクションで作成したkroインスタンスを削除しましょう：
 
@@ -117,6 +117,17 @@ $ aws dynamodb list-tables
 
 kroの組み合わせ可能なアプローチを使用して、DynamoDBテーブルとコンポーネントが正常に作成されました。
 
+:::info EKS Pod Identityは結果整合性を持ちます
+`WebApplicationDynamoDB` ResourceGraphDefinitionは、アプリケーションのDeploymentを`PodIdentityAssociation`が同期状態に達するまでゲートします（kroの`readyWhen`を介して）。これは、Pod Identityの認証情報がPodが最初に許可されたときにのみ注入されるためです。もし`carts` Podが`CrashLoopBackOff`状態で、DynamoDBの`AccessDenied`エラーが発生した場合、Podが起動したときに関連付けが完全に伝播していなかったことを意味します。単純にPodを再作成して、注入された認証情報を取得してください：
+
+```bash
+$ kubectl rollout restart deployment/carts -n carts
+$ kubectl rollout status deployment/carts -n carts --timeout=120s
+```
+
+自動化されたGitOpsツールを使用した大規模なこの結果整合性の管理については、[How to manage EKS Pod Identities at scale using Argo CD and AWS ACK](https://aws.amazon.com/blogs/containers/how-to-manage-eks-pod-identities-at-scale-using-argo-cd-and-aws-ack/)を参照してください。
+:::
+
 コンポーネントが新しいDynamoDBテーブルで正常に動作していることを確認するために、ブラウザを通じて操作することができます。テスト用にサンプルアプリケーションを公開するためのNLBが作成されています：
 
 ```bash
@@ -132,7 +143,7 @@ http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com
 ロードバランサーがプロビジョニングを完了したことを確認するには、次のコマンドを実行できます：
 
 ```bash timeout=610
-curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
+$ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
   -k $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 ```
 
@@ -152,4 +163,5 @@ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-time
 $ aws dynamodb scan --table-name "${EKS_CLUSTER_NAME}-carts-kro"
 ```
 
-おめでとうございます！ベースのWebApplicationテンプレートを拡張してDynamoDBストレージを追加することで、kroの組み合わせ可能性を実証することに成功しました。
+おめでとうございます！ベースのWebApplicationテンプレートを基に構築してDynamoDBストレージを追加することで、kroの組み合わせ可能性の実証に成功しました。
+
