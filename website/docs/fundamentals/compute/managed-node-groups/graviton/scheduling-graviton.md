@@ -32,7 +32,7 @@ Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists fo
 
 As anticipated, the application is running successfully on a non-tainted node. The associated pod is in a `Running` status and we can confirm that no custom tolerations have been configured. Note that Kubernetes automatically adds tolerations for `node.kubernetes.io/not-ready` and `node.kubernetes.io/unreachable` with `tolerationSeconds=300`, unless you or a controller set those tolerations explicitly. These automatically-added tolerations mean that Pods remain bound to Nodes for 5 minutes after one of these problems is detected.
 
-Let's update our `ui` deployment to bind its pods to our tainted managed node group. We have pre-configured our tainted managed node group with a label of `tainted=yes` that we can use with a `nodeSelector`. The following `Kustomize` patch describes the changes needed to our deployment configuration in order to enable this setup:
+Let's update our `ui` deployment to bind its pods to our tainted managed node group. Graviton-based nodes are identified by the `kubernetes.io/arch=arm64` label, which we can use with a `nodeSelector`. The following `Kustomize` patch describes the changes needed to our deployment configuration in order to enable this setup:
 
 ```kustomization
 modules/fundamentals/mng/graviton/nodeselector-wo-toleration/deployment.yaml
@@ -85,7 +85,7 @@ Events:
   Warning  FailedScheduling  19s   default-scheduler  0/4 nodes are available: 1 node(s) had untolerated taint {frontend: true}, 3 node(s) didn't match Pod's node affinity/selector. preemption: 0/4 nodes are available: 4 Preemption is not helpful for scheduling.
 ```
 
-Our changes are reflected in the new configuration of the `Pending` pod. We can see that we have pinned the pod to any node with the `tainted=yes` label but this introduced a new problem as our pod cannot be scheduled (`PodScheduled False`). A more useful explanation can be found under the `events`:
+Our changes are reflected in the new configuration of the `Pending` pod. We can see that we have pinned the pod to any node with the `kubernetes.io/arch=arm64` label but this introduced a new problem as our pod cannot be scheduled (`PodScheduled False`). A more useful explanation can be found under the `events`:
 
 ```text
 0/4 nodes are available: 1 node(s) had untolerated taint {frontend: true}, 3 node(s) didn't match Pod's node affinity/selector. preemption: 0/4 nodes are available: 4 Preemption is not helpful for scheduling.
