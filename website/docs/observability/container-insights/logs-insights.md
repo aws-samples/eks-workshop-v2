@@ -12,7 +12,7 @@ First open the CloudWatch Log Insights console:
 
 Near the top of the screen is the query editor. When you first open CloudWatch Logs Insights this box contains a default query that returns the 20 most recent log events.
 
-When you select a log group and run the query, CloudWatch Logs Insights automatically detects fields in the data in the log group and displays them in **Discovered fields** in the right pane. It also displays a bar graph of log events in this log group over time. This bar graph shows the distribution of events in the log group that matches your query and time range, not only the events displayed in the table. Select the log group for your EKS cluster that ends with `/performance`.
+When you select a log group and run the query, CloudWatch Logs Insights automatically detects fields in the data in the log group and can be displayed in **Discovered fields** section that is below the query. It also displays a bar graph of log events in this log group over time. This bar graph shows the distribution of events in the log group that matches your query and time range, not only the events displayed in the table. Select the log group for your EKS cluster that ends with `/performance`.
 
 In the query editor, replace the default query with the following query and choose **Run query.**
 
