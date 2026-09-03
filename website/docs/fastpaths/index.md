@@ -5,7 +5,7 @@ sidebar_position: 10
 
 # Learn with Amazon EKS Auto Mode
 
-Streamlined, role-based learning experiences that get you hands-on with Amazon EKS quickly. Unlike the comprehensive workshop that covers all EKS features, Auto Mode Paths focus on the most essential capabilities for specific roles like developers and operators.
+Streamlined, role-based learning experiences that get you hands-on with Amazon EKS quickly. Unlike the comprehensive workshop that covers all EKS features, Auto Mode Paths focus on the most essential labs for specific roles like developers and operators, and a path including labs for the managed EKS capabilities.
 
 ## Choose Your Journey
 
