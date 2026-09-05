@@ -18,7 +18,7 @@ We can use this screen to dive further into the cost allocation of our cluster. 
 - pod
 - labels
 
-The application we installed in the Introduction section created several of these components. These components also have. Next, we'll drill into the costs of this application by using these dimensions.
+The application we installed in the Introduction section created several of these components. Next, we'll drill into the costs of this application by using these dimensions.
 
 To do this click on the setting button next to <b>Aggregate by</b> at the top right.
 
