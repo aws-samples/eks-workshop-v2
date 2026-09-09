@@ -39,7 +39,11 @@ jobs:
         run: |
           export LAB_TIMES_ENABLED='true'
           yarn install
-          yarn workspace website build
+          # Build only the default (en) locale on PRs. Translations for newly
+          # added modules are produced post-merge by the auto-translate workflow
+          # (push to main), so a full multi-locale build here fails the broken
+          # links check on untranslated pages. The full build runs on publish.
+          yarn workspace website build --locale en
 
   build-lab:
     name: "Build lab"
