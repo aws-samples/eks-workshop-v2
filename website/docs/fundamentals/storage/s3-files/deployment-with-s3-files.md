@@ -168,7 +168,7 @@ $ kubectl exec --stdin $POD_1 -n ui -- bash -c 'curl -sS -o /s3files/placeholder
 Now we'll verify that the second UI Pod can access this newly created file, demonstrating the shared nature of our S3 Files storage:
 
 ```bash hook=sample-images
-$ POD_2=$(kubectl -n ui get pods -o jsonpath='{.items[1].metadata.name}')
+$ POD_2=$(kubectl -n ui get pods -l app.kubernetes.io/instance=ui -o jsonpath='{.items[1].metadata.name}')
 $ kubectl exec --stdin $POD_2 -n ui -- bash -c 'ls /s3files/'
 1ca35e86-4b4c-4124-b6b5-076ba4134d0d.jpg
 4f18544b-70a5-4352-8e19-0d070f46745d.jpg
