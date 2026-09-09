@@ -35,6 +35,13 @@ Statement:
       - !Sub arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/${Env}*
       - !Sub arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/eks-workshop*
       - !Sub arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/Karpenter*
+      - !Sub arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/DO-NOT-DELETE-S3-Files*
+  - Effect: Allow
+    Action:
+      - events:ListRules
+      - events:ListRuleNamesByTarget
+    Resource:
+      - !Sub arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/*
   - Effect: Allow
     Action:
       - vpc-lattice:List*
@@ -63,6 +70,22 @@ Statement:
       - elasticfilesystem:DescribeFileSystems
     Resource:
       - !Sub arn:aws:elasticfilesystem:${AWS::Region}:${AWS::AccountId}:file-system/*
+  - Effect: Allow
+    Action:
+      - s3files:GetFileSystem
+      - s3files:CreateFileSystem
+      - s3files:DeleteFileSystem
+      - s3files:DescribeFileSystems
+      - s3files:CreateMountTarget
+      - s3files:DeleteMountTarget
+      - s3files:GetMountTarget
+      - s3files:DescribeMountTargets
+      - s3files:DescribeMountTargetSecurityGroups
+      - s3files:TagResource
+      - s3files:UntagResource
+      - s3files:ListTagsForResource
+    Resource:
+      - !Sub arn:aws:s3files:${AWS::Region}:${AWS::AccountId}:file-system/*
   - Effect: Allow
     Action:
       - fsx:Describe*
