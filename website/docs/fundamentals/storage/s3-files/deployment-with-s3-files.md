@@ -8,6 +8,9 @@ Now that we understand the S3 Files storage class for Kubernetes and why S3 File
 An S3 file system has been provisioned for us, linked to an S3 bucket with versioning enabled. The file system includes mount targets and the required security group that includes an inbound rule allowing NFS traffic on port 2049. Let's get its ID which we'll need for the static `PersistentVolume`:
 
 ```bash
+$ export S3_FILES_ID=$(aws s3files list-file-systems \
+    --query "fileSystems[?starts_with(bucket, 'arn:aws:s3:::${EKS_CLUSTER_NAME}-s3-files-')].fileSystemId | [0]" \
+    --output text)
 $ echo $S3_FILES_ID
 fs-0123456789abcdef0
 ```
@@ -144,6 +147,8 @@ d77f9ae6-e9a8-4a3e-86bd-b72af75cbc49.jpg
 Because S3 Files automatically synchronizes data between the file system and the S3 bucket, we can verify that the images are also present in the underlying S3 bucket:
 
 ```bash
+$ export S3_FILES_BUCKET_NAME=$(aws s3api list-buckets \
+    --query "Buckets[?starts_with(Name, '${EKS_CLUSTER_NAME}-s3-files-')].Name | [0]" --output text)
 $ aws s3 ls $S3_FILES_BUCKET_NAME
                            PRE /
 2025-07-09 14:43:36     102950 1ca35e86-4b4c-4124-b6b5-076ba4134d0d.jpg
