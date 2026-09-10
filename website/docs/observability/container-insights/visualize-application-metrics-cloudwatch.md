@@ -140,11 +140,11 @@ Choose the dashboard **Order-Service-Metrics** to review the panels within the d
 
 ![Application Metrics](/docs/observability/container-insights/dashboard-metrics.webp)
 
-We can see how the dashboard was configured to query CloudWatch by hovering over the title of the "Orders by Product" panel and clicking the "Edit" button:
+We can see how the dashboard was configured to query CloudWatch by hovering over the title of the "Orders by Product" panel and open the kebab menu (3 vertical dots), then select edit to have the following view:
 
 ![Edit Panel](/docs/observability/container-insights/dashboard-edit-metrics.webp)
 
-The query used to create this panel is displayed at the bottom of the page:
+The query used to create this panel is as follows:
 
 ```text
 SELECT COUNT(watch_orders_total) FROM "ContainerInsights/Prometheus" WHERE productId != '*' GROUP BY productId
