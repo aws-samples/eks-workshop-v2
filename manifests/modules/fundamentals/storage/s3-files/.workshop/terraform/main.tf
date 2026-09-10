@@ -3,7 +3,7 @@
 # AmazonS3FilesCSIDriverPolicy and AmazonS3FilesClientFullAccess managed policies.
 module "s3_files_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.60.0"
+  version = "6.8.0"
 
   role_name_prefix   = "${var.addon_context.eks_cluster_id}-s3files-csi-"
   policy_name_prefix = "${var.addon_context.eks_cluster_id}-s3files-csi-"
