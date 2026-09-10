@@ -1,4 +1,12 @@
-data "aws_partition" "current" {}
+# The EKS Pod Identity Agent is a prerequisite for granting the CloudWatch agent
+# permissions via EKS Pod Identity, which the learner sets up in the lab. OVERWRITE lets
+# Terraform adopt the add-on if it is already present on the cluster.
+resource "aws_eks_addon" "pod_identity" {
+  cluster_name                = var.addon_context.eks_cluster_id
+  addon_name                  = "eks-pod-identity-agent"
+  resolve_conflicts_on_create = "OVERWRITE"
+  preserve                    = false
+}
 
 module "ebs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
@@ -55,75 +63,8 @@ resource "time_sleep" "blueprints_addons_sleep" {
   create_duration = "15s"
 }
 
-module "cert_manager" {
-  source  = "aws-ia/eks-blueprints-addon/aws"
-  version = "1.1.1"
-
-  depends_on = [
-    time_sleep.blueprints_addons_sleep
-  ]
-
-  name             = "cert-manager"
-  namespace        = "cert-manager"
-  create_namespace = true
-  wait             = true
-  chart            = "cert-manager"
-  chart_version    = "v1.15.1"
-  repository       = "https://charts.jetstack.io"
-
-  set = [
-    {
-      name  = "crds.enabled"
-      value = true
-    }
-  ]
-}
-
-resource "kubernetes_namespace" "opentelemetry_operator" {
-  metadata {
-    name = "opentelemetry-operator-system"
-  }
-}
-
-module "opentelemetry_operator" {
-  source  = "aws-ia/eks-blueprints-addon/aws"
-  version = "1.1.1"
-
-  depends_on = [
-    module.cert_manager
-  ]
-
-  name             = "opentelemetry"
-  namespace        = kubernetes_namespace.opentelemetry_operator.metadata[0].name
-  create_namespace = false
-  wait             = true
-  chart            = "opentelemetry-operator"
-  chart_version    = var.operator_chart_version
-  repository       = "https://open-telemetry.github.io/opentelemetry-helm-charts"
-
-  set = [{
-    name  = "manager.collectorImage.repository"
-    value = "otel/opentelemetry-collector-k8s"
-  }]
-}
-
 resource "aws_prometheus_workspace" "this" {
   alias = var.addon_context.eks_cluster_id
-
-  tags = var.tags
-}
-
-module "iam_assumable_role_adot" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version = "5.60.0"
-
-  create_role  = true
-  role_name    = "${var.addon_context.eks_cluster_id}-adot-collector"
-  provider_url = var.addon_context.eks_oidc_issuer_url
-  role_policy_arns = [
-    "arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonPrometheusRemoteWriteAccess"
-  ]
-  oidc_fully_qualified_subjects = ["system:serviceaccount:other:adot-collector"]
 
   tags = var.tags
 }
@@ -490,6 +431,10 @@ ingress:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/inbound-cidrs: ${var.inbound_cidrs}
+    # Grafana redirects "/" to the login page (HTTP 302), which fails the ALB's
+    # default health check (expects 200) and leaves the target unhealthy. Point the
+    # health check at Grafana's /api/health endpoint, which returns 200.
+    alb.ingress.kubernetes.io/healthcheck-path: /api/health
   ingressClassName: alb
 
 datasources:
