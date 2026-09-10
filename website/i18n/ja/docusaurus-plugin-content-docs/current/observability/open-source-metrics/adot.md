@@ -1,7 +1,7 @@
 ---
-title: "AWS Distro for OpenTelemetry を使用したメトリクスのスクレイピング"
+title: "CloudWatch エージェントを使用したメトリクスの収集"
 sidebar_position: 10
-tmdTranslationSourceHash: 6aa970c5e4f2721d7454114bf1c8dcc1
+tmdTranslationSourceHash: 265d242dd1b3bd076c86f7a39c32c366
 ---
 
 このラボでは、すでに作成されている Amazon Managed Service for Prometheus ワークスペースにメトリクスを保存します。コンソールで確認することができます：
@@ -10,79 +10,82 @@ tmdTranslationSourceHash: 6aa970c5e4f2721d7454114bf1c8dcc1
 
 ワークスペースを表示するには、左側のコントロールパネルの **All Workspaces** タブをクリックします。**eks-workshop** で始まるワークスペースを選択すると、ルール管理やアラートマネージャーなどのワークスペース内のさまざまなタブを表示できます。
 
-Amazon EKS クラスターからメトリクスを収集するために、`OpenTelemetryCollector` カスタムリソースをデプロイします。EKS クラスターで実行されている ADOT オペレーターは、このリソースの存在や変更を検出し、以下のアクションを実行します：
+Amazon EKS クラスターからメトリクスを収集するために、[Amazon CloudWatch Observability EKS アドオン](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Observability-EKS-addon.html)を使用します。このアドオンは CloudWatch エージェントをデプロイします。エージェントは埋め込まれた OpenTelemetry コレクターを実行し、そのコレクターには [Prometheus レシーバー](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.md)と [Prometheus リモートライトエクスポーター](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusremotewriteexporter)が含まれているため、CloudWatch の代わりに Amazon Managed Service for Prometheus にアドオンをポイントすることができます。
 
-- Kubernetes API サーバーへの作成、更新、削除リクエストに必要なすべての接続が利用可能であることを確認します。
-- `OpenTelemetryCollector` リソース設定でユーザーが指定した方法で ADOT コレクターインスタンスをデプロイします。
+:::info
+ここでの CloudWatch エージェントには特別なことはありません。Prometheus レシーバー、`sigv4auth` エクステンション、Prometheus リモートライトエクスポーターで構成された OpenTelemetry 互換のコレクターであれば、Amazon Managed Service for Prometheus にメトリクスを送信できます。アドオンを使用するのは、コレクターやオペレーターを自分でデプロイして保守することなく、コレクターを実行するマネージドでサポートされた方法であるためです。
+:::
 
-まず、ADOT コレクターに必要な権限を与えるリソースを作成しましょう。コレクターが Kubernetes API にアクセスするための権限を与える ClusterRole から始めます：
+### CloudWatch エージェントに権限を付与する
 
-::yaml{file="manifests/modules/observability/oss-metrics/adot/clusterrole.yaml" paths="rules.0,rules.1,rules.2"}
+CloudWatch エージェントは、Amazon Managed Service for Prometheus ワークスペースにメトリクスをリモートライトするために IAM 権限が必要です。[Amazon EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html) を使用して権限を付与します。これにより、Kubernetes サービスアカウントが静的な認証情報なしで IAM ロールを引き受けることができます。Pod Identity の前提条件である [EKS Pod Identity Agent](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html) アドオンは、`prepare-environment` によってすでにクラスターにインストールされています。
 
-1. このコア API グループ `""` は、メトリクス収集のために `resources` の下にリストされているコア Kubernetes リソースに `verbs` の下で指定されたアクションを使用してアクセスする権限をロールに与えます
-2. この拡張 API グループ `extensions` は、ネットワークトラフィックメトリクス収集のために `verbs` の下で指定されたアクションを使用してイングレスリソースにアクセスする権限をロールに与えます
-3. `nonResourceURLs` は、クラスターレベルの運用メトリクス収集のために `verbs` の下で指定されたアクションを使用して、Kubernetes API サーバー上の `/metrics` エンドポイントにアクセスする権限をロールに与えます
-
-マネージド IAM ポリシー `AmazonPrometheusRemoteWriteAccess` を使用して、IAM Roles for Service Accounts を通じてコレクターに必要な IAM 権限を提供します：
+CloudWatch エージェントが引き受けることができる IAM ロールを作成します。信頼ポリシーは EKS Pod Identity サービスプリンシパルを許可し、AMP インジェスション用の AWS マネージド `AmazonPrometheusRemoteWriteAccess` ポリシーと、エージェントのベースライン動作用の `CloudWatchAgentServerPolicy` をアタッチします：
 
 ```bash
-$ aws iam list-attached-role-policies \
-  --role-name $EKS_CLUSTER_NAME-adot-collector | jq .
-{
-  "AttachedPolicies": [
-    {
-      "PolicyName": "AmazonPrometheusRemoteWriteAccess",
-      "PolicyArn": "arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess"
-    }
-  ]
-}
+$ aws iam create-role \
+  --role-name $EKS_CLUSTER_NAME-cloudwatch-agent \
+  --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"pods.eks.amazonaws.com"},"Action":["sts:AssumeRole","sts:TagSession"]}]}'
+$ aws iam attach-role-policy \
+  --role-name $EKS_CLUSTER_NAME-cloudwatch-agent \
+  --policy-arn arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess
+$ aws iam attach-role-policy \
+  --role-name $EKS_CLUSTER_NAME-cloudwatch-agent \
+  --policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
 ```
 
-この IAM ロールは、コレクターの ServiceAccount に追加されます：
+アドオンが `amazon-cloudwatch` 名前空間に作成する `cloudwatch-agent` サービスアカウントにロールを関連付けます：
+
+```bash
+$ aws eks create-pod-identity-association \
+  --cluster-name $EKS_CLUSTER_NAME \
+  --namespace amazon-cloudwatch \
+  --service-account cloudwatch-agent \
+  --role-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/$EKS_CLUSTER_NAME-cloudwatch-agent
+```
+
+### AMP に書き込むようアドオンを設定する
+
+アドオンに、クラスターから Prometheus メトリクスをスクレイプしてワークスペースにリモートライトする OpenTelemetry パイプラインを提供します：
 
 ```file
-manifests/modules/observability/oss-metrics/adot/serviceaccount.yaml
+manifests/modules/observability/oss-metrics/cwagent-amp/cloudwatch-agent-amp.yaml
 ```
 
-リソースを作成します：
+この設定にはいくつか重要な部分があります。`prometheusremotewrite/amp` エクスポーターは、AMP ワークスペースのリモートライトエンドポイントにメトリクスを送信し、`sigv4auth` エクステンションは、エージェントが Pod Identity を通じて取得する認証情報でこれらのリクエストに署名します。Prometheus の `scrape_configs` は、アノテーション付きの Pod（`kubernetes-pods`）からアプリケーションメトリクスを収集し、各ノードの `kubelet` と `cadvisor` エンドポイントからクラスターメトリクスを収集します。
+
+パイプラインは、グローバルエージェント設定ではなく、`cloudwatch-agent-cluster-scraper` エージェント（単一レプリカの Deployment）に接続されています。アドオンは CloudWatch エージェントを各ノード上の DaemonSet としても実行します。リモートライトパイプラインをグローバルに接続すると、すべてのノードが同じシリーズをスクレイプして書き込み、AMP は重複したサンプルを拒否します。単一の cluster-scraper にスコープを設定することで、各シリーズが正確に一度だけ書き込まれることが保証されます。
+
+この設定で `amazon-cloudwatch-observability` アドオンをインストールします。アドオンに渡す前に、`envsubst` を使用してワークスペースのエンドポイントとリージョンをファイルに置換します：
 
 ```bash hook=deploy-adot
-$ kubectl kustomize ~/environment/eks-workshop/modules/observability/oss-metrics/adot \
-  | envsubst | kubectl apply -f-
-$ kubectl rollout status -n other deployment/adot-collector --timeout=120s
+$ envsubst '$AMP_ENDPOINT $AWS_REGION' \
+  < ~/environment/eks-workshop/modules/observability/oss-metrics/cwagent-amp/cloudwatch-agent-amp.yaml \
+  > /tmp/cloudwatch-agent-amp.yaml
+$ aws eks create-addon \
+  --cluster-name $EKS_CLUSTER_NAME \
+  --addon-name amazon-cloudwatch-observability \
+  --configuration-values file:///tmp/cloudwatch-agent-amp.yaml
+$ aws eks wait addon-active \
+  --cluster-name $EKS_CLUSTER_NAME \
+  --addon-name amazon-cloudwatch-observability
 ```
 
-コレクターの仕様は長すぎて全てを表示できませんが、以下のように確認できます：
+アドオンは CloudWatch エージェントを `amazon-cloudwatch` 名前空間にデプロイします。Pod が実行中であることを確認します：
 
 ```bash
-$ kubectl -n other get opentelemetrycollector adot -o yaml
+$ kubectl get pods -n amazon-cloudwatch
+NAME                                                          READY   STATUS    RESTARTS   AGE
+amazon-cloudwatch-observability-controller-manager-7c9b8f7d   1/1     Running   0          80s
+cloudwatch-agent-8xk2p                                        1/1     Running   0          72s
+cloudwatch-agent-df9wz                                        1/1     Running   0          72s
+cloudwatch-agent-cluster-scraper-6dfdc8f88-458kl              1/1     Running   0          72s
+fluent-bit-2s7zn                                              1/1     Running   0          72s
+fluent-bit-krl6t                                              1/1     Running   0          72s
+kube-state-metrics-6cf6f8b5c7-h8m2p                           1/1     Running   0          72s
+node-exporter-7k2ml                                           1/1     Running   0          72s
+node-exporter-mfh2d                                           1/1     Running   0          72s
 ```
 
-より理解しやすくするために、このセクションを分解してみましょう。これが OpenTelemetry コレクター設定です：
+アドオンが管理するコンポーネントの組み合わせに注目してください：`cloudwatch-agent` DaemonSet、AMP パイプラインを実行する単一の `cloudwatch-agent-cluster-scraper` Deployment、`fluent-bit` DaemonSet、クラスターステートとノードレベルのメトリクスを公開する `kube-state-metrics` と `node-exporter` ワークロード — すべてマネージドアドオンとしてパッケージ化およびサポートされるオープンソースプロジェクトです。
 
-```bash
-$ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.config}' | jq
-```
-
-これは以下の構造を持つ OpenTelemetry パイプラインを設定しています：
-
-- レシーバー
-  - [Prometheus レシーバー](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.md) - Prometheus エンドポイントを公開するターゲットからメトリクスをスクレイプするように設計されています
-- プロセッサー
-  - このパイプラインには含まれていません
-- エクスポーター
-  - [Prometheus リモートライトエクスポーター](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusremotewriteexporter) - AMP のような Prometheus リモートライトエンドポイントにメトリクスを送信します
-
-このコレクターは、1つのコレクターエージェントを実行する Deployment として構成されています：
-
-```bash
-$ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.mode}{"\n"}'
-```
-
-実行中の ADOT コレクター Pod を調査することで、これを確認できます：
-
-```bash
-$ kubectl get pods -n other
-NAME                              READY   STATUS    RESTARTS   AGE
-adot-collector-6f6b8867f6-lpjb7   1/1     Running   2          11d
-```
