@@ -1,7 +1,7 @@
 ---
 title: "コントローラーのデプロイ"
 sidebar_position: 10
-tmdTranslationSourceHash: 91a3b9cd6266ae94a91ade2df0c27182
+tmdTranslationSourceHash: 082f2c2732a34920563a84d6e8dd9b88
 ---
 
 クラスターを作成してAWS Gateway API Controllerをデプロイするには、以下の手順に従ってください。
@@ -32,10 +32,10 @@ $ aws ec2 authorize-security-group-ingress --group-id $CLUSTER_SG --ip-permissio
 }
 ```
 
-このステップでは、Kubernetes Gateway API CRDとそのAPIの実装を提供するVPC Latticeコントローラーをインストールします：
+このステップでは、Kubernetes Gateway API CRDとそのAPIの実装を提供するVPC Latticeコントローラーをインストールします。コントローラーは起動時に`TLSRoute` CRDをチェックするため、experimental channelが必要です（standard channelには含まれていません）：
 
 ```bash wait=30
-$ kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/standard-install.yaml
+$ kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/experimental-install.yaml
 $ aws ecr-public get-login-password --region us-east-1 \
   | helm registry login --username AWS --password-stdin public.ecr.aws
 $ helm install gateway-api-controller \
