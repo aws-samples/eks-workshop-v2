@@ -7,7 +7,7 @@ Let's head over to the dashboard section and visualize the EKS cluster metrics c
 
 ![Grafana dashboard](/docs/observability/open-source-metrics/dashboard.webp)
 
-Click the dashboard **Kubernetes Cluster Monitoring** and let's review a panel within the dashboard.
+Click the dashboard **Kubernetes cluster monitoring (via Prometheus)** and let's review a panel within the dashboard.
 
 The Total Usage panel shows the overall cluster usage of CPU, memory and filesystem.
 

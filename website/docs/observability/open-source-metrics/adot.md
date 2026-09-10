@@ -74,12 +74,16 @@ The add-on deploys the CloudWatch agent into the `amazon-cloudwatch` namespace. 
 
 ```bash
 $ kubectl get pods -n amazon-cloudwatch
-NAME                                                READY   STATUS    RESTARTS   AGE
-cloudwatch-agent-8xk2p                              1/1     Running   0          72s
-cloudwatch-agent-df9wz                              1/1     Running   0          72s
-cloudwatch-agent-cluster-scraper-6dfdc8f88-458kl    1/1     Running   0          72s
-fluent-bit-2s7zn                                    1/1     Running   0          72s
-fluent-bit-krl6t                                    1/1     Running   0          72s
+NAME                                                          READY   STATUS    RESTARTS   AGE
+amazon-cloudwatch-observability-controller-manager-7c9b8f7d   1/1     Running   0          80s
+cloudwatch-agent-8xk2p                                        1/1     Running   0          72s
+cloudwatch-agent-df9wz                                        1/1     Running   0          72s
+cloudwatch-agent-cluster-scraper-6dfdc8f88-458kl              1/1     Running   0          72s
+fluent-bit-2s7zn                                              1/1     Running   0          72s
+fluent-bit-krl6t                                              1/1     Running   0          72s
+kube-state-metrics-6cf6f8b5c7-h8m2p                           1/1     Running   0          72s
+node-exporter-7k2ml                                           1/1     Running   0          72s
+node-exporter-mfh2d                                           1/1     Running   0          72s
 ```
 
-Notice the mix of components the add-on manages for you: the `cloudwatch-agent` DaemonSet, the single `cloudwatch-agent-cluster-scraper` Deployment that runs our AMP pipeline, and the `fluent-bit` DaemonSet, all open source projects packaged and supported as a managed add-on.
+Notice the mix of components the add-on manages for you: the `cloudwatch-agent` DaemonSet, the single `cloudwatch-agent-cluster-scraper` Deployment that runs our AMP pipeline, the `fluent-bit` DaemonSet, and the `kube-state-metrics` and `node-exporter` workloads that expose cluster-state and node-level metrics — all open source projects packaged and supported as a managed add-on.
