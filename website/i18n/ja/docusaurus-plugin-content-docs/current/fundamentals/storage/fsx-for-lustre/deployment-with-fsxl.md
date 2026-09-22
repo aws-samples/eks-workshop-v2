@@ -1,18 +1,19 @@
 ---
-title: Dynamic provisioning using FSx for Lustre
+title: FSx for Lustre を使用した動的プロビジョニング
 sidebar_position: 30
+tmdTranslationSourceHash: 028c0dd6ca3cf533e96c296b1760d7bd
 ---
 
-Now that we understand the FSx for Lustre storage class for Kubernetes, let's modify the UI component to mount the FSx for Lustre volume.
+Kubernetes 用の FSx for Lustre ストレージクラスについて理解したので、UI コンポーネントを変更して FSx for Lustre ボリュームをマウントしましょう。
 
-We'll update the UI component to reference the FSx for Lustre PVC:
+FSx for Lustre PVC を参照するように UI コンポーネントを更新します:
 
 ```kustomization
 modules/fundamentals/storage/fsxl/deployment/deployment.yaml
 Deployment/ui
 ```
 
-Apply these changes with the following command:
+以下のコマンドでこれらの変更を適用します:
 
 ```bash wait=30
 $ kubectl apply -k ~/environment/eks-workshop/modules/fundamentals/storage/fsxl/deployment
@@ -24,7 +25,7 @@ deployment.apps/ui configured
 $ kubectl rollout status --timeout=130s deployment/ui -n ui
 ```
 
-Let's examine the `volumeMounts` in the deployment. Notice that our new volume named `fsxlvolume` is mounted at `/fsxl`:
+Deployment の `volumeMounts` を確認しましょう。`fsxlvolume` という名前の新しいボリュームが `/fsxl` にマウントされていることに注目してください:
 
 ```bash
 $ kubectl get deployment -n ui \
@@ -35,7 +36,7 @@ $ kubectl get deployment -n ui \
   name: tmp-volume
 ```
 
-A PersistentVolume (PV) has been statically provisioned and bound to our PersistentVolumeClaim (PVC):
+PersistentVolume (PV) が静的にプロビジョニングされ、PersistentVolumeClaim (PVC) にバインドされています:
 
 ```bash
 $ kubectl get pv
@@ -43,7 +44,7 @@ NAME      CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM            S
 fsxl-pv   1200Gi     RWX            Retain           Bound    ui/fsxl-claim    fsx-lustre-sc   5m
 ```
 
-Let's examine the details of our PersistentVolumeClaim (PVC):
+PersistentVolumeClaim (PVC) の詳細を確認しましょう:
 
 ```bash
 $ kubectl describe pvc -n ui fsxl-claim
@@ -58,18 +59,19 @@ Finalizers:    [kubernetes.io/pvc-protection]
 Capacity:      1200Gi
 Access Modes:  RWX
 VolumeMode:    Filesystem
-Used By:       <none>
+Used By:       ui-5d4687cf64-phs2w
+               ui-5d4687cf64-rc29s
 Events:        <none>
 ```
 
-At this point, the FSx for Lustre file system is successfully mounted but currently empty:
+この時点で、FSx for Lustre ファイルシステムは正常にマウントされていますが、現在は空です:
 
 ```bash
 $ POD_1=$(kubectl -n ui get pods -l app.kubernetes.io/instance=ui -o jsonpath='{.items[0].metadata.name}')
 $ kubectl exec --stdin $POD_1 -n ui -- bash -c 'ls /fsxl/'
 ```
 
-Let's use a [Kubernetes Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/) to populate the FSx for Lustre volume with images:
+[Kubernetes Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/) を使用して、FSx for Lustre ボリュームに画像を追加しましょう:
 
 ```bash
 $ export PVC_NAME="fsxl-claim"
@@ -78,7 +80,7 @@ $ kubectl wait --for=condition=complete -n ui \
   job/populate-images --timeout=300s
 ```
 
-Now let's demonstrate the shared storage functionality by listing the current files in `/fsxl` through one of the UI component Pods:
+それでは、UI コンポーネントの Pod の 1 つを通じて `/fsxl` 内の現在のファイルを一覧表示することで、共有ストレージ機能を実証しましょう:
 
 ```bash
 $ POD_1=$(kubectl -n ui get pods -l app.kubernetes.io/instance=ui -o jsonpath='{.items[0].metadata.name}')
@@ -97,14 +99,14 @@ d4edfedb-dbe9-4dd9-aae8-009489394955.jpg
 d77f9ae6-e9a8-4a3e-86bd-b72af75cbc49.jpg
 ```
 
-To further demonstrate the shared storage capabilities, let's create a new image called `placeholder.jpg` and add it to the FSx for Lustre volume through the first Pod:
+共有ストレージ機能をさらに実証するために、`placeholder.jpg` という名前の新しい画像を作成し、最初の Pod を通じて FSx for Lustre ボリュームに追加しましょう:
 
 ```bash
 $ POD_1=$(kubectl -n ui get pods -l app.kubernetes.io/instance=ui -o jsonpath='{.items[0].metadata.name}')
 $ kubectl exec --stdin $POD_1 -n ui -- bash -c 'curl -sS -o /fsxl/placeholder.jpg https://placehold.co/600x400/jpg?text=EKS+Workshop\\nPlaceholder'
 ```
 
-Now we'll verify that the second UI Pod can access this newly created file, demonstrating the shared nature of our FSx for Lustre storage:
+次に、2 番目の UI Pod が新しく作成されたファイルにアクセスできることを確認し、FSx for Lustre ストレージの共有性を実証しましょう:
 
 ```bash
 $ POD_2=$(kubectl -n ui get pods -o jsonpath='{.items[1].metadata.name}')
@@ -124,9 +126,9 @@ d77f9ae6-e9a8-4a3e-86bd-b72af75cbc49.jpg
 placeholder.jpg      <----------------
 ```
 
-As you can see, even though we created the file through the first Pod, the second Pod has immediate access to it because they're both accessing the same shared FSx for Lustre file system.
+ご覧のように、最初の Pod を通じてファイルを作成したにもかかわらず、2 番目の Pod はすぐにそれにアクセスできます。これは、両方が同じ共有 FSx for Lustre ファイルシステムにアクセスしているためです。
 
-Finally, let's confirm that the image is accessible through the UI service:
+最後に、UI サービスを通じて画像にアクセスできることを確認しましょう:
 
 ```bash hook=placeholder
 $ LB_HOSTNAME=$(kubectl -n ui get service ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}')
@@ -134,10 +136,11 @@ $ echo "http://$LB_HOSTNAME/assets/img/products/placeholder.jpg"
 http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/assets/img/products/placeholder.jpg
 ```
 
-Visit the URL in your browser:
+ブラウザで URL にアクセスしてください:
 
 <Browser url="http://k8s-ui-uinlb-647e781087-6717c5049aa96b...">
 <img src={require('@site/static/docs/fundamentals/storage/fsx-for-lustre/placeholder.jpg').default}/>
 </Browser>
 
-We've successfully demonstrated how Amazon FSx for Lustre provides high-performance shared parallel storage for workloads running on Amazon EKS. This solution allows multiple pods to read from and write to the same storage volume simultaneously, making it ideal for machine learning training data, HPC workloads, media processing, and other use cases requiring high-throughput parallel file system access.
+Amazon FSx for Lustre が Amazon EKS 上で実行されるワークロードに高性能な共有並列ストレージを提供する方法を実証することに成功しました。このソリューションにより、複数の Pod が同じストレージボリュームに同時に読み書きできるため、機械学習のトレーニングデータ、HPC ワークロード、メディア処理、および高スループットの並列ファイルシステムアクセスを必要とするその他のユースケースに最適です。
+

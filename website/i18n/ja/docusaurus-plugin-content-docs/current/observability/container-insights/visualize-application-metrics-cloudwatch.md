@@ -1,17 +1,13 @@
 ---
 title: "アプリケーションメトリクス"
 sidebar_position: 50
-tmdTranslationSourceHash: 3f49f73bcc8bf808480d0dc139810348
+tmdTranslationSourceHash: 1212a2b344ba35871f0590287ae1bb26
 ---
 
-import dashboard from '@site/static/docs/observability/container-insights/cw-dashboard.webp';
-
-このセクションでは、ワークロードによって公開されているメトリクスの洞察を得て、Amazon CloudWatch Insights Prometheusを使用してこれらのメトリクスを可視化する方法を見ていきます。これらのメトリクスの例としては以下のようなものがあります：
+このセクションでは、ワークロードによって公開されているメトリクスの洞察を得て、Amazon CloudWatchを使用してこれらのメトリクスを可視化する方法を見ていきます。これらのメトリクスの例としては以下のようなものがあります：
 
 - Javaヒープメトリクスやデータベース接続プールのステータスなどのシステムメトリクス
 - ビジネスKPIに関連するアプリケーションメトリクス
-
-AWS Distro for OpenTelemetryを使用してアプリケーションメトリクスを取り込み、Amazon CloudWatchを使用してメトリクスを可視化する方法を見てみましょう。
 
 このワークショップの各コンポーネントは、特定のプログラミング言語やフレームワークに関連するライブラリを使用してPrometheusメトリクスを提供するように計装されています。ordersサービスからのこれらのメトリクスの例を次のように見ることができます：
 
@@ -28,71 +24,57 @@ jdbc_connections_idle{name="writer",} 10.0
 watch_orders_total{productId="510a0d7e-8e83-4193-b483-e27e09ddc34d",} 2.0
 watch_orders_total{productId="808a2de1-1aaa-4c25-a9b9-6612e8f29a38",} 1.0
 watch_orders_total{productId="*",} 3.0
-watch_orders_total{productId="6d62d909-f957-430e-8689-b5129c0bb75e",} 1.0
 ```
 
-このコマンドの出力は詳細ですが、このラボのためにwatch_orders_totalメトリクスに焦点を当てましょう：
+このコマンドの出力は詳細ですが、このラボのために`watch_orders_total`メトリクスに焦点を当てましょう：
 
 - `watch_orders_total` - アプリケーションメトリクス - 小売店を通じて何件の注文が行われたか
 
-同様のリクエストを他のコンポーネント、例えばcheckoutサービスに実行できます：
+## CloudWatchエージェントによるアプリケーションメトリクスのスクレイピング
+
+前のセクションでは、Amazon CloudWatch Observabilityアドオンがインフラストラクチャメトリクスを収集するためにCloudWatchエージェントをデプロイしました。同じエージェントは[OpenTelemetry](https://opentelemetry.io/)上に構築されており、アプリケーションによって公開されたPrometheusエンドポイントをスクレイピングし、[Embedded Metric Format (EMF)](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Specification.html)を使用してAmazon CloudWatchに公開することもできます。
+
+別のコレクターをデプロイする代わりに、アプリケーションPodをスクレイピングする追加のOpenTelemetryパイプラインでアドオンの構成を拡張します。アドオンは`cloudwatch-agent-cluster-scraper`という名前の専用の単一レプリカDeploymentでクラスター全体のスクレイピングを実行します（ノードごとの`cloudwatch-agent` DaemonSetとは別です）。そのため、メトリクスは重複なく一度だけ収集されます。
+
+以下の構成はCloudWatchエージェントにPrometheusパイプラインを追加します。この構成は`~/environment/eks-workshop/modules/observability/container-insights/cwagent-prometheus/cloudwatch-agent-prometheus.yaml`にあります：
+
+::yaml{file="manifests/modules/observability/container-insights/cwagent-prometheus/cloudwatch-agent-prometheus.yaml"}
+
+この構成が何をしているかを説明します：
+
+- `prometheus/appmetrics` [Prometheusレシーバー](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.md)は、`orders`名前空間内で`prometheus.io/scrape`アノテーションを持つPodを発見し、それらのメトリクスエンドポイントをスクレイピングします。
+- `awsemf/appmetrics` [EMFエクスポーター](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/awsemfexporter/README.md)は、スクレイピングされたメトリクスをEmbedded Metric Formatに変換し、CloudWatchに送信します。`metric_declarations`セクションは`watch_orders_total`メトリクスを選択し、`pod`と`productId`のディメンションを使用して`ContainerInsights/Prometheus`名前空間に公開します。
+- `metrics/appmetrics`パイプラインは、レシーバー、プロセッサー、エクスポーターを結びつけます。`/appmetrics`サフィックスは、このパイプラインをアドオンが自動的に管理するパイプラインとは別に保ちます。
+
+:::tip
+`^watch_orders_total$$`の`$$`は意図的なものです。CloudWatchエージェントは構成内の環境変数を展開するため、リテラルの`$`（Prometheusの正規表現の終端アンカー）を保持するには`$$`と記述する必要があります。
+:::
+
+アドオンを更新して構成を適用し、アクティブになるまで待ちます：
 
 ```bash
-$ kubectl -n checkout exec deployment/checkout -- curl http://localhost:8080/metrics
-[...]
-# HELP nodejs_heap_size_total_bytes Process heap size from Node.js in bytes.
-# TYPE nodejs_heap_size_total_bytes gauge
-nodejs_heap_size_total_bytes 48668672
-[...]
+$ aws eks update-addon \
+  --cluster-name $EKS_CLUSTER_NAME \
+  --addon-name amazon-cloudwatch-observability \
+  --configuration-values file://$HOME/environment/eks-workshop/modules/observability/container-insights/cwagent-prometheus/cloudwatch-agent-prometheus.yaml \
+  --resolve-conflicts OVERWRITE
+$ aws eks wait addon-active \
+  --cluster-name $EKS_CLUSTER_NAME \
+  --addon-name amazon-cloudwatch-observability
 ```
 
-すでにデプロイしたコレクターはDaemonSetであり、すべてのノードで実行されていることを思い出してください。クラスター内のPodからメトリクスをスクレイピングする場合、これは重複したメトリクスが発生するため望ましくありません。今回は、単一のレプリカを持つDeploymentとして実行される2番目のコレクターをデプロイします。
-
-<details>
-  <summary>完全なコレクターマニフェストを展開</summary>
-
-::yaml{file="manifests/modules/observability/container-insights/adot-deployment/opentelemetrycollector.yaml"}
-
-</details>
-
-これをいくつかの部分に分けて確認することで、より理解しやすくなります。
-
-::yaml{file="manifests/modules/observability/container-insights/adot-deployment/opentelemetrycollector.yaml" zoomPath="spec.image" zoomAfter="1"}
-
-前述の通り、今回はDeploymentを使用しています。
-
-次にコレクター構成自体の内容を見ていきましょう。
-
-::yaml{file="manifests/modules/observability/container-insights/adot-deployment/opentelemetrycollector.yaml" zoomPath="spec.config.receivers.prometheus" zoomBefore="2"}
-
-AWS Container Insights Receiverではなく、[Prometheusレシーバー](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/prometheusreceiver/README.md)を使用してEKSクラスター内のすべてのPodをスクレイプします。
-
-::yaml{file="manifests/modules/observability/container-insights/adot-deployment/opentelemetrycollector.yaml" zoomPath="spec.config.processors"}
-
-前回のコレクターと同じバッチプロセッサーを使用します。
-
-::yaml{file="manifests/modules/observability/container-insights/adot-deployment/opentelemetrycollector.yaml" zoomPath="spec.config.exporters.awsemf/prometheus"}
-
-AWS CloudWatch EMF Exporter for OpenTelemetry Collectorを使用しますが、今回は`ContainerInsights/Prometheus`という名前空間を使用します。
-
-::yaml{file="manifests/modules/observability/container-insights/adot-deployment/opentelemetrycollector.yaml" zoomPath="spec.config.service.pipelines"}
-
-前回と同様に、これらをパイプラインにまとめます。
-
-上記で確認したリソースを作成します：
+クラスタースクレイパーを再起動して、新しいスクレイプジョブを取得するようにします：
 
 ```bash
-$ kubectl kustomize ~/environment/eks-workshop/modules/observability/container-insights/adot-deployment \
-  | envsubst | kubectl apply -f- && sleep 5
-$ kubectl rollout status -n other deployment/adot-container-ci-deploy-collector --timeout=120s
+$ kubectl -n amazon-cloudwatch rollout restart deployment/cloudwatch-agent-cluster-scraper
+$ kubectl -n amazon-cloudwatch rollout status deployment/cloudwatch-agent-cluster-scraper --timeout=120s
 ```
 
-コレクターが実行されていることを、DaemonSetによって作成されたPodを調査することで確認できます：
+スクレイパーがジョブをロードしたことを確認します：
 
-```bash
-$ kubectl get pod -n other -l app.kubernetes.io/name=adot-container-ci-deploy-collector
-NAME                                      READY   STATUS    RESTARTS   AGE
-adot-container-ci-deploy-collector-5lp5g  1/1     Running   0          15s
+```bash test=false
+$ kubectl -n amazon-cloudwatch logs -l app.kubernetes.io/name=cloudwatch-agent-cluster-scraper --tail=200 | grep retail-app-pods
+... "msg":"Scrape job added","jobName":"retail-app-pods"
 ```
 
 これで設定が完了しましたので、以下のスクリプトを使用して負荷ジェネレーターを実行し、ストアに注文を行い、アプリケーションメトリクスを生成します：
@@ -137,9 +119,13 @@ CloudWatchコンソールを開いて、ダッシュボードセクションに�
 
 <ConsoleButton url="https://console.aws.amazon.com/cloudwatch/home#dashboards" service="cloudwatch" label="CloudWatchコンソールを開く"/>
 
-ダッシュボード**Order-Service-Metrics**を選択して、ダッシュボード内のパネルを確認します：
+ダッシュボード**Order-Service-Metrics-1**を選択して、ダッシュボード内のパネルを確認します：
 
 ![Application Metrics](/docs/observability/container-insights/dashboard-metrics.webp)
+
+:::tip
+スクレイピングされたメトリクスがCloudWatchに表示されるまでに数分かかる場合があります。
+:::
 
 「Orders by Product」パネルのタイトルにカーソルを合わせて「Edit」ボタンをクリックすることで、ダッシュボードがCloudWatchをクエリするように構成されている方法を確認できます：
 

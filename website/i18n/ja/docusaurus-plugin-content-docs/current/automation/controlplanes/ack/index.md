@@ -3,7 +3,7 @@ title: "AWS Controllers for Kubernetes (ACK)"
 sidebar_position: 1
 sidebar_custom_props: { "module": true }
 description: "Directly manage AWS services from Amazon Elastic Kubernetes Service with AWS Controllers for Kubernetes."
-tmdTranslationSourceHash: 631c04d31582052f4c23f1864087ceda
+tmdTranslationSourceHash: 6bafedd694f7ec70612bf6d738506c54
 ---
 
 ::required-time
@@ -27,10 +27,10 @@ $ prepare-environment automation/controlplanes/ack
 
 ACKを使用すると、データベース（[RDS](https://aws-controllers-k8s.github.io/community/docs/tutorials/rds-example/)や他のもの）やキュー（[SQS](https://aws-controllers-k8s.github.io/community/docs/tutorials/sqs-example/)など）などのAWSサービスをKubernetesアプリケーション用に活用できます。クラスター外部でリソースを手動で定義することなく、これによりアプリケーションの依存関係を管理する全体的な複雑さが軽減されます。
 
-サンプルアプリケーションはデータベースやメッセージキューなどのステートフルなワークロードを含め、クラスター内で完全に実行できますが（開発に適しています）、テストや本番環境ではAmazon DynamoDBやAmazon MQなどのAWSマネージドサービスを使用することで、チームはデータベースやメッセージブローカーの管理ではなく、顧客やビジネスプロジェクトに集中できます。
+サンプルアプリケーションは、データベースやメッセージキューなどのステートフルなワークロードを含め、クラスター内で完全に実行できます（開発に適しています）が、テストや本番環境ではAmazon DynamoDBやAmazon MQなどのAWSマネージドサービスを使用することで、チームはデータベースやメッセージブローカーの管理ではなく、顧客やビジネスプロジェクトに集中できます。
 
-このラボでは、ACKを使用してこれらのサービスをプロビジョニングし、アプリケーションをこれらのAWSマネージドサービスに接続するためのバインディング情報を含むシークレットとコンフィグマップを作成します。
+このラボでは、ACKを使用してこれらのサービスをプロビジョニングし、アプリケーションをこれらのAWSマネージドサービスに接続するためのバインディング情報を含むシークレットとConfigMapを作成します。
 
-このラボでは、フルマネージドのケイパビリティである [Amazon EKS ケイパビリティ](https://docs.aws.amazon.com/eks/latest/userguide/capabilities.html) を通じて ACK を利用します。そのため、ご自身でインストールしたり運用したりするコントローラーはありません。Amazon EKS がお客様に代わって、AWS マネージドインフラストラクチャ上で ACK コントローラーを実行・維持します。
+[Amazon EKS ケイパビリティ](https://docs.aws.amazon.com/eks/latest/userguide/capabilities.html)を通じてACKを利用します。これはフルマネージドのケイパビリティであるため、ご自身でインストールしたり運用したりするコントローラーはありません。Amazon EKSがお客様に代わって、AWSマネージドインフラストラクチャ上でACKコントローラーを実行・維持します。
 
 ![EKS with DynamoDB](/docs/automation/controlplanes/ack/eks-workshop-ddb.webp)

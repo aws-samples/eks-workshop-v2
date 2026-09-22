@@ -1,7 +1,7 @@
 ---
 title: "アプリケーションメトリクス"
 sidebar_position: 50
-tmdTranslationSourceHash: dc55c16ffd550a3b1bb2421e3c4c2b6e
+tmdTranslationSourceHash: adadec8d8e0171bdd7c4444f38541f6c
 ---
 
 このセクションでは、ワークロードによって公開されるメトリクスへの洞察を得る方法を見ていきます。例としては以下のようなものがあります：
@@ -9,7 +9,7 @@ tmdTranslationSourceHash: dc55c16ffd550a3b1bb2421e3c4c2b6e
 - Java ヒープメトリクスやデータベース接続プールのステータスなどのシステムメトリクス
 - ビジネス KPI に関連するアプリケーションメトリクス
 
-AWS Distro for OpenTelemetry を使用してアプリケーションメトリクスを取り込み、Grafana を使用してメトリクスを可視化する方法を見てみましょう。
+CloudWatch エージェントを使用してアプリケーションメトリクスを取り込み、Grafana を使用してメトリクスを可視化する方法を見てみましょう。
 
 このワークショップの各コンポーネントは、特定のプログラミング言語やフレームワークに関連するライブラリを使用して Prometheus メトリクスを提供するように計装されています。以下のように orders サービスからこれらのメトリクスの例を見ることができます：
 
@@ -45,12 +45,10 @@ nodejs_heap_size_total_bytes 48668672
 [...]
 ```
 
-このラボでは、ADOT を活用してすべてのコンポーネントのメトリクスを取り込み、注文された数を表示するダッシュボードを探索します。アプリケーション Pod からメトリクスをスクレイピングするために使用される OpenTelemetry 設定、特にこのセクションを見てみましょう：
+このラボでは、CloudWatch エージェントを使用してすべてのコンポーネントのメトリクスを取り込み、注文された数を表示するダッシュボードを探索します。アドオンに適用した OpenTelemetry 設定からの `kubernetes-pods` スクレイプジョブを見てみましょう：
 
-```bash
-$ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.config}' \
-  | yq '.receivers.prometheus.config.scrape_configs[2]'
-job_name: 'kubernetes-pods'
+```yaml
+job_name: kubernetes-pods
 honor_labels: true
 kubernetes_sd_configs:
   - role: pod
@@ -70,9 +68,6 @@ relabel_configs:
     target_label: __metrics_path__
     regex: (.+)
   - action: labelmap
-    regex: __meta_kubernetes_pod_annotation_prometheus_io_param_(.+)
-    replacement: __param_$1
-  - action: labelmap
     regex: __meta_kubernetes_pod_label_(.+)
   - source_labels: [__meta_kubernetes_namespace]
     action: replace
@@ -85,7 +80,7 @@ relabel_configs:
     action: drop
 ```
 
-この設定は、Prometheus の [Kubernetes サービスディスカバリ](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config)メカニズムを活用して、特定のアノテーションを持つすべての Pod を自動的に検出します。この特定の設定は、アノテーション `prometheus.io/scrape` を持つすべての Pod を検出し、スクレイピングするメトリクスに namespace や Pod 名などの Kubernetes メタデータで強化します。
+この設定は、Prometheus の [Kubernetes サービスディスカバリ](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config)メカニズムを使用して、特定のアノテーションを持つすべての Pod を自動的に検出します。この設定は、`prometheus.io/scrape` アノテーションを持つすべての Pod を対象とし、スクレイピングされたメトリクスに namespace や Pod 名などの Kubernetes メタデータで強化します。
 
 order コンポーネントの Pod のアノテーションを確認できます：
 
@@ -96,7 +91,7 @@ prometheus.io/port: "8080"
 prometheus.io/scrape: "true"
 ```
 
-クラスターメトリクスのセクションで見たように、これらの Pod メトリクスも同じ OpenTelemetry エクスポーターを使用して AMP に送信されます。
+クラスターメトリクスに関するセクションで見たように、これらの Pod メトリクスも同じ Prometheus Remote Write エクスポーターを使用して AMP に送信されます。
 
 次に、以下のスクリプトを使用してロードジェネレーターを実行し、ストアを通じて注文を行い、アプリケーションメトリクスを生成します：
 
@@ -171,4 +166,3 @@ sum by(productId) (watch_orders_total{productId!="*"})
 ```bash timeout=180 test=false
 $ kubectl delete pod load-generator -n other
 ```
-

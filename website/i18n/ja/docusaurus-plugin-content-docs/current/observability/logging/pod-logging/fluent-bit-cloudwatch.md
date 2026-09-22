@@ -1,7 +1,7 @@
 ---
 title: "CloudWatch でのログの確認"
 sidebar_position: 40
-tmdTranslationSourceHash: "85cb81e77b59ccece01f916ef782d84c"
+tmdTranslationSourceHash: "7b88ea7ccc94f26c88778a000f3123d7"
 ---
 
 この実習では、各ノードにデプロイされた Fluent Bit エージェントが Amazon CloudWatch Logs に転送した Kubernetes Pod のログを確認する方法を見ていきます。デプロイされたアプリケーションコンポーネントは `stdout` にログを書き込み、これらは各ノードの `/var/log/containers/*.log` パスに保存されます。
@@ -20,11 +20,9 @@ deployment "ui" successfully rolled out
 ```bash hook=pods-log
 $ kubectl logs daemonset.apps/aws-for-fluent-bit -n kube-system
 ...
-[2025/04/15 12:40:10] [ info] [filter:kubernetes:kubernetes.0]  token updated
-[2025/04/15 12:40:10] [ info] [input:tail:tail.0] inotify_fs_add(): inode=16895961 watch_fd=12 name=/var/log/containers/ui-8564fc5cfb-qb7td_ui_ui-4ace14944409ee785708c9031b4c2243bfa065ffe0cd320e219131aa33541a1e.log
-[2025/04/15 12:40:11] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream ui-8564fc5cfb-qb7td.ui in log group /aws/eks/fluentbit-cloudwatch/workload/ui
-[2025/04/15 12:40:11] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Created log stream ui-8564fc5cfb-qb7td.ui
-
+...
+[2026/08/07 15:04:24] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream fluentbit-kube.var.log.containers.aws-for-fluent-bit-4h7cr_kube-system_aws-for-fluent-bit-0e26a01294055645368d7692084cda1a886f04a3621e5fe07fbd24e4d8c7f14a.log in log group /aws/eks/eks-workshop/aws-fluentbit-logs-20260807150346312400000001
+...
 ```
 
 次に、`kubectl logs` を直接使用して `ui` コンポーネントがログを生成していることを確認できます：
@@ -55,11 +53,11 @@ CloudWatch Logs コンソールを開いて、これらのログが表示され�
 
 <ConsoleButton url="https://console.aws.amazon.com/cloudwatch/home?#logsV2:log-groups" service="cloudwatch" label="CloudWatch コンソールを開く"/>
 
-**fluentbit-cloudwatch** でフィルタリングして、Fluent Bit によって作成されたロググループを見つけます：
+**fluentbit** でフィルタリングして、Fluent Bit によって作成されたロググループを見つけます：
 
 ![CloudWatch Log Group](/docs/observability/logging/pod-logging/log-group.webp)
 
-`/aws/eks/fluentbit-cloudwatch/workload/ui` を選択してログストリームを表示します。各ストリームは個々の Pod に対応しています：
+`/aws/eks/eks-workshop/aws-fluentbit-logs-a1b2c3` を選択してログストリームを表示します。各ストリームは個々の Pod に対応しています：
 
 ![CloudWatch Log Stream](/docs/observability/logging/pod-logging/log-streams.webp)
 

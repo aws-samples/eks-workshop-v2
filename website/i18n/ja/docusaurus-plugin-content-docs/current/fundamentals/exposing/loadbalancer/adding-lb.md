@@ -1,7 +1,7 @@
 ---
 title: "ロードバランサーの作成"
 sidebar_position: 20
-tmdTranslationSourceHash: e841c90e78e7e9a022ea9cda90de035c
+tmdTranslationSourceHash: 55fc63cbdcdf0f7d3c4e633eb6526b28
 ---
 
 以下の設定でロードバランサーをプロビジョニングする追加のServiceを作成しましょう：
@@ -9,9 +9,9 @@ tmdTranslationSourceHash: e841c90e78e7e9a022ea9cda90de035c
 ::yaml{file="manifests/modules/exposing/load-balancer/nlb/nlb.yaml" paths="metadata.annotations,spec.type,spec.ports,spec.selector"}
 
 1. AnnotationsはAWS Load Balancer Controllerがインターネット向けNLBをプロビジョニングするように設定します。`load-balancer-source-ranges`アノテーションはインバウンドトラフィックを特定のCIDR範囲に制限します
-2. この`Service`はネットワークロードバランサーを作成します
+2. この`Service`はNetwork Load Balancerを作成します
 3. NLBはポート80でリッスンし、`ui` Podsのポート8080に接続を転送します
-4. ここでは、ポッド上のラベルを使用して、このサービスのターゲットに追加するポッドを指定します
+4. ここでは、Pod上のラベルを使用して、このServiceのターゲットに追加するPodを指定します
 
 この設定を適用します：
 
@@ -19,7 +19,7 @@ tmdTranslationSourceHash: e841c90e78e7e9a022ea9cda90de035c
 $ kubectl kustomize ~/environment/eks-workshop/modules/exposing/load-balancer/nlb | envsubst | kubectl apply -f -
 ```
 
-`ui`アプリケーションのService リソースを再度確認してみましょう：
+`ui`アプリケーションのServiceリソースを再度確認してみましょう：
 
 ```bash
 $ kubectl get service -n ui
@@ -84,8 +84,8 @@ $ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalance
 コントローラーによって作成されたターゲットグループ内のターゲットも確認できます：
 
 ```bash
-$ ALB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`].LoadBalancerArn' | jq -r '.[0]')
-$ TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --load-balancer-arn $ALB_ARN | jq -r '.TargetGroups[0].TargetGroupArn')
+$ NLB_ARN=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-uinlb`) == `true`].LoadBalancerArn' | jq -r '.[0]')
+$ TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --load-balancer-arn $NLB_ARN | jq -r '.TargetGroups[0].TargetGroupArn')
 $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 {
     "TargetHealthDescriptions": [
@@ -138,7 +138,7 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 }
 ```
 
-上記の出力から、同じポート上でEC2インスタンスID（`i-`）を使用して3つのターゲットがロードバランサーに登録されていることがわかります。これは、デフォルトでAWS Load Balancer Controllerが「インスタンスモード」で動作しており、EKSクラスター内のワーカーノードにトラフィックを転送し、`kube-proxy`が個々のPodにトラフィックを転送できるようにしているためです。
+上記の出力から、同じポート上でEC2インスタンスID（`i-`）を使用して3つのターゲットがロードバランサーに登録されていることがわかります。これは、デフォルトでAWS Load Balancer Controllerが「インスタンスモード」で動作しており、EKSクラスター内のワーカーノードにトラフィックをターゲットし、`kube-proxy`が個々のPodにトラフィックを転送できるようにしているためです。
 
 このリンクをクリックしてコンソールでNLBを確認することもできます：
 
@@ -164,3 +164,4 @@ $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-ti
 <Browser url="http://k8s-ui-uinlb-e1c1ebaeb4-28a0d1a388d43825.elb.us-west-2.amazonaws.com">
 <img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
 </Browser>
+

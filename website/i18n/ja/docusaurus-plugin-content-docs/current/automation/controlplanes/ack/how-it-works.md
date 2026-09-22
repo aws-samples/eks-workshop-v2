@@ -1,7 +1,7 @@
 ---
 title: "ACKの仕組み"
 sidebar_position: 5
-tmdTranslationSourceHash: dab1dfb1b518410df47bf95ab800501e
+tmdTranslationSourceHash: '65a6535f311f56cd60f0a17bedec678c'
 ---
 
 :::info
@@ -16,6 +16,7 @@ ACK がクラスター内で利用可能にしているリソースタイプを�
 $ kubectl get crd
 ```
 
-このコマンドは、クラスター内のすべてのカスタムリソース定義（CRD）を表示します。`*.services.k8s.aws` のリソースがいくつも一覧に表示されることに注目してください。マネージド ACK ケイパビリティは、DynamoDB だけでなく、幅広い AWS サービス（S3、RDS、IAM など）の CRD をインストールします。
+このコマンドは、クラスター内のすべてのCustom Resource Definitions（CRD）を表示します。`*.services.k8s.aws` のリソースがいくつも一覧に表示されることに注目してください。マネージド ACK ケイパビリティは、DynamoDB だけでなく、幅広い AWS サービス（S3、RDS、IAM など）の CRD をインストールします。
 
 これは、セルフマネージドの ACK 構成との重要な違いです。セルフマネージドでは、サービスごとに個別のコントローラー（たとえば DynamoDB コントローラー単体）をインストールするため、そのサービスの CRD のみがクラスターで利用可能になります。マネージド ACK ケイパビリティでは、Amazon EKS が単一のマネージドケイパビリティを通じて幅広い ACK 対応サービスの CRD を利用可能にします。そのため、サービスごとにコントローラーをインストールして運用することなく、Kubernetes から多数の AWS サービスを管理できます。
+

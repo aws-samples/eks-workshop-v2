@@ -1,7 +1,7 @@
 ---
 title: "Fluent Bitの使用"
 sidebar_position: 30
-tmdTranslationSourceHash: 97df5abbfec6a9f9822044e8d381f7b2
+tmdTranslationSourceHash: 'f1d3dad7e3c2272f554942e08a61fed7'
 ---
 
 Kubernetesクラスターコンポーネントのうち、Podで実行されるものは、デフォルトのロギングメカニズムをバイパスして `/var/log` ディレクトリ内のファイルに書き込みます。Fluent BitなどのノードレベルのロギングエージェントをDaemonSetとして各ノードにデプロイすることで、Podレベルのロギングを実装できます。
@@ -14,7 +14,7 @@ Fluent Bitは様々な宛先にログを送信するために使用できます�
 
 ![Fluent-bitアーキテクチャ](/docs/observability/logging/pod-logging/fluentbit-architecture.webp)
 
-以下のセクションでは、Fluent BitエージェントがすでにDaemonSetとして実行され、コンテナ/PodログをCloudWatch Logsに送信していることを検証する方法を説明します。[コンテナからCloudWatch LogsにログヹSUを送信するためにFluent Bitをデプロイする方法](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-logs-FluentBit.html#Container-Insights-FluentBit-troubleshoot)についての詳細をご覧ください。
+以下のセクションでは、Fluent BitエージェントがすでにDaemonSetとして実行され、コンテナ/PodログをCloudWatch Logsに送信していることを検証する方法を説明します。[コンテナからCloudWatch Logsにログを送信するためにFluent Bitをデプロイする方法](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-setup-logs-FluentBit.html#Container-Insights-FluentBit-troubleshoot)についての詳細をご覧ください。
 
 まず、次のコマンドを入力して、Fluent Bit用に作成されたリソースを検証できます。各ノードには1つのPodが必要です：
 
@@ -32,7 +32,7 @@ NAME                                DESIRED   CURRENT   READY   UP-TO-DATE   AVA
 daemonset.apps/aws-for-fluent-bit   3         3         3       3            3           <none>          96s
 ```
 
-aws-for-fluent-bitのConfigMapは、各ノードから `/var/log/containers/*.log` ディレクトリ内のファイルの内容をCloudWatchロググループ `/eks-workshop/worker-fluentbit-logs` にストリーミングするように設定されています：
+aws-for-fluent-bitのConfigMapは、各ノードから `/var/log/containers/*.log` ディレクトリ内のファイルの内容を、`/eks-workshop/worker-fluentbit-logs-<random-suffix>` というパターンに従った名前のCloudWatchロググループにストリーミングするように設定されています。正確な名前はインストール時に生成されるため、固定値を想定するのではなく、ConfigMapの `[OUTPUT]` セクションから読み取ってください：
 
 ```bash hook=desc-cm
 $ kubectl describe configmap -n kube-system -l app.kubernetes.io/name=aws-for-fluent-bit
@@ -88,7 +88,11 @@ fluent-bit.conf:
 ...
 ```
 
-`kubectl logs`コマンドを使用してFluent BitのPodログをチェックしてみましょう。サービスの新しいCloudWatchロググループとストリームが作成されるのが確認できます。
+:::tip
+上記の `log_group_name` の値（`/eks-workshop/worker-fluentbit-logs-a1b2c3`）は例であり、あなたの環境のランダムサフィックスは異なります。この値をメモしてください。後でCloudWatchコンソールでログを見つけるために使用します。この値は、環境変数 `CLOUDWATCH_LOG_GROUP_NAME` としてシェルでも利用できます：
+:::
+
+`kubectl logs` コマンドを使用してFluent BitのPodログをチェックしてみましょう。サービスの新しいCloudWatchロググループとストリームが作成されるのが確認できます。
 
 ```bash hook=pods-log
 $ kubectl logs daemonset.apps/aws-for-fluent-bit -n kube-system
