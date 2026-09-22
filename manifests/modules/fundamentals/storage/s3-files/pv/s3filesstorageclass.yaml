@@ -1,0 +1,9 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: s3-files-sc
+# No parameters and no dynamic provisioning: this StorageClass exists only to
+# bind the statically-provisioned PersistentVolume to its PersistentVolumeClaim.
+# The S3 file system is created ahead of time, so the EFS CSI driver does not
+# provision anything on demand here.
+provisioner: efs.csi.aws.com

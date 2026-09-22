@@ -5,7 +5,7 @@
       "type": "stdio",
       "command": "uvx",
       "args": [
-        "mcp-proxy-for-aws@latest",
+        "mcp-proxy-for-aws@1.6.4",
         "https://eks-mcp.${AWS_REGION}.api.aws/mcp",
         "--service",
         "eks-mcp",
@@ -19,7 +19,7 @@
       "type": "stdio",
       "command": "uvx",
       "args": [
-        "mcp-proxy-for-aws@latest",
+        "mcp-proxy-for-aws@1.6.4",
         "https://aws-mcp.us-east-1.api.aws/mcp",
         "--metadata",
         "AWS_REGION=${AWS_REGION}"

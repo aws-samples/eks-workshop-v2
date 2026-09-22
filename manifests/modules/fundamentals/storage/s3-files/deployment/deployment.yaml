@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui
+spec:
+  replicas: 2
+  template:
+    spec:
+      initContainers:
+        - name: fix-permissions
+          image: public.ecr.aws/docker/library/busybox:1.37
+          command: ["sh", "-c", "chown 1000:1000 /s3files"]
+          volumeMounts:
+            - name: s3filesvolume
+              mountPath: /s3files
+          securityContext:
+            runAsUser: 0
+      containers:
+        - name: ui
+          volumeMounts:
+            - name: s3filesvolume
+              mountPath: /s3files
+          env:
+            - name: RETAIL_UI_PRODUCT_IMAGES_PATH
+              value: /s3files
+      volumes:
+        - name: s3filesvolume
+          persistentVolumeClaim:
+            claimName: s3-files-claim

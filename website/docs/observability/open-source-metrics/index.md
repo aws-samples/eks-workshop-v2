@@ -2,7 +2,7 @@
 title: "EKS open source observability"
 sidebar_position: 40
 sidebar_custom_props: { "module": true }
-description: "Leverage open source observability solutions like Prometheus and Grafana with Amazon Elastic Kubernetes Service."
+description: "Use open source observability solutions like Prometheus and Grafana with Amazon Elastic Kubernetes Service."
 ---
 
 ::required-time
@@ -16,18 +16,19 @@ $ prepare-environment observability/oss-metrics
 
 This will make the following changes to your lab environment:
 
-- Install the OpenTelemetry operator
-- Create an IAM role for the ADOT collector to access Amazon Managed Prometheus
+- Install the EKS Pod Identity Agent add-on (a prerequisite for granting the CloudWatch agent permissions via EKS Pod Identity)
+- Provision an Amazon Managed Service for Prometheus workspace
+- Install Grafana in the cluster with the workspace configured as a data source
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/observability/oss-metrics/.workshop/terraform).
 
 :::
 
-In this lab, we'll collect the metrics from the application using [AWS Distro for OpenTelemetry](https://aws-otel.github.io/), store the metrics in Amazon Managed Service for Prometheus and visualize using Amazon Managed Grafana.
+In this lab, we'll collect the metrics from the application using the [Amazon CloudWatch Observability EKS add-on](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Observability-EKS-addon.html), store the metrics in Amazon Managed Service for Prometheus and visualize them using Grafana.
 
-AWS Distro for OpenTelemetry is a secure, production-ready, AWS-supported distribution of the [OpenTelemetry project](https://opentelemetry.io/) . Part of the Cloud Native Computing Foundation, OpenTelemetry provides open source APIs, libraries, and agents to collect distributed traces and metrics for application monitoring. With AWS Distro for OpenTelemetry, you can instrument your applications just once to send correlated metrics and traces to multiple AWS and Partner monitoring solutions. Use auto-instrumentation agents to collect traces without changing your code. AWS Distro for OpenTelemetry also collects metadata from your AWS resources and managed services, so you can correlate application performance data with underlying infrastructure data, reducing the mean time to problem resolution. Use AWS Distro for OpenTelemetry to instrument your applications running on Amazon Elastic Compute Cloud (EC2), Amazon Elastic Container Service (ECS), and Amazon Elastic Kubernetes Service (EKS) on EC2, AWS Fargate, and AWS Lambda, as well as on-premises.
+The CloudWatch Observability add-on deploys the CloudWatch agent, which is built on open source: it [runs an embedded OpenTelemetry collector](https://github.com/aws/amazon-cloudwatch-agent) and ships logs with [Fluent Bit](https://fluentbit.io/). Part of the Cloud Native Computing Foundation, [OpenTelemetry](https://opentelemetry.io/) provides open source APIs, libraries, and agents to collect distributed traces and metrics for application monitoring. Because the collector bundles the Prometheus receiver and the Prometheus Remote Write exporter, we can use the add-on to scrape Prometheus metrics from the cluster and remote-write them to Amazon Managed Service for Prometheus, with no separate collector to deploy or maintain.
 
-Amazon Managed Service for Prometheus is a monitoring service for metrics compatible with the open source Prometheus project, making it easier for you to securely monitor container environments. Amazon Managed Service for Prometheus is a solution for monitoring containers based on the popular Cloud Native Computing Foundation (CNCF) Prometheus project. Amazon Managed Service for Prometheus reduces the heavy lifting required to get started with monitoring applications across Amazon Elastic Kubernetes Service and Amazon Elastic Container Service, as well as self-managed Kubernetes clusters.
+Amazon Managed Service for Prometheus is a Prometheus-compatible monitoring service based on the Cloud Native Computing Foundation (CNCF) Prometheus project. It removes the work of running and scaling your own Prometheus, whether you are monitoring Amazon Elastic Kubernetes Service, Amazon Elastic Container Service, or self-managed Kubernetes clusters.
 
 :::info
 If you are using the CDK Observability Accelerator then check out the collection of Open Source Observability Patterns covering a wide range of use cases including [ADOT collector](https://aws-observability.github.io/cdk-aws-observability-accelerator/patterns/existing-eks-observability-accelerators/existing-eks-adotmetrics-collection-observability/), [GPU Monitoring with Nvidia DCGM](https://aws-observability.github.io/cdk-aws-observability-accelerator/patterns/single-new-eks-observability-accelerators/single-new-eks-gpu-opensource-observability/) and many more.
