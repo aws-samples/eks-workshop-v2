@@ -19,3 +19,29 @@ It should be possible to run any given set of content modules in any order witho
 ### Stability
 
 Workshop content that does not function, negatively affects both the confidence of those delivering customer workshops and the public perception of those using the content on their own time. We strive to produce content in a manner that remains stable and functional, and mechanisms that detect issues as early as possible.
+
+## Fast Path Tenets
+
+### Persona-driven
+
+Fast paths provide an opinionated learning journey tailored to specific roles (e.g., Developer, Platform Engineer, FinOps) rather than a broad feature set. 
+
+### Time-bound
+
+Each fast path must be completable within a two-hour window, including environment setup, hands-on labs, and conclusion. 
+
+### Frictionless flow
+
+Provide an uninterrupted experience using a single prepare-environment script at the start to eliminate mid-workshop infrastructure delays. 
+
+### Strictly opinionated
+
+Select exactly one tool or methodology for any given objective (e.g., choosing ArgoCD over Flux) to prevent redundancy and decision fatigue. 
+
+### Auto Mode by default
+
+Utilize EKS Auto Mode clusters as the standard environment unless specific lab requirements necessitate a custom configuration. 
+
+### Outcome-focused
+
+Target a 200-level depth, prioritizing high-level learning outcomes over deep-dive architectural exploration.
