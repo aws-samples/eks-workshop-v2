@@ -52,6 +52,7 @@ resource "null_resource" "idc_instance" {
   triggers = {
     region        = data.aws_region.current.id
     instance_name = local.idc_instance_name
+    instance_arn  = var.idc_instance_arn
   }
 
   provisioner "local-exec" {
@@ -60,6 +61,49 @@ resource "null_resource" "idc_instance" {
       REGION="${data.aws_region.current.id}"
       NAME="${local.idc_instance_name}"
       ACCOUNT="${data.aws_caller_identity.current.account_id}"
+      PROVIDED_ARN="${var.idc_instance_arn}"
+
+      # Relaxing MFA enforcement is only ever correct on an instance provisioned for
+      # this event, never on one we merely found, so both callers below are paths
+      # where the instance is known to be ours. A brand new instance asks users to
+      # register an MFA device on first sign-in, and that prompt replaces the forced
+      # password change the lab depends on.
+      #
+      # Best-effort on purpose: if this fails the event still provisions and
+      # participants are merely asked to enroll an MFA device.
+      relax_mfa_enforcement() {
+        if ! python3 -c 'import boto3' 2>/dev/null; then
+          echo "Installing boto3 to configure MFA enforcement..."
+          # The retry covers PEP 668: on a GitHub Actions runner the system Python is
+          # marked externally managed and refuses a plain install. Installing into it
+          # anyway is fine because every host that reaches this is disposable.
+          python3 -m pip install --quiet --disable-pip-version-check boto3 \
+            || python3 -m pip install --quiet --disable-pip-version-check \
+                 --break-system-packages boto3 \
+            || true
+        fi
+
+        python3 "${abspath("${path.module}/disable-mfa.py")}" --region "$REGION" \
+          || echo "WARNING: could not disable MFA enforcement; participants may be asked to register an MFA device"
+      }
+
+      # A Workshop Studio event arrives here with the instance already created, as a
+      # CloudFormation resource in the team stack, because this build is not permitted
+      # to create one itself. Take that instance as ours: it was made for this event,
+      # in a disposable account, so the MFA step below is as appropriate as it is on
+      # one we created.
+      if [ -n "$PROVIDED_ARN" ]; then
+        echo "Using the IAM Identity Center instance provisioned for this environment: $PROVIDED_ARN"
+        STATUS=$(aws sso-admin describe-instance --instance-arn "$PROVIDED_ARN" \
+          --region $REGION --output json | jq -r '.Status // "UNKNOWN"')
+        if [ "$STATUS" != "ACTIVE" ]; then
+          echo "ERROR: instance $PROVIDED_ARN is $STATUS, expected ACTIVE." >&2
+          echo "       It is created by the team stack, so check that stack before re-running." >&2
+          exit 1
+        fi
+        relax_mfa_enforcement
+        exit 0
+      fi
 
       IDC_JSON=$(aws sso-admin list-instances --region $REGION --output json)
       COUNT=$(echo "$IDC_JSON" | jq '.Instances | length')
@@ -127,24 +171,7 @@ resource "null_resource" "idc_instance" {
 
       # Reached only when this script created the instance above, so the directory
       # is one we just made in a disposable event account and nothing else uses it.
-      # A brand new instance asks users to register an MFA device on first sign-in,
-      # and that prompt replaces the forced password change the lab depends on.
-      #
-      # Best-effort on purpose: if this fails the event still provisions and
-      # participants are merely asked to enroll an MFA device.
-      if ! python3 -c 'import boto3' 2>/dev/null; then
-        echo "Installing boto3 to configure MFA enforcement..."
-        # The retry covers PEP 668: on a GitHub Actions runner the system Python is
-        # marked externally managed and refuses a plain install. Installing into it
-        # anyway is fine because every host that reaches this is disposable.
-        python3 -m pip install --quiet --disable-pip-version-check boto3 \
-          || python3 -m pip install --quiet --disable-pip-version-check \
-               --break-system-packages boto3 \
-          || true
-      fi
-
-      python3 "${abspath("${path.module}/disable-mfa.py")}" --region "$REGION" \
-        || echo "WARNING: could not disable MFA enforcement on the instance we created; participants may be asked to register an MFA device"
+      relax_mfa_enforcement
     EOF
   }
 
@@ -158,6 +185,16 @@ resource "null_resource" "idc_instance" {
     command = <<-EOF
       REGION="${self.triggers.region}"
       NAME="${self.triggers.instance_name}"
+
+      # An instance this module did not create is not this module's to delete. For a
+      # Workshop Studio event the team stack owns it as a CloudFormation resource, so
+      # deleting it here would leave that stack with a resource that no longer exists
+      # and fail the teardown it is meant to help.
+      if [ -n "${self.triggers.instance_arn}" ]; then
+        echo "IAM Identity Center instance ${self.triggers.instance_arn} is owned by the team stack, leaving it for CloudFormation to delete"
+        exit 0
+      fi
+
       IDC_ARN=$(aws sso-admin list-instances --region $REGION --output json \
         | jq -r --arg name "$NAME" '.Instances[] | select(.Name==$name) | .InstanceArn // empty' | head -1)
 

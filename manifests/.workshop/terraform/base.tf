@@ -59,6 +59,16 @@ variable "inbound_cidrs" {
   default     = "0.0.0.0/0"
 }
 
+# Passed through to the shared IAM Identity Center layer. Populated from
+# TF_VAR_idc_instance_arn, which the Workshop Studio buildspec sets from the team
+# stack's IAM Identity Center resource. See preprovision-base/vars.tf.
+# tflint-ignore: terraform_unused_declarations
+variable "idc_instance_arn" {
+  description = "ARN of an IAM Identity Center instance already provisioned for this environment. Empty means the pre-provisioning layer manages the instance itself."
+  type        = string
+  default     = ""
+}
+
 # tflint-ignore: terraform_unused_declarations
 variable "enable_eks_capabilities" {
   description = "Gate for the fastpaths/eks-capabilities resources (ACK/Argo CD/kro capabilities + IAM Identity Center user/group + CodeCommit repo). reset-environment sets this true only for the eks-capabilities path; developer/operator paths leave it false so no capabilities and no IAM Identity Center instance are required."
