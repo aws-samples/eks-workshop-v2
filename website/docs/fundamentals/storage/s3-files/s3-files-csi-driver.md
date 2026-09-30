@@ -9,7 +9,7 @@ Amazon S3 Files uses the [Amazon EFS Container Storage Interface (CSI) Driver](h
 
 The following architecture diagram illustrates how we will use S3 Files as persistent storage for our EKS pods:
 
-![Assets with S3 Files](/docs/fundamentals/storage/s3-files/s3-files-storage.webp)
+![Assets with S3 Files](/docs/fundamentals/storage/s3-files/eksworkshop-storage-s3-files.svg)
 
 To utilize Amazon S3 Files on our EKS cluster, we first need to confirm that we have the EFS CSI Driver installed. The driver implements the CSI specification which allows container orchestrators to manage both Amazon EFS and S3 file systems throughout their lifecycle.
 
