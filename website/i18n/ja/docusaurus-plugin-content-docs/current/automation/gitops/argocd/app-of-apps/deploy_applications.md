@@ -1,7 +1,7 @@
 ---
 title: "より多くのワークロードの追加"
 sidebar_position: 60
-tmdTranslationSourceHash: 6eb0402859d82d5555e7e2d450ba7503
+tmdTranslationSourceHash: aa3b0e958c150625b846337f43505e36
 ---
 
 App of Appsパターンの基盤を設定したので、追加のワークロードHelmチャートをGitリポジトリに追加することができます。
@@ -39,12 +39,18 @@ $ git -C ~/environment/argocd commit -am "Adding apps charts"
 $ git -C ~/environment/argocd push
 ```
 
-appsアプリケーションを同期します：
+ワークロードアプリケーションを同期します：
 
 ```bash
-$ argocd app sync apps
-$ argocd app wait -l app.kubernetes.io/created-by=eks-workshop
+$ argocd app sync -l app.kubernetes.io/created-by=eks-workshop
+$ argocd app wait -l app.kubernetes.io/created-by=eks-workshop --timeout 300
 ```
+
+:::note
+ここでは親の`apps`アプリケーションではなく、ワークロードアプリケーションを直接同期します。親を同期すると、すでに作成した5つの`Application`リソースが再適用されることになります。その出力には変化がありません。なぜなら、このコミットはApp of Apps設定ではなく、ワークロードチャートを追加したからです。
+
+各ワークロードアプリケーションはリポジトリ内の独自のパスを追跡しているため、新しいコミットに気付く必要があるのはこれらのアプリケーションです。Argo CDは約3分ごとにGitをポーリングしており、同期することで次のポーリングを待つのではなく、そのチェックを即座に強制します。
+:::
 
 Argo CDがプロセスを完了すると、すべてのアプリケーションはArgo CDのUI上で`Synced`状態になります：
 
@@ -55,7 +61,6 @@ Argo CDがプロセスを完了すると、すべてのアプリケーション�
 ```bash hook=deploy
 $ kubectl get namespaces
 NAME              STATUS   AGE
-argocd            Active   18m
 carts             Active   28s
 catalog           Active   28s
 checkout          Active   28s
@@ -76,4 +81,3 @@ carts   1/1     1            1           46s
 ```
 
 これにより、App of Appsパターンを使用したGitOpsベースのデプロイメントが、すべてのマイクロサービスをクラスターに正常にデプロイしたことが確認されました。
-

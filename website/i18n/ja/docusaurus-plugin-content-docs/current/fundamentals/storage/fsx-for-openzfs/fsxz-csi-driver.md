@@ -1,7 +1,7 @@
 ---
 title: FSx for OpenZFS CSI Driver
 sidebar_position: 20
-tmdTranslationSourceHash: 42b5d289881ac60bdd73a62ac3e2f2d4
+tmdTranslationSourceHash: 7f3e15e15a36236eb27b7693a4747fa8
 ---
 
 このセクションに入る前に、メインの[ストレージ](../index.md)セクションで紹介されたKubernetesストレージオブジェクト（ボリューム、永続ボリューム（PV）、永続ボリューム要求（PVC）、動的プロビジョニング、一時ストレージ）に精通しているべきです。
@@ -10,7 +10,7 @@ tmdTranslationSourceHash: 42b5d289881ac60bdd73a62ac3e2f2d4
 
 以下のアーキテクチャ図は、FSx for OpenZFSをEKS Podの永続ストレージとして使用する方法を示しています：
 
-![FSx for OpenZFSを使用したアセット](/docs/fundamentals/storage/fsx-for-openzfs/fsxz-storage.webp)
+![FSx for OpenZFSを使用したアセット](/docs/fundamentals/storage/fsx-for-openzfs/eksworkshop-storage-fsx-for-openzfs.svg)
 
 EKSクラスターで動的プロビジョニングを使用してAmazon FSx for OpenZFSを利用するには、まずFSx for OpenZFS CSI Driverがインストールされていることを確認する必要があります。このドライバーはCSI仕様を実装しており、コンテナオーケストレーターがAmazon FSx for OpenZFSファイルシステムとボリュームのライフサイクル全体を管理できるようにします。
 

@@ -1,7 +1,7 @@
 ---
 title: "セットアップ"
 sidebar_position: 50
-tmdTranslationSourceHash: 86a90c638741f24ff8690a25037f4d04
+tmdTranslationSourceHash: 6a9cb34b3328bd2c2c1e1656f8102b87
 ---
 
 Helmチャートを使用してDRY（Don't Repeat Yourself）アプローチでArgo CDアプリケーションのテンプレートを作成します：
@@ -29,7 +29,7 @@ Helmチャートを使用してDRY（Don't Repeat Yourself）アプローチでA
 
 ::yaml{file="manifests/modules/automation/gitops/argocd/app-of-apps/values.yaml" paths="spec.destination.server,spec.source,applications"}
 
-1. アプリケーションがデプロイされるKubernetes APIサーバーエンドポイントを指定します（ローカルクラスター）
+1. 宛先としてEKSクラスターARNを指定します — EKS CapabilityのArgo CDは、クラスター内アドレスではなく、ARNによってクラスターを識別します。このプレースホルダーは、以下のセットアップステップで`$CLUSTER_ARN`に置き換えられます
 2. `${GITOPS_REPO_URL_ARGOCD}`環境変数を使用して、アプリケーションマニフェストを含むGitリポジトリと、追跡するGitブランチ（`main`）を指定します
 3. `applications`リストは、デプロイされるアプリケーションの名前を指定します
 
@@ -37,7 +37,10 @@ Helmチャートを使用してDRY（Don't Repeat Yourself）アプローチでA
 
 ```bash
 $ cp -R ~/environment/eks-workshop/modules/automation/gitops/argocd/app-of-apps ~/environment/argocd/
+$ export CLUSTER_ARN=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME \
+  --query 'cluster.arn' --output text)
 $ yq -i ".spec.source.repoURL = env(GITOPS_REPO_URL_ARGOCD)" ~/environment/argocd/app-of-apps/values.yaml
+$ yq -i ".spec.destination.server = env(CLUSTER_ARN)" ~/environment/argocd/app-of-apps/values.yaml
 ```
 
 次に、これらの変更をGitリポジトリにコミットしてプッシュしましょう：
@@ -52,7 +55,7 @@ $ git -C ~/environment/argocd push
 
 ```bash
 $ argocd app create apps --repo $GITOPS_REPO_URL_ARGOCD \
-  --dest-server https://kubernetes.default.svc \
+  --dest-server $CLUSTER_ARN \
   --sync-policy automated --self-heal --auto-prune \
   --set-finalizer \
   --upsert \
