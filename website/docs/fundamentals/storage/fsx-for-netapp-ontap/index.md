@@ -1,5 +1,5 @@
 ---
-title: FSx for NetApp ONTAP
+title: Amazon FSx for NetApp ONTAP
 sidebar_position: 50
 sidebar_custom_props: { "module": true }
 description: "Fully managed shared storage for workloads on Amazon Elastic Kubernetes Service with Amazon FSx for NetApp ONTAP."
