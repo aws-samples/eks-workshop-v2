@@ -9,7 +9,7 @@ The [Amazon FSx for Lustre Container Storage Interface (CSI) Driver](https://git
 
 The following architecture diagram illustrates how we will use FSx for Lustre as persistent storage for our EKS pods:
 
-![Assets with FSx for Lustre](/docs/fundamentals/storage/fsx-for-lustre/fsxl-storage.webp)
+![Assets with FSx for Lustre](/docs/fundamentals/storage/fsx-for-lustre/eksworkshop-storage-fsx-for-lustre.svg)
 
 To utilize Amazon FSx for Lustre on our EKS cluster, we need to install the FSx for Lustre CSI Driver. The driver implements the CSI specification which allows container orchestrators to manage Amazon FSx for Lustre file systems throughout their lifecycle.
 
