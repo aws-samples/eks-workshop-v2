@@ -1,16 +1,16 @@
 ---
 title: FSx for NetApp ONTAP CSI ドライバー
 sidebar_position: 20
-tmdTranslationSourceHash: 15cdbda44d1d25a0e88fb88a737efc18
+tmdTranslationSourceHash: 8edfeaa090be86bab1f76ca29a9f8faf
 ---
 
-このセクションに入る前に、メインの[ストレージ](../index.md)セクションで紹介したKubernetesストレージオブジェクト（ボリューム、永続ボリューム（PV）、永続ボリューム要求（PVC）、動的プロビジョニング、一時ストレージ）について理解しておくべきです。
+このセクションに入る前に、メインの[ストレージ](../index.md)セクションで紹介したKubernetesストレージオブジェクト（ボリューム、Persistent Volume（PV）、Persistent Volume Claim（PVC）、動的プロビジョニング、一時ストレージ）について理解しておくべきです。
 
 [Amazon FSx for NetApp ONTAP Container Storage Interface (CSI) ドライバー](https://github.com/NetApp/trident)は、AWSで実行されているKubernetesクラスターがAmazon FSx for NetApp ONTAPファイルシステムのライフサイクルを管理できるようにするCSIインターフェースを提供することで、ステートフルなコンテナ化アプリケーションを実行できるようにします。
 
-次のアーキテクチャ図は、FSx for NetApp ONTAPをEKSポッドの永続ストレージとして使用する方法を示しています：
+次のアーキテクチャ図は、FSx for NetApp ONTAPをEKS Podの永続ストレージとして使用する方法を示しています：
 
-![FSx for NetApp ONTAPを使用したアセット](/docs/fundamentals/storage/fsx-for-netapp-ontap/fsxn-storage.webp)
+![FSx for NetApp ONTAPを使用したアセット](/docs/fundamentals/storage/fsx-for-netapp-ontap/eksworkshop-storage-fsx-for-netapp-ontap.svg)
 
 EKSクラスターで動的プロビジョニングを使用してAmazon FSx for NetApp ONTAPを利用するには、まずFSx for NetApp ONTAP CSIドライバーがインストールされていることを確認する必要があります。このドライバーはCSI仕様を実装しており、コンテナオーケストレーターがAmazon FSx for NetApp ONTAPファイルシステムのライフサイクル全体を管理できるようにします。
 
@@ -34,7 +34,7 @@ trident-node-linux-z92x2            2/2     Running   0          86s
 trident-operator-588c7c854d-t4c4x   1/1     Running   0          102s
 ```
 
-FSx for NetApp ONTAPファイルシステムがストレージ仮想マシン（SVM）と、FSxマウントポイントへのNFSトラフィックを許可するインバウンドルールを含む必要なセキュリティグループとともにプロビジョニングされています。後で必要になるIDを取得しましょう：
+FSx for NetApp ONTAPファイルシステムがStorage Virtual Machine（SVM）と、FSxマウントポイントへのNFSトラフィックを許可するインバウンドルールを含む必要なセキュリティグループとともにプロビジョニングされています。後で必要になるIDを取得しましょう：
 
 ```bash
 $ export FSXN_ID=$(aws fsx describe-file-systems --output json | jq -r --arg cluster_name "${EKS_CLUSTER_NAME}-fsxn" '.FileSystems[] | select(.Tags[] | select(.Key=="Name" and .Value==$cluster_name)) | .FileSystemId')
@@ -47,11 +47,11 @@ FSx for NetApp ONTAP CSIドライバーは動的プロビジョニングと静�
 - **動的プロビジョニング**：ドライバーは既存のFSx for NetApp ONTAPファイルシステム上にボリュームを作成します。これには、StorageClassパラメータで指定する必要がある既存のAWS FSx for NetApp ONTAPファイルシステムが必要です。
 - **静的プロビジョニング**：これも事前に作成されたAWS FSx for NetApp ONTAPファイルシステムが必要であり、ドライバーを使用してコンテナ内のボリュームとしてマウントできます。
 
-次に、事前にプロビジョニングされたFSx for NetApp ONTAPファイルシステムを使用するように構成されたTridentBackendConfigオブジェクトを作成します。バックエンドを作成するために使用する`fsxn-backend-nas.yaml`ファイルを見てみましょう：
+次に、事前にプロビジョニングされたFSx for NetApp ONTAPファイルシステムを使用するように構成されたTridentBackendConfigオブジェクトを作成します。このため、バックエンドを作成するために使用する`fsxn-backend-nas.yaml`ファイルを見てみましょう：
 
 ::yaml{file="manifests/modules/fundamentals/storage/fsxn/backend/fsxn-backend-nas.yaml" paths="spec.svm,spec.aws.fsxFilesystemID,spec.credentials.name"}
 
-1. `svm`パラメータに`EKS_CLUSTER_NAME`環境変数を注入します - これはストレージ仮想マシン名です
+1. `svm`パラメータに`EKS_CLUSTER_NAME`環境変数を注入します - これはStorage Virtual Machine名です
 2. `fsxFilesystemID`パラメータに`FSXN_ID`環境変数を注入します - これはCSIドライバーを接続するFSxNファイルシステムです
 3. `credentials.name`パラメータに`FSXN_SECRET_ARN`環境変数を注入します - これはONTAP APIインターフェースに接続するための認証情報を含むAWS Secrets Managerに安全に保存されているシークレットのARNです
 

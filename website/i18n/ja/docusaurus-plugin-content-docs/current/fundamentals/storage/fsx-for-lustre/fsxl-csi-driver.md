@@ -1,7 +1,7 @@
 ---
 title: FSx for Lustre CSI Driver
 sidebar_position: 20
-tmdTranslationSourceHash: bd2142bc015c6a4ac13658804585b22d
+tmdTranslationSourceHash: 2d64e41f8509d739eb683a7d59e7769c
 ---
 
 このセクションに入る前に、メインの [Storage](../index.md) セクションで紹介された Kubernetes ストレージオブジェクト（volumes、persistent volumes (PV)、persistent volume claims (PVC)、dynamic provisioning、ephemeral storage）について理解しておく必要があります。
@@ -10,7 +10,7 @@ tmdTranslationSourceHash: bd2142bc015c6a4ac13658804585b22d
 
 以下のアーキテクチャ図は、EKS Pod の永続ストレージとして FSx for Lustre を使用する方法を示しています：
 
-![Assets with FSx for Lustre](/docs/fundamentals/storage/fsx-for-lustre/fsxl-storage.webp)
+![Assets with FSx for Lustre](/docs/fundamentals/storage/fsx-for-lustre/eksworkshop-storage-fsx-for-lustre.svg)
 
 EKS クラスタで Amazon FSx for Lustre を利用するには、FSx for Lustre CSI Driver をインストールする必要があります。このドライバーは CSI 仕様を実装しており、コンテナオーケストレーターが Amazon FSx for Lustre ファイルシステムのライフサイクル全体を管理できるようにします。
 
@@ -97,3 +97,4 @@ fsxl-claim   Bound    fsxl-pv   1200Gi     RWX            fsx-lustre-sc   10s
 ```
 
 これで FSx for Lustre StorageClass と FSx for Lustre CSI ドライバーの動作について理解できました。次のステップでは、製品画像を保存するために FSx for Lustre ボリュームを使用するよう UI コンポーネントを変更します。
+
