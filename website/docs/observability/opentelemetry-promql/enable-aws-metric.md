@@ -16,7 +16,7 @@ Amazon CloudWatch exposes a regional OTLP endpoint that OpenTelemetry-compatible
 
 **Option A: AWS Console**
 
-1. Open the Amazon CloudWatch console <ConsoleButton url="https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab" service="eks" label="Open EKS console"/>
+1. Open the Amazon CloudWatch console <ConsoleButton url="https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab" service="eks" label="Open CloudWatch console"/>
 2. In the left navigation, choose Settings
 3. In the Resource tags on telemetry section, toggle Enable resource tags for telemetry to On
 4. In the OTel metric ingestion section, toggle Enable OTel metric ingestion to On
