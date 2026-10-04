@@ -1,7 +1,7 @@
 ---
 title: "コントロールプレーンログの設定"
 sidebar_position: 30
-tmdTranslationSourceHash: fd4f1ef234023516a56dd350779104b9
+tmdTranslationSourceHash: b73c5dc0ba0a660ac3f8806f2c72b8c9
 ---
 
 クラスターログタイプはそれぞれ個別に有効にすることができ、このラボではすべてを有効にしています。
@@ -10,12 +10,12 @@ EKSコンソールでこの設定を確認してみましょう：
 
 <ConsoleButton url="https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab" service="eks" label="EKSコンソールを開く"/>
 
-**ログ記録**タブには、クラスターのコントロールプレーンログの現在の設定が表示されます：
+**Observability**タブには、クラスターのコントロールプレーンログの現在の設定が表示されます：
 
 ![EKS Console Observability Tab](/docs/observability/logging/cluster-logging/logging-cluster-observability-tab.webp)
 ![EKS Console Control Plane Tab](/docs/observability/logging/cluster-logging/logging-cluster-control-plane-logging-tab.webp)
 
-**管理**ボタンをクリックすることで、ログ設定を変更することができます：
+**Manage**ボタンをクリックすることで、ログ設定を変更することができます：
 
 ![Enable Logging](/docs/observability/logging/cluster-logging/logging-cluster-enable-control-plane-logging.webp)
 
@@ -51,11 +51,11 @@ EKSコンソールでこの設定を確認してみましょう：
 
 <ConsoleButton url="https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab" service="eks" label="EKSコンソールを開く"/>
 
-**ログ記録**タブには、クラスターのコントロールプレーンログの現在の設定が表示されます：
+**Observability**タブには、クラスターのコントロールプレーンログの現在の設定が表示されます：
 
 ![EKS Console Logging Tab](/docs/observability/logging/cluster-logging/logging-cluster-logging-tab.webp)
 
-**管理**ボタンをクリックすることで、ログ設定を変更することができます：
+**Manage**ボタンをクリックすることで、ログ設定を変更することができます：
 
 ![Enable Logging](/docs/observability/logging/cluster-logging/logging-cluster-enable-logging.webp)
 

@@ -1,7 +1,8 @@
 ---
 title: AWSイベントでの利用
 sidebar_position: 20
-tmdTranslationSourceHash: 04b12c0c4959e1262ffab9241608712d
+pagination_next: fastpaths/navigating-labs
+tmdTranslationSourceHash: af7bac5ea96d1533a7c71211ebdec040
 ---
 
 このワークショップに参加することで、ラボ資料を完了するために使用するAWSアカウントが提供されます。[https://catalog.workshops.aws/](https://catalog.workshops.aws/)にアクセスしてポータルに接続します。**Get Started**をクリックします。
@@ -43,4 +44,3 @@ tmdTranslationSourceHash: 04b12c0c4959e1262ffab9241608712d
 ![Get Started](/docs/introduction/setup/workshop-event-page.webp)
 
 これで、[ラボのナビゲーションセクション](/docs/fastpaths/navigating-labs)に進むことができます。
-
