@@ -1,0 +1,73 @@
+apiVersion: cloudwatch.aws.amazon.com/v1alpha1
+kind: AmazonCloudWatchAgent
+metadata:
+  name: application-metrics-collector
+  namespace: amazon-cloudwatch
+spec:
+  mode: deployment
+  replicas: 1
+  image: ${CWA_IMAGE}
+  serviceAccount: cloudwatch-agent
+  config: '{"agent":{"region":"${AWS_REGION}"}}'
+  otelConfig: |
+    exporters:
+      otlphttp/cw:
+        auth:
+          authenticator: sigv4auth/cw
+        endpoint: https://monitoring.${AWS_REGION}.amazonaws.com:443
+        tls:
+          insecure: false
+    extensions:
+      sigv4auth/cw:
+        region: ${AWS_REGION}
+        service: monitoring
+    processors:
+      batch:
+        send_batch_max_size: 500
+        send_batch_size: 500
+        timeout: 10s
+    receivers:
+      prometheus:
+        config:
+          scrape_configs:
+            - job_name: orders
+              metrics_path: /actuator/prometheus
+              scrape_interval: 60s
+              kubernetes_sd_configs:
+                - role: pod
+                  namespaces:
+                    names:
+                      - orders
+              relabel_configs:
+                - source_labels: [__meta_kubernetes_pod_container_port_number]
+                  regex: "8080"
+                  action: keep
+                - source_labels: [__meta_kubernetes_namespace]
+                  target_label: Namespace
+                - source_labels: [__meta_kubernetes_pod_name]
+                  target_label: PodName
+            - job_name: checkout
+              metrics_path: /metrics
+              scrape_interval: 60s
+              kubernetes_sd_configs:
+                - role: pod
+                  namespaces:
+                    names:
+                      - checkout
+              relabel_configs:
+                - source_labels: [__meta_kubernetes_pod_container_port_number]
+                  regex: "8080"
+                  action: keep
+                - source_labels: [__meta_kubernetes_namespace]
+                  target_label: Namespace
+                - source_labels: [__meta_kubernetes_pod_name]
+                  target_label: PodName           
+    service:
+      extensions: [sigv4auth/cw]
+      pipelines:
+        metrics:
+          exporters: [otlphttp/cw]
+          processors: [batch]
+          receivers: [prometheus]
+
+
