@@ -18,7 +18,7 @@ We can use this screen to dive further into the cost allocation of our cluster. 
 - pod
 - labels
 
-The application we installed in the Introduction section created several of these components. These components also have. Next, we'll drill into the costs of this application by using these dimensions.
+The application we installed in the Introduction section created several of these components. These components also have associated costs. Next, we'll drill into the costs of this application by using these dimensions.
 
 To do this click on the setting button next to <b>Aggregate by</b> at the top right.
 
@@ -32,7 +32,7 @@ Then under <b>Filters</b> select <b>label</b> from the drop-down menu, enter the
 <img src={require('@site/static/docs/observability/kubecost/costallocation-label.webp').default}/>
 </Browser>
 
-This filters down the namespaces to only show our workloads that have the label `app.kubernetes.io/create-by: eks-workshop`. This label is included on all the components of the application we launched in the Introduction section.
+This filters down the namespaces to only show our workloads that have the label `app.kubernetes.io/created-by: eks-workshop`. This label is included on all the components of the application we launched in the Introduction section.
 
 Now click on <b>Aggregate by</b> and choose <b>Deployment</b>. This will aggregate the costs by deployment instead of by namespace. See below.
 
