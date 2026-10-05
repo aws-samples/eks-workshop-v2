@@ -2,7 +2,7 @@
 title: Kustomize
 sidebar_custom_props: { "module": true }
 sidebar_position: 70
-tmdTranslationSourceHash: 785ddb1ac12e1137a75c4433b9b12aa5
+tmdTranslationSourceHash: 0615bc407706082a7352e8cea036eee3
 ---
 
 ::required-time
@@ -11,7 +11,7 @@ tmdTranslationSourceHash: 785ddb1ac12e1137a75c4433b9b12aa5
 このセクションのために環境を準備してください：
 
 ```bash timeout=300 wait=10
-$ prepare-environment
+$ prepare-environment introduction/kustomize
 ```
 
 :::
