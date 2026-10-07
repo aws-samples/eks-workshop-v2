@@ -2,7 +2,7 @@
 
 set -e
 
-export VERSION="4.101.2"
+export VERSION="4.139.1"
 arch=$(uname -m)
 arch_name=""
 
