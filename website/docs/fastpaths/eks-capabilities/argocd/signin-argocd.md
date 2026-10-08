@@ -109,9 +109,9 @@ $ aws eks describe-capability \
   --query 'capability.configuration.argoCd.serverUrl' --output text
 ```
 
-1. Click **Log in via AWS Identity Center**.
+1. Click **Log in via SSO**. Here, the SSO is powered by IAM Identity Center.
 2. **Username:** the value of `$EKS_CAP_ARGOCD_USER`. Click **Next**.
-3. **Password:** the one-time password you copied in step 3. Click **Sign in**.
+3. **Password:** the one-time password you copied earlier either from SecretManager or in step 3. Click **Sign in**.
 4. Identity Center forces a **Set new password** screen on first sign-in. Choose any new password and confirm it.
 5. After setting the new password you'll be redirected to the Argo CD **Applications** view as `ADMIN`.
 
