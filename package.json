@@ -49,7 +49,7 @@
     ]
   },
   "resolutions": {
-    "markdown-link-extractor": "4.0.2"
+    "markdown-link-extractor": "4.0.4"
   },
   "packageManager": "yarn@4.12.0"
 }
