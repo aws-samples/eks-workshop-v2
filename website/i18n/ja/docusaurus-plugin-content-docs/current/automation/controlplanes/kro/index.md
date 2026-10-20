@@ -11,7 +11,7 @@ tmdTranslationSourceHash: 0999bb4d3d1e014187c52837fcc1d68c
 :::tip 始める前に
 このセクションの環境を準備してください：
 
-```bash timeout=300 wait=30
+```bash timeout=900 wait=30
 $ prepare-environment automation/controlplanes/kro
 ```
 

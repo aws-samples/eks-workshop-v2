@@ -58,7 +58,7 @@ webapplicationdynamodbs.kro.run    2024-01-15T10:35:00Z
 
 Now let's examine the carts-ddb.yaml file that will use the WebApplicationDynamoDB API to create an instance of the **Carts** component:
 
-::yaml{file="manifests/modules/automation/controlplanes/kro/app/carts-ddb.yaml" paths="kind,metadata,spec.appName,spec.replicas,spec.image,spec.port,spec.dynamodb,spec.env,spec.aws"}
+::yaml{file="manifests/modules/automation/controlplanes/kro/app/carts-ddb.yaml" paths="kind,metadata,spec.appName,spec.replicas,spec.image,spec.port,spec.dynamodb,spec.env"}
 
 1. Uses the custom WebApplicationDynamoDB API created by our RGD
 2. Creates a resource named `carts` in the `carts` namespace
@@ -68,7 +68,6 @@ Now let's examine the carts-ddb.yaml file that will use the WebApplicationDynamo
 6. Exposes the application on port 8080
 7. Specifies the DynamoDB table name
 8. Sets environment variables to enable DynamoDB persistence mode
-9. Provides AWS account ID and region for IAM and Pod Identity configuration
 
 Next, let's deploy the updated component leveraging the carts-ddb.yaml file:
 
@@ -116,14 +115,16 @@ $ aws dynamodb list-tables
 
 Our DynamoDB table and component have been successfully created using kro's composable approach.
 
-:::info EKS Pod Identity is eventually consistent
-The `WebApplicationDynamoDB` ResourceGraphDefinition gates the application Deployment on the `PodIdentityAssociation` reaching a synced state (via kro's `readyWhen`), because Pod Identity credentials are only injected when a pod is first admitted. If the `carts` pod ever lands in `CrashLoopBackOff` with a DynamoDB `AccessDenied` error, the association had not fully propagated when the pod started — simply recreate the pod so it picks up the injected credentials:
+The `carts` Deployment uses EKS Pod Identity to get credentials for DynamoDB. EKS injects these credentials only when a pod is admitted, and a new Pod Identity association can take a short time to take effect after it is created. The `carts` pod was created right after the association, so it may have started without credentials. Restart the Deployment so that the new pod gets them:
 
-```bash
+```bash timeout=180
 $ kubectl rollout restart deployment/carts -n carts
+deployment.apps/carts restarted
 $ kubectl rollout status deployment/carts -n carts --timeout=120s
+deployment "carts" successfully rolled out
 ```
 
+:::info
 For managing this eventual consistency at scale with automated GitOps tooling, see [How to manage EKS Pod Identities at scale using Argo CD and AWS ACK](https://aws.amazon.com/blogs/containers/how-to-manage-eks-pod-identities-at-scale-using-argo-cd-and-aws-ack/).
 :::
 
