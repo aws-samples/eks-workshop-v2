@@ -45,17 +45,17 @@ workshop() {
     echo "Sign in to the AWS console of the account you deployed the workshop in."
   fi
 }
-EOT
 
-{
-  echo "  Workshop URL:     ${WORKSHOP_URL}"
-  if [ -n "${CONSOLE_URL}" ]; then
-    echo "  Login to console: ${CONSOLE_URL}"
-  fi
+# Print the links when an IDE terminal opens: interactive VS Code shells only
+# (not scripts or bash -c), and not again in shells nested inside a terminal.
+# banner.bash sorts first, so the first terminal shows the banner, then these.
+if [[ \$- == *i* ]] && [ "\$TERM_PROGRAM" = "vscode" ] && [ -z "\$WORKSHOP_LINKS_SHOWN" ]; then
+  export WORKSHOP_LINKS_SHOWN=1
+  workshop
+  echo "(Type 'workshop' at any time to show these links again.)"
   echo ""
-  echo "  Type 'workshop' at any time to show these links again."
-  echo ""
-} >> /home/ec2-user/.banner-text
+fi
+EOT
 
 mkdir -p ~/.local/share/code-server/User
 touch ~/.local/share/code-server/User/settings.json
