@@ -39,9 +39,6 @@ export CONSOLE_URL="${CONSOLE_URL}"
 
 workshop() {
   echo "Workshop URL:     \$WORKSHOP_URL"
-}
-
-console() {
   if [ -n "\$CONSOLE_URL" ]; then
     echo "Login to console: \$CONSOLE_URL"
   else
@@ -56,7 +53,7 @@ EOT
     echo "  Login to console: ${CONSOLE_URL}"
   fi
   echo ""
-  echo "  Type 'workshop' or 'console' at any time to show these links again."
+  echo "  Type 'workshop' at any time to show these links again."
   echo ""
 } >> /home/ec2-user/.banner-text
 
