@@ -44,6 +44,7 @@ Kubernetes uses labels for many purposes, for example the nodes have a label tha
 $ kubectl get nodes -o json | jq -c '.items[] | {name: .metadata.name, nodepool: .metadata.labels."karpenter.sh/nodepool"}'
 {"name":"i-082b0e8be0994671a","nodepool":"general-purpose"}
 {"name":"i-0af75b7f0f828f36c","nodepool":"general-purpose"}
+{"name":"i-0f079ef3f16e78092","nodepool":"system"}
 ```
 
 
@@ -67,7 +68,7 @@ other      Active   62s
 ui         Active   62s
 ```
 
-We can also see all of resources created for the components:
+We can also see all resources created for these components:
 
 ```bash
 $ kubectl get all -l app.kubernetes.io/created-by=eks-workshop -A
@@ -103,10 +104,16 @@ Now that we have deployed our sample application, pick one of the two options to
       <p>Learn essential EKS features for deploying and managing containerized applications.</p>
     </div>
   </a>
-    <a href="../operator" style={{textDecoration: 'none', color: 'inherit', flex: '1', minWidth: '280px', maxWidth: '400px'}}>
+  <a href="../operator" style={{textDecoration: 'none', color: 'inherit', flex: '1', minWidth: '280px', maxWidth: '400px'}}>
     <div style={{border: '2px solid #ddd', borderRadius: '8px', padding: '2rem', height: '100%', cursor: 'pointer'}}>
       <h3 style={{marginTop: 0}}>Operator Essentials</h3>
       <p>Learn essential EKS features for managing a container platform.</p>
+    </div>
+  </a>
+  <a href="../eks-capabilities" style={{textDecoration: 'none', color: 'inherit', flex: '1', minWidth: '280px', maxWidth: '400px'}}>
+    <div style={{border: '2px solid #ddd', borderRadius: '8px', padding: '2rem', height: '100%', cursor: 'pointer'}}>
+      <h3 style={{marginTop: 0}}>Capability Essentials</h3>
+      <p>Learn managed EKS capabilities.</p>
     </div>
   </a>
 </div>

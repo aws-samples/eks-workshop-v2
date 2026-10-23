@@ -24,10 +24,13 @@ Before we do anything, let's inspect the current Namespaces in our EKS cluster:
 ```bash
 $ kubectl get namespaces
 NAME              STATUS   AGE
-default           Active   30h
-kube-node-lease   Active   30h
-kube-public       Active   30h
-kube-system       Active   30h
+amazon-cloudwatch   Active   2d23h
+argocd              Active   2d23h
+default             Active   3d
+external-secrets    Active   2d23h
+kube-node-lease     Active   3d
+kube-public         Active   3d
+kube-system         Active   3d
 ```
 
 All of the entries listed are Namespaces for system components. We'll use [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) to filter the Namespaces down to only those we've created:
