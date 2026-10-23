@@ -111,8 +111,9 @@ if [ -n "$idc_required" ]; then
 module "gen_idc_base" {
   source = "./$idc_base_target"
 
-  eks_cluster_id = local.eks_cluster_id
-  tags           = local.tags
+  eks_cluster_id   = local.eks_cluster_id
+  tags             = local.tags
+  idc_instance_arn = var.idc_instance_arn
 }
 EOF
 
