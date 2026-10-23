@@ -26,6 +26,6 @@ content/cost-optimization:
   - manifests/modules/costoptimization/**/*
   - website/docs/costoptimization/**/*
 
-content/fastpaths:
+content/learningpaths:
   - manifests/modules/fastpaths/**/*
   - website/docs/fastpaths/**/*
