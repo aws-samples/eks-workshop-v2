@@ -22,17 +22,13 @@ Now let us try accessing the 'catalog' component from the 'ui' component,
 
 ```bash expectError=true
 $ kubectl exec deployment/ui -n ui -- curl -s http://catalog.catalog/health --connect-timeout 5
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0
-curl: (28) Resolving timed out after 5000 milliseconds
 command terminated with exit code 28
 ```
 
 On execution of the curl command, the output displayed should have the below statement, which shows that the 'ui' component now cannot directly communicate with the 'catalog' component.
 
 ```text
-curl: (28) Resolving timed out after 3000 milliseconds
+command terminated with exit code 28
 ```
 
 Implementing the above policy will also cause the sample application to no longer function properly as 'ui' component requires access to the 'catalog' service and other service components. To define an effective egress policy for 'ui' component requires understanding the network dependencies for the component.
@@ -65,10 +61,14 @@ As you can see from the outputs, we can now connect to the 'catalog' service but
 $ kubectl exec deployment/ui -n ui -- curl -v telnet://catalog-mysql.catalog:3306 --connect-timeout 5
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host catalog-mysql.catalog:3306 was resolved.
+* IPv6: (none)
+* IPv4: 172.16.244.252
+*   Trying 172.16.244.252:3306...
+  0     0    0     0    0     0      0      0 --:--:--  0:00:04 --:--:--     0* Connection timed out after 5002 milliseconds
   0     0    0     0    0     0      0      0 --:--:--  0:00:05 --:--:--     0
-* Failed to connect to catalog-mysql.catalog port 3306 after 5000 ms: Timeout was reached
-* Closing connection 0
-curl: (28) Failed to connect to catalog-mysql.catalog port 3306 after 5000 ms: Timeout was reached
+* closing connection #0
+curl: (28) Connection timed out after 5002 milliseconds
 command terminated with exit code 28
 ```
 
@@ -76,10 +76,32 @@ Similarly, we can test to see if we are able to connect to other services like t
 
 ```bash expectError=true
 $ kubectl exec deployment/ui -n ui -- curl -v www.google.com --connect-timeout 5
-   Trying XXX.XXX.XXX.XXX:80...
-*   Trying [XXXX:XXXX:XXXX:XXXX::XXXX]:80...
-* Immediate connect fail for XXXX:XXXX:XXXX:XXXX::XXXX: Network is unreachable
-curl: (28) Failed to connect to www.google.com port 80 after 5001 ms: Timeout was reached
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host www.google.com:80 was resolved.
+* IPv6: 2001:4860:482a:7700::, 2001:4860:482d:7700::, 2001:4860:4828:7700::, 2001:4860:4826:7700::, 2001:4860:482c:7700::, 2001:4860:4827:7700::, 2001:4860:482b:7700::, 2001:4860:4829:7700::
+* IPv4: 142.251.157.119, 142.251.152.119, 142.251.155.119, 142.251.156.119, 142.251.154.119, 142.251.150.119, 142.251.153.119, 142.251.151.119
+*   Trying [2001:4860:482a:7700::]:80...
+* Immediate connect fail for 2001:4860:482a:7700::: Network is unreachable
+*   Trying [2001:4860:482d:7700::]:80...
+* Immediate connect fail for 2001:4860:482d:7700::: Network is unreachable
+...
+...
+*   Trying [2001:4860:4829:7700::]:80...
+* Immediate connect fail for 2001:4860:4829:7700::: Network is unreachable
+*   Trying 142.251.157.119:80...
+  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0* ipv4 connect timeout after 2497ms, move on!
+  0     0    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0*   Trying 142.251.152.119:80...
+  0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0* ipv4 connect timeout after 1247ms, move on!
+*   Trying 142.251.155.119:80...
+* ipv4 connect timeout after 623ms, move on!
+*   Trying 142.251.156.119:80...
+* ipv4 connect timeout after 312ms, move on!
+  0     0    0     0    0     0      0      0 --:--:--  0:00:04 --:--:--     0*   Trying 142.251.154.119:80...
+* Connection timed out after 5001 milliseconds
+  0     0    0     0    0     0      0      0 --:--:--  0:00:05 --:--:--     0
+* closing connection #0
+curl: (28) Connection timed out after 5001 milliseconds
 command terminated with exit code 28
 ```
 
