@@ -59,7 +59,7 @@ webapplicationdynamodbs.kro.run    2024-01-15T10:35:00Z
 
 次に、WebApplicationDynamoDB APIを使用して**Carts**コンポーネントのインスタンスを作成するcarts-ddb.yamlファイルを確認しましょう：
 
-::yaml{file="manifests/modules/automation/controlplanes/kro/app/carts-ddb.yaml" paths="kind,metadata,spec.appName,spec.replicas,spec.image,spec.port,spec.dynamodb,spec.env"}
+::yaml{file="manifests/modules/automation/controlplanes/kro/app/carts-ddb.yaml" paths="kind,metadata,spec.appName,spec.replicas,spec.image,spec.port,spec.dynamodb,spec.env,spec.aws"}
 
 1. RGDで作成されたカスタムWebApplicationDynamoDB APIを使用
 2. `carts`名前空間に`carts`という名前のリソースを作成
@@ -69,6 +69,7 @@ webapplicationdynamodbs.kro.run    2024-01-15T10:35:00Z
 6. ポート8080でアプリケーションを公開
 7. DynamoDBテーブル名を指定
 8. DynamoDB永続モードを有効にする環境変数を設定
+9. IAMとPod Identityの設定のためにAWSアカウントIDとリージョンを提供
 
 次に、carts-ddb.yamlファイルを活用して更新されたコンポーネントをデプロイしましょう：
 
