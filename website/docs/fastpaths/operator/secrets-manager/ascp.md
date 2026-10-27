@@ -16,6 +16,8 @@ daemonset.apps/csi-secrets-store-secrets-store-csi-driver   3         3         
 
 NAME                                                   READY   STATUS    RESTARTS   AGE
 pod/csi-secrets-store-secrets-store-csi-driver-bzddm   3/3     Running   0          3m57s
+pod/csi-secrets-store-secrets-store-csi-driver-k7m6c   3/3     Running   0          3m57s
+pod/csi-secrets-store-secrets-store-csi-driver-x2rs4   3/3     Running   0          3m57s
 ```
 
 Next, check the CSI Secrets Store Provider for AWS driver `DaemonSet` and its `Pods`:
@@ -27,6 +29,8 @@ daemonset.apps/secrets-store-csi-driver-provider-aws   3         3         3    
 
 NAME                                              READY   STATUS    RESTARTS   AGE
 pod/secrets-store-csi-driver-provider-aws-4jf8f   1/1     Running   0          2m2s
+pod/secrets-store-csi-driver-provider-aws-djtf5   1/1     Running   0          2m2s
+pod/secrets-store-csi-driver-provider-aws-dzg9r   1/1     Running   0          2m2s
 ```
 
 To provide access to secrets stored in AWS Secrets Manager via the CSI driver, you'll need a `SecretProviderClass` - a namespaced custom resource that provides driver configurations and parameters matching the information in AWS Secrets Manager.
