@@ -1,7 +1,7 @@
 ---
 title: 最初のコンポーネントのデプロイ
 sidebar_position: 40
-tmdTranslationSourceHash: '0dbec28f9d8a26b4d0a8e6cd338727a4'
+tmdTranslationSourceHash: 'f20c2424b9a0ecc0b4b2271ae73bf248'
 ---
 
 サンプルアプリケーションは、Kustomize で簡単に適用できるように構成された Kubernetes マニフェストのセットで構成されています。Kustomize はオープンソースのツールであり、`kubectl` CLI のネイティブ機能としても提供されています。このワークショップでは、Kustomize を使用して Kubernetes マニフェストに変更を適用し、YAML を手動で編集することなくマニフェストファイルの変更を理解しやすくします。このワークショップのさまざまなモジュールを進めていく中で、Kustomize を使用してオーバーレイとパッチを段階的に適用していきます。
@@ -25,10 +25,13 @@ tmdTranslationSourceHash: '0dbec28f9d8a26b4d0a8e6cd338727a4'
 ```bash
 $ kubectl get namespaces
 NAME              STATUS   AGE
-default           Active   30h
-kube-node-lease   Active   30h
-kube-public       Active   30h
-kube-system       Active   30h
+amazon-cloudwatch   Active   2d23h
+argocd              Active   2d23h
+default             Active   3d
+external-secrets    Active   2d23h
+kube-node-lease     Active   3d
+kube-public         Active   3d
+kube-system         Active   3d
 ```
 
 リストされているすべてのエントリは、システムコンポーネントの Namespace です。[Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) を使用して、作成した Namespace のみにフィルタリングします。
@@ -98,7 +101,7 @@ catalog-5fdcc8c65-jkg9f   1/1     Running   2 (87s ago)   2m6s
 catalog-mysql-0           1/1     Running   0             2m5s
 ```
 
-<!-- `catalog` Pod のステータスが `CrashLoopBackOff` と表示されている場合、起動する前に `catalog-mysql` Pod に接続できる必要があります。Kubernetes はこれが当てはまるまで再起動を続けます。その場合、[kubectl wait](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#wait) を使用して、Ready 状態になるまで特定の Pod を監視できます。-->
+<!-- catalog API 用の Pod と MySQL データベース用の別の Pod があることに注目してください。`catalog` Pod のステータスが `CrashLoopBackOff` と表示されている場合、起動する前に `catalog-mysql` Pod に接続できる必要があります。Kubernetes はこれが当てはまるまで再起動を続けます。その場合、[kubectl wait](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#wait) を使用して、Ready 状態になるまで特定の Pod を監視できます。-->
 
 Pod がまだ準備できていない場合は、[kubectl wait](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#wait) を使用して準備ができるまで待つことができます。
 
