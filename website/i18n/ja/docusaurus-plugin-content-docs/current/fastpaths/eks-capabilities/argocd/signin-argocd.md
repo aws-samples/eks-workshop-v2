@@ -1,7 +1,7 @@
 ---
 title: "Identity Center経由でArgo CDにサインインする"
 sidebar_position: 15
-tmdTranslationSourceHash: 'ce2402e707a9fc64da51a453b89e27e0'
+tmdTranslationSourceHash: '85b747b01ef00dc3a5a1dd53347aa934'
 ---
 
 マネージドArgo CD capabilityは、**AWS IAM Identity Center経由でのみ**認証を行います。ローカル`admin`アカウントや自動生成されたパスワードは存在しません。サインインする全ての人は、3つの組み込みArgo CDロール（`ADMIN`、`EDITOR`、`VIEWER`）のいずれかにマッピングされたIdentity Centerのアイデンティティを使用します。
@@ -110,9 +110,9 @@ $ aws eks describe-capability \
   --query 'capability.configuration.argoCd.serverUrl' --output text
 ```
 
-1. **Log in via AWS Identity Center**をクリックします。
+1. **Log in via SSO**をクリックします。ここでのSSOはIAM Identity Centerによって提供されています。
 2. **Username:** `$EKS_CAP_ARGOCD_USER`の値を入力します。**Next**をクリックします。
-3. **Password:** ステップ3でコピーしたワンタイムパスワードを入力します。**Sign in**をクリックします。
+3. **Password:** SecretsManagerから取得した、またはステップ3でコピーしたワンタイムパスワードを入力します。**Sign in**をクリックします。
 4. Identity Centerは初回サインイン時に**Set new password**画面を強制します。任意の新しいパスワードを選択して確認します。
 5. 新しいパスワードを設定すると、`ADMIN`としてArgo CDの**Applications**ビューにリダイレクトされます。
 
@@ -133,4 +133,3 @@ UIには**Amazon EKSコンソール**からもアクセスできます。クラ�
 **"It's not you, it's us"。** Identity Centerがユーザーをアクティブ化できませんでした。Reset password → "Generate a one-time password"（メールリンクオプションではなく）を使用して、メールの往復をバイパスしてください。
 
 **`prepare-environment`中の`Caller does not have permission to perform sso:CreateApplication`。** IDEロールには、`lab/iam/policies/eks-capabilities.yaml`で提供されるSSOおよびIdentity Storeのパーミッションが必要です。標準のワークショップIDE外で実行している場合は、そのポリシーをランナーロールにアタッチしてください。 -->
-
