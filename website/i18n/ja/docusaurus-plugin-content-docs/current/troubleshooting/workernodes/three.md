@@ -2,7 +2,7 @@
 title: "ノードがNot-Ready状態"
 sidebar_position: 73
 chapter: true
-tmdTranslationSourceHash: 09464da5ad3fd035147d80e84aa037dc
+tmdTranslationSourceHash: 0d920d1187f4d4b59883b2c4621631ef
 ---
 
 ::required-time
@@ -31,13 +31,13 @@ $ NODE_NAME=$(kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodeg
 
 ### ステップ3: システムPodの状態をチェックする
 
-影響を受けているノード上のkube-system podsの状態を調べて、システムレベルの問題を特定しましょう：
+影響を受けているノード上のkube-system Podの状態を調べて、システムレベルの問題を特定しましょう：
 
 ```bash
 $ kubectl get pods -n kube-system -o wide --field-selector spec.nodeName=$NODE_NAME
 ```
 
-このコマンドは、影響を受けたノード上で実行されているすべてのkube-system podsを表示し、それらによって引き起こされる可能性のあるノードの問題を特定するのに役立ちます。すべてのpodがrunning状態であることに注意してください。
+このコマンドは、影響を受けたノード上で実行されているすべてのkube-system Podを表示し、それらによって引き起こされる可能性のあるノードの問題を特定するのに役立ちます。すべてのPodがrunning状態であることに注意してください。
 
 ### ステップ4: ノードの状態を調べる
 
@@ -80,10 +80,10 @@ Events:
 ここでは、ノードのkubeletが*Unknown*状態にあり、到達できないことがわかります。このステータスについては、[Kubernetesドキュメント](https://kubernetes.io/docs/reference/node/node-status/#condition)で詳細を確認できます。
 
 :::note ノードステータス情報
-ノードには次のtaintsがあります：
+ノードには次のTaintがあります：
 
-- **node.kubernetes.io/unreachable:NoExecute**: このtaintを許容しないポッドは退避されることを示します
-- **node.kubernetes.io/unreachable:NoSchedule**: 新しいポッドがスケジュールされるのを防ぎます
+- **node.kubernetes.io/unreachable:NoExecute**: このTaintをToleration（許容）しないPodは退避されることを示します
+- **node.kubernetes.io/unreachable:NoSchedule**: 新しいPodがスケジュールされるのを防ぎます
 
 ノードの状態は、kubeletがステータスの更新を停止したことを示しています。これは通常、深刻なリソース制約やシステムの不安定さを示しています。
 :::
@@ -161,14 +161,14 @@ $ kubectl scale deployment/prod-app -n prod --replicas=0 && kubectl delete pod -
 
 #### 6.3. ノードグループのノードをリサイクルする
 
-```bash timeout=120 wait=95
+```bash timeout=600 wait=95
 $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=0 && \
 aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && \
 aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --labels "addOrUpdateLabels={status=new-node}" && \
 aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && \
 aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=1 && \
 aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && \
-for i in {1..12}; do NODE_NAME_2=$(kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_3,status=new-node --no-headers -o custom-columns=":metadata.name" 2>/dev/null) && [ -n "$NODE_NAME_2" ] && break || sleep 5; done && \
+for i in {1..36}; do NODE_NAME_2=$(kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_3,status=new-node --no-headers -o custom-columns=":metadata.name" 2>/dev/null) && [ -n "$NODE_NAME_2" ] && break || sleep 5; done && \
 [ -n "$NODE_NAME_2" ]
 ```
 
@@ -296,7 +296,7 @@ ip-10-42-180-24.us-west-2.compute.internal    Ready    <none>   1h35m   v1.30.8-
 
 #### 3. ベストプラクティス
 
-- 水平Pod自動スケーリングを実装する
+- Horizontal Pod Autoscalingを実装する
 - 自動スケーリングを使用する：[Cluster-autoscaler](https://docs.aws.amazon.com/eks/latest/best-practices/cas.html)、[Karpenter](https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html)、[EKS Auto Mode](https://docs.aws.amazon.com/eks/latest/userguide/automode.html)
 - 定期的な容量計画
 - アプリケーションでの適切なエラー処理の実装
