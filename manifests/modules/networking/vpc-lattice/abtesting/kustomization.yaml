@@ -6,5 +6,6 @@ resources:
 patches:
   - path: deploymentv2.yaml
   - path: servicev2.yaml
+  - path: configmapv2.yaml
   - path: delete-deployment-redis.yaml
   - path: delete-service-redis.yaml
