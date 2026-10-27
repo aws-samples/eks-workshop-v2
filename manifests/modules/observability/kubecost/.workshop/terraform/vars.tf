@@ -38,5 +38,11 @@ variable "kubecost_chart_version" {
   description = "The chart version of kubecost to use"
   type        = string
   # renovate-helm: depName=cost-analyzer registryUrl=https://kubecost.github.io/cost-analyzer
-  default = "2.8.6"
+  default = "2.8.4"
+}
+
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
+  type        = string
 }

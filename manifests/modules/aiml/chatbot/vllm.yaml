@@ -54,7 +54,7 @@ spec:
               pip install hf_transfer
 
               mkdir -p /models/mistral-7b-v0.3
-              HF_HUB_ENABLE_HF_TRANSFER=1 hf download aws-neuron/Mistral-7B-Instruct-v0.3-seqlen-2048-bs-1-cores-2 --local-dir /models/mistral-7b-v0.3
+              HF_HUB_ENABLE_HF_TRANSFER=1 HF_HUB_DISABLE_XET=1 hf download aws-neuron/Mistral-7B-Instruct-v0.3-seqlen-2048-bs-1-cores-2 --local-dir /models/mistral-7b-v0.3
 
               echo ""
               echo "Model download is complete."

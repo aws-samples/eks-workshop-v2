@@ -10,13 +10,13 @@ description: "Directly manage AWS services from Amazon Elastic Kubernetes Servic
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=300 wait=30
+```bash timeout=600 wait=30
 $ prepare-environment automation/controlplanes/ack
 ```
 
 This will make the following changes to your lab environment:
 
-- Install the AWS Controllers for DynamoDB in the Amazon EKS cluster
+- Enable the AWS Controllers for Kubernetes (ACK) capability for Amazon DynamoDB using Amazon EKS capabilities
 
 You can view the Terraform that applies these changes [here](https://github.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/tree/VAR::MANIFESTS_REF/manifests/modules/automation/controlplanes/ack/.workshop/terraform).
 
@@ -30,6 +30,6 @@ While the sample application can run entirely within your cluster, including sta
 
 In this lab, we'll use ACK to provision these services and create secrets and configmaps containing the binding information to connect the application to these AWS managed services.
 
-For learning purposes, we're using helm to install the ACK controller. Another option is to use Terraform that allows for rapid deployment of AWS Service Controllers to your cluster. For more information, see the [ACK Terraform module documentation](https://registry.terraform.io/modules/aws-ia/eks-ack-addons/aws/latest#module_dynamodb).
+You'll consume ACK through [Amazon EKS capabilities](https://docs.aws.amazon.com/eks/latest/userguide/capabilities.html), a fully managed capability, so there's no controller for you to install or operate yourself. Amazon EKS runs and maintains the ACK controller in AWS-managed infrastructure on your behalf.
 
 ![EKS with DynamoDB](/docs/automation/controlplanes/ack/eks-workshop-ddb.webp)

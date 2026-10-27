@@ -1,7 +1,7 @@
 ---
 title: "Grafanaへのアクセス"
 sidebar_position: 30
-tmdTranslationSourceHash: 1c39985a7c86ef01590c8c217d5278e3
+tmdTranslationSourceHash: '54efc8a0f55939ccf57287bf63e04122'
 ---
 
 GrafanaのインスタンスはあなたのEKSクラスターに事前にインストールされています。アクセスするには、まずURLを取得する必要があります：
@@ -25,3 +25,14 @@ $ kubectl get -n grafana secrets/grafana -o=jsonpath='{.data.admin-password}' | 
 Grafanaコンソールにログインした後、データソースセクションを見てみましょう。Amazon Managed Service for Prometheusワークスペースがデータソースとして既に設定されているはずです。
 
 ![Amazon Managed Service for Prometheusデータソース](/docs/observability/open-source-metrics/datasource.webp)
+
+:::info 本番環境向けのAmazon Managed Grafana
+このラボでは、セットアップをシンプルにするためにクラスター内でセルフマネージド型Grafanaを実行しています。本番環境では、通常、AWSがGrafana Labsと連携して運用する完全マネージド型サービスである[Amazon Managed Grafana](https://aws.amazon.com/grafana/)を使用することをお勧めします：
+
+- **運用作業なし** — AWSがGrafanaのプロビジョニング、パッチ適用、スケーリング、および高可用性を提供するため、サーバーやバージョンアップグレードを管理する必要がありません。
+- **AWS経由のEnterpriseプラグイン** — Grafana Labsの個別のEnterpriseライセンスなしで、AWS経由で直接Grafana Enterpriseデータソースプラグインをワークスペースでアップグレードして使用できます。
+- **AWSネイティブなセキュリティ** — ユーザーはAWS IAM Identity CenterまたはSAMLを通じてサインインし、AWS Identity and Access Managementによってアクセスが管理されます。
+- **組み込みのAWSデータソース** — Amazon Managed Service for Prometheus、Amazon CloudWatchなどとのネイティブな統合。
+
+Amazon Managed Grafanaワークスペースは、このラボで使用する同じAmazon Managed Service for Prometheusワークスペースをデータソースとしてクエリできます。
+:::

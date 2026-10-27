@@ -1,7 +1,7 @@
 ---
 title: "ルートの設定"
 sidebar_position: 30
-tmdTranslationSourceHash: 2a099daa7d22fd6797d5afed142a0f8d
+tmdTranslationSourceHash: 607942b50a09a9268c77b8b43a71019f
 ---
 
 このセクションでは、ブルー/グリーンデプロイメントやカナリアスタイルのデプロイメントのための重み付けルーティングを使用した、高度なトラフィック管理にAmazon VPC Latticeを使用する方法を示します。
@@ -9,7 +9,7 @@ tmdTranslationSourceHash: 2a099daa7d22fd6797d5afed142a0f8d
 配送オプションに「Lattice」というプレフィックスを追加した`checkout`マイクロサービスの修正版をデプロイしましょう。Kustomizeを使用して、この新しいバージョンを新しい名前空間（`checkoutv2`）にデプロイします。
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/networking/vpc-lattice/abtesting/
+$ kubectl kustomize ~/environment/eks-workshop/modules/networking/vpc-lattice/abtesting/ | envsubst | kubectl apply -f -
 $ kubectl rollout status deployment/checkout -n checkoutv2
 ```
 

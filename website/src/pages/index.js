@@ -4,6 +4,7 @@ import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
 import HomepageFeatures from "@site/src/components/HomepageFeatures";
+import HomepageModuleLink from "@site/src/components/HomepageModuleLink";
 import HomepageVideo from "@site/src/components/HomepageVideo";
 import Translate from "@docusaurus/Translate";
 
@@ -11,6 +12,7 @@ import styles from "./index.module.css";
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
+  
   return (
     <header className={clsx("hero hero--primary", styles.heroBanner)}>
       <div className="container">
@@ -50,6 +52,7 @@ export default function Home() {
       description="Amazon Web Services workshop for Elastic Kubernetes Service"
     >
       <HomepageHeader />
+      <HomepageModuleLink />
       <main>
         <HomepageFeatures />
         <HomepageVideo />

@@ -157,6 +157,31 @@ Depending on your Docker/Finch version, you might need to add a flag to enable [
 
 If your AWS credentials expire you can `exit` and restart the shell, which will not affect your cluster.
 
+### Restricting inbound traffic
+
+Several workshop labs create internet-facing load balancers (NLB or ALB). By default these are open to all traffic (`0.0.0.0/0`), but you can restrict them to your IP address using the `SOURCE_IP_ADDRESS` environment variable.
+
+The behavior is:
+
+- **Not set or `auto`**: Automatically resolves your public IP via `https://checkip.amazonaws.com` and restricts inbound traffic to that address
+- **Set to a specific IP**: Uses the provided value verbatim
+
+For example:
+
+```bash
+# Auto-detect your IP
+SOURCE_IP_ADDRESS=auto make shell
+
+# Use a specific IP
+SOURCE_IP_ADDRESS=203.0.113.10 make shell
+```
+
+This works with `make shell`, `make ide`, `make deploy-ide`, and the automated test suite. The resolved IP is appended with `/32` and exported as `INBOUND_CIDRS`, which is used by:
+
+- Kubernetes Service annotations (`service.beta.kubernetes.io/load-balancer-source-ranges`) for NLBs
+- Ingress annotations (`alb.ingress.kubernetes.io/inbound-cidrs`) for ALBs
+- Terraform variable `var.inbound_cidrs` passed to lab modules
+
 ## Planning your content
 
 An EKS Workshop lab generally consists of several components:

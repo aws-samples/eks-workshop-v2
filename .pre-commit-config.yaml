@@ -7,7 +7,7 @@ repos:
   - repo: local
     hooks:
       - id: lint
-        language: node
+        language: system
         name: Run linting
         entry: yarn lint:staged
-        stage: [commit]
+        stages: [pre-commit]

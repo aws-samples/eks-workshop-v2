@@ -10,13 +10,13 @@ description: "Compose and manage complex Kubernetes resource graphs with kro on 
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=300 wait=30
+```bash timeout=900 wait=30
 $ prepare-environment automation/controlplanes/kro
 ```
 
 This will make the following changes to your lab environment:
 
-- Install the AWS Controllers for Kubernetes controllers for EKS, IAM and DynamoDB
+- Enable the fully managed Amazon EKS ACK (AWS Controllers for Kubernetes) capability, which provides the EKS, IAM and DynamoDB controllers
 - Install the AWS Load Balancer Controller
 - Create an Ingress resource for the UI workload
 

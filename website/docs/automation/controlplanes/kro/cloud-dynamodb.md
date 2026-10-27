@@ -58,7 +58,7 @@ webapplicationdynamodbs.kro.run    2024-01-15T10:35:00Z
 
 Now let's examine the carts-ddb.yaml file that will use the WebApplicationDynamoDB API to create an instance of the **Carts** component:
 
-::yaml{file="manifests/modules/automation/controlplanes/kro/app/carts-ddb.yaml" paths="kind,metadata,spec.appName,spec.replicas,spec.image,spec.port,spec.dynamodb,spec.env,spec.aws"}
+::yaml{file="manifests/modules/automation/controlplanes/kro/app/carts-ddb.yaml" paths="kind,metadata,spec.appName,spec.replicas,spec.image,spec.port,spec.dynamodb,spec.env"}
 
 1. Uses the custom WebApplicationDynamoDB API created by our RGD
 2. Creates a resource named `carts` in the `carts` namespace
@@ -68,7 +68,6 @@ Now let's examine the carts-ddb.yaml file that will use the WebApplicationDynamo
 6. Exposes the application on port 8080
 7. Specifies the DynamoDB table name
 8. Sets environment variables to enable DynamoDB persistence mode
-9. Provides AWS account ID and region for IAM and Pod Identity configuration
 
 Next, let's deploy the updated component leveraging the carts-ddb.yaml file:
 
@@ -90,7 +89,7 @@ Now we can wait until the instance has reached a "synced" state:
 
 ```bash
 $ kubectl wait -o yaml webapplicationdynamodb/carts -n carts \
-  --for=condition=InstanceSynced=True --timeout=120s
+  --for=condition=ResourcesReady=True --timeout=120s
 ```
 
 To verify that the DynamoDB table has been created, we can check the generated ACK resource:
@@ -116,6 +115,19 @@ $ aws dynamodb list-tables
 
 Our DynamoDB table and component have been successfully created using kro's composable approach.
 
+The `carts` Deployment uses EKS Pod Identity to get credentials for DynamoDB. EKS injects these credentials only when a pod is admitted, and a new Pod Identity association can take a short time to take effect after it is created. The `carts` pod was created right after the association, so it may have started without credentials. Restart the Deployment so that the new pod gets them:
+
+```bash timeout=180
+$ kubectl rollout restart deployment/carts -n carts
+deployment.apps/carts restarted
+$ kubectl rollout status deployment/carts -n carts --timeout=120s
+deployment "carts" successfully rolled out
+```
+
+:::info
+For managing this eventual consistency at scale with automated GitOps tooling, see [How to manage EKS Pod Identities at scale using Argo CD and AWS ACK](https://aws.amazon.com/blogs/containers/how-to-manage-eks-pod-identities-at-scale-using-argo-cd-and-aws-ack/).
+:::
+
 To verify that the component is working with the new DynamoDB table, we can interact with it through a browser. An NLB has been created to expose the sample application for testing:
 
 ```bash
@@ -131,7 +143,7 @@ Please note that the actual endpoint will be different when you run this command
 To make sure the load balancer has finished provisioning, you can run this command:
 
 ```bash timeout=610
-curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
+$ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
   -k $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 ```
 

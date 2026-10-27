@@ -9,7 +9,9 @@
     "releaser"
   ],
   "scripts": {
-    "serve": "yarn workspace website start",
+    "build": "LAB_TIMES_ENABLED=true yarn workspace website build",
+    "serve": "LAB_TIMES_ENABLED=true yarn workspace website serve",
+    "start": "LAB_TIMES_ENABLED=true yarn workspace website start",
     "spelling:check": "yarn cspell 'website/docs/**/*.md'",
     "links:check": "markdown-link-check -q -c link-check-config.json website/docs/**/*.md",
     "format:check": "prettier -c .",
@@ -21,14 +23,16 @@
   "author": "",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@aws/toolkit-md": "^0.1.6",
+    "@aws/toolkit-md": "^0.3.3",
     "cspell": "^9.0.0",
+    "linkinator": "^7.0.0",
     "lint-staged": "^16.0.0",
     "markdown-link-check": "3.14.2",
     "markdownlint-cli2": "^0.18.0",
     "npm-run-all2": "^8.0.0",
     "prettier": "^3.2.5",
-    "prettier-plugin-sh": "^0.18.0"
+    "prettier-plugin-sh": "^0.18.0",
+    "puppeteer": "^23.0.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -43,6 +47,9 @@
       "markdown-link-check -q -c link-check-config.json",
       "markdownlint-cli2"
     ]
+  },
+  "resolutions": {
+    "markdown-link-extractor": "4.0.2"
   },
   "packageManager": "yarn@4.12.0"
 }

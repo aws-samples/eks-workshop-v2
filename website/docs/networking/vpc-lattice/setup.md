@@ -31,7 +31,7 @@ $ aws ec2 authorize-security-group-ingress --group-id $CLUSTER_SG --ip-permissio
 }
 ```
 
-This step will install the Kubernetes Gateway API CRDs as well as the VPC Lattice controller that provide an implementation of that API:
+This step will install the Kubernetes Gateway API CRDs as well as the VPC Lattice controller that provide an implementation of that API. The experimental channel is required because the controller checks for the `TLSRoute` CRD at startup, which the standard channel does not include:
 
 ```bash wait=30
 $ kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.0/experimental-install.yaml

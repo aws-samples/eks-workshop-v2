@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui
+spec:
+  replicas: 2
+  template:
+    spec:
+      initContainers:
+        - name: fix-permissions
+          image: public.ecr.aws/docker/library/busybox:1.37
+          command: ["sh", "-c", "chown 1000:1000 /fsxl"]
+          volumeMounts:
+            - name: fsxlvolume
+              mountPath: /fsxl
+          securityContext:
+            runAsUser: 0
+      containers:
+        - name: ui
+          volumeMounts:
+            - name: fsxlvolume
+              mountPath: /fsxl
+          env:
+            - name: RETAIL_UI_PRODUCT_IMAGES_PATH
+              value: /fsxl
+      volumes:
+        - name: fsxlvolume
+          persistentVolumeClaim:
+            claimName: fsxl-claim

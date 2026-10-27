@@ -1,0 +1,9 @@
+The Argo CD capability in argocd-capability.tf authenticates through AWS IAM Identity
+Center, so hack/pre-provision-resources.sh stages
+manifests/.workshop/terraform/preprovision-base (which creates the instance, the user
+and the group it maps to the ADMIN role) before this directory, and orders this
+directory after it.
+
+The presence of this file is the whole signal; its contents are only documentation.
+Remove it and this directory is staged with no Identity Center behind it, so the
+data "aws_identitystore_group" lookup in argocd-capability.tf fails.

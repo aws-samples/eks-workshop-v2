@@ -9,7 +9,7 @@ Let's take a look this configuration in the EKS console:
 
 <ConsoleButton url="https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab" service="eks" label="Open EKS console"/>
 
-The **Logging** tab shows the current configuration for control plane logs for the cluster:
+The **Observability** tab shows the current configuration for control plane logs for the cluster:
 
 ![EKS Console Observability Tab](/docs/observability/logging/cluster-logging/logging-cluster-observability-tab.webp)
 ![EKS Console Control Plane Tab](/docs/observability/logging/cluster-logging/logging-cluster-control-plane-logging-tab.webp)
@@ -50,7 +50,7 @@ Let's take a look this configuration in the EKS console:
 
 <ConsoleButton url="https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab" service="eks" label="Open EKS console"/>
 
-The **Logging** tab shows the current configuration for control plane logs for the cluster:
+The **Observability** tab shows the current configuration for control plane logs for the cluster:
 
 ![EKS Console Logging Tab](/docs/observability/logging/cluster-logging/logging-cluster-logging-tab.webp)
 

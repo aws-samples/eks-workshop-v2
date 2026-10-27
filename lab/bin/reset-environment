@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 GREEN='\033[1;32m'
 RED='\033[1;31m'
 PURPLE='\033[1;35m'
@@ -39,8 +41,23 @@ if [ -z "$EKS_DEFAULT_MNG_MIN" ]; then
 fi
 
 rm -f /home/ec2-user/.kube/config
+EKS_CLUSTER_AUTO_NAME=${EKS_CLUSTER_AUTO_NAME:-"eks-workshop-auto"}
+export EKS_CLUSTER_AUTO_NAME
 
-aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --alias default --user-alias default
+aws eks update-kubeconfig --name $EKS_CLUSTER_AUTO_NAME --alias eks-workshop-auto 2>/dev/null || true
+aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --alias default --user-alias default 2>/dev/null || true
+
+INBOUND_CIDRS="${BASE_INBOUND_CIDRS}"
+for cluster in "$EKS_CLUSTER_NAME" "$EKS_CLUSTER_AUTO_NAME"; do
+  ip=$(aws ec2 describe-nat-gateways \
+    --filter "Name=tag:created-by,Values=eks-workshop-v2" "Name=tag:env,Values=${cluster}" \
+    --query "NatGateways[0].NatGatewayAddresses[0].PublicIp" --output text 2>/dev/null) || continue
+  if [ "$ip" != "None" ] && [ -n "$ip" ]; then
+    INBOUND_CIDRS="${INBOUND_CIDRS:+${INBOUND_CIDRS},}${ip}/32"
+  fi
+done
+
+echo "Resolved IPs: ${INBOUND_CIDRS}"
 
 module=$1
 
@@ -64,10 +81,14 @@ mkdir -p /eks-workshop
 logmessage "🚀 We're preparing your environment for the next lab, sit tight!"
 
 REPOSITORY_REF=${REPOSITORY_REF:-""}
+RESET_NO_DELETE=${RESET_NO_DELETE:-""}
 
-if [ ! -z "${REPOSITORY_REF}" ]; then
+if [ ! -z "${REPOSITORY_REF}" ] && [ -z "${RESET_NO_DELETE}" ]; then
   rm -f /home/ec2-user/environment/eks-workshop
-  rm -rf $manifests_path
+  if [ -z "${RESET_NO_DELETE}" ]; then
+    rm -rf $manifests_path
+    mkdir -p $manifests_path
+  fi
   rm -rf $repository_path
 
   logmessage "📦 Refreshing copy of workshop repository from GitHub..."
@@ -76,20 +97,182 @@ if [ ! -z "${REPOSITORY_REF}" ]; then
   
   logmessage ""
 
-  cp -R $repository_path/manifests $manifests_path
+  # In containers we cannot delete the base path so we need to copy inside
+  for dir in $repository_path/manifests/*/  $repository_path/manifests/.*/; do
+    [ -d "$dir" ] || continue
+    [[ "$dir" == */. || "$dir" == */.. ]] && continue
+    cp -R "$dir" $manifests_path/
+  done
 
   ln -s $manifests_path /home/ec2-user/environment/eks-workshop
 fi
 
 if [ ! -z "$module" ]; then
+  # The module directory is the registry of valid module names. reset-environment
+  # derives the manifests, the cleanup hook and the Terraform to apply from this
+  # path, and reports the name to analytics, so a path that does not exist would
+  # otherwise reset the environment, install nothing and still report success.
+  #
+  # Checked here because $manifests_path is only populated by the repository
+  # refresh above, and before anything is torn down so a bad path costs nothing.
+  # Labs with no manifests of their own register an empty directory to be found.
+  module_dir="$manifests_path/modules/$module"
+
+  if [[ "$module" == fastpaths/* ]]; then
+    # fastpaths content addresses a module by its first two path segments, and uses
+    # the singular form where the directory is plural (developer -> developers).
+    fastpaths_dir="$manifests_path/modules/$(echo "$module" | cut -d'/' -f1-2)"
+
+    if [ -d "$fastpaths_dir" ]; then
+      module_dir="$fastpaths_dir"
+    elif [ -d "${fastpaths_dir}s" ]; then
+      module_dir="${fastpaths_dir}s"
+    fi
+  fi
+
+  if [ ! -d "$module_dir" ]; then
+    logmessage "🚨 ${RED}Error:${NC} no module registered at manifests/modules/$module"
+    logmessage "Check the module path in this lab's prepare-environment command."
+    exit 1
+  fi
+
   ANALYTICS_ENDPOINT=${ANALYTICS_ENDPOINT:-""}
 
   if [ ! -z "$ANALYTICS_ENDPOINT" ]; then
-    AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-    curl --get -s --data-urlencode "lab=$module" --data-urlencode "account_id=$AWS_ACCOUNT_ID" $ANALYTICS_ENDPOINT || true
+    curl --get -s -o /dev/null --data-urlencode "ws=$WS" --data-urlencode "build=$BUILD" --data-urlencode "env=$WORKSHOP_ENV_ID" --data-urlencode "lab=$module" $ANALYTICS_ENDPOINT || true
   fi
 
-  if [ $module = "introduction/getting-started" ]; then
+  if [[ "$module" = "fastpaths/"* ]]; then
+    kubectl config use-context eks-workshop-auto
+
+    # getting-started teaches deployment from scratch — skip everything
+    if [[ "$module" = "fastpaths/getting-started" ]]; then
+      exit
+    fi
+
+    # Run cleanup from previous fastpaths module if it exists
+    if [ -f "/eks-workshop/hooks/cleanup.sh" ]; then
+      logmessage "\n🧹 Cleaning up previous lab..."
+      bash /eks-workshop/hooks/cleanup.sh || true
+      rm -f /eks-workshop/hooks/cleanup.sh
+    fi
+
+    # Only delete StatefulSets if EBS lab modified them (StorageClass ebs-sc exists)
+    # Otherwise the base app apply is idempotent and StatefulSets don't need recreation
+    if kubectl get storageclass ebs-sc &>/dev/null 2>&1; then
+      kubectl delete statefulset -l app.kubernetes.io/created-by=eks-workshop -A --ignore-not-found 2>/dev/null || true
+      sleep 5
+      while kubectl get statefulset -l app.kubernetes.io/created-by=eks-workshop -A --no-headers 2>/dev/null | grep -q .; do
+        sleep 2
+      done
+    fi
+
+    # Deploy base application and run one-time preprovision in parallel
+    logmessage "\n📦 Deploying base application..."
+    kubectl apply -k $base_path
+
+    # Stage the lab Terraform on disk every run so we can read outputs
+    # (or apply, if first run) against the kubernetes-secret backend.
+    rm -rf /eks-workshop/terraform
+    mkdir -p /eks-workshop/terraform
+    cp -R $manifests_path/.workshop/terraform/* /eks-workshop/terraform
+    rm -f /eks-workshop/terraform/lab-fastpaths.tf
+
+    mkdir -p /eks-workshop/terraform/lab
+    cp -R $manifests_path/modules/fastpaths/developers/.workshop/terraform/* /eks-workshop/terraform/lab
+    cp $manifests_path/.workshop/terraform/lab-fastpaths.tf /eks-workshop/terraform/lab.tf
+
+    mkdir -p /eks-workshop/terraform-data
+    export TF_DATA_DIR="/eks-workshop/terraform-data"
+    export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
+    export TF_VAR_eks_cluster_auto_id="$EKS_CLUSTER_AUTO_NAME"
+    export TF_VAR_resources_precreated="${RESOURCES_PRECREATED:-false}"
+
+    # The shared preprovision terraform carries the ACK/Argo CD/kro capability
+    # resources (plus an IAM Identity Center user/group and a CodeCommit repo),
+    # but they must ONLY provision for the eks-capabilities fast path. Gate them
+    # with TF_VAR_enable_eks_capabilities so the developer/operator paths never
+    # create capabilities — and never require an IAM Identity Center instance,
+    # which would otherwise fail their apply on the Argo CD IDC precondition.
+    if [[ "$module" = "fastpaths/eks-capabilities"* ]]; then
+      export TF_VAR_enable_eks_capabilities="true"
+    else
+      export TF_VAR_enable_eks_capabilities="false"
+    fi
+
+
+    tf_dir=$(realpath --relative-to="$PWD" '/eks-workshop/terraform')
+
+    # Provision fastpaths infrastructure (KEDA, fluent-bit, external-secrets, etc.).
+    #
+    # terraform apply runs unconditionally so that the kubernetes-backed state
+    # always contains the environment-variable outputs that downstream labs and
+    # test hooks depend on.  When resources_precreated is true, the preprovision
+    # module is gated to count=0 and apply only evaluates locals and data
+    # sources — no cloud resources are created or destroyed.
+    terraform -chdir="$tf_dir" init -upgrade
+
+    if [ "$RESOURCES_PRECREATED" != "true" ]; then
+      logmessage "\n🔧 First time setup: provisioning fastpaths infrastructure (this only runs once)..."
+      terraform -chdir="$tf_dir" destroy --auto-approve
+    fi
+
+    terraform -chdir="$tf_dir" apply --auto-approve &
+    TF_PID=$!
+
+    logmessage "\n⏳ Waiting for application to become ready..."
+    sleep 10
+    kubectl wait --for=condition=available --timeout=480s deployments -l app.kubernetes.io/created-by=eks-workshop -A
+    kubectl wait --for=condition=Ready --timeout=480s pods -l app.kubernetes.io/created-by=eks-workshop -A
+
+    # Restart deployments to pick up any configmap changes from the base app restore
+    kubectl rollout restart deployment/carts -n carts
+    kubectl rollout restart deployment/catalog -n catalog
+    kubectl rollout restart deployment/orders -n orders
+    kubectl rollout status deployment/carts -n carts --timeout=120s
+    kubectl rollout status deployment/catalog -n catalog --timeout=120s
+    kubectl rollout status deployment/orders -n orders --timeout=120s
+
+    if [ -n "$TF_PID" ]; then
+      logmessage "\n⏳ Waiting for infrastructure provisioning to complete..."
+      wait $TF_PID
+      TF_EXIT=$?
+      if [ $TF_EXIT -ne 0 ]; then
+        logmessage "\n${RED}Error:${NC} Infrastructure provisioning failed"
+        exit $TF_EXIT
+      fi
+      logmessage "\n✅ Fastpaths infrastructure provisioned!"
+    fi
+
+    # Export the lab Terraform's `environment_variables` output into the IDE
+    # shell so labs and test hooks can reference values like
+    # EKS_CAP_ACK_CAPABILITY and EKS_CAP_DDB_TABLE. Mirrors the same write
+    # done at the bottom of this script for non-fastpaths labs. Runs whether
+    # or not preprovision just executed, so re-entries pick up the values.
+    terraform -chdir="$tf_dir" output -json \
+      | jq -r '.environment.value | select(. != null)' \
+      > ~/.bashrc.d/workshop-env.bash
+    echo "export INBOUND_CIDRS='${INBOUND_CIDRS}'" >> ~/.bashrc.d/workshop-env.bash
+
+    # Save cleanup hook for this module's path (developer or operator).
+    # Empty the directory rather than removing it: local runs bind mount it from
+    # the host so the hook survives container restarts, and a mount point cannot
+    # be unlinked.
+    mkdir -p /eks-workshop/hooks
+    find /eks-workshop/hooks -mindepth 1 -delete
+    # Map content path to manifests path (developer->developers, operator->operators)
+    fastpaths_top=$(echo "$module" | cut -d'/' -f1-2)
+    module_path="$manifests_path/modules/$fastpaths_top"
+    # Try plural form if singular doesn't exist
+    if [ ! -d "$module_path/.workshop" ]; then
+      module_path="${module_path}s"
+    fi
+    if [ -f "$module_path/.workshop/cleanup.sh" ]; then
+      mkdir -p /eks-workshop/hooks
+      cp "$module_path/.workshop/cleanup.sh" /eks-workshop/hooks
+    fi
+
+    logmessage "\n✅ Environment is ${GREEN}ready${NC}!"
     exit
   fi
 fi
@@ -104,31 +287,52 @@ fi
 
 kubectl delete pod load-generator --ignore-not-found
 
-kubectl delete namespace other --ignore-not-found
+# Delete namespace with timeout and handle metrics-server discovery failures
+kubectl delete namespace other --ignore-not-found --timeout=60s || {
+  logmessage "⚠️  ${RED}Warning:${NC} Namespace deletion timed out or failed, forcing cleanup..."
+  
+  # Remove finalizers to force deletion
+  kubectl get namespace other -o json 2>/dev/null | \
+    jq '.spec.finalizers = []' | \
+    kubectl replace --raw "/api/v1/namespaces/other/finalize" -f - 2>/dev/null || \
+    kubectl patch namespace other -p '{"metadata":{"finalizers":[]}}' --type=merge 2>/dev/null || true
+  
+  # Wait a bit and verify deletion
+  sleep 5
+  if kubectl get namespace other &>/dev/null; then
+    logmessage "⚠️  ${RED}Warning:${NC} Namespace 'other' still exists but continuing..."
+  fi
+}
 
-kubectl apply -k $base_path --prune --all \
-  --prune-allowlist=autoscaling/v1/HorizontalPodAutoscaler \
-  --prune-allowlist=core/v1/Service \
-  --prune-allowlist=core/v1/ConfigMap \
-  --prune-allowlist=apps/v1/Deployment \
-  --prune-allowlist=apps/v1/StatefulSet \
-  --prune-allowlist=core/v1/ServiceAccount \
-  --prune-allowlist=core/v1/Secret \
-  --prune-allowlist=core/v1/PersistentVolumeClaim \
-  --prune-allowlist=scheduling.k8s.io/v1/PriorityClass \
-  --prune-allowlist=networking.k8s.io/v1/Ingress
+if [[ $module = introduction/basics* || $module = introduction/getting-started* ]]; then
+  kubectl delete -k $base_path --ignore-not-found
+else
+    kubectl apply -k $base_path --prune --all \
+      --prune-allowlist=autoscaling/v1/HorizontalPodAutoscaler \
+      --prune-allowlist=core/v1/Service \
+      --prune-allowlist=core/v1/ConfigMap \
+      --prune-allowlist=apps/v1/Deployment \
+      --prune-allowlist=apps/v1/StatefulSet \
+      --prune-allowlist=core/v1/ServiceAccount \
+      --prune-allowlist=core/v1/Secret \
+      --prune-allowlist=core/v1/PersistentVolumeClaim \
+      --prune-allowlist=scheduling.k8s.io/v1/PriorityClass \
+      --prune-allowlist=networking.k8s.io/v1/Ingress
 
-logmessage "\n⏳ Waiting for application to become ready..."
+    logmessage "\n⏳ Waiting for application to become ready..."
 
-sleep 10
+    sleep 10
 
-kubectl wait --for=condition=available --timeout=240s deployments -l app.kubernetes.io/created-by=eks-workshop -A
-kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
+    kubectl wait --for=condition=available --timeout=240s deployments -l app.kubernetes.io/created-by=eks-workshop -A
+    kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
+
+fi
 
 # Addons
 rm -rf /eks-workshop/terraform
 mkdir -p /eks-workshop/terraform
 cp -R $manifests_path/.workshop/terraform/* /eks-workshop/terraform
+rm -f /eks-workshop/terraform/lab-fastpaths.tf
 
 # Use a separate directory for .terraform directory
 # Allows us to wipe the TF configuration every time but retain providers installed
@@ -136,6 +340,7 @@ mkdir -p /eks-workshop/terraform-data
 export TF_DATA_DIR="/eks-workshop/terraform-data"
 
 export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
+export TF_VAR_inbound_cidrs="${INBOUND_CIDRS:-0.0.0.0/0}"
 
 RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-"false"}
 
@@ -146,9 +351,20 @@ tf_dir=$(realpath --relative-to="$PWD" '/eks-workshop/terraform')
 terraform -chdir="$tf_dir" init -upgrade
 terraform -chdir="$tf_dir" destroy --auto-approve
 
-rm -rf /eks-workshop/hooks
+# Empty the directory rather than removing it: local runs bind mount it from the
+# host so the hook survives container restarts, and a mount point cannot be
+# unlinked.
+mkdir -p /eks-workshop/hooks
+find /eks-workshop/hooks -mindepth 1 -delete
+
+# Cleanup done, let's install the right item
 
 if [ ! -z "$module" ]; then
+  if [ $module = "introduction/getting-started" ]; then
+    # This module doesn't need anything installed
+    exit
+  fi
+
   module_path="$manifests_path/modules/$module"
 
   if [ -f "$module_path/.workshop/cleanup.sh" ]; then
@@ -185,6 +401,7 @@ if [ ! -z "$module" ]; then
 fi
 
 terraform -chdir="$tf_dir" output -json | jq -r '.environment.value | select(. != null)' > ~/.bashrc.d/workshop-env.bash
+echo "export INBOUND_CIDRS='${INBOUND_CIDRS}'" >> ~/.bashrc.d/workshop-env.bash
 
 # Node groups
 expected_size_config="$EKS_DEFAULT_MNG_MIN $EKS_DEFAULT_MNG_MAX $EKS_DEFAULT_MNG_DESIRED"
@@ -238,10 +455,12 @@ if [ $EXIT_CODE -ne 0 ]; then
 fi
 
 # Recycle workload pods in case stateful pods got restarted
-kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernetes.io/component=service -A
+kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernetes.io/component=service -A --ignore-not-found
 
 # Wait for the workload pods previously recycled
-kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
+if kubectl get pods -A -l app.kubernetes.io/created-by=eks-workshop 2>/dev/null | grep -q .; then
+  kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
+fi
 
 # Finished
 logmessage "\n✅ Environment is ${GREEN}ready${NC}!"

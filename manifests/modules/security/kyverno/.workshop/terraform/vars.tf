@@ -40,3 +40,9 @@ variable "kyverno_chart_version" {
   # renovate-helm: depName=kyverno registryUrl=https://kyverno.github.io/kyverno/
   default = "3.3.4"
 }
+
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
+  type        = string
+}

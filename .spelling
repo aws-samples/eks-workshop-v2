@@ -58,6 +58,9 @@ apis
 versioned
 crds
 argocd
+Argoadmin
+preprovision
+repoint
 dev
 webhooks
 gitops
@@ -143,3 +146,6 @@ resolv
 untolerated
 Workernodes
 Gitea
+kro
+fastpath
+fastpaths

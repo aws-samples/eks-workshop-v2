@@ -83,17 +83,24 @@ Statement:
       - cloudformation:UntagResource
     Resource:
       - !Sub arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${Env}*
+  # CreateHostedZone has no zone to target yet, and GetChange/ListTagsForResource
+  # are not hostedzone-scoped, so those stay on "*". Route 53 is global, hence
+  # the empty region and account fields in the hostedzone ARN.
   - Effect: Allow
     Action:
       - route53:CreateHostedZone
+      - route53:GetChange
+      - route53:ListTagsForResource
+      - route53:ChangeTagsForResource
+    Resource: ["*"]
+  - Effect: Allow
+    Action:
       - route53:DeleteHostedZone
       - route53:AssociateVPCWithHostedZone
       - route53:DisassociateVPCFromHostedZone
-      - route53:GetChange
       - route53:GetHostedZone
       - route53:ListResourceRecordSets
-      - route53:ListTagsForResource
-      - route53:ChangeTagsForResource
       - route53:ChangeResourceRecordSets
       - route53:GetDNSSEC
-    Resource: ["*"]
+    Resource:
+      - arn:aws:route53:::hostedzone/*

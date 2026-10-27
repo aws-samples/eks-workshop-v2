@@ -13,8 +13,8 @@ $ kubectl delete namespace ui
 
 Next, clone the repository we used to bootstrap Flux in the previous section:
 
-```bash hook=clone
-$ git clone ssh://git@${GITEA_SSH_HOSTNAME}:2222/workshop-user/flux.git
+```bash
+$ git clone $GITOPS_REPO_URL_FLUX ~/environment/flux
 ```
 
 Now, let's start populating the Flux repository by creating a directory for our "apps". This directory is designed to contain a sub-directory for each application component:
