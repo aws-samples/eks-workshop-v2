@@ -17,10 +17,9 @@ deployment "ui" successfully rolled out
 Meanwhile, if you check the Fluent Bit DaemonSet logs, you will observe that a new log stream is created under the existing log group for the `ui` component.
 
 ```bash hook=pods-log
-$ kubectl logs daemonset.apps/aws-for-fluent-bit -n kube-system
+$ kubectl logs -n kube-system -l app.kubernetes.io/name=aws-for-fluent-bit --all-containers --prefix --tail=100
 ...
-...
-[2026/08/07 15:04:24] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream fluentbit-kube.var.log.containers.aws-for-fluent-bit-4h7cr_kube-system_aws-for-fluent-bit-0e26a01294055645368d7692084cda1a886f04a3621e5fe07fbd24e4d8c7f14a.log in log group /aws/eks/eks-workshop/aws-fluentbit-logs-20260807150346312400000001
+[pod/aws-for-fluent-bit-xxxxx/aws-for-fluent-bit] [2026/08/07 15:04:24] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream fluentbit-kube.var.log.containers.aws-for-fluent-bit-4h7cr_kube-system_aws-for-fluent-bit-0e26a01294055645368d7692084cda1a886f04a3621e5fe07fbd24e4d8c7f14a.log in log group /aws/eks/eks-workshop/aws-fluentbit-logs-20260807150346312400000001
 ...
 ```
 
