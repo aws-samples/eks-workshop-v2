@@ -3,7 +3,7 @@ title: "Introduction"
 sidebar_position: 10
 ---
 
-The first thing we'll do is install Kubecost in our cluster. As part of the lab preparation an the AWS Load Balancer Controller and EBS CSI driver were pre-installed to provide ingress and storage to Kubecost.
+The first thing we'll do is install Kubecost in our cluster. As part of the lab preparation, the AWS Load Balancer Controller and EBS CSI driver were pre-installed to provide ingress and storage to Kubecost.
 
 All that we have left to do is install Kubecost as a Helm chart:
 
