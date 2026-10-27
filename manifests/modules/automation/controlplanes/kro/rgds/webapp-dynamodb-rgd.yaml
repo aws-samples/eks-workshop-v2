@@ -24,10 +24,6 @@ spec:
       service:
         enabled: boolean | default=true
 
-      aws:
-        accountID: integer | required=true
-        region: string | default="us-west-2"
-
       env: map[string]string | default={}
 
       ingress:
@@ -38,13 +34,11 @@ spec:
 
   resources:
     - id: podIdentityAssociation
-      # The EKS Pod Identity API is eventually consistent: the association can be
-      # created in ACK before EKS will actually inject credentials for a pod using
-      # this service account. Pod Identity credentials are only injected at pod
-      # admission, so a carts pod admitted before the association is usable would
-      # start with the node role and fail on DynamoDB access. Gate on
-      # ACK.ResourceSynced=True so kro does not create the dependent WebApplication
-      # (and its Deployment) until the association has been reconciled in AWS.
+      # Gate on ACK.ResourceSynced=True so kro does not create the dependent
+      # WebApplication (and its Deployment) until the association exists in AWS.
+      # EKS Pod Identity is eventually consistent, so a pod admitted right after
+      # this point can still start without credentials; the lab restarts the
+      # Deployment once the instance is ready to cover that window.
       readyWhen:
         - ${podIdentityAssociation.status.conditions.exists(c, c.type == "ACK.ResourceSynced" && c.status == "True")}
       template:
@@ -154,8 +148,8 @@ spec:
                   "Effect": "Allow",
                   "Action": "dynamodb:*",
                   "Resource": [
-                    "arn:aws:dynamodb:${schema.spec.aws.region}:${string(schema.spec.aws.accountID)}:table/${itemsTable.spec.tableName}",
-                    "arn:aws:dynamodb:${schema.spec.aws.region}:${string(schema.spec.aws.accountID)}:table/${itemsTable.spec.tableName}/index/*"
+                    "${itemsTable.status.ackResourceMetadata.arn}",
+                    "${itemsTable.status.ackResourceMetadata.arn}/index/*"
                   ]
                 }
               ]
