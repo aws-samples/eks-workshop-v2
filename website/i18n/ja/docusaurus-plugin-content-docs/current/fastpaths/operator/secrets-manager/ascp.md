@@ -1,7 +1,7 @@
 ---
 title: "AWS Secrets and Configuration Provider (ASCP)"
 sidebar_position: 422
-tmdTranslationSourceHash: 'caf6dfb26db7a75b14bca637027c5da2'
+tmdTranslationSourceHash: '86ba2da0463d87c9d26526d7c5a412a6'
 ---
 
 このワークショップでは、AWS Secrets and Configuration Provider (ASCP) を EKS クラスターに事前設定しています。
@@ -17,6 +17,8 @@ daemonset.apps/csi-secrets-store-secrets-store-csi-driver   3         3         
 
 NAME                                                   READY   STATUS    RESTARTS   AGE
 pod/csi-secrets-store-secrets-store-csi-driver-bzddm   3/3     Running   0          3m57s
+pod/csi-secrets-store-secrets-store-csi-driver-k7m6c   3/3     Running   0          3m57s
+pod/csi-secrets-store-secrets-store-csi-driver-x2rs4   3/3     Running   0          3m57s
 ```
 
 次に、CSI Secrets Store Provider for AWS driver の `DaemonSet` とその `Pod` を確認します：
@@ -28,9 +30,11 @@ daemonset.apps/secrets-store-csi-driver-provider-aws   3         3         3    
 
 NAME                                              READY   STATUS    RESTARTS   AGE
 pod/secrets-store-csi-driver-provider-aws-4jf8f   1/1     Running   0          2m2s
+pod/secrets-store-csi-driver-provider-aws-djtf5   1/1     Running   0          2m2s
+pod/secrets-store-csi-driver-provider-aws-dzg9r   1/1     Running   0          2m2s
 ```
 
-CSI driver を介して AWS Secrets Manager に保存されたシークレットへのアクセスを提供するには、`SecretProviderClass` が必要です。これは、AWS Secrets Manager の情報と一致するドライバー設定とパラメータを提供する namespace スコープの Custom Resource Definition (CRD) です。
+CSI driver を介して AWS Secrets Manager に保存されたシークレットへのアクセスを提供するには、`SecretProviderClass` が必要です。これは、AWS Secrets Manager の情報と一致するドライバー設定とパラメータを提供する、namespace スコープのカスタムリソースです。
 
 ::yaml{file="manifests/modules/security/secrets-manager/secret-provider-class.yaml" paths="spec.provider,spec.parameters.objects,spec.secretObjects.0"}
 
@@ -46,4 +50,3 @@ $ cat ~/environment/eks-workshop/modules/security/secrets-manager/secret-provide
 ```
 
 Secret Store CSI Driver は、Kubernetes と AWS Secrets Manager などの外部シークレットプロバイダーの間の仲介役として機能します。SecretProviderClass で設定すると、シークレットを Pod ボリュームのファイルとしてマウントし、同期された Kubernetes Secret オブジェクトを作成することができ、アプリケーションがこれらのシークレットを使用する方法に柔軟性を提供します。
-
