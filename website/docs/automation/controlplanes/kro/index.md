@@ -10,7 +10,7 @@ description: "Compose and manage complex Kubernetes resource graphs with kro on 
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=300 wait=30
+```bash timeout=900 wait=30
 $ prepare-environment automation/controlplanes/kro
 ```
 

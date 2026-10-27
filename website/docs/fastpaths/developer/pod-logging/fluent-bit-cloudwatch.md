@@ -18,12 +18,12 @@ deployment "ui" successfully rolled out
 Meanwhile, if you check the Fluent Bit DaemonSet logs, you will observe that a new log stream is created under the existing log group for the `ui` component.
 
 ```bash hook=pods-log
-$ kubectl logs daemonset.apps/aws-for-fluent-bit -n amazon-cloudwatch
+$ kubectl logs -n amazon-cloudwatch -l app.kubernetes.io/name=aws-for-fluent-bit --all-containers --prefix --tail=100
 ...
-[2025/04/15 12:40:10] [ info] [filter:kubernetes:kubernetes.0]  token updated
-[2025/04/15 12:40:10] [ info] [input:tail:tail.0] inotify_fs_add(): inode=16895961 watch_fd=12 name=/var/log/containers/ui-8564fc5cfb-qb7td_ui_ui-4ace14944409ee785708c9031b4c2243bfa065ffe0cd320e219131aa33541a1e.log
-[2025/04/15 12:40:11] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream ui-8564fc5cfb-qb7td.ui in log group /aws/eks/fluentbit-cloudwatch/workload/ui
-[2025/04/15 12:40:11] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Created log stream ui-8564fc5cfb-qb7td.ui
+[pod/aws-for-fluent-bit-xxxxx/aws-for-fluent-bit] [2025/04/15 12:40:10] [ info] [filter:kubernetes:kubernetes.0]  token updated
+[pod/aws-for-fluent-bit-xxxxx/aws-for-fluent-bit] [2025/04/15 12:40:10] [ info] [input:tail:tail.0] inotify_fs_add(): inode=16895961 watch_fd=12 name=/var/log/containers/ui-8564fc5cfb-qb7td_ui_ui-4ace14944409ee785708c9031b4c2243bfa065ffe0cd320e219131aa33541a1e.log
+[pod/aws-for-fluent-bit-xxxxx/aws-for-fluent-bit] [2025/04/15 12:40:11] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream ui-8564fc5cfb-qb7td.ui in log group /aws/eks/fluentbit-cloudwatch/workload/ui
+[pod/aws-for-fluent-bit-xxxxx/aws-for-fluent-bit] [2025/04/15 12:40:11] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Created log stream ui-8564fc5cfb-qb7td.ui
 
 ```
 

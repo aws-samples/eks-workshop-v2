@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "6.31.0"
+      version = "6.40.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
@@ -57,6 +57,16 @@ variable "inbound_cidrs" {
   description = "CIDR range to allowlist for inbound traffic"
   type        = string
   default     = "0.0.0.0/0"
+}
+
+# Passed through to the shared IAM Identity Center layer. Populated from
+# TF_VAR_idc_instance_arn, which the Workshop Studio buildspec sets from the team
+# stack's IAM Identity Center resource. See preprovision-base/vars.tf.
+# tflint-ignore: terraform_unused_declarations
+variable "idc_instance_arn" {
+  description = "ARN of an IAM Identity Center instance already provisioned for this environment. Empty means the pre-provisioning layer manages the instance itself."
+  type        = string
+  default     = ""
 }
 
 # tflint-ignore: terraform_unused_declarations

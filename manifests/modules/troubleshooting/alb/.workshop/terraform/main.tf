@@ -113,8 +113,14 @@ resource "null_resource" "kustomize_app" {
     always_run = timestamp()
   }
 
+  # The ingress carries an `alb.ingress.kubernetes.io/inbound-cidrs` annotation
+  # templated as `$INBOUND_CIDRS`. Substitute it here (from the module's
+  # inbound_cidrs variable) so the AWS Load Balancer Controller receives a valid
+  # CIDR. Without substitution the controller fails model-building with
+  # "invalid CIDR address: $INBOUND_CIDRS" and never provisions the ALB, which
+  # masks the intended subnet-tag (alb_fix_1) and IAM (alb_fix_5) scenarios.
   provisioner "local-exec" {
-    command = "kubectl apply -k ~/environment/eks-workshop/modules/troubleshooting/alb/creating-alb"
+    command = "kubectl kustomize ~/environment/eks-workshop/modules/troubleshooting/alb/creating-alb | INBOUND_CIDRS='${var.inbound_cidrs}' envsubst '$INBOUND_CIDRS' | kubectl apply -f -"
     when    = create
   }
 

@@ -1,12 +1,12 @@
 ---
 title: "はじめに"
 sidebar_position: 10
-tmdTranslationSourceHash: '2f75776010aa8dbf0f9a590034be7034'
+tmdTranslationSourceHash: '043d97d202007d02294fd2f35f71efec'
 ---
 
 # Amazon EKS Auto Mode で学ぶ
 
-迅速に Amazon EKS を実践できる、効率化されたロールベースの学習体験です。すべての EKS 機能を網羅する包括的なワークショップとは異なり、Auto Mode パスは開発者やオペレーターなどの特定のロールに最も重要な機能に焦点を当てています。
+迅速に Amazon EKS を実践できる、効率化されたロールベースの学習体験です。すべての EKS 機能を網羅する包括的なワークショップとは異なり、Auto Mode パスは開発者やオペレーターなどの特定のロールに最も重要なラボに焦点を当てており、さらにマネージド EKS 機能向けのラボを含むパスも用意されています。
 
 ## あなたの学習パスを選択
 

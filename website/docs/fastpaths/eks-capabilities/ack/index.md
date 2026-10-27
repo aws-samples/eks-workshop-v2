@@ -49,6 +49,8 @@ $ kubectl get crd tables.dynamodb.services.k8s.aws \
 Table
 ```
 
+Now list the API resources available in the cluster to manage DynamoDB components under the managed ACK capability.
+
 ```bash
 $ kubectl api-resources --api-group=dynamodb.services.k8s.aws
 NAME             SHORTNAMES   APIVERSION                              NAMESPACED   KIND

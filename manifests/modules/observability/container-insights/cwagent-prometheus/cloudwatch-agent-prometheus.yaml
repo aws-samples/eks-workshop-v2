@@ -1,0 +1,53 @@
+otelContainerInsights:
+  enabled: true
+agent:
+  otelConfig:
+    receivers:
+      prometheus/appmetrics:
+        config:
+          global:
+            scrape_interval: 30s
+            scrape_timeout: 10s
+          scrape_configs:
+            - job_name: retail-app-pods
+              honor_labels: true
+              kubernetes_sd_configs:
+                - role: pod
+                  namespaces:
+                    names: [orders]
+              relabel_configs:
+                - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+                  action: keep
+                  regex: true
+                - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+                  action: replace
+                  target_label: __metrics_path__
+                  regex: (.+)
+                - action: labelmap
+                  regex: __meta_kubernetes_pod_label_(.+)
+                - source_labels: [__meta_kubernetes_namespace]
+                  action: replace
+                  target_label: namespace
+                - source_labels: [__meta_kubernetes_pod_name]
+                  action: replace
+                  target_label: pod
+    processors:
+      batch/appmetrics:
+        timeout: 30s
+    exporters:
+      awsemf/appmetrics:
+        namespace: ContainerInsights/Prometheus
+        log_group_name: /aws/containerinsights/eks-workshop/prometheus
+        dimension_rollup_option: NoDimensionRollup
+        resource_to_telemetry_conversion:
+          enabled: true
+        metric_declarations:
+          - dimensions: [[pod, productId]]
+            metric_name_selectors:
+              - ^watch_orders_total$$
+    service:
+      pipelines:
+        metrics/appmetrics:
+          receivers: [prometheus/appmetrics]
+          processors: [batch/appmetrics]
+          exporters: [awsemf/appmetrics]

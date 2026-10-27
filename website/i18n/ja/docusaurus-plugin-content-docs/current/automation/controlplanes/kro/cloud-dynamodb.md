@@ -1,10 +1,10 @@
 ---
 title: "クラウドリソースのプロビジョニング"
 sidebar_position: 6
-tmdTranslationSourceHash: 14aa0a06a6577684447440694dfb8ddd
+tmdTranslationSourceHash: 7530f9a35aef4418f9f5547510a77fa6
 ---
 
-このセクションでは、カートが使用しているインメモリデータベースをDynamoDBに置き換えます。WebApplicationのベーステンプレートを拡張してWebApplicationDynamoDB ResourceGraphDefinitionを構成することで実現します。
+このセクションでは、cartsが使用しているインメモリデータベースをDynamoDBに置き換えます。WebApplicationのベーステンプレートを基に構築するWebApplicationDynamoDB ResourceGraphDefinitionを構成することで実現します。
 
 まず、前のセクションで作成したkroインスタンスを削除しましょう：
 
@@ -59,7 +59,7 @@ webapplicationdynamodbs.kro.run    2024-01-15T10:35:00Z
 
 次に、WebApplicationDynamoDB APIを使用して**Carts**コンポーネントのインスタンスを作成するcarts-ddb.yamlファイルを確認しましょう：
 
-::yaml{file="manifests/modules/automation/controlplanes/kro/app/carts-ddb.yaml" paths="kind,metadata,spec.appName,spec.replicas,spec.image,spec.port,spec.dynamodb,spec.env,spec.aws"}
+::yaml{file="manifests/modules/automation/controlplanes/kro/app/carts-ddb.yaml" paths="kind,metadata,spec.appName,spec.replicas,spec.image,spec.port,spec.dynamodb,spec.env"}
 
 1. RGDで作成されたカスタムWebApplicationDynamoDB APIを使用
 2. `carts`名前空間に`carts`という名前のリソースを作成
@@ -69,7 +69,6 @@ webapplicationdynamodbs.kro.run    2024-01-15T10:35:00Z
 6. ポート8080でアプリケーションを公開
 7. DynamoDBテーブル名を指定
 8. DynamoDB永続モードを有効にする環境変数を設定
-9. IAMとPod Identityの設定のためにAWSアカウントIDとリージョンを提供
 
 次に、carts-ddb.yamlファイルを活用して更新されたコンポーネントをデプロイしましょう：
 
@@ -117,6 +116,19 @@ $ aws dynamodb list-tables
 
 kroの組み合わせ可能なアプローチを使用して、DynamoDBテーブルとコンポーネントが正常に作成されました。
 
+`carts` Deploymentは、EKS Pod Identityを使用してDynamoDBの認証情報を取得します。EKSはPodが許可されたときにのみこれらの認証情報を注入し、新しいPod Identity関連付けは作成後に有効になるまで少し時間がかかる場合があります。`carts` Podは関連付けの直後に作成されたため、認証情報なしで起動した可能性があります。新しいPodが認証情報を取得できるように、Deploymentを再起動してください：
+
+```bash timeout=180
+$ kubectl rollout restart deployment/carts -n carts
+deployment.apps/carts restarted
+$ kubectl rollout status deployment/carts -n carts --timeout=120s
+deployment "carts" successfully rolled out
+```
+
+:::info
+自動化されたGitOpsツールを使用した大規模なこの結果整合性の管理については、[How to manage EKS Pod Identities at scale using Argo CD and AWS ACK](https://aws.amazon.com/blogs/containers/how-to-manage-eks-pod-identities-at-scale-using-argo-cd-and-aws-ack/)を参照してください。
+:::
+
 コンポーネントが新しいDynamoDBテーブルで正常に動作していることを確認するために、ブラウザを通じて操作することができます。テスト用にサンプルアプリケーションを公開するためのNLBが作成されています：
 
 ```bash
@@ -132,7 +144,7 @@ http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com
 ロードバランサーがプロビジョニングを完了したことを確認するには、次のコマンドを実行できます：
 
 ```bash timeout=610
-curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
+$ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
   -k $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 ```
 
@@ -152,4 +164,4 @@ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-time
 $ aws dynamodb scan --table-name "${EKS_CLUSTER_NAME}-carts-kro"
 ```
 
-おめでとうございます！ベースのWebApplicationテンプレートを拡張してDynamoDBストレージを追加することで、kroの組み合わせ可能性を実証することに成功しました。
+おめでとうございます！ベースのWebApplicationテンプレートを基に構築してDynamoDBストレージを追加することで、kroの組み合わせ可能性の実証に成功しました。

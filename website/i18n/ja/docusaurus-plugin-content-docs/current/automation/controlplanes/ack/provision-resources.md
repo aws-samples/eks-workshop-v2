@@ -1,19 +1,19 @@
 ---
 title: "ACKリソースのプロビジョニング"
 sidebar_position: 5
-tmdTranslationSourceHash: 0aa3b23424b499ac70a2cbc57fa49081
+tmdTranslationSourceHash: a23ca8e2cc741eb169a7ff6f22717536
 ---
 
-デフォルトでは、サンプルアプリケーションの**Carts**コンポーネントは、EKSクラスター内でポッドとして実行されている`carts-dynamodb`というDynamoDBローカルインスタンスを使用しています。このセクションでは、Kubernetesカスタムリソースを使用してアプリケーション用のAmazon DynamoDBクラウドベーステーブルをプロビジョニングし、**Carts**デプロイメントをローカルコピーの代わりにこの新しくプロビジョニングされたDynamoDBテーブルを使用するように構成します。
+デフォルトでは、サンプルアプリケーションの**Carts**コンポーネントは、EKSクラスター内でPodとして実行されている`carts-dynamodb`というDynamoDBローカルインスタンスを使用しています。このラボのこのセクションでは、Kubernetesカスタムリソースを使用してアプリケーション用のAmazon DynamoDBクラウドベーステーブルをプロビジョニングし、**Carts** Deploymentをローカルコピーの代わりにこの新しくプロビジョニングされたDynamoDBテーブルを使用するように構成します。
 
 ![ACK reconciler concept](/docs/automation/controlplanes/ack/ack-desired-current-ddb.webp)
 
-Kubernetesマニフェストを使用してDynamoDBテーブルを作成する方法を見てみましょう：
+Kubernetesマニフェストを使用してDynamoDB Tableを作成する方法を見てみましょう：
 
 ::yaml{file="manifests/modules/automation/controlplanes/ack/dynamodb/dynamodb-create.yaml" paths="apiVersion,kind,spec.keySchema,spec.attributeDefinitions,spec.billingMode,spec.tableName,spec.globalSecondaryIndexes"}
 
 1. ACK DynamoDBコントローラーを使用
-2. DynamoDBテーブルリソースを作成
+2. DynamoDB Tableリソースを作成
 3. `id`属性をパーティションキー（`HASH`）として使用してプライマリキーを指定
 4. `id`と`customerId`を文字列属性として定義
 5. オンデマンド課金モデルを指定
@@ -32,7 +32,7 @@ $ kubectl kustomize ~/environment/eks-workshop/modules/automation/controlplanes/
 table.dynamodb.services.k8s.aws/items created
 ```
 
-マネージド ACK ケイパビリティはこれらの新しいリソースに応答し、マニフェストで定義された AWS インフラストラクチャをプロビジョニングします。ACK がテーブルを作成したことを確認するには、次のコマンドを実行します：
+マネージドACKケイパビリティはこれらの新しいリソースに応答し、マニフェストで定義されたAWSインフラストラクチャをプロビジョニングします。ACKがテーブルを作成したことを確認するには、次のコマンドを実行します：
 
 ```bash timeout=300
 $ kubectl wait table.dynamodb.services.k8s.aws items -n carts --for=condition=ACK.ResourceSynced --timeout=15m
@@ -56,3 +56,4 @@ $ aws dynamodb list-tables
 この出力は、新しいテーブルが正常に作成されたことを確認しています！
 
 ACKを活用することで、Kubernetesクラスターから直接クラウドベースのDynamoDBテーブルをシームレスにプロビジョニングし、AWSリソースを管理するためのこのアプローチの力と柔軟性を実証しました。
+

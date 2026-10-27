@@ -38,4 +38,12 @@ fi
 
 yarn install --immutable
 yarn workspace website clear
-yarn workspace website build
+if [ "$CONTEXT" = "deploy-preview" ]; then
+  # Deploy previews build only the default locale. Translations for newly added
+  # modules are generated post-merge by the auto-translate workflow, so a full
+  # multi-locale build on a PR preview fails onBrokenLinks on the new module's
+  # still-untranslated pages. Production/branch deploys build every locale.
+  yarn workspace website build --locale en
+else
+  yarn workspace website build
+fi
