@@ -15,6 +15,12 @@ on:
 permissions:
   contents: read
 
+# Only the latest run per PR matters: label, milestone and description edits
+# re-trigger the whole workflow, so cancel any run they supersede.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   build-website:
     name: "Build website"
