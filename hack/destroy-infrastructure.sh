@@ -24,16 +24,41 @@ cluster_exists() {
   aws eks describe-cluster --name "$1" &> /dev/null
 }
 
-# Prints the number of updates on the cluster that are still InProgress.
-in_progress_updates() {
+# Prints the number of InProgress updates in a list-updates result. Extra args
+# (e.g. --addon-name coredns) select addon updates instead of cluster updates.
+count_in_progress() {
   local name=$1 count=0 update_id status
+  shift
 
-  for update_id in $(aws eks list-updates --name "$name" --query 'updateIds[]' --output text 2> /dev/null); do
+  for update_id in $(aws eks list-updates --name "$name" "$@" --query 'updateIds[]' --output text 2> /dev/null); do
     [ "$update_id" == "None" ] && continue
-    status=$(aws eks describe-update --name "$name" --update-id "$update_id" --query 'update.status' --output text 2> /dev/null || echo "Unknown")
+    status=$(aws eks describe-update --name "$name" --update-id "$update_id" "$@" --query 'update.status' --output text 2> /dev/null || echo "Unknown")
     if [ "$status" == "InProgress" ]; then
       count=$((count + 1))
     fi
+  done
+
+  echo "$count"
+}
+
+# Prints the number of cluster and addon updates still in progress. Lab cleanup
+# hooks run by delete-environment update addons (for example the
+# troubleshooting/dns hook resets kube-proxy and coredns), so addons are
+# checked as well as the cluster itself.
+in_progress_updates() {
+  local name=$1 count addon addon_status
+
+  count=$(count_in_progress "$name")
+
+  for addon in $(aws eks list-addons --cluster-name "$name" --query 'addons[]' --output text 2> /dev/null); do
+    [ "$addon" == "None" ] && continue
+    addon_status=$(aws eks describe-addon --cluster-name "$name" --addon-name "$addon" --query 'addon.status' --output text 2> /dev/null || echo "Unknown")
+    case "$addon_status" in
+      CREATING|UPDATING|DELETING)
+        count=$((count + 1))
+        continue;;
+    esac
+    count=$((count + $(count_in_progress "$name" --addon-name "$addon")))
   done
 
   echo "$count"
