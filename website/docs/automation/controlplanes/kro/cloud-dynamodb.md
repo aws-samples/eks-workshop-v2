@@ -58,16 +58,17 @@ webapplicationdynamodbs.kro.run    2024-01-15T10:35:00Z
 
 Now let's examine the carts-ddb.yaml file that will use the WebApplicationDynamoDB API to create an instance of the **Carts** component:
 
-::yaml{file="manifests/modules/automation/controlplanes/kro/app/carts-ddb.yaml" paths="kind,metadata,spec.appName,spec.replicas,spec.image,spec.port,spec.dynamodb,spec.env"}
+::yaml{file="manifests/modules/automation/controlplanes/kro/app/carts-ddb.yaml" paths="kind,metadata,spec.appName,spec.clusterName,spec.replicas,spec.image,spec.port,spec.dynamodb,spec.env"}
 
 1. Uses the custom WebApplicationDynamoDB API created by our RGD
 2. Creates a resource named `carts` in the `carts` namespace
 3. Specifies the application name for resource naming
-4. Sets single replica
-5. Uses the retail store cart service container image
-6. Exposes the application on port 8080
-7. Specifies the DynamoDB table name
-8. Sets environment variables to enable DynamoDB persistence mode
+4. Specifies the EKS cluster the Pod Identity association is created in
+5. Sets single replica
+6. Uses the retail store cart service container image
+7. Exposes the application on port 8080
+8. Specifies the DynamoDB table name
+9. Sets environment variables to enable DynamoDB persistence mode
 
 Next, let's deploy the updated component leveraging the carts-ddb.yaml file:
 

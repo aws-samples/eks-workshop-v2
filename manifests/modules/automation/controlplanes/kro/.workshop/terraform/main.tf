@@ -15,6 +15,13 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
+# Must match spec.dynamodb.tableName in kro/app/carts-ddb.yaml, which is
+# ${EKS_CLUSTER_NAME}-carts-kro. Deriving it from the cluster name keeps the IAM
+# scoping below correct on clusters not named eks-workshop (e.g. CI).
+locals {
+  carts_dynamo_table_name = "${var.addon_context.eks_cluster_id}-carts-kro"
+}
+
 data "aws_ecrpublic_authorization_token" "token" {
   provider = aws.virginia
 }
@@ -134,8 +141,8 @@ resource "aws_iam_role_policy" "ack_capability_dynamodb" {
         Effect = "Allow"
         Action = "dynamodb:*"
         Resource = [
-          "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${var.carts_dynamo_table_name}",
-          "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${var.carts_dynamo_table_name}/index/*"
+          "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${local.carts_dynamo_table_name}",
+          "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${local.carts_dynamo_table_name}/index/*"
         ]
       }
     ]
@@ -179,7 +186,7 @@ resource "aws_iam_role_policy" "ack_capability_iam" {
           "iam:PutRolePolicy",
           "iam:DeleteRolePolicy"
         ]
-        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.carts_dynamo_table_name}-*"
+        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.carts_dynamo_table_name}-*"
       },
       {
         # The RGD-generated role is only ever passed to EKS Pod Identity, so
@@ -187,7 +194,7 @@ resource "aws_iam_role_policy" "ack_capability_iam" {
         Sid      = "PassAckRolesToPodIdentity"
         Effect   = "Allow"
         Action   = "iam:PassRole"
-        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.carts_dynamo_table_name}-*"
+        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.carts_dynamo_table_name}-*"
         Condition = {
           StringEquals = {
             "iam:PassedToService" = "pods.eks.amazonaws.com"
@@ -209,7 +216,7 @@ resource "aws_iam_role_policy" "ack_capability_iam" {
           "iam:UntagPolicy",
           "iam:ListPolicyTags"
         ]
-        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.carts_dynamo_table_name}-*"
+        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${local.carts_dynamo_table_name}-*"
       }
     ]
   })

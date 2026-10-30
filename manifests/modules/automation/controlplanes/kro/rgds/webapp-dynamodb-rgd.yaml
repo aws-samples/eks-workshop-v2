@@ -8,6 +8,7 @@ spec:
     kind: WebApplicationDynamoDB
     spec:
       appName: string | required=true description="Web Application Name"
+      clusterName: string | required=true description="EKS cluster name for the Pod Identity association"
       replicas: integer | default=1 minimum=1 maximum=100
       image: string | default=nginx
       port: integer | default=8080
@@ -48,7 +49,7 @@ spec:
           name: ${schema.spec.appName}
           namespace: ${schema.spec.appName}
         spec:
-          clusterName: "eks-workshop"
+          clusterName: ${schema.spec.clusterName}
           namespace: ${schema.spec.appName}
           serviceAccount: ${schema.spec.appName}
           roleARN: ${itemsTableIAMRole.status.ackResourceMetadata.arn}
