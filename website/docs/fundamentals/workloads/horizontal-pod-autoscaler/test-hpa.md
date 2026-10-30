@@ -3,7 +3,7 @@ title: "Generate load"
 sidebar_position: 20
 ---
 
-To observe HPA scale out in response to the policy we have configured we need to generate some load on our application. We'll do that by calling the home page of the workload with [hey](https://github.com/rakyll/hey).
+To observe HPA scale out in response to the policy we have configured we need to generate some load on our application. We'll do that by calling the home page of the workload with [oha](https://github.com/hatoo/oha).
 
 The command below will run the load generator with:
 
@@ -13,8 +13,8 @@ The command below will run the load generator with:
 
 ```bash hook=hpa-pod-scaleout hookTimeout=330
 $ kubectl run load-generator \
-  --image=williamyeh/hey:latest \
-  --restart=Never -- -c 10 -q 5 -z 60m http://ui.ui.svc/home
+  --image=ghcr.io/hatoo/oha:latest \
+  --restart=Never -- -c 10 -q 5 -z 60m --no-tui http://ui.ui.svc/home
 ```
 
 Now that we have requests hitting our application we can watch the HPA resource to follow its progress:
