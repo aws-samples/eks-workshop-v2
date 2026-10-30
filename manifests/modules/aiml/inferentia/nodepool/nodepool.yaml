@@ -49,8 +49,20 @@ spec:
     Content-Type: text/x-shellscript; charset="us-ascii"
 
     #!/bin/bash
+    # SOCI tuning
     sed -i "s/^max_concurrent_downloads_per_image = .*$/max_concurrent_downloads_per_image = 10/" /etc/soci-snapshotter-grpc/config.toml
     sed -i "s/^max_concurrent_unpacks_per_image = .*$/max_concurrent_unpacks_per_image = 10/" /etc/soci-snapshotter-grpc/config.toml
+
+    # Workaround for https://github.com/awslabs/amazon-eks-ami/issues/2710
+    # Import pause image into SOCI snapshotter before kubelet starts
+    # Can be removed once AMI includes fix from PR #2717
+    mkdir -p /etc/systemd/system/kubelet.service.d
+    cat > /etc/systemd/system/kubelet.service.d/prestart-load-pause-ctr.conf << 'EOF'
+    [Service]
+    ExecStartPre=/usr/bin/ctr --namespace=k8s.io image import --snapshotter soci --local /etc/eks/pause.tar
+    ExecStartPre=/usr/bin/ctr --namespace=k8s.io image label localhost/kubernetes/pause:latest io.cri-containerd.pinned=pinned
+    EOF
+    systemctl daemon-reload
 
     --//
     Content-Type: application/node.eks.aws

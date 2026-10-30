@@ -34,3 +34,8 @@ variable "resources_precreated" {
   description = "Have expensive resources been created already"
   type        = bool
 }
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
+  type        = string
+}

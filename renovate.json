@@ -2,10 +2,12 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
-    ":rebaseStalePrs",
     ":automergeStableNonMajor"
   ],
-  "schedule": ["* * 7-14 * *"],
+  "timezone": "America/Toronto",
+  "schedule": ["* 0-8 7-14 * *"],
+  "rebaseWhen": "conflicted",
+  "updateNotScheduled": false,
   "enabledManagers": ["custom.regex", "github-actions", "terraform", "npm"],
   "labels": ["content/other"],
   "minimumReleaseAge": "28 days",

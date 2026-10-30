@@ -11,6 +11,7 @@ metadata:
     alb.ingress.kubernetes.io/healthcheck-path: /health
     # HIGHLIGHT
     alb.ingress.kubernetes.io/group.name: retail-app-group
+    alb.ingress.kubernetes.io/inbound-cidrs: $INBOUND_CIDRS
 spec:
   ingressClassName: alb
   rules:

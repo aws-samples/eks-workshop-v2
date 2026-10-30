@@ -3,7 +3,7 @@ title: "Introduction"
 sidebar_position: 10
 ---
 
-The first thing we'll do is install Kubecost in our cluster. As part of the lab preparation an the AWS Load Balancer Controller and EBS CSI driver were pre-installed to provide ingress and storage to Kubecost.
+The first thing we'll do is install Kubecost in our cluster. As part of the lab preparation, the AWS Load Balancer Controller and EBS CSI driver were pre-installed to provide ingress and storage to Kubecost.
 
 All that we have left to do is install Kubecost as a Helm chart:
 
@@ -12,11 +12,13 @@ $ aws ecr-public get-login-password \
   --region us-east-1 | helm registry login \
   --username AWS \
   --password-stdin public.ecr.aws
+$ ESCAPED_CIDRS="${INBOUND_CIDRS//,/\\,}"
 $ helm upgrade --install kubecost oci://public.ecr.aws/kubecost/cost-analyzer \
   --version "${KUBECOST_CHART_VERSION}" \
   --namespace "kubecost" --create-namespace \
   --values https://raw.githubusercontent.com/kubecost/cost-analyzer-helm-chart/v${KUBECOST_CHART_VERSION}/cost-analyzer/values-eks-cost-monitoring.yaml \
   --values ~/environment/eks-workshop/modules/observability/kubecost/values.yaml \
+  --set "service.annotations.service\\.beta\\.kubernetes\\.io/load-balancer-source-ranges"="$ESCAPED_CIDRS" \
   --wait
 NAME: kubecost
 LAST DEPLOYED: Thu Jun 13 17:48:55 2024

@@ -138,9 +138,24 @@ aws ec2 delete-launch-template --launch-template-name new_nodegroup_3 2>/dev/nul
 
 # Delete IAM role and policies
 logmessage "Cleaning up IAM resources..."
+# The ARN is captured before the role goes, so the access entry below can be
+# matched exactly. EKS created that entry when nodegroup 3 was created and does
+# not remove it here, so deleting only the role leaves an entry bound to a
+# principal that no longer exists. A re-run of this lab recreates the role with
+# the same ARN and a new principal id, which the stale entry does not match, and
+# the new nodegroup's kubelet is then rejected with "Unauthorized" while the
+# nodegroup sits in CREATING with no health issue reported.
+# Nodegroups 1 and 2 reuse the default nodegroup's role, which is not deleted
+# here, so they are unaffected.
+new_nodegroup_3_arn=$(aws iam get-role --role-name new_nodegroup_3 --query 'Role.Arn' --output text 2>/dev/null || true)
 aws iam detach-role-policy --role-name new_nodegroup_3 --policy-arn arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy 2>/dev/null || true
 aws iam detach-role-policy --role-name new_nodegroup_3 --policy-arn arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly 2>/dev/null || true
 aws iam delete-role --role-name new_nodegroup_3 2>/dev/null || true
+if [ -n "$new_nodegroup_3_arn" ] && [ "$new_nodegroup_3_arn" != "None" ]; then
+  logmessage "Deleting access entry for $new_nodegroup_3_arn..."
+  aws eks delete-access-entry --cluster-name "$EKS_CLUSTER_NAME" \
+    --principal-arn "$new_nodegroup_3_arn" 2>/dev/null || true
+fi
 logmessage "Cleanup complete."
 
 

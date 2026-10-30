@@ -34,16 +34,15 @@ variable "resources_precreated" {
   type        = bool
 }
 
-variable "operator_chart_version" {
-  description = "The chart version of opentelemetry-operator to use"
-  type        = string
-  # renovate-helm: depName=opentelemetry-operator registryUrl=https://open-telemetry.github.io/opentelemetry-helm-charts
-  default = "0.68.1"
-}
-
 variable "grafana_chart_version" {
   description = "The chart version of grafana to use"
   type        = string
   # renovate-helm: depName=grafana registryUrl=https://grafana.github.io/helm-charts
   default = "8.15.0"
+}
+
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
+  type        = string
 }

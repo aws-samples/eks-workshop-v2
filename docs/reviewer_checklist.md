@@ -21,6 +21,7 @@ See style guide for expanded explanations.
 - [ ] Any references to external manifests are pinned to a version
 - [ ] `$EKS_CLUSTER_NAME` is used instead of hard-coded cluster names, including referencing other infrastructure that may use the cluster name
 - [ ] Avoided use of interactive `kubectl exec` or multiple terminal windows (or tests skipped)
+- [ ] Appropriately secured any public load balancers or other endpoints
 
 ## AWS infrastructure
 

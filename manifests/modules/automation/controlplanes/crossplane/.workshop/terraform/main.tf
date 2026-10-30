@@ -154,21 +154,40 @@ module "eks_blueprints_addons" {
   observability_tag = null
 }
 
-resource "time_sleep" "blueprints_addons_sleep" {
-  depends_on = [
-    module.eks_blueprints_addons
-  ]
+resource "time_sleep" "wait" {
+  depends_on = [module.eks_blueprints_addons]
 
-  create_duration  = "15s"
-  destroy_duration = "15s"
+  create_duration = "10s"
 }
 
-resource "kubectl_manifest" "nlb" {
-  yaml_body = templatefile("${path.module}/templates/nlb.yaml", {
+resource "kubernetes_manifest" "ui_nlb" {
+  depends_on = [time_sleep.wait]
 
-  })
-
-  wait = true
-
-  depends_on = [time_sleep.blueprints_addons_sleep]
+  manifest = {
+    "apiVersion" = "v1"
+    "kind"       = "Service"
+    "metadata" = {
+      "name"      = "ui-nlb"
+      "namespace" = "ui"
+      "annotations" = {
+        "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
+        "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
+        "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "instance"
+        "service.beta.kubernetes.io/load-balancer-source-ranges"       = var.inbound_cidrs
+      }
+    }
+    "spec" = {
+      "type" = "LoadBalancer"
+      "ports" = [{
+        "port"       = 80
+        "targetPort" = 8080
+        "name"       = "http"
+      }]
+      "selector" = {
+        "app.kubernetes.io/name"      = "ui"
+        "app.kubernetes.io/instance"  = "ui"
+        "app.kubernetes.io/component" = "service"
+      }
+    }
+  }
 }

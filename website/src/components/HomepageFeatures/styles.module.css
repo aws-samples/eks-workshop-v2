@@ -7,6 +7,11 @@
   color: rgb(28, 30, 33);
 }
 
+[data-theme="dark"] .features {
+  background-color: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+}
+
 .featureSvg {
   height: 200px;
   width: 200px;

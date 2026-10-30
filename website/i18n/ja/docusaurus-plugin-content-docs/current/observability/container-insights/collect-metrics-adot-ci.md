@@ -1,91 +1,72 @@
 ---
 title: "クラスターメトリクス"
 sidebar_position: 10
-tmdTranslationSourceHash: 2c66fe48c70c4039dd8856f2d14ddfd6
+tmdTranslationSourceHash: e62390c5293f0ca55db1ea8900716b8f
 ---
 
-EKSクラスター用のCloudWatch Container InsightsメトリクスをADOTコレクターで有効にする方法を調査します。最初に必要なことは、クラスター内にコレクターを作成して、ノード、ポッド、コンテナなどのクラスターのさまざまな側面に関するメトリクスを収集することです。
+[Amazon CloudWatch Observability EKS add-on](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Observability-EKS-addon.html)を使用して、EKSクラスター用のCloudWatch Container Insightsを有効にします。このアドオンは、ノード、ポッド、コンテナなどのクラスターのさまざまな側面に関するメトリクスを収集し、CloudWatchに送信するCloudWatchエージェントをデプロイします。
 
-完全なコレクターマニフェストは以下で確認でき、その後で詳しく分解して説明します。
+内部的には、CloudWatchエージェントは[OpenTelemetry](https://opentelemetry.io/)上に構築されています。OTel Container Insightsを有効にすると、エージェントは組み込みのOpenTelemetryパイプラインを実行します：[AWS Container Insights Receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/awscontainerinsightreceiver/README.md)がノードとコンテナのテレメトリを収集し、[AWS CloudWatch EMF Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/awsemfexporter/README.md)がそれを[CloudWatch Embedded Metric Format (EMF)](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Specification.html)に変換してCloudWatch Logsに送信します。そこでメトリクスは`ContainerInsights`名前空間に表示されます。アドオンがこのパイプラインを管理するため、デプロイや保守するコレクターマニフェスト、Helmチャート、DaemonSetはありません。エージェントはDaemonSetとして実行されるため、クラスター内の各ノードで1つのポッドが実行されます。
 
-<details>
-  <summary>コレクターマニフェスト全体を展開</summary>
+### CloudWatchエージェントに権限を付与する
 
-::yaml{file="manifests/modules/observability/container-insights/adot/opentelemetrycollector.yaml"}
+CloudWatchエージェントは、メトリクスとログをCloudWatchに送信するためのIAM権限が必要です。[Amazon EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html)を使用して権限を付与します。これにより、Kubernetes Service AccountがIAMロールを引き受けることができます。静的な認証情報は必要ありません。
 
-</details>
+Pod Identityの前提条件である[EKS Pod Identity Agent](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html)アドオンは、`prepare-environment`によって既にクラスターにインストールされています。
 
-これをいくつかの部分に分けて理解しやすくしましょう。
-
-::yaml{file="manifests/modules/observability/container-insights/adot/opentelemetrycollector.yaml" zoomPath="spec.image" zoomAfter="1"}
-
-OpenTelemetryコレクターは、収集するテレメトリによって異なるモードで実行できます。今回はDaemonSetとして実行し、EKSクラスター内の各ノードにポッドが実行されるようにします。これにより、ノードとコンテナランタイムからテレメトリを収集できます。
-
-次に、コレクター設定自体を分解していきます。
-
-::yaml{file="manifests/modules/observability/container-insights/adot/opentelemetrycollector.yaml" zoomPath="spec.config.receivers.awscontainerinsightreceiver" zoomBefore="2"}
-
-まず、[AWS Container Insights Receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/9da7fea0097b991b771e0999bc4cd930edb221e2/receiver/awscontainerinsightreceiver/README.md)を設定して、ノードからメトリクスを収集します。
-
-::yaml{file="manifests/modules/observability/container-insights/adot/opentelemetrycollector.yaml" zoomPath="spec.config.processors"}
-
-次に、バッチプロセッサを使用して、最大60秒間バッファリングされたメトリクスをフラッシュすることでCloudWatchへのAPI呼び出し回数を減らします。
-
-::yaml{file="manifests/modules/observability/container-insights/adot/opentelemetrycollector.yaml" zoomPath="spec.config.exporters.awsemf/performance.namespace" zoomBefore="2" zoomAfter="1"}
-
-そして[AWS CloudWatch EMF Exporter for OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/awsemfexporter/README.md)を使用してOpenTelemetryメトリクスを[AWS CloudWatch Embedded Metric Format (EMF)](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Embedded_Metric_Format_Specification.html)に変換し、[PutLogEvents](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutLogEvents.html) APIを使用して直接CloudWatch Logsに送信します。ログエントリは表示されているCloudWatch Logsロググループに送信され、メトリクスは`ContainerInsights`名前空間に表示されます。このセクションの残りの部分は長すぎるため全体を表示できませんが、上記の完全なマニフェストを参照してください。
-
-::yaml{file="manifests/modules/observability/container-insights/adot/opentelemetrycollector.yaml" zoomPath="spec.config.service.pipelines"}
-
-最後に、OpenTelemetryパイプラインを使用して、レシーバー、プロセッサー、エクスポーターを組み合わせる必要があります。
-
-マネージドIAMポリシー`CloudWatchAgentServerPolicy`を使用して、IAMロールをサービスアカウントに付与し、コレクターがメトリクスをCloudWatchに送信するために必要なIAM権限を提供します：
+CloudWatchエージェントが引き受けることができるIAMロールを作成します。信頼ポリシーはEKS Pod Identityサービスプリンシパルを許可し、AWSマネージド`CloudWatchAgentServerPolicy`をアタッチします：
 
 ```bash
-$ aws iam list-attached-role-policies \
-  --role-name eks-workshop-adot-collector-ci | jq .
-{
-  "AttachedPolicies": [
-    {
-      "PolicyName": "CloudWatchAgentServerPolicy",
-      "PolicyArn": "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-    }
-  ]
-}
+$ aws iam create-role \
+  --role-name $EKS_CLUSTER_NAME-cloudwatch-agent \
+  --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"pods.eks.amazonaws.com"},"Action":["sts:AssumeRole","sts:TagSession"]}]}'
+$ aws iam attach-role-policy \
+  --role-name $EKS_CLUSTER_NAME-cloudwatch-agent \
+  --policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
 ```
 
-このIAMロールはコレクターのServiceAccountに追加されます：
-
-```file
-manifests/modules/observability/container-insights/adot/serviceaccount.yaml
-```
-
-上記で検討したリソースを作成します：
+アドオンが`amazon-cloudwatch`名前空間に作成する`cloudwatch-agent` Service Accountにロールを関連付けます：
 
 ```bash
-$ kubectl kustomize ~/environment/eks-workshop/modules/observability/container-insights/adot \
-  | envsubst | kubectl apply -f- && sleep 5
-$ kubectl rollout status -n other daemonset/adot-container-ci-collector --timeout=120s
+$ aws eks create-pod-identity-association \
+  --cluster-name $EKS_CLUSTER_NAME \
+  --namespace amazon-cloudwatch \
+  --service-account cloudwatch-agent \
+  --role-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/$EKS_CLUSTER_NAME-cloudwatch-agent
 ```
 
-DaemonSetによって作成されたPodを検査して、コレクターが実行されていることを確認できます：
+### Container Insightsを有効化する
+
+次に、OTel Container Insightsを有効にして`amazon-cloudwatch-observability`アドオンをインストールします。これは、コンソールまたはAWS CLIのどちらを使用してもインストールされる同じアドオンで、CloudWatchエージェントをデプロイして設定します：
+
+```bash
+$ aws eks create-addon \
+  --cluster-name $EKS_CLUSTER_NAME \
+  --addon-name amazon-cloudwatch-observability \
+  --configuration-values '{"otelContainerInsights":{"enabled":true}}'
+$ aws eks wait addon-active \
+  --cluster-name $EKS_CLUSTER_NAME \
+  --addon-name amazon-cloudwatch-observability
+```
+
+:::note
+`otelContainerInsights.enabled`設定はOTel Container Insightsをオンにします。デフォルトでは有効になっていません。
+:::
+
+アドオンは`amazon-cloudwatch`名前空間にCloudWatchエージェントをDaemonSetとしてデプロイします。エージェントポッドが実行されていることを確認します：
 
 ```bash hook=metrics
-$ kubectl get pod -n other -l app.kubernetes.io/name=adot-container-ci-collector
-NAME                               READY   STATUS    RESTARTS   AGE
-adot-container-ci-collector-5lp5g  1/1     Running   0          15s
-adot-container-ci-collector-ctvgs  1/1     Running   0          15s
-adot-container-ci-collector-w4vqs  1/1     Running   0          15s
+$ kubectl get pods -n amazon-cloudwatch -l app.kubernetes.io/name=cloudwatch-agent
+NAME                     READY   STATUS    RESTARTS   AGE
+cloudwatch-agent-4frxx   1/1     Running   0          31s
+cloudwatch-agent-5rvpc   1/1     Running   0          31s
+cloudwatch-agent-tptl7   1/1     Running   0          31s
 ```
 
-これはコレクターが実行されクラスターからメトリクスを収集していることを示しています。メトリクスを表示するには、まずCloudWatchコンソールを開き、Container Insightsに移動します：
+エージェントはPod Identityを介してIAMロールを引き受けるため、すぐにメトリクスをCloudWatchに送信できます。メトリクスを表示するには、CloudWatchコンソールを開き、Container Insightsに移動します：
 
 :::tip
-以下の点に注意してください：
-
-1. CloudWatchにデータが表示され始めるまで数分かかることがあります
-2. [拡張観測性を備えたCloudWatchエージェント](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-EKS-agent.html)によって提供される一部のメトリクスが欠落していることが予想されます
-
+CloudWatchにデータが表示され始めるまで2〜3分かかることがあります。
 :::
 
 <ConsoleButton url="https://console.aws.amazon.com/cloudwatch/home#container-insights:performance/EKS:Cluster?~(query~(controls~(CW*3a*3aEKS.cluster~(~'eks-workshop)))~context~())" service="cloudwatch" label="CloudWatchコンソールを開く"/>

@@ -1,12 +1,12 @@
 ---
 title: StatefulSet with EBS Volume
 sidebar_position: 30
-tmdTranslationSourceHash: b5376f2fdd3fe277c0128a3de2a6be09
+tmdTranslationSourceHash: 331bfd8e63f7941b14e1bf0bde4f2792
 ---
 
-[StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/)と[Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)を理解したので、Catalogマイクロサービスの MySQL DBを変更して、データベースファイルを永続的に保存するための新しいEBSボリュームをプロビジョニングしましょう。
+[StatefulSet](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/)と[Dynamic Volume Provisioning](https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/)を理解したので、Catalogマイクロサービスの MySQL DBを変更して、データベースファイルを永続的に保存するための新しいEBSボリュームをプロビジョニングしましょう。
 
-![MySQL with EBS](/docs/fundamentals/storage/ebs/mysql-ebs.webp)
+![MySQL with EBS](/docs/fundamentals/storage/ebs/eksworkshop-storage-ebs.svg)
 
 Kustomizeを使用して、次の2つのことを行います：
 

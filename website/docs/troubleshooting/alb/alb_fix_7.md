@@ -97,7 +97,7 @@ Notice that the ingress is configured to use a service named `service-ui`, but o
 Let's update the ingress to point to the correct service name:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/troubleshooting/alb/creating-alb/fix_ingress
+$ kubectl kustomize ~/environment/eks-workshop/modules/troubleshooting/alb/creating-alb/fix_ingress | envsubst | kubectl apply -f -
 ```
 
 The corrected configuration should look like this:

@@ -28,10 +28,22 @@ Parameters:
     Type: String
     Description: Analytics endpoint used for AWS events
     Default: ""
+  WS:
+    Type: String
+    Description: Workshop Studio workshop id (empty for self-paced)
+    Default: ""
+  BUILD:
+    Type: String
+    Description: Workshop content build/commit id (empty for self-paced)
+    Default: ""
+  ENV:
+    Type: String
+    Description: Workshop Studio team id (empty for self-paced)
+    Default: ""
   CodeServerVersion:
     Type: String
     Description: Default code-server version to use
-    Default: "4.104.2"
+    Default: "4.139.1"
   AmiParameterStoreName:
     Type: "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>"
     Default: "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64"
@@ -39,6 +51,10 @@ Parameters:
     Type: String
     Description: For testing purposes only
     Default: ""
+  InboundCIDR:
+    Type: String
+    Description: CIDR range to allowlist for inbound traffic
+    Default: "0.0.0.0/0"
 
 Mappings:
   PrefixListID:
@@ -309,6 +325,12 @@ Resources:
                   export REPOSITORY_REF="${RepositoryRef}"
                   export RESOURCES_PRECREATED="${ResourcesPrecreated}"
                   export ANALYTICS_ENDPOINT="${AnalyticsEndpoint}"
+                  export WS="${WS}"
+                  export BUILD="${BUILD}"
+                  export ENV="${ENV}"
+                  IMDS_TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+                  IDE_IP=$(curl -s -H "X-aws-ec2-metadata-token: $IMDS_TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4)
+                  export BASE_INBOUND_CIDRS="${InboundCIDR},$IDE_IP/32"
 
                   curl -fsSL https://raw.githubusercontent.com/${RepositoryOwner}/${RepositoryName}/${RepositoryRef}/lab/scripts/installer.sh | bash
 
@@ -393,6 +415,17 @@ Resources:
 
   EksWorkshopBasePolicy:
     Type: AWS::IAM::ManagedPolicy
+    Metadata:
+      checkov:
+        skip:
+          - id: CKV_AWS_107
+            comment: >-
+              ecr-public:GetAuthorizationToken accepts no resource ARN, so it can
+              only be granted on "*". The Service Authorization Reference lists no
+              resource type for it, unlike every other ecr-public action. It is
+              required to pull the workshop's container images from public.ecr.aws.
+              Checkov already excludes the equivalent ecr:GetAuthorizationToken
+              from this check for the same reason.
     Properties:
       Roles:
         - !Ref EksWorkshopIdeRole
@@ -452,6 +485,17 @@ Resources:
       ManagedPolicyName: !Sub ${AWS::StackName}-labs4
       PolicyDocument:
         file: ./iam/policies/labs4.yaml
+
+  EksWorkshopEksCapabilitiesPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - EksWorkshopIdeRole
+    Properties:
+      Roles:
+        - !Ref EksWorkshopIdeRole
+      ManagedPolicyName: !Sub ${AWS::StackName}-eks-capabilities
+      PolicyDocument:
+        file: ./iam/policies/eks-capabilities.yaml
 
   EksWorkshopTroubleshootPolicy:
     Type: AWS::IAM::ManagedPolicy

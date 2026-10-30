@@ -8,7 +8,7 @@ const notificationConfig = {
   prefix: "Live:",
   text: "Hands-on EKS Workshop Series -",
   linkText: "Register",
-  linkUrl: "https://aws-experience.com/emea/smb/events/series/get-hands-on-with-amazon-eks?trk=d42ffbaa-d60a-4513-8a79-0bf36b9f33ce&sc_channel=el"
+  linkUrl: "https://awsworkshop.io/eks?trk=d42ffbaa-d60a-4513-8a79-0bf36b9f33ce&sc_channel=el"
 };
 
 const GlobalNotification = () => {

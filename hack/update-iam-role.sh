@@ -21,4 +21,5 @@ aws cloudformation deploy \
     --stack-name ${EKS_CLUSTER_NAME}-ide-role \
     --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
     --template-file $outfile \
-    --region $AWS_REGION
+    --region $AWS_REGION \
+    --no-fail-on-empty-changeset

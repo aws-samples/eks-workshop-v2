@@ -5,35 +5,28 @@ sidebar_position: 3
 
 kro operates within a cluster using two primary components:
 
-1. The kro controller manager, which provides the core orchestration functionality
+1. The kro controller, which provides the core orchestration functionality
 2. ResourceGraphDefinitions (RGDs), which define templates for creating groups of related resources
 
-The kro controller manager watches for ResourceGraphDefinition custom resources and orchestrates the creation and management of the underlying Kubernetes resources defined in the template.
+The kro controller watches for ResourceGraphDefinition custom resources and orchestrates the creation and management of the underlying Kubernetes resources defined in the template.
 
 kro simplifies complex resource management by allowing platform teams to define ResourceGraphDefinitions that encapsulate multiple related resources. Developers interact with simple custom APIs defined by the RGD schema, while kro handles the complexity of creating and managing the underlying resources. This architecture provides a clear separation between the platform team, who defines the ResourceGraphDefinitions, and application developers, who consume the simplified custom APIs to create complex resource groups.
 
-Let us first install kro to the Kubernetes cluster by using a Helm chart:
+In this lab kro is provided as a fully managed [Amazon EKS Capability](https://docs.aws.amazon.com/eks/latest/userguide/eks-capabilities.html), which was enabled when you prepared the environment. Amazon EKS runs the kro controller in AWS-managed infrastructure and installs the kro custom resource definitions into your cluster, so there is no controller to install, patch, or scale yourself.
 
-```bash wait=60
-$ helm install kro oci://registry.k8s.io/kro/charts/kro \
-  --version=${KRO_VERSION} \
-  --namespace kro-system --create-namespace \
-  --wait
-```
-
-Verify the kro controller is running:
-
-```bash
-$ kubectl get deployment -n kro-system
-NAME    READY   UP-TO-DATE   AVAILABLE   AGE
-kro     1/1     1            1           13s
-```
-
-We can also verify that the kro custom resource definitions have been installed:
+Verify that the kro custom resource definitions have been installed by the capability:
 
 ```bash
 $ kubectl get crd | grep kro
+graphrevisions.internal.kro.run           2025-10-15T22:34:13Z
 resourcegraphdefinitions.kro.run          2025-10-15T22:34:13Z
+```
+
+Because kro runs as a managed capability, there is no kro controller deployment inside the cluster:
+
+```bash
+$ kubectl get deployment -n kro-system
+No resources found in kro-system namespace.
 ```
 
 When you create a ResourceGraphDefinition kro performs the following:

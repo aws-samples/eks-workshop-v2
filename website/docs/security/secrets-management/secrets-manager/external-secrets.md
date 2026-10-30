@@ -39,7 +39,15 @@ $ cat ~/environment/eks-workshop/modules/security/secrets-manager/cluster-secret
   | envsubst | kubectl apply -f -
 ```
 
-Next, we'll create an `ExternalSecret` that defines what data should be fetched from AWS Secrets Manager and how it should be transformed into a Kubernetes Secret. We'll then update our `catalog` Deployment to use these credentials:
+Next, we'll create an `ExternalSecret` that defines what data should be fetched from AWS Secrets Manager and how it should be transformed into a Kubernetes Secret.
+
+Let's inspect the `ExternalSecret` manifest that will be applied:
+
+::yaml{file="manifests/modules/security/secrets-manager/external-secrets/external-secret.yaml"}
+
+This tells the External Secrets Operator to pull the secret identified by `$SECRET_NAME` from the `ClusterSecretStore` and sync it into the `catalog` namespace every hour.
+
+We'll also update our `catalog` Deployment to use these credentials:
 
 ```kustomization
 modules/security/secrets-manager/external-secrets/kustomization.yaml

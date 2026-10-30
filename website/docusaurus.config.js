@@ -26,7 +26,7 @@ const baseUrl = process.env.BASE_URL || "";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "EKS Workshop",
+  title: "Amazon EKS Workshop",
   tagline:
     "Practical exercises to learn about Amazon Elastic Kubernetes Service",
   url: "https://www.eksworkshop.com",
@@ -37,6 +37,35 @@ const config = {
   noIndex: process.env.ENABLE_INDEX !== "1",
   customFields: {
     showNotification: process.env.SHOW_NOTIFICATION === "1",
+    secondaryNav: {
+      eksGroup: {
+        label: "Choose your own adventure",
+        items: [
+          { to: "/docs/introduction", label: "Intro" },
+          { to: "/docs/fundamentals", label: "Fundamentals" },
+          { to: "/docs/observability", label: "Observability" },
+          { to: "/docs/security", label: "Security" },
+          { to: "/docs/networking", label: "Networking" },
+          { to: "/docs/automation", label: "Automation" },
+          { to: "/docs/aiml", label: "AI/ML" },
+          { to: "/docs/troubleshooting", label: "Troubleshooting" },
+        ],
+      },
+      autoModeGroup: {
+        label: "Amazon EKS Essentials",
+        items: [
+          { to: "/docs/fastpaths/", label: "Intro" },
+          { to: "/docs/fastpaths/setup", label: "Setup" },
+          {
+            to: "/docs/fastpaths/navigating-labs",
+            label: "Navigating the labs",
+          },
+          { to: "/docs/fastpaths/developer", label: "Developer" },
+          { to: "/docs/fastpaths/operator", label: "Operator" },
+          { to: "/docs/fastpaths/eks-capabilities", label: "Capability" },
+        ],
+      },
+    },
   },
 
   organizationName: "aws-samples",
@@ -74,8 +103,8 @@ const config = {
                   MANIFESTS_REF: manifestsRef,
                   MANIFESTS_OWNER: manifestsOwner,
                   MANIFESTS_REPOSITORY: manifestsRepository,
-                  KUBERNETES_VERSION: "1.33",
-                  KUBERNETES_NODE_VERSION: "1.33-eks-036c24b",
+                  KUBERNETES_VERSION: "1.35",
+                  KUBERNETES_NODE_VERSION: "1.35.6-eks-b3f9404",
                 },
               },
             ],
@@ -85,6 +114,7 @@ const config = {
           ],
           editUrl:
             "https://github.com/aws-samples/eks-workshop-v2/tree/main/website",
+          exclude: ["networking/vpc-lattice"],
         },
         theme: {
           customCss: require.resolve("./src/css/custom.scss"),

@@ -1,7 +1,7 @@
 ---
 title: Helm
 sidebar_custom_props: { "module": true }
-sidebar_position: 50
+sidebar_position: 80
 ---
 
 ::required-time
@@ -160,5 +160,3 @@ $ helm uninstall ui --namespace ui --wait
 ```
 
 This will delete all the resources created by the chart for that release from our EKS cluster.
-
-Now that you understand how Helm works, proceed to the [Fundamentals module](/docs/fundamentals).
