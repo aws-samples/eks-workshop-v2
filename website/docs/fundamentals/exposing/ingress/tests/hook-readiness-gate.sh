@@ -7,10 +7,11 @@ before() {
 after() {
   kubectl -n ui get pods -o wide
 
-  # Every ui Pod must carry the readiness gate injected by the AWS Load Balancer Controller
+  # Every ui Pod must carry the readiness gate injected by the AWS Load Balancer Controller.
+  # Terminating Pods are skipped: they belong to the ReplicaSet from before the gate was injected.
   pods=$(kubectl -n ui get pods -l app.kubernetes.io/name=ui -o json)
 
-  missing=$(echo "$pods" | jq -r '.items[] | select(([.spec.readinessGates[]?.conditionType | select(startswith("target-health.elbv2.k8s.aws/"))] | length) == 0) | .metadata.name')
+  missing=$(echo "$pods" | jq -r '.items[] | select(.metadata.deletionTimestamp == null) | select(([.spec.readinessGates[]?.conditionType | select(startswith("target-health.elbv2.k8s.aws/"))] | length) == 0) | .metadata.name')
 
   if [ -n "$missing" ]; then
     >&2 echo "Pods without a target-health readiness gate: $missing"
