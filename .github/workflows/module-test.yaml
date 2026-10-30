@@ -55,6 +55,17 @@ jobs:
           chmod +x ${HOME}/.local/bin/*
 
           echo "${HOME}/.local/bin" >> $GITHUB_PATH
+      - name: Install Terraform
+        # Pre-provisioning runs terraform on the runner itself, not inside the lab
+        # container, and ubuntu-latest does not ship it. Same version the lab IDE
+        # installs (terraform_version in lab/scripts/installer.sh); keep them in step.
+        # Installed before the clusters are created so the always() destroy step
+        # below still has it when an earlier step fails.
+        if: inputs.preprovision == true
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.14.4"
+          terraform_wrapper: false
       - name: Set cluster ID
         env:
           RUN_ID: "${{ github.job }}"
