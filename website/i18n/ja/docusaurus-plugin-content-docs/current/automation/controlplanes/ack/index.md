@@ -3,7 +3,7 @@ title: "AWS Controllers for Kubernetes (ACK)"
 sidebar_position: 1
 sidebar_custom_props: { "module": true }
 description: "Directly manage AWS services from Amazon Elastic Kubernetes Service with AWS Controllers for Kubernetes."
-tmdTranslationSourceHash: 6bafedd694f7ec70612bf6d738506c54
+tmdTranslationSourceHash: 4c822cf85b88e78e15c1035b60e93ef2
 ---
 
 ::required-time
@@ -11,7 +11,7 @@ tmdTranslationSourceHash: 6bafedd694f7ec70612bf6d738506c54
 :::tip 開始する前に
 このセクションの環境を準備してください：
 
-```bash timeout=600 wait=30
+```bash timeout=900 wait=30
 $ prepare-environment automation/controlplanes/ack
 ```
 
@@ -34,3 +34,4 @@ ACKを使用すると、データベース（[RDS](https://aws-controllers-k8s.g
 [Amazon EKS ケイパビリティ](https://docs.aws.amazon.com/eks/latest/userguide/capabilities.html)を通じてACKを利用します。これはフルマネージドのケイパビリティであるため、ご自身でインストールしたり運用したりするコントローラーはありません。Amazon EKSがお客様に代わって、AWSマネージドインフラストラクチャ上でACKコントローラーを実行・維持します。
 
 ![EKS with DynamoDB](/docs/automation/controlplanes/ack/eks-workshop-ddb.webp)
+
