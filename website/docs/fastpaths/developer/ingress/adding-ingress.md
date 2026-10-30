@@ -114,6 +114,11 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
             "HealthCheckPort": "8080",
             "TargetHealth": {
                 "State": "healthy"
+            },
+            "AdministrativeOverride": {
+                "State": "no_override",
+                "Reason": "AdministrativeOverride.NoOverride",
+                "Description": "No override is currently active on target"
             }
         }
     ]
