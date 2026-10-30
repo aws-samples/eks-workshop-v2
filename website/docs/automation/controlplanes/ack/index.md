@@ -10,7 +10,7 @@ description: "Directly manage AWS services from Amazon Elastic Kubernetes Servic
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=600 wait=30
+```bash timeout=900 wait=30
 $ prepare-environment automation/controlplanes/ack
 ```
 
