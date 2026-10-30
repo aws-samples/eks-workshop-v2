@@ -156,6 +156,11 @@ To wait until the load balancer has finished provisioning you can run this comma
 ```bash
 $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
   -k $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Language: en-US
+set-cookie: SESSIONID=d64d5163-6ec3-44b8-a900-6d58f1d66a32
+content-length: 19973
 ```
 
 Now that our application is exposed to the outside world, lets try to access it by pasting that URL in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
