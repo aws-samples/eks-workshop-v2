@@ -1,7 +1,7 @@
 ---
 title: "IPモード"
 sidebar_position: 40
-tmdTranslationSourceHash: '3b12b3e9dd53801847aa273070a1b9bc'
+tmdTranslationSourceHash: '7aab533bf0486a78e14b8ee5d4d6661c'
 ---
 
 前述のように、作成したNLBは「インスタンスモード」で動作しています。インスタンスターゲットモードはAWS EC2インスタンス上で実行されているPodをサポートしています。このモードでは、AWS NLBはインスタンスにトラフィックを送信し、個々のワーカーノード上の`kube-proxy`がKubernetesクラスター内の1つ以上のワーカーノードを介してPodにトラフィックを転送します。
@@ -138,4 +138,9 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 ```bash timeout=240
 $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
   -k $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Language: en-US
+set-cookie: SESSIONID=d64d5163-6ec3-44b8-a900-6d58f1d66a32
+content-length: 19973
 ```
