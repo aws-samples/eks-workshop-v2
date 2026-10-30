@@ -1,7 +1,7 @@
 ---
 title: "ロードバランサーの作成"
 sidebar_position: 20
-tmdTranslationSourceHash: 55fc63cbdcdf0f7d3c4e633eb6526b28
+tmdTranslationSourceHash: 'adaa3502fd13fa6de94da12c63002cdb'
 ---
 
 以下の設定でロードバランサーをプロビジョニングする追加のServiceを作成しましょう：
@@ -157,6 +157,11 @@ http://k8s-ui-uinlb-e1c1ebaeb4-28a0d1a388d43825.elb.us-west-2.amazonaws.com
 ```bash
 $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
   -k $(kubectl get service -n ui ui-nlb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Language: en-US
+set-cookie: SESSIONID=d64d5163-6ec3-44b8-a900-6d58f1d66a32
+content-length: 19973
 ```
 
 これでアプリケーションが外部に公開されたので、ウェブブラウザにそのURLを貼り付けてアクセスしてみましょう。ウェブストアのUIが表示され、ユーザーとしてサイト内を移動することができるようになります。
@@ -164,4 +169,3 @@ $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-ti
 <Browser url="http://k8s-ui-uinlb-e1c1ebaeb4-28a0d1a388d43825.elb.us-west-2.amazonaws.com">
 <img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
 </Browser>
-

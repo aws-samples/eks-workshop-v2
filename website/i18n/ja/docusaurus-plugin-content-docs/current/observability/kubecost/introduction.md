@@ -1,12 +1,12 @@
 ---
 title: "はじめに"
 sidebar_position: 10
-tmdTranslationSourceHash: 8efcc70ec51cfc295110ffa098c8c902
+tmdTranslationSourceHash: 6ac0cc609cd95e68bbf7663d0c8a7573
 ---
 
 最初に行うことは、クラスターにKubecostをインストールすることです。ラボの準備の一環として、AWS Load Balancer ControllerとEBS CSIドライバーが事前にインストールされ、Kubecostにイングレスとストレージを提供します。
 
-残りの作業は、HelmチャートとしてKubecostをインストールするだけです：
+残りの作業は、HelmチャートとしてKubecostをインストールするだけです。
 
 ```bash timeout=300
 $ aws ecr-public get-login-password \
@@ -31,7 +31,7 @@ NOTES:
 [...]
 ```
 
-これには数分かかりますが、完了したらKubecostが実行されているかどうかを確認できます：
+これには数分かかります。完了したら、Kubecostが実行されているかどうかを確認できます。
 
 ```bash
 $ kubectl get deployment -n kubecost
@@ -40,7 +40,7 @@ kubecost-kube-state-metrics   1/1     1            1           16m
 kubecost-prometheus-server    1/1     1            1           16m
 ```
 
-Kubecostは `LoadBalancer` サービスを使用して公開されており、アクセスするURLは次のように見つけることができます：
+Kubecostは `LoadBalancer` サービスを使用して公開されており、アクセスするURLは次のように確認できます。
 
 ```bash
 $ export KUBECOST_SERVER=$(kubectl get svc -n kubecost kubecost-cost-analyzer -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname'):9090
@@ -48,7 +48,7 @@ $ echo "Kubecost URL: http://$KUBECOST_SERVER"
 Kubecost URL: http://k8s-kubecost-kubecost-e83ecf8fc1-fc26f5c92767520f.elb.us-west-2.amazonaws.com:9090
 ```
 
-ロードバランサーのプロビジョニングには時間がかかるため、Kubecostが応答するまで待つためにこのコマンドを使用します：
+ロードバランサーのプロビジョニングには時間がかかるため、Kubecostが応答するまで待つために次のコマンドを使用します。
 
 ```bash timeout=300
 $ curl --head -X GET --retry 20 --retry-all-errors --retry-delay 15 \
@@ -70,9 +70,8 @@ Cache-Control: max-age=300
 Accept-Ranges: bytes
 ```
 
-ブラウザでURLを開いてKubecostにアクセスします：
+ブラウザでURLを開いてKubecostにアクセスします。
 
 <Browser url='http://k8s-kubecost-kubecost-e83ecf8fc1-fc26f5c92767520f.elb.us-west-2.amazonaws.com:9090'>
 <img src={require('@site/static/docs/observability/kubecost/overview.webp').default}/>
 </Browser>
-
