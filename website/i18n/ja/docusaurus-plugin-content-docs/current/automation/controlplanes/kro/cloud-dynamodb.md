@@ -1,7 +1,7 @@
 ---
 title: "クラウドリソースのプロビジョニング"
 sidebar_position: 6
-tmdTranslationSourceHash: 7530f9a35aef4418f9f5547510a77fa6
+tmdTranslationSourceHash: 28cc8a7184d6a48c6c24a2c9ee39d33e
 ---
 
 このセクションでは、cartsが使用しているインメモリデータベースをDynamoDBに置き換えます。WebApplicationのベーステンプレートを基に構築するWebApplicationDynamoDB ResourceGraphDefinitionを構成することで実現します。
@@ -59,16 +59,17 @@ webapplicationdynamodbs.kro.run    2024-01-15T10:35:00Z
 
 次に、WebApplicationDynamoDB APIを使用して**Carts**コンポーネントのインスタンスを作成するcarts-ddb.yamlファイルを確認しましょう：
 
-::yaml{file="manifests/modules/automation/controlplanes/kro/app/carts-ddb.yaml" paths="kind,metadata,spec.appName,spec.replicas,spec.image,spec.port,spec.dynamodb,spec.env"}
+::yaml{file="manifests/modules/automation/controlplanes/kro/app/carts-ddb.yaml" paths="kind,metadata,spec.appName,spec.clusterName,spec.replicas,spec.image,spec.port,spec.dynamodb,spec.env"}
 
 1. RGDで作成されたカスタムWebApplicationDynamoDB APIを使用
 2. `carts`名前空間に`carts`という名前のリソースを作成
 3. リソース命名のためのアプリケーション名を指定
-4. 1レプリカを設定
-5. 小売店のカートサービスコンテナイメージを使用
-6. ポート8080でアプリケーションを公開
-7. DynamoDBテーブル名を指定
-8. DynamoDB永続モードを有効にする環境変数を設定
+4. Pod Identity関連付けが作成されるEKSクラスターを指定
+5. 1レプリカを設定
+6. 小売店のカートサービスコンテナイメージを使用
+7. ポート8080でアプリケーションを公開
+8. DynamoDBテーブル名を指定
+9. DynamoDB永続モードを有効にする環境変数を設定
 
 次に、carts-ddb.yamlファイルを活用して更新されたコンポーネントをデプロイしましょう：
 
@@ -165,3 +166,4 @@ $ aws dynamodb scan --table-name "${EKS_CLUSTER_NAME}-carts-kro"
 ```
 
 おめでとうございます！ベースのWebApplicationテンプレートを基に構築してDynamoDBストレージを追加することで、kroの組み合わせ可能性の実証に成功しました。
+
