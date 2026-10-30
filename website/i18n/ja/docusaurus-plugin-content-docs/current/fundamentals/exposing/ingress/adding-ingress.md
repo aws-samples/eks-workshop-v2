@@ -1,7 +1,7 @@
 ---
 title: "Ingressの作成"
 sidebar_position: 20
-tmdTranslationSourceHash: 75afb2bdcdabdcb4e4411b96e8001b6c
+tmdTranslationSourceHash: 'e15273d6abdb47991b0a5e6f08673337'
 ---
 
 以下の構成で Ingress リソースを作成しましょう：
@@ -9,7 +9,7 @@ tmdTranslationSourceHash: 75afb2bdcdabdcb4e4411b96e8001b6c
 ::yaml{file="manifests/modules/exposing/ingress/creating-ingress/ingress.yaml" paths="kind,metadata.annotations,spec.rules.0"}
 
 1. `Ingress` の種類を使用
-2. アノテーションを使用して、作成される ALB の様々な動作（ターゲットポッドに対して実行するヘルスチェックなど）を設定できます。`inbound-cidrs` アノテーションは、特定の CIDR 範囲へのインバウンドトラフィックを制限します
+2. アノテーションを使用して、作成される ALB の様々な動作（ターゲット Pod に対して実行するヘルスチェックなど）を設定できます。`inbound-cidrs` アノテーションは、特定の CIDR 範囲へのインバウンドトラフィックを制限します
 3. rules セクションは、ALB がトラフィックをどのようにルーティングすべきかを表現するために使用されます。この例では、パスが `/` から始まる全ての HTTP リクエストを、ポート 80 で `ui` という名前の Kubernetes サービスにルーティングしています
 
 この設定を適用しましょう：
@@ -26,7 +26,7 @@ NAME   CLASS   HOSTS   ADDRESS                                            PORTS 
 ui     alb     *       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com   80      15s
 ```
 
-ALB はターゲットをプロビジョニングして登録するのに数分かかりますので、この Ingress 用にプロビジョニングされた ALB の設定を詳しく見てみましょう：
+ALB のプロビジョニングとターゲットの登録には数分かかりますので、この Ingress 用にプロビジョニングされた ALB の設定を詳しく見てみましょう：
 
 ```bash
 $ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-ui`) == `true`]'
@@ -91,6 +91,11 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
             "HealthCheckPort": "8080",
             "TargetHealth": {
                 "State": "healthy"
+            },
+            "AdministrativeOverride": {
+                "State": "no_override",
+                "Reason": "AdministrativeOverride.NoOverride",
+                "Description": "No override is currently active on target"
             }
         }
     ]
@@ -123,3 +128,4 @@ $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-ti
 <Browser url="http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com">
 <img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
 </Browser>
+
