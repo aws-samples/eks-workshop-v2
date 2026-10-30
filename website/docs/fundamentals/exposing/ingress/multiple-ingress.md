@@ -14,7 +14,6 @@ The first thing we'll do is create a new Ingress for the `ui` component:
 1. Set the IngressGroup to `retail-app-group` by adding the annotation `alb.ingress.kubernetes.io/group.name`
 2. The rules section is used to express how the ALB should route traffic. For the `ui` component we route all HTTP requests where the path starts with `/` to the Kubernetes service called `ui` on port 80
 
-
 Then we'll create a separate Ingress for the `catalog` component:
 
 ::yaml{file="manifests/modules/exposing/ingress/multiple-ingress/ingress-catalog.yaml" paths="metadata.annotations,spec.rules.0"}
@@ -25,7 +24,7 @@ Then we'll create a separate Ingress for the `catalog` component:
 Apply these manifests to the cluster:
 
 ```bash wait=60
-$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/multiple-ingress
+$ kubectl kustomize ~/environment/eks-workshop/modules/exposing/ingress/multiple-ingress | envsubst | kubectl apply -f -
 ```
 
 We'll now have two additional Ingress objects in our cluster that end with `-multi`:

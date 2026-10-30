@@ -43,7 +43,7 @@ deployment.apps "carts-dynamodb" deleted
 Next, apply the ResourceGraphDefinition to register the WebApplication API:
 
 ```bash wait=10
-$ kubectl apply -f ~/environment/eks-workshop/modules/automation/controlplanes/kro/rgds/webapp-rgd.yaml
+$ cat ~/environment/eks-workshop/modules/automation/controlplanes/kro/rgds/webapp-rgd.yaml | envsubst | kubectl apply -f -
 resourcegraphdefinition.kro.run/web-application created
 ```
 
@@ -87,7 +87,7 @@ Now we can wait until the instance has reached a "synced" state:
 
 ```bash
 $ kubectl wait -o yaml webapplication/carts -n carts \
-  --for=condition=InstanceSynced=True --timeout=120s
+  --for=condition=ResourcesReady=True --timeout=120s
 ```
 
 Next, verify the components of the RGD are running:

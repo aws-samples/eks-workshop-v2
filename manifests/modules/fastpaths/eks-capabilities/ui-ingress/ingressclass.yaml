@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: eks-auto-alb
+  annotations:
+    ingressclass.kubernetes.io/is-default-class: "true"
+spec:
+  controller: eks.amazonaws.com/alb
+  parameters:
+    apiGroup: eks.amazonaws.com
+    kind: IngressClassParams
+    name: eks-auto-alb
+---
+apiVersion: eks.amazonaws.com/v1
+kind: IngressClassParams
+metadata:
+  name: eks-auto-alb
+spec:
+  scheme: internet-facing
+  targetType: ip
+  # EKS Auto Mode configures the load balancer from IngressClassParams (the
+  # alb.ingress.kubernetes.io/* annotations are ignored), so access is
+  # restricted here. $INBOUND_CIDRS resolves via envsubst to the learner's IP
+  # (or the workshop range); the manifest is applied through envsubst so a
+  # learner in their own account gets a locked-down ALB, not 0.0.0.0/0.
+  inboundCIDRs: [$INBOUND_CIDRS]

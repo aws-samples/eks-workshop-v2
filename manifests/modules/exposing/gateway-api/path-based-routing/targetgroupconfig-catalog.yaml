@@ -1,0 +1,12 @@
+apiVersion: gateway.k8s.aws/v1beta1
+kind: TargetGroupConfiguration
+metadata:
+  name: catalog-tgconfig
+  namespace: catalog
+spec:
+  targetReference:
+    name: catalog
+    kind: Service
+  defaultConfiguration:
+    healthCheckConfig:
+      healthCheckPath: /health

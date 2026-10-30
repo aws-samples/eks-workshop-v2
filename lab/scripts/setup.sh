@@ -21,6 +21,7 @@ export AWS_PAGER=""
 export AWS_REGION="${AWS_REGION}"
 export AWS_ACCOUNT_ID="${AWS_ACCOUNT_ID}"
 export EKS_CLUSTER_NAME="${EKS_CLUSTER_NAME}"
+export EKS_CLUSTER_AUTO_NAME="${EKS_CLUSTER_AUTO_NAME}"
 export EKS_DEFAULT_MNG_NAME="default"
 export EKS_DEFAULT_MNG_MIN=3
 export EKS_DEFAULT_MNG_MAX=6
@@ -29,20 +30,41 @@ EOT
 
 touch ~/.bashrc.d/workshop-env.bash
 
+REPOSITORY_OWNER=${REPOSITORY_OWNER:-"aws-samples"}
+REPOSITORY_NAME=${REPOSITORY_NAME:-"eks-workshop-v2"}
+REPOSITORY_REF=${REPOSITORY_REF:-"main"}
+
 cat << EOT > /home/ec2-user/.bashrc.d/aliases.bash
-function prepare-environment() { 
+function prepare-environment() {
+  start_time=\$(date +%s)
+
+  if [[ "\$1" == fastpaths/* ]]; then
+    cluster_name="\$EKS_CLUSTER_AUTO_NAME"
+    create_cmd="create-cluster-auto"
+  else
+    cluster_name="\$EKS_CLUSTER_NAME"
+    create_cmd="create-cluster"
+  fi
+
+  if ! aws eks describe-cluster --name "\$cluster_name" --no-cli-pager &>/dev/null; then
+    echo "Error: EKS cluster '\$cluster_name' does not exist."
+    echo "Please create it first by running: \$create_cmd"
+    return 1
+  fi
+
   bash /usr/local/bin/reset-environment \$1
   exit_code=\$?
   source ~/.bashrc.d/workshop-env.bash
+  echo "Execution time: \$((\$(date +%s) - start_time)) seconds"
   return \$exit_code
 }
 
 function use-cluster() { bash /usr/local/bin/use-cluster \$1; source ~/.bashrc.d/env.bash; }
-function create-cluster() { URL=https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/refs/heads/${REPOSITORY_REF}/cluster/eksctl/cluster.yaml; echo "Creating cluster with eksctl from $URL"; curl -fsSL $URL | envsubst | eksctl create cluster -f -; }
+function create-cluster() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster.yaml; echo "Creating cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl create cluster -f -; }
+function create-cluster-auto() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster-auto.yaml; echo "Creating cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl create cluster -f -; }
+function delete-cluster() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster.yaml; echo "Deleting cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl delete cluster -f -; }
+function delete-cluster-auto() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster-auto.yaml; echo "Deleting cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl delete cluster -f -; }
 EOT
-
-REPOSITORY_OWNER=${REPOSITORY_OWNER:-"aws-samples"}
-REPOSITORY_NAME=${REPOSITORY_NAME:-"eks-workshop-v2"}
 
 if [ ! -z "$REPOSITORY_REF" ]; then
   cat << EOT > ~/.bashrc.d/repository.bash
@@ -56,7 +78,21 @@ RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-"false"}
 
 echo "export RESOURCES_PRECREATED='${RESOURCES_PRECREATED}'" > ~/.bashrc.d/infra.bash
 
+# Analytics: stable per-environment id.
+# Use the Workshop Studio team id (ENV) when present (AWS-hosted events);
+# otherwise generate + persist a random per-environment UUID.
+ENV_ID_FILE=~/.workshop-env-id
+if [ ! -s "$ENV_ID_FILE" ]; then
+  cat /proc/sys/kernel/random/uuid > "$ENV_ID_FILE"
+fi
+WORKSHOP_ENV_ID="${ENV:-$(cat "$ENV_ID_FILE")}"
+
 echo "export ANALYTICS_ENDPOINT='${ANALYTICS_ENDPOINT}'" > ~/.bashrc.d/analytics.bash
+echo "export WORKSHOP_ENV_ID='${WORKSHOP_ENV_ID}'" >> ~/.bashrc.d/analytics.bash
+echo "export WS='${WS}'" >> ~/.bashrc.d/analytics.bash
+echo "export BUILD='${BUILD}'" >> ~/.bashrc.d/analytics.bash
+
+echo "export BASE_INBOUND_CIDRS='${BASE_INBOUND_CIDRS}'" > ~/.bashrc.d/inbound-cidr.bash
 
 /usr/local/bin/kubectl completion bash >  ~/.bashrc.d/kubectl_completion.bash
 echo "alias k=kubectl" >> ~/.bashrc.d/kubectl_completion.bash

@@ -160,14 +160,14 @@ $ kubectl scale deployment/prod-app -n prod --replicas=0 && kubectl delete pod -
 
 #### 6.3. Recycle the node on the nodegroup
 
-```bash timeout=120 wait=95
+```bash timeout=600 wait=95
 $ aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=0 && \
 aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && \
 aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --labels "addOrUpdateLabels={status=new-node}" && \
 aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && \
 aws eks update-nodegroup-config --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 --scaling-config desiredSize=1 && \
 aws eks wait nodegroup-active --cluster-name "${EKS_CLUSTER_NAME}" --nodegroup-name new_nodegroup_3 && \
-for i in {1..12}; do NODE_NAME_2=$(kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_3,status=new-node --no-headers -o custom-columns=":metadata.name" 2>/dev/null) && [ -n "$NODE_NAME_2" ] && break || sleep 5; done && \
+for i in {1..36}; do NODE_NAME_2=$(kubectl get nodes --selector=eks.amazonaws.com/nodegroup=new_nodegroup_3,status=new-node --no-headers -o custom-columns=":metadata.name" 2>/dev/null) && [ -n "$NODE_NAME_2" ] && break || sleep 5; done && \
 [ -n "$NODE_NAME_2" ]
 ```
 

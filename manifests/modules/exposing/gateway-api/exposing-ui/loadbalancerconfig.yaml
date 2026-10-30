@@ -1,0 +1,8 @@
+apiVersion: gateway.k8s.aws/v1beta1
+kind: LoadBalancerConfiguration
+metadata:
+  name: retail-store-lb-config
+  namespace: ui
+spec:
+  scheme: internet-facing
+  sourceRanges: $SOURCE_RANGES

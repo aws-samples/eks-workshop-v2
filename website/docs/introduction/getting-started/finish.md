@@ -52,7 +52,6 @@ catalog     catalog             1/1     1            1           7m46s
 checkout    checkout            1/1     1            1           90s
 checkout    checkout-redis      1/1     1            1           90s
 orders      orders              1/1     1            1           90s
-orders      orders-postgresql   1/1     1            1           90s
 ui          ui                  1/1     1            1           90s
 ```
 

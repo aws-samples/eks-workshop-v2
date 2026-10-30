@@ -1,9 +1,9 @@
 ---
-title: FSx for NetApp ONTAP
+title: Amazon FSx for NetApp ONTAP
 sidebar_position: 50
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes Service上のワークロードのためにAmazon FSx for NetApp ONTAPによる完全管理型共有ストレージ。"
-tmdTranslationSourceHash: d91a0fa0e676536bceca6c2b324434de
+tmdTranslationSourceHash: 670401c7636880a8ee4032ab8eb3b796
 ---
 
 ::required-time{estimatedLabExecutionTimeMinutes="60"}
@@ -15,7 +15,7 @@ FSx For NetApp ONTAPファイルシステムと関連インフラのプロビジ
 :::
 
 :::tip 始める前に
-この章のための環境を準備してください：
+このセクションのための環境を準備してください：
 
 ```bash timeout=1800 wait=30
 $ prepare-environment fundamentals/storage/fsxn
@@ -28,7 +28,8 @@ $ prepare-environment fundamentals/storage/fsxn
 このラボでは以下を行います：
 
 - 永続的なネットワークストレージについて学ぶ
-- KubernetesのためのFSx for NetApp ONTAP CSIドライバーを設定・デプロイする
+- KubernetesのためのFSx for NetApp ONTAP CSI Driverを設定・デプロイする
 - KubernetesデプロイメントでFSx for NetApp ONTAPを使った動的プロビジョニングを実装する
 
 この実践的な経験により、Amazon FSx for NetApp ONTAPとAmazon EKSを効果的に使用して、完全管理型のエンタープライズグレードの永続ストレージソリューションを実現する方法を学びます。
+

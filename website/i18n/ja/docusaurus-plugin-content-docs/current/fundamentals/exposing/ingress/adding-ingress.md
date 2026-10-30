@@ -1,7 +1,7 @@
 ---
 title: "Ingressの作成"
 sidebar_position: 20
-tmdTranslationSourceHash: 55ba2d304b8961fd6c8455b49eb75f66
+tmdTranslationSourceHash: 75afb2bdcdabdcb4e4411b96e8001b6c
 ---
 
 以下の構成で Ingress リソースを作成しましょう：
@@ -9,13 +9,13 @@ tmdTranslationSourceHash: 55ba2d304b8961fd6c8455b49eb75f66
 ::yaml{file="manifests/modules/exposing/ingress/creating-ingress/ingress.yaml" paths="kind,metadata.annotations,spec.rules.0"}
 
 1. `Ingress` の種類を使用
-2. アノテーションを使用して、作成される ALB の様々な動作（ターゲットポッドに対して実行するヘルスチェックなど）を設定できます
+2. アノテーションを使用して、作成される ALB の様々な動作（ターゲットポッドに対して実行するヘルスチェックなど）を設定できます。`inbound-cidrs` アノテーションは、特定の CIDR 範囲へのインバウンドトラフィックを制限します
 3. rules セクションは、ALB がトラフィックをどのようにルーティングすべきかを表現するために使用されます。この例では、パスが `/` から始まる全ての HTTP リクエストを、ポート 80 で `ui` という名前の Kubernetes サービスにルーティングしています
 
 この設定を適用しましょう：
 
 ```bash timeout=180 hook=add-ingress hookTimeout=430
-$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/creating-ingress
+$ kubectl kustomize ~/environment/eks-workshop/modules/exposing/ingress/creating-ingress | envsubst | kubectl apply -f -
 ```
 
 作成された Ingress オブジェクトを確認しましょう：
@@ -26,7 +26,7 @@ NAME   CLASS   HOSTS   ADDRESS                                            PORTS 
 ui     alb     *       k8s-ui-ui-1268651632.us-west-2.elb.amazonaws.com   80      15s
 ```
 
-ALB はターゲットをプロビジョニングして登録するのに数分かかりますので、この Ingress 用にプロビジョニングされた ALB をより詳しく見てみましょう：
+ALB はターゲットをプロビジョニングして登録するのに数分かかりますので、この Ingress 用にプロビジョニングされた ALB の設定を詳しく見てみましょう：
 
 ```bash
 $ aws elbv2 describe-load-balancers --query 'LoadBalancers[?contains(LoadBalancerName, `k8s-ui-ui`) == `true`]'
@@ -97,7 +97,7 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
 }
 ```
 
-Ingress オブジェクトで IP モードを指定したので、ターゲットは `ui` ポッドの IP アドレスとトラフィックを提供するポートを使用して登録されます。
+Ingress オブジェクトで IP モードを指定したので、ターゲットは `ui` Pod の IP アドレスとトラフィックを提供するポートを使用して登録されます。
 
 次のリンクをクリックすると、コンソールで ALB とそのターゲットグループを確認することもできます：
 

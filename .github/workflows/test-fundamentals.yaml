@@ -3,7 +3,7 @@ name: Test - Fundamentals
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 7 * * 1"
+    - cron: "0 17 * * 1"
 
 permissions:
   id-token: write

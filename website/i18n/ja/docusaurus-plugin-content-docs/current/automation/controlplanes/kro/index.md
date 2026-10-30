@@ -1,9 +1,9 @@
 ---
-title: "kro - Kube リソースオーケストレーター"
+title: "kro - Kube Resource Orchestrator"
 sidebar_position: 1
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes Service 上で kro を使用して複雑な Kubernetes リソースグラフを構成および管理します。"
-tmdTranslationSourceHash: 323089b6c7dc70bb60357518ab54bc97
+tmdTranslationSourceHash: 50c43b5b911205f040faa7294d5f1aee
 ---
 
 ::required-time
@@ -11,13 +11,13 @@ tmdTranslationSourceHash: 323089b6c7dc70bb60357518ab54bc97
 :::tip 始める前に
 このセクションの環境を準備してください：
 
-```bash timeout=300 wait=30
+```bash timeout=900 wait=30
 $ prepare-environment automation/controlplanes/kro
 ```
 
 これにより、ラボ環境に以下の変更が加えられます：
 
-- EKS、IAM、DynamoDB 用の AWS Controllers for Kubernetes コントローラーをインストール
+- EKS、IAM、DynamoDB コントローラーを提供する、フルマネージドの Amazon EKS ACK（AWS Controllers for Kubernetes）機能を有効化
 - AWS Load Balancer Controller をインストール
 - UI ワークロード用の Ingress リソースを作成
 
@@ -29,5 +29,5 @@ $ prepare-environment automation/controlplanes/kro
 
 kro を使用すると、インテリジェントな依存関係処理を備えた高レベルの抽象化に複数の Kubernetes リソースを構成できます - リソースがどのように相互に参照しているかを分析することで、リソースをデプロイする正しい順序を自動的に決定します。CEL 式を使用してリソース間で値を渡したり、条件付きロジックを含めたり、ユーザーエクスペリエンスを簡素化するためのデフォルト値を定義したりすることができます。
 
-このラボでは、まず WebApplication ResourceGraphDefinition を使用してインメモリデータベースを持つ完全な **Carts** コンポーネントをデプロイすることで、kro の機能を探ります。次に、ベースの WebApplication テンプレートを拡張して Amazon DynamoDB ストレージを追加する WebApplicationDynamoDB ResourceGraphDefinition を構成することでこれを強化します。
+このラボでは、まず WebApplication ResourceGraphDefinition を使用してインメモリデータベースを持つ完全な **Carts** コンポーネントをデプロイすることで、kro の機能を探ります。次に、ベースの WebApplication テンプレートを基に構築して Amazon DynamoDB ストレージを追加する WebApplicationDynamoDB ResourceGraphDefinition を構成することでこれを強化します。
 

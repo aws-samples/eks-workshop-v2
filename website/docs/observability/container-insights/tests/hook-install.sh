@@ -5,7 +5,7 @@ before() {
 }
 
 after() {
-  kubectl wait --for condition=established --timeout=120s crd opentelemetrycollectors.opentelemetry.io
+  kubectl wait --for=condition=Ready --timeout=120s pods -l app.kubernetes.io/name=eks-pod-identity-agent -n kube-system
 }
 
 "$@"

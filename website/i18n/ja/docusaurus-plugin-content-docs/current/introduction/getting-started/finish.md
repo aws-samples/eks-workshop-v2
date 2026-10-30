@@ -1,7 +1,7 @@
 ---
 title: 他のコンポーネント
 sidebar_position: 50
-tmdTranslationSourceHash: 2b121f2c62f5ef803e4d6ed1ed186a8c
+tmdTranslationSourceHash: d8055e22245e0308df100684cf82cb42
 ---
 
 この実習では、Kustomizeのパワーを活用してサンプルアプリケーションの残りの部分を効率的にデプロイします。次のkustomizationファイルは、他のkustomizationを参照して複数のコンポーネントを一緒にデプロイする方法を示しています：
@@ -29,7 +29,7 @@ $ kubectl wait --for=condition=Ready --timeout=180s pods \
   -l app.kubernetes.io/created-by=eks-workshop -A
 ```
 
-これで、各アプリケーションコンポーネント用の名前空間ができました：
+これで、各アプリケーションコンポーネント用のNamespaceができました：
 
 ```bash
 $ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
@@ -53,7 +53,6 @@ catalog     catalog             1/1     1            1           7m46s
 checkout    checkout            1/1     1            1           90s
 checkout    checkout-redis      1/1     1            1           90s
 orders      orders              1/1     1            1           90s
-orders      orders-postgresql   1/1     1            1           90s
 ui          ui                  1/1     1            1           90s
 ```
 

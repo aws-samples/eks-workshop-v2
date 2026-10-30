@@ -30,3 +30,44 @@ Statement:
       - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:file-system/*
       - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:storage-virtual-machine/*
       - !Sub arn:aws:fsx:${AWS::Region}:${AWS::AccountId}:volume/*
+  # Required by the Amazon EKS Capability for Argo CD, which registers an IAM
+  # Identity Center application to authenticate workshop participants.
+  #
+  # Deliberately excludes sso:CreateInstance, sso:DeleteInstance and
+  # identitystore:CreateIdentityStore. Enabling IAM Identity Center is an
+  # account-wide and effectively irreversible change, so the IDE never does it:
+  # Workshop Studio events get an instance from the pre-provisioning pipeline, and
+  # anyone else enables Identity Center themselves before starting the lab.
+  - Effect: Allow
+    Action:
+      - sso:ListInstances
+      - sso:DescribeInstance
+      - sso:CreateApplication
+      - sso:DeleteApplication
+      - sso:UpdateApplication
+      - sso:ListApplications
+      - sso:PutApplicationGrant
+      - sso:PutApplicationAuthenticationMethod
+      - sso:PutApplicationAccessScope
+      - sso:CreateApplicationAssignment
+      - sso:DeleteApplicationAssignment
+      - sso:ListApplicationAssignments
+    Resource: ["*"]
+  # Read-only on purpose. The identity store may be a directory holding real
+  # identities, so the IDE is not able to create, modify or delete users in it. The
+  # Argo CD workshop user is created by the Workshop Studio pre-provisioning
+  # pipeline, or by whoever set up Identity Center in their own account.
+  - Effect: Allow
+    Action:
+      - identitystore:ListUsers
+      - identitystore:DescribeUser
+      - identitystore:GetUserId
+      # The capability maps a group to Argo CD's ADMIN role, so the lab resolves the
+      # group and confirms the user is in it. Reads only: the group, like the user, is
+      # created by the pre-provisioning pipeline or by whoever set up Identity Center.
+      - identitystore:ListGroups
+      - identitystore:DescribeGroup
+      - identitystore:GetGroupId
+      - identitystore:ListGroupMemberships
+      - identitystore:GetGroupMembershipId
+    Resource: ["*"]

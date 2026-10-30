@@ -20,7 +20,7 @@ deploy a sample workload using the `Deployment` and `Ingress` manifests below:
 Let's deploy the workload:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/networking/eks-hybrid-nodes/kustomize
+$ kubectl kustomize ~/environment/eks-workshop/modules/networking/eks-hybrid-nodes/kustomize | envsubst | kubectl apply -f -
 namespace/nginx-remote created
 service/nginx created
 deployment.apps/nginx created

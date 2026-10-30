@@ -1,7 +1,7 @@
 ---
-title: EFS CSIドライバー
+title: EFS CSI Driver
 sidebar_position: 20
-tmdTranslationSourceHash: e381ce19d4fb30098d1dfe2c70ba6658
+tmdTranslationSourceHash: 1e3c44c2a3cf6d702994c3deeecbf1f3
 ---
 
 このセクションに入る前に、メインの[ストレージ](../index.md)セクションで紹介されたKubernetesのストレージオブジェクト（ボリューム、Persistent Volume（PV）、Persistent Volume Claim（PVC）、動的プロビジョニング、一時的ストレージ）について理解しておく必要があります。
@@ -10,7 +10,7 @@ tmdTranslationSourceHash: e381ce19d4fb30098d1dfe2c70ba6658
 
 次のアーキテクチャ図は、EKS PodのPersistent StorageとしてEFSを使用する方法を示しています：
 
-![Assets with EFS](/docs/fundamentals/storage/efs/efs-storage.webp)
+![Assets with EFS](/docs/fundamentals/storage/efs/eksworkshop-storage-efs.svg)
 
 EKSクラスターで動的プロビジョニングを使用してAmazon EFSを利用するには、まずEFS CSI Driverがインストールされていることを確認する必要があります。このドライバーはCSI仕様を実装しており、コンテナオーケストレーターがAmazon EFSファイルシステムのライフサイクル全体を管理できるようにします。
 
@@ -50,6 +50,7 @@ fs-061cb5c5ed841a6b0
 1. EFS CSIプロビジョナー用に`provisioner`パラメータを`efs.csi.aws.com`に設定します
 2. `filesystemid`パラメータに`EFS_ID`環境変数を注入します
 
+
 kustomizationを適用します：
 
 ```bash
@@ -79,4 +80,3 @@ Events:                <none>
 ```
 
 これでEFS StorageClassとEFS CSI driverの仕組みが理解できました。次のステップでは、UIコンポーネントを変更して、Kubernetesの動的ボリュームプロビジョニングとEFS `StorageClass`を使用して、製品画像を保存するためのPersistentVolumeを使用します。
-

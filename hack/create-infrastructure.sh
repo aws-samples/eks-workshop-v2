@@ -1,6 +1,9 @@
 #!/bin/bash
 
 environment=$1
+cluster=${2:-all}
+export USE_CURRENT_USER=${USE_CURRENT_USER:-1} # We don't want to change the ARN in exec
+echo "Creating infrastructure for environment ${environment} and cluster ${cluster}"
 
 set -Eeuo pipefail
 set -u
@@ -13,12 +16,32 @@ bash $SCRIPT_DIR/update-iam-role.sh $environment
 
 sleep 5
 
+pids=()
+
 cluster_exists=0
 aws eks describe-cluster --name "${EKS_CLUSTER_NAME}" &> /dev/null || cluster_exists=$?
 
-if [ $cluster_exists -eq 0 ]; then
-  echo "Cluster ${EKS_CLUSTER_NAME} already exists"
-else
+if [ $cluster_exists -ne 0 ] && [[ "$cluster" == "standard" || "$cluster" == "all" ]]; then
   echo "Creating cluster ${EKS_CLUSTER_NAME}"
-  bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster.yaml | envsubst | eksctl create cluster -f -'
+  bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster.yaml /cluster/eksctl/access-entries.yaml | envsubst | eksctl create cluster -f -' &
+  pids+=($!)
+else
+  echo "Cluster ${EKS_CLUSTER_NAME} already exists"
+fi
+
+auto_cluster_exists=0
+aws eks describe-cluster --name "${EKS_CLUSTER_AUTO_NAME}" &> /dev/null || auto_cluster_exists=$?
+
+if [ $auto_cluster_exists -ne 0 ] && [[ "$cluster" == "auto" || "$cluster" == "all" ]]; then
+  echo "Creating auto mode cluster ${EKS_CLUSTER_AUTO_NAME}"
+  bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster-auto.yaml /cluster/eksctl/access-entries.yaml | envsubst | eksctl create cluster -f -' &
+  pids+=($!)
+else
+  echo "Auto mode cluster ${EKS_CLUSTER_AUTO_NAME} already exists"
+fi
+
+if [ ${#pids[@]} -gt 0 ]; then
+  for pid in "${pids[@]}"; do
+    wait "$pid" || exit 1
+  done
 fi

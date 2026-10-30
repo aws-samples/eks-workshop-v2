@@ -39,6 +39,18 @@ To send us a pull request, please:
 GitHub provides additional document on [forking a repository](https://help.github.com/articles/fork-a-repo/) and
 [creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
 
+## Translations
+
+Translations for this workshop are **generated automatically** via a GitHub Actions pipeline (`auto-translate.yaml`). When content under `website/docs/` is merged to `main`, the pipeline automatically translates it and opens a pull request with the updated files under `website/i18n/`.
+
+Because of this:
+
+- **Do not manually edit files under `website/i18n/`** — any manual changes will be overwritten by the next automated translation run.
+- Pull requests should only modify content in the primary language (`website/docs/`). The translation pipeline will handle producing the corresponding localized versions.
+- If a new term needs to pass spell-checking, add it to the `.spelling` file at the repository root.
+
+If you spot a translation quality issue, please open an issue describing the problem rather than submitting a direct edit to the translated files.
+
 ## Finding contributions to work on
 
 Looking at the existing issues is a great way to find something to contribute on. As our projects, by default, use the default GitHub issue labels (enhancement/bug/duplicate/help wanted/invalid/question/wontfix), looking at any 'help wanted' issues is a great place to start.

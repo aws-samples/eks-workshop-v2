@@ -1,22 +1,22 @@
 ---
-title: "サービスがエンドポイントを登録していない問題"
+title: "Service が Endpoint を登録していない問題"
 sidebar_position: 32
-tmdTranslationSourceHash: fc331a5ef68d4afb716ae012b9f5dd05
+tmdTranslationSourceHash: 8d1dace21e05f19a16833e847fd153c0
 ---
 
-このセクションでは、Application Load Balancer (ALB) が Kubernetes サービスのエンドポイントを正しく登録しない理由についてトラブルシューティングを行います。ALB が正常に作成されたにもかかわらず、バックエンドサービスの設定に問題があるためアプリケーションにアクセスできません。
+このセクションでは、Application Load Balancer (ALB) が Kubernetes Service の Endpoint を正しく登録しない理由についてトラブルシューティングを行います。ALB が正常に作成されたにもかかわらず、バックエンド Service の設定に問題があるためアプリケーションにアクセスできません。
 
 ### ステップ 1: エラーの確認
 
-ALB を通じてアプリケーションにアクセスすると、「Backend service does not exist（バックエンドサービスが存在しません）」というエラーが表示されます：
+ALB を通じてアプリケーションにアクセスすると、「Backend service does not exist（バックエンド Service が存在しません）」というエラーが表示されます：
 
 ![ALb-Backend-DoesNotExist](/docs/troubleshooting/alb/alb-does-not-exist.webp)
 
-イングレスは正常に作成されたため、これは Kubernetes イングレスとサービス間の通信に問題があることを示唆しています。
+Ingress は正常に作成されたため、これは Kubernetes Ingress と Service 間の通信に問題があることを示唆しています。
 
-### ステップ 2: サービス設定の確認
+### ステップ 2: Service 設定の確認
 
-サービス設定を調べてみましょう：
+Service 設定を調べてみましょう：
 
 ```bash
 $ kubectl -n ui get service/ui -o yaml
@@ -52,9 +52,9 @@ status:
   loadBalancer: {}
 ```
 
-### ステップ 3: イングレス設定の確認
+### ステップ 3: Ingress 設定の確認
 
-次にイングレス設定を確認します：
+次に Ingress 設定を確認します：
 
 ```bash
 $ kubectl get ingress/ui -n ui -o yaml
@@ -91,14 +91,14 @@ spec:
 ...
 ```
 
-イングレスが `service-ui` という名前のサービスを使用するように設定されていますが、実際のサービス名は `ui` であることに注目してください。
+Ingress が `service-ui` という名前の Service を使用するように設定されていますが、実際の Service 名は `ui` であることに注目してください。
 
-### ステップ 4: イングレス設定の修正
+### ステップ 4: Ingress 設定の修正
 
-イングレスを正しいサービス名を指すように更新しましょう：
+Ingress を正しい Service 名を指すように更新しましょう：
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/troubleshooting/alb/creating-alb/fix_ingress
+$ kubectl kustomize ~/environment/eks-workshop/modules/troubleshooting/alb/creating-alb/fix_ingress | envsubst | kubectl apply -f -
 ```
 
 修正後の設定は次のようになります：
@@ -118,13 +118,13 @@ spec:
                   number: 80
 ```
 
-### ステップ 5: サービスエンドポイントの確認
+### ステップ 5: Service Endpoint の確認
 
-サービス名を修正した後も、まだ 503 エラーが表示されます：
+Service 名を修正した後も、まだ 503 エラーが表示されます：
 
 ![ALb-503-ERROR](/docs/troubleshooting/alb/alb-503.webp)
 
-これは、サービスのバックエンドエンドポイントに問題があることを示唆しています。エンドポイントを確認してみましょう：
+これは、Service のバックエンド Endpoint に問題があることを示唆しています。Endpoint を確認してみましょう：
 
 ```bash
 $ kubectl -n ui get endpoints ui
@@ -132,11 +132,11 @@ NAME   ENDPOINTS   AGE
 ui     <none>     13d
 ```
 
-エンドポイントが空であることは、サービスが Pod バックエンドを適切に選択していないことを示しています。
+Endpoint が空であることは、Service が Pod バックエンドを適切に選択していないことを示しています。
 
-### ステップ 6: サービスと Pod のラベルの比較
+### ステップ 6: Service と Pod のラベルの比較
 
-デプロイメントの Pod ラベルを調べてみましょう：
+Deployment の Pod ラベルを調べてみましょう：
 
 ```bash
 $ kubectl -n ui get deploy/ui -o yaml
@@ -183,7 +183,7 @@ spec:
 
 ```
 
-これをサービスセレクタと比較してみましょう：
+これを Service セレクタと比較してみましょう：
 
 ```bash
 $ kubectl -n ui get svc ui -o yaml
@@ -217,10 +217,10 @@ spec:
 ...
 ```
 
-サービスセレクタの `app.kubernetes.io/name: ui-app` が Pod ラベルの `app.kubernetes.io/name: ui` と一致していません。
+Service セレクタの `app.kubernetes.io/name: ui-app` が Pod ラベルの `app.kubernetes.io/name: ui` と一致していません。
 
 :::tip
-サービスセレクタを以下のように更新することができます：
+Service セレクタを以下のように更新することができます：
 
 ```text
 kubectl edit service <service-name> -n <namespace>
@@ -234,25 +234,25 @@ kubectl patch service <service-name> -n <namespace> --type='json' -p='[{"op": "r
 
 :::
 
-### ステップ 7: サービスセレクタの修正
+### ステップ 7: Service セレクタの修正
 
-サービスセレクタを Pod ラベルと一致するように更新しましょう：
+Service セレクタを Pod ラベルと一致するように更新しましょう：
 
 ```bash timeout=960 hook=fix-7 hookTimeout=960
 $ kubectl apply -k ~/environment/eks-workshop/modules/troubleshooting/alb/creating-alb/fix_ui
 ```
 
-修正を適用した後、ブラウザを更新してください。これでUI アプリケーションが表示されるはずです：
+修正を適用した後、ブラウザを更新してください。これで UI アプリケーションが表示されるはずです：
 
 ![ALB-UI-APP](/docs/troubleshooting/alb/alb-working.webp)
 
 :::tip
-サービスと Pod の接続をトラブルシューティングする際は：
+Service と Pod の接続をトラブルシューティングする際は：
 
-1. サービスセレクタが Pod ラベルと完全に一致することを常に確認する
+1. Service セレクタが Pod ラベルと完全に一致することを常に確認する
 2. `kubectl get endpoints` を使用して Pod の選択を確認する
 3. ラベル名と値のタイプミスがないか確認する
 
 :::
 
-サービス設定の問題を修正し、ALB のトラブルシューティング演習を完了しました！お疲れ様でした。
+Service 設定の問題を修正し、ALB のトラブルシューティング演習を完了しました！お疲れ様でした。

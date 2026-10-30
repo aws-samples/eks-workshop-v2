@@ -42,7 +42,7 @@ Now let's update our previous Ingress resource with DNS configuration:
 Apply this configuration:
 
 ```bash
-$ kubectl apply -k ~/environment/eks-workshop/modules/exposing/ingress/external-dns
+$ kubectl kustomize ~/environment/eks-workshop/modules/exposing/ingress/external-dns | envsubst | kubectl apply -f -
 ```
 
 Let's inspect the Ingress object created with host name:
@@ -76,7 +76,7 @@ You can also verify the new DNS record in the AWS Route 53 console by clicking t
 Route 53 private hosted zones are only accessible from associated VPCs, in this case the EKS cluster VPC. To test the DNS entry we'll use `curl` from inside a pod:
 
 ```bash hook=dns-curl
-$ kubectl -n ui exec -it \
+$ kubectl -n ui exec \
   deployment/ui -- bash -c "curl -i http://ui.retailstore.com/actuator/health/liveness; echo"
 
 HTTP/1.1 200 OK

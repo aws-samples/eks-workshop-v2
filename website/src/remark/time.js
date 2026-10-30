@@ -34,15 +34,19 @@ const plugin = (options) => {
       const attributes = { ...defaultAttributes, ...node.attributes };
 
       const filePath = vfile.history[0];
+      const projectDir = process.cwd();
+      const docsDir = `${projectDir}/docs`;
       let relativePath;
 
-      if (locale === "en") {
-        relativePath = path.relative(`${vfile.cwd}/docs`, filePath);
+      if (locale !== "en") {
+        const i18nDocsDir = `${projectDir}/i18n/${locale}/docusaurus-plugin-content-docs/current`;
+        if (filePath.startsWith(i18nDocsDir)) {
+          relativePath = path.relative(i18nDocsDir, filePath);
+        } else {
+          relativePath = path.relative(docsDir, filePath);
+        }
       } else {
-        relativePath = path.relative(
-          `${vfile.cwd}/i18n/${locale}/docusaurus-plugin-content-docs/current`,
-          filePath,
-        );
+        relativePath = path.relative(docsDir, filePath);
       }
 
       if (attributes.estimatedLabExecutionTimeMinutes === "0") {

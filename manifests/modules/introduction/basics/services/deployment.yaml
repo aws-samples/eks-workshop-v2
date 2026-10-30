@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui
+  labels:
+    app.kubernetes.io/created-by: eks-workshop
+    app.kubernetes.io/type: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ui
+      app.kubernetes.io/instance: ui
+      app.kubernetes.io/component: service
+  template:
+    spec:
+      containers:
+        - name: ui
+          env:
+            - name: MANAGEMENT_INFO_ENV_ENABLED
+              value: "true"
+            - name: INFO_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          

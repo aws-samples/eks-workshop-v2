@@ -25,7 +25,7 @@ Statement:
       - !Sub arn:aws:iam::${AWS::AccountId}:role/aws-efs-csi-driver-*
       - !Sub arn:aws:iam::${AWS::AccountId}:role/eksworkshop-aws-load-balancer-controller
       - !Sub arn:aws:iam::${AWS::AccountId}:role/new_nodegroup_3
-      - !Sub arn:aws:iam::${AWS::AccountId}:role/${Env}-ecr-ec2-role       
+      - !Sub arn:aws:iam::${AWS::AccountId}:role/${Env}-ecr-ec2-role
 
   - Effect: Allow
     Action:
@@ -34,7 +34,7 @@ Statement:
     Resource: !Sub arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:security-group/*
     Condition:
       StringEquals:
-        'aws:ResourceTag/env': ${var.eks_cluster_id}
+        "aws:ResourceTag/env": ${var.eks_cluster_id}
 
   - Effect: Allow
     Action:
@@ -62,12 +62,18 @@ Statement:
       - !Sub arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/retail-sample-app-ui
       - !Sub arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/retail-store-sample*
 
+  # CreateKey accepts no resource ARN, so it stays on "*". PutKeyPolicy targets
+  # the created key, whose id is generated, so it is scoped by resource type.
   - Effect: Allow
     Action:
       - kms:CreateKey
-      - kms:PutKeyPolicy
       - kms:TagResource
     Resource: ["*"]
+  - Effect: Allow
+    Action:
+      - kms:PutKeyPolicy
+    Resource:
+      - !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*
 
   - Effect: Allow
     Action:

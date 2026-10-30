@@ -34,9 +34,8 @@ variable "resources_precreated" {
   type        = bool
 }
 
-variable "dynamo_ack_version" {
-  description = "The version of Dynamo ACK to use"
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
   type        = string
-  # renovate: datasource=github-releases depName=aws-controllers-k8s/dynamodb-controller
-  default = "1.7.1"
 }

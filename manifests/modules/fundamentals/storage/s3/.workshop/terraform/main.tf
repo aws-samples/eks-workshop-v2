@@ -70,6 +70,7 @@ resource "kubernetes_manifest" "ui_nlb" {
         "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
         "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
         "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "instance"
+        "service.beta.kubernetes.io/load-balancer-source-ranges"       = var.inbound_cidrs
       }
     }
     "spec" = {

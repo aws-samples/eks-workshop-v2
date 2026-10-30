@@ -3,12 +3,12 @@ title: "Application Metrics"
 sidebar_position: 50
 ---
 
-In this section we'll look at gaining insight in to metrics exposed by our workloads. Some examples of these could be:
+In this section we'll look at gaining insight into metrics exposed by our workloads. Some examples of these could be:
 
 - System metrics such as Java heap metrics or database connection pool status
 - Application metrics related to business KPIs
 
-Let's look at how to ingest application metrics using AWS Distro for OpenTelemetry and visualize the metrics using Grafana.
+Let's look at how to ingest application metrics using the CloudWatch agent and visualize the metrics using Grafana.
 
 Each of the components in this workshop have been instrumented to provide Prometheus metrics using libraries relevant to the particular programming language or framework. We can look at an example of these metrics from the orders service like so:
 
@@ -44,12 +44,10 @@ nodejs_heap_size_total_bytes 48668672
 [...]
 ```
 
-In this lab we'll leverage ADOT to ingest the metrics for all the components and explore a dashboard to show the number of orders that have been placed. Let's take a look at the OpenTelemetry configuration used to scrape metrics from the application pods, specifically this section:
+In this lab we'll use the CloudWatch agent to ingest the metrics for all the components and explore a dashboard to show the number of orders that have been placed. Let's take a look at the `kubernetes-pods` scrape job from the OpenTelemetry configuration we applied to the add-on:
 
-```bash
-$ kubectl -n other get opentelemetrycollector adot -o jsonpath='{.spec.config}' \
-  | yq '.receivers.prometheus.config.scrape_configs[2]'
-job_name: 'kubernetes-pods'
+```yaml
+job_name: kubernetes-pods
 honor_labels: true
 kubernetes_sd_configs:
   - role: pod
@@ -69,9 +67,6 @@ relabel_configs:
     target_label: __metrics_path__
     regex: (.+)
   - action: labelmap
-    regex: __meta_kubernetes_pod_annotation_prometheus_io_param_(.+)
-    replacement: __param_$1
-  - action: labelmap
     regex: __meta_kubernetes_pod_label_(.+)
   - source_labels: [__meta_kubernetes_namespace]
     action: replace
@@ -84,7 +79,7 @@ relabel_configs:
     action: drop
 ```
 
-This configuration leverages the Prometheus [Kubernetes service discovery](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config) mechanism to automatically discover all pods with specific annotations. This particular configuration will discover any pods with the annotation `prometheus.io/scrape`, and will enrich metrics it scrapes with Kubernetes metadata such as the namespace and pod name.
+This configuration uses the Prometheus [Kubernetes service discovery](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config) mechanism to automatically discover all pods with specific annotations. It targets any pod carrying the `prometheus.io/scrape` annotation and enriches the scraped metrics with Kubernetes metadata such as the namespace and pod name.
 
 We can check the annotations on the order component pods:
 
@@ -95,7 +90,7 @@ prometheus.io/port: "8080"
 prometheus.io/scrape: "true"
 ```
 
-As we saw in the section regarding cluster metrics, these pod metrics will also be sent to AMP using the same OpenTelemetry exporter.
+As we saw in the section regarding cluster metrics, these pod metrics are also sent to AMP using the same Prometheus Remote Write exporter.
 
 Next use the below script to run a load generator which will place orders through the store and generate application metrics:
 

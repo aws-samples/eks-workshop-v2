@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fsxl-pv
+spec:
+  capacity:
+    storage: 1200Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  mountOptions:
+    - flock
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: fsx-lustre-sc
+  csi:
+    driver: fsx.csi.aws.com
+    volumeHandle: "$FSXL_FS_ID"
+    volumeAttributes:
+      dnsname: "$FSXL_DNS_NAME"
+      mountname: "$FSXL_MOUNT_NAME"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fsxl-claim
+  namespace: ui
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: fsx-lustre-sc
+  resources:
+    requests:
+      storage: 1200Gi
+  volumeName: fsxl-pv

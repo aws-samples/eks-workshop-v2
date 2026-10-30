@@ -47,3 +47,8 @@ variable "cluster_proportional_autoscaler_chart_version" {
   # renovate-helm: depName=cluster-proportional-autoscaler registryUrl=https://kubernetes-sigs.github.io/cluster-proportional-autoscaler
   default = "1.1.0"
 }
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
+  type        = string
+}

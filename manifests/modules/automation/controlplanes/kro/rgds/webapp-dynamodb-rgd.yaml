@@ -24,10 +24,6 @@ spec:
       service:
         enabled: boolean | default=true
 
-      aws:
-        accountID: integer | required=true
-        region: string | default="us-west-2"
-
       env: map[string]string | default={}
 
       ingress:
@@ -37,142 +33,149 @@ spec:
         groupname: string | default="eks-workshop"
 
   resources:
-  - id: podIdentityAssociation
-    template:
-      apiVersion: eks.services.k8s.aws/v1alpha1
-      kind: PodIdentityAssociation
-      metadata:
-        name: ${schema.spec.appName}
-        namespace: ${schema.spec.appName}
-      spec:
-        clusterName: "eks-workshop"
-        namespace: ${schema.spec.appName}
-        serviceAccount: ${schema.spec.appName}
-        roleARN: ${itemsTableIAMRole.status.ackResourceMetadata.arn}
+    - id: podIdentityAssociation
+      # Gate on ACK.ResourceSynced=True so kro does not create the dependent
+      # WebApplication (and its Deployment) until the association exists in AWS.
+      # EKS Pod Identity is eventually consistent, so a pod admitted right after
+      # this point can still start without credentials; the lab restarts the
+      # Deployment once the instance is ready to cover that window.
+      readyWhen:
+        - ${podIdentityAssociation.status.conditions.exists(c, c.type == "ACK.ResourceSynced" && c.status == "True")}
+      template:
+        apiVersion: eks.services.k8s.aws/v1alpha1
+        kind: PodIdentityAssociation
+        metadata:
+          name: ${schema.spec.appName}
+          namespace: ${schema.spec.appName}
+        spec:
+          clusterName: "eks-workshop"
+          namespace: ${schema.spec.appName}
+          serviceAccount: ${schema.spec.appName}
+          roleARN: ${itemsTableIAMRole.status.ackResourceMetadata.arn}
 
-  - id: webApplication
-    template:
-      apiVersion: kro.run/v1alpha1
-      kind: WebApplication
-      metadata:
-        name: ${schema.spec.appName}
-        namespace: ${schema.spec.appName}
-      spec:
-        appName: ${schema.spec.appName}
-        replicas: 1
-        image: ${schema.spec.image}
-        port: 8080
-        healthcheck:
-          readinessPath: ${schema.spec.healthcheck.readinessPath}
-          readinessPort: ${schema.spec.healthcheck.readinessPort}
-          livenessPath: ${schema.spec.healthcheck.livenessPath}
-          livenessPort: ${schema.spec.healthcheck.livenessPort}
+    - id: webApplication
+      template:
+        apiVersion: kro.run/v1alpha1
+        kind: WebApplication
+        metadata:
+          name: ${schema.spec.appName}
+          namespace: ${schema.spec.appName}
+        spec:
+          appName: ${schema.spec.appName}
+          replicas: 1
+          image: ${schema.spec.image}
+          port: 8080
+          healthcheck:
+            readinessPath: ${schema.spec.healthcheck.readinessPath}
+            readinessPort: ${schema.spec.healthcheck.readinessPort}
+            livenessPath: ${schema.spec.healthcheck.livenessPath}
+            livenessPort: ${schema.spec.healthcheck.livenessPort}
 
-        service:
-          enabled: ${schema.spec.service.enabled}
-          iamRole: ${podIdentityAssociation.status.ackResourceMetadata.arn}
+          service:
+            enabled: ${schema.spec.service.enabled}
+            iamRole: ${podIdentityAssociation.status.ackResourceMetadata.arn}
 
-        env: ${schema.spec.env}
+          env: ${schema.spec.env}
 
-        ingress:
-          enabled: ${schema.spec.ingress.enabled}
-          path: ${schema.spec.ingress.path}
-          healthcheckPath: ${schema.spec.ingress.healthcheckPath}
-          groupname: ${schema.spec.ingress.groupname}
+          ingress:
+            enabled: ${schema.spec.ingress.enabled}
+            path: ${schema.spec.ingress.path}
+            healthcheckPath: ${schema.spec.ingress.healthcheckPath}
+            groupname: ${schema.spec.ingress.groupname}
 
-  - id: serviceDDB
-    template:
-      apiVersion: v1
-      kind: Service
-      metadata:
-        name: carts-dynamodb
-        labels:
-          app.kubernetes.io/created-by: eks-workshop
-      spec:
-        type: ClusterIP
-        ports:
-        - port: 8000
-          targetPort: dynamodb
-          protocol: TCP
-          name: dynamodb
-        selector:
-          app.kubernetes.io/name: ${schema.spec.appName}
-          app.kubernetes.io/instance: ${schema.spec.appName}
-          app.kubernetes.io/component: dynamodb
+    - id: serviceDDB
+      template:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: carts-dynamodb
+          labels:
+            app.kubernetes.io/created-by: eks-workshop
+        spec:
+          type: ClusterIP
+          ports:
+            - port: 8000
+              targetPort: dynamodb
+              protocol: TCP
+              name: dynamodb
+          selector:
+            app.kubernetes.io/name: ${schema.spec.appName}
+            app.kubernetes.io/instance: ${schema.spec.appName}
+            app.kubernetes.io/component: dynamodb
 
-  - id: itemsTable
-    template:
-      apiVersion: dynamodb.services.k8s.aws/v1alpha1
-      kind: Table
-      metadata:
-        name: items
-        namespace: ${schema.spec.appName}
-      spec:
-        keySchema:
-        - attributeName: id
-          keyType: HASH
-        attributeDefinitions:
-        - attributeName: id
-          attributeType: "S"
-        - attributeName: customerId
-          attributeType: "S"
-        billingMode: PAY_PER_REQUEST
-        tableName: ${schema.spec.dynamodb.tableName}
-        globalSecondaryIndexes:
-        - indexName: idx_global_customerId
+    - id: itemsTable
+      template:
+        apiVersion: dynamodb.services.k8s.aws/v1alpha1
+        kind: Table
+        metadata:
+          name: items
+          namespace: ${schema.spec.appName}
+        spec:
           keySchema:
-          - attributeName: customerId
-            keyType: HASH
-          - attributeName: id
-            keyType: RANGE
-          projection:
-            projectionType: "ALL"
-  - id: itemsTableIamPolicy
-    template:
-      apiVersion: iam.services.k8s.aws/v1alpha1
-      kind: Policy
-      metadata:
-        name: ${itemsTable.spec.tableName}-iam-policy
-      spec:
-        name: ${itemsTable.spec.tableName}-iam-policy
-        description: "EKS Workshop Carts DynamoDB Policy"
-        policyDocument: >
-          {
-            "Version": "2012-10-17",
-            "Statement": [
-              {
-                "Sid": "AllAPIActionsOnCart",
-                "Effect": "Allow",
-                "Action": "dynamodb:*",
-                "Resource": [
-                  "arn:aws:dynamodb:${schema.spec.aws.region}:${schema.spec.aws.accountID}:table/${itemsTable.spec.tableName}",
-                  "arn:aws:dynamodb:${schema.spec.aws.region}:${schema.spec.aws.accountID}:table/${itemsTable.spec.tableName}/index/*"
-                ]
-              }
-            ]
-          }
-  - id: itemsTableIAMRole
-    template:
-      apiVersion: iam.services.k8s.aws/v1alpha1
-      kind: Role
-      metadata:
-        name: ${itemsTable.spec.tableName}-iam-role
-        namespace: ${schema.spec.appName}
-      spec:
-        name: ${itemsTable.spec.tableName}-iam-role
-        description: "EKS Workshop Carts DynamoDB Role"
-        maxSessionDuration: 3600
-        policies:
-        - ${itemsTableIamPolicy.status.ackResourceMetadata.arn}
-        assumeRolePolicyDocument: >
-          {
-            "Version":"2012-10-17",
-            "Statement": [{
-              "Effect":"Allow",
-              "Principal": {"Service": "pods.eks.amazonaws.com"},
-              "Action": [
-                  "sts:TagSession",
-                  "sts:AssumeRole"
+            - attributeName: id
+              keyType: HASH
+          attributeDefinitions:
+            - attributeName: id
+              attributeType: "S"
+            - attributeName: customerId
+              attributeType: "S"
+          billingMode: PAY_PER_REQUEST
+          tableName: ${schema.spec.dynamodb.tableName}
+          globalSecondaryIndexes:
+            - indexName: idx_global_customerId
+              keySchema:
+                - attributeName: customerId
+                  keyType: HASH
+                - attributeName: id
+                  keyType: RANGE
+              projection:
+                projectionType: "ALL"
+    - id: itemsTableIamPolicy
+      template:
+        apiVersion: iam.services.k8s.aws/v1alpha1
+        kind: Policy
+        metadata:
+          name: ${itemsTable.spec.tableName}-iam-policy
+        spec:
+          name: ${itemsTable.spec.tableName}-iam-policy
+          description: "EKS Workshop Carts DynamoDB Policy"
+          policyDocument: >
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "AllAPIActionsOnCart",
+                  "Effect": "Allow",
+                  "Action": "dynamodb:*",
+                  "Resource": [
+                    "${itemsTable.status.ackResourceMetadata.arn}",
+                    "${itemsTable.status.ackResourceMetadata.arn}/index/*"
+                  ]
+                }
               ]
-            }]
-          }
+            }
+    - id: itemsTableIAMRole
+      template:
+        apiVersion: iam.services.k8s.aws/v1alpha1
+        kind: Role
+        metadata:
+          name: ${itemsTable.spec.tableName}-iam-role
+          namespace: ${schema.spec.appName}
+        spec:
+          name: ${itemsTable.spec.tableName}-iam-role
+          description: "EKS Workshop Carts DynamoDB Role"
+          maxSessionDuration: 3600
+          policies:
+            - ${itemsTableIamPolicy.status.ackResourceMetadata.arn}
+          assumeRolePolicyDocument: >
+            {
+              "Version":"2012-10-17",
+              "Statement": [{
+                "Effect":"Allow",
+                "Principal": {"Service": "pods.eks.amazonaws.com"},
+                "Action": [
+                    "sts:TagSession",
+                    "sts:AssumeRole"
+                ]
+              }]
+            }

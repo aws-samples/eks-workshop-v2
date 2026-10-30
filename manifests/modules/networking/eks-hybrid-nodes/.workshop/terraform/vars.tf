@@ -39,3 +39,8 @@ variable "remote_network_cidr" {
   type        = string
   default     = "10.52.0.0/16"
 }
+# tflint-ignore: terraform_unused_declarations
+variable "inbound_cidrs" {
+  description = "CIDR range to allowlist for inbound traffic"
+  type        = string
+}
