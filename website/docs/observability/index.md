@@ -12,6 +12,7 @@ In this chapter, we'll cover how you can use AWS observability solutions integra
 - Control Plane and Pod Logs utilizing Fluentbit
 - Monitoring Metrics with CloudWatch Container Insights
 - Monitoring EKS Metrics with AMP and ADOT.
+- Monitor Using Opentelemetry and PromQL
 
 Watch a video walk-through of the observability module with one of the module maintainers, Nirmal Mehta (AWS) here:
 
