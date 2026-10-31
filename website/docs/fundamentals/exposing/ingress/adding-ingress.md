@@ -120,6 +120,16 @@ To wait until the load balancer has finished provisioning you can run this comma
 ```bash
 $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
   -k $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+curl: (6) Could not resolve host: k8s-ui-ui-5ddc3ba496-368640211.us-west-2.elb.amazonaws.com
+Warning: Problem : timeout. Will retry in 15 seconds. 30 retries left.
+[...]
+HTTP/1.1 200 OK
+Date: Mon, 07 Sep 2026 10:43:05 GMT
+Content-Type: text/html
+Content-Length: 19973
+Connection: keep-alive
+Content-Language: en-US
+set-cookie: SESSIONID=c9b351b4-9626-4d33-a112-52b28c85fd7c
 ```
 
 And access it in your web browser. You will see the UI from the web store displayed and will be able to navigate around the site as a user.
