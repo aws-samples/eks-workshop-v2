@@ -82,7 +82,7 @@ Let's validate the SA associated with the `carts` Deployment.
 
 ```bash
 $ kubectl -n carts describe deployment carts | grep 'Service Account'
-  Service Account:  cart
+  Service Account:  carts
 ```
 
 Now lets check the value of `CARTS_IAM_ROLE` which will provide the ARN of the IAM role for the Service Account annotation.
