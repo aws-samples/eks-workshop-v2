@@ -31,6 +31,7 @@ service/ui unchanged
 persistentvolumeclaim/fsxz-claim created
 deployment.apps/ui configured
 $ kubectl rollout status --timeout=130s deployment/ui -n ui
+deployment "ui" successfully rolled out
 ```
 
 Let's examine the `volumeMounts` in the deployment. Notice that our new volume named `fsxzvolume` is mounted at `/fsxz`:
@@ -93,6 +94,7 @@ $ export PVC_NAME="fsxz-claim"
 $ cat ~/environment/eks-workshop/modules/fundamentals/storage/populate-images-job.yaml | envsubst | kubectl apply -f -
 $ kubectl wait --for=condition=complete -n ui \
   job/populate-images --timeout=300s
+job.batch/populate-images condition met
 ```
 
 Now let's demonstrate the shared storage functionality by listing the current files in `/fsxz` through one of the UI component Pods:
