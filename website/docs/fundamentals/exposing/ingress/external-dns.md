@@ -65,8 +65,13 @@ Check ExternalDNS logs to confirm DNS record creation:
 
 ```bash hook=dns-logs
 $ kubectl -n external-dns logs deployment/external-dns
-Desired change: CREATE ui.retailstore.com A
-5 record(s) were successfully updated
+[...]
+time="2026-09-07T10:47:49Z" level=info msg="Desired change: CREATE aaaa-ui.retailstore.com TXT" profile=default zoneID=/hostedzone/Z0555650CWZOQSPVZG4 zoneName=retailstore.com.
+time="2026-09-07T10:47:49Z" level=info msg="Desired change: CREATE cname-ui.retailstore.com TXT" profile=default zoneID=/hostedzone/Z0555650CWZOQSPVZG4 zoneName=retailstore.com.
+time="2026-09-07T10:47:49Z" level=info msg="Desired change: CREATE ui.retailstore.com A" profile=default zoneID=/hostedzone/Z0555650CWZOQSPVZG4 zoneName=retailstore.com.
+time="2026-09-07T10:47:49Z" level=info msg="Desired change: CREATE ui.retailstore.com AAAA" profile=default zoneID=/hostedzone/Z0555650CWZOQSPVZG4 zoneName=retailstore.com.
+time="2026-09-07T10:47:49Z" level=info msg="4 record(s) were successfully updated" profile=default zoneID=/hostedzone/Z0555650CWZOQSPVZG4 zoneName=retailstore.com.
+[...]
 ```
 
 You can also verify the new DNS record in the AWS Route 53 console by clicking the link and navigating to the `retailstore.com` private hosted zone:
