@@ -1,7 +1,7 @@
 ---
 title: "アプリケーションメトリクス"
 sidebar_position: 50
-tmdTranslationSourceHash: adadec8d8e0171bdd7c4444f38541f6c
+tmdTranslationSourceHash: 2a795d3c6d1879a4975694d019bf6c0c
 ---
 
 このセクションでは、ワークロードによって公開されるメトリクスへの洞察を得る方法を見ていきます。例としては以下のようなものがあります：
@@ -23,10 +23,10 @@ jdbc_connections_idle{name="writer",} 10.0
 [...]
 # HELP watch_orders_total The number of orders placed
 # TYPE watch_orders_total counter
-watch_orders_total{productId="510a0d7e-8e83-4193-b483-e27e09ddc34d",} 2.0
-watch_orders_total{productId="808a2de1-1aaa-4c25-a9b9-6612e8f29a38",} 1.0
+watch_orders_total{productId="cc789f85-1476-452a-8100-9e74502198e0",} 2.0
+watch_orders_total{productId="87e89b11-d319-446d-b9be-50adcca5224a",} 1.0
 watch_orders_total{productId="*",} 3.0
-watch_orders_total{productId="6d62d909-f957-430e-8689-b5129c0bb75e",} 1.0
+watch_orders_total{productId="4f18544b-70a5-4352-8e19-0d070f46745d",} 1.0
 ```
 
 このコマンドの出力は冗長なので、上記の例では以下を示すために整理されています：
@@ -80,7 +80,7 @@ relabel_configs:
     action: drop
 ```
 
-この設定は、Prometheus の [Kubernetes サービスディスカバリ](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config)メカニズムを使用して、特定のアノテーションを持つすべての Pod を自動的に検出します。この設定は、`prometheus.io/scrape` アノテーションを持つすべての Pod を対象とし、スクレイピングされたメトリクスに namespace や Pod 名などの Kubernetes メタデータで強化します。
+この設定は、Prometheus の [Kubernetes サービスディスカバリ](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config)メカニズムを使用して、特定のアノテーションを持つすべての Pod を自動的に検出します。この設定は、`prometheus.io/scrape` アノテーションを持つすべての Pod を対象とし、スクレイピングされたメトリクスに namespace や Pod 名などの Kubernetes メタデータを付与します。
 
 order コンポーネントの Pod のアノテーションを確認できます：
 
