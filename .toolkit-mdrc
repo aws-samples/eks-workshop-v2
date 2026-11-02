@@ -1,7 +1,6 @@
 {
   "contentDir": "website/docs",
   "ai": {
-    "model": "global.anthropic.claude-sonnet-5-5",
     "maxTokens": 8000,
     "rate": {
       "requests": 10,

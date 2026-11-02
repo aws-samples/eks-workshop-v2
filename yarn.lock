@@ -1016,9 +1016,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aws/toolkit-md@npm:^0.3.3":
-  version: 0.3.3
-  resolution: "@aws/toolkit-md@npm:0.3.3"
+"@aws/toolkit-md@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@aws/toolkit-md@npm:0.4.0"
   dependencies:
     "@aws-sdk/client-bedrock-runtime": "npm:^3.985.0"
     "@modelcontextprotocol/sdk": "npm:^1.27.1"
@@ -1042,7 +1042,7 @@ __metadata:
     zod: "npm:^4.3.6"
   bin:
     toolkit-md: ./dist/cli.js
-  checksum: 10c0/158c03687eb2c8cddb27898c8266988ed563b9eee76575df16c467f8d6094ee6b2625f661b00230baf92702d7943826e9f85d62673adc6fc060f1441ea7d983f
+  checksum: 10c0/9f251374340270e404962bd341b3a2530cdf92b698315dca144e9fbdfc4a1349d640a3d268f886982324fd995c703ae0dc07e8713b103f0ec3120240ed5269e8
   languageName: node
   linkType: hard
 
@@ -8634,7 +8634,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "eks-workshop@workspace:."
   dependencies:
-    "@aws/toolkit-md": "npm:^0.3.3"
+    "@aws/toolkit-md": "npm:^0.4.0"
     cspell: "npm:^9.0.0"
     linkinator: "npm:^7.0.0"
     lint-staged: "npm:^16.0.0"
