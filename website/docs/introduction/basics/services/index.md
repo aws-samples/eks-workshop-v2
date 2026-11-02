@@ -107,7 +107,7 @@ ui     ClusterIP   172.20.83.84    <none>        80/TCP    15m
 
 View service endpoints (the actual pod IPs):
 ```bash
-$ kubectl get endpoints -n ui ui
+$ kubectl get endpointslices -n ui
 NAME   ENDPOINTS           AGE
 ui     10.42.1.15:8080     15m
 ```
@@ -202,7 +202,7 @@ $ kubectl scale deployment -n ui ui --replicas=3
 
 **Watch how the service endpoints update:**
 ```bash
-$ kubectl get endpoints -n ui ui
+$ kubectl get endpointslices -n ui
 NAME   ENDPOINTS                                               AGE
 ui     10.42.117.212:8080,10.42.129.33:8080,10.42.174.4:8080   11m
 ```
