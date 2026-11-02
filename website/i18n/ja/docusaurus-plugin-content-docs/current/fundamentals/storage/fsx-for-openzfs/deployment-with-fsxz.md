@@ -1,17 +1,17 @@
 ---
 title: FSx for OpenZFSを使用した動的プロビジョニング
 sidebar_position: 30
-tmdTranslationSourceHash: 53fcfdb5bdb801647660e1719940d4c5
+tmdTranslationSourceHash: 06384c99314a7d988e193a94dc4a2ab2
 ---
 
-FSx for OpenZFSのKubernetes用ストレージクラスについて理解したところで、[永続ボリューム](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)を作成し、UIコンポーネントを変更してこのボリュームをマウントしましょう。
+FSx for OpenZFSのKubernetes用StorageClassについて理解したところで、[Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)を作成し、UIコンポーネントを変更してこのボリュームをマウントしましょう。
 
 まず、`fsxzpvcclaim.yaml`ファイルを確認しましょう：
 
 ::yaml{file="manifests/modules/fundamentals/storage/fsxz/deployment/fsxzpvcclaim.yaml" paths="kind,spec.storageClassName,spec.resources.requests.storage"}
 
 1. 定義されているリソースはPersistentVolumeClaimです
-2. これは先ほど作成した`fsxz-vol-sc`ストレージクラスを参照しています
+2. これは先ほど作成した`fsxz-vol-sc` StorageClassを参照しています
 3. 1GBのストレージを要求しています
 
 次に、UIコンポーネントを更新してFSx for OpenZFS PVCを参照するようにします：
@@ -32,9 +32,10 @@ service/ui unchanged
 persistentvolumeclaim/fsxz-claim created
 deployment.apps/ui configured
 $ kubectl rollout status --timeout=130s deployment/ui -n ui
+deployment "ui" successfully rolled out
 ```
 
-デプロイメントの`volumeMounts`を確認しましょう。`fsxzvolume`という名前の新しいボリュームが`/fsxz`にマウントされていることに注目してください：
+Deploymentの`volumeMounts`を確認しましょう。`fsxzvolume`という名前の新しいボリュームが`/fsxz`にマウントされていることに注目してください：
 
 ```bash
 $ kubectl get deployment -n ui \
@@ -87,16 +88,17 @@ $ POD_1=$(kubectl -n ui get pods -l app.kubernetes.io/instance=ui -o jsonpath='{
 $ kubectl exec --stdin $POD_1 -n ui -- bash -c 'ls /fsxz/'
 ```
 
-[Kubernetesジョブ](https://kubernetes.io/docs/concepts/workloads/controllers/job/)を使用して、FSx for OpenZFSボリュームに画像を配置しましょう：
+[Kubernetes Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/)を使用して、FSx for OpenZFSボリュームに画像を配置しましょう：
 
 ```bash
 $ export PVC_NAME="fsxz-claim"
 $ cat ~/environment/eks-workshop/modules/fundamentals/storage/populate-images-job.yaml | envsubst | kubectl apply -f -
 $ kubectl wait --for=condition=complete -n ui \
   job/populate-images --timeout=300s
+job.batch/populate-images condition met
 ```
 
-次に、UIコンポーネントPodの1つを通じて`/fsxz`の現在のファイルを一覧表示して、共有ストレージ機能を実証しましょう：
+次に、UIコンポーネントのPodの1つを通じて`/fsxz`の現在のファイルを一覧表示して、共有ストレージ機能を実証しましょう：
 
 ```bash
 $ POD_1=$(kubectl -n ui get pods -l app.kubernetes.io/instance=ui -o jsonpath='{.items[0].metadata.name}')
@@ -122,7 +124,7 @@ $ POD_1=$(kubectl -n ui get pods -l app.kubernetes.io/instance=ui -o jsonpath='{
 $ kubectl exec --stdin $POD_1 -n ui -- bash -c 'curl -sS -o /fsxz/placeholder.jpg https://placehold.co/600x400/jpg?text=EKS+Workshop\\nPlaceholder'
 ```
 
-次に、2番目のUIPodがこの新しく作成されたファイルにアクセスできることを確認し、FSx for OpenZFSストレージの共有特性を実証しましょう：
+次に、2番目のUI Podがこの新しく作成されたファイルにアクセスできることを確認し、FSx for OpenZFSストレージの共有特性を実証しましょう：
 
 ```bash
 $ POD_2=$(kubectl -n ui get pods -o jsonpath='{.items[1].metadata.name}')
@@ -158,5 +160,4 @@ http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/asse
 <img src={require('@site/static/docs/fundamentals/storage/fsx-for-openzfs/placeholder.jpg').default}/>
 </Browser>
 
-Amazon FSx for OpenZFSがAmazon EKSで実行されるワークロードに永続的な共有ストレージを提供する方法を正常に実証しました。このソリューションにより、複数のPodが同時に同じストレージボリュームから読み取りおよび書き込みを行うことができ、共有コンテンツホスティングやハイパフォーマンスでエンタープライズ機能を備えた分散ファイルシステムアクセスを必要とする他のユースケースに最適です。
-
+Amazon FSx for OpenZFSがAmazon EKSで実行されるワークロードに永続的な共有ストレージを提供する方法を正常に実証しました。このソリューションにより、複数のPodが同時に同じストレージボリュームから読み取りおよび書き込みを行うことができ、共有コンテンツホスティングや、ハイパフォーマンスでエンタープライズ機能を備えた分散ファイルシステムアクセスを必要とする他のユースケースに最適です。
