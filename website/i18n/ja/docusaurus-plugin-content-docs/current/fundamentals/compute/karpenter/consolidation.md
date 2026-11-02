@@ -1,7 +1,7 @@
 ---
 title: "Disruption (Consolidation)"
 sidebar_position: 50
-tmdTranslationSourceHash: a739527bb224a17ec2e7395b301bcf69
+tmdTranslationSourceHash: '8450d8d08bff745c9e40e3a8f844d4fd'
 ---
 
 Karpenterは、中断（Disruption）の対象となるノードを自動的に検出し、必要に応じて代替ノードをスピンアップします。これは3つの異なる理由で発生します：
@@ -17,7 +17,7 @@ Disruptionは、`NodePool`の`disruption`ブロックを通じて設定されま
 1. `expireAfter`はカスタム値に設定されているため、ノードは72時間後に自動的に終了します
 2. `WhenEmptyOrUnderutilized`ポリシーにより、ノードが空または十分に活用されていない場合にKarpenterがノードを置き換えることができます
 
-`consolidationPolicy`は、`WhenEmpty`に設定することもでき、その場合はワークロードPodを含まないノードにのみDisruptionを制限します。また、`Balanced`に設定することもでき、その場合はコスト削減の効果が実行中のPodへの中断を上回るときに統合が行われます。Disruptionの詳細は、[Karpenterドキュメント](https://karpenter.sh/docs/concepts/disruption/#consolidation)を参照してください。
+`consolidationPolicy`は、`WhenEmpty`に設定することもでき、その場合はワークロードのPodを含まないノードのみを中断します。また、`Balanced`に設定することもでき、その場合はコスト削減の効果が実行中のPodへの中断を上回るときにのみ統合が行われます。Disruptionの詳細は、[Karpenterドキュメント](https://karpenter.sh/docs/concepts/disruption/#consolidation)を参照してください。
 
 インフラストラクチャーのスケールアウトは、コスト効率の良いコンピューティングインフラストラクチャーを運用するための方程式の一面に過ぎません。例えば、十分に活用されていないコンピューティングインスタンス上で実行されているワークロードを少ないインスタンスにまとめるなど、継続的に最適化する必要もあります。これにより、ワークロードをコンピューティング上で実行する全体的な効率が向上し、オーバーヘッドが少なくなりコストが削減されます。
 
@@ -34,7 +34,7 @@ $ kubectl scale -n other deployment/inflate --replicas 12
 $ kubectl rollout status -n other deployment/inflate --timeout=180s
 ```
 
-これにより、このデプロイメントの合計メモリリクエストは約12Giになります。各ノードでkubelet用に予約されている約600Miを考慮すると、これは2つの`m5.large`タイプのインスタンスに収まります：
+これにより、このDeploymentの合計メモリリクエストは約12Giになります。各ノードでkubelet用に予約されている約600Miを考慮すると、これは2つの`m5.large`タイプのインスタンスに収まります：
 
 ```bash
 $ kubectl get nodes -l type=karpenter --label-columns node.kubernetes.io/instance-type
@@ -49,7 +49,7 @@ ip-10-42-9-102.us-west-2.compute.internal    Ready    <none>   14m     vVAR::KUB
 $ kubectl scale -n other deployment/inflate --replicas 5
 ```
 
-Karpenterのログを確認して、デプロイメントのスケールインに対応してどのようなアクションを実行したかを確認できます。次のコマンドを実行する前に、5〜10秒ほど待ちましょう：
+Karpenterのログを確認して、Deploymentのスケールインに対応してどのようなアクションを実行したかを確認できます。次のコマンドを実行する前に、5〜10秒ほど待ちましょう：
 
 ```bash hook=grep
 $ kubectl logs -l app.kubernetes.io/instance=karpenter -n karpenter | grep 'disrupting node(s)' | jq '.'
@@ -75,7 +75,7 @@ $ kubectl get nodes -l type=karpenter
 ip-10-42-44-164.us-west-2.compute.internal   Ready    <none>   6m30s   vVAR::KUBERNETES_NODE_VERSION   m5.large
 ```
 
-Karpenterは、ワークロードの変更に応じて、ノードをより安価なバリアントに置き換えることでさらに統合することもできます。これは、`inflate`デプロイメントのレプリカを1に縮小し、合計メモリリクエストを約1Giにすることで実証できます：
+Karpenterは、ワークロードの変更に応じて、ノードをより安価なバリアントに置き換えることでさらに統合することもできます。これは、`inflate`Deploymentのレプリカを1に縮小し、合計メモリリクエストを約1Giにすることで実証できます：
 
 ```bash
 $ kubectl scale -n other deployment/inflate --replicas 1
