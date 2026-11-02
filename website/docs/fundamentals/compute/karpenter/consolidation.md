@@ -16,11 +16,11 @@ Disruption is configured through the `disruption` block in a `NodePool`. You can
 1. `expireAfter` is set to a custom value so that nodes are terminated automatically after 72 hours
 2. The `WhenEmptyOrUnderutilized` policy enables Karpenter to replace nodes when they are either empty or underutilized
 
-The `consolidationPolicy` can also be set to `WhenEmpty`, which restricts disruption only to nodes that contain no workload pods. Learn more about Disruption on the [Karpenter docs](https://karpenter.sh/docs/concepts/disruption/#consolidation).
+The `consolidationPolicy` can also be set to `WhenEmpty`, which restricts disruption only to nodes that contain no workload pods or `Balanced`, when the cost savings outweigh the disruption to running pods. Learn more about Disruption on the [Karpenter docs](https://karpenter.sh/docs/concepts/disruption/#consolidation).
 
 Scaling out infrastructure is only one side of the equation for operating compute infrastructure in a cost-effective manner. We also need to be able to optimize on an on-going basis such that, for example, workloads running on under-utilized compute instances are compacted to fewer instances. This improves the overall efficiency of how we run workloads on the compute, resulting in less overhead and lower costs.
 
-Let's explore how to trigger automatic consolidation when `disruption` is set to `consolidationPolicy: WhenUnderutilized`:
+Let's explore how to trigger automatic consolidation when `disruption` is set to `consolidationPolicy: WhenEmptyOrUnderutilized`:
 
 1. Scale the `inflate` workload from 5 to 12 replicas, triggering Karpenter to provision additional capacity
 2. Scale down the workload back down to 5 replicas
