@@ -1,7 +1,7 @@
 ---
 title: "Disruption (Consolidation)"
 sidebar_position: 50
-tmdTranslationSourceHash: c9be6fd2ae61e4dc79f9e05f66ecdc31
+tmdTranslationSourceHash: a739527bb224a17ec2e7395b301bcf69
 ---
 
 Karpenterは、中断（Disruption）の対象となるノードを自動的に検出し、必要に応じて代替ノードをスピンアップします。これは3つの異なる理由で発生します：
@@ -17,11 +17,11 @@ Disruptionは、`NodePool`の`disruption`ブロックを通じて設定されま
 1. `expireAfter`はカスタム値に設定されているため、ノードは72時間後に自動的に終了します
 2. `WhenEmptyOrUnderutilized`ポリシーにより、ノードが空または十分に活用されていない場合にKarpenterがノードを置き換えることができます
 
-`consolidationPolicy`は、`WhenEmpty`に設定することもでき、その場合はワークロードPodを含まないノードにのみDisruptionを制限します。Disruptionの詳細は、[Karpenterドキュメント](https://karpenter.sh/docs/concepts/disruption/#consolidation)を参照してください。
+`consolidationPolicy`は、`WhenEmpty`に設定することもでき、その場合はワークロードPodを含まないノードにのみDisruptionを制限します。また、`Balanced`に設定することもでき、その場合はコスト削減の効果が実行中のPodへの中断を上回るときに統合が行われます。Disruptionの詳細は、[Karpenterドキュメント](https://karpenter.sh/docs/concepts/disruption/#consolidation)を参照してください。
 
 インフラストラクチャーのスケールアウトは、コスト効率の良いコンピューティングインフラストラクチャーを運用するための方程式の一面に過ぎません。例えば、十分に活用されていないコンピューティングインスタンス上で実行されているワークロードを少ないインスタンスにまとめるなど、継続的に最適化する必要もあります。これにより、ワークロードをコンピューティング上で実行する全体的な効率が向上し、オーバーヘッドが少なくなりコストが削減されます。
 
-`disruption`が`consolidationPolicy: WhenUnderutilized`に設定されている場合の自動統合をトリガーする方法を見てみましょう：
+`disruption`が`consolidationPolicy: WhenEmptyOrUnderutilized`に設定されている場合の自動統合をトリガーする方法を見てみましょう：
 
 1. `inflate`ワークロードを5から12レプリカにスケールアップし、Karpenterに追加の容量のプロビジョニングを促します
 2. ワークロードを5レプリカに戻します
