@@ -76,6 +76,35 @@ catch() {
   exec 3<&-
 }
 
+# Wait for the sample application to be ready. `kubectl wait pods` resolves the
+# pod names up front, so a pod replaced during the wait (recycled below, or
+# evicted from a node group a lab cleanup is deleting asynchronously) fails it
+# with "pods ... not found" even though its replacement is fine. Retry against
+# the current pods when that is the only failure.
+wait_for_workload() {
+  local selector="app.kubernetes.io/created-by=eks-workshop"
+  local err_file attempt
+  err_file=$(mktemp)
+
+  kubectl wait --for=condition=available --timeout=240s deployments -l $selector -A
+
+  for attempt in 1 2 3; do
+    if kubectl wait --for=condition=Ready --timeout=240s pods -l $selector -A 2>"$err_file"; then
+      rm -f "$err_file"
+      return 0
+    fi
+    if ! grep -q 'NotFound' "$err_file"; then
+      break
+    fi
+    echo "Pods were replaced while waiting (attempt $attempt), retrying..."
+    sleep 10
+  done
+
+  cat "$err_file" >&2
+  rm -f "$err_file"
+  return 1
+}
+
 mkdir -p /eks-workshop
 
 logmessage "🚀 We're preparing your environment for the next lab, sit tight!"
@@ -323,8 +352,7 @@ else
 
     sleep 10
 
-    kubectl wait --for=condition=available --timeout=240s deployments -l app.kubernetes.io/created-by=eks-workshop -A
-    kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
+    wait_for_workload
 
 fi
 
@@ -459,7 +487,7 @@ kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernete
 
 # Wait for the workload pods previously recycled
 if kubectl get pods -A -l app.kubernetes.io/created-by=eks-workshop 2>/dev/null | grep -q .; then
-  kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
+  wait_for_workload
 fi
 
 # Finished
