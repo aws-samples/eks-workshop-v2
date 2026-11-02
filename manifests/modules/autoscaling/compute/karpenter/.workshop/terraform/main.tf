@@ -21,6 +21,16 @@ module "karpenter" {
   queue_name                      = "${var.addon_context.eks_cluster_id}-karpenter"
   rule_name_prefix                = "eks-workshop"
 
+  # Karpenter 1.14 calls ec2:DescribeInstanceStatus for instance health checks;
+  # module 21.15.1 doesn't grant it (added in 21.19).
+  iam_policy_statements = [
+    {
+      sid       = "AllowDescribeInstanceStatus"
+      actions   = ["ec2:DescribeInstanceStatus"]
+      resources = ["*"]
+    }
+  ]
+
   node_iam_role_additional_policies = {
     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   }
