@@ -3,12 +3,12 @@ title: "Verifying DynamoDB access"
 sidebar_position: 25
 ---
 
-Now, with the `carts` Service Account annotated with the authorized IAM role, the `carts` Pod has permission to access the DynamoDB table. Access the web store again and navigate to the shopping cart.
+Now, with the `carts` Service Account annotated with the authorized IAM role, the `carts` Pod has permission to access the DynamoDB table. Open the shopping cart page of the web store at the URL from this command:
 
 ```bash
 $ LB_HOSTNAME=$(kubectl -n ui get service ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}')
-$ echo "http://$LB_HOSTNAME"
-http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
+$ echo "http://$LB_HOSTNAME/cart"
+http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/cart
 ```
 
 The `carts` Pod is able to reach the DynamoDB service and the shopping cart is now accessible!
