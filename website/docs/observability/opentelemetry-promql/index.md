@@ -47,7 +47,7 @@ Amazon CloudWatch natively supports ingestion of OpenTelemetry Protocol (OTLP) m
 | SQL Queries | Query OpenTelemetry metrics using SQL syntax in the Amazon CloudWatch Query Studio |
 | Enrichment | Enrich CloudWatch vended metrics with AWS resource attributes for unified PromQL querying |
 | Grafana Integration | Integrate OpenTelemetry metrics as a data source in Grafana (Amazon Managed or open source)|
-| Custom Metrics | Collect application-level Prometheus metrics from ECS services via the CloudWatch Agent OTLP pipeline |
+| Custom Metrics | Collect application-level Prometheus metrics from the retail store sample application via the CloudWatch Agent OTLP pipeline |
 
 
 **What this section covers**
@@ -55,7 +55,7 @@ Amazon CloudWatch natively supports ingestion of OpenTelemetry Protocol (OTLP) m
 Here's what you'll learn:
 
 - **Enable OTel Enrichment:** Enrich existing CloudWatch metrics with AWS resource attributes for unified PromQL querying
-- **Send Custom Metrics:** Collect application metrics from petsite (.NET on EKS) and petfood (Rust on ECS) using the CloudWatch Agent
+- **Send Custom Metrics:** Collect application metrics from the retail store's `orders` and `checkout` services using the CloudWatch Agent
 - **Query with PromQL:** Use Amazon CloudWatch Query Studio to query infrastructure, application, and enriched metrics
 - **Amazon Managed Grafana:** Connect Amazon Managed Grafana and build a full-stack observability dashboard
 

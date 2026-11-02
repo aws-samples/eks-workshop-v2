@@ -3,7 +3,7 @@ title: "Send Custom Metrics"
 sidebar_position: 20
 ---
 
-Amazon CloudWatch exposes a regional OTLP endpoint (https://monitoring.region.amazonaws.com/v1/metrics) that accepts metrics from any OpenTelemetry-compatible collector. In this section, you configure custom metric collection from both the EKS and ECS environments in the PetAdoptions application.
+Amazon CloudWatch exposes a regional OTLP endpoint (https://monitoring.region.amazonaws.com/v1/metrics) that accepts metrics from any OpenTelemetry-compatible collector. In this section, you configure custom metric collection from the `orders` and `checkout` services of the retail store sample application.
 
 :::info
 The workshop cluster also runs OTel Container Insights, which collects infrastructure metrics (CPU, memory, network per node/pod/container) automatically. For a deep dive into the Container Insights console experience, see the OTel Container Insights (EKS) module.
@@ -16,7 +16,7 @@ Deploy the CloudWatch Agent CRD to scrape Prometheus metrics from application wo
 
 ```bash
 $ export CWA_IMAGE=$(kubectl get daemonset -n amazon-cloudwatch cloudwatch-agent -o jsonpath='{.spec.template.spec.containers[0].image}')
-kubectl kustomize ~/environment/eks-workshop/modules/observability/otlp-metrics/otel | envsubst | kubectl apply -f -
+$ kubectl kustomize ~/environment/eks-workshop/modules/observability/otlp-metrics/otel | envsubst | kubectl apply -f -
 ```
 
 **Generate Application Load**
