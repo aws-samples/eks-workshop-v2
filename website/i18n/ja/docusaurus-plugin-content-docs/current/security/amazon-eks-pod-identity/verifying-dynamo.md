@@ -1,22 +1,22 @@
 ---
 title: "DynamoDBアクセスの検証"
 sidebar_position: 35
-tmdTranslationSourceHash: 4130a6ea94698da1a24cf632242194ac
+tmdTranslationSourceHash: 3c36738326e9e842bb530baecf741fcf
 ---
 
-これで、`carts` ServiceAccountが認可されたIAMロールに関連付けられたため、`carts` PodはDynamoDBテーブルにアクセスする権限を持ちました。再度Webストアにアクセスし、ショッピングカートに移動しましょう。
+`carts` Service Accountが認可されたIAMロールに関連付けられたため、`carts` PodはDynamoDBテーブルにアクセスする権限を持ちました。次のコマンドで取得したURLから、Webストアのショッピングカートページを開いてください。
 
 ```bash
 $ LB_HOSTNAME=$(kubectl -n ui get service ui-nlb -o jsonpath='{.status.loadBalancer.ingress[*].hostname}{"\n"}')
-$ echo "http://$LB_HOSTNAME"
-http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com
+$ echo "http://$LB_HOSTNAME/cart"
+http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/cart
 ```
 
-`carts` PodはDynamoDBサービスに到達でき、ショッピングカートが利用可能になりました！
+`carts` PodはDynamoDBサービスに到達でき、ショッピングカートにアクセスできるようになりました！
 
 ![カート](/img/sample-app-screens/shopping-cart.webp)
 
-AWS IAMロールがServiceAccountに関連付けられた後、そのServiceAccountを使用して新しく作成されたPodは、[EKS Pod Identityウェブフック](https://github.com/aws/amazon-eks-pod-identity-webhook)によって傍受されます。このウェブフックはAmazon EKSクラスターのコントロールプレーン上で実行され、AWSによって完全に管理されています。新しい`carts` Podを詳しく調べて、新しい環境変数を確認しましょう：
+AWS IAMロールがService Accountに関連付けられた後、そのService Accountを使用して新しく作成されたPodは、[EKS Pod Identityウェブフック](https://github.com/aws/amazon-eks-pod-identity-webhook)によって傍受されます。このウェブフックはAmazon EKSクラスターのコントロールプレーン上で実行され、AWSによって完全に管理されています。新しい`carts` Podを詳しく調べて、新しい環境変数を確認しましょう。
 
 ```bash
 $ kubectl -n carts exec deployment/carts -- env | grep AWS
@@ -34,3 +34,4 @@ AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE=/var/run/secrets/pods.eks.amazonaws.com/s
 - `AWS_CONTAINER_CREDENTIALS_FULL_URI` - この変数は、AWS SDKに[HTTPクレデンシャルプロバイダー](https://docs.aws.amazon.com/sdkref/latest/guide/feature-container-credentials.html)を使用してクレデンシャルを取得する方法を伝えます。これにより、EKS Pod Identityは`AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`のようなペアを介してクレデンシャルを注入する必要がなく、代わりにSDKはEKS Pod Identityメカニズムを介して一時的なクレデンシャルを取得できます。この仕組みの詳細については、[AWS公式ドキュメント](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html)で詳しく説明されています。
 
 これでアプリケーションでPod Identityを正常に設定できました。
+
