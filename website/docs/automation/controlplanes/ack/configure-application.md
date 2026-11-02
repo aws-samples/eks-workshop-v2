@@ -78,6 +78,30 @@ To confirm that these items are also in the DynamoDB table, run:
 
 ```bash
 $ aws dynamodb scan --table-name "${EKS_CLUSTER_NAME}-carts-ack"
+{
+    "Items": [
+        {
+            "quantity": {
+                "N": "1"
+            },
+            "itemId": {
+                "S": "d4edfedb-dbe9-4dd9-aae8-009489394955"
+            },
+            "unitPrice": {
+                "N": "190"
+            },
+            "id": {
+                "S": "08375fd1-85b1-4750-99ae-960c31f484ad:d4edfedb-dbe9-4dd9-aae8-009489394955"
+            },
+            "customerId": {
+                "S": "08375fd1-85b1-4750-99ae-960c31f484ad"
+            }
+        }
+    ],
+    "Count": 1,
+    "ScannedCount": 1,
+    "ConsumedCapacity": null
+}
 ```
 
 Congratulations! You've successfully created AWS Resources without leaving the Kubernetes API!
