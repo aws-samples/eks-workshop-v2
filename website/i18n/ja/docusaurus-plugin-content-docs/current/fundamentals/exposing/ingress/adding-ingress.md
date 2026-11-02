@@ -1,7 +1,7 @@
 ---
 title: "Ingressの作成"
 sidebar_position: 20
-tmdTranslationSourceHash: 'e15273d6abdb47991b0a5e6f08673337'
+tmdTranslationSourceHash: 'a8212b3a678a239eea9eb149f2745863'
 ---
 
 以下の構成で Ingress リソースを作成しましょう：
@@ -121,6 +121,16 @@ http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com
 ```bash
 $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-timeout 30 --max-time 60 \
   -k $(kubectl get ingress -n ui ui -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+curl: (6) Could not resolve host: k8s-ui-ui-5ddc3ba496-368640211.us-west-2.elb.amazonaws.com
+Warning: Problem : timeout. Will retry in 15 seconds. 30 retries left.
+[...]
+HTTP/1.1 200 OK
+Date: Mon, 07 Sep 2026 10:43:05 GMT
+Content-Type: text/html
+Content-Length: 19973
+Connection: keep-alive
+Content-Language: en-US
+set-cookie: SESSIONID=c9b351b4-9626-4d33-a112-52b28c85fd7c
 ```
 
 そして Web ブラウザでアクセスしてみましょう。Web ストアの UI が表示され、ユーザーとしてサイト内を移動することができます。
@@ -128,4 +138,3 @@ $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-ti
 <Browser url="http://k8s-ui-ui-a9797f0f61.elb.us-west-2.amazonaws.com">
 <img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
 </Browser>
-
