@@ -86,6 +86,16 @@ module "karpenter" {
   rule_name_prefix                = "eks-workshop"
   create_pod_identity_association = true
 
+  # Karpenter 1.14 calls ec2:DescribeInstanceStatus for instance health checks;
+  # module 21.15 doesn't grant it (added in 21.19).
+  iam_policy_statements = [
+    {
+      sid       = "AllowDescribeInstanceStatus"
+      actions   = ["ec2:DescribeInstanceStatus"]
+      resources = ["*"]
+    }
+  ]
+
   tags = {
     created-by = "eks-workshop-v2"
     env        = var.addon_context.eks_cluster_id
@@ -103,7 +113,7 @@ resource "helm_release" "karpenter" {
   repository_password = data.aws_ecrpublic_authorization_token.token.password
   chart               = "karpenter"
   # renovate: datasource=github-releases depName=aws/karpenter-provider-aws
-  version = "1.9.0"
+  version = "1.14.3"
   wait    = true
 
   values = [
