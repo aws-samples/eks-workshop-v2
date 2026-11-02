@@ -114,7 +114,6 @@ const config = {
           ],
           editUrl:
             "https://github.com/aws-samples/eks-workshop-v2/tree/main/website",
-          exclude: ["networking/vpc-lattice"],
         },
         theme: {
           customCss: require.resolve("./src/css/custom.scss"),
