@@ -20,8 +20,8 @@ jdbc_connections_idle{name="writer",} 10.0
 [...]
 # HELP watch_orders_total The number of orders placed
 # TYPE watch_orders_total counter
-watch_orders_total{productId="510a0d7e-8e83-4193-b483-e27e09ddc34d",} 2.0
-watch_orders_total{productId="808a2de1-1aaa-4c25-a9b9-6612e8f29a38",} 1.0
+watch_orders_total{productId="cc789f85-1476-452a-8100-9e74502198e0",} 2.0
+watch_orders_total{productId="87e89b11-d319-446d-b9be-50adcca5224a",} 1.0
 watch_orders_total{productId="*",} 3.0
 ```
 
