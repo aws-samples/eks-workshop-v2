@@ -29,6 +29,15 @@ jobs:
           chmod +x ${HOME}/.local/bin/*
 
           echo "${HOME}/.local/bin" >> $GITHUB_PATH
+      - name: Install Terraform
+        # Pre-provisioning runs terraform on the runner itself, not inside the lab
+        # container, and ubuntu-latest does not ship it. Same version as module-test.yaml
+        # and the lab IDE (terraform_version in lab/scripts/installer.sh). Installed
+        # before the clusters are created so the always() destroy step still has it.
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.14.4"
+          terraform_wrapper: false
       - name: Set cluster ID
         env:
           RUN_ID: "${{ github.job }}"
@@ -50,6 +59,18 @@ jobs:
           AWS_REGION: "${{ secrets.AWS_REGION }}"
         run: |
           make create-infrastructure environment="$CLUSTER_ID"
+      - name: Pre-provision lab resources
+        # The fast paths are tested the way a Workshop Studio event runs them: the
+        # shared fastpaths preprovision module is applied here, and the lab only reads
+        # it (RESOURCES_PRECREATED below). This is also the only route that reaches
+        # manifests/.workshop/terraform/preprovision-base, which creates the Identity
+        # Center user and the <cluster>-argocd-admins group that the eks-capabilities
+        # path looks up. The lab never creates them itself.
+        env:
+          AWS_REGION: "${{ secrets.AWS_REGION }}"
+        run: |
+          export AWS_DEFAULT_REGION="$AWS_REGION"
+          make pre-provision environment="$CLUSTER_ID" action=apply module="fastpaths/developers"
       - name: Refresh AWS credentials
         if: always()
         uses: aws-actions/configure-aws-credentials@v4.3.1
@@ -64,6 +85,7 @@ jobs:
           DEV_MODE: 1
           AWS_REGION: "${{ secrets.AWS_REGION }}"
           DOCKER_DNS_OVERRIDE: "8.8.8.8"
+          RESOURCES_PRECREATED: "true"
         run: |
           export AWS_DEFAULT_REGION="$AWS_REGION"
           bash hack/run-tests.sh "$CLUSTER_ID" "-" "{fastpaths/getting-started,fastpaths/getting-started/**,fastpaths/operator,fastpaths/operator/**,fastpaths/developer,fastpaths/developer/**,fastpaths/eks-capabilities,fastpaths/eks-capabilities/**}"
@@ -81,9 +103,27 @@ jobs:
           DOCKER_BUILDKIT: 1
           DEV_MODE: 1
           AWS_REGION: "${{ secrets.AWS_REGION }}"
+          RESOURCES_PRECREATED: "true"
         run: |
           export AWS_DEFAULT_REGION="$AWS_REGION"
           make test environment="$CLUSTER_ID" module="cleanup"
+      - name: Refresh AWS credentials
+        if: always()
+        uses: aws-actions/configure-aws-credentials@v4.3.1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-duration-seconds: 3600
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GithubActionsSession-${{ env.CLUSTER_ID }}
+      - name: Destroy pre-provisioned lab resources
+        # Before the clusters go, because the Argo CD capability is attached to the Auto
+        # Mode cluster with delete_propagation_policy = RETAIN.
+        if: always()
+        env:
+          AWS_REGION: "${{ secrets.AWS_REGION }}"
+        run: |
+          export AWS_DEFAULT_REGION="$AWS_REGION"
+          make pre-provision environment="$CLUSTER_ID" action=destroy module="fastpaths/developers"
       - name: Refresh AWS credentials
         if: always()
         uses: aws-actions/configure-aws-credentials@v4.3.1

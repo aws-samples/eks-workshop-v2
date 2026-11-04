@@ -137,6 +137,17 @@ do
 "
   fi
 
+  # Modules that target the Auto Mode cluster (the fast paths) need its name too. Only
+  # passed to modules that declare the variable, because Terraform rejects an argument
+  # a module does not declare. At an event the name is eks-workshop-auto, the same as
+  # the variable's default; anywhere with an environment suffix (GitHub Actions) the
+  # default names a cluster that does not exist.
+  auto_cluster_arg=""
+  if grep -qs 'variable "eks_cluster_auto_id"' "$file"/*.tf; then
+    auto_cluster_arg="
+  eks_cluster_auto_id = var.eks_cluster_auto_id"
+  fi
+
   cat << EOF > $conf_dir/$target.tf
 module "gen-$target" {
   source = "./$target"
@@ -146,7 +157,7 @@ module "gen-$target" {
   }
 $depends_on_idc
   eks_cluster_id = local.eks_cluster_id
-  tags           = local.tags
+  tags           = local.tags$auto_cluster_arg
 }
 EOF
 
@@ -171,4 +182,4 @@ if [[ "$action" != 'plan' ]]; then
   approve_args='--auto-approve'
 fi
 
-terraform -chdir="${conf_dir}" "$action" -var="eks_cluster_id=$EKS_CLUSTER_NAME" $approve_args
+terraform -chdir="${conf_dir}" "$action" -var="eks_cluster_id=$EKS_CLUSTER_NAME" -var="eks_cluster_auto_id=$EKS_CLUSTER_AUTO_NAME" $approve_args
