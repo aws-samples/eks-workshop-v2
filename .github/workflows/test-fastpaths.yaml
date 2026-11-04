@@ -29,6 +29,16 @@ jobs:
           chmod +x ${HOME}/.local/bin/*
 
           echo "${HOME}/.local/bin" >> $GITHUB_PATH
+      - name: Install Terraform
+        # Creating the Identity Center test identity runs terraform on the runner
+        # itself, not inside the lab container, and ubuntu-latest does not ship it.
+        # Same version as module-test.yaml and the lab IDE (terraform_version in
+        # lab/scripts/installer.sh). Installed before the clusters are created so the
+        # always() destroy step still has it.
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.14.4"
+          terraform_wrapper: false
       - name: Set cluster ID
         env:
           RUN_ID: "${{ github.job }}"
@@ -50,6 +60,17 @@ jobs:
           AWS_REGION: "${{ secrets.AWS_REGION }}"
         run: |
           make create-infrastructure environment="$CLUSTER_ID"
+      - name: Create IAM Identity Center test identity
+        # Only the identity the eks-capabilities path signs in with: the Identity Center
+        # user, the <cluster>-argocd-admins group and its membership, and the secret
+        # holding the activated password (manifests/.workshop/terraform/preprovision-base).
+        # A lab never creates these itself. Everything else, the capabilities included,
+        # the fast paths create through a normal prepare-environment, as they do locally.
+        env:
+          AWS_REGION: "${{ secrets.AWS_REGION }}"
+        run: |
+          export AWS_DEFAULT_REGION="$AWS_REGION"
+          make pre-provision environment="$CLUSTER_ID" action=apply module="idc-base"
       - name: Refresh AWS credentials
         if: always()
         uses: aws-actions/configure-aws-credentials@v4.3.1
@@ -84,6 +105,24 @@ jobs:
         run: |
           export AWS_DEFAULT_REGION="$AWS_REGION"
           make test environment="$CLUSTER_ID" module="cleanup"
+      - name: Refresh AWS credentials
+        if: always()
+        uses: aws-actions/configure-aws-credentials@v4.3.1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-duration-seconds: 3600
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GithubActionsSession-${{ env.CLUSTER_ID }}
+      - name: Destroy IAM Identity Center test identity
+        # After the lab cleanup, so no capability still maps the group. The Identity
+        # Center instance itself is permanent in the test account and is not deleted:
+        # preprovision-base only removes an instance it created.
+        if: always()
+        env:
+          AWS_REGION: "${{ secrets.AWS_REGION }}"
+        run: |
+          export AWS_DEFAULT_REGION="$AWS_REGION"
+          make pre-provision environment="$CLUSTER_ID" action=destroy module="idc-base"
       - name: Refresh AWS credentials
         if: always()
         uses: aws-actions/configure-aws-credentials@v4.3.1
