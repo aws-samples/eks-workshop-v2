@@ -14,6 +14,18 @@ if [ "$module_filter" = "-" ]; then
   module_filter=""
 fi
 
+# `idc-base` is not a module path. It stages only the shared IAM Identity Center layer
+# (manifests/.workshop/terraform/preprovision-base: the user, the group and its
+# membership, and the secret holding the activated password) and no module's
+# preprovision directory. GitHub Actions uses it to give a lab the identity it cannot
+# create for itself, while the lab still creates everything else through a normal
+# prepare-environment, the same way it does outside an event.
+idc_base_only=""
+if [ "$module_filter" = "idc-base" ]; then
+  idc_base_only="yes"
+  module_filter=""
+fi
+
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 source $SCRIPT_DIR/lib/common-env.sh
@@ -73,8 +85,17 @@ staged=0
 # below carry a depends_on referring to it.
 selected=()
 
+# idc-base asks for the shared layer directly, and the loop below selects no module.
+if [ -n "$idc_base_only" ]; then
+  idc_required="yes"
+fi
+
 while read -d $'\0' file
 do
+  if [ -n "$idc_base_only" ]; then
+    continue
+  fi
+
   relative_path=${file#"$manifests_dir/modules/"}
 
   if [ -n "$module_filter" ] && [[ "$relative_path" != "$module_filter"* ]]; then
@@ -164,7 +185,9 @@ EOF
   staged=$((staged + 1))
 done
 
-if [ -n "$module_filter" ]; then
+if [ -n "$idc_base_only" ]; then
+  echo "Staged only the shared IAM Identity Center layer (idc-base)"
+elif [ -n "$module_filter" ]; then
   echo "Staged $staged preprovision directories matching '$module_filter'"
 
   if [ "$staged" = "0" ]; then

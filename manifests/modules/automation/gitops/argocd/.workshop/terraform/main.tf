@@ -37,6 +37,9 @@ locals {
   # RFC 2606 reserves for documentation.
   idc_user_email = "${var.eks_cluster_id}@example.com"
 
+  # Written by preprovision-base once the user is activated: `${eks_cluster_id}-argocd-idc`.
+  idc_secret_name = "${var.eks_cluster_id}-argocd-idc"
+
   # The console deep link uses the instance ID without its "ssoins-" prefix.
   idc_instance_id = trimprefix(try(element(split("/", local.idc_instance_arn), 1), ""), "ssoins-")
   idc_console_url = "https://${data.aws_region.current.id}.console.aws.amazon.com/singlesignon/home?region=${data.aws_region.current.id}#/instances/${local.idc_instance_id}/users"
@@ -79,18 +82,28 @@ resource "null_resource" "idc_precheck" {
   }
 }
 
-# At an AWS-run event the pre-provisioning pipeline has already activated this user
-# and stored a password it proved works, so participants can be handed a working
-# credential instead of minting a one-time password themselves.
+# Wherever manifests/.workshop/terraform/preprovision-base ran -- an AWS-run event, or
+# GitHub Actions, which applies only that layer -- this user has already been
+# activated and a password it proved works is stored, so participants can be handed a
+# working credential instead of minting a one-time password themselves.
 #
-# Gated on resources_precreated because that is this repo's existing signal for
-# "Workshop Studio pre-provisioned things", and the pre-provisioning is precisely
-# what creates this secret. Anywhere else it does not exist, and the lab falls back
-# to the manual activation the docs describe.
-data "aws_secretsmanager_secret_version" "argocd_admin" {
-  count = var.resources_precreated ? 1 : 0
+# Gated on the secret existing rather than on resources_precreated, because the
+# identity layer is applied separately from the lab's other pre-provisioned
+# resources: GitHub Actions creates the identity but lets the lab create its own
+# capability. Anywhere the secret does not exist the lab falls back to the manual
+# activation the docs describe. ListSecrets filters by name prefix, hence the exact
+# match on the result.
+data "aws_secretsmanager_secrets" "argocd_admin" {
+  filter {
+    name   = "name"
+    values = [local.idc_secret_name]
+  }
+}
 
-  secret_id = "${var.eks_cluster_id}-argocd-idc"
+data "aws_secretsmanager_secret_version" "argocd_admin" {
+  count = contains(data.aws_secretsmanager_secrets.argocd_admin.names, local.idc_secret_name) ? 1 : 0
+
+  secret_id = local.idc_secret_name
 }
 
 # Enabling the capability takes around ten minutes, so at an AWS-run event the
