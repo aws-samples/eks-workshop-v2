@@ -1,12 +1,12 @@
 ---
 title: FSx for Lustre を使用した動的プロビジョニング
 sidebar_position: 30
-tmdTranslationSourceHash: 028c0dd6ca3cf533e96c296b1760d7bd
+tmdTranslationSourceHash: '957c545c0f10813999ff8e7a2d46506b'
 ---
 
 Kubernetes 用の FSx for Lustre ストレージクラスについて理解したので、UI コンポーネントを変更して FSx for Lustre ボリュームをマウントしましょう。
 
-FSx for Lustre PVC を参照するように UI コンポーネントを更新します:
+FSx for Lustre の PVC を参照するように UI コンポーネントを更新します:
 
 ```kustomization
 modules/fundamentals/storage/fsxl/deployment/deployment.yaml
@@ -23,6 +23,7 @@ configmap/ui unchanged
 service/ui unchanged
 deployment.apps/ui configured
 $ kubectl rollout status --timeout=130s deployment/ui -n ui
+deployment "ui" successfully rolled out
 ```
 
 Deployment の `volumeMounts` を確認しましょう。`fsxlvolume` という名前の新しいボリュームが `/fsxl` にマウントされていることに注目してください:
@@ -78,6 +79,7 @@ $ export PVC_NAME="fsxl-claim"
 $ cat ~/environment/eks-workshop/modules/fundamentals/storage/populate-images-job.yaml | envsubst | kubectl apply -f -
 $ kubectl wait --for=condition=complete -n ui \
   job/populate-images --timeout=300s
+job.batch/populate-images condition met
 ```
 
 それでは、UI コンポーネントの Pod の 1 つを通じて `/fsxl` 内の現在のファイルを一覧表示することで、共有ストレージ機能を実証しましょう:
@@ -143,4 +145,3 @@ http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/asse
 </Browser>
 
 Amazon FSx for Lustre が Amazon EKS 上で実行されるワークロードに高性能な共有並列ストレージを提供する方法を実証することに成功しました。このソリューションにより、複数の Pod が同じストレージボリュームに同時に読み書きできるため、機械学習のトレーニングデータ、HPC ワークロード、メディア処理、および高スループットの並列ファイルシステムアクセスを必要とするその他のユースケースに最適です。
-

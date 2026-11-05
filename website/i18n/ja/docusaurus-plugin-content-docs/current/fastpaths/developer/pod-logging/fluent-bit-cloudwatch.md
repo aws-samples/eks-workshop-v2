@@ -2,7 +2,7 @@
 title: "CloudWatch でのログの確認"
 sidebar_position: 40
 pagination_next: fastpaths/explore/index
-tmdTranslationSourceHash: 'afbf0c15420bd6ef0df8e46d32ec8c2c'
+tmdTranslationSourceHash: 'c2b5eaaefe9b0315685350777360aebc'
 ---
 
 このラボ演習では、各ノードにデプロイされた Fluent Bit エージェントによって Amazon CloudWatch Logs に転送された Kubernetes Pod のログを確認する方法を見ていきます。デプロイされたアプリケーションコンポーネントは `stdout` にログを書き込み、それらは各ノードの `/var/log/containers/*.log` パスに保存されます。
@@ -19,16 +19,16 @@ deployment "ui" successfully rolled out
 その間に、Fluent Bit DaemonSet のログを確認すると、`ui` コンポーネント用の既存のロググループの下に新しいログストリームが作成されているのが確認できます。
 
 ```bash hook=pods-log
-$ kubectl logs daemonset.apps/aws-for-fluent-bit -n amazon-cloudwatch
+$ kubectl logs -n amazon-cloudwatch -l app.kubernetes.io/name=aws-for-fluent-bit --all-containers --prefix --tail=100
 ...
-[2025/04/15 12:40:10] [ info] [filter:kubernetes:kubernetes.0]  token updated
-[2025/04/15 12:40:10] [ info] [input:tail:tail.0] inotify_fs_add(): inode=16895961 watch_fd=12 name=/var/log/containers/ui-8564fc5cfb-qb7td_ui_ui-4ace14944409ee785708c9031b4c2243bfa065ffe0cd320e219131aa33541a1e.log
-[2025/04/15 12:40:11] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream ui-8564fc5cfb-qb7td.ui in log group /aws/eks/fluentbit-cloudwatch/workload/ui
-[2025/04/15 12:40:11] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Created log stream ui-8564fc5cfb-qb7td.ui
+[pod/aws-for-fluent-bit-xxxxx/aws-for-fluent-bit] [2025/04/15 12:40:10] [ info] [filter:kubernetes:kubernetes.0]  token updated
+[pod/aws-for-fluent-bit-xxxxx/aws-for-fluent-bit] [2025/04/15 12:40:10] [ info] [input:tail:tail.0] inotify_fs_add(): inode=16895961 watch_fd=12 name=/var/log/containers/ui-8564fc5cfb-qb7td_ui_ui-4ace14944409ee785708c9031b4c2243bfa065ffe0cd320e219131aa33541a1e.log
+[pod/aws-for-fluent-bit-xxxxx/aws-for-fluent-bit] [2025/04/15 12:40:11] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream ui-8564fc5cfb-qb7td.ui in log group /aws/eks/fluentbit-cloudwatch/workload/ui
+[pod/aws-for-fluent-bit-xxxxx/aws-for-fluent-bit] [2025/04/15 12:40:11] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Created log stream ui-8564fc5cfb-qb7td.ui
 
 ```
 
-次に、`ui` コンポーネントが `kubectl logs` を直接使用してログを作成していることを確認できます:
+次に、`kubectl logs` を直接使用して、`ui` コンポーネントがログを作成していることを確認できます:
 
 ```bash
 $ kubectl logs -n ui deployment/ui
