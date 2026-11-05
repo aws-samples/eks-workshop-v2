@@ -80,19 +80,26 @@ The capability does not support `argocd login`, so instead of signing in, the CL
 2. Choose **Generate New Token**
 3. Copy the token it shows you, as it is not displayed again
 
-Then set these environment variables, pasting the token in place of the placeholder:
+Then point the CLI at the capability:
 
-```bash test=false
+```bash
 $ export ARGOCD_SERVER=$(echo $ARGOCD_SERVER | sed 's|^https://||')
-$ export ARGOCD_AUTH_TOKEN="<paste-token-here>"
 $ export ARGOCD_OPTS="--grpc-web"
 ```
 
-The capability reports its endpoint as a URL, but the CLI expects a bare host, which is what the first line strips. `--grpc-web` is needed because the capability serves the API over gRPC-Web. With these three set, the CLI works without `argocd login`.
+The capability reports its endpoint as a URL, but the CLI expects a bare host, which is what the first line strips. `--grpc-web` is needed because the capability serves the API over gRPC-Web.
+
+Now give the CLI your token, pasting it in place of the placeholder:
+
+```bash test=false
+$ export ARGOCD_AUTH_TOKEN="<paste-token-here>"
+```
+
+With these three set, the CLI works without `argocd login`.
 
 Verify the CLI works:
 
-```bash test=false
+```bash
 $ argocd app list
 NAME  CLUSTER  NAMESPACE  PROJECT  STATUS  HEALTH  SYNCPOLICY  CONDITIONS
 ```

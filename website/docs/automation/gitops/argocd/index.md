@@ -66,7 +66,7 @@ $ aws identitystore create-group-membership \
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=900 wait=120
+```bash timeout=900 wait=120 hook=argocd-cli
 $ prepare-environment automation/gitops/argocd
 ```
 
