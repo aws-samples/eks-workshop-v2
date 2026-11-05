@@ -68,7 +68,11 @@ resource "kubectl_manifest" "upbound_aws_controller_config" {
     controller-config = local.upbound_aws_provider.controller_config
   })
 
-  depends_on = [module.upbound_irsa_aws]
+  # module.crossplane: the ControllerConfig CRD and the controller that removes
+  # the provider's finalizers come from that chart. Without this edge, destroy can
+  # uninstall Crossplane while the provider is still being deleted, which then
+  # hangs until timeout and leaves the IRSA role behind.
+  depends_on = [module.crossplane, module.upbound_irsa_aws]
 }
 
 resource "kubectl_manifest" "upbound_aws_provider" {
