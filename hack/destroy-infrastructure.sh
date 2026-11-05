@@ -96,6 +96,41 @@ wait_for_cluster_idle() {
   done
 }
 
+CAPABILITY_DELETE_TIMEOUT=${CAPABILITY_DELETE_TIMEOUT:-900}
+
+# EKS rejects DeleteCluster with a 409 ("Cluster has capabilities attached") while
+# any EKS capability (ACK, Argo CD, kro) exists. The lab cleanup removes the ones
+# the labs create; this catches any a failed or skipped lab cleanup left behind,
+# so the cluster stack does not end up in DELETE_FAILED. Does nothing when the
+# cluster has no capabilities or the AWS CLI does not know the API.
+delete_capabilities() {
+  local name=$1 capabilities capability deadline
+
+  capabilities=$(aws eks list-capabilities --cluster-name "$name" --query 'capabilities[].capabilityName' --output text 2> /dev/null || true)
+  if [ -z "$capabilities" ] || [ "$capabilities" == "None" ]; then
+    return 0
+  fi
+
+  for capability in $capabilities; do
+    echo "Deleting capability ${capability} left on cluster ${name}"
+    aws eks delete-capability --cluster-name "$name" --capability-name "$capability" > /dev/null || true
+  done
+
+  deadline=$(( $(date +%s) + CAPABILITY_DELETE_TIMEOUT ))
+  while true; do
+    capabilities=$(aws eks list-capabilities --cluster-name "$name" --query 'capabilities[].capabilityName' --output text 2> /dev/null || true)
+    if [ -z "$capabilities" ] || [ "$capabilities" == "None" ]; then
+      return 0
+    fi
+    if [ "$(date +%s)" -ge "$deadline" ]; then
+      echo "Capabilities still present on ${name} after ${CAPABILITY_DELETE_TIMEOUT}s: ${capabilities}, deleting the cluster anyway"
+      return 0
+    fi
+    echo "Waiting for capabilities to be deleted from ${name}: ${capabilities}"
+    sleep "$CLUSTER_IDLE_POLL"
+  done
+}
+
 # Deletes one cluster with eksctl, retrying when the delete fails while the
 # cluster still exists (typically the 409 above, which leaves a DELETE_FAILED
 # cluster stack that a second `eksctl delete cluster` picks up). Returns non-zero
@@ -106,6 +141,7 @@ delete_cluster() {
 
   while true; do
     wait_for_cluster_idle "$name"
+    delete_capabilities "$name"
 
     rc=0
     bash $SCRIPT_DIR/exec.sh "${environment}" "eksctl delete cluster --name ${name} --region ${AWS_REGION} --wait --force --disable-nodegroup-eviction --timeout 45m" || rc=$?
