@@ -3,7 +3,7 @@ title: "Argo CD"
 sidebar_position: 3
 sidebar_custom_props: { "module": true }
 description: "Amazon Elastic Kubernetes ServiceでのArgo CDを使用した宣言的なGitOps継続的デリバリー。"
-tmdTranslationSourceHash: 73705bb7c19022e6a8aa5be7f386ceac
+tmdTranslationSourceHash: adf6d9787882f0963996a6ee2ae3beac
 ---
 
 ::required-time
@@ -67,7 +67,7 @@ $ aws identitystore create-group-membership \
 :::tip 始める前に
 このセクションの環境を準備します：
 
-```bash timeout=900 wait=120
+```bash timeout=900 wait=120 hook=argocd-cli
 $ prepare-environment automation/gitops/argocd
 ```
 
@@ -96,3 +96,4 @@ CNCFの卒業プロジェクトとして、Argo CDはいくつかの主要な機
 - SSO認証のためのネイティブIAM Identity Center統合
 
 Argo CDを使用することで、Kubernetesアプリケーションがソース設定と一貫性を保ち、望ましい状態と実際の状態の間に発生する可能性のあるドリフトを自動的に修正することができます。
+
