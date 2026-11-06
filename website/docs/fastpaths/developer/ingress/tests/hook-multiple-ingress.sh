@@ -9,29 +9,36 @@ after() {
 
   kubectl get ingress -A
 
-  export catalog_endpoint=$(kubectl get ingress -n catalog catalog-multi -o json | jq -r '.status.loadBalancer.ingress[0].hostname')
+  local catalog_endpoint
+  catalog_endpoint=$(kubectl get ingress -n catalog catalog-multi -o json | jq -r '.status.loadBalancer.ingress[0].hostname // empty')
 
   if [ -z "$catalog_endpoint" ]; then
     >&2 echo "Failed to retrieve hostname from Ingress"
     exit 1
   fi
 
-  EXIT_CODE=0
+  # Same limit as lab/bin/wait-for-lb and hook-add-ingress.sh.
+  local timeout_seconds=600
+  local deadline=$((SECONDS + timeout_seconds))
+  local code=""
 
-  timeout -s TERM 400 bash -c \
-    'while [[ "$(curl -s -o /dev/null -L -w ''%{http_code}'' ${catalog_endpoint}/catalog/products)" != "200" ]];\
-    do sleep 20;\
-    done' || EXIT_CODE=$?
+  while [ $SECONDS -lt $deadline ]; do
+    code=$(curl -s -o /dev/null -L --max-time 10 -w '%{http_code}' "http://${catalog_endpoint}/catalog/products" || true)
 
-  echo "Timeout completed"
+    if [ "$code" == "200" ]; then
+      echo "Ingress is available at http://${catalog_endpoint}"
+      return 0
+    fi
 
-  if [ $EXIT_CODE -ne 0 ]; then
-    >&2 echo "Ingress did not become available after 400 seconds"
-    echo "Was checking $catalog_endpoint"
-    echo ""
-    kubectl get ingress -A
-    exit 1
-  fi
+    sleep 20
+  done
+
+  >&2 echo "Ingress did not become available after ${timeout_seconds} seconds"
+  echo "Was checking http://${catalog_endpoint}/catalog/products, last HTTP code: ${code}"
+  echo ""
+  kubectl get ingress -A
+  kubectl describe ingress -n catalog catalog-multi || true
+  exit 1
 }
 
 "$@"

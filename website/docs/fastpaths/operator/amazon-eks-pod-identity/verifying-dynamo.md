@@ -52,7 +52,7 @@ Notable points about these environment variables:
 
 Now let's wait for the load balancer to finish provisioning:
 
-```bash timeout=610
+```bash timeout=610 hook=wait-nlb-hostname hookTimeout=240
 $ wait-for-lb $(kubectl get service -n ui ui-nlb-auto -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 
 Waiting for k8s-ui-uinlbaut-a9797f0f61.elb.us-west-2.amazonaws.com...
