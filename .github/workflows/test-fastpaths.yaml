@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
       - name: Install utilities
         run: |
           sudo apt install -y gettext
@@ -35,7 +35,7 @@ jobs:
         # Same version as module-test.yaml and the lab IDE (terraform_version in
         # lab/scripts/installer.sh). Installed before the clusters are created so the
         # always() destroy step still has it.
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: "1.14.4"
           terraform_wrapper: false
@@ -48,7 +48,7 @@ jobs:
           echo "Using cluster ID ${CLUSTER_ID}"
           echo "CLUSTER_ID=$CLUSTER_ID" >> $GITHUB_ENV
       - name: Get AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4.3.1
+        uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-duration-seconds: 3600
@@ -73,7 +73,7 @@ jobs:
           make pre-provision environment="$CLUSTER_ID" action=apply module="idc-base"
       - name: Refresh AWS credentials
         if: always()
-        uses: aws-actions/configure-aws-credentials@v4.3.1
+        uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-duration-seconds: 3600
@@ -90,7 +90,7 @@ jobs:
           bash hack/run-tests.sh "$CLUSTER_ID" "-" "{fastpaths/getting-started,fastpaths/getting-started/**,fastpaths/operator,fastpaths/operator/**,fastpaths/developer,fastpaths/developer/**,fastpaths/eks-capabilities,fastpaths/eks-capabilities/**}"
       - name: Refresh AWS credentials
         if: always()
-        uses: aws-actions/configure-aws-credentials@v4.3.1
+        uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-duration-seconds: 3600
@@ -107,7 +107,7 @@ jobs:
           make test environment="$CLUSTER_ID" module="cleanup"
       - name: Refresh AWS credentials
         if: always()
-        uses: aws-actions/configure-aws-credentials@v4.3.1
+        uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-duration-seconds: 3600
@@ -125,7 +125,7 @@ jobs:
           make pre-provision environment="$CLUSTER_ID" action=destroy module="idc-base"
       - name: Refresh AWS credentials
         if: always()
-        uses: aws-actions/configure-aws-credentials@v4.3.1
+        uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-duration-seconds: 3600

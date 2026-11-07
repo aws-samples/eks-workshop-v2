@@ -27,17 +27,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 26
       - name: Get kubectl version
         run: |
           source hack/lib/kubectl-version.sh
           echo "Using kubectl ${KUBECTL_VERSION}"
           echo "KUBECTL_VERSION=$KUBECTL_VERSION" >> $GITHUB_ENV
-      - uses: azure/setup-kubectl@v4
+      - uses: azure/setup-kubectl@v5
         with:
           version: "${{ env.KUBECTL_VERSION }}"
         id: install
@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
       - name: Make shell
         env:
           SKIP_CREDENTIALS: 1
@@ -67,8 +67,8 @@ jobs:
     name: "Validate Terraform"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: hashicorp/setup-terraform@v3
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: "~1.9.0"
       - name: Check Terraform formatting
