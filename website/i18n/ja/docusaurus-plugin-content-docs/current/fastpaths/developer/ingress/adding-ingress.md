@@ -1,7 +1,7 @@
 ---
 title: "Ingress の作成"
 sidebar_position: 20
-tmdTranslationSourceHash: '63d43266b4da1fb303cc538338d24c42'
+tmdTranslationSourceHash: '97f89c41256bb5e4b8f9231b6685c37e'
 ---
 
 :::info AWS Load Balancer Controller
@@ -37,7 +37,7 @@ EKS Auto Mode では、アノテーションによる ALB 設定はサポート�
 
 それでは、これらの設定を適用しましょう:
 
-```bash timeout=180 hook=add-ingress hookTimeout=660
+```bash timeout=180 hook=add-ingress hookTimeout=720
 $ envsubst < ~/environment/eks-workshop/modules/fastpaths/developers/ingress/adding-ingress/ingressclass.yaml | kubectl apply -f -
 $ kubectl apply -f ~/environment/eks-workshop/modules/fastpaths/developers/ingress/adding-ingress/ingress.yaml
 ```
