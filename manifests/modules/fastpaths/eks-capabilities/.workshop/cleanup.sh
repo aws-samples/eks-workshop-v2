@@ -3,8 +3,10 @@
 set -Eeuo pipefail
 
 # The EKS capability, IAM Capability Role, and DynamoDB IAM policies are
-# tracked by the shared fastpaths preprovision Terraform and are torn down
-# only when the entire fastpaths environment is destroyed. This script
+# tracked by the shared fastpaths preprovision Terraform on the auto cluster.
+# reset-environment destroys them when the environment leaves the fast paths
+# (teardown_fastpaths: a standard lab, prepare-environment with no module, or
+# delete-environment), after running this hook. This script
 # cleans up the per-lab resources the *learner* applied during the labs so
 # the path can be entered/exited cleanly between sessions.
 

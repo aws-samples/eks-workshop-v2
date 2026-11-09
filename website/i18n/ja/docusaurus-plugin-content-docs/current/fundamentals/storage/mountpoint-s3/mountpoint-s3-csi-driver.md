@@ -1,16 +1,16 @@
 ---
 title: Mountpoint for Amazon S3
 sidebar_position: 20
-tmdTranslationSourceHash: 33c66beddd4e3a9034878051b80eaea3
+tmdTranslationSourceHash: 6cb6fa7ae50515d7e1c92fc03b93b5e4
 ---
 
 このセクションに進む前に、[ストレージ](../index.md)の主要セクションで説明されているKubernetesのストレージ概念（ボリューム、永続ボリューム（PV）、永続ボリューム要求（PVC）、動的プロビジョニング、一時ストレージ）を理解することが重要です。
 
-[Mountpoint for Amazon S3 Container Storage Interface（CSI）ドライバ](https://github.com/awslabs/mountpoint-s3-csi-driver)を使用すると、KubernetesアプリケーションがAmazon S3オブジェクトに標準ファイルシステムインターフェースからアクセスできるようになります。[Mountpoint for Amazon S3](https://github.com/awslabs/mountpoint-s3)を基盤としており、Mountpoint CSIドライバはAmazon S3バケットをストレージボリュームとして公開し、Kubernetesクラスター内のコンテナがシームレスにアクセスできるようにします。このドライバは[CSI](https://github.com/container-storage-interface/spec/blob/master/spec.md)仕様を実装しており、コンテナオーケストレータ（CO）がストレージボリュームを効率的に管理できるようにします。
+[Mountpoint for Amazon S3 Container Storage Interface（CSI）ドライバ](https://github.com/awslabs/mountpoint-s3-csi-driver)を使用すると、KubernetesアプリケーションがAmazon S3オブジェクトに標準ファイルシステムインターフェースからアクセスできるようになります。[Mountpoint for Amazon S3](https://github.com/awslabs/mountpoint-s3)を基盤として構築されたMountpoint CSIドライバは、Amazon S3バケットをストレージボリュームとして公開し、Kubernetesクラスター内のコンテナがシームレスにアクセスできるようにします。このドライバは[CSI](https://github.com/container-storage-interface/spec/blob/master/spec.md)仕様を実装しており、コンテナオーケストレータ（CO）がストレージボリュームを効率的に管理できるようにします。
 
 以下のアーキテクチャ図は、Mountpoint for Amazon S3をPodの永続ストレージとして使用する方法を示しています：
 
-![Assets with S3](/docs/fundamentals/storage/mountpoint-s3/s3-storage.webp)
+![Assets with S3](/docs/fundamentals/storage/mountpoint-s3/eksworkshop-storage-mountpoint-for-s3.svg)
 
 まず、イメージホスティングWebアプリケーションに必要な画像のためのステージングディレクトリを作成しましょう：
 

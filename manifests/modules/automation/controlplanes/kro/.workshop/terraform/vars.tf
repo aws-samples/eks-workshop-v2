@@ -34,12 +34,6 @@ variable "resources_precreated" {
   type        = bool
 }
 
-variable "carts_dynamo_table_name" {
-  description = "Name of the DynamoDB table the kro RGD provisions for the carts application"
-  type        = string
-  default     = "eks-workshop-carts-kro"
-}
-
 # tflint-ignore: terraform_unused_declarations
 variable "inbound_cidrs" {
   description = "CIDR range to allowlist for inbound traffic"

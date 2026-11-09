@@ -18,11 +18,11 @@ Let's check which authentication method your cluster is configured with using `a
 ```bash
 $ aws eks describe-cluster --name $EKS_CLUSTER_NAME --query 'cluster.accessConfig'
 {
-  "authenticationMode": "API_AND_CONFIG_MAP"
+  "authenticationMode": "API"
 }
 ```
 
-Since the cluster is already using the API as one of the authentication options, EKS has already mapped a couple of default access entries to the cluster. Let's check them:
+Since the cluster uses the `API` authentication mode, all access is granted through access entries, and EKS has already mapped a couple of default access entries to the cluster. Let's check them:
 
 ```bash
 $ aws eks list-access-entries --cluster $EKS_CLUSTER_NAME

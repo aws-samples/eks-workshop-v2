@@ -12,16 +12,17 @@ jobs:
       fail-fast: false
       matrix:
         # Spelled out rather than a plain list of modules so the Argo CD suite can
-        # ask for pre-provisioning. It reads an IAM Identity Center instance and user
-        # that the lab deliberately refuses to create, so without this the module has
-        # no identity to sign in with and cannot be tested at all.
+        # ask for the IAM Identity Center test identity. The lab reads an Identity
+        # Center user that it deliberately refuses to create, so without this the
+        # module has no identity to sign in with and cannot be tested at all. It
+        # still creates its own Argo CD capability, as it does outside an event.
         include:
           - module: automation/gitops
-            preprovision: true
+            idc: true
           - module: automation/controlplanes
-            preprovision: false
+            idc: false
     uses: ./.github/workflows/module-test.yaml
     with:
       module: ${{ matrix.module }}
-      preprovision: ${{ matrix.preprovision }}
+      idc: ${{ matrix.idc }}
     secrets: inherit

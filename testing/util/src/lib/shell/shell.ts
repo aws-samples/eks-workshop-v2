@@ -35,19 +35,25 @@ export class DefaultShell implements Shell {
     const prefix = this.beforeEach === "" ? "" : `${this.beforeEach} &&`;
 
     try {
-      const buffer: Buffer = child.execSync(
-        `${prefix} set -e && ${command} && echo '${DefaultShell.ENV_MARKER}' && env`,
-        {
-          timeout: timeout * 1000,
-          killSignal: "SIGKILL",
-          stdio: ["inherit", "pipe", "pipe"],
-          shell: "/bin/bash",
-          env: {
-            ...this.environment,
-            ...additionalEnv,
-          },
+      // The command must end with a newline so that a heredoc delimiter on its
+      // last line (e.g. "EOF") stands alone and terminates the heredoc. The
+      // explicit exit-status check preserves the previous "command && echo"
+      // behaviour when the last line is an && / || list, which set -e ignores.
+      const script = [
+        `${prefix} set -e && ${command}`,
+        `__mdsh_rc=$?; if [ "$__mdsh_rc" -ne 0 ]; then exit "$__mdsh_rc"; fi; echo '${DefaultShell.ENV_MARKER}' && env`,
+      ].join("\n");
+
+      const buffer: Buffer = child.execSync(script, {
+        timeout: timeout * 1000,
+        killSignal: "SIGKILL",
+        stdio: ["inherit", "pipe", "pipe"],
+        shell: "/bin/bash",
+        env: {
+          ...this.environment,
+          ...additionalEnv,
         },
-      );
+      });
 
       const output = String(buffer);
 

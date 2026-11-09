@@ -85,7 +85,11 @@ def main():
         help="Argo CD endpoint, with or without the https:// prefix",
     )
     parser.add_argument("--region", default=os.environ.get("AWS_REGION", ""))
-    parser.add_argument("--user-name", default="eks-workshop")
+    # Same convention as the lab and preprovision-base: the Identity Center user is
+    # named after the cluster (eks-workshop at an event, eks-workshop-<id> in CI).
+    parser.add_argument(
+        "--user-name", default=os.environ.get("EKS_CLUSTER_NAME", "eks-workshop")
+    )
     parser.add_argument(
         "--secret-id",
         default=f"{os.environ.get('EKS_CLUSTER_NAME', 'eks-workshop')}-argocd-idc",

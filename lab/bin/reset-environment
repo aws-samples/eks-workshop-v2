@@ -76,6 +76,120 @@ catch() {
   exec 3<&-
 }
 
+# Wait for the sample application to be ready. `kubectl wait pods` resolves the
+# pod names up front, so a pod replaced during the wait (recycled below, or
+# evicted from a node group a lab cleanup is deleting asynchronously) fails it
+# with "pods ... not found" even though its replacement is fine. Retry against
+# the current pods when that is the only failure.
+wait_for_workload() {
+  local selector="app.kubernetes.io/created-by=eks-workshop"
+  local err_file attempt
+  err_file=$(mktemp)
+
+  kubectl wait --for=condition=available --timeout=240s deployments -l $selector -A
+
+  for attempt in 1 2 3; do
+    if kubectl wait --for=condition=Ready --timeout=240s pods -l $selector -A 2>"$err_file"; then
+      rm -f "$err_file"
+      return 0
+    fi
+    if ! grep -q 'NotFound' "$err_file"; then
+      break
+    fi
+    echo "Pods were replaced while waiting (attempt $attempt), retrying..."
+    sleep 10
+  done
+
+  cat "$err_file" >&2
+  rm -f "$err_file"
+  return 1
+}
+
+# Stage the fastpaths lab Terraform in /eks-workshop/terraform. Its state lives in
+# the kubernetes backend of whichever cluster is the current kubectl context, so
+# callers switch to eks-workshop-auto first. Sets tf_dir for the caller.
+stage_fastpaths_terraform() {
+  rm -rf /eks-workshop/terraform
+  mkdir -p /eks-workshop/terraform
+  cp -R $manifests_path/.workshop/terraform/* /eks-workshop/terraform
+  rm -f /eks-workshop/terraform/lab-fastpaths.tf
+
+  mkdir -p /eks-workshop/terraform/lab
+  cp -R $manifests_path/modules/fastpaths/developers/.workshop/terraform/* /eks-workshop/terraform/lab
+  cp $manifests_path/.workshop/terraform/lab-fastpaths.tf /eks-workshop/terraform/lab.tf
+
+  mkdir -p /eks-workshop/terraform-data
+  export TF_DATA_DIR="/eks-workshop/terraform-data"
+  export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
+  export TF_VAR_eks_cluster_auto_id="$EKS_CLUSTER_AUTO_NAME"
+  export TF_VAR_resources_precreated="${RESOURCES_PRECREATED:-false}"
+
+  tf_dir=$(realpath --relative-to="$PWD" '/eks-workshop/terraform')
+}
+
+# Leaving the fast paths (a standard lab, `prepare-environment` with no module, or
+# delete-environment): destroy what the fastpaths Terraform created on the auto
+# cluster. That state, including the ACK, Argo CD and kro capabilities of the
+# eks-capabilities path, is stored on eks-workshop-auto, so the standard-lab
+# destroy further down, which runs against the default cluster, never sees it.
+# Left behind, the capabilities keep billing and block deleting the auto cluster
+# ("Cluster has capabilities attached", HTTP 409).
+#
+# Same order as automation/gitops/argocd: the lab's cleanup hook and the Argo CD
+# custom resources first, then Terraform removes the capabilities.
+teardown_fastpaths() {
+  local auto_context=eks-workshop-auto managed
+
+  # No auto cluster, or it never ran a fastpaths lab: nothing to do.
+  kubectl --context "$auto_context" -n kube-system get secret tfstate-default-state &>/dev/null || return 0
+
+  kubectl config use-context "$auto_context"
+
+  stage_fastpaths_terraform
+  # Destroy works from the state, so the capability resources do not need to be
+  # in the configuration. Leaving them out skips the IAM Identity Center lookups,
+  # which fail once the Identity Center group is gone.
+  export TF_VAR_enable_eks_capabilities="false"
+
+  terraform -chdir="$tf_dir" init -upgrade
+
+  # Data sources are kept in the state too; only managed resources need a destroy.
+  # Event environments (RESOURCES_PRECREATED=true) have none, because the event
+  # pre-provisioning owns the capabilities, so they are left as they are.
+  managed=$(terraform -chdir="$tf_dir" state list | grep -vc -e '^data\.' -e '\.data\.' || true)
+
+  if [ "$managed" -gt 0 ]; then
+    logmessage "\n🧹 Removing fast path infrastructure from the Auto Mode cluster..."
+
+    # The hook saved by the last fastpaths lab targets the auto cluster, so run it
+    # here rather than against the default cluster below.
+    if [ -f "/eks-workshop/hooks/cleanup.sh" ]; then
+      bash /eks-workshop/hooks/cleanup.sh || true
+      rm -f /eks-workshop/hooks/cleanup.sh
+    fi
+
+    # Argo CD custom resources carry resources-finalizer.argocd.argoproj.io, and
+    # once the capability is gone nothing clears it, so remove them first.
+    local crd ns name
+    for crd in applications.argoproj.io applicationsets.argoproj.io appprojects.argoproj.io; do
+      kubectl get crd "$crd" &>/dev/null || continue
+      kubectl get "$crd" -A \
+        -o jsonpath='{range .items[*]}{.metadata.namespace}{" "}{.metadata.name}{"\n"}{end}' \
+        2>/dev/null | while read -r ns name; do
+        [ -n "$name" ] || continue
+        kubectl patch "$crd" "$name" -n "$ns" --type=merge \
+          -p '{"metadata":{"finalizers":null}}' &>/dev/null || true
+      done || true
+      kubectl delete "$crd" -A --all --ignore-not-found --wait=false &>/dev/null || true
+      kubectl wait --for=delete "$crd" -A --all --timeout=120s &>/dev/null || true
+    done
+
+    terraform -chdir="$tf_dir" destroy --auto-approve
+  fi
+
+  kubectl config use-context default
+}
+
 mkdir -p /eks-workshop
 
 logmessage "🚀 We're preparing your environment for the next lab, sit tight!"
@@ -173,20 +287,7 @@ if [ ! -z "$module" ]; then
 
     # Stage the lab Terraform on disk every run so we can read outputs
     # (or apply, if first run) against the kubernetes-secret backend.
-    rm -rf /eks-workshop/terraform
-    mkdir -p /eks-workshop/terraform
-    cp -R $manifests_path/.workshop/terraform/* /eks-workshop/terraform
-    rm -f /eks-workshop/terraform/lab-fastpaths.tf
-
-    mkdir -p /eks-workshop/terraform/lab
-    cp -R $manifests_path/modules/fastpaths/developers/.workshop/terraform/* /eks-workshop/terraform/lab
-    cp $manifests_path/.workshop/terraform/lab-fastpaths.tf /eks-workshop/terraform/lab.tf
-
-    mkdir -p /eks-workshop/terraform-data
-    export TF_DATA_DIR="/eks-workshop/terraform-data"
-    export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
-    export TF_VAR_eks_cluster_auto_id="$EKS_CLUSTER_AUTO_NAME"
-    export TF_VAR_resources_precreated="${RESOURCES_PRECREATED:-false}"
+    stage_fastpaths_terraform
 
     # The shared preprovision terraform carries the ACK/Argo CD/kro capability
     # resources (plus an IAM Identity Center user/group and a CodeCommit repo),
@@ -199,9 +300,6 @@ if [ ! -z "$module" ]; then
     else
       export TF_VAR_enable_eks_capabilities="false"
     fi
-
-
-    tf_dir=$(realpath --relative-to="$PWD" '/eks-workshop/terraform')
 
     # Provision fastpaths infrastructure (KEDA, fluent-bit, external-secrets, etc.).
     #
@@ -279,6 +377,8 @@ fi
 
 logmessage "🎓 ${PURPLE}Tip:${NC} Read the rest of the lab introduction while you wait!\n"
 
+teardown_fastpaths
+
 if [ -f "/eks-workshop/hooks/cleanup.sh" ]; then
   bash /eks-workshop/hooks/cleanup.sh
 
@@ -323,8 +423,7 @@ else
 
     sleep 10
 
-    kubectl wait --for=condition=available --timeout=240s deployments -l app.kubernetes.io/created-by=eks-workshop -A
-    kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
+    wait_for_workload
 
 fi
 
@@ -459,7 +558,7 @@ kubectl delete pod -l app.kubernetes.io/created-by=eks-workshop -l app.kubernete
 
 # Wait for the workload pods previously recycled
 if kubectl get pods -A -l app.kubernetes.io/created-by=eks-workshop 2>/dev/null | grep -q .; then
-  kubectl wait --for=condition=Ready --timeout=240s pods -l app.kubernetes.io/created-by=eks-workshop -A
+  wait_for_workload
 fi
 
 # Finished

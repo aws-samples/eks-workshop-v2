@@ -9,12 +9,14 @@ on:
       glob:
         type: string
         default: "-"
-      preprovision:
+      idc:
         description: >-
-          Apply the module's preprovision/ directory before testing, the way
-          Workshop Studio does, and tell the lab those resources already exist.
-          Needed by modules that cannot create their own prerequisites, such as
-          Argo CD, which reads an IAM Identity Center user it refuses to create.
+          Create the IAM Identity Center test identity before testing (the user,
+          the <cluster>-argocd-admins group and its membership, and the secret
+          holding the activated password) and delete it afterwards. Needed by
+          modules that read an Identity Center user they refuse to create, such as
+          Argo CD. The lab still creates everything else itself through a normal
+          prepare-environment, exactly as it does outside an event.
         type: boolean
         default: false
     outputs:
@@ -31,12 +33,11 @@ jobs:
     if: github.repository == 'aws-samples/eks-workshop-v2'
     name: run-tests
     runs-on: ubuntu-latest
-    # Pre-provisioning creates an IAM Identity Center instance, and an account has
-    # exactly one per Region, so two of those runs cannot overlap. They share a
-    # single group and queue behind each other. Everything else stays keyed by
-    # module, so unrelated suites still run in parallel as they do today.
+    # The test account's IAM Identity Center instance is permanent, so a run only
+    # adopts it and never creates or deletes it. What a run writes into it is named
+    # after its own cluster ID, so idc runs do not collide and need no shared queue.
     concurrency:
-      group: ${{ inputs.preprovision == true && 'module-test-preprovision' || format('module-test-{0}-{1}', inputs.module, inputs.glob) }}
+      group: ${{ format('module-test-{0}-{1}', inputs.module, inputs.glob) }}
       cancel-in-progress: false
     outputs:
       durations-artifact: ${{ steps.upload-durations.outputs.artifact-id }}
@@ -55,6 +56,18 @@ jobs:
           chmod +x ${HOME}/.local/bin/*
 
           echo "${HOME}/.local/bin" >> $GITHUB_PATH
+      - name: Install Terraform
+        # Creating the Identity Center test identity runs terraform on the runner
+        # itself, not inside the lab container, and ubuntu-latest does not ship it.
+        # Same version the lab IDE installs (terraform_version in
+        # lab/scripts/installer.sh); keep them in step.
+        # Installed before the clusters are created so the always() destroy step
+        # below still has it when an earlier step fails.
+        if: inputs.idc == true
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.14.4"
+          terraform_wrapper: false
       - name: Set cluster ID
         env:
           RUN_ID: "${{ github.job }}"
@@ -76,15 +89,15 @@ jobs:
           AWS_REGION: "${{ secrets.AWS_REGION }}"
         run: |
           make create-infrastructure environment="$CLUSTER_ID"
-      - name: Pre-provision lab resources
-        # Runs after the clusters exist, because pre-provisioning targets them.
-        if: inputs.preprovision == true
+      - name: Create IAM Identity Center test identity
+        # Only manifests/.workshop/terraform/preprovision-base, never the module's own
+        # preprovision/ directory: the lab creates the rest itself.
+        if: inputs.idc == true
         env:
-          MODULE: ${{ inputs.module }}
           AWS_REGION: "${{ secrets.AWS_REGION }}"
         run: |
           export AWS_DEFAULT_REGION="$AWS_REGION"
-          make pre-provision environment="$CLUSTER_ID" action=apply module="$MODULE"
+          make pre-provision environment="$CLUSTER_ID" action=apply module="idc-base"
       - name: Refresh AWS credentials
         if: always()
         uses: aws-actions/configure-aws-credentials@v4.3.1
@@ -103,9 +116,6 @@ jobs:
           GLOB: ${{ inputs.glob }}
           AWS_REGION: "${{ secrets.AWS_REGION }}"
           DOCKER_DNS_OVERRIDE: "8.8.8.8"
-          # Tells the lab that preprovision/ already created what it needs, so it
-          # reads those resources instead of creating them a second time.
-          RESOURCES_PRECREATED: ${{ inputs.preprovision }}
         run: |
           export AWS_DEFAULT_REGION="$AWS_REGION"
           bash hack/run-tests.sh "$CLUSTER_ID" "$MODULE" "$GLOB"
@@ -128,7 +138,6 @@ jobs:
           DOCKER_BUILDKIT: 1
           DEV_MODE: 1
           AWS_REGION: "${{ secrets.AWS_REGION }}"
-          RESOURCES_PRECREATED: ${{ inputs.preprovision }}
         run: |
           export AWS_DEFAULT_REGION="$AWS_REGION"
           make test environment="$CLUSTER_ID" module="cleanup"
@@ -140,17 +149,16 @@ jobs:
           role-duration-seconds: 3600
           aws-region: ${{ secrets.AWS_REGION }}
           role-session-name: GithubActionsSession-${{ env.CLUSTER_ID }}
-      - name: Destroy pre-provisioned lab resources
-        # Before the clusters go, because the Argo CD capability is attached to one
-        # and is created with delete_propagation_policy = RETAIN. This also releases
-        # the account's single IAM Identity Center instance for the next run.
-        if: always() && inputs.preprovision == true
+      - name: Destroy IAM Identity Center test identity
+        # After the lab cleanup, so no capability still maps the group. The Identity
+        # Center instance itself is permanent in the test account and is not deleted:
+        # preprovision-base only removes an instance it created.
+        if: always() && inputs.idc == true
         env:
-          MODULE: ${{ inputs.module }}
           AWS_REGION: "${{ secrets.AWS_REGION }}"
         run: |
           export AWS_DEFAULT_REGION="$AWS_REGION"
-          make pre-provision environment="$CLUSTER_ID" action=destroy module="$MODULE"
+          make pre-provision environment="$CLUSTER_ID" action=destroy module="idc-base"
       - name: Cleanup environment
         if: always()
         env:

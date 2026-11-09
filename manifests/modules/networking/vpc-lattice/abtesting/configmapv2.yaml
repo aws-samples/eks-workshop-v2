@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: checkout
+data:
+  RETAIL_CHECKOUT_PERSISTENCE_REDIS_URL: redis://checkout-redis.checkout:6379

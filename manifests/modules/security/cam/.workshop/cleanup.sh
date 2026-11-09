@@ -17,9 +17,3 @@ carts_check=$(aws eks list-access-entries --cluster-name $EKS_CLUSTER_NAME --out
 if [ ! -z "$carts_check" ]; then
   aws eks delete-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn $CARTS_TEAM_IAM_ROLE
 fi
-
-admins_check=$(aws eks list-access-entries --cluster-name $EKS_CLUSTER_NAME --output text | grep $ADMINS_IAM_ROLE || true)
-
-if [ ! -z "$admins_check" ]; then
-  aws eks delete-access-entry --cluster-name $EKS_CLUSTER_NAME --principal-arn $ADMINS_IAM_ROLE
-fi
