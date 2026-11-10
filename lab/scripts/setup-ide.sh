@@ -51,12 +51,17 @@ workshop() {
   fi
   local line="────────────────────────────────────────────────────────────────────────────"
 
+  # Two entry points, each landing on its section's "Navigating the labs" page,
+  # so participants pick a path instead of browsing from the site home page.
   echo "${rule}${line}${reset}"
-  echo "  ${label}Workshop URL:${reset}      ${url}${WORKSHOP_URL}${reset}"
+  # Labels are padded to one width so the URLs line up in a column.
+  local fmt="  ${label}%-29s${reset}%s\n"
+  printf "$fmt" "EKS Essentials (start here)" "${url}${WORKSHOP_URL}docs/fastpaths/navigating-labs${reset}"
+  printf "$fmt" "Choose your own adventure" "${url}${WORKSHOP_URL}docs/introduction/navigating-labs${reset}"
   if [ -n "$CONSOLE_URL" ]; then
-    echo "  ${label}Login to console:${reset}  ${url}${CONSOLE_URL}${reset}"
+    printf "$fmt" "AWS console login" "${url}${CONSOLE_URL}${reset}"
   else
-    echo "  ${label}AWS console:${reset}       Sign in to the account you deployed the workshop in."
+    printf "$fmt" "AWS console" "Sign in to the account you deployed the workshop in."
   fi
   echo "${rule}${line}${reset}"
   echo "  ${dim}Type 'workshop' at any time to show these links again.${reset}"
