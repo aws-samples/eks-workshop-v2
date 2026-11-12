@@ -5,7 +5,7 @@ sidebar_position: 30
 
 You can enable each of the cluster log types individually, and in this lab we're enabling everything.
 
-Let's take a look this configuration in the EKS console:
+Let's take a look at this configuration in the EKS console:
 
 <ConsoleButton url="https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab" service="eks" label="Open EKS console"/>
 
@@ -46,7 +46,7 @@ $ aws eks wait cluster-active --name $EKS_CLUSTER_NAME
 
 As you can see we can enable each of the cluster log types individually, and in this lab we're enabling everything.
 
-Let's take a look this configuration in the EKS console:
+Let's take a look at this configuration in the EKS console:
 
 <ConsoleButton url="https://console.aws.amazon.com/eks/home#/clusters/eks-workshop?selectedTab=cluster-logging-tab" service="eks" label="Open EKS console"/>
 

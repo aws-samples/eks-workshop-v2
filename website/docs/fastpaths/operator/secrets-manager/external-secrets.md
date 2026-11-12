@@ -27,7 +27,7 @@ We need to create a `ClusterSecretStore` resource - this is a cluster-wide Secre
 2. Use the `$AWS_REGION` environment variable to specify the AWS region where secrets are stored
 
 :::note
-With EKS Pod Identites there is no need for the auth section here as the ServiceAccount authenticate via the Pod Identity Association linking the service account `external-secrets-sa` to an IAM role with AWS Secrets Manager permissions
+With EKS Pod Identities there is no need for the auth section here as the ServiceAccount authenticates via the Pod Identity Association linking the service account `external-secrets-sa` to an IAM role with AWS Secrets Manager permissions
 :::
 
 Let's use this file to create the ClusterSecretStore resource.

@@ -11,7 +11,7 @@ The NodePool inspected in the previous section expressed specific instance famil
 | ----------------- | ---------- | ------ | ------------ |
 | `c`, `m`, `r`     |     >4     | Linux  | amd64        |
 
-This broad configuration provide a wide range of choices to Karpenter for selecting a right-sized instance based on the requirements.
+This broad configuration provides a wide range of choices to Karpenter for selecting a right-sized instance based on the requirements.
 
 Let's create some Pods and see how Auto Mode's Karpenter-based autoscaling adapts. Currently there should be a couple of nodes available that are managed by Karpenter:
 
