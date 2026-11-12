@@ -6,7 +6,8 @@ variable "keda_chart_version" {
 }
 
 resource "aws_iam_role" "keda_auto" {
-  name = "${var.eks_cluster_auto_id}-keda"
+  name                 = "${var.eks_cluster_auto_id}-keda"
+  permissions_boundary = var.iam_permissions_boundary_arn
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

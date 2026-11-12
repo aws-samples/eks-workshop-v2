@@ -62,7 +62,8 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    wait = true
+    role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
+    wait                          = true
   }
 
   cluster_name      = var.addon_context.eks_cluster_id

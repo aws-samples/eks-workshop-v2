@@ -32,14 +32,15 @@ resource "aws_dynamodb_table" "carts" {
 }
 
 module "iam_assumable_role_carts" {
-  source                  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
-  version                 = "5.60.0"
-  create_role             = true
-  role_requires_mfa       = false
-  role_name               = "${var.eks_cluster_auto_id}-carts-dynamo"
-  trusted_role_services   = ["pods.eks.amazonaws.com"]
-  custom_role_policy_arns = [aws_iam_policy.carts_dynamo.arn]
-  trusted_role_actions    = ["sts:AssumeRole", "sts:TagSession"]
+  source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
+  version                       = "5.60.0"
+  role_permissions_boundary_arn = var.iam_permissions_boundary_arn
+  create_role                   = true
+  role_requires_mfa             = false
+  role_name                     = "${var.eks_cluster_auto_id}-carts-dynamo"
+  trusted_role_services         = ["pods.eks.amazonaws.com"]
+  custom_role_policy_arns       = [aws_iam_policy.carts_dynamo.arn]
+  trusted_role_actions          = ["sts:AssumeRole", "sts:TagSession"]
 
   tags = var.tags
 }

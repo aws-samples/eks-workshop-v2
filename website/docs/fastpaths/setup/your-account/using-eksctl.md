@@ -20,8 +20,10 @@ Apply the configuration file like so:
 ```bash
 $ export EKS_CLUSTER_AUTO_NAME=eks-workshop-auto
 $ curl -fsSL https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/cluster/eksctl/cluster-auto.yaml | \
-envsubst | eksctl create cluster -f -
+envsubst | with-iam-boundary | eksctl create cluster -f -
 ```
+
+`with-iam-boundary` is a helper in the IDE that adds the workshop IAM permissions boundary to the roles eksctl creates. The IDE is only allowed to create IAM roles that carry it.
 
 This process will take approximately 20 minutes to complete.
 

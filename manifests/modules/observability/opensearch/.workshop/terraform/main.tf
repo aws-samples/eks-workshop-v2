@@ -69,7 +69,8 @@ resource "random_string" "suffix" {
 
 # Lambda execution role for OpenSearch exporter
 resource "aws_iam_role" "lambda_execution_role" {
-  name = "${local.lambda_function_name}-Role-${random_string.suffix.result}"
+  name                 = "${local.lambda_function_name}-Role-${random_string.suffix.result}"
+  permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
 
   # Trust relationship 
   assume_role_policy = jsonencode({

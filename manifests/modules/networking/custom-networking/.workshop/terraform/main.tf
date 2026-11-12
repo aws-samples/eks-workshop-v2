@@ -57,7 +57,8 @@ resource "aws_route_table_association" "a" {
 }
 
 resource "aws_iam_role" "custom_networking_node" {
-  name = "${var.addon_context.eks_cluster_id}-custom-node"
+  name                 = "${var.addon_context.eks_cluster_id}-custom-node"
+  permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
