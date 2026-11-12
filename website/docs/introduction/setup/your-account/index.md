@@ -12,6 +12,29 @@ Provisioning this workshop environment in your AWS account will create resources
 
 This section outlines how to set up the environment to run the labs in your own AWS account.
 
+### VPC Block Public Access prerequisite
+
+The default IDE template creates a public EC2 instance and requires outbound
+HTTPS access to AWS Systems Manager, Amazon S3, GitHub, and COPR package
+repositories.
+
+If your account uses Amazon VPC Block Public Access, the default template can
+fail because direct Internet Gateway traffic from the IDE instance is blocked.
+Before launching the template, verify that the workshop VPC can make the
+required outbound HTTPS connections.
+
+Possible approaches include:
+
+- Use an account or VPC that permits the required outbound HTTPS access
+- Use a NAT Gateway-based network design
+- Create a scoped VPC Block Public Access exclusion for the temporary workshop
+  VPC, subject to your account's security policies
+
+Do not disable account-wide VPC Block Public Access unless that is approved for
+your environment.
+
+### Copy the CloudFormation IDE template
+
 The first step is to create an IDE with the provided CloudFormation templates. Use the AWS CloudFormation quick-create links below to launch the desired template in the appropriate AWS region.
 
 | Region           | Link                                                                                                                                                                                                                                                                                                                              |
