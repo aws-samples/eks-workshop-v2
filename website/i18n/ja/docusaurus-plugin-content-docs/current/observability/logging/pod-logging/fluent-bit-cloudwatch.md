@@ -1,7 +1,7 @@
 ---
 title: "CloudWatch でのログの確認"
 sidebar_position: 40
-tmdTranslationSourceHash: "7b88ea7ccc94f26c88778a000f3123d7"
+tmdTranslationSourceHash: "c5d69368cc078beeada7470e1224da09"
 ---
 
 この実習では、各ノードにデプロイされた Fluent Bit エージェントが Amazon CloudWatch Logs に転送した Kubernetes Pod のログを確認する方法を見ていきます。デプロイされたアプリケーションコンポーネントは `stdout` にログを書き込み、これらは各ノードの `/var/log/containers/*.log` パスに保存されます。
@@ -18,10 +18,9 @@ deployment "ui" successfully rolled out
 その間に、Fluent Bit DaemonSet のログを確認すると、既存のロググループの下に `ui` コンポーネント用の新しいログストリームが作成されていることがわかります。
 
 ```bash hook=pods-log
-$ kubectl logs daemonset.apps/aws-for-fluent-bit -n kube-system
+$ kubectl logs -n kube-system -l app.kubernetes.io/name=aws-for-fluent-bit --all-containers --prefix --tail=100
 ...
-...
-[2026/08/07 15:04:24] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream fluentbit-kube.var.log.containers.aws-for-fluent-bit-4h7cr_kube-system_aws-for-fluent-bit-0e26a01294055645368d7692084cda1a886f04a3621e5fe07fbd24e4d8c7f14a.log in log group /aws/eks/eks-workshop/aws-fluentbit-logs-20260807150346312400000001
+[pod/aws-for-fluent-bit-xxxxx/aws-for-fluent-bit] [2026/08/07 15:04:24] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream fluentbit-kube.var.log.containers.aws-for-fluent-bit-4h7cr_kube-system_aws-for-fluent-bit-0e26a01294055645368d7692084cda1a886f04a3621e5fe07fbd24e4d8c7f14a.log in log group /aws/eks/eks-workshop/aws-fluentbit-logs-20260807150346312400000001
 ...
 ```
 
@@ -64,3 +63,4 @@ CloudWatch Logs コンソールを開いて、これらのログが表示され�
 ログエントリの1つを展開して、完全な JSON ペイロードを確認できます：
 
 ![Pod logs](/docs/observability/logging/pod-logging/logs.webp)
+

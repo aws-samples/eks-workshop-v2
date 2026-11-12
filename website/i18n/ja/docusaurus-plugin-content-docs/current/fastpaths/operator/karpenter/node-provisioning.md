@@ -1,7 +1,7 @@
 ---
 title: "自動ノードプロビジョニング"
 sidebar_position: 40
-tmdTranslationSourceHash: 'f72bb599bbdb8974b106cac05c633d86'
+tmdTranslationSourceHash: '0ef5927e858f365130d335d0fd08e8bc'
 ---
 
 まず、スケジュールできない Pod のニーズに応じて、Karpenter が適切なサイズの EC2 インスタンスを動的にプロビジョニングする方法を確認します。これにより、EKS クラスター内の未使用のコンピュートリソースを削減できます。
@@ -114,4 +114,3 @@ general-purpose-wp7wg   c6a.large   on-demand   us-west-2c   i-0c1ceaeeb6ed1bfb6
 ```
 
 この簡単な例は、EKS Auto Mode の Karpenter ベースのオートスケーリングが、コンピュート容量を必要とするワークロードのリソース要件に基づいて、適切なインスタンスタイプを動的に選択できることを示しています。これは、Cluster Autoscaler のようなノードプールを中心としたモデルとは根本的に異なります。ノードプールでは、単一のノードグループ内のインスタンスタイプは一貫した CPU とメモリの特性を持つ必要があります。
-

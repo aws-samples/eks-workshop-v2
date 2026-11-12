@@ -2,7 +2,7 @@
 title: "DynamoDB アクセスの検証"
 sidebar_position: 35
 pagination_next: fastpaths/explore/index
-tmdTranslationSourceHash: '2c11edc8fa0b86100aa05df752ced57c'
+tmdTranslationSourceHash: '2ec54d7ced4cff12b0e882b627a5727e'
 ---
 
 これで、`carts` Service Account が認可された IAM ロールに関連付けられたため、`carts` Pod は DynamoDB テーブルへのアクセス許可を持つようになりました。Network Load Balancer を通じて UI を公開し、ショッピングカートにアクセスして検証してみましょう。
@@ -53,7 +53,7 @@ AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE=/var/run/secrets/pods.eks.amazonaws.com/s
 
 それでは、ロードバランサーのプロビジョニングが完了するまで待ちましょう。
 
-```bash timeout=610
+```bash timeout=610 hook=wait-nlb-hostname hookTimeout=240
 $ wait-for-lb $(kubectl get service -n ui ui-nlb-auto -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 
 Waiting for k8s-ui-uinlbaut-a9797f0f61.elb.us-west-2.amazonaws.com...
