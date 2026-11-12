@@ -1,7 +1,7 @@
 ---
 title: "コントロールプレーンログの設定"
 sidebar_position: 30
-tmdTranslationSourceHash: b73c5dc0ba0a660ac3f8806f2c72b8c9
+tmdTranslationSourceHash: 'e9e31c85166ca817b0c6f4722c6efdd0'
 ---
 
 クラスターログタイプはそれぞれ個別に有効にすることができ、このラボではすべてを有効にしています。
@@ -15,11 +15,11 @@ EKSコンソールでこの設定を確認してみましょう：
 ![EKS Console Observability Tab](/docs/observability/logging/cluster-logging/logging-cluster-observability-tab.webp)
 ![EKS Console Control Plane Tab](/docs/observability/logging/cluster-logging/logging-cluster-control-plane-logging-tab.webp)
 
-**Manage**ボタンをクリックすることで、ログ設定を変更することができます：
+**Manage**ボタンをクリックすることで、ロギング設定を変更することができます：
 
 ![Enable Logging](/docs/observability/logging/cluster-logging/logging-cluster-enable-control-plane-logging.webp)
 
-また、EKS APIを通じてクラスター単位でEKSコントロールプレーンログを有効にすることもできます。これは通常、TerraformやCloudFormationを使用して設定されますが、このラボではAWS CLIを使用して機能を有効にすることができます：
+また、EKS APIを通じてクラスター単位でEKSコントロールプレーンログを有効にすることもできます。これは通常、TerraformやCloudFormationを使用して設定されますが、このラボでは`aws`CLIを使用して機能を有効にすることができます：
 
 ```bash hook=cluster-logging
 $ aws eks update-cluster-config \
@@ -55,7 +55,7 @@ EKSコンソールでこの設定を確認してみましょう：
 
 ![EKS Console Logging Tab](/docs/observability/logging/cluster-logging/logging-cluster-logging-tab.webp)
 
-**Manage**ボタンをクリックすることで、ログ設定を変更することができます：
+**Manage**ボタンをクリックすることで、ロギング設定を変更することができます：
 
 ![Enable Logging](/docs/observability/logging/cluster-logging/logging-cluster-enable-logging.webp)
 
