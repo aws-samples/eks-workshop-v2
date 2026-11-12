@@ -1,7 +1,7 @@
 ---
 title: "External Secrets Operator"
 sidebar_position: 424
-tmdTranslationSourceHash: '1de17192c2e07a824ef9d3b122a721db'
+tmdTranslationSourceHash: 'db47dfb1f9d2b3b0e467a4eec2dc7da4'
 ---
 
 次に、External Secrets Operator を使用して AWS Secrets Manager と統合する方法を見ていきましょう。これは既に EKS クラスターにインストールされています:
@@ -20,15 +20,15 @@ external-secrets-sa   0         7m
 
 Operator は `external-secrets-sa` という名前の ServiceAccount を使用しており、これは [EKS Pod Identities](../amazon-eks-pod-identity/) を介して IAM role に関連付けられ、シークレットを取得するために AWS Secrets Manager へのアクセスを提供します:
 
-`ClusterSecretStore` リソースを作成する必要があります - これは、任意の namespace の ExternalSecrets から参照できるクラスター全体の SecretStore です。この `ClusterSecretStore` を作成するために使用するファイルを見てみましょう:
+`ClusterSecretStore` リソースを作成する必要があります。これは、任意の Namespace の ExternalSecret から参照できるクラスター全体の SecretStore です。この `ClusterSecretStore` を作成するために使用するファイルを見てみましょう:
 
 ::yaml{file="manifests/modules/fastpaths/operators/external-secrets/cluster-secret-store.yaml" paths="spec.provider.aws.service,spec.provider.aws.region"}
 
-1. シークレットソースとして AWS Secrets Manager を使用するために `service: SecretsManager` を設定
-2. `$AWS_REGION` 環境変数を使用して、シークレットが保存されている AWS リージョンを指定
+1. シークレットソースとして AWS Secrets Manager を使用するために `service: SecretsManager` を設定します
+2. `$AWS_REGION` 環境変数を使用して、シークレットが保存されている AWS リージョンを指定します
 
 :::note
-EKS Pod Identites を使用する場合、ServiceAccount `external-secrets-sa` を AWS Secrets Manager 権限を持つ IAM role にリンクする Pod Identity Association を介して認証するため、ここで auth セクションは不要です
+EKS Pod Identities を使用する場合、ServiceAccount `external-secrets-sa` を AWS Secrets Manager の権限を持つ IAM role にリンクする Pod Identity Association を介して認証されるため、ここで auth セクションは不要です
 :::
 
 このファイルを使用して ClusterSecretStore リソースを作成しましょう。
@@ -79,9 +79,9 @@ target:
   deletionPolicy: Retain
 ```
 
-この設定は、`key` パラメータを介して AWS Secrets Manager のシークレットと、先ほど作成した `ClusterSecretStore` を参照しています。1 時間の `refreshInterval` は、シークレット値が同期される頻度を決定します。
+この設定は、`key` パラメータを介して AWS Secrets Manager のシークレットを参照し、先ほど作成した `ClusterSecretStore` も参照しています。1 時間の `refreshInterval` は、シークレット値が同期される頻度を決定します。
 
-ExternalSecret を作成すると、対応する Kubernetes secret が自動的に作成されます:
+ExternalSecret を作成すると、対応する Kubernetes Secret が自動的に作成されます:
 
 ```bash
 $ kubectl -n catalog get secrets
@@ -125,13 +125,12 @@ $ kubectl -n catalog get deployment catalog -o yaml | yq '.spec.template.spec.co
 
 ### まとめ
 
-AWS Secrets Manager のシークレットを管理するための **AWS Secrets and Configuration Provider (ASCP)** と **External Secrets Operator (ESO)** の間に、単一の「ベスト」な選択肢はありません。
+AWS Secrets Manager のシークレットを管理するうえで、**AWS Secrets and Configuration Provider (ASCP)** と **External Secrets Operator (ESO)** のどちらが唯一の「ベスト」な選択肢ということはありません。
 
 各ツールには明確な利点があります:
 
-- **ASCP** は、環境変数としての露出を避けて、AWS Secrets Manager からシークレットを volume として直接マウントできますが、これには volume 管理が必要です。
+- **ASCP** は、AWS Secrets Manager からシークレットを volume として直接マウントでき、環境変数としての露出を避けられますが、volume の管理が必要になります。
 
-- **ESO** は Kubernetes Secrets のライフサイクル管理を簡素化し、クラスター全体の SecretStore 機能を提供しますが、volume マウントをサポートしていません。
+- **ESO** は Kubernetes Secret のライフサイクル管理を簡素化し、クラスター全体で利用できる SecretStore 機能を提供しますが、volume のマウントはサポートしていません。
 
-特定のユースケースが意思決定を主導すべきであり、両方のツールを使用することで、シークレット管理において最大限の柔軟性とセキュリティを提供できます。
-
+特定のユースケースに応じて選択すべきであり、両方のツールを併用することで、シークレット管理において最大限の柔軟性とセキュリティを実現できます。
