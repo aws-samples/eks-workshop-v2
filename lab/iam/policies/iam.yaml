@@ -93,3 +93,15 @@ Statement:
           - fis.amazonaws.com
           - transitgateway.amazonaws.com
           - fsx.amazonaws.com
+  # No lab attaches an admin-level AWS managed policy, so refuse it outright.
+  - Effect: Deny
+    Action:
+      - iam:AttachRolePolicy
+      - iam:AttachUserPolicy
+    Resource: ["*"]
+    Condition:
+      ArnLike:
+        iam:PolicyARN:
+          - arn:aws:iam::aws:policy/AdministratorAccess*
+          - arn:aws:iam::aws:policy/PowerUserAccess
+          - arn:aws:iam::aws:policy/IAMFullAccess
