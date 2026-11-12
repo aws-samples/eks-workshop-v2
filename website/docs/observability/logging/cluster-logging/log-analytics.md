@@ -17,7 +17,7 @@ You will be presented with a screen that looks like this:
 
 ![log analytics initial](/docs/observability/logging/cluster-logging/log-insights-initial.webp)
 
-A common use-case for Log Analytics is to identify component within an EKS cluster that are making a high volume of requests to the Kubernetes API server. One way to do this is with the following query:
+A common use-case for Log Analytics is to identify components within an EKS cluster that are making a high volume of requests to the Kubernetes API server. One way to do this is with the following query:
 
 ```blank
 fields userAgent, requestURI, @timestamp, @message

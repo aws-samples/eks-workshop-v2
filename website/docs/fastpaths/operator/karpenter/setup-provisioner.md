@@ -63,7 +63,7 @@ spec:
       terminationGracePeriod: 24h0m0s
 ```
 
-In addition to this default `NodePool` resource, you may also create your custom `NodePool` resources to specify different isolation and infrastructure requirements for your workloads. Following are some the key considerations for the same.
+In addition to this default `NodePool` resource, you may also create your custom `NodePool` resources to specify different isolation and infrastructure requirements for your workloads. Following are some of the key considerations for the same.
 
 1. The `NodePool` is configured to start all new nodes with a Kubernetes label `type: karpenter`, which will allow us to specifically target Karpenter nodes with pods for demonstration purposes.
 2. The [NodePool CRD](https://karpenter.sh/docs/concepts/nodepools/) supports defining node properties like instance type and zone. In this configuration, we're setting the `karpenter.sh/capacity-type` to initially limit Karpenter to provisioning On-Demand instances, as well as `node.kubernetes.io/instance-type` to limit to a subset of specific instance types. You can learn which other properties are [available here](https://karpenter.sh/docs/concepts/scheduling/#selecting-nodes). We'll work on a few more during the workshop.
