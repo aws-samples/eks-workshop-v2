@@ -30,13 +30,9 @@ resource "aws_iam_role_policy_attachment" "keda_auto" {
   role       = aws_iam_role.keda_auto.name
 }
 
-# EKS Pod Identity Association for FluentBit
-resource "aws_eks_pod_identity_association" "keda_auto" {
-  cluster_name    = var.eks_cluster_auto_id
-  namespace       = "keda"
-  service_account = "keda-operator"
-  role_arn        = aws_iam_role.keda_auto.arn
-}
+# No Pod Identity association here: install-keda.md has the participant create
+# it (keda/keda-operator -> <auto cluster>-keda), and the lab cleanup deletes it.
+# Pre-creating it made that step fail with ResourceInUseException.
 
 resource "kubernetes_manifest" "ui_alb" {
   count    = 0 # Created in exposing workloads with Ingress
