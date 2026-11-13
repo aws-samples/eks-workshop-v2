@@ -46,7 +46,8 @@ data "aws_subnets" "selected" {
 }
 
 resource "aws_iam_role" "ecr_ec2_role" {
-  name = "${var.addon_context.eks_cluster_id}-ecr-ec2-role"
+  name                 = "${var.addon_context.eks_cluster_id}-ecr-ec2-role"
+  permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -168,7 +169,8 @@ module "eks_blueprints_addons" {
 
   enable_aws_efs_csi_driver = true
   aws_efs_csi_driver = {
-    wait = true
+    role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
+    wait                          = true
   }
 
   cluster_name      = var.addon_context.eks_cluster_id

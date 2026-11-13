@@ -268,7 +268,8 @@ resource "aws_eks_node_group" "new_nodegroup_2" {
 
 # Scenario 3 Resources
 resource "aws_iam_role" "new_nodegroup_3" {
-  name = "new_nodegroup_3"
+  name                 = "new_nodegroup_3"
+  permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

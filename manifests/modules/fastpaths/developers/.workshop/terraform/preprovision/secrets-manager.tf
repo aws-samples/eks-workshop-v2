@@ -55,7 +55,8 @@ resource "helm_release" "external_secrets" {
 
 # IAM role for Secrets Manager access using Pod Identity
 resource "aws_iam_role" "secrets_manager_role" {
-  name_prefix = "${var.eks_cluster_auto_id}-sm-"
+  name_prefix          = "${var.eks_cluster_auto_id}-sm-"
+  permissions_boundary = var.iam_permissions_boundary_arn
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -126,7 +127,8 @@ locals {
 
 # IAM role for Secrets Manager access using Pod Identity
 resource "aws_iam_role" "external_secrets" {
-  name_prefix = "${var.eks_cluster_auto_id}-eso-"
+  name_prefix          = "${var.eks_cluster_auto_id}-eso-"
+  permissions_boundary = var.iam_permissions_boundary_arn
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

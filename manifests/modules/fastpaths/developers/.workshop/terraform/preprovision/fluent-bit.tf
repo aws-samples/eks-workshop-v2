@@ -16,7 +16,8 @@ resource "aws_cloudwatch_log_group" "fluentbit" {
 
 # IAM role for FluentBit with CloudWatch write permissions using Pod Identity
 resource "aws_iam_role" "auto_fluentbit" {
-  name_prefix = "${var.eks_cluster_auto_id}-fb-"
+  name_prefix          = "${var.eks_cluster_auto_id}-fb-"
+  permissions_boundary = var.iam_permissions_boundary_arn
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

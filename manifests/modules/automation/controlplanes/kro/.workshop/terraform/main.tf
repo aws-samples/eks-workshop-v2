@@ -33,9 +33,10 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    wait        = true
-    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
-    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
+    role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
+    wait                          = true
+    role_name                     = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name                   = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
 
   cluster_name      = var.addon_context.eks_cluster_id
@@ -107,7 +108,8 @@ resource "kubernetes_manifest" "ui_alb" {
 #   * IAM       -> create the Policy + Role the pods assume for table access
 #   * EKS       -> create the Pod Identity Association that binds them
 resource "aws_iam_role" "ack_capability" {
-  name = "${var.addon_context.eks_cluster_id}-ack-capability"
+  name                 = "${var.addon_context.eks_cluster_id}-ack-capability"
+  permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -316,7 +318,8 @@ resource "aws_eks_capability" "ack" {
 # interacts with the Kubernetes API, so the role exists purely for the
 # capabilities.eks.amazonaws.com trust relationship.
 resource "aws_iam_role" "kro_capability" {
-  name = "${var.addon_context.eks_cluster_id}-kro-capability"
+  name                 = "${var.addon_context.eks_cluster_id}-kro-capability"
+  permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

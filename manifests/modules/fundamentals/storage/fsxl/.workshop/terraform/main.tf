@@ -21,6 +21,7 @@ data "aws_subnet" "private_fsxl" {
 module "iam_assumable_role_fsx_lustre" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version                       = "5.60.0"
+  role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-fsxl"
   provider_url                  = var.addon_context.eks_oidc_issuer_url
@@ -107,9 +108,10 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    wait        = true
-    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
-    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
+    role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
+    wait                          = true
+    role_name                     = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name                   = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
 
   cluster_name      = var.addon_context.eks_cluster_id

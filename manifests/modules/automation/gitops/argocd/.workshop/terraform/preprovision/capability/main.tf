@@ -42,7 +42,8 @@ locals {
 }
 
 resource "aws_iam_role" "argocd_capability" {
-  name = local.capability_role_name
+  name                 = local.capability_role_name
+  permissions_boundary = var.iam_permissions_boundary_arn
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

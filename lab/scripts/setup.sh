@@ -26,6 +26,7 @@ export EKS_DEFAULT_MNG_NAME="default"
 export EKS_DEFAULT_MNG_MIN=3
 export EKS_DEFAULT_MNG_MAX=6
 export EKS_DEFAULT_MNG_DESIRED=3
+export EKS_IAM_PERMISSIONS_BOUNDARY_ARN="${EKS_IAM_PERMISSIONS_BOUNDARY_ARN:-}"
 EOT
 
 touch ~/.bashrc.d/workshop-env.bash
@@ -60,8 +61,12 @@ function prepare-environment() {
 }
 
 function use-cluster() { bash /usr/local/bin/use-cluster \$1; source ~/.bashrc.d/env.bash; }
-function create-cluster() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster.yaml; echo "Creating cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl create cluster -f -; }
-function create-cluster-auto() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster-auto.yaml; echo "Creating cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl create cluster -f -; }
+# The IDE role may only create IAM roles that carry the workshop permissions boundary,
+# so add it to every role eksctl creates (cluster, node group, add-on and Auto Mode node
+# roles). Passes the config through unchanged when no boundary is set.
+function with-iam-boundary() { if [ -z "\$EKS_IAM_PERMISSIONS_BOUNDARY_ARN" ]; then cat; else yq '.iam.serviceRolePermissionsBoundary = strenv(EKS_IAM_PERMISSIONS_BOUNDARY_ARN) | with(select(has("managedNodeGroups")); .managedNodeGroups[].iam.instanceRolePermissionsBoundary = strenv(EKS_IAM_PERMISSIONS_BOUNDARY_ARN)) | with(select(has("addons")); .addons[].permissionsBoundary = strenv(EKS_IAM_PERMISSIONS_BOUNDARY_ARN)) | with(select(has("autoModeConfig")); .autoModeConfig.permissionsBoundaryARN = strenv(EKS_IAM_PERMISSIONS_BOUNDARY_ARN))'; fi; }
+function create-cluster() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster.yaml; echo "Creating cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | with-iam-boundary | eksctl create cluster -f -; }
+function create-cluster-auto() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster-auto.yaml; echo "Creating cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | with-iam-boundary | eksctl create cluster -f -; }
 function delete-cluster() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster.yaml; echo "Deleting cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl delete cluster -f -; }
 function delete-cluster-auto() { URL=https://raw.githubusercontent.com/\${REPOSITORY_OWNER}/\${REPOSITORY_NAME}/refs/heads/\${REPOSITORY_REF}/cluster/eksctl/cluster-auto.yaml; echo "Deleting cluster with eksctl from \$URL"; curl -fsSL \$URL | envsubst | eksctl delete cluster -f -; }
 EOT

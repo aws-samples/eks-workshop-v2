@@ -19,7 +19,8 @@ module "eks_blueprints_addons" {
   enable_aws_for_fluentbit = true
 
   aws_for_fluentbit = {
-    chart_version = "0.1.32"
+    role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
+    chart_version                 = "0.1.32"
 
     role_name   = "${var.addon_context.eks_cluster_id}-fluent-bit"
     policy_name = "${var.addon_context.eks_cluster_id}-fluent-bit"

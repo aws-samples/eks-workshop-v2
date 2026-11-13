@@ -7,8 +7,9 @@ resource "aws_s3_bucket" "mountpoint_s3" {
 
 # Create S3 CSI Driver IAM Role and associated policy
 module "mountpoint_s3_csi_driver_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.60.0"
+  source                        = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version                       = "5.60.0"
+  role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
 
   # Create prefixes
   role_name_prefix   = "${var.addon_context.eks_cluster_id}-s3-csi-"
@@ -38,9 +39,10 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    wait        = true
-    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
-    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
+    role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
+    wait                          = true
+    role_name                     = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name                   = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
 
   cluster_name      = var.addon_context.eks_cluster_id

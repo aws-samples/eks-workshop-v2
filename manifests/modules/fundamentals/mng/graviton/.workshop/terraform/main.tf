@@ -11,7 +11,8 @@ data "aws_subnets" "private" {
 }
 
 resource "aws_iam_role" "graviton_node" {
-  name = "${var.addon_context.eks_cluster_id}-graviton-node"
+  name                 = "${var.addon_context.eks_cluster_id}-graviton-node"
+  permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

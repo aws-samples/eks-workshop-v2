@@ -2,8 +2,9 @@
 # (kube-system:efs-csi-controller-sa). For S3 Files the controller requires the
 # AmazonS3FilesCSIDriverPolicy and AmazonS3FilesClientFullAccess managed policies.
 module "s3_files_csi_driver_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.60.0"
+  source                        = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version                       = "5.60.0"
+  role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
 
   role_name_prefix   = "${var.addon_context.eks_cluster_id}-s3files-csi-"
   policy_name_prefix = "${var.addon_context.eks_cluster_id}-s3files-csi-"
@@ -83,8 +84,9 @@ module "preprovision" {
   source = "./preprovision"
   count  = var.resources_precreated ? 0 : 1
 
-  eks_cluster_id = var.eks_cluster_id
-  tags           = var.tags
+  eks_cluster_id               = var.eks_cluster_id
+  tags                         = var.tags
+  iam_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
 }
 
 module "eks_blueprints_addons" {
@@ -93,9 +95,10 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    wait        = true
-    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
-    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
+    role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
+    wait                          = true
+    role_name                     = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name                   = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
 
   cluster_name      = var.addon_context.eks_cluster_id

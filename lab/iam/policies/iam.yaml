@@ -7,6 +7,7 @@ Statement:
       - iam:DetachRolePolicy
       - iam:AttachRolePolicy
       - iam:PutRolePolicy
+      - iam:PutRolePermissionsBoundary
       - iam:DeleteRolePolicy
       - iam:DeleteRole
       - iam:ListInstanceProfilesForRole
@@ -93,3 +94,68 @@ Statement:
           - fis.amazonaws.com
           - transitgateway.amazonaws.com
           - fsx.amazonaws.com
+  # Permissions boundary guard. The Allow statements above let the IDE create
+  # roles and users and give them permissions, which on their own would let it
+  # mint an administrator role and assume or pass it. These Deny statements
+  # apply to every Allow in every IDE policy: a role or user may only be
+  # created or granted permissions when it carries the workshop boundary
+  # (boundary.yaml), and the boundary cannot be removed or edited.
+  # iam:PermissionsBoundary is the boundary of the role or user being changed,
+  # so this also covers roles that already exist without one (including the
+  # IDE role itself).
+  - Sid: RequireBoundary
+    Effect: Deny
+    Action:
+      - iam:CreateRole
+      - iam:PutRolePolicy
+      - iam:PutRolePermissionsBoundary
+      - iam:CreateUser
+      - iam:PutUserPolicy
+      - iam:AttachUserPolicy
+      - iam:PutUserPermissionsBoundary
+    Resource: "*"
+    Condition:
+      StringNotEquals:
+        iam:PermissionsBoundary: !Ref EksWorkshopBoundaryPolicy
+  - Sid: RequireBoundaryToAttach
+    Effect: Deny
+    Action:
+      - iam:AttachRolePolicy
+    NotResource:
+      - !Sub arn:aws:iam::${AWS::AccountId}:role/eksctl-${Env}*-nodegroup-*
+    Condition:
+      StringNotEquals:
+        iam:PermissionsBoundary: !Ref EksWorkshopBoundaryPolicy
+  # The S3 Files lab attaches these managed policies to the cluster's managed
+  # node group roles, which eksctl creates outside the IDE (CI, Workshop Studio)
+  # without the boundary. Only these policies may be attached to an unbounded
+  # node group role.
+  - Sid: RequireBoundaryToAttachNodeRole
+    Effect: Deny
+    Action:
+      - iam:AttachRolePolicy
+    Resource:
+      - !Sub arn:aws:iam::${AWS::AccountId}:role/eksctl-${Env}*-nodegroup-*
+    Condition:
+      StringNotEquals:
+        iam:PermissionsBoundary: !Ref EksWorkshopBoundaryPolicy
+        iam:PolicyARN:
+          - arn:aws:iam::aws:policy/AmazonS3FilesClientFullAccess
+          - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+          - arn:aws:iam::aws:policy/AmazonElasticFileSystemsUtils
+  - Sid: KeepBoundary
+    Effect: Deny
+    Action:
+      - iam:DeleteRolePermissionsBoundary
+      - iam:DeleteUserPermissionsBoundary
+    Resource: "*"
+  - Sid: ProtectBoundaryPolicy
+    Effect: Deny
+    Action:
+      - iam:CreatePolicyVersion
+      - iam:DeletePolicy
+      - iam:DeletePolicyVersion
+      - iam:SetDefaultPolicyVersion
+      - iam:TagPolicy
+      - iam:UntagPolicy
+    Resource: !Ref EksWorkshopBoundaryPolicy

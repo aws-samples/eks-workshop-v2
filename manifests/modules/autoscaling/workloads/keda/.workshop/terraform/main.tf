@@ -11,8 +11,9 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
-    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
+    role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
+    role_name                     = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name                   = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
 
   observability_tag = null
@@ -21,6 +22,7 @@ module "eks_blueprints_addons" {
 module "iam_assumable_role_keda" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version                       = "5.60.0"
+  role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-keda"
   provider_url                  = var.addon_context.eks_oidc_issuer_url

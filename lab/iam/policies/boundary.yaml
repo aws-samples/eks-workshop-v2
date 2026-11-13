@@ -1,0 +1,149 @@
+# Permissions boundary for every IAM role and user the labs create from the IDE.
+#
+# The IDE role can create roles, but iam.yaml only lets it do so when the new
+# role carries this boundary, so no role it creates can do more than what is
+# listed here: the AWS services the labs' controllers, nodes and capabilities
+# call, plus the narrow IAM actions they need. There is no iam:* here, nothing
+# that can change this policy, and no way to create a role without it.
+#
+# Adding a lab that calls a new AWS service means adding the service here.
+Version: "2012-10-17"
+Statement:
+  - Sid: LabServices
+    Effect: Allow
+    Action:
+      - acm:*
+      - aps:*
+      - autoscaling:*
+      - cloudwatch:*
+      - codebuild:*
+      - codecommit:*
+      - codepipeline:*
+      - cognito-idp:Describe*
+      - dynamodb:*
+      - ec2:*
+      - ec2messages:*
+      - ecr:*
+      - ecr-public:*
+      - eks:*
+      - eks-auth:*
+      - elasticfilesystem:*
+      - elasticloadbalancing:*
+      - es:*
+      - events:*
+      - fis:*
+      - fsx:*
+      - grafana:*
+      - kms:*
+      - lambda:*
+      - logs:*
+      - pricing:*
+      - rds:Describe*
+      - route53:*
+      - s3:*
+      - s3express:*
+      - s3files:*
+      - secretsmanager:*
+      - servicediscovery:*
+      - shield:*
+      - sqs:*
+      - ssm:*
+      - ssmmessages:*
+      - synthetics:*
+      - tag:*
+      - vpc-lattice:*
+      - waf-regional:*
+      - waf:*
+      - wafv2:*
+      - xray:*
+      - sts:GetCallerIdentity
+      - sts:GetServiceBearerToken
+      - sts:TagSession
+    Resource: "*"
+
+  - Sid: IamRead
+    Effect: Allow
+    Action:
+      - iam:Get*
+      - iam:List*
+    Resource: "*"
+
+  # Load balancer, FSx, Lattice, Auto Mode and Spot controllers create the
+  # service-linked roles they depend on. Only AWS services can assume these.
+  - Sid: ServiceLinkedRoles
+    Effect: Allow
+    Action:
+      - iam:CreateServiceLinkedRole
+    Resource: "*"
+
+  # The FSx CSI driver attaches its data-repository policy to the FSx
+  # service-linked role (AmazonFSxFullAccess grants the same).
+  - Sid: FsxServiceLinkedRolePolicy
+    Effect: Allow
+    Action:
+      - iam:AttachRolePolicy
+      - iam:PutRolePolicy
+    Resource: !Sub arn:aws:iam::${AWS::AccountId}:role/aws-service-role/s3.data-source.lustre.fsx.amazonaws.com/*
+
+  # Karpenter and EKS Auto Mode manage instance profiles for the node roles
+  # they launch. AddRoleToInstanceProfile also needs iam:PassRole on the role,
+  # which is limited to workshop roles below.
+  - Sid: NodeInstanceProfiles
+    Effect: Allow
+    Action:
+      - iam:CreateInstanceProfile
+      - iam:DeleteInstanceProfile
+      - iam:AddRoleToInstanceProfile
+      - iam:RemoveRoleFromInstanceProfile
+      - iam:TagInstanceProfile
+      - iam:UntagInstanceProfile
+    Resource: !Sub arn:aws:iam::${AWS::AccountId}:instance-profile/*
+
+  # Node, Auto Mode, Pod Identity and CodePipeline roles are passed to AWS
+  # services. Only workshop roles, which the IDE can only create with this
+  # boundary, may be passed or assumed.
+  - Sid: PassAndAssumeWorkshopRoles
+    Effect: Allow
+    Action:
+      - iam:PassRole
+      - sts:AssumeRole
+    Resource:
+      - !Sub arn:aws:iam::${AWS::AccountId}:role/${Env}*
+      - !Sub arn:aws:iam::${AWS::AccountId}:role/eksctl-${Env}*
+
+  # The kro lab's ACK capability creates an IAM role and policy for the carts
+  # pods (manifests/modules/automation/controlplanes/kro). It may only create or
+  # grant permissions to roles that carry this same boundary, and only under the
+  # lab's own name prefix.
+  - Sid: AckRolesKeepBoundary
+    Effect: Allow
+    Action:
+      - iam:CreateRole
+      - iam:AttachRolePolicy
+      - iam:PutRolePolicy
+      - iam:PutRolePermissionsBoundary
+    Resource: !Sub arn:aws:iam::${AWS::AccountId}:role/${Env}-carts-kro-*
+    Condition:
+      StringEquals:
+        iam:PermissionsBoundary: !Sub arn:aws:iam::${AWS::AccountId}:policy/${AWS::StackName}-boundary
+  - Sid: AckRolesManage
+    Effect: Allow
+    Action:
+      - iam:DeleteRole
+      - iam:UpdateRole
+      - iam:UpdateAssumeRolePolicy
+      - iam:TagRole
+      - iam:UntagRole
+      - iam:DetachRolePolicy
+      - iam:DeleteRolePolicy
+    Resource: !Sub arn:aws:iam::${AWS::AccountId}:role/${Env}-carts-kro-*
+  - Sid: AckPolicies
+    Effect: Allow
+    Action:
+      - iam:CreatePolicy
+      - iam:DeletePolicy
+      - iam:CreatePolicyVersion
+      - iam:DeletePolicyVersion
+      - iam:TagPolicy
+      - iam:UntagPolicy
+    Resource: !Sub arn:aws:iam::${AWS::AccountId}:policy/${Env}-carts-kro-*
