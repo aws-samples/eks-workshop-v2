@@ -24,12 +24,18 @@ if [ "${SKIP_CREDENTIALS:-0}" = "0" ] && [ "${USE_CURRENT_USER:-0}" = "0" ]; the
   echo "Passing temp AWS credentials"
   source $SCRIPT_DIR/lib/generate-aws-creds.sh
 elif [ "${USE_CURRENT_USER:-0}" != "0" ]; then
-  if [ -z "$AWS_ACCESS_KEY_ID" ]; then
+  if [ -n "$AWS_ACCESS_KEY_ID" ]; then
+    echo "Using USE_CURRENT_USER"
+    aws_credential_args="-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN:-}"
+  elif [ -n "${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI:-}" ]; then
+    # CodeBuild exposes the build role through a container credentials endpoint,
+    # not environment variables. The URI is passed to the container below.
+    echo "Using USE_CURRENT_USER (container credentials)"
+    aws_credential_args=""
+  else
     echo "No AWS_ACCESS_KEY_ID found, please check your AWS credentials"
     exit 1
   fi
-  echo "Using USE_CURRENT_USER"
-  aws_credential_args="-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN:-}"
 else
   echo "Using DEFAULT no credentials passed"
   aws_credential_args=""
