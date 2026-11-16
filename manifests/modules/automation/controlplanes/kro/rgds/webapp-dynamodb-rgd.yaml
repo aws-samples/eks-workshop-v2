@@ -15,6 +15,7 @@ spec:
 
       dynamodb:
         tableName: string | required=true description="DynamoDB Table Name"
+        iamPermissionsBoundary: string | required=true description="Permissions boundary ARN set on the generated IAM role"
 
       healthcheck:
         readinessPath: string | default="/actuator/health/readiness"
@@ -166,6 +167,7 @@ spec:
           name: ${itemsTable.spec.tableName}-iam-role
           description: "EKS Workshop Carts DynamoDB Role"
           maxSessionDuration: 3600
+          permissionsBoundary: ${schema.spec.dynamodb.iamPermissionsBoundary}
           policies:
             - ${itemsTableIamPolicy.status.ackResourceMetadata.arn}
           assumeRolePolicyDocument: >

@@ -335,11 +335,12 @@ resource "aws_route" "remote_route_to_pod" {
 ###### HYBRID ROLE #####
 
 module "eks_hybrid_node_role" {
-  source      = "terraform-aws-modules/eks/aws//modules/hybrid-node-role"
-  version     = "21.15.1"
-  name        = "${var.eks_cluster_id}-hybrid-node-role"
-  policy_name = "${var.eks_cluster_id}-hybrid-node-policy"
-  tags        = var.tags
+  source                   = "terraform-aws-modules/eks/aws//modules/hybrid-node-role"
+  version                  = "21.15.1"
+  permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
+  name                     = "${var.eks_cluster_id}-hybrid-node-role"
+  policy_name              = "${var.eks_cluster_id}-hybrid-node-policy"
+  tags                     = var.tags
 }
 
 resource "aws_eks_access_entry" "remote" {
@@ -377,8 +378,9 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
-    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
+    role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
+    role_name                     = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name                   = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
 
   observability_tag = null

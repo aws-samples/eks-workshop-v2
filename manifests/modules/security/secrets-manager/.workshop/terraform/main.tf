@@ -39,7 +39,8 @@ module "eks_blueprints_addons" {
   enable_external_secrets = true
 
   external_secrets = {
-    chart_version = "0.9.5"
+    role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
+    chart_version                 = "0.9.5"
 
     role_name   = "${var.addon_context.eks_cluster_id}-ext-secrets"
     policy_name = "${var.addon_context.eks_cluster_id}-ext-secrets"
@@ -51,8 +52,9 @@ module "eks_blueprints_addons" {
 }
 
 module "secrets_manager_role" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.60.0"
+  source                        = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version                       = "5.60.0"
+  role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
 
   role_name_prefix   = "${var.eks_cluster_id}-secrets-"
   policy_name_prefix = "${var.eks_cluster_id}-secrets-"

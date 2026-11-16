@@ -39,8 +39,9 @@ locals {
 # being trusted by the EKS capabilities service principal, no AWS data-plane
 # permissions needed.
 resource "aws_iam_role" "eks_cap_kro_capability" {
-  count = local.eks_cap_count
-  name  = "${var.eks_cluster_auto_id}-kro-cap-role"
+  count                = local.eks_cap_count
+  name                 = "${var.eks_cluster_auto_id}-kro-cap-role"
+  permissions_boundary = var.iam_permissions_boundary_arn
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

@@ -6,8 +6,10 @@ resource "aws_eks_addon" "pod_identity" {
 }
 
 module "karpenter" {
-  source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "21.15.1"
+  source                             = "terraform-aws-modules/eks/aws//modules/karpenter"
+  version                            = "21.15.1"
+  iam_role_permissions_boundary_arn  = var.addon_context.irsa_iam_permissions_boundary
+  node_iam_role_permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
 
   cluster_name                    = var.addon_context.eks_cluster_id
   create_pod_identity_association = true

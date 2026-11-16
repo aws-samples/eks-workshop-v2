@@ -13,3 +13,11 @@ variable "tags" {
   type        = any
   default     = {}
 }
+
+# Passed by the lab module when the IDE role applies this directly. Left null by
+# hack/pre-provision-resources.sh, whose identity is not bound by the boundary.
+variable "iam_permissions_boundary_arn" {
+  description = "Permissions boundary for the IAM roles this module creates. Null means none."
+  type        = string
+  default     = null
+}
