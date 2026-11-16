@@ -16,7 +16,6 @@ Statement:
       - aps:*
       - autoscaling:*
       - cloudwatch:*
-      - codebuild:*
       - codecommit:*
       - codepipeline:*
       - cognito-idp:Describe*
@@ -35,7 +34,6 @@ Statement:
       - fsx:*
       - grafana:*
       - kms:*
-      - lambda:*
       - logs:*
       - pricing:*
       - rds:Describe*
@@ -47,7 +45,6 @@ Statement:
       - servicediscovery:*
       - shield:*
       - sqs:*
-      - ssm:*
       - ssmmessages:*
       - synthetics:*
       - tag:*
@@ -59,6 +56,57 @@ Statement:
       - sts:GetCallerIdentity
       - sts:GetServiceBearerToken
       - sts:TagSession
+    Resource: "*"
+
+  # Lambda only on functions and layers the labs create: the resiliency lab's
+  # Synthetics canary (cwsyn-<canary name>-*) and ${Env}* functions.
+  - Sid: LabLambda
+    Effect: Allow
+    Action:
+      - lambda:*
+    Resource:
+      - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${Env}*
+      - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:cwsyn-${Env}*
+      - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:layer:cwsyn-${Env}*
+
+  # Node roles (AmazonSSMManagedInstanceCore), Karpenter AMI lookups and the
+  # OpenSearch lab's Lambda read parameters and run the SSM agent.
+  - Sid: SsmAgentAndParameters
+    Effect: Allow
+    Action:
+      - ssm:DescribeAssociation
+      - ssm:DescribeDocument
+      - ssm:DescribeParameters
+      - ssm:GetDeployablePatchSnapshotForInstance
+      - ssm:GetDocument
+      - ssm:GetManifest
+      - ssm:GetParameter
+      - ssm:GetParameters
+      - ssm:GetParametersByPath
+      - ssm:ListAssociations
+      - ssm:ListInstanceAssociations
+      - ssm:PutComplianceItems
+      - ssm:PutConfigurePackageResult
+      - ssm:PutInventory
+      - ssm:UpdateAssociationStatus
+      - ssm:UpdateInstanceAssociationStatus
+      - ssm:UpdateInstanceInformation
+    Resource: "*"
+
+  # The resiliency lab's FIS experiment runs an AWS-owned Resilience Hub
+  # automation document.
+  - Sid: SsmResilienceAutomation
+    Effect: Allow
+    Action:
+      - ssm:StartAutomationExecution
+    Resource: arn:aws:ssm:*:*:automation-definition/AWSResilienceHub-*
+  - Sid: SsmAutomationRead
+    Effect: Allow
+    Action:
+      - ssm:DescribeAutomationExecutions
+      - ssm:DescribeAutomationStepExecutions
+      - ssm:GetAutomationExecution
+      - ssm:StopAutomationExecution
     Resource: "*"
 
   - Sid: IamRead
