@@ -1,7 +1,7 @@
 ---
 title: "クラスターメトリクス"
 sidebar_position: 10
-tmdTranslationSourceHash: e62390c5293f0ca55db1ea8900716b8f
+tmdTranslationSourceHash: 062798c65e838a1d8437ff0640c775b1
 ---
 
 [Amazon CloudWatch Observability EKS add-on](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Observability-EKS-addon.html)を使用して、EKSクラスター用のCloudWatch Container Insightsを有効にします。このアドオンは、ノード、ポッド、コンテナなどのクラスターのさまざまな側面に関するメトリクスを収集し、CloudWatchに送信するCloudWatchエージェントをデプロイします。
@@ -19,6 +19,7 @@ CloudWatchエージェントが引き受けることができるIAMロールを�
 ```bash
 $ aws iam create-role \
   --role-name $EKS_CLUSTER_NAME-cloudwatch-agent \
+  --permissions-boundary $EKS_IAM_PERMISSIONS_BOUNDARY_ARN \
   --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"pods.eks.amazonaws.com"},"Action":["sts:AssumeRole","sts:TagSession"]}]}'
 $ aws iam attach-role-policy \
   --role-name $EKS_CLUSTER_NAME-cloudwatch-agent \

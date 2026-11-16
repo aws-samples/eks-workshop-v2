@@ -1,7 +1,7 @@
 ---
 title: "CloudWatch エージェントを使用したメトリクスの収集"
 sidebar_position: 10
-tmdTranslationSourceHash: 265d242dd1b3bd076c86f7a39c32c366
+tmdTranslationSourceHash: de4b1beba09c923561c9d537f676caa9
 ---
 
 このラボでは、すでに作成されている Amazon Managed Service for Prometheus ワークスペースにメトリクスを保存します。コンソールで確認することができます：
@@ -25,6 +25,7 @@ CloudWatch エージェントが引き受けることができる IAM ロール�
 ```bash
 $ aws iam create-role \
   --role-name $EKS_CLUSTER_NAME-cloudwatch-agent \
+  --permissions-boundary $EKS_IAM_PERMISSIONS_BOUNDARY_ARN \
   --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"pods.eks.amazonaws.com"},"Action":["sts:AssumeRole","sts:TagSession"]}]}'
 $ aws iam attach-role-policy \
   --role-name $EKS_CLUSTER_NAME-cloudwatch-agent \
@@ -88,4 +89,3 @@ node-exporter-mfh2d                                           1/1     Running   
 ```
 
 アドオンが管理するコンポーネントの組み合わせに注目してください：`cloudwatch-agent` DaemonSet、AMP パイプラインを実行する単一の `cloudwatch-agent-cluster-scraper` Deployment、`fluent-bit` DaemonSet、クラスターステートとノードレベルのメトリクスを公開する `kube-state-metrics` と `node-exporter` ワークロード — すべてマネージドアドオンとしてパッケージ化およびサポートされるオープンソースプロジェクトです。
-
