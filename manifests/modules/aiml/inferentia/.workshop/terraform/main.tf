@@ -30,8 +30,10 @@ resource "aws_eks_addon" "pod_identity" {
 # Karpenter controller & Node IAM roles, SQS Queue, Eventbridge Rules
 
 module "karpenter" {
-  source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "21.15.1"
+  source                             = "terraform-aws-modules/eks/aws//modules/karpenter"
+  version                            = "21.15.1"
+  iam_role_permissions_boundary_arn  = var.addon_context.irsa_iam_permissions_boundary
+  node_iam_role_permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
 
   cluster_name = var.addon_context.eks_cluster_id
   namespace    = local.namespace
@@ -116,6 +118,7 @@ resource "aws_s3_bucket" "inference" {
 module "iam_assumable_role_inference" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version                       = "5.60.0"
+  role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-inference"
   provider_url                  = var.addon_context.eks_oidc_issuer_url

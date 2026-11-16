@@ -24,6 +24,7 @@ Create an IAM role that the CloudWatch agent can assume. The trust policy allows
 ```bash
 $ aws iam create-role \
   --role-name $EKS_CLUSTER_NAME-cloudwatch-agent \
+  --permissions-boundary $EKS_IAM_PERMISSIONS_BOUNDARY_ARN \
   --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"pods.eks.amazonaws.com"},"Action":["sts:AssumeRole","sts:TagSession"]}]}'
 $ aws iam attach-role-policy \
   --role-name $EKS_CLUSTER_NAME-cloudwatch-agent \

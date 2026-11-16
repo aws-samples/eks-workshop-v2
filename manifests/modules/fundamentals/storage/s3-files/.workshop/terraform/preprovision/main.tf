@@ -73,7 +73,8 @@ resource "aws_security_group" "s3_files" {
 
 # IAM role for S3 Files to access the bucket
 resource "aws_iam_role" "s3_files" {
-  name_prefix = "${var.eks_cluster_id}-s3files-role-"
+  name_prefix          = "${var.eks_cluster_id}-s3files-role-"
+  permissions_boundary = var.iam_permissions_boundary_arn
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

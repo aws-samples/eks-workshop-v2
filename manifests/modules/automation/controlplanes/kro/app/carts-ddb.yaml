@@ -13,6 +13,9 @@ spec:
 
   dynamodb:
     tableName: "${EKS_CLUSTER_NAME}-carts-kro"
+    # The ACK capability role's permissions boundary only lets it create IAM
+    # roles that carry this same boundary.
+    iamPermissionsBoundary: "${EKS_IAM_PERMISSIONS_BOUNDARY_ARN}"
 
   env:
     RETAIL_CART_PERSISTENCE_PROVIDER: "dynamodb"

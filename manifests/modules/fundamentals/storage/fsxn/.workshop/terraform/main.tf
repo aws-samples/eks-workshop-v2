@@ -58,8 +58,9 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "fsxn-csi-role" {
-  name               = "${var.addon_context.eks_cluster_id}-fsxn-csi-${random_string.suffix.result}"
-  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+  name                 = "${var.addon_context.eks_cluster_id}-fsxn-csi-${random_string.suffix.result}"
+  permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
+  assume_role_policy   = data.aws_iam_policy_document.assume_role.json
 }
 
 resource "aws_iam_role_policy_attachment" "fsxn-csi-policy-attachment" {
@@ -103,9 +104,10 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    wait        = true
-    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
-    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
+    role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
+    wait                          = true
+    role_name                     = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name                   = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
 
   cluster_name      = var.addon_context.eks_cluster_id

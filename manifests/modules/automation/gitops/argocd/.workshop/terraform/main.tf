@@ -120,9 +120,10 @@ module "capability" {
 
   depends_on = [null_resource.idc_precheck]
 
-  eks_cluster_id = var.addon_context.eks_cluster_id
-  idc_group_name = local.idc_group_name
-  tags           = var.tags
+  eks_cluster_id               = var.addon_context.eks_cluster_id
+  idc_group_name               = local.idc_group_name
+  tags                         = var.tags
+  iam_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
 }
 
 resource "aws_codecommit_repository" "argocd" {
@@ -131,8 +132,9 @@ resource "aws_codecommit_repository" "argocd" {
 }
 
 resource "aws_iam_user" "gitops" {
-  name = "${var.addon_context.eks_cluster_id}-gitops"
-  path = "/"
+  name                 = "${var.addon_context.eks_cluster_id}-gitops"
+  path                 = "/"
+  permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
 }
 
 resource "tls_private_key" "gitops" {

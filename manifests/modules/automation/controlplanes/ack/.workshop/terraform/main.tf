@@ -23,6 +23,7 @@ data "aws_ecrpublic_authorization_token" "token" {
 module "iam_assumable_role_carts" {
   source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version                       = "5.60.0"
+  role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
   create_role                   = true
   role_name                     = "${var.addon_context.eks_cluster_id}-carts-ack"
   provider_url                  = var.addon_context.eks_oidc_issuer_url
@@ -86,7 +87,8 @@ EOF
 # the same least-privilege DynamoDB policy so the managed controller can only
 # act on this lab's carts table.
 resource "aws_iam_role" "ack_capability" {
-  name = "${var.addon_context.eks_cluster_id}-ack-capability"
+  name                 = "${var.addon_context.eks_cluster_id}-ack-capability"
+  permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -173,9 +175,10 @@ module "eks_blueprints_addons" {
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    wait        = true
-    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
-    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
+    role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
+    wait                          = true
+    role_name                     = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name                   = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
 
   cluster_name      = var.addon_context.eks_cluster_id

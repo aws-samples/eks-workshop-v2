@@ -17,4 +17,5 @@ module "preprovision" {
   # (and no IAM Identity Center requirement) is applied.
   enable_eks_capabilities = var.enable_eks_capabilities
 
+  iam_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
 }

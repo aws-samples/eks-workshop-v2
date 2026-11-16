@@ -69,6 +69,18 @@ variable "idc_instance_arn" {
   default     = ""
 }
 
+# Set from TF_VAR_iam_permissions_boundary_arn when Terraform runs as the IDE role.
+# The IDE role may only create or change IAM roles and users that carry this
+# permissions boundary, so every role a lab creates must set it. Other identities
+# (pre-provisioning, CI create-infrastructure) leave it empty and create roles
+# without a boundary, as before.
+# tflint-ignore: terraform_unused_declarations
+variable "iam_permissions_boundary_arn" {
+  description = "ARN of the permissions boundary to set on every IAM role and user the labs create. Empty means no boundary."
+  type        = string
+  default     = ""
+}
+
 # tflint-ignore: terraform_unused_declarations
 variable "enable_eks_capabilities" {
   description = "Gate for the fastpaths/eks-capabilities resources (ACK/Argo CD/kro capabilities + IAM Identity Center user/group + CodeCommit repo). reset-environment sets this true only for the eks-capabilities path; developer/operator paths leave it false so no capabilities and no IAM Identity Center instance are required."
@@ -175,6 +187,6 @@ locals {
     eks_oidc_provider_arn          = local.eks_oidc_provider_arn
     tags                           = {}
     irsa_iam_role_path             = "/"
-    irsa_iam_permissions_boundary  = ""
+    irsa_iam_permissions_boundary  = var.iam_permissions_boundary_arn != "" ? var.iam_permissions_boundary_arn : null
   }
 }

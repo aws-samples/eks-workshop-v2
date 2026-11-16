@@ -26,6 +26,7 @@ data "aws_iam_policy_document" "fargate_assume_role_policy" {
 
 resource "aws_iam_role" "fargate" {
   name                  = "${var.addon_context.eks_cluster_id}-fargate"
+  permissions_boundary  = var.addon_context.irsa_iam_permissions_boundary
   description           = "EKS Fargate IAM Role"
   assume_role_policy    = data.aws_iam_policy_document.fargate_assume_role_policy.json
   force_detach_policies = true
