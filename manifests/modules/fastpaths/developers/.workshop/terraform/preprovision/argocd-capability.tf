@@ -141,8 +141,9 @@ resource "null_resource" "eks_cap_argocd_repo_seed" {
 # manifests from CodeCommit. Scoped to GitPull on the single seeded repo,
 # no account-wide managed policy.
 resource "aws_iam_role" "eks_cap_argocd_capability" {
-  count = local.eks_cap_count
-  name  = "${var.eks_cluster_auto_id}-argocd-cap-role"
+  count                = local.eks_cap_count
+  name                 = "${var.eks_cluster_auto_id}-argocd-cap-role"
+  permissions_boundary = var.iam_permissions_boundary_arn
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

@@ -9,10 +9,11 @@ module "eks_blueprints_addons" {
 
   enable_cluster_autoscaler = true
   cluster_autoscaler = {
-    role_name              = "${var.addon_context.eks_cluster_id}-cluster-autoscaler"
-    role_name_use_prefix   = false
-    policy_name            = "${var.addon_context.eks_cluster_id}-cluster-autoscaler"
-    policy_name_use_prefix = false
+    role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
+    role_name                     = "${var.addon_context.eks_cluster_id}-cluster-autoscaler"
+    role_name_use_prefix          = false
+    policy_name                   = "${var.addon_context.eks_cluster_id}-cluster-autoscaler"
+    policy_name_use_prefix        = false
   }
   create_kubernetes_resources = false
 

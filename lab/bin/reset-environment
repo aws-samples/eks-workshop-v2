@@ -187,6 +187,7 @@ if [ ! -z "$module" ]; then
     export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
     export TF_VAR_eks_cluster_auto_id="$EKS_CLUSTER_AUTO_NAME"
     export TF_VAR_resources_precreated="false"
+    export TF_VAR_iam_permissions_boundary_arn="${EKS_IAM_PERMISSIONS_BOUNDARY_ARN:-}"
 
     # The shared preprovision terraform carries the ACK/Argo CD/kro capability
     # resources (plus an IAM Identity Center user/group and a CodeCommit repo),
@@ -340,6 +341,7 @@ export TF_DATA_DIR="/eks-workshop/terraform-data"
 
 export TF_VAR_eks_cluster_id="$EKS_CLUSTER_NAME"
 export TF_VAR_inbound_cidrs="${INBOUND_CIDRS:-0.0.0.0/0}"
+export TF_VAR_iam_permissions_boundary_arn="${EKS_IAM_PERMISSIONS_BOUNDARY_ARN:-}"
 
 RESOURCES_PRECREATED=${RESOURCES_PRECREATED:-"false"}
 

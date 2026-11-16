@@ -23,6 +23,17 @@ Resources:
       PolicyDocument:
         file: ./iam/policies/iam.yaml
 
+  # Permissions boundary that iam.yaml requires on every role and user the IDE
+  # creates. Not attached to the IDE role itself. The name must stay
+  # <stack name>-boundary: boundary.yaml refers to itself by that name, and
+  # hack/lib/generate-aws-creds.sh derives the ARN from it.
+  EksWorkshopBoundaryPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub ${AWS::StackName}-boundary
+      PolicyDocument:
+        file: ./iam/policies/boundary.yaml
+
   EksWorkshopBasePolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:

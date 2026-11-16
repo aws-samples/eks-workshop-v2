@@ -32,15 +32,17 @@ module "eks_blueprints_addons" {
   enable_external_dns            = true
   external_dns_route53_zone_arns = [aws_route53_zone.private_zone.arn]
   external_dns = {
-    create_role = true
-    role_name   = "${var.addon_context.eks_cluster_id}-external-dns"
-    policy_name = "${var.addon_context.eks_cluster_id}-external-dns"
+    role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
+    create_role                   = true
+    role_name                     = "${var.addon_context.eks_cluster_id}-external-dns"
+    policy_name                   = "${var.addon_context.eks_cluster_id}-external-dns"
   }
 
   enable_aws_load_balancer_controller = true
   aws_load_balancer_controller = {
-    role_name   = "${var.addon_context.eks_cluster_id}-alb-controller"
-    policy_name = "${var.addon_context.eks_cluster_id}-alb-controller"
+    role_permissions_boundary_arn = var.addon_context.irsa_iam_permissions_boundary
+    role_name                     = "${var.addon_context.eks_cluster_id}-alb-controller"
+    policy_name                   = "${var.addon_context.eks_cluster_id}-alb-controller"
   }
 
   create_kubernetes_resources = false
