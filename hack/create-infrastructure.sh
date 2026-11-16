@@ -23,7 +23,9 @@ aws eks describe-cluster --name "${EKS_CLUSTER_NAME}" &> /dev/null || cluster_ex
 
 if [ $cluster_exists -ne 0 ] && [[ "$cluster" == "standard" || "$cluster" == "all" ]]; then
   echo "Creating cluster ${EKS_CLUSTER_NAME}"
-  bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster.yaml /cluster/eksctl/access-entries.yaml | envsubst | eksctl create cluster -f -' &
+  # Always create the cluster as the caller: eksctl creates its own IAM roles,
+  # which the IDE role is not allowed to create.
+  USE_CURRENT_USER=1 bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster.yaml /cluster/eksctl/access-entries.yaml | envsubst | eksctl create cluster -f -' &
   pids+=($!)
 else
   echo "Cluster ${EKS_CLUSTER_NAME} already exists"
@@ -34,7 +36,7 @@ aws eks describe-cluster --name "${EKS_CLUSTER_AUTO_NAME}" &> /dev/null || auto_
 
 if [ $auto_cluster_exists -ne 0 ] && [[ "$cluster" == "auto" || "$cluster" == "all" ]]; then
   echo "Creating auto mode cluster ${EKS_CLUSTER_AUTO_NAME}"
-  bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster-auto.yaml /cluster/eksctl/access-entries.yaml | envsubst | eksctl create cluster -f -' &
+  USE_CURRENT_USER=1 bash $SCRIPT_DIR/exec.sh "${environment}" 'cat /cluster/eksctl/cluster-auto.yaml /cluster/eksctl/access-entries.yaml | envsubst | eksctl create cluster -f -' &
   pids+=($!)
 else
   echo "Auto mode cluster ${EKS_CLUSTER_AUTO_NAME} already exists"
