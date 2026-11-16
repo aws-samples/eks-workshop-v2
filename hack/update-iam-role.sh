@@ -15,7 +15,7 @@ cd lab
 
 export Env="${EKS_CLUSTER_NAME}"
 
-cat iam/iam-role-cfn.yaml | yq '(.. | select(has("file"))) |= (load(.file))' | envsubst '$Env' > $outfile
+cat iam/iam-role-cfn.yaml | yq '(.. | select(has("file"))) |= (load(.file)) | ... comments=""' | envsubst '$Env' > $outfile
 
 aws cloudformation deploy \
     --stack-name ${EKS_CLUSTER_NAME}-ide-role \
