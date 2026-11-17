@@ -35,9 +35,10 @@ resource "aws_iam_role" "eks_carts_team" {
 }
 
 resource "aws_iam_role" "eks_admins" {
-  name               = "${var.eks_cluster_id}-admins"
-  path               = "/"
-  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+  name                 = "${var.eks_cluster_id}-admins"
+  path                 = "/"
+  permissions_boundary = var.addon_context.irsa_iam_permissions_boundary
+  assume_role_policy   = data.aws_iam_policy_document.assume_role.json
 }
 
 resource "terraform_data" "identity_mapping" {
