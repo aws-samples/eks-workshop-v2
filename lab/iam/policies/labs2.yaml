@@ -86,6 +86,12 @@ Statement:
       - s3files:ListTagsForResource
     Resource:
       - !Sub arn:aws:s3files:${AWS::Region}:${AWS::AccountId}:file-system/*
+  # The S3 Files lab looks up its file system with list-file-systems, which is
+  # authorized against "*" rather than a file system ARN.
+  - Effect: Allow
+    Action:
+      - s3files:ListFileSystems
+    Resource: ["*"]
   - Effect: Allow
     Action:
       - fsx:Describe*
