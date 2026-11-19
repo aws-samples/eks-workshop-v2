@@ -108,7 +108,7 @@ ui     ClusterIP   172.20.83.84    <none>        80/TCP    15m
 
 Service のエンドポイント (実際の Pod IP) を表示します:
 ```bash
-$ kubectl get endpoints -n ui ui
+$ kubectl get endpointslices -n ui
 NAME   ENDPOINTS           AGE
 ui     10.42.1.15:8080     15m
 ```
@@ -203,7 +203,7 @@ $ kubectl scale deployment -n ui ui --replicas=3
 
 **Service のエンドポイントがどのように更新されるかを確認します:**
 ```bash
-$ kubectl get endpoints -n ui ui
+$ kubectl get endpointslices -n ui
 NAME   ENDPOINTS                                               AGE
 ui     10.42.117.212:8080,10.42.129.33:8080,10.42.174.4:8080   11m
 ```
