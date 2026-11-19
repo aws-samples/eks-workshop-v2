@@ -2,7 +2,7 @@
 title: "Argo CDへのアクセス"
 sidebar_position: 10
 weight: 10
-tmdTranslationSourceHash: 021b83cb38cbb1d7cf0cf9e297bf7e13
+tmdTranslationSourceHash: 833cbdb3d1a9a129779490d5603242b6
 ---
 
 :::tip セットアップ済みの内容
@@ -81,19 +81,26 @@ AWS主催のイベントではこれは発生しません。Identity Centerイ�
 2. **Generate New Token** を選択します
 3. 表示されたトークンをコピーします（再度表示されません）
 
-次に、これらの環境変数を設定し、プレースホルダーの部分にトークンを貼り付けます：
+次に、CLIをCapabilityに向けます：
 
-```bash test=false
+```bash
 $ export ARGOCD_SERVER=$(echo $ARGOCD_SERVER | sed 's|^https://||')
-$ export ARGOCD_AUTH_TOKEN="<paste-token-here>"
 $ export ARGOCD_OPTS="--grpc-web"
 ```
 
-CapabilityはエンドポイントをURLとして報告しますが、CLIは単なるホストを期待するため、最初の行でそれを削除します。`--grpc-web` が必要なのは、CapabilityがgRPC-Web経由でAPIを提供するためです。これら3つを設定すると、`argocd login` なしでCLIが動作します。
+CapabilityはエンドポイントをURLとして報告しますが、CLIは単なるホストを期待するため、最初の行でそれを削除します。`--grpc-web` が必要なのは、CapabilityがgRPC-Web経由でAPIを提供するためです。
+
+次に、プレースホルダーの部分にトークンを貼り付けて、CLIにトークンを渡します：
+
+```bash test=false
+$ export ARGOCD_AUTH_TOKEN="<paste-token-here>"
+```
+
+これら3つを設定すると、`argocd login` なしでCLIが動作します。
 
 CLIが動作することを確認します：
 
-```bash test=false
+```bash
 $ argocd app list
 NAME  CLUSTER  NAMESPACE  PROJECT  STATUS  HEALTH  SYNCPOLICY  CONDITIONS
 ```
@@ -124,4 +131,3 @@ $ argocd repo add $GITOPS_REPO_URL_ARGOCD \
   --insecure-ignore-host-key --upsert --name git-repo
 Repository 'ssh://...' added
 ```
-

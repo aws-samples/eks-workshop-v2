@@ -1,7 +1,7 @@
 ---
 title: "クラスターアクセスの管理"
 sidebar_position: 12
-tmdTranslationSourceHash: 47ef58479d59d40fc0b2c0f1c8e64c12
+tmdTranslationSourceHash: 48e6b39fb9d091ddcc98de9cb5977cb5
 ---
 
 Cluster Access Management APIの基本を理解したところで、実践的な活動を始めましょう。まず最初に、Cluster Access Management APIが利用可能になる前は、Amazon EKSは`aws-auth` ConfigMapを使用してクラスターへの認証とアクセス提供を行っていたことを知っておくことが重要です。Amazon EKSは現在、3つの異なる認証モードを提供しています：
@@ -19,11 +19,11 @@ Cluster Access Management APIの基本を理解したところで、実践的な
 ```bash
 $ aws eks describe-cluster --name $EKS_CLUSTER_NAME --query 'cluster.accessConfig'
 {
-  "authenticationMode": "API_AND_CONFIG_MAP"
+  "authenticationMode": "API"
 }
 ```
 
-クラスターがすでに認証オプションの1つとしてAPIを使用しているため、EKSはすでにいくつかのデフォルトのアクセスエントリをクラスターにマッピングしています。確認してみましょう：
+クラスターは`API`認証モードを使用しているため、すべてのアクセスはアクセスエントリを通じて付与されます。また、EKSはすでにいくつかのデフォルトのアクセスエントリをクラスターにマッピングしています。確認してみましょう：
 
 ```bash
 $ aws eks list-access-entries --cluster $EKS_CLUSTER_NAME

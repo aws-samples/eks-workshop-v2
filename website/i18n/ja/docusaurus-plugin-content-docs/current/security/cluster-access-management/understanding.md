@@ -1,7 +1,7 @@
 ---
 title: "Cluster Access Management APIの理解"
 sidebar_position: 11
-tmdTranslationSourceHash: 8aa7ba79d55267c9c14e17689f94ef87
+tmdTranslationSourceHash: 1ead495c27d24bcf333fb9deaaab4c27
 ---
 
 Amazon EKSクラスターを作成する際、プラットフォームを消費および管理するチームやユーザーにアクセス権を付与する必要があります。チームによって必要なアクセスレベルは異なります - プラットフォームエンジニアはリソースを管理し、アドオンをデプロイしたり問題をトラブルシューティングするためにクラスター全体のアクセス権が必要かもしれませんが、開発者はアプリケーションが存在するNamespaceに限定された読み取り専用アクセスまたは管理者アクセスのみが必要な場合があります。
@@ -14,7 +14,7 @@ Cluster Access Management APIは次の2つの基本的な概念に依存して�
 
 - **アクセスエントリ（認証）**：Amazon EKSクラスターに認証を許可されたAWS IAMプリンシパル（ユーザーまたはロール）に直接リンクされたクラスターアイデンティティ。アクセスエントリはクラスターに紐づけられているため、クラスターが作成され、認証方法としてCluster Access Management APIを使用するように設定されていない限り、そのクラスターのアクセスエントリは存在しません。
 - **アクセスポリシー（認可）**：アクセスエントリがAmazon EKSクラスターでアクションを実行することを許可するAmazon EKS固有のポリシー。アクセスポリシーはアカウントベースのリソースであり、クラスターがデプロイされていなくてもAWSアカウントに存在します。
-  現在、Amazon EKSは事前定義された一部のAWS管理ポリシーのみをサポートしています。アクセスポリシーはIAMエンティティではなく、デフォルトのKubernetesクラスターロールに基づいてAmazon EKSによって定義および管理され、次のようにマッピングされます：
+  現在、Amazon EKSは事前定義されたAWS管理ポリシーのうち、いくつかのみをサポートしています。アクセスポリシーはIAMエンティティではなく、デフォルトのKubernetesクラスターロールに基づいてAmazon EKSによって定義および管理され、次のようにマッピングされます：
 
 | アクセスポリシー            | RBAC            | 説明                                                                                                                       |
 | --------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------------- |
@@ -25,7 +25,7 @@ Cluster Access Management APIは次の2つの基本的な概念に依存して�
 | AmazonEKSViewPolicy         | `view`          | ほとんどのKubernetesリソースをリスト/表示するアクセス権を付与、通常はNamespaceにスコープされる                              |
 | AmazonEMRJobPolicy          | N/A             | Amazon EKSクラスター上でAmazon EMRジョブを実行するためのカスタムアクセス                                                   |
 
-アカウントで利用可能なアクセスポリシーのリストを確認するには、次のコマンドを実行します：
+上記の表は、一般的に使用されるアクセスポリシーの一部を示しています。AWSは時間の経過とともに新しいポリシーを追加しています（例：EKS Auto Mode、ArgoCD、KRO、SageMaker HyperPodなど）。アカウントで利用可能な最新かつ完全なポリシーのリストを確認するには、次のコマンドを実行します：
 
 ```bash
 $ aws eks list-access-policies
@@ -65,3 +65,4 @@ $ aws eks list-access-policies
 以下の図は、Cluster Access Management APIがAWS IAMプリンシパルにAmazon EKSクラスターへの認証と認可を提供するために従うワークフローを示しています。
 
 ![CAM Auth Workflow](/docs/security/cluster-access-management/cam-workflow.webp)
+

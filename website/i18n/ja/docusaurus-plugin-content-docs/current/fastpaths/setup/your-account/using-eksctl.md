@@ -2,7 +2,7 @@
 title: eksctl を使用する
 sidebar_position: 20
 pagination_next: fastpaths/navigating-labs
-tmdTranslationSourceHash: '35b6089a346b6ed8dbdd09ac89809ae2'
+tmdTranslationSourceHash: '9193e9f6b357e955cc87909efdf7aa31'
 ---
 
 このセクションでは、[eksctl ツール](https://eksctl.io/)を使用してラボ演習用のクラスターを構築する方法を説明します。これは最も簡単に始められる方法であり、ほとんどの学習者に推奨されます。
@@ -21,8 +21,10 @@ tmdTranslationSourceHash: '35b6089a346b6ed8dbdd09ac89809ae2'
 ```bash
 $ export EKS_CLUSTER_AUTO_NAME=eks-workshop-auto
 $ curl -fsSL https://raw.githubusercontent.com/VAR::MANIFESTS_OWNER/VAR::MANIFESTS_REPOSITORY/VAR::MANIFESTS_REF/cluster/eksctl/cluster-auto.yaml | \
-envsubst | eksctl create cluster -f -
+envsubst | with-iam-boundary | eksctl create cluster -f -
 ```
+
+`with-iam-boundary` は、eksctl が作成するロールにワークショップの IAM アクセス許可境界を追加する IDE のヘルパーです。IDE は、このアクセス許可境界が付与された IAM ロールのみを作成できます。
 
 このプロセスは完了まで約 20 分かかります。
 

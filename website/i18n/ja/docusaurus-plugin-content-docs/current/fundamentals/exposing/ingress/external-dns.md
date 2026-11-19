@@ -1,7 +1,7 @@
 ---
 title: "External DNS"
 sidebar_position: 30
-tmdTranslationSourceHash: 019f0b1b461fa8b8569fd792821c987d
+tmdTranslationSourceHash: 'b70878979b882d542f9f4317bd6c47b6'
 ---
 
 [ExternalDNS](https://github.com/kubernetes-sigs/external-dns)はKubernetesコントローラーで、クラスターのサービスとIngressのDNSレコードを自動的に管理します。KubernetesリソースとAWS Route 53などのDNSプロバイダー間の橋渡しとして機能し、DNSレコードがクラスターの状態と同期されるようにします。ロードバランサーにDNSエントリを使用することで、自動生成されたホスト名の代わりに人間が読みやすく記憶しやすいアドレスを提供し、組織のブランディングに合ったドメイン名でサービスを簡単にアクセス可能かつ認識可能にします。
@@ -66,8 +66,13 @@ ExternalDNSのログを確認してDNSレコードの作成を確認します：
 
 ```bash hook=dns-logs
 $ kubectl -n external-dns logs deployment/external-dns
-Desired change: CREATE ui.retailstore.com A
-5 record(s) were successfully updated
+[...]
+time="2026-09-07T10:47:49Z" level=info msg="Desired change: CREATE aaaa-ui.retailstore.com TXT" profile=default zoneID=/hostedzone/Z0555650CWZOQSPVZG4 zoneName=retailstore.com.
+time="2026-09-07T10:47:49Z" level=info msg="Desired change: CREATE cname-ui.retailstore.com TXT" profile=default zoneID=/hostedzone/Z0555650CWZOQSPVZG4 zoneName=retailstore.com.
+time="2026-09-07T10:47:49Z" level=info msg="Desired change: CREATE ui.retailstore.com A" profile=default zoneID=/hostedzone/Z0555650CWZOQSPVZG4 zoneName=retailstore.com.
+time="2026-09-07T10:47:49Z" level=info msg="Desired change: CREATE ui.retailstore.com AAAA" profile=default zoneID=/hostedzone/Z0555650CWZOQSPVZG4 zoneName=retailstore.com.
+time="2026-09-07T10:47:49Z" level=info msg="4 record(s) were successfully updated" profile=default zoneID=/hostedzone/Z0555650CWZOQSPVZG4 zoneName=retailstore.com.
+[...]
 ```
 
 リンクをクリックして`retailstore.com`プライベートホストゾーンに移動することで、AWS Route 53コンソールで新しいDNSレコードを確認することもできます：
@@ -89,3 +94,4 @@ Set-Cookie: SESSIONID=c3f13e02-4ff3-40ba-866e-c777f7450997
 
 {"status":"UP"}
 ```
+

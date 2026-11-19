@@ -1,17 +1,17 @@
 ---
 title: EFSを使用した動的プロビジョニング
 sidebar_position: 30
-tmdTranslationSourceHash: 3ebb6d789f8ef01214bb12b1eca28f1e
+tmdTranslationSourceHash: 'c945a552122fd46eb39530f86539ebc5'
 ---
 
-EFS用のKubernetesストレージクラスについて理解したので、[Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)を作成し、UIコンポーネントを変更してこのボリュームをマウントしましょう。
+EFS用のKubernetesのStorageClassについて理解できたので、[Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)を作成し、UIコンポーネントを変更してこのボリュームをマウントしましょう。
 
 まず、`efspvclaim.yaml`ファイルを確認しましょう：
 
 ::yaml{file="manifests/modules/fundamentals/storage/efs/deployment/efspvclaim.yaml" paths="kind,spec.storageClassName,spec.resources.requests.storage"}
 
 1. 定義されているリソースはPersistentVolumeClaimです
-2. これは先ほど作成した`efs-sc`ストレージクラスを参照しています
+2. これは先ほど作成した`efs-sc`のStorageClassを参照しています
 3. 5GBのストレージを要求しています
 
 次に、UIコンポーネントを更新してEFS PVCを参照するようにします：
@@ -32,9 +32,10 @@ service/ui unchanged
 persistentvolumeclaim/efs-claim created
 deployment.apps/ui configured
 $ kubectl rollout status --timeout=130s deployment/ui -n ui
+deployment "ui" successfully rolled out
 ```
 
-デプロイメントの`volumeMounts`を調べてみましょう。`efsvolume`という名前の新しいボリュームが`/efs`にマウントされていることがわかります：
+Deploymentの`volumeMounts`を調べてみましょう。`efsvolume`という名前の新しいボリュームが`/efs`にマウントされていることがわかります：
 
 ```bash
 $ kubectl get deployment -n ui \
@@ -45,7 +46,7 @@ $ kubectl get deployment -n ui \
   name: tmp-volume
 ```
 
-PersistentVolumeClaim（PVC）を満たすためにPersistentVolume（PV）が自動的に作成されました：
+PersistentVolumeClaim（PVC）を満たすために、PersistentVolume（PV）が自動的に作成されました：
 
 ```bash
 $ kubectl get pv
@@ -87,16 +88,17 @@ $ POD_1=$(kubectl -n ui get pods -l app.kubernetes.io/instance=ui -o jsonpath='{
 $ kubectl exec --stdin $POD_1 -n ui -- bash -c 'ls /efs/'
 ```
 
-[Kubernetesジョブ](https://kubernetes.io/docs/concepts/workloads/controllers/job/)を使用して、EFSボリュームに画像を投入しましょう：
+[Kubernetes Job](https://kubernetes.io/docs/concepts/workloads/controllers/job/)を使用して、EFSボリュームに画像を投入しましょう：
 
 ```bash
 $ export PVC_NAME="efs-claim"
 $ cat ~/environment/eks-workshop/modules/fundamentals/storage/populate-images-job.yaml | envsubst | kubectl apply -f -
 $ kubectl wait --for=condition=complete -n ui \
   job/populate-images --timeout=300s
+job.batch/populate-images condition met
 ```
 
-UIコンポーネントのPodの1つを通じて、`/efs`内の現在のファイルをリストして、共有ストレージ機能を実証しましょう：
+UIコンポーネントのPodの1つを通じて`/efs`内の現在のファイルを一覧表示し、共有ストレージ機能を確認しましょう：
 
 ```bash
 $ POD_1=$(kubectl -n ui get pods -l app.kubernetes.io/instance=ui -o jsonpath='{.items[0].metadata.name}')
@@ -115,14 +117,14 @@ d4edfedb-dbe9-4dd9-aae8-009489394955.jpg
 d77f9ae6-e9a8-4a3e-86bd-b72af75cbc49.jpg
 ```
 
-共有ストレージ機能をさらに実証するために、最初のPodを通じて`placeholder.jpg`という新しい画像を作成し、EFSボリュームに追加しましょう：
+共有ストレージ機能をさらに確認するために、`placeholder.jpg`という新しい画像を作成し、最初のPodを通じてEFSボリュームに追加しましょう：
 
 ```bash
 $ POD_1=$(kubectl -n ui get pods -l app.kubernetes.io/instance=ui -o jsonpath='{.items[0].metadata.name}')
 $ kubectl exec --stdin $POD_1 -n ui -- bash -c 'curl -sS -o /efs/placeholder.jpg https://placehold.co/600x400/jpg?text=EKS+Workshop\\nPlaceholder'
 ```
 
-次に、2番目のUIPodがこの新しく作成されたファイルにアクセスできることを確認し、EFSストレージの共有特性を実証します：
+次に、2番目のUI Podがこの新しく作成されたファイルにアクセスできることを確認し、EFSストレージの共有特性を確認します：
 
 ```bash hook=sample-images
 $ POD_2=$(kubectl -n ui get pods -o jsonpath='{.items[1].metadata.name}')
@@ -142,7 +144,7 @@ d77f9ae6-e9a8-4a3e-86bd-b72af75cbc49.jpg
 placeholder.jpg      <----------------
 ```
 
-ご覧のとおり、最初のPodを通じてファイルを作成したにもかかわらず、2番目のPodは同じ共有EFSファイルシステムにアクセスしているため、すぐにアクセスできます。
+ご覧のとおり、最初のPodを通じてファイルを作成したにもかかわらず、2番目のPodも同じ共有EFSファイルシステムにアクセスしているため、すぐにそのファイルにアクセスできます。
 
 最後に、UIサービスを通じて画像にアクセスできることを確認しましょう：
 
@@ -158,4 +160,5 @@ http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/asse
 <img src={require('@site/static/docs/fundamentals/storage/efs/placeholder.jpg').default}/>
 </Browser>
 
-Amazon EFSがAmazon EKS上で実行されるワークロードに永続的な共有ストレージを提供する方法を正常に実証しました。このソリューションにより、複数のPodが同時に同じストレージボリュームから読み取りや書き込みを行うことができ、共有コンテンツホスティングや分散ファイルシステムアクセスを必要とする他のユースケースに最適です。
+Amazon EFSがAmazon EKS上で実行されるワークロードに永続的な共有ストレージを提供する方法を実証することができました。このソリューションにより、複数のPodが同じストレージボリュームに対して同時に読み取りや書き込みを行うことができ、共有コンテンツのホスティングや、分散ファイルシステムアクセスを必要とするその他のユースケースに最適です。
+

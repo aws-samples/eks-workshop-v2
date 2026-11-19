@@ -1,7 +1,7 @@
 ---
 title: S3 Filesを使用した静的プロビジョニング
 sidebar_position: 30
-tmdTranslationSourceHash: 293360447972abae5b305ada7ef2c4ee
+tmdTranslationSourceHash: c8288fdc81e9828fdd67634ca0599fad
 ---
 
 S3 FilesのストレージクラスとS3 Filesが静的プロビジョニングを使用する理由を理解したので、事前に作成されたS3ファイルシステム用に[Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)を静的にプロビジョニングし、UIコンポーネントをマウントするように変更しましょう。
@@ -85,7 +85,7 @@ modules/fundamentals/storage/s3-files/deployment/deployment.yaml
 Deployment/ui
 ```
 
-このパッチは、小さな`fix-permissions` initコンテナも追加します。`ui`コンテナは非rootユーザー`1000`として実行されますが、S3 Filesボリュームは`root`が所有した状態でマウントされます。S3 FilesはNFSベースのファイルシステムを使用するため、PodのfsGroup設定は、Amazon EBSのようなブロックストレージの場合のようにマウントされたボリュームの所有権を自動的に変更しません。initコンテナは`root`として実行され、`ui`コンテナが起動する前にマウントをユーザー`1000`に`chown`するため、アプリケーションが`/s3files`に書き込めるようになります。これがないと、このラボの後半での書き込みのような操作が権限エラーで失敗します。
+このパッチは、小さな`fix-permissions` initコンテナも追加します。`ui`コンテナは非rootユーザー`1000`として実行されますが、S3 Filesボリュームは`root`が所有した状態でマウントされます。S3 FilesはNFSベースのファイルシステムを使用するため、Podの`fsGroup`設定は、Amazon EBSのようなブロックストレージの場合のようにマウントされたボリュームの所有権を自動的に変更しません。initコンテナは`root`として実行され、`ui`コンテナが起動する前にマウントをユーザー`1000`に`chown`するため、アプリケーションが`/s3files`に書き込めるようになります。これがないと、このラボの後半での書き込みのような操作が権限エラーで失敗します。
 
 次のコマンドでこれらの変更を適用します:
 
@@ -97,6 +97,7 @@ configmap/ui unchanged
 service/ui unchanged
 deployment.apps/ui configured
 $ kubectl rollout status --timeout=130s deployment/ui -n ui
+deployment "ui" successfully rolled out
 ```
 
 デプロイメントの`volumeMounts`を確認してみましょう。`s3filesvolume`という名前の新しいボリュームが`/s3files`にマウントされていることに注目してください:
@@ -124,6 +125,7 @@ $ export PVC_NAME="s3-files-claim"
 $ cat ~/environment/eks-workshop/modules/fundamentals/storage/populate-images-job.yaml | envsubst | kubectl apply -f -
 $ kubectl wait --for=condition=complete -n ui \
   job/populate-images --timeout=300s
+job.batch/populate-images condition met
 ```
 
 次に、UIコンポーネントのPodの1つを通じて`/s3files`内の現在のファイルをリストすることで、共有ストレージ機能を実証しましょう:
@@ -205,4 +207,3 @@ http://k8s-ui-uinlb-647e781087-6717c5049aa96bd9.elb.us-west-2.amazonaws.com/asse
 </Browser>
 
 Amazon S3 Filesが、Amazon EKS上で実行されているワークロードに永続的な共有ストレージを提供する方法を実証しました。このソリューションは、ファイルシステムのシンプルさとパフォーマンスとAmazon S3のスケーラビリティと耐久性を組み合わせることで、複数のPodが同じストレージボリュームに同時に読み書きできるようにし、データをS3バケットと同期させたままにします。
-

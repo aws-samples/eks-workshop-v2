@@ -1,11 +1,11 @@
 ---
 title: "ACKの仕組み"
 sidebar_position: 5
-tmdTranslationSourceHash: '65a6535f311f56cd60f0a17bedec678c'
+tmdTranslationSourceHash: '27815a64d2738aff7614288d9dc09dc0'
 ---
 
 :::info
-kubectlは、フォーマットされた出力の代わりに、デプロイメント定義の完全なYAMLまたはJSON形式のマニフェストを抽出する便利な`-oyaml`や`-ojson`フラグも提供しています。
+`kubectl`は、フォーマットされた出力の代わりに、デプロイメント定義の完全なYAMLまたはJSON形式のマニフェストを抽出する便利な`-oyaml`や`-ojson`フラグも提供しています。
 :::
 
 AWS マネージドインフラストラクチャ上で実行されるマネージド ACK コントローラーは、`dynamodb.services.k8s.aws.Table` のような DynamoDB 固有の Kubernetes カスタムリソースを監視します。これらのリソースの設定に基づいて、DynamoDB エンドポイントへの API 呼び出しを行います。リソースが作成または変更されると、コントローラーは `Status` フィールドに値を設定してカスタムリソースのステータスを更新します。マニフェストの仕様に関する詳細は、[ACK リファレンスドキュメント](https://aws-controllers-k8s.github.io/community/reference/)を参照してください。
@@ -16,7 +16,18 @@ ACK がクラスター内で利用可能にしているリソースタイプを�
 $ kubectl get crd
 ```
 
-このコマンドは、クラスター内のすべてのCustom Resource Definitions（CRD）を表示します。`*.services.k8s.aws` のリソースがいくつも一覧に表示されることに注目してください。マネージド ACK ケイパビリティは、DynamoDB だけでなく、幅広い AWS サービス（S3、RDS、IAM など）の CRD をインストールします。
+このコマンドは、クラスター内のすべてのCustom Resource Definition（CRD）を表示します。`*.services.k8s.aws` のリソースがいくつも一覧に表示されることに注目してください。マネージド ACK ケイパビリティは、DynamoDB だけでなく、幅広い AWS サービス（S3、RDS、IAM など）の CRD をインストールします。
+
+ACK のリソースタイプのみを一覧表示するには、`services.k8s.aws` API グループで出力をフィルタリングします：
+
+```bash
+$ kubectl get crd | grep services.k8s.aws
+accessentries.eks.services.k8s.aws                                    2026-10-31T13:32:34Z
+accesspoints.efs.services.k8s.aws                                     2026-10-31T13:33:13Z
+accesspoints.s3control.services.k8s.aws                               2026-10-31T13:31:50Z
+[...]
+tables.dynamodb.services.k8s.aws                                      2026-10-31T13:34:45Z
+[...]
+```
 
 これは、セルフマネージドの ACK 構成との重要な違いです。セルフマネージドでは、サービスごとに個別のコントローラー（たとえば DynamoDB コントローラー単体）をインストールするため、そのサービスの CRD のみがクラスターで利用可能になります。マネージド ACK ケイパビリティでは、Amazon EKS が単一のマネージドケイパビリティを通じて幅広い ACK 対応サービスの CRD を利用可能にします。そのため、サービスごとにコントローラーをインストールして運用することなく、Kubernetes から多数の AWS サービスを管理できます。
-

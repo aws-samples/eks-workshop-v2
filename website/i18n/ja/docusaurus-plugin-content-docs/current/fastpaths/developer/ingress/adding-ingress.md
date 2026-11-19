@@ -1,7 +1,7 @@
 ---
 title: "Ingress の作成"
 sidebar_position: 20
-tmdTranslationSourceHash: 'e84ebe7a9b2001ac86ff0c6d6846d021'
+tmdTranslationSourceHash: '97f89c41256bb5e4b8f9231b6685c37e'
 ---
 
 :::info AWS Load Balancer Controller
@@ -37,7 +37,7 @@ EKS Auto Mode では、アノテーションによる ALB 設定はサポート�
 
 それでは、これらの設定を適用しましょう:
 
-```bash timeout=180 hook=add-ingress hookTimeout=660
+```bash timeout=180 hook=add-ingress hookTimeout=720
 $ envsubst < ~/environment/eks-workshop/modules/fastpaths/developers/ingress/adding-ingress/ingressclass.yaml | kubectl apply -f -
 $ kubectl apply -f ~/environment/eks-workshop/modules/fastpaths/developers/ingress/adding-ingress/ingress.yaml
 ```
@@ -115,6 +115,11 @@ $ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN
             "HealthCheckPort": "8080",
             "TargetHealth": {
                 "State": "healthy"
+            },
+            "AdministrativeOverride": {
+                "State": "no_override",
+                "Reason": "AdministrativeOverride.NoOverride",
+                "Description": "No override is currently active on target"
             }
         }
     ]
@@ -151,3 +156,4 @@ $ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 --connect-ti
 <Browser url="http://k8s-ui-uiauto-cb8129ddff-1888909706.us-west-2.elb.amazonaws.com">
 <img src={require('@site/static/img/sample-app-screens/home.webp').default}/>
 </Browser>
+

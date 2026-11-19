@@ -1,14 +1,14 @@
 ---
 title: "Karpenter 設定の確認"
 sidebar_position: 30
-tmdTranslationSourceHash: 71e7d00dc015ad2a1c4b15a4580cf76d
+tmdTranslationSourceHash: '654521f504e2c19d1c09f1889c63309b'
 ---
 
 EKS Auto Mode は、すぐに使える機能として完全マネージド型の Karpenter を提供します。Karpenter の設定は `NodePool` CRD (Custom Resource Definition) の形式で提供されます。単一の Karpenter `NodePool` は、さまざまな Pod 形状を処理できます。Karpenter は、ラベルやアフィニティなどの Pod 属性に基づいてスケジューリングとプロビジョニングの決定を行います。クラスターには複数の `NodePool` を持つことができますが、当面は Auto Mode がデフォルトで設定する NodePool を使用します。
 
 Karpenter の主な目的の 1 つは、容量管理を簡素化することです。他の自動スケーリングソリューションに精通している場合、Karpenter が **グループレス自動スケーリング** と呼ばれる異なるアプローチを採用していることに気づいたかもしれません。他のソリューションでは、従来 **ノードグループ** という概念を制御要素として使用し、提供される容量の特性（つまり：オンデマンド、EC2 Spot、GPU ノードなど）を定義し、クラスター内のグループの望ましいスケールを制御していました。AWS では、ノードグループの実装は [Auto Scaling グループ](https://docs.aws.amazon.com/autoscaling/ec2/userguide/AutoScalingGroup.html) と一致します。Karpenter を使用すると、異なるコンピューティングニーズを持つ複数のタイプのアプリケーションを管理する際に生じる複雑さを回避できます。
 
-まず、Karpenter が使用する既存のリソースを確認することから始めましょう。まず、一般的な容量要件を定義するデフォルトの `NodePool` を確認します：
+まず、Karpenter が使用する既存のリソースを確認することから始めましょう。最初に、一般的な容量要件を定義するデフォルトの `NodePool` を確認します：
 
 ```bash 
 $ kubectl get nodepools general-purpose -o yaml
@@ -68,7 +68,7 @@ spec:
 
 1. `NodePool` は、すべての新しいノードを Kubernetes ラベル `type: karpenter` で起動するように設定されており、これにより、デモンストレーション目的で Pod を Karpenter ノードに特定してターゲットできるようになります。
 2. [NodePool CRD](https://karpenter.sh/docs/concepts/nodepools/) は、インスタンスタイプやゾーンなどのノードプロパティの定義をサポートしています。この設定では、`karpenter.sh/capacity-type` を設定して、最初は Karpenter をオンデマンドインスタンスのプロビジョニングに制限し、`node.kubernetes.io/instance-type` を設定して特定のインスタンスタイプのサブセットに制限しています。他にどのようなプロパティが [利用可能かはこちら](https://karpenter.sh/docs/concepts/scheduling/#selecting-nodes) で確認できます。ワークショップ中にさらにいくつか取り組みます。
-3. `NodePool` は、それが管理する CPU とメモリの量に制限を定義できます。この制限に達すると、Karpenter はその特定の `NodePool` に関連する追加容量をプロビジョニングせず、総コンピューティングに上限を提供します。
+3. `NodePool` は、それが管理する CPU とメモリの量に制限を定義できます。この制限に達すると、Karpenter はその特定の `NodePool` に関連する追加容量をプロビジョニングせず、総コンピューティングに上限を設けます。
 
 `NodePool` に加えて、Karpenter にはもう 1 つ重要なリソース、`NodeClass` があります。前の `NodePool` 設定の `nodeClassRef` の下で参照されている `NodeClass` を確認できます。この `NodeClass` も EKS Auto Mode によって事前にプロビジョニングされています。以下がその設定です。
 
