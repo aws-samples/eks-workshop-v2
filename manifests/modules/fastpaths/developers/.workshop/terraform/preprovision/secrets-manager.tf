@@ -51,6 +51,12 @@ resource "helm_release" "external_secrets" {
     name  = "serviceAccount.name"
     value = local.external_secrets_sa # To be consistent with the auto-generated one with IRSA
   }
+
+  # Pod Identity credentials are injected only when a pod is created, so the
+  # association must exist before the operator pod starts. Without this the two
+  # are created in parallel and the operator can come up with no AWS credentials
+  # (ClusterSecretStore: NoCredentialProviders).
+  depends_on = [aws_eks_pod_identity_association.external_secrets]
 }
 
 # IAM role for Secrets Manager access using Pod Identity
