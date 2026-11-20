@@ -130,9 +130,10 @@ $ kubectl apply -f ~/environment/eks-workshop/modules/fastpaths/eks-capabilities
 Wait for the load balancer to finish provisioning (this takes a few minutes), then print its URL:
 
 ```bash test=false
-$ curl --head -X GET --retry 30 --retry-all-errors --retry-delay 15 \
-  --connect-timeout 30 --max-time 60 -k -s -o /dev/null \
-  $(kubectl get ingress -n ui ui-auto -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+$ wait-for-lb ingress/ui-auto -n ui
+Waiting for ingress/ui-auto to be assigned a load balancer hostname...
+Waiting for k8s-ui-uiauto-....us-west-2.elb.amazonaws.com...
+You can now access http://k8s-ui-uiauto-....us-west-2.elb.amazonaws.com
 $ echo "http://$(kubectl get ingress -n ui ui-auto -o jsonpath='{.status.loadBalancer.ingress[*].hostname}')"
 http://k8s-ui-uiauto-....us-west-2.elb.amazonaws.com
 ```
