@@ -7,6 +7,12 @@ In this lab, we are going to implement network policies for the sample applicati
 
 <img src={require('@site/static/img/sample-app-screens/architecture.webp').default}/>
 
+If you just finished the Karpenter lab, node consolidation may still be moving sample application Pods onto new nodes. Wait for every sample application Pod to be ready before continuing:
+
+```bash timeout=310
+$ kubectl wait --for=condition=Ready --timeout=300s pods -l app.kubernetes.io/created-by=eks-workshop -A
+```
+
 Each component in the sample application is implemented in its own namespace. For example, the **'ui'** component is deployed in the **'ui'** namespace, whereas the **'catalog'** web service and **'catalog'** MySQL database are deployed in the **'catalog'** namespace.
 
 Currently, there are no network policies that are defined, and any component in the sample application can communicate with any other component or any external service. For example, the 'catalog' component can directly communicate with the 'checkout' component. We can validate this using the below commands:
