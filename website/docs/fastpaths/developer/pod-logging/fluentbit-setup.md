@@ -31,19 +31,19 @@ NAME                                DESIRED   CURRENT   READY   UP-TO-DATE   AVA
 daemonset.apps/aws-for-fluent-bit   3         3         3       3            3           <none>          96s
 ```
 
-The ConfigMap for `aws-for-fluent-bit` is configured to stream the contents of files in the directory `/var/log/containers/*.log` from each node to the CloudWatch log group `/eks-workshop/worker-fluentbit-logs`.
+The ConfigMap for `aws-for-fluent-bit` is configured to stream the contents of files in the directory `/var/log/containers/*.log` from each node to a CloudWatch log group whose name follows the pattern `/eks-workshop-auto/worker-fluentbit-logs-<random-suffix>`.
 
 ```bash hook=desc-cm
 $ kubectl describe configmap -n amazon-cloudwatch -l app.kubernetes.io/name=aws-for-fluent-bit
 Name:         aws-for-fluent-bit
-Namespace:    kube-system
+Namespace:    amazon-cloudwatch
 Labels:       app.kubernetes.io/instance=aws-for-fluent-bit
               app.kubernetes.io/managed-by=Helm
               app.kubernetes.io/name=aws-for-fluent-bit
               app.kubernetes.io/version=2.31.12.20231011
               helm.sh/chart=aws-for-fluent-bit-0.1.32
 Annotations:  meta.helm.sh/release-name: aws-for-fluent-bit
-              meta.helm.sh/release-namespace: kube-system
+              meta.helm.sh/release-namespace: amazon-cloudwatch
 
 Data
 ====
@@ -82,12 +82,12 @@ fluent-bit.conf:
     Name                  cloudwatch_logs
     Match                 *
     region                us-west-2
-    log_group_name        /aws/eks/eks-workshop/aws-fluentbit-logs-20250415195811907400000002
+    log_group_name        /eks-workshop-auto/worker-fluentbit-logs-xxxxxx
     log_stream_prefix     fluentbit-
 ...
 ```
 
-Use the `kubectl logs` command to check the Fluent Bit Pod logs, where you will observe new CloudWatch Log groups and streams are created for the services.
+Use the `kubectl logs` command to check the Fluent Bit Pod logs, where you will observe new CloudWatch log streams are created for the services.
 
 ```bash hook=pods-log
 $ kubectl logs daemonset.apps/aws-for-fluent-bit -n amazon-cloudwatch
@@ -107,12 +107,8 @@ Fluent Bit v1.9.9
 [2025/04/14 16:15:40] [ info] [sp] stream processor started
 [2025/04/14 16:15:40] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] worker #0 started
 ...
-[2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream ui-8564fc5cfb-54llk.ui in log group /aws/eks/fluentbit-cloudwatch/workload/ui
-[2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Log Group /aws/eks/fluentbit-cloudwatch/workload/ui not found. Will attempt to create it.
-[2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log group /aws/eks/fluentbit-cloudwatch/workload/ui
-[2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Created log group /aws/eks/fluentbit-cloudwatch/workload/ui
-[2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream ui-8564fc5cfb-54llk.ui in log group /aws/eks/fluentbit-cloudwatch/workload/ui
-[2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Created log stream ui-8564fc5cfb-54llk.ui
+[2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream fluentbit-kube.var.log.containers.ui-8564fc5cfb-54llk_ui_ui-4ace14944409ee785708c9031b4c2243bfa065ffe0cd320e219131aa33541a1e.log in log group /eks-workshop-auto/worker-fluentbit-logs-xxxxxx
+[2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Created log stream fluentbit-kube.var.log.containers.ui-8564fc5cfb-54llk_ui_ui-4ace14944409ee785708c9031b4c2243bfa065ffe0cd320e219131aa33541a1e.log
 ```
 
 In the next lab, we will verify these logs in CloudWatch.
