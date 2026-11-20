@@ -165,7 +165,7 @@ EOT
   cat << EOT > /usr/local/bin/wait-for-lb
 #!/bin/bash
 set -e
-curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/$REPOSITORY_REF/lab/bin/wait-for-lb | bash -s -- \$1
+curl -fsSL https://raw.githubusercontent.com/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/$REPOSITORY_REF/lab/bin/wait-for-lb | bash -s -- "\$@"
 EOT
   chmod +x /usr/local/bin/wait-for-lb
   cat << EOT > /usr/local/bin/use-cluster

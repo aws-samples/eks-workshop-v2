@@ -1,6 +1,20 @@
 #!/bin/bash
 
+# Usage:
+#   wait-for-lb <hostname>
+#   wait-for-lb <service|ingress>/<name> [-n <namespace>]
+#
+# With a Kubernetes reference, first wait for the resource to be assigned a
+# load balancer hostname, then wait for it to return HTTP 200. Both waits
+# share one 600 second budget.
+
 export host=$1
+shift || true
+
+namespace=""
+if [ "${1:-}" == "-n" ] || [ "${1:-}" == "--namespace" ]; then
+  namespace=${2:-}
+fi
 
 set -Eeuo pipefail
 
@@ -9,11 +23,45 @@ if [ -z "$host" ]; then
   exit 1
 fi
 
+deadline=$((SECONDS + 600))
+
+case "$host" in
+  service/* | svc/* | ingress/* | ing/*)
+    resource=$host
+    namespace_args=()
+    if [ -n "$namespace" ]; then
+      namespace_args=(-n "$namespace")
+    fi
+
+    echo "Waiting for ${resource} to be assigned a load balancer hostname..."
+
+    host=""
+    while [ -z "$host" ]; do
+      if [ $SECONDS -ge $deadline ]; then
+        echo "${resource} was not assigned a load balancer hostname after 600 seconds"
+        exit 1
+      fi
+      host=$(kubectl get "$resource" "${namespace_args[@]}" -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' 2>/dev/null || true)
+      if [ -z "$host" ]; then
+        sleep 5
+      fi
+    done
+    export host
+    ;;
+esac
+
 echo "Waiting for ${host}..."
+
+remaining=$((deadline - SECONDS))
+# timeout treats 0 as "no limit"
+if [ "$remaining" -lt 1 ]; then
+  remaining=1
+fi
 
 EXIT_CODE=0
 
-timeout -s TERM 600 bash -c \
+# shellcheck disable=SC2016 # $host is expanded by the inner bash from the exported env
+timeout -s TERM "$remaining" bash -c \
   'while [[ "$(curl -s -o /dev/null -L -w ''%{http_code}'' ${host}/home)" != "200" ]];\
   do sleep 5;\
   done' || EXIT_CODE=$?
