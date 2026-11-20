@@ -48,6 +48,9 @@ spec:
                   keyType: RANGE
               projection:
                 projectionType: "ALL"
+      readyWhen:
+        - ${table.status.tableStatus == "ACTIVE"}
+        - ${table.status.conditions.exists(c, c.type == "ACK.ResourceSynced" && c.status == "True")}
     - id: sa
       template:
         apiVersion: v1
@@ -139,6 +142,8 @@ spec:
                 - name: tmp-volume
                   emptyDir:
                     medium: Memory
+      readyWhen:
+        - ${deployment.status.conditions.exists(c, c.type == "Available" && c.status == "True")}
     - id: service
       template:
         apiVersion: v1

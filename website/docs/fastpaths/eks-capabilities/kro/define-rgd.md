@@ -10,6 +10,8 @@ Let's write the `CartsStack` RGD, the blueprint introduced on the previous page.
 1. **`spec.schema`** declares the shape of the user-facing CR using kro's **SimpleSchema** syntax (the `string | required=true` form), not raw OpenAPI. Optional fields like `image` and `replicas` get defaults, so a minimal instance only sets `tableName` and `namespace`.
 2. **`spec.resources`** is the graph kro creates. Each entry has an `id` (used to reference its outputs from other resources) and a `template` (the actual manifest). Note the `${schema.spec.X}` references pulling in the user's inputs, and `${table.status...arn}` / `${sa.metadata.name}` references between resources, which is how kro infers the order to create them in.
 
+The `table` and `deployment` entries also have a `readyWhen` list. Without it, kro treats a resource as ready as soon as it has been created. With it, kro waits until every expression is true: the DynamoDB table is `ACTIVE` and synced by ACK, and the Deployment is `Available`. The `CartsStack` instance only reports `ACTIVE` once those children are ready.
+
 Apply the RGD:
 
 ```bash
