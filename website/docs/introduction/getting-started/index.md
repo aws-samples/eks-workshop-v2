@@ -16,6 +16,7 @@ Before we begin we need to run the following command to prepare our IDE environm
 ```bash
 $ prepare-environment introduction/getting-started
 ```
+
 This command will clone the EKS workshop Git repository into the IDE environment.
 :::
 
@@ -50,7 +51,8 @@ CoreDNS is running at https://XXXXXXXXXXXXXXXXXXXXXXXXXX.gr7.us-west-2.eks.amazo
 To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 
-Check the cluster version 
+Check the cluster version
+
 ```bash
 $ kubectl version
 Client Version: v1.33.5
@@ -90,59 +92,15 @@ metrics-server-7fb96f5556-mpj78   1/1     Running   0          26h
 ```
 
 You'll see essential components like:
+
 - **CoreDNS** - Provides DNS services for the cluster
 - **AWS Load Balancer Controller** - Manages AWS load balancers for services
 - **VPC CNI** - Handles pod networking within your VPC
 - **kube-proxy** - Manages network rules on each node
 
-## Deploy the Sample Application
-
-Let's deploy the retail store application to see Kubernetes in action. We'll use Kustomize, which is built into kubectl:
-
-```bash wait=10
-$ kubectl apply -k ~/environment/eks-workshop/base-application
-```
-
-After this is complete we can use `kubectl wait` to make sure all the components have started before we proceed:
-
-```bash timeout=200
-$ kubectl wait --for=condition=Ready --timeout=180s pods \
-  -l app.kubernetes.io/created-by=eks-workshop -A
-```
-
-We'll now have a Namespace for each of our application components:
-
-```bash
-$ kubectl get namespaces -l app.kubernetes.io/created-by=eks-workshop
-NAME       STATUS   AGE
-carts      Active   62s
-catalog    Active   7m17s
-checkout   Active   62s
-orders     Active   62s
-other      Active   62s
-ui         Active   62s
-```
-
-We can also see all of the Deployments created for the components:
-
-```bash
-$ kubectl get deployment -l app.kubernetes.io/created-by=eks-workshop -A
-NAMESPACE   NAME                READY   UP-TO-DATE   AVAILABLE   AGE
-carts       carts               1/1     1            1           90s
-carts       carts-dynamodb      1/1     1            1           90s
-catalog     catalog             1/1     1            1           7m46s
-checkout    checkout            1/1     1            1           90s
-checkout    checkout-redis      1/1     1            1           90s
-orders      orders              1/1     1            1           90s
-orders      orders-postgresql   1/1     1            1           90s
-ui          ui                  1/1     1            1           90s
-```
-
-The sample application is now deployed and ready to provide a foundation for us to use in the rest of the labs in this workshop!
-
 ## What's Next?
 
-Your EKS cluster is ready and the sample application is deployed! You can now jump into any workshop module based on your learning goals.
+Your EKS cluster is ready. In the next pages of this lab you'll get to know the sample application, then deploy it to the cluster step by step, starting with a single component.
 
 :::tip
 Each module is self-contained and includes its own `prepare-environment` command to set up the required resources. You can complete them in any order!
