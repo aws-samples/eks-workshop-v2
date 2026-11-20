@@ -10,7 +10,7 @@ description: "Manage AWS credentials for your applications running on Amazon Ela
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=300 wait=30
+```bash timeout=600 wait=30
 $ prepare-environment security/eks-pod-identity
 ```
 

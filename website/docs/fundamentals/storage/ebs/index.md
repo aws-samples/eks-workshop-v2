@@ -10,7 +10,7 @@ description: "High performance block storage for workloads on Amazon Elastic Kub
 :::tip Before you start
 Prepare your environment for this section:
 
-```bash timeout=300 wait=30
+```bash timeout=600 wait=30
 $ prepare-environment fundamentals/storage/ebs
 ```
 
