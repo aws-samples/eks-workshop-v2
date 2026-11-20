@@ -50,11 +50,12 @@ Notable points about these environment variables:
 - `AWS_STS_REGIONAL_ENDPOINTS` - Regional STS endpoints are configured to avoid putting too much pressure on the global endpoint in `us-east-1`
 - `AWS_CONTAINER_CREDENTIALS_FULL_URI` - This variable tells AWS SDKs how to obtain credentials using the [HTTP credential provider](https://docs.aws.amazon.com/sdkref/latest/guide/feature-container-credentials.html). This means that EKS Pod Identity does not need to inject credentials via something like an `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` pair, and instead the SDKs can have temporary credentials vended to them via the EKS Pod Identity mechanism. You can read more about how this functions in the [AWS documentation](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html).
 
-Now let's wait for the load balancer to finish provisioning:
+Now let's wait for the load balancer to finish provisioning. `wait-for-lb` waits for the Service to be assigned a hostname, then for the NLB to serve the application:
 
-```bash timeout=610 hook=wait-nlb-hostname hookTimeout=240
-$ wait-for-lb $(kubectl get service -n ui ui-nlb-auto -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+```bash timeout=610
+$ wait-for-lb service/ui-nlb-auto -n ui
 
+Waiting for service/ui-nlb-auto to be assigned a load balancer hostname...
 Waiting for k8s-ui-uinlbaut-a9797f0f61.elb.us-west-2.amazonaws.com...
 You can now access http://k8s-ui-uinlbaut-a9797f0f61.elb.us-west-2.amazonaws.com
 ```
