@@ -82,7 +82,7 @@ fluent-bit.conf:
     Name                  cloudwatch_logs
     Match                 *
     region                us-west-2
-    log_group_name        /aws/eks/eks-workshop/aws-fluentbit-logs-20250415195811907400000002
+    log_group_name        /eks-workshop/worker-fluentbit-logs-a1b2c3
     log_stream_prefix     fluentbit-
 ...
 ```
@@ -91,7 +91,7 @@ fluent-bit.conf:
 The `log_group_name` value above (`/eks-workshop/worker-fluentbit-logs-a1b2c3`) is an example, the random suffix in your environment will differ. Note this value down, you'll use it later to locate the logs in the CloudWatch console. It is also available in your shell as the `CLOUDWATCH_LOG_GROUP_NAME` environment variable:
 :::
 
-Use the `kubectl logs` command to check the Fluent Bit Pod logs, where you will observe new CloudWatch Log groups and streams are created for the services.
+Use the `kubectl logs` command to check the Fluent Bit Pod logs, where you will observe new CloudWatch log streams are created for the services.
 
 ```bash hook=pods-log
 $ kubectl logs daemonset.apps/aws-for-fluent-bit -n kube-system
@@ -111,10 +111,6 @@ Fluent Bit v1.9.9
 [2025/04/14 16:15:40] [ info] [sp] stream processor started
 [2025/04/14 16:15:40] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] worker #0 started
 ...
-[2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream ui-8564fc5cfb-54llk.ui in log group /aws/eks/fluentbit-cloudwatch/workload/ui
-[2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Log Group /aws/eks/fluentbit-cloudwatch/workload/ui not found. Will attempt to create it.
-[2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log group /aws/eks/fluentbit-cloudwatch/workload/ui
-[2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Created log group /aws/eks/fluentbit-cloudwatch/workload/ui
-[2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream ui-8564fc5cfb-54llk.ui in log group /aws/eks/fluentbit-cloudwatch/workload/ui
-[2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Created log stream ui-8564fc5cfb-54llk.ui
+[2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream fluentbit-kube.var.log.containers.ui-8564fc5cfb-54llk_ui_ui-4ace14944409ee785708c9031b4c2243bfa065ffe0cd320e219131aa33541a1e.log in log group /eks-workshop/worker-fluentbit-logs-a1b2c3
+[2025/04/14 16:16:01] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Created log stream fluentbit-kube.var.log.containers.ui-8564fc5cfb-54llk_ui_ui-4ace14944409ee785708c9031b4c2243bfa065ffe0cd320e219131aa33541a1e.log
 ```

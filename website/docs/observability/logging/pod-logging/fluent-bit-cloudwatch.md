@@ -19,7 +19,7 @@ Meanwhile, if you check the Fluent Bit DaemonSet logs, you will observe that a n
 ```bash hook=pods-log
 $ kubectl logs -n kube-system -l app.kubernetes.io/name=aws-for-fluent-bit --all-containers --prefix --tail=100
 ...
-[pod/aws-for-fluent-bit-xxxxx/aws-for-fluent-bit] [2026/08/07 15:04:24] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream fluentbit-kube.var.log.containers.aws-for-fluent-bit-4h7cr_kube-system_aws-for-fluent-bit-0e26a01294055645368d7692084cda1a886f04a3621e5fe07fbd24e4d8c7f14a.log in log group /aws/eks/eks-workshop/aws-fluentbit-logs-20260807150346312400000001
+[pod/aws-for-fluent-bit-xxxxx/aws-for-fluent-bit] [2026/08/07 15:04:24] [ info] [output:cloudwatch_logs:cloudwatch_logs.0] Creating log stream fluentbit-kube.var.log.containers.aws-for-fluent-bit-4h7cr_kube-system_aws-for-fluent-bit-0e26a01294055645368d7692084cda1a886f04a3621e5fe07fbd24e4d8c7f14a.log in log group /eks-workshop/worker-fluentbit-logs-a1b2c3
 ...
 ```
 
@@ -55,7 +55,7 @@ Filter for **fluentbit** to find the log groups created by Fluent Bit:
 
 ![CloudWatch Log Group](/docs/observability/logging/pod-logging/log-group.webp)
 
-Select /aws/eks/eks-workshop/aws-fluentbit-logs-a1b2c3` to view the log streams, each one corresponds to an individual pod:
+Select the `/eks-workshop/worker-fluentbit-logs-<random-suffix>` log group for the `eks-workshop` cluster to view the log streams, each one corresponds to an individual pod:
 
 ![CloudWatch Log Stream](/docs/observability/logging/pod-logging/log-streams.webp)
 

@@ -28,7 +28,10 @@ module "eks_blueprints_addons" {
     wait = true
   }
 
-  aws_for_fluentbit_cw_log_group = local.cw_log_group_name
+  aws_for_fluentbit_cw_log_group = {
+    name            = local.cw_log_group_name
+    use_name_prefix = false
+  }
 
   observability_tag = null
 }
