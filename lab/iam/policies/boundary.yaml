@@ -95,7 +95,8 @@ Statement:
 
   # The resiliency lab's FIS experiment runs an AWS-owned Resilience Hub
   # automation document. IAM evaluates StartAutomationExecution against the
-  # document ARN (AWS-owned, so the account field is empty).
+  # document ARN (AWS-owned, so the account field is empty) and against the
+  # new execution's automation-execution ARN.
   - Sid: SsmResilienceAutomation
     Effect: Allow
     Action:
@@ -103,6 +104,7 @@ Statement:
     Resource:
       - arn:aws:ssm:*::document/AWSResilienceHub-*
       - arn:aws:ssm:*:*:automation-definition/AWSResilienceHub-*
+      - arn:aws:ssm:*:*:automation-execution/*
   - Sid: SsmAutomationRead
     Effect: Allow
     Action:

@@ -126,6 +126,7 @@ Statement:
       - s3:Get*
       - s3:PutBucketPublicAccessBlock
       - s3:PutBucketTagging
+      - s3:TagResource
       - s3:DeleteObject
       - s3:DeleteObjectVersion
     Resource:

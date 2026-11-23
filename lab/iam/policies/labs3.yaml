@@ -10,6 +10,7 @@ Statement:
       - s3:GetObjectVersion
       - s3:PutBucketPublicAccessBlock
       - s3:PutBucketTagging
+      - s3:TagResource
       - s3:PutBucketVersioning
       - s3:PutBucketNotification
       - s3:DeleteObject
@@ -22,14 +23,12 @@ Statement:
       - fis:CreateExperimentTemplate
       - fis:CreateExperimentTemplate
       - fis:GetExperimentTemplate
-      - fis:ListExperimentTemplates
       - fis:DeleteExperimentTemplate
       - fis:UpdateExperimentTemplate
       - fis:TagResource
       - fis:UntagResource
       - fis:StartExperiment
       - fis:GetExperiment
-      - fis:ListExperiments
     Resource:
       - !Sub arn:aws:fis:${AWS::Region}:${AWS::AccountId}:action/aws:eks:*
       - !Sub arn:aws:fis:${AWS::Region}:${AWS::AccountId}:action/aws:ssm:*
@@ -40,7 +39,7 @@ Statement:
     Action:
       - synthetics:CreateCanary
       - synthetics:DeleteCanary
-      - synthetics:DescribeCanaries
+      - synthetics:GetCanary
       - synthetics:StartCanary
       - synthetics:StopCanary
       - synthetics:UpdateCanary
@@ -49,11 +48,21 @@ Statement:
   - Effect: Allow
     Action:
       - cloudwatch:PutMetricAlarm
+      - cloudwatch:DeleteAlarms
       - cloudwatch:PutMetricData
       - cloudwatch:GetMetricStatistics
       - cloudwatch:ListMetrics
     Resource:
       - !Sub arn:aws:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:${Env}*
+  # List calls the resiliency lab and its cleanup make; IAM only matches
+  # these against "*".
+  - Effect: Allow
+    Action:
+      - fis:ListExperiments
+      - fis:ListExperimentTemplates
+      - synthetics:DescribeCanaries
+      - cloudwatch:DescribeAlarms
+    Resource: ["*"]
   - Effect: Allow
     Action:
       - lambda:CreateFunction
