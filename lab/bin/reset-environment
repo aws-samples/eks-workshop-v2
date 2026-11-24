@@ -13,8 +13,9 @@ cd ~
 mkdir -p /eks-workshop/logs
 log_file=/eks-workshop/logs/action-$(date +%s).log
 
-if [ -f /home/ec2-user/.banner-text ]; then
-  cat /home/ec2-user/.banner-text
+if [ -f /home/ec2-user/.bashrc.d/workshop-links.bash ]; then
+  source /home/ec2-user/.bashrc.d/workshop-links.bash
+  workshop
 fi
 
 exec 7>&1
