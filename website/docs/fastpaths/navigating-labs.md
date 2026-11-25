@@ -23,7 +23,7 @@ If you're **at an AWS event**, open the IDE from the *Event Outputs* section at 
 
 <img src={require('@site/static/img/fastpaths/ide-open.png').default} alt="Event Outputs copy/paste" width="500" />
 
-If you're running **in your own account**, find the `IdeUrl` in your CloudFormation stack's Outputs tab — see the [setup guide](/docs/fastpaths/setup/your-account) for details.
+If you're running **in your own account**, find the `IdeUrl` in your CloudFormation stack's Outputs tab.
 
 ## Starting a Lab
 

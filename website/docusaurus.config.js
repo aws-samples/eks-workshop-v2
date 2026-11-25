@@ -55,7 +55,6 @@ const config = {
         label: "Amazon EKS Essentials",
         items: [
           { to: "/docs/fastpaths/", label: "Intro" },
-          { to: "/docs/fastpaths/setup", label: "Setup" },
           {
             to: "/docs/fastpaths/navigating-labs",
             label: "Navigating the labs",

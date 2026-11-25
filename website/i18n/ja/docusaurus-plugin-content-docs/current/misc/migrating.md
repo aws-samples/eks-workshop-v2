@@ -26,4 +26,4 @@ $ terraform destroy -target=module.cluster.module.eks_blueprints --auto-approve
 $ terraform destroy --auto-approve
 ```
 
-これで、[ここに概説されている手順](/docs/introduction/setup/your-account)に従って、新しいラボ環境を作成できます。
+これで、[ここに概説されている手順](https://www.eksworkshop.com/docs/introduction/setup/your-account)に従って、新しいラボ環境を作成できます。

@@ -24,7 +24,7 @@ import TabItem from '@theme/TabItem';
 
 <img src={require('@site/static/img/fastpaths/ide-open.png').default} alt="Event Outputs copy/paste" width="500" />
 
-**自分のアカウントで実行している場合**は、CloudFormation スタックの Outputs タブで `IdeUrl` を見つけてください。詳細は[セットアップガイド](/docs/fastpaths/setup/your-account)を参照してください。
+**自分のアカウントで実行している場合**は、CloudFormation スタックの Outputs タブで `IdeUrl` を見つけてください。
 
 ## ラボの開始
 

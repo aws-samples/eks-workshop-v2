@@ -25,4 +25,4 @@ $ terraform destroy -target=module.cluster.module.eks_blueprints --auto-approve
 $ terraform destroy --auto-approve
 ```
 
-You can now create a new lab environment following the steps [outlined here](/docs/introduction/setup/your-account).
+You can now create a new lab environment following the steps [outlined here](https://www.eksworkshop.com/docs/introduction/setup/your-account).

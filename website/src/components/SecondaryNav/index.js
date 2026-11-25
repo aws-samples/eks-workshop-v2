@@ -26,10 +26,10 @@ export default function SecondaryNav() {
   // Get the last visited page or default
   const getTargetPage = (context) => {
     if (typeof window === 'undefined') {
-      return context === 'autoMode' ? '/docs/fastpaths/setup' : '/docs/introduction';
+      return context === 'autoMode' ? '/docs/fastpaths/' : '/docs/introduction';
     }
     if (context === 'autoMode') {
-      return localStorage.getItem('lastAutoModePage') || '/docs/fastpaths/setup';
+      return localStorage.getItem('lastAutoModePage') || '/docs/fastpaths/';
     } else {
       return localStorage.getItem('lastTraditionalPage') || '/docs/introduction';
     }
