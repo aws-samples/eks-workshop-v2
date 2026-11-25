@@ -29,44 +29,11 @@ $ echo "User:     $ARGOCD_IDC_USER"
 $ echo "Password: $ARGOCD_IDC_PASSWORD"
 ```
 
-If a password is printed, it is ready to use and you can skip to the next section.
-
-<details>
-<summary>Empty password? Read this to <strong>activate the user yourself</strong></summary>
-
-An empty `ARGOCD_IDC_PASSWORD` means the user exists but has never signed in, which is the case when you set up IAM Identity Center in your own account. Identity Center creates users without a password and offers no API to set one, so the first password has to be established through a sign-in. This is the same process an administrator follows to onboard a new team member.
-
-Generate a one-time password for the user:
-
-```bash test=false
-$ echo "Console: $ARGOCD_IDC_CONSOLE_URL"
-```
-
-1. Open `$ARGOCD_IDC_CONSOLE_URL` in your browser, using credentials with administrator access
-2. Click on the `$ARGOCD_IDC_USER` user
-3. Choose **Reset password**, select **Generate a one-time password and share the password with the user**, then copy the password shown
-
-Use that one-time password to sign in below. Identity Center will immediately ask you to set a permanent password — choose one and keep it for the rest of the lab.
-
-At an AWS-run event none of this is necessary: the event provisioning activates the user and stores the password, which is why `ARGOCD_IDC_PASSWORD` is already populated. If it is somehow empty there, read it straight from the secret that provisioning wrote:
-
-```bash test=false
-$ aws secretsmanager get-secret-value \
-  --secret-id $EKS_CLUSTER_NAME-argocd-idc \
-  --query SecretString --output text | jq -r '.password'
-```
-
-</details>
+The environment setup already activated this user and stored its password, so both lines print a value.
 
 ## Accessing the Argo CD UI
 
 Open `$ARGOCD_SERVER` in your browser and click **Log in via SSO**, then sign in as `$ARGOCD_IDC_USER`.
-
-:::note
-If you set up IAM Identity Center yourself, it may ask you to register an MFA device on this first sign-in, which is its default for a new user. Register one with an authenticator app to continue, or turn the prompt off under **Settings → Authentication → Multi-factor authentication** in the Identity Center console.
-
-At an AWS-run event this does not happen: the Identity Center instance is created for the event and its MFA prompt is turned off during provisioning. The workshop only does that for an instance it created itself, and never changes the settings of one that already existed.
-:::
 
 You will see an interface that looks like this:
 

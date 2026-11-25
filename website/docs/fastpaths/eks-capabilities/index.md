@@ -34,7 +34,7 @@ Amazon EKS Capabilities offload the operation of platform components to AWS so y
 | **Argo CD** | Deliver the `catalog` microservice via GitOps from a pre-provisioned AWS CodeCommit repository. Sign in to the managed Argo CD UI through AWS IAM Identity Center, register the cluster as a deployment target, then trigger a real GitOps update. |
 | **kro** (Kube Resource Orchestrator) | Compose the ACK lab's three apply steps into a single `CartsStack` resource. Define a `ResourceGraphDefinition` that bundles a Namespace, an ACK `Table`, a ConfigMap, and a ServiceAccount, then apply one instance and watch kro reconcile the whole graph.                  |
 
-The Argo CD lab signs in through AWS IAM Identity Center and includes a short, one-time console setup, covered on its [Sign in to Argo CD via Identity Center](./argocd/signin-argocd.md) page.
+The Argo CD lab signs in through AWS IAM Identity Center is covered on its [Sign in to Argo CD via Identity Center](./argocd/signin-argocd.md) page.
 
 ## What's pre-provisioned for you
 
