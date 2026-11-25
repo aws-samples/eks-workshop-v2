@@ -64,9 +64,13 @@ $ kubectl rollout status -n catalog deployment/catalog --timeout=180s
 deployment "catalog" successfully rolled out
 ```
 
-Confirm the running Deployment now has 2 replicas:
+Confirm the running Deployment now has 2 replicas. The rollout can report done
+a moment before the second Pod is counted as ready, so wait for it first:
 
 ```bash
+$ kubectl wait --for=jsonpath='{.status.readyReplicas}'=2 \
+  deployment/catalog -n catalog --timeout=120s
+deployment.apps/catalog condition met
 $ kubectl get deployment catalog -n catalog \
   -o jsonpath='{.status.readyReplicas}{"\n"}'
 2
